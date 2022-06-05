@@ -16,7 +16,6 @@
         "jaxon-php/jaxon-dialogs": "^4.0",
         "jaxon-php/jaxon-laravel": "^4.0",
         "jaxon-php/jaxon-annotations": "^2.1",
-        "bugsnag/bugsnag-laravel": "^2.0",
         "mcamara/laravel-localization": "^1.7"
     },
     "require-dev": {
