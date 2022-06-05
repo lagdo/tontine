@@ -48,6 +48,7 @@
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
             "@php -r \"is_dir('storage/annotations') || mkdir('storage/annotations');\""
         ],
