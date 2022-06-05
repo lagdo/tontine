@@ -31,8 +31,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "Siak\\Tontine\\": "src/",
-            "Siak\\Tontine\\Ajax\\": "app/Ajax/"
+            "Siak\\Tontine\\": "src/"
         },
         "files": [
             "app/helpers.php"
