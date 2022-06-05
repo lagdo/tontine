@@ -59,7 +59,7 @@ class IndexController extends Controller
             'pagination' => $jxnTontine->page()->paginate(1, 10, $tontineService->getTontineCount()),
         ]);
 
-        return view('ben.home', [
+        return view('base.home', [
             'pageTitle' => "Siak Tontine",
             'jaxonCss' => $jaxon->css(),
             'jaxonJs' => $jaxon->js(),

@@ -1,4 +1,4 @@
-@extends('ben.layout')
+@extends('base.layout')
 
 @section('page-title', 'Siak Tontine')
 
