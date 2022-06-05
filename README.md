@@ -1,5 +1,5 @@
-The Jaxon core library
-======================
+Siak Tontine
+============
 
 Web application for online tontine management.
 
