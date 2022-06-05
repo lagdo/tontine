@@ -4,7 +4,7 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\JaxonController;
 use App\Http\Controllers\WebController;
 use App\Http\Middleware\AnnotationCache;
-use App\Http\Middleware\Tontine;
+use App\Http\Middleware\TontineTenant;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -20,11 +20,11 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function()
     // Home page
     //----------------------------------
     Route::get('/', [IndexController::class, 'index'])->name('tontine.home')
-        ->middleware([AnnotationCache::class, Tontine::class]);
+        ->middleware([AnnotationCache::class, TontineTenant::class]);
 
     // Route to Jaxon controller
     Route::post('ajax', [JaxonController::class, 'jaxon'])->name('tontine.ajax')
-        ->middleware([AnnotationCache::class, Tontine::class]);
+        ->middleware([AnnotationCache::class, TontineTenant::class]);
 
     // Deposit page
     //----------------------------------

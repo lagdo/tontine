@@ -9,7 +9,7 @@ use Closure;
 
 use function session;
 
-class Tontine
+class TontineTenant
 {
     /**
      * @var TenantService
