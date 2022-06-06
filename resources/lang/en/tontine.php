@@ -64,6 +64,7 @@ return [
             'address' => "Address",
         ],
         'titles' => [
+            'title' => "Session of :month :year",
             'host' => "Edit the host",
             'venue' => "Venue",
         ],
@@ -88,6 +89,7 @@ return [
         'titles' => [
             'deposits' => "Deposits table",
             'remittances' => "Remittances table",
+            'subscriptions' => "Subscriptions",
         ],
         'actions' => [
             'subscriptions' => "Subscriptions",

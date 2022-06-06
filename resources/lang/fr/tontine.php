@@ -64,6 +64,7 @@ return [
             'address' => "Adresse",
         ],
         'titles' => [
+            'title' => "Séance de :month :year",
             'host' => "Choisir l'hôte",
             'venue' => "Lieu",
         ],
@@ -88,6 +89,7 @@ return [
         'titles' => [
             'deposits' => "Tableau des cotisations",
             'remittances' => "Tableau des remises",
+            'subscriptions' => "Souscriptions",
         ],
         'actions' => [
             'subscriptions' => "Souscriptions",

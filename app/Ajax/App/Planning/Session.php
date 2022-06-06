@@ -2,8 +2,10 @@
 
 namespace App\Ajax\App\Planning;
 
-use Siak\Tontine\Service\SessionService;
 use App\Ajax\CallableClass;
+use Carbon\Carbon;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Siak\Tontine\Service\SessionService;
 
 use function jq;
 use function pm;
@@ -96,6 +98,8 @@ class Session extends CallableClass
         $html = $this->view()->render('pages.planning.session.add')->with('count', $count);
         $this->response->html('content-home', $html);
         $this->jq('#btn-cancel')->click($this->rq()->home());
+        $this->jq('#btn-copy')->click($this->rq()->copy(jq('#session_date_0')->val(),
+            jq('#session_start_0')->val(), jq('#session_end_0')->val(), $count));
         $this->jq('#btn-save')->click($this->rq()->create(pm()->form('session-form')));
 
         return $this->response;
@@ -112,6 +116,25 @@ class Session extends CallableClass
             $this->jq("#session_date_$i")->val($sessions[$i]->date);
             $this->jq("#session_start_$i")->val($sessions[$i]->start);
             $this->jq("#session_end_$i")->val($sessions[$i]->end);
+        }
+
+        return $this->response;
+    }
+
+    public function copy(string $date, string $start, string $end, int $count)
+    {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $date = Carbon::createFromFormat('Y-m-d', $date);
+        $this->jq("#session_title_0")->val(trans('tontine.session.titles.title',
+            ['month' => $date->locale($locale)->monthName, 'year' => $date->year]));
+        for($i = 1; $i < $count; $i++)
+        {
+            $date->addMonth();
+            $this->jq("#session_title_$i")->val(trans('tontine.session.titles.title',
+                ['month' => $date->locale($locale)->monthName, 'year' => $date->year]));
+            $this->jq("#session_date_$i")->val($date->toDateString());
+            $this->jq("#session_start_$i")->val($start);
+            $this->jq("#session_end_$i")->val($end);
         }
 
         return $this->response;

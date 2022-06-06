@@ -6,6 +6,7 @@
               <div class="col-sm-4">
                 <div class="btn-group float-right" role="group" aria-label="">
                   <button type="button" class="btn btn-primary" id="btn-cancel"><i class="fa fa-arrow-left"></i></button>
+                  <button type="button" class="btn btn-primary" id="btn-copy"><i class="fa fa-copy"></i></button>
                   <button type="button" class="btn btn-primary" id="btn-save"><i class="fa fa-save"></i></button>
                 </div>
               </div>
