@@ -162,18 +162,18 @@ class TontineSeeder extends Seeder
                     'amount' => $charge->amount,
                     'issued_at' => now(),
                 ];
-                if($charge->period === Charge::PERIOD_ONCE)
+                if($charge->period_once)
                 {
                     $charge->bills()->create($bill);
                     continue;
                 }
-                if($charge->period === Charge::PERIOD_ROUND)
+                if($charge->period_round)
                 {
                     $bill['round_id'] = $round->id;
                     $charge->bills()->create($bill);
                     continue;
                 }
-                // $charge->period === Charge::PERIOD_SESSION
+                // $charge->period_session
                 foreach($round->sessions as $session)
                 {
                     $bill['session_id'] = $session->id;

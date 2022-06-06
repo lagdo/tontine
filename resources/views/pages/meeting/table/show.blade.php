@@ -13,7 +13,7 @@
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right" role="group" aria-label="">
-                  <button type="button" class="btn btn-primary" id="btn-meeting-table-print"><i class="fa fa-arrow-left"></i></button>
+                  <button type="button" class="btn btn-primary" id="btn-meeting-table-print"><i class="fa fa-file-pdf"></i></button>
                   <button type="button" class="btn btn-primary" id="btn-meeting-table-refresh"><i class="fa fa-sync"></i></button>
                 </div>
               </div>

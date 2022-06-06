@@ -29,7 +29,7 @@ class Charge extends CallableClass
         $this->jq('#btn-refresh')->click($this->rq()->home());
         $this->jq('#btn-create')->click($this->rq()->number());
 
-        return $this->page($this->bag('charge')->get('page', 1));
+        return $this->page();
     }
 
     /**
