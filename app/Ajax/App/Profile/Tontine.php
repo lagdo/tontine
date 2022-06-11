@@ -5,6 +5,7 @@ namespace App\Ajax\App\Profile;
 use Siak\Tontine\Service\RoundService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\TontineService;
+use Siak\Tontine\Model\Tontine as TontineModel;
 use App\Ajax\CallableClass;
 
 use function jq;
@@ -75,8 +76,12 @@ class Tontine extends CallableClass
 
     public function add()
     {
+        $types = [
+            TontineModel::TYPE_MUTUAL => trans('tontine.labels.types.mutual'),
+            TontineModel::TYPE_FINANCIAL => trans('tontine.labels.types.financial'),
+        ];
         $title = trans('tontine.titles.add');
-        $content = $this->view()->render('pages.profile.tontine.add');
+        $content = $this->view()->render('pages.profile.tontine.add')->with('types', $types);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -105,8 +110,13 @@ class Tontine extends CallableClass
     {
         $tontine = $this->tontineService->getTontine($tontineId);
 
+        $types = [
+            TontineModel::TYPE_MUTUAL => trans('tontine.labels.types.mutual'),
+            TontineModel::TYPE_FINANCIAL => trans('tontine.labels.types.financial'),
+        ];
         $title = trans('tontine.titles.edit');
-        $content = $this->view()->render('pages.profile.tontine.edit')->with('tontine', $tontine);
+        $content = $this->view()->render('pages.profile.tontine.edit')
+            ->with('tontine', $tontine)->with('types', $types);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

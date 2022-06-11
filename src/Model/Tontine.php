@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Model;
 
 use Database\Factories\TontineFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,11 +13,22 @@ class Tontine extends Model
     use HasFactory;
 
     /**
+     * @const
+     */
+    const TYPE_MUTUAL = 0;
+
+    /**
+     * @const
+     */
+    const TYPE_FINANCIAL = 1;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
+        'type',
         'name',
         'shortname',
         'biography',
@@ -38,6 +50,36 @@ class Tontine extends Model
     protected static function newFactory()
     {
         return TontineFactory::new();
+    }
+
+    public function getIsMutualAttribute()
+    {
+        return intval($this->type) === self::TYPE_MUTUAL;
+    }
+
+    public function getIsFinancialAttribute()
+    {
+        return intval($this->type) === self::TYPE_FINANCIAL;
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeMutual(Builder $query): Builder
+    {
+        return $query->where('type', self::TYPE_MUTUAL);
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeFinancial(Builder $query): Builder
+    {
+        return $query->where('type', self::TYPE_FINANCIAL);
     }
 
     public function user()

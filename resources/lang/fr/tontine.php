@@ -17,6 +17,12 @@ return [
         'add' => "Ajouter une tontine",
         'edit' => "Modifier une tontine",
     ],
+    'labels' => [
+        'types' => [
+            'mutual' => "Mutuelle",
+            'financial' => "Financière",
+        ],
+    ],
     'actions' => [
         'rounds' => "Tours",
         'select' => "Sélectionner",
