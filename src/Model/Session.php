@@ -107,6 +107,16 @@ class Session extends Model
         return $this->hasMany(Bill::class);
     }
 
+    public function biddings()
+    {
+        return $this->hasMany(Bidding::class);
+    }
+
+    public function enabled(Fund $fund)
+    {
+        return in_array($this->id, $fund->session_ids);
+    }
+
     public function disabled(Fund $fund)
     {
         return !in_array($this->id, $fund->session_ids);
