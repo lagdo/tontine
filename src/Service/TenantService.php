@@ -2,7 +2,6 @@
 
 namespace Siak\Tontine\Service;
 
-use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Round;
@@ -50,8 +49,7 @@ class TenantService
     public function setTontine(Tontine $tontine): void
     {
         // Set the currency in the models
-        Charge::$currency = $tontine->currency;
-        Fund::$currency = $tontine->currency;
+        Currency::$current = $tontine->currency;
 
         $this->tontine = $tontine;
     }

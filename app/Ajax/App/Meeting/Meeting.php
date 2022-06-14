@@ -3,6 +3,7 @@
 namespace App\Ajax\App\Meeting;
 
 use Siak\Tontine\Service\MeetingService;
+use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 
@@ -17,6 +18,11 @@ use function trans;
  */
 class Meeting extends CallableClass
 {
+    /**
+     * @var TenantService
+     */
+    protected TenantService $tenantService;
+
     /**
      * @di
      * @var MeetingService
@@ -38,6 +44,9 @@ class Meeting extends CallableClass
         $this->session = $this->meetingService->getSession($sessionId);
     }
 
+    /**
+     * @di $tenantService
+     */
     public function home($sessionId)
     {
         $sessionId = intval($sessionId);
@@ -55,12 +64,15 @@ class Meeting extends CallableClass
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 
-        $this->cl(Fund::class)->show($this->session, $this->meetingService);
+        $this->cl(Fund::class)->show($this->session, $this->tenantService, $this->meetingService);
         $this->cl(Charge::class)->show($this->session, $this->meetingService);
 
         return $this->response;
     }
 
+    /**
+     * @di $tenantService
+     */
     public function open()
     {
         $this->session->update(['status' => SessionModel::STATUS_OPENED]);
@@ -70,6 +82,9 @@ class Meeting extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $tenantService
+     */
     public function close()
     {
         $this->session->update(['status' => SessionModel::STATUS_CLOSED]);

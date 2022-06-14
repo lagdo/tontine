@@ -22,4 +22,9 @@ return [
             'amount' => "Montant remis",
         ],
     ],
+    'bidding' => [
+        'titles' => [
+            'available' => "Disponible",
+        ],
+    ],
 ];

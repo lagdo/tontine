@@ -10,12 +10,12 @@
             </div>
 @endif
             <div class="form-group row">
-                {!! Form::label('name', trans('common.labels.name'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
-                <div class="col-sm-9">
-                  {!! Form::text('name', $tontine->name, ['class' => 'form-control']) !!}
-                </div>
+              {!! Form::label('name', trans('common.labels.name'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+              <div class="col-sm-9">
+                {!! Form::text('name', $tontine->name, ['class' => 'form-control']) !!}
               </div>
-              <div class="form-group row">
+            </div>
+            <div class="form-group row">
               {!! Form::label('shortname', trans('common.labels.shortname'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
               <div class="col-sm-5">
                 {!! Form::text('shortname', $tontine->shortname, ['class' => 'form-control']) !!}

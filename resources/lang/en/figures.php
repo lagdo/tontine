@@ -22,4 +22,9 @@ return [
             'amount' => "Remittance amounts",
         ],
     ],
+    'bidding' => [
+        'titles' => [
+            'available' => "Available",
+        ],
+    ],
 ];

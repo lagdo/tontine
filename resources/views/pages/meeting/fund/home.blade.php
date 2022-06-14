@@ -1,4 +1,15 @@
-                  <div class="section-title mt-0">{!! __('meeting.titles.funds') !!}</div>
+                  <div class="row align-items-center">
+                    <div class="col-auto">
+                      <div class="section-title mt-0">{!! __('meeting.titles.funds') !!}</div>
+                    </div>
+@if($tontine->is_financial)
+                    <div class="col">
+                      <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
+                        <button type="button" class="btn btn-primary" id="btn-biddings"><i class="fa fa-user-shield"></i></button>
+                      </div>
+                    </div>
+@endif
+                  </div>
                   <div class="table-responsive">
                     <table class="table table-bordered">
                       <thead>
@@ -22,16 +33,30 @@
                           <td>{{ $fund->money('amount') }}</td>
                           <td class="table-item-menu">
 @if($session->opened)
+<?php
+$menu = [[
+    'class' => 'btn-fund-deposits',
+    'text' => __('meeting.actions.deposits'),
+]];
+if($tontine->is_mutual)
+{
+    $menu[] = [
+        'class' => 'btn-fund-remittances',
+        'text' => __('meeting.actions.remittances'),
+    ];
+}
+if($tontine->is_financial)
+{
+    $menu[] = [
+        'class' => 'btn-fund-biddings',
+        'text' => __('meeting.actions.biddings'),
+    ];
+}
+?>
 @include('parts.table.menu', [
   'dataIdKey' => 'data-fund-id',
   'dataIdValue' => $fund->id,
-  'menus' => [[
-    'class' => 'btn-fund-deposits',
-    'text' => __('meeting.actions.deposits'),
-  ],[
-    'class' => 'btn-fund-remittances',
-    'text' => __('meeting.actions.remittances'),
-  ]],
+  'menus' => $menu,
 ])
 @endif
                           </td>

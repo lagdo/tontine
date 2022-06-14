@@ -28,7 +28,7 @@
               <i class="fa fa-cash-register"></i> <span>{{ __('tontine.menus.sessions') }}</span>
             </a></li>
             <li><a class="nav-link" id="meeting-menu-tables" href="javascript:void(0)">
-              <i class="fa fa-cash-register"></i> <span>{{ __('tontine.menus.tables') }}</span>
+              <i class="fa fa-table"></i> <span>{{ __('tontine.menus.tables') }}</span>
             </a></li>
           </ul>
         </aside>
