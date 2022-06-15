@@ -46,7 +46,7 @@ class Bidding extends CallableClass
      */
     protected function getFund()
     {
-        $fundId = $this->target()->method() === 'home' ?
+        $fundId = $this->target()->method() === 'fund' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('fund.id');
         $this->fund = $this->biddingService->getFund($fundId);
     }
@@ -62,7 +62,7 @@ class Bidding extends CallableClass
         $biddings = $figures->payables
             ->map(function($payable) use($figures) {
                 return (object)[
-                    'id' => $payable->id,
+                    'id' => $payable->subscription->id,
                     'title' => $payable->subscription->member->name,
                     'amount' => $figures->amount,
                     'available' => false,
@@ -79,9 +79,9 @@ class Bidding extends CallableClass
         $this->response->html('meeting-funds', $html);
 
         $this->jq('#btn-biddings-back')->click($this->cl(Fund::class)->rq()->home());
-        $this->jq('.btn-bidding-add')->click($this->rq()->addFundBidding());
-        $payableId = jq()->parent()->attr('data-payable-id');
-        $this->jq('.btn-bidding-delete')->click($this->rq()->deleteFundBidding($payableId));
+        $this->jq('.btn-bidding-add')->click($this->rq()->addRemittance());
+        $subscriptionId = jq()->parent()->attr('data-subscription-id');
+        $this->jq('.btn-bidding-delete')->click($this->rq()->deleteRemittance($subscriptionId));
 
         return $this->response;
     }
@@ -89,8 +89,23 @@ class Bidding extends CallableClass
     /**
      * @before getFund
      */
-    public function addFundBidding()
+    public function addRemittance()
     {
+        $subscriptions = $this->biddingService->getPendingSubscriptions($this->fund);
+        $members = $subscriptions->pluck('member.name', 'id');
+        $title = trans('tontine.bidding.titles.add');
+        $content = $this->view()->render('pages.meeting.bidding.add-remittance')
+            ->with('members', $members);
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.save'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->saveRemittance(pm()->form('bidding-form')),
+        ]];
+        $this->dialog->show($title, $content, $buttons, ['width' => '800']);
 
         return $this->response;
     }
@@ -98,19 +113,26 @@ class Bidding extends CallableClass
     /**
      * @before getFund
      */
-    public function saveFundBidding()
+    public function saveRemittance(array $formValues)
     {
+        $subscriptionId = $formValues['subscription'];
+        $amountPaid = $formValues['amount'];
+        $this->biddingService->createRemittance($this->fund, $this->session, $subscriptionId, $amountPaid);
+        $this->dialog->hide();
+        // $this->notify->success(trans('session.remittance.created'), trans('common.titles.success'));
 
-        return $this->response;
+        return $this->fund($this->fund->id);
     }
 
     /**
      * @before getFund
      */
-    public function deleteFundBidding($payableId)
+    public function deleteRemittance($subscriptionId)
     {
+        $this->biddingService->deleteRemittance($this->fund, $this->session, $subscriptionId);
+        // $this->notify->success(trans('session.remittance.deleted'), trans('common.titles.success'));
 
-        return $this->response;
+        return $this->fund($this->fund->id);
     }
 
     public function cash()
@@ -124,6 +146,7 @@ class Bidding extends CallableClass
                 'id' => 0,
                 'title' => trans('meeting.title.amount_to_bid'),
                 'amount' => $amountAvailable,
+                'available' => true,
             ]);
         }
 
@@ -132,9 +155,50 @@ class Bidding extends CallableClass
         $this->response->html('meeting-funds', $html);
 
         $this->jq('#btn-biddings-back')->click($this->cl(Fund::class)->rq()->home());
-        // $payableId = jq()->parent()->attr('data-payable-id');
-        // $this->jq('.btn-bidding-settlements')->click($this->cl(Settlement::class)->rq()->home($payableId));
-        // $this->jq('.btn-bidding-fine')->click($this->cl(Fine::class)->rq()->home($payableId));
+        // $subscriptionId = jq()->parent()->attr('data-subscription-id');
+        // $this->jq('.btn-bidding-settlements')->click($this->cl(Settlement::class)->rq()->home($subscriptionId));
+        // $this->jq('.btn-bidding-fine')->click($this->cl(Fine::class)->rq()->home($subscriptionId));
+
+        return $this->response;
+    }
+
+    /**
+     * @before getFund
+     */
+    public function addBidding()
+    {
+        $subscriptions = $this->biddingService->getPendingSubscriptions($this->fund);
+        $members = $subscriptions->pluck('member.name', 'id');
+        $title = trans('tontine.bidding.titles.add');
+        $content = $this->view()->render('pages.meeting.bidding.add')->with('members', $members);
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.save'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->saveBidding(pm()->form('bidding-form')),
+        ]];
+        $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+
+        return $this->response;
+    }
+
+    /**
+     * @before getFund
+     */
+    public function saveBidding(array $formValues)
+    {
+
+        return $this->response;
+    }
+
+    /**
+     * @before getFund
+     */
+    public function deleteBidding($subscriptionId)
+    {
 
         return $this->response;
     }

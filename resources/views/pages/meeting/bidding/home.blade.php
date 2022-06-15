@@ -24,7 +24,7 @@
                           <td>{{ $bidding->amount }}</td>
                           <td class="table-item-menu">
 @include('parts.table.menu', [
-  'dataIdKey' => 'data-payable-id',
+  'dataIdKey' => 'data-subscription-id',
   'dataIdValue' => $bidding->id,
   'menus' => $bidding->available ? [[
     'class' => 'btn-bidding-add',

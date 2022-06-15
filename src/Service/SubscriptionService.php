@@ -193,29 +193,25 @@ class SubscriptionService
     }
 
     /**
-     * @param Fund $fund
      * @param Session $session
-     * @param int $subscriptionId
+     * @param Subscription $subscription
      *
      * @return void
      */
-    private function setPayableSession(Fund $fund, Session $session, int $subscriptionId)
+    public function setPayableSession(Session $session, Subscription $subscription)
     {
-        $subscription = $fund->subscriptions()->find($subscriptionId);
         $subscription->payable->session()->associate($session);
         $subscription->payable->save();
     }
 
     /**
-     * @param Fund $fund
      * @param Session $session
-     * @param int $subscriptionId
+     * @param Subscription $subscription
      *
      * @return void
      */
-    private function unsetPayableSession(Fund $fund, Session $session, int $subscriptionId)
+    public function unsetPayableSession(Session $session, Subscription $subscription)
     {
-        $subscription = $fund->subscriptions()->find($subscriptionId);
         if($subscription->payable->session_id === $session->id)
         {
             $subscription->payable->session()->dissociate();
@@ -238,11 +234,13 @@ class SubscriptionService
         DB::transaction(function() use($fund, $session, $currSubscriptionId, $nextSubscriptionId) {
             if($currSubscriptionId > 0)
             {
-                $this->unsetPayableSession($fund, $session, $currSubscriptionId);
+                $subscription = $fund->subscriptions()->find($currSubscriptionId);
+                $this->unsetPayableSession($session, $subscription);
             }
             if($nextSubscriptionId > 0)
             {
-                $this->setPayableSession($fund, $session, $nextSubscriptionId);
+                $subscription = $fund->subscriptions()->find($nextSubscriptionId);
+                $this->setPayableSession($session, $subscription);
             }
         });
     }

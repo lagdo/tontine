@@ -3,9 +3,11 @@
 namespace Siak\Tontine\Service\Figures;
 
 use Illuminate\Support\Collection;
+use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Fund;
 use stdClass;
 
+use function collect;
 use function compact;
 
 trait TableTrait
@@ -42,11 +44,11 @@ trait TableTrait
      */
     private function formatCurrencies(stdClass $figures): stdClass
     {
-        $figures->cashier->start = Fund::format($figures->cashier->start, true);
-        $figures->cashier->recv = Fund::format($figures->cashier->recv, true);
-        $figures->cashier->end = Fund::format($figures->cashier->end, true);
-        $figures->deposit->amount = Fund::format($figures->deposit->amount, true);
-        $figures->remittance->amount = Fund::format($figures->remittance->amount, true);
+        $figures->cashier->start = Currency::format($figures->cashier->start, true);
+        $figures->cashier->recv = Currency::format($figures->cashier->recv, true);
+        $figures->cashier->end = Currency::format($figures->cashier->end, true);
+        $figures->deposit->amount = Currency::format($figures->deposit->amount, true);
+        $figures->remittance->amount = Currency::format($figures->remittance->amount, true);
 
         return $figures;
     }
@@ -64,7 +66,7 @@ trait TableTrait
         $depositCount = $subscriptions->count();
         $depositAmount = $fund->amount * $subscriptions->count();
         $remittanceAmount = $fund->amount * $sessions->filter(function($session) use($fund) {
-            return !$session->disabled($fund);
+            return $session->enabled($fund);
         })->count();
 
         $expectedFigures = [];
@@ -226,8 +228,16 @@ trait TableTrait
             return !$subscription->payable->session_id;
         });
         $beneficiaries = $beneficiaries->pluck('member.name', 'id');
-        $subscriptions = $subscriptions->pluck('member.name', 'id');
-        $subscriptions->prepend('', 0);
+        // Show the list of subscriptions only for mutual tontines
+        if($this->tenantService->tontine()->is_mutual)
+        {
+            $subscriptions = $subscriptions->pluck('member.name', 'id');
+            $subscriptions->prepend('', 0);
+        }
+        else // if($this->tenantService->tontine()->is_financial)
+        {
+            $subscriptions = collect([]);
+        }
 
         return compact('fund', 'sessions', 'subscriptions', 'beneficiaries', 'figures');
     }
@@ -253,5 +263,42 @@ trait TableTrait
         $figures->achieved = $this->getAchievedFigures($fund, $sessions, $subscriptions);
 
         return compact('fund', 'sessions', 'subscriptions', 'figures');
+    }
+
+    /**
+     * @param Fund $fund
+     * @param int $sessionId
+     *
+     * @return array|stdClass
+     */
+    public function getRemittanceFigures(Fund $fund, int $sessionId = 0)
+    {
+        $sessions = $this->_getSessions($fund, ['payables.subscription.member']);
+        $depositAmount = $fund->amount * $fund->subscriptions->count();
+        $remittanceAmount = $fund->amount * $sessions->filter(function($session) use($fund) {
+            return $session->enabled($fund);
+        })->count();
+
+        $figures = [];
+        $amount = 0;
+        foreach($sessions as $session)
+        {
+            $figures[$session->id] = new stdClass();
+            $figures[$session->id]->payables = $session->payables;
+            $figures[$session->id]->count = 0;
+            $figures[$session->id]->amount = '';
+            if($session->enabled($fund))
+            {
+                $figures[$session->id]->amount = Currency::format($remittanceAmount);
+                $amount += $depositAmount;
+                while($amount >= $remittanceAmount)
+                {
+                    $figures[$session->id]->count++;
+                    $amount -= $remittanceAmount;
+                }
+            }
+        }
+
+        return $sessionId > 0 ? $figures[$sessionId] : $figures;
     }
 }
