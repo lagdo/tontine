@@ -26,6 +26,10 @@ return [
         'summary' => "Résumé",
         'fine' => "Appliquer",
     ],
+    'labels' => [
+        'member' => "Membre",
+        'members' => "Membres",
+    ],
     'messages' => [
         'agenda' => [
             'updated' => "Enregistré !",

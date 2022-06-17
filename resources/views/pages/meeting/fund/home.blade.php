@@ -33,30 +33,16 @@
                           <td>{{ $fund->money('amount') }}</td>
                           <td class="table-item-menu">
 @if($session->opened)
-<?php
-$menu = [[
-    'class' => 'btn-fund-deposits',
-    'text' => __('meeting.actions.deposits'),
-]];
-if($tontine->is_mutual)
-{
-    $menu[] = [
-        'class' => 'btn-fund-remittances',
-        'text' => __('meeting.actions.remittances'),
-    ];
-}
-if($tontine->is_financial)
-{
-    $menu[] = [
-        'class' => 'btn-fund-biddings',
-        'text' => __('meeting.actions.biddings'),
-    ];
-}
-?>
 @include('parts.table.menu', [
   'dataIdKey' => 'data-fund-id',
   'dataIdValue' => $fund->id,
-  'menus' => $menu,
+  'menus' => [[
+    'class' => 'btn-fund-deposits',
+    'text' => __('meeting.actions.deposits'),
+  ],[
+    'class' => $tontine->is_mutual ? 'btn-fund-remittances' : 'btn-fund-biddings',
+    'text' => __('meeting.actions.remittances'),
+  ]],
 ])
 @endif
                           </td>

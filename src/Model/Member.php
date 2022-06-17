@@ -81,4 +81,9 @@ class Member extends Model
     {
         return $this->hasMany(Settlement::class);
     }
+
+    public function biddings()
+    {
+        return $this->hasMany(Bidding::class);
+    }
 }

@@ -26,6 +26,10 @@ return [
         'summary' => "Summary",
         'fine' => "Fine",
     ],
+    'labels' => [
+        'member' => "Member",
+        'members' => "Members",
+    ],
     'messages' => [
         'agenda' => [
             'updated' => "Saved!",

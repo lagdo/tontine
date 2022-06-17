@@ -118,4 +118,13 @@ return [
             'deleted' => "The member subscription was deleted.",
         ],
     ],
+    'bidding' => [
+        'titles' => [
+            'add' => "Add a bidding",
+        ],
+        'labels' => [
+            'bid' => "Bid",
+            'amount_to_bid' => "Amount to bid",
+        ],
+    ],
 ];

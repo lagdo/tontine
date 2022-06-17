@@ -1,6 +1,6 @@
                   <div class="row align-items-center">
                     <div class="col-auto">
-                      <div class="section-title mt-0">{{ __('meeting.titles.biddings') }}@isset($fund) - {{ $fund->title }}@endisset</div>
+                      <div class="section-title mt-0">@isset($fund){{ $fund->title }} - {{ __('meeting.titles.remittances') }}@else{{ __('meeting.titles.biddings') }}@endisset</div>
                     </div>
                     <div class="col">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
@@ -20,20 +20,14 @@
                       <tbody>
 @foreach ($biddings as $bidding)
                         <tr>
-                          <td>{{ $bidding->title }}</td>
-                          <td>{{ $bidding->amount }}</td>
-                          <td class="table-item-menu">
-@include('parts.table.menu', [
-  'dataIdKey' => 'data-subscription-id',
-  'dataIdValue' => $bidding->id,
-  'menus' => $bidding->available ? [[
-    'class' => 'btn-bidding-add',
-    'text' => __('common.actions.add'),
-  ]] : [[
-    'class' => 'btn-bidding-delete',
-    'text' => __('common.actions.delete'),
-  ]],
-])
+                          <td>{{ $bidding->title === '__' ? __('tontine.bidding.labels.amount_to_bid') : $bidding->title }}</td>
+                          <td>{{ $bidding->amount }}@if ($bidding->paid > 0)<br/>{{ $bidding->paid }}@endif</td>
+                          <td class="table-item-menu" data-subscription-id="{{ $bidding->id }}">
+@if ($bidding->available)
+                            <a href="javascript:void(0)" class="btn-bidding-add"><i class="fa fa-toggle-off"></i></a>
+@else
+                            <a href="javascript:void(0)" class="btn-bidding-delete"><i class="fa fa-toggle-on"></i></a>
+@endif
                           </td>
                         </tr>
 @endforeach

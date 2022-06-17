@@ -7,7 +7,6 @@ use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Fund as FundModel;
 use App\Ajax\CallableClass;
 
-use function collect;
 use function jq;
 
 /**
@@ -65,12 +64,14 @@ class Bidding extends CallableClass
                     'id' => $payable->subscription->id,
                     'title' => $payable->subscription->member->name,
                     'amount' => $figures->amount,
+                    'paid' => 0,
                     'available' => false,
                 ];
             })->pad($figures->count, (object)[
                 'id' => 0,
                 'title' => '** ' . trans('figures.bidding.titles.available') . ' **',
                 'amount' => $figures->amount,
+                'paid' => 0,
                 'available' => true,
             ]);
 
@@ -91,8 +92,7 @@ class Bidding extends CallableClass
      */
     public function addRemittance()
     {
-        $subscriptions = $this->biddingService->getPendingSubscriptions($this->fund);
-        $members = $subscriptions->pluck('member.name', 'id');
+        $members = $this->biddingService->getSubscriptions($this->fund);
         $title = trans('tontine.bidding.titles.add');
         $content = $this->view()->render('pages.meeting.bidding.add-remittance')
             ->with('members', $members);
@@ -137,40 +137,33 @@ class Bidding extends CallableClass
 
     public function cash()
     {
-        // One opened bid for the amount already paid for the others bids.
-        $biddings = collect([]);
-        $amountAvailable = $this->biddingService->getAmountAvailable($this->session);
-        if($amountAvailable > 0)
-        {
-            $biddings->push((object)[
-                'id' => 0,
-                'title' => trans('meeting.title.amount_to_bid'),
-                'amount' => $amountAvailable,
-                'available' => true,
-            ]);
-        }
+        $biddings = $this->biddingService->getSessionBiddings($this->session);
 
         $html = $this->view()->render('pages.meeting.bidding.home')
             ->with('biddings', $biddings)->with('session', $this->session);
         $this->response->html('meeting-funds', $html);
 
         $this->jq('#btn-biddings-back')->click($this->cl(Fund::class)->rq()->home());
-        // $subscriptionId = jq()->parent()->attr('data-subscription-id');
-        // $this->jq('.btn-bidding-settlements')->click($this->cl(Settlement::class)->rq()->home($subscriptionId));
-        // $this->jq('.btn-bidding-fine')->click($this->cl(Fine::class)->rq()->home($subscriptionId));
+        $this->jq('.btn-bidding-add')->click($this->rq()->addBidding());
+        $biddingId = jq()->parent()->attr('data-bidding-id');
+        $this->jq('.btn-bidding-delete')->click($this->rq()->deleteBidding($biddingId));
 
         return $this->response;
     }
 
-    /**
-     * @before getFund
-     */
     public function addBidding()
     {
-        $subscriptions = $this->biddingService->getPendingSubscriptions($this->fund);
-        $members = $subscriptions->pluck('member.name', 'id');
+        $amountAvailable = $this->biddingService->getAmountAvailable($this->session);
+        if($amountAvailable <= 0)
+        {
+            $this->notify->success(trans('session.bidding.errors.amount'), trans('common.titles.warning'));
+            return $this->response;
+        }
+
+        $members = $this->biddingService->getMembers();
         $title = trans('tontine.bidding.titles.add');
-        $content = $this->view()->render('pages.meeting.bidding.add')->with('members', $members);
+        $content = $this->view()->render('pages.meeting.bidding.add-cash')
+            ->with('members', $members)->with('amount', $amountAvailable);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -185,19 +178,18 @@ class Bidding extends CallableClass
         return $this->response;
     }
 
-    /**
-     * @before getFund
-     */
     public function saveBidding(array $formValues)
     {
+        $member = $this->biddingService->getMember(intval($formValues['member']));
+        $this->biddingService->createBidding($this->session, $member,
+            intval($formValues['amount_bid']), intval($formValues['amount_paid']));
+        $this->dialog->hide();
+        // $this->notify->success(trans('session.remittance.created'), trans('common.titles.success'));
 
-        return $this->response;
+        return $this->cash();
     }
 
-    /**
-     * @before getFund
-     */
-    public function deleteBidding($subscriptionId)
+    public function deleteBidding($biddingId)
     {
 
         return $this->response;

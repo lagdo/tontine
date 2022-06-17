@@ -273,7 +273,8 @@ trait TableTrait
      */
     public function getRemittanceFigures(Fund $fund, int $sessionId = 0)
     {
-        $sessions = $this->_getSessions($fund, ['payables.subscription.member']);
+        $sessions = $this->_getSessions($fund,
+            ['payables.subscription.member', 'payables.remittance']);
         $depositAmount = $fund->amount * $fund->subscriptions->count();
         $remittanceAmount = $fund->amount * $sessions->filter(function($session) use($fund) {
             return $session->enabled($fund);

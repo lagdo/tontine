@@ -118,4 +118,13 @@ return [
             'deleted' => "La souscription du membre a été supprimée.",
         ],
     ],
+    'bidding' => [
+        'titles' => [
+            'add' => "Ajouter une enchère",
+        ],
+        'labels' => [
+            'bid' => "Enchère",
+            'amount_to_bid' => "Montant à enchérir",
+        ],
+    ],
 ];
