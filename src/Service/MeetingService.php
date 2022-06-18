@@ -9,12 +9,15 @@ use Siak\Tontine\Model\Session;
 
 class MeetingService
 {
-    use Figures\TableTrait;
-
     /**
      * @var TenantService
      */
     protected TenantService $tenantService;
+
+    /**
+     * @var PlanningService
+     */
+    protected PlanningService $planningService;
 
     /**
      * @var DepositService
@@ -38,16 +41,18 @@ class MeetingService
 
     /**
      * @param TenantService $tenantService
+     * @param PlanningService $planningService
      * @param DepositService $depositService
      * @param RemittanceService $remittanceService
      * @param FeeSettlementService $feeService
      * @param FineSettlementService $fineService
      */
-    public function __construct(TenantService $tenantService,
+    public function __construct(TenantService $tenantService, PlanningService $planningService,
         DepositService $depositService, RemittanceService $remittanceService,
         FeeSettlementService $feeService, FineSettlementService $fineService)
     {
         $this->tenantService = $tenantService;
+        $this->planningService = $planningService;
         $this->depositService = $depositService;
         $this->remittanceService = $remittanceService;
         $this->feeService = $feeService;
@@ -176,5 +181,19 @@ class MeetingService
     public function getChargeCount(): int
     {
         return $this->tenantService->tontine()->charges()->count();
+    }
+
+    /**
+     * Get the receivables of a given fund.
+     *
+     * Will return extended data on subscriptions.
+     *
+     * @param Fund $fund
+     *
+     * @return array
+     */
+    public function getFigures(Fund $fund): array
+    {
+        return $this->planningService->getFigures($fund);
     }
 }

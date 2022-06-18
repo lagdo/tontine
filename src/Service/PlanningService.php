@@ -1,17 +1,33 @@
 <?php
 
-namespace Siak\Tontine\Service\Figures;
+namespace Siak\Tontine\Service;
 
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Currency;
+use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Fund;
 use stdClass;
 
 use function collect;
 use function compact;
+use function floor;
+use function gmp_gcd;
 
-trait TableTrait
+class PlanningService
 {
+    /**
+     * @var TenantService
+     */
+    protected TenantService $tenantService;
+
+    /**
+     * @param TenantService $tenantService
+     */
+    public function __construct(TenantService $tenantService)
+    {
+        $this->tenantService = $tenantService;
+    }
+
     /**
      * @param mixed $defaultValue
      *
@@ -62,13 +78,17 @@ trait TableTrait
      */
     private function getExpectedFigures(Fund $fund, Collection $sessions, Collection $subscriptions): array
     {
-        $cashier = 0;
-        $depositCount = $subscriptions->count();
-        $depositAmount = $fund->amount * $subscriptions->count();
-        $remittanceAmount = $fund->amount * $sessions->filter(function($session) use($fund) {
+        $sessionCount = $sessions->filter(function($session) use($fund) {
             return $session->enabled($fund);
         })->count();
+        $subscriptionCount = $fund->subscriptions()->count();
+        $depositCount = $subscriptions->count();
 
+        $remittanceAmount = $fund->amount * $sessionCount;
+        $depositAmount = $fund->amount * $subscriptions->count();
+
+        $rank = 0;
+        $cashier = 0;
         $expectedFigures = [];
         foreach($sessions as $session)
         {
@@ -82,17 +102,14 @@ trait TableTrait
 
             $figures->cashier->start = $cashier;
             $figures->cashier->recv = $cashier + $depositAmount;
-            $figures->cashier->end = $cashier + $depositAmount;
             $figures->deposit->count = $depositCount;
             $figures->deposit->amount = $depositAmount;
-            while($figures->cashier->end >= $remittanceAmount)
-            {
-                $figures->remittance->count++;
-                $figures->remittance->amount += $remittanceAmount;
-                $figures->cashier->end -= $remittanceAmount;
-            }
-
+            $figures->remittance->count =
+                $this->getRemittanceCount($sessionCount, $subscriptionCount, $rank++);
+            $figures->remittance->amount = $remittanceAmount * $figures->remittance->count;
+            $figures->cashier->end = $cashier + $depositAmount - $figures->remittance->amount;
             $cashier = $figures->cashier->end;
+
             $expectedFigures[$session->id] = $this->formatCurrencies($figures);
         }
 
@@ -110,7 +127,7 @@ trait TableTrait
     {
         $cashier = 0;
         $remittanceAmount = $fund->amount * $sessions->filter(function($session) use($fund) {
-            return !$session->disabled($fund);
+            return $session->enabled($fund);
         })->count();
 
         $achievedFigures = [];
@@ -266,6 +283,35 @@ trait TableTrait
     }
 
     /**
+     * Get the number of subscribers to remit a fund to at a given session
+     *
+     * @param Fund $fund
+     * @param Session $session
+     *
+     * @return int
+     */
+    public function getRemittanceCount(int $sessionCount, int $subscriptionCount, int $sessionRank): int
+    {
+        if($sessionCount === 0 || $subscriptionCount === 0)
+        {
+            return 0;
+        }
+
+        // Greatest common divisor
+        $gcd = gmp_gcd($sessionCount, $subscriptionCount);
+        $sessionsInLoop = (int)($sessionCount / $gcd);
+        $subscriptionsInLoop = (int)($subscriptionCount / $gcd);
+
+        // The session rank in a loop, ranging from 0 to $sessionInLoop - 1.
+        $sessionRankInLoop = $sessionRank % $sessionsInLoop;
+        $extraSubscriptionsInLoop = $subscriptionsInLoop % $sessionsInLoop;
+        $remittanceCount = (int)floor($subscriptionCount / $sessionCount) +
+            ($sessionRankInLoop < $sessionsInLoop - $extraSubscriptionsInLoop ? 0 : 1);
+
+        return $remittanceCount;
+    }
+
+    /**
      * @param Fund $fund
      * @param int $sessionId
      *
@@ -273,15 +319,17 @@ trait TableTrait
      */
     public function getRemittanceFigures(Fund $fund, int $sessionId = 0)
     {
-        $sessions = $this->_getSessions($fund,
-            ['payables.subscription.member', 'payables.remittance']);
-        $depositAmount = $fund->amount * $fund->subscriptions->count();
-        $remittanceAmount = $fund->amount * $sessions->filter(function($session) use($fund) {
+        $sessions = $this->_getSessions($fund, ['payables.subscription.member']);
+        $sessionCount = $sessions->filter(function($session) use($fund) {
             return $session->enabled($fund);
         })->count();
+        $subscriptionCount = $fund->subscriptions()->count();
+
+        $remittanceAmount = $fund->amount * $sessionCount;
+        $formattedAmount = Currency::format($remittanceAmount);
 
         $figures = [];
-        $amount = 0;
+        $rank = 0;
         foreach($sessions as $session)
         {
             $figures[$session->id] = new stdClass();
@@ -290,13 +338,9 @@ trait TableTrait
             $figures[$session->id]->amount = '';
             if($session->enabled($fund))
             {
-                $figures[$session->id]->amount = Currency::format($remittanceAmount);
-                $amount += $depositAmount;
-                while($amount >= $remittanceAmount)
-                {
-                    $figures[$session->id]->count++;
-                    $amount -= $remittanceAmount;
-                }
+                $figures[$session->id]->count =
+                    $this->getRemittanceCount($sessionCount, $subscriptionCount, $rank++);
+                $figures[$session->id]->amount = $formattedAmount;
             }
         }
 

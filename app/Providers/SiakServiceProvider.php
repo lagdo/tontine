@@ -20,6 +20,7 @@ use Siak\Tontine\Service\TontineService;
 use Siak\Tontine\Service\FeeSettlementService;
 use Siak\Tontine\Service\FineSettlementService;
 use Siak\Tontine\Service\BiddingService;
+use Siak\Tontine\Service\PlanningService;
 
 // use Siak\Tontine\Gateway\PaymentGateway;
 
@@ -59,6 +60,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(FeeSettlementService::class, FeeSettlementService::class);
         $this->app->singleton(FineSettlementService::class, FineSettlementService::class);
         $this->app->singleton(BiddingService::class, BiddingService::class);
+        $this->app->singleton(PlanningService::class, PlanningService::class);
 
         /*$this->app->resolving(PaymentGateway::class, function(PaymentGateway $gateway) {
             $gateway->setServerUrl(env('HOST_WEB_PAYMENT'));

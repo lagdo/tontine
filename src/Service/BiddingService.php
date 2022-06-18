@@ -16,12 +16,15 @@ use function collect;
 
 class BiddingService
 {
-    use Figures\TableTrait;
-
     /**
      * @var TenantService
      */
     protected TenantService $tenantService;
+
+    /**
+     * @var PlanningService
+     */
+    protected PlanningService $planningService;
 
     /**
      * @var RemittanceService
@@ -35,13 +38,15 @@ class BiddingService
 
     /**
      * @param TenantService $tenantService
+     * @param PlanningService $planningService
      * @param RemittanceService $remittanceService
      * @param SubscriptionService $subscriptionService
      */
-    public function __construct(TenantService $tenantService,
+    public function __construct(TenantService $tenantService, PlanningService $planningService,
         RemittanceService $remittanceService, SubscriptionService $subscriptionService)
     {
         $this->tenantService = $tenantService;
+        $this->planningService = $planningService;
         $this->remittanceService = $remittanceService;
         $this->subscriptionService = $subscriptionService;
     }
@@ -340,5 +345,16 @@ class BiddingService
             return;
         }
         $bidding->refund()->delete();
+    }
+
+    /**
+     * @param Fund $fund
+     * @param int $sessionId
+     *
+     * @return array|stdClass
+     */
+    public function getRemittanceFigures(Fund $fund, int $sessionId = 0)
+    {
+        return $this->planningService->getRemittanceFigures($fund, $sessionId);
     }
 }

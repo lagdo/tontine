@@ -16,7 +16,6 @@ use function in_array;
 
 class SubscriptionService
 {
-    use Figures\TableTrait;
     use Events\DebtEventTrait;
 
     /**
@@ -25,11 +24,18 @@ class SubscriptionService
     protected TenantService $tenantService;
 
     /**
-     * @param TenantService $tenantService
+     * @var PlanningService
      */
-    public function __construct(TenantService $tenantService)
+    protected PlanningService $planningService;
+
+    /**
+     * @param TenantService $tenantService
+     * @param PlanningService $planningService
+     */
+    public function __construct(TenantService $tenantService, PlanningService $planningService)
     {
         $this->tenantService = $tenantService;
+        $this->planningService = $planningService;
     }
 
     /**
@@ -243,5 +249,31 @@ class SubscriptionService
                 $this->setPayableSession($session, $subscription);
             }
         });
+    }
+
+    /**
+     * Get the payables of a given fund.
+     *
+     * @param Fund $fund
+     *
+     * @return array
+     */
+    public function getPayables(Fund $fund): array
+    {
+        return $this->planningService->getPayables($fund);
+    }
+
+    /**
+     * Get the receivables of a given fund.
+     *
+     * Will return basic data on subscriptions.
+     *
+     * @param Fund $fund
+     *
+     * @return array
+     */
+    public function getReceivables(Fund $fund): array
+    {
+        return $this->planningService->getReceivables($fund);
     }
 }
