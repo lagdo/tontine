@@ -11,6 +11,7 @@ use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Remittance;
 use Siak\Tontine\Model\Session;
+use stdClass;
 
 use function collect;
 
@@ -111,30 +112,6 @@ class BiddingService
     public function getMember(int $memberId): ?Member
     {
         return $this->tenantService->tontine()->members()->find($memberId);
-    }
-
-    /**
-     * Get the bids for a given fund in a given session.
-     *
-     * @param Fund $fund    The fund
-     * @param Session $session    The session
-     *
-     * @return Collection
-     */
-    public function getOpenedBids(Fund $fund, Session $session): Collection
-    {
-        $query = $session->payables()->whereDoesntHave('remittance');
-        if($fund !== null)
-        {
-            $query->whereIn('subscription_id', $fund->subscriptions()->pluck('id'));
-        }
-        return $query->get()->map(function($payable) {
-            return (object)[
-                'id' => $payable->id,
-                'title' => $payable->subscription->fund->title,
-                'amount' => $payable->subscription->fund->amount,
-            ];
-        });
     }
 
     /**

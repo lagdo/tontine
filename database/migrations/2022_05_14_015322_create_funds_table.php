@@ -18,9 +18,16 @@ class CreateFundsTable extends Migration
             $table->string('title', 100);
             $table->integer('amount');
             $table->string('notes')->default('');
-            $table->string('session_ids', 100);
             $table->unsignedBigInteger('round_id');
             $table->foreign('round_id')->references('id')->on('rounds');
+        });
+
+        Schema::create('fund_session_disabled', function (Blueprint $table) {
+            $table->unsignedBigInteger('fund_id');
+            $table->foreign('fund_id')->references('id')->on('funds');
+            $table->unsignedBigInteger('session_id');
+            $table->foreign('session_id')->references('id')->on('sessions');
+            $this->unique(['fund_id', 'session_id']);
         });
     }
 
@@ -31,6 +38,7 @@ class CreateFundsTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('fund_session_disabled');
         Schema::dropIfExists('funds');
     }
 }

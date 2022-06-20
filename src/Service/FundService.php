@@ -74,11 +74,6 @@ class FundService
     public function createFunds(array $values): bool
     {
         DB::transaction(function() use($values) {
-            $sessionIds = $this->tenantService->round()->sessions()->pluck('id')->all();
-            foreach($values as &$value)
-            {
-                $value['session_ids'] = $sessionIds;
-            }
             $this->tenantService->round()->funds()->createMany($values);
         });
 
@@ -129,9 +124,7 @@ class FundService
      */
     public function getFakeFunds(int $count): Collection
     {
-        $sessionIds = $this->tenantService->round()->sessions()->pluck('id')->all();
         return Fund::factory()->count($count)->make([
-            'session_ids' => $sessionIds,
             'round_id' => $this->tenantService->round(),
         ]);
     }

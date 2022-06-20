@@ -112,13 +112,18 @@ class Session extends Model
         return $this->hasMany(Bidding::class);
     }
 
+    public function disabledFunds()
+    {
+        return $this->belongsToMany(Fund::class, 'fund_session_disabled');
+    }
+
     public function enabled(Fund $fund)
     {
-        return in_array($this->id, $fund->session_ids);
+        return $this->disabledFunds()->where('fund_id', $fund->id)->doesntExist();
     }
 
     public function disabled(Fund $fund)
     {
-        return !in_array($this->id, $fund->session_ids);
+        return $this->disabledFunds()->where('fund_id', $fund->id)->exists();
     }
 }

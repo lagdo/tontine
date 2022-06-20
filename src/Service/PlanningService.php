@@ -4,7 +4,6 @@ namespace Siak\Tontine\Service;
 
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Currency;
-use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Fund;
 use stdClass;
 
@@ -140,7 +139,6 @@ class PlanningService
             }
 
             $figures = $this->makeFigures(0);
-
             $figures->cashier->start = $cashier;
             $figures->cashier->recv = $cashier;
             foreach($subscriptions as $subscription)
@@ -199,14 +197,8 @@ class PlanningService
      */
     private function _getSessions(Fund $fund, array $with = []): Collection
     {
-        /*return $this->tenantService->round()->sessions()->with($with)
-            ->get()->each(function($session) use($fund) {
-                // Keep only the payables of the current fund.
-                $session->setRelation('payables', $session->payables->filter(function($payable) use($fund) {
-                    return $payable->subscription->fund_id === $fund->id;
-                }));
-            });*/
         $with['payables'] = function($query) use($fund) {
+            // Keep only the subscriptions of the current fund.
             $query->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
                 ->where('subscriptions.fund_id', $fund->id);
         };
@@ -285,8 +277,9 @@ class PlanningService
     /**
      * Get the number of subscribers to remit a fund to at a given session
      *
-     * @param Fund $fund
-     * @param Session $session
+     * @param int $sessionCount
+     * @param int $subscriptionCount
+     * @param int $sessionRank
      *
      * @return int
      */
@@ -305,10 +298,8 @@ class PlanningService
         // The session rank in a loop, ranging from 0 to $sessionInLoop - 1.
         $sessionRankInLoop = $sessionRank % $sessionsInLoop;
         $extraSubscriptionsInLoop = $subscriptionsInLoop % $sessionsInLoop;
-        $remittanceCount = (int)floor($subscriptionCount / $sessionCount) +
+        return (int)floor($subscriptionCount / $sessionCount) +
             ($sessionRankInLoop < $sessionsInLoop - $extraSubscriptionsInLoop ? 0 : 1);
-
-        return $remittanceCount;
     }
 
     /**
@@ -324,7 +315,6 @@ class PlanningService
             return $session->enabled($fund);
         })->count();
         $subscriptionCount = $fund->subscriptions()->count();
-
         $remittanceAmount = $fund->amount * $sessionCount;
         $formattedAmount = Currency::format($remittanceAmount);
 

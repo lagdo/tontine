@@ -134,23 +134,18 @@ class TontineSeeder extends Seeder
 
             // A few funds
             Fund::unguard();
-            $sessionIds = $round->sessions()->pluck('id')->all();
             $round->funds()->createMany([[
                 'title' => "Liste de 5000",
                 'amount' => 5000,
-                'session_ids' => $sessionIds,
             ],[
                 'title' => "Liste de 10000",
                 'amount' => 10000,
-                'session_ids' => $sessionIds,
             ],[
                 'title' => "Liste de 15000",
                 'amount' => 15000,
-                'session_ids' => $sessionIds,
             ],[
                 'title' => "Liste de 20000",
                 'amount' => 20000,
-                'session_ids' => $sessionIds,
             ]]);
             Fund::reguard();
 

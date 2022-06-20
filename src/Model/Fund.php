@@ -6,12 +6,8 @@ use Database\Factories\FundFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Traits\HasCurrency;
-
-use function array_unique;
-use function array_values;
-use function json_decode;
-use function json_encode;
 
 class Fund extends Model
 {
@@ -34,7 +30,6 @@ class Fund extends Model
         'title',
         'amount',
         'notes',
-        'session_ids',
     ];
 
     /**
@@ -47,16 +42,6 @@ class Fund extends Model
         return FundFactory::new();
     }
 
-    public function getSessionIdsAttribute($value)
-    {
-        return json_decode($value, true);
-    }
-
-    public function setSessionIdsAttribute(array $value)
-    {
-        $this->attributes['session_ids'] = json_encode(array_unique(array_values($value)));
-    }
-
     public function round()
     {
         return $this->belongsTo(Round::class);
@@ -67,8 +52,14 @@ class Fund extends Model
         return $this->hasMany(Subscription::class);
     }
 
+    public function disabledSessions()
+    {
+        return $this->belongsToMany(Session::class, 'fund_session_disabled');
+    }
+
     public function sessions()
     {
-        return Session::whereIn('id', $this->session_ids);
+        return Session::whereNotIn('id',
+            DB::table('fund_session_disabled')->where('fund_id', $this->id)->pluck('session_id'));
     }
 }

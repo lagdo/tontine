@@ -179,20 +179,14 @@ class SubscriptionService
      */
     public function toggleSession(Fund $fund, Session $session): bool
     {
-        $sessionIds = $fund->session_ids;
-        if(in_array($session->id, $sessionIds))
-        {
-            $fund->session_ids = array_diff($sessionIds, [$session->id]);
-            DB::transaction(function() use($fund, $session) {
-                $fund->save();
-                $this->fundDetached($fund, $session);
-            });
-            return true;
-        }
-
-        $fund->session_ids = array_merge($sessionIds, [$session->id]);
         DB::transaction(function() use($fund, $session) {
-            $fund->save();
+            if($session->enabled($fund))
+            {
+                $fund->disabledSessions()->attach($session->id);
+                $this->fundDetached($fund, $session);
+                return;
+            }
+            $fund->disabledSessions()->detach($session->id);
             $this->fundAttached($fund, $session);
         });
         return true;
