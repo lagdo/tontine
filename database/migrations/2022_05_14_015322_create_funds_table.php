@@ -27,7 +27,7 @@ class CreateFundsTable extends Migration
             $table->foreign('fund_id')->references('id')->on('funds');
             $table->unsignedBigInteger('session_id');
             $table->foreign('session_id')->references('id')->on('sessions');
-            $this->unique(['fund_id', 'session_id']);
+            $table->unique(['fund_id', 'session_id']);
         });
     }
 
