@@ -288,43 +288,6 @@ class BiddingService
     }
 
     /**
-     * Create a refund.
-     *
-     * @param Session $session The session
-     * @param int $biddingId
-     *
-     * @return void
-     */
-    public function createRefund(Session $session, int $biddingId): void
-    {
-        $bidding = Bidding::whereIn('session_id',
-            $this->tenantService->round()->sessions()->pluck('id'))->find($biddingId);
-        if(!$bidding || $bidding->refund)
-        {
-            return;
-        }
-        $bidding->refund()->create(['session' => $session]);
-    }
-
-    /**
-     * Delete a refund.
-     *
-     * @param Session $session The session
-     * @param int $biddingId
-     *
-     * @return void
-     */
-    public function deleteRefund(Session $session, int $biddingId): void
-    {
-        $bidding = $session->biddings()->find($biddingId);
-        if(!$bidding || !$bidding->refund)
-        {
-            return;
-        }
-        $bidding->refund()->delete();
-    }
-
-    /**
      * @param Fund $fund
      * @param int $sessionId
      *

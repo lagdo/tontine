@@ -111,7 +111,7 @@ class Fine extends CallableClass
         $this->chargeService->createFine($this->charge, $this->session, $memberId);
         // $this->notify->success(trans('session.fine.created'), trans('common.titles.success'));
 
-        return $this->page();
+        return $this->page(1);
     }
 
     /**

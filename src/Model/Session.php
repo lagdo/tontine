@@ -112,6 +112,11 @@ class Session extends Model
         return $this->hasMany(Bidding::class);
     }
 
+    public function refunds()
+    {
+        return $this->hasMany(Refund::class);
+    }
+
     public function disabledFunds()
     {
         return $this->belongsToMany(Fund::class, 'fund_session_disabled');

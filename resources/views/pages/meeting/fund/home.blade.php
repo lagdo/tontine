@@ -6,6 +6,7 @@
                     <div class="col">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
                         <button type="button" class="btn btn-primary" id="btn-biddings"><i class="fa fa-user-shield"></i></button>
+                        <button type="button" class="btn btn-primary" id="btn-refunds"><i class="fa fa-user-shield"></i></button>
                       </div>
                     </div>
 @endif

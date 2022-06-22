@@ -62,6 +62,7 @@ class Fund extends CallableClass
         $this->response->html('meeting-funds', $html);
 
         $this->jq('#btn-biddings')->click($this->cl(Bidding::class)->rq()->cash());
+        $this->jq('#btn-refunds')->click($this->cl(Refund::class)->rq()->home());
         $fundId = jq()->parent()->attr('data-fund-id');
         $this->jq('.btn-fund-deposits')->click($this->cl(Deposit::class)->rq()->home($fundId));
         $this->jq('.btn-fund-remittances')->click($this->cl(Remittance::class)->rq()->home($fundId));
