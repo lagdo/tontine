@@ -6,8 +6,6 @@ use Illuminate\Support\Collection;
 
 use Siak\Tontine\Model\Bidding;
 use Siak\Tontine\Model\Refund;
-use Siak\Tontine\Model\Fund;
-use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
 
 class RefundService
@@ -38,13 +36,16 @@ class RefundService
     }
 
     /**
+     * @param Session $session The session
      * @param bool $refunded
      *
      * @return mixed
      */
-    private function getBiddingQuery(?bool $refunded)
+    private function getBiddingQuery(Session $session, ?bool $refunded)
     {
-        $sessionIds = $this->tenantService->round()->sessions()->pluck('id');
+        // Get the biddings of the previous sessions.
+        $sessionIds = $this->tenantService->round()->sessions()
+            ->where('start_at', '<', $session->start_at)->pluck('id');
         $biddings = Bidding::whereIn('session_id', $sessionIds);
         if($refunded === false)
         {
@@ -60,32 +61,34 @@ class RefundService
     /**
      * Get the number of bids that are not yet refunded.
      *
+     * @param Session $session The session
      * @param bool $refunded
      *
      * @return int
      */
-    public function getBiddingCount(?bool $refunded): int
+    public function getBiddingCount(Session $session, ?bool $refunded): int
     {
-        return $this->getBiddingQuery($refunded)->count();
+        return $this->getBiddingQuery($session, $refunded)->count();
     }
 
     /**
      * Get the bids that are not yet refunded.
      *
+     * @param Session $session The session
      * @param bool $refunded
      * @param int $page
      *
      * @return Collection
      */
-    public function getBiddings(?bool $refunded, int $page = 0): Collection
+    public function getBiddings(Session $session, ?bool $refunded, int $page = 0): Collection
     {
-        $biddings = $this->getBiddingQuery($refunded);
+        $biddings = $this->getBiddingQuery($session, $refunded);
         if($page > 0 )
         {
             $biddings->take($this->tenantService->getLimit());
             $biddings->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $biddings->withCount(['refund'])->with('member')->get();
+        return $biddings->with(['refund', 'member'])->get();
     }
 
     /**

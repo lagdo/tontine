@@ -15,6 +15,7 @@ return [
         'fine' => "Fine",
         'amount_to_bid' => "Amount to bid",
         'benefit' => "Benefit",
+        'refunds' => "Refunds",
     ],
     'actions' => [
         'deposits' => "Deposits",

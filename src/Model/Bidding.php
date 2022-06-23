@@ -23,6 +23,11 @@ class Bidding extends Model
         'amount_paid',
     ];
 
+    public function getAmountAttribute()
+    {
+        return Currency::format($this->amount_bid);
+    }
+
     public function session()
     {
         return $this->belongsTo(Session::class);

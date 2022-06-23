@@ -15,6 +15,7 @@ return [
         'fine' => "Appliquer",
         'amount_to_bid' => "Montant à enchérir",
         'benefit' => "Bénéfice",
+        'refunds' => "Remboursements",
     ],
     'actions' => [
         'deposits' => "Versements",

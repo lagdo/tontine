@@ -59,12 +59,12 @@ class Refund extends CallableClass
         $this->bag('meeting')->set('bidding.page', $pageNumber);
 
         $refunded = $this->bag('meeting')->get('bidding.filter', null);
-        $biddingCount = $this->refundService->getBiddingCount($refunded);
-        $html = $this->view()->render('pages.meeting.refund.page', [
-            'biddings' => $this->refundService->getBiddings($refunded, $pageNumber),
+        $biddingCount = $this->refundService->getBiddingCount($this->session, $refunded);
+        $html = $this->view()->render('pages.meeting.refund.biddings', [
+            'biddings' => $this->refundService->getBiddings($this->session, $refunded, $pageNumber),
             'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $biddingCount),
         ]);
-        $this->response->html('meeting-refund-biddings', $html);
+        $this->response->html('meeting-biddings-page', $html);
 
         $biddingId = jq()->parent()->attr('data-bidding-id');
         $this->jq('.btn-add-refund')->click($this->rq()->create($biddingId));
