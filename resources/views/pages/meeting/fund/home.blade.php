@@ -2,11 +2,14 @@
                     <div class="col-auto">
                       <div class="section-title mt-0">{!! __('meeting.titles.funds') !!}</div>
                     </div>
-@if($tontine->is_financial)
+@if($session->opened)
                     <div class="col">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
+@if($tontine->is_financial)
                         <button type="button" class="btn btn-primary" id="btn-biddings"><i class="fa fa-user-shield"></i></button>
                         <button type="button" class="btn btn-primary" id="btn-refunds"><i class="fa fa-user-shield"></i></button>
+@endif
+                        <button type="button" class="btn btn-primary" id="btn-funds-refresh"><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
 @endif

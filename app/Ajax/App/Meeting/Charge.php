@@ -47,8 +47,10 @@ class Charge extends CallableClass
 
     public function home()
     {
-        $html = $this->view()->render('pages.meeting.charge.home');
+        $html = $this->view()->render('pages.meeting.charge.home')
+            ->with('session', $this->session);
         $this->response->html('meeting-charges', $html);
+        $this->jq('#btn-charges-refresh')->click($this->rq()->home());
 
         return $this->page(1);
     }
