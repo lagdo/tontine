@@ -11,6 +11,8 @@ use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Remittance;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Model\Payable;
+use Siak\Tontine\Model\Refund;
 use stdClass;
 
 use function collect;
@@ -234,13 +236,19 @@ class BiddingService
      */
     public function getAmountAvailable(Session $session): int
     {
+        // Get the ids of all the sessions until the current one.
+        $sessionIds = $this->tenantService->round()->sessions()
+            ->where('start_at', '<=', $session->start_at)->pluck('id');
         // The amount available for bidding is the sum of the amounts paid for remittances,
-        // and the amounts paid in the biddings.
-        return Remittance::whereIn('payable_id',
-            $session->payables()->pluck('id'))->sum('amount_paid') +
-            $session->biddings->reduce(function($sum, $bidding) {
-                return $sum + $bidding->amount_paid - $bidding->amount_bid;
-            }, 0);
+        // the amounts paid in the biddings, and the refunds, for all the sessions.
+        $payableIds = Payable::whereIn('session_id', $sessionIds)->pluck('id');
+        return Remittance::whereIn('payable_id', $payableIds)->sum('amount_paid') +
+            Bidding::whereIn('session_id', $sessionIds)->get()
+                ->reduce(function($sum, $bidding) {
+                    return $sum + $bidding->amount_paid - $bidding->amount_bid;
+                }, 0) +
+            Refund::whereIn('session_id', $sessionIds)
+                ->with('bidding')->get()->sum('bidding.amount_bid');
     }
 
     /**
