@@ -52,6 +52,16 @@ class Session extends Model
         'end_at',
     ];
 
+    public function getNotFirstAttribute()
+    {
+        return $this->round->sessions()->where('start_at', '<', $this->start_at)->exists();
+    }
+
+    public function getNotLastAttribute()
+    {
+        return $this->round->sessions()->where('start_at', '>', $this->start_at)->exists();
+    }
+
     public function getAbbrevAttribute($value)
     {
         return $value ?? $this->start_at->format('M y');
