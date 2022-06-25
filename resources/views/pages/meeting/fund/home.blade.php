@@ -7,10 +7,10 @@
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
 @if($tontine->is_financial)
 @if($session->not_first)
-                        <button type="button" class="btn btn-primary" id="btn-refunds"><i class="fa fa-user-shield"></i></button>
+                        <button type="button" class="btn btn-primary" id="btn-refunds"><i class="fa fa-step-forward"></i></button>
 @endif
 @if($session->not_last)
-                        <button type="button" class="btn btn-primary" id="btn-biddings"><i class="fa fa-user-shield"></i></button>
+                        <button type="button" class="btn btn-primary" id="btn-biddings"><i class="fa fa-step-backward"></i></button>
 @endif
 @endif
                         <button type="button" class="btn btn-primary" id="btn-funds-refresh"><i class="fa fa-sync"></i></button>
