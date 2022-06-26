@@ -2,7 +2,8 @@
 
 return [
     'titles' => [
-        'sessions' => "Séances",
+        'sessions' => "Sessions",
+        'deposits' => "Deposits",
         'amounts' => "Cash amounts",
         'amount' => "Cash amount",
         'start' => "Start of session",

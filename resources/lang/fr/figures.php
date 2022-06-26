@@ -3,6 +3,7 @@
 return [
     'titles' => [
         'sessions' => "Sessions",
+        'deposits' => "Cotisations",
         'amounts' => "Montants en caisse",
         'amount' => "Montant en caisse",
         'start' => "Début de séance",

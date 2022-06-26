@@ -37,13 +37,7 @@
 @endforeach
                     </tr>
                   </thead>
-                 <tbody>
-@foreach ($subscriptions as $subscription)
-                    <tr>
-                      <td>{{ $subscription->member->name }}</td>
-                      @foreach($sessions as $session)<td class="currency">{{ $session->disabled($fund) ? '' : $fund->money('amount', true) }}</td>@endforeach
-                    </tr>
-@endforeach
+                  <tbody>
                     <tr>
                       <th colspan="{{ (count($sessions) + 1) }}">{{ __('figures.titles.amounts') }}</th>
                     </tr>
@@ -75,6 +69,16 @@
                       <td>{{ __('figures.titles.end') }}</td>
                       @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->cashier->end }}</td>@endforeach
                     </tr>
+                    <tr>
+                      <th colspan="{{ (count($sessions) + 1) }}">{{ __('figures.titles.deposits') }}</th>
+                    </tr>
+@foreach ($subscriptions as $subscription)
+                    <tr>
+                      <td>{{ $subscription->member->name }}</td>
+                      @foreach($sessions as $session)<td class="currency">{{ $session->disabled($fund) ? '' : $fund->money('amount', true) }}</td>@endforeach
+                    </tr>
+@endforeach
+                  </tbody>
                 </table>
               </div>
             </div>

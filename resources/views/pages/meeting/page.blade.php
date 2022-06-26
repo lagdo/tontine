@@ -16,15 +16,8 @@
                       <td>{{ $session->date }}</td>
                       <td>{{ $session->times }}</td>
                       <td>{{ $session->host ? $session->host->name : '' }}</td>
-                      <td class="table-item-menu">
-@include('parts.table.menu', [
-  'dataIdKey' => 'data-session-id',
-  'dataIdValue' => $session->id,
-  'menus' => [[
-    'class' => 'btn-session-show',
-    'text' => __('common.actions.enter'),
-  ]],
-])
+                      <td class="table-item-menu" data-session-id="{{ $session->id }}">
+                        <button type="button" class="btn btn-primary btn-session-show"><i class="fa fa-arrow-circle-right"></i></button>
                       </td>
                     </tr>
 @endforeach
