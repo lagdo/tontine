@@ -15,7 +15,7 @@
             </a></li>
             <li class="menu-header">{{ __('tontine.menus.planning') }}</li>
             <li><a class="nav-link" id="planning-menu-sessions" href="javascript:void(0)">
-              <i class="fa fa-calendar-day"></i> <span>{{ __('tontine.menus.sessions') }}</span>
+              <i class="fa fa-calendar"></i> <span>{{ __('tontine.menus.sessions') }}</span>
             </a></li>
             <li><a class="nav-link" id="planning-menu-funds" href="javascript:void(0)">
               <i class="fa fa-wallet"></i> <span>{{ __('tontine.menus.funds') }}</span>
@@ -25,10 +25,10 @@
             </a></li>
             <li class="menu-header">{{ __('tontine.menus.meeting') }}</li>
             <li><a class="nav-link" id="meeting-menu-sessions" href="javascript:void(0)">
-              <i class="fa fa-cash-register"></i> <span>{{ __('tontine.menus.sessions') }}</span>
+              <i class="fa fa-calendar-day"></i> <span>{{ __('tontine.menus.sessions') }}</span>
             </a></li>
             <li><a class="nav-link" id="meeting-menu-tables" href="javascript:void(0)">
-              <i class="fa fa-table"></i> <span>{{ __('tontine.menus.tables') }}</span>
+              <i class="fa fa-calendar-alt"></i> <span>{{ __('tontine.menus.tables') }}</span>
             </a></li>
           </ul>
         </aside>

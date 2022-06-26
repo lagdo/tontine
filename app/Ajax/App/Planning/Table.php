@@ -59,13 +59,31 @@ class Table extends CallableClass
             $this->bag('table')->set('fund.id', $this->fund->id);
         }
 
-        return $showDeposits ? $this->deposits() : $this->remittances();
+        return $showDeposits ? $this->amounts() : $this->remittances();
     }
 
     public function home()
     {
         // Don't try to show the page if there is no fund selected.
-        return ($this->fund) ? $this->deposits() : $this->response;
+        return ($this->fund) ? $this->amounts() : $this->response;
+    }
+
+    public function amounts()
+    {
+        $receivables = $this->subscriptionService->getReceivables($this->fund);
+        $this->view()->shareValues($receivables);
+        $html = $this->view()->render('pages.planning.table.amounts')
+            ->with('fund', $this->fund)
+            ->with('funds', $this->subscriptionService->getFunds());
+        $this->response->html('content-home', $html);
+
+        $this->jq('#btn-fund-select')->click($this->rq()->select(pm()->select('select-fund'), true));
+        $this->jq('#btn-subscription-refresh')->click($this->rq()->amounts());
+        $this->jq('#btn-subscription-deposits')->click($this->rq()->deposits());
+        $this->jq('#btn-subscription-remittances')->click($this->rq()->remittances());
+        $this->jq('.fund-session-toggle')->click($this->rq()->toggleSession(jq()->attr('data-session-id')));
+
+        return $this->response;
     }
 
     public function deposits()
@@ -79,6 +97,7 @@ class Table extends CallableClass
 
         $this->jq('#btn-fund-select')->click($this->rq()->select(pm()->select('select-fund'), true));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->deposits());
+        $this->jq('#btn-subscription-amounts')->click($this->rq()->amounts());
         $this->jq('#btn-subscription-remittances')->click($this->rq()->remittances());
         $this->jq('.fund-session-toggle')->click($this->rq()->toggleSession(jq()->attr('data-session-id')));
 
@@ -93,7 +112,7 @@ class Table extends CallableClass
         $session = $this->tenantService->getSession(intval($sessionId));
         $this->subscriptionService->toggleSession($this->fund, $session);
 
-        return $this->deposits();
+        return $this->amounts();
     }
 
     public function remittances()
@@ -107,6 +126,7 @@ class Table extends CallableClass
 
         $this->jq('#btn-fund-select')->click($this->rq()->select(pm()->select('select-fund'), false));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->remittances());
+        $this->jq('#btn-subscription-amounts')->click($this->rq()->amounts());
         $this->jq('#btn-subscription-deposits')->click($this->rq()->deposits());
         $this->jq('.select-beneficiary')->change($this->rq()
             ->saveBeneficiary(jq()->attr('data-session-id'), jq()->attr('data-subscription-id'), jq()->val()));

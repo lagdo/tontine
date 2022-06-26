@@ -13,8 +13,9 @@
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right" role="group" aria-label="">
+                  <button type="button" class="btn btn-primary" id="btn-subscription-amounts"><i class="fa fa-cash-register"></i></button>
+                  <button type="button" class="btn btn-primary" id="btn-subscription-remittances"><i class="fa fa-user-check"></i></button>
                   <button type="button" class="btn btn-primary" id="btn-subscription-refresh"><i class="fa fa-sync"></i></button>
-                  <button type="button" class="btn btn-primary" id="btn-subscription-remittances"><i class="fa fa-calendar-minus"></i></button>
                 </div>
               </div>
             </div>
@@ -30,48 +31,12 @@
 @foreach($sessions as $session)
                       <th>
                         {{ $session->abbrev }}
-                        <a href="javascript:void(0)" class="fund-session-toggle" data-session-id="{{ $session->id }}">
-                          @if($session->disabled($fund))<i class="fa fa-toggle-off"></i>@else<i class="fa fa-toggle-on"></i>@endif
-                        </a>
+                        @if($session->disabled($fund))<i class="fa fa-toggle-off"></i>@else<i class="fa fa-toggle-on"></i>@endif
                       </th>
 @endforeach
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <th colspan="{{ (count($sessions) + 1) }}">{{ __('figures.titles.amounts') }}</th>
-                    </tr>
-                    <tr>
-                      <td>{{ __('figures.titles.start') }}</td>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->cashier->start }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td>{{ __('figures.deposit.titles.count') }}</td>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->deposit->count }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td>{{ __('figures.deposit.titles.amount') }}</td>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->deposit->amount }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td>{{ __('figures.titles.recv') }}</td>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->cashier->recv }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td>{{ __('figures.remittance.titles.count') }}</td>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->remittance->count }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td>{{ __('figures.remittance.titles.amount') }}</td>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->remittance->amount }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td>{{ __('figures.titles.end') }}</td>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->cashier->end }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <th colspan="{{ (count($sessions) + 1) }}">{{ __('figures.titles.deposits') }}</th>
-                    </tr>
 @foreach ($subscriptions as $subscription)
                     <tr>
                       <td>{{ $subscription->member->name }}</td>
