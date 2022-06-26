@@ -14,6 +14,7 @@
               <div class="col-auto">
                 <div class="btn-group float-right" role="group" aria-label="">
                   <button type="button" class="btn btn-primary" id="btn-meeting-table-print"><i class="fa fa-file-pdf"></i></button>
+                  <button type="button" class="btn btn-primary" id="btn-meeting-table-deposits"><i class="fa fa-users"></i></button>
                   <button type="button" class="btn btn-primary" id="btn-meeting-table-refresh"><i class="fa fa-sync"></i></button>
                 </div>
               </div>
@@ -34,19 +35,7 @@
 @endforeach
                     </tr>
                   </thead>
-                 <tbody>
-@foreach ($subscriptions as $subscription)
-                    <tr>
-                      <td rowspan="2">{{ $subscription->member->name }}</td>
-                        @foreach($sessions as $session)<td class="currency"><b>{{ $subscription->receivables[$session->id]->deposit ? $fund->money('amount', true) : ($session->opened ? 0 : '') }}</b></td>@endforeach
-                    </tr>
-                    <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $session->disabled($fund) ? '' : $fund->money('amount', true) }}</td>@endforeach
-                    </tr>
-@endforeach
-                    <tr>
-                      <th colspan="{{ (count($sessions) + 1) }}">{{ __('figures.titles.amounts') }}</th>
-                    </tr>
+                  <tbody>
                     <tr>
                       <td rowspan="2">{{ __('figures.titles.start') }}</td>
                         @foreach($sessions as $session)<td class="currency"><b>{{ $figures->achieved[$session->id]->cashier->start }}</b></td>@endforeach

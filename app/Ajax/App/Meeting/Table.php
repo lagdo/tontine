@@ -57,7 +57,7 @@ class Table extends CallableClass
         if(($this->fund))
         {
             $this->bag('meeting')->set('fund.id', $this->fund->id);
-            return $this->show();
+            return $this->amounts();
         }
 
         return $this->response;
@@ -66,22 +66,36 @@ class Table extends CallableClass
     public function home()
     {
         // Don't try to show the page if there is no fund selected.
-        return ($this->fund) ? $this->show() : $this->response;
+        return ($this->fund) ? $this->amounts() : $this->response;
     }
 
-    /**
-     * @exclude
-     */
-    public function show()
+    public function amounts()
     {
         $this->view()->shareValues($this->meetingService->getFigures($this->fund));
-        $html = $this->view()->render('pages.meeting.table.show')
+        $html = $this->view()->render('pages.meeting.table.amounts')
             ->with('fund', $this->fund)
             ->with('funds', $this->subscriptionService->getFunds());
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-fund-select')->click($this->rq()->select(pm()->select('select-fund'), true));
-        $this->jq('#btn-meeting-table-refresh')->click($this->rq()->home());
+        $this->jq('#btn-meeting-table-refresh')->click($this->rq()->amounts());
+        $this->jq('#btn-meeting-table-deposits')->click($this->rq()->deposits());
+        $this->jq('#btn-meeting-table-print')->click($this->rq()->print());
+
+        return $this->response;
+    }
+
+    public function deposits()
+    {
+        $this->view()->shareValues($this->meetingService->getFigures($this->fund));
+        $html = $this->view()->render('pages.meeting.table.deposits')
+            ->with('fund', $this->fund)
+            ->with('funds', $this->subscriptionService->getFunds());
+        $this->response->html('content-home', $html);
+
+        $this->jq('#btn-fund-select')->click($this->rq()->select(pm()->select('select-fund'), true));
+        $this->jq('#btn-meeting-table-refresh')->click($this->rq()->deposits());
+        $this->jq('#btn-meeting-table-amounts')->click($this->rq()->amounts());
         $this->jq('#btn-meeting-table-print')->click($this->rq()->print());
 
         return $this->response;
