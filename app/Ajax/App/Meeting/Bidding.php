@@ -145,7 +145,7 @@ class Bidding extends CallableClass
 
         $this->jq('#btn-biddings-back')->click($this->cl(Fund::class)->rq()->home());
         $this->jq('.btn-bidding-add')->click($this->rq()->addBidding());
-        $biddingId = jq()->parent()->attr('data-bidding-id');
+        $biddingId = jq()->parent()->attr('data-subscription-id');
         $this->jq('.btn-bidding-delete')->click($this->rq()->deleteBidding($biddingId));
 
         return $this->response;
@@ -191,7 +191,8 @@ class Bidding extends CallableClass
 
     public function deleteBidding($biddingId)
     {
+        $this->biddingService->deleteBidding($this->session, intval($biddingId));
 
-        return $this->response;
+        return $this->cash();
     }
 }

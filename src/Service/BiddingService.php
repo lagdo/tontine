@@ -195,20 +195,14 @@ class BiddingService
     /**
      * Delete a bidding.
      *
-     * @param Fund $fund The fund
      * @param Session $session The session
-     * @param int $payableId
+     * @param int $biddingId
      *
      * @return void
      */
-    public function deleteBidding(Fund $fund, Session $session, int $payableId): void
+    public function deleteBidding(Session $session, int $biddingId): void
     {
-        $payable = $this->remittanceService->getPayable($fund, $session, $payableId);
-        if(!$payable || !$payable->remittance)
-        {
-            return;
-        }
-        $payable->remittance()->delete();
+        $session->biddings()->where('id', $biddingId)->delete();
     }
 
     /**
