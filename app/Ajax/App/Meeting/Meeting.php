@@ -3,7 +3,6 @@
 namespace App\Ajax\App\Meeting;
 
 use Siak\Tontine\Service\MeetingService;
-use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\BiddingService;
 use Siak\Tontine\Service\RefundService;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -20,11 +19,6 @@ use function trans;
  */
 class Meeting extends CallableClass
 {
-    /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
     /**
      * @di
      * @var MeetingService
@@ -57,13 +51,12 @@ class Meeting extends CallableClass
     }
 
     /**
-     * @di $tenantService
      * @di $biddingService
      * @di $refundService
      */
     public function home($sessionId)
     {
-        $tontine = $this->tenantService->tontine();
+        $tontine = $this->meetingService->getTontine();
         $sessionId = intval($sessionId);
         $this->bag('meeting')->set('session.id', $sessionId);
 
@@ -80,7 +73,7 @@ class Meeting extends CallableClass
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 
-        $this->cl(Fund::class)->show($this->session, $this->tenantService, $this->meetingService);
+        $this->cl(Fund::class)->show($this->session, $this->meetingService);
         $this->cl(Charge::class)->show($this->session, $this->meetingService);
         if($tontine->is_financial)
         {
@@ -97,7 +90,8 @@ class Meeting extends CallableClass
     }
 
     /**
-     * @di $tenantService
+     * @di $biddingService
+     * @di $refundService
      */
     public function open()
     {
@@ -109,7 +103,8 @@ class Meeting extends CallableClass
     }
 
     /**
-     * @di $tenantService
+     * @di $biddingService
+     * @di $refundService
      */
     public function close()
     {

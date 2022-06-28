@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Model\Tontine;
 
 class MeetingService
 {
@@ -57,6 +58,14 @@ class MeetingService
         $this->remittanceService = $remittanceService;
         $this->feeService = $feeService;
         $this->fineService = $fineService;
+    }
+
+    /**
+     * @return Tontine|null
+     */
+    public function getTontine(): ?Tontine
+    {
+        return $this->tenantService->tontine();
     }
 
     /**
