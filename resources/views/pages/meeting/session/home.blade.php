@@ -77,5 +77,13 @@
                 <div class="col-md-6 col-sm-12" id="meeting-charges">
                 </div>
               </div>
+@if($tontine->is_financial && $session->opened)
+              <div class="row">
+                <div class="col-md-6 col-sm-12" id="meeting-biddings">
+                </div>
+                <div class="col-md-6 col-sm-12" id="meeting-refunds">
+                </div>
+              </div>
+@endif
             </div>
           </div>

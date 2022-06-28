@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Meeting;
+namespace App\Ajax\App\Meeting\Financial;
 
 use Siak\Tontine\Service\RefundService;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -34,12 +34,23 @@ class Refund extends CallableClass
         $this->session = $this->refundService->getSession($sessionId);
     }
 
+    /**
+     * @exclude
+     */
+    public function show($session, $refundService)
+    {
+        $this->session = $session;
+        $this->refundService = $refundService;
+
+        return $this->home();
+    }
+
     public function home()
     {
         $html = $this->view()->render('pages.meeting.refund.home')
             ->with('session', $this->session);
-        $this->response->html('meeting-funds', $html);
-        $this->jq('#btn-refunds-back')->click($this->cl(Fund::class)->rq()->home());
+        $this->response->html('meeting-refunds', $html);
+        $this->jq('#btn-refunds-refresh')->click($this->rq()->home());
         $this->jq('#btn-refunds-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);

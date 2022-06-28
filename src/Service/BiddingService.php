@@ -273,18 +273,14 @@ class BiddingService
             ];
         });
         // One opened bid for the amount already paid for the others bids.
-        $biddings = collect([]);
         $amountAvailable = $this->getAmountAvailable($session);
-        if($amountAvailable > 0)
-        {
-            $biddings->push((object)[
-                'id' => 0,
-                'title' => '__',
-                'amount' => Currency::format($amountAvailable),
-                'paid' => 0,
-                'available' => true,
-            ]);
-        }
+        $biddings = collect([(object)[
+            'id' => 0,
+            'title' => '__',
+            'amount' => Currency::format($amountAvailable),
+            'paid' => 0,
+            'available' => true,
+        ]]);
 
         return $biddings->merge($fundBiddings)->merge($cashBiddings);
     }

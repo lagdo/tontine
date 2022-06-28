@@ -1,5 +1,5 @@
       <div class="portlet-body form">
-        <form class="form-horizontal" role="form" id="bidding-form">
+        <form class="form-horizontal" role="form" id="remittance-form">
           <div class="module-body">
             <div class="form-group row">
               {!! Form::label('subscription', trans('meeting.labels.member'), ['class' => 'col-sm-3 col-form-label text-right']) !!}

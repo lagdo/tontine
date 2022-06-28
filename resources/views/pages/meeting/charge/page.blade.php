@@ -2,15 +2,15 @@
                       <thead>
                         <tr>
                           <th>{!! __('common.labels.title') !!}</th>
-                          <th>{!! __('common.labels.amount') !!}</th>
+                          <th>&nbsp;</th>
                           <th>&nbsp;</th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach ($charges as $charge)
                         <tr>
-                          <td>{{ $charge->name }} [{{ $charge->members_paid }}/{{ $charge->members_count }}]</td>
-                          <td>{{ $charge->money('amount') }}</td>
+                          <td>{{ $charge->name }} ({{ $charge->money('amount') }})</td>
+                          <td>[{{ $charge->members_paid }}/{{ $charge->members_count }}]</td>
                           <td class="table-item-menu">
 @if($session->opened)
 @if( $charge->is_fee )

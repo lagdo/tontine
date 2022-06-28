@@ -4,6 +4,8 @@ namespace App\Ajax\App\Meeting;
 
 use Siak\Tontine\Service\MeetingService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\BiddingService;
+use Siak\Tontine\Service\RefundService;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 
@@ -30,6 +32,16 @@ class Meeting extends CallableClass
     protected MeetingService $meetingService;
 
     /**
+     * @var BiddingService
+     */
+    protected BiddingService $biddingService;
+
+    /**
+     * @var RefundService
+     */
+    protected RefundService $refundService;
+
+    /**
      * @var SessionModel|null
      */
     protected ?SessionModel $session;
@@ -46,13 +58,17 @@ class Meeting extends CallableClass
 
     /**
      * @di $tenantService
+     * @di $biddingService
+     * @di $refundService
      */
     public function home($sessionId)
     {
+        $tontine = $this->tenantService->tontine();
         $sessionId = intval($sessionId);
         $this->bag('meeting')->set('session.id', $sessionId);
 
-        $html = $this->view()->render('pages.meeting.session.home', ['session' => $this->session]);
+        $html = $this->view()->render('pages.meeting.session.home',
+            ['tontine' => $tontine, 'session' => $this->session]);
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-session-back')->click($this->cl(Session::class)->rq()->home());
@@ -66,7 +82,17 @@ class Meeting extends CallableClass
 
         $this->cl(Fund::class)->show($this->session, $this->tenantService, $this->meetingService);
         $this->cl(Charge::class)->show($this->session, $this->meetingService);
+        if($tontine->is_financial)
+        {
+            $this->cl(Financial\Bidding::class)->show($this->session, $this->biddingService);
+            $this->cl(Financial\Refund::class)->show($this->session, $this->refundService);
+        }
 
+        return $this->response;
+    }
+
+    public function summary()
+    {
         return $this->response;
     }
 

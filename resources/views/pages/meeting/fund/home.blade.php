@@ -5,14 +5,6 @@
 @if($session->opened)
                     <div class="col">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
-@if($tontine->is_financial)
-@if($session->not_first)
-                        <button type="button" class="btn btn-primary" id="btn-refunds"><i class="fa fa-step-forward"></i></button>
-@endif
-@if($session->not_last)
-                        <button type="button" class="btn btn-primary" id="btn-biddings"><i class="fa fa-step-backward"></i></button>
-@endif
-@endif
                         <button type="button" class="btn btn-primary" id="btn-funds-refresh"><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
@@ -23,7 +15,7 @@
                       <thead>
                         <tr>
                           <th>{!! __('common.labels.title') !!}</th>
-                          <th>{!! __('common.labels.amount') !!}</th>
+                          <th>&nbsp;</th>
                           <th>&nbsp;</th>
                         </tr>
                       </thead>
@@ -31,14 +23,14 @@
 @foreach($funds as $fund)
 @if($session->disabled($fund))
                         <tr style="background-color:rgba(0, 0, 0, 0.02)">
-                          <td>{{ $fund->title }} [{{ $fund->recv_paid }}/{{ $fund->recv_count }}] [{{ $fund->pay_paid }}/{{ $fund->pay_count }}]</td>
-                          <td>{{ $fund->money('amount') }}</td>
+                          <td>{{ $fund->title }} ({{ $fund->money('amount') }})</td>
+                          <td>[{{ $fund->recv_paid }}/{{ $fund->recv_count }}] [{{ $fund->pay_paid }}/{{ $fund->pay_count }}]</td>
                           <td></td>
                         </tr>
 @else
                         <tr>
-                          <td>{{ $fund->title }} [{{ $fund->recv_paid }}/{{ $fund->recv_count }}] [{{ $fund->pay_paid }}/{{ $fund->pay_count }}]</td>
-                          <td>{{ $fund->money('amount') }}</td>
+                          <td>{{ $fund->title }} ({{ $fund->money('amount') }})</td>
+                          <td>[{{ $fund->recv_paid }}/{{ $fund->recv_count }}] [{{ $fund->pay_paid }}/{{ $fund->pay_count }}]</td>
                           <td class="table-item-menu">
 @if($session->opened)
 @include('parts.table.menu', [
@@ -48,7 +40,7 @@
     'class' => 'btn-fund-deposits',
     'text' => __('meeting.actions.deposits'),
   ],[
-    'class' => $tontine->is_mutual ? 'btn-fund-remittances' : 'btn-fund-biddings',
+    'class' => $tontine->is_mutual ? 'btn-mutual-remittances' : 'btn-financial-remittances',
     'text' => __('meeting.actions.remittances'),
   ]],
 ])

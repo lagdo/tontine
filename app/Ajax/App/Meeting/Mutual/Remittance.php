@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Ajax\App\Meeting;
+namespace App\Ajax\App\Meeting\Mutual;
 
+use App\Ajax\App\Meeting\Fund;
+use App\Ajax\CallableClass;
 use Siak\Tontine\Service\RemittanceService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Fund as FundModel;
-use App\Ajax\CallableClass;
 
 use function jq;
 use function trans;
@@ -34,10 +35,12 @@ class Remittance extends CallableClass
 
     protected function getFund()
     {
+        // Get session
         $sessionId = $this->bag('meeting')->get('session.id');
+        $this->session = $this->remittanceService->getSession($sessionId);
+        // Get fund
         $fundId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('fund.id');
-        $this->session = $this->remittanceService->getSession($sessionId);
         $this->fund = $this->remittanceService->getFund($fundId);
         if($this->session->disabled($this->fund))
         {
@@ -55,13 +58,18 @@ class Remittance extends CallableClass
     {
         $this->bag('meeting')->set('fund.id', $fundId);
 
-        $html = $this->view()->render('pages.meeting.remittance.home', [
+        $payables = $this->remittanceService->getPayables($this->fund, $this->session);
+        $html = $this->view()->render('pages.meeting.remittance.mutual', [
             'fund' => $this->fund,
+            'payables' => $payables,
         ]);
         $this->response->html('meeting-funds', $html);
         $this->jq('#btn-remittances-back')->click($this->cl(Fund::class)->rq()->home());
+        $payableId = jq()->parent()->attr('data-payable-id');
+        $this->jq('.btn-add-remittance')->click($this->rq()->addRemittance($payableId));
+        $this->jq('.btn-del-remittance')->click($this->rq()->delRemittance($payableId));
 
-        return $this->page(1);
+        return $this->response;
     }
 
     /**

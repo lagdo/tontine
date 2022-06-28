@@ -62,12 +62,12 @@ class Fund extends CallableClass
         $this->response->html('meeting-funds', $html);
 
         $this->jq('#btn-funds-refresh')->click($this->rq()->home());
-        $this->jq('#btn-biddings')->click($this->cl(Bidding::class)->rq()->cash());
-        $this->jq('#btn-refunds')->click($this->cl(Refund::class)->rq()->home());
+        $this->jq('#btn-biddings')->click($this->cl(Financial\Bidding::class)->rq()->cash());
+        $this->jq('#btn-refunds')->click($this->cl(Financial\Refund::class)->rq()->home());
         $fundId = jq()->parent()->attr('data-fund-id');
         $this->jq('.btn-fund-deposits')->click($this->cl(Deposit::class)->rq()->home($fundId));
-        $this->jq('.btn-fund-remittances')->click($this->cl(Remittance::class)->rq()->home($fundId));
-        $this->jq('.btn-fund-biddings')->click($this->cl(Bidding::class)->rq()->fund($fundId));
+        $this->jq('.btn-mutual-remittances')->click($this->cl(Mutual\Remittance::class)->rq()->home($fundId));
+        $this->jq('.btn-financial-remittances')->click($this->cl(Financial\Remittance::class)->rq()->home($fundId));
         $this->jq('.btn-fund-table')->click($this->rq()->table($fundId));
 
         return $this->response;
