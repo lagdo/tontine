@@ -22,31 +22,13 @@
                       <tbody>
 @foreach($funds as $fund)
 @if($session->disabled($fund))
-                        <tr style="background-color:rgba(0, 0, 0, 0.02)">
-                          <td>{{ $fund->title }} ({{ $fund->money('amount') }})</td>
-                          <td>[{{ $fund->recv_paid }}/{{ $fund->recv_count }}] [{{ $fund->pay_paid }}/{{ $fund->pay_count }}]</td>
-                          <td></td>
-                        </tr>
+                        @include('pages.meeting.fund.disabled', ['fund' => $fund])
+@elseif($session->opened)
+                        @include('pages.meeting.fund.opened', ['fund' => $fund, 'tontine' => $tontine])
+@elseif($session->closed)
+                        @include('pages.meeting.fund.closed', ['fund' => $fund, 'summary' => $summary])
 @else
-                        <tr>
-                          <td>{{ $fund->title }} ({{ $fund->money('amount') }})</td>
-                          <td>[{{ $fund->recv_paid }}/{{ $fund->recv_count }}] [{{ $fund->pay_paid }}/{{ $fund->pay_count }}]</td>
-                          <td class="table-item-menu">
-@if($session->opened)
-@include('parts.table.menu', [
-  'dataIdKey' => 'data-fund-id',
-  'dataIdValue' => $fund->id,
-  'menus' => [[
-    'class' => 'btn-fund-deposits',
-    'text' => __('meeting.actions.deposits'),
-  ],[
-    'class' => $tontine->is_mutual ? 'btn-mutual-remittances' : 'btn-financial-remittances',
-    'text' => __('meeting.actions.remittances'),
-  ]],
-])
-@endif
-                          </td>
-                        </tr>
+                        @include('pages.meeting.fund.pending', ['fund' => $fund])
 @endif
 @endforeach
                       </tbody>

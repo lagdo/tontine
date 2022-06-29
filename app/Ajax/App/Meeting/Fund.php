@@ -51,6 +51,10 @@ class Fund extends CallableClass
         $html = $this->view()->render('pages.meeting.fund.home')
             ->with('tontine', $tontine)->with('session', $this->session)
             ->with('funds', $this->meetingService->getFunds($this->session));
+        if($this->session->closed)
+        {
+            $html->with('summary', $this->meetingService->getFundsSummary($this->session));
+        }
         $this->response->html('meeting-funds', $html);
 
         $this->jq('#btn-funds-refresh')->click($this->rq()->home());

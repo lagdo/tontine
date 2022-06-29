@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Session extends Model
 {
@@ -107,9 +108,29 @@ class Session extends Model
         return $this->hasMany(Payable::class)->orderBy('payables.id', 'asc');
     }
 
+    public function payableAmounts()
+    {
+        return $this->hasMany(Payable::class)
+            ->join('subscriptions', 'subscriptions.id', '=', 'payables.subscription_id')
+            ->join('funds', 'subscriptions.fund_id', '=', 'funds.id')
+            ->whereHas('remittance')
+            ->groupBy('funds.id')
+            ->select('funds.id', DB::raw('sum(funds.amount) as amount'));
+    }
+
     public function receivables()
     {
         return $this->hasMany(Receivable::class)->orderBy('receivables.id', 'asc');
+    }
+
+    public function receivableAmounts()
+    {
+        return $this->hasMany(Receivable::class)
+            ->join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
+            ->join('funds', 'subscriptions.fund_id', '=', 'funds.id')
+            ->whereHas('deposit')
+            ->groupBy('funds.id')
+            ->select('funds.id', DB::raw('sum(funds.amount) as amount'));
     }
 
     public function bills()

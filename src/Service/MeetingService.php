@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service;
 
 use Illuminate\Support\Collection;
 
+use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
@@ -204,5 +205,35 @@ class MeetingService
     public function getFigures(Fund $fund): array
     {
         return $this->planningService->getFigures($fund);
+    }
+
+    /**
+     * Get a session summary
+     *
+     * @param Session $session
+     *
+     * @return array
+     */
+    public function getFundsSummary(Session $session): array
+    {
+        $funds = $this->tenantService->round()->funds->keyBy('id');
+        $sessions = $this->tenantService->round()->sessions;
+        $payableAmounts = $session->payableAmounts()->get()
+            ->each(function($payable) use($funds, $sessions) {
+                $fund = $funds[$payable->id];
+                $count = $sessions->filter(function($session) use($fund) {
+                    return $session->enabled($fund);
+                })->count();
+                $payable->amount = Currency::format($payable->amount * $count);
+            })->pluck('amount', 'id');
+        $receivableAmounts = $session->receivableAmounts()->get()
+            ->each(function($receivable) {
+                $receivable->amount = Currency::format($receivable->amount);
+            })->pluck('amount', 'id');
+
+        return [
+            'payables' => $payableAmounts,
+            'receivables' => $receivableAmounts,
+        ];
     }
 }
