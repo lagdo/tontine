@@ -111,9 +111,9 @@ class FeeSettlementService extends SettlementService
             return;
         }
         $settlement = new Settlement();
-        $settlement->paid_at = now();
-        $settlement->member()->associate($member);
         $settlement->bill()->associate($bill);
+        $settlement->member()->associate($member);
+        $settlement->session()->associate($session);
         $settlement->save();
     }
 
