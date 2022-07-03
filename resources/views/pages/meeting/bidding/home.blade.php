@@ -23,7 +23,7 @@
                           <td>{{ __('tontine.bidding.labels.amount_to_bid') }}</td>
                           <td>{{ $amountAvailable }}</td>
                           <td>&nbsp;</td>
-@if($session->closed)
+@if(!$session->opened)
                           <td>&nbsp;</td>
 @else
                           <td class="table-item-menu">
@@ -36,7 +36,7 @@
                           <td>{{ $bidding->title }}</td>
                           <td>{{ $bidding->amount }}</td>
                           <td>{{ $bidding->paid }}</td>
-@if($session->closed)
+@if(!$session->opened)
                           <td>&nbsp;</td>
 @else
                           <td class="table-item-menu" data-subscription-id="{{ $bidding->id }}">

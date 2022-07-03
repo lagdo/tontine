@@ -11,8 +11,8 @@
                     <tr>
                       <td>{{ $bidding->member->name }}</td>
                       <td>{{ $bidding->amount }}</td>
-@if($session->closed)
-                      <td><i class="fa @if($bidding->refund) fa-toggle-on @else fa-toggle-off @endif"></td>
+@if(!$session->opened)
+                      <td><i class="fa @if($bidding->refund) fa-toggle-on @else fa-toggle-off @endif"></i></td>
 @elseif($bidding->refund)
                       <td data-refund-id="{{ $bidding->refund->id }}">
                         <a href="javascript:void(0)" class="btn-del-refund"><i class="fa fa-toggle-on"></i></a>
