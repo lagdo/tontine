@@ -10,6 +10,8 @@
 @foreach ($charges as $charge)
 @if($session->closed)
                         @include('pages.meeting.charge.closed', compact('charge', 'session'))
+@elseif($session->pending)
+                        @include('pages.meeting.charge.pending', compact('charge'))
 @elseif($charge->is_fee)
                         @include('pages.meeting.charge.fee', compact('charge'))
 @elseif($charge->is_fine)
