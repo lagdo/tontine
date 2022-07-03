@@ -138,6 +138,19 @@ class Session extends Model
         return $this->hasMany(Bill::class);
     }
 
+    public function settlements()
+    {
+        return $this->hasMany(Settlement::class);
+    }
+
+    public function settlementAmounts()
+    {
+        return $this->hasMany(Settlement::class)
+            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->groupBy('bills.charge_id')
+            ->select('bills.charge_id', DB::raw('sum(bills.amount) as amount'));
+    }
+
     public function biddings()
     {
         return $this->hasMany(Bidding::class);

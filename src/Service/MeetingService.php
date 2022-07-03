@@ -208,7 +208,7 @@ class MeetingService
     }
 
     /**
-     * Get a session summary
+     * Get funds summary for a session
      *
      * @param Session $session
      *
@@ -234,6 +234,25 @@ class MeetingService
         return [
             'payables' => $payableAmounts,
             'receivables' => $receivableAmounts,
+        ];
+    }
+
+    /**
+     * Get settlements summary for a session
+     *
+     * @param Session $session
+     *
+     * @return array
+     */
+    public function getChargesSummary(Session $session): array
+    {
+        $settlementAmounts = $session->settlementAmounts()->get()
+            ->each(function($settlement) {
+                $settlement->amount = Currency::format($settlement->amount);
+            })->pluck('amount', 'charge_id');
+
+        return [
+            'settlements' => $settlementAmounts,
         ];
     }
 }

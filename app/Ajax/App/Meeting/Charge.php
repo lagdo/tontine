@@ -63,6 +63,10 @@ class Charge extends CallableClass
         $html = $this->view()->render('pages.meeting.charge.page')
             ->with('charges', $charges)->with('session', $this->session)
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $chargeCount));
+        if($this->session->closed)
+        {
+            $html->with('summary', $this->meetingService->getChargesSummary($this->session));
+        }
         $this->response->html('meeting-charges-page', $html);
 
         $chargeId = jq()->parent()->attr('data-charge-id');

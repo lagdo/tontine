@@ -79,9 +79,9 @@
               </div>
 @if($tontine->is_financial)
               <div class="row">
-                <div class="col-md-6 col-sm-12" id="meeting-biddings">
+                <div class="col-md-7 col-sm-12" id="meeting-biddings">
                 </div>
-                <div class="col-md-6 col-sm-12" id="meeting-refunds">
+                <div class="col-md-5 col-sm-12" id="meeting-refunds">
                 </div>
               </div>
 @endif

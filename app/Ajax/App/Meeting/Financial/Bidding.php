@@ -3,6 +3,7 @@
 namespace App\Ajax\App\Meeting\Financial;
 
 use Siak\Tontine\Service\BiddingService;
+use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 
@@ -48,9 +49,11 @@ class Bidding extends CallableClass
     public function home()
     {
         $biddings = $this->biddingService->getSessionBiddings($this->session);
+        $amountAvailable = $this->biddingService->getAmountAvailable($this->session);
 
         $html = $this->view()->render('pages.meeting.bidding.home')
-            ->with('biddings', $biddings)->with('session', $this->session);
+            ->with('biddings', $biddings)->with('session', $this->session)
+            ->with('amountAvailable', Currency::format($amountAvailable));
         $this->response->html('meeting-biddings', $html);
 
         $this->jq('#btn-biddings-refresh')->click($this->rq()->home());

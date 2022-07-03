@@ -15,8 +15,6 @@ use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Refund;
 use stdClass;
 
-use function collect;
-
 class BiddingService
 {
     /**
@@ -236,6 +234,7 @@ class BiddingService
         // The amount available for bidding is the sum of the amounts paid for remittances,
         // the amounts paid in the biddings, and the refunds, for all the sessions.
         $payableIds = Payable::whereIn('session_id', $sessionIds)->pluck('id');
+
         return Remittance::whereIn('payable_id', $payableIds)->sum('amount_paid') +
             Bidding::whereIn('session_id', $sessionIds)->get()
                 ->reduce(function($sum, $bidding) {
@@ -260,7 +259,6 @@ class BiddingService
                 'title' => $payable->subscription->member->name,
                 'amount' => Currency::format($payable->amount),
                 'paid' => Currency::format($payable->remittance->amount_paid),
-                'available' => false,
             ];
         });
         $cashBiddings = $this->getBiddings($session)->map(function($bidding) {
@@ -269,20 +267,10 @@ class BiddingService
                 'title' => $bidding->member->name,
                 'amount' => Currency::format($bidding->amount_bid),
                 'paid' => Currency::format($bidding->amount_paid),
-                'available' => false,
             ];
         });
-        // One opened bid for the amount already paid for the others bids.
-        $amountAvailable = $this->getAmountAvailable($session);
-        $biddings = collect([(object)[
-            'id' => 0,
-            'title' => '__',
-            'amount' => Currency::format($amountAvailable),
-            'paid' => 0,
-            'available' => true,
-        ]]);
 
-        return $biddings->merge($fundBiddings)->merge($cashBiddings);
+        return $fundBiddings->merge($cashBiddings);
     }
 
     /**
