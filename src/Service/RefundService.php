@@ -5,6 +5,7 @@ namespace Siak\Tontine\Service;
 use Illuminate\Support\Collection;
 
 use Siak\Tontine\Model\Bidding;
+use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
 
@@ -139,5 +140,19 @@ class RefundService
     public function deleteRefund(Session $session, int $refundId): void
     {
         $session->refunds()->where('id', $refundId)->delete();
+    }
+
+    /**
+     * Get the refund sum.
+     *
+     * @param Session $session The session
+     *
+     * @return string
+     */
+    public function getRefundSum(Session $session): string
+    {
+        return Currency::format($session->refunds()
+            ->join('biddings', 'biddings.id', '=', 'refunds.bidding_id')
+            ->sum('biddings.amount_bid'));
     }
 }

@@ -18,6 +18,12 @@
                         @include('pages.meeting.charge.fine', compact('charge'))
 @endif
 @endforeach
+@if($session->closed)
+                        <tr>
+                          <td colspan="2">{!! __('common.labels.total') !!}</td>
+                          <td>{{ $summary['sum']['settlements'] }}</td>
+                        </tr>
+@endif
                       </tbody>
                     </table>
                     {!! $pagination !!}

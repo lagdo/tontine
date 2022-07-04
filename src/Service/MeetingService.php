@@ -218,22 +218,32 @@ class MeetingService
     {
         $funds = $this->tenantService->round()->funds->keyBy('id');
         $sessions = $this->tenantService->round()->sessions;
+
+        $payableSum = 0;
         $payableAmounts = $session->payableAmounts()->get()
-            ->each(function($payable) use($funds, $sessions) {
+            ->each(function($payable) use($funds, $sessions, &$payableSum) {
                 $fund = $funds[$payable->id];
                 $count = $sessions->filter(function($session) use($fund) {
                     return $session->enabled($fund);
                 })->count();
+                $payableSum += $payable->amount * $count;
                 $payable->amount = Currency::format($payable->amount * $count);
             })->pluck('amount', 'id');
+
+        $receivableSum = 0;
         $receivableAmounts = $session->receivableAmounts()->get()
-            ->each(function($receivable) {
+            ->each(function($receivable) use(&$receivableSum) {
+                $receivableSum += $receivable->amount;
                 $receivable->amount = Currency::format($receivable->amount);
             })->pluck('amount', 'id');
 
         return [
             'payables' => $payableAmounts,
             'receivables' => $receivableAmounts,
+            'sum' => [
+                'payables' => Currency::format($payableSum),
+                'receivables' => Currency::format($receivableSum),
+            ],
         ];
     }
 
@@ -246,13 +256,18 @@ class MeetingService
      */
     public function getChargesSummary(Session $session): array
     {
+        $settlementSum = 0;
         $settlementAmounts = $session->settlementAmounts()->get()
-            ->each(function($settlement) {
+            ->each(function($settlement) use(&$settlementSum) {
+                $settlementSum += $settlement->amount;
                 $settlement->amount = Currency::format($settlement->amount);
             })->pluck('amount', 'charge_id');
 
         return [
             'settlements' => $settlementAmounts,
+            'sum' => [
+                'settlements' => Currency::format($settlementSum),
+            ],
         ];
     }
 }

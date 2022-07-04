@@ -45,6 +45,14 @@
 @endif
                         </tr>
 @endforeach
+@if($session->closed)
+                        <tr>
+                          <td>{!! __('common.labels.total') !!}</td>
+                          <td>{{ $sum['bid'] }}</td>
+                          <td>{{ $sum['paid'] }}</td>
+                          <td>&nbsp;</td>
+                        </tr>
+@endif
                       </tbody>
                     </table>
                   </div> <!-- End table -->

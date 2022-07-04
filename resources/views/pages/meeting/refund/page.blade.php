@@ -24,6 +24,13 @@
 @endif
                     </tr>
 @endforeach
+@if($session->closed)
+                        <tr>
+                          <td>{!! __('common.labels.total') !!}</td>
+                          <td>{{ $refundSum }}</td>
+                          <td>&nbsp;</td>
+                        </tr>
+@endif
                   </tbody>
                 </table>
                 <nav>{!! $pagination !!}</nav>

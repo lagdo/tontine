@@ -48,12 +48,16 @@ class Bidding extends CallableClass
 
     public function home()
     {
-        $biddings = $this->biddingService->getSessionBiddings($this->session);
+        [$biddings, $sum] = $this->biddingService->getSessionBiddings($this->session);
         $amountAvailable = $this->biddingService->getAmountAvailable($this->session);
 
         $html = $this->view()->render('pages.meeting.bidding.home')
             ->with('biddings', $biddings)->with('session', $this->session)
             ->with('amountAvailable', Currency::format($amountAvailable));
+        if($this->session->closed)
+        {
+            $html->with('sum', $sum);
+        }
         $this->response->html('meeting-biddings', $html);
 
         $this->jq('#btn-biddings-refresh')->click($this->rq()->home());

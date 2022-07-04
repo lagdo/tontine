@@ -31,6 +31,12 @@
                         @include('pages.meeting.fund.pending', ['fund' => $fund])
 @endif
 @endforeach
+@if($session->closed)
+                        <tr>
+                          <td colspan="2">{!! __('common.labels.total') !!}</td>
+                          <td>{{ $summary['sum']['receivables'] }}<br/>{{ $summary['sum']['payables'] }}</td>
+                        </tr>
+@endif
                       </tbody>
                     </table>
                   </div> <!-- End table -->

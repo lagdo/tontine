@@ -76,6 +76,10 @@ class Refund extends CallableClass
             'biddings' => $this->refundService->getBiddings($this->session, $refunded, $pageNumber),
             'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $biddingCount),
         ]);
+        if($this->session->closed)
+        {
+            $html->with('refundSum', $this->refundService->getRefundSum($this->session));
+        }
         $this->response->html('meeting-biddings-page', $html);
 
         $biddingId = jq()->parent()->attr('data-bidding-id');
