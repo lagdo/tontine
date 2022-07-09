@@ -1,23 +1,27 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>{!! __('common.labels.name') !!}</th>
+                          <th>{!! __('common.labels.title') !!}</th>
+                          <th>&nbsp;</th>
                           <th>&nbsp;</th>
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($members as $member)
-                        <tr>
-                          <td>{{ $member->name }}</td>
-                          <td data-member-id="{{ $member->id }}">
-@if ($member->bills_count > 0)
-                            <a href="javascript:void(0)" class="btn-del-fine"><i class="fa fa-toggle-on"></i></a>
+@foreach ($fines as $charge)
+@if($session->closed)
+                        @include('pages.meeting.charge.closed', compact('charge', 'session'))
+@elseif($session->pending)
+                        @include('pages.meeting.charge.pending', compact('charge'))
 @else
-                            <a href="javascript:void(0)" class="btn-add-fine"><i class="fa fa-toggle-off"></i></a>
+                        @include('pages.meeting.charge.fine', compact('charge'))
 @endif
-                          </td>
-                        </tr>
 @endforeach
+@if($session->closed)
+                        <tr>
+                          <td colspan="2">{!! __('common.labels.total') !!}</td>
+                          <td>{{ $summary['sum']['settlements'] }}</td>
+                        </tr>
+@endif
                       </tbody>
                     </table>
-                    <nav>{!! $pagination !!}</nav>
+                    {!! $pagination !!}

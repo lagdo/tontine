@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service;
 
+use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Round;
@@ -50,6 +51,8 @@ class TenantService
     {
         // Set the currency in the models
         Currency::$current = $tontine->currency;
+        // Set the members count in the Charge model
+        Charge::$memberCount = $tontine->members()->count();
 
         $this->tontine = $tontine;
     }

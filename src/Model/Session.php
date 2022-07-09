@@ -151,6 +151,26 @@ class Session extends Model
             ->select('bills.charge_id', DB::raw('sum(bills.amount) as amount'));
     }
 
+    public function feeSettlementAmounts()
+    {
+        return $this->hasMany(Settlement::class)
+            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->join('charges', 'bills.charge_id', '=', 'charges.id')
+            ->where('charges.type', '=', Charge::TYPE_FEE)
+            ->groupBy('bills.charge_id')
+            ->select('bills.charge_id', DB::raw('sum(bills.amount) as amount'));
+    }
+
+    public function fineSettlementAmounts()
+    {
+        return $this->hasMany(Settlement::class)
+            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->join('charges', 'bills.charge_id', '=', 'charges.id')
+            ->where('charges.type', '=', Charge::TYPE_FINE)
+            ->groupBy('bills.charge_id')
+            ->select('bills.charge_id', DB::raw('sum(bills.amount) as amount'));
+    }
+
     public function biddings()
     {
         return $this->hasMany(Bidding::class);

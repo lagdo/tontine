@@ -42,7 +42,49 @@ class Fund extends CallableClass
         $this->session = $session;
         $this->meetingService = $meetingService;
 
-        return $this->home();
+        $this->deposits();
+        $this->remittances();
+
+        return $this->response;
+    }
+
+    public function deposits()
+    {
+        $tontine = $this->meetingService->getTontine();
+        $html = $this->view()->render('pages.meeting.fund.deposits')
+            ->with('tontine', $tontine)->with('session', $this->session)
+            ->with('funds', $this->meetingService->getFunds($this->session));
+        if($this->session->closed)
+        {
+            $html->with('summary', $this->meetingService->getFundsSummary($this->session));
+        }
+        $this->response->html('meeting-deposits', $html);
+
+        $this->jq('#btn-deposits-refresh')->click($this->rq()->deposits());
+        $fundId = jq()->parent()->attr('data-fund-id');
+        $this->jq('.btn-fund-deposits')->click($this->cl(Deposit::class)->rq()->home($fundId));
+
+        return $this->response;
+    }
+
+    public function remittances()
+    {
+        $tontine = $this->meetingService->getTontine();
+        $html = $this->view()->render('pages.meeting.fund.remittances')
+            ->with('tontine', $tontine)->with('session', $this->session)
+            ->with('funds', $this->meetingService->getFunds($this->session));
+        if($this->session->closed)
+        {
+            $html->with('summary', $this->meetingService->getFundsSummary($this->session));
+        }
+        $this->response->html('meeting-remittances', $html);
+
+        $this->jq('#btn-remittances-refresh')->click($this->rq()->remittances());
+        $fundId = jq()->parent()->attr('data-fund-id');
+        $remittanceClass = ($tontine->is_mutual ? Mutual\Remittance::class : Financial\Remittance::class);
+        $this->jq('.btn-fund-remittances')->click($this->cl($remittanceClass)->rq()->home($fundId));
+
+        return $this->response;
     }
 
     public function home()

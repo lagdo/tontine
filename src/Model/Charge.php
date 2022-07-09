@@ -17,6 +17,11 @@ class Charge extends Model
     use HasCurrency;
 
     /**
+     * @var int
+     */
+    public static $memberCount = 0;
+
+    /**
      * @const
      */
     const TYPE_FEE = 0;
@@ -158,5 +163,31 @@ class Charge extends Model
     public function scopeSession(Builder $query): Builder
     {
         return $query->where('type', self::TYPE_FEE)->where('period', self::PERIOD_SESSION);
+    }
+
+    public function getCurrSettlementCount(array $settlements)
+    {
+        return $settlements['current'][$this->id] ?? 0;
+    }
+
+    public function getPrevSettlementCount(array $settlements)
+    {
+        return $settlements['previous'][$this->id] ?? 0;
+    }
+
+    public function getCurrBillCount(array $bills)
+    {
+        // For fees, there's a single bill for all tontine members.
+        // The number of bills then needs to be multiplied by the number of members.
+        $count = $this->is_fee ? self::$memberCount : 1;
+        return $count * ($bills['current'][$this->id] ?? 0);
+    }
+
+    public function getPrevBillCount(array $bills)
+    {
+        // For fees, there's a single bill for all tontine members.
+        // The number of bills then needs to be multiplied by the number of members.
+        $count = $this->is_fee ? self::$memberCount : 1;
+        return $count * ($bills['previous'][$this->id] ?? 0);
     }
 }

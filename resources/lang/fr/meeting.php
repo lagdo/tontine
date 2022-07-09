@@ -7,6 +7,8 @@ return [
         'report' => "Rapport",
         'funds' => "Fonds",
         'charges' => "Frais et amendes",
+        'fees' => "Frais",
+        'fines' => "Amendes",
         'deposits' => "Versements",
         'remittances' => "Remises",
         'biddings' => "Enchères",

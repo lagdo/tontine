@@ -1,12 +1,15 @@
                         <tr>
                           <td>{{ $charge->name }}<br/>{{ $charge->money('amount') }}</td>
-                          <td>[{{ $charge->members_paid }}/{{ $charge->members_count }}]</td>
+                          <td>
+                            {{ $charge->getCurrSettlementCount($settlements) }}/{{ $charge->getCurrBillCount($bills) }}<br/>
+                            {{ $charge->getPrevSettlementCount($settlements) }}/{{ $charge->getPrevBillCount($bills) }}
+                          </td>
                           <td class="table-item-menu">
 @include('parts.table.menu', [
-  'dataIdKey' => 'data-charge-id',
+  'dataIdKey' => 'data-fee-id',
   'dataIdValue' => $charge->id,
   'menus' => [[
-    'class' => 'btn-charge-settlements',
+    'class' => 'btn-fee-settlements',
     'text' => __('meeting.actions.settlements'),
   ]],
 ])

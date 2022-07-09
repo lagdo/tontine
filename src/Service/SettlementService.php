@@ -2,10 +2,14 @@
 
 namespace Siak\Tontine\Service;
 
+use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Charge;
+use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Model\Settlement;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 abstract class SettlementService
 {
@@ -86,4 +90,73 @@ abstract class SettlementService
      * @return void
      */
     abstract public function deleteSettlement(Charge $charge, Session $session, int $Id): void;
+
+    /**
+     * @param Session $session
+     *
+     * @return mixed
+     */
+    private function getSettlementCountQuery(Session $session)
+    {
+        return Settlement::join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->join('sessions', 'settlements.session_id', '=', 'sessions.id')
+            ->groupBy('bills.charge_id')
+            ->select('bills.charge_id', DB::raw('count(*) as total'));
+    }
+
+    /**
+     * Get the numbers of settlements
+     *
+     * @param Session $session
+     * @param bool $withPrevious
+     *
+     * @return Collection
+     */
+    public function getSettlementCount(Session $session, bool $withPrevious): Collection
+    {
+        $sessionIds = $this->tenantService->round()->sessions()
+            ->where('start_at', '<=', $session->start_at)->pluck('id');
+        $query = $withPrevious ?
+            $this->getSettlementCountQuery($session)->whereIn('sessions.id', $sessionIds) :
+            $this->getSettlementCountQuery($session)->where('sessions.id', $session->id);
+        return $query->pluck('total', 'charge_id');
+    }
+
+    /**
+     * Get the numbers of bills
+     *
+     * @param Session $session
+     * @param bool $withPrevious
+     *
+     * @return Collection
+     */
+    public function getBillCount(Session $session, bool $withPrevious): Collection
+    {
+        $chargeIds = $this->tenantService->tontine()->charges()->pluck('id');
+        $noSessionQuery = Bill::whereIn('charge_id', $chargeIds)
+            ->whereNull('session_id')
+            ->select('charge_id', DB::raw('count(*) as total'))
+            ->groupBy('charge_id');
+        $sessionQuery = Bill::whereIn('charge_id', $chargeIds)
+            ->select('bills.charge_id', DB::raw('count(*) as total'))
+            ->groupBy('bills.charge_id')
+            ->join('sessions', 'bills.session_id', '=', 'sessions.id');
+        $sessionQuery = $withPrevious ?
+            $sessionQuery->where('sessions.start_at', '<=', $session->start_at) :
+            $sessionQuery->where('sessions.id', $session->id);
+        return $noSessionQuery->union($sessionQuery)->pluck('total', 'charge_id');
+    }
+
+    /**
+     * Get a formatted amount.
+     *
+     * @param int $amount
+     * @param bool $hideSymbol
+     *
+     * @return string
+     */
+    public function getFormattedAmount(int $amount, bool $hideSymbol = false): string
+    {
+        return Currency::format($amount, $hideSymbol);
+    }
 }

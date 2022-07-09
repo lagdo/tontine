@@ -194,6 +194,64 @@ class MeetingService
     }
 
     /**
+     * Get a paginated list of fees.
+     *
+     * @param Session $session
+     * @param int $page
+     *
+     * @return Collection
+     */
+    public function getFees(Session $session, int $page = 0): Collection
+    {
+        $fees = $this->tenantService->tontine()->charges()->fee()->orderBy('id', 'desc');
+        if($page > 0 )
+        {
+            $fees->take($this->tenantService->getLimit());
+            $fees->skip($this->tenantService->getLimit() * ($page - 1));
+        }
+        return $fees->get();
+    }
+
+    /**
+     * Get the number of fees.
+     *
+     * @return int
+     */
+    public function getFeeCount(): int
+    {
+        return $this->tenantService->tontine()->charges()->fee()->count();
+    }
+
+    /**
+     * Get a paginated list of fines.
+     *
+     * @param Session $session
+     * @param int $page
+     *
+     * @return Collection
+     */
+    public function getFines(Session $session, int $page = 0): Collection
+    {
+        $fines = $this->tenantService->tontine()->charges()->fine()->orderBy('id', 'desc');
+        if($page > 0 )
+        {
+            $fines->take($this->tenantService->getLimit());
+            $fines->skip($this->tenantService->getLimit() * ($page - 1));
+        }
+        return $fines->get();
+    }
+
+    /**
+     * Get the number of fines.
+     *
+     * @return int
+     */
+    public function getFineCount(): int
+    {
+        return $this->tenantService->tontine()->charges()->fine()->count();
+    }
+
+    /**
      * Get the receivables of a given fund.
      *
      * Will return extended data on subscriptions.
@@ -254,10 +312,34 @@ class MeetingService
      *
      * @return array
      */
-    public function getChargesSummary(Session $session): array
+    public function getFeesSummary(Session $session): array
     {
         $settlementSum = 0;
-        $settlementAmounts = $session->settlementAmounts()->get()
+        $settlementAmounts = $session->feeSettlementAmounts()->get()
+            ->each(function($settlement) use(&$settlementSum) {
+                $settlementSum += $settlement->amount;
+                $settlement->amount = Currency::format($settlement->amount);
+            })->pluck('amount', 'charge_id');
+
+        return [
+            'settlements' => $settlementAmounts,
+            'sum' => [
+                'settlements' => Currency::format($settlementSum),
+            ],
+        ];
+    }
+
+    /**
+     * Get settlements summary for a session
+     *
+     * @param Session $session
+     *
+     * @return array
+     */
+    public function getFinesSummary(Session $session): array
+    {
+        $settlementSum = 0;
+        $settlementAmounts = $session->fineSettlementAmounts()->get()
             ->each(function($settlement) use(&$settlementSum) {
                 $settlementSum += $settlement->amount;
                 $settlement->amount = Currency::format($settlement->amount);

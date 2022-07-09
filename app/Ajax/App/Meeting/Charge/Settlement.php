@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Meeting;
+namespace App\Ajax\App\Meeting\Charge;
 
 use Siak\Tontine\Service\FeeSettlementService;
 use Siak\Tontine\Service\FineSettlementService;
@@ -69,8 +69,16 @@ class Settlement extends CallableClass
         $html = $this->view()->render('pages.meeting.settlement.home', [
             'charge' => $this->charge,
         ]);
-        $this->response->html('meeting-charges', $html);
-        $this->jq('#btn-settlements-back')->click($this->cl(Charge::class)->rq()->home());
+        if($this->charge->is_fee)
+        {
+            $this->response->html('meeting-fees', $html);
+            $this->jq('#btn-settlements-back')->click($this->cl(Fee::class)->rq()->home());
+        }
+        if($this->charge->is_fine)
+        {
+            $this->response->html('meeting-fines', $html);
+            $this->jq('#btn-settlements-back')->click($this->cl(Fine::class)->rq()->home());
+        }
         $this->jq('#btn-settlements-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);

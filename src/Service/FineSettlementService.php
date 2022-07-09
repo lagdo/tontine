@@ -8,8 +8,6 @@ use Siak\Tontine\Model\Session;
 
 use Illuminate\Support\Collection;
 
-use function now;
-
 class FineSettlementService extends SettlementService
 {
     /**
