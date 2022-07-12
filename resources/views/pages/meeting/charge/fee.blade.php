@@ -4,14 +4,7 @@
                             {{ $charge->getCurrSettlementCount($settlements) }}/{{ $charge->getCurrBillCount($bills) }}<br/>
                             {{ $charge->getPrevSettlementCount($settlements) }}/{{ $charge->getPrevBillCount($bills) }}
                           </td>
-                          <td class="table-item-menu">
-@include('parts.table.menu', [
-  'dataIdKey' => 'data-fee-id',
-  'dataIdValue' => $charge->id,
-  'menus' => [[
-    'class' => 'btn-fee-settlements',
-    'text' => __('meeting.actions.settlements'),
-  ]],
-])
+                          <td class="table-item-menu" data-fee-id="{{ $charge->id }}">
+                            <button type="button" class="btn btn-primary btn-fee-settlements"><i class="fa fa-arrow-circle-right"></i></button>
                           </td>
                         </tr>

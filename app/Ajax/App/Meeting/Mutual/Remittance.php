@@ -63,39 +63,11 @@ class Remittance extends CallableClass
             'fund' => $this->fund,
             'payables' => $payables,
         ]);
-        $this->response->html('meeting-funds', $html);
-        $this->jq('#btn-remittances-back')->click($this->cl(Fund::class)->rq()->home());
+        $this->response->html('meeting-remittances', $html);
+        $this->jq('#btn-remittances-back')->click($this->cl(Fund::class)->rq()->remittances());
         $payableId = jq()->parent()->attr('data-payable-id');
         $this->jq('.btn-add-remittance')->click($this->rq()->addRemittance($payableId));
         $this->jq('.btn-del-remittance')->click($this->rq()->delRemittance($payableId));
-
-        return $this->response;
-    }
-
-    /**
-     * @param int $pageNumber
-     *
-     * @return mixed
-     */
-    public function page(int $pageNumber = 0)
-    {
-        if($pageNumber < 1)
-        {
-            $pageNumber = $this->bag('meeting')->get('remittance.page', 1);
-        }
-        $this->bag('meeting')->set('remittance.page', $pageNumber);
-
-        $payableCount = $this->remittanceService->getPayableCount($this->fund, $this->session);
-        $html = $this->view()->render('pages.meeting.remittance.page', [
-            'payables' => $this->remittanceService->getPayables($this->fund, $this->session, $pageNumber),
-            'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $payableCount),
-        ]);
-        $this->response->html('meeting-fund-remittances', $html);
-
-        $payableId = jq()->parent()->attr('data-payable-id');
-        $this->jq('.btn-add-remittance')->click($this->rq()->addRemittance($payableId));
-        $this->jq('.btn-del-remittance')->click($this->rq()->delRemittance($payableId));
-        $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($payableId));
 
         return $this->response;
     }
@@ -110,7 +82,7 @@ class Remittance extends CallableClass
         $this->remittanceService->createRemittance($this->fund, $this->session, $payableId);
         // $this->notify->success(trans('session.remittance.created'), trans('common.titles.success'));
 
-        return $this->page();
+        return $this->home($this->fund->id);
     }
 
     /**
@@ -123,6 +95,6 @@ class Remittance extends CallableClass
         $this->remittanceService->deleteRemittance($this->fund, $this->session, $payableId);
         // $this->notify->success(trans('session.remittance.deleted'), trans('common.titles.success'));
 
-        return $this->page();
+        return $this->home($this->fund->id);
     }
 }
