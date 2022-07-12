@@ -77,9 +77,9 @@ class Remittance extends CallableClass
             ->with('fund', $this->fund)
             ->with('session', $this->session)
             ->with('payables', $payables);
-        $this->response->html('meeting-funds', $html);
+        $this->response->html('meeting-remittances', $html);
 
-        $this->jq('#btn-remittances-back')->click($this->cl(Fund::class)->rq()->home());
+        $this->jq('#btn-remittances-back')->click($this->cl(Fund::class)->rq()->remittances());
         $this->jq('.btn-add-remittance')->click($this->rq()->addRemittance());
         $subscriptionId = jq()->parent()->attr('data-subscription-id');
         $this->jq('.btn-del-remittance')->click($this->rq()->deleteRemittance($subscriptionId));

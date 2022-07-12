@@ -58,8 +58,8 @@ class Deposit extends CallableClass
         $html = $this->view()->render('pages.meeting.deposit.home', [
             'fund' => $this->fund,
         ]);
-        $this->response->html('meeting-funds', $html);
-        $this->jq('#btn-deposits-back')->click($this->cl(Fund::class)->rq()->home());
+        $this->response->html('meeting-deposits', $html);
+        $this->jq('#btn-deposits-back')->click($this->cl(Fund::class)->rq()->deposits());
 
         return $this->page(1);
     }
