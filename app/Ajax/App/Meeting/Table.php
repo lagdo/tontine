@@ -8,7 +8,6 @@ use Siak\Tontine\Service\SubscriptionService;
 use Siak\Tontine\Service\MeetingService;
 
 use function intval;
-use function jq;
 
 /**
  * @databag meeting
@@ -52,7 +51,7 @@ class Table extends CallableClass
         }
     }
 
-    public function select($fundId)
+    public function select(int $fundId)
     {
         if(($this->fund))
         {

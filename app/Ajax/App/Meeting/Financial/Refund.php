@@ -82,9 +82,9 @@ class Refund extends CallableClass
         }
         $this->response->html('meeting-biddings-page', $html);
 
-        $biddingId = jq()->parent()->attr('data-bidding-id');
+        $biddingId = jq()->parent()->attr('data-bidding-id')->toInt();
         $this->jq('.btn-add-refund')->click($this->rq()->create($biddingId));
-        $refundId = jq()->parent()->attr('data-refund-id');
+        $refundId = jq()->parent()->attr('data-refund-id')->toInt();
         $this->jq('.btn-del-refund')->click($this->rq()->delete($refundId));
 
         return $this->response;
@@ -100,16 +100,16 @@ class Refund extends CallableClass
         return $this->page(1);
     }
 
-    public function create($biddingId)
+    public function create(int $biddingId)
     {
-        $this->refundService->createRefund($this->session, intval($biddingId));
+        $this->refundService->createRefund($this->session, $biddingId);
 
         return $this->page();
     }
 
-    public function delete($refundId)
+    public function delete(int $refundId)
     {
-        $this->refundService->deleteRefund($this->session, intval($refundId));
+        $this->refundService->deleteRefund($this->session, $refundId);
 
         return $this->page();
     }

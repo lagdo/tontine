@@ -61,7 +61,7 @@ class Fund extends CallableClass
         $this->response->html('meeting-deposits', $html);
 
         $this->jq('#btn-deposits-refresh')->click($this->rq()->deposits());
-        $fundId = jq()->parent()->attr('data-fund-id');
+        $fundId = jq()->parent()->attr('data-fund-id')->toInt();
         $this->jq('.btn-fund-deposits')->click($this->cl(Deposit::class)->rq()->home($fundId));
 
         return $this->response;
@@ -80,7 +80,7 @@ class Fund extends CallableClass
         $this->response->html('meeting-remittances', $html);
 
         $this->jq('#btn-remittances-refresh')->click($this->rq()->remittances());
-        $fundId = jq()->parent()->attr('data-fund-id');
+        $fundId = jq()->parent()->attr('data-fund-id')->toInt();
         $remittanceClass = ($tontine->is_mutual ? Mutual\Remittance::class : Financial\Remittance::class);
         $this->jq('.btn-fund-remittances')->click($this->cl($remittanceClass)->rq()->home($fundId));
 
@@ -100,7 +100,7 @@ class Fund extends CallableClass
         $this->response->html('meeting-funds', $html);
 
         $this->jq('#btn-funds-refresh')->click($this->rq()->home());
-        $fundId = jq()->parent()->attr('data-fund-id');
+        $fundId = jq()->parent()->attr('data-fund-id')->toInt();
         $this->jq('.btn-fund-deposits')->click($this->cl(Deposit::class)->rq()->home($fundId));
         if($tontine->is_mutual)
         {

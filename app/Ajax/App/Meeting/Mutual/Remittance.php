@@ -65,7 +65,7 @@ class Remittance extends CallableClass
         ]);
         $this->response->html('meeting-remittances', $html);
         $this->jq('#btn-remittances-back')->click($this->cl(Fund::class)->rq()->remittances());
-        $payableId = jq()->parent()->attr('data-payable-id');
+        $payableId = jq()->parent()->attr('data-payable-id')->toInt();
         $this->jq('.btn-add-remittance')->click($this->rq()->addRemittance($payableId));
         $this->jq('.btn-del-remittance')->click($this->rq()->delRemittance($payableId));
 
@@ -77,7 +77,7 @@ class Remittance extends CallableClass
      *
      * @return mixed
      */
-    public function addRemittance($payableId)
+    public function addRemittance(int $payableId)
     {
         $this->remittanceService->createRemittance($this->fund, $this->session, $payableId);
         // $this->notify->success(trans('session.remittance.created'), trans('common.titles.success'));
@@ -90,7 +90,7 @@ class Remittance extends CallableClass
      *
      * @return mixed
      */
-    public function delRemittance($payableId)
+    public function delRemittance(int $payableId)
     {
         $this->remittanceService->deleteRemittance($this->fund, $this->session, $payableId);
         // $this->notify->success(trans('session.remittance.deleted'), trans('common.titles.success'));

@@ -106,7 +106,7 @@ class Settlement extends CallableClass
         ]);
         $this->response->html('meeting-charge-members', $html);
 
-        $targetId = jq()->parent()->attr('data-target-id');
+        $targetId = jq()->parent()->attr('data-target-id')->toInt();
         $this->jq('.btn-add-settlement')->click($this->rq()->addSettlement($targetId));
         $this->jq('.btn-del-settlement')->click($this->rq()->delSettlement($targetId));
         $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($targetId));
@@ -129,7 +129,7 @@ class Settlement extends CallableClass
      *
      * @return mixed
      */
-    public function addSettlement($targetId)
+    public function addSettlement(int $targetId)
     {
         $this->settlementService->createSettlement($this->charge, $this->session, $targetId);
         // $this->notify->success(trans('session.settlement.created'), trans('common.titles.success'));
@@ -142,7 +142,7 @@ class Settlement extends CallableClass
      *
      * @return mixed
      */
-    public function delSettlement($targetId)
+    public function delSettlement(int $targetId)
     {
         $this->settlementService->deleteSettlement($this->charge, $this->session, $targetId);
         // $this->notify->success(trans('session.settlement.deleted'), trans('common.titles.success'));

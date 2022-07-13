@@ -66,7 +66,7 @@ class Fund extends CallableClass
             $this->response->script($this->cl(Subscription::class)->rq()->home($fundId));
         }
 
-        $fundId = jq()->parent()->attr('data-fund-id');
+        $fundId = jq()->parent()->attr('data-fund-id')->toInt();
         $this->jq('.btn-fund-edit')->click($this->rq()->edit($fundId));
         $this->jq('.btn-fund-subscriptions')->click($this->cl(Subscription::class)->rq()->home($fundId));
 
@@ -84,7 +84,7 @@ class Fund extends CallableClass
         ],[
             'title' => trans('common.actions.add'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->add(pm()->input('text-number')),
+            'click' => $this->rq()->add(pm()->input('text-number')->toInt()),
         ]];
         $this->dialog->show($title, $content, $buttons);
 
@@ -94,9 +94,8 @@ class Fund extends CallableClass
     /**
      * @databag faker
      */
-    public function add($count)
+    public function add(int $count)
     {
-        $count = intval($count);
         if($count <= 0)
         {
             $this->notify->warning(trans('number.errors.invalid'));

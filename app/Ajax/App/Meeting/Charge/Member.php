@@ -83,7 +83,7 @@ class Member extends CallableClass
         ]);
         $this->response->html('meeting-charge-members', $html);
 
-        $memberId = jq()->parent()->attr('data-member-id');
+        $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $this->jq('.btn-add-fine')->click($this->rq()->addFine($memberId));
         $this->jq('.btn-del-fine')->click($this->rq()->delFine($memberId));
         // $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($memberId));
@@ -106,7 +106,7 @@ class Member extends CallableClass
      *
      * @return mixed
      */
-    public function addFine($memberId)
+    public function addFine(int $memberId)
     {
         $this->chargeService->createFine($this->charge, $this->session, $memberId);
         // $this->notify->success(trans('session.fine.created'), trans('common.titles.success'));
@@ -119,7 +119,7 @@ class Member extends CallableClass
      *
      * @return mixed
      */
-    public function delFine($memberId)
+    public function delFine(int $memberId)
     {
         $this->chargeService->deleteFine($this->charge, $this->session, $memberId);
         // $this->notify->success(trans('session.fine.deleted'), trans('common.titles.success'));

@@ -91,7 +91,7 @@ class Fee extends CallableClass
         }
         $this->response->html('meeting-fees-page', $html);
 
-        $feeId = jq()->parent()->attr('data-fee-id');
+        $feeId = jq()->parent()->attr('data-fee-id')->toInt();
         $this->jq('.btn-fee-settlements')->click($this->cl(Settlement::class)->rq()->home($feeId));
 
         return $this->response;

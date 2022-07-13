@@ -46,7 +46,7 @@ class Session extends CallableClass
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $sessionCount));
         $this->response->html('content-page', $html);
 
-        $sessionId = jq()->parent()->attr('data-session-id');
+        $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.btn-session-show')->click($this->cl(Meeting::class)->rq()->home($sessionId));
 
         return $this->response;

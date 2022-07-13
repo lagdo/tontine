@@ -62,9 +62,8 @@ class Meeting extends CallableClass
         $this->session = $this->meetingService->getSession($sessionId);
     }
 
-    public function home($sessionId)
+    public function home(int $sessionId)
     {
-        $sessionId = intval($sessionId);
         $this->bag('meeting')->set('session.id', $sessionId);
 
         return $this->funds();
@@ -191,7 +190,7 @@ class Meeting extends CallableClass
         return $this->response;
     }
 
-    public function saveAgenda($text)
+    public function saveAgenda(string $text)
     {
         $this->meetingService->updateSessionAgenda($this->session, $text);
         $this->notify->success(trans('meeting.messages.agenda.updated'), trans('common.titles.success'));
@@ -199,7 +198,7 @@ class Meeting extends CallableClass
         return $this->response;
     }
 
-    public function saveReport($text)
+    public function saveReport(string $text)
     {
         $this->meetingService->updateSessionReport($this->session, $text);
         $this->notify->success(trans('meeting.messages.report.updated'), trans('common.titles.success'));

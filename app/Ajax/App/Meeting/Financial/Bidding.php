@@ -7,6 +7,7 @@ use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 
+use function intval;
 use function jq;
 
 /**
@@ -62,7 +63,7 @@ class Bidding extends CallableClass
 
         $this->jq('#btn-biddings-refresh')->click($this->rq()->home());
         $this->jq('.btn-bidding-add')->click($this->rq()->addBidding());
-        $biddingId = jq()->parent()->attr('data-subscription-id');
+        $biddingId = jq()->parent()->attr('data-subscription-id')->toInt();
         $this->jq('.btn-bidding-delete')->click($this->rq()->deleteBidding($biddingId));
 
         return $this->response;
@@ -100,14 +101,13 @@ class Bidding extends CallableClass
         $this->biddingService->createBidding($this->session, $member,
             intval($formValues['amount_bid']), intval($formValues['amount_paid']));
         $this->dialog->hide();
-        // $this->notify->success(trans('session.remittance.created'), trans('common.titles.success'));
 
         return $this->home();
     }
 
-    public function deleteBidding($biddingId)
+    public function deleteBidding(int $biddingId)
     {
-        $this->biddingService->deleteBidding($this->session, intval($biddingId));
+        $this->biddingService->deleteBidding($this->session, $biddingId);
 
         return $this->home();
     }

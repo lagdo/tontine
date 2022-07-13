@@ -81,7 +81,7 @@ class Remittance extends CallableClass
 
         $this->jq('#btn-remittances-back')->click($this->cl(Fund::class)->rq()->remittances());
         $this->jq('.btn-add-remittance')->click($this->rq()->addRemittance());
-        $subscriptionId = jq()->parent()->attr('data-subscription-id');
+        $subscriptionId = jq()->parent()->attr('data-subscription-id')->toInt();
         $this->jq('.btn-del-remittance')->click($this->rq()->deleteRemittance($subscriptionId));
 
         return $this->response;
@@ -118,7 +118,7 @@ class Remittance extends CallableClass
         return $this->home($this->fund->id);
     }
 
-    public function deleteRemittance($subscriptionId)
+    public function deleteRemittance(int $subscriptionId)
     {
         $this->biddingService->deleteRemittance($this->fund, $this->session, $subscriptionId);
         // $this->notify->success(trans('session.remittance.deleted'), trans('common.titles.success'));

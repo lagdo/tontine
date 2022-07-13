@@ -49,7 +49,7 @@ class Member extends CallableClass
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $memberCount));
         $this->response->html('content-page', $html);
 
-        $memberId = jq()->parent()->attr('data-member-id');
+        $memberId = jq()->parent()->attr('data-member-id')->toInt()->toInt();
         $this->jq('.btn-member-edit')->click($this->rq()->edit($memberId));
 
         return $this->response;
@@ -76,9 +76,8 @@ class Member extends CallableClass
     /**
      * @databag faker
      */
-    public function add($count)
+    public function add(int $count)
     {
-        $count = intval($count);
         if($count <= 0)
         {
             $this->notify->warning(trans('number.errors.invalid'));

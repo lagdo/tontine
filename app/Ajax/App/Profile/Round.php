@@ -51,7 +51,7 @@ class Round extends CallableClass
         return $this->home(0); // The parameter here is not relevant
     }
 
-    public function home($tontineId)
+    public function home(int $tontineId)
     {
         $this->bag('tontine')->set('tontine.id', $this->tontine->id);
         $html = $this->view()->render('pages.profile.round.home')->with('tontine', $this->tontine);
@@ -78,14 +78,14 @@ class Round extends CallableClass
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $roundCount));
         $this->response->html('round-page', $html);
 
-        $roundId = jq()->parent()->attr('data-round-id');
+        $roundId = jq()->parent()->attr('data-round-id')->toInt();
         $this->jq('.btn-round-edit')->click($this->rq()->edit($roundId));
         $this->jq('.btn-round-select')->click($this->rq()->select($roundId));
 
         return $this->response;
     }
 
-    public function select($roundId)
+    public function select(int $roundId)
     {
         if(!($round = $this->roundService->getRound(intval($roundId))))
         {
