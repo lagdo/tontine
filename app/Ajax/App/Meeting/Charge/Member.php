@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Meeting;
+namespace App\Ajax\App\Meeting\Charge;
 
 use Siak\Tontine\Service\ChargeService;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -14,7 +14,7 @@ use function trans;
  * @databag meeting
  * @before getCharge
  */
-class Fine extends CallableClass
+class Member extends CallableClass
 {
     /**
      * @di
@@ -51,11 +51,11 @@ class Fine extends CallableClass
         $this->bag('meeting')->set('charge.id', $chargeId);
         $this->bag('meeting')->set('fine.filter', null);
 
-        $html = $this->view()->render('pages.meeting.fine.home', [
+        $html = $this->view()->render('pages.meeting.fine.member.home', [
             'charge' => $this->charge,
         ]);
-        $this->response->html('meeting-charges', $html);
-        $this->jq('#btn-fine-back')->click($this->cl(Charge::class)->rq()->home());
+        $this->response->html('meeting-fines', $html);
+        $this->jq('#btn-fine-back')->click($this->cl(Fine::class)->rq()->home());
         $this->jq('#btn-fine-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
@@ -76,14 +76,14 @@ class Fine extends CallableClass
 
         $onlyFined = $this->bag('meeting')->get('fine.filter', null);
         $memberCount = $this->chargeService->getMemberCount($this->charge, $this->session, $onlyFined);
-        $html = $this->view()->render('pages.meeting.fine.page', [
+        $html = $this->view()->render('pages.meeting.fine.member.page', [
             'charge' => $this->charge,
             'members' => $this->chargeService->getMembers($this->charge, $this->session, $onlyFined, $pageNumber),
             'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $memberCount),
         ]);
         $this->response->html('meeting-charge-members', $html);
 
-        $memberId = jq()->parent()->attr('data-member-id');
+        $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $this->jq('.btn-add-fine')->click($this->rq()->addFine($memberId));
         $this->jq('.btn-del-fine')->click($this->rq()->delFine($memberId));
         // $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($memberId));
@@ -106,7 +106,7 @@ class Fine extends CallableClass
      *
      * @return mixed
      */
-    public function addFine($memberId)
+    public function addFine(int $memberId)
     {
         $this->chargeService->createFine($this->charge, $this->session, $memberId);
         // $this->notify->success(trans('session.fine.created'), trans('common.titles.success'));
@@ -119,7 +119,7 @@ class Fine extends CallableClass
      *
      * @return mixed
      */
-    public function delFine($memberId)
+    public function delFine(int $memberId)
     {
         $this->chargeService->deleteFine($this->charge, $this->session, $memberId);
         // $this->notify->success(trans('session.fine.deleted'), trans('common.titles.success'));

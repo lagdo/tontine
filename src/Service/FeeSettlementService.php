@@ -10,8 +10,6 @@ use Siak\Tontine\Model\Session;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
-use function now;
-
 class FeeSettlementService extends SettlementService
 {
     /**
@@ -32,7 +30,7 @@ class FeeSettlementService extends SettlementService
             $bills->where('round_id', $this->tenantService->round()->id);
         }
         // if($charge->period === Charge::PERIOD_ONCE)
-        return $bills->first();;
+        return $bills->first();
     }
 
     /**
@@ -56,9 +54,7 @@ class FeeSettlementService extends SettlementService
                 $query->where('bill_id', $bill->id);
             });
         }
-        return $query->withCount(['settlements' => function(Builder $query) use($bill) {
-            $query->where('bill_id', $bill->id);
-        }]);
+        return $query;
     }
 
     /**
@@ -67,7 +63,10 @@ class FeeSettlementService extends SettlementService
     public function getMembers(Charge $charge, Session $session, ?bool $onlyPaid = null, int $page = 0): Collection
     {
         $bill = $this->getBill($charge, $session);
-        $members = $this->getQuery($bill, $onlyPaid);
+        $members = $this->getQuery($bill, $onlyPaid)
+            ->withCount(['settlements' => function(Builder $query) use($bill) {
+                $query->where('bill_id', $bill->id);
+            }]);
         if($page > 0 )
         {
             $members->take($this->tenantService->getLimit());
@@ -111,9 +110,9 @@ class FeeSettlementService extends SettlementService
             return;
         }
         $settlement = new Settlement();
-        $settlement->paid_at = now();
-        $settlement->member()->associate($member);
         $settlement->bill()->associate($bill);
+        $settlement->member()->associate($member);
+        $settlement->session()->associate($session);
         $settlement->save();
     }
 

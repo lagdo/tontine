@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Meeting;
+namespace App\Ajax\App\Meeting\Charge;
 
 use Siak\Tontine\Service\FeeSettlementService;
 use Siak\Tontine\Service\FineSettlementService;
@@ -69,8 +69,16 @@ class Settlement extends CallableClass
         $html = $this->view()->render('pages.meeting.settlement.home', [
             'charge' => $this->charge,
         ]);
-        $this->response->html('meeting-charges', $html);
-        $this->jq('#btn-settlements-back')->click($this->cl(Charge::class)->rq()->home());
+        if($this->charge->is_fee)
+        {
+            $this->response->html('meeting-fees', $html);
+            $this->jq('#btn-settlements-back')->click($this->cl(Fee::class)->rq()->home());
+        }
+        if($this->charge->is_fine)
+        {
+            $this->response->html('meeting-fines', $html);
+            $this->jq('#btn-settlements-back')->click($this->cl(Fine::class)->rq()->home());
+        }
         $this->jq('#btn-settlements-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
@@ -98,7 +106,7 @@ class Settlement extends CallableClass
         ]);
         $this->response->html('meeting-charge-members', $html);
 
-        $targetId = jq()->parent()->attr('data-target-id');
+        $targetId = jq()->parent()->attr('data-target-id')->toInt();
         $this->jq('.btn-add-settlement')->click($this->rq()->addSettlement($targetId));
         $this->jq('.btn-del-settlement')->click($this->rq()->delSettlement($targetId));
         $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($targetId));
@@ -121,7 +129,7 @@ class Settlement extends CallableClass
      *
      * @return mixed
      */
-    public function addSettlement($targetId)
+    public function addSettlement(int $targetId)
     {
         $this->settlementService->createSettlement($this->charge, $this->session, $targetId);
         // $this->notify->success(trans('session.settlement.created'), trans('common.titles.success'));
@@ -134,7 +142,7 @@ class Settlement extends CallableClass
      *
      * @return mixed
      */
-    public function delSettlement($targetId)
+    public function delSettlement(int $targetId)
     {
         $this->settlementService->deleteSettlement($this->charge, $this->session, $targetId);
         // $this->notify->success(trans('session.settlement.deleted'), trans('common.titles.success'));

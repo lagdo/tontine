@@ -43,7 +43,7 @@ class Subscription extends CallableClass
         $this->fund = $this->subscriptionService->getFund($fundId);
     }
 
-    public function home($fundId)
+    public function home(int $fundId)
     {
         $html = $this->view()->render('pages.planning.subscription.home')
             ->with('fund', $this->fund);
@@ -75,7 +75,7 @@ class Subscription extends CallableClass
             ->with('pagination', $this->rq()->page(pm()->page(), $filter)->paginate($pageNumber, 10, $memberCount));
         $this->response->html('subscription-page', $html);
 
-        $memberId = jq()->parent()->parent()->attr('data-member-id');
+        $memberId = jq()->parent()->parent()->attr('data-member-id')->toInt();
         $this->jq('.btn-subscription-add')->click($this->rq()->create($memberId));
         $this->jq('.btn-subscription-del')->click($this->rq()->delete($memberId));
 
@@ -94,7 +94,7 @@ class Subscription extends CallableClass
     public function create(int $memberId)
     {
         $this->subscriptionService->createSubscription($this->fund, $memberId);
-        $this->page(0); // Refresh the current page
+        $this->page(); // Refresh the current page
         // $this->notify->success(trans('tontine.subscription.messages.created'), trans('common.titles.success'));
 
         return $this->response;
@@ -103,7 +103,7 @@ class Subscription extends CallableClass
     public function delete(int $memberId)
     {
         $this->subscriptionService->deleteSubscription($this->fund, $memberId);
-        $this->page(0); // Refresh the current page
+        $this->page(); // Refresh the current page
         // $this->notify->success(trans('tontine.subscription.messages.deleted'), trans('common.titles.success'));
 
         return $this->response;

@@ -50,7 +50,7 @@ class Session extends CallableClass
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $sessionCount));
         $this->response->html('content-page', $html);
 
-        $sessionId = jq()->parent()->attr('data-session-id');
+        $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.btn-session-edit')->click($this->rq()->edit($sessionId));
         $this->jq('.btn-session-venue')->click($this->rq()->editVenue($sessionId));
 
@@ -72,16 +72,15 @@ class Session extends CallableClass
         ],[
             'title' => trans('common.actions.add'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->add(pm()->input('text-number')),
+            'click' => $this->rq()->add(pm()->input('text-number')->toInt()),
         ]];
         $this->dialog->show($title, $content, $buttons);
 
         return $this->response;
     }
 
-    public function add($count)
+    public function add(int $count)
     {
-        $count = intval($count);
         if($count <= 0)
         {
             $this->notify->warning(trans('number.errors.invalid'));

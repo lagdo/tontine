@@ -58,8 +58,8 @@ class Deposit extends CallableClass
         $html = $this->view()->render('pages.meeting.deposit.home', [
             'fund' => $this->fund,
         ]);
-        $this->response->html('meeting-funds', $html);
-        $this->jq('#btn-deposits-back')->click($this->cl(Fund::class)->rq()->home());
+        $this->response->html('meeting-deposits', $html);
+        $this->jq('#btn-deposits-back')->click($this->cl(Fund::class)->rq()->deposits());
 
         return $this->page(1);
     }
@@ -84,7 +84,7 @@ class Deposit extends CallableClass
         ]);
         $this->response->html('meeting-fund-deposits', $html);
 
-        $receivableId = jq()->parent()->attr('data-receivable-id');
+        $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
         $this->jq('.btn-add-deposit')->click($this->rq()->addDeposit($receivableId));
         $this->jq('.btn-del-deposit')->click($this->rq()->delDeposit($receivableId));
         $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($receivableId));
@@ -97,7 +97,7 @@ class Deposit extends CallableClass
      *
      * @return mixed
      */
-    public function addDeposit($receivableId)
+    public function addDeposit(int $receivableId)
     {
         $this->depositService->createDeposit($this->fund, $this->session, $receivableId);
         // $this->notify->success(trans('session.deposit.created'), trans('common.titles.success'));
@@ -110,7 +110,7 @@ class Deposit extends CallableClass
      *
      * @return mixed
      */
-    public function delDeposit($receivableId)
+    public function delDeposit(int $receivableId)
     {
         $this->depositService->deleteDeposit($this->fund, $this->session, $receivableId);
         // $this->notify->success(trans('session.deposit.deleted'), trans('common.titles.success'));

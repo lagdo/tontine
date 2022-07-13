@@ -109,7 +109,7 @@ class FundService
                 ->where('subscriptions.fund_id', $fund->id)
                 ->delete();
             // Delete the receivables
-            Receivable::join('subscriptions', 'subscriptions.id', '=', 'payables.subscription_id')
+            Receivable::join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
                 ->where('subscriptions.fund_id', $fund->id)
                 ->delete();
             // Delete the fund

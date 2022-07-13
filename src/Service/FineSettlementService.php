@@ -8,8 +8,6 @@ use Siak\Tontine\Model\Session;
 
 use Illuminate\Support\Collection;
 
-use function now;
-
 class FineSettlementService extends SettlementService
 {
     /**
@@ -73,9 +71,9 @@ class FineSettlementService extends SettlementService
             return;
         }
         $settlement = new Settlement();
-        $settlement->paid_at = now();
-        $settlement->member()->associate($bill->member);
         $settlement->bill()->associate($bill);
+        $settlement->member()->associate($bill->member);
+        $settlement->session()->associate($session);
         $settlement->save();
     }
 

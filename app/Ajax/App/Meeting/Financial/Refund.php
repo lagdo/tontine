@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Meeting;
+namespace App\Ajax\App\Meeting\Financial;
 
 use Siak\Tontine\Service\RefundService;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -34,12 +34,23 @@ class Refund extends CallableClass
         $this->session = $this->refundService->getSession($sessionId);
     }
 
+    /**
+     * @exclude
+     */
+    public function show($session, $refundService)
+    {
+        $this->session = $session;
+        $this->refundService = $refundService;
+
+        return $this->home();
+    }
+
     public function home()
     {
         $html = $this->view()->render('pages.meeting.refund.home')
             ->with('session', $this->session);
-        $this->response->html('meeting-funds', $html);
-        $this->jq('#btn-refunds-back')->click($this->cl(Fund::class)->rq()->home());
+        $this->response->html('meeting-refunds', $html);
+        $this->jq('#btn-refunds-refresh')->click($this->rq()->home());
         $this->jq('#btn-refunds-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
@@ -60,15 +71,20 @@ class Refund extends CallableClass
 
         $refunded = $this->bag('meeting')->get('bidding.filter', null);
         $biddingCount = $this->refundService->getBiddingCount($this->session, $refunded);
-        $html = $this->view()->render('pages.meeting.refund.biddings', [
+        $html = $this->view()->render('pages.meeting.refund.page', [
+            'session' => $this->session,
             'biddings' => $this->refundService->getBiddings($this->session, $refunded, $pageNumber),
             'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $biddingCount),
         ]);
+        if($this->session->closed)
+        {
+            $html->with('refundSum', $this->refundService->getRefundSum($this->session));
+        }
         $this->response->html('meeting-biddings-page', $html);
 
-        $biddingId = jq()->parent()->attr('data-bidding-id');
+        $biddingId = jq()->parent()->attr('data-bidding-id')->toInt();
         $this->jq('.btn-add-refund')->click($this->rq()->create($biddingId));
-        $refundId = jq()->parent()->attr('data-refund-id');
+        $refundId = jq()->parent()->attr('data-refund-id')->toInt();
         $this->jq('.btn-del-refund')->click($this->rq()->delete($refundId));
 
         return $this->response;
@@ -84,16 +100,16 @@ class Refund extends CallableClass
         return $this->page(1);
     }
 
-    public function create($biddingId)
+    public function create(int $biddingId)
     {
-        $this->refundService->createRefund($this->session, intval($biddingId));
+        $this->refundService->createRefund($this->session, $biddingId);
 
         return $this->page();
     }
 
-    public function delete($refundId)
+    public function delete(int $refundId)
     {
-        $this->refundService->deleteRefund($this->session, intval($refundId));
+        $this->refundService->deleteRefund($this->session, $refundId);
 
         return $this->page();
     }

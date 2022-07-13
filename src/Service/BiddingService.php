@@ -15,8 +15,6 @@ use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Refund;
 use stdClass;
 
-use function collect;
-
 class BiddingService
 {
     /**
@@ -195,20 +193,14 @@ class BiddingService
     /**
      * Delete a bidding.
      *
-     * @param Fund $fund The fund
      * @param Session $session The session
-     * @param int $payableId
+     * @param int $biddingId
      *
      * @return void
      */
-    public function deleteBidding(Fund $fund, Session $session, int $payableId): void
+    public function deleteBidding(Session $session, int $biddingId): void
     {
-        $payable = $this->remittanceService->getPayable($fund, $session, $payableId);
-        if(!$payable || !$payable->remittance)
-        {
-            return;
-        }
-        $payable->remittance()->delete();
+        $session->biddings()->where('id', $biddingId)->delete();
     }
 
     /**
@@ -242,6 +234,7 @@ class BiddingService
         // The amount available for bidding is the sum of the amounts paid for remittances,
         // the amounts paid in the biddings, and the refunds, for all the sessions.
         $payableIds = Payable::whereIn('session_id', $sessionIds)->pluck('id');
+
         return Remittance::whereIn('payable_id', $payableIds)->sum('amount_paid') +
             Bidding::whereIn('session_id', $sessionIds)->get()
                 ->reduce(function($sum, $bidding) {
@@ -255,44 +248,36 @@ class BiddingService
      * Get all the cash biddings of a given session
      *
      * @param Session $session
-     * @return void
+     * @return array
      */
-    public function getSessionBiddings(Session $session)
+    public function getSessionBiddings(Session $session): array
     {
         $payables = $this->getSessionPayables($session);
-        $fundBiddings = $payables->map(function($payable) {
+
+        $paidSum = 0;
+        $fundBiddings = $payables->map(function($payable) use(&$paidSum) {
+            $paidSum += $payable->remittance->amount_paid;
             return (object)[
                 'id' => 0, // $payable->subscription->id,
                 'title' => $payable->subscription->member->name,
                 'amount' => Currency::format($payable->amount),
                 'paid' => Currency::format($payable->remittance->amount_paid),
-                'available' => false,
             ];
         });
-        $cashBiddings = $this->getBiddings($session)->map(function($bidding) {
+        $bidSum = 0;
+        $cashBiddings = $this->getBiddings($session)->map(function($bidding) use(&$bidSum, &$paidSum) {
+            $bidSum += $bidding->amount_bid;
+            $paidSum += $bidding->amount_paid;
             return (object)[
                 'id' => $bidding->id,
                 'title' => $bidding->member->name,
                 'amount' => Currency::format($bidding->amount_bid),
                 'paid' => Currency::format($bidding->amount_paid),
-                'available' => false,
             ];
         });
-        // One opened bid for the amount already paid for the others bids.
-        $biddings = collect([]);
-        $amountAvailable = $this->getAmountAvailable($session);
-        if($amountAvailable > 0)
-        {
-            $biddings->push((object)[
-                'id' => 0,
-                'title' => '__',
-                'amount' => Currency::format($amountAvailable),
-                'paid' => 0,
-                'available' => true,
-            ]);
-        }
 
-        return $biddings->merge($fundBiddings)->merge($cashBiddings);
+        return [$fundBiddings->merge($cashBiddings),
+            ['bid' => Currency::format($bidSum), 'paid' => Currency::format($paidSum)]];
     }
 
     /**

@@ -8,6 +8,9 @@ use App\Ajax\CallableClass;
 use function jq;
 use function trans;
 
+/**
+ * @databag session
+ */
 class Session extends CallableClass
 {
     /**
@@ -16,9 +19,6 @@ class Session extends CallableClass
      */
     public SessionService $sessionService;
 
-    /**
-     * @databag session
-     */
     public function home()
     {
         $html = $this->view()->render('pages.meeting.home');
@@ -29,9 +29,6 @@ class Session extends CallableClass
         return $this->page();
     }
 
-    /**
-     * @databag session
-     */
     public function page(int $pageNumber = 0)
     {
         if($pageNumber < 1)
@@ -49,7 +46,7 @@ class Session extends CallableClass
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $sessionCount));
         $this->response->html('content-page', $html);
 
-        $sessionId = jq()->parent()->attr('data-session-id');
+        $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.btn-session-show')->click($this->cl(Meeting::class)->rq()->home($sessionId));
 
         return $this->response;

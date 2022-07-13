@@ -8,15 +8,10 @@
                   <button type="button" class="btn btn-primary" id="btn-session-back"><i class="fa fa-arrow-left"></i></button>
                   <button type="button" class="btn btn-primary" id="btn-session-refresh"><i class="fa fa-sync"></i></button>
                 </div>
-@if( $session->pending )
-                <div class="btn-group float-right" role="group" aria-label="">
-                  <button type="button" class="btn btn-primary" id="btn-session-open"><i class="fa fa-lock"></i></button>
+                <div class="btn-group float-right ml-2" role="group" aria-label="">
+                  <button type="button" class="btn btn-primary" id="btn-session-funds"><i class="fa fa-wallet"></i></button>
+                  <button type="button" class="btn btn-primary" id="btn-session-charges"><i class="fa fa-money-check"></i></button>
                 </div>
-@elseif( $session->opened )
-                <div class="btn-group float-right" role="group" aria-label="">
-                  <button type="button" class="btn btn-primary" id="btn-session-close"><i class="fa fa-lock-open"></i></button>
-                </div>
-@endif
               </div>
             </div>
           </div>
@@ -72,18 +67,10 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 col-sm-12" id="meeting-funds">
-                </div>
-                <div class="col-md-6 col-sm-12" id="meeting-charges">
-                </div>
-              </div>
-@if($tontine->is_financial)
-              <div class="row">
                 <div class="col-md-7 col-sm-12" id="meeting-biddings">
                 </div>
                 <div class="col-md-5 col-sm-12" id="meeting-refunds">
                 </div>
               </div>
-@endif
             </div>
           </div>

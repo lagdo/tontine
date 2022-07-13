@@ -7,6 +7,8 @@ return [
         'report' => "Report",
         'funds' => "Funds",
         'charges' => "Fees and fines",
+        'fees' => "Fees",
+        'fines' => "Fines",
         'deposits' => "Deposits",
         'remittances' => "Remittances",
         'biddings' => "Biddings",

@@ -52,7 +52,7 @@ class Table extends CallableClass
         }
     }
 
-    public function select($fundId, $showDeposits)
+    public function select(int $fundId, bool $showDeposits)
     {
         if(($this->fund))
         {
@@ -77,11 +77,11 @@ class Table extends CallableClass
             ->with('funds', $this->subscriptionService->getFunds());
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-fund-select')->click($this->rq()->select(pm()->select('select-fund'), true));
+        $this->jq('#btn-fund-select')->click($this->rq()->select(pm()->select('select-fund')->toInt(), true));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->amounts());
         $this->jq('#btn-subscription-deposits')->click($this->rq()->deposits());
         $this->jq('#btn-subscription-remittances')->click($this->rq()->remittances());
-        $this->jq('.fund-session-toggle')->click($this->rq()->toggleSession(jq()->attr('data-session-id')));
+        $this->jq('.fund-session-toggle')->click($this->rq()->toggleSession(jq()->attr('data-session-id')->toInt()));
 
         return $this->response;
     }
@@ -95,11 +95,11 @@ class Table extends CallableClass
             ->with('funds', $this->subscriptionService->getFunds());
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-fund-select')->click($this->rq()->select(pm()->select('select-fund'), true));
+        $this->jq('#btn-fund-select')->click($this->rq()->select(pm()->select('select-fund')->toInt(), true));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->deposits());
         $this->jq('#btn-subscription-amounts')->click($this->rq()->amounts());
         $this->jq('#btn-subscription-remittances')->click($this->rq()->remittances());
-        $this->jq('.fund-session-toggle')->click($this->rq()->toggleSession(jq()->attr('data-session-id')));
+        $this->jq('.fund-session-toggle')->click($this->rq()->toggleSession(jq()->attr('data-session-id')->toInt()));
 
         return $this->response;
     }
@@ -107,7 +107,7 @@ class Table extends CallableClass
     /**
      * @di $tenantService
      */
-    public function toggleSession($sessionId)
+    public function toggleSession(int $sessionId)
     {
         $session = $this->tenantService->getSession(intval($sessionId));
         $this->subscriptionService->toggleSession($this->fund, $session);
@@ -124,12 +124,12 @@ class Table extends CallableClass
             ->with('funds', $this->subscriptionService->getFunds());
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-fund-select')->click($this->rq()->select(pm()->select('select-fund'), false));
+        $this->jq('#btn-fund-select')->click($this->rq()->select(pm()->select('select-fund')->toInt(), false));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->remittances());
         $this->jq('#btn-subscription-amounts')->click($this->rq()->amounts());
         $this->jq('#btn-subscription-deposits')->click($this->rq()->deposits());
-        $this->jq('.select-beneficiary')->change($this->rq()
-            ->saveBeneficiary(jq()->attr('data-session-id'), jq()->attr('data-subscription-id'), jq()->val()));
+        $this->jq('.select-beneficiary')->change($this->rq()->saveBeneficiary(jq()->attr('data-session-id')->toInt(),
+            jq()->attr('data-subscription-id')->toInt(), jq()->val()));
 
         return $this->response;
     }
@@ -137,11 +137,10 @@ class Table extends CallableClass
     /**
      * @di $tenantService
      */
-    public function saveBeneficiary($sessionId, $currSubscriptionId, $nextSubscriptionId)
+    public function saveBeneficiary(int $sessionId, int $currSubscriptionId, int $nextSubscriptionId)
     {
-        $session = $this->tenantService->getSession(intval($sessionId));
-        $this->subscriptionService->saveBeneficiary($this->fund, $session,
-            intval($currSubscriptionId), intval($nextSubscriptionId));
+        $session = $this->tenantService->getSession($sessionId);
+        $this->subscriptionService->saveBeneficiary($this->fund, $session, $currSubscriptionId, $nextSubscriptionId);
 
         return $this->remittances();
     }

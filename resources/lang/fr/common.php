@@ -94,5 +94,6 @@ return [
         'period' => "Récurrence",
         'start' => "Début",
         'end' => "Fin",
+        'total' => "Total",
     ],
 ];

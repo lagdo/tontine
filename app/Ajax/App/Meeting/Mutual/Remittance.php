@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Ajax\App\Meeting;
+namespace App\Ajax\App\Meeting\Mutual;
 
+use App\Ajax\App\Meeting\Fund;
+use App\Ajax\CallableClass;
 use Siak\Tontine\Service\RemittanceService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Fund as FundModel;
-use App\Ajax\CallableClass;
 
 use function jq;
 use function trans;
@@ -34,10 +35,12 @@ class Remittance extends CallableClass
 
     protected function getFund()
     {
+        // Get session
         $sessionId = $this->bag('meeting')->get('session.id');
+        $this->session = $this->remittanceService->getSession($sessionId);
+        // Get fund
         $fundId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('fund.id');
-        $this->session = $this->remittanceService->getSession($sessionId);
         $this->fund = $this->remittanceService->getFund($fundId);
         if($this->session->disabled($this->fund))
         {
@@ -55,39 +58,16 @@ class Remittance extends CallableClass
     {
         $this->bag('meeting')->set('fund.id', $fundId);
 
-        $html = $this->view()->render('pages.meeting.remittance.home', [
+        $payables = $this->remittanceService->getPayables($this->fund, $this->session);
+        $html = $this->view()->render('pages.meeting.remittance.mutual', [
             'fund' => $this->fund,
+            'payables' => $payables,
         ]);
-        $this->response->html('meeting-funds', $html);
-        $this->jq('#btn-remittances-back')->click($this->cl(Fund::class)->rq()->home());
-
-        return $this->page(1);
-    }
-
-    /**
-     * @param int $pageNumber
-     *
-     * @return mixed
-     */
-    public function page(int $pageNumber = 0)
-    {
-        if($pageNumber < 1)
-        {
-            $pageNumber = $this->bag('meeting')->get('remittance.page', 1);
-        }
-        $this->bag('meeting')->set('remittance.page', $pageNumber);
-
-        $payableCount = $this->remittanceService->getPayableCount($this->fund, $this->session);
-        $html = $this->view()->render('pages.meeting.remittance.page', [
-            'payables' => $this->remittanceService->getPayables($this->fund, $this->session, $pageNumber),
-            'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $payableCount),
-        ]);
-        $this->response->html('meeting-fund-remittances', $html);
-
-        $payableId = jq()->parent()->attr('data-payable-id');
+        $this->response->html('meeting-remittances', $html);
+        $this->jq('#btn-remittances-back')->click($this->cl(Fund::class)->rq()->remittances());
+        $payableId = jq()->parent()->attr('data-payable-id')->toInt();
         $this->jq('.btn-add-remittance')->click($this->rq()->addRemittance($payableId));
         $this->jq('.btn-del-remittance')->click($this->rq()->delRemittance($payableId));
-        $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($payableId));
 
         return $this->response;
     }
@@ -97,12 +77,12 @@ class Remittance extends CallableClass
      *
      * @return mixed
      */
-    public function addRemittance($payableId)
+    public function addRemittance(int $payableId)
     {
         $this->remittanceService->createRemittance($this->fund, $this->session, $payableId);
         // $this->notify->success(trans('session.remittance.created'), trans('common.titles.success'));
 
-        return $this->page();
+        return $this->home($this->fund->id);
     }
 
     /**
@@ -110,11 +90,11 @@ class Remittance extends CallableClass
      *
      * @return mixed
      */
-    public function delRemittance($payableId)
+    public function delRemittance(int $payableId)
     {
         $this->remittanceService->deleteRemittance($this->fund, $this->session, $payableId);
         // $this->notify->success(trans('session.remittance.deleted'), trans('common.titles.success'));
 
-        return $this->page();
+        return $this->home($this->fund->id);
     }
 }

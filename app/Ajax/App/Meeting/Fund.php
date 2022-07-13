@@ -3,7 +3,6 @@
 namespace App\Ajax\App\Meeting;
 
 use Siak\Tontine\Service\MeetingService;
-use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 
@@ -15,12 +14,6 @@ use function jq;
  */
 class Fund extends CallableClass
 {
-    /**
-     * @di
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
     /**
      * @di
      * @var MeetingService
@@ -44,31 +37,79 @@ class Fund extends CallableClass
     /**
      * @exclude
      */
-    public function show($session, $tenantService, $meetingService)
+    public function show($session, $meetingService)
     {
         $this->session = $session;
-        $this->tenantService = $tenantService;
         $this->meetingService = $meetingService;
 
-        return $this->home();
+        $this->deposits();
+        $this->remittances();
+
+        return $this->response;
+    }
+
+    public function deposits()
+    {
+        $tontine = $this->meetingService->getTontine();
+        $html = $this->view()->render('pages.meeting.fund.deposits')
+            ->with('tontine', $tontine)->with('session', $this->session)
+            ->with('funds', $this->meetingService->getFunds($this->session));
+        if($this->session->closed)
+        {
+            $html->with('summary', $this->meetingService->getFundsSummary($this->session));
+        }
+        $this->response->html('meeting-deposits', $html);
+
+        $this->jq('#btn-deposits-refresh')->click($this->rq()->deposits());
+        $fundId = jq()->parent()->attr('data-fund-id')->toInt();
+        $this->jq('.btn-fund-deposits')->click($this->cl(Deposit::class)->rq()->home($fundId));
+
+        return $this->response;
+    }
+
+    public function remittances()
+    {
+        $tontine = $this->meetingService->getTontine();
+        $html = $this->view()->render('pages.meeting.fund.remittances')
+            ->with('tontine', $tontine)->with('session', $this->session)
+            ->with('funds', $this->meetingService->getFunds($this->session));
+        if($this->session->closed)
+        {
+            $html->with('summary', $this->meetingService->getFundsSummary($this->session));
+        }
+        $this->response->html('meeting-remittances', $html);
+
+        $this->jq('#btn-remittances-refresh')->click($this->rq()->remittances());
+        $fundId = jq()->parent()->attr('data-fund-id')->toInt();
+        $remittanceClass = ($tontine->is_mutual ? Mutual\Remittance::class : Financial\Remittance::class);
+        $this->jq('.btn-fund-remittances')->click($this->cl($remittanceClass)->rq()->home($fundId));
+
+        return $this->response;
     }
 
     public function home()
     {
+        $tontine = $this->meetingService->getTontine();
         $html = $this->view()->render('pages.meeting.fund.home')
-            ->with('tontine', $this->tenantService->tontine())
-            ->with('session', $this->session)
+            ->with('tontine', $tontine)->with('session', $this->session)
             ->with('funds', $this->meetingService->getFunds($this->session));
+        if($this->session->closed)
+        {
+            $html->with('summary', $this->meetingService->getFundsSummary($this->session));
+        }
         $this->response->html('meeting-funds', $html);
 
         $this->jq('#btn-funds-refresh')->click($this->rq()->home());
-        $this->jq('#btn-biddings')->click($this->cl(Bidding::class)->rq()->cash());
-        $this->jq('#btn-refunds')->click($this->cl(Refund::class)->rq()->home());
-        $fundId = jq()->parent()->attr('data-fund-id');
+        $fundId = jq()->parent()->attr('data-fund-id')->toInt();
         $this->jq('.btn-fund-deposits')->click($this->cl(Deposit::class)->rq()->home($fundId));
-        $this->jq('.btn-fund-remittances')->click($this->cl(Remittance::class)->rq()->home($fundId));
-        $this->jq('.btn-fund-biddings')->click($this->cl(Bidding::class)->rq()->fund($fundId));
-        $this->jq('.btn-fund-table')->click($this->rq()->table($fundId));
+        if($tontine->is_mutual)
+        {
+            $this->jq('.btn-mutual-remittances')->click($this->cl(Mutual\Remittance::class)->rq()->home($fundId));
+        }
+        if($tontine->is_financial)
+        {
+            $this->jq('.btn-financial-remittances')->click($this->cl(Financial\Remittance::class)->rq()->home($fundId));
+        }
 
         return $this->response;
     }

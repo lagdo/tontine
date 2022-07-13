@@ -53,7 +53,7 @@ class Charge extends CallableClass
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $chargeCount));
         $this->response->html('content-page', $html);
 
-        $chargeId = jq()->parent()->attr('data-charge-id');
+        $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
         $this->jq('.btn-charge-edit')->click($this->rq()->edit($chargeId));
 
         return $this->response;
@@ -70,7 +70,7 @@ class Charge extends CallableClass
         ],[
             'title' => trans('common.actions.add'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->add(pm()->input('text-number')),
+            'click' => $this->rq()->add(pm()->input('text-number')->toInt()),
         ]];
         $this->dialog->show($title, $content, $buttons);
 
@@ -80,9 +80,8 @@ class Charge extends CallableClass
     /**
      * @databag faker
      */
-    public function add($count)
+    public function add(int $count)
     {
-        $count = intval($count);
         if($count <= 0)
         {
             $this->notify->warning(trans('number.errors.invalid'));

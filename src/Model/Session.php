@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Session extends Model
 {
@@ -107,14 +108,67 @@ class Session extends Model
         return $this->hasMany(Payable::class)->orderBy('payables.id', 'asc');
     }
 
+    public function payableAmounts()
+    {
+        return $this->hasMany(Payable::class)
+            ->join('subscriptions', 'subscriptions.id', '=', 'payables.subscription_id')
+            ->join('funds', 'subscriptions.fund_id', '=', 'funds.id')
+            ->whereHas('remittance')
+            ->groupBy('funds.id')
+            ->select('funds.id', DB::raw('sum(funds.amount) as amount'));
+    }
+
     public function receivables()
     {
         return $this->hasMany(Receivable::class)->orderBy('receivables.id', 'asc');
     }
 
+    public function receivableAmounts()
+    {
+        return $this->hasMany(Receivable::class)
+            ->join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
+            ->join('funds', 'subscriptions.fund_id', '=', 'funds.id')
+            ->whereHas('deposit')
+            ->groupBy('funds.id')
+            ->select('funds.id', DB::raw('sum(funds.amount) as amount'));
+    }
+
     public function bills()
     {
         return $this->hasMany(Bill::class);
+    }
+
+    public function settlements()
+    {
+        return $this->hasMany(Settlement::class);
+    }
+
+    public function settlementAmounts()
+    {
+        return $this->hasMany(Settlement::class)
+            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->groupBy('bills.charge_id')
+            ->select('bills.charge_id', DB::raw('sum(bills.amount) as amount'));
+    }
+
+    public function feeSettlementAmounts()
+    {
+        return $this->hasMany(Settlement::class)
+            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->join('charges', 'bills.charge_id', '=', 'charges.id')
+            ->where('charges.type', '=', Charge::TYPE_FEE)
+            ->groupBy('bills.charge_id')
+            ->select('bills.charge_id', DB::raw('sum(bills.amount) as amount'));
+    }
+
+    public function fineSettlementAmounts()
+    {
+        return $this->hasMany(Settlement::class)
+            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->join('charges', 'bills.charge_id', '=', 'charges.id')
+            ->where('charges.type', '=', Charge::TYPE_FINE)
+            ->groupBy('bills.charge_id')
+            ->select('bills.charge_id', DB::raw('sum(bills.amount) as amount'));
     }
 
     public function biddings()
