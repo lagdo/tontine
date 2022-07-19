@@ -3,6 +3,7 @@
 namespace App\Ajax\App\Meeting\Financial;
 
 use Siak\Tontine\Service\BiddingService;
+use Siak\Tontine\Validation\Meeting\BiddingValidator;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
@@ -21,6 +22,11 @@ class Bidding extends CallableClass
      * @var BiddingService
      */
     protected BiddingService $biddingService;
+
+    /**
+     * @var BiddingValidator
+     */
+    protected BiddingValidator $validator;
 
     /**
      * @var SessionModel|null
@@ -95,8 +101,13 @@ class Bidding extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function saveBidding(array $formValues)
     {
+        $this->validator->validateItem($formValues);
+
         $member = $this->biddingService->getMember(intval($formValues['member']));
         $this->biddingService->createBidding($this->session, $member,
             intval($formValues['amount_bid']), intval($formValues['amount_paid']));
