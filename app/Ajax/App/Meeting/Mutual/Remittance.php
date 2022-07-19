@@ -8,6 +8,7 @@ use Siak\Tontine\Service\RemittanceService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Fund as FundModel;
 
+use function intval;
 use function jq;
 use function trans;
 
@@ -36,11 +37,11 @@ class Remittance extends CallableClass
     protected function getFund()
     {
         // Get session
-        $sessionId = $this->bag('meeting')->get('session.id');
+        $sessionId = intval($this->bag('meeting')->get('session.id'));
         $this->session = $this->remittanceService->getSession($sessionId);
         // Get fund
         $fundId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('fund.id');
+            $this->target()->args()[0] : intval($this->bag('meeting')->get('fund.id'));
         $this->fund = $this->remittanceService->getFund($fundId);
         if($this->session->disabled($this->fund))
         {
