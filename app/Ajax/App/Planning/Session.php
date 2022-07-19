@@ -6,6 +6,7 @@ use App\Ajax\CallableClass;
 use Carbon\Carbon;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Service\SessionService;
+use Siak\Tontine\Validation\Planning\SessionValidator;
 
 use function jq;
 use function pm;
@@ -21,6 +22,11 @@ class Session extends CallableClass
      * @var SessionService
      */
     public SessionService $sessionService;
+
+    /**
+     * @var SessionValidator
+     */
+    protected SessionValidator $validator;
 
     public function home()
     {
@@ -139,8 +145,13 @@ class Session extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function create(array $formValues)
     {
+        $this->validator->validateList($formValues);
+
         $this->sessionService->createSessions($formValues['sessions'] ?? []);
         $this->notify->success(trans('tontine.session.messages.created'), trans('common.titles.success'));
 
@@ -168,8 +179,13 @@ class Session extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function update(int $sessionId, array $formValues)
     {
+        $this->validator->validateItem($formValues);
+
         $session = $this->sessionService->getSession($sessionId);
 
         $this->sessionService->updateSession($session, $formValues);
@@ -201,8 +217,13 @@ class Session extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function saveVenue(int $sessionId, array $formValues)
     {
+        $this->validator->validateVenue($formValues);
+
         $session = $this->sessionService->getSession($sessionId);
 
         $this->sessionService->updateSession($session, $formValues);
