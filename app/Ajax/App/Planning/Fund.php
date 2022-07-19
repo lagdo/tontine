@@ -3,6 +3,7 @@
 namespace App\Ajax\App\Planning;
 
 use Siak\Tontine\Service\FundService;
+use Siak\Tontine\Validation\Planning\FundValidator;
 use App\Ajax\CallableClass;
 
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -19,6 +20,11 @@ class Fund extends CallableClass
      * @var FundService
      */
     public FundService $fundService;
+
+    /**
+     * @var FundValidator
+     */
+    protected FundValidator $validator;
 
     /**
      * @var bool
@@ -136,8 +142,13 @@ class Fund extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function create(array $formValues)
     {
+        $this->validator->validateList($formValues);
+
         $this->fundService->createFunds($formValues['funds'] ?? []);
         $this->notify->success(trans('tontine.fund.messages.created'), trans('common.titles.success'));
 
@@ -166,8 +177,13 @@ class Fund extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function update(int $fundId, array $formValues)
     {
+        $this->validator->validateItem($formValues);
+
         $fund = $this->fundService->getFund($fundId);
 
         $this->fundService->updateFund($fund, $formValues);
