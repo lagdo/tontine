@@ -3,6 +3,7 @@
 namespace App\Ajax\App;
 
 use Siak\Tontine\Service\ChargeService;
+use Siak\Tontine\Validation\ChargeValidator;
 use App\Ajax\CallableClass;
 
 use function jq;
@@ -17,6 +18,11 @@ class Charge extends CallableClass
      * @var ChargeService
      */
     public ChargeService $chargeService;
+
+    /**
+     * @var ChargeValidator
+     */
+    public ChargeValidator $validator;
 
     /**
      * @databag charge
@@ -126,6 +132,9 @@ class Charge extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function create(array $formValues)
     {
         $this->chargeService->createCharges($formValues['charges'] ?? []);
@@ -158,6 +167,7 @@ class Charge extends CallableClass
     }
 
     /**
+     * @di $validator
      * @databag charge
      */
     public function update(int $chargeId, array $formValues)
