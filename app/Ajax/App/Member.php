@@ -3,6 +3,7 @@
 namespace App\Ajax\App;
 
 use Siak\Tontine\Service\MemberService;
+use Siak\Tontine\Validation\MemberValidator;
 use App\Ajax\CallableClass;
 
 use function jq;
@@ -16,6 +17,11 @@ class Member extends CallableClass
      * @var MemberService
      */
     public MemberService $memberService;
+
+    /**
+     * @var MemberValidator
+     */
+    public MemberValidator $validator;
 
     /**
      * @databag member
@@ -120,8 +126,13 @@ class Member extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function create(array $formValues)
     {
+        $this->validator->validateList($formValues);
+
         $this->memberService->createMembers($formValues['members'] ?? []);
         $this->notify->success(trans('tontine.member.messages.created'), trans('common.titles.success'));
 
@@ -149,8 +160,13 @@ class Member extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function update(int $memberId, array $formValues)
     {
+        $this->validator->validateItem($formValues);
+
         $member = $this->memberService->getMember($memberId);
 
         $this->memberService->updateMember($member, $formValues);
