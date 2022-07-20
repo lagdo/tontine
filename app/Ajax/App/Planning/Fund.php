@@ -147,9 +147,9 @@ class Fund extends CallableClass
      */
     public function create(array $formValues)
     {
-        $this->validator->validateList($formValues);
+        $values = $this->validator->validateList($formValues['funds'] ?? []);
 
-        $this->fundService->createFunds($formValues['funds'] ?? []);
+        $this->fundService->createFunds($values);
         $this->notify->success(trans('tontine.fund.messages.created'), trans('common.titles.success'));
 
         return $this->home();
@@ -182,11 +182,11 @@ class Fund extends CallableClass
      */
     public function update(int $fundId, array $formValues)
     {
-        $this->validator->validateItem($formValues);
+        $values = $this->validator->validateItem($formValues);
 
         $fund = $this->fundService->getFund($fundId);
 
-        $this->fundService->updateFund($fund, $formValues);
+        $this->fundService->updateFund($fund, $values);
         $this->page(); // Back to current page
         $this->dialog->hide();
         $this->notify->success(trans('tontine.fund.messages.updated'), trans('common.titles.success'));

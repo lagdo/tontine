@@ -131,9 +131,9 @@ class Member extends CallableClass
      */
     public function create(array $formValues)
     {
-        $this->validator->validateList($formValues);
+        $values = $this->validator->validateList($formValues['members'] ?? []);
 
-        $this->memberService->createMembers($formValues['members'] ?? []);
+        $this->memberService->createMembers($values);
         $this->notify->success(trans('tontine.member.messages.created'), trans('common.titles.success'));
 
         return $this->home();
@@ -165,11 +165,11 @@ class Member extends CallableClass
      */
     public function update(int $memberId, array $formValues)
     {
-        $this->validator->validateItem($formValues);
+        $values = $this->validator->validateItem($formValues);
 
         $member = $this->memberService->getMember($memberId);
 
-        $this->memberService->updateMember($member, $formValues);
+        $this->memberService->updateMember($member, $values);
         $this->page(); // Back to current page
         $this->dialog->hide();
         $this->notify->success(trans('tontine.member.messages.updated'), trans('common.titles.success'));

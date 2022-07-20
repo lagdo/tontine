@@ -150,9 +150,9 @@ class Session extends CallableClass
      */
     public function create(array $formValues)
     {
-        $this->validator->validateList($formValues);
+        $values = $this->validator->validateList($formValues['sessions'] ?? []);
 
-        $this->sessionService->createSessions($formValues['sessions'] ?? []);
+        $this->sessionService->createSessions($values);
         $this->notify->success(trans('tontine.session.messages.created'), trans('common.titles.success'));
 
         return $this->home();
@@ -184,7 +184,7 @@ class Session extends CallableClass
      */
     public function update(int $sessionId, array $formValues)
     {
-        $this->validator->validateItem($formValues);
+        $values = $this->validator->validateItem($formValues);
 
         $session = $this->sessionService->getSession($sessionId);
 
@@ -222,7 +222,7 @@ class Session extends CallableClass
      */
     public function saveVenue(int $sessionId, array $formValues)
     {
-        $this->validator->validateVenue($formValues);
+        $values = $this->validator->validateVenue($formValues);
 
         $session = $this->sessionService->getSession($sessionId);
 

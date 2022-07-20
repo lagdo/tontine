@@ -106,11 +106,11 @@ class Bidding extends CallableClass
      */
     public function saveBidding(array $formValues)
     {
-        $this->validator->validateItem($formValues);
+        $values = $this->validator->validateItem($formValues);
 
-        $member = $this->biddingService->getMember(intval($formValues['member']));
+        $member = $this->biddingService->getMember($values['member']);
         $this->biddingService->createBidding($this->session, $member,
-            intval($formValues['amount_bid']), intval($formValues['amount_paid']));
+            $values['amount_bid'], $values['amount_paid']);
         $this->dialog->hide();
 
         return $this->home();

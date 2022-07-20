@@ -10,7 +10,12 @@ use function implode;
 
 class SessionValidator extends AbstractValidator
 {
-    public function validateItem(array $values)
+    /**
+     * @param array $values
+     *
+     * @return array
+     */
+    public function validateItem(array $values): array
     {
         $validator = Validator::make($values, [
         ]);
@@ -18,9 +23,15 @@ class SessionValidator extends AbstractValidator
         {
             throw new Exception(implode('<br/>', $validator->errors()->all()));
         }
+        return $validator->validated();
     }
 
-    public function validateVenue(array $values)
+    /**
+     * @param array $values
+     *
+     * @return array
+     */
+    public function validateVenue(array $values): array
     {
         $validator = Validator::make($values, [
         ]);
@@ -28,5 +39,6 @@ class SessionValidator extends AbstractValidator
         {
             throw new Exception(implode('<br/>', $validator->errors()->all()));
         }
+        return $validator->validated();
     }
 }

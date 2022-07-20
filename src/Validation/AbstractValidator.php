@@ -2,15 +2,26 @@
 
 namespace Siak\Tontine\Validation;
 
+use function array_map;
+
 abstract class AbstractValidator
 {
-    abstract public function validateItem(array $values);
+    /**
+     * @param array $values
+     *
+     * @return array
+     */
+    abstract public function validateItem(array $values): array;
 
-    public function validateList(array $values)
+    /**
+     * @param array $values
+     *
+     * @return array
+     */
+    public function validateList(array $values): array
     {
-        foreach($values as $value)
-        {
-            $this->validateItem($value);
-        }
+        return array_map(function($value) {
+            return $this->validateItem($value);
+        }, $values);
     }
 }

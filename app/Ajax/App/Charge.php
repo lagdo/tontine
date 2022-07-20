@@ -137,7 +137,9 @@ class Charge extends CallableClass
      */
     public function create(array $formValues)
     {
-        $this->chargeService->createCharges($formValues['charges'] ?? []);
+        $values = $this->validator->validateList($formValues['charges'] ?? []);
+
+        $this->chargeService->createCharges($values);
         $this->notify->success(trans('tontine.charge.messages.created'), trans('common.titles.success'));
 
         return $this->home();
@@ -172,9 +174,11 @@ class Charge extends CallableClass
      */
     public function update(int $chargeId, array $formValues)
     {
+        $values = $this->validator->validateItem($formValues);
+
         $charge = $this->chargeService->getCharge($chargeId);
 
-        $this->chargeService->updateCharge($charge, $formValues);
+        $this->chargeService->updateCharge($charge, $values);
         $this->dialog->hide();
         $this->page(); // Back to current page
         $this->notify->success(trans('tontine.charge.messages.updated'), trans('common.titles.success'));

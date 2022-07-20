@@ -10,7 +10,12 @@ use function implode;
 
 class FundValidator extends AbstractValidator
 {
-    public function validateItem(array $values)
+    /**
+     * @param array $values
+     *
+     * @return array
+     */
+    public function validateItem(array $values): array
     {
         $validator = Validator::make($values, [
         ]);
@@ -18,5 +23,6 @@ class FundValidator extends AbstractValidator
         {
             throw new Exception(implode('<br/>', $validator->errors()->all()));
         }
+        return $validator->validated();
     }
 }

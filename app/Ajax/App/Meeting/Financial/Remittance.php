@@ -118,11 +118,10 @@ class Remittance extends CallableClass
      */
     public function saveRemittance(array $formValues)
     {
-        $this->validator->validateItem($formValues);
+        $values = $this->validator->validateItem($formValues);
 
-        $subscriptionId = $formValues['subscription'];
-        $amountPaid = $formValues['amount'];
-        $this->biddingService->createRemittance($this->fund, $this->session, $subscriptionId, $amountPaid);
+        $this->biddingService->createRemittance($this->fund, $this->session,
+            $values['subscription'], $values['amount']);
         $this->dialog->hide();
         // $this->notify->success(trans('session.remittance.created'), trans('common.titles.success'));
 
