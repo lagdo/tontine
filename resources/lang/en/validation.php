@@ -131,6 +131,11 @@ return [
     'uuid' => 'The :attribute must be a valid UUID.',
 
     /*
+     * Phone number
+     */
+    'phone' => 'The :attribute field contains an invalid number.',
+
+    /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
     |--------------------------------------------------------------------------
