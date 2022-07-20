@@ -18,6 +18,9 @@ class FundValidator extends AbstractValidator
     public function validateItem(array $values): array
     {
         $validator = Validator::make($values, [
+            'title' => 'required|string|min:1',
+            'amount' => 'required|integer|min:1',
+            'notes' => 'present',
         ]);
         if($validator->fails())
         {

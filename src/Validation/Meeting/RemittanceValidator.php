@@ -17,6 +17,8 @@ class RemittanceValidator
     public function validateItem(array $values): array
     {
         $validator = Validator::make($values, [
+            'subscription' => 'required|integer|min:1',
+            'amount' => 'required|integer|min:1',
         ]);
         if($validator->fails())
         {

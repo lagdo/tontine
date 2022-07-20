@@ -18,6 +18,13 @@ class MemberValidator extends AbstractValidator
     public function validateItem(array $values): array
     {
         $validator = Validator::make($values, [
+            'gender' => 'required|array:F,M',
+            'name' => 'required|string|min:1',
+            'email' => 'required|email',
+            'phone' => 'phone:AUTO,US',
+            'birthday' => 'sometimes|required|date_format:Y-m-d',
+            'city' => 'sometimes|required|string',
+            'address' => 'sometimes|required|string',
         ]);
         if($validator->fails())
         {

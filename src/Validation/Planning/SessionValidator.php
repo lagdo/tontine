@@ -34,6 +34,10 @@ class SessionValidator extends AbstractValidator
     public function validateVenue(array $values): array
     {
         $validator = Validator::make($values, [
+            'title' => 'required|string|min:1',
+            'date' => 'required|date_format:Y-m-d',
+            'start' => 'required|date_format:H:I',
+            'end' => 'required|date_format:H:I',
         ]);
         if($validator->fails())
         {
