@@ -2,11 +2,21 @@
 
 namespace Siak\Tontine\Validation;
 
-class ChargeValidator
+use Illuminate\Support\Facades\Validator;
+use Siak\Tontine\Validation\AbstractValidator;
+use Exception;
+
+use function implode;
+
+class ChargeValidator extends AbstractValidator
 {
     public function validateItem(array $values)
-    {}
-
-    public function validateList(array $values)
-    {}
+    {
+        $validator = Validator::make($values, [
+        ]);
+        if($validator->fails())
+        {
+            throw new Exception(implode('<br/>', $validator->errors()->all()));
+        }
+    }
 }
