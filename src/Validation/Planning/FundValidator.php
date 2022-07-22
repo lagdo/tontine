@@ -20,7 +20,7 @@ class FundValidator extends AbstractValidator
         $validator = Validator::make($values, [
             'title' => 'required|string|min:1',
             'amount' => 'required|integer|min:1',
-            'notes' => 'present',
+            'notes' => 'present|string',
         ]);
         if($validator->fails())
         {

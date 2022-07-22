@@ -107,17 +107,27 @@ class SessionService
     {
         $values['start_at'] = $values['date'] . ' ' . $values['start'] . ':00';
         $values['end_at'] = $values['date'] . ' ' . $values['end'] . ':00';
-        // Make sure the host belongs ts the same tontine
-        if(isset($values['host_id']))
+        // Make sure the host belongs to the same tontine
+        $hostId = intval($values['host_id']);
+        $values['host_id'] = null;
+        if($hostId > 0)
         {
-            $hostId = intval($values['host_id']);
-            $values['host_id'] = null;
-            if($hostId > 0)
-            {
-                $values['host_id'] = $this->tenantService->tontine()->members()->find($hostId)->id;
-            }
+            $values['host_id'] = $this->tenantService->tontine()->members()->find($hostId)->id;
         }
 
+        return $session->update($values);
+    }
+
+    /**
+     * Update a session,venue.
+     *
+     * @param Session $session
+     * @param array $values
+     *
+     * @return int
+     */
+    public function saveSessionVenue(Session $session, array $values): int
+    {
         return $session->update($values);
     }
 

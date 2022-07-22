@@ -98,7 +98,8 @@ class Member extends CallableClass
         $this->dialog->hide();
         $this->bag('faker')->set('member.count', $count);
 
-        $html = $this->view()->render('pages.member.add')->with('count', $count)
+        $html = $this->view()->render('pages.member.add')
+            ->with('count', $count)
             ->with('genders', $this->memberService->getGenders());
         $this->response->html('content-home', $html);
         $this->jq('#btn-cancel')->click($this->rq()->home());
@@ -144,7 +145,8 @@ class Member extends CallableClass
         $member = $this->memberService->getMember($memberId);
 
         $title = trans('tontine.member.labels.edit');
-        $content = $this->view()->render('pages.member.edit')->with('member', $member)
+        $content = $this->view()->render('pages.member.edit')
+            ->with('member', $member)
             ->with('genders', $this->memberService->getGenders());
         $buttons = [[
             'title' => trans('common.actions.cancel'),

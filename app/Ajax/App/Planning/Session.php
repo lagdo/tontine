@@ -188,7 +188,7 @@ class Session extends CallableClass
 
         $session = $this->sessionService->getSession($sessionId);
 
-        $this->sessionService->updateSession($session, $formValues);
+        $this->sessionService->updateSession($session, $values);
         $this->dialog->hide();
         $this->notify->success(trans('tontine.session.messages.updated'), trans('common.titles.success'));
 
@@ -226,7 +226,7 @@ class Session extends CallableClass
 
         $session = $this->sessionService->getSession($sessionId);
 
-        $this->sessionService->updateSession($session, $formValues);
+        $this->sessionService->saveSessionVenue($session, $values);
         $this->dialog->hide();
         $this->notify->success(trans('tontine.session.messages.updated'), trans('common.titles.success'));
 
