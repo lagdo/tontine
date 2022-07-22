@@ -4,9 +4,7 @@ namespace Siak\Tontine\Validation\Planning;
 
 use Illuminate\Support\Facades\Validator;
 use Siak\Tontine\Validation\AbstractValidator;
-use Exception;
-
-use function implode;
+use Siak\Tontine\Validation\ValidationException;
 
 class SessionValidator extends AbstractValidator
 {
@@ -26,7 +24,7 @@ class SessionValidator extends AbstractValidator
         ]);
         if($validator->fails())
         {
-            throw new Exception(implode('<br/>', $validator->errors()->all()));
+            throw new ValidationException($validator);
         }
         return $validator->validated();
     }
@@ -44,7 +42,7 @@ class SessionValidator extends AbstractValidator
         ]);
         if($validator->fails())
         {
-            throw new Exception(implode('<br/>', $validator->errors()->all()));
+            throw new ValidationException($validator);
         }
         return $validator->validated();
     }

@@ -3,9 +3,7 @@
 namespace Siak\Tontine\Validation\Meeting;
 
 use Illuminate\Support\Facades\Validator;
-use Exception;
-
-use function implode;
+use Siak\Tontine\Validation\ValidationException;
 
 class BiddingValidator
 {
@@ -23,7 +21,7 @@ class BiddingValidator
         ]);
         if($validator->fails())
         {
-            throw new Exception(implode('<br/>', $validator->errors()->all()));
+            throw new ValidationException($validator);
         }
         return $validator->validated();
     }

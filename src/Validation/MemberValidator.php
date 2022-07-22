@@ -4,9 +4,6 @@ namespace Siak\Tontine\Validation;
 
 use Illuminate\Support\Facades\Validator;
 use Siak\Tontine\Validation\AbstractValidator;
-use Exception;
-
-use function implode;
 
 class MemberValidator extends AbstractValidator
 {
@@ -28,7 +25,7 @@ class MemberValidator extends AbstractValidator
         ]);
         if($validator->fails())
         {
-            throw new Exception(implode('<br/>', $validator->errors()->all()));
+            throw new ValidationException($validator);
         }
         return $validator->validated();
     }
