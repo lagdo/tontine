@@ -3,6 +3,7 @@
 namespace App\Ajax\App;
 
 use Siak\Tontine\Service\ChargeService;
+use Siak\Tontine\Validation\ChargeValidator;
 use App\Ajax\CallableClass;
 
 use function jq;
@@ -17,6 +18,11 @@ class Charge extends CallableClass
      * @var ChargeService
      */
     public ChargeService $chargeService;
+
+    /**
+     * @var ChargeValidator
+     */
+    public ChargeValidator $validator;
 
     /**
      * @databag charge
@@ -126,9 +132,14 @@ class Charge extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function create(array $formValues)
     {
-        $this->chargeService->createCharges($formValues['charges'] ?? []);
+        $values = $this->validator->validateList($formValues['charges'] ?? []);
+
+        $this->chargeService->createCharges($values);
         $this->notify->success(trans('tontine.charge.messages.created'), trans('common.titles.success'));
 
         return $this->home();
@@ -138,7 +149,7 @@ class Charge extends CallableClass
     {
         $charge = $this->chargeService->getCharge($chargeId);
 
-        $title = trans('charge.labels.edit');
+        $title = trans('tontine.charge.titles.edit');
         $types = ['Frais', 'Amende'];
         $periods = ['Aucune', 'Unique', 'Année', 'Séance'];
         $content = $this->view()->render('pages.charge.edit')->with('charge', $charge)
@@ -158,13 +169,16 @@ class Charge extends CallableClass
     }
 
     /**
+     * @di $validator
      * @databag charge
      */
     public function update(int $chargeId, array $formValues)
     {
+        $values = $this->validator->validateItem($formValues);
+
         $charge = $this->chargeService->getCharge($chargeId);
 
-        $this->chargeService->updateCharge($charge, $formValues);
+        $this->chargeService->updateCharge($charge, $values);
         $this->dialog->hide();
         $this->page(); // Back to current page
         $this->notify->success(trans('tontine.charge.messages.updated'), trans('common.titles.success'));

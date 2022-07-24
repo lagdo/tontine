@@ -5,6 +5,7 @@ namespace App\Ajax\App\Meeting\Financial;
 use App\Ajax\App\Meeting\Fund;
 use App\Ajax\CallableClass;
 use Siak\Tontine\Service\BiddingService;
+use Siak\Tontine\Validation\Meeting\RemittanceValidator;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Fund as FundModel;
 
@@ -21,6 +22,11 @@ class Remittance extends CallableClass
      * @var BiddingService
      */
     protected BiddingService $biddingService;
+
+    /**
+     * @var RemittanceValidator
+     */
+    protected RemittanceValidator $validator;
 
     /**
      * @var SessionModel|null
@@ -107,11 +113,15 @@ class Remittance extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function saveRemittance(array $formValues)
     {
-        $subscriptionId = $formValues['subscription'];
-        $amountPaid = $formValues['amount'];
-        $this->biddingService->createRemittance($this->fund, $this->session, $subscriptionId, $amountPaid);
+        $values = $this->validator->validateItem($formValues);
+
+        $this->biddingService->createRemittance($this->fund, $this->session,
+            $values['subscription'], $values['amount']);
         $this->dialog->hide();
         // $this->notify->success(trans('session.remittance.created'), trans('common.titles.success'));
 

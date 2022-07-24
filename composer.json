@@ -10,15 +10,16 @@
         "ext-json": "*",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "jaxon-php/jaxon-annotations": "^2.1",
+        "jaxon-php/jaxon-core": "^4.0",
+        "jaxon-php/jaxon-dialogs": "^4.0",
+        "jaxon-php/jaxon-laravel": "^4.0",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravelcollective/html": "^6.3",
-        "jaxon-php/jaxon-core": "^4.0",
-        "jaxon-php/jaxon-dialogs": "^4.0",
-        "jaxon-php/jaxon-laravel": "^4.0",
-        "jaxon-php/jaxon-annotations": "^2.1",
-        "mcamara/laravel-localization": "^1.7"
+        "mcamara/laravel-localization": "^1.7",
+        "propaganistas/laravel-phone": "^4.3"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -26,6 +27,8 @@
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^5.10",
+        "laravel-lang/lang": "^10.2",
+        "laravel-lang/publisher": "^12.2",
         "phpunit/phpunit": "^9.5.10"
     },
     "autoload": {

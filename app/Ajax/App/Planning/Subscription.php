@@ -7,9 +7,9 @@ use Siak\Tontine\Service\SubscriptionService;
 use Siak\Tontine\Service\TenantService;
 use App\Ajax\CallableClass;
 
+use function intval;
 use function jq;
 use function pm;
-use function trans;
 
 /**
  * @databag subscription
@@ -39,7 +39,7 @@ class Subscription extends CallableClass
     protected function getFund()
     {
         $fundId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('subscription')->get('fund.id');
+            $this->target()->args()[0] : intval($this->bag('subscription')->get('fund.id'));
         $this->fund = $this->subscriptionService->getFund($fundId);
     }
 

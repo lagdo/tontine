@@ -3,6 +3,7 @@
 namespace App\Ajax\App;
 
 use Siak\Tontine\Service\MemberService;
+use Siak\Tontine\Validation\MemberValidator;
 use App\Ajax\CallableClass;
 
 use function jq;
@@ -16,6 +17,11 @@ class Member extends CallableClass
      * @var MemberService
      */
     public MemberService $memberService;
+
+    /**
+     * @var MemberValidator
+     */
+    public MemberValidator $validator;
 
     /**
      * @databag member
@@ -92,7 +98,8 @@ class Member extends CallableClass
         $this->dialog->hide();
         $this->bag('faker')->set('member.count', $count);
 
-        $html = $this->view()->render('pages.member.add')->with('count', $count)
+        $html = $this->view()->render('pages.member.add')
+            ->with('count', $count)
             ->with('genders', $this->memberService->getGenders());
         $this->response->html('content-home', $html);
         $this->jq('#btn-cancel')->click($this->rq()->home());
@@ -120,9 +127,14 @@ class Member extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function create(array $formValues)
     {
-        $this->memberService->createMembers($formValues['members'] ?? []);
+        $values = $this->validator->validateList($formValues['members'] ?? []);
+
+        $this->memberService->createMembers($values);
         $this->notify->success(trans('tontine.member.messages.created'), trans('common.titles.success'));
 
         return $this->home();
@@ -132,8 +144,9 @@ class Member extends CallableClass
     {
         $member = $this->memberService->getMember($memberId);
 
-        $title = trans('tontine.member.labels.edit');
-        $content = $this->view()->render('pages.member.edit')->with('member', $member)
+        $title = trans('tontine.member.titles.edit');
+        $content = $this->view()->render('pages.member.edit')
+            ->with('member', $member)
             ->with('genders', $this->memberService->getGenders());
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -149,11 +162,16 @@ class Member extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function update(int $memberId, array $formValues)
     {
+        $values = $this->validator->validateItem($formValues);
+
         $member = $this->memberService->getMember($memberId);
 
-        $this->memberService->updateMember($member, $formValues);
+        $this->memberService->updateMember($member, $values);
         $this->page(); // Back to current page
         $this->dialog->hide();
         $this->notify->success(trans('tontine.member.messages.updated'), trans('common.titles.success'));

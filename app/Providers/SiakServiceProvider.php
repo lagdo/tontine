@@ -22,6 +22,12 @@ use Siak\Tontine\Service\FineSettlementService;
 use Siak\Tontine\Service\BiddingService;
 use Siak\Tontine\Service\RefundService;
 use Siak\Tontine\Service\PlanningService;
+use Siak\Tontine\Validation\ChargeValidator;
+use Siak\Tontine\Validation\MemberValidator;
+use Siak\Tontine\Validation\Meeting\BiddingValidator;
+use Siak\Tontine\Validation\Meeting\RemittanceValidator;
+use Siak\Tontine\Validation\Planning\FundValidator;
+use Siak\Tontine\Validation\Planning\SessionValidator;
 
 // use Siak\Tontine\Gateway\PaymentGateway;
 
@@ -63,6 +69,12 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(BiddingService::class, BiddingService::class);
         $this->app->singleton(RefundService::class, RefundService::class);
         $this->app->singleton(PlanningService::class, PlanningService::class);
+        $this->app->singleton(ChargeValidator::class, ChargeValidator::class);
+        $this->app->singleton(MemberValidator::class, MemberValidator::class);
+        $this->app->singleton(BiddingValidator::class, BiddingValidator::class);
+        $this->app->singleton(FundValidator::class, FundValidator::class);
+        $this->app->singleton(RemittanceValidator::class, RemittanceValidator::class);
+        $this->app->singleton(SessionValidator::class, SessionValidator::class);
 
         /*$this->app->resolving(PaymentGateway::class, function(PaymentGateway $gateway) {
             $gateway->setServerUrl(env('HOST_WEB_PAYMENT'));

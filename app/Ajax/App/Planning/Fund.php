@@ -3,6 +3,7 @@
 namespace App\Ajax\App\Planning;
 
 use Siak\Tontine\Service\FundService;
+use Siak\Tontine\Validation\Planning\FundValidator;
 use App\Ajax\CallableClass;
 
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -19,6 +20,11 @@ class Fund extends CallableClass
      * @var FundService
      */
     public FundService $fundService;
+
+    /**
+     * @var FundValidator
+     */
+    protected FundValidator $validator;
 
     /**
      * @var bool
@@ -136,9 +142,14 @@ class Fund extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function create(array $formValues)
     {
-        $this->fundService->createFunds($formValues['funds'] ?? []);
+        $values = $this->validator->validateList($formValues['funds'] ?? []);
+
+        $this->fundService->createFunds($values);
         $this->notify->success(trans('tontine.fund.messages.created'), trans('common.titles.success'));
 
         return $this->home();
@@ -148,7 +159,7 @@ class Fund extends CallableClass
     {
         $fund = $this->fundService->getFund($fundId);
 
-        $title = trans('tontine.fund.labels.edit');
+        $title = trans('tontine.fund.titles.edit');
         $content = $this->view()->render('pages.planning.fund.edit')
             ->with('fund', $fund)
             ->with('locales', LaravelLocalization::getSupportedLocales());
@@ -166,11 +177,16 @@ class Fund extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function update(int $fundId, array $formValues)
     {
+        $values = $this->validator->validateItem($formValues);
+
         $fund = $this->fundService->getFund($fundId);
 
-        $this->fundService->updateFund($fund, $formValues);
+        $this->fundService->updateFund($fund, $values);
         $this->page(); // Back to current page
         $this->dialog->hide();
         $this->notify->success(trans('tontine.fund.messages.updated'), trans('common.titles.success'));
