@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Response;
+use Illuminate\View\View;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Ajax\App\Charge;
@@ -29,9 +29,9 @@ class IndexController extends Controller
      * @param TontineService $tontineService
      * @param Jaxon $jaxon
      *
-     * @return Response
+     * @return View
      */
-    public function index(TenantService $tenantService, TontineService $tontineService, Jaxon $jaxon): Response
+    public function index(TenantService $tenantService, TontineService $tontineService, Jaxon $jaxon): View
     {
         // Localized Jaxon request processing URI
         $jaxon->setOption('core.request.uri', LaravelLocalization::localizeUrl('/ajax'));
