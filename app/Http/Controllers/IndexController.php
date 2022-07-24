@@ -31,7 +31,7 @@ class IndexController extends Controller
      *
      * @return Response
      */
-    public function index(TenantService $tenantService, TontineService $tontineService, Jaxon $jaxon)
+    public function index(TenantService $tenantService, TontineService $tontineService, Jaxon $jaxon): Response
     {
         // Localized Jaxon request processing URI
         $jaxon->setOption('core.request.uri', LaravelLocalization::localizeUrl('/ajax'));

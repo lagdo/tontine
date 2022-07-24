@@ -101,9 +101,9 @@ class ChargeService
      *
      * @param int $page
      *
-     * @return array
+     * @return Collection
      */
-    public function getCharges(int $page = 0)
+    public function getCharges(int $page = 0): Collection
     {
         $charges = $this->tenantService->tontine()->charges();
         if($page > 0 )
