@@ -32,7 +32,7 @@ return [
         'updated' => "La tontine a été modifiée",
     ],
     'round' => [
-        'labels' => [
+        'titles' => [
             'add' => "Ajouter un tour",
             'edit' => "Modifier un tour",
         ],
@@ -43,8 +43,9 @@ return [
         ],
     ],
     'member' => [
-        'labels' => [
+        'titles' => [
             'add' => "Ajouter des membres",
+            'edit' => "Modifier un membre",
         ],
         'messages' => [
             'created' => "Le membre a été ajouté.",
@@ -53,8 +54,9 @@ return [
         ],
     ],
     'charge' => [
-        'labels' => [
+        'titles' => [
             'add' => "Ajouter des frais et amendes",
+            'edit' => "Modifier un frais ou une amende",
         ],
         'messages' => [
             'created' => "La charge a été ajoutée.",
@@ -63,16 +65,17 @@ return [
         ],
     ],
     'session' => [
-        'labels' => [
-            'add' => "Ajouter des séances",
-            'times' => "Horaires",
-            'host' => "Hôte",
-            'address' => "Adresse",
-        ],
         'titles' => [
+            'add' => "Ajouter des séances",
+            'edit' => "Modifier une séance",
             'title' => "Séance de :month :year",
             'host' => "Choisir l'hôte",
             'venue' => "Lieu",
+        ],
+        'labels' => [
+            'times' => "Horaires",
+            'host' => "Hôte",
+            'address' => "Adresse",
         ],
         'actions' => [
             'host' => "Hôte",
@@ -89,10 +92,9 @@ return [
         ],
     ],
     'fund' => [
-        'labels' => [
-            'add' => "Ajouter des fonds",
-        ],
         'titles' => [
+            'add' => "Ajouter des fonds",
+            'edit' => "Modifier un fond",
             'deposits' => "Tableau des cotisations",
             'remittances' => "Tableau des remises",
             'subscriptions' => "Souscriptions",

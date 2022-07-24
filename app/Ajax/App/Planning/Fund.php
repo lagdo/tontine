@@ -159,7 +159,7 @@ class Fund extends CallableClass
     {
         $fund = $this->fundService->getFund($fundId);
 
-        $title = trans('tontine.fund.labels.edit');
+        $title = trans('tontine.fund.titles.edit');
         $content = $this->view()->render('pages.planning.fund.edit')
             ->with('fund', $fund)
             ->with('locales', LaravelLocalization::getSupportedLocales());

@@ -149,7 +149,7 @@ class Charge extends CallableClass
     {
         $charge = $this->chargeService->getCharge($chargeId);
 
-        $title = trans('charge.labels.edit');
+        $title = trans('tontine.charge.titles.edit');
         $types = ['Frais', 'Amende'];
         $periods = ['Aucune', 'Unique', 'Année', 'Séance'];
         $content = $this->view()->render('pages.charge.edit')->with('charge', $charge)

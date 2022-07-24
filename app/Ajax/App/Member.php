@@ -144,7 +144,7 @@ class Member extends CallableClass
     {
         $member = $this->memberService->getMember($memberId);
 
-        $title = trans('tontine.member.labels.edit');
+        $title = trans('tontine.member.titles.edit');
         $content = $this->view()->render('pages.member.edit')
             ->with('member', $member)
             ->with('genders', $this->memberService->getGenders());

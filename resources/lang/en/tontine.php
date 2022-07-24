@@ -32,7 +32,7 @@ return [
         'updated' => "The tontine was successfully updated.",
     ],
     'round' => [
-        'labels' => [
+        'titles' => [
             'add' => "Add a round",
             'edit' => "Edit a round",
         ],
@@ -43,8 +43,9 @@ return [
         ],
     ],
     'member' => [
-        'labels' => [
+        'titles' => [
             'add' => "Add members",
+            'edit' => "Edit a member",
         ],
         'messages' => [
             'created' => "The member was successfully created.",
@@ -53,8 +54,9 @@ return [
         ],
     ],
     'charge' => [
-        'labels' => [
+        'titles' => [
             'add' => "Add fees and fines",
+            'edit' => "Edit a fee or fine",
         ],
         'messages' => [
             'created' => "The charge was successfully created.",
@@ -63,16 +65,17 @@ return [
         ],
     ],
     'session' => [
-        'labels' => [
-            'add' => "Add sessions",
-            'times' => "Times",
-            'host' => "Host",
-            'address' => "Address",
-        ],
         'titles' => [
+            'add' => "Add sessions",
+            'edit' => "Edit a session",
             'title' => "Session of :month :year",
             'host' => "Edit the host",
             'venue' => "Venue",
+        ],
+        'labels' => [
+            'times' => "Times",
+            'host' => "Host",
+            'address' => "Address",
         ],
         'actions' => [
             'host' => "Host",
@@ -89,10 +92,9 @@ return [
         ],
     ],
     'fund' => [
-        'labels' => [
-            'add' => "Add funds",
-        ],
         'titles' => [
+            'add' => "Add funds",
+            'edit' => "Edit a fund",
             'deposits' => "Deposits table",
             'remittances' => "Remittances table",
             'subscriptions' => "Subscriptions",
