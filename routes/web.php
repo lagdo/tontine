@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\JaxonController;
-use App\Http\Controllers\WebController;
 use App\Http\Middleware\AnnotationCache;
 use App\Http\Middleware\TontineTenant;
 use Illuminate\Support\Facades\Route;
@@ -25,9 +24,4 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function()
     // Route to Jaxon controller
     Route::post('ajax', [JaxonController::class, 'jaxon'])->name('tontine.ajax')
         ->middleware([AnnotationCache::class, TontineTenant::class]);
-
-    // Deposit page
-    //----------------------------------
-    Route::get('/deposit/{deposit}', [WebController::class, 'showDepositPage'])
-        ->name('tontine.deposit.page');
 });
