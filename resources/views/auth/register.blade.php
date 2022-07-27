@@ -44,8 +44,9 @@
 
                   <div class="form-group">
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" name="agree" class="custom-control-input" id="agree">
+                      <input type="checkbox" name="agree" class="custom-control-input @error('agree')is-invalid @enderror" id="agree">
                       <label class="custom-control-label" for="agree">I agree with the terms and conditions</label>
+                      <div class="invalid-feedback">{{ $errors->first('agree') }}</div>
                     </div>
                   </div>
 
