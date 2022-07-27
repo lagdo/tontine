@@ -26,4 +26,7 @@
                 </form>
               </div>
             </div>
+            <div class="mt-5 text-muted text-center">
+              <a href="{{ route('login') }}">Back to login</a>
+            </div>
 @endsection
