@@ -34,7 +34,7 @@
                 <i class="far fa-user"></i> Tontines
               </a>
               <div class="dropdown-divider"></div>
-              <a href="javascript:void(0)" class="dropdown-item has-icon text-danger">
+              <a href="javascript:void(0)" class="dropdown-item has-icon text-danger" id="user-menu-logout">
                 <i class="fa fa-sign-out-alt"></i> Logout
               </a>
             </div>

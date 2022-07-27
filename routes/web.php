@@ -19,7 +19,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function()
     // Home page
     //----------------------------------
     Route::get('/', [IndexController::class, 'index'])->name('tontine.home')
-        ->middleware([AnnotationCache::class, TontineTenant::class]);
+        ->middleware(['auth', AnnotationCache::class, TontineTenant::class]);
 
     // Route to Jaxon controller
     Route::post('ajax', [JaxonController::class, 'jaxon'])->name('tontine.ajax')

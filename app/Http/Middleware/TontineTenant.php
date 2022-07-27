@@ -7,6 +7,7 @@ use Siak\Tontine\Model\User;
 use Siak\Tontine\Service\TenantService;
 use Closure;
 
+use function auth;
 use function session;
 
 class TontineTenant
@@ -33,7 +34,10 @@ class TontineTenant
      */
     public function handle($request, Closure $next)
     {
-        $user = User::first();
+        /**
+         * @var User
+         */
+        $user = auth()->user();
         $this->tenantService->setUser($user);
         $tontine = $user->tontines()->find(session('tontine.id', 0));
         if(!$tontine)
