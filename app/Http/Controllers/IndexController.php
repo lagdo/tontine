@@ -18,6 +18,7 @@ use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\TontineService;
 use Jaxon\Laravel\Jaxon;
 
+use function auth;
 use function view;
 
 class IndexController extends Controller
@@ -40,6 +41,7 @@ class IndexController extends Controller
         $jxnTontine = $jaxon->request(Tontine::class);
 
         view()->share([
+            'user' => auth()->user(),
             'tontine' => $tenantService->tontine(),
             'round' => $tenantService->round(),
             'locales' => LaravelLocalization::getSupportedLocales(),
