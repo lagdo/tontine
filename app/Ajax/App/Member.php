@@ -6,8 +6,8 @@ use Siak\Tontine\Service\MemberService;
 use Siak\Tontine\Validation\MemberValidator;
 use App\Ajax\CallableClass;
 
-use function jq;
-use function pm;
+use function Jaxon\jq;
+use function Jaxon\pm;
 use function trans;
 
 class Member extends CallableClass

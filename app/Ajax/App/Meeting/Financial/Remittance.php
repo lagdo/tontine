@@ -9,7 +9,7 @@ use Siak\Tontine\Validation\Meeting\RemittanceValidator;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Fund as FundModel;
 
-use function jq;
+use function Jaxon\jq;
 
 /**
  * @databag meeting

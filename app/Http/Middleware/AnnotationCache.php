@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Closure;
 
-use function jaxon;
+use function Jaxon\jaxon;
 use function storage_path;
 
 class AnnotationCache

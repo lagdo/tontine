@@ -9,8 +9,8 @@ use App\Ajax\CallableClass;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use function intval;
-use function jq;
-use function pm;
+use function Jaxon\jq;
+use function Jaxon\pm;
 use function trans;
 
 class Fund extends CallableClass

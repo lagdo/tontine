@@ -8,8 +8,8 @@ use Siak\Tontine\Service\TenantService;
 use App\Ajax\CallableClass;
 
 use function intval;
-use function jq;
-use function pm;
+use function Jaxon\jq;
+use function Jaxon\pm;
 
 /**
  * @databag subscription

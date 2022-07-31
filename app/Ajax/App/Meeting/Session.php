@@ -5,7 +5,7 @@ namespace App\Ajax\App\Meeting;
 use Siak\Tontine\Service\SessionService;
 use App\Ajax\CallableClass;
 
-use function jq;
+use function Jaxon\jq;
 use function trans;
 
 /**

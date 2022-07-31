@@ -20,8 +20,8 @@
     // Tontine page
     $('#btn-tontine-refresh').click(function() { {!! $jxnTontine->home() !!}; });
     $('#btn-tontine-create').click(function() { {!! $jxnTontine->add() !!}; });
-    $('.btn-tontine-edit').click(function() { {!! $jxnTontine->edit(jq()->parent()->attr('data-tontine-id')) !!}; });
-    $('.btn-tontine-rounds').click(function() { {!! $jxnRound->home(jq()->parent()->attr('data-tontine-id')) !!}; });
+    $('.btn-tontine-edit').click(function() { {!! $jxnTontine->edit(Jaxon\jq()->parent()->attr('data-tontine-id')) !!}; });
+    $('.btn-tontine-rounds').click(function() { {!! $jxnRound->home(Jaxon\jq()->parent()->attr('data-tontine-id')) !!}; });
 @if(($tontine))
     {!! $jxnRound->home($tontine->id) !!};
 @endif

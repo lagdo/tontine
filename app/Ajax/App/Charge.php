@@ -6,8 +6,8 @@ use Siak\Tontine\Service\ChargeService;
 use Siak\Tontine\Validation\ChargeValidator;
 use App\Ajax\CallableClass;
 
-use function jq;
-use function pm;
+use function Jaxon\jq;
+use function Jaxon\pm;
 use function trans;
 use function intval;
 

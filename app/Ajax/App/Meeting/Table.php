@@ -7,6 +7,7 @@ use Siak\Tontine\Model\Fund as FundModel;
 use Siak\Tontine\Service\SubscriptionService;
 use Siak\Tontine\Service\MeetingService;
 
+use function Jaxon\pm;
 use function intval;
 
 /**

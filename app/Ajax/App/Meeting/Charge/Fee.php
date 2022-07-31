@@ -7,7 +7,7 @@ use Siak\Tontine\Service\FeeSettlementService;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 
-use function jq;
+use function Jaxon\jq;
 
 /**
  * @databag meeting

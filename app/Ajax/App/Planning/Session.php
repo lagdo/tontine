@@ -8,8 +8,8 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Service\SessionService;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 
-use function jq;
-use function pm;
+use function Jaxon\jq;
+use function Jaxon\pm;
 use function trans;
 
 /**

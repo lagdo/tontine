@@ -6,7 +6,7 @@ use Illuminate\Validation\Validator;
 use Exception;
 
 use function implode;
-use function jaxon;
+use function Jaxon\jaxon;
 use function trans;
 
 class ValidationException extends Exception

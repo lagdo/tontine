@@ -8,7 +8,8 @@ use Siak\Tontine\Service\TontineService;
 use Siak\Tontine\Model\Tontine as TontineModel;
 use App\Ajax\CallableClass;
 
-use function jq;
+use function Jaxon\jq;
+use function Jaxon\pm;
 use function trans;
 
 class Tontine extends CallableClass

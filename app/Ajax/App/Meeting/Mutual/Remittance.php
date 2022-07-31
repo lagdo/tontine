@@ -9,7 +9,7 @@ use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Fund as FundModel;
 
 use function intval;
-use function jq;
+use function Jaxon\jq;
 use function trans;
 
 /**
