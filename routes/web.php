@@ -6,6 +6,7 @@ use App\Http\Middleware\AnnotationCache;
 use App\Http\Middleware\TontineTenant;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,3 +26,6 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function()
     Route::post('ajax', [JaxonController::class, 'jaxon'])->name('tontine.ajax')
         ->middleware([AnnotationCache::class, TontineTenant::class]);
 });
+
+// Logout
+Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout.get');

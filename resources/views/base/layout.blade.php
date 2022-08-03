@@ -85,9 +85,6 @@
 
     </div>
   </div>
-
-  <!-- Logout form -->
-  <form id="logout-form" method="POST" action="{{ route('logout') }}"> @csrf </form>
 </body>
 
 @include('parts.footer.html')

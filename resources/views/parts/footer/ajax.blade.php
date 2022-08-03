@@ -16,7 +16,6 @@
     $('#meeting-menu-sessions').click(function() { {!! $jxnMeeting->home() !!}; });
     $('#meeting-menu-tables').click(function() { {!! $jxnCashFlow->home() !!}; });
     $('#user-menu-profile').click(function() { {!! $jxnTontine->home() !!}; });
-    $('#user-menu-logout').click(function() { $('#logout-form').submit(); });
     // Tontine page
     $('#btn-tontine-refresh').click(function() { {!! $jxnTontine->home() !!}; });
     $('#btn-tontine-create').click(function() { {!! $jxnTontine->add() !!}; });
