@@ -19,6 +19,7 @@ class CreateRemittancesTable extends Migration
             $table->timestamps();
             $table->unsignedBigInteger('payable_id');
             $table->foreign('payable_id')->references('id')->on('payables');
+            $table->unique('payable_id');
         });
     }
 

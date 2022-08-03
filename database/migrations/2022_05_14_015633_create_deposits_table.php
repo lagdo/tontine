@@ -19,6 +19,7 @@ class CreateDepositsTable extends Migration
             $table->timestamps();
             $table->unsignedBigInteger('receivable_id');
             $table->foreign('receivable_id')->references('id')->on('receivables');
+            $table->unique('receivable_id');
         });
     }
 
