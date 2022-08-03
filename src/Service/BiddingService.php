@@ -256,12 +256,13 @@ class BiddingService
 
         $paidSum = 0;
         $fundBiddings = $payables->map(function($payable) use(&$paidSum) {
-            $paidSum += $payable->remittance->amount_paid;
+            $amountPaid = $payable->remittance->amount_paid ?? 0;
+            $paidSum += $amountPaid;
             return (object)[
                 'id' => 0, // $payable->subscription->id,
                 'title' => $payable->subscription->member->name,
                 'amount' => Currency::format($payable->amount),
-                'paid' => Currency::format($payable->remittance->amount_paid),
+                'paid' => Currency::format($amountPaid),
             ];
         });
         $bidSum = 0;

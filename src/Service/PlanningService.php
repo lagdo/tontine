@@ -291,7 +291,7 @@ class PlanningService
         }
 
         // Greatest common divisor
-        $gcd = gmp_gcd($sessionCount, $subscriptionCount);
+        $gcd = (int)gmp_gcd($sessionCount, $subscriptionCount);
         $sessionsInLoop = (int)($sessionCount / $gcd);
         $subscriptionsInLoop = (int)($subscriptionCount / $gcd);
 
