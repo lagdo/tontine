@@ -7,10 +7,10 @@ catch(e) {
     jaxon.config = {};
 };
 
-jaxon.config.requestURI = "http://my.tontine.lan/fr/ajax";
+jaxon.config.requestURI = "/ajax";
 jaxon.config.statusMessages = false;
 jaxon.config.waitCursor = true;
-jaxon.config.version = "Jaxon 4.0.0-dev";
+jaxon.config.version = "Jaxon 4.0";
 jaxon.config.defaultMode = "asynchronous";
 jaxon.config.defaultMethod = "POST";
 jaxon.config.responseType = "JSON";
@@ -93,9 +93,6 @@ App.Ajax.App.Meeting.Fund.deposits = function() {
 };
 App.Ajax.App.Meeting.Fund.remittances = function() {
     return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Fund', jxnmthd: 'remittances' }, { parameters: arguments, bags: ["meeting"] });
-};
-App.Ajax.App.Meeting.Fund.home = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Fund', jxnmthd: 'home' }, { parameters: arguments, bags: ["meeting"] });
 };
 App.Ajax.App.Meeting.Table = {};
 App.Ajax.App.Meeting.Table.select = function() {

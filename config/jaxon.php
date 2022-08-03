@@ -53,7 +53,7 @@ return [
             'app' => [
                 'uri' => env('JAXON_JS_APP_URI', ''),
                 'dir' => env('JAXON_JS_APP_DIR', ''),
-                // 'file' => env('JAXON_JS_APP_FILE', ''),
+                'file' => env('JAXON_JS_APP_FILE', ''),
                 'export' => env('JAXON_JS_APP_EXPORT', false),
                 'minify' => env('JAXON_JS_APP_MINIFY', false),
             ],
