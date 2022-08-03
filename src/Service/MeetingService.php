@@ -82,14 +82,24 @@ class MeetingService
     }
 
     /**
-     * Get a paginated list of funds.
+     * @param Session $session
+     *
+     * @return int
+     */
+    private function getSessionRank(Session $session): int
+    {
+        return 0;
+    }
+
+    /**
+     * Get a paginated list of funds with receivables.
      *
      * @param Session $session
      * @param int $page
      *
      * @return Collection
      */
-    public function getFunds(Session $session, int $page = 0): Collection
+    public function getFundsWithReceivables(Session $session, int $page = 0): Collection
     {
         $funds = $this->tenantService->round()->funds();
         if($page > 0 )
@@ -97,6 +107,7 @@ class MeetingService
             $funds->take($this->tenantService->getLimit());
             $funds->skip($this->tenantService->getLimit() * ($page - 1));
         }
+
         return $funds->get()->each(function($fund) use($session) {
             // Receivables
             $receivables = $this->depositService->getReceivables($fund, $session);
@@ -106,15 +117,45 @@ class MeetingService
             $fund->recv_paid = $receivables->filter(function($receivable) {
                 return $receivable->deposit !== null;
             })->count();
+        });
+    }
 
+    /**
+     * Get a paginated list of funds with payables.
+     *
+     * @param Session $session
+     * @param int $page
+     *
+     * @return Collection
+     */
+    public function getFundsWithPayables(Session $session, int $page = 0): Collection
+    {
+        $funds = $this->tenantService->round()->funds();
+        if($page > 0 )
+        {
+            $funds->take($this->tenantService->getLimit());
+            $funds->skip($this->tenantService->getLimit() * ($page - 1));
+        }
+
+        $sessions = $this->tenantService->round()->sessions;
+        $sessionRank = $this->getSessionRank($session);
+
+        return $funds->get()->each(function($fund) use($session, $sessionRank, $sessions) {
             // Payables
             $payables = $this->remittanceService->getPayables($fund, $session);
             // Expected
-            $fund->pay_count = $payables->count();
+            // $fund->pay_count = $payables->count();
             // Paid
             $fund->pay_paid = $payables->filter(function($payable) {
                 return $payable->remittance !== null;
             })->count();
+
+            // Remittances
+            $sessionCount = $sessions->filter(function($session) use($fund) {
+                return $session->enabled($fund);
+            })->count();
+            $subscriptionCount = $fund->subscriptions()->count();
+            $fund->pay_count = $this->planningService->getRemittanceCount($sessionCount, $subscriptionCount, $sessionRank);
         });
     }
 
