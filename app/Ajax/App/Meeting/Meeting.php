@@ -10,8 +10,6 @@ use Siak\Tontine\Service\RefundService;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 
-use function intval;
-use function Jaxon\jq;
 use function Jaxon\pm;
 use function trans;
 
