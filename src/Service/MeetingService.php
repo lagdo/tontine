@@ -82,16 +82,6 @@ class MeetingService
     }
 
     /**
-     * @param Session $session
-     *
-     * @return int
-     */
-    private function getSessionRank(Session $session): int
-    {
-        return 0;
-    }
-
-    /**
      * Get a paginated list of funds with receivables.
      *
      * @param Session $session
@@ -138,9 +128,8 @@ class MeetingService
         }
 
         $sessions = $this->tenantService->round()->sessions;
-        $sessionRank = $this->getSessionRank($session);
 
-        return $funds->get()->each(function($fund) use($session, $sessionRank, $sessions) {
+        return $funds->get()->each(function($fund) use($session, $sessions) {
             // Payables
             $payables = $this->remittanceService->getPayables($fund, $session);
             // Expected
@@ -151,8 +140,12 @@ class MeetingService
             })->count();
 
             // Remittances
-            $sessionCount = $sessions->filter(function($session) use($fund) {
-                return $session->enabled($fund);
+            $sessions = $sessions->filter(function($_session) use($fund) {
+                return $_session->enabled($fund);
+            });
+            $sessionCount = $sessions->count();
+            $sessionRank = $sessions->filter(function($_session) use($session) {
+                return $_session->start_at->lt($session->start_at);
             })->count();
             $subscriptionCount = $fund->subscriptions()->count();
             $fund->pay_count = $this->planningService->getRemittanceCount($sessionCount, $subscriptionCount, $sessionRank);
