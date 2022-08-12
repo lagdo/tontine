@@ -1,28 +1,30 @@
-          <div class="section-body">
-            <div class="row align-items-center">
-              <div class="col">
-                <h2 class="section-title">{{ $fund->title }} - {{ __('figures.titles.amounts') }}</h2>
-              </div>
-              <div class="col-auto">
-                <div class="input-group float-right ml-2">
-                  {!! Form::select('fund_id', $funds, $fund->id, ['class' => 'form-control', 'id' => 'select-fund']) !!}
-                  <div class="input-group-append">
-                    <button type="button" class="btn btn-primary" id="btn-fund-select"><i class="fa fa-arrow-right"></i></button>
-                  </div>
-                </div>
-              </div>
-              <div class="col-auto">
-                <div class="btn-group float-right" role="group" aria-label="">
-                  <a type="button" class="btn btn-primary" target="_blank" href="{{ route('report.fund', ['fundId' => $fund->id]) }}"><i class="fa fa-file-pdf"></i></a>
-                  <button type="button" class="btn btn-primary" id="btn-meeting-table-deposits"><i class="fa fa-user-times"></i></button>
-                  <button type="button" class="btn btn-primary" id="btn-meeting-table-refresh"><i class="fa fa-sync"></i></button>
-                </div>
-              </div>
+@extends('report.layout')
+
+@section('page-title', 'Siak Tontine')
+
+@section('content')
+          <div class="row">
+            <div class="col-auto">
+              <h3>{{ $tontine->name }}</h3>
+            </div>
+            <div class="col">
+              <h3 class="float-right">{{ $tontine->country->name }}</h3>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col d-flex justify-content-center flex-nowrap">
+              <h4>{{ $fund->title }}</h4>
             </div>
           </div>
 
-          <div class="card shadow mb-4">
-            <div class="card-body" id="content-page">
+          <div class="row mt-5">
+            <div class="col">
+              <h5 class="section-title">{{ __('figures.titles.amounts') }} ({{ $tontine->currency->symbol() }})</h5>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col" id="content-page">
               <div class="table-responsive">
                 <table class="table table-bordered">
                   <thead>
@@ -90,3 +92,46 @@
               </div>
             </div>
           </div>
+
+          <div class="section-body pagebreak">
+            <div class="row">
+              <div class="col">
+                <h5 class="section-title">{{ __('meeting.titles.deposits') }} ({{ $tontine->currency->symbol() }})</h5>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col" id="content-page">
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>{{ $fund->title }}</th>
+@foreach($sessions as $session)
+                      <th>
+                        {{ $session->abbrev }}
+                      </th>
+@endforeach
+                    </tr>
+                  </thead>
+                  <tbody>
+@foreach ($subscriptions as $subscription)
+                    <tr class="no-pagebreak">
+                      <td rowspan="2">{{ $subscription->member->name }}</td>
+@foreach($sessions as $session)
+                      <td class="currency"><b>{{ $subscription->receivables[$session->id]->deposit ? $fund->money('amount', true) : ($session->opened ? 0 : '') }}</b></td>
+@endforeach
+                    </tr>
+                    <tr>
+@foreach($sessions as $session)
+                      <td class="currency">{{ $session->disabled($fund) ? '' : $fund->money('amount', true) }}</td>
+@endforeach
+                    </tr>
+@endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+@endsection

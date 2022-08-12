@@ -32,6 +32,16 @@ class Currency extends Model
     }
 
     /**
+     * Get the currency symbol
+     *
+     * @return string
+     */
+    public static function symbol(): string
+    {
+        return self::$current->options->symbol->value;
+    }
+
+    /**
      * Indicates if the model should be timestamped.
      *
      * @var bool

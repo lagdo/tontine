@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use HeadlessChromium\BrowserFactory;
+use HeadlessChromium\Browser;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +31,7 @@ use Siak\Tontine\Validation\Meeting\RemittanceValidator;
 use Siak\Tontine\Validation\Planning\FundValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 
-// use Siak\Tontine\Gateway\PaymentGateway;
+use function config;
 
 class SiakServiceProvider extends ServiceProvider
 {
@@ -76,9 +78,10 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(RemittanceValidator::class, RemittanceValidator::class);
         $this->app->singleton(SessionValidator::class, SessionValidator::class);
 
-        /*$this->app->resolving(PaymentGateway::class, function(PaymentGateway $gateway) {
-            $gateway->setServerUrl(env('HOST_WEB_PAYMENT'));
+        $this->app->singleton(Browser::class, function($app) {
+            $browserFactory = new BrowserFactory();
+            // Starts headless chrome
+            return $browserFactory->createBrowser(config('chrome.browser', []));
         });
-        $this->app->singleton(PaymentGateway::class, PaymentGateway::class);*/
     }
 }
