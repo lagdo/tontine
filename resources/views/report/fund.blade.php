@@ -2,6 +2,15 @@
 
 @section('page-title', 'Siak Tontine')
 
+@section('css')
+  <style>
+    @page {
+      size: A4 landscape;
+      /*margin: 0;*/
+    }
+  </style>
+@endsection
+
 @section('content')
           <div class="row">
             <div class="col-auto">
