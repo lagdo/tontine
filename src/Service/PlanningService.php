@@ -134,7 +134,7 @@ class PlanningService
         {
             if($session->disabled($fund) || $session->pending)
             {
-                $achievedFigures[$session->id] = $this->makeFigures('');
+                $achievedFigures[$session->id] = $this->makeFigures('&nbsp;');
                 continue;
             }
 
