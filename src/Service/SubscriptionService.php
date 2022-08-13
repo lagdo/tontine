@@ -10,10 +10,6 @@ use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
 
-use function array_diff;
-use function array_merge;
-use function in_array;
-
 class SubscriptionService
 {
     use Events\DebtEventTrait;
