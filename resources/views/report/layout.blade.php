@@ -15,10 +15,6 @@
   <link rel="stylesheet" href="/tpl/assets/css/style.css">
 
   <style>
-    @page {
-      size: A4 landscape;
-      /*margin: 0;*/
-    }
     @media print {
       .pagebreak {
         page-break-before: always;
@@ -63,6 +59,8 @@
       height: 120px;
     }
   </style>
+
+@yield('css')
 </head>
 
 <body>

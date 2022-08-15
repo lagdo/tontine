@@ -78,8 +78,8 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(RemittanceValidator::class, RemittanceValidator::class);
         $this->app->singleton(SessionValidator::class, SessionValidator::class);
 
-        $this->app->singleton(Browser::class, function($app) {
-            $browserFactory = new BrowserFactory();
+        $this->app->singleton(Browser::class, function() {
+            $browserFactory = new BrowserFactory(config('chrome.binary'));
             // Starts headless chrome
             return $browserFactory->createBrowser(config('chrome.browser', []));
         });

@@ -31,6 +31,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function()
     //----------------------------------
     Route::get('/report/fund/{fundId}', [ReportController::class, 'fund'])
         ->name('report.fund')->middleware(['auth', TontineTenant::class]);
+    Route::get('/report/session/{sessionId}', [ReportController::class, 'session'])
+        ->name('report.session')->middleware(['auth', TontineTenant::class]);
 });
 
 // Logout
