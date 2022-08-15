@@ -8,8 +8,8 @@ return [
     'page' => [
         'landscape'           => true,             // default to false
         'printBackground'     => true,             // default to false
+        'preferCSSPageSize'   => true,             // default to false (reads parameters directly from @page)
         // 'displayHeaderFooter' => true,             // default to false
-        // 'preferCSSPageSize'   => true,             // default to false (reads parameters directly from @page)
         // 'marginTop'           => 0.0,              // defaults to ~0.4 (must be a float, value in inches)
         // 'marginBottom'        => 1.4,              // defaults to ~0.4 (must be a float, value in inches)
         // 'marginLeft'          => 5.0,              // defaults to ~0.4 (must be a float, value in inches)

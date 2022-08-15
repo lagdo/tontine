@@ -12,7 +12,7 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>{!! __('common.labels.title') !!}</th>
+                          <th>{!! __('meeting.labels.member') !!}</th>
                           <th>{!! __('common.labels.amount') !!}</th>
                           <th>{!! __('common.labels.price') !!}</th>
                           <th>&nbsp;</th>

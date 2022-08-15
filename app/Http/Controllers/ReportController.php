@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use HeadlessChromium\Browser;
+use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Service\SubscriptionService;
 use Siak\Tontine\Service\MeetingService;
 use Siak\Tontine\Service\FeeSettlementService;
@@ -74,19 +75,29 @@ class ReportController extends Controller
      */
     public function session(Request $request, Browser $browser,
         MeetingService $meetingService, FeeSettlementService $feeSettlementService,
-        FineSettlementService $fineSettlementService, int $sessionId)
+        FineSettlementService $fineSettlementService, BiddingService $biddingService,
+        RefundService $refundService, int $sessionId)
     {
         $tontine = $meetingService->getTontine();
         $session = $meetingService->getSession($sessionId);
+        $summary = $meetingService->getFundsSummary($session);
 
         $html = view('report.session', [
             'tontine' => $tontine,
             'session' => $session,
-            'receivables' => $meetingService->getFundsWithReceivables($session),
-            'payables' => $meetingService->getFundsWithPayables($session),
-            'summary' => $meetingService->getFundsSummary($session),
+            'deposits' => [
+                'session' => $session,
+                'funds' => $meetingService->getFundsWithReceivables($session),
+                'summary' => $summary['receivables'],
+                'sum' => $summary['sum']['receivables'],
+            ],
+            'remittances' => [
+                'session' => $session,
+                'funds' => $meetingService->getFundsWithPayables($session),
+                'summary' => $summary['payables'],
+                'sum' => $summary['sum']['payables'],
+            ],
             'fees' => [
-                'tontine' => $tontine,
                 'session' => $session,
                 'fees' => $meetingService->getFees($session),
                 'settlements' => [
@@ -101,7 +112,6 @@ class ReportController extends Controller
                 'summary' => $meetingService->getFeesSummary($session),
             ],
             'fines' => [
-                'tontine' => $tontine,
                 'session' => $session,
                 'fines' => $meetingService->getFines($session),
                 'settlements' => [
@@ -116,6 +126,23 @@ class ReportController extends Controller
                 'summary' => $meetingService->getFinesSummary($session),
             ],
         ]);
+
+        /*if($tontine->is_financial)
+        {
+            [$biddings, $sum] = $biddingService->getSessionBiddings($session);
+            $amountAvailable = $biddingService->getAmountAvailable($session);
+            $html->with('biddings', [
+                'session' => $session,
+                'biddings' => $biddings,
+                'sum' => $sum,
+                'amountAvailable' => Currency::format($amountAvailable),
+            ]);
+            $html->with('refunds', [
+                'session' => $session,
+                'biddings' => $refundService->getBiddings($session, true),
+                'refundSum' => $refundService->getRefundSum($session),
+            ]);
+        }*/
 
         // Show the html page
         if($request->has('html'))
