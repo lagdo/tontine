@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 use Siak\Tontine\Model\Bidding;
@@ -42,21 +43,38 @@ class RefundService
      *
      * @return mixed
      */
-    private function getBiddingQuery(Session $session, ?bool $refunded)
+    private function _getBiddingQuery(Session $session)
     {
         // Get the biddings of the previous sessions.
         $sessionIds = $this->tenantService->round()->sessions()
             ->where('start_at', '<', $session->start_at)->pluck('id');
-        $biddings = Bidding::whereIn('session_id', $sessionIds);
+        return Bidding::whereIn('session_id', $sessionIds);
+    }
+
+    /**
+     * @param Session $session The session
+     * @param bool $refunded
+     *
+     * @return mixed
+     */
+    private function getBiddingQuery(Session $session, ?bool $refunded)
+    {
         if($refunded === false)
         {
-            $biddings->whereDoesntHave('refund');
+            // Bids with no refund.
+            return $this->_getBiddingQuery($session)->whereDoesntHave('refund');
         }
-        elseif($refunded === true)
+        $filter = function(Builder $query) use($session) {
+            $query->where('session_id', $session->id);
+        };
+        if($refunded === true)
         {
-            $biddings->whereHas('refund');
+            // Bids with refund on the current session.
+            return $this->_getBiddingQuery($session)->whereHas('refund', $filter);
         }
-        return $biddings;
+        // The union of the two above queries.
+        return $this->_getBiddingQuery($session)->whereDoesntHave('refund')
+            ->union($this->_getBiddingQuery($session)->whereHas('refund', $filter));
     }
 
     /**
