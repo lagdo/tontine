@@ -1,8 +1,8 @@
 {
-    "name": "laravel/laravel",
+    "name": "lagdo/tontine",
     "type": "project",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "description": "An online tontine management application.",
+    "keywords": ["tontine"],
     "license": "MIT",
     "require": {
         "php": "^7.4|^8.0",
