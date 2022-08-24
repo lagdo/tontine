@@ -6,7 +6,9 @@
               <div class="col-sm-4">
                 <div class="btn-group float-right" role="group" aria-label="">
                   <button type="button" class="btn btn-primary" id="btn-cancel"><i class="fa fa-arrow-left"></i></button>
+@if($useFaker)
                   <button type="button" class="btn btn-primary" id="btn-fakes"><i class="fa fa-fill"></i></button>
+@endif
                   <button type="button" class="btn btn-primary" id="btn-save"><i class="fa fa-save"></i></button>
                 </div>
               </div>
@@ -20,17 +22,17 @@
                 <form class="form-horizontal" role="form" id="member-form">
                   <div class="module-body">
                     <div class="form-group row">
-                      {!! Form::label('gender', '&nbsp;', ['class' => 'col-sm-1 col-form-label']) !!}
-                      {!! Form::label('name', trans('common.labels.name'), ['class' => 'col-sm-4 col-form-label']) !!}
+                      {!! Form::label('gender', '&nbsp;', ['class' => 'col-sm-2 col-form-label']) !!}
+                      {!! Form::label('name', trans('common.labels.name'), ['class' => 'col-sm-3 col-form-label']) !!}
                       {!! Form::label('email', trans('common.labels.email'), ['class' => 'col-sm-4 col-form-label']) !!}
                       {!! Form::label('phone', trans('common.labels.phone'), ['class' => 'col-sm-3 col-form-label']) !!}
                     </div>
 @for($i = 0; $i < $count; $i++)
                     <div class="form-group row">
-                      <div class="col-sm-1">
+                      <div class="col-sm-2" style="width:30px">
                         {!! Form::select('members[' . $i . '][gender]', $genders, '', ['class' => 'form-control', 'id' => "member_gender_$i"]) !!}
                       </div>
-                      <div class="col-sm-4">
+                      <div class="col-sm-3">
                         {!! Form::text('members[' . $i . '][name]', '', ['class' => 'form-control', 'id' => "member_name_$i"]) !!}
                       </div>
                       <div class="col-sm-4">

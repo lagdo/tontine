@@ -5,12 +5,13 @@ namespace App\Ajax\App\Planning;
 use Siak\Tontine\Service\FundService;
 use Siak\Tontine\Validation\Planning\FundValidator;
 use App\Ajax\CallableClass;
+use App\Ajax\App\Faker;
 
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
-use function intval;
 use function Jaxon\jq;
 use function Jaxon\pm;
+use function config;
 use function trans;
 
 class Fund extends CallableClass
@@ -19,7 +20,7 @@ class Fund extends CallableClass
      * @di
      * @var FundService
      */
-    public FundService $fundService;
+    protected FundService $fundService;
 
     /**
      * @var FundValidator
@@ -116,27 +117,16 @@ class Fund extends CallableClass
         $this->dialog->hide();
         $this->bag('faker')->set('fund.count', $count);
 
-        $html = $this->view()->render('pages.planning.fund.add')->with('count', $count);
+        $useFaker = config('jaxon.app.faker');
+        $html = $this->view()->render('pages.planning.fund.add')
+            ->with('useFaker', $useFaker)
+            ->with('count', $count);
         $this->response->html('content-home', $html);
         $this->jq('#btn-cancel')->click($this->rq()->home());
-        $this->jq('#btn-fakes')->click($this->rq()->fakes());
         $this->jq('#btn-save')->click($this->rq()->create(pm()->form('fund-form')));
-
-        return $this->response;
-    }
-
-    /**
-     * @databag faker
-     */
-    public function fakes()
-    {
-        $count = intval($this->bag('faker')->get('fund.count'));
-        $funds = $this->fundService->getFakeFunds($count);
-        for($i = 0; $i < $count; $i++)
+        if($useFaker)
         {
-            $this->jq("#fund_title_$i")->val($funds[$i]->title);
-            $this->jq("#fund_amount_$i")->val($funds[$i]->amount);
-            $this->jq("#fund_notes_$i")->val($funds[$i]->notes);
+            $this->jq('#btn-fakes')->click($this->cl(Faker::class)->rq()->funds());
         }
 
         return $this->response;

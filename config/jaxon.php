@@ -2,6 +2,7 @@
 
 return [
     'app' => [
+        'faker' => true,
         /*'request' => [
             'route' => 'ajax',
         ],*/

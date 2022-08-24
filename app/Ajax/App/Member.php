@@ -8,6 +8,7 @@ use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
+use function config;
 use function trans;
 
 class Member extends CallableClass
@@ -16,12 +17,12 @@ class Member extends CallableClass
      * @di
      * @var MemberService
      */
-    public MemberService $memberService;
+    protected MemberService $memberService;
 
     /**
      * @var MemberValidator
      */
-    public MemberValidator $validator;
+    protected MemberValidator $validator;
 
     /**
      * @databag member
@@ -98,30 +99,17 @@ class Member extends CallableClass
         $this->dialog->hide();
         $this->bag('faker')->set('member.count', $count);
 
+        $useFaker = config('jaxon.app.faker');
         $html = $this->view()->render('pages.member.add')
+            ->with('useFaker', $useFaker)
             ->with('count', $count)
             ->with('genders', $this->memberService->getGenders());
         $this->response->html('content-home', $html);
         $this->jq('#btn-cancel')->click($this->rq()->home());
-        $this->jq('#btn-fakes')->click($this->rq()->fakes());
         $this->jq('#btn-save')->click($this->rq()->create(pm()->form('member-form')));
-
-        return $this->response;
-    }
-
-    /**
-     * @databag faker
-     */
-    public function fakes()
-    {
-        $count = intval($this->bag('faker')->get('member.count'));
-        $members = $this->memberService->getFakeMembers($count);
-        for($i = 0; $i < $count; $i++)
+        if($useFaker)
         {
-            $this->jq("#member_gender_$i")->val($members[$i]->gender);
-            $this->jq("#member_name_$i")->val($members[$i]->name);
-            $this->jq("#member_email_$i")->val($members[$i]->email);
-            $this->jq("#member_phone_$i")->val($members[$i]->phone);
+            $this->jq('#btn-fakes')->click($this->cl(Faker::class)->rq()->members());
         }
 
         return $this->response;

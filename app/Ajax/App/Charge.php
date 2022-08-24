@@ -8,8 +8,8 @@ use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
+use function config;
 use function trans;
-use function intval;
 
 class Charge extends CallableClass
 {
@@ -17,12 +17,12 @@ class Charge extends CallableClass
      * @di
      * @var ChargeService
      */
-    public ChargeService $chargeService;
+    protected ChargeService $chargeService;
 
     /**
      * @var ChargeValidator
      */
-    public ChargeValidator $validator;
+    protected ChargeValidator $validator;
 
     /**
      * @databag charge
@@ -102,31 +102,20 @@ class Charge extends CallableClass
         $this->dialog->hide();
         $this->bag('faker')->set('charge.count', $count);
 
+        $useFaker = config('jaxon.app.faker');
         $types = ['Frais', 'Amende'];
         $periods = ['Aucune', 'Unique', 'Année', 'Séance'];
-        $html = $this->view()->render('pages.charge.add')->with('count', $count)
-            ->with('types', $types)->with('periods', $periods);
+        $html = $this->view()->render('pages.charge.add')
+            ->with('useFaker', $useFaker)
+            ->with('count', $count)
+            ->with('types', $types)
+            ->with('periods', $periods);
         $this->response->html('content-home', $html);
         $this->jq('#btn-cancel')->click($this->rq()->home());
-        $this->jq('#btn-fakes')->click($this->rq()->fakes());
         $this->jq('#btn-save')->click($this->rq()->create(pm()->form('charge-form')));
-
-        return $this->response;
-    }
-
-    /**
-     * @databag faker
-     */
-    public function fakes()
-    {
-        $count = intval($this->bag('faker')->get('charge.count'));
-        $charges = $this->chargeService->getFakeCharges($count);
-        for($i = 0; $i < $count; $i++)
+        if($useFaker)
         {
-            $this->jq("#charge_type_$i")->val($charges[$i]->type);
-            $this->jq("#charge_period_$i")->val($charges[$i]->period);
-            $this->jq("#charge_name_$i")->val($charges[$i]->name);
-            $this->jq("#charge_amount_$i")->val($charges[$i]->amount);
+            $this->jq('#btn-fakes')->click($this->cl(Faker::class)->rq()->charges());
         }
 
         return $this->response;
