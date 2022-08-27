@@ -1,7 +1,7 @@
           <div class="section-body">
             <div class="row align-items-center">
               <div class="col-sm-8">
-                <h2 class="section-title">{{ __('tontine.charge.labels.add') }}</h2>
+                <h2 class="section-title">{{ __('tontine.charge.titles.add') }}</h2>
               </div>
               <div class="col-sm-4">
                 <div class="btn-group float-right" role="group" aria-label="">
