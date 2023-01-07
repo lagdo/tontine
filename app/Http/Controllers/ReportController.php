@@ -9,7 +9,7 @@ use Siak\Tontine\Service\SubscriptionService;
 use Siak\Tontine\Service\MeetingService;
 use Siak\Tontine\Service\FeeSettlementService;
 use Siak\Tontine\Service\FineSettlementService;
-use Siak\Tontine\Service\BiddingService;
+use Siak\Tontine\Service\LoanService;
 use Siak\Tontine\Service\RefundService;
 
 use function config;
@@ -75,7 +75,7 @@ class ReportController extends Controller
      */
     public function session(Request $request, Browser $browser,
         MeetingService $meetingService, FeeSettlementService $feeSettlementService,
-        FineSettlementService $fineSettlementService, BiddingService $biddingService,
+        FineSettlementService $fineSettlementService, LoanService $loanService,
         RefundService $refundService, int $sessionId)
     {
         $tontine = $meetingService->getTontine();
@@ -129,17 +129,17 @@ class ReportController extends Controller
 
         /*if($tontine->is_financial)
         {
-            [$biddings, $sum] = $biddingService->getSessionBiddings($session);
-            $amountAvailable = $biddingService->getAmountAvailable($session);
-            $html->with('biddings', [
+            [$loans, $sum] = $loanService->getSessionLoans($session);
+            $amountAvailable = $loanService->getAmountAvailable($session);
+            $html->with('loans', [
                 'session' => $session,
-                'biddings' => $biddings,
+                'loans' => $loans,
                 'sum' => $sum,
                 'amountAvailable' => Currency::format($amountAvailable),
             ]);
             $html->with('refunds', [
                 'session' => $session,
-                'biddings' => $refundService->getBiddings($session, true),
+                'loans' => $refundService->getLoans($session, true),
                 'refundSum' => $refundService->getRefundSum($session),
             ]);
         }*/

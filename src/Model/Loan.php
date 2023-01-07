@@ -4,7 +4,7 @@ namespace Siak\Tontine\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Bidding extends Model
+class Loan extends Model
 {
     /**
      * Indicates if the model should be timestamped.
@@ -19,14 +19,9 @@ class Bidding extends Model
      * @var array
      */
     protected $fillable = [
-        'amount_bid',
-        'amount_paid',
+        'amount',
+        'interest',
     ];
-
-    public function getAmountAttribute()
-    {
-        return Currency::format($this->amount_bid);
-    }
 
     public function session()
     {

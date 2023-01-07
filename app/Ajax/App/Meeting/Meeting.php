@@ -5,7 +5,7 @@ namespace App\Ajax\App\Meeting;
 use Siak\Tontine\Service\MeetingService;
 use Siak\Tontine\Service\FeeSettlementService;
 use Siak\Tontine\Service\FineSettlementService;
-use Siak\Tontine\Service\BiddingService;
+use Siak\Tontine\Service\LoanService;
 use Siak\Tontine\Service\RefundService;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
@@ -36,9 +36,9 @@ class Meeting extends CallableClass
     protected FineSettlementService $fineSettlementService;
 
     /**
-     * @var BiddingService
+     * @var LoanService
      */
-    protected BiddingService $biddingService;
+    protected LoanService $loanService;
 
     /**
      * @var RefundService
@@ -77,7 +77,7 @@ class Meeting extends CallableClass
 
         $this->jq('#btn-session-back')->click($this->cl(Session::class)->rq()->home());
         $this->jq('#btn-session-refresh')->click($this->rq()->pools());
-        $this->jq('#btn-session-bids')->click($this->rq()->bids());
+        $this->jq('#btn-session-loans')->click($this->rq()->loans());
         $this->jq('#btn-session-charges')->click($this->rq()->charges());
         $this->jq('#btn-session-open')->click($this->rq()->open()
             ->confirm(trans('tontine.session.questions.open')));
@@ -92,25 +92,25 @@ class Meeting extends CallableClass
     }
 
     /**
-     * @di $biddingService
+     * @di $loanService
      * @di $refundService
      */
-    public function bids()
+    public function loans()
     {
-        $html = $this->view()->render('pages.meeting.session.bids', [
+        $html = $this->view()->render('pages.meeting.session.loans', [
             'tontine' => $this->meetingService->getTontine(),
             'session' => $this->session,
         ]);
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-session-back')->click($this->cl(Session::class)->rq()->home());
-        $this->jq('#btn-session-refresh')->click($this->rq()->bids());
+        $this->jq('#btn-session-refresh')->click($this->rq()->loans());
         $this->jq('#btn-session-pools')->click($this->rq()->pools());
         $this->jq('#btn-session-charges')->click($this->rq()->charges());
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 
-        $this->cl(Financial\Bidding::class)->show($this->session, $this->biddingService);
+        $this->cl(Financial\Loan::class)->show($this->session, $this->loanService);
         $this->cl(Financial\Refund::class)->show($this->session, $this->refundService);
 
         return $this->response;
@@ -131,7 +131,7 @@ class Meeting extends CallableClass
         $this->jq('#btn-session-back')->click($this->cl(Session::class)->rq()->home());
         $this->jq('#btn-session-refresh')->click($this->rq()->charges());
         $this->jq('#btn-session-pools')->click($this->rq()->pools());
-        $this->jq('#btn-session-bids')->click($this->rq()->bids());
+        $this->jq('#btn-session-loans')->click($this->rq()->loans());
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 

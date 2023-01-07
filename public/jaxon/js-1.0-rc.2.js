@@ -225,8 +225,8 @@ App.Ajax.App.Meeting.Meeting.home = function() {
 App.Ajax.App.Meeting.Meeting.pools = function() {
     return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Meeting', jxnmthd: 'pools' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Meeting.bids = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Meeting', jxnmthd: 'bids' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Meeting.loans = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Meeting', jxnmthd: 'loans' }, { parameters: arguments, bags: ["meeting"] });
 };
 App.Ajax.App.Meeting.Meeting.charges = function() {
     return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Meeting', jxnmthd: 'charges' }, { parameters: arguments, bags: ["meeting"] });
@@ -358,18 +358,18 @@ App.Ajax.App.Meeting.Charge.Settlement.addSettlement = function() {
 App.Ajax.App.Meeting.Charge.Settlement.delSettlement = function() {
     return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Charge.Settlement', jxnmthd: 'delSettlement' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Financial.Bidding = {};
-App.Ajax.App.Meeting.Financial.Bidding.home = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Bidding', jxnmthd: 'home' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Financial.Loan = {};
+App.Ajax.App.Meeting.Financial.Loan.home = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Loan', jxnmthd: 'home' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Financial.Bidding.addBidding = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Bidding', jxnmthd: 'addBidding' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Financial.Loan.addLoan = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Loan', jxnmthd: 'addLoan' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Financial.Bidding.saveBidding = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Bidding', jxnmthd: 'saveBidding' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Financial.Loan.saveLoan = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Loan', jxnmthd: 'saveLoan' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Financial.Bidding.deleteBidding = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Bidding', jxnmthd: 'deleteBidding' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Financial.Loan.deleteLoan = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Loan', jxnmthd: 'deleteLoan' }, { parameters: arguments, bags: ["meeting"] });
 };
 App.Ajax.App.Meeting.Mutual.Remittance = {};
 App.Ajax.App.Meeting.Mutual.Remittance.home = function() {

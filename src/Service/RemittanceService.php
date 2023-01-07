@@ -109,18 +109,18 @@ class RemittanceService
      * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $payableId
-     * @param int $amountPaid
+     * @param int $interest
      *
      * @return void
      */
-    public function createRemittance(Pool $pool, Session $session, int $payableId, int $amountPaid = 0): void
+    public function createRemittance(Pool $pool, Session $session, int $payableId, int $interest = 0): void
     {
         $payable = $this->getPayable($pool, $session, $payableId);
         if(!$payable || $payable->remittance)
         {
             return;
         }
-        $payable->remittance()->create(['paid_at' => now(), 'amount_paid' => $amountPaid]);
+        $payable->remittance()->create(['paid_at' => now(), 'interest' => $interest]);
     }
 
     /**

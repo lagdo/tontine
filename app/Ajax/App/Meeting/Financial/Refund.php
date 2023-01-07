@@ -65,25 +65,25 @@ class Refund extends CallableClass
     {
         if($pageNumber < 1)
         {
-            $pageNumber = $this->bag('meeting')->get('bidding.page', 1);
+            $pageNumber = $this->bag('meeting')->get('loan.page', 1);
         }
-        $this->bag('meeting')->set('bidding.page', $pageNumber);
+        $this->bag('meeting')->set('loan.page', $pageNumber);
 
-        $refunded = $this->bag('meeting')->get('bidding.filter', null);
-        $biddingCount = $this->refundService->getBiddingCount($this->session, $refunded);
+        $refunded = $this->bag('meeting')->get('loan.filter', null);
+        $loanCount = $this->refundService->getLoanCount($this->session, $refunded);
         $html = $this->view()->render('pages.meeting.refund.page', [
             'session' => $this->session,
-            'biddings' => $this->refundService->getBiddings($this->session, $refunded, $pageNumber),
-            'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $biddingCount),
+            'loans' => $this->refundService->getLoans($this->session, $refunded, $pageNumber),
+            'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $loanCount),
         ]);
         if($this->session->closed)
         {
             $html->with('refundSum', $this->refundService->getRefundSum($this->session));
         }
-        $this->response->html('meeting-biddings-page', $html);
+        $this->response->html('meeting-loans-page', $html);
 
-        $biddingId = jq()->parent()->attr('data-bidding-id')->toInt();
-        $this->jq('.btn-add-refund')->click($this->rq()->create($biddingId));
+        $loanId = jq()->parent()->attr('data-loan-id')->toInt();
+        $this->jq('.btn-add-refund')->click($this->rq()->create($loanId));
         $refundId = jq()->parent()->attr('data-refund-id')->toInt();
         $this->jq('.btn-del-refund')->click($this->rq()->delete($refundId));
 
@@ -92,17 +92,17 @@ class Refund extends CallableClass
 
     public function toggleFilter()
     {
-        $refunded = $this->bag('meeting')->get('bidding.filter', null);
+        $refunded = $this->bag('meeting')->get('loan.filter', null);
         // Switch between null, true and false
         $refunded = $refunded === null ? true : ($refunded === true ? false : null);
-        $this->bag('meeting')->set('bidding.filter', $refunded);
+        $this->bag('meeting')->set('loan.filter', $refunded);
 
         return $this->page(1);
     }
 
-    public function create(int $biddingId)
+    public function create(int $loanId)
     {
-        $this->refundService->createRefund($this->session, $biddingId);
+        $this->refundService->createRefund($this->session, $loanId);
 
         return $this->page();
     }

@@ -5,7 +5,7 @@ namespace Siak\Tontine\Service;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-use Siak\Tontine\Model\Bidding;
+use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Member;
@@ -15,7 +15,7 @@ use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Refund;
 use stdClass;
 
-class BiddingService
+class LoanService
 {
     /**
      * @var TenantService
@@ -120,16 +120,16 @@ class BiddingService
      * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $subscriptionId
-     * @param int $amountPaid
+     * @param int $interest
      *
      * @return void
      */
-    public function createRemittance(Pool $pool, Session $session, int $subscriptionId, int $amountPaid): void
+    public function createRemittance(Pool $pool, Session $session, int $subscriptionId, int $interest): void
     {
         $subscription = $pool->subscriptions()->find($subscriptionId);
-        DB::transaction(function() use($pool, $session, $subscription, $amountPaid) {
+        DB::transaction(function() use($pool, $session, $subscription, $interest) {
             $this->subscriptionService->setPayableSession($session, $subscription);
-            $this->remittanceService->createRemittance($pool, $session, $subscription->payable->id, $amountPaid);
+            $this->remittanceService->createRemittance($pool, $session, $subscription->payable->id, $interest);
         });
     }
 
@@ -152,55 +152,55 @@ class BiddingService
     }
 
     /**
-     * Get the bids for a given session.
+     * Get the loans for a given session.
      *
      * @param Session $session    The session
      * @param int $page
      *
      * @return Collection
      */
-    public function getBiddings(Session $session, int $page = 0): Collection
+    public function getLoans(Session $session, int $page = 0): Collection
     {
-        $biddings = $session->biddings()->with('member');
+        $loans = $session->loans()->with('member');
         if($page > 0 )
         {
-            $biddings->take($this->tenantService->getLimit());
-            $biddings->skip($this->tenantService->getLimit() * ($page - 1));
+            $loans->take($this->tenantService->getLimit());
+            $loans->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $biddings->get();
+        return $loans->get();
     }
 
     /**
-     * Create a bidding.
+     * Create a loan.
      *
      * @param Session $session The session
      * @param Member $member The member
-     * @param int $amountBid
-     * @param int $amountPaid
+     * @param int $amount
+     * @param int $interest
      *
      * @return void
      */
-    public function createBidding(Session $session, Member $member, int $amountBid, int $amountPaid): void
+    public function createLoan(Session $session, Member $member, int $amount, int $interest): void
     {
-        $bidding = new Bidding();
-        $bidding->amount_bid = $amountBid;
-        $bidding->amount_paid = $amountPaid;
-        $bidding->member()->associate($member);
-        $bidding->session()->associate($session);
-        $bidding->save();
+        $loan = new Loan();
+        $loan->amount = $amount;
+        $loan->interest = $interest;
+        $loan->member()->associate($member);
+        $loan->session()->associate($session);
+        $loan->save();
     }
 
     /**
-     * Delete a bidding.
+     * Delete a loan.
      *
      * @param Session $session The session
-     * @param int $biddingId
+     * @param int $loanId
      *
      * @return void
      */
-    public function deleteBidding(Session $session, int $biddingId): void
+    public function deleteLoan(Session $session, int $loanId): void
     {
-        $session->biddings()->where('id', $biddingId)->delete();
+        $session->loans()->where('id', $loanId)->delete();
     }
 
     /**
@@ -220,7 +220,7 @@ class BiddingService
     }
 
     /**
-     * Get the amount available for bidding.
+     * Get the amount available for loan.
      *
      * @param Session $session    The session
      *
@@ -231,54 +231,54 @@ class BiddingService
         // Get the ids of all the sessions until the current one.
         $sessionIds = $this->tenantService->round()->sessions()
             ->where('start_at', '<=', $session->start_at)->pluck('id');
-        // The amount available for bidding is the sum of the amounts paid for remittances,
-        // the amounts paid in the biddings, and the refunds, for all the sessions.
+        // The amount available for loan is the sum of the amounts paid for remittances,
+        // the amounts paid in the loans, and the refunds, for all the sessions.
         $payableIds = Payable::whereIn('session_id', $sessionIds)->pluck('id');
 
-        return Remittance::whereIn('payable_id', $payableIds)->sum('amount_paid') +
-            Bidding::whereIn('session_id', $sessionIds)->get()
-                ->reduce(function($sum, $bidding) {
-                    return $sum + $bidding->amount_paid - $bidding->amount_bid;
+        return Remittance::whereIn('payable_id', $payableIds)->sum('interest') +
+            Loan::whereIn('session_id', $sessionIds)->get()
+                ->reduce(function($sum, $loan) {
+                    return $sum + $loan->interest - $loan->amount;
                 }, 0) +
             Refund::whereIn('session_id', $sessionIds)
-                ->with('bidding')->get()->sum('bidding.amount_bid');
+                ->with('loan')->get()->sum('loan.amount');
     }
 
     /**
-     * Get all the cash biddings of a given session
+     * Get all the cash loans of a given session
      *
      * @param Session $session
      * @return array
      */
-    public function getSessionBiddings(Session $session): array
+    public function getSessionLoans(Session $session): array
     {
         $payables = $this->getSessionPayables($session);
 
         $paidSum = 0;
-        $poolBiddings = $payables->map(function($payable) use(&$paidSum) {
-            $amountPaid = $payable->remittance->amount_paid ?? 0;
-            $paidSum += $amountPaid;
+        $poolLoans = $payables->map(function($payable) use(&$paidSum) {
+            $interest = $payable->remittance->interest ?? 0;
+            $paidSum += $interest;
             return (object)[
                 'id' => 0, // $payable->subscription->id,
                 'title' => $payable->subscription->member->name,
                 'amount' => Currency::format($payable->amount),
-                'paid' => Currency::format($amountPaid),
+                'paid' => Currency::format($interest),
             ];
         });
-        $bidSum = 0;
-        $cashBiddings = $this->getBiddings($session)->map(function($bidding) use(&$bidSum, &$paidSum) {
-            $bidSum += $bidding->amount_bid;
-            $paidSum += $bidding->amount_paid;
+        $loanSum = 0;
+        $cashLoans = $this->getLoans($session)->map(function($loan) use(&$loanSum, &$paidSum) {
+            $loanSum += $loan->amount;
+            $paidSum += $loan->interest;
             return (object)[
-                'id' => $bidding->id,
-                'title' => $bidding->member->name,
-                'amount' => Currency::format($bidding->amount_bid),
-                'paid' => Currency::format($bidding->amount_paid),
+                'id' => $loan->id,
+                'title' => $loan->member->name,
+                'amount' => Currency::format($loan->amount),
+                'paid' => Currency::format($loan->interest),
             ];
         });
 
-        return [$poolBiddings->merge($cashBiddings),
-            ['bid' => Currency::format($bidSum), 'paid' => Currency::format($paidSum)]];
+        return [$poolLoans->merge($cashLoans),
+            ['loan' => Currency::format($loanSum), 'paid' => Currency::format($paidSum)]];
     }
 
     /**

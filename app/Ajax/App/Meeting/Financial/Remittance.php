@@ -4,7 +4,7 @@ namespace App\Ajax\App\Meeting\Financial;
 
 use App\Ajax\App\Meeting\Pool;
 use App\Ajax\CallableClass;
-use Siak\Tontine\Service\BiddingService;
+use Siak\Tontine\Service\LoanService;
 use Siak\Tontine\Validation\Meeting\RemittanceValidator;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Pool as PoolModel;
@@ -20,9 +20,9 @@ class Remittance extends CallableClass
 {
     /**
      * @di
-     * @var BiddingService
+     * @var LoanService
      */
-    protected BiddingService $biddingService;
+    protected LoanService $loanService;
 
     /**
      * @var RemittanceValidator
@@ -46,11 +46,11 @@ class Remittance extends CallableClass
     {
         // Get session
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->biddingService->getSession($sessionId);
+        $this->session = $this->loanService->getSession($sessionId);
         // Get pool
         $poolId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('pool.id');
-        $this->pool = $this->biddingService->getPool($poolId);
+        $this->pool = $this->loanService->getPool($poolId);
         if($this->session->disabled($this->pool))
         {
             $this->notify->error(trans('tontine.session.errors.disabled'), trans('common.titles.error'));
@@ -62,7 +62,7 @@ class Remittance extends CallableClass
     {
         $this->bag('meeting')->set('pool.id', $poolId);
 
-        $figures = $this->biddingService->getRemittanceFigures($this->pool, $this->session->id);
+        $figures = $this->loanService->getRemittanceFigures($this->pool, $this->session->id);
         $payables = $figures->payables
             ->map(function($payable) use($figures) {
                 return (object)[
@@ -74,7 +74,7 @@ class Remittance extends CallableClass
                 ];
             })->pad($figures->count, (object)[
                 'id' => 0,
-                'title' => '** ' . trans('figures.bidding.titles.available') . ' **',
+                'title' => '** ' . trans('figures.loan.titles.available') . ' **',
                 'amount' => $figures->amount,
                 'paid' => 0,
                 'available' => true,
@@ -96,8 +96,8 @@ class Remittance extends CallableClass
 
     public function addRemittance()
     {
-        $members = $this->biddingService->getSubscriptions($this->pool);
-        $title = trans('tontine.bidding.titles.add');
+        $members = $this->loanService->getSubscriptions($this->pool);
+        $title = trans('tontine.loan.titles.add');
         $content = $this->view()->render('pages.meeting.remittance.add')
             ->with('members', $members);
         $buttons = [[
@@ -121,8 +121,8 @@ class Remittance extends CallableClass
     {
         $values = $this->validator->validateItem($formValues);
 
-        $this->biddingService->createRemittance($this->pool, $this->session,
-            $values['subscription'], $values['amount']);
+        $this->loanService->createRemittance($this->pool, $this->session,
+            $values['subscription'], $values['interest']);
         $this->dialog->hide();
         // $this->notify->success(trans('session.remittance.created'), trans('common.titles.success'));
 
@@ -131,7 +131,7 @@ class Remittance extends CallableClass
 
     public function deleteRemittance(int $subscriptionId)
     {
-        $this->biddingService->deleteRemittance($this->pool, $this->session, $subscriptionId);
+        $this->loanService->deleteRemittance($this->pool, $this->session, $subscriptionId);
         // $this->notify->success(trans('session.remittance.deleted'), trans('common.titles.success'));
 
         return $this->home($this->pool->id);

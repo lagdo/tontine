@@ -1,6 +1,6 @@
           <div class="row align-items-center">
             <div class="col-auto">
-              <h6 class="section-title mt-0">{{ __('meeting.titles.biddings') }}</h6>
+              <h6 class="section-title mt-0">{{ __('meeting.titles.loans') }}</h6>
             </div>
           </div>
           <div class="table-responsive">
@@ -9,17 +9,17 @@
                 <tr>
                   <th>{!! __('meeting.labels.member') !!}</th>
                   <th>{!! __('common.labels.amount') !!}</th>
-                  <th>{!! __('common.labels.price') !!}</th>
+                  <th>{!! __('common.labels.interest') !!}</th>
                   <th>&nbsp;</th>
                 </tr>
               </thead>
               <tbody>
-@foreach ($biddings as $bidding)
+@foreach ($loans as $loan)
                 <tr>
-                  <td>{{ $bidding->title }}</td>
-                  <td>{{ $bidding->amount }}</td>
-                  <td>{{ $bidding->paid }}</td>
-                  <td>{{ $bidding->paid }}</td>
+                  <td>{{ $loan->title }}</td>
+                  <td>{{ $loan->amount }}</td>
+                  <td>{{ $loan->paid }}</td>
+                  <td>{{ $loan->paid }}</td>
                 </tr>
 @endforeach
                 <tr>

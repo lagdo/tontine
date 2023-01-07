@@ -120,13 +120,13 @@ return [
             'deleted' => "The member subscription was deleted.",
         ],
     ],
-    'bidding' => [
+    'loan' => [
         'titles' => [
-            'add' => "Add a bidding",
+            'add' => "Add a loan",
         ],
         'labels' => [
-            'bid' => "Bid",
-            'amount_to_bid' => "Amount to bid",
+            'interest' => "Interest",
+            'amount_to_lend' => "Amount to lend",
         ],
     ],
 ];

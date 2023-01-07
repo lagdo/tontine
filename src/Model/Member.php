@@ -82,8 +82,8 @@ class Member extends Model
         return $this->hasMany(Settlement::class);
     }
 
-    public function biddings()
+    public function loans()
     {
-        return $this->hasMany(Bidding::class);
+        return $this->hasMany(Loan::class);
     }
 }

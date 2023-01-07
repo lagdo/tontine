@@ -171,9 +171,9 @@ class Session extends Model
             ->select('bills.charge_id', DB::raw('sum(bills.amount) as amount'));
     }
 
-    public function biddings()
+    public function loans()
     {
-        return $this->hasMany(Bidding::class);
+        return $this->hasMany(Loan::class);
     }
 
     public function refunds()

@@ -7,11 +7,8 @@ return [
             'route' => 'ajax',
         ],*/
         'directories' => [
-            app_path('Ajax') => [
-                'namespace' => '\\App\\Ajax',
-                // 'separator' => '', // '.' or '_'
-                // 'protected' => [],
-                // 'autoload' => true,
+            app_path('Ajax\\Api') => [
+                'namespace' => '\\App\\Ajax\\Api',
             ],
         ],
         'views' => [
@@ -22,8 +19,8 @@ return [
                 // 'register' => true,
             ],
         ],
-        // 'packages' => [
-        // ],
+        'packages' => [
+        ],
     ],
     'lib' => [
         'core' => [

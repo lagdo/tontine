@@ -23,7 +23,7 @@ return [
             'amount' => "Remittance amounts",
         ],
     ],
-    'bidding' => [
+    'loan' => [
         'titles' => [
             'available' => "Available",
         ],
