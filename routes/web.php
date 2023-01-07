@@ -29,8 +29,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function()
 
     // Report pages
     //----------------------------------
-    Route::get('/report/fund/{fundId}', [ReportController::class, 'fund'])
-        ->name('report.fund')->middleware(['auth', TontineTenant::class]);
+    Route::get('/report/pool/{poolId}', [ReportController::class, 'pool'])
+        ->name('report.pool')->middleware(['auth', TontineTenant::class]);
     Route::get('/report/session/{sessionId}', [ReportController::class, 'session'])
         ->name('report.session')->middleware(['auth', TontineTenant::class]);
 });

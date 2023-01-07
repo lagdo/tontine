@@ -9,7 +9,7 @@ use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Country;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Tontine;
-use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\Pool;
 
 class TontineSeeder extends Seeder
 {
@@ -33,7 +33,7 @@ class TontineSeeder extends Seeder
             'currency_id' => $currency->id,
         ]);
 
-        // Bill Reasons
+        // Bills
         foreach($tontines as $tontine)
         {
             $tontine->charges()->createMany([[
@@ -132,9 +132,9 @@ class TontineSeeder extends Seeder
                 'end_at' => '2022-12-05 20:00:00',
             ]]);
 
-            // A few funds
-            Fund::unguard();
-            $round->funds()->createMany([[
+            // A few pools
+            Pool::unguard();
+            $round->pools()->createMany([[
                 'title' => "Liste de 5000",
                 'amount' => 5000,
             ],[
@@ -147,7 +147,7 @@ class TontineSeeder extends Seeder
                 'title' => "Liste de 20000",
                 'amount' => 20000,
             ]]);
-            Fund::reguard();
+            Pool::reguard();
 
             // Bills
             foreach($tontine->charges()->fee()->get() as $charge)

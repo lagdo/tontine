@@ -2,7 +2,7 @@
 
 namespace Siak\Tontine\Service\Events;
 
-use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
 
@@ -22,17 +22,17 @@ trait DebtEventTrait
     }
 
     /**
-     * @param Fund $fund
+     * @param Pool $pool
      * @param Subscription $subscription
      *
      * @return void
      */
-    protected function subscriptionCreated(Fund $fund, Subscription $subscription)
+    protected function subscriptionCreated(Pool $pool, Subscription $subscription)
     {
         // Create the payable
         $subscription->payable()->create([]);
         // Create the receivables
-        foreach($fund->sessions()->get() as $session)
+        foreach($pool->sessions()->get() as $session)
         {
             $subscription->receivables()->create(['session_id' => $session->id]);
         }
@@ -52,30 +52,30 @@ trait DebtEventTrait
     }
 
     /**
-     * @param Fund $fund
+     * @param Pool $pool
      * @param Session $session
      *
      * @return void
      */
-    protected function fundAttached(Fund $fund, Session $session)
+    protected function poolAttached(Pool $pool, Session $session)
     {
         // Create the receivables
-        foreach($fund->subscriptions as $subscription)
+        foreach($pool->subscriptions as $subscription)
         {
             $subscription->receivables()->create(['session_id' => $session->id]);
         }
     }
 
     /**
-     * @param Fund $fund
+     * @param Pool $pool
      * @param Session $session
      *
      * @return void
      */
-    protected function fundDetached(Fund $fund, Session $session)
+    protected function poolDetached(Pool $pool, Session $session)
     {
         // Delete the receivables
-        foreach($fund->subscriptions as $subscription)
+        foreach($pool->subscriptions as $subscription)
         {
             $subscription->receivables()->where('session_id', $session->id)->delete();
         }

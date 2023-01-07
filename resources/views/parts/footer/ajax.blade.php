@@ -11,7 +11,7 @@
     $('#tontine-menu-members').click(function() { {!! $jxnMember->home() !!}; });
     $('#tontine-menu-charges').click(function() { {!! $jxnCharge->home() !!}; });
     $('#planning-menu-sessions').click(function() { {!! $jxnPlanning->home() !!}; });
-    $('#planning-menu-funds').click(function() { {!! $jxnFund->home() !!}; });
+    $('#planning-menu-pools').click(function() { {!! $jxnPool->home() !!}; });
     $('#planning-menu-tables').click(function() { {!! $jxnTable->home() !!}; });
     $('#meeting-menu-sessions').click(function() { {!! $jxnMeeting->home() !!}; });
     $('#meeting-menu-tables').click(function() { {!! $jxnCashFlow->home() !!}; });

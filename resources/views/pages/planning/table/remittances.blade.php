@@ -1,13 +1,13 @@
           <div class="section-body">
             <div class="row align-items-center">
               <div class="col">
-                <h2 class="section-title">{{ __('tontine.fund.titles.remittances') }} - {{ $fund->title }}</h2>
+                <h2 class="section-title">{{ __('tontine.pool.titles.remittances') }} - {{ $pool->title }}</h2>
               </div>
               <div class="col-auto">
                 <div class="input-group float-right ml-2">
-                  {!! Form::select('fund_id', $funds, $fund->id, ['class' => 'form-control', 'id' => 'select-fund']) !!}
+                  {!! Form::select('pool_id', $pools, $pool->id, ['class' => 'form-control', 'id' => 'select-pool']) !!}
                   <div class="input-group-append">
-                    <button type="button" class="btn btn-primary" id="btn-fund-select"><i class="fa fa-arrow-right"></i></button>
+                    <button type="button" class="btn btn-primary" id="btn-pool-select"><i class="fa fa-arrow-right"></i></button>
                   </div>
                 </div>
               </div>
@@ -36,7 +36,7 @@
                   </thead>
                   <tbody>
 @foreach ($sessions as $session)
-@if ($session->disabled($fund))
+@if ($session->disabled($pool))
                     <tr>
                       <td>{{ $session->title }}</td>
                       <td>&nbsp;</td>

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\ChargeService;
-use Siak\Tontine\Service\FundService;
+use Siak\Tontine\Service\PoolService;
 use Siak\Tontine\Service\SubscriptionService;
 use Siak\Tontine\Service\MeetingService;
 use Siak\Tontine\Service\MemberService;
@@ -28,7 +28,7 @@ use Siak\Tontine\Validation\ChargeValidator;
 use Siak\Tontine\Validation\MemberValidator;
 use Siak\Tontine\Validation\Meeting\BiddingValidator;
 use Siak\Tontine\Validation\Meeting\RemittanceValidator;
-use Siak\Tontine\Validation\Planning\FundValidator;
+use Siak\Tontine\Validation\Planning\PoolValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 
 use function config;
@@ -56,7 +56,7 @@ class SiakServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(TenantService::class, TenantService::class);
-        $this->app->singleton(FundService::class, FundService::class);
+        $this->app->singleton(PoolService::class, PoolService::class);
         $this->app->singleton(ChargeService::class, ChargeService::class);
         $this->app->singleton(SubscriptionService::class, SubscriptionService::class);
         $this->app->singleton(MemberService::class, MemberService::class);
@@ -74,7 +74,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(ChargeValidator::class, ChargeValidator::class);
         $this->app->singleton(MemberValidator::class, MemberValidator::class);
         $this->app->singleton(BiddingValidator::class, BiddingValidator::class);
-        $this->app->singleton(FundValidator::class, FundValidator::class);
+        $this->app->singleton(PoolValidator::class, PoolValidator::class);
         $this->app->singleton(RemittanceValidator::class, RemittanceValidator::class);
         $this->app->singleton(SessionValidator::class, SessionValidator::class);
 

@@ -2,7 +2,7 @@
 
 namespace Siak\Tontine\Service;
 
-use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
 
@@ -36,38 +36,38 @@ class DepositService
     }
 
     /**
-     * Get a single fund.
+     * Get a single pool.
      *
-     * @param int $fundId    The fund id
+     * @param int $poolId    The pool id
      *
-     * @return Fund|null
+     * @return Pool|null
      */
-    public function getFund(int $fundId): ?Fund
+    public function getPool(int $poolId): ?Pool
     {
-        return $this->tenantService->round()->funds()->find($fundId);
+        return $this->tenantService->round()->pools()->find($poolId);
     }
 
     /**
-     * @param Fund $fund
+     * @param Pool $pool
      * @param Session $session
      *
      * @return mixed
      */
-    private function getQuery(Fund $fund, Session $session)
+    private function getQuery(Pool $pool, Session $session)
     {
-        return $session->receivables()->whereIn('subscription_id', $fund->subscriptions()->pluck('id'));
+        return $session->receivables()->whereIn('subscription_id', $pool->subscriptions()->pluck('id'));
     }
 
     /**
-     * @param Fund $fund
+     * @param Pool $pool
      * @param Session $session
      * @param int $page
      *
      * @return Collection
      */
-    public function getReceivables(Fund $fund, Session $session, int $page = 0): Collection
+    public function getReceivables(Pool $pool, Session $session, int $page = 0): Collection
     {
-        $receivables = $this->getQuery($fund, $session)->with(['subscription.member', 'deposit']);
+        $receivables = $this->getQuery($pool, $session)->with(['subscription.member', 'deposit']);
         if($page > 0 )
         {
             $receivables->take($this->tenantService->getLimit());
@@ -79,42 +79,42 @@ class DepositService
     /**
      * Get the number of receivables in the selected round.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      * @param Session $session
      *
      * @return int
      */
-    public function getReceivableCount(Fund $fund, Session $session): int
+    public function getReceivableCount(Pool $pool, Session $session): int
     {
-        return $this->getQuery($fund, $session)->count();
+        return $this->getQuery($pool, $session)->count();
     }
 
     /**
-     * Find the unique receivable for a fund and a session.
+     * Find the unique receivable for a pool and a session.
      *
-     * @param Fund $fund The fund
+     * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $receivableId
      *
      * @return Receivable|null
      */
-    public function getReceivable(Fund $fund, Session $session, int $receivableId): ?Receivable
+    public function getReceivable(Pool $pool, Session $session, int $receivableId): ?Receivable
     {
-        return $this->getQuery($fund, $session)->where('id', $receivableId)->first();
+        return $this->getQuery($pool, $session)->where('id', $receivableId)->first();
     }
 
     /**
      * Create a deposit.
      *
-     * @param Fund $fund The fund
+     * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $receivableId
      *
      * @return void
      */
-    public function createDeposit(Fund $fund, Session $session, int $receivableId): void
+    public function createDeposit(Pool $pool, Session $session, int $receivableId): void
     {
-        $receivable = $this->getReceivable($fund, $session, $receivableId);
+        $receivable = $this->getReceivable($pool, $session, $receivableId);
         if(!$receivable || $receivable->deposit)
         {
             return;
@@ -125,15 +125,15 @@ class DepositService
     /**
      * Delete a deposit.
      *
-     * @param Fund $fund The fund
+     * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $receivableId
      *
      * @return void
      */
-    public function deleteDeposit(Fund $fund, Session $session, int $receivableId): void
+    public function deleteDeposit(Pool $pool, Session $session, int $receivableId): void
     {
-        $receivable = $this->getReceivable($fund, $session, $receivableId);
+        $receivable = $this->getReceivable($pool, $session, $receivableId);
         if(!$receivable || !$receivable->deposit)
         {
             return;

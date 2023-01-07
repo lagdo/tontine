@@ -2,8 +2,8 @@
 
 namespace App\Ajax\App\Planning;
 
-use Siak\Tontine\Service\FundService;
-use Siak\Tontine\Validation\Planning\FundValidator;
+use Siak\Tontine\Service\PoolService;
+use Siak\Tontine\Validation\Planning\PoolValidator;
 use App\Ajax\CallableClass;
 use App\Ajax\App\Faker;
 
@@ -14,18 +14,18 @@ use function Jaxon\pm;
 use function config;
 use function trans;
 
-class Fund extends CallableClass
+class Pool extends CallableClass
 {
     /**
      * @di
-     * @var FundService
+     * @var PoolService
      */
-    protected FundService $fundService;
+    protected PoolService $poolService;
 
     /**
-     * @var FundValidator
+     * @var PoolValidator
      */
-    protected FundValidator $validator;
+    protected PoolValidator $validator;
 
     /**
      * @var bool
@@ -33,49 +33,49 @@ class Fund extends CallableClass
     protected bool $fromHome = false;
 
     /**
-     * @databag fund
+     * @databag pool
      * @databag subscription
      */
     public function home()
     {
-        $html = $this->view()->render('pages.planning.fund.home');
+        $html = $this->view()->render('pages.planning.pool.home');
         $this->response->html('section-title', trans('tontine.menus.planning'));
         $this->response->html('content-home', $html);
         $this->jq('#btn-refresh')->click($this->rq()->home());
         $this->jq('#btn-create')->click($this->rq()->number());
 
         $this->fromHome = true;
-        return $this->page($this->bag('fund')->get('page', 1));
+        return $this->page($this->bag('pool')->get('page', 1));
     }
 
     /**
-     * @databag fund
+     * @databag pool
      * @databag subscription
      */
     public function page(int $pageNumber = 0)
     {
         if($pageNumber < 1)
         {
-            $pageNumber = $this->bag('fund')->get('page', 1);
+            $pageNumber = $this->bag('pool')->get('page', 1);
         }
-        $this->bag('fund')->set('page', $pageNumber);
+        $this->bag('pool')->set('page', $pageNumber);
 
-        $funds = $this->fundService->getFunds($pageNumber);
-        $fundCount = $this->fundService->getFundCount();
+        $pools = $this->poolService->getPools($pageNumber);
+        $poolCount = $this->poolService->getPoolCount();
 
-        $html = $this->view()->render('pages.planning.fund.page')->with('funds', $funds)
-            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $fundCount));
-        $this->response->html('fund-page', $html);
-        if($this->fromHome && $fundCount > 0)
+        $html = $this->view()->render('pages.planning.pool.page')->with('pools', $pools)
+            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $poolCount));
+        $this->response->html('pool-page', $html);
+        if($this->fromHome && $poolCount > 0)
         {
-            // Show the subscriptions of the first fund in the list
-            $fundId = $this->bag('subscription')->get('fund.id', $funds[0]->id);
-            $this->response->script($this->cl(Subscription::class)->rq()->home($fundId));
+            // Show the subscriptions of the first pool in the list
+            $poolId = $this->bag('subscription')->get('pool.id', $pools[0]->id);
+            $this->response->script($this->cl(Subscription::class)->rq()->home($poolId));
         }
 
-        $fundId = jq()->parent()->attr('data-fund-id')->toInt();
-        $this->jq('.btn-fund-edit')->click($this->rq()->edit($fundId));
-        $this->jq('.btn-fund-subscriptions')->click($this->cl(Subscription::class)->rq()->home($fundId));
+        $poolId = jq()->parent()->attr('data-pool-id')->toInt();
+        $this->jq('.btn-pool-edit')->click($this->rq()->edit($poolId));
+        $this->jq('.btn-pool-subscriptions')->click($this->cl(Subscription::class)->rq()->home($poolId));
 
         return $this->response;
     }
@@ -83,7 +83,7 @@ class Fund extends CallableClass
     public function number()
     {
         $title = trans('number.labels.title');
-        $content = $this->view()->render('pages.planning.fund.number');
+        $content = $this->view()->render('pages.planning.pool.number');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -115,18 +115,18 @@ class Fund extends CallableClass
         }
 
         $this->dialog->hide();
-        $this->bag('faker')->set('fund.count', $count);
+        $this->bag('faker')->set('pool.count', $count);
 
         $useFaker = config('jaxon.app.faker');
-        $html = $this->view()->render('pages.planning.fund.add')
+        $html = $this->view()->render('pages.planning.pool.add')
             ->with('useFaker', $useFaker)
             ->with('count', $count);
         $this->response->html('content-home', $html);
         $this->jq('#btn-cancel')->click($this->rq()->home());
-        $this->jq('#btn-save')->click($this->rq()->create(pm()->form('fund-form')));
+        $this->jq('#btn-save')->click($this->rq()->create(pm()->form('pool-form')));
         if($useFaker)
         {
-            $this->jq('#btn-fakes')->click($this->cl(Faker::class)->rq()->funds());
+            $this->jq('#btn-fakes')->click($this->cl(Faker::class)->rq()->pools());
         }
 
         return $this->response;
@@ -137,21 +137,21 @@ class Fund extends CallableClass
      */
     public function create(array $formValues)
     {
-        $values = $this->validator->validateList($formValues['funds'] ?? []);
+        $values = $this->validator->validateList($formValues['pools'] ?? []);
 
-        $this->fundService->createFunds($values);
-        $this->notify->success(trans('tontine.fund.messages.created'), trans('common.titles.success'));
+        $this->poolService->createPools($values);
+        $this->notify->success(trans('tontine.pool.messages.created'), trans('common.titles.success'));
 
         return $this->home();
     }
 
-    public function edit(int $fundId)
+    public function edit(int $poolId)
     {
-        $fund = $this->fundService->getFund($fundId);
+        $pool = $this->poolService->getPool($poolId);
 
-        $title = trans('tontine.fund.titles.edit');
-        $content = $this->view()->render('pages.planning.fund.edit')
-            ->with('fund', $fund)
+        $title = trans('tontine.pool.titles.edit');
+        $content = $this->view()->render('pages.planning.pool.edit')
+            ->with('pool', $pool)
             ->with('locales', LaravelLocalization::getSupportedLocales());
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -160,7 +160,7 @@ class Fund extends CallableClass
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($fund->id, pm()->form('fund-form')),
+            'click' => $this->rq()->update($pool->id, pm()->form('pool-form')),
         ]];
         $this->dialog->show($title, $content, $buttons, ['width' => '800']);
 
@@ -170,21 +170,21 @@ class Fund extends CallableClass
     /**
      * @di $validator
      */
-    public function update(int $fundId, array $formValues)
+    public function update(int $poolId, array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
 
-        $fund = $this->fundService->getFund($fundId);
+        $pool = $this->poolService->getPool($poolId);
 
-        $this->fundService->updateFund($fund, $values);
+        $this->poolService->updatePool($pool, $values);
         $this->page(); // Back to current page
         $this->dialog->hide();
-        $this->notify->success(trans('tontine.fund.messages.updated'), trans('common.titles.success'));
+        $this->notify->success(trans('tontine.pool.messages.updated'), trans('common.titles.success'));
 
         return $this->response;
     }
 
-    /*public function delete(int $fundId)
+    /*public function delete(int $poolId)
     {
         $this->notify->error("Cette fonction n'est pas encore disponible", trans('common.titles.error'));
 

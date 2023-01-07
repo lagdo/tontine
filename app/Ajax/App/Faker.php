@@ -3,7 +3,7 @@
 namespace App\Ajax\App;
 
 use Siak\Tontine\Service\ChargeService;
-use Siak\Tontine\Service\FundService;
+use Siak\Tontine\Service\PoolService;
 use Siak\Tontine\Service\MemberService;
 use App\Ajax\CallableClass;
 
@@ -22,9 +22,9 @@ class Faker extends CallableClass
     public ChargeService $chargeService;
 
     /**
-     * @var FundService
+     * @var PoolService
      */
-    public FundService $fundService;
+    public PoolService $poolService;
 
     /**
      * @databag faker
@@ -66,17 +66,17 @@ class Faker extends CallableClass
 
     /**
      * @databag faker
-     * @di $fundService
+     * @di $poolService
      */
-    public function funds()
+    public function pools()
     {
-        $count = intval($this->bag('faker')->get('fund.count'));
-        $funds = $this->fundService->getFakeFunds($count);
+        $count = intval($this->bag('faker')->get('pool.count'));
+        $pools = $this->poolService->getFakePools($count);
         for($i = 0; $i < $count; $i++)
         {
-            $this->jq("#fund_title_$i")->val($funds[$i]->title);
-            $this->jq("#fund_amount_$i")->val($funds[$i]->amount);
-            $this->jq("#fund_notes_$i")->val($funds[$i]->notes);
+            $this->jq("#pool_title_$i")->val($pools[$i]->title);
+            $this->jq("#pool_amount_$i")->val($pools[$i]->amount);
+            $this->jq("#pool_notes_$i")->val($pools[$i]->notes);
         }
 
         return $this->response;

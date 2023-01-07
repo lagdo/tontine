@@ -4,7 +4,7 @@ namespace Siak\Tontine\Service;
 
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Currency;
-use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
@@ -112,21 +112,21 @@ class TenantService
     }
 
     /**
-     * Get a single fund.
+     * Get a single pool.
      *
-     * @param int $fundId    The fund id
+     * @param int $poolId    The pool id
      * @param bool $with
      *
-     * @return Fund|null
+     * @return Pool|null
      */
-    public function getFund(int $fundId, bool $with = false): ?Fund
+    public function getPool(int $poolId, bool $with = false): ?Pool
     {
-        $funds = $this->round->funds();
+        $pools = $this->round->pools();
         if($with)
         {
-            $funds->with(['subscriptions.receivables.deposit']);
+            $pools->with(['subscriptions.receivables.deposit']);
         }
-        return $funds->find($fundId);
+        return $pools->find($poolId);
     }
 
     /**

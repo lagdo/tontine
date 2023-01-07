@@ -22,9 +22,9 @@ class Subscription extends Model
         'title',
     ];
 
-    public function fund()
+    public function pool()
     {
-        return $this->belongsTo(Fund::class);
+        return $this->belongsTo(Pool::class);
     }
 
     public function member()

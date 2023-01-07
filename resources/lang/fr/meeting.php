@@ -5,7 +5,7 @@ return [
         'session' => "Séance",
         'agenda' => "Ordre du jour",
         'report' => "Rapport",
-        'funds' => "Fonds",
+        'pools' => "Fonds",
         'charges' => "Frais et amendes",
         'fees' => "Frais",
         'fines' => "Amendes",

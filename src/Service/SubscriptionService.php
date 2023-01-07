@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
 
@@ -35,54 +35,54 @@ class SubscriptionService
     }
 
     /**
-     * Get funds for the dropdown list.
+     * Get pools for the dropdown list.
      *
      * @return Collection
      */
-    public function getFunds(): Collection
+    public function getPools(): Collection
     {
-        return $this->tenantService->round()->funds()->pluck('title', 'id');
+        return $this->tenantService->round()->pools()->pluck('title', 'id');
     }
 
     /**
-     * Get a single fund.
+     * Get a single pool.
      *
-     * @param int $fundId    The fund id
+     * @param int $poolId    The pool id
      *
-     * @return Fund|null
+     * @return Pool|null
      */
-    public function getFund(int $fundId): ?Fund
+    public function getPool(int $poolId): ?Pool
     {
-        return $this->tenantService->round()->funds()->find($fundId);
+        return $this->tenantService->round()->pools()->find($poolId);
     }
 
     /**
-     * Get the first fund.
+     * Get the first pool.
      *
-     * @return Fund|null
+     * @return Pool|null
      */
-    public function getFirstFund(): ?Fund
+    public function getFirstPool(): ?Pool
     {
-        return $this->tenantService->round()->funds()->first();
+        return $this->tenantService->round()->pools()->first();
     }
 
     /**
      * Get a paginated list of members.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      * @param bool $filter
      * @param int $page
      *
      * @return Collection
      */
-    public function getMembers(Fund $fund, bool $filter, int $page = 0): Collection
+    public function getMembers(Pool $pool, bool $filter, int $page = 0): Collection
     {
         $members = $this->tenantService->tontine()->members();
         if($filter)
         {
-            // Return only members with subscription in this fund
-            $members->whereHas('subscriptions', function(Builder $query) use($fund) {
-                $query->where('subscriptions.fund_id', $fund->id);
+            // Return only members with subscription in this pool
+            $members->whereHas('subscriptions', function(Builder $query) use($pool) {
+                $query->where('subscriptions.pool_id', $pool->id);
             });
         }
         if($page > 0 )
@@ -93,7 +93,7 @@ class SubscriptionService
         $members = $members->get();
         foreach($members as &$member)
         {
-            $member->subscriptionCount = $member->subscriptions()->where('fund_id', $fund->id)->count();
+            $member->subscriptionCount = $member->subscriptions()->where('pool_id', $pool->id)->count();
         }
         return $members;
     }
@@ -101,56 +101,56 @@ class SubscriptionService
     /**
      * Get the number of members.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      * @param bool $filter
      *
      * @return int
      */
-    public function getMemberCount(Fund $fund, bool $filter): int
+    public function getMemberCount(Pool $pool, bool $filter): int
     {
         $members = $this->tenantService->tontine()->members();
         if($filter)
         {
-            // Return only members with subscription in this fund
-            $members->whereHas('subscriptions', function(Builder $query) use($fund) {
-                $query->where('subscriptions.fund_id', $fund->id);
+            // Return only members with subscription in this pool
+            $members->whereHas('subscriptions', function(Builder $query) use($pool) {
+                $query->where('subscriptions.pool_id', $pool->id);
             });
         }
         return $members->count();
     }
 
     /**
-     * @param Fund $fund
+     * @param Pool $pool
      * @param int $memberId
      *
      * @return int
      */
-    public function createSubscription(Fund $fund, int $memberId): int
+    public function createSubscription(Pool $pool, int $memberId): int
     {
         $member = $this->tenantService->tontine()->members()->find($memberId);
         $subscription = new Subscription();
         $subscription->title = '';
-        $subscription->fund()->associate($fund);
+        $subscription->pool()->associate($pool);
         $subscription->member()->associate($member);
 
-        DB::transaction(function() use($fund, $subscription) {
+        DB::transaction(function() use($pool, $subscription) {
             // Create the subscription
             $subscription->save();
-            $this->subscriptionCreated($fund, $subscription);
+            $this->subscriptionCreated($pool, $subscription);
         });
 
         return $subscription->id;
     }
 
     /**
-     * @param Fund $fund
+     * @param Pool $pool
      * @param int $memberId
      *
      * @return int
      */
-    public function deleteSubscription(Fund $fund, int $memberId): int
+    public function deleteSubscription(Pool $pool, int $memberId): int
     {
-        $subscription = $fund->subscriptions()->where('member_id', $memberId)->first();
+        $subscription = $pool->subscriptions()->where('member_id', $memberId)->first();
         if(!$subscription)
         {
             return 0;
@@ -166,24 +166,24 @@ class SubscriptionService
     }
 
     /**
-     * Enable or disable a session for a fund.
+     * Enable or disable a session for a pool.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      * @param Session $session
      *
      * @return bool
      */
-    public function toggleSession(Fund $fund, Session $session): bool
+    public function toggleSession(Pool $pool, Session $session): bool
     {
-        DB::transaction(function() use($fund, $session) {
-            if($session->enabled($fund))
+        DB::transaction(function() use($pool, $session) {
+            if($session->enabled($pool))
             {
-                $fund->disabledSessions()->attach($session->id);
-                $this->fundDetached($fund, $session);
+                $pool->disabledSessions()->attach($session->id);
+                $this->poolDetached($pool, $session);
                 return;
             }
-            $fund->disabledSessions()->detach($session->id);
-            $this->fundAttached($fund, $session);
+            $pool->disabledSessions()->detach($session->id);
+            $this->poolAttached($pool, $session);
         });
         return true;
     }
@@ -216,54 +216,54 @@ class SubscriptionService
     }
 
     /**
-     * Set or unset the beneficiary of a given fund.
+     * Set or unset the beneficiary of a given pool.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      * @param Session $session
      * @param int $currSubscriptionId
      * @param int $nextSubscriptionId
      *
      * @return void
      */
-    public function saveBeneficiary(Fund $fund, Session $session, int $currSubscriptionId, int $nextSubscriptionId)
+    public function saveBeneficiary(Pool $pool, Session $session, int $currSubscriptionId, int $nextSubscriptionId)
     {
-        DB::transaction(function() use($fund, $session, $currSubscriptionId, $nextSubscriptionId) {
+        DB::transaction(function() use($pool, $session, $currSubscriptionId, $nextSubscriptionId) {
             if($currSubscriptionId > 0)
             {
-                $subscription = $fund->subscriptions()->find($currSubscriptionId);
+                $subscription = $pool->subscriptions()->find($currSubscriptionId);
                 $this->unsetPayableSession($session, $subscription);
             }
             if($nextSubscriptionId > 0)
             {
-                $subscription = $fund->subscriptions()->find($nextSubscriptionId);
+                $subscription = $pool->subscriptions()->find($nextSubscriptionId);
                 $this->setPayableSession($session, $subscription);
             }
         });
     }
 
     /**
-     * Get the payables of a given fund.
+     * Get the payables of a given pool.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      *
      * @return array
      */
-    public function getPayables(Fund $fund): array
+    public function getPayables(Pool $pool): array
     {
-        return $this->planningService->getPayables($fund);
+        return $this->planningService->getPayables($pool);
     }
 
     /**
-     * Get the receivables of a given fund.
+     * Get the receivables of a given pool.
      *
      * Will return basic data on subscriptions.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      *
      * @return array
      */
-    public function getReceivables(Fund $fund): array
+    public function getReceivables(Pool $pool): array
     {
-        return $this->planningService->getReceivables($fund);
+        return $this->planningService->getReceivables($pool);
     }
 }

@@ -8,7 +8,7 @@ return [
         'members' => "Members",
         'charges' => "Fees and fines",
         'sessions' => "Sessions",
-        'funds' => "Funds",
+        'pools' => "Pools",
         'tables' => "Tables",
     ],
     'titles' => [
@@ -91,10 +91,10 @@ return [
             'close' => "Close this session?",
         ],
     ],
-    'fund' => [
+    'pool' => [
         'titles' => [
-            'add' => "Add funds",
-            'edit' => "Edit a fund",
+            'add' => "Add pools",
+            'edit' => "Edit a pool",
             'deposits' => "Deposits table",
             'remittances' => "Remittances table",
             'subscriptions' => "Subscriptions",
@@ -103,9 +103,9 @@ return [
             'subscriptions' => "Subscriptions",
         ],
         'messages' => [
-            'created' => "The fund was successfully created.",
-            'updated' => "The fund was successfully updated.",
-            'deleted' => "The fund was successfully deleted.",
+            'created' => "The pool was successfully created.",
+            'updated' => "The pool was successfully updated.",
+            'deleted' => "The pool was successfully deleted.",
         ],
         'errors' => [
             'number' => [

@@ -1,7 +1,7 @@
           <div class="section-body">
             <div class="row align-items-center">
               <div class="col-sm-8">
-                <h2 class="section-title">{{ __('tontine.fund.titles.add') }}</h2>
+                <h2 class="section-title">{{ __('tontine.pool.titles.add') }}</h2>
               </div>
               <div class="col-sm-4">
                 <div class="btn-group float-right" role="group" aria-label="">
@@ -19,7 +19,7 @@
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">
               <div class="portlet-body form">
-                <form class="form-horizontal" role="form" id="fund-form">
+                <form class="form-horizontal" role="form" id="pool-form">
                   <div class="module-body">
                     <div class="form-group row">
                       {!! Form::label('title', trans('common.labels.title'), ['class' => 'col-sm-4 col-form-label']) !!}
@@ -29,13 +29,13 @@
 @for($i = 0; $i < $count; $i++)
                     <div class="form-group row">
                       <div class="col-sm-4">
-                        {!! Form::text('funds[' . $i . '][title]', '', ['class' => 'form-control', 'id' => "fund_title_$i"]) !!}
+                        {!! Form::text('pools[' . $i . '][title]', '', ['class' => 'form-control', 'id' => "pool_title_$i"]) !!}
                       </div>
                       <div class="col-sm-2">
-                        {!! Form::text('funds[' . $i . '][amount]', '', ['class' => 'form-control', 'id' => "fund_amount_$i"]) !!}
+                        {!! Form::text('pools[' . $i . '][amount]', '', ['class' => 'form-control', 'id' => "pool_amount_$i"]) !!}
                       </div>
                       <div class="col-sm-6">
-                        {!! Form::text('funds[' . $i . '][notes]', '', ['class' => 'form-control', 'id' => "fund_notes_$i"]) !!}
+                        {!! Form::text('pools[' . $i . '][notes]', '', ['class' => 'form-control', 'id' => "pool_notes_$i"]) !!}
                       </div>
                     </div>
 @endfor

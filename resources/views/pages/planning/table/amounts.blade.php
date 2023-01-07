@@ -1,13 +1,13 @@
           <div class="section-body">
             <div class="row align-items-center">
               <div class="col">
-                <h2 class="section-title">{{ __('tontine.fund.titles.deposits') }} - {{ $fund->title }}</h2>
+                <h2 class="section-title">{{ __('tontine.pool.titles.deposits') }} - {{ $pool->title }}</h2>
               </div>
               <div class="col-auto">
                 <div class="input-group float-right ml-2">
-                  {!! Form::select('fund_id', $funds, $fund->id, ['class' => 'form-control', 'id' => 'select-fund']) !!}
+                  {!! Form::select('pool_id', $pools, $pool->id, ['class' => 'form-control', 'id' => 'select-pool']) !!}
                   <div class="input-group-append">
-                    <button type="button" class="btn btn-primary" id="btn-fund-select"><i class="fa fa-arrow-right"></i></button>
+                    <button type="button" class="btn btn-primary" id="btn-pool-select"><i class="fa fa-arrow-right"></i></button>
                   </div>
                 </div>
               </div>
@@ -31,8 +31,8 @@
 @foreach($sessions as $session)
                       <th>
                         {{ $session->abbrev }}
-                        <a href="javascript:void(0)" class="fund-session-toggle" data-session-id="{{ $session->id }}">
-                          @if($session->disabled($fund))<i class="fa fa-toggle-off"></i>@else<i class="fa fa-toggle-on"></i>@endif
+                        <a href="javascript:void(0)" class="pool-session-toggle" data-session-id="{{ $session->id }}">
+                          @if($session->disabled($pool))<i class="fa fa-toggle-off"></i>@else<i class="fa fa-toggle-on"></i>@endif
                         </a>
                       </th>
 @endforeach

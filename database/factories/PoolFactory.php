@@ -4,18 +4,18 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\Pool;
 
 use function trim;
 
-class FundFactory extends Factory
+class PoolFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Fund::class;
+    protected $model = Pool::class;
 
     /**
      * Define the model's default state.

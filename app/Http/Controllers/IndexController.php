@@ -10,7 +10,7 @@ use App\Ajax\App\Meeting\Session as Meeting;
 use App\Ajax\App\Meeting\Table as CashFlow;
 use App\Ajax\App\Member;
 use App\Ajax\App\Planning\Session as Planning;
-use App\Ajax\App\Planning\Fund;
+use App\Ajax\App\Planning\Pool;
 use App\Ajax\App\Planning\Table;
 use App\Ajax\App\Profile\Round;
 use App\Ajax\App\Profile\Tontine;
@@ -51,7 +51,7 @@ class IndexController extends Controller
             'jxnMember' => $jaxon->request(Member::class),
             'jxnCharge' => $jaxon->request(Charge::class),
             'jxnPlanning' => $jaxon->request(Planning::class),
-            'jxnFund' => $jaxon->request(Fund::class),
+            'jxnPool' => $jaxon->request(Pool::class),
             'jxnTable' => $jaxon->request(Table::class),
             'jxnMeeting' => $jaxon->request(Meeting::class),
             'jxnCashFlow' => $jaxon->request(CashFlow::class),

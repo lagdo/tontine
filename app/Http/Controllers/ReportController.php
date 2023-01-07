@@ -23,20 +23,20 @@ class ReportController extends Controller
      * @param Browser $browser
      * @param MeetingService $meetingService
      * @param SubscriptionService $subscriptionService
-     * @param int $fundId
+     * @param int $poolId
      *
      * @return View
      */
-    public function fund(Request $request, Browser $browser,
-        MeetingService $meetingService, SubscriptionService $subscriptionService, int $fundId)
+    public function pool(Request $request, Browser $browser,
+        MeetingService $meetingService, SubscriptionService $subscriptionService, int $poolId)
     {
-        $fund = $subscriptionService->getFund($fundId);
-        view()->share($meetingService->getFigures($fund));
+        $pool = $subscriptionService->getPool($poolId);
+        view()->share($meetingService->getFigures($pool));
 
-        $html = view('report.fund', [
+        $html = view('report.pool', [
             'tontine' => $meetingService->getTontine(),
-            'fund' => $fund,
-            'funds' > $subscriptionService->getFunds(),
+            'pool' => $pool,
+            'pools' > $subscriptionService->getPools(),
         ]);
 
         // Show the html page
@@ -80,20 +80,20 @@ class ReportController extends Controller
     {
         $tontine = $meetingService->getTontine();
         $session = $meetingService->getSession($sessionId);
-        $summary = $meetingService->getFundsSummary($session);
+        $summary = $meetingService->getPoolsSummary($session);
 
         $html = view('report.session', [
             'tontine' => $tontine,
             'session' => $session,
             'deposits' => [
                 'session' => $session,
-                'funds' => $meetingService->getFundsWithReceivables($session),
+                'pools' => $meetingService->getPoolsWithReceivables($session),
                 'summary' => $summary['receivables'],
                 'sum' => $summary['sum']['receivables'],
             ],
             'remittances' => [
                 'session' => $session,
-                'funds' => $meetingService->getFundsWithPayables($session),
+                'pools' => $meetingService->getPoolsWithPayables($session),
                 'summary' => $summary['payables'],
                 'sum' => $summary['sum']['payables'],
             ],

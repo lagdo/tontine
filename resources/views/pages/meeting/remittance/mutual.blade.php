@@ -1,6 +1,6 @@
                   <div class="row align-items-center">
                     <div class="col-auto">
-                      <div class="section-title mt-0">{{ $fund->title }} - {{ __('meeting.titles.remittances') }}</div>
+                      <div class="section-title mt-0">{{ $pool->title }} - {{ __('meeting.titles.remittances') }}</div>
                     </div>
                     <div class="col">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
@@ -8,7 +8,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="table-responsive" id="meeting-fund-remittances">
+                  <div class="table-responsive" id="meeting-pool-remittances">
                     <table class="table table-bordered">
                       <thead>
                         <tr>

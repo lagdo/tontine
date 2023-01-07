@@ -112,10 +112,10 @@ class Session extends Model
     {
         return $this->hasMany(Payable::class)
             ->join('subscriptions', 'subscriptions.id', '=', 'payables.subscription_id')
-            ->join('funds', 'subscriptions.fund_id', '=', 'funds.id')
+            ->join('pools', 'subscriptions.pool_id', '=', 'pools.id')
             ->whereHas('remittance')
-            ->groupBy('funds.id')
-            ->select('funds.id', DB::raw('sum(funds.amount) as amount'));
+            ->groupBy('pools.id')
+            ->select('pools.id', DB::raw('sum(pools.amount) as amount'));
     }
 
     public function receivables()
@@ -127,10 +127,10 @@ class Session extends Model
     {
         return $this->hasMany(Receivable::class)
             ->join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
-            ->join('funds', 'subscriptions.fund_id', '=', 'funds.id')
+            ->join('pools', 'subscriptions.pool_id', '=', 'pools.id')
             ->whereHas('deposit')
-            ->groupBy('funds.id')
-            ->select('funds.id', DB::raw('sum(funds.amount) as amount'));
+            ->groupBy('pools.id')
+            ->select('pools.id', DB::raw('sum(pools.amount) as amount'));
     }
 
     public function bills()
@@ -181,18 +181,18 @@ class Session extends Model
         return $this->hasMany(Refund::class);
     }
 
-    public function disabledFunds()
+    public function disabledPools()
     {
-        return $this->belongsToMany(Fund::class, 'fund_session_disabled');
+        return $this->belongsToMany(Pool::class, 'pool_session_disabled');
     }
 
-    public function enabled(Fund $fund)
+    public function enabled(Pool $pool)
     {
-        return $this->disabledFunds()->where('fund_id', $fund->id)->doesntExist();
+        return $this->disabledPools()->where('pool_id', $pool->id)->doesntExist();
     }
 
-    public function disabled(Fund $fund)
+    public function disabled(Pool $pool)
     {
-        return $this->disabledFunds()->where('fund_id', $fund->id)->exists();
+        return $this->disabledPools()->where('pool_id', $pool->id)->exists();
     }
 }

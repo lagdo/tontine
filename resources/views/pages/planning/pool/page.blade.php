@@ -7,20 +7,20 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($funds as $fund)
+@foreach ($pools as $pool)
                         <tr>
-                          <td>{{ $fund->title }}</td>
-                          <td class="currency">{{ $fund->money('amount') }}</td>
+                          <td>{{ $pool->title }}</td>
+                          <td class="currency">{{ $pool->money('amount') }}</td>
                           <td class="table-item-menu">
 @include('parts.table.menu', [
-  'dataIdKey' => 'data-fund-id',
-  'dataIdValue' => $fund->id,
+  'dataIdKey' => 'data-pool-id',
+  'dataIdValue' => $pool->id,
   'menus' => [[
-    'class' => 'btn-fund-edit',
+    'class' => 'btn-pool-edit',
     'text' => __('common.actions.edit'),
   ],[
-    'class' => 'btn-fund-subscriptions',
-    'text' => __('tontine.fund.actions.subscriptions'),
+    'class' => 'btn-pool-subscriptions',
+    'text' => __('tontine.pool.actions.subscriptions'),
   ]],
 ])
                           </td>

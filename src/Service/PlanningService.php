@@ -4,7 +4,7 @@ namespace Siak\Tontine\Service;
 
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Currency;
-use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\Pool;
 use stdClass;
 
 use function collect;
@@ -69,29 +69,29 @@ class PlanningService
     }
 
     /**
-     * @param Fund $fund
+     * @param Pool $pool
      * @param Collection $sessions
      * @param Collection $subscriptions
      *
      * @return array
      */
-    private function getExpectedFigures(Fund $fund, Collection $sessions, Collection $subscriptions): array
+    private function getExpectedFigures(Pool $pool, Collection $sessions, Collection $subscriptions): array
     {
-        $sessionCount = $sessions->filter(function($session) use($fund) {
-            return $session->enabled($fund);
+        $sessionCount = $sessions->filter(function($session) use($pool) {
+            return $session->enabled($pool);
         })->count();
-        $subscriptionCount = $fund->subscriptions()->count();
+        $subscriptionCount = $pool->subscriptions()->count();
         $depositCount = $subscriptions->count();
 
-        $remittanceAmount = $fund->amount * $sessionCount;
-        $depositAmount = $fund->amount * $subscriptions->count();
+        $remittanceAmount = $pool->amount * $sessionCount;
+        $depositAmount = $pool->amount * $subscriptions->count();
 
         $rank = 0;
         $cashier = 0;
         $expectedFigures = [];
         foreach($sessions as $session)
         {
-            if($session->disabled($fund))
+            if($session->disabled($pool))
             {
                 $expectedFigures[$session->id] = $this->makeFigures('');
                 continue;
@@ -116,23 +116,23 @@ class PlanningService
     }
 
     /**
-     * @param Fund $fund
+     * @param Pool $pool
      * @param Collection $sessions
      * @param Collection $subscriptions
      *
      * @return array
      */
-    private function getCollectedFigures(Fund $fund, Collection $sessions, Collection $subscriptions): array
+    private function getCollectedFigures(Pool $pool, Collection $sessions, Collection $subscriptions): array
     {
         $cashier = 0;
-        $remittanceAmount = $fund->amount * $sessions->filter(function($session) use($fund) {
-            return $session->enabled($fund);
+        $remittanceAmount = $pool->amount * $sessions->filter(function($session) use($pool) {
+            return $session->enabled($pool);
         })->count();
 
         $collectedFigures = [];
         foreach($sessions as $session)
         {
-            if($session->disabled($fund) || $session->pending)
+            if($session->disabled($pool) || $session->pending)
             {
                 $collectedFigures[$session->id] = $this->makeFigures('&nbsp;');
                 continue;
@@ -146,8 +146,8 @@ class PlanningService
                 if(($subscription->receivables[$session->id]->deposit))
                 {
                     $figures->deposit->count++;
-                    $figures->deposit->amount += $fund->amount;
-                    $figures->cashier->recv += $fund->amount;
+                    $figures->deposit->amount += $pool->amount;
+                    $figures->cashier->recv += $pool->amount;
                 }
             }
             $figures->cashier->end = $figures->cashier->recv;
@@ -169,60 +169,60 @@ class PlanningService
     }
 
     /**
-     * Get the receivables of a given fund.
+     * Get the receivables of a given pool.
      *
      * Will return basic data on subscriptions.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      *
      * @return array
      */
-    public function getReceivables(Fund $fund): array
+    public function getReceivables(Pool $pool): array
     {
         $sessions = $this->tenantService->round()->sessions()->get();
-        $subscriptions = $fund->subscriptions()->with(['member'])->get();
+        $subscriptions = $pool->subscriptions()->with(['member'])->get();
         $figures = new stdClass();
-        $figures->expected = $this->getExpectedFigures($fund, $sessions, $subscriptions);
+        $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
 
-        return compact('fund', 'sessions', 'subscriptions', 'figures');
+        return compact('pool', 'sessions', 'subscriptions', 'figures');
     }
 
     /**
-     * Get the payables of a given fund.
+     * Get the payables of a given pool.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      * @param array $with
      *
      * @return Collection
      */
-    private function _getSessions(Fund $fund, array $with = []): Collection
+    private function _getSessions(Pool $pool, array $with = []): Collection
     {
-        $with['payables'] = function($query) use($fund) {
-            // Keep only the subscriptions of the current fund.
+        $with['payables'] = function($query) use($pool) {
+            // Keep only the subscriptions of the current pool.
             $query->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
-                ->where('subscriptions.fund_id', $fund->id);
+                ->where('subscriptions.pool_id', $pool->id);
         };
         return $this->tenantService->round()->sessions()->with($with)->get();
     }
 
     /**
-     * Get the payables of a given fund.
+     * Get the payables of a given pool.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      *
      * @return array
      */
-    public function getPayables(Fund $fund): array
+    public function getPayables(Pool $pool): array
     {
-        $sessions = $this->_getSessions($fund, ['payables.subscription']);
-        $subscriptions = $fund->subscriptions()->with(['payable', 'member'])->get();
+        $sessions = $this->_getSessions($pool, ['payables.subscription']);
+        $subscriptions = $pool->subscriptions()->with(['payable', 'member'])->get();
         $figures = new stdClass();
-        $figures->expected = $this->getExpectedFigures($fund, $sessions, $subscriptions);
+        $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
 
         // Set the subscriptions that will be pay at each session.
         // Pad with 0's when the beneficiaries are not yet set.
-        $sessions->each(function($session) use($figures, $fund) {
-            if($session->disabled($fund))
+        $sessions->each(function($session) use($figures, $pool) {
+            if($session->disabled($pool))
             {
                 return;
             }
@@ -248,34 +248,34 @@ class PlanningService
             $subscriptions = collect([]);
         }
 
-        return compact('fund', 'sessions', 'subscriptions', 'beneficiaries', 'figures');
+        return compact('pool', 'sessions', 'subscriptions', 'beneficiaries', 'figures');
     }
 
     /**
-     * Get the receivables of a given fund.
+     * Get the receivables of a given pool.
      *
      * Will return extended data on subscriptions.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      *
      * @return array
      */
-    public function getFigures(Fund $fund): array
+    public function getFigures(Pool $pool): array
     {
-        $subscriptions = $fund->subscriptions()->with(['member', 'receivables.deposit'])
+        $subscriptions = $pool->subscriptions()->with(['member', 'receivables.deposit'])
             ->get()->each(function($subscription) {
                 $subscription->setRelation('receivables', $subscription->receivables->keyBy('session_id'));
             });
-        $sessions = $this->_getSessions($fund, ['payables.remittance']);
+        $sessions = $this->_getSessions($pool, ['payables.remittance']);
         $figures = new stdClass();
-        $figures->expected = $this->getExpectedFigures($fund, $sessions, $subscriptions);
-        $figures->collected = $this->getCollectedFigures($fund, $sessions, $subscriptions);
+        $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
+        $figures->collected = $this->getCollectedFigures($pool, $sessions, $subscriptions);
 
-        return compact('fund', 'sessions', 'subscriptions', 'figures');
+        return compact('pool', 'sessions', 'subscriptions', 'figures');
     }
 
     /**
-     * Get the number of subscribers to remit a fund to at a given session
+     * Get the number of subscribers to remit a pool to at a given session
      *
      * @param int $sessionCount
      * @param int $subscriptionCount
@@ -303,19 +303,19 @@ class PlanningService
     }
 
     /**
-     * @param Fund $fund
+     * @param Pool $pool
      * @param int $sessionId
      *
      * @return array|stdClass
      */
-    public function getRemittanceFigures(Fund $fund, int $sessionId = 0)
+    public function getRemittanceFigures(Pool $pool, int $sessionId = 0)
     {
-        $sessions = $this->_getSessions($fund, ['payables.subscription.member']);
-        $sessionCount = $sessions->filter(function($session) use($fund) {
-            return $session->enabled($fund);
+        $sessions = $this->_getSessions($pool, ['payables.subscription.member']);
+        $sessionCount = $sessions->filter(function($session) use($pool) {
+            return $session->enabled($pool);
         })->count();
-        $subscriptionCount = $fund->subscriptions()->count();
-        $remittanceAmount = $fund->amount * $sessionCount;
+        $subscriptionCount = $pool->subscriptions()->count();
+        $remittanceAmount = $pool->amount * $sessionCount;
         $formattedAmount = Currency::format($remittanceAmount);
 
         $figures = [];
@@ -326,7 +326,7 @@ class PlanningService
             $figures[$session->id]->payables = $session->payables;
             $figures[$session->id]->count = 0;
             $figures[$session->id]->amount = '';
-            if($session->enabled($fund))
+            if($session->enabled($pool))
             {
                 $figures[$session->id]->count =
                     $this->getRemittanceCount($sessionCount, $subscriptionCount, $rank++);

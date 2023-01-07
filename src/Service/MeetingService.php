@@ -5,7 +5,7 @@ namespace Siak\Tontine\Service;
 use Illuminate\Support\Collection;
 
 use Siak\Tontine\Model\Currency;
-use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
 
@@ -82,73 +82,73 @@ class MeetingService
     }
 
     /**
-     * Get a paginated list of funds with receivables.
+     * Get a paginated list of pools with receivables.
      *
      * @param Session $session
      * @param int $page
      *
      * @return Collection
      */
-    public function getFundsWithReceivables(Session $session, int $page = 0): Collection
+    public function getPoolsWithReceivables(Session $session, int $page = 0): Collection
     {
-        $funds = $this->tenantService->round()->funds();
+        $pools = $this->tenantService->round()->pools();
         if($page > 0 )
         {
-            $funds->take($this->tenantService->getLimit());
-            $funds->skip($this->tenantService->getLimit() * ($page - 1));
+            $pools->take($this->tenantService->getLimit());
+            $pools->skip($this->tenantService->getLimit() * ($page - 1));
         }
 
-        return $funds->get()->each(function($fund) use($session) {
+        return $pools->get()->each(function($pool) use($session) {
             // Receivables
-            $receivables = $this->depositService->getReceivables($fund, $session);
+            $receivables = $this->depositService->getReceivables($pool, $session);
             // Expected
-            $fund->recv_count = $receivables->count();
+            $pool->recv_count = $receivables->count();
             // Paid
-            $fund->recv_paid = $receivables->filter(function($receivable) {
+            $pool->recv_paid = $receivables->filter(function($receivable) {
                 return $receivable->deposit !== null;
             })->count();
         });
     }
 
     /**
-     * Get a paginated list of funds with payables.
+     * Get a paginated list of pools with payables.
      *
      * @param Session $session
      * @param int $page
      *
      * @return Collection
      */
-    public function getFundsWithPayables(Session $session, int $page = 0): Collection
+    public function getPoolsWithPayables(Session $session, int $page = 0): Collection
     {
-        $funds = $this->tenantService->round()->funds();
+        $pools = $this->tenantService->round()->pools();
         if($page > 0 )
         {
-            $funds->take($this->tenantService->getLimit());
-            $funds->skip($this->tenantService->getLimit() * ($page - 1));
+            $pools->take($this->tenantService->getLimit());
+            $pools->skip($this->tenantService->getLimit() * ($page - 1));
         }
 
         $sessions = $this->tenantService->round()->sessions;
 
-        return $funds->get()->each(function($fund) use($session, $sessions) {
+        return $pools->get()->each(function($pool) use($session, $sessions) {
             // Payables
-            $payables = $this->remittanceService->getPayables($fund, $session);
+            $payables = $this->remittanceService->getPayables($pool, $session);
             // Expected
-            // $fund->pay_count = $payables->count();
+            // $pool->pay_count = $payables->count();
             // Paid
-            $fund->pay_paid = $payables->filter(function($payable) {
+            $pool->pay_paid = $payables->filter(function($payable) {
                 return $payable->remittance !== null;
             })->count();
 
             // Remittances
-            $sessions = $sessions->filter(function($_session) use($fund) {
-                return $_session->enabled($fund);
+            $sessions = $sessions->filter(function($_session) use($pool) {
+                return $_session->enabled($pool);
             });
             $sessionCount = $sessions->count();
             $sessionRank = $sessions->filter(function($_session) use($session) {
                 return $_session->start_at->lt($session->start_at);
             })->count();
-            $subscriptionCount = $fund->subscriptions()->count();
-            $fund->pay_count = $this->planningService->getRemittanceCount($sessionCount, $subscriptionCount, $sessionRank);
+            $subscriptionCount = $pool->subscriptions()->count();
+            $pool->pay_count = $this->planningService->getRemittanceCount($sessionCount, $subscriptionCount, $sessionRank);
         });
     }
 
@@ -179,19 +179,19 @@ class MeetingService
     }
 
     /**
-     * Find the unique receivable for a fund and a session.
+     * Find the unique receivable for a pool and a session.
      *
-     * @param Fund $fund The fund
+     * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $receivableId
      * @param string $notes
      *
      * @return int
      */
-    public function saveReceivableNotes(Fund $fund, Session $session, int $receivableId, string $notes): int
+    public function saveReceivableNotes(Pool $pool, Session $session, int $receivableId, string $notes): int
     {
         return $session->receivables()->where('id', $receivableId)
-            ->whereIn('subscription_id', $fund->subscriptions()->pluck('id'))->update(['notes' => $notes]);
+            ->whereIn('subscription_id', $pool->subscriptions()->pluck('id'))->update(['notes' => $notes]);
     }
 
     /**
@@ -286,37 +286,37 @@ class MeetingService
     }
 
     /**
-     * Get the receivables of a given fund.
+     * Get the receivables of a given pool.
      *
      * Will return extended data on subscriptions.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      *
      * @return array
      */
-    public function getFigures(Fund $fund): array
+    public function getFigures(Pool $pool): array
     {
-        return $this->planningService->getFigures($fund);
+        return $this->planningService->getFigures($pool);
     }
 
     /**
-     * Get funds summary for a session
+     * Get pools summary for a session
      *
      * @param Session $session
      *
      * @return array
      */
-    public function getFundsSummary(Session $session): array
+    public function getPoolsSummary(Session $session): array
     {
-        $funds = $this->tenantService->round()->funds->keyBy('id');
+        $pools = $this->tenantService->round()->pools->keyBy('id');
         $sessions = $this->tenantService->round()->sessions;
 
         $payableSum = 0;
         $payableAmounts = $session->payableAmounts()->get()
-            ->each(function($payable) use($funds, $sessions, &$payableSum) {
-                $fund = $funds[$payable->id];
-                $count = $sessions->filter(function($session) use($fund) {
-                    return $session->enabled($fund);
+            ->each(function($payable) use($pools, $sessions, &$payableSum) {
+                $pool = $pools[$payable->id];
+                $count = $sessions->filter(function($session) use($pool) {
+                    return $session->enabled($pool);
                 })->count();
                 $payableSum += $payable->amount * $count;
                 $payable->amount = Currency::format($payable->amount * $count);
