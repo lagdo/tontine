@@ -51,7 +51,7 @@ class Subscription extends CallableClass
         $this->jq('#btn-subscription-filter')->click($this->rq()->filter());
         $this->jq('#btn-subscription-refresh')->click($this->rq()->home($poolId));
         $this->jq('#btn-subscription-deposits')->click($this->rq()->deposits());
-        $this->jq('#btn-subscription-remittances')->click($this->rq()->remittances());
+        $this->jq('#btn-subscription-remitments')->click($this->rq()->remitments());
 
         $this->bag('subscription')->set('pool.id', $poolId);
         $this->bag('subscription')->set('filter', false);

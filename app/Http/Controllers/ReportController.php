@@ -91,7 +91,7 @@ class ReportController extends Controller
                 'summary' => $summary['receivables'],
                 'sum' => $summary['sum']['receivables'],
             ],
-            'remittances' => [
+            'remitments' => [
                 'session' => $session,
                 'pools' => $meetingService->getPoolsWithPayables($session),
                 'summary' => $summary['payables'],

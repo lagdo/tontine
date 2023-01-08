@@ -59,7 +59,7 @@ class Table extends CallableClass
             $this->bag('table')->set('pool.id', $this->pool->id);
         }
 
-        return $showDeposits ? $this->amounts() : $this->remittances();
+        return $showDeposits ? $this->amounts() : $this->remitments();
     }
 
     public function home()
@@ -80,7 +80,7 @@ class Table extends CallableClass
         $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt(), true));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->amounts());
         $this->jq('#btn-subscription-deposits')->click($this->rq()->deposits());
-        $this->jq('#btn-subscription-remittances')->click($this->rq()->remittances());
+        $this->jq('#btn-subscription-remitments')->click($this->rq()->remitments());
         $this->jq('.pool-session-toggle')->click($this->rq()->toggleSession(jq()->attr('data-session-id')->toInt()));
 
         return $this->response;
@@ -98,7 +98,7 @@ class Table extends CallableClass
         $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt(), true));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->deposits());
         $this->jq('#btn-subscription-amounts')->click($this->rq()->amounts());
-        $this->jq('#btn-subscription-remittances')->click($this->rq()->remittances());
+        $this->jq('#btn-subscription-remitments')->click($this->rq()->remitments());
         $this->jq('.pool-session-toggle')->click($this->rq()->toggleSession(jq()->attr('data-session-id')->toInt()));
 
         return $this->response;
@@ -115,17 +115,17 @@ class Table extends CallableClass
         return $this->amounts();
     }
 
-    public function remittances()
+    public function remitments()
     {
         $payables = $this->subscriptionService->getPayables($this->pool);
         $this->view()->shareValues($payables);
-        $html = $this->view()->render('pages.planning.table.remittances')
+        $html = $this->view()->render('pages.planning.table.remitments')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt(), false));
-        $this->jq('#btn-subscription-refresh')->click($this->rq()->remittances());
+        $this->jq('#btn-subscription-refresh')->click($this->rq()->remitments());
         $this->jq('#btn-subscription-amounts')->click($this->rq()->amounts());
         $this->jq('#btn-subscription-deposits')->click($this->rq()->deposits());
         $this->jq('.select-beneficiary')->change($this->rq()->saveBeneficiary(jq()->attr('data-session-id')->toInt(),
@@ -142,6 +142,6 @@ class Table extends CallableClass
         $session = $this->tenantService->getSession($sessionId);
         $this->subscriptionService->saveBeneficiary($this->pool, $session, $currSubscriptionId, $nextSubscriptionId);
 
-        return $this->remittances();
+        return $this->remitments();
     }
 }

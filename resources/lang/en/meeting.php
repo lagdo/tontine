@@ -10,7 +10,7 @@ return [
         'fees' => "Fees",
         'fines' => "Fines",
         'deposits' => "Deposits",
-        'remittances' => "Remittances",
+        'remitments' => "Remitments",
         'loans' => "Loans",
         'amounts' => "Amounts",
         'settlements' => "Settlements",
@@ -21,7 +21,7 @@ return [
     ],
     'actions' => [
         'deposits' => "Deposits",
-        'remittances' => "Remittances",
+        'remitments' => "Remitments",
         'settlements' => "Settlements",
         'loans' => "Loans",
         'amounts' => "Amounts",

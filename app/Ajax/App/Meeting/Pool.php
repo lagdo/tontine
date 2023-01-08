@@ -43,7 +43,7 @@ class Pool extends CallableClass
         $this->meetingService = $meetingService;
 
         $this->deposits();
-        $this->remittances();
+        $this->remitments();
 
         return $this->response;
     }
@@ -67,22 +67,22 @@ class Pool extends CallableClass
         return $this->response;
     }
 
-    public function remittances()
+    public function remitments()
     {
         $tontine = $this->meetingService->getTontine();
-        $html = $this->view()->render('pages.meeting.pool.remittances')
+        $html = $this->view()->render('pages.meeting.pool.remitments')
             ->with('tontine', $tontine)->with('session', $this->session)
             ->with('pools', $this->meetingService->getPoolsWithPayables($this->session));
         if($this->session->closed)
         {
             $html->with('summary', $this->meetingService->getPoolsSummary($this->session));
         }
-        $this->response->html('meeting-remittances', $html);
+        $this->response->html('meeting-remitments', $html);
 
-        $this->jq('#btn-remittances-refresh')->click($this->rq()->remittances());
+        $this->jq('#btn-remitments-refresh')->click($this->rq()->remitments());
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
-        $remittanceClass = ($tontine->is_mutual ? Mutual\Remittance::class : Financial\Remittance::class);
-        $this->jq('.btn-pool-remittances')->click($this->cl($remittanceClass)->rq()->home($poolId));
+        $remitmentClass = ($tontine->is_mutual ? Mutual\Remitment::class : Financial\Remitment::class);
+        $this->jq('.btn-pool-remitments')->click($this->cl($remitmentClass)->rq()->home($poolId));
 
         return $this->response;
     }

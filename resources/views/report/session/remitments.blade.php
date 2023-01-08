@@ -1,6 +1,6 @@
           <div class="row align-items-center">
             <div class="col-auto">
-              <h6 class="section-title mt-0">{!! __('meeting.titles.remittances') !!}</h6>
+              <h6 class="section-title mt-0">{!! __('meeting.titles.remitments') !!}</h6>
             </div>
           </div>
           <div class="table-responsive">

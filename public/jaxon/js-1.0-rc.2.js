@@ -91,8 +91,8 @@ App.Ajax.App.Meeting.Pool = {};
 App.Ajax.App.Meeting.Pool.deposits = function() {
     return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Pool', jxnmthd: 'deposits' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Pool.remittances = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Pool', jxnmthd: 'remittances' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Pool.remitments = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Pool', jxnmthd: 'remitments' }, { parameters: arguments, bags: ["meeting"] });
 };
 App.Ajax.App.Meeting.Table = {};
 App.Ajax.App.Meeting.Table.select = function() {
@@ -173,8 +173,8 @@ App.Ajax.App.Planning.Table.deposits = function() {
 App.Ajax.App.Planning.Table.toggleSession = function() {
     return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Table', jxnmthd: 'toggleSession' }, { parameters: arguments, bags: ["table"] });
 };
-App.Ajax.App.Planning.Table.remittances = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Table', jxnmthd: 'remittances' }, { parameters: arguments, bags: ["table"] });
+App.Ajax.App.Planning.Table.remitments = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Table', jxnmthd: 'remitments' }, { parameters: arguments, bags: ["table"] });
 };
 App.Ajax.App.Planning.Table.saveBeneficiary = function() {
     return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Table', jxnmthd: 'saveBeneficiary' }, { parameters: arguments, bags: ["table"] });
@@ -371,28 +371,28 @@ App.Ajax.App.Meeting.Financial.Loan.saveLoan = function() {
 App.Ajax.App.Meeting.Financial.Loan.deleteLoan = function() {
     return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Loan', jxnmthd: 'deleteLoan' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Mutual.Remittance = {};
-App.Ajax.App.Meeting.Mutual.Remittance.home = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Mutual.Remittance', jxnmthd: 'home' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Mutual.Remitment = {};
+App.Ajax.App.Meeting.Mutual.Remitment.home = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Mutual.Remitment', jxnmthd: 'home' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Mutual.Remittance.addRemittance = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Mutual.Remittance', jxnmthd: 'addRemittance' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Mutual.Remitment.addRemitment = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Mutual.Remitment', jxnmthd: 'addRemitment' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Mutual.Remittance.delRemittance = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Mutual.Remittance', jxnmthd: 'delRemittance' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Mutual.Remitment.delRemitment = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Mutual.Remitment', jxnmthd: 'delRemitment' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Financial.Remittance = {};
-App.Ajax.App.Meeting.Financial.Remittance.home = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Remittance', jxnmthd: 'home' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Financial.Remitment = {};
+App.Ajax.App.Meeting.Financial.Remitment.home = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Remitment', jxnmthd: 'home' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Financial.Remittance.addRemittance = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Remittance', jxnmthd: 'addRemittance' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Financial.Remitment.addRemitment = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Remitment', jxnmthd: 'addRemitment' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Financial.Remittance.saveRemittance = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Remittance', jxnmthd: 'saveRemittance' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Financial.Remitment.saveRemitment = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Remitment', jxnmthd: 'saveRemitment' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Financial.Remittance.deleteRemittance = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Remittance', jxnmthd: 'deleteRemittance' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Financial.Remitment.deleteRemitment = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Remitment', jxnmthd: 'deleteRemitment' }, { parameters: arguments, bags: ["meeting"] });
 };
 
 jaxon.dialogs = {};

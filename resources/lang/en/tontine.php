@@ -96,7 +96,7 @@ return [
             'add' => "Add pools",
             'edit' => "Edit a pool",
             'deposits' => "Deposits table",
-            'remittances' => "Remittances table",
+            'remitments' => "Remitments table",
             'subscriptions' => "Subscriptions",
         ],
         'actions' => [

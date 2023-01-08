@@ -32,8 +32,8 @@ class Payable extends Model
         return $this->belongsTo(Subscription::class);
     }
 
-    public function remittance()
+    public function remitment()
     {
-        return $this->hasOne(Remittance::class);
+        return $this->hasOne(Remitment::class);
     }
 }

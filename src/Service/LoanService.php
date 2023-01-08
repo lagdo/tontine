@@ -9,7 +9,7 @@ use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Member;
-use Siak\Tontine\Model\Remittance;
+use Siak\Tontine\Model\Remitment;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Refund;
@@ -28,9 +28,9 @@ class LoanService
     protected PlanningService $planningService;
 
     /**
-     * @var RemittanceService
+     * @var RemitmentService
      */
-    protected RemittanceService $remittanceService;
+    protected RemitmentService $remitmentService;
 
     /**
      * @var SubscriptionService
@@ -40,15 +40,15 @@ class LoanService
     /**
      * @param TenantService $tenantService
      * @param PlanningService $planningService
-     * @param RemittanceService $remittanceService
+     * @param RemitmentService $remitmentService
      * @param SubscriptionService $subscriptionService
      */
     public function __construct(TenantService $tenantService, PlanningService $planningService,
-        RemittanceService $remittanceService, SubscriptionService $subscriptionService)
+        RemitmentService $remitmentService, SubscriptionService $subscriptionService)
     {
         $this->tenantService = $tenantService;
         $this->planningService = $planningService;
-        $this->remittanceService = $remittanceService;
+        $this->remitmentService = $remitmentService;
         $this->subscriptionService = $subscriptionService;
     }
 
@@ -115,7 +115,7 @@ class LoanService
     }
 
     /**
-     * Create a remittance.
+     * Create a remitment.
      *
      * @param Pool $pool The pool
      * @param Session $session The session
@@ -124,17 +124,17 @@ class LoanService
      *
      * @return void
      */
-    public function createRemittance(Pool $pool, Session $session, int $subscriptionId, int $interest): void
+    public function createRemitment(Pool $pool, Session $session, int $subscriptionId, int $interest): void
     {
         $subscription = $pool->subscriptions()->find($subscriptionId);
         DB::transaction(function() use($pool, $session, $subscription, $interest) {
             $this->subscriptionService->setPayableSession($session, $subscription);
-            $this->remittanceService->createRemittance($pool, $session, $subscription->payable->id, $interest);
+            $this->remitmentService->createRemitment($pool, $session, $subscription->payable->id, $interest);
         });
     }
 
     /**
-     * Delete a remittance.
+     * Delete a remitment.
      *
      * @param Pool $pool The pool
      * @param Session $session The session
@@ -142,11 +142,11 @@ class LoanService
      *
      * @return void
      */
-    public function deleteRemittance(Pool $pool, Session $session, int $subscriptionId): void
+    public function deleteRemitment(Pool $pool, Session $session, int $subscriptionId): void
     {
         $subscription = $pool->subscriptions()->find($subscriptionId);
         DB::transaction(function() use($pool, $session, $subscription) {
-            $this->remittanceService->deleteRemittance($pool, $session, $subscription->payable->id);
+            $this->remitmentService->deleteRemitment($pool, $session, $subscription->payable->id);
             $this->subscriptionService->unsetPayableSession($session, $subscription);
         });
     }
@@ -231,11 +231,11 @@ class LoanService
         // Get the ids of all the sessions until the current one.
         $sessionIds = $this->tenantService->round()->sessions()
             ->where('start_at', '<=', $session->start_at)->pluck('id');
-        // The amount available for loan is the sum of the amounts paid for remittances,
+        // The amount available for loan is the sum of the amounts paid for remitments,
         // the amounts paid in the loans, and the refunds, for all the sessions.
         $payableIds = Payable::whereIn('session_id', $sessionIds)->pluck('id');
 
-        return Remittance::whereIn('payable_id', $payableIds)->sum('interest') +
+        return Remitment::whereIn('payable_id', $payableIds)->sum('interest') +
             Loan::whereIn('session_id', $sessionIds)->get()
                 ->reduce(function($sum, $loan) {
                     return $sum + $loan->interest - $loan->amount;
@@ -256,7 +256,7 @@ class LoanService
 
         $paidSum = 0;
         $poolLoans = $payables->map(function($payable) use(&$paidSum) {
-            $interest = $payable->remittance->interest ?? 0;
+            $interest = $payable->remitment->interest ?? 0;
             $paidSum += $interest;
             return (object)[
                 'id' => 0, // $payable->subscription->id,
@@ -287,8 +287,8 @@ class LoanService
      *
      * @return array|stdClass
      */
-    public function getRemittanceFigures(Pool $pool, int $sessionId = 0)
+    public function getRemitmentFigures(Pool $pool, int $sessionId = 0)
     {
-        return $this->planningService->getRemittanceFigures($pool, $sessionId);
+        return $this->planningService->getRemitmentFigures($pool, $sessionId);
     }
 }

@@ -113,7 +113,7 @@ class Session extends Model
         return $this->hasMany(Payable::class)
             ->join('subscriptions', 'subscriptions.id', '=', 'payables.subscription_id')
             ->join('pools', 'subscriptions.pool_id', '=', 'pools.id')
-            ->whereHas('remittance')
+            ->whereHas('remitment')
             ->groupBy('pools.id')
             ->select('pools.id', DB::raw('sum(pools.amount) as amount'));
     }

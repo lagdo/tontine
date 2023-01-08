@@ -1,7 +1,7 @@
           <div class="section-body">
             <div class="row align-items-center">
               <div class="col">
-                <h2 class="section-title">{{ __('tontine.pool.titles.remittances') }} - {{ $pool->title }}</h2>
+                <h2 class="section-title">{{ __('tontine.pool.titles.remitments') }} - {{ $pool->title }}</h2>
               </div>
               <div class="col-auto">
                 <div class="input-group float-right ml-2">
@@ -29,8 +29,8 @@
                     <tr>
                       <th>{{ __('figures.titles.sessions') }}</th>
                       <th class="currency">{{ __('figures.titles.amount') }}</th>
-                      <th class="currency">{{ __('figures.remittance.titles.count') }}</th>
-                      <th class="currency">{{ __('figures.remittance.titles.amount') }}</th>
+                      <th class="currency">{{ __('figures.remitment.titles.count') }}</th>
+                      <th class="currency">{{ __('figures.remitment.titles.amount') }}</th>
                       <th>{{ __('figures.titles.beneficiaries') }}</th>
                     </tr>
                   </thead>
@@ -48,8 +48,8 @@
                     <tr>
                       <td>{{ $session->title }}</td>
                       <td class="currency">{{ $figures->expected[$session->id]->cashier->recv }}</td>
-                      <td class="currency">{{ $figures->expected[$session->id]->remittance->count }}</td>
-                      <td class="currency">{{ $figures->expected[$session->id]->remittance->amount }}</td>
+                      <td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>
+                      <td class="currency">{{ $figures->expected[$session->id]->remitment->amount }}</td>
                       <td>
 @foreach ($session->beneficiaries as $subscription)
                         {!! Form::select('', $subscription === 0 ? $subscriptions :

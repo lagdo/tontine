@@ -45,9 +45,9 @@ class PlanningService
         $figures->deposit->count = $defaultValue;
         $figures->deposit->amount = $defaultValue;
 
-        $figures->remittance = new stdClass();
-        $figures->remittance->count = $defaultValue;
-        $figures->remittance->amount = $defaultValue;
+        $figures->remitment = new stdClass();
+        $figures->remitment->count = $defaultValue;
+        $figures->remitment->amount = $defaultValue;
 
         return $figures;
     }
@@ -63,7 +63,7 @@ class PlanningService
         $figures->cashier->recv = Currency::format($figures->cashier->recv, true);
         $figures->cashier->end = Currency::format($figures->cashier->end, true);
         $figures->deposit->amount = Currency::format($figures->deposit->amount, true);
-        $figures->remittance->amount = Currency::format($figures->remittance->amount, true);
+        $figures->remitment->amount = Currency::format($figures->remitment->amount, true);
 
         return $figures;
     }
@@ -83,7 +83,7 @@ class PlanningService
         $subscriptionCount = $pool->subscriptions()->count();
         $depositCount = $subscriptions->count();
 
-        $remittanceAmount = $pool->amount * $sessionCount;
+        $remitmentAmount = $pool->amount * $sessionCount;
         $depositAmount = $pool->amount * $subscriptions->count();
 
         $rank = 0;
@@ -103,10 +103,10 @@ class PlanningService
             $figures->cashier->recv = $cashier + $depositAmount;
             $figures->deposit->count = $depositCount;
             $figures->deposit->amount = $depositAmount;
-            $figures->remittance->count =
-                $this->getRemittanceCount($sessionCount, $subscriptionCount, $rank++);
-            $figures->remittance->amount = $remittanceAmount * $figures->remittance->count;
-            $figures->cashier->end = $cashier + $depositAmount - $figures->remittance->amount;
+            $figures->remitment->count =
+                $this->getRemitmentCount($sessionCount, $subscriptionCount, $rank++);
+            $figures->remitment->amount = $remitmentAmount * $figures->remitment->count;
+            $figures->cashier->end = $cashier + $depositAmount - $figures->remitment->amount;
             $cashier = $figures->cashier->end;
 
             $expectedFigures[$session->id] = $this->formatCurrencies($figures);
@@ -125,7 +125,7 @@ class PlanningService
     private function getCollectedFigures(Pool $pool, Collection $sessions, Collection $subscriptions): array
     {
         $cashier = 0;
-        $remittanceAmount = $pool->amount * $sessions->filter(function($session) use($pool) {
+        $remitmentAmount = $pool->amount * $sessions->filter(function($session) use($pool) {
             return $session->enabled($pool);
         })->count();
 
@@ -153,11 +153,11 @@ class PlanningService
             $figures->cashier->end = $figures->cashier->recv;
             foreach($session->payables as $payable)
             {
-                if(($payable->remittance))
+                if(($payable->remitment))
                 {
-                    $figures->remittance->count++;
-                    $figures->remittance->amount += $remittanceAmount;
-                    $figures->cashier->end -= $remittanceAmount;
+                    $figures->remitment->count++;
+                    $figures->remitment->amount += $remitmentAmount;
+                    $figures->cashier->end -= $remitmentAmount;
                 }
             }
 
@@ -229,7 +229,7 @@ class PlanningService
             // Pick the subscriptions ids, and fill with 0's to the max available.
             $session->beneficiaries = $session->payables->map(function($payable) {
                 return $payable->subscription_id;
-            })->pad($figures->expected[$session->id]->remittance->count, 0);
+            })->pad($figures->expected[$session->id]->remitment->count, 0);
         });
 
         // Separate subscriptions that already have a beneficiary assigned from the others.
@@ -266,7 +266,7 @@ class PlanningService
             ->get()->each(function($subscription) {
                 $subscription->setRelation('receivables', $subscription->receivables->keyBy('session_id'));
             });
-        $sessions = $this->_getSessions($pool, ['payables.remittance']);
+        $sessions = $this->_getSessions($pool, ['payables.remitment']);
         $figures = new stdClass();
         $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
         $figures->collected = $this->getCollectedFigures($pool, $sessions, $subscriptions);
@@ -283,7 +283,7 @@ class PlanningService
      *
      * @return int
      */
-    public function getRemittanceCount(int $sessionCount, int $subscriptionCount, int $sessionRank): int
+    public function getRemitmentCount(int $sessionCount, int $subscriptionCount, int $sessionRank): int
     {
         if($sessionCount === 0 || $subscriptionCount === 0)
         {
@@ -308,15 +308,15 @@ class PlanningService
      *
      * @return array|stdClass
      */
-    public function getRemittanceFigures(Pool $pool, int $sessionId = 0)
+    public function getRemitmentFigures(Pool $pool, int $sessionId = 0)
     {
         $sessions = $this->_getSessions($pool, ['payables.subscription.member']);
         $sessionCount = $sessions->filter(function($session) use($pool) {
             return $session->enabled($pool);
         })->count();
         $subscriptionCount = $pool->subscriptions()->count();
-        $remittanceAmount = $pool->amount * $sessionCount;
-        $formattedAmount = Currency::format($remittanceAmount);
+        $remitmentAmount = $pool->amount * $sessionCount;
+        $formattedAmount = Currency::format($remitmentAmount);
 
         $figures = [];
         $rank = 0;
@@ -329,7 +329,7 @@ class PlanningService
             if($session->enabled($pool))
             {
                 $figures[$session->id]->count =
-                    $this->getRemittanceCount($sessionCount, $subscriptionCount, $rank++);
+                    $this->getRemitmentCount($sessionCount, $subscriptionCount, $rank++);
                 $figures[$session->id]->amount = $formattedAmount;
             }
         }

@@ -13,10 +13,6 @@ class CreateLoansTable extends Migration
      */
     public function up()
     {
-        Schema::table('remittances', function (Blueprint $table) {
-            $table->integer('interest')->default(0);
-        });
-
         Schema::create('loans', function (Blueprint $table) {
             $table->id();
             $table->integer('amount');
@@ -36,9 +32,5 @@ class CreateLoansTable extends Migration
     public function down()
     {
         Schema::dropIfExists('loans');
-
-        Schema::table('remittances', function (Blueprint $table) {
-            $table->dropColumn('interest');
-        });
     }
 }
