@@ -15,12 +15,12 @@ class Tontine extends Model
     /**
      * @const
      */
-    const TYPE_MUTUAL = 0;
+    const TYPE_MUTUAL = 'm';
 
     /**
      * @const
      */
-    const TYPE_FINANCIAL = 1;
+    const TYPE_FINANCIAL = 'f';
 
     /**
      * The attributes that are mass assignable.
@@ -54,12 +54,12 @@ class Tontine extends Model
 
     public function getIsMutualAttribute()
     {
-        return intval($this->type) === self::TYPE_MUTUAL;
+        return $this->type === self::TYPE_MUTUAL;
     }
 
     public function getIsFinancialAttribute()
     {
-        return intval($this->type) === self::TYPE_FINANCIAL;
+        return $this->type === self::TYPE_FINANCIAL;
     }
 
     /**
