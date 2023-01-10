@@ -30,6 +30,10 @@ use Siak\Tontine\Validation\Meeting\BiddingValidator;
 use Siak\Tontine\Validation\Meeting\RemittanceValidator;
 use Siak\Tontine\Validation\Planning\FundValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
+use Siak\Tontine\Service\Report\PdfGeneratorInterface;
+use Siak\Tontine\Service\Report\LocalPdfGenerator;
+use Siak\Tontine\Service\Report\ReportServiceInterface;
+use Siak\Tontine\Service\Report\ReportService;
 
 use function config;
 
@@ -71,6 +75,13 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(BiddingService::class, BiddingService::class);
         $this->app->singleton(RefundService::class, RefundService::class);
         $this->app->singleton(PlanningService::class, PlanningService::class);
+        $this->app->singleton(ReportService::class, ReportService::class);
+        $this->app->bind(ReportServiceInterface::class, ReportService::class);
+        $this->app->singleton(LocalPdfGenerator::class, function($app) {
+            return new LocalPdfGenerator($app->make(Browser::class), config('chrome.page'));
+        });
+        $this->app->bind(PdfGeneratorInterface::class, LocalPdfGenerator::class);
+
         $this->app->singleton(ChargeValidator::class, ChargeValidator::class);
         $this->app->singleton(MemberValidator::class, MemberValidator::class);
         $this->app->singleton(BiddingValidator::class, BiddingValidator::class);

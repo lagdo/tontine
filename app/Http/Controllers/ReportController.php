@@ -3,16 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use HeadlessChromium\Browser;
-use Siak\Tontine\Model\Currency;
-use Siak\Tontine\Service\SubscriptionService;
-use Siak\Tontine\Service\MeetingService;
-use Siak\Tontine\Service\FeeSettlementService;
-use Siak\Tontine\Service\FineSettlementService;
-use Siak\Tontine\Service\BiddingService;
-use Siak\Tontine\Service\RefundService;
+use Siak\Tontine\Service\Report\PdfGeneratorInterface;
+use Siak\Tontine\Service\Report\ReportServiceInterface;
 
-use function config;
+use function base64_decode;
 use function view;
 use function response;
 
@@ -20,24 +14,16 @@ class ReportController extends Controller
 {
     /**
      * @param Request $request
-     * @param Browser $browser
-     * @param MeetingService $meetingService
-     * @param SubscriptionService $subscriptionService
-     * @param int $fundId
+     * @param PdfGeneratorInterface $pdfGenerator
+     * @param ReportServiceInterface $reportService
+     * @param int $poolId
      *
-     * @return View
+     * @return View|Response
      */
-    public function fund(Request $request, Browser $browser,
-        MeetingService $meetingService, SubscriptionService $subscriptionService, int $fundId)
+    public function pool(Request $request, PdfGeneratorInterface $pdfGenerator,
+        ReportServiceInterface $reportService, int $poolId)
     {
-        $fund = $subscriptionService->getFund($fundId);
-        view()->share($meetingService->getFigures($fund));
-
-        $html = view('report.fund', [
-            'tontine' => $meetingService->getTontine(),
-            'fund' => $fund,
-            'funds' > $subscriptionService->getFunds(),
-        ]);
+        $html = view('report.pool', $reportService->getPool($poolId));
 
         // Show the html page
         if($request->has('html'))
@@ -46,103 +32,28 @@ class ReportController extends Controller
         }
 
         // Print the pdf
-        try
-        {
-            $page = $browser->createPage();
-            $page->setHtml("$html");
-            $pdf = $page->pdf(config('chrome.page', []));
-
-            return response(base64_decode($pdf->getBase64()), 200)
-                ->header('Content-Description', 'File Transfer')
-                ->header('Content-Type', 'application/pdf')
-                ->header('Content-Disposition', 'inline; filename=report.pdf')
-                ->header('Content-Transfer-Encoding', 'binary')
-                ->header('Expires', '0')
-                ->header('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-                ->header('Pragma', 'public');
-        }
-        finally
-        {
-            $browser->close();
-        }
+        return response(base64_decode($pdfGenerator->getPdf("$html")), 200)
+            ->header('Content-Description', 'Pool Report')
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename=report.pdf')
+            ->header('Content-Transfer-Encoding', 'binary')
+            ->header('Expires', '0')
+            ->header('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+            ->header('Pragma', 'public');
     }
 
     /**
-     * @param MeetingService $meetingService
+     * @param Request $request
+     * @param PdfGeneratorInterface $pdfGenerator
+     * @param ReportServiceInterface $reportService
      * @param int $sessionId
      *
-     * @return View
+     * @return View|Response
      */
-    public function session(Request $request, Browser $browser,
-        MeetingService $meetingService, FeeSettlementService $feeSettlementService,
-        FineSettlementService $fineSettlementService, BiddingService $biddingService,
-        RefundService $refundService, int $sessionId)
+    public function session(Request $request, PdfGeneratorInterface $pdfGenerator,
+        ReportServiceInterface $reportService, int $sessionId)
     {
-        $tontine = $meetingService->getTontine();
-        $session = $meetingService->getSession($sessionId);
-        $summary = $meetingService->getFundsSummary($session);
-
-        $html = view('report.session', [
-            'tontine' => $tontine,
-            'session' => $session,
-            'deposits' => [
-                'session' => $session,
-                'funds' => $meetingService->getFundsWithReceivables($session),
-                'summary' => $summary['receivables'],
-                'sum' => $summary['sum']['receivables'],
-            ],
-            'remittances' => [
-                'session' => $session,
-                'funds' => $meetingService->getFundsWithPayables($session),
-                'summary' => $summary['payables'],
-                'sum' => $summary['sum']['payables'],
-            ],
-            'fees' => [
-                'session' => $session,
-                'fees' => $meetingService->getFees($session),
-                'settlements' => [
-                    'current' => $feeSettlementService->getSettlementCount($session, false),
-                    'previous' => $feeSettlementService->getSettlementCount($session, true),
-                ],
-                'bills' => [
-                    'current' => $feeSettlementService->getBillCount($session, false),
-                    'previous' => $feeSettlementService->getBillCount($session, true),
-                ],
-                'zero' => $feeSettlementService->getFormattedAmount(0),
-                'summary' => $meetingService->getFeesSummary($session),
-            ],
-            'fines' => [
-                'session' => $session,
-                'fines' => $meetingService->getFines($session),
-                'settlements' => [
-                    'current' => $fineSettlementService->getSettlementCount($session, false),
-                    'previous' => $fineSettlementService->getSettlementCount($session, true),
-                ],
-                'bills' => [
-                    'current' => $fineSettlementService->getBillCount($session, false),
-                    'previous' => $fineSettlementService->getBillCount($session, true),
-                ],
-                'zero' => $fineSettlementService->getFormattedAmount(0),
-                'summary' => $meetingService->getFinesSummary($session),
-            ],
-        ]);
-
-        /*if($tontine->is_financial)
-        {
-            [$biddings, $sum] = $biddingService->getSessionBiddings($session);
-            $amountAvailable = $biddingService->getAmountAvailable($session);
-            $html->with('biddings', [
-                'session' => $session,
-                'biddings' => $biddings,
-                'sum' => $sum,
-                'amountAvailable' => Currency::format($amountAvailable),
-            ]);
-            $html->with('refunds', [
-                'session' => $session,
-                'biddings' => $refundService->getBiddings($session, true),
-                'refundSum' => $refundService->getRefundSum($session),
-            ]);
-        }*/
+        $html = view('report.session', $reportService->getSession($sessionId));
 
         // Show the html page
         if($request->has('html'))
@@ -151,24 +62,13 @@ class ReportController extends Controller
         }
 
         // Print the pdf
-        try
-        {
-            $page = $browser->createPage();
-            $page->setHtml("$html");
-            $pdf = $page->pdf(config('chrome.page', []));
-
-            return response(base64_decode($pdf->getBase64()), 200)
-                ->header('Content-Description', 'File Transfer')
-                ->header('Content-Type', 'application/pdf')
-                ->header('Content-Disposition', 'inline; filename=report.pdf')
-                ->header('Content-Transfer-Encoding', 'binary')
-                ->header('Expires', '0')
-                ->header('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-                ->header('Pragma', 'public');
-        }
-        finally
-        {
-            $browser->close();
-        }
+        return response(base64_decode($pdfGenerator->getPdf("$html")), 200)
+            ->header('Content-Description', 'Session Report')
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename=report.pdf')
+            ->header('Content-Transfer-Encoding', 'binary')
+            ->header('Expires', '0')
+            ->header('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+            ->header('Pragma', 'public');
     }
 }
