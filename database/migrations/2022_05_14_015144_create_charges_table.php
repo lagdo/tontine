@@ -15,10 +15,11 @@ class CreateChargesTable extends Migration
     {
         Schema::create('charges', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 180);
+            $table->string('name', 150);
             $table->tinyInteger('type');
             $table->tinyInteger('period');
             $table->integer('amount');
+            $table->boolean('active');
             $table->unsignedBigInteger('tontine_id');
             $table->foreign('tontine_id')->references('id')->on('tontines');
             $table->unique(['name', 'tontine_id']);

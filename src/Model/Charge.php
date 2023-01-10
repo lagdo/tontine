@@ -68,6 +68,7 @@ class Charge extends Model
         'type',
         'period',
         'amount',
+        'active',
     ];
 
     /**
@@ -85,9 +86,19 @@ class Charge extends Model
         return $this->belongsTo(Tontine::class);
     }
 
-    public function bills()
+    public function session_bills()
     {
-        return $this->hasMany(Bill::class);
+        return $this->hasMany(SessionBill::class);
+    }
+
+    public function round_bills()
+    {
+        return $this->hasMany(RoundBill::class);
+    }
+
+    public function tontine_bills()
+    {
+        return $this->hasMany(TontineBill::class);
     }
 
     public function getIsFeeAttribute()
@@ -165,29 +176,13 @@ class Charge extends Model
         return $query->where('type', self::TYPE_FEE)->where('period', self::PERIOD_SESSION);
     }
 
-    public function getCurrSettlementCount(array $settlements)
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeActive(Builder $query): Builder
     {
-        return $settlements['current'][$this->id] ?? 0;
-    }
-
-    public function getPrevSettlementCount(array $settlements)
-    {
-        return $settlements['previous'][$this->id] ?? 0;
-    }
-
-    public function getCurrBillCount(array $bills)
-    {
-        // For fees, there's a single bill for all tontine members.
-        // The number of bills then needs to be multiplied by the number of members.
-        $count = $this->is_fee ? self::$memberCount : 1;
-        return $count * ($bills['current'][$this->id] ?? 0);
-    }
-
-    public function getPrevBillCount(array $bills)
-    {
-        // For fees, there's a single bill for all tontine members.
-        // The number of bills then needs to be multiplied by the number of members.
-        $count = $this->is_fee ? self::$memberCount : 1;
-        return $count * ($bills['previous'][$this->id] ?? 0);
+        return $query->where('active', true);
     }
 }

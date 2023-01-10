@@ -7,12 +7,35 @@ use Illuminate\Database\Eloquent\Model;
 class Round extends Model
 {
     /**
+     * @const
+     */
+    const STATUS_PENDING = 0;
+
+    /**
+     * @const
+     */
+    const STATUS_OPENED = 1;
+
+    /**
+     * @const
+     */
+    const STATUS_CLOSED = 2;
+
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
         'title',
+        'status',
         'notes',
         'start_at',
         'end_at',
@@ -24,9 +47,6 @@ class Round extends Model
      * @var array
      */
     protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
         'start_at',
         'end_at',
     ];
@@ -51,6 +71,21 @@ class Round extends Model
         return $this->end_at->toFormattedDateString();
     }
 
+    public function getPendingAttribute()
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    public function getOpenedAttribute()
+    {
+        return $this->status === self::STATUS_OPENED;
+    }
+
+    public function getClosedAttribute()
+    {
+        return $this->status === self::STATUS_CLOSED;
+    }
+
     public function tontine()
     {
         return $this->belongsTo(Tontine::class);
@@ -68,6 +103,6 @@ class Round extends Model
 
     public function bills()
     {
-        return $this->hasMany(Bill::class);
+        return $this->hasMany(RoundBill::class);
     }
 }

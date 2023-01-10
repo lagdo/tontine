@@ -16,10 +16,10 @@ class CreateRoundsTable extends Migration
         Schema::create('rounds', function (Blueprint $table) {
             $table->id();
             $table->string('title', 100);
+            $table->tinyInteger('status')->default(0);
             $table->string('notes')->default('');
             $table->date('start_at');
             $table->date('end_at');
-            $table->timestamps();
             $table->unsignedBigInteger('tontine_id');
             $table->foreign('tontine_id')->references('id')->on('tontines');
         });

@@ -8,19 +8,23 @@ use Illuminate\Database\Eloquent\Model;
 class Bill extends Model
 {
     /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name',
+        'charge',
         'amount',
         'issued_at',
         'deadline',
         'notes',
-        'charge_id',
-        'round_id',
-        'session_id',
     ];
 
     /**
@@ -29,36 +33,13 @@ class Bill extends Model
      * @var array
      */
     protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'due_at',
+        'issued_at',
         'deadline',
     ];
 
-    public function charge()
+    public function settlement()
     {
-        return $this->belongsTo(Charge::class);
-    }
-
-    public function round()
-    {
-        return $this->belongsTo(Round::class);
-    }
-
-    public function session()
-    {
-        return $this->belongsTo(Session::class);
-    }
-
-    public function member()
-    {
-        return $this->belongsTo(Member::class);
-    }
-
-    public function settlements()
-    {
-        return $this->hasMany(Settlement::class);
+        return $this->hasOne(Settlement::class);
     }
 
     /**

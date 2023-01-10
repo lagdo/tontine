@@ -6,14 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Settlement extends Model
 {
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
     public function bill()
     {
         return $this->belongsTo(Bill::class);
-    }
-
-    public function member()
-    {
-        return $this->belongsTo(Member::class);
     }
 
     public function session()
