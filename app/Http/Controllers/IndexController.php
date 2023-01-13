@@ -5,15 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\View\View;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
-use App\Ajax\App\Charge;
+use App\Ajax\App\Meeting\Report as MeetingReport;
 use App\Ajax\App\Meeting\Session as Meeting;
-use App\Ajax\App\Meeting\Table as CashFlow;
-use App\Ajax\App\Member;
-use App\Ajax\App\Planning\Session as Planning;
 use App\Ajax\App\Planning\Fund;
-use App\Ajax\App\Planning\Table;
-use App\Ajax\App\Profile\Round;
-use App\Ajax\App\Profile\Tontine;
+use App\Ajax\App\Planning\Report as PlanningReport;
+use App\Ajax\App\Planning\Session as Planning;
+use App\Ajax\App\Tontine\Charge;
+use App\Ajax\App\Tontine\Member;
+use App\Ajax\App\Tontine\Round;
+use App\Ajax\App\Tontine\Tontine;
 use Siak\Tontine\Service\Tontine\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Jaxon\Laravel\Jaxon;
@@ -52,9 +52,9 @@ class IndexController extends Controller
             'jxnCharge' => $jaxon->request(Charge::class),
             'jxnPlanning' => $jaxon->request(Planning::class),
             'jxnFund' => $jaxon->request(Fund::class),
-            'jxnTable' => $jaxon->request(Table::class),
+            'jxnPlanningReport' => $jaxon->request(PlanningReport::class),
             'jxnMeeting' => $jaxon->request(Meeting::class),
-            'jxnCashFlow' => $jaxon->request(CashFlow::class),
+            'jxnMeetingReport' => $jaxon->request(MeetingReport::class),
             'jxnTontine' => $jxnTontine,
             'jxnRound' => $jxnRound,
             'tontines' => $tontineService->getTontines(1),

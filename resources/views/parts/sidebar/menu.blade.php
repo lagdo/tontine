@@ -20,15 +20,15 @@
             <li><a class="nav-link" id="planning-menu-funds" href="javascript:void(0)">
               <i class="fa fa-wallet"></i> <span>{{ __('tontine.menus.funds') }}</span>
             </a></li>
-            <li><a class="nav-link" id="planning-menu-tables" href="javascript:void(0)">
-              <i class="fa fa-calendar-alt"></i> <span>{{ __('tontine.menus.tables') }}</span>
+            <li><a class="nav-link" id="planning-menu-reports" href="javascript:void(0)">
+              <i class="fa fa-calendar-alt"></i> <span>{{ __('tontine.menus.reports') }}</span>
             </a></li>
             <li class="menu-header">{{ __('tontine.menus.meeting') }}</li>
             <li><a class="nav-link" id="meeting-menu-sessions" href="javascript:void(0)">
               <i class="fa fa-calendar-day"></i> <span>{{ __('tontine.menus.sessions') }}</span>
             </a></li>
-            <li><a class="nav-link" id="meeting-menu-tables" href="javascript:void(0)">
-              <i class="fa fa-calendar-alt"></i> <span>{{ __('tontine.menus.tables') }}</span>
+            <li><a class="nav-link" id="meeting-menu-reports" href="javascript:void(0)">
+              <i class="fa fa-calendar-alt"></i> <span>{{ __('tontine.menus.reports') }}</span>
             </a></li>
           </ul>
         </aside>

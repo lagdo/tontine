@@ -14,7 +14,7 @@ use function intval;
  * @databag meeting
  * @before getFund
  */
-class Table extends CallableClass
+class Report extends CallableClass
 {
     /**
      * @di
@@ -72,15 +72,15 @@ class Table extends CallableClass
     public function amounts()
     {
         $this->view()->shareValues($this->meetingService->getFigures($this->fund));
-        $html = $this->view()->render('pages.meeting.table.amounts')
+        $html = $this->view()->render('pages.meeting.report.amounts')
             ->with('fund', $this->fund)
             ->with('funds', $this->subscriptionService->getFunds());
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-fund-select')->click($this->rq()->select(pm()->select('select-fund'), true));
-        $this->jq('#btn-meeting-table-refresh')->click($this->rq()->amounts());
-        $this->jq('#btn-meeting-table-deposits')->click($this->rq()->deposits());
-        $this->jq('#btn-meeting-table-print')->click($this->rq()->print());
+        $this->jq('#btn-meeting-report-refresh')->click($this->rq()->amounts());
+        $this->jq('#btn-meeting-report-deposits')->click($this->rq()->deposits());
+        $this->jq('#btn-meeting-report-print')->click($this->rq()->print());
 
         return $this->response;
     }
@@ -88,15 +88,15 @@ class Table extends CallableClass
     public function deposits()
     {
         $this->view()->shareValues($this->meetingService->getFigures($this->fund));
-        $html = $this->view()->render('pages.meeting.table.deposits')
+        $html = $this->view()->render('pages.meeting.report.deposits')
             ->with('fund', $this->fund)
             ->with('funds', $this->subscriptionService->getFunds());
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-fund-select')->click($this->rq()->select(pm()->select('select-fund'), true));
-        $this->jq('#btn-meeting-table-refresh')->click($this->rq()->deposits());
-        $this->jq('#btn-meeting-table-amounts')->click($this->rq()->amounts());
-        $this->jq('#btn-meeting-table-print')->click($this->rq()->print());
+        $this->jq('#btn-meeting-report-refresh')->click($this->rq()->deposits());
+        $this->jq('#btn-meeting-report-amounts')->click($this->rq()->amounts());
+        $this->jq('#btn-meeting-report-print')->click($this->rq()->print());
 
         return $this->response;
     }

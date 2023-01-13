@@ -3,7 +3,7 @@
 namespace App\Ajax\App\Meeting\Charge;
 
 use Siak\Tontine\Service\Charge\FineService;
-use Siak\Tontine\Service\Charge\FineSummaryService;
+use Siak\Tontine\Service\Charge\FineReportService;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 
@@ -23,9 +23,9 @@ class Fine extends CallableClass
 
     /**
      * @di
-     * @var FineSummaryService
+     * @var FineReportService
      */
-    protected FineSummaryService $summaryService;
+    protected FineReportService $reportService;
 
     /**
      * @var SessionModel|null
@@ -44,11 +44,11 @@ class Fine extends CallableClass
     /**
      * @exclude
      */
-    public function show($session, $fineService, $summaryService)
+    public function show($session, $fineService, $reportService)
     {
         $this->session = $session;
         $this->fineService = $fineService;
-        $this->summaryService = $summaryService;
+        $this->reportService = $reportService;
 
         return $this->home();
     }
@@ -67,21 +67,21 @@ class Fine extends CallableClass
     {
         $fines = $this->fineService->getFines($this->session, $pageNumber);
         $fineCount = $this->fineService->getFineCount();
-        // Settlement summary
-        $settlements = $this->summaryService->getSettlements($this->session);
+        // Settlement report
+        $settlements = $this->reportService->getSettlements($this->session);
         // Bill counts
-        $bills = $this->summaryService->getBills($this->session);
+        $bills = $this->reportService->getBills($this->session);
 
         $html = $this->view()->render('pages.meeting.fee.page')
             ->with('session', $this->session)
             ->with('fees', $fees)
             ->with('settlements', $settlements['total'])
             ->with('bills', $bills['total'])
-            ->with('zero', $this->summaryService->getFormattedAmount(0))
+            ->with('zero', $this->reportService->getFormattedAmount(0))
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $feeCount));
         // if($this->session->closed)
         // {
-        //     $html->with('summary', $this->feeService->getFeesSummary($this->session));
+        //     $html->with('report', $this->feeService->getFeesReport($this->session));
         // }
         $this->response->html('meeting-fines-page', $html);
 

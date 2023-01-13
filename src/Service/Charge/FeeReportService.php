@@ -9,7 +9,7 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Service\Tontine\TenantService;
 
-class FeeSummaryService
+class FeeReportService
 {
     /**
      * @var TenantService
@@ -151,7 +151,7 @@ class FeeSummaryService
     }
 
     /**
-     * Get the summary of bills
+     * Get the report of bills
      *
      * @param Session $session
      *
@@ -174,7 +174,7 @@ class FeeSummaryService
     }
 
     /**
-     * Get the summary of settlements
+     * Get the report of settlements
      *
      * @param Session $session
      *

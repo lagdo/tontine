@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\DB;
 
 use Siak\Tontine\Service\Charge\ChargeService;
 use Siak\Tontine\Service\Charge\FeeService;
-use Siak\Tontine\Service\Charge\FeeSummaryService;
+use Siak\Tontine\Service\Charge\FeeReportService;
 use Siak\Tontine\Service\Charge\FineService;
-use Siak\Tontine\Service\Charge\FineSummaryService;
+use Siak\Tontine\Service\Charge\FineReportService;
 use Siak\Tontine\Service\Charge\SettlementService;
 use Siak\Tontine\Service\Meeting\BiddingService;
 use Siak\Tontine\Service\Meeting\DepositService;
@@ -70,9 +70,9 @@ class SiakServiceProvider extends ServiceProvider
 
         $this->app->singleton(ChargeService::class, ChargeService::class);
         $this->app->singleton(FeeService::class, FeeService::class);
-        $this->app->singleton(FeeSummaryService::class, FeeSummaryService::class);
+        $this->app->singleton(FeeReportService::class, FeeReportService::class);
         $this->app->singleton(FineService::class, FineService::class);
-        $this->app->singleton(FineSummaryService::class, FineSummaryService::class);
+        $this->app->singleton(FineReportService::class, FineReportService::class);
         $this->app->singleton(SettlementService::class, SettlementService::class);
 
         $this->app->singleton(BiddingService::class, BiddingService::class);

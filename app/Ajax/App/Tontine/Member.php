@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App;
+namespace App\Ajax\App\Tontine;
 
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\MemberValidator;

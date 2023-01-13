@@ -19,7 +19,7 @@
 @if($session->closed)
                         <tr>
                           <td colspan="2">{!! __('common.labels.total') !!}</td>
-                          <td>{{ $summary['sum']['settlements'] }}</td>
+                          <td>{{ $report['sum']['settlements'] }}</td>
                         </tr>
 @endif
                       </tbody>

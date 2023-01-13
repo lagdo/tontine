@@ -23,13 +23,13 @@
                     {{ $charge->getCurrBillCount($bills) }}
                   </td>
                   <td>
-                    {{ $summary['settlements'][$charge->id] ?? $zero }}
+                    {{ $report['settlements'][$charge->id] ?? $zero }}
                   </td>
                 </tr>
 @endforeach
                 <tr>
                   <th colspan="3">{!! __('common.labels.total') !!}</th>
-                  <th>{{ $summary['sum']['settlements'] }}</th>
+                  <th>{{ $report['sum']['settlements'] }}</th>
                 </tr>
               </tbody>
             </table>

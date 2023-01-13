@@ -9,7 +9,7 @@ return [
         'charges' => "Fees and fines",
         'sessions' => "Sessions",
         'funds' => "Funds",
-        'tables' => "Tables",
+        'reports' => "Reports",
     ],
     'titles' => [
         'tontines' => "Tontines",
@@ -95,8 +95,8 @@ return [
         'titles' => [
             'add' => "Add funds",
             'edit' => "Edit a fund",
-            'deposits' => "Deposits table",
-            'remittances' => "Remittances table",
+            'deposits' => "Deposits report",
+            'remittances' => "Remittances report",
             'subscriptions' => "Subscriptions",
         ],
         'actions' => [

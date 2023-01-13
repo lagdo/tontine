@@ -5,6 +5,6 @@
                             {{ $charge->getPrevSettlementCount($settlements) }}/{{ $charge->getPrevBillCount($bills) }}
                           </td>
                           <td>
-                            {{ $summary['settlements'][$charge->id] ?? $zero }}<br/>&nbsp;
+                            {{ $report['settlements'][$charge->id] ?? $zero }}<br/>&nbsp;
                           </td>
                         </tr>

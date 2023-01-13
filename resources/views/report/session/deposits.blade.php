@@ -27,7 +27,7 @@
                   <td>{{ $fund->title }}</td>
                   <td>{{ $fund->money('amount') }}</td>
                   <td>{{ $fund->recv_paid }}/{{ $fund->recv_count }}</td>
-                  <td>{{ $summary[$fund->id] ?? 0 }}</td>
+                  <td>{{ $report[$fund->id] ?? 0 }}</td>
                 </tr>
 @endif
 @endforeach

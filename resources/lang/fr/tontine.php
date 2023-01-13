@@ -9,7 +9,7 @@ return [
         'charges' => "Frais et amendes",
         'sessions' => "Séances",
         'funds' => "Fonds",
-        'tables' => "Tableaux",
+        'reports' => "Rapports",
     ],
     'titles' => [
         'tontines' => "Tontines",
@@ -95,8 +95,8 @@ return [
         'titles' => [
             'add' => "Ajouter des fonds",
             'edit' => "Modifier un fond",
-            'deposits' => "Tableau des cotisations",
-            'remittances' => "Tableau des remises",
+            'deposits' => "Rapport des dépôts",
+            'remittances' => "Rapport des remises",
             'subscriptions' => "Souscriptions",
         ],
         'actions' => [

@@ -311,15 +311,15 @@
                   </div>
                 </div>
                 <div class="card-body">
-                  <div class="summary">
-                    <div class="summary-info">
+                  <div class="report">
+                    <div class="report-info">
                       <h4>$1,053</h4>
                       <div class="text-muted">Sold 3 items on 2 customers</div>
                       <div class="d-block mt-2">
                         <a href="#">View All</a>
                       </div>
                     </div>
-                    <div class="summary-item">
+                    <div class="report-item">
                       <h6>Item List <span class="text-muted">(3 Items)</span></h6>
                       <ul class="list-unstyled list-unstyled-border">
                         <li class="media">

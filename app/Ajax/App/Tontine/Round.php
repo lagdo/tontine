@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Profile;
+namespace App\Ajax\App\Tontine;
 
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Tontine\TenantService;

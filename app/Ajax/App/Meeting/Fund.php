@@ -56,7 +56,7 @@ class Fund extends CallableClass
             ->with('funds', $this->meetingService->getFundsWithReceivables($this->session));
         if($this->session->closed)
         {
-            $html->with('summary', $this->meetingService->getFundsSummary($this->session));
+            $html->with('report', $this->meetingService->getFundsReport($this->session));
         }
         $this->response->html('meeting-deposits', $html);
 
@@ -75,7 +75,7 @@ class Fund extends CallableClass
             ->with('funds', $this->meetingService->getFundsWithPayables($this->session));
         if($this->session->closed)
         {
-            $html->with('summary', $this->meetingService->getFundsSummary($this->session));
+            $html->with('report', $this->meetingService->getFundsReport($this->session));
         }
         $this->response->html('meeting-remittances', $html);
 

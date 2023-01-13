@@ -12,10 +12,10 @@ use function Jaxon\jq;
 use function Jaxon\pm;
 
 /**
- * @databag table
+ * @databag report
  * @before getFund
  */
-class Table extends CallableClass
+class Report extends CallableClass
 {
     /**
      * @var TenantService
@@ -39,7 +39,7 @@ class Table extends CallableClass
     protected function getFund()
     {
         $fundId = $this->target()->method() === 'select' ?
-            $this->target()->args()[0] : $this->bag('table')->get('fund.id', 0);
+            $this->target()->args()[0] : $this->bag('report')->get('fund.id', 0);
         if($fundId !== 0)
         {
             $this->fund = $this->subscriptionService->getFund(intval($fundId));
@@ -48,7 +48,7 @@ class Table extends CallableClass
         {
             $this->fund = $this->subscriptionService->getFirstFund();
             // Save the current fund id
-            $this->bag('table')->set('fund.id', $this->fund ? $this->fund->id : 0);
+            $this->bag('report')->set('fund.id', $this->fund ? $this->fund->id : 0);
         }
     }
 
@@ -56,7 +56,7 @@ class Table extends CallableClass
     {
         if(($this->fund))
         {
-            $this->bag('table')->set('fund.id', $this->fund->id);
+            $this->bag('report')->set('fund.id', $this->fund->id);
         }
 
         return $showDeposits ? $this->amounts() : $this->remittances();
@@ -72,7 +72,7 @@ class Table extends CallableClass
     {
         $receivables = $this->subscriptionService->getReceivables($this->fund);
         $this->view()->shareValues($receivables);
-        $html = $this->view()->render('pages.planning.table.amounts')
+        $html = $this->view()->render('pages.planning.report.amounts')
             ->with('fund', $this->fund)
             ->with('funds', $this->subscriptionService->getFunds());
         $this->response->html('content-home', $html);
@@ -90,7 +90,7 @@ class Table extends CallableClass
     {
         $receivables = $this->subscriptionService->getReceivables($this->fund);
         $this->view()->shareValues($receivables);
-        $html = $this->view()->render('pages.planning.table.deposits')
+        $html = $this->view()->render('pages.planning.report.deposits')
             ->with('fund', $this->fund)
             ->with('funds', $this->subscriptionService->getFunds());
         $this->response->html('content-home', $html);
@@ -119,7 +119,7 @@ class Table extends CallableClass
     {
         $payables = $this->subscriptionService->getPayables($this->fund);
         $this->view()->shareValues($payables);
-        $html = $this->view()->render('pages.planning.table.remittances')
+        $html = $this->view()->render('pages.planning.report.remittances')
             ->with('fund', $this->fund)
             ->with('funds', $this->subscriptionService->getFunds());
         $this->response->html('content-home', $html);

@@ -39,7 +39,7 @@
                             'fund' => $fund,
                             'paid' => $fund->recv_paid,
                             'count' => $fund->recv_count,
-                            'summary' => $summary['receivables'],
+                            'report' => $report['receivables'],
                         ])
 @else
                         @include('pages.meeting.fund.pending', [
@@ -52,7 +52,7 @@
 @if($session->closed)
                         <tr>
                           <td colspan="2">{!! __('common.labels.total') !!}</td>
-                          <td>{{ $summary['sum']['receivables'] }}</td>
+                          <td>{{ $report['sum']['receivables'] }}</td>
                         </tr>
 @endif
                       </tbody>

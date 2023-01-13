@@ -195,13 +195,13 @@ class MeetingService
     }
 
     /**
-     * Get funds summary for a session
+     * Get funds report for a session
      *
      * @param Session $session
      *
      * @return array
      */
-    public function getFundsSummary(Session $session): array
+    public function getFundsReport(Session $session): array
     {
         $funds = $this->tenantService->round()->funds->keyBy('id');
         $sessions = $this->tenantService->round()->sessions;

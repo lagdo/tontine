@@ -3,9 +3,9 @@
 namespace App\Ajax\App\Meeting;
 
 use Siak\Tontine\Service\Charge\FeeService;
-use Siak\Tontine\Service\Charge\FeeSummaryService;
+use Siak\Tontine\Service\Charge\FeeReportService;
 use Siak\Tontine\Service\Charge\FineService;
-use Siak\Tontine\Service\Charge\FineSummaryService;
+use Siak\Tontine\Service\Charge\FineReportService;
 use Siak\Tontine\Service\Meeting\BiddingService;
 use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -31,14 +31,14 @@ class Meeting extends CallableClass
     protected FineService $fineService;
 
     /**
-     * @var FeeSummaryService
+     * @var FeeReportService
      */
-    protected FeeSummaryService $feeSummaryService;
+    protected FeeReportService $feeReportService;
 
     /**
-     * @var FineSummaryService
+     * @var FineReportService
      */
-    protected FineSummaryService $fineSummaryService;
+    protected FineReportService $fineReportService;
 
     /**
      * @var BiddingService
@@ -124,8 +124,8 @@ class Meeting extends CallableClass
     /**
      * @di $feeService
      * @di $fineService
-     * @di $feeSummaryService
-     * @di $fineSummaryService
+     * @di $feeReportService
+     * @di $fineReportService
      */
     public function charges()
     {
@@ -142,13 +142,13 @@ class Meeting extends CallableClass
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 
-        $this->cl(Charge\Fee::class)->show($this->session, $this->feeService, $this->feeSummaryService);
-        $this->cl(Charge\Fine::class)->show($this->session, $this->fineService, $this->fineSummaryService);
+        $this->cl(Charge\Fee::class)->show($this->session, $this->feeService, $this->feeReportService);
+        $this->cl(Charge\Fine::class)->show($this->session, $this->fineService, $this->fineReportService);
 
         return $this->response;
     }
 
-    public function summary()
+    public function report()
     {
         return $this->response;
     }

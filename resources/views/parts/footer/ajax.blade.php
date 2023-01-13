@@ -12,9 +12,9 @@
     $('#tontine-menu-charges').click(function() { {!! $jxnCharge->home() !!}; });
     $('#planning-menu-sessions').click(function() { {!! $jxnPlanning->home() !!}; });
     $('#planning-menu-funds').click(function() { {!! $jxnFund->home() !!}; });
-    $('#planning-menu-tables').click(function() { {!! $jxnTable->home() !!}; });
+    $('#planning-menu-tables').click(function() { {!! $jxnPlanningReport->home() !!}; });
     $('#meeting-menu-sessions').click(function() { {!! $jxnMeeting->home() !!}; });
-    $('#meeting-menu-tables').click(function() { {!! $jxnCashFlow->home() !!}; });
+    $('#meeting-menu-tables').click(function() { {!! $jxnMeetingReport->home() !!}; });
     $('#user-menu-profile').click(function() { {!! $jxnTontine->home() !!}; });
     // Tontine page
     $('#btn-tontine-refresh').click(function() { {!! $jxnTontine->home() !!}; });
