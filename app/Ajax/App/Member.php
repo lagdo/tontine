@@ -2,7 +2,7 @@
 
 namespace App\Ajax\App;
 
-use Siak\Tontine\Service\MemberService;
+use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\MemberValidator;
 use App\Ajax\CallableClass;
 

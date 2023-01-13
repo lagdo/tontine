@@ -6,8 +6,8 @@ use Siak\Tontine\Service\Charge\FeeService;
 use Siak\Tontine\Service\Charge\FeeSummaryService;
 use Siak\Tontine\Service\Charge\FineService;
 use Siak\Tontine\Service\Charge\FineSummaryService;
-use Siak\Tontine\Service\BiddingService;
-use Siak\Tontine\Service\RefundService;
+use Siak\Tontine\Service\Meeting\BiddingService;
+use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 

@@ -3,8 +3,8 @@
 namespace App\Ajax\App;
 
 use Siak\Tontine\Service\Charge\ChargeService;
-use Siak\Tontine\Service\FundService;
-use Siak\Tontine\Service\MemberService;
+use Siak\Tontine\Service\Tontine\FundService;
+use Siak\Tontine\Service\Tontine\MemberService;
 use App\Ajax\CallableClass;
 
 use function intval;

@@ -2,7 +2,7 @@
 
 namespace App\Ajax\App\Planning;
 
-use Siak\Tontine\Service\FundService;
+use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Planning\FundValidator;
 use App\Ajax\CallableClass;
 use App\Ajax\App\Faker;

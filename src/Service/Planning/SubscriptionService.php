@@ -1,19 +1,17 @@
 <?php
 
-namespace Siak\Tontine\Service;
+namespace Siak\Tontine\Service\Planning;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
+use Siak\Tontine\Service\Tontine\TenantService;
 
 class SubscriptionService
 {
-    use Events\DebtEventTrait;
-
     /**
      * @var TenantService
      */
@@ -136,7 +134,8 @@ class SubscriptionService
         DB::transaction(function() use($fund, $subscription) {
             // Create the subscription
             $subscription->save();
-            $this->subscriptionCreated($fund, $subscription);
+            // Create the payable
+            $subscription->payable()->create([]);
         });
 
         return $subscription->id;
@@ -157,7 +156,8 @@ class SubscriptionService
         }
 
         DB::transaction(function() use($subscription) {
-            $this->subscriptionDeleted($subscription);
+            // Delete the payable
+            $subscription->payable()->delete();
             // Delete the subscription
             $subscription->delete();
         });
@@ -171,21 +171,20 @@ class SubscriptionService
      * @param Fund $fund
      * @param Session $session
      *
-     * @return bool
+     * @return void
      */
-    public function toggleSession(Fund $fund, Session $session): bool
+    public function toggleSession(Fund $fund, Session $session)
     {
         DB::transaction(function() use($fund, $session) {
             if($session->enabled($fund))
             {
+                // Add the session to the list of disabled sessiosn for the fund.
                 $fund->disabledSessions()->attach($session->id);
-                $this->fundDetached($fund, $session);
                 return;
             }
+            // Remove the session from the list of disabled sessiosn for the fund.
             $fund->disabledSessions()->detach($session->id);
-            $this->fundAttached($fund, $session);
         });
-        return true;
     }
 
     /**
@@ -228,11 +227,13 @@ class SubscriptionService
     public function saveBeneficiary(Fund $fund, Session $session, int $currSubscriptionId, int $nextSubscriptionId)
     {
         DB::transaction(function() use($fund, $session, $currSubscriptionId, $nextSubscriptionId) {
+            // If the beneficiary already has a session assigned, first remove it.
             if($currSubscriptionId > 0)
             {
                 $subscription = $fund->subscriptions()->find($currSubscriptionId);
                 $this->unsetPayableSession($session, $subscription);
             }
+            // If there is a new session assigned to the beneficiary, then save it.
             if($nextSubscriptionId > 0)
             {
                 $subscription = $fund->subscriptions()->find($nextSubscriptionId);

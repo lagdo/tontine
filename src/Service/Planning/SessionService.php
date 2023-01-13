@@ -1,19 +1,19 @@
 <?php
 
-namespace Siak\Tontine\Service;
+namespace Siak\Tontine\Service\Planning;
 
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Events\EventTrait;
 
 use function intval;
 use function now;
 
 class SessionService
 {
-    use Events\DebtEventTrait;
-    use Events\BillEventTrait;
+    use EventTrait;
 
     /**
      * @var TenantService
@@ -83,7 +83,6 @@ class SessionService
             $value['end_at'] = $value['date'] . ' ' . $value['end'] . ':00';
         }
         DB::transaction(function() use($values) {
-            $tontine = $this->tenantService->tontine();
             $sessions = $this->tenantService->round()->sessions()->createMany($values);
         });
 
@@ -155,10 +154,7 @@ class SessionService
      */
     public function closeSession(Session $session)
     {
-        DB::transaction(function() use($session) {
-            // Close the session
-            $session->update(['status' => SessionModel::STATUS_CLOSED]);
-        });
+        $session->update(['status' => SessionModel::STATUS_CLOSED]);
     }
 
     /**
@@ -171,8 +167,8 @@ class SessionService
     public function deleteSession(Session $session)
     {
         DB::transaction(function() use($session) {
-            $this->sessionDeleted($session);
-
+            // Detach from the payables. Don't delete.
+            $session->payables()->update(['session_id' => null]);
             // Delete the session
             $session->delete();
         });

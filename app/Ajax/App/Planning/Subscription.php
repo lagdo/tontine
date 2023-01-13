@@ -3,8 +3,8 @@
 namespace App\Ajax\App\Planning;
 
 use Siak\Tontine\Model\Fund as FundModel;
-use Siak\Tontine\Service\SubscriptionService;
-use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Planning\SubscriptionService;
+use Siak\Tontine\Service\Tontine\TenantService;
 use App\Ajax\CallableClass;
 
 use function intval;

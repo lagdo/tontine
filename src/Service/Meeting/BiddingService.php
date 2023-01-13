@@ -1,10 +1,9 @@
 <?php
 
-namespace Siak\Tontine\Service;
+namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-
 use Siak\Tontine\Model\Bidding;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Fund;
@@ -13,6 +12,9 @@ use Siak\Tontine\Model\Remittance;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Refund;
+use Siak\Tontine\Service\Planning\PlanningService;
+use Siak\Tontine\Service\Planning\SubscriptionService;
+use Siak\Tontine\Service\Tontine\TenantService;
 use stdClass;
 
 class BiddingService

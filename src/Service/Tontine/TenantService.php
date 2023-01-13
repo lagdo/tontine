@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service;
+namespace Siak\Tontine\Service\Tontine;
 
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Currency;

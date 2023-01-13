@@ -8,6 +8,7 @@ use Siak\Tontine\Model\FineBill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Tontine\TenantService;
 
 class FineService
 {

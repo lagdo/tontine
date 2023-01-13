@@ -1,14 +1,16 @@
 <?php
 
-namespace Siak\Tontine\Service;
+namespace Siak\Tontine\Service\Tontine;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Service\Events\EventTrait;
 
 class MemberService
 {
+    use EventTrait;
+
     /**
      * @var TenantService
      */
@@ -82,7 +84,13 @@ class MemberService
     public function createMembers(array $values): bool
     {
         DB::transaction(function() use($values) {
-            $this->tenantService->tontine()->members()->createMany($values);
+            $tontine = $this->tenantService->tontine();
+            $members = $tontine->members()->createMany($values);
+            // Create members bills
+            foreach($members as $member)
+            {
+                $this->memberCreated($tontine, $member);
+            }
         });
 
         return true;
@@ -110,7 +118,7 @@ class MemberService
      */
     public function deleteMember(Member $member)
     {
-        $member->delete();
+        $member->update(['active' => false]);
     }
 
     /**

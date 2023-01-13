@@ -1,10 +1,11 @@
 <?php
 
-namespace Siak\Tontine\Service;
+namespace Siak\Tontine\Service\Planning;
 
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Service\Tontine\TenantService;
 use stdClass;
 
 use function collect;

@@ -2,7 +2,7 @@
 
 namespace App\Ajax\App\Meeting\Financial;
 
-use Siak\Tontine\Service\BiddingService;
+use Siak\Tontine\Service\Meeting\BiddingService;
 use Siak\Tontine\Validation\Meeting\BiddingValidator;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Session as SessionModel;

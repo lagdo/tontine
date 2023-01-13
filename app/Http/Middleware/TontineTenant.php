@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Siak\Tontine\Model\User;
-use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Tontine\TenantService;
 use Closure;
 
 use function auth;

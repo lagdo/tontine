@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service;
+namespace Siak\Tontine\Service\Tontine;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;

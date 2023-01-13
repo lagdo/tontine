@@ -1,12 +1,14 @@
 <?php
 
-namespace Siak\Tontine\Service;
+namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
+use Siak\Tontine\Service\Planning\PlanningService;
+use Siak\Tontine\Service\Tontine\TenantService;
 
 class MeetingService
 {

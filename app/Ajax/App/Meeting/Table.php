@@ -4,8 +4,8 @@ namespace App\Ajax\App\Meeting;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Fund as FundModel;
-use Siak\Tontine\Service\SubscriptionService;
-use Siak\Tontine\Service\MeetingService;
+use Siak\Tontine\Service\Planning\SubscriptionService;
+use Siak\Tontine\Service\Meeting\MeetingService;
 
 use function Jaxon\pm;
 use function intval;

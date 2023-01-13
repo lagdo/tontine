@@ -2,8 +2,8 @@
 
 namespace App\Ajax\App\Profile;
 
-use Siak\Tontine\Service\RoundService;
-use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Planning\RoundService;
+use Siak\Tontine\Service\Tontine\TenantService;
 use App\Ajax\CallableClass;
 
 use function intval;

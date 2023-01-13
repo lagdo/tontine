@@ -3,10 +3,10 @@
 namespace Siak\Tontine\Service\Report;
 
 use Siak\Tontine\Model\Currency;
-use Siak\Tontine\Service\FeeSettlementService;
-use Siak\Tontine\Service\FineSettlementService;
-use Siak\Tontine\Service\MeetingService;
-use Siak\Tontine\Service\SubscriptionService;
+use Siak\Tontine\Service\Charge\FeeSummaryService;
+use Siak\Tontine\Service\Charge\FineSummaryService;
+use Siak\Tontine\Service\Meeting\MeetingService;
+use Siak\Tontine\Service\Planning\SubscriptionService;
 
 class ReportService implements ReportServiceInterface
 {
@@ -21,28 +21,28 @@ class ReportService implements ReportServiceInterface
     private $subscriptionService;
 
     /**
-     * @var FeeSettlementService
+     * @var FeeSummaryService
      */
-    private $feeSettlementService;
+    private $feeSummaryService;
 
     /**
-     * @var FineSettlementService
+     * @var FineSummaryService
      */
-    private $fineSettlementService;
+    private $fineSummaryService;
 
     /**
      * @param MeetingService $meetingService
      * @param SubscriptionService $subscriptionService
-     * @param FeeSettlementService $feeSettlementService
-     * @param FineSettlementService $fineSettlementService
+     * @param FeeSummaryService $feeSummaryService
+     * @param FineSummaryService $fineSummaryService
      */
     public function __construct(MeetingService $meetingService, SubscriptionService $subscriptionService,
-        FeeSettlementService $feeSettlementService, FineSettlementService $fineSettlementService)
+        FeeSummaryService $feeSummaryService, FineSummaryService $fineSummaryService)
     {
         $this->meetingService = $meetingService;
         $this->subscriptionService = $subscriptionService;
-        $this->feeSettlementService = $feeSettlementService;
-        $this->fineSettlementService = $fineSettlementService;
+        $this->feeSummaryService = $feeSummaryService;
+        $this->fineSummaryService = $fineSummaryService;
     }
 
 
@@ -75,30 +75,16 @@ class ReportService implements ReportServiceInterface
             'fees' => [
                 'session' => $session,
                 'fees' => $this->meetingService->getFees($session),
-                'settlements' => [
-                    'current' => $this->feeSettlementService->getSettlementCount($session, false),
-                    'previous' => $this->feeSettlementService->getSettlementCount($session, true),
-                ],
-                'bills' => [
-                    'current' => $this->feeSettlementService->getBillCount($session, false),
-                    'previous' => $this->feeSettlementService->getBillCount($session, true),
-                ],
-                'zero' => $this->feeSettlementService->getFormattedAmount(0),
-                'summary' => $this->meetingService->getFeesSummary($session),
+                'settlements' => $this->feeSummaryService->getSettlements($session),
+                'bills' => $this->feeSummaryService->getBills($session),
+                'zero' => $this->feeSummaryService->getFormattedAmount(0),
             ],
             'fines' => [
                 'session' => $session,
                 'fines' => $this->meetingService->getFines($session),
-                'settlements' => [
-                    'current' => $this->fineSettlementService->getSettlementCount($session, false),
-                    'previous' => $this->fineSettlementService->getSettlementCount($session, true),
-                ],
-                'bills' => [
-                    'current' => $this->fineSettlementService->getBillCount($session, false),
-                    'previous' => $this->fineSettlementService->getBillCount($session, true),
-                ],
-                'zero' => $this->fineSettlementService->getFormattedAmount(0),
-                'summary' => $this->meetingService->getFinesSummary($session),
+                'settlements' => $this->fineSummaryService->getSettlements($sessions),
+                'bills' => $this->fineSummaryService->getBills($session),
+                'zero' => $this->fineSummaryService->getFormattedAmount(0),
             ],
         ];
 

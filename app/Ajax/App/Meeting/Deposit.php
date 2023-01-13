@@ -2,7 +2,7 @@
 
 namespace App\Ajax\App\Meeting;
 
-use Siak\Tontine\Service\DepositService;
+use Siak\Tontine\Service\Meeting\DepositService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Fund as FundModel;
 use App\Ajax\CallableClass;

@@ -2,9 +2,9 @@
 
 namespace App\Ajax\App\Profile;
 
-use Siak\Tontine\Service\RoundService;
-use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\TontineService;
+use Siak\Tontine\Service\Planning\RoundService;
+use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Model\Tontine as TontineModel;
 use App\Ajax\CallableClass;
 

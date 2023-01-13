@@ -6,9 +6,13 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Events\EventTrait;
+use Siak\Tontine\Service\Tontine\TenantService;
 
 class ChargeService
 {
+    use EventTrait;
+
     /**
      * @var TenantService
      */
@@ -84,15 +88,12 @@ class ChargeService
     public function createCharges(array $values): bool
     {
         DB::transaction(function() use($values) {
-            $round = $this->tenantService->round();
-            $charges = $this->tenantService->tontine()->charges()->createMany($values);
-            // Create charge bills
+            $tontine = $this->tenantService->tontine();
+            $charges = $tontine->charges()->createMany($values);
+            // Create charges bills
             foreach($charges as $charge)
             {
-                if($charge->is_fee)
-                {
-                    $this->chargeCreated($charge, $round);
-                }
+                $this->chargeCreated($tontine, $charge);
             }
         });
         return true;
@@ -120,7 +121,7 @@ class ChargeService
      */
     public function deleteCharge(Charge $charge)
     {
-        $charge->delete();
+        $charge->update(['active' => false]);
     }
 
     /**

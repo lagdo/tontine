@@ -4,7 +4,7 @@ namespace App\Ajax\App\Meeting\Financial;
 
 use App\Ajax\App\Meeting\Fund;
 use App\Ajax\CallableClass;
-use Siak\Tontine\Service\BiddingService;
+use Siak\Tontine\Service\Meeting\BiddingService;
 use Siak\Tontine\Validation\Meeting\RemittanceValidator;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Fund as FundModel;

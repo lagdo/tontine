@@ -1,14 +1,14 @@
 <?php
 
-namespace Siak\Tontine\Service;
+namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-
 use Siak\Tontine\Model\Bidding;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Tontine\TenantService;
 
 class RefundService
 {

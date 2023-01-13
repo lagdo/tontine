@@ -5,9 +5,9 @@ namespace Siak\Tontine\Service\Charge;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Tontine\TenantService;
 
 class FeeService
 {

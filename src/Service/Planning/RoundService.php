@@ -1,17 +1,18 @@
 <?php
 
-namespace Siak\Tontine\Service;
+namespace Siak\Tontine\Service\Planning;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
+use Siak\Tontine\Service\Events\EventTrait;
 
 use function collect;
 
 class RoundService
 {
-    use Events\BillEventTrait;
+    use EventTrait;
 
     /**
      * @var TenantService
@@ -102,12 +103,7 @@ class RoundService
      */
     public function createRound(array $values): bool
     {
-        $tontine = $this->tenantService->tontine();
-        DB::transaction(function() use($tontine, $values) {
-            $round = $tontine->rounds()->create($values);
-            // Create the bills
-            $this->roundCreated($tontine, $round);
-        });
+        $this->tenantService->tontine()->rounds()->create($values);
 
         return true;
     }
@@ -139,7 +135,6 @@ class RoundService
             return;
         }
         DB::transaction(function() use($round) {
-            // Open the round
             $round->update(['status' => RoundModel::STATUS_OPENED]);
             $this->roundOpened($this->tenantService->tontine(), $round);
         });
@@ -154,10 +149,7 @@ class RoundService
      */
     public function closeRound(Round $round)
     {
-        DB::transaction(function() use($round) {
-            // Close the round
-            $round->update(['status' => RoundModel::STATUS_CLOSED]);
-        });
+        $round->update(['status' => RoundModel::STATUS_CLOSED]);
     }
 
     /**

@@ -14,8 +14,8 @@ use App\Ajax\App\Planning\Fund;
 use App\Ajax\App\Planning\Table;
 use App\Ajax\App\Profile\Round;
 use App\Ajax\App\Profile\Tontine;
-use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\TontineService;
+use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\Tontine\TontineService;
 use Jaxon\Laravel\Jaxon;
 
 use function auth;

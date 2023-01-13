@@ -4,9 +4,9 @@ namespace App\Ajax\App\Meeting\Mutual;
 
 use App\Ajax\App\Meeting\Fund;
 use App\Ajax\CallableClass;
-use Siak\Tontine\Service\RemittanceService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Fund as FundModel;
+use Siak\Tontine\Service\Meeting\RemittanceService;
 
 use function intval;
 use function Jaxon\jq;

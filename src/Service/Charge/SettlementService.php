@@ -12,6 +12,7 @@ use Siak\Tontine\Model\RoundBill;
 use Siak\Tontine\Model\TontineBill;
 use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Tontine\TenantService;
 
 class SettlementService
 {

@@ -2,7 +2,7 @@
 
 namespace App\Ajax\App\Meeting;
 
-use Siak\Tontine\Service\MeetingService;
+use Siak\Tontine\Service\Meeting\MeetingService;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 

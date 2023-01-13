@@ -1,12 +1,12 @@
 <?php
 
-namespace Siak\Tontine\Service;
+namespace Siak\Tontine\Service\Meeting;
 
+use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Session;
-
-use Illuminate\Support\Collection;
+use Siak\Tontine\Service\Tontine\TenantService;
 
 class RemittanceService
 {
