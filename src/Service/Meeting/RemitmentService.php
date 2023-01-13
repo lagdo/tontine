@@ -3,8 +3,10 @@
 namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Payable;
+use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Tontine\TenantService;
 
@@ -120,7 +122,19 @@ class RemitmentService
         {
             return;
         }
-        $payable->remitment()->create(['paid_at' => now(), 'interest' => $interest]);
+        DB::transaction(function() use($session, $interest) {
+            $remitment = $payable->remitment()->create([]);
+            if($interest > 0)
+            {
+                $loan = $remitment->loan()->create(['amount' => 0, 'interest' => $interest]);
+                // The loan interest is supposed to be immediatly refunded.
+                $refund = new Refund();
+                $refund->type = Refund::TYPE_INTEREST;
+                $refund->loan()->associate($loan);
+                $refund->session()->associate($session);
+                $refund->save();
+            }
+        });
     }
 
     /**
@@ -139,6 +153,14 @@ class RemitmentService
         {
             return;
         }
-        $payable->remitment()->delete();
+        DB::transaction(function() use($payable) {
+            $remitment = $payable->remitment;
+            if(($loan = $remitment->loan) != null)
+            {
+                $loan->refund()->delete();
+                $loan->delete();
+            }
+            $remitment->delete();
+        });
     }
 }
