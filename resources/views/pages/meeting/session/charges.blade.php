@@ -10,7 +10,7 @@
                   <button type="button" class="btn btn-primary" id="btn-session-refresh"><i class="fa fa-sync"></i></button>
                 </div>
                 <div class="btn-group float-right ml-2" role="group" aria-label="">
-                  <button type="button" class="btn btn-primary" id="btn-session-funds"><i class="fa fa-wallet"></i></button>
+                  <button type="button" class="btn btn-primary" id="btn-session-pools"><i class="fa fa-wallet"></i></button>
 @if($tontine->is_financial)
                   <button type="button" class="btn btn-primary" id="btn-session-bids"><i class="fa fa-handshake"></i></button>
 @endif

@@ -87,12 +87,12 @@ App.Ajax.App.Charge.update = function() {
     return jaxon.request({ jxncls: 'App.Ajax.App.Charge', jxnmthd: 'update' }, { parameters: arguments, bags: ["charge"] });
 };
 App.Ajax.CallableClass = {};
-App.Ajax.App.Meeting.Fund = {};
-App.Ajax.App.Meeting.Fund.deposits = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Fund', jxnmthd: 'deposits' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Pool = {};
+App.Ajax.App.Meeting.Pool.deposits = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Pool', jxnmthd: 'deposits' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Fund.remittances = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Fund', jxnmthd: 'remittances' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Pool.remittances = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Pool', jxnmthd: 'remittances' }, { parameters: arguments, bags: ["meeting"] });
 };
 App.Ajax.App.Meeting.Table = {};
 App.Ajax.App.Meeting.Table.select = function() {
@@ -132,30 +132,30 @@ App.Ajax.App.Profile.Round.edit = function() {
 App.Ajax.App.Profile.Round.update = function() {
     return jaxon.request({ jxncls: 'App.Ajax.App.Profile.Round', jxnmthd: 'update' }, { parameters: arguments, bags: ["tontine"] });
 };
-App.Ajax.App.Planning.Fund = {};
-App.Ajax.App.Planning.Fund.home = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Fund', jxnmthd: 'home' }, { parameters: arguments, bags: ["fund","subscription"] });
+App.Ajax.App.Planning.Pool = {};
+App.Ajax.App.Planning.Pool.home = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Pool', jxnmthd: 'home' }, { parameters: arguments, bags: ["pool","subscription"] });
 };
-App.Ajax.App.Planning.Fund.page = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Fund', jxnmthd: 'page' }, { parameters: arguments, bags: ["fund","subscription"] });
+App.Ajax.App.Planning.Pool.page = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Pool', jxnmthd: 'page' }, { parameters: arguments, bags: ["pool","subscription"] });
 };
-App.Ajax.App.Planning.Fund.number = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Fund', jxnmthd: 'number' }, { parameters: arguments });
+App.Ajax.App.Planning.Pool.number = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Pool', jxnmthd: 'number' }, { parameters: arguments });
 };
-App.Ajax.App.Planning.Fund.add = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Fund', jxnmthd: 'add' }, { parameters: arguments, bags: ["faker"] });
+App.Ajax.App.Planning.Pool.add = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Pool', jxnmthd: 'add' }, { parameters: arguments, bags: ["faker"] });
 };
-App.Ajax.App.Planning.Fund.fakes = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Fund', jxnmthd: 'fakes' }, { parameters: arguments, bags: ["faker"] });
+App.Ajax.App.Planning.Pool.fakes = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Pool', jxnmthd: 'fakes' }, { parameters: arguments, bags: ["faker"] });
 };
-App.Ajax.App.Planning.Fund.create = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Fund', jxnmthd: 'create' }, { parameters: arguments });
+App.Ajax.App.Planning.Pool.create = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Pool', jxnmthd: 'create' }, { parameters: arguments });
 };
-App.Ajax.App.Planning.Fund.edit = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Fund', jxnmthd: 'edit' }, { parameters: arguments });
+App.Ajax.App.Planning.Pool.edit = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Pool', jxnmthd: 'edit' }, { parameters: arguments });
 };
-App.Ajax.App.Planning.Fund.update = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Fund', jxnmthd: 'update' }, { parameters: arguments });
+App.Ajax.App.Planning.Pool.update = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Planning.Pool', jxnmthd: 'update' }, { parameters: arguments });
 };
 App.Ajax.App.Planning.Table = {};
 App.Ajax.App.Planning.Table.select = function() {
@@ -222,8 +222,8 @@ App.Ajax.App.Meeting.Meeting = {};
 App.Ajax.App.Meeting.Meeting.home = function() {
     return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Meeting', jxnmthd: 'home' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Meeting.funds = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Meeting', jxnmthd: 'funds' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Meeting.pools = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Meeting', jxnmthd: 'pools' }, { parameters: arguments, bags: ["meeting"] });
 };
 App.Ajax.App.Meeting.Meeting.bids = function() {
     return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Meeting', jxnmthd: 'bids' }, { parameters: arguments, bags: ["meeting"] });

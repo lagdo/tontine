@@ -12,7 +12,7 @@ use function Jaxon\jq;
  * @databag meeting
  * @before getSession
  */
-class Fund extends CallableClass
+class Pool extends CallableClass
 {
     /**
      * @di
@@ -51,18 +51,18 @@ class Fund extends CallableClass
     public function deposits()
     {
         $tontine = $this->meetingService->getTontine();
-        $html = $this->view()->render('pages.meeting.fund.deposits')
+        $html = $this->view()->render('pages.meeting.pool.deposits')
             ->with('tontine', $tontine)->with('session', $this->session)
-            ->with('funds', $this->meetingService->getFundsWithReceivables($this->session));
+            ->with('pools', $this->meetingService->getPoolsWithReceivables($this->session));
         if($this->session->closed)
         {
-            $html->with('report', $this->meetingService->getFundsReport($this->session));
+            $html->with('report', $this->meetingService->getPoolsReport($this->session));
         }
         $this->response->html('meeting-deposits', $html);
 
         $this->jq('#btn-deposits-refresh')->click($this->rq()->deposits());
-        $fundId = jq()->parent()->attr('data-fund-id')->toInt();
-        $this->jq('.btn-fund-deposits')->click($this->cl(Deposit::class)->rq()->home($fundId));
+        $poolId = jq()->parent()->attr('data-pool-id')->toInt();
+        $this->jq('.btn-pool-deposits')->click($this->cl(Deposit::class)->rq()->home($poolId));
 
         return $this->response;
     }
@@ -70,19 +70,19 @@ class Fund extends CallableClass
     public function remittances()
     {
         $tontine = $this->meetingService->getTontine();
-        $html = $this->view()->render('pages.meeting.fund.remittances')
+        $html = $this->view()->render('pages.meeting.pool.remittances')
             ->with('tontine', $tontine)->with('session', $this->session)
-            ->with('funds', $this->meetingService->getFundsWithPayables($this->session));
+            ->with('pools', $this->meetingService->getPoolsWithPayables($this->session));
         if($this->session->closed)
         {
-            $html->with('report', $this->meetingService->getFundsReport($this->session));
+            $html->with('report', $this->meetingService->getPoolsReport($this->session));
         }
         $this->response->html('meeting-remittances', $html);
 
         $this->jq('#btn-remittances-refresh')->click($this->rq()->remittances());
-        $fundId = jq()->parent()->attr('data-fund-id')->toInt();
+        $poolId = jq()->parent()->attr('data-pool-id')->toInt();
         $remittanceClass = ($tontine->is_mutual ? Mutual\Remittance::class : Financial\Remittance::class);
-        $this->jq('.btn-fund-remittances')->click($this->cl($remittanceClass)->rq()->home($fundId));
+        $this->jq('.btn-pool-remittances')->click($this->cl($remittanceClass)->rq()->home($poolId));
 
         return $this->response;
     }

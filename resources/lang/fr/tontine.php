@@ -8,7 +8,7 @@ return [
         'members' => "Membres",
         'charges' => "Frais et amendes",
         'sessions' => "Séances",
-        'funds' => "Fonds",
+        'pools' => "Fonds",
         'reports' => "Rapports",
     ],
     'titles' => [
@@ -91,7 +91,7 @@ return [
             'close' => "Fermer cette séance?",
         ],
     ],
-    'fund' => [
+    'pool' => [
         'titles' => [
             'add' => "Ajouter des fonds",
             'edit' => "Modifier un fond",

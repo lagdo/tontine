@@ -73,7 +73,7 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 col-sm-12" id="meeting-funds">
+                <div class="col-md-6 col-sm-12" id="meeting-pools">
                 </div>
                 <div class="col-md-6 col-sm-12" id="meeting-charges">
                 </div>

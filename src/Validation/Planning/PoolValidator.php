@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Validator;
 use Siak\Tontine\Validation\AbstractValidator;
 use Siak\Tontine\Validation\ValidationException;
 
-class FundValidator extends AbstractValidator
+class PoolValidator extends AbstractValidator
 {
     /**
      * @param array $values

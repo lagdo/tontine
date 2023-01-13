@@ -14,20 +14,20 @@
                 </tr>
               </thead>
               <tbody>
-@foreach($funds as $fund)
-@if($session->disabled($fund))
+@foreach($pools as $pool)
+@if($session->disabled($pool))
                 <tr style="background-color:rgba(0, 0, 0, 0.02)">
-                  <td>{{ $fund->title }}</td>
-                  <td>{{ $fund->money('amount') }}</td>
+                  <td>{{ $pool->title }}</td>
+                  <td>{{ $pool->money('amount') }}</td>
                   <td></td>
                   <td></td>
                 </tr>
 @else
                 <tr>
-                  <td>{{ $fund->title }}</td>
-                  <td>{{ $fund->money('amount') }}</td>
-                  <td>{{ $fund->recv_paid }}/{{ $fund->recv_count }}</td>
-                  <td>{{ $report[$fund->id] ?? 0 }}</td>
+                  <td>{{ $pool->title }}</td>
+                  <td>{{ $pool->money('amount') }}</td>
+                  <td>{{ $pool->recv_paid }}/{{ $pool->recv_count }}</td>
+                  <td>{{ $report[$pool->id] ?? 0 }}</td>
                 </tr>
 @endif
 @endforeach

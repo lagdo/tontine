@@ -2,10 +2,10 @@
 
 namespace App\Ajax\App\Meeting\Mutual;
 
-use App\Ajax\App\Meeting\Fund;
+use App\Ajax\App\Meeting\Pool;
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Model\Fund as FundModel;
+use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Meeting\RemittanceService;
 
 use function intval;
@@ -14,7 +14,7 @@ use function trans;
 
 /**
  * @databag meeting
- * @before getFund
+ * @before getPool
  */
 class Remittance extends CallableClass
 {
@@ -30,42 +30,42 @@ class Remittance extends CallableClass
     protected ?SessionModel $session;
 
     /**
-     * @var FundModel|null
+     * @var PoolModel|null
      */
-    protected ?FundModel $fund;
+    protected ?PoolModel $pool;
 
-    protected function getFund()
+    protected function getPool()
     {
         // Get session
         $sessionId = intval($this->bag('meeting')->get('session.id'));
         $this->session = $this->remittanceService->getSession($sessionId);
-        // Get fund
-        $fundId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : intval($this->bag('meeting')->get('fund.id'));
-        $this->fund = $this->remittanceService->getFund($fundId);
-        if($this->session->disabled($this->fund))
+        // Get pool
+        $poolId = $this->target()->method() === 'home' ?
+            $this->target()->args()[0] : intval($this->bag('meeting')->get('pool.id'));
+        $this->pool = $this->remittanceService->getPool($poolId);
+        if($this->session->disabled($this->pool))
         {
             $this->notify->error(trans('tontine.session.errors.disabled'), trans('common.titles.error'));
-            $this->fund = null;
+            $this->pool = null;
         }
     }
 
     /**
-     * @param int $fundId
+     * @param int $poolId
      *
      * @return mixed
      */
-    public function home(int $fundId)
+    public function home(int $poolId)
     {
-        $this->bag('meeting')->set('fund.id', $fundId);
+        $this->bag('meeting')->set('pool.id', $poolId);
 
-        $payables = $this->remittanceService->getPayables($this->fund, $this->session);
+        $payables = $this->remittanceService->getPayables($this->pool, $this->session);
         $html = $this->view()->render('pages.meeting.remittance.mutual', [
-            'fund' => $this->fund,
+            'pool' => $this->pool,
             'payables' => $payables,
         ]);
         $this->response->html('meeting-remittances', $html);
-        $this->jq('#btn-remittances-back')->click($this->cl(Fund::class)->rq()->remittances());
+        $this->jq('#btn-remittances-back')->click($this->cl(Pool::class)->rq()->remittances());
         $payableId = jq()->parent()->attr('data-payable-id')->toInt();
         $this->jq('.btn-add-remittance')->click($this->rq()->addRemittance($payableId));
         $this->jq('.btn-del-remittance')->click($this->rq()->delRemittance($payableId));
@@ -80,10 +80,10 @@ class Remittance extends CallableClass
      */
     public function addRemittance(int $payableId)
     {
-        $this->remittanceService->createRemittance($this->fund, $this->session, $payableId);
+        $this->remittanceService->createRemittance($this->pool, $this->session, $payableId);
         // $this->notify->success(trans('session.remittance.created'), trans('common.titles.success'));
 
-        return $this->home($this->fund->id);
+        return $this->home($this->pool->id);
     }
 
     /**
@@ -93,9 +93,9 @@ class Remittance extends CallableClass
      */
     public function delRemittance(int $payableId)
     {
-        $this->remittanceService->deleteRemittance($this->fund, $this->session, $payableId);
+        $this->remittanceService->deleteRemittance($this->pool, $this->session, $payableId);
         // $this->notify->success(trans('session.remittance.deleted'), trans('common.titles.success'));
 
-        return $this->home($this->fund->id);
+        return $this->home($this->pool->id);
     }
 }

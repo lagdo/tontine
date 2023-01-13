@@ -20,32 +20,32 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach($funds as $fund)
-@if($session->disabled($fund))
-                        @include('pages.meeting.fund.disabled', [
-                            'fund' => $fund,
+@foreach($pools as $pool)
+@if($session->disabled($pool))
+                        @include('pages.meeting.pool.disabled', [
+                            'pool' => $pool,
                         ])
 @elseif($session->opened)
-                        @include('pages.meeting.fund.opened', [
-                            'fund' => $fund,
-                            'paid' => $fund->pay_paid,
-                            'count' => $fund->pay_count,
+                        @include('pages.meeting.pool.opened', [
+                            'pool' => $pool,
+                            'paid' => $pool->pay_paid,
+                            'count' => $pool->pay_count,
                             'tontine' => $tontine,
-                            'menuClass' => 'btn-fund-remittances',
+                            'menuClass' => 'btn-pool-remittances',
                             'menuText' => __('meeting.actions.remittances'),
                         ])
 @elseif($session->closed)
-                        @include('pages.meeting.fund.closed', [
-                            'fund' => $fund,
-                            'paid' => $fund->pay_paid,
-                            'count' => $fund->pay_count,
+                        @include('pages.meeting.pool.closed', [
+                            'pool' => $pool,
+                            'paid' => $pool->pay_paid,
+                            'count' => $pool->pay_count,
                             'report' => $report['payables'],
                         ])
 @else
-                        @include('pages.meeting.fund.pending', [
-                            'fund' => $fund,
-                            'paid' => $fund->pay_paid,
-                            'count' => $fund->pay_count,
+                        @include('pages.meeting.pool.pending', [
+                            'pool' => $pool,
+                            'paid' => $pool->pay_paid,
+                            'count' => $pool->pay_count,
                         ])
 @endif
 @endforeach

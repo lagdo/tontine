@@ -3,7 +3,7 @@
 namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Support\Collection;
-use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Tontine\TenantService;
@@ -36,38 +36,38 @@ class RemittanceService
     }
 
     /**
-     * Get a single fund.
+     * Get a single pool.
      *
-     * @param int $fundId    The fund id
+     * @param int $poolId    The pool id
      *
-     * @return Fund|null
+     * @return Pool|null
      */
-    public function getFund(int $fundId): ?Fund
+    public function getPool(int $poolId): ?Pool
     {
-        return $this->tenantService->round()->funds()->with(['subscriptions.payable.remittance'])->find($fundId);
+        return $this->tenantService->round()->pools()->with(['subscriptions.payable.remittance'])->find($poolId);
     }
 
     /**
-     * @param Fund $fund
+     * @param Pool $pool
      * @param Session $session
      *
      * @return mixed
      */
-    private function getQuery(Fund $fund, Session $session)
+    private function getQuery(Pool $pool, Session $session)
     {
-        return $session->payables()->whereIn('subscription_id', $fund->subscriptions()->pluck('id'));
+        return $session->payables()->whereIn('subscription_id', $pool->subscriptions()->pluck('id'));
     }
 
     /**
-     * @param Fund $fund
+     * @param Pool $pool
      * @param Session $session
      * @param int $page
      *
      * @return Collection
      */
-    public function getPayables(Fund $fund, Session $session, int $page = 0): Collection
+    public function getPayables(Pool $pool, Session $session, int $page = 0): Collection
     {
-        $payables = $this->getQuery($fund, $session)->with(['subscription.member', 'remittance']);
+        $payables = $this->getQuery($pool, $session)->with(['subscription.member', 'remittance']);
         if($page > 0 )
         {
             $payables->take($this->tenantService->getLimit());
@@ -79,43 +79,43 @@ class RemittanceService
     /**
      * Get the number of payables in the selected round.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      * @param Session $session
      *
      * @return int
      */
-    public function getPayableCount(Fund $fund, Session $session): int
+    public function getPayableCount(Pool $pool, Session $session): int
     {
-        return $this->getQuery($fund, $session)->count();
+        return $this->getQuery($pool, $session)->count();
     }
 
     /**
-     * Find the unique payable for a fund and a session.
+     * Find the unique payable for a pool and a session.
      *
-     * @param Fund $fund The fund
+     * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $payableId
      *
      * @return Payable|null
      */
-    public function getPayable(Fund $fund, Session $session, int $payableId): ?Payable
+    public function getPayable(Pool $pool, Session $session, int $payableId): ?Payable
     {
-        return $this->getQuery($fund, $session)->where('id', $payableId)->first();
+        return $this->getQuery($pool, $session)->where('id', $payableId)->first();
     }
 
     /**
      * Create a remittance.
      *
-     * @param Fund $fund The fund
+     * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $payableId
      * @param int $amountPaid
      *
      * @return void
      */
-    public function createRemittance(Fund $fund, Session $session, int $payableId, int $amountPaid = 0): void
+    public function createRemittance(Pool $pool, Session $session, int $payableId, int $amountPaid = 0): void
     {
-        $payable = $this->getPayable($fund, $session, $payableId);
+        $payable = $this->getPayable($pool, $session, $payableId);
         if(!$payable || $payable->remittance)
         {
             return;
@@ -126,15 +126,15 @@ class RemittanceService
     /**
      * Delete a remittance.
      *
-     * @param Fund $fund The fund
+     * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $payableId
      *
      * @return void
      */
-    public function deleteRemittance(Fund $fund, Session $session, int $payableId): void
+    public function deleteRemittance(Pool $pool, Session $session, int $payableId): void
     {
-        $payable = $this->getPayable($fund, $session, $payableId);
+        $payable = $this->getPayable($pool, $session, $payableId);
         if(!$payable || !$payable->remittance)
         {
             return;

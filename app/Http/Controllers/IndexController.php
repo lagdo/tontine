@@ -7,7 +7,7 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use App\Ajax\App\Meeting\Report as MeetingReport;
 use App\Ajax\App\Meeting\Session as Meeting;
-use App\Ajax\App\Planning\Fund;
+use App\Ajax\App\Planning\Pool;
 use App\Ajax\App\Planning\Report as PlanningReport;
 use App\Ajax\App\Planning\Session as Planning;
 use App\Ajax\App\Tontine\Charge;
@@ -51,7 +51,7 @@ class IndexController extends Controller
             'jxnMember' => $jaxon->request(Member::class),
             'jxnCharge' => $jaxon->request(Charge::class),
             'jxnPlanning' => $jaxon->request(Planning::class),
-            'jxnFund' => $jaxon->request(Fund::class),
+            'jxnPool' => $jaxon->request(Pool::class),
             'jxnPlanningReport' => $jaxon->request(PlanningReport::class),
             'jxnMeeting' => $jaxon->request(Meeting::class),
             'jxnMeetingReport' => $jaxon->request(MeetingReport::class),

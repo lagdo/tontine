@@ -91,9 +91,9 @@ class Round extends Model
         return $this->belongsTo(Tontine::class);
     }
 
-    public function funds()
+    public function pools()
     {
-        return $this->hasMany(Fund::class)->orderBy('id', 'asc');
+        return $this->hasMany(Pool::class)->orderBy('id', 'asc');
     }
 
     public function sessions()

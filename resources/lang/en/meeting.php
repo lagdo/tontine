@@ -5,7 +5,7 @@ return [
         'session' => "Session",
         'agenda' => "Agenda",
         'report' => "Report",
-        'funds' => "Funds",
+        'pools' => "Pools",
         'charges' => "Fees and fines",
         'fees' => "Fees",
         'fines' => "Fines",

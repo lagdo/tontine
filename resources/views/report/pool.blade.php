@@ -22,7 +22,7 @@
           </div>
           <div class="row mt-2">
             <div class="col d-flex justify-content-center flex-nowrap">
-              <h4>{{ $fund->title }}</h4>
+              <h4>{{ $pool->title }}</h4>
             </div>
           </div>
 
@@ -116,7 +116,7 @@
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th>{{ $fund->title }}</th>
+                      <th>{{ $pool->title }}</th>
 @foreach($sessions as $session)
                       <th>
                         {{ $session->abbrev }}
@@ -129,12 +129,12 @@
                     <tr class="no-pagebreak">
                       <td rowspan="2">{{ $subscription->member->name }}</td>
 @foreach($sessions as $session)
-                      <td class="currency"><b>{!! $subscription->receivables[$session->id]->deposit ? $fund->money('amount', true) : ($session->opened ? 0 : '&nbsp;') !!}</b></td>
+                      <td class="currency"><b>{!! $subscription->receivables[$session->id]->deposit ? $pool->money('amount', true) : ($session->opened ? 0 : '&nbsp;') !!}</b></td>
 @endforeach
                     </tr>
                     <tr>
 @foreach($sessions as $session)
-                      <td class="currency">{{ $session->disabled($fund) ? '' : $fund->money('amount', true) }}</td>
+                      <td class="currency">{{ $session->disabled($pool) ? '' : $pool->money('amount', true) }}</td>
 @endforeach
                     </tr>
 @endforeach

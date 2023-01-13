@@ -27,7 +27,7 @@ use Siak\Tontine\Service\Report\PdfGeneratorInterface;
 use Siak\Tontine\Service\Report\LocalPdfGenerator;
 use Siak\Tontine\Service\Report\ReportServiceInterface;
 use Siak\Tontine\Service\Report\ReportService;
-use Siak\Tontine\Service\Tontine\FundService;
+use Siak\Tontine\Service\Tontine\PoolService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
@@ -35,7 +35,7 @@ use Siak\Tontine\Validation\ChargeValidator;
 use Siak\Tontine\Validation\MemberValidator;
 use Siak\Tontine\Validation\Meeting\BiddingValidator;
 use Siak\Tontine\Validation\Meeting\RemittanceValidator;
-use Siak\Tontine\Validation\Planning\FundValidator;
+use Siak\Tontine\Validation\Planning\PoolValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 
 use function config;
@@ -87,7 +87,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(SubscriptionService::class, SubscriptionService::class);
 
         $this->app->singleton(TenantService::class, TenantService::class);
-        $this->app->singleton(FundService::class, FundService::class);
+        $this->app->singleton(PoolService::class, PoolService::class);
         $this->app->singleton(MemberService::class, MemberService::class);
         $this->app->singleton(TontineService::class, TontineService::class);
 
@@ -101,7 +101,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(ChargeValidator::class, ChargeValidator::class);
         $this->app->singleton(MemberValidator::class, MemberValidator::class);
         $this->app->singleton(BiddingValidator::class, BiddingValidator::class);
-        $this->app->singleton(FundValidator::class, FundValidator::class);
+        $this->app->singleton(PoolValidator::class, PoolValidator::class);
         $this->app->singleton(RemittanceValidator::class, RemittanceValidator::class);
         $this->app->singleton(SessionValidator::class, SessionValidator::class);
     }

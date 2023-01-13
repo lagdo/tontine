@@ -127,12 +127,12 @@ trait EventTrait
             }
         };
 
-        // Create the receivables for each subscription on each fund
-        foreach($session->round->funds as $fund)
+        // Create the receivables for each subscription on each pool
+        foreach($session->round->pools as $pool)
         {
-            if($session->enabled($fund))
+            if($session->enabled($pool))
             {
-                foreach($fund->subscriptions as $subscription)
+                foreach($pool->subscriptions as $subscription)
                 {
                     $subscription->receivables()->create(['session_id' => $session->id]);
                 }

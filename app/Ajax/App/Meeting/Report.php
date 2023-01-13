@@ -3,7 +3,7 @@
 namespace App\Ajax\App\Meeting;
 
 use App\Ajax\CallableClass;
-use Siak\Tontine\Model\Fund as FundModel;
+use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Meeting\MeetingService;
 
@@ -12,7 +12,7 @@ use function intval;
 
 /**
  * @databag meeting
- * @before getFund
+ * @before getPool
  */
 class Report extends CallableClass
 {
@@ -29,34 +29,34 @@ class Report extends CallableClass
     public SubscriptionService $subscriptionService;
 
     /**
-     * @var FundModel|null
+     * @var PoolModel|null
      */
-    protected ?FundModel $fund = null;
+    protected ?PoolModel $pool = null;
 
     /**
      * @return void
      */
-    protected function getFund()
+    protected function getPool()
     {
-        $fundId = intval($this->target()->method() === 'select' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('fund.id', 0));
-        if($fundId !== 0)
+        $poolId = intval($this->target()->method() === 'select' ?
+            $this->target()->args()[0] : $this->bag('meeting')->get('pool.id', 0));
+        if($poolId !== 0)
         {
-            $this->fund = $this->subscriptionService->getFund($fundId);
+            $this->pool = $this->subscriptionService->getPool($poolId);
         }
-        if(!$this->fund)
+        if(!$this->pool)
         {
-            $this->fund = $this->subscriptionService->getFirstFund();
-            // Save the current fund id
-            $this->bag('meeting')->set('fund.id', $this->fund ? $this->fund->id : 0);
+            $this->pool = $this->subscriptionService->getFirstPool();
+            // Save the current pool id
+            $this->bag('meeting')->set('pool.id', $this->pool ? $this->pool->id : 0);
         }
     }
 
-    public function select(int $fundId)
+    public function select(int $poolId)
     {
-        if(($this->fund))
+        if(($this->pool))
         {
-            $this->bag('meeting')->set('fund.id', $this->fund->id);
+            $this->bag('meeting')->set('pool.id', $this->pool->id);
             return $this->amounts();
         }
 
@@ -65,19 +65,19 @@ class Report extends CallableClass
 
     public function home()
     {
-        // Don't try to show the page if there is no fund selected.
-        return ($this->fund) ? $this->amounts() : $this->response;
+        // Don't try to show the page if there is no pool selected.
+        return ($this->pool) ? $this->amounts() : $this->response;
     }
 
     public function amounts()
     {
-        $this->view()->shareValues($this->meetingService->getFigures($this->fund));
+        $this->view()->shareValues($this->meetingService->getFigures($this->pool));
         $html = $this->view()->render('pages.meeting.report.amounts')
-            ->with('fund', $this->fund)
-            ->with('funds', $this->subscriptionService->getFunds());
+            ->with('pool', $this->pool)
+            ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-fund-select')->click($this->rq()->select(pm()->select('select-fund'), true));
+        $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool'), true));
         $this->jq('#btn-meeting-report-refresh')->click($this->rq()->amounts());
         $this->jq('#btn-meeting-report-deposits')->click($this->rq()->deposits());
         $this->jq('#btn-meeting-report-print')->click($this->rq()->print());
@@ -87,13 +87,13 @@ class Report extends CallableClass
 
     public function deposits()
     {
-        $this->view()->shareValues($this->meetingService->getFigures($this->fund));
+        $this->view()->shareValues($this->meetingService->getFigures($this->pool));
         $html = $this->view()->render('pages.meeting.report.deposits')
-            ->with('fund', $this->fund)
-            ->with('funds', $this->subscriptionService->getFunds());
+            ->with('pool', $this->pool)
+            ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-fund-select')->click($this->rq()->select(pm()->select('select-fund'), true));
+        $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool'), true));
         $this->jq('#btn-meeting-report-refresh')->click($this->rq()->deposits());
         $this->jq('#btn-meeting-report-amounts')->click($this->rq()->amounts());
         $this->jq('#btn-meeting-report-print')->click($this->rq()->print());

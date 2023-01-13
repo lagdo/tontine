@@ -69,19 +69,19 @@ class Meeting extends CallableClass
     {
         $this->bag('meeting')->set('session.id', $sessionId);
 
-        return $this->funds();
+        return $this->pools();
     }
 
-    public function funds()
+    public function pools()
     {
-        $html = $this->view()->render('pages.meeting.session.funds', [
+        $html = $this->view()->render('pages.meeting.session.pools', [
             'tontine' => $this->meetingService->getTontine(),
             'session' => $this->session,
         ]);
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-session-back')->click($this->cl(Session::class)->rq()->home());
-        $this->jq('#btn-session-refresh')->click($this->rq()->funds());
+        $this->jq('#btn-session-refresh')->click($this->rq()->pools());
         $this->jq('#btn-session-bids')->click($this->rq()->bids());
         $this->jq('#btn-session-charges')->click($this->rq()->charges());
         $this->jq('#btn-session-open')->click($this->rq()->open()
@@ -91,7 +91,7 @@ class Meeting extends CallableClass
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 
-        $this->cl(Fund::class)->show($this->session, $this->meetingService);
+        $this->cl(Pool::class)->show($this->session, $this->meetingService);
 
         return $this->response;
     }
@@ -110,7 +110,7 @@ class Meeting extends CallableClass
 
         $this->jq('#btn-session-back')->click($this->cl(Session::class)->rq()->home());
         $this->jq('#btn-session-refresh')->click($this->rq()->bids());
-        $this->jq('#btn-session-funds')->click($this->rq()->funds());
+        $this->jq('#btn-session-pools')->click($this->rq()->pools());
         $this->jq('#btn-session-charges')->click($this->rq()->charges());
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
@@ -137,7 +137,7 @@ class Meeting extends CallableClass
 
         $this->jq('#btn-session-back')->click($this->cl(Session::class)->rq()->home());
         $this->jq('#btn-session-refresh')->click($this->rq()->charges());
-        $this->jq('#btn-session-funds')->click($this->rq()->funds());
+        $this->jq('#btn-session-pools')->click($this->rq()->pools());
         $this->jq('#btn-session-bids')->click($this->rq()->bids());
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));

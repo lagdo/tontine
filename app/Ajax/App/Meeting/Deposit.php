@@ -4,7 +4,7 @@ namespace App\Ajax\App\Meeting;
 
 use Siak\Tontine\Service\Meeting\DepositService;
 use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Model\Fund as FundModel;
+use Siak\Tontine\Model\Pool as PoolModel;
 use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
@@ -12,7 +12,7 @@ use function trans;
 
 /**
  * @databag meeting
- * @before getFund
+ * @before getPool
  */
 class Deposit extends CallableClass
 {
@@ -28,38 +28,38 @@ class Deposit extends CallableClass
     protected ?SessionModel $session;
 
     /**
-     * @var FundModel|null
+     * @var PoolModel|null
      */
-    protected ?FundModel $fund;
+    protected ?PoolModel $pool;
 
-    protected function getFund()
+    protected function getPool()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $fundId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('fund.id');
+        $poolId = $this->target()->method() === 'home' ?
+            $this->target()->args()[0] : $this->bag('meeting')->get('pool.id');
         $this->session = $this->depositService->getSession($sessionId);
-        $this->fund = $this->depositService->getFund($fundId);
-        if($this->session->disabled($this->fund))
+        $this->pool = $this->depositService->getPool($poolId);
+        if($this->session->disabled($this->pool))
         {
             $this->notify->error(trans('tontine.session.errors.disabled'), trans('common.titles.error'));
-            $this->fund = null;
+            $this->pool = null;
         }
     }
 
     /**
-     * @param int $fundId
+     * @param int $poolId
      *
      * @return mixed
      */
-    public function home(int $fundId)
+    public function home(int $poolId)
     {
-        $this->bag('meeting')->set('fund.id', $fundId);
+        $this->bag('meeting')->set('pool.id', $poolId);
 
         $html = $this->view()->render('pages.meeting.deposit.home', [
-            'fund' => $this->fund,
+            'pool' => $this->pool,
         ]);
         $this->response->html('meeting-deposits', $html);
-        $this->jq('#btn-deposits-back')->click($this->cl(Fund::class)->rq()->deposits());
+        $this->jq('#btn-deposits-back')->click($this->cl(Pool::class)->rq()->deposits());
 
         return $this->page(1);
     }
@@ -77,12 +77,12 @@ class Deposit extends CallableClass
         }
         $this->bag('meeting')->set('deposit.page', $pageNumber);
 
-        $receivableCount = $this->depositService->getReceivableCount($this->fund, $this->session);
+        $receivableCount = $this->depositService->getReceivableCount($this->pool, $this->session);
         $html = $this->view()->render('pages.meeting.deposit.page', [
-            'receivables' => $this->depositService->getReceivables($this->fund, $this->session, $pageNumber),
+            'receivables' => $this->depositService->getReceivables($this->pool, $this->session, $pageNumber),
             'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $receivableCount),
         ]);
-        $this->response->html('meeting-fund-deposits', $html);
+        $this->response->html('meeting-pool-deposits', $html);
 
         $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
         $this->jq('.btn-add-deposit')->click($this->rq()->addDeposit($receivableId));
@@ -99,7 +99,7 @@ class Deposit extends CallableClass
      */
     public function addDeposit(int $receivableId)
     {
-        $this->depositService->createDeposit($this->fund, $this->session, $receivableId);
+        $this->depositService->createDeposit($this->pool, $this->session, $receivableId);
         // $this->notify->success(trans('session.deposit.created'), trans('common.titles.success'));
 
         return $this->page();
@@ -112,7 +112,7 @@ class Deposit extends CallableClass
      */
     public function delDeposit(int $receivableId)
     {
-        $this->depositService->deleteDeposit($this->fund, $this->session, $receivableId);
+        $this->depositService->deleteDeposit($this->pool, $this->session, $receivableId);
         // $this->notify->success(trans('session.deposit.deleted'), trans('common.titles.success'));
 
         return $this->page();

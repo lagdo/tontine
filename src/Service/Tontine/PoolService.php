@@ -5,11 +5,11 @@ namespace Siak\Tontine\Service\Tontine;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Receivable;
 
-class FundService
+class PoolService
 {
     /**
      * @var TenantService
@@ -25,95 +25,95 @@ class FundService
     }
 
     /**
-     * Get a paginated list of funds in the selected round.
+     * Get a paginated list of pools in the selected round.
      *
      * @param int $page
      *
      * @return array
      */
-    public function getFunds(int $page = 0)
+    public function getPools(int $page = 0)
     {
-        $funds = $this->tenantService->round()->funds();
+        $pools = $this->tenantService->round()->pools();
         if($page > 0 )
         {
-            $funds->take($this->tenantService->getLimit());
-            $funds->skip($this->tenantService->getLimit() * ($page - 1));
+            $pools->take($this->tenantService->getLimit());
+            $pools->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $funds->get();
+        return $pools->get();
     }
 
     /**
-     * Get the number of funds in the selected round.
+     * Get the number of pools in the selected round.
      *
      * @return int
      */
-    public function getFundCount(): int
+    public function getPoolCount(): int
     {
-        return $this->tenantService->round()->funds()->count();
+        return $this->tenantService->round()->pools()->count();
     }
 
     /**
-     * Get a single fund.
+     * Get a single pool.
      *
-     * @param int $fundId    The fund id
+     * @param int $poolId    The pool id
      *
-     * @return Fund|null
+     * @return Pool|null
      */
-    public function getFund(int $fundId): ?Fund
+    public function getPool(int $poolId): ?Pool
     {
-        return $this->tenantService->getFund($fundId);
+        return $this->tenantService->getPool($poolId);
     }
 
     /**
-     * Add a new fund.
+     * Add a new pool.
      *
      * @param array $values
      *
      * @return bool
      */
-    public function createFunds(array $values): bool
+    public function createPools(array $values): bool
     {
         DB::transaction(function() use($values) {
-            $this->tenantService->round()->funds()->createMany($values);
+            $this->tenantService->round()->pools()->createMany($values);
         });
 
         return true;
     }
 
     /**
-     * Update a fund.
+     * Update a pool.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      * @param array $values
      *
      * @return int
      */
-    public function updateFund(Fund $fund, array $values): int
+    public function updatePool(Pool $pool, array $values): int
     {
-        return $fund->update($values);
+        return $pool->update($values);
     }
 
     /**
-     * Delete a fund.
+     * Delete a pool.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      *
      * @return void
      */
-    public function deleteFund(Fund $fund)
+    public function deletePool(Pool $pool)
     {
         // Todo: soft delete this model.
-        DB::transaction(function() use($fund) {
+        DB::transaction(function() use($pool) {
             // Delete the payables
             Payable::join('subscriptions', 'subscriptions.id', '=', 'payables.subscription_id')
-                ->where('subscriptions.fund_id', $fund->id)
+                ->where('subscriptions.pool_id', $pool->id)
                 ->delete();
             // Delete the receivables
             Receivable::join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
-                ->where('subscriptions.fund_id', $fund->id)
+                ->where('subscriptions.pool_id', $pool->id)
                 ->delete();
-            // Delete the fund
-            $fund->delete();
+            // Delete the pool
+            $pool->delete();
         });
     }
 
@@ -122,9 +122,9 @@ class FundService
      *
      * @return Collection
      */
-    public function getFakeFunds(int $count): Collection
+    public function getFakePools(int $count): Collection
     {
-        return Fund::factory()->count($count)->make([
+        return Pool::factory()->count($count)->make([
             'round_id' => $this->tenantService->round(),
         ]);
     }

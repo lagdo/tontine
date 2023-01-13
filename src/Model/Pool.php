@@ -2,14 +2,14 @@
 
 namespace Siak\Tontine\Model;
 
-use Database\Factories\FundFactory;
+use Database\Factories\PoolFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Traits\HasCurrency;
 
-class Fund extends Model
+class Pool extends Model
 {
     use HasFactory;
     use HasCurrency;
@@ -39,7 +39,7 @@ class Fund extends Model
      */
     protected static function newFactory()
     {
-        return FundFactory::new();
+        return PoolFactory::new();
     }
 
     public function round()
@@ -54,12 +54,12 @@ class Fund extends Model
 
     public function disabledSessions()
     {
-        return $this->belongsToMany(Session::class, 'fund_session_disabled');
+        return $this->belongsToMany(Session::class, 'pool_session_disabled');
     }
 
     public function sessions()
     {
         return Session::whereNotIn('id',
-            DB::table('fund_session_disabled')->where('fund_id', $this->id)->pluck('session_id'));
+            DB::table('pool_session_disabled')->where('pool_id', $this->id)->pluck('session_id'));
     }
 }

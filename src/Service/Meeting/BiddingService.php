@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Bidding;
 use Siak\Tontine\Model\Currency;
-use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Remittance;
 use Siak\Tontine\Model\Session;
@@ -67,27 +67,27 @@ class BiddingService
     }
 
     /**
-     * Get a single fund.
+     * Get a single pool.
      *
-     * @param int $fundId    The fund id
+     * @param int $poolId    The pool id
      *
-     * @return Fund|null
+     * @return Pool|null
      */
-    public function getFund(int $fundId): ?Fund
+    public function getPool(int $poolId): ?Pool
     {
-        return $this->tenantService->round()->funds()->find($fundId);
+        return $this->tenantService->round()->pools()->find($poolId);
     }
 
     /**
-     * Get the unpaid subscriptions of a given fund.
+     * Get the unpaid subscriptions of a given pool.
      *
-     * @param Fund $fund
+     * @param Pool $pool
      *
      * @return Collection
      */
-    public function getSubscriptions(Fund $fund): Collection
+    public function getSubscriptions(Pool $pool): Collection
     {
-        return $fund->subscriptions()->with(['payable', 'member'])->get()
+        return $pool->subscriptions()->with(['payable', 'member'])->get()
             ->filter(function($subscription) {
                 return !$subscription->payable->session_id;
             })->pluck('member.name', 'id');
@@ -119,36 +119,36 @@ class BiddingService
     /**
      * Create a remittance.
      *
-     * @param Fund $fund The fund
+     * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $subscriptionId
      * @param int $amountPaid
      *
      * @return void
      */
-    public function createRemittance(Fund $fund, Session $session, int $subscriptionId, int $amountPaid): void
+    public function createRemittance(Pool $pool, Session $session, int $subscriptionId, int $amountPaid): void
     {
-        $subscription = $fund->subscriptions()->find($subscriptionId);
-        DB::transaction(function() use($fund, $session, $subscription, $amountPaid) {
+        $subscription = $pool->subscriptions()->find($subscriptionId);
+        DB::transaction(function() use($pool, $session, $subscription, $amountPaid) {
             $this->subscriptionService->setPayableSession($session, $subscription);
-            $this->remittanceService->createRemittance($fund, $session, $subscription->payable->id, $amountPaid);
+            $this->remittanceService->createRemittance($pool, $session, $subscription->payable->id, $amountPaid);
         });
     }
 
     /**
      * Delete a remittance.
      *
-     * @param Fund $fund The fund
+     * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $subscriptionId
      *
      * @return void
      */
-    public function deleteRemittance(Fund $fund, Session $session, int $subscriptionId): void
+    public function deleteRemittance(Pool $pool, Session $session, int $subscriptionId): void
     {
-        $subscription = $fund->subscriptions()->find($subscriptionId);
-        DB::transaction(function() use($fund, $session, $subscription) {
-            $this->remittanceService->deleteRemittance($fund, $session, $subscription->payable->id);
+        $subscription = $pool->subscriptions()->find($subscriptionId);
+        DB::transaction(function() use($pool, $session, $subscription) {
+            $this->remittanceService->deleteRemittance($pool, $session, $subscription->payable->id);
             $this->subscriptionService->unsetPayableSession($session, $subscription);
         });
     }
@@ -215,8 +215,8 @@ class BiddingService
         $sessions = $this->tenantService->round()->sessions;
         return $session->payables->map(function($payable) use($sessions) {
             $payable->amount = $sessions->filter(function($session) use($payable) {
-                return $session->enabled($payable->subscription->fund);
-            })->count() * $payable->subscription->fund->amount;
+                return $session->enabled($payable->subscription->pool);
+            })->count() * $payable->subscription->pool->amount;
             return $payable;
         });
     }
@@ -257,7 +257,7 @@ class BiddingService
         $payables = $this->getSessionPayables($session);
 
         $paidSum = 0;
-        $fundBiddings = $payables->map(function($payable) use(&$paidSum) {
+        $poolBiddings = $payables->map(function($payable) use(&$paidSum) {
             $amountPaid = $payable->remittance->amount_paid ?? 0;
             $paidSum += $amountPaid;
             return (object)[
@@ -279,18 +279,18 @@ class BiddingService
             ];
         });
 
-        return [$fundBiddings->merge($cashBiddings),
+        return [$poolBiddings->merge($cashBiddings),
             ['bid' => Currency::format($bidSum), 'paid' => Currency::format($paidSum)]];
     }
 
     /**
-     * @param Fund $fund
+     * @param Pool $pool
      * @param int $sessionId
      *
      * @return array|stdClass
      */
-    public function getRemittanceFigures(Fund $fund, int $sessionId = 0)
+    public function getRemittanceFigures(Pool $pool, int $sessionId = 0)
     {
-        return $this->planningService->getRemittanceFigures($fund, $sessionId);
+        return $this->planningService->getRemittanceFigures($pool, $sessionId);
     }
 }
