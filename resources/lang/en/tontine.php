@@ -25,6 +25,8 @@ return [
     ],
     'actions' => [
         'rounds' => "Rounds",
+        'open' => "Open",
+        'enter' => "Enter",
         'select' => "Select",
     ],
     'messages' => [
@@ -40,6 +42,10 @@ return [
             'created' => "The round was successfully created.",
             'updated' => "The round was successfully updated.",
             'deleted' => "The round was successfully deleted.",
+        ],
+        'questions' => [
+            'open' => "Open this round? Make sure you have set its data correctly.",
+            'close' => "Close this round?",
         ],
     ],
     'member' => [

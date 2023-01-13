@@ -81,12 +81,14 @@ class Round extends CallableClass
 
         $roundId = jq()->parent()->attr('data-round-id')->toInt();
         $this->jq('.btn-round-edit')->click($this->rq()->edit($roundId));
-        $this->jq('.btn-round-select')->click($this->rq()->select($roundId));
+        $this->jq('.btn-round-open')->click($this->rq()->open($roundId)
+            ->confirm(trans('tontine.round.questions.open')));
+        $this->jq('.btn-round-enter')->click($this->rq()->enter($roundId));
 
         return $this->response;
     }
 
-    public function select(int $roundId)
+    public function enter(int $roundId)
     {
         if(!($round = $this->roundService->getRound(intval($roundId))))
         {

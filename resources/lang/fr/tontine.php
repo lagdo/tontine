@@ -25,6 +25,8 @@ return [
     ],
     'actions' => [
         'rounds' => "Tours",
+        'open' => "Ouvrir",
+        'enter' => "Entrer",
         'select' => "Sélectionner",
     ],
     'messages' => [
@@ -40,6 +42,10 @@ return [
             'created' => "le tour a été ajouté.",
             'updated' => "le tour a été modifié.",
             'deleted' => "le tour a été supprimé.",
+        ],
+        'questions' => [
+            'open' => "Ouvrir ce tour ? Assurez-vous d'avoir défini ses données.",
+            'close' => "Fermer ce tour ?",
         ],
     ],
     'member' => [
@@ -88,7 +94,7 @@ return [
         ],
         'questions' => [
             'open' => "Ouvrir cette séance ?",
-            'close' => "Fermer cette séance?",
+            'close' => "Fermer cette séance ?",
         ],
     ],
     'pool' => [

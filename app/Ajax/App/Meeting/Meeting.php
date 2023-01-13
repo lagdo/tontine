@@ -7,6 +7,7 @@ use Siak\Tontine\Service\Charge\FeeReportService;
 use Siak\Tontine\Service\Charge\FineService;
 use Siak\Tontine\Service\Charge\FineReportService;
 use Siak\Tontine\Service\Meeting\LoanService;
+use Siak\Tontine\Service\Meeting\PlanningService;
 use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
@@ -49,6 +50,11 @@ class Meeting extends CallableClass
      * @var RefundService
      */
     protected RefundService $refundService;
+
+    /**
+     * @var PlanningService
+     */
+    protected PlanningService $planningService;
 
     /**
      * @var SessionModel|null
@@ -153,19 +159,23 @@ class Meeting extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $planningService
+     */
     public function open()
     {
-        $this->session->update(['status' => SessionModel::STATUS_OPENED]);
-
+        $this->planningService->openSession($this->session);
         $this->home($this->session->id);
 
         return $this->response;
     }
 
+    /**
+     * @di $planningService
+     */
     public function close()
     {
-        $this->session->update(['status' => SessionModel::STATUS_CLOSED]);
-
+        $this->planningService->closeSession($this->session);
         $this->home($this->session->id);
 
         return $this->response;
