@@ -358,18 +358,18 @@ App.Ajax.App.Meeting.Charge.Settlement.addSettlement = function() {
 App.Ajax.App.Meeting.Charge.Settlement.delSettlement = function() {
     return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Charge.Settlement', jxnmthd: 'delSettlement' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Financial.Bidding = {};
-App.Ajax.App.Meeting.Financial.Bidding.home = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Bidding', jxnmthd: 'home' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Financial.Loa={};
+App.Ajax.App.Meeting.Financial.Loahme = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Loa,jxnmthd: 'home' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Financial.Bidding.addBidding = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Bidding', jxnmthd: 'addBidding' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Financial.LoaadLoaLoauction() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Loanjxnmthd: 'addLoaLoan parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Financial.Bidding.saveBidding = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Bidding', jxnmthd: 'saveBidding' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Financial.LoanveLoaLoanction() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Loanjxnmthd: 'saveLoaLoan parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Financial.Bidding.deleteBidding = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Bidding', jxnmthd: 'deleteBidding' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Financial.LoanleteLoaLoanction() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Financial.Loanjxnmthd: 'deleteLoaLoan parameters: arguments, bags: ["meeting"] });
 };
 App.Ajax.App.Meeting.Mutual.Remitment = {};
 App.Ajax.App.Meeting.Mutual.Remitment.home = function() {

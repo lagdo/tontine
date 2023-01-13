@@ -20,7 +20,7 @@
                       <tbody>
 @foreach ($payables as $payable)
                         <tr>
-                          <td>{{ $payable->title === '__' ? __('tontine.bidding.labels.amount_to_bid') : $payable->title }}</td>
+                          <td>{{ $payable->title === '__' ? __('tontine.loan.labels.amount_to_bid') : $payable->title }}</td>
                           <td>{{ $payable->amount }}@if ($payable->paid > 0)<br/>{{ $payable->paid }}@endif</td>
                           <td class="table-item-menu" data-subscription-id="{{ $payable->id }}">
 @if ($payable->available)

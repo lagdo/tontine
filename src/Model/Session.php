@@ -147,9 +147,9 @@ class Session extends Model
         return $this->hasMany(FineBill::class);
     }
 
-    public function biddings()
+    public function loans()
     {
-        return $this->hasMany(Bidding::class);
+        return $this->hasMany(Loan::class);
     }
 
     public function refunds()

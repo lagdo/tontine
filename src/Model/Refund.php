@@ -18,8 +18,8 @@ class Refund extends Model
         return $this->belongsTo(Session::class);
     }
 
-    public function bidding()
+    public function loan()
     {
-        return $this->belongsTo(Bidding::class);
+        return $this->belongsTo(Loan::class);
     }
 }

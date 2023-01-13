@@ -5,7 +5,7 @@ namespace Siak\Tontine\Validation\Meeting;
 use Illuminate\Support\Facades\Validator;
 use Siak\Tontine\Validation\ValidationException;
 
-class BiddingValidator
+class LoanValidator
 {
     /**
      * @param array $values

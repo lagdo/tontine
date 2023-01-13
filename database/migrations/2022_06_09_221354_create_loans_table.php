@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBiddingsTable extends Migration
+class CreateLoansTable extends Migration
 {
     /**
      * Run the migrations.
@@ -17,7 +17,7 @@ class CreateBiddingsTable extends Migration
             $table->integer('amount_paid')->default(0);
         });
 
-        Schema::create('biddings', function (Blueprint $table) {
+        Schema::create('loans', function (Blueprint $table) {
             $table->id();
             $table->integer('amount_bid');
             $table->integer('amount_paid');
@@ -35,7 +35,7 @@ class CreateBiddingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('biddings');
+        Schema::dropIfExists('loans');
 
         Schema::table('remitments', function (Blueprint $table) {
             $table->dropColumn('amount_paid');

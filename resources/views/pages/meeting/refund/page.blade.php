@@ -7,18 +7,18 @@
                     </tr>
                   </thead>
                   <tbody>
-@foreach($biddings as $bidding)
+@foreach($loans as $loan)
                     <tr>
-                      <td>{{ $bidding->member->name }}</td>
-                      <td>{{ $bidding->amount }}</td>
+                      <td>{{ $loan->member->name }}</td>
+                      <td>{{ $loan->amount }}</td>
 @if(!$session->opened)
-                      <td><i class="fa @if($bidding->refund) fa-toggle-on @else fa-toggle-off @endif"></i></td>
-@elseif($bidding->refund)
-                      <td data-refund-id="{{ $bidding->refund->id }}">
+                      <td><i class="fa @if($loan->refund) fa-toggle-on @else fa-toggle-off @endif"></i></td>
+@elseif($loan->refund)
+                      <td data-refund-id="{{ $loan->refund->id }}">
                         <a href="javascript:void(0)" class="btn-del-refund"><i class="fa fa-toggle-on"></i></a>
                       </td>
 @else
-                      <td data-bidding-id="{{ $bidding->id }}">
+                      <td data-loan-id="{{ $loan->id }}">
                         <a href="javascript:void(0)" class="btn-add-refund"><i class="fa fa-toggle-off"></i></a>
                       </td>
 @endif

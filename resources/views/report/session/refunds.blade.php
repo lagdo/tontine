@@ -14,12 +14,12 @@
                 </tr>
               </thead>
               <tbody>
-@foreach($biddings as $bidding)
+@foreach($loans as $loan)
                 <tr>
-                  <td>{{ $bidding->member->name }}</td>
-                  <td>{{ $bidding->session->date }}</td>
+                  <td>{{ $loan->member->name }}</td>
+                  <td>{{ $loan->session->date }}</td>
                   <td>&nbsp;</td>
-                  <td>{{ $bidding->amount }}</td>
+                  <td>{{ $loan->amount }}</td>
                 </tr>
 @endforeach
                 <tr>

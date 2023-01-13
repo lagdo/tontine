@@ -1,10 +1,10 @@
                   <div class="row align-items-center">
                     <div class="col-auto">
-                      <div class="section-title mt-0">@isset($pool){{ $pool->title }} - {{ __('meeting.titles.remitments') }}@else{{ __('meeting.titles.biddings') }}@endisset</div>
+                      <div class="section-title mt-0">@isset($pool){{ $pool->title }} - {{ __('meeting.titles.remitments') }}@else{{ __('meeting.titles.loans') }}@endisset</div>
                     </div>
                     <div class="col">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
-                        <button type="button" class="btn btn-primary" id="btn-biddings-refresh"><i class="fa fa-sync"></i></button>
+                        <button type="button" class="btn btn-primary" id="btn-loans-refresh"><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
                   </div>
@@ -20,27 +20,27 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <td>{{ __('tontine.bidding.labels.amount_to_bid') }}</td>
+                          <td>{{ __('tontine.loan.labels.amount_to_bid') }}</td>
                           <td>{{ $amountAvailable }}</td>
                           <td>&nbsp;</td>
 @if(!$session->opened)
                           <td>&nbsp;</td>
 @else
                           <td class="table-item-menu">
-                            <a href="javascript:void(0)" class="btn-bidding-add"><i class="fa fa-toggle-off"></i></a>
+                            <a href="javascript:void(0)" class="btn-loan-add"><i class="fa fa-toggle-off"></i></a>
                           </td>
 @endif
                         </tr>
-@foreach ($biddings as $bidding)
+@foreach ($loans as $loan)
                         <tr>
-                          <td>{{ $bidding->title }}</td>
-                          <td>{{ $bidding->amount }}</td>
-                          <td>{{ $bidding->paid }}</td>
+                          <td>{{ $loan->title }}</td>
+                          <td>{{ $loan->amount }}</td>
+                          <td>{{ $loan->paid }}</td>
 @if(!$session->opened)
                           <td>&nbsp;</td>
 @else
-                          <td class="table-item-menu" data-subscription-id="{{ $bidding->id }}">
-                            <a href="javascript:void(0)" class="btn-bidding-delete"><i class="fa fa-toggle-on"></i></a>
+                          <td class="table-item-menu" data-subscription-id="{{ $loan->id }}">
+                            <a href="javascript:void(0)" class="btn-loan-delete"><i class="fa fa-toggle-on"></i></a>
                           </td>
 @endif
                         </tr>

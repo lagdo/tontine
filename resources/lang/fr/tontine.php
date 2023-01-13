@@ -120,7 +120,7 @@ return [
             'deleted' => "La souscription du membre a été supprimée.",
         ],
     ],
-    'bidding' => [
+    'loan' => [
         'titles' => [
             'add' => "Ajouter une enchère",
         ],

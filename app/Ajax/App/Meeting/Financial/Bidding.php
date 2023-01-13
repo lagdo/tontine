@@ -2,8 +2,8 @@
 
 namespace App\Ajax\App\Meeting\Financial;
 
-use Siak\Tontine\Service\Meeting\BiddingService;
-use Siak\Tontine\Validation\Meeting\BiddingValidator;
+use Siak\Tontine\Service\Meeting\LoanService;
+use Siak\Tontine\Validation\Meeting\LoanValidator;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
@@ -15,18 +15,18 @@ use function Jaxon\pm;
  * @databag meeting
  * @before getSession
  */
-class Bidding extends CallableClass
+class Loan extends CallableClass
 {
     /**
      * @di
-     * @var BiddingService
+     * @var LoanService
      */
-    protected BiddingService $biddingService;
+    protected LoanService $loanService;
 
     /**
-     * @var BiddingValidator
+     * @var LoanValidator
      */
-    protected BiddingValidator $validator;
+    protected LoanValidator $validator;
 
     /**
      * @var SessionModel|null
@@ -39,53 +39,53 @@ class Bidding extends CallableClass
     protected function getSession()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->biddingService->getSession($sessionId);
+        $this->session = $this->loanService->getSession($sessionId);
     }
 
     /**
      * @exclude
      */
-    public function show($session, $biddingService)
+    public function show($session, $loanService)
     {
         $this->session = $session;
-        $this->biddingService = $biddingService;
+        $this->loanService = $loanService;
 
         return $this->home();
     }
 
     public function home()
     {
-        [$biddings, $sum] = $this->biddingService->getSessionBiddings($this->session);
-        $amountAvailable = $this->biddingService->getAmountAvailable($this->session);
+        [$loans, $sum] = $this->loanService->getSessionLoans($this->session);
+        $amountAvailable = $this->loanService->getAmountAvailable($this->session);
 
-        $html = $this->view()->render('pages.meeting.bidding.home')
-            ->with('biddings', $biddings)->with('session', $this->session)
+        $html = $this->view()->render('pages.meeting.loan.home')
+            ->with('loans', $loans)->with('session', $this->session)
             ->with('amountAvailable', Currency::format($amountAvailable));
         if($this->session->closed)
         {
             $html->with('sum', $sum);
         }
-        $this->response->html('meeting-biddings', $html);
+        $this->response->html('meeting-loans', $html);
 
-        $this->jq('#btn-biddings-refresh')->click($this->rq()->home());
-        $this->jq('.btn-bidding-add')->click($this->rq()->addBidding());
-        $biddingId = jq()->parent()->attr('data-subscription-id')->toInt();
-        $this->jq('.btn-bidding-delete')->click($this->rq()->deleteBidding($biddingId));
+        $this->jq('#btn-loans-refresh')->click($this->rq()->home());
+        $this->jq('.btn-loan-add')->click($this->rq()->addLoan());
+        $loanId = jq()->parent()->attr('data-subscription-id')->toInt();
+        $this->jq('.btn-loan-delete')->click($this->rq()->deleteLoan($loanId));
 
         return $this->response;
     }
 
-    public function addBidding()
+    public function addLoan()
     {
-        $amountAvailable = $this->biddingService->getAmountAvailable($this->session);
+        $amountAvailable = $this->loanService->getAmountAvailable($this->session);
         if($amountAvailable <= 0)
         {
             return $this->response;
         }
 
-        $members = $this->biddingService->getMembers();
-        $title = trans('tontine.bidding.titles.add');
-        $content = $this->view()->render('pages.meeting.bidding.add')
+        $members = $this->loanService->getMembers();
+        $title = trans('tontine.loan.titles.add');
+        $content = $this->view()->render('pages.meeting.loan.add')
             ->with('members', $members)->with('amount', $amountAvailable);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -94,7 +94,7 @@ class Bidding extends CallableClass
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveBidding(pm()->form('bidding-form')),
+            'click' => $this->rq()->saveLoan(pm()->form('loan-form')),
         ]];
         $this->dialog->show($title, $content, $buttons, ['width' => '800']);
 
@@ -104,21 +104,21 @@ class Bidding extends CallableClass
     /**
      * @di $validator
      */
-    public function saveBidding(array $formValues)
+    public function saveLoan(array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
 
-        $member = $this->biddingService->getMember($values['member']);
-        $this->biddingService->createBidding($this->session, $member,
+        $member = $this->loanService->getMember($values['member']);
+        $this->loanService->createLoan($this->session, $member,
             $values['amount_bid'], $values['amount_paid']);
         $this->dialog->hide();
 
         return $this->home();
     }
 
-    public function deleteBidding(int $biddingId)
+    public function deleteLoan(int $loanId)
     {
-        $this->biddingService->deleteBidding($this->session, $biddingId);
+        $this->loanService->deleteLoan($this->session, $loanId);
 
         return $this->home();
     }

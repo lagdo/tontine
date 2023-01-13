@@ -120,9 +120,9 @@ return [
             'deleted' => "The member subscription was deleted.",
         ],
     ],
-    'bidding' => [
+    'loan' => [
         'titles' => [
-            'add' => "Add a bidding",
+            'add' => "Add a loan",
         ],
         'labels' => [
             'bid' => "Bid",

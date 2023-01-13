@@ -90,17 +90,17 @@ class ReportService implements ReportServiceInterface
 
         /*if($tontine->is_financial)
         {
-            [$biddings, $sum] = $biddingService->getSessionBiddings($session);
-            $amountAvailable = $biddingService->getAmountAvailable($session);
-            $html->with('biddings', [
+            [$loans, $sum] = $loanService->getSessionLoans($session);
+            $amountAvailable = $loanService->getAmountAvailable($session);
+            $html->with('loans', [
                 'session' => $session,
-                'biddings' => $biddings,
+                'loans' => $loans,
                 'sum' => $sum,
                 'amountAvailable' => Currency::format($amountAvailable),
             ]);
             $html->with('refunds', [
                 'session' => $session,
-                'biddings' => $refundService->getBiddings($session, true),
+                'loans' => $refundService->getLoans($session, true),
                 'refundSum' => $refundService->getRefundSum($session),
             ]);
         }*/

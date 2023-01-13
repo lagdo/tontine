@@ -74,9 +74,9 @@ class Member extends Model
         return $this->hasMany(Payment::class);
     }
 
-    public function biddings()
+    public function loans()
     {
-        return $this->hasMany(Bidding::class);
+        return $this->hasMany(Loan::class);
     }
 
     public function fineBills()

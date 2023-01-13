@@ -4,7 +4,7 @@ namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Siak\Tontine\Model\Bidding;
+use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
@@ -43,12 +43,12 @@ class RefundService
      *
      * @return mixed
      */
-    private function _getBiddingQuery(Session $session)
+    private function _getLoanQuery(Session $session)
     {
-        // Get the biddings of the previous sessions.
+        // Get the loans of the previous sessions.
         $sessionIds = $this->tenantService->round()->sessions()
             ->where('start_at', '<', $session->start_at)->pluck('id');
-        return Bidding::whereIn('session_id', $sessionIds);
+        return Loan::whereIn('session_id', $sessionIds);
     }
 
     /**
@@ -57,12 +57,12 @@ class RefundService
      *
      * @return mixed
      */
-    private function getBiddingQuery(Session $session, ?bool $refunded)
+    private function getLoanQuery(Session $session, ?bool $refunded)
     {
         if($refunded === false)
         {
             // Bids with no refund.
-            return $this->_getBiddingQuery($session)->whereDoesntHave('refund');
+            return $this->_getLoanQuery($session)->whereDoesntHave('refund');
         }
         $filter = function(Builder $query) use($session) {
             $query->where('session_id', $session->id);
@@ -70,11 +70,11 @@ class RefundService
         if($refunded === true)
         {
             // Bids with refund on the current session.
-            return $this->_getBiddingQuery($session)->whereHas('refund', $filter);
+            return $this->_getLoanQuery($session)->whereHas('refund', $filter);
         }
         // The union of the two above queries.
-        return $this->_getBiddingQuery($session)->whereDoesntHave('refund')
-            ->union($this->_getBiddingQuery($session)->whereHas('refund', $filter));
+        return $this->_getLoanQuery($session)->whereDoesntHave('refund')
+            ->union($this->_getLoanQuery($session)->whereHas('refund', $filter));
     }
 
     /**
@@ -85,9 +85,9 @@ class RefundService
      *
      * @return int
      */
-    public function getBiddingCount(Session $session, ?bool $refunded): int
+    public function getLoanCount(Session $session, ?bool $refunded): int
     {
-        return $this->getBiddingQuery($session, $refunded)->count();
+        return $this->getLoanQuery($session, $refunded)->count();
     }
 
     /**
@@ -99,15 +99,15 @@ class RefundService
      *
      * @return Collection
      */
-    public function getBiddings(Session $session, ?bool $refunded, int $page = 0): Collection
+    public function getLoans(Session $session, ?bool $refunded, int $page = 0): Collection
     {
-        $biddings = $this->getBiddingQuery($session, $refunded);
+        $loans = $this->getLoanQuery($session, $refunded);
         if($page > 0 )
         {
-            $biddings->take($this->tenantService->getLimit());
-            $biddings->skip($this->tenantService->getLimit() * ($page - 1));
+            $loans->take($this->tenantService->getLimit());
+            $loans->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $biddings->with(['refund', 'member'])->get();
+        return $loans->with(['refund', 'member'])->get();
     }
 
     /**
@@ -126,23 +126,23 @@ class RefundService
             $refunds->take($this->tenantService->getLimit());
             $refunds->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $refunds->with('bidding.member')->get();
+        return $refunds->with('loan.member')->get();
     }
 
     /**
      * Create a refund.
      *
      * @param Session $session The session
-     * @param int $biddingId
+     * @param int $loanId
      *
      * @return void
      */
-    public function createRefund(Session $session, int $biddingId): void
+    public function createRefund(Session $session, int $loanId): void
     {
         $sessionIds = $this->tenantService->round()->sessions()->pluck('id');
-        $bidding = Bidding::whereIn('session_id', $sessionIds)->find($biddingId);
+        $loan = Loan::whereIn('session_id', $sessionIds)->find($loanId);
         $refund = new Refund();
-        $refund->bidding()->associate($bidding);
+        $refund->loan()->associate($loan);
         $refund->session()->associate($session);
         $refund->save();
     }
@@ -170,7 +170,7 @@ class RefundService
     public function getRefundSum(Session $session): string
     {
         return Currency::format($session->refunds()
-            ->join('biddings', 'biddings.id', '=', 'refunds.bidding_id')
-            ->sum('biddings.amount_bid'));
+            ->join('loans', 'loans.id', '=', 'refunds.loan_id')
+            ->sum('loans.amount_bid'));
     }
 }

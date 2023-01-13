@@ -23,7 +23,7 @@ return [
             'amount' => "Montant remis",
         ],
     ],
-    'bidding' => [
+    'loan' => [
         'titles' => [
             'available' => "Disponible",
         ],

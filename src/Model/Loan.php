@@ -4,7 +4,7 @@ namespace Siak\Tontine\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Bidding extends Model
+class Loan extends Model
 {
     /**
      * Indicates if the model should be timestamped.

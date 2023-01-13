@@ -6,7 +6,7 @@ use Siak\Tontine\Service\Charge\FeeService;
 use Siak\Tontine\Service\Charge\FeeReportService;
 use Siak\Tontine\Service\Charge\FineService;
 use Siak\Tontine\Service\Charge\FineReportService;
-use Siak\Tontine\Service\Meeting\BiddingService;
+use Siak\Tontine\Service\Meeting\LoanService;
 use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
@@ -41,9 +41,9 @@ class Meeting extends CallableClass
     protected FineReportService $fineReportService;
 
     /**
-     * @var BiddingService
+     * @var LoanService
      */
-    protected BiddingService $biddingService;
+    protected LoanService $loanService;
 
     /**
      * @var RefundService
@@ -97,7 +97,7 @@ class Meeting extends CallableClass
     }
 
     /**
-     * @di $biddingService
+     * @di $loanService
      * @di $refundService
      */
     public function bids()
@@ -115,7 +115,7 @@ class Meeting extends CallableClass
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 
-        $this->cl(Financial\Bidding::class)->show($this->session, $this->biddingService);
+        $this->cl(Financial\Loan::class)->show($this->session, $this->loanService);
         $this->cl(Financial\Refund::class)->show($this->session, $this->refundService);
 
         return $this->response;

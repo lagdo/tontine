@@ -14,7 +14,7 @@ use Siak\Tontine\Service\Charge\FeeReportService;
 use Siak\Tontine\Service\Charge\FineService;
 use Siak\Tontine\Service\Charge\FineReportService;
 use Siak\Tontine\Service\Charge\SettlementService;
-use Siak\Tontine\Service\Meeting\BiddingService;
+use Siak\Tontine\Service\Meeting\LoanService;
 use Siak\Tontine\Service\Meeting\DepositService;
 use Siak\Tontine\Service\Meeting\MeetingService;
 use Siak\Tontine\Service\Meeting\RefundService;
@@ -33,7 +33,7 @@ use Siak\Tontine\Service\Tontine\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\ChargeValidator;
 use Siak\Tontine\Validation\MemberValidator;
-use Siak\Tontine\Validation\Meeting\BiddingValidator;
+use Siak\Tontine\Validation\Meeting\LoanValidator;
 use Siak\Tontine\Validation\Meeting\RemitmentValidator;
 use Siak\Tontine\Validation\Planning\PoolValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
@@ -75,7 +75,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(FineReportService::class, FineReportService::class);
         $this->app->singleton(SettlementService::class, SettlementService::class);
 
-        $this->app->singleton(BiddingService::class, BiddingService::class);
+        $this->app->singleton(LoanService::class, LoanService::class);
         $this->app->singleton(DepositService::class, DepositService::class);
         $this->app->singleton(MeetingService::class, MeetingService::class);
         $this->app->singleton(RefundService::class, RefundService::class);
@@ -100,7 +100,7 @@ class SiakServiceProvider extends ServiceProvider
 
         $this->app->singleton(ChargeValidator::class, ChargeValidator::class);
         $this->app->singleton(MemberValidator::class, MemberValidator::class);
-        $this->app->singleton(BiddingValidator::class, BiddingValidator::class);
+        $this->app->singleton(LoanValidator::class, LoanValidator::class);
         $this->app->singleton(PoolValidator::class, PoolValidator::class);
         $this->app->singleton(RemitmentValidator::class, RemitmentValidator::class);
         $this->app->singleton(SessionValidator::class, SessionValidator::class);
