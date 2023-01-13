@@ -5,7 +5,7 @@ namespace App\Ajax\App\Meeting;
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\SubscriptionService;
-use Siak\Tontine\Service\Meeting\MeetingService;
+use Siak\Tontine\Service\Meeting\ReportService;
 
 use function Jaxon\pm;
 use function intval;
@@ -18,9 +18,9 @@ class Report extends CallableClass
 {
     /**
      * @di
-     * @var MeetingService
+     * @var ReportService
      */
-    public MeetingService $meetingService;
+    public ReportService $reportService;
 
     /**
      * @di
@@ -71,7 +71,7 @@ class Report extends CallableClass
 
     public function amounts()
     {
-        $this->view()->shareValues($this->meetingService->getFigures($this->pool));
+        $this->view()->shareValues($this->reportService->getFigures($this->pool));
         $html = $this->view()->render('pages.meeting.report.amounts')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());
@@ -87,7 +87,7 @@ class Report extends CallableClass
 
     public function deposits()
     {
-        $this->view()->shareValues($this->meetingService->getFigures($this->pool));
+        $this->view()->shareValues($this->reportService->getFigures($this->pool));
         $html = $this->view()->render('pages.meeting.report.deposits')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());

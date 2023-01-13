@@ -5,6 +5,7 @@ namespace App\Ajax\App\Meeting\Financial;
 use App\Ajax\App\Meeting\Pool;
 use App\Ajax\CallableClass;
 use Siak\Tontine\Service\Meeting\LoanService;
+use Siak\Tontine\Service\Meeting\ReportService;
 use Siak\Tontine\Validation\Meeting\RemitmentValidator;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Pool as PoolModel;
@@ -23,6 +24,11 @@ class Remitment extends CallableClass
      * @var LoanService
      */
     protected LoanService $loanService;
+
+    /**
+     * @var ReportService
+     */
+    protected ReportService $reportService;
 
     /**
      * @var RemitmentValidator
@@ -62,7 +68,7 @@ class Remitment extends CallableClass
     {
         $this->bag('meeting')->set('pool.id', $poolId);
 
-        $figures = $this->loanService->getRemitmentFigures($this->pool, $this->session->id);
+        $figures = $this->reportService->getRemitmentFigures($this->pool, $this->session->id);
         $payables = $figures->payables
             ->map(function($payable) use($figures) {
                 return (object)[

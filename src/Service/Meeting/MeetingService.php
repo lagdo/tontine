@@ -181,20 +181,6 @@ class MeetingService
     }
 
     /**
-     * Get the receivables of a given pool.
-     *
-     * Will return extended data on subscriptions.
-     *
-     * @param Pool $pool
-     *
-     * @return array
-     */
-    public function getFigures(Pool $pool): array
-    {
-        return $this->planningService->getFigures($pool);
-    }
-
-    /**
      * Get pools report for a session
      *
      * @param Session $session

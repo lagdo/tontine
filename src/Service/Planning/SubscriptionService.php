@@ -24,12 +24,10 @@ class SubscriptionService
 
     /**
      * @param TenantService $tenantService
-     * @param PlanningService $planningService
      */
-    public function __construct(TenantService $tenantService, PlanningService $planningService)
+    public function __construct(TenantService $tenantService)
     {
         $this->tenantService = $tenantService;
-        $this->planningService = $planningService;
     }
 
     /**
@@ -240,31 +238,5 @@ class SubscriptionService
                 $this->setPayableSession($session, $subscription);
             }
         });
-    }
-
-    /**
-     * Get the payables of a given pool.
-     *
-     * @param Pool $pool
-     *
-     * @return array
-     */
-    public function getPayables(Pool $pool): array
-    {
-        return $this->planningService->getPayables($pool);
-    }
-
-    /**
-     * Get the receivables of a given pool.
-     *
-     * Will return basic data on subscriptions.
-     *
-     * @param Pool $pool
-     *
-     * @return array
-     */
-    public function getReceivables(Pool $pool): array
-    {
-        return $this->planningService->getReceivables($pool);
     }
 }

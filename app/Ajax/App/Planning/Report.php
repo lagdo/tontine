@@ -4,6 +4,7 @@ namespace App\Ajax\App\Planning;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
+use Siak\Tontine\Service\Planning\ReportService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Tontine\TenantService;
 
@@ -27,6 +28,11 @@ class Report extends CallableClass
      * @var SubscriptionService
      */
     public SubscriptionService $subscriptionService;
+
+    /**
+     * @var ReportService
+     */
+    public ReportService $reportService;
 
     /**
      * @var PoolModel|null
@@ -68,9 +74,12 @@ class Report extends CallableClass
         return ($this->pool) ? $this->amounts() : $this->response;
     }
 
+    /**
+     * @di $reportService
+     */
     public function amounts()
     {
-        $receivables = $this->subscriptionService->getReceivables($this->pool);
+        $receivables = $this->reportService->getReceivables($this->pool);
         $this->view()->shareValues($receivables);
         $html = $this->view()->render('pages.planning.report.amounts')
             ->with('pool', $this->pool)
@@ -86,9 +95,12 @@ class Report extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $reportService
+     */
     public function deposits()
     {
-        $receivables = $this->subscriptionService->getReceivables($this->pool);
+        $receivables = $this->reportService->getReceivables($this->pool);
         $this->view()->shareValues($receivables);
         $html = $this->view()->render('pages.planning.report.deposits')
             ->with('pool', $this->pool)
@@ -115,9 +127,12 @@ class Report extends CallableClass
         return $this->amounts();
     }
 
+    /**
+     * @di $reportService
+     */
     public function remitments()
     {
-        $payables = $this->subscriptionService->getPayables($this->pool);
+        $payables = $this->reportService->getPayables($this->pool);
         $this->view()->shareValues($payables);
         $html = $this->view()->render('pages.planning.report.remitments')
             ->with('pool', $this->pool)
