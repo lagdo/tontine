@@ -14,13 +14,13 @@
                         <tr>
                           <th>{!! __('meeting.labels.member') !!}</th>
                           <th>{!! __('common.labels.amount') !!}</th>
-                          <th>{!! __('common.labels.price') !!}</th>
+                          <th>{!! __('common.labels.interest') !!}</th>
                           <th>&nbsp;</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td>{{ __('tontine.loan.labels.amount_to_bid') }}</td>
+                          <td>{{ __('tontine.loan.labels.amount_to_lend') }}</td>
                           <td>{{ $amountAvailable }}</td>
                           <td>&nbsp;</td>
 @if(!$session->opened)
@@ -48,7 +48,7 @@
 @if($session->closed)
                         <tr>
                           <td>{!! __('common.labels.total') !!}</td>
-                          <td>{{ $sum['bid'] }}</td>
+                          <td>{{ $sum['loan'] }}</td>
                           <td>{{ $sum['paid'] }}</td>
                           <td>&nbsp;</td>
                         </tr>

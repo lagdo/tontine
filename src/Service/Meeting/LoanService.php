@@ -122,16 +122,16 @@ class LoanService
      * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $subscriptionId
-     * @param int $amountPaid
+     * @param int $interest
      *
      * @return void
      */
-    public function createRemitment(Pool $pool, Session $session, int $subscriptionId, int $amountPaid): void
+    public function createRemitment(Pool $pool, Session $session, int $subscriptionId, int $interest): void
     {
         $subscription = $pool->subscriptions()->find($subscriptionId);
-        DB::transaction(function() use($pool, $session, $subscription, $amountPaid) {
+        DB::transaction(function() use($pool, $session, $subscription, $interest) {
             $this->subscriptionService->setPayableSession($session, $subscription);
-            $this->remitmentService->createRemitment($pool, $session, $subscription->payable->id, $amountPaid);
+            $this->remitmentService->createRemitment($pool, $session, $subscription->payable->id, $interest);
         });
     }
 
@@ -154,7 +154,7 @@ class LoanService
     }
 
     /**
-     * Get the bids for a given session.
+     * Get the loans for a given session.
      *
      * @param Session $session    The session
      * @param int $page
@@ -177,16 +177,16 @@ class LoanService
      *
      * @param Session $session The session
      * @param Member $member The member
-     * @param int $amountBid
-     * @param int $amountPaid
+     * @param int $amount
+     * @param int $interest
      *
      * @return void
      */
-    public function createLoan(Session $session, Member $member, int $amountBid, int $amountPaid): void
+    public function createLoan(Session $session, Member $member, int $amount, int $interest): void
     {
         $loan = new Loan();
-        $loan->amount_bid = $amountBid;
-        $loan->amount_paid = $amountPaid;
+        $loan->amount = $amount;
+        $loan->interest = $interest;
         $loan->member()->associate($member);
         $loan->session()->associate($session);
         $loan->save();
@@ -237,13 +237,13 @@ class LoanService
         // the amounts paid in the loans, and the refunds, for all the sessions.
         $payableIds = Payable::whereIn('session_id', $sessionIds)->pluck('id');
 
-        return Remitment::whereIn('payable_id', $payableIds)->sum('amount_paid') +
+        return Remitment::whereIn('payable_id', $payableIds)->sum('interest') +
             Loan::whereIn('session_id', $sessionIds)->get()
                 ->reduce(function($sum, $loan) {
-                    return $sum + $loan->amount_paid - $loan->amount_bid;
+                    return $sum + $loan->interest - $loan->amount;
                 }, 0) +
             Refund::whereIn('session_id', $sessionIds)
-                ->with('loan')->get()->sum('loan.amount_bid');
+                ->with('loan')->get()->sum('loan.amount');
     }
 
     /**
@@ -258,29 +258,29 @@ class LoanService
 
         $paidSum = 0;
         $poolLoans = $payables->map(function($payable) use(&$paidSum) {
-            $amountPaid = $payable->remitment->amount_paid ?? 0;
-            $paidSum += $amountPaid;
+            $interest = $payable->remitment->interest ?? 0;
+            $paidSum += $interest;
             return (object)[
                 'id' => 0, // $payable->subscription->id,
                 'title' => $payable->subscription->member->name,
                 'amount' => Currency::format($payable->amount),
-                'paid' => Currency::format($amountPaid),
+                'paid' => Currency::format($interest),
             ];
         });
-        $bidSum = 0;
-        $cashLoans = $this->getLoans($session)->map(function($loan) use(&$bidSum, &$paidSum) {
-            $bidSum += $loan->amount_bid;
-            $paidSum += $loan->amount_paid;
+        $loanSum = 0;
+        $cashLoans = $this->getLoans($session)->map(function($loan) use(&$loanSum, &$paidSum) {
+            $loanSum += $loan->amount;
+            $paidSum += $loan->interest;
             return (object)[
                 'id' => $loan->id,
                 'title' => $loan->member->name,
-                'amount' => Currency::format($loan->amount_bid),
-                'paid' => Currency::format($loan->amount_paid),
+                'amount' => Currency::format($loan->amount),
+                'paid' => Currency::format($loan->interest),
             ];
         });
 
         return [$poolLoans->merge($cashLoans),
-            ['bid' => Currency::format($bidSum), 'paid' => Currency::format($paidSum)]];
+            ['loan' => Currency::format($loanSum), 'paid' => Currency::format($paidSum)]];
     }
 
     /**

@@ -8,15 +8,15 @@
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('amount_bid', trans('common.labels.amount'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+              {!! Form::label('amount', trans('common.labels.amount'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
               <div class="col-sm-5">
-                {!! Form::text('amount_bid', $amount, ['class' => 'form-control']) !!}
+                {!! Form::text('amount', $amount, ['class' => 'form-control']) !!}
               </div>
             </div>
             <div class="form-group row">
-                {!! Form::label('amount_paid', trans('tontine.loan.labels.bid'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+                {!! Form::label('interest', trans('tontine.loan.labels.interest'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
                 <div class="col-sm-5">
-                  {!! Form::text('amount_paid', '', ['class' => 'form-control']) !!}
+                  {!! Form::text('interest', '', ['class' => 'form-control']) !!}
                 </div>
               </div>
             </div>

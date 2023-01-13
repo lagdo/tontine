@@ -19,14 +19,9 @@ class Loan extends Model
      * @var array
      */
     protected $fillable = [
-        'amount_bid',
-        'amount_paid',
+        'amount',
+        'interest',
     ];
-
-    public function getAmountAttribute()
-    {
-        return Currency::format($this->amount_bid);
-    }
 
     public function session()
     {

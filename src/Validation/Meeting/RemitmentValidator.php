@@ -16,7 +16,7 @@ class RemitmentValidator
     {
         $validator = Validator::make($values, [
             'subscription' => 'required|integer|min:1',
-            'amount' => 'required|integer|min:1',
+            'interest' => 'required|integer|min:1',
         ]);
         if($validator->fails())
         {

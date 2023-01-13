@@ -109,18 +109,18 @@ class RemitmentService
      * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $payableId
-     * @param int $amountPaid
+     * @param int $interest
      *
      * @return void
      */
-    public function createRemitment(Pool $pool, Session $session, int $payableId, int $amountPaid = 0): void
+    public function createRemitment(Pool $pool, Session $session, int $payableId, int $interest = 0): void
     {
         $payable = $this->getPayable($pool, $session, $payableId);
         if(!$payable || $payable->remitment)
         {
             return;
         }
-        $payable->remitment()->create(['paid_at' => now(), 'amount_paid' => $amountPaid]);
+        $payable->remitment()->create(['paid_at' => now(), 'interest' => $interest]);
     }
 
     /**

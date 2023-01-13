@@ -15,6 +15,7 @@ class CreateRemitmentsTable extends Migration
     {
         Schema::create('remitments', function (Blueprint $table) {
             $table->id();
+            $table->integer('interest')->default(0);
             $table->datetime('paid_at');
             $table->timestamps();
             $table->unsignedBigInteger('payable_id');

@@ -122,7 +122,7 @@ class Remitment extends CallableClass
         $values = $this->validator->validateItem($formValues);
 
         $this->loanService->createRemitment($this->pool, $this->session,
-            $values['subscription'], $values['amount']);
+            $values['subscription'], $values['interest']);
         $this->dialog->hide();
         // $this->notify->success(trans('session.remitment.created'), trans('common.titles.success'));
 

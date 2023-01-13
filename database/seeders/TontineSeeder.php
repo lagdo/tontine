@@ -33,7 +33,7 @@ class TontineSeeder extends Seeder
             'currency_id' => $currency->id,
         ]);
 
-        // Bill Reasons
+        // Bills
         foreach($tontines as $tontine)
         {
             $tontine->charges()->createMany([[

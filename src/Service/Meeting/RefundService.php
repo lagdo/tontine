@@ -61,7 +61,7 @@ class RefundService
     {
         if($refunded === false)
         {
-            // Bids with no refund.
+            // Loans with no refund.
             return $this->_getLoanQuery($session)->whereDoesntHave('refund');
         }
         $filter = function(Builder $query) use($session) {
@@ -69,7 +69,7 @@ class RefundService
         };
         if($refunded === true)
         {
-            // Bids with refund on the current session.
+            // Loans with refund on the current session.
             return $this->_getLoanQuery($session)->whereHas('refund', $filter);
         }
         // The union of the two above queries.
@@ -78,7 +78,7 @@ class RefundService
     }
 
     /**
-     * Get the number of bids that are not yet refunded.
+     * Get the number of loans that are not yet refunded.
      *
      * @param Session $session The session
      * @param bool $refunded
@@ -91,7 +91,7 @@ class RefundService
     }
 
     /**
-     * Get the bids that are not yet refunded.
+     * Get the loans that are not yet refunded.
      *
      * @param Session $session The session
      * @param bool $refunded
@@ -171,6 +171,6 @@ class RefundService
     {
         return Currency::format($session->refunds()
             ->join('loans', 'loans.id', '=', 'refunds.loan_id')
-            ->sum('loans.amount_bid'));
+            ->sum('loans.amount'));
     }
 }

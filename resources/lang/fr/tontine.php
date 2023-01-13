@@ -125,8 +125,8 @@ return [
             'add' => "Ajouter une enchère",
         ],
         'labels' => [
-            'bid' => "Enchère",
-            'amount_to_bid' => "Montant à enchérir",
+            'interest' => "Intérêt",
+            'amount_to_lend' => "Montant à prêter",
         ],
     ],
 ];

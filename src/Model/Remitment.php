@@ -13,7 +13,7 @@ class Remitment extends Model
      */
     protected $fillable = [
         'paid_at',
-        'amount_paid',
+        'interest',
     ];
 
     /**

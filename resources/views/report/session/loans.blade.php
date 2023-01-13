@@ -9,7 +9,7 @@
                 <tr>
                   <th>{!! __('meeting.labels.member') !!}</th>
                   <th>{!! __('common.labels.amount') !!}</th>
-                  <th>{!! __('common.labels.price') !!}</th>
+                  <th>{!! __('common.labels.interest') !!}</th>
                   <th>&nbsp;</th>
                 </tr>
               </thead>

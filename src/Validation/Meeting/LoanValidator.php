@@ -16,8 +16,8 @@ class LoanValidator
     {
         $validator = Validator::make($values, [
             'member' => 'required|integer|min:1',
-            'amount_bid' => 'required|integer|min:1',
-            'amount_paid' => 'required|integer|min:0',
+            'amount' => 'required|integer|min:1',
+            'interest' => 'required|integer|min:0',
         ]);
         if($validator->fails())
         {

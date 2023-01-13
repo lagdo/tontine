@@ -15,7 +15,7 @@ return [
         'amounts' => "Montants",
         'settlements' => "Règlements",
         'fine' => "Appliquer",
-        'amount_to_bid' => "Montant à enchérir",
+        'amount_to_lend' => "Montant à prêter",
         'benefit' => "Bénéfice",
         'refunds' => "Remboursements",
     ],

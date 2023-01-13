@@ -2,7 +2,7 @@
 
 namespace App\Ajax\App\Meeting\Financial;
 
-use Siak\Tontine\Service\Meeting\LoanService;
+use Siak\Tontine\Service\LoanService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -110,7 +110,7 @@ class Loan extends CallableClass
 
         $member = $this->loanService->getMember($values['member']);
         $this->loanService->createLoan($this->session, $member,
-            $values['amount_bid'], $values['amount_paid']);
+            $values['amount'], $values['interest']);
         $this->dialog->hide();
 
         return $this->home();
