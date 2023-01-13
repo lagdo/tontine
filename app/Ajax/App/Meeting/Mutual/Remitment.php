@@ -60,7 +60,7 @@ class Remitment extends CallableClass
         $this->bag('meeting')->set('pool.id', $poolId);
 
         $payables = $this->remitmentService->getPayables($this->pool, $this->session);
-        $html = $this->view()->render('pages.meeting.remitment.mutual', [
+        $html = $this->view()->render('tontine.pages.meeting.remitment.mutual', [
             'pool' => $this->pool,
             'payables' => $payables,
         ]);

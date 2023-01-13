@@ -17,7 +17,7 @@
                       <td>{{ $charge->name }}</td>
                       <td class="currency">{{ $charge->money('amount') }}</td>
                       <td class="table-item-menu">
-@include('parts.table.menu', [
+@include('tontine.parts.table.menu', [
   'dataIdKey' => 'data-charge-id',
   'dataIdValue' => $charge->id,
   'menus' => [[

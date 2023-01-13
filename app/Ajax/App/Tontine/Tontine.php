@@ -37,7 +37,7 @@ class Tontine extends CallableClass
      */
     public function home()
     {
-        $html = $this->view()->render('pages.profile.tontine.home');
+        $html = $this->view()->render('tontine.pages.profile.tontine.home');
         $this->response->html('section-title', trans('tontine.menus.tontine'));
         $this->response->html('content-home', $html);
 
@@ -63,7 +63,7 @@ class Tontine extends CallableClass
         $tontines = $this->tontineService->getTontines($pageNumber);
         $tontineCount = $this->tontineService->getTontineCount();
 
-        $html = $this->view()->render('pages.profile.tontine.page')
+        $html = $this->view()->render('tontine.pages.profile.tontine.page')
             ->with('tontines', $tontines)
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $tontineCount));
         $this->response->html('tontine-page', $html);
@@ -82,7 +82,7 @@ class Tontine extends CallableClass
             TontineModel::TYPE_FINANCIAL => trans('tontine.labels.types.financial'),
         ];
         $title = trans('tontine.titles.add');
-        $content = $this->view()->render('pages.profile.tontine.add')->with('types', $types);
+        $content = $this->view()->render('tontine.pages.profile.tontine.add')->with('types', $types);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -116,7 +116,7 @@ class Tontine extends CallableClass
             TontineModel::TYPE_FINANCIAL => trans('tontine.labels.types.financial'),
         ];
         $title = trans('tontine.titles.edit');
-        $content = $this->view()->render('pages.profile.tontine.edit')
+        $content = $this->view()->render('tontine.pages.profile.tontine.edit')
             ->with('tontine', $tontine)->with('types', $types);
         $buttons = [[
             'title' => trans('common.actions.cancel'),

@@ -17,7 +17,7 @@
                       <td>{{ $session->times }}</td>
                       <td>{{ $session->host ? $session->host->name : '' }}</td>
                       <td class="table-item-menu">
-@include('parts.table.menu', [
+@include('tontine.parts.table.menu', [
   'dataIdKey' => 'data-session-id',
   'dataIdValue' => $session->id,
   'menus' => [[

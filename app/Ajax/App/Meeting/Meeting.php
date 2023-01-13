@@ -80,7 +80,7 @@ class Meeting extends CallableClass
 
     public function pools()
     {
-        $html = $this->view()->render('pages.meeting.session.pools', [
+        $html = $this->view()->render('tontine.pages.meeting.session.pools', [
             'tontine' => $this->meetingService->getTontine(),
             'session' => $this->session,
         ]);
@@ -108,7 +108,7 @@ class Meeting extends CallableClass
      */
     public function loans()
     {
-        $html = $this->view()->render('pages.meeting.session.loans', [
+        $html = $this->view()->render('tontine.pages.meeting.session.loans', [
             'tontine' => $this->meetingService->getTontine(),
             'session' => $this->session,
         ]);
@@ -135,7 +135,7 @@ class Meeting extends CallableClass
      */
     public function charges()
     {
-        $html = $this->view()->render('pages.meeting.session.charges', [
+        $html = $this->view()->render('tontine.pages.meeting.session.charges', [
             'tontine' => $this->meetingService->getTontine(),
             'session' => $this->session,
         ]);

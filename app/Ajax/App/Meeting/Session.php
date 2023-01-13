@@ -21,7 +21,7 @@ class Session extends CallableClass
 
     public function home()
     {
-        $html = $this->view()->render('pages.meeting.home');
+        $html = $this->view()->render('tontine.pages.meeting.home');
         $this->response->html('section-title', trans('tontine.menus.meeting'));
         $this->response->html('content-home', $html);
         $this->jq('#btn-refresh')->click($this->rq()->home());
@@ -40,7 +40,7 @@ class Session extends CallableClass
         $sessions = $this->sessionService->getSessions($pageNumber);
         $sessionCount = $this->sessionService->getSessionCount();
 
-        $html = $this->view()->render('pages.meeting.page')
+        $html = $this->view()->render('tontine.pages.meeting.page')
             ->with('sessions', $sessions)
             ->with('members', $this->sessionService->getMembers())
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $sessionCount));

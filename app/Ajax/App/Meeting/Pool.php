@@ -51,7 +51,7 @@ class Pool extends CallableClass
     public function deposits()
     {
         $tontine = $this->meetingService->getTontine();
-        $html = $this->view()->render('pages.meeting.pool.deposits')
+        $html = $this->view()->render('tontine.pages.meeting.pool.deposits')
             ->with('tontine', $tontine)->with('session', $this->session)
             ->with('pools', $this->meetingService->getPoolsWithReceivables($this->session));
         if($this->session->closed)
@@ -70,7 +70,7 @@ class Pool extends CallableClass
     public function remitments()
     {
         $tontine = $this->meetingService->getTontine();
-        $html = $this->view()->render('pages.meeting.pool.remitments')
+        $html = $this->view()->render('tontine.pages.meeting.pool.remitments')
             ->with('tontine', $tontine)->with('session', $this->session)
             ->with('pools', $this->meetingService->getPoolsWithPayables($this->session));
         if($this->session->closed)

@@ -7,13 +7,13 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($fees as $charge)
+@foreach ($fines as $charge)
 @if($session->closed)
-                        @include('pages.meeting.charge.closed', compact('charge', 'session'))
+                        @include('tontine.pages.meeting.charge.closed', compact('charge', 'session'))
 @elseif($session->pending)
-                        @include('pages.meeting.charge.pending', compact('charge'))
+                        @include('tontine.pages.meeting.charge.pending', compact('charge'))
 @else
-                        @include('pages.meeting.charge.fee', compact('charge'))
+                        @include('tontine.pages.meeting.charge.fine', compact('charge'))
 @endif
 @endforeach
 @if($session->closed)

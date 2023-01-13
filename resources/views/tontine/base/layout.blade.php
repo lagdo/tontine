@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  @include('parts.header.html')
+  @include('tontine.parts.header.html')
   <!-- Fix Flag Icon style -->
   <style>
     .language .flag-icon {
@@ -67,12 +67,12 @@
       <div class="navbar-bg"></div>
       <nav class="navbar navbar-expand-lg main-navbar">
 
-@include('parts.header.menu')
+@include('tontine.parts.header.menu')
 
       </nav>
       <div class="main-sidebar">
 
-@include('parts.sidebar.menu')
+@include('tontine.parts.sidebar.menu')
 
       </div>
 
@@ -87,9 +87,9 @@
   </div>
 </body>
 
-@include('parts.footer.html')
+@include('tontine.parts.footer.html')
 
-@include('parts.footer.ajax', compact('jaxonJs', 'jaxonScript', 'jaxonCss'))
+@include('tontine.parts.footer.ajax', compact('jaxonJs', 'jaxonScript', 'jaxonCss'))
 
 @yield('script')
 </html>

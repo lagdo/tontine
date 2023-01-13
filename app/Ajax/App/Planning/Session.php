@@ -30,7 +30,7 @@ class Session extends CallableClass
 
     public function home()
     {
-        $html = $this->view()->render('pages.planning.session.home');
+        $html = $this->view()->render('tontine.pages.planning.session.home');
         $this->response->html('section-title', trans('tontine.menus.planning'));
         $this->response->html('content-home', $html);
         $this->jq('#btn-refresh')->click($this->rq()->home());
@@ -50,7 +50,7 @@ class Session extends CallableClass
         $sessions = $this->sessionService->getSessions($pageNumber);
         $sessionCount = $this->sessionService->getSessionCount();
 
-        $html = $this->view()->render('pages.planning.session.page')
+        $html = $this->view()->render('tontine.pages.planning.session.page')
             ->with('sessions', $sessions)
             ->with('members', $this->sessionService->getMembers())
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $sessionCount));
@@ -66,7 +66,7 @@ class Session extends CallableClass
     public function number()
     {
         $title = trans('number.labels.title');
-        $content = $this->view()->render('pages.planning.session.number');
+        $content = $this->view()->render('tontine.pages.planning.session.number');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -100,7 +100,7 @@ class Session extends CallableClass
 
         $this->dialog->hide();
 
-        $html = $this->view()->render('pages.planning.session.add')->with('count', $count);
+        $html = $this->view()->render('tontine.pages.planning.session.add')->with('count', $count);
         $this->response->html('content-home', $html);
         $this->jq('#btn-cancel')->click($this->rq()->home());
         $this->jq('#btn-copy')->click($this->rq()->copy(jq('#session_date_0')->val(),
@@ -163,7 +163,7 @@ class Session extends CallableClass
         $session = $this->sessionService->getSession($sessionId);
 
         $title = trans('tontine.session.titles.edit');
-        $content = $this->view()->render('pages.planning.session.edit')->with('session', $session)
+        $content = $this->view()->render('tontine.pages.planning.session.edit')->with('session', $session)
             ->with('members', $this->sessionService->getMembers());
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -201,7 +201,7 @@ class Session extends CallableClass
 
         $venue = $session->venue ?? ($session->host ? $session->host->address : '');
         $title = trans('tontine.session.titles.venue');
-        $content = $this->view()->render('pages.planning.session.venue')
+        $content = $this->view()->render('tontine.pages.planning.session.venue')
             ->with('session', $session)->with('venue', $venue);
         $buttons = [[
             'title' => trans('common.actions.cancel'),

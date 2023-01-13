@@ -29,7 +29,7 @@ class Member extends CallableClass
      */
     public function home()
     {
-        $html = $this->view()->render('pages.member.home');
+        $html = $this->view()->render('tontine.pages.member.home');
         $this->response->html('section-title', trans('tontine.menus.tontine'));
         $this->response->html('content-home', $html);
         $this->jq('#btn-refresh')->click($this->rq()->home());
@@ -52,7 +52,7 @@ class Member extends CallableClass
         $members = $this->memberService->getMembers($pageNumber);
         $memberCount = $this->memberService->getMemberCount();
 
-        $html = $this->view()->render('pages.member.page')->with('members', $members)
+        $html = $this->view()->render('tontine.pages.member.page')->with('members', $members)
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $memberCount));
         $this->response->html('content-page', $html);
 
@@ -65,7 +65,7 @@ class Member extends CallableClass
     public function number()
     {
         $title = trans('number.labels.title');
-        $content = $this->view()->render('pages.member.number');
+        $content = $this->view()->render('tontine.pages.member.number');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -100,7 +100,7 @@ class Member extends CallableClass
         $this->bag('faker')->set('member.count', $count);
 
         $useFaker = config('jaxon.app.faker');
-        $html = $this->view()->render('pages.member.add')
+        $html = $this->view()->render('tontine.pages.member.add')
             ->with('useFaker', $useFaker)
             ->with('count', $count)
             ->with('genders', $this->memberService->getGenders());
@@ -133,7 +133,7 @@ class Member extends CallableClass
         $member = $this->memberService->getMember($memberId);
 
         $title = trans('tontine.member.titles.edit');
-        $content = $this->view()->render('pages.member.edit')
+        $content = $this->view()->render('tontine.pages.member.edit')
             ->with('member', $member)
             ->with('genders', $this->memberService->getGenders());
         $buttons = [[

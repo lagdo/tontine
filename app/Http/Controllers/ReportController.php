@@ -23,7 +23,7 @@ class ReportController extends Controller
     public function pool(Request $request, PdfGeneratorInterface $pdfGenerator,
         ReportServiceInterface $reportService, int $poolId)
     {
-        $html = view('report.pool', $reportService->getPool($poolId));
+        $html = view('tontine.report.pool', $reportService->getPool($poolId));
 
         // Show the html page
         if($request->has('html'))
@@ -53,7 +53,7 @@ class ReportController extends Controller
     public function session(Request $request, PdfGeneratorInterface $pdfGenerator,
         ReportServiceInterface $reportService, int $sessionId)
     {
-        $html = view('report.session', $reportService->getSession($sessionId));
+        $html = view('tontine.report.session', $reportService->getSession($sessionId));
 
         // Show the html page
         if($request->has('html'))

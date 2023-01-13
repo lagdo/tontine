@@ -10,7 +10,7 @@
                         <tr>
                           <td>{{ $tontine->name }}</td>
                           <td class="table-item-menu">
-@include('parts.table.menu', [
+@include('tontine.parts.table.menu', [
   'dataIdKey' => 'data-tontine-id',
   'dataIdValue' => $tontine->id,
   'menus' => [[

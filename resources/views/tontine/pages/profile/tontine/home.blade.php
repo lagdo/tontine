@@ -18,7 +18,7 @@
               <div class="card shadow mb-4">
                 <div class="card-body">
                   <div class="table-responsive" id="tontine-page">
-                    @isset($tontines) @include('pages.profile.tontine.page') @endisset
+                    @isset($tontines) @include('tontine.pages.profile.tontine.page') @endisset
                   </div> <!-- End table -->
                 </div>
               </div>

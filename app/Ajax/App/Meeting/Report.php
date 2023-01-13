@@ -72,7 +72,7 @@ class Report extends CallableClass
     public function amounts()
     {
         $this->view()->shareValues($this->reportService->getFigures($this->pool));
-        $html = $this->view()->render('pages.meeting.report.amounts')
+        $html = $this->view()->render('tontine.pages.meeting.report.amounts')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
@@ -88,7 +88,7 @@ class Report extends CallableClass
     public function deposits()
     {
         $this->view()->shareValues($this->reportService->getFigures($this->pool));
-        $html = $this->view()->render('pages.meeting.report.deposits')
+        $html = $this->view()->render('tontine.pages.meeting.report.deposits')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);

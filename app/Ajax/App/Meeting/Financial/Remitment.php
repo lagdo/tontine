@@ -86,7 +86,7 @@ class Remitment extends CallableClass
                 'available' => true,
             ]);
 
-        $html = $this->view()->render('pages.meeting.remitment.financial')
+        $html = $this->view()->render('tontine.pages.meeting.remitment.financial')
             ->with('pool', $this->pool)
             ->with('session', $this->session)
             ->with('payables', $payables);
@@ -104,7 +104,7 @@ class Remitment extends CallableClass
     {
         $members = $this->loanService->getSubscriptions($this->pool);
         $title = trans('tontine.loan.titles.add');
-        $content = $this->view()->render('pages.meeting.remitment.add')
+        $content = $this->view()->render('tontine.pages.meeting.remitment.add')
             ->with('members', $members);
         $buttons = [[
             'title' => trans('common.actions.cancel'),

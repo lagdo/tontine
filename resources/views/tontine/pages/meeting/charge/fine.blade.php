@@ -5,7 +5,7 @@
                             {{ $charge->getPrevSettlementCount($settlements) }}/{{ $charge->getPrevBillCount($bills) }}
                           </td>
                           <td class="table-item-menu">
-@include('parts.table.menu', [
+@include('tontine.parts.table.menu', [
   'dataIdKey' => 'data-fine-id',
   'dataIdValue' => $charge->id,
   'menus' => [[

@@ -81,7 +81,7 @@ class Report extends CallableClass
     {
         $receivables = $this->reportService->getReceivables($this->pool);
         $this->view()->shareValues($receivables);
-        $html = $this->view()->render('pages.planning.report.amounts')
+        $html = $this->view()->render('tontine.pages.planning.report.amounts')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
@@ -102,7 +102,7 @@ class Report extends CallableClass
     {
         $receivables = $this->reportService->getReceivables($this->pool);
         $this->view()->shareValues($receivables);
-        $html = $this->view()->render('pages.planning.report.deposits')
+        $html = $this->view()->render('tontine.pages.planning.report.deposits')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
@@ -134,7 +134,7 @@ class Report extends CallableClass
     {
         $payables = $this->reportService->getPayables($this->pool);
         $this->view()->shareValues($payables);
-        $html = $this->view()->render('pages.planning.report.remitments')
+        $html = $this->view()->render('tontine.pages.planning.report.remitments')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);

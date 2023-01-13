@@ -55,7 +55,7 @@ class Fee extends CallableClass
 
     public function home()
     {
-        $html = $this->view()->render('pages.meeting.fee.home')
+        $html = $this->view()->render('tontine.pages.meeting.fee.home')
             ->with('session', $this->session);
         $this->response->html('meeting-fees', $html);
         $this->jq('#btn-fees-refresh')->click($this->rq()->home());
@@ -72,7 +72,7 @@ class Fee extends CallableClass
         // Bill counts
         $bills = $this->reportService->getBills($this->session);
 
-        $html = $this->view()->render('pages.meeting.fee.page')
+        $html = $this->view()->render('tontine.pages.meeting.fee.page')
             ->with('session', $this->session)
             ->with('fees', $fees)
             ->with('settlements', $settlements['total'])

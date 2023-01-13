@@ -58,7 +58,7 @@ class Loan extends CallableClass
         [$loans, $sum] = $this->loanService->getSessionLoans($this->session);
         $amountAvailable = $this->loanService->getAmountAvailable($this->session);
 
-        $html = $this->view()->render('pages.meeting.loan.home')
+        $html = $this->view()->render('tontine.pages.meeting.loan.home')
             ->with('loans', $loans)->with('session', $this->session)
             ->with('amountAvailable', Currency::format($amountAvailable));
         if($this->session->closed)
@@ -85,7 +85,7 @@ class Loan extends CallableClass
 
         $members = $this->loanService->getMembers();
         $title = trans('tontine.loan.titles.add');
-        $content = $this->view()->render('pages.meeting.loan.add')
+        $content = $this->view()->render('tontine.pages.meeting.loan.add')
             ->with('members', $members)->with('amount', $amountAvailable);
         $buttons = [[
             'title' => trans('common.actions.cancel'),

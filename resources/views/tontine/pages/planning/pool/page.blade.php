@@ -2,27 +2,25 @@
                       <thead>
                         <tr>
                           <th>{!! __('common.labels.title') !!}</th>
-                          <th>{!! __('common.labels.start') !!}</th>
-                          <th>{!! __('common.labels.end') !!}</th>
+                          <th class="currency">{!! __('common.labels.amount') !!}</th>
                           <th class="table-menu"></th>
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($rounds as $round)
+@foreach ($pools as $pool)
                         <tr>
-                          <td>{{ $round->title }}</td>
-                          <td>{{ $round->start }}</td>
-                          <td>{{ $round->end }}</td>
+                          <td>{{ $pool->title }}</td>
+                          <td class="currency">{{ $pool->money('amount') }}</td>
                           <td class="table-item-menu">
-@include('parts.table.menu', [
-  'dataIdKey' => 'data-round-id',
-  'dataIdValue' => $round->id,
+@include('tontine.parts.table.menu', [
+  'dataIdKey' => 'data-pool-id',
+  'dataIdValue' => $pool->id,
   'menus' => [[
-    'class' => 'btn-round-edit',
+    'class' => 'btn-pool-edit',
     'text' => __('common.actions.edit'),
   ],[
-    'class' => $round->pending ? 'btn-round-open' : 'btn-round-enter',
-    'text' => $round->pending ? __('tontine.actions.open') : __('tontine.actions.enter'),
+    'class' => 'btn-pool-subscriptions',
+    'text' => __('tontine.pool.actions.subscriptions'),
   ]],
 ])
                           </td>

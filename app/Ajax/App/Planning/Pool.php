@@ -38,7 +38,7 @@ class Pool extends CallableClass
      */
     public function home()
     {
-        $html = $this->view()->render('pages.planning.pool.home');
+        $html = $this->view()->render('tontine.pages.planning.pool.home');
         $this->response->html('section-title', trans('tontine.menus.planning'));
         $this->response->html('content-home', $html);
         $this->jq('#btn-refresh')->click($this->rq()->home());
@@ -63,7 +63,7 @@ class Pool extends CallableClass
         $pools = $this->poolService->getPools($pageNumber);
         $poolCount = $this->poolService->getPoolCount();
 
-        $html = $this->view()->render('pages.planning.pool.page')->with('pools', $pools)
+        $html = $this->view()->render('tontine.pages.planning.pool.page')->with('pools', $pools)
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $poolCount));
         $this->response->html('pool-page', $html);
         if($this->fromHome && $poolCount > 0)
@@ -83,7 +83,7 @@ class Pool extends CallableClass
     public function number()
     {
         $title = trans('number.labels.title');
-        $content = $this->view()->render('pages.planning.pool.number');
+        $content = $this->view()->render('tontine.pages.planning.pool.number');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -118,7 +118,7 @@ class Pool extends CallableClass
         $this->bag('faker')->set('pool.count', $count);
 
         $useFaker = config('jaxon.app.faker');
-        $html = $this->view()->render('pages.planning.pool.add')
+        $html = $this->view()->render('tontine.pages.planning.pool.add')
             ->with('useFaker', $useFaker)
             ->with('count', $count);
         $this->response->html('content-home', $html);
@@ -150,7 +150,7 @@ class Pool extends CallableClass
         $pool = $this->poolService->getPool($poolId);
 
         $title = trans('tontine.pool.titles.edit');
-        $content = $this->view()->render('pages.planning.pool.edit')
+        $content = $this->view()->render('tontine.pages.planning.pool.edit')
             ->with('pool', $pool)
             ->with('locales', LaravelLocalization::getSupportedLocales());
         $buttons = [[

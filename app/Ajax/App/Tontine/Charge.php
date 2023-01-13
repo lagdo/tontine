@@ -29,7 +29,7 @@ class Charge extends CallableClass
      */
     public function home()
     {
-        $html = $this->view()->render('pages.charge.home');
+        $html = $this->view()->render('tontine.pages.charge.home');
         $this->response->html('section-title', trans('tontine.menus.tontine'));
         $this->response->html('content-home', $html);
         $this->jq('#btn-refresh')->click($this->rq()->home());
@@ -54,7 +54,7 @@ class Charge extends CallableClass
 
         $types = ['Frais', 'Amende'];
         $periods = ['Aucune', 'Unique', 'Année', 'Séance'];
-        $html = $this->view()->render('pages.charge.page')
+        $html = $this->view()->render('tontine.pages.charge.page')
             ->with('charges', $charges)->with('types', $types)->with('periods', $periods)
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $chargeCount));
         $this->response->html('content-page', $html);
@@ -68,7 +68,7 @@ class Charge extends CallableClass
     public function number()
     {
         $title = trans('number.labels.title');
-        $content = $this->view()->render('pages.charge.number');
+        $content = $this->view()->render('tontine.pages.charge.number');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -105,7 +105,7 @@ class Charge extends CallableClass
         $useFaker = config('jaxon.app.faker');
         $types = ['Frais', 'Amende'];
         $periods = ['Aucune', 'Unique', 'Année', 'Séance'];
-        $html = $this->view()->render('pages.charge.add')
+        $html = $this->view()->render('tontine.pages.charge.add')
             ->with('useFaker', $useFaker)
             ->with('count', $count)
             ->with('types', $types)
@@ -141,7 +141,7 @@ class Charge extends CallableClass
         $title = trans('tontine.charge.titles.edit');
         $types = ['Frais', 'Amende'];
         $periods = ['Aucune', 'Unique', 'Année', 'Séance'];
-        $content = $this->view()->render('pages.charge.edit')->with('charge', $charge)
+        $content = $this->view()->render('tontine.pages.charge.edit')->with('charge', $charge)
             ->with('types', $types)->with('periods', $periods);
         $buttons = [[
             'title' => trans('common.actions.cancel'),

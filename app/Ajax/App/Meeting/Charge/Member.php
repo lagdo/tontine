@@ -58,7 +58,7 @@ class Member extends CallableClass
         $this->bag('meeting')->set('charge.id', $chargeId);
         $this->bag('meeting')->set('fine.filter', null);
 
-        $html = $this->view()->render('pages.meeting.fine.member.home', [
+        $html = $this->view()->render('tontine.pages.meeting.fine.member.home', [
             'charge' => $this->charge,
         ]);
         $this->response->html('meeting-fines', $html);
@@ -83,7 +83,7 @@ class Member extends CallableClass
 
         $onlyFined = $this->bag('meeting')->get('fine.filter', null);
         $memberCount = $this->fineService->getMemberCount($this->charge, $this->session, $onlyFined);
-        $html = $this->view()->render('pages.meeting.fine.member.page', [
+        $html = $this->view()->render('tontine.pages.meeting.fine.member.page', [
             'charge' => $this->charge,
             'members' => $this->fineService->getMembers($this->charge, $this->session, $onlyFined, $pageNumber),
             'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $memberCount),

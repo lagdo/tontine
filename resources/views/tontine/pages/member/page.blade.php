@@ -15,7 +15,7 @@
                       <td>{{ $member->email }}</td>
                       <td>{{ $member->phone }}</td>
                       <td class="table-item-menu">
-@include('parts.table.menu', [
+@include('tontine.parts.table.menu', [
   'dataIdKey' => 'data-member-id',
   'dataIdValue' => $member->id,
   'menus' => [[

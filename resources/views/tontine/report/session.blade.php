@@ -32,17 +32,17 @@
           </div>
           <div class="pagebreak"></div>
 
-          @include('report.session.deposits', $deposits)
+          @include('tontine.report.session.deposits', $deposits)
 
-          @include('report.session.remitments', $remitments)
+          @include('tontine.report.session.remitments', $remitments)
 
 {{-- @if($tontine->is_financial)
-          @include('report.session.loans', $loans)
+          @include('tontine.report.session.loans', $loans)
 
-          @include('report.session.refunds', $refunds)
+          @include('tontine.report.session.refunds', $refunds)
 @endif --}}
 
-          @include('report.session.fees', $fees)
+          @include('tontine.report.session.fees', $fees)
 
-          @include('report.session.fines', $fines)
+          @include('tontine.report.session.fines', $fines)
 @endsection

@@ -58,7 +58,7 @@ class Settlement extends CallableClass
         $this->bag('meeting')->set('charge.id', $chargeId);
         $this->bag('meeting')->set('settlement.filter', null);
 
-        $html = $this->view()->render('pages.meeting.settlement.home', [
+        $html = $this->view()->render('tontine.pages.meeting.settlement.home', [
             'charge' => $this->charge,
         ]);
         if($this->charge->is_fee)
@@ -91,7 +91,7 @@ class Settlement extends CallableClass
 
         $onlyUnpaid = $this->bag('meeting')->get('settlement.filter', null);
         $billCount = $this->settlementService->getBillCount($this->charge, $this->session, $onlyUnpaid);
-        $html = $this->view()->render('pages.meeting.settlement.page', [
+        $html = $this->view()->render('tontine.pages.meeting.settlement.page', [
             'charge' => $this->charge,
             'bills' => $this->settlementService->getBills($this->charge, $this->session, $onlyUnpaid, $pageNumber),
             'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $billCount),
