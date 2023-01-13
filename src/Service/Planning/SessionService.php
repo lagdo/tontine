@@ -6,15 +6,12 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Events\EventTrait;
 
 use function intval;
 use function now;
 
 class SessionService
 {
-    use EventTrait;
-
     /**
      * @var TenantService
      */
@@ -123,38 +120,6 @@ class SessionService
     public function saveSessionVenue(Session $session, array $values): int
     {
         return $session->update($values);
-    }
-
-    /**
-     * Open a session.
-     *
-     * @param Session $session
-     *
-     * @return void
-     */
-    public function openSession(Session $session)
-    {
-        if($session->is_opened)
-        {
-            return;
-        }
-        DB::transaction(function() use($session) {
-            // Open the session
-            $session->update(['status' => SessionModel::STATUS_OPENED]);
-            $this->sessionOpened($this->tenantService->tontine(), $session);
-        });
-    }
-
-    /**
-     * Close a session.
-     *
-     * @param Session $session
-     *
-     * @return void
-     */
-    public function closeSession(Session $session)
-    {
-        $session->update(['status' => SessionModel::STATUS_CLOSED]);
     }
 
     /**

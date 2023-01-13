@@ -6,14 +6,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
-use Siak\Tontine\Service\Events\EventTrait;
 
 use function collect;
 
 class RoundService
 {
-    use EventTrait;
-
     /**
      * @var TenantService
      */
@@ -119,37 +116,6 @@ class RoundService
     public function updateRound(int $id, array $values): int
     {
         return $this->tenantService->tontine()->rounds()->where('id', $id)->update($values);
-    }
-
-    /**
-     * Open a round.
-     *
-     * @param Round $round
-     *
-     * @return void
-     */
-    public function openRound(Round $round)
-    {
-        if($round->is_opened)
-        {
-            return;
-        }
-        DB::transaction(function() use($round) {
-            $round->update(['status' => RoundModel::STATUS_OPENED]);
-            $this->roundOpened($this->tenantService->tontine(), $round);
-        });
-    }
-
-    /**
-     * Close a round.
-     *
-     * @param Round $round
-     *
-     * @return void
-     */
-    public function closeRound(Round $round)
-    {
-        $round->update(['status' => RoundModel::STATUS_CLOSED]);
     }
 
     /**

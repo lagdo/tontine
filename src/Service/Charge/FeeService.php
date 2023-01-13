@@ -11,8 +11,6 @@ use Siak\Tontine\Service\Tontine\TenantService;
 
 class FeeService
 {
-    use Events\BillEventTrait;
-
     /**
      * @var TenantService
      */
