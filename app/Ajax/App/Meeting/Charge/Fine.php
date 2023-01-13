@@ -2,8 +2,8 @@
 
 namespace App\Ajax\App\Meeting\Charge;
 
-use Siak\Tontine\Service\MeetingService;
-use Siak\Tontine\Service\FineSettlementService;
+use Siak\Tontine\Service\Charge\FineService;
+use Siak\Tontine\Service\Charge\FineSummaryService;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 
@@ -17,15 +17,15 @@ class Fine extends CallableClass
 {
     /**
      * @di
-     * @var MeetingService
+     * @var FineService
      */
-    protected MeetingService $meetingService;
+    protected FineService $fineService;
 
     /**
      * @di
-     * @var FineSettlementService
+     * @var FineSummaryService
      */
-    protected FineSettlementService $settlementService;
+    protected FineSummaryService $summaryService;
 
     /**
      * @var SessionModel|null
@@ -38,17 +38,17 @@ class Fine extends CallableClass
     protected function getSession()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->meetingService->getSession($sessionId);
+        $this->session = $this->fineService->getSession($sessionId);
     }
 
     /**
      * @exclude
      */
-    public function show($session, $meetingService, $settlementService)
+    public function show($session, $fineService, $summaryService)
     {
         $this->session = $session;
-        $this->meetingService = $meetingService;
-        $this->settlementService = $settlementService;
+        $this->fineService = $fineService;
+        $this->summaryService = $summaryService;
 
         return $this->home();
     }
@@ -65,30 +65,24 @@ class Fine extends CallableClass
 
     public function page(int $pageNumber)
     {
-        $fines = $this->meetingService->getFines($this->session, $pageNumber);
-        $fineCount = $this->meetingService->getFineCount();
-        // Settlement counts
-        $settlements = [
-            'current' => $this->settlementService->getSettlementCount($this->session, false),
-            'previous' => $this->settlementService->getSettlementCount($this->session, true),
-        ];
+        $fines = $this->fineService->getFines($this->session, $pageNumber);
+        $fineCount = $this->fineService->getFineCount();
+        // Settlement summary
+        $settlements = $this->summaryService->getSettlements($this->session);
         // Bill counts
-        $bills = [
-            'current' => $this->settlementService->getBillCount($this->session, false),
-            'previous' => $this->settlementService->getBillCount($this->session, true),
-        ];
+        $bills = $this->summaryService->getBills($this->session);
 
-        $html = $this->view()->render('pages.meeting.fine.page')
+        $html = $this->view()->render('pages.meeting.fee.page')
             ->with('session', $this->session)
-            ->with('fines', $fines)
-            ->with('settlements', $settlements)
-            ->with('bills', $bills)
-            ->with('zero', $this->settlementService->getFormattedAmount(0))
-            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $fineCount));
-        if($this->session->closed)
-        {
-            $html->with('summary', $this->meetingService->getFinesSummary($this->session));
-        }
+            ->with('fees', $fees)
+            ->with('settlements', $settlements['total'])
+            ->with('bills', $bills['total'])
+            ->with('zero', $this->summaryService->getFormattedAmount(0))
+            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $feeCount));
+        // if($this->session->closed)
+        // {
+        //     $html->with('summary', $this->feeService->getFeesSummary($this->session));
+        // }
         $this->response->html('meeting-fines-page', $html);
 
         $fineId = jq()->parent()->attr('data-fine-id')->toInt();

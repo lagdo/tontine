@@ -3,7 +3,6 @@
 namespace Siak\Tontine\Service;
 
 use Illuminate\Support\Collection;
-
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Session;
@@ -32,33 +31,18 @@ class MeetingService
     protected RemittanceService $remittanceService;
 
     /**
-     * @var FeeSettlementService
-     */
-    protected FeeSettlementService $feeService;
-
-    /**
-     * @var FineSettlementService
-     */
-    protected FineSettlementService $fineService;
-
-    /**
      * @param TenantService $tenantService
      * @param PlanningService $planningService
      * @param DepositService $depositService
      * @param RemittanceService $remittanceService
-     * @param FeeSettlementService $feeService
-     * @param FineSettlementService $fineService
      */
     public function __construct(TenantService $tenantService, PlanningService $planningService,
-        DepositService $depositService, RemittanceService $remittanceService,
-        FeeSettlementService $feeService, FineSettlementService $fineService)
+        DepositService $depositService, RemittanceService $remittanceService)
     {
         $this->tenantService = $tenantService;
         $this->planningService = $planningService;
         $this->depositService = $depositService;
         $this->remittanceService = $remittanceService;
-        $this->feeService = $feeService;
-        $this->fineService = $fineService;
     }
 
     /**
@@ -195,97 +179,6 @@ class MeetingService
     }
 
     /**
-     * Get a paginated list of charges.
-     *
-     * @param Session $session
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getCharges(Session $session, int $page = 0): Collection
-    {
-        $charges = $this->tenantService->tontine()->charges()->orderBy('id', 'desc');
-        if($page > 0 )
-        {
-            $charges->take($this->tenantService->getLimit());
-            $charges->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        return $charges->get()->each(function($charge) use($session) {
-            $settlementService = $charge->is_fee ? $this->feeService : $this->fineService;
-            $charge->members_count = $settlementService->getMemberCount($charge, $session);
-            $charge->members_paid = $settlementService->getMemberCount($charge, $session, true);
-        });
-    }
-
-    /**
-     * Get the number of charges.
-     *
-     * @return int
-     */
-    public function getChargeCount(): int
-    {
-        return $this->tenantService->tontine()->charges()->count();
-    }
-
-    /**
-     * Get a paginated list of fees.
-     *
-     * @param Session $session
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getFees(Session $session, int $page = 0): Collection
-    {
-        $fees = $this->tenantService->tontine()->charges()->fee()->orderBy('id', 'desc');
-        if($page > 0 )
-        {
-            $fees->take($this->tenantService->getLimit());
-            $fees->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        return $fees->get();
-    }
-
-    /**
-     * Get the number of fees.
-     *
-     * @return int
-     */
-    public function getFeeCount(): int
-    {
-        return $this->tenantService->tontine()->charges()->fee()->count();
-    }
-
-    /**
-     * Get a paginated list of fines.
-     *
-     * @param Session $session
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getFines(Session $session, int $page = 0): Collection
-    {
-        $fines = $this->tenantService->tontine()->charges()->fine()->orderBy('id', 'desc');
-        if($page > 0 )
-        {
-            $fines->take($this->tenantService->getLimit());
-            $fines->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        return $fines->get();
-    }
-
-    /**
-     * Get the number of fines.
-     *
-     * @return int
-     */
-    public function getFineCount(): int
-    {
-        return $this->tenantService->tontine()->charges()->fine()->count();
-    }
-
-    /**
      * Get the receivables of a given fund.
      *
      * Will return extended data on subscriptions.
@@ -335,54 +228,6 @@ class MeetingService
             'sum' => [
                 'payables' => Currency::format($payableSum),
                 'receivables' => Currency::format($receivableSum),
-            ],
-        ];
-    }
-
-    /**
-     * Get settlements summary for a session
-     *
-     * @param Session $session
-     *
-     * @return array
-     */
-    public function getFeesSummary(Session $session): array
-    {
-        $settlementSum = 0;
-        $settlementAmounts = $session->feeSettlementAmounts()->get()
-            ->each(function($settlement) use(&$settlementSum) {
-                $settlementSum += $settlement->amount;
-                $settlement->amount = Currency::format($settlement->amount);
-            })->pluck('amount', 'charge_id');
-
-        return [
-            'settlements' => $settlementAmounts,
-            'sum' => [
-                'settlements' => Currency::format($settlementSum),
-            ],
-        ];
-    }
-
-    /**
-     * Get settlements summary for a session
-     *
-     * @param Session $session
-     *
-     * @return array
-     */
-    public function getFinesSummary(Session $session): array
-    {
-        $settlementSum = 0;
-        $settlementAmounts = $session->fineSettlementAmounts()->get()
-            ->each(function($settlement) use(&$settlementSum) {
-                $settlementSum += $settlement->amount;
-                $settlement->amount = Currency::format($settlement->amount);
-            })->pluck('amount', 'charge_id');
-
-        return [
-            'settlements' => $settlementAmounts,
-            'sum' => [
-                'settlements' => Currency::format($settlementSum),
             ],
         ];
     }

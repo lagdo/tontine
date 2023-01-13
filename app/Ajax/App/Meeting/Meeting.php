@@ -2,9 +2,10 @@
 
 namespace App\Ajax\App\Meeting;
 
-use Siak\Tontine\Service\MeetingService;
-use Siak\Tontine\Service\FeeSettlementService;
-use Siak\Tontine\Service\FineSettlementService;
+use Siak\Tontine\Service\Charge\FeeService;
+use Siak\Tontine\Service\Charge\FeeSummaryService;
+use Siak\Tontine\Service\Charge\FineService;
+use Siak\Tontine\Service\Charge\FineSummaryService;
 use Siak\Tontine\Service\BiddingService;
 use Siak\Tontine\Service\RefundService;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -20,20 +21,24 @@ use function trans;
 class Meeting extends CallableClass
 {
     /**
-     * @di
-     * @var MeetingService
+     * @var FeeService
      */
-    protected MeetingService $meetingService;
+    protected FeeService $feeService;
 
     /**
-     * @var FeeSettlementService
+     * @var FineService
      */
-    protected FeeSettlementService $feeSettlementService;
+    protected FineService $fineService;
 
     /**
-     * @var FineSettlementService
+     * @var FeeSummaryService
      */
-    protected FineSettlementService $fineSettlementService;
+    protected FeeSummaryService $feeSummaryService;
+
+    /**
+     * @var FineSummaryService
+     */
+    protected FineSummaryService $fineSummaryService;
 
     /**
      * @var BiddingService
@@ -117,8 +122,10 @@ class Meeting extends CallableClass
     }
 
     /**
-     * @di $feeSettlementService
-     * @di $fineSettlementService
+     * @di $feeService
+     * @di $fineService
+     * @di $feeSummaryService
+     * @di $fineSummaryService
      */
     public function charges()
     {
@@ -135,8 +142,8 @@ class Meeting extends CallableClass
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 
-        $this->cl(Charge\Fee::class)->show($this->session, $this->meetingService, $this->feeSettlementService);
-        $this->cl(Charge\Fine::class)->show($this->session, $this->meetingService, $this->fineSettlementService);
+        $this->cl(Charge\Fee::class)->show($this->session, $this->feeService, $this->feeSummaryService);
+        $this->cl(Charge\Fine::class)->show($this->session, $this->fineService, $this->fineSummaryService);
 
         return $this->response;
     }

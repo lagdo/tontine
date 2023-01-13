@@ -126,6 +126,41 @@ class RoundService
     }
 
     /**
+     * Open a round.
+     *
+     * @param Round $round
+     *
+     * @return void
+     */
+    public function openRound(Round $round)
+    {
+        if($round->is_opened)
+        {
+            return;
+        }
+        DB::transaction(function() use($round) {
+            // Open the round
+            $round->update(['status' => RoundModel::STATUS_OPENED]);
+            $this->roundOpened($this->tenantService->tontine(), $round);
+        });
+    }
+
+    /**
+     * Close a round.
+     *
+     * @param Round $round
+     *
+     * @return void
+     */
+    public function closeRound(Round $round)
+    {
+        DB::transaction(function() use($round) {
+            // Close the round
+            $round->update(['status' => RoundModel::STATUS_CLOSED]);
+        });
+    }
+
+    /**
      * Delete a round.
      *
      * @param int $id

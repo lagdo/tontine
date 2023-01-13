@@ -9,5 +9,5 @@
                       </div>
                     </div>
                   </div>
-                  <div class="table-responsive" id="meeting-charge-members">
+                  <div class="table-responsive" id="meeting-charge-bills">
                   </div> <!-- End table -->

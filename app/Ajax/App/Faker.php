@@ -2,7 +2,7 @@
 
 namespace App\Ajax\App;
 
-use Siak\Tontine\Service\ChargeService;
+use Siak\Tontine\Service\Charge\ChargeService;
 use Siak\Tontine\Service\FundService;
 use Siak\Tontine\Service\MemberService;
 use App\Ajax\CallableClass;

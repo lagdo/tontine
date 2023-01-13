@@ -2,7 +2,8 @@
 
 namespace App\Ajax\App\Meeting\Charge;
 
-use Siak\Tontine\Service\ChargeService;
+use Siak\Tontine\Service\Charge\ChargeService;
+use Siak\Tontine\Service\Charge\FineService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Charge as ChargeModel;
 use App\Ajax\CallableClass;
@@ -21,6 +22,12 @@ class Member extends CallableClass
      * @var ChargeService
      */
     protected ChargeService $chargeService;
+
+    /**
+     * @di
+     * @var FineService
+     */
+    protected FineService $fineService;
 
     /**
      * @var SessionModel|null
@@ -75,10 +82,10 @@ class Member extends CallableClass
         $this->bag('meeting')->set('fine.page', $pageNumber);
 
         $onlyFined = $this->bag('meeting')->get('fine.filter', null);
-        $memberCount = $this->chargeService->getMemberCount($this->charge, $this->session, $onlyFined);
+        $memberCount = $this->fineService->getMemberCount($this->charge, $this->session, $onlyFined);
         $html = $this->view()->render('pages.meeting.fine.member.page', [
             'charge' => $this->charge,
-            'members' => $this->chargeService->getMembers($this->charge, $this->session, $onlyFined, $pageNumber),
+            'members' => $this->fineService->getMembers($this->charge, $this->session, $onlyFined, $pageNumber),
             'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $memberCount),
         ]);
         $this->response->html('meeting-charge-members', $html);
@@ -108,8 +115,7 @@ class Member extends CallableClass
      */
     public function addFine(int $memberId)
     {
-        $this->chargeService->createFine($this->charge, $this->session, $memberId);
-        // $this->notify->success(trans('session.fine.created'), trans('common.titles.success'));
+        $this->fineService->createFine($this->charge, $this->session, $memberId);
 
         return $this->page(1);
     }
@@ -121,8 +127,7 @@ class Member extends CallableClass
      */
     public function delFine(int $memberId)
     {
-        $this->chargeService->deleteFine($this->charge, $this->session, $memberId);
-        // $this->notify->success(trans('session.fine.deleted'), trans('common.titles.success'));
+        $this->fineService->deleteFine($this->charge, $this->session, $memberId);
 
         return $this->page();
     }

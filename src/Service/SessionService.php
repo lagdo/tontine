@@ -5,7 +5,6 @@ namespace Siak\Tontine\Service;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-
 use Siak\Tontine\Model\Session;
 
 use function intval;
@@ -86,10 +85,6 @@ class SessionService
         DB::transaction(function() use($values) {
             $tontine = $this->tenantService->tontine();
             $sessions = $this->tenantService->round()->sessions()->createMany($values);
-            foreach($sessions as $session)
-            {
-                $this->sessionCreated($tontine, $session);
-            }
         });
 
         return true;
@@ -129,6 +124,41 @@ class SessionService
     public function saveSessionVenue(Session $session, array $values): int
     {
         return $session->update($values);
+    }
+
+    /**
+     * Open a session.
+     *
+     * @param Session $session
+     *
+     * @return void
+     */
+    public function openSession(Session $session)
+    {
+        if($session->is_opened)
+        {
+            return;
+        }
+        DB::transaction(function() use($session) {
+            // Open the session
+            $session->update(['status' => SessionModel::STATUS_OPENED]);
+            $this->sessionOpened($this->tenantService->tontine(), $session);
+        });
+    }
+
+    /**
+     * Close a session.
+     *
+     * @param Session $session
+     *
+     * @return void
+     */
+    public function closeSession(Session $session)
+    {
+        DB::transaction(function() use($session) {
+            // Close the session
+            $session->update(['status' => SessionModel::STATUS_CLOSED]);
+        });
     }
 
     /**

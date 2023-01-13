@@ -6,11 +6,11 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($members as $member)
+@foreach ($bills as $bill)
                         <tr>
-                          <td>{{ $member->name }}</td>
-                          <td data-target-id="{{ $charge->is_fee ? $member->id : $member->bill->id }}">
-@if ($member->paid)
+                          <td>{{ $bill->member->name }}</td>
+                          <td data-bill-id="{{ $bill->bill->id }}">
+@if ($bill->paid)
                             <a href="javascript:void(0)" class="btn-del-settlement"><i class="fa fa-toggle-on"></i></a>
 @else
                             <a href="javascript:void(0)" class="btn-add-settlement"><i class="fa fa-toggle-off"></i></a>

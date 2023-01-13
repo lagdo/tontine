@@ -2,9 +2,8 @@
 
 namespace App\Ajax\App\Meeting\Charge;
 
-use Siak\Tontine\Service\FeeSettlementService;
-use Siak\Tontine\Service\FineSettlementService;
-use Siak\Tontine\Service\SettlementService;
+use Siak\Tontine\Service\Charge\ChargeService;
+use Siak\Tontine\Service\Charge\SettlementService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Charge as ChargeModel;
 use App\Ajax\CallableClass;
@@ -20,17 +19,12 @@ class Settlement extends CallableClass
 {
     /**
      * @di
-     * @var FeeSettlementService
+     * @var ChargeService
      */
-    protected FeeSettlementService $feeService;
+    protected ChargeService $chargeService;
 
     /**
      * @di
-     * @var FineSettlementService
-     */
-    protected FineSettlementService $fineService;
-
-    /**
      * @var SettlementService
      */
     protected SettlementService $settlementService;
@@ -50,10 +44,8 @@ class Settlement extends CallableClass
         $sessionId = $this->bag('meeting')->get('session.id');
         $chargeId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('charge.id');
-        $this->session = $this->feeService->getSession($sessionId);
-        $this->charge = $this->feeService->getCharge($chargeId);
-
-        $this->settlementService = $this->charge->is_fee ? $this->feeService : $this->fineService;
+        $this->session = $this->chargeService->getSession($sessionId);
+        $this->charge = $this->chargeService->getCharge($chargeId);
     }
 
     /**
@@ -98,18 +90,18 @@ class Settlement extends CallableClass
         $this->bag('meeting')->set('settlement.page', $pageNumber);
 
         $onlyUnpaid = $this->bag('meeting')->get('settlement.filter', null);
-        $memberCount = $this->settlementService->getMemberCount($this->charge, $this->session, $onlyUnpaid);
+        $billCount = $this->settlementService->getBillCount($this->charge, $this->session, $onlyUnpaid);
         $html = $this->view()->render('pages.meeting.settlement.page', [
             'charge' => $this->charge,
-            'members' => $this->settlementService->getMembers($this->charge, $this->session, $onlyUnpaid, $pageNumber),
-            'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $memberCount),
+            'bills' => $this->settlementService->getBills($this->charge, $this->session, $onlyUnpaid, $pageNumber),
+            'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $billCount),
         ]);
-        $this->response->html('meeting-charge-members', $html);
+        $this->response->html('meeting-charge-bills', $html);
 
-        $targetId = jq()->parent()->attr('data-target-id')->toInt();
-        $this->jq('.btn-add-settlement')->click($this->rq()->addSettlement($targetId));
-        $this->jq('.btn-del-settlement')->click($this->rq()->delSettlement($targetId));
-        $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($targetId));
+        $billId = jq()->parent()->attr('data-bill-id')->toInt();
+        $this->jq('.btn-add-settlement')->click($this->rq()->addSettlement($billId));
+        $this->jq('.btn-del-settlement')->click($this->rq()->delSettlement($billId));
+        $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($billId));
 
         return $this->response;
     }
@@ -125,26 +117,26 @@ class Settlement extends CallableClass
     }
 
     /**
-     * @param int $targetId Member id for fees, bill id for fines
+     * @param int $billId
      *
      * @return mixed
      */
-    public function addSettlement(int $targetId)
+    public function addSettlement(int $billId)
     {
-        $this->settlementService->createSettlement($this->charge, $this->session, $targetId);
+        $this->settlementService->createSettlement($this->charge, $this->session, $billId);
         // $this->notify->success(trans('session.settlement.created'), trans('common.titles.success'));
 
         return $this->page();
     }
 
     /**
-     * @param int $targetId Member id for fees, bill id for fines
+     * @param int $billId
      *
      * @return mixed
      */
-    public function delSettlement(int $targetId)
+    public function delSettlement(int $billId)
     {
-        $this->settlementService->deleteSettlement($this->charge, $this->session, $targetId);
+        $this->settlementService->deleteSettlement($this->charge, $this->session, $billId);
         // $this->notify->success(trans('session.settlement.deleted'), trans('common.titles.success'));
 
         return $this->page();
