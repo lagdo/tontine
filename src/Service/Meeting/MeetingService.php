@@ -28,23 +28,23 @@ class MeetingService
     protected DepositService $depositService;
 
     /**
-     * @var RemittanceService
+     * @var RemitmentService
      */
-    protected RemittanceService $remittanceService;
+    protected RemitmentService $remitmentService;
 
     /**
      * @param TenantService $tenantService
      * @param PlanningService $planningService
      * @param DepositService $depositService
-     * @param RemittanceService $remittanceService
+     * @param RemitmentService $remitmentService
      */
     public function __construct(TenantService $tenantService, PlanningService $planningService,
-        DepositService $depositService, RemittanceService $remittanceService)
+        DepositService $depositService, RemitmentService $remitmentService)
     {
         $this->tenantService = $tenantService;
         $this->planningService = $planningService;
         $this->depositService = $depositService;
-        $this->remittanceService = $remittanceService;
+        $this->remitmentService = $remitmentService;
     }
 
     /**
@@ -117,15 +117,15 @@ class MeetingService
 
         return $pools->get()->each(function($pool) use($session, $sessions) {
             // Payables
-            $payables = $this->remittanceService->getPayables($pool, $session);
+            $payables = $this->remitmentService->getPayables($pool, $session);
             // Expected
             // $pool->pay_count = $payables->count();
             // Paid
             $pool->pay_paid = $payables->filter(function($payable) {
-                return $payable->remittance !== null;
+                return $payable->remitment !== null;
             })->count();
 
-            // Remittances
+            // Remitments
             $sessions = $sessions->filter(function($_session) use($pool) {
                 return $_session->enabled($pool);
             });
@@ -134,7 +134,7 @@ class MeetingService
                 return $_session->start_at->lt($session->start_at);
             })->count();
             $subscriptionCount = $pool->subscriptions()->count();
-            $pool->pay_count = $this->planningService->getRemittanceCount($sessionCount, $subscriptionCount, $sessionRank);
+            $pool->pay_count = $this->planningService->getRemitmentCount($sessionCount, $subscriptionCount, $sessionRank);
         });
     }
 

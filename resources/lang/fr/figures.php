@@ -17,7 +17,7 @@ return [
             'amount' => "Montant cotisé",
         ],
     ],
-    'remittance' => [
+    'remitment' => [
         'titles' => [
             'count' => "Nombre de remises",
             'amount' => "Montant remis",

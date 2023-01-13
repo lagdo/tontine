@@ -4,7 +4,7 @@ namespace Siak\Tontine\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Remittance extends Model
+class Remitment extends Model
 {
     /**
      * The attributes that are mass assignable.

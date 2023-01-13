@@ -96,7 +96,7 @@ return [
             'add' => "Ajouter des fonds",
             'edit' => "Modifier un fond",
             'deposits' => "Rapport des dépôts",
-            'remittances' => "Rapport des remises",
+            'remitments' => "Rapport des remises",
             'subscriptions' => "Souscriptions",
         ],
         'actions' => [

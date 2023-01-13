@@ -10,7 +10,7 @@ return [
         'fees' => "Frais",
         'fines' => "Amendes",
         'deposits' => "Versements",
-        'remittances' => "Remises",
+        'remitments' => "Remises",
         'biddings' => "Enchères",
         'amounts' => "Montants",
         'settlements' => "Règlements",
@@ -21,7 +21,7 @@ return [
     ],
     'actions' => [
         'deposits' => "Versements",
-        'remittances' => "Remises",
+        'remitments' => "Remises",
         'settlements' => "Règlements",
         'biddings' => "Enchères",
         'amounts' => "Montants",

@@ -14,7 +14,7 @@
               <div class="col-auto">
                 <div class="btn-group float-right" role="group" aria-label="">
                   <button type="button" class="btn btn-primary" id="btn-subscription-deposits"><i class="fa fa-user-times"></i></button>
-                  <button type="button" class="btn btn-primary" id="btn-subscription-remittances"><i class="fa fa-user-check"></i></button>
+                  <button type="button" class="btn btn-primary" id="btn-subscription-remitments"><i class="fa fa-user-check"></i></button>
                   <button type="button" class="btn btn-primary" id="btn-subscription-refresh"><i class="fa fa-sync"></i></button>
                 </div>
               </div>
@@ -56,12 +56,12 @@
                       @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->cashier->recv }}</td>@endforeach
                     </tr>
                     <tr>
-                      <td>{{ __('figures.remittance.titles.count') }}</td>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->remittance->count }}</td>@endforeach
+                      <td>{{ __('figures.remitment.titles.count') }}</td>
+                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>@endforeach
                     </tr>
                     <tr>
-                      <td>{{ __('figures.remittance.titles.amount') }}</td>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->remittance->amount }}</td>@endforeach
+                      <td>{{ __('figures.remitment.titles.amount') }}</td>
+                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->remitment->amount }}</td>@endforeach
                     </tr>
                     <tr>
                       <td>{{ __('figures.titles.end') }}</td>

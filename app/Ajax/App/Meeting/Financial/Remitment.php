@@ -5,7 +5,7 @@ namespace App\Ajax\App\Meeting\Financial;
 use App\Ajax\App\Meeting\Pool;
 use App\Ajax\CallableClass;
 use Siak\Tontine\Service\Meeting\BiddingService;
-use Siak\Tontine\Validation\Meeting\RemittanceValidator;
+use Siak\Tontine\Validation\Meeting\RemitmentValidator;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Pool as PoolModel;
 
@@ -16,7 +16,7 @@ use function Jaxon\pm;
  * @databag meeting
  * @before getPool
  */
-class Remittance extends CallableClass
+class Remitment extends CallableClass
 {
     /**
      * @di
@@ -25,9 +25,9 @@ class Remittance extends CallableClass
     protected BiddingService $biddingService;
 
     /**
-     * @var RemittanceValidator
+     * @var RemitmentValidator
      */
-    protected RemittanceValidator $validator;
+    protected RemitmentValidator $validator;
 
     /**
      * @var SessionModel|null
@@ -62,7 +62,7 @@ class Remittance extends CallableClass
     {
         $this->bag('meeting')->set('pool.id', $poolId);
 
-        $figures = $this->biddingService->getRemittanceFigures($this->pool, $this->session->id);
+        $figures = $this->biddingService->getRemitmentFigures($this->pool, $this->session->id);
         $payables = $figures->payables
             ->map(function($payable) use($figures) {
                 return (object)[
@@ -80,25 +80,25 @@ class Remittance extends CallableClass
                 'available' => true,
             ]);
 
-        $html = $this->view()->render('pages.meeting.remittance.financial')
+        $html = $this->view()->render('pages.meeting.remitment.financial')
             ->with('pool', $this->pool)
             ->with('session', $this->session)
             ->with('payables', $payables);
-        $this->response->html('meeting-remittances', $html);
+        $this->response->html('meeting-remitments', $html);
 
-        $this->jq('#btn-remittances-back')->click($this->cl(Pool::class)->rq()->remittances());
-        $this->jq('.btn-add-remittance')->click($this->rq()->addRemittance());
+        $this->jq('#btn-remitments-back')->click($this->cl(Pool::class)->rq()->remitments());
+        $this->jq('.btn-add-remitment')->click($this->rq()->addRemitment());
         $subscriptionId = jq()->parent()->attr('data-subscription-id')->toInt();
-        $this->jq('.btn-del-remittance')->click($this->rq()->deleteRemittance($subscriptionId));
+        $this->jq('.btn-del-remitment')->click($this->rq()->deleteRemitment($subscriptionId));
 
         return $this->response;
     }
 
-    public function addRemittance()
+    public function addRemitment()
     {
         $members = $this->biddingService->getSubscriptions($this->pool);
         $title = trans('tontine.bidding.titles.add');
-        $content = $this->view()->render('pages.meeting.remittance.add')
+        $content = $this->view()->render('pages.meeting.remitment.add')
             ->with('members', $members);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -107,7 +107,7 @@ class Remittance extends CallableClass
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveRemittance(pm()->form('remittance-form')),
+            'click' => $this->rq()->saveRemitment(pm()->form('remitment-form')),
         ]];
         $this->dialog->show($title, $content, $buttons, ['width' => '800']);
 
@@ -117,22 +117,22 @@ class Remittance extends CallableClass
     /**
      * @di $validator
      */
-    public function saveRemittance(array $formValues)
+    public function saveRemitment(array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
 
-        $this->biddingService->createRemittance($this->pool, $this->session,
+        $this->biddingService->createRemitment($this->pool, $this->session,
             $values['subscription'], $values['amount']);
         $this->dialog->hide();
-        // $this->notify->success(trans('session.remittance.created'), trans('common.titles.success'));
+        // $this->notify->success(trans('session.remitment.created'), trans('common.titles.success'));
 
         return $this->home($this->pool->id);
     }
 
-    public function deleteRemittance(int $subscriptionId)
+    public function deleteRemitment(int $subscriptionId)
     {
-        $this->biddingService->deleteRemittance($this->pool, $this->session, $subscriptionId);
-        // $this->notify->success(trans('session.remittance.deleted'), trans('common.titles.success'));
+        $this->biddingService->deleteRemitment($this->pool, $this->session, $subscriptionId);
+        // $this->notify->success(trans('session.remitment.deleted'), trans('common.titles.success'));
 
         return $this->home($this->pool->id);
     }

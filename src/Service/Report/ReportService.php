@@ -66,7 +66,7 @@ class ReportService implements ReportServiceInterface
                 'report' => $report['receivables'],
                 'sum' => $report['sum']['receivables'],
             ],
-            'remittances' => [
+            'remitments' => [
                 'session' => $session,
                 'pools' => $this->meetingService->getPoolsWithPayables($session),
                 'report' => $report['payables'],

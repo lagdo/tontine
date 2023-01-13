@@ -1,11 +1,11 @@
                   <div class="row align-items-center">
                     <div class="col-auto">
-                      <div class="section-title mt-0">{!! __('meeting.titles.remittances') !!}</div>
+                      <div class="section-title mt-0">{!! __('meeting.titles.remitments') !!}</div>
                     </div>
 @if($session->opened)
                     <div class="col">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
-                        <button type="button" class="btn btn-primary" id="btn-remittances-refresh"><i class="fa fa-sync"></i></button>
+                        <button type="button" class="btn btn-primary" id="btn-remitments-refresh"><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
 @endif
@@ -31,8 +31,8 @@
                             'paid' => $pool->pay_paid,
                             'count' => $pool->pay_count,
                             'tontine' => $tontine,
-                            'menuClass' => 'btn-pool-remittances',
-                            'menuText' => __('meeting.actions.remittances'),
+                            'menuClass' => 'btn-pool-remitments',
+                            'menuText' => __('meeting.actions.remitments'),
                         ])
 @elseif($session->closed)
                         @include('pages.meeting.pool.closed', [

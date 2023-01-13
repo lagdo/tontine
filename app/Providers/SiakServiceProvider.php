@@ -18,7 +18,7 @@ use Siak\Tontine\Service\Meeting\BiddingService;
 use Siak\Tontine\Service\Meeting\DepositService;
 use Siak\Tontine\Service\Meeting\MeetingService;
 use Siak\Tontine\Service\Meeting\RefundService;
-use Siak\Tontine\Service\Meeting\RemittanceService;
+use Siak\Tontine\Service\Meeting\RemitmentService;
 use Siak\Tontine\Service\Planning\PlanningService;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Planning\SessionService;
@@ -34,7 +34,7 @@ use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\ChargeValidator;
 use Siak\Tontine\Validation\MemberValidator;
 use Siak\Tontine\Validation\Meeting\BiddingValidator;
-use Siak\Tontine\Validation\Meeting\RemittanceValidator;
+use Siak\Tontine\Validation\Meeting\RemitmentValidator;
 use Siak\Tontine\Validation\Planning\PoolValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 
@@ -79,7 +79,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(DepositService::class, DepositService::class);
         $this->app->singleton(MeetingService::class, MeetingService::class);
         $this->app->singleton(RefundService::class, RefundService::class);
-        $this->app->singleton(RemittanceService::class, RemittanceService::class);
+        $this->app->singleton(RemitmentService::class, RemitmentService::class);
 
         $this->app->singleton(PlanningService::class, PlanningService::class);
         $this->app->singleton(RoundService::class, RoundService::class);
@@ -102,7 +102,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(MemberValidator::class, MemberValidator::class);
         $this->app->singleton(BiddingValidator::class, BiddingValidator::class);
         $this->app->singleton(PoolValidator::class, PoolValidator::class);
-        $this->app->singleton(RemittanceValidator::class, RemittanceValidator::class);
+        $this->app->singleton(RemitmentValidator::class, RemitmentValidator::class);
         $this->app->singleton(SessionValidator::class, SessionValidator::class);
     }
 }

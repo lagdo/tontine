@@ -34,7 +34,7 @@
 
           @include('report.session.deposits', $deposits)
 
-          @include('report.session.remittances', $remittances)
+          @include('report.session.remitments', $remitments)
 
 {{-- @if($tontine->is_financial)
           @include('report.session.biddings', $biddings)

@@ -17,10 +17,10 @@ return [
             'amount' => "Deposit amounts",
         ],
     ],
-    'remittance' => [
+    'remitment' => [
         'titles' => [
-            'count' => "Number of remittances",
-            'amount' => "Remittance amounts",
+            'count' => "Number of remitments",
+            'amount' => "Remitment amounts",
         ],
     ],
     'bidding' => [

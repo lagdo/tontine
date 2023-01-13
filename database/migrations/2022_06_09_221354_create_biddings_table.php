@@ -13,7 +13,7 @@ class CreateBiddingsTable extends Migration
      */
     public function up()
     {
-        Schema::table('remittances', function (Blueprint $table) {
+        Schema::table('remitments', function (Blueprint $table) {
             $table->integer('amount_paid')->default(0);
         });
 
@@ -37,7 +37,7 @@ class CreateBiddingsTable extends Migration
     {
         Schema::dropIfExists('biddings');
 
-        Schema::table('remittances', function (Blueprint $table) {
+        Schema::table('remitments', function (Blueprint $table) {
             $table->dropColumn('amount_paid');
         });
     }

@@ -65,18 +65,18 @@
                       @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->cashier->recv }}</td>@endforeach
                     </tr>
                     <tr>
-                      <td rowspan="2">{{ __('figures.remittance.titles.count') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->achieved[$session->id]->remittance->count !!}</b></td>@endforeach
+                      <td rowspan="2">{{ __('figures.remitment.titles.count') }}</td>
+                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->achieved[$session->id]->remitment->count !!}</b></td>@endforeach
                     </tr>
                     <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->remittance->count }}</td>@endforeach
+                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>@endforeach
                     </tr>
                     <tr>
-                      <td rowspan="2">{{ __('figures.remittance.titles.amount') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->achieved[$session->id]->remittance->amount !!}</b></td>@endforeach
+                      <td rowspan="2">{{ __('figures.remitment.titles.amount') }}</td>
+                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->achieved[$session->id]->remitment->amount !!}</b></td>@endforeach
                     </tr>
                     <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->remittance->amount }}</td>@endforeach
+                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->remitment->amount }}</td>@endforeach
                     </tr>
                     <tr>
                       <td rowspan="2">{{ __('figures.titles.end') }}</td>

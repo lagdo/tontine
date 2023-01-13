@@ -81,7 +81,7 @@
               <div class="row">
                 <div class="col-md-6 col-sm-12" id="meeting-deposits">
                 </div>
-                <div class="col-md-6 col-sm-12" id="meeting-remittances">
+                <div class="col-md-6 col-sm-12" id="meeting-remitments">
                 </div>
               </div>
             </div>
