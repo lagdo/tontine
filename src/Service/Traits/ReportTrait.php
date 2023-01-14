@@ -70,16 +70,28 @@ trait ReportTrait
             return 0;
         }
 
+        $count = (int)floor($subscriptionCount / $sessionCount);
         // Greatest common divisor
         $gcd = (int)gmp_gcd($sessionCount, $subscriptionCount);
         $sessionsInLoop = (int)($sessionCount / $gcd);
-        $subscriptionsInLoop = (int)($subscriptionCount / $gcd);
-
-        // The session position in a loop, ranging from 0 to $sessionInLoop - 1.
         $positionInLoop = $sessionPosition % $sessionsInLoop;
+
+        // There's no extra remitment when subscription count is multiple
+        // of session count, and for the first session in loop.
+        if($sessionsInLoop === 1 || $positionInLoop === 0)
+        {
+            return $count;
+        }
+
+        $subscriptionsInLoop = (int)($subscriptionCount / $gcd);
         $extraSubscriptionsInLoop = $subscriptionsInLoop % $sessionsInLoop;
-        return (int)floor($subscriptionCount / $sessionCount) +
-            ($positionInLoop < $sessionsInLoop - $extraSubscriptionsInLoop ? 0 : 1);
+        // There's is an extra remitment when the modulo decreases compared to the previous session.
+        $prevModulo = ($positionInLoop * $extraSubscriptionsInLoop) % $sessionsInLoop;
+        if($prevModulo > ($prevModulo + $extraSubscriptionsInLoop) % $sessionsInLoop)
+        {
+            return $count + 1;
+        }
+        return $count;
     }
 
     /**
