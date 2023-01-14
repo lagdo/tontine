@@ -30,6 +30,7 @@ class TontineFactory extends Factory
             'phone' => $this->faker->phoneNumber(),
             'address' => $this->faker->address(),
             'city' => $this->faker->city(),
+            'type' => $this->faker->randomElement(['f', 'm']),
         ];
     }
 }

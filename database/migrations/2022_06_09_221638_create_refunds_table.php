@@ -15,7 +15,7 @@ class CreateRefundsTable extends Migration
     {
         Schema::create('refunds', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['p', 'i']); // "principal" and "interest".
+            $table->char('type', 1); // enum('type', ['p', 'i']); // "principal" and "interest".
             $table->unsignedBigInteger('session_id');
             $table->foreign('session_id')->references('id')->on('sessions');
             $table->unsignedBigInteger('loan_id');

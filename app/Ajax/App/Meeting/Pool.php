@@ -2,7 +2,7 @@
 
 namespace App\Ajax\App\Meeting;
 
-use Siak\Tontine\Service\Meeting\MeetingService;
+use Siak\Tontine\Service\Meeting\PoolService;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 
@@ -16,9 +16,9 @@ class Pool extends CallableClass
 {
     /**
      * @di
-     * @var MeetingService
+     * @var PoolService
      */
-    protected MeetingService $meetingService;
+    protected PoolService $poolService;
 
     /**
      * @var SessionModel|null
@@ -31,16 +31,16 @@ class Pool extends CallableClass
     protected function getSession()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->meetingService->getSession($sessionId);
+        $this->session = $this->poolService->getSession($sessionId);
     }
 
     /**
      * @exclude
      */
-    public function show($session, $meetingService)
+    public function show(SessionModel $session, PoolService $poolService)
     {
         $this->session = $session;
-        $this->meetingService = $meetingService;
+        $this->poolService = $poolService;
 
         $this->deposits();
         $this->remitments();
@@ -50,13 +50,13 @@ class Pool extends CallableClass
 
     public function deposits()
     {
-        $tontine = $this->meetingService->getTontine();
+        $tontine = $this->poolService->getTontine();
         $html = $this->view()->render('tontine.pages.meeting.pool.deposits')
             ->with('tontine', $tontine)->with('session', $this->session)
-            ->with('pools', $this->meetingService->getPoolsWithReceivables($this->session));
+            ->with('pools', $this->poolService->getPoolsWithReceivables($this->session));
         if($this->session->closed)
         {
-            $html->with('report', $this->meetingService->getPoolsReport($this->session));
+            $html->with('report', $this->poolService->getPoolsReport($this->session));
         }
         $this->response->html('meeting-deposits', $html);
 
@@ -69,13 +69,13 @@ class Pool extends CallableClass
 
     public function remitments()
     {
-        $tontine = $this->meetingService->getTontine();
+        $tontine = $this->poolService->getTontine();
         $html = $this->view()->render('tontine.pages.meeting.pool.remitments')
             ->with('tontine', $tontine)->with('session', $this->session)
-            ->with('pools', $this->meetingService->getPoolsWithPayables($this->session));
+            ->with('pools', $this->poolService->getPoolsWithPayables($this->session));
         if($this->session->closed)
         {
-            $html->with('report', $this->meetingService->getPoolsReport($this->session));
+            $html->with('report', $this->poolService->getPoolsReport($this->session));
         }
         $this->response->html('meeting-remitments', $html);
 

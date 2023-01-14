@@ -19,7 +19,7 @@ class CreateChargesTable extends Migration
             $table->tinyInteger('type');
             $table->tinyInteger('period');
             $table->integer('amount');
-            $table->boolean('active');
+            $table->boolean('active')->default(true);
             $table->unsignedBigInteger('tontine_id');
             $table->foreign('tontine_id')->references('id')->on('tontines');
             $table->unique(['name', 'tontine_id']);

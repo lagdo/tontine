@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
+use Siak\Tontine\Service\Tontine\TenantService;
 
 use function collect;
 

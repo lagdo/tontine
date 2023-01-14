@@ -1,11 +1,14 @@
 <?php
 
-namespace Siak\Tontine\Service\Planning;
+namespace Siak\Tontine\Service\Meeting;
 
+use Siak\Tontine\Model\Pool;
+use Siak\Tontine\Model\Session;
+use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\Events\EventTrait;
 use Siak\Tontine\Service\Tontine\TenantService;
 
-class PlanningService
+class SessionService
 {
     use EventTrait;
 
@@ -20,6 +23,26 @@ class PlanningService
     public function __construct(TenantService $tenantService)
     {
         $this->tenantService = $tenantService;
+    }
+
+    /**
+     * @return Tontine|null
+     */
+    public function getTontine(): ?Tontine
+    {
+        return $this->tenantService->tontine();
+    }
+
+    /**
+     * Get a single session.
+     *
+     * @param int $sessionId    The session id
+     *
+     * @return Session|null
+     */
+    public function getSession(int $sessionId): ?Session
+    {
+        return $this->tenantService->round()->sessions()->find($sessionId);
     }
 
     /**
@@ -83,5 +106,49 @@ class PlanningService
     public function closeSession(Session $session)
     {
         $session->update(['status' => SessionModel::STATUS_CLOSED]);
+    }
+
+    /**
+     * Update a session agenda.
+     *
+     * @param Session $session
+     * @param string $agenda
+     *
+     * @return void
+     */
+    public function saveAgenda(Session $session, string $agenda): void
+    {
+        $session->update(['agenda' => $agenda]);
+    }
+
+    /**
+     * Update a session report.
+     *
+     * @param Session $session
+     * @param string $report
+     *
+     * @return void
+     */
+    public function saveReport(Session $session, string $report): void
+    {
+        $session->update(['report' => $report]);
+    }
+
+    /**
+     * Find the unique receivable for a pool and a session.
+     *
+     * @param Pool $pool The pool
+     * @param Session $session The session
+     * @param int $receivableId
+     * @param string $notes
+     *
+     * @return int
+     */
+    public function saveReceivableNotes(Pool $pool, Session $session, int $receivableId, string $notes): int
+    {
+        return $session->receivables()
+            ->where('id', $receivableId)
+            ->whereIn('subscription_id', $pool->subscriptions()->pluck('id'))
+            ->update(['notes' => $notes]);
     }
 }

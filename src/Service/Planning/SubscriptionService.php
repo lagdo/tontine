@@ -18,11 +18,6 @@ class SubscriptionService
     protected TenantService $tenantService;
 
     /**
-     * @var PlanningService
-     */
-    protected PlanningService $planningService;
-
-    /**
      * @param TenantService $tenantService
      */
     public function __construct(TenantService $tenantService)

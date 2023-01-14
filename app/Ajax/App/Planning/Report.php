@@ -30,6 +30,7 @@ class Report extends CallableClass
     public SubscriptionService $subscriptionService;
 
     /**
+     * @di
      * @var ReportService
      */
     public ReportService $reportService;
@@ -74,9 +75,6 @@ class Report extends CallableClass
         return ($this->pool) ? $this->amounts() : $this->response;
     }
 
-    /**
-     * @di $reportService
-     */
     public function amounts()
     {
         $receivables = $this->reportService->getReceivables($this->pool);
@@ -95,9 +93,6 @@ class Report extends CallableClass
         return $this->response;
     }
 
-    /**
-     * @di $reportService
-     */
     public function deposits()
     {
         $receivables = $this->reportService->getReceivables($this->pool);
@@ -127,9 +122,6 @@ class Report extends CallableClass
         return $this->amounts();
     }
 
-    /**
-     * @di $reportService
-     */
     public function remitments()
     {
         $payables = $this->reportService->getPayables($this->pool);
@@ -144,7 +136,7 @@ class Report extends CallableClass
         $this->jq('#btn-subscription-amounts')->click($this->rq()->amounts());
         $this->jq('#btn-subscription-deposits')->click($this->rq()->deposits());
         $this->jq('.select-beneficiary')->change($this->rq()->saveBeneficiary(jq()->attr('data-session-id')->toInt(),
-            jq()->attr('data-subscription-id')->toInt(), jq()->val()));
+            jq()->attr('data-subscription-id')->toInt(), jq()->val()->toInt()));
 
         return $this->response;
     }

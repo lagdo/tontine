@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(UserSeeder::class);
         $this->call(CountrySeeder::class);
-        // $this->call(TontineSeeder::class);
-        // $this->call(MemberSeeder::class);
+        $this->call(TontineSeeder::class);
+        $this->call(MemberSeeder::class);
     }
 }

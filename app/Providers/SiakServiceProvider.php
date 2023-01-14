@@ -14,20 +14,22 @@ use Siak\Tontine\Service\Charge\FeeReportService;
 use Siak\Tontine\Service\Charge\FineService;
 use Siak\Tontine\Service\Charge\FineReportService;
 use Siak\Tontine\Service\Charge\SettlementService;
-use Siak\Tontine\Service\Meeting\LoanService;
 use Siak\Tontine\Service\Meeting\DepositService;
-use Siak\Tontine\Service\Meeting\MeetingService;
+use Siak\Tontine\Service\Meeting\LoanService;
+use Siak\Tontine\Service\Meeting\PoolService as MeetingPoolService;
 use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Service\Meeting\RemitmentService;
-use Siak\Tontine\Service\Planning\PlanningService;
+use Siak\Tontine\Service\Meeting\ReportService as MeetingReportService;
+use Siak\Tontine\Service\Meeting\SessionService as MeetingSessionService;
+use Siak\Tontine\Service\Planning\ReportService as PlanningReportService;
 use Siak\Tontine\Service\Planning\RoundService;
-use Siak\Tontine\Service\Planning\SessionService;
+use Siak\Tontine\Service\Planning\SessionService as PlanningSessionService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Report\PdfGeneratorInterface;
 use Siak\Tontine\Service\Report\LocalPdfGenerator;
 use Siak\Tontine\Service\Report\ReportServiceInterface;
 use Siak\Tontine\Service\Report\ReportService;
-use Siak\Tontine\Service\Tontine\PoolService;
+use Siak\Tontine\Service\Tontine\PoolService as TontinePoolService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
@@ -77,17 +79,19 @@ class SiakServiceProvider extends ServiceProvider
 
         $this->app->singleton(LoanService::class, LoanService::class);
         $this->app->singleton(DepositService::class, DepositService::class);
-        $this->app->singleton(MeetingService::class, MeetingService::class);
+        $this->app->singleton(MeetingPoolService::class, MeetingPoolService::class);
         $this->app->singleton(RefundService::class, RefundService::class);
         $this->app->singleton(RemitmentService::class, RemitmentService::class);
+        $this->app->singleton(MeetingReportService::class, MeetingReportService::class);
+        $this->app->singleton(MeetingSessionService::class, MeetingSessionService::class);
 
-        $this->app->singleton(PlanningService::class, PlanningService::class);
         $this->app->singleton(RoundService::class, RoundService::class);
-        $this->app->singleton(SessionService::class, SessionService::class);
+        $this->app->singleton(PlanningSessionService::class, PlanningSessionService::class);
         $this->app->singleton(SubscriptionService::class, SubscriptionService::class);
+        $this->app->singleton(PlanningReportService::class, PlanningReportService::class);
 
         $this->app->singleton(TenantService::class, TenantService::class);
-        $this->app->singleton(PoolService::class, PoolService::class);
+        $this->app->singleton(TontinePoolService::class, TontinePoolService::class);
         $this->app->singleton(MemberService::class, MemberService::class);
         $this->app->singleton(TontineService::class, TontineService::class);
 

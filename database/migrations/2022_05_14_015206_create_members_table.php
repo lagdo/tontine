@@ -22,7 +22,7 @@ class CreateMembersTable extends Migration
             $table->string('city', 100)->default('');
             $table->date('registered_at')->nullable();
             $table->date('birthday')->nullable();
-            $table->boolean('active');
+            $table->boolean('active')->default(true);
             $table->unsignedBigInteger('tontine_id');
             $table->foreign('tontine_id')->references('id')->on('tontines');
         });

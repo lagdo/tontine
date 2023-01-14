@@ -15,7 +15,7 @@ class CreateTontinesTable extends Migration
     {
         Schema::create('tontines', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['m', 'f']);
+            $table->char('type', 1); // enum('type', ['m', 'f']);
             $table->string('name', 100);
             $table->string('shortname', 25);
             $table->text('biography')->nullable();

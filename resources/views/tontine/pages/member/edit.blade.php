@@ -2,12 +2,6 @@
         <form class="form-horizontal" role="form" id="member-form">
           <div class="module-body">
             <div class="form-group row">
-              {!! Form::label('gender', trans('common.labels.gender'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
-              <div class="col-md-4">
-                {!! Form::select('gender', $genders, $member->gender, ['class' => 'form-control']) !!}
-              </div>
-            </div>
-            <div class="form-group row">
               {!! Form::label('name', trans('common.labels.name'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
               <div class="col-md-8">
                 {!! Form::text('name', $member->name, ['class' => 'form-control']) !!}

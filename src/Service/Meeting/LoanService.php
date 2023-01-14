@@ -12,7 +12,6 @@ use Siak\Tontine\Model\Remitment;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Refund;
-use Siak\Tontine\Service\Planning\PlanningService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Tontine\TenantService;
 use stdClass;
@@ -23,11 +22,6 @@ class LoanService
      * @var TenantService
      */
     protected TenantService $tenantService;
-
-    /**
-     * @var PlanningService
-     */
-    protected PlanningService $planningService;
 
     /**
      * @var RemitmentService
@@ -41,15 +35,13 @@ class LoanService
 
     /**
      * @param TenantService $tenantService
-     * @param PlanningService $planningService
      * @param RemitmentService $remitmentService
      * @param SubscriptionService $subscriptionService
      */
-    public function __construct(TenantService $tenantService, PlanningService $planningService,
+    public function __construct(TenantService $tenantService,
         RemitmentService $remitmentService, SubscriptionService $subscriptionService)
     {
         $this->tenantService = $tenantService;
-        $this->planningService = $planningService;
         $this->remitmentService = $remitmentService;
         $this->subscriptionService = $subscriptionService;
     }
@@ -281,16 +273,5 @@ class LoanService
 
         return [$poolLoans->merge($cashLoans),
             ['loan' => Currency::format($loanSum), 'paid' => Currency::format($paidSum)]];
-    }
-
-    /**
-     * @param Pool $pool
-     * @param int $sessionId
-     *
-     * @return array|stdClass
-     */
-    public function getRemitmentFigures(Pool $pool, int $sessionId = 0)
-    {
-        return $this->planningService->getRemitmentFigures($pool, $sessionId);
     }
 }

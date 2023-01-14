@@ -7,10 +7,9 @@ use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
-use Siak\Tontine\Service\Planning\PlanningService;
 use Siak\Tontine\Service\Tontine\TenantService;
 
-class MeetingService
+class PoolService
 {
     /**
      * @var TenantService
@@ -18,9 +17,9 @@ class MeetingService
     protected TenantService $tenantService;
 
     /**
-     * @var PlanningService
+     * @var ReportService
      */
-    protected PlanningService $planningService;
+    protected ReportService $reportService;
 
     /**
      * @var DepositService
@@ -34,15 +33,15 @@ class MeetingService
 
     /**
      * @param TenantService $tenantService
-     * @param PlanningService $planningService
+     * @param ReportService $reportService
      * @param DepositService $depositService
      * @param RemitmentService $remitmentService
      */
-    public function __construct(TenantService $tenantService, PlanningService $planningService,
+    public function __construct(TenantService $tenantService, ReportService $reportService,
         DepositService $depositService, RemitmentService $remitmentService)
     {
         $this->tenantService = $tenantService;
-        $this->planningService = $planningService;
+        $this->reportService = $reportService;
         $this->depositService = $depositService;
         $this->remitmentService = $remitmentService;
     }
@@ -134,50 +133,8 @@ class MeetingService
                 return $_session->start_at->lt($session->start_at);
             })->count();
             $subscriptionCount = $pool->subscriptions()->count();
-            $pool->pay_count = $this->planningService->getRemitmentCount($sessionCount, $subscriptionCount, $sessionRank);
+            $pool->pay_count = $this->reportService->getRemitmentCount($sessionCount, $subscriptionCount, $sessionRank);
         });
-    }
-
-    /**
-     * Update a session agenda.
-     *
-     * @param Session $session
-     * @param string $agenda
-     *
-     * @return void
-     */
-    public function updateSessionAgenda(Session $session, string $agenda): void
-    {
-        $session->update(['agenda' => $agenda]);
-    }
-
-    /**
-     * Update a session report.
-     *
-     * @param Session $session
-     * @param string $report
-     *
-     * @return void
-     */
-    public function updateSessionReport(Session $session, string $report): void
-    {
-        $session->update(['report' => $report]);
-    }
-
-    /**
-     * Find the unique receivable for a pool and a session.
-     *
-     * @param Pool $pool The pool
-     * @param Session $session The session
-     * @param int $receivableId
-     * @param string $notes
-     *
-     * @return int
-     */
-    public function saveReceivableNotes(Pool $pool, Session $session, int $receivableId, string $notes): int
-    {
-        return $session->receivables()->where('id', $receivableId)
-            ->whereIn('subscription_id', $pool->subscriptions()->pluck('id'))->update(['notes' => $notes]);
     }
 
     /**

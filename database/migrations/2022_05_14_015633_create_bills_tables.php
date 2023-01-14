@@ -23,6 +23,7 @@ class CreateBillsTables extends Migration
         });
 
         Schema::create('tontine_bills', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('bill_id');
             $table->foreign('bill_id')->references('id')->on('bills');
             $table->unsignedBigInteger('charge_id');
@@ -34,6 +35,7 @@ class CreateBillsTables extends Migration
         });
 
         Schema::create('round_bills', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('bill_id');
             $table->foreign('bill_id')->references('id')->on('bills');
             $table->unsignedBigInteger('charge_id');
@@ -47,6 +49,7 @@ class CreateBillsTables extends Migration
         });
 
         Schema::create('session_bills', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('bill_id');
             $table->foreign('bill_id')->references('id')->on('bills');
             $table->unsignedBigInteger('charge_id');
@@ -60,6 +63,7 @@ class CreateBillsTables extends Migration
         });
 
         Schema::create('fine_bills', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('bill_id');
             $table->foreign('bill_id')->references('id')->on('bills');
             $table->unsignedBigInteger('charge_id');

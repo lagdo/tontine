@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\View\View;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
+use App\Ajax\App\Meeting\Meeting;
 use App\Ajax\App\Meeting\Report as MeetingReport;
-use App\Ajax\App\Meeting\Session as Meeting;
 use App\Ajax\App\Planning\Pool;
 use App\Ajax\App\Planning\Report as PlanningReport;
 use App\Ajax\App\Planning\Session as Planning;

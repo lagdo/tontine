@@ -7,8 +7,8 @@ return [
             'route' => 'ajax',
         ],*/
         'directories' => [
-            app_path('Ajax\\Api') => [
-                'namespace' => '\\App\\Ajax\\Api',
+            app_path('Ajax/App') => [
+                'namespace' => '\\App\\Ajax\\App',
             ],
         ],
         'views' => [
@@ -49,11 +49,13 @@ return [
                 // 'uri' => '',
             ],
             'app' => [
-                'uri' => env('JAXON_JS_APP_URI', ''),
-                'dir' => env('JAXON_JS_APP_DIR', ''),
-                'file' => env('JAXON_JS_APP_FILE', ''),
-                'export' => env('JAXON_JS_APP_EXPORT', false),
-                'minify' => env('JAXON_JS_APP_MINIFY', false),
+                // 'uri' => env('JAXON_JS_APP_URI', ''),
+                // 'dir' => env('JAXON_JS_APP_DIR', ''),
+                // 'file' => env('JAXON_JS_APP_FILE', ''),
+                // 'export' => env('JAXON_JS_APP_EXPORT', false),
+                // 'minify' => env('JAXON_JS_APP_MINIFY', false),
+                'export' => false,
+                'minify' => false,
             ],
         ],
         // 'assets' => [

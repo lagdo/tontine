@@ -5,7 +5,7 @@ namespace App\Ajax\App\Planning;
 use App\Ajax\CallableClass;
 use Carbon\Carbon;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use Siak\Tontine\Service\SessionService;
+use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 
 use function Jaxon\jq;
