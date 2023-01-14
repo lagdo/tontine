@@ -86,25 +86,6 @@ class Report extends CallableClass
 
         $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt(), true));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->amounts());
-        $this->jq('#btn-subscription-deposits')->click($this->rq()->deposits());
-        $this->jq('#btn-subscription-remitments')->click($this->rq()->remitments());
-        $this->jq('.pool-session-toggle')->click($this->rq()->toggleSession(jq()->attr('data-session-id')->toInt()));
-
-        return $this->response;
-    }
-
-    public function deposits()
-    {
-        $receivables = $this->reportService->getReceivables($this->pool);
-        $this->view()->shareValues($receivables);
-        $html = $this->view()->render('tontine.pages.planning.report.deposits')
-            ->with('pool', $this->pool)
-            ->with('pools', $this->subscriptionService->getPools());
-        $this->response->html('content-home', $html);
-
-        $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt(), true));
-        $this->jq('#btn-subscription-refresh')->click($this->rq()->deposits());
-        $this->jq('#btn-subscription-amounts')->click($this->rq()->amounts());
         $this->jq('#btn-subscription-remitments')->click($this->rq()->remitments());
         $this->jq('.pool-session-toggle')->click($this->rq()->toggleSession(jq()->attr('data-session-id')->toInt()));
 
@@ -134,7 +115,6 @@ class Report extends CallableClass
         $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt(), false));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->remitments());
         $this->jq('#btn-subscription-amounts')->click($this->rq()->amounts());
-        $this->jq('#btn-subscription-deposits')->click($this->rq()->deposits());
         $this->jq('.select-beneficiary')->change($this->rq()->saveBeneficiary(jq()->attr('data-session-id')->toInt(),
             jq()->attr('data-subscription-id')->toInt(), jq()->val()->toInt()));
 
