@@ -100,4 +100,51 @@ trait ReportTrait
         };
         return $round->sessions()->with($with)->get();
     }
+
+    /**
+     * @param Pool $pool
+     * @param Collection $sessions
+     * @param Collection $subscriptions
+     *
+     * @return array
+     */
+    private function getExpectedFigures(Pool $pool, Collection $sessions, Collection $subscriptions): array
+    {
+        $sessionCount = $sessions->filter(function($session) use($pool) {
+            return $session->enabled($pool);
+        })->count();
+        $subscriptionCount = $pool->subscriptions()->count();
+        $depositCount = $subscriptions->count();
+
+        $remitmentAmount = $pool->amount * $sessionCount;
+        $depositAmount = $pool->amount * $subscriptions->count();
+
+        $rank = 0;
+        $cashier = 0;
+        $expectedFigures = [];
+        foreach($sessions as $session)
+        {
+            if($session->disabled($pool))
+            {
+                $expectedFigures[$session->id] = $this->makeFigures('');
+                continue;
+            }
+
+            $figures = $this->makeFigures(0);
+
+            $figures->cashier->start = $cashier;
+            $figures->cashier->recv = $cashier + $depositAmount;
+            $figures->deposit->count = $depositCount;
+            $figures->deposit->amount = $depositAmount;
+            $figures->remitment->count =
+                $this->getRemitmentCount($sessionCount, $subscriptionCount, $rank++);
+            $figures->remitment->amount = $remitmentAmount * $figures->remitment->count;
+            $figures->cashier->end = $cashier + $depositAmount - $figures->remitment->amount;
+            $cashier = $figures->cashier->end;
+
+            $expectedFigures[$session->id] = $this->formatCurrencies($figures);
+        }
+
+        return $expectedFigures;
+    }
 }

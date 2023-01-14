@@ -35,19 +35,19 @@ class ReportService
      *
      * @return array
      */
-    private function getAchievedFigures(Pool $pool, Collection $sessions, Collection $subscriptions): array
+    private function getCollectedFigures(Pool $pool, Collection $sessions, Collection $subscriptions): array
     {
         $cashier = 0;
         $remitmentAmount = $pool->amount * $sessions->filter(function($session) use($pool) {
             return $session->enabled($pool);
         })->count();
 
-        $achievedFigures = [];
+        $collectedFigures = [];
         foreach($sessions as $session)
         {
             if($session->disabled($pool) || $session->pending)
             {
-                $achievedFigures[$session->id] = $this->makeFigures('&nbsp;');
+                $collectedFigures[$session->id] = $this->makeFigures('&nbsp;');
                 continue;
             }
 
@@ -75,10 +75,10 @@ class ReportService
             }
 
             $cashier = $figures->cashier->end;
-            $achievedFigures[$session->id] = $this->formatCurrencies($figures);
+            $collectedFigures[$session->id] = $this->formatCurrencies($figures);
         }
 
-        return $achievedFigures;
+        return $collectedFigures;
     }
 
     /**
@@ -99,7 +99,7 @@ class ReportService
         $sessions = $this->_getSessions($this->tenantService->round(), $pool, ['payables.remitment']);
         $figures = new stdClass();
         $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
-        $figures->achieved = $this->getAchievedFigures($pool, $sessions, $subscriptions);
+        $figures->collected = $this->getCollectedFigures($pool, $sessions, $subscriptions);
 
         return compact('pool', 'sessions', 'subscriptions', 'figures');
     }
