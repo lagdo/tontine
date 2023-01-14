@@ -55,7 +55,7 @@ class Round extends CallableClass
     public function home(int $tontineId)
     {
         $this->bag('tontine')->set('tontine.id', $this->tontine->id);
-        $html = $this->view()->render('tontine.pages.profile.round.home')->with('tontine', $this->tontine);
+        $html = $this->view()->render('tontine.pages.round.home')->with('tontine', $this->tontine);
         $this->response->html('round-home', $html);
 
         $this->jq('#btn-round-create')->click($this->rq()->add());
@@ -74,15 +74,15 @@ class Round extends CallableClass
         $rounds = $this->roundService->getRounds($pageNumber);
         $roundCount = $this->roundService->getRoundCount();
 
-        $html = $this->view()->render('tontine.pages.profile.round.page')
+        $html = $this->view()->render('tontine.pages.round.page')
             ->with('rounds', $rounds)
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $roundCount));
         $this->response->html('round-page', $html);
 
         $roundId = jq()->parent()->attr('data-round-id')->toInt();
         $this->jq('.btn-round-edit')->click($this->rq()->edit($roundId));
-        $this->jq('.btn-round-open')->click($this->rq()->open($roundId)
-            ->confirm(trans('tontine.round.questions.open')));
+        // $this->jq('.btn-round-open')->click($this->rq()->open($roundId)
+        //     ->confirm(trans('tontine.round.questions.open')));
         $this->jq('.btn-round-enter')->click($this->rq()->enter($roundId));
 
         return $this->response;
@@ -107,7 +107,7 @@ class Round extends CallableClass
     public function add()
     {
         $title = trans('tontine.round.labels.add');
-        $content = $this->view()->render('tontine.pages.profile.round.add');
+        $content = $this->view()->render('tontine.pages.round.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -137,7 +137,7 @@ class Round extends CallableClass
         $round = $this->roundService->getRound($roundId);
 
         $title = trans('tontine.round.labels.edit');
-        $content = $this->view()->render('tontine.pages.profile.round.edit')->with('round', $round);
+        $content = $this->view()->render('tontine.pages.round.edit')->with('round', $round);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

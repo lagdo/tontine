@@ -85,6 +85,9 @@ class SessionService
      */
     public function openSession(Session $session)
     {
+        // Make sure the round is also opened.
+        $this->openRound($session->round);
+
         if($session->is_opened)
         {
             return;

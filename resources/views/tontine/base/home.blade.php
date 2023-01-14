@@ -11,7 +11,7 @@
           </div>
         </div>
         <div id="content-home">
-          @include('tontine.pages.profile.tontine.home')
+          @include('tontine.pages.tontine.home')
         </div>
 @endsection
 

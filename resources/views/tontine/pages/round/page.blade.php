@@ -21,8 +21,8 @@
     'class' => 'btn-round-edit',
     'text' => __('common.actions.edit'),
   ],[
-    'class' => $round->pending ? 'btn-round-open' : 'btn-round-enter',
-    'text' => $round->pending ? __('tontine.actions.open') : __('tontine.actions.enter'),
+    'class' => 'btn-round-enter',
+    'text' => __('tontine.actions.enter'),
   ]],
 ])
                           </td>
