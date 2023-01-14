@@ -8,6 +8,8 @@ use Siak\Tontine\Model\Country;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Tontine;
 
+use function trans;
+
 class TontineService
 {
     /**
@@ -21,6 +23,26 @@ class TontineService
     public function __construct(TenantService $tenantService)
     {
         $this->tenantService = $tenantService;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getCountries(): Collection
+    {
+        // For dropdown select.
+        return Country::pluck('name', 'id');
+    }
+
+    /**
+     * @return array
+     */
+    public function getTontineTypes(): array
+    {
+        return [
+            Tontine::TYPE_MUTUAL => trans('tontine.labels.types.mutual'),
+            Tontine::TYPE_FINANCIAL => trans('tontine.labels.types.financial'),
+        ];
     }
 
     /**

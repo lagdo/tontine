@@ -67,7 +67,7 @@ class Round extends CallableClass
     {
         $this->bag('tontine')->set('tontine.id', $this->tontine->id);
         $html = $this->view()->render('tontine.pages.round.home')->with('tontine', $this->tontine);
-        $this->response->html('round-home', $html);
+        $this->response->html('content-home', $html);
 
         $this->jq('#btn-round-create')->click($this->rq()->add());
 
