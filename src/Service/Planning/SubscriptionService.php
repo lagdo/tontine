@@ -5,6 +5,7 @@ namespace Siak\Tontine\Service\Planning;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
@@ -114,9 +115,9 @@ class SubscriptionService
      * @param Pool $pool
      * @param int $memberId
      *
-     * @return int
+     * @return void
      */
-    public function createSubscription(Pool $pool, int $memberId): int
+    public function createSubscription(Pool $pool, int $memberId)
     {
         $member = $this->tenantService->tontine()->members()->find($memberId);
         $subscription = new Subscription();
@@ -130,22 +131,20 @@ class SubscriptionService
             // Create the payable
             $subscription->payable()->create([]);
         });
-
-        return $subscription->id;
     }
 
     /**
      * @param Pool $pool
      * @param int $memberId
      *
-     * @return int
+     * @return void
      */
-    public function deleteSubscription(Pool $pool, int $memberId): int
+    public function deleteSubscription(Pool $pool, int $memberId)
     {
         $subscription = $pool->subscriptions()->where('member_id', $memberId)->first();
         if(!$subscription)
         {
-            return 0;
+            return;
         }
 
         DB::transaction(function() use($subscription) {
@@ -154,8 +153,6 @@ class SubscriptionService
             // Delete the subscription
             $subscription->delete();
         });
-
-        return $subscription->id;
     }
 
     /**
@@ -168,39 +165,43 @@ class SubscriptionService
      */
     public function toggleSession(Pool $pool, Session $session)
     {
-        DB::transaction(function() use($pool, $session) {
-            if($session->enabled($pool))
-            {
-                // Add the session to the list of disabled sessiosn for the pool.
-                $pool->disabledSessions()->attach($session->id);
-                return;
-            }
-            // Remove the session from the list of disabled sessiosn for the pool.
+        if($session->disabled($pool))
+        {
+            // Enable the session for the pool.
             $pool->disabledSessions()->detach($session->id);
+            return;
+        }
+
+        DB::transaction(function() use($pool, $session) {
+            // Disable the session for the pool.
+            $pool->disabledSessions()->attach($session->id);
+            // Delete the beneficiaries for the pool on this session.
+            Payable::where('session_id', $session->id)
+                ->whereIn('subscription_id', $pool->subscriptions->pluck('id'))
+                ->update(['session_id' => null]);
         });
     }
 
     /**
-     * @param Session $session
      * @param Subscription $subscription
+     * @param Session $session
      *
      * @return void
      */
-    public function setPayableSession(Session $session, Subscription $subscription)
+    public function setPayableSession(Subscription $subscription, Session $session)
     {
         $subscription->payable->session()->associate($session);
         $subscription->payable->save();
     }
 
     /**
-     * @param Session $session
      * @param Subscription $subscription
      *
      * @return void
      */
-    public function unsetPayableSession(Session $session, Subscription $subscription)
+    public function unsetPayableSession(Subscription $subscription)
     {
-        if($subscription->payable->session_id === $session->id)
+        if(($subscription->payable->session_id))
         {
             $subscription->payable->session()->dissociate();
             $subscription->payable->save();
@@ -224,13 +225,13 @@ class SubscriptionService
             if($currSubscriptionId > 0)
             {
                 $subscription = $pool->subscriptions()->find($currSubscriptionId);
-                $this->unsetPayableSession($session, $subscription);
+                $this->unsetPayableSession($subscription);
             }
             // If there is a new session assigned to the beneficiary, then save it.
             if($nextSubscriptionId > 0)
             {
                 $subscription = $pool->subscriptions()->find($nextSubscriptionId);
-                $this->setPayableSession($session, $subscription);
+                $this->setPayableSession($subscription, $session);
             }
         });
     }

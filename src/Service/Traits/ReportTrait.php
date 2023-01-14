@@ -59,11 +59,11 @@ trait ReportTrait
      *
      * @param int $sessionCount
      * @param int $subscriptionCount
-     * @param int $sessionRank
+     * @param int $sessionPosition
      *
      * @return int
      */
-    public function getRemitmentCount(int $sessionCount, int $subscriptionCount, int $sessionRank): int
+    public function getRemitmentCount(int $sessionCount, int $subscriptionCount, int $sessionPosition): int
     {
         if($sessionCount === 0 || $subscriptionCount === 0)
         {
@@ -75,11 +75,11 @@ trait ReportTrait
         $sessionsInLoop = (int)($sessionCount / $gcd);
         $subscriptionsInLoop = (int)($subscriptionCount / $gcd);
 
-        // The session rank in a loop, ranging from 0 to $sessionInLoop - 1.
-        $sessionRankInLoop = $sessionRank % $sessionsInLoop;
+        // The session position in a loop, ranging from 0 to $sessionInLoop - 1.
+        $positionInLoop = $sessionPosition % $sessionsInLoop;
         $extraSubscriptionsInLoop = $subscriptionsInLoop % $sessionsInLoop;
         return (int)floor($subscriptionCount / $sessionCount) +
-            ($sessionRankInLoop < $sessionsInLoop - $extraSubscriptionsInLoop ? 0 : 1);
+            ($positionInLoop < $sessionsInLoop - $extraSubscriptionsInLoop ? 0 : 1);
     }
 
     /**
@@ -119,7 +119,7 @@ trait ReportTrait
         $remitmentAmount = $pool->amount * $sessionCount;
         $depositAmount = $pool->amount * $subscriptions->count();
 
-        $rank = 0;
+        $position = 0;
         $cashier = 0;
         $expectedFigures = [];
         foreach($sessions as $session)
@@ -137,7 +137,7 @@ trait ReportTrait
             $figures->deposit->count = $depositCount;
             $figures->deposit->amount = $depositAmount;
             $figures->remitment->count =
-                $this->getRemitmentCount($sessionCount, $subscriptionCount, $rank++);
+                $this->getRemitmentCount($sessionCount, $subscriptionCount, $position++);
             $figures->remitment->amount = $remitmentAmount * $figures->remitment->count;
             $figures->cashier->end = $cashier + $depositAmount - $figures->remitment->amount;
             $cashier = $figures->cashier->end;

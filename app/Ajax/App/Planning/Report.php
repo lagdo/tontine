@@ -116,7 +116,7 @@ class Report extends CallableClass
      */
     public function toggleSession(int $sessionId)
     {
-        $session = $this->tenantService->getSession(intval($sessionId));
+        $session = $this->tenantService->getSession($sessionId);
         $this->subscriptionService->toggleSession($this->pool, $session);
 
         return $this->amounts();

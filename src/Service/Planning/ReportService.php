@@ -56,7 +56,7 @@ class ReportService
     public function getPayables(Pool $pool): array
     {
         $sessions = $this->_getSessions($this->tenantService->round(), $pool, ['payables.subscription']);
-        $subscriptions = $pool->subscriptions()->with(['payable', 'member'])->get();
+        $subscriptions = $pool->subscriptions()->with(['payable', 'payable.session', 'member'])->get();
         $figures = new stdClass();
         $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
 
@@ -74,8 +74,9 @@ class ReportService
         });
 
         // Separate subscriptions that already have a beneficiary assigned from the others.
-        [$subscriptions, $beneficiaries] = $subscriptions->partition(function($subscription) {
-            return !$subscription->payable->session_id;
+        [$beneficiaries, $subscriptions] = $subscriptions->partition(function($subscription) use($pool) {
+            $session = $subscription->payable->session;
+            return $session !== null && $session->enabled($pool);
         });
         $beneficiaries = $beneficiaries->pluck('member.name', 'id');
         // Show the list of subscriptions only for mutual tontines
