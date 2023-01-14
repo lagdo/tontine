@@ -3,6 +3,7 @@
 namespace App\Ajax\App\Tontine;
 
 use Siak\Tontine\Service\Planning\RoundService;
+use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Model\Tontine as TontineModel;
@@ -10,6 +11,7 @@ use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
+use function session;
 use function trans;
 
 class Tontine extends CallableClass
@@ -31,6 +33,11 @@ class Tontine extends CallableClass
     protected RoundService $roundService;
 
     /**
+     * @var MemberService
+     */
+    protected MemberService $memberService;
+
+    /**
      * @di $tenantService
      * @di $roundService
      * @databag tontine
@@ -40,11 +47,12 @@ class Tontine extends CallableClass
         $html = $this->view()->render('tontine.pages.tontine.home');
         $this->response->html('section-title', trans('tontine.menus.tontine'));
         $this->response->html('content-home', $html);
+        // Clear the sidebar menu
+        $this->response->html('sidebar-menu-items', '');
+        $this->response->html('section-header-title', '');
 
         $this->jq('#btn-tontine-create')->click($this->rq()->add());
         $this->jq('#btn-tontine-refresh')->click($this->rq()->home());
-
-        $this->cl(Round::class)->show($this->tenantService->tontine(), $this->roundService);
 
         return $this->page();
     }
@@ -71,6 +79,7 @@ class Tontine extends CallableClass
         $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
         $this->jq('.btn-tontine-edit')->click($this->rq()->edit($tontineId));
         $this->jq('.btn-tontine-rounds')->click($this->cl(Round::class)->rq()->home($tontineId));
+        $this->jq('.btn-tontine-enter')->click($this->rq()->enter($tontineId));
 
         return $this->response;
     }
@@ -138,6 +147,37 @@ class Tontine extends CallableClass
         $this->page(); // Back to current page
         $this->dialog->hide();
         $this->notify->success(trans('tontine.messages.updated'), trans('common.titles.success'));
+
+        return $this->response;
+    }
+
+    /**
+     * @databag member
+     * @databag tontine
+     * @di $tenantService
+     * @di $memberService
+     */
+    public function enter(int $tontineId)
+    {
+        $tontine = $this->tontineService->getTontine($tontineId);
+        if(!$tontine)
+        {
+            return $this->response;
+        }
+
+        session(['tontine.id' => $tontine->id, 'round.id' => 0]);
+        $this->bag('tontine')->set('tontine.id', $tontine->id);
+        $this->tenantService->setTontine($tontine);
+
+        $this->response->html('section-header-title', $tontine->name);
+
+        // Show the sidebar menu
+        $this->response->html('sidebar-menu-items', $this->view()->render('tontine.parts.sidebar.tontine'));
+        $this->jq('#tontine-menu-members')->click($this->cl(Member::class)->rq()->home());
+        $this->jq('#tontine-menu-charges')->click($this->cl(Charge::class)->rq()->home());
+
+        // Show the tontine member list
+        $this->cl(Member::class)->show($this->memberService);
 
         return $this->response;
     }

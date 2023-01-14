@@ -30,10 +30,10 @@
               <div class="d-sm-none d-lg-inline-block">Hi, {{ $user->name }}</div>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-              <a href="javascript:void(0)" class="dropdown-item has-icon" id="user-menu-profile">
+              {{-- <a href="javascript:void(0)" class="dropdown-item has-icon" id="user-menu-profile">
                 <i class="far fa-user"></i> Tontines
               </a>
-              <div class="dropdown-divider"></div>
+              <div class="dropdown-divider"></div> --}}
               <a href="{{ route('logout.get') }}" class="dropdown-item has-icon text-danger">
                 <i class="fa fa-sign-out-alt"></i> Logout
               </a>

@@ -7,7 +7,7 @@
         <div class="section-header">
           <h1 id="section-title">{{ __('tontine.menus.tontine') }}</h1>
           <div class="section-header-breadcrumb">
-            <h3>@isset($tontine){{ $tontine->name }} - {{ $round->title }}@endisset</h3>
+            <h3 id="section-header-title"></h3>
           </div>
         </div>
         <div id="content-home">

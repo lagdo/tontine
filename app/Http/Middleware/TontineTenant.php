@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
-use Siak\Tontine\Model\User;
 use Siak\Tontine\Service\Tontine\TenantService;
 use Closure;
 
@@ -25,6 +24,27 @@ class TontineTenant
         $this->tenantService = $tenantService;
     }
 
+    private function initTontine()
+    {
+        $user = auth()->user();
+        $this->tenantService->setUser($user);
+        $tontine = $user->tontines()->find(session('tontine.id', 0));
+        if(!$tontine)
+        {
+            session(['tontine.id' => 0, 'round.id' => 0]);
+            return;
+        }
+
+        $this->tenantService->setTontine($tontine);
+        $round = $tontine->rounds()->find(session('round.id', 0));
+        if(!$round)
+        {
+            session(['round.id' => 0]);
+            return;
+        }
+        $this->tenantService->setRound($round);
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -34,29 +54,7 @@ class TontineTenant
      */
     public function handle($request, Closure $next)
     {
-        /**
-         * @var User
-         */
-        $user = auth()->user();
-        $this->tenantService->setUser($user);
-        $tontine = $user->tontines()->find(session('tontine.id', 0));
-        if(!$tontine)
-        {
-            $tontine = $user->tontines()->has('rounds')->first();
-        }
-        if(($tontine))
-        {
-            $this->tenantService->setTontine($tontine);
-            $round = $tontine->rounds()->find(session('round.id', 0));
-            if(!$round)
-            {
-                $round = $tontine->rounds()->first();
-            }
-            if(($round))
-            {
-                $this->tenantService->setRound($round);
-            }
-        }
+        $this->initTontine();
 
         return $next($request);
     }

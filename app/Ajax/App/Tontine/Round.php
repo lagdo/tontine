@@ -3,7 +3,13 @@
 namespace App\Ajax\App\Tontine;
 
 use Siak\Tontine\Service\Planning\RoundService;
+use Siak\Tontine\Service\Tontine\PoolService;
 use Siak\Tontine\Service\Tontine\TenantService;
+use App\Ajax\App\Meeting\Meeting;
+use App\Ajax\App\Meeting\Report as MeetingReport;
+use App\Ajax\App\Planning\Pool;
+use App\Ajax\App\Planning\Report as PlanningReport;
+use App\Ajax\App\Planning\Session;
 use App\Ajax\CallableClass;
 
 use function intval;
@@ -29,6 +35,11 @@ class Round extends CallableClass
      * @var RoundService
      */
     protected RoundService $roundService;
+
+    /**
+     * @var PoolService
+     */
+    protected PoolService $poolService;
 
     /**
      * @return void
@@ -84,22 +95,6 @@ class Round extends CallableClass
         // $this->jq('.btn-round-open')->click($this->rq()->open($roundId)
         //     ->confirm(trans('tontine.round.questions.open')));
         $this->jq('.btn-round-enter')->click($this->rq()->enter($roundId));
-
-        return $this->response;
-    }
-
-    public function enter(int $roundId)
-    {
-        if(!($round = $this->roundService->getRound(intval($roundId))))
-        {
-            return $this->response;
-        }
-
-        // Save the tontine and round ids in the user session.
-        session(['tontine.id' => $this->tontine->id, 'round.id' => $round->id]);
-
-        // Reload the page
-        $this->response->redirect('/');
 
         return $this->response;
     }
@@ -160,5 +155,33 @@ class Round extends CallableClass
         $this->notify->success(trans('tontine.round.messages.updated'), trans('common.titles.success'));
 
         return $this->response;
+    }
+
+    /**
+     * @di $poolService
+     */
+    public function enter(int $roundId)
+    {
+        $round = $this->roundService->getRound($roundId);
+        if(!$round)
+        {
+            return $this->response;
+        }
+
+        // Save the tontine and round ids in the user session.
+        session(['tontine.id' => $this->tontine->id, 'round.id' => $round->id]);
+        $this->tenantService->setRound($round);
+
+        $this->response->html('section-header-title', $this->tontine->name . ' - ' . $round->title);
+
+        // Show the sidebar menu
+        $this->response->html('sidebar-menu-items', $this->view()->render('tontine.parts.sidebar.round'));
+        $this->jq('#planning-menu-pools')->click($this->cl(Pool::class)->rq()->home());
+        $this->jq('#planning-menu-sessions')->click($this->cl(Session::class)->rq()->home());
+        $this->jq('#planning-menu-reports')->click($this->cl(PlanningReport::class)->rq()->home());
+        $this->jq('#meeting-menu-sessions')->click($this->cl(Meeting::class)->rq()->home());
+        $this->jq('#meeting-menu-reports')->click($this->cl(MeetingReport::class)->rq()->home());
+
+        return $this->cl(Pool::class)->show($this->poolService);
     }
 }

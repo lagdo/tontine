@@ -2,6 +2,7 @@
 
 return [
     'menus' => [
+        'tontines' => "Tontines",
         'tontine' => "Tontine",
         'planning' => "Planning",
         'meeting' => "Réunion",

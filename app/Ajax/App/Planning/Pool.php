@@ -33,6 +33,16 @@ class Pool extends CallableClass
     protected bool $fromHome = false;
 
     /**
+     * @exclude
+     */
+    public function show(PoolService $poolService)
+    {
+        $this->poolService = $poolService;
+
+        return $this->home();
+    }
+
+    /**
      * @databag pool
      * @databag subscription
      */
