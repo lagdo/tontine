@@ -121,7 +121,7 @@ class ReportService
         $formattedAmount = Currency::format($remitmentAmount);
 
         $figures = [];
-        $rank = 0;
+        $position = 0;
         foreach($sessions as $session)
         {
             $figures[$session->id] = new stdClass();
@@ -131,7 +131,7 @@ class ReportService
             if($session->enabled($pool))
             {
                 $figures[$session->id]->count =
-                    $this->getRemitmentCount($sessionCount, $subscriptionCount, $rank++);
+                    $this->getRemitmentCount($sessionCount, $subscriptionCount, $position++);
                 $figures[$session->id]->amount = $formattedAmount;
             }
         }

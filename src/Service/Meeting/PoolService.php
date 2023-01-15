@@ -129,11 +129,11 @@ class PoolService
                 return $_session->enabled($pool);
             });
             $sessionCount = $sessions->count();
-            $sessionRank = $sessions->filter(function($_session) use($session) {
+            $position = $sessions->filter(function($_session) use($session) {
                 return $_session->start_at->lt($session->start_at);
             })->count();
             $subscriptionCount = $pool->subscriptions()->count();
-            $pool->pay_count = $this->reportService->getRemitmentCount($sessionCount, $subscriptionCount, $sessionRank);
+            $pool->pay_count = $this->reportService->getRemitmentCount($sessionCount, $subscriptionCount, $position);
         });
     }
 
