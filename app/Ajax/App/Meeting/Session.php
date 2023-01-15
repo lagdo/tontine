@@ -166,6 +166,9 @@ class Session extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $sessionService
+     */
     public function open()
     {
         $this->sessionService->openSession($this->session);
@@ -174,6 +177,9 @@ class Session extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $sessionService
+     */
     public function close()
     {
         $this->sessionService->closeSession($this->session);
@@ -182,6 +188,9 @@ class Session extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $sessionService
+     */
     public function saveAgenda(string $text)
     {
         $this->sessionService->saveAgenda($this->session, $text);
@@ -190,6 +199,9 @@ class Session extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $sessionService
+     */
     public function saveReport(string $text)
     {
         $this->sessionService->saveReport($this->session, $text);

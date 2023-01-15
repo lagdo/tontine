@@ -2,7 +2,9 @@
 
 namespace Siak\Tontine\Service\Meeting;
 
+use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Pool;
+use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\Events\EventTrait;
@@ -59,7 +61,7 @@ class SessionService
             return;
         }
         DB::transaction(function() use($round) {
-            $round->update(['status' => RoundModel::STATUS_OPENED]);
+            $round->update(['status' => Round::STATUS_OPENED]);
             $this->roundOpened($this->tenantService->tontine(), $round);
         });
     }
@@ -73,7 +75,7 @@ class SessionService
      */
     public function closeRound(Round $round)
     {
-        $round->update(['status' => RoundModel::STATUS_CLOSED]);
+        $round->update(['status' => Round::STATUS_CLOSED]);
     }
 
     /**
@@ -94,7 +96,7 @@ class SessionService
         }
         DB::transaction(function() use($session) {
             // Open the session
-            $session->update(['status' => SessionModel::STATUS_OPENED]);
+            $session->update(['status' => Session::STATUS_OPENED]);
             $this->sessionOpened($this->tenantService->tontine(), $session);
         });
     }
@@ -108,7 +110,7 @@ class SessionService
      */
     public function closeSession(Session $session)
     {
-        $session->update(['status' => SessionModel::STATUS_CLOSED]);
+        $session->update(['status' => Session::STATUS_CLOSED]);
     }
 
     /**
