@@ -59,14 +59,14 @@ class Report extends CallableClass
         }
     }
 
-    public function select(int $poolId, bool $showDeposits)
+    public function select(int $poolId)
     {
         if(($this->pool))
         {
             $this->bag('report')->set('pool.id', $this->pool->id);
         }
 
-        return $showDeposits ? $this->amounts() : $this->remitments();
+        return $this->amounts();
     }
 
     public function home()
@@ -84,9 +84,8 @@ class Report extends CallableClass
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt(), true));
+        $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt()));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->amounts());
-        $this->jq('#btn-subscription-remitments')->click($this->rq()->remitments());
         $this->jq('.pool-session-toggle')->click($this->rq()->toggleSession(jq()->attr('data-session-id')->toInt()));
 
         return $this->response;
@@ -101,34 +100,5 @@ class Report extends CallableClass
         $this->subscriptionService->toggleSession($this->pool, $session);
 
         return $this->amounts();
-    }
-
-    public function remitments()
-    {
-        $payables = $this->reportService->getPayables($this->pool);
-        $this->view()->shareValues($payables);
-        $html = $this->view()->render('tontine.pages.planning.report.remitments')
-            ->with('pool', $this->pool)
-            ->with('pools', $this->subscriptionService->getPools());
-        $this->response->html('content-home', $html);
-
-        $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt(), false));
-        $this->jq('#btn-subscription-refresh')->click($this->rq()->remitments());
-        $this->jq('#btn-subscription-amounts')->click($this->rq()->amounts());
-        $this->jq('.select-beneficiary')->change($this->rq()->saveBeneficiary(jq()->attr('data-session-id')->toInt(),
-            jq()->attr('data-subscription-id')->toInt(), jq()->val()->toInt()));
-
-        return $this->response;
-    }
-
-    /**
-     * @di $tenantService
-     */
-    public function saveBeneficiary(int $sessionId, int $currSubscriptionId, int $nextSubscriptionId)
-    {
-        $session = $this->tenantService->getSession($sessionId);
-        $this->subscriptionService->saveBeneficiary($this->pool, $session, $currSubscriptionId, $nextSubscriptionId);
-
-        return $this->remitments();
     }
 }

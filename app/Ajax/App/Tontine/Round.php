@@ -7,6 +7,7 @@ use Siak\Tontine\Service\Tontine\PoolService;
 use Siak\Tontine\Service\Tontine\TenantService;
 use App\Ajax\App\Meeting\Meeting;
 use App\Ajax\App\Meeting\Report as MeetingReport;
+use App\Ajax\App\Planning\Planning;
 use App\Ajax\App\Planning\Pool;
 use App\Ajax\App\Planning\Report as PlanningReport;
 use App\Ajax\App\Planning\Session;
@@ -176,8 +177,9 @@ class Round extends CallableClass
 
         // Show the sidebar menu
         $this->response->html('sidebar-menu-items', $this->view()->render('tontine.parts.sidebar.round'));
-        $this->jq('#planning-menu-pools')->click($this->cl(Pool::class)->rq()->home());
+        $this->jq('#planning-menu-subscriptions')->click($this->cl(Pool::class)->rq()->home());
         $this->jq('#planning-menu-sessions')->click($this->cl(Session::class)->rq()->home());
+        $this->jq('#planning-menu-beneficiaries')->click($this->cl(Planning::class)->rq()->beneficiaries());
         $this->jq('#planning-menu-reports')->click($this->cl(PlanningReport::class)->rq()->home());
         $this->jq('#meeting-menu-sessions')->click($this->cl(Meeting::class)->rq()->home());
         $this->jq('#meeting-menu-reports')->click($this->cl(MeetingReport::class)->rq()->home());

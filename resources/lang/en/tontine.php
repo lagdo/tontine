@@ -11,6 +11,8 @@ return [
         'sessions' => "Sessions",
         'pools' => "Pools",
         'reports' => "Reports",
+        'subscriptions' => "Subscriptions",
+        'beneficiaries' => "Beneficiaries",
     ],
     'titles' => [
         'tontines' => "Tontines",
@@ -94,7 +96,8 @@ return [
             'deleted' => "The session was successfully deleted.",
         ],
         'questions' => [
-            'open' => "Open this session?",
+            'open' => "Open this session? First make sure that you have entered all " .
+                "the informations required about members subscriptions, in the planning section.",
             'close' => "Close this session?",
         ],
     ],

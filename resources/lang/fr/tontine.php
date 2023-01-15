@@ -11,6 +11,8 @@ return [
         'sessions' => "Séances",
         'pools' => "Fonds",
         'reports' => "Rapports",
+        'subscriptions' => "Souscriptions",
+        'beneficiaries' => "Bénéficiaires",
     ],
     'titles' => [
         'tontines' => "Tontines",
@@ -94,7 +96,8 @@ return [
             'deleted' => "La séance a été supprimée.",
         ],
         'questions' => [
-            'open' => "Ouvrir cette séance ?",
+            'open' => "Ouvrir cette séance ? Assurez-vous d'avoir bien entré toutes les informations " .
+                "nécessaires sur les souscriptions des membres, dans la section planning.",
             'close' => "Fermer cette séance ?",
         ],
     ],

@@ -13,7 +13,6 @@
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right" role="group" aria-label="">
-                  <button type="button" class="btn btn-primary" id="btn-subscription-amounts"><i class="fa fa-cash-register"></i></button>
                   <button type="button" class="btn btn-primary" id="btn-subscription-refresh"><i class="fa fa-sync"></i></button>
                 </div>
               </div>

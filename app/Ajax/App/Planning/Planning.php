@@ -3,39 +3,97 @@
 namespace App\Ajax\App\Planning;
 
 use App\Ajax\CallableClass;
-use Carbon\Carbon;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use Siak\Tontine\Service\Planning\SessionService;
-use Siak\Tontine\Validation\Planning\SessionValidator;
+use Siak\Tontine\Model\Pool as PoolModel;
+use Siak\Tontine\Service\Planning\ReportService;
+use Siak\Tontine\Service\Planning\SubscriptionService;
+use Siak\Tontine\Service\Tontine\TenantService;
 
+use function intval;
 use function Jaxon\jq;
 use function Jaxon\pm;
-use function trans;
 
 /**
- * @databag session
+ * @databag report
+ * @before getPool
  */
 class Planning extends CallableClass
 {
     /**
-     * @di
-     * @var SessionService
+     * @var TenantService
      */
-    public SessionService $sessionService;
+    public TenantService $tenantService;
 
     /**
-     * @var SessionValidator
+     * @di
+     * @var SubscriptionService
      */
-    protected SessionValidator $validator;
+    public SubscriptionService $subscriptionService;
 
-    public function home()
+    /**
+     * @di
+     * @var ReportService
+     */
+    public ReportService $reportService;
+
+    /**
+     * @var PoolModel|null
+     */
+    protected ?PoolModel $pool = null;
+
+    /**
+     * @return void
+     */
+    protected function getPool()
     {
-        $html = $this->view()->render('tontine.pages.planning.session.home');
-        $this->response->html('section-title', trans('tontine.menus.planning'));
-        $this->response->html('content-home', $html);
-        $this->jq('#btn-refresh')->click($this->rq()->home());
-        $this->jq('#btn-create')->click($this->rq()->number());
+        $poolId = $this->target()->method() === 'select' ?
+            $this->target()->args()[0] : $this->bag('report')->get('pool.id', 0);
+        if($poolId !== 0)
+        {
+            $this->pool = $this->subscriptionService->getPool(intval($poolId));
+        }
+        if(!$this->pool)
+        {
+            $this->pool = $this->subscriptionService->getFirstPool();
+            // Save the current pool id
+            $this->bag('report')->set('pool.id', $this->pool ? $this->pool->id : 0);
+        }
+    }
 
-        return $this->page($this->bag('session')->get('page', 1));
+    public function select(int $poolId)
+    {
+        if(($this->pool))
+        {
+            $this->bag('report')->set('pool.id', $this->pool->id);
+        }
+
+        return $this->beneficiaries();
+    }
+
+    public function beneficiaries()
+    {
+        $payables = $this->reportService->getPayables($this->pool);
+        $this->view()->shareValues($payables);
+        $html = $this->view()->render('tontine.pages.planning.report.remitments')
+            ->with('pool', $this->pool)
+            ->with('pools', $this->subscriptionService->getPools());
+        $this->response->html('content-home', $html);
+
+        $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt()));
+        $this->jq('#btn-subscription-refresh')->click($this->rq()->beneficiaries());
+        $this->jq('.select-beneficiary')->change($this->rq()->saveBeneficiary(jq()->attr('data-session-id')->toInt(),
+            jq()->attr('data-subscription-id')->toInt(), jq()->val()->toInt()));
+
+        return $this->response;
+    }
+
+    /**
+     * @di $tenantService
+     */
+    public function saveBeneficiary(int $sessionId, int $currSubscriptionId, int $nextSubscriptionId)
+    {
+        $session = $this->tenantService->getSession($sessionId);
+        $this->subscriptionService->saveBeneficiary($this->pool, $session, $currSubscriptionId, $nextSubscriptionId);
+
+        return $this->beneficiaries();
     }
 }

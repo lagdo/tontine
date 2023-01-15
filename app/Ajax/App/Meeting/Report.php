@@ -52,12 +52,12 @@ class Report extends CallableClass
         }
     }
 
-    public function select(int $poolId)
+    public function select(int $poolId, bool $showAmounts)
     {
         if(($this->pool))
         {
             $this->bag('meeting')->set('pool.id', $this->pool->id);
-            return $this->amounts();
+            return $showAmounts ? $this->amounts() : $this->deposits();
         }
 
         return $this->response;
@@ -77,7 +77,7 @@ class Report extends CallableClass
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool'), true));
+        $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt(), true));
         $this->jq('#btn-meeting-report-refresh')->click($this->rq()->amounts());
         $this->jq('#btn-meeting-report-deposits')->click($this->rq()->deposits());
         $this->jq('#btn-meeting-report-print')->click($this->rq()->print());
@@ -93,7 +93,7 @@ class Report extends CallableClass
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool'), true));
+        $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt(), false));
         $this->jq('#btn-meeting-report-refresh')->click($this->rq()->deposits());
         $this->jq('#btn-meeting-report-amounts')->click($this->rq()->amounts());
         $this->jq('#btn-meeting-report-print')->click($this->rq()->print());
