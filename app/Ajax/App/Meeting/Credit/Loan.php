@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Meeting\Financial;
+namespace App\Ajax\App\Meeting\Credit;
 
 use Siak\Tontine\Service\LoanService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;

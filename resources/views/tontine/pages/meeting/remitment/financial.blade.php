@@ -14,19 +14,19 @@
                         <tr>
                           <th>{!! __('common.labels.title') !!}</th>
                           <th>{!! __('common.labels.amount') !!}</th>
-                          <th>&nbsp;</th>
+                          <th>{!! __('common.labels.paid') !!}</th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach ($payables as $payable)
                         <tr>
-                          <td>{{ $payable->title === '__' ? __('tontine.loan.labels.amount_to_lend') : $payable->title }}</td>
-                          <td>{{ $payable->amount }}@if ($payable->paid > 0)<br/>{{ $payable->paid }}@endif</td>
-                          <td class="table-item-menu" data-subscription-id="{{ $payable->id }}">
-@if ($payable->available)
-                            <a href="javascript:void(0)" class="btn-add-remitment"><i class="fa fa-toggle-off"></i></a>
-@else
+                          <td>{{ $payable->subscription->member->name ?? __('tontine.remitment.labels.not-assigned') }}</td>
+                          <td>{{ $payable->amount }}</td>
+                          <td class="table-item-menu" data-payable-id="{{ $payable->id }}">
+@if ($payable->id > 0)
                             <a href="javascript:void(0)" class="btn-del-remitment"><i class="fa fa-toggle-on"></i></a>
+@else
+                            <a href="javascript:void(0)" class="btn-add-remitment"><i class="fa fa-toggle-off"></i></a>
 @endif
                           </td>
                         </tr>

@@ -130,6 +130,11 @@ return [
             'deleted' => "The member subscription was deleted.",
         ],
     ],
+    'remitment' => [
+        'labels' => [
+            'not-assigned' => "** Not assigned **",
+        ],
+    ],
     'loan' => [
         'titles' => [
             'add' => "Add a loan",

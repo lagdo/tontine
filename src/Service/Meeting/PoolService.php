@@ -22,28 +22,13 @@ class PoolService
     protected ReportService $reportService;
 
     /**
-     * @var DepositService
-     */
-    protected DepositService $depositService;
-
-    /**
-     * @var RemitmentService
-     */
-    protected RemitmentService $remitmentService;
-
-    /**
      * @param TenantService $tenantService
      * @param ReportService $reportService
-     * @param DepositService $depositService
-     * @param RemitmentService $remitmentService
      */
-    public function __construct(TenantService $tenantService, ReportService $reportService,
-        DepositService $depositService, RemitmentService $remitmentService)
+    public function __construct(TenantService $tenantService, ReportService $reportService)
     {
         $this->tenantService = $tenantService;
         $this->reportService = $reportService;
-        $this->depositService = $depositService;
-        $this->remitmentService = $remitmentService;
     }
 
     /**
@@ -85,13 +70,12 @@ class PoolService
 
         return $pools->get()->each(function($pool) use($session) {
             // Receivables
-            $receivables = $this->depositService->getReceivables($pool, $session);
+            $query = $session->receivables()
+                ->whereIn('subscription_id', $pool->subscriptions()->pluck('id'));
             // Expected
-            $pool->recv_count = $receivables->count();
+            $pool->recv_count = $query->count();
             // Paid
-            $pool->recv_paid = $receivables->filter(function($receivable) {
-                return $receivable->deposit !== null;
-            })->count();
+            $pool->recv_paid = $query->whereHas('deposit')->count();
         });
     }
 
@@ -112,28 +96,14 @@ class PoolService
             $pools->skip($this->tenantService->getLimit() * ($page - 1));
         }
 
-        $sessions = $this->tenantService->round()->sessions;
-
-        return $pools->get()->each(function($pool) use($session, $sessions) {
-            // Payables
-            $payables = $this->remitmentService->getPayables($pool, $session);
+        return $pools->get()->each(function($pool) use($session) {
             // Expected
-            // $pool->pay_count = $payables->count();
+            $pool->pay_count = $this->reportService->getSessionRemitmentCount($pool, $session);
             // Paid
-            $pool->pay_paid = $payables->filter(function($payable) {
-                return $payable->remitment !== null;
-            })->count();
-
-            // Remitments
-            $sessions = $sessions->filter(function($_session) use($pool) {
-                return $_session->enabled($pool);
-            });
-            $sessionCount = $sessions->count();
-            $position = $sessions->filter(function($_session) use($session) {
-                return $_session->start_at->lt($session->start_at);
-            })->count();
-            $subscriptionCount = $pool->subscriptions()->count();
-            $pool->pay_count = $this->reportService->getRemitmentCount($sessionCount, $subscriptionCount, $position);
+            $pool->pay_paid = $session->payables()
+                ->whereIn('subscription_id', $pool->subscriptions()->pluck('id'))
+                ->whereHas('remitment')
+                ->count();
         });
     }
 

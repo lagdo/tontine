@@ -5,6 +5,7 @@ namespace Siak\Tontine\Service\Meeting;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Pool;
+use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Tontine\TenantService;
 use Siak\Tontine\Service\Traits\ReportTrait;
 use stdClass;
@@ -137,5 +138,23 @@ class ReportService
         }
 
         return $sessionId > 0 ? $figures[$sessionId] : $figures;
+    }
+
+    /**
+     * @param Pool $pool
+     * @param Session $session
+     *
+     * @return int
+     */
+    public function getSessionRemitmentCount(Pool $pool, Session $session): int
+    {
+        $sessions = $this->tenantService->round()->sessions->filter(function($_session) use($pool) {
+            return $_session->enabled($pool);
+        });
+        $position = $sessions->filter(function($_session) use($session) {
+            return $_session->start_at->lt($session->start_at);
+        })->count();
+
+        return $this->getRemitmentCount($sessions->count(), $pool->subscriptions()->count(), $position);
     }
 }

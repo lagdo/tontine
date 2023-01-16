@@ -21,6 +21,8 @@ class Loan extends Model
     protected $fillable = [
         'amount',
         'interest',
+        'member_id',
+        'session_id',
     ];
 
     public function session()

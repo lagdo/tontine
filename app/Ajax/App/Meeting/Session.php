@@ -128,8 +128,8 @@ class Session extends CallableClass
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 
-        $this->cl(Financial\Loan::class)->show($this->session, $this->loanService);
-        $this->cl(Financial\Refund::class)->show($this->session, $this->refundService);
+        $this->cl(Credit\Loan::class)->show($this->session, $this->loanService);
+        $this->cl(Credit\Refund::class)->show($this->session, $this->refundService);
 
         return $this->response;
     }

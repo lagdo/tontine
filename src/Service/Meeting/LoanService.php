@@ -12,7 +12,6 @@ use Siak\Tontine\Model\Remitment;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Refund;
-use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Tontine\TenantService;
 use stdClass;
 
@@ -24,26 +23,11 @@ class LoanService
     protected TenantService $tenantService;
 
     /**
-     * @var RemitmentService
-     */
-    protected RemitmentService $remitmentService;
-
-    /**
-     * @var SubscriptionService
-     */
-    protected SubscriptionService $subscriptionService;
-
-    /**
      * @param TenantService $tenantService
-     * @param RemitmentService $remitmentService
-     * @param SubscriptionService $subscriptionService
      */
-    public function __construct(TenantService $tenantService,
-        RemitmentService $remitmentService, SubscriptionService $subscriptionService)
+    public function __construct(TenantService $tenantService)
     {
         $this->tenantService = $tenantService;
-        $this->remitmentService = $remitmentService;
-        $this->subscriptionService = $subscriptionService;
     }
 
     /**
@@ -71,21 +55,6 @@ class LoanService
     }
 
     /**
-     * Get the unpaid subscriptions of a given pool.
-     *
-     * @param Pool $pool
-     *
-     * @return Collection
-     */
-    public function getSubscriptions(Pool $pool): Collection
-    {
-        return $pool->subscriptions()->with(['payable', 'member'])->get()
-            ->filter(function($subscription) {
-                return !$subscription->payable->session_id;
-            })->pluck('member.name', 'id');
-    }
-
-    /**
      * Get a list of members for the dropdown select component.
      *
      * @return Collection
@@ -106,43 +75,6 @@ class LoanService
     public function getMember(int $memberId): ?Member
     {
         return $this->tenantService->tontine()->members()->find($memberId);
-    }
-
-    /**
-     * Create a remitment.
-     *
-     * @param Pool $pool The pool
-     * @param Session $session The session
-     * @param int $subscriptionId
-     * @param int $interest
-     *
-     * @return void
-     */
-    public function createRemitment(Pool $pool, Session $session, int $subscriptionId, int $interest): void
-    {
-        $subscription = $pool->subscriptions()->find($subscriptionId);
-        DB::transaction(function() use($pool, $session, $subscription, $interest) {
-            $this->subscriptionService->setPayableSession($session, $subscription);
-            $this->remitmentService->createRemitment($pool, $session, $subscription->payable->id, $interest);
-        });
-    }
-
-    /**
-     * Delete a remitment.
-     *
-     * @param Pool $pool The pool
-     * @param Session $session The session
-     * @param int $subscriptionId
-     *
-     * @return void
-     */
-    public function deleteRemitment(Pool $pool, Session $session, int $subscriptionId): void
-    {
-        $subscription = $pool->subscriptions()->find($subscriptionId);
-        DB::transaction(function() use($pool, $session, $subscription) {
-            $this->remitmentService->deleteRemitment($pool, $session, $subscription->payable->id);
-            $this->subscriptionService->unsetPayableSession($session, $subscription);
-        });
     }
 
     /**

@@ -4,8 +4,8 @@ namespace App\Ajax\App\Meeting\Mutual;
 
 use App\Ajax\App\Meeting\Pool;
 use App\Ajax\CallableClass;
-use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Pool as PoolModel;
+use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\RemitmentService;
 
 use function intval;
@@ -34,6 +34,9 @@ class Remitment extends CallableClass
      */
     protected ?PoolModel $pool;
 
+    /**
+     * @return void
+     */
     protected function getPool()
     {
         // Get session
@@ -65,10 +68,11 @@ class Remitment extends CallableClass
             'payables' => $payables,
         ]);
         $this->response->html('meeting-remitments', $html);
+
         $this->jq('#btn-remitments-back')->click($this->cl(Pool::class)->rq()->remitments());
         $payableId = jq()->parent()->attr('data-payable-id')->toInt();
-        $this->jq('.btn-add-remitment')->click($this->rq()->addRemitment($payableId));
-        $this->jq('.btn-del-remitment')->click($this->rq()->delRemitment($payableId));
+        $this->jq('.btn-add-remitment')->click($this->rq()->saveRemitment($payableId));
+        $this->jq('.btn-del-remitment')->click($this->rq()->deleteRemitment($payableId));
 
         return $this->response;
     }
@@ -78,9 +82,9 @@ class Remitment extends CallableClass
      *
      * @return mixed
      */
-    public function addRemitment(int $payableId)
+    public function saveRemitment(int $payableId)
     {
-        $this->remitmentService->createRemitment($this->pool, $this->session, $payableId);
+        $this->remitmentService->saveMutualRemitment($this->pool, $this->session, $payableId);
         // $this->notify->success(trans('session.remitment.created'), trans('common.titles.success'));
 
         return $this->home($this->pool->id);
@@ -91,9 +95,9 @@ class Remitment extends CallableClass
      *
      * @return mixed
      */
-    public function delRemitment(int $payableId)
+    public function deleteRemitment(int $payableId)
     {
-        $this->remitmentService->deleteRemitment($this->pool, $this->session, $payableId);
+        $this->remitmentService->deleteMutualRemitment($this->pool, $this->session, $payableId);
         // $this->notify->success(trans('session.remitment.deleted'), trans('common.titles.success'));
 
         return $this->home($this->pool->id);

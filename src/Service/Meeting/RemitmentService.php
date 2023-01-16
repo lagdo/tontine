@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Refund;
@@ -18,11 +19,18 @@ class RemitmentService
     protected TenantService $tenantService;
 
     /**
-     * @param TenantService $tenantService
+     * @var ReportService
      */
-    public function __construct(TenantService $tenantService)
+    protected ReportService $reportService;
+
+    /**
+     * @param TenantService $tenantService
+     * @param ReportService $reportService
+     */
+    public function __construct(TenantService $tenantService, ReportService $reportService)
     {
         $this->tenantService = $tenantService;
+        $this->reportService = $reportService;
     }
 
     /**
@@ -69,13 +77,27 @@ class RemitmentService
      */
     public function getPayables(Pool $pool, Session $session, int $page = 0): Collection
     {
-        $payables = $this->getQuery($pool, $session)->with(['subscription.member', 'remitment']);
+        $query = $this->getQuery($pool, $session)->with(['subscription.member', 'remitment']);
         if($page > 0 )
         {
-            $payables->take($this->tenantService->getLimit());
-            $payables->skip($this->tenantService->getLimit() * ($page - 1));
+            $query->take($this->tenantService->getLimit());
+            $query->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $payables->get();
+        $payables = $query->get();
+        // Set the amount
+        $amount = Currency::format($pool->amount * $pool->subscriptions->count());
+        $payables->each(function($payable) use($amount) {
+            $payable->amount = $amount;
+        });
+
+        $remitmentCount = $this->reportService->getSessionRemitmentCount($pool, $session);
+        $emptyPayable = (object)[
+            'id' => 0,
+            'amount' => $amount,
+            'remitment' => null,
+        ];
+
+        return $payables->pad($remitmentCount, $emptyPayable);
     }
 
     /**
@@ -102,7 +124,44 @@ class RemitmentService
      */
     public function getPayable(Pool $pool, Session $session, int $payableId): ?Payable
     {
-        return $this->getQuery($pool, $session)->where('id', $payableId)->first();
+        return $this->getQuery($pool, $session)->with(['remitment'])->find($payableId);
+    }
+
+    /**
+     * Save a remitment for a mutual tontine.
+     *
+     * @param Pool $pool The pool
+     * @param Session $session The session
+     * @param int $payableId
+     *
+     * @return void
+     */
+    public function saveMutualRemitment(Pool $pool, Session $session, int $payableId): void
+    {
+        $payable = $this->getPayable($pool, $session, $payableId);
+        if(!$payable || $payable->remitment)
+        {
+            return;
+        }
+        $remitment = $payable->remitment()->create([]);
+    }
+
+    /**
+     * Delete a remitment.
+     *
+     * @param Pool $pool The pool
+     * @param Session $session The session
+     * @param int $payableId
+     *
+     * @return void
+     */
+    public function deleteMutualRemitment(Pool $pool, Session $session, int $payableId): void
+    {
+        $payable = $this->getPayable($pool, $session, $payableId);
+        if(($payable) && ($payable->remitment))
+        {
+            $payable->remitment->delete();
+        }
     }
 
     /**
@@ -115,25 +174,38 @@ class RemitmentService
      *
      * @return void
      */
-    public function createRemitment(Pool $pool, Session $session, int $payableId, int $interest = 0): void
+    public function saveFinancialRemitment(Pool $pool, Session $session, int $payableId, int $interest = 0): void
     {
-        $payable = $this->getPayable($pool, $session, $payableId);
-        if(!$payable || $payable->remitment)
+        // Cannot use the getPayable() method here, because there's no session attached to the payable.
+        $payable = Payable::with(['subscription'])
+            ->whereDoesntHave('remitment')
+            ->whereIn('subscription_id', $pool->subscriptions()->pluck('id'))
+            ->find($payableId);
+        if(!$payable)
         {
             return;
         }
-        DB::transaction(function() use($session, $interest) {
+
+        DB::transaction(function() use($session, $payable, $interest) {
+            // Associate the payable with the session.
+            $payable->session()->associate($session);
+            $payable->save();
+            // Create the remitment.
             $remitment = $payable->remitment()->create([]);
-            if($interest > 0)
-            {
-                $loan = $remitment->loan()->create(['amount' => 0, 'interest' => $interest]);
-                // The loan interest is supposed to be immediatly refunded.
-                $refund = new Refund();
-                $refund->type = Refund::TYPE_INTEREST;
-                $refund->loan()->associate($loan);
-                $refund->session()->associate($session);
-                $refund->save();
-            }
+            // Create the corresponding loan.
+            // $loan = new Loan();
+            $loan = $remitment->loan()->create([
+                'amount' => 0,
+                'interest' => $interest,
+                'member_id' => $payable->subscription->member_id,
+                'session_id' => $session->id,
+            ]);
+            // The loan interest is supposed to have been immediatly refunded.
+            $refund = new Refund();
+            $refund->type = Refund::TYPE_INTEREST;
+            $refund->loan()->associate($loan);
+            $refund->session()->associate($session);
+            $refund->save();
         });
     }
 
@@ -146,21 +218,43 @@ class RemitmentService
      *
      * @return void
      */
-    public function deleteRemitment(Pool $pool, Session $session, int $payableId): void
+    public function deleteFinancialRemitment(Pool $pool, Session $session, int $payableId): void
     {
-        $payable = $this->getPayable($pool, $session, $payableId);
-        if(!$payable || !$payable->remitment)
+        $payable = $this->getQuery($pool, $session)
+            ->with(['remitment', 'remitment.loan', 'remitment.loan.refund'])
+            ->find($payableId);
+        if(($payable) && ($remitment = $payable->remitment))
         {
-            return;
+            DB::transaction(function() use($payable, $remitment) {
+                if(($loan = $remitment->loan) != null)
+                {
+                    if(($refund = $loan->refund))
+                    {
+                        $refund->delete();
+                    }
+                    $loan->delete();
+                }
+                $remitment->delete();
+                // Detach from the session
+                $payable->session()->dissociate();
+                $payable->save();
+            });
         }
-        DB::transaction(function() use($payable) {
-            $remitment = $payable->remitment;
-            if(($loan = $remitment->loan) != null)
-            {
-                $loan->refund()->delete();
-                $loan->delete();
-            }
-            $remitment->delete();
-        });
+    }
+
+    /**
+     * Get the unpaid subscriptions of a given pool.
+     *
+     * @param Pool $pool
+     *
+     * @return Collection
+     */
+    public function getSubscriptions(Pool $pool): Collection
+    {
+        // Return the member names, keyed by payable id.
+        return $pool->subscriptions()->with(['payable', 'member'])->get()
+            ->filter(function($subscription) {
+                return !$subscription->payable->session_id;
+            })->pluck('member.name', 'payable.id');
     }
 }

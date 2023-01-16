@@ -130,6 +130,11 @@ return [
             'deleted' => "La souscription du membre a été supprimée.",
         ],
     ],
+    'remitment' => [
+        'labels' => [
+            'not-assigned' => "** Pas attribué **",
+        ],
+    ],
     'loan' => [
         'titles' => [
             'add' => "Ajouter une enchère",
