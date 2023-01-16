@@ -2,7 +2,7 @@
 
 namespace App\Ajax\App\Meeting\Credit;
 
-use Siak\Tontine\Service\LoanService;
+use Siak\Tontine\Service\Meeting\LoanService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -45,7 +45,7 @@ class Loan extends CallableClass
     /**
      * @exclude
      */
-    public function show($session, $loanService)
+    public function show(SessionModel $session, LoanService $loanService)
     {
         $this->session = $session;
         $this->loanService = $loanService;
@@ -55,21 +55,17 @@ class Loan extends CallableClass
 
     public function home()
     {
-        [$loans, $sum] = $this->loanService->getSessionLoans($this->session);
-        $amountAvailable = $this->loanService->getAmountAvailable($this->session);
+        $loans = $this->loanService->getSessionLoans($this->session);
+        $amountAvailable = $this->loanService->getFormattedAmountAvailable($this->session);
 
         $html = $this->view()->render('tontine.pages.meeting.loan.home')
-            ->with('loans', $loans)->with('session', $this->session)
-            ->with('amountAvailable', Currency::format($amountAvailable));
-        if($this->session->closed)
-        {
-            $html->with('sum', $sum);
-        }
+            ->with('loans', $loans)
+            ->with('amountAvailable', $amountAvailable);
         $this->response->html('meeting-loans', $html);
 
         $this->jq('#btn-loans-refresh')->click($this->rq()->home());
-        $this->jq('.btn-loan-add')->click($this->rq()->addLoan());
-        $loanId = jq()->parent()->attr('data-subscription-id')->toInt();
+        $this->jq('#btn-loan-add')->click($this->rq()->addLoan());
+        $loanId = jq()->parent()->attr('data-loan-id')->toInt();
         $this->jq('.btn-loan-delete')->click($this->rq()->deleteLoan($loanId));
 
         return $this->response;
@@ -86,7 +82,8 @@ class Loan extends CallableClass
         $members = $this->loanService->getMembers();
         $title = trans('tontine.loan.titles.add');
         $content = $this->view()->render('tontine.pages.meeting.loan.add')
-            ->with('members', $members)->with('amount', $amountAvailable);
+            ->with('members', $members)
+            ->with('amount', $amountAvailable);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -108,9 +105,11 @@ class Loan extends CallableClass
     {
         $values = $this->validator->validateItem($formValues);
 
-        $member = $this->loanService->getMember($values['member']);
-        $this->loanService->createLoan($this->session, $member,
-            $values['amount'], $values['interest']);
+        $memberId = $values['member'];
+        $amount = $values['amount'];
+        $interest = $values['interest'];
+        $this->loanService->createLoan($this->session, $memberId, $amount, $interest);
+
         $this->dialog->hide();
 
         return $this->home();

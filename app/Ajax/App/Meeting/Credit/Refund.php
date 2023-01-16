@@ -2,9 +2,10 @@
 
 namespace App\Ajax\App\Meeting\Credit;
 
-use Siak\Tontine\Service\Meeting\RefundService;
-use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
+use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Meeting\RefundService;
+use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 use function Jaxon\jq;
 
@@ -19,6 +20,11 @@ class Refund extends CallableClass
      * @var RefundService
      */
     protected RefundService $refundService;
+
+    /**
+     * @var DebtValidator
+     */
+    protected DebtValidator $validator;
 
     /**
      * @var SessionModel|null
@@ -37,7 +43,7 @@ class Refund extends CallableClass
     /**
      * @exclude
      */
-    public function show($session, $refundService)
+    public function show(SessionModel $session, RefundService $refundService)
     {
         $this->session = $session;
         $this->refundService = $refundService;
@@ -65,49 +71,49 @@ class Refund extends CallableClass
     {
         if($pageNumber < 1)
         {
-            $pageNumber = $this->bag('meeting')->get('loan.page', 1);
+            $pageNumber = $this->bag('meeting')->get('debt.page', 1);
         }
-        $this->bag('meeting')->set('loan.page', $pageNumber);
+        $this->bag('meeting')->set('debt.page', $pageNumber);
 
-        $refunded = $this->bag('meeting')->get('loan.filter', null);
-        $loanCount = $this->refundService->getLoanCount($this->session, $refunded);
+        $refunded = $this->bag('meeting')->get('debt.filter', null);
+        $debtCount = $this->refundService->getDebtCount($this->session, $refunded);
         $html = $this->view()->render('tontine.pages.meeting.refund.page', [
-            'session' => $this->session,
-            'loans' => $this->refundService->getLoans($this->session, $refunded, $pageNumber),
-            'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $loanCount),
+            'debts' => $this->refundService->getDebts($this->session, $refunded, $pageNumber),
+            'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $debtCount),
         ]);
-        if($this->session->closed)
-        {
-            $html->with('refundSum', $this->refundService->getRefundSum($this->session));
-        }
-        $this->response->html('meeting-loans-page', $html);
+        $this->response->html('meeting-debts-page', $html);
 
-        $loanId = jq()->parent()->attr('data-loan-id')->toInt();
-        $this->jq('.btn-add-refund')->click($this->rq()->create($loanId));
+        $debtId = jq()->parent()->attr('data-debt-id');
+        $this->jq('.btn-add-refund')->click($this->rq()->createRefund($debtId));
         $refundId = jq()->parent()->attr('data-refund-id')->toInt();
-        $this->jq('.btn-del-refund')->click($this->rq()->delete($refundId));
+        $this->jq('.btn-del-refund')->click($this->rq()->deleteRefund($refundId));
 
         return $this->response;
     }
 
     public function toggleFilter()
     {
-        $refunded = $this->bag('meeting')->get('loan.filter', null);
+        $refunded = $this->bag('meeting')->get('debt.filter', null);
         // Switch between null, true and false
         $refunded = $refunded === null ? true : ($refunded === true ? false : null);
-        $this->bag('meeting')->set('loan.filter', $refunded);
+        $this->bag('meeting')->set('debt.filter', $refunded);
 
         return $this->page(1);
     }
 
-    public function create(int $loanId)
+    /**
+     * @di $validator
+     */
+    public function createRefund(string $debtId)
     {
-        $this->refundService->createRefund($this->session, $loanId);
+        $values = $this->validator->validate($debtId);
+
+        $this->refundService->createRefund($this->session, $values['loan_id'], $values['type']);
 
         return $this->page();
     }
 
-    public function delete(int $refundId)
+    public function deleteRefund(int $refundId)
     {
         $this->refundService->deleteRefund($this->session, $refundId);
 

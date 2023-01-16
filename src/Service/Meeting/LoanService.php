@@ -8,9 +8,7 @@ use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Member;
-use Siak\Tontine\Model\Remitment;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Service\Tontine\TenantService;
 use stdClass;
@@ -97,17 +95,82 @@ class LoanService
     }
 
     /**
+     * Get the amount available for loan.
+     *
+     * @param Session $session    The session
+     *
+     * @return int
+     */
+    public function getAmountAvailable(Session $session): int
+    {
+        // Get the ids of all the sessions until the current one.
+        $sessionIds = $this->tenantService->round()->sessions()
+            ->where('start_at', '<=', $session->start_at)->pluck('id');
+
+        // The amount available for lending is the sum of the refunds,
+        // minus the sum of the loans, for all the sessions before the selected.
+        $loan = Loan::select(DB::raw('sum(amount) as total'))
+            ->whereIn('session_id', $sessionIds)
+            ->value('total');
+        $interest = Refund::interest()
+            ->join('loans', 'refunds.loan_id', '=', 'loans.id')
+            ->select(DB::raw('sum(loans.interest) as total'))
+            ->whereIn('refunds.session_id', $sessionIds)
+            ->value('total');
+        $principal = Refund::principal()
+            ->join('loans', 'refunds.loan_id', '=', 'loans.id')
+            ->select(DB::raw('sum(loans.amount) as total'))
+            ->whereIn('refunds.session_id', $sessionIds)
+            ->value('total');
+
+        return $principal + $interest - $loan;
+    }
+
+    /**
+     * @param Session $session    The session
+     *
+     * @return string
+     */
+    public function getFormattedAmountAvailable(Session $session): string
+    {
+        return Currency::format($this->getAmountAvailable($session));
+    }
+
+    /**
+     * Get the amount available for loan.
+     *
+     * @param Session $session
+     *
+     * @return Collection
+     */
+    public function getSessionLoans(Session $session): Collection
+    {
+        $loans = $session->loans()->with(['member'])->get();
+        $loans->each(function($loan) {
+            $loan->amount = Currency::format($loan->amount);
+            $loan->interest = Currency::format($loan->interest);
+        });
+        return $loans;
+    }
+
+    /**
      * Create a loan.
      *
      * @param Session $session The session
-     * @param Member $member The member
+     * @param int $memberId
      * @param int $amount
      * @param int $interest
      *
      * @return void
      */
-    public function createLoan(Session $session, Member $member, int $amount, int $interest): void
+    public function createLoan(Session $session, int $memberId, int $amount, int $interest): void
     {
+        $member = $this->getMember($memberId);
+        if(!$member)
+        {
+            return; // Todo: throw an exception.
+        }
+
         $loan = new Loan();
         $loan->amount = $amount;
         $loan->interest = $interest;
@@ -127,83 +190,5 @@ class LoanService
     public function deleteLoan(Session $session, int $loanId): void
     {
         $session->loans()->where('id', $loanId)->delete();
-    }
-
-    /**
-     * @param Session $session
-     *
-     * @return Collection
-     */
-    private function getSessionPayables(Session $session): Collection
-    {
-        $sessions = $this->tenantService->round()->sessions;
-        return $session->payables->map(function($payable) use($sessions) {
-            $payable->amount = $sessions->filter(function($session) use($payable) {
-                return $session->enabled($payable->subscription->pool);
-            })->count() * $payable->subscription->pool->amount;
-            return $payable;
-        });
-    }
-
-    /**
-     * Get the amount available for loan.
-     *
-     * @param Session $session    The session
-     *
-     * @return int
-     */
-    public function getAmountAvailable(Session $session): int
-    {
-        // Get the ids of all the sessions until the current one.
-        $sessionIds = $this->tenantService->round()->sessions()
-            ->where('start_at', '<=', $session->start_at)->pluck('id');
-        // The amount available for loan is the sum of the amounts paid for remitments,
-        // the amounts paid in the loans, and the refunds, for all the sessions.
-        $payableIds = Payable::whereIn('session_id', $sessionIds)->pluck('id');
-
-        return Remitment::whereIn('payable_id', $payableIds)->sum('interest') +
-            Loan::whereIn('session_id', $sessionIds)->get()
-                ->reduce(function($sum, $loan) {
-                    return $sum + $loan->interest - $loan->amount;
-                }, 0) +
-            Refund::whereIn('session_id', $sessionIds)
-                ->with('loan')->get()->sum('loan.amount');
-    }
-
-    /**
-     * Get all the cash loans of a given session
-     *
-     * @param Session $session
-     * @return array
-     */
-    public function getSessionLoans(Session $session): array
-    {
-        $payables = $this->getSessionPayables($session);
-
-        $paidSum = 0;
-        $poolLoans = $payables->map(function($payable) use(&$paidSum) {
-            $interest = $payable->remitment->interest ?? 0;
-            $paidSum += $interest;
-            return (object)[
-                'id' => 0, // $payable->subscription->id,
-                'title' => $payable->subscription->member->name,
-                'amount' => Currency::format($payable->amount),
-                'paid' => Currency::format($interest),
-            ];
-        });
-        $loanSum = 0;
-        $cashLoans = $this->getLoans($session)->map(function($loan) use(&$loanSum, &$paidSum) {
-            $loanSum += $loan->amount;
-            $paidSum += $loan->interest;
-            return (object)[
-                'id' => $loan->id,
-                'title' => $loan->member->name,
-                'amount' => Currency::format($loan->amount),
-                'paid' => Currency::format($loan->interest),
-            ];
-        });
-
-        return [$poolLoans->merge($cashLoans),
-            ['loan' => Currency::format($loanSum), 'paid' => Currency::format($paidSum)]];
     }
 }

@@ -35,6 +35,11 @@ class Loan extends Model
         return $this->belongsTo(Member::class);
     }
 
+    public function remitment()
+    {
+        return $this->belongsTo(Remitment::class);
+    }
+
     public function refund()
     {
         return $this->hasOne(Refund::class);

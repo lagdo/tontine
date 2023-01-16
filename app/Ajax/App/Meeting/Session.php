@@ -95,7 +95,7 @@ class Session extends CallableClass
 
         $this->jq('#btn-session-back')->click($this->cl(Meeting::class)->rq()->home());
         $this->jq('#btn-session-refresh')->click($this->rq()->pools());
-        $this->jq('#btn-session-loans')->click($this->rq()->loans());
+        $this->jq('#btn-session-credits')->click($this->rq()->credits());
         $this->jq('#btn-session-charges')->click($this->rq()->charges());
         $this->jq('#btn-session-open')->click($this->rq()->open()
             ->confirm(trans('tontine.session.questions.open')));
@@ -113,16 +113,16 @@ class Session extends CallableClass
      * @di $loanService
      * @di $refundService
      */
-    public function loans()
+    public function credits()
     {
-        $html = $this->view()->render('tontine.pages.meeting.session.loans', [
+        $html = $this->view()->render('tontine.pages.meeting.session.credits', [
             'tontine' => $this->poolService->getTontine(),
             'session' => $this->session,
         ]);
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-session-back')->click($this->cl(Session::class)->rq()->home());
-        $this->jq('#btn-session-refresh')->click($this->rq()->loans());
+        $this->jq('#btn-session-refresh')->click($this->rq()->credits());
         $this->jq('#btn-session-pools')->click($this->rq()->pools());
         $this->jq('#btn-session-charges')->click($this->rq()->charges());
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
@@ -151,7 +151,7 @@ class Session extends CallableClass
         $this->jq('#btn-session-back')->click($this->cl(Session::class)->rq()->home());
         $this->jq('#btn-session-refresh')->click($this->rq()->charges());
         $this->jq('#btn-session-pools')->click($this->rq()->pools());
-        $this->jq('#btn-session-loans')->click($this->rq()->loans());
+        $this->jq('#btn-session-credits')->click($this->rq()->credits());
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 
