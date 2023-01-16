@@ -117,7 +117,7 @@ class Member extends CallableClass
     {
         $this->fineService->createFine($this->charge, $this->session, $memberId);
 
-        return $this->page(1);
+        return $this->page();
     }
 
     /**

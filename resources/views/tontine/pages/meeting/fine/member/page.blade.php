@@ -10,7 +10,7 @@
                         <tr>
                           <td>{{ $member->name }}</td>
                           <td data-member-id="{{ $member->id }}">
-@if ($member->bills_count > 0)
+@if ($member->fine_bills_count > 0)
                             <a href="javascript:void(0)" class="btn-del-fine"><i class="fa fa-toggle-on"></i></a>
 @else
                             <a href="javascript:void(0)" class="btn-add-fine"><i class="fa fa-toggle-off"></i></a>

@@ -2,11 +2,12 @@
 
 namespace Siak\Tontine\Service\Charge;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\FineBill;
 use Siak\Tontine\Model\Charge;
-use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Tontine\TenantService;
 
@@ -53,7 +54,33 @@ class FineService
             $fines->take($this->tenantService->getLimit());
             $fines->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $fines->get();
+        $sessionIds = $this->tenantService->round()->sessions()
+            ->where('start_at', '<=', $session->start_at)->pluck('id');
+
+        return $fines->withCount([
+            'fine_bills' => function(Builder $query) use($session) {
+                $query->where('session_id', $session->id);
+            },
+            'fine_bills as all_fine_bills_count' => function(Builder $query) use($sessionIds) {
+                $query->whereIn('session_id', $sessionIds);
+            },
+            'fine_bills as paid_fine_bills_count' => function(Builder $query) use($session) {
+                $query->where('session_id', $session->id)
+                    ->whereExists(function($whereQuery) {
+                        $whereQuery->select(DB::raw(1))
+                            ->from('settlements')
+                            ->whereColumn('settlements.bill_id', 'fine_bills.bill_id');
+                    });
+            },
+            'fine_bills as all_paid_fine_bills_count' => function(Builder $query) use($sessionIds) {
+                $query->whereIn('session_id', $sessionIds)
+                    ->whereExists(function($whereQuery) {
+                        $whereQuery->select(DB::raw(1))
+                            ->from('settlements')
+                            ->whereColumn('settlements.bill_id', 'fine_bills.bill_id');
+                    });
+            },
+        ])->get();
     }
 
     /**
@@ -107,7 +134,8 @@ class FineService
             $members->take($this->tenantService->getLimit());
             $members->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $members->withCount(['fine_bills' => function(Builder $query) use($charge, $session) {
+        return $members
+            ->withCount(['fine_bills' => function(Builder $query) use($charge, $session) {
                 $query->where('charge_id', $charge->id)->where('session_id', $session->id);
             }])->get();
     }
@@ -126,19 +154,25 @@ class FineService
 
     /**
      * @param Charge $charge
-     * @param Member $member
      * @param Session $session
+     * @param int $memberId
      *
      * @return void
      */
-    public function createFine(Charge $charge, Member $member, Session $session): void
+    public function createFine(Charge $charge, Session $session, int $memberId): void
     {
-        $bill = new Bill();
-        $bill->amount = $charge->amount;
-        $bill->issued_at = now();
+        $member = $this->tenantService->tontine()->members()->find($memberId);
+        if(!$member)
+        {
+            return;
+        }
 
-        DB::transaction(function() use($bill, $charge, $member, $session) {
-            $bill->save();
+        DB::transaction(function() use($charge, $session, $member) {
+            $bill = Bill::create([
+                'charge' => $charge->name,
+                'amount' => $charge->amount,
+                'issued_at' => now(),
+            ]);
             $fine = new FineBill();
             $fine->charge()->associate($charge);
             $fine->member()->associate($member);
@@ -150,17 +184,26 @@ class FineService
 
     /**
      * @param Charge $charge
-     * @param Member $member
      * @param Session $session
+     * @param int $memberId
      *
      * @return void
      */
-    public function deleteFine(Charge $charge, Member $member, Session $session): void
+    public function deleteFine(Charge $charge, Session $session, int $memberId): void
     {
+        $member = $this->tenantService->tontine()->members()->find($memberId);
+        if(!$member)
+        {
+            return;
+        }
         $fine = FineBill::where('charge_id', $charge->id)
-            ->where('member_id', $member->id)
             ->where('session_id', $session->id)
+            ->where('member_id', $member->id)
             ->first();
+        if(!$fine)
+        {
+            return;
+        }
 
         DB::transaction(function() use($fine) {
             $billId = $fine->bill_id;

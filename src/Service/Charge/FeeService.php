@@ -52,7 +52,49 @@ class FeeService
             $fees->take($this->tenantService->getLimit());
             $fees->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $fees->get();
+        $sessionIds = $this->tenantService->round()->sessions()
+            ->where('start_at', '<=', $session->start_at)->pluck('id');
+
+        return $fees->withCount([
+            'tontine_bills',
+            'tontine_bills as paid_tontine_bills_count' => function(Builder $query) {
+                $query->whereExists(function($whereQuery) {
+                    $whereQuery->select(DB::raw(1))
+                        ->from('settlements')
+                        ->whereColumn('settlements.bill_id', 'tontine_bills.bill_id');
+                });
+            },
+            'round_bills',
+            'round_bills as paid_round_bills_count' => function(Builder $query) {
+                $query->whereExists(function($whereQuery) {
+                    $whereQuery->select(DB::raw(1))
+                        ->from('settlements')
+                        ->whereColumn('settlements.bill_id', 'round_bills.bill_id');
+                });
+            },
+            'session_bills' => function(Builder $query) use($session) {
+                $query->where('session_id', $session->id);
+            },
+            'session_bills as all_session_bills_count' => function(Builder $query) use($sessionIds) {
+                $query->whereIn('session_id', $sessionIds);
+            },
+            'session_bills as paid_session_bills_count' => function(Builder $query) use($session) {
+                $query->where('session_id', $session->id)
+                    ->whereExists(function($whereQuery) {
+                        $whereQuery->select(DB::raw(1))
+                            ->from('settlements')
+                            ->whereColumn('settlements.bill_id', 'session_bills.bill_id');
+                    });
+            },
+            'session_bills as all_paid_session_bills_count' => function(Builder $query) use($sessionIds) {
+                $query->whereIn('session_id', $sessionIds)
+                    ->whereExists(function($whereQuery) {
+                        $whereQuery->select(DB::raw(1))
+                            ->from('settlements')
+                            ->whereColumn('settlements.bill_id', 'session_bills.bill_id');
+                    });
+            },
+        ])->get();
     }
 
     /**

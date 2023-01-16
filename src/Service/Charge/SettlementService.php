@@ -66,11 +66,11 @@ class SettlementService
         $query = $this->getBillsQuery($charge, $session);
         if($onlyPaid === false)
         {
-            $query->whereDoesntHave('bill.settlements');
+            $query->whereDoesntHave('bill.settlement');
         }
         elseif($onlyPaid === true)
         {
-            $query->whereHas('bill.settlements');
+            $query->whereHas('bill.settlement');
         }
         return $query->where('charge_id', $charge->id);
     }
@@ -85,13 +85,13 @@ class SettlementService
      */
     public function getBills(Charge $charge, Session $session, ?bool $onlyPaid = null, int $page = 0): Collection
     {
-        $bills = $this->getQuery($charge, $session, $onlyPaid);
+        $query = $this->getQuery($charge, $session, $onlyPaid);
         if($page > 0 )
         {
-            $bills->take($this->tenantService->getLimit());
-            $bills->skip($this->tenantService->getLimit() * ($page - 1));
+            $query->take($this->tenantService->getLimit());
+            $query->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $bills->with(['member', 'bill', 'bill.settlements'])->get();
+        return $query->with(['member', 'bill', 'bill.settlement'])->get();
     }
 
     /**
@@ -114,24 +114,27 @@ class SettlementService
      */
     private function getBillQuery(Charge $charge, Session $session)
     {
+        // The select('bills.*') is important here, otherwise Eloquent overrides the
+        // Bill model id fields with those of another model, then making the dataset incorrect.
+        $query = Bill::select('bills.*')->with('settlement');
         if($charge->is_fine)
         {
-            return Bill::join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
+            return $query->join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
                 ->where('fine_bills.session_id', $session->id);
         }
         if($charge->period_session)
         {
-            return Bill::join('session_bills', 'session_bills.bill_id', '=', 'bills.id')
+            return $query->join('session_bills', 'session_bills.bill_id', '=', 'bills.id')
                 ->where('session_bills.session_id', $session->id);
         }
         if($charge->period_round)
         {
-            return Bill::join('round_bills', 'round_bills.bill_id', '=', 'bills.id')
+            return $query->join('round_bills', 'round_bills.bill_id', '=', 'bills.id')
                 ->where('round_bills.round_id', $session->round_id);
         }
         // if($charge->period_once)
         $memberIds = $this->tenantService->tontine()->members()->pluck('id');
-        return Bill::join('tontine_bills', 'tontine_bills.bill_id', '=', 'bills.id')
+        return $query->join('tontine_bills', 'tontine_bills.bill_id', '=', 'bills.id')
             ->whereIn('tontine_bills.member_id', $memberIds);
     }
 
@@ -146,7 +149,7 @@ class SettlementService
      */
     public function createSettlement(Charge $charge, Session $session, int $billId): void
     {
-        $bill = $this->getBillQuery($charge, $session)->with('settlement')->find($billId);
+        $bill = $this->getBillQuery($charge, $session)->find($billId);
         // Return if the bill is not found or the bill is already settled.
         if(!$bill || ($bill->settlement))
         {
@@ -169,7 +172,7 @@ class SettlementService
      */
     public function deleteSettlement(Charge $charge, Session $session, int $billId): void
     {
-        $bill = $this->getBillQuery($charge, $session)->with('settlement')->find($billId);
+        $bill = $this->getBillQuery($charge, $session)->find($billId);
         // Return if the bill is not found or the bill is not settled.
         if(!$bill || !($bill->settlement))
         {

@@ -72,16 +72,16 @@ class Fine extends CallableClass
         // Bill counts
         $bills = $this->reportService->getBills($this->session);
 
-        $html = $this->view()->render('tontine.pages.meeting.fee.page')
+        $html = $this->view()->render('tontine.pages.meeting.fine.page')
             ->with('session', $this->session)
-            ->with('fees', $fees)
+            ->with('fines', $fines)
             ->with('settlements', $settlements['total'])
             ->with('bills', $bills['total'])
             ->with('zero', $this->reportService->getFormattedAmount(0))
-            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $feeCount));
+            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $fineCount));
         // if($this->session->closed)
         // {
-        //     $html->with('report', $this->feeService->getFeesReport($this->session));
+        //     $html->with('report', $this->fineService->getFeesReport($this->session));
         // }
         $this->response->html('meeting-fines-page', $html);
 

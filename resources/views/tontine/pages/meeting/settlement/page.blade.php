@@ -9,8 +9,8 @@
 @foreach ($bills as $bill)
                         <tr>
                           <td>{{ $bill->member->name }}</td>
-                          <td data-bill-id="{{ $bill->bill->id }}">
-@if ($bill->paid)
+                          <td data-bill-id="{{ $bill->bill_id }}">
+@if ($bill->bill->settlement)
                             <a href="javascript:void(0)" class="btn-del-settlement"><i class="fa fa-toggle-on"></i></a>
 @else
                             <a href="javascript:void(0)" class="btn-add-settlement"><i class="fa fa-toggle-off"></i></a>

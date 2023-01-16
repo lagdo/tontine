@@ -79,7 +79,7 @@ class Member extends Model
         return $this->hasMany(Loan::class);
     }
 
-    public function fineBills()
+    public function fine_bills()
     {
         return $this->hasMany(FineBill::class);
     }
