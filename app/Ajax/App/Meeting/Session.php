@@ -2,6 +2,11 @@
 
 namespace App\Ajax\App\Meeting;
 
+use App\Ajax\CallableClass;
+use App\Ajax\App\Charge\Fee;
+use App\Ajax\App\Charge\Fine;
+use App\Ajax\App\Credit\Loan;
+use App\Ajax\App\Credit\Refund;
 use Siak\Tontine\Service\Charge\FeeService;
 use Siak\Tontine\Service\Charge\FeeReportService;
 use Siak\Tontine\Service\Charge\FineService;
@@ -11,7 +16,6 @@ use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Service\Meeting\PoolService;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Model\Session as SessionModel;
-use App\Ajax\CallableClass;
 
 use function Jaxon\pm;
 use function trans;
@@ -128,8 +132,8 @@ class Session extends CallableClass
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 
-        $this->cl(Credit\Loan::class)->show($this->session, $this->loanService);
-        $this->cl(Credit\Refund::class)->show($this->session, $this->refundService);
+        $this->cl(Loan::class)->show($this->session, $this->loanService);
+        $this->cl(Refund::class)->show($this->session, $this->refundService);
 
         return $this->response;
     }
@@ -155,8 +159,8 @@ class Session extends CallableClass
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 
-        $this->cl(Charge\Fee::class)->show($this->session, $this->feeService, $this->feeReportService);
-        $this->cl(Charge\Fine::class)->show($this->session, $this->fineService, $this->fineReportService);
+        $this->cl(Fee::class)->show($this->session, $this->feeService, $this->feeReportService);
+        $this->cl(Fine::class)->show($this->session, $this->fineService, $this->fineReportService);
 
         return $this->response;
     }

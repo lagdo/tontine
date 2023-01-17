@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Meeting\Credit;
+namespace App\Ajax\App\Credit;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Session as SessionModel;

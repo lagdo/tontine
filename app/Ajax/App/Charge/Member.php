@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Meeting\Charge;
+namespace App\Ajax\App\Charge;
 
 use Siak\Tontine\Service\Charge\ChargeService;
 use Siak\Tontine\Service\Charge\FineService;

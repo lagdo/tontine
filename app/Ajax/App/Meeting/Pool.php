@@ -81,7 +81,7 @@ class Pool extends CallableClass
 
         $this->jq('#btn-remitments-refresh')->click($this->rq()->remitments());
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
-        $remitmentClass = ($tontine->is_mutual ? Mutual\Remitment::class : Financial\Remitment::class);
+        $remitmentClass = ($tontine->is_mutual ? Remitment\Mutual::class : Remitment\Financial::class);
         $this->jq('.btn-pool-remitments')->click($this->cl($remitmentClass)->rq()->home($poolId));
 
         return $this->response;
