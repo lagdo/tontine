@@ -140,6 +140,7 @@ return [
             'add' => "Ajouter une enchère",
         ],
         'labels' => [
+            'principal' => "Principal",
             'interest' => "Intérêt",
             'amount_to_lend' => "Montant à prêter",
         ],

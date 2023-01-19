@@ -140,6 +140,7 @@ return [
             'add' => "Add a loan",
         ],
         'labels' => [
+            'principal' => "Principal",
             'interest' => "Interest",
             'amount_to_lend' => "Amount to lend",
         ],

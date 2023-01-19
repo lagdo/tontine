@@ -11,7 +11,7 @@
 @foreach($debts as $debt)
                     <tr>
                       <td>{{ $debt->member->name }}</td>
-                      <td>{{ $debt->type }}</td>
+                      <td>{{ __('tontine.loan.labels.' . $debt->type) }}</td>
                       <td>{{ $debt->amount }}</td>
 @if ($debt->refund_count)
                       <td data-refund-id="{{ $debt->refund->id }}">

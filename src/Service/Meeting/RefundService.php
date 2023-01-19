@@ -47,7 +47,7 @@ class RefundService
     private function getPrincipalQuery(Collection $sessionIds, ?bool $refunded)
     {
         $query = Loan::select('member_id', 'session_id', 'id', 'amount',
-                DB::raw("'" . Refund::TYPE_PRINCIPAL . "' as type"))
+                DB::raw("'principal' as type"))
             ->where('amount', '>', 0)
             ->whereIn('session_id', $sessionIds)
             ->withCount([
@@ -82,7 +82,7 @@ class RefundService
     {
         $query = Loan::select('member_id', 'session_id', 'id',
                 DB::raw('interest as amount'),
-                DB::raw("'" . Refund::TYPE_INTEREST . "' as type"))
+                DB::raw("'interest' as type"))
             ->where('loans.interest', '>', 0)
             ->whereIn('session_id', $sessionIds)
             ->withCount([
@@ -124,7 +124,7 @@ class RefundService
         $principal = $this->getPrincipalQuery($sessionIds, $refunded);
         $interest = $this->getInterestQuery($sessionIds, $refunded);
 
-        return $interest->unionAll($principal);
+        return $principal->unionAll($interest);
     }
 
     /**

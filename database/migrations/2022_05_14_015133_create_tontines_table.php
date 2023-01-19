@@ -42,8 +42,6 @@ class CreateTontinesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_tontine');
-
         Schema::dropIfExists('tontines');
     }
 }
