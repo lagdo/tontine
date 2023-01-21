@@ -4,6 +4,7 @@ namespace App\Ajax\App\Tontine;
 
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\MemberValidator;
+use App\Ajax\App\Faker;
 use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
@@ -107,9 +108,8 @@ class Member extends CallableClass
         }
 
         $this->dialog->hide();
-        $this->bag('faker')->set('member.count', $count);
 
-        $useFaker = config('jaxon.app.faker');
+        $useFaker = config('jaxon.app.faker', false);
         $html = $this->view()->render('tontine.pages.member.add')
             ->with('useFaker', $useFaker)
             ->with('count', $count);
@@ -118,6 +118,7 @@ class Member extends CallableClass
         $this->jq('#btn-save')->click($this->rq()->create(pm()->form('member-form')));
         if($useFaker)
         {
+            $this->bag('faker')->set('member.count', $count);
             $this->jq('#btn-fakes')->click($this->cl(Faker::class)->rq()->members());
         }
 

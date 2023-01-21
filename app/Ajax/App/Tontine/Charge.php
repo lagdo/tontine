@@ -4,6 +4,7 @@ namespace App\Ajax\App\Tontine;
 
 use Siak\Tontine\Service\Charge\ChargeService;
 use Siak\Tontine\Validation\ChargeValidator;
+use App\Ajax\App\Faker;
 use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
@@ -100,9 +101,8 @@ class Charge extends CallableClass
         }
 
         $this->dialog->hide();
-        $this->bag('faker')->set('charge.count', $count);
 
-        $useFaker = config('jaxon.app.faker');
+        $useFaker = config('jaxon.app.faker', false);
         $types = ['Frais', 'Amende'];
         $periods = ['Aucune', 'Unique', 'Année', 'Séance'];
         $html = $this->view()->render('tontine.pages.charge.add')
@@ -115,6 +115,7 @@ class Charge extends CallableClass
         $this->jq('#btn-save')->click($this->rq()->create(pm()->form('charge-form')));
         if($useFaker)
         {
+            $this->bag('faker')->set('charge.count', $count);
             $this->jq('#btn-fakes')->click($this->cl(Faker::class)->rq()->charges());
         }
 

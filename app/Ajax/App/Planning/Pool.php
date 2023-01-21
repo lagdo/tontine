@@ -5,8 +5,8 @@ namespace App\Ajax\App\Planning;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Tontine\PoolService;
 use Siak\Tontine\Validation\Planning\PoolValidator;
-use App\Ajax\CallableClass;
 use App\Ajax\App\Faker;
+use App\Ajax\CallableClass;
 
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -131,7 +131,6 @@ class Pool extends CallableClass
         }
 
         $this->dialog->hide();
-        $this->bag('faker')->set('pool.count', $count);
 
         $useFaker = config('jaxon.app.faker');
         $html = $this->view()->render('tontine.pages.planning.pool.add')
@@ -142,6 +141,7 @@ class Pool extends CallableClass
         $this->jq('#btn-save')->click($this->rq()->create(pm()->form('pool-form')));
         if($useFaker)
         {
+            $this->bag('faker')->set('pool.count', $count);
             $this->jq('#btn-fakes')->click($this->cl(Faker::class)->rq()->pools());
         }
 
