@@ -112,8 +112,7 @@ class Member extends CallableClass
         $useFaker = config('jaxon.app.faker');
         $html = $this->view()->render('tontine.pages.member.add')
             ->with('useFaker', $useFaker)
-            ->with('count', $count)
-            ->with('genders', $this->memberService->getGenders());
+            ->with('count', $count);
         $this->response->html('content-home', $html);
         $this->jq('#btn-cancel')->click($this->rq()->home());
         $this->jq('#btn-save')->click($this->rq()->create(pm()->form('member-form')));
@@ -144,8 +143,7 @@ class Member extends CallableClass
 
         $title = trans('tontine.member.titles.edit');
         $content = $this->view()->render('tontine.pages.member.edit')
-            ->with('member', $member)
-            ->with('genders', $this->memberService->getGenders());
+            ->with('member', $member);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

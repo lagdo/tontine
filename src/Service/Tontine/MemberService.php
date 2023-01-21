@@ -25,16 +25,6 @@ class MemberService
     }
 
     /**
-     * Get the genders.
-     *
-     * @return array
-     */
-    public function getGenders(): array
-    {
-        return ['M' => 'M.', 'F' => 'Mme'];
-    }
-
-    /**
      * Get a paginated list of members.
      *
      * @param int $page

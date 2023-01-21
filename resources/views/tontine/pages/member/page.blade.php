@@ -11,7 +11,7 @@
                  <tbody>
 @foreach ($members as $member)
                     <tr>
-                      <td>{{ $member->gender === 'F' ? 'Mme' : 'M.' }} {{ $member->name }}</td>
+                      <td>{{ $member->name }}</td>
                       <td>{{ $member->email }}</td>
                       <td>{{ $member->phone }}</td>
                       <td class="table-item-menu">

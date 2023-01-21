@@ -9,7 +9,7 @@
                  <tbody>
 @foreach ($members as $member)
                     <tr>
-                      <td>{{ $member->gender === 'F' ? 'Mme' : 'M.' }} {{ $member->name }}</td>
+                      <td>{{ $member->name }}</td>
                       <td class="table-member-subscription">
                         <div class="input-group float-right" data-member-id="{{ $member->id }}" style="width:auto;">
                           <div class="input-group-prepend">

@@ -36,7 +36,6 @@ class Faker extends CallableClass
         $members = $this->memberService->getFakeMembers($count);
         for($i = 0; $i < $count; $i++)
         {
-            $this->jq("#member_gender_$i")->val($members[$i]->gender);
             $this->jq("#member_name_$i")->val($members[$i]->name);
             $this->jq("#member_email_$i")->val($members[$i]->email);
             $this->jq("#member_phone_$i")->val($members[$i]->phone);

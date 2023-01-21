@@ -95,7 +95,6 @@ return [
         'start' => "Début",
         'end' => "Fin",
         'total' => "Total",
-        'gender' => "Civilité",
         'birthday' => "Date de naissance",
     ],
 ];

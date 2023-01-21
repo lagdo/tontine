@@ -28,9 +28,6 @@
                     </div>
 @for($i = 0; $i < $count; $i++)
                     <div class="form-group row">
-                      <div class="col-sm-2" style="width:30px">
-                        {!! Form::select('members[' . $i . '][gender]', $genders, '', ['class' => 'form-control', 'id' => "member_gender_$i"]) !!}
-                      </div>
                       <div class="col-sm-3">
                         {!! Form::text('members[' . $i . '][name]', '', ['class' => 'form-control', 'id' => "member_name_$i"]) !!}
                       </div>
