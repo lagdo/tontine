@@ -39,6 +39,9 @@
       font-size: 16px;
       padding: 4px 24px;
     }
+    .main-sidebar .sidebar-menu li a#tontine-menu-tontines {
+      color: #6777ef;
+    }
     .table td.table-item-menu {
       width: 90px;
     }
@@ -78,9 +81,17 @@
 
       <!-- Main Content -->
       <div class="main-content"><section class="section">
+        <!-- Page heading -->
+        <div class="section-header">
+
+@include('tontine.parts.header.topbar')
+
+        </div>
+        <div id="content-home">
 
 @yield('content')
 
+        </div>
       </section></div>
 
     </div>

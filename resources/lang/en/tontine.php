@@ -19,8 +19,11 @@ return [
         'rounds' => "Rounds",
         'add' => "Add a tontine",
         'edit' => "Edit a tontine",
+        'select' => "Select a tontine",
     ],
     'labels' => [
+        'tontine' => "Tontine",
+        'round' => "Round",
         'types' => [
             'mutual' => "Mutual",
             'financial' => "Financial",
@@ -40,6 +43,7 @@ return [
         'titles' => [
             'add' => "Add a round",
             'edit' => "Edit a round",
+            'select' => "Select a round",
         ],
         'messages' => [
             'created' => "The round was successfully created.",

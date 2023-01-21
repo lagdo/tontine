@@ -44,12 +44,11 @@ class Tontine extends CallableClass
      */
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.tontine.home');
-        $this->response->html('section-title', trans('tontine.menus.tontine'));
-        $this->response->html('content-home', $html);
-        // Clear the sidebar menu
-        $this->response->html('sidebar-menu-items', '');
-        $this->response->html('section-header-title', '');
+        $this->response->html('section-title', trans('tontine.menus.tontines'));
+        $this->response->html('content-home', $this->view()->render('tontine.pages.tontine.home'));
+
+        // Reset the sidebar menu
+        // $this->cl(Select::class)->resetSidebarMenu();
 
         $this->jq('#btn-tontine-create')->click($this->rq()->add());
         $this->jq('#btn-tontine-refresh')->click($this->rq()->home());
@@ -81,7 +80,6 @@ class Tontine extends CallableClass
         $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
         $this->jq('.btn-tontine-edit')->click($this->rq()->edit($tontineId));
         $this->jq('.btn-tontine-rounds')->click($this->cl(Round::class)->rq()->home($tontineId));
-        $this->jq('.btn-tontine-enter')->click($this->rq()->enter($tontineId));
 
         return $this->response;
     }
@@ -109,6 +107,7 @@ class Tontine extends CallableClass
     {
         $this->tontineService->createTontine($formValues);
         $this->page(); // Back to current page
+
         $this->dialog->hide();
         $this->notify->success(trans('tontine.messages.created'), trans('common.titles.success'));
 
@@ -141,39 +140,9 @@ class Tontine extends CallableClass
     {
         $this->tontineService->updateTontine($tontineId, $formValues);
         $this->page(); // Back to current page
+
         $this->dialog->hide();
         $this->notify->success(trans('tontine.messages.updated'), trans('common.titles.success'));
-
-        return $this->response;
-    }
-
-    /**
-     * @databag member
-     * @databag tontine
-     * @di $tenantService
-     * @di $memberService
-     */
-    public function enter(int $tontineId)
-    {
-        $tontine = $this->tontineService->getTontine($tontineId);
-        if(!$tontine)
-        {
-            return $this->response;
-        }
-
-        session(['tontine.id' => $tontine->id, 'round.id' => 0]);
-        $this->bag('tontine')->set('tontine.id', $tontine->id);
-        $this->tenantService->setTontine($tontine);
-
-        $this->response->html('section-header-title', $tontine->name);
-
-        // Show the sidebar menu
-        $this->response->html('sidebar-menu-items', $this->view()->render('tontine.parts.sidebar.tontine'));
-        $this->jq('#tontine-menu-members')->click($this->cl(Member::class)->rq()->home());
-        $this->jq('#tontine-menu-charges')->click($this->cl(Charge::class)->rq()->home());
-
-        // Show the tontine member list
-        $this->cl(Member::class)->show($this->memberService);
 
         return $this->response;
     }

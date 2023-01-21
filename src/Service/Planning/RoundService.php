@@ -48,7 +48,7 @@ class RoundService
     }
 
     /**
-     * Get a paginated list of rounds in the selected round.
+     * Get a paginated list of rounds in the selected tontine.
      *
      * @param int $page
      *
@@ -70,7 +70,7 @@ class RoundService
     }
 
     /**
-     * Get the number of rounds in the selected round.
+     * Get the number of rounds in the selected tontine.
      *
      * @return int
      */

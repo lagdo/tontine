@@ -20,9 +20,6 @@
   'menus' => [[
     'class' => 'btn-round-edit',
     'text' => __('common.actions.edit'),
-  ],[
-    'class' => 'btn-round-enter',
-    'text' => __('tontine.actions.enter'),
   ]],
 ])
                           </td>

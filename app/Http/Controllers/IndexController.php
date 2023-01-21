@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\View\View;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-
+use App\Ajax\App\Tontine\Select;
 use App\Ajax\App\Tontine\Tontine;
 use Jaxon\Laravel\Jaxon;
 
@@ -30,6 +30,7 @@ class IndexController extends Controller
             'locales' => LaravelLocalization::getSupportedLocales(),
             'locale' => LaravelLocalization::getCurrentLocale(),
             'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
+            'jxnSelect' => $jaxon->request(Select::class),
             'jxnTontine' => $jaxon->request(Tontine::class),
         ]);
 

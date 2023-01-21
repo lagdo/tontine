@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Country;
 use Siak\Tontine\Model\Currency;
+use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 
 use function trans;
@@ -83,6 +84,29 @@ class TontineService
     public function getTontine(int $tontineId): ?Tontine
     {
         return $this->tenantService->user()->tontines()->find($tontineId);
+    }
+
+    /**
+     * Get the rounds of the selected tontine.
+     *
+     * @return Collection
+     */
+    public function getRounds(): Collection
+    {
+        $tontine = $this->tenantService->tontine();
+        return ($tontine) ? $tontine->rounds()->get() : collect([]);
+    }
+
+    /**
+     * Get a single round.
+     *
+     * @param int $roundId    The round id
+     *
+     * @return Round|null
+     */
+    public function getRound(int $roundId): ?Round
+    {
+        return $this->tenantService->tontine()->rounds()->find($roundId);
     }
 
     /**

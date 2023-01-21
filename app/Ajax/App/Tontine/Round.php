@@ -95,7 +95,6 @@ class Round extends CallableClass
         $this->jq('.btn-round-edit')->click($this->rq()->edit($roundId));
         // $this->jq('.btn-round-open')->click($this->rq()->open($roundId)
         //     ->confirm(trans('tontine.round.questions.open')));
-        $this->jq('.btn-round-enter')->click($this->rq()->enter($roundId));
 
         return $this->response;
     }
@@ -122,6 +121,7 @@ class Round extends CallableClass
     {
         $this->roundService->createRound($formValues);
         $this->page(); // Back to current page
+
         $this->dialog->hide();
         $this->notify->success(trans('tontine.round.messages.created'), trans('common.titles.success'));
 
@@ -152,38 +152,10 @@ class Round extends CallableClass
     {
         $this->roundService->updateRound($roundId, $formValues);
         $this->page(); // Back to current page
+
         $this->dialog->hide();
         $this->notify->success(trans('tontine.round.messages.updated'), trans('common.titles.success'));
 
         return $this->response;
-    }
-
-    /**
-     * @di $poolService
-     */
-    public function enter(int $roundId)
-    {
-        $round = $this->roundService->getRound($roundId);
-        if(!$round)
-        {
-            return $this->response;
-        }
-
-        // Save the tontine and round ids in the user session.
-        session(['tontine.id' => $this->tontine->id, 'round.id' => $round->id]);
-        $this->tenantService->setRound($round);
-
-        $this->response->html('section-header-title', $this->tontine->name . ' - ' . $round->title);
-
-        // Show the sidebar menu
-        $this->response->html('sidebar-menu-items', $this->view()->render('tontine.parts.sidebar.round'));
-        $this->jq('#planning-menu-subscriptions')->click($this->cl(Pool::class)->rq()->home());
-        $this->jq('#planning-menu-sessions')->click($this->cl(Session::class)->rq()->home());
-        $this->jq('#planning-menu-beneficiaries')->click($this->cl(Planning::class)->rq()->beneficiaries());
-        $this->jq('#planning-menu-reports')->click($this->cl(PlanningReport::class)->rq()->home());
-        $this->jq('#meeting-menu-sessions')->click($this->cl(Meeting::class)->rq()->home());
-        $this->jq('#meeting-menu-reports')->click($this->cl(MeetingReport::class)->rq()->home());
-
-        return $this->cl(Pool::class)->show($this->poolService);
     }
 }

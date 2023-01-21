@@ -19,8 +19,11 @@ return [
         'rounds' => "Tours",
         'add' => "Ajouter une tontine",
         'edit' => "Modifier une tontine",
+        'select' => "Sélectionner une tontine",
     ],
     'labels' => [
+        'tontine' => "Tontine",
+        'round' => "Tour",
         'types' => [
             'mutual' => "Mutuelle",
             'financial' => "Financière",
@@ -40,6 +43,7 @@ return [
         'titles' => [
             'add' => "Ajouter un tour",
             'edit' => "Modifier un tour",
+            'select' => "Sélectionner un tour",
         ],
         'messages' => [
             'created' => "le tour a été ajouté.",
@@ -47,7 +51,7 @@ return [
             'deleted' => "le tour a été supprimé.",
         ],
         'questions' => [
-            'open' => "Ouvrir ce tour ? Assurez-vous d'avoir défini ses données.",
+            'open' => "Ouvrir ce tour ? Assurez-vous d'avoir saisi toutes ses données.",
             'close' => "Fermer ce tour ?",
         ],
     ],
