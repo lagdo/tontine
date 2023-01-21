@@ -43,6 +43,16 @@ class Subscription extends CallableClass
         $this->pool = $this->subscriptionService->getPool($poolId);
     }
 
+    /**
+     * @exclude
+     */
+    public function show(SubscriptionService $subscriptionService, PoolModel $pool)
+    {
+        $this->subscriptionService = $subscriptionService;
+        $this->pool = $pool;
+        return $this->home($pool->id);
+    }
+
     public function home(int $poolId)
     {
         $html = $this->view()->render('tontine.pages.planning.subscription.home')

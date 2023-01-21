@@ -2,6 +2,7 @@
 
 namespace App\Ajax\App\Planning;
 
+use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Tontine\PoolService;
 use Siak\Tontine\Validation\Planning\PoolValidator;
 use App\Ajax\CallableClass;
@@ -28,6 +29,11 @@ class Pool extends CallableClass
     protected PoolValidator $validator;
 
     /**
+     * @var SubscriptionService
+     */
+    public SubscriptionService $subscriptionService;
+
+    /**
      * @var bool
      */
     protected bool $fromHome = false;
@@ -45,6 +51,7 @@ class Pool extends CallableClass
     /**
      * @databag pool
      * @databag subscription
+     * @di $subscriptionService
      */
     public function home()
     {
@@ -60,7 +67,6 @@ class Pool extends CallableClass
 
     /**
      * @databag pool
-     * @databag subscription
      */
     public function page(int $pageNumber = 0)
     {
@@ -76,11 +82,11 @@ class Pool extends CallableClass
         $html = $this->view()->render('tontine.pages.planning.pool.page')->with('pools', $pools)
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $poolCount));
         $this->response->html('pool-page', $html);
+
         if($this->fromHome && $poolCount > 0)
         {
             // Show the subscriptions of the first pool in the list
-            $poolId = $this->bag('subscription')->get('pool.id', $pools[0]->id);
-            $this->response->script($this->cl(Subscription::class)->rq()->home($poolId));
+            $this->cl(Subscription::class)->show($this->subscriptionService, $pools[0]);
         }
 
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
