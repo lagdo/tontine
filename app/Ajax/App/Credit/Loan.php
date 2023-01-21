@@ -4,7 +4,6 @@ namespace App\Ajax\App\Credit;
 
 use Siak\Tontine\Service\Meeting\LoanService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
-use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 

@@ -4,8 +4,6 @@ namespace Siak\Tontine\Service\Tontine;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Siak\Tontine\Model\Country;
-use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 
@@ -24,15 +22,6 @@ class TontineService
     public function __construct(TenantService $tenantService)
     {
         $this->tenantService = $tenantService;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getCountries(): Collection
-    {
-        // For dropdown select.
-        return Country::pluck('name', 'id');
     }
 
     /**
@@ -118,9 +107,6 @@ class TontineService
      */
     public function createTontine(array $values): bool
     {
-        // The default country and currency
-        $values['currency_id'] = Currency::where('code', 'XAF')->first()->id;
-        $values['country_id'] = Country::where('code', 'CM')->first()->id;
         $this->tenantService->user()->tontines()->create($values);
 
         return true;

@@ -24,14 +24,11 @@ class CreateTontinesTable extends Migration
             $table->string('address', 500)->default('');
             $table->string('city', 100)->default('');
             $table->string('website', 100)->default('');
-            $table->string('numbers', 200)->default('{}');
+            $table->string('country_code', 2);
+            $table->string('currency_code', 3);
             $table->timestamps();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->unsignedInteger('country_id');
-            $table->foreign('country_id')->references('id')->on('countries');
-            $table->unsignedInteger('currency_id');
-            $table->foreign('currency_id')->references('id')->on('currencies');
         });
     }
 

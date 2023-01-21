@@ -37,9 +37,6 @@ class Tontine extends Model
         'address',
         'city',
         'website',
-        'numbers',
-        'country_id',
-        'currency_id',
     ];
 
     /**
@@ -85,16 +82,6 @@ class Tontine extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function country()
-    {
-        return $this->belongsTo(Country::class);
-    }
-
-    public function currency()
-    {
-        return $this->belongsTo(Currency::class);
     }
 
     public function members()

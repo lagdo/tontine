@@ -5,7 +5,6 @@ namespace Siak\Tontine\Service\Charge;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Bill;
-use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Service\Tontine\TenantService;
@@ -135,18 +134,5 @@ class FineReportService
                 'previous' => $previousSettlements->pluck('amount', 'charge_id'),
             ],
         ];
-    }
-
-    /**
-     * Get a formatted amount.
-     *
-     * @param int $amount
-     * @param bool $hideSymbol
-     *
-     * @return string
-     */
-    public function getFormattedAmount(int $amount, bool $hideSymbol = false): string
-    {
-        return Currency::format($amount, $hideSymbol);
     }
 }

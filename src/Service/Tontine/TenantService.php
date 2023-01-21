@@ -3,7 +3,6 @@
 namespace Siak\Tontine\Service\Tontine;
 
 use Siak\Tontine\Model\Charge;
-use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
@@ -49,8 +48,6 @@ class TenantService
      */
     public function setTontine(Tontine $tontine): void
     {
-        // Set the currency in the models
-        Currency::$current = $tontine->currency;
         // Set the members count in the Charge model
         Charge::$memberCount = $tontine->members()->count();
 
@@ -73,14 +70,6 @@ class TenantService
     public function user(): ?User
     {
         return $this->user;
-    }
-
-    /**
-     * @return Currency
-     */
-    public function currency(): Currency
-    {
-        return $this->tontine->currency;
     }
 
     /**
