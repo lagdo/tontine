@@ -26,7 +26,6 @@ class MemberFactory extends Factory
         $isMale = $this->faker->boolean();
         return [
             'name' => $this->faker->name($isMale ? 'male' : 'female'),
-            'gender' => $isMale ? 'M' : 'F',
             'email' => $this->faker->email(),
             'phone' => $this->faker->phoneNumber(),
             'address' => $this->faker->address(),

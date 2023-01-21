@@ -2,10 +2,11 @@
 
 namespace App\Ajax\App\Planning;
 
-use Siak\Tontine\Service\PoolService;
+use Siak\Tontine\Service\Planning\SubscriptionService;
+use Siak\Tontine\Service\Tontine\PoolService;
 use Siak\Tontine\Validation\Planning\PoolValidator;
-use App\Ajax\CallableClass;
 use App\Ajax\App\Faker;
+use App\Ajax\CallableClass;
 
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -28,17 +29,33 @@ class Pool extends CallableClass
     protected PoolValidator $validator;
 
     /**
+     * @var SubscriptionService
+     */
+    public SubscriptionService $subscriptionService;
+
+    /**
      * @var bool
      */
     protected bool $fromHome = false;
 
     /**
+     * @exclude
+     */
+    public function show(PoolService $poolService)
+    {
+        $this->poolService = $poolService;
+
+        return $this->home();
+    }
+
+    /**
      * @databag pool
      * @databag subscription
+     * @di $subscriptionService
      */
     public function home()
     {
-        $html = $this->view()->render('pages.planning.pool.home');
+        $html = $this->view()->render('tontine.pages.planning.pool.home');
         $this->response->html('section-title', trans('tontine.menus.planning'));
         $this->response->html('content-home', $html);
         $this->jq('#btn-refresh')->click($this->rq()->home());
@@ -50,7 +67,6 @@ class Pool extends CallableClass
 
     /**
      * @databag pool
-     * @databag subscription
      */
     public function page(int $pageNumber = 0)
     {
@@ -63,14 +79,14 @@ class Pool extends CallableClass
         $pools = $this->poolService->getPools($pageNumber);
         $poolCount = $this->poolService->getPoolCount();
 
-        $html = $this->view()->render('pages.planning.pool.page')->with('pools', $pools)
+        $html = $this->view()->render('tontine.pages.planning.pool.page')->with('pools', $pools)
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $poolCount));
         $this->response->html('pool-page', $html);
+
         if($this->fromHome && $poolCount > 0)
         {
             // Show the subscriptions of the first pool in the list
-            $poolId = $this->bag('subscription')->get('pool.id', $pools[0]->id);
-            $this->response->script($this->cl(Subscription::class)->rq()->home($poolId));
+            $this->cl(Subscription::class)->show($this->subscriptionService, $pools[0]);
         }
 
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
@@ -83,7 +99,7 @@ class Pool extends CallableClass
     public function number()
     {
         $title = trans('number.labels.title');
-        $content = $this->view()->render('pages.planning.pool.number');
+        $content = $this->view()->render('tontine.pages.planning.pool.number');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -115,10 +131,9 @@ class Pool extends CallableClass
         }
 
         $this->dialog->hide();
-        $this->bag('faker')->set('pool.count', $count);
 
         $useFaker = config('jaxon.app.faker');
-        $html = $this->view()->render('pages.planning.pool.add')
+        $html = $this->view()->render('tontine.pages.planning.pool.add')
             ->with('useFaker', $useFaker)
             ->with('count', $count);
         $this->response->html('content-home', $html);
@@ -126,6 +141,7 @@ class Pool extends CallableClass
         $this->jq('#btn-save')->click($this->rq()->create(pm()->form('pool-form')));
         if($useFaker)
         {
+            $this->bag('faker')->set('pool.count', $count);
             $this->jq('#btn-fakes')->click($this->cl(Faker::class)->rq()->pools());
         }
 
@@ -150,7 +166,7 @@ class Pool extends CallableClass
         $pool = $this->poolService->getPool($poolId);
 
         $title = trans('tontine.pool.titles.edit');
-        $content = $this->view()->render('pages.planning.pool.edit')
+        $content = $this->view()->render('tontine.pages.planning.pool.edit')
             ->with('pool', $pool)
             ->with('locales', LaravelLocalization::getSupportedLocales());
         $buttons = [[

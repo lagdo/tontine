@@ -148,33 +148,6 @@ class TontineSeeder extends Seeder
                 'amount' => 20000,
             ]]);
             Pool::reguard();
-
-            // Bills
-            foreach($tontine->charges()->fee()->get() as $charge)
-            {
-                $bill = [
-                    'name' => $charge->name,
-                    'amount' => $charge->amount,
-                    'issued_at' => now(),
-                ];
-                if($charge->period_once)
-                {
-                    $charge->bills()->create($bill);
-                    continue;
-                }
-                if($charge->period_round)
-                {
-                    $bill['round_id'] = $round->id;
-                    $charge->bills()->create($bill);
-                    continue;
-                }
-                // $charge->period_session
-                foreach($round->sessions as $session)
-                {
-                    $bill['session_id'] = $session->id;
-                    $charge->bills()->create($bill);
-                }
-            }
         }
     }
 }

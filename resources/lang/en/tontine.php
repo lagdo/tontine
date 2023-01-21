@@ -2,6 +2,7 @@
 
 return [
     'menus' => [
+        'tontines' => "Tontines",
         'tontine' => "Tontine",
         'planning' => "Planning",
         'meeting' => "Meeting",
@@ -9,15 +10,20 @@ return [
         'charges' => "Fees and fines",
         'sessions' => "Sessions",
         'pools' => "Pools",
-        'tables' => "Tables",
+        'reports' => "Reports",
+        'subscriptions' => "Subscriptions",
+        'beneficiaries' => "Beneficiaries",
     ],
     'titles' => [
         'tontines' => "Tontines",
         'rounds' => "Rounds",
         'add' => "Add a tontine",
         'edit' => "Edit a tontine",
+        'select' => "Select a tontine",
     ],
     'labels' => [
+        'tontine' => "Tontine",
+        'round' => "Round",
         'types' => [
             'mutual' => "Mutual",
             'financial' => "Financial",
@@ -25,6 +31,8 @@ return [
     ],
     'actions' => [
         'rounds' => "Rounds",
+        'open' => "Open",
+        'enter' => "Enter",
         'select' => "Select",
     ],
     'messages' => [
@@ -35,11 +43,16 @@ return [
         'titles' => [
             'add' => "Add a round",
             'edit' => "Edit a round",
+            'select' => "Select a round",
         ],
         'messages' => [
             'created' => "The round was successfully created.",
             'updated' => "The round was successfully updated.",
             'deleted' => "The round was successfully deleted.",
+        ],
+        'questions' => [
+            'open' => "Open this round? Make sure you have set its data correctly.",
+            'close' => "Close this round?",
         ],
     ],
     'member' => [
@@ -87,7 +100,8 @@ return [
             'deleted' => "The session was successfully deleted.",
         ],
         'questions' => [
-            'open' => "Open this session?",
+            'open' => "Open this session? First make sure that you have entered all " .
+                "the informations required about members subscriptions, in the planning section.",
             'close' => "Close this session?",
         ],
     ],
@@ -95,8 +109,8 @@ return [
         'titles' => [
             'add' => "Add pools",
             'edit' => "Edit a pool",
-            'deposits' => "Deposits table",
-            'remitments' => "Remitments table",
+            'deposits' => "Deposits report",
+            'remitments' => "Remitments report",
             'subscriptions' => "Subscriptions",
         ],
         'actions' => [
@@ -120,11 +134,17 @@ return [
             'deleted' => "The member subscription was deleted.",
         ],
     ],
+    'remitment' => [
+        'labels' => [
+            'not-assigned' => "** Not assigned **",
+        ],
+    ],
     'loan' => [
         'titles' => [
             'add' => "Add a loan",
         ],
         'labels' => [
+            'principal' => "Principal",
             'interest' => "Interest",
             'amount_to_lend' => "Amount to lend",
         ],

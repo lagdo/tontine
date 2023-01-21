@@ -2,7 +2,7 @@
 
 namespace App\Ajax\App\Meeting;
 
-use Siak\Tontine\Service\DepositService;
+use Siak\Tontine\Service\Meeting\DepositService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Pool as PoolModel;
 use App\Ajax\CallableClass;
@@ -55,7 +55,7 @@ class Deposit extends CallableClass
     {
         $this->bag('meeting')->set('pool.id', $poolId);
 
-        $html = $this->view()->render('pages.meeting.deposit.home', [
+        $html = $this->view()->render('tontine.pages.meeting.deposit.home', [
             'pool' => $this->pool,
         ]);
         $this->response->html('meeting-deposits', $html);
@@ -78,7 +78,7 @@ class Deposit extends CallableClass
         $this->bag('meeting')->set('deposit.page', $pageNumber);
 
         $receivableCount = $this->depositService->getReceivableCount($this->pool, $this->session);
-        $html = $this->view()->render('pages.meeting.deposit.page', [
+        $html = $this->view()->render('tontine.pages.meeting.deposit.page', [
             'receivables' => $this->depositService->getReceivables($this->pool, $this->session, $pageNumber),
             'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $receivableCount),
         ]);

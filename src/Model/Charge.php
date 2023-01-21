@@ -68,6 +68,7 @@ class Charge extends Model
         'type',
         'period',
         'amount',
+        'active',
     ];
 
     /**
@@ -85,9 +86,24 @@ class Charge extends Model
         return $this->belongsTo(Tontine::class);
     }
 
-    public function bills()
+    public function session_bills()
     {
-        return $this->hasMany(Bill::class);
+        return $this->hasMany(SessionBill::class);
+    }
+
+    public function round_bills()
+    {
+        return $this->hasMany(RoundBill::class);
+    }
+
+    public function tontine_bills()
+    {
+        return $this->hasMany(TontineBill::class);
+    }
+
+    public function fine_bills()
+    {
+        return $this->hasMany(FineBill::class);
     }
 
     public function getIsFeeAttribute()
@@ -113,6 +129,61 @@ class Charge extends Model
     public function getPeriodSessionAttribute()
     {
         return intval($this->period) === self::PERIOD_SESSION;
+    }
+
+    /*
+     * The fields that are used in the 4 following methods are filled by the
+     * Siak\Tontine\Service\Charge\FeeService::getFees() and
+     * Siak\Tontine\Service\Charge\FineService::getFines() calls.
+     *
+     * So they will hold valid values only for models that are returned by these calls.
+     */
+
+    /*
+     * For a charge of type TYPE_FINE, only the fine_bills_count field is set.
+     *
+     * For a charge of type TYPE_FEE, the session_bills_count, round_bills_count
+     * and tontine_bills_count fields are set, but only one of them can have a value
+     * different than 0. So their sum returns this value.
+     */
+    public function getBillsCountAttribute()
+    {
+        return $this->is_fine ? $this->fine_bills_count :
+            $this->session_bills_count + $this->round_bills_count + $this->tontine_bills_count;
+    }
+
+    /*
+     * The above rules also apply for paid_* fields.
+     */
+    public function getPaidBillsCountAttribute()
+    {
+        return $this->is_fine ? $this->paid_fine_bills_count :
+            $this->paid_session_bills_count + $this->paid_round_bills_count + $this->paid_tontine_bills_count;
+    }
+
+    /*
+     * For a charge of type TYPE_FINE, only the all_fine_bills_count field is set.
+     *
+     * For a charge of type TYPE_FEE and period PERIOD_SESSION, only the
+     * all_session_bills_count field is set.
+     *
+     * For the other charges, there is no all_* field because they are not session-specific.
+     */
+    public function getAllBillsCountAttribute()
+    {
+        return $this->is_fine ? $this->all_fine_bills_count :
+            ($this->period_session ? $this->all_session_bills_count :
+            $this->round_bills_count + $this->tontine_bills_count);
+    }
+
+    /*
+     * The above rules also apply for all_paid_* fields.
+     */
+    public function getAllPaidBillsCountAttribute()
+    {
+        return $this->is_fine ? $this->all_paid_fine_bills_count :
+            ($this->period_session ? $this->all_paid_session_bills_count :
+            $this->paid_round_bills_count + $this->paid_tontine_bills_count);
     }
 
     /**
@@ -165,29 +236,13 @@ class Charge extends Model
         return $query->where('type', self::TYPE_FEE)->where('period', self::PERIOD_SESSION);
     }
 
-    public function getCurrSettlementCount(array $settlements)
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeActive(Builder $query): Builder
     {
-        return $settlements['current'][$this->id] ?? 0;
-    }
-
-    public function getPrevSettlementCount(array $settlements)
-    {
-        return $settlements['previous'][$this->id] ?? 0;
-    }
-
-    public function getCurrBillCount(array $bills)
-    {
-        // For fees, there's a single bill for all tontine members.
-        // The number of bills then needs to be multiplied by the number of members.
-        $count = $this->is_fee ? self::$memberCount : 1;
-        return $count * ($bills['current'][$this->id] ?? 0);
-    }
-
-    public function getPrevBillCount(array $bills)
-    {
-        // For fees, there's a single bill for all tontine members.
-        // The number of bills then needs to be multiplied by the number of members.
-        $count = $this->is_fee ? self::$memberCount : 1;
-        return $count * ($bills['previous'][$this->id] ?? 0);
+        return $query->where('active', true);
     }
 }

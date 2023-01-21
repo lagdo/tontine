@@ -25,7 +25,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function()
 
     // Route to Jaxon controller
     Route::post('ajax', [JaxonController::class, 'jaxon'])->name('tontine.ajax')
-        ->middleware([AnnotationCache::class, TontineTenant::class]);
+        ->middleware(['auth', AnnotationCache::class, TontineTenant::class]);
 
     // Report pages
     //----------------------------------

@@ -5,6 +5,7 @@ namespace Siak\Tontine\Model;
 use Database\Factories\MemberFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Member extends Model
@@ -25,13 +26,13 @@ class Member extends Model
      */
     protected $fillable = [
         'name',
-        'gender',
         'email',
         'phone',
         'address',
         'city',
         'registered_at',
         'birthday',
+        'active',
     ];
 
     /**
@@ -72,18 +73,38 @@ class Member extends Model
         return $this->hasMany(Payment::class);
     }
 
-    public function bills()
-    {
-        return $this->hasMany(Bill::class);
-    }
-
-    public function settlements()
-    {
-        return $this->hasMany(Settlement::class);
-    }
-
     public function loans()
     {
         return $this->hasMany(Loan::class);
+    }
+
+    public function fine_bills()
+    {
+        return $this->hasMany(FineBill::class);
+    }
+
+    public function session_bills()
+    {
+        return $this->hasMany(SessionBill::class);
+    }
+
+    public function round_bills()
+    {
+        return $this->hasMany(RoundBill::class);
+    }
+
+    public function tontine_bills()
+    {
+        return $this->hasMany(TontineBill::class);
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('active', true);
     }
 }

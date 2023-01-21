@@ -2,9 +2,9 @@
 
 namespace App\Ajax\App;
 
-use Siak\Tontine\Service\ChargeService;
-use Siak\Tontine\Service\PoolService;
-use Siak\Tontine\Service\MemberService;
+use Siak\Tontine\Service\Charge\ChargeService;
+use Siak\Tontine\Service\Tontine\PoolService;
+use Siak\Tontine\Service\Tontine\MemberService;
 use App\Ajax\CallableClass;
 
 use function intval;
@@ -36,7 +36,6 @@ class Faker extends CallableClass
         $members = $this->memberService->getFakeMembers($count);
         for($i = 0; $i < $count; $i++)
         {
-            $this->jq("#member_gender_$i")->val($members[$i]->gender);
             $this->jq("#member_name_$i")->val($members[$i]->name);
             $this->jq("#member_email_$i")->val($members[$i]->email);
             $this->jq("#member_phone_$i")->val($members[$i]->phone);

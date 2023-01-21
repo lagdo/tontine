@@ -2,180 +2,52 @@
 
 namespace App\Ajax\App\Meeting;
 
-use Siak\Tontine\Service\MeetingService;
-use Siak\Tontine\Service\FeeSettlementService;
-use Siak\Tontine\Service\FineSettlementService;
-use Siak\Tontine\Service\LoanService;
-use Siak\Tontine\Service\RefundService;
-use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Planning\SessionService;
 use App\Ajax\CallableClass;
 
-use function Jaxon\pm;
+use function Jaxon\jq;
 use function trans;
 
 /**
- * @databag meeting
- * @before getSession
+ * @databag session
  */
 class Meeting extends CallableClass
 {
     /**
      * @di
-     * @var MeetingService
+     * @var SessionService
      */
-    protected MeetingService $meetingService;
+    public SessionService $sessionService;
 
-    /**
-     * @var FeeSettlementService
-     */
-    protected FeeSettlementService $feeSettlementService;
-
-    /**
-     * @var FineSettlementService
-     */
-    protected FineSettlementService $fineSettlementService;
-
-    /**
-     * @var LoanService
-     */
-    protected LoanService $loanService;
-
-    /**
-     * @var RefundService
-     */
-    protected RefundService $refundService;
-
-    /**
-     * @var SessionModel|null
-     */
-    protected ?SessionModel $session;
-
-    /**
-     * @return void
-     */
-    protected function getSession()
+    public function home()
     {
-        $sessionId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('session.id');
-        $this->session = $this->meetingService->getSession($sessionId);
-    }
-
-    public function home(int $sessionId)
-    {
-        $this->bag('meeting')->set('session.id', $sessionId);
-
-        return $this->pools();
-    }
-
-    public function pools()
-    {
-        $html = $this->view()->render('pages.meeting.session.pools', [
-            'tontine' => $this->meetingService->getTontine(),
-            'session' => $this->session,
-        ]);
+        $html = $this->view()->render('tontine.pages.meeting.home');
+        $this->response->html('section-title', trans('tontine.menus.meeting'));
         $this->response->html('content-home', $html);
+        $this->jq('#btn-refresh')->click($this->rq()->home());
 
-        $this->jq('#btn-session-back')->click($this->cl(Session::class)->rq()->home());
-        $this->jq('#btn-session-refresh')->click($this->rq()->pools());
-        $this->jq('#btn-session-loans')->click($this->rq()->loans());
-        $this->jq('#btn-session-charges')->click($this->rq()->charges());
-        $this->jq('#btn-session-open')->click($this->rq()->open()
-            ->confirm(trans('tontine.session.questions.open')));
-        $this->jq('#btn-session-close')->click($this->rq()->close()
-            ->confirm(trans('tontine.session.questions.close')));
-        $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
-        $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
-
-        $this->cl(Pool::class)->show($this->session, $this->meetingService);
-
-        return $this->response;
+        return $this->page();
     }
 
-    /**
-     * @di $loanService
-     * @di $refundService
-     */
-    public function loans()
+    public function page(int $pageNumber = 0)
     {
-        $html = $this->view()->render('pages.meeting.session.loans', [
-            'tontine' => $this->meetingService->getTontine(),
-            'session' => $this->session,
-        ]);
-        $this->response->html('content-home', $html);
+        if($pageNumber < 1)
+        {
+            $pageNumber = $this->bag('session')->get('page', 1);
+        }
+        $this->bag('session')->set('page', $pageNumber);
 
-        $this->jq('#btn-session-back')->click($this->cl(Session::class)->rq()->home());
-        $this->jq('#btn-session-refresh')->click($this->rq()->loans());
-        $this->jq('#btn-session-pools')->click($this->rq()->pools());
-        $this->jq('#btn-session-charges')->click($this->rq()->charges());
-        $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
-        $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
+        $sessions = $this->sessionService->getSessions($pageNumber);
+        $sessionCount = $this->sessionService->getSessionCount();
 
-        $this->cl(Financial\Loan::class)->show($this->session, $this->loanService);
-        $this->cl(Financial\Refund::class)->show($this->session, $this->refundService);
+        $html = $this->view()->render('tontine.pages.meeting.page')
+            ->with('sessions', $sessions)
+            ->with('members', $this->sessionService->getMembers())
+            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $sessionCount));
+        $this->response->html('content-page', $html);
 
-        return $this->response;
-    }
-
-    /**
-     * @di $feeSettlementService
-     * @di $fineSettlementService
-     */
-    public function charges()
-    {
-        $html = $this->view()->render('pages.meeting.session.charges', [
-            'tontine' => $this->meetingService->getTontine(),
-            'session' => $this->session,
-        ]);
-        $this->response->html('content-home', $html);
-
-        $this->jq('#btn-session-back')->click($this->cl(Session::class)->rq()->home());
-        $this->jq('#btn-session-refresh')->click($this->rq()->charges());
-        $this->jq('#btn-session-pools')->click($this->rq()->pools());
-        $this->jq('#btn-session-loans')->click($this->rq()->loans());
-        $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
-        $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
-
-        $this->cl(Charge\Fee::class)->show($this->session, $this->meetingService, $this->feeSettlementService);
-        $this->cl(Charge\Fine::class)->show($this->session, $this->meetingService, $this->fineSettlementService);
-
-        return $this->response;
-    }
-
-    public function summary()
-    {
-        return $this->response;
-    }
-
-    public function open()
-    {
-        $this->session->update(['status' => SessionModel::STATUS_OPENED]);
-
-        $this->home($this->session->id);
-
-        return $this->response;
-    }
-
-    public function close()
-    {
-        $this->session->update(['status' => SessionModel::STATUS_CLOSED]);
-
-        $this->home($this->session->id);
-
-        return $this->response;
-    }
-
-    public function saveAgenda(string $text)
-    {
-        $this->meetingService->updateSessionAgenda($this->session, $text);
-        $this->notify->success(trans('meeting.messages.agenda.updated'), trans('common.titles.success'));
-
-        return $this->response;
-    }
-
-    public function saveReport(string $text)
-    {
-        $this->meetingService->updateSessionReport($this->session, $text);
-        $this->notify->success(trans('meeting.messages.report.updated'), trans('common.titles.success'));
+        $sessionId = jq()->parent()->attr('data-session-id')->toInt();
+        $this->jq('.btn-session-show')->click($this->cl(Session::class)->rq()->home($sessionId));
 
         return $this->response;
     }

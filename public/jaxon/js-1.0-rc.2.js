@@ -231,8 +231,8 @@ App.Ajax.App.Meeting.Meeting.loans = function() {
 App.Ajax.App.Meeting.Meeting.charges = function() {
     return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Meeting', jxnmthd: 'charges' }, { parameters: arguments, bags: ["meeting"] });
 };
-App.Ajax.App.Meeting.Meeting.summary = function() {
-    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Meeting', jxnmthd: 'summary' }, { parameters: arguments, bags: ["meeting"] });
+App.Ajax.App.Meeting.Meeting.report = function() {
+    return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Meeting', jxnmthd: 'report' }, { parameters: arguments, bags: ["meeting"] });
 };
 App.Ajax.App.Meeting.Meeting.open = function() {
     return jaxon.request({ jxncls: 'App.Ajax.App.Meeting.Meeting', jxnmthd: 'open' }, { parameters: arguments, bags: ["meeting"] });

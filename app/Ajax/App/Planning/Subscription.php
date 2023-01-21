@@ -3,8 +3,8 @@
 namespace App\Ajax\App\Planning;
 
 use Siak\Tontine\Model\Pool as PoolModel;
-use Siak\Tontine\Service\SubscriptionService;
-use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Planning\SubscriptionService;
+use Siak\Tontine\Service\Tontine\TenantService;
 use App\Ajax\CallableClass;
 
 use function intval;
@@ -43,9 +43,19 @@ class Subscription extends CallableClass
         $this->pool = $this->subscriptionService->getPool($poolId);
     }
 
+    /**
+     * @exclude
+     */
+    public function show(SubscriptionService $subscriptionService, PoolModel $pool)
+    {
+        $this->subscriptionService = $subscriptionService;
+        $this->pool = $pool;
+        return $this->home($pool->id);
+    }
+
     public function home(int $poolId)
     {
-        $html = $this->view()->render('pages.planning.subscription.home')
+        $html = $this->view()->render('tontine.pages.planning.subscription.home')
             ->with('pool', $this->pool);
         $this->response->html('subscription-home', $html);
         $this->jq('#btn-subscription-filter')->click($this->rq()->filter());
@@ -70,7 +80,7 @@ class Subscription extends CallableClass
         $members = $this->subscriptionService->getMembers($this->pool, $filter, $pageNumber);
         $memberCount = $this->subscriptionService->getMemberCount($this->pool, $filter);
 
-        $html = $this->view()->render('pages.planning.subscription.page')
+        $html = $this->view()->render('tontine.pages.planning.subscription.page')
             ->with('members', $members)
             ->with('pagination', $this->rq()->page(pm()->page(), $filter)->paginate($pageNumber, 10, $memberCount));
         $this->response->html('subscription-page', $html);

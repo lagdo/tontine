@@ -21,6 +21,8 @@ class Loan extends Model
     protected $fillable = [
         'amount',
         'interest',
+        'member_id',
+        'session_id',
     ];
 
     public function session()
@@ -31,6 +33,11 @@ class Loan extends Model
     public function member()
     {
         return $this->belongsTo(Member::class);
+    }
+
+    public function remitment()
+    {
+        return $this->belongsTo(Remitment::class);
     }
 
     public function refund()

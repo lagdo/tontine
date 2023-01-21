@@ -25,8 +25,8 @@ return [
         'settlements' => "Settlements",
         'loans' => "Loans",
         'amounts' => "Amounts",
-        'table' => "Table",
-        'summary' => "Summary",
+        'report' => "Report",
+        'report' => "Report",
         'fine' => "Fine",
     ],
     'labels' => [

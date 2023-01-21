@@ -24,7 +24,6 @@ class CreateSessionsTable extends Migration
             $table->string('notes')->default('');
             $table->datetime('start_at');
             $table->datetime('end_at');
-            $table->timestamps();
             $table->unsignedBigInteger('round_id');
             $table->foreign('round_id')->references('id')->on('rounds');
             $table->unsignedBigInteger('host_id')->nullable();

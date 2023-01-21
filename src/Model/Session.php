@@ -23,6 +23,13 @@ class Session extends Model
     const STATUS_CLOSED = 2;
 
     /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -46,9 +53,6 @@ class Session extends Model
      * @var array
      */
     protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
         'start_at',
         'end_at',
     ];
@@ -135,40 +139,12 @@ class Session extends Model
 
     public function bills()
     {
-        return $this->hasMany(Bill::class);
+        return $this->hasMany(SessionBill::class);
     }
 
-    public function settlements()
+    public function fines()
     {
-        return $this->hasMany(Settlement::class);
-    }
-
-    public function settlementAmounts()
-    {
-        return $this->hasMany(Settlement::class)
-            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-            ->groupBy('bills.charge_id')
-            ->select('bills.charge_id', DB::raw('sum(bills.amount) as amount'));
-    }
-
-    public function feeSettlementAmounts()
-    {
-        return $this->hasMany(Settlement::class)
-            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-            ->join('charges', 'bills.charge_id', '=', 'charges.id')
-            ->where('charges.type', '=', Charge::TYPE_FEE)
-            ->groupBy('bills.charge_id')
-            ->select('bills.charge_id', DB::raw('sum(bills.amount) as amount'));
-    }
-
-    public function fineSettlementAmounts()
-    {
-        return $this->hasMany(Settlement::class)
-            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-            ->join('charges', 'bills.charge_id', '=', 'charges.id')
-            ->where('charges.type', '=', Charge::TYPE_FINE)
-            ->groupBy('bills.charge_id')
-            ->select('bills.charge_id', DB::raw('sum(bills.amount) as amount'));
+        return $this->hasMany(FineBill::class);
     }
 
     public function loans()

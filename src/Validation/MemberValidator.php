@@ -3,7 +3,7 @@
 namespace Siak\Tontine\Validation;
 
 use Illuminate\Support\Facades\Validator;
-use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Tontine\TenantService;
 use Siak\Tontine\Validation\AbstractValidator;
 
 use function strtoupper;
@@ -32,7 +32,6 @@ class MemberValidator extends AbstractValidator
     {
         $country = strtoupper($this->tenantService->tontine()->country->code);
         $validator = Validator::make($values, [
-            'gender' => 'required|in:F,M',
             'name' => 'required|string|min:1',
             'email' => 'sometimes|required|email',
             'phone' => 'sometimes|required|phone:AUTO,' . $country,
