@@ -9,7 +9,7 @@ use App\Ajax\App\Planning\Pool;
 use App\Ajax\App\Planning\Report as PlanningReport;
 use App\Ajax\App\Planning\Session;
 use App\Ajax\CallableClass;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
 use function intval;

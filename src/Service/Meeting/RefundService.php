@@ -6,23 +6,30 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Loan;
-use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\TenantService;
 
 class RefundService
 {
+    /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @var TenantService
      */
     protected TenantService $tenantService;
 
     /**
+     * @param LocaleService $localeService
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService)
     {
+        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
     }
 
@@ -159,7 +166,7 @@ class RefundService
         }
         $debts = $query->get();
         $debts->each(function($debt) {
-            $debt->amount = Currency::format($debt->amount);
+            $debt->amount = $this->localeService->formatCurrency($debt->amount);
         });
         return $debts;
     }
@@ -225,7 +232,7 @@ class RefundService
      */
     public function getRefundSum(Session $session): string
     {
-        return Currency::format($session->refunds()
+        return $this->localeService->formatCurrency($session->refunds()
             ->join('loans', 'loans.id', '=', 'refunds.loan_id')
             ->sum('loans.amount'));
     }

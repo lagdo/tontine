@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 
 class DepositService
 {

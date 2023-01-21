@@ -4,7 +4,7 @@ namespace App\Ajax\App\Planning;
 
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\SubscriptionService;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 use App\Ajax\CallableClass;
 
 use function intval;

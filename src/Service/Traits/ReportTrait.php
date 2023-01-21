@@ -19,11 +19,11 @@ trait ReportTrait
      */
     private function formatCurrencies(stdClass $figures): stdClass
     {
-        $figures->cashier->start = ''; // Currency::format($figures->cashier->start, true);
-        $figures->cashier->recv = ''; // Currency::format($figures->cashier->recv, true);
-        $figures->cashier->end = ''; // Currency::format($figures->cashier->end, true);
-        $figures->deposit->amount = ''; // Currency::format($figures->deposit->amount, true);
-        $figures->remitment->amount = ''; // Currency::format($figures->remitment->amount, true);
+        $figures->cashier->start = $this->localeService->formatCurrency($figures->cashier->start, true);
+        $figures->cashier->recv = $this->localeService->formatCurrency($figures->cashier->recv, true);
+        $figures->cashier->end = $this->localeService->formatCurrency($figures->cashier->end, true);
+        $figures->deposit->amount = $this->localeService->formatCurrency($figures->deposit->amount, true);
+        $figures->remitment->amount = $this->localeService->formatCurrency($figures->remitment->amount, true);
 
         return $figures;
     }

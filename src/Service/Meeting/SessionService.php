@@ -8,7 +8,7 @@ use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\Events\EventTrait;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 
 class SessionService
 {

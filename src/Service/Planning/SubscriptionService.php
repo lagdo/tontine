@@ -9,7 +9,7 @@ use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 
 class SubscriptionService
 {

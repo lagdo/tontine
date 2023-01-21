@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Service\Events\EventTrait;
+use Siak\Tontine\Service\TenantService;
 
 class MemberService
 {

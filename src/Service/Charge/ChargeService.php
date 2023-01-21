@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Events\EventTrait;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 
 class ChargeService
 {

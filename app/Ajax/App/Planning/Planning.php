@@ -6,7 +6,7 @@ use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\ReportService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 
 use function intval;
 use function Jaxon\jq;

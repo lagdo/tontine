@@ -1,1 +1,1 @@
-                {!! Form::select('currency', $currencies ?? [], $currency ?? '', ['class' => 'form-control']) !!}
+                {!! Form::select('currency_code', $currencies ?? [], $currency ?? '', ['class' => 'form-control']) !!}

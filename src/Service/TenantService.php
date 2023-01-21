@@ -1,8 +1,7 @@
 <?php
 
-namespace Siak\Tontine\Service\Tontine;
+namespace Siak\Tontine\Service;
 
-use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
@@ -11,6 +10,11 @@ use Siak\Tontine\Model\User;
 
 class TenantService
 {
+    /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @var User|null
      */
@@ -32,6 +36,14 @@ class TenantService
     protected int $limit = 10;
 
     /**
+     * @param LocaleService $localeService
+     */
+    public function __construct(LocaleService $localeService)
+    {
+        $this->localeService = $localeService;
+    }
+
+    /**
      * @param User $user
      *
      * @return void
@@ -48,10 +60,9 @@ class TenantService
      */
     public function setTontine(Tontine $tontine): void
     {
-        // Set the members count in the Charge model
-        Charge::$memberCount = $tontine->members()->count();
-
         $this->tontine = $tontine;
+        // Set the currency for locales.
+        $this->localeService->setCurrency($tontine->currency_code);
     }
 
     /**

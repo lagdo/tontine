@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Receivable;
+use Siak\Tontine\Service\TenantService;
 
 class PoolService
 {

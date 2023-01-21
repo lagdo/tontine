@@ -2,6 +2,7 @@
 
 namespace App\Ajax\App\Charge;
 
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Charge\FineService;
 use Siak\Tontine\Service\Charge\FineReportService;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -15,6 +16,12 @@ use function Jaxon\jq;
  */
 class Fine extends CallableClass
 {
+    /**
+     * @di
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @di
      * @var FineService
@@ -77,7 +84,7 @@ class Fine extends CallableClass
             ->with('fines', $fines)
             ->with('settlements', $settlements['total'])
             ->with('bills', $bills['total'])
-            ->with('zero', $this->reportService->getFormattedAmount(0))
+            ->with('zero', $this->localeService->formatCurrency(0))
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $fineCount));
         // if($this->session->closed)
         // {

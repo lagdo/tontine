@@ -17,11 +17,6 @@ class Charge extends Model
     use HasCurrency;
 
     /**
-     * @var int
-     */
-    public static $memberCount = 0;
-
-    /**
      * @const
      */
     const TYPE_FEE = 0;

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Report\PdfGeneratorInterface;
 use Siak\Tontine\Service\Report\ReportServiceInterface;
 
@@ -46,13 +47,15 @@ class ReportController extends Controller
      * @param Request $request
      * @param PdfGeneratorInterface $pdfGenerator
      * @param ReportServiceInterface $reportService
+     * @param LocaleService $localeService
      * @param int $sessionId
      *
      * @return View|Response
      */
     public function session(Request $request, PdfGeneratorInterface $pdfGenerator,
-        ReportServiceInterface $reportService, int $sessionId)
+        ReportServiceInterface $reportService, LocaleService $localeService, int $sessionId)
     {
+        view()->share(['zero' => $localeService->formatCurrency(0)]);
         $html = view('tontine.report.session', $reportService->getSession($sessionId));
 
         // Show the html page

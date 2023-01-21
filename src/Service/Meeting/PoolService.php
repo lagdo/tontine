@@ -3,14 +3,19 @@
 namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Support\Collection;
-use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\TenantService;
 
 class PoolService
 {
+    /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @var TenantService
      */
@@ -22,11 +27,13 @@ class PoolService
     protected ReportService $reportService;
 
     /**
+     * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param ReportService $reportService
      */
-    public function __construct(TenantService $tenantService, ReportService $reportService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService, ReportService $reportService)
     {
+        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
         $this->reportService = $reportService;
     }
@@ -127,22 +134,22 @@ class PoolService
                     return $session->enabled($pool);
                 })->count();
                 $payableSum += $payable->amount * $count;
-                $payable->amount = Currency::format($payable->amount * $count);
+                $payable->amount = $this->localeService->formatCurrency($payable->amount * $count);
             })->pluck('amount', 'id');
 
         $receivableSum = 0;
         $receivableAmounts = $session->receivableAmounts()->get()
             ->each(function($receivable) use(&$receivableSum) {
                 $receivableSum += $receivable->amount;
-                $receivable->amount = Currency::format($receivable->amount);
+                $receivable->amount = $this->localeService->formatCurrency($receivable->amount);
             })->pluck('amount', 'id');
 
         return [
             'payables' => $payableAmounts,
             'receivables' => $receivableAmounts,
             'sum' => [
-                'payables' => Currency::format($payableSum),
-                'receivables' => Currency::format($receivableSum),
+                'payables' => $this->localeService->formatCurrency($payableSum),
+                'receivables' => $this->localeService->formatCurrency($receivableSum),
             ],
         ];
     }

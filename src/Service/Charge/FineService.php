@@ -9,7 +9,7 @@ use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\FineBill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 
 class FineService
 {

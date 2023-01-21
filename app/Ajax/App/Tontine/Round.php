@@ -4,7 +4,7 @@ namespace App\Ajax\App\Tontine;
 
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Tontine\PoolService;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 use App\Ajax\App\Meeting\Meeting;
 use App\Ajax\App\Meeting\Report as MeetingReport;
 use App\Ajax\App\Planning\Planning;

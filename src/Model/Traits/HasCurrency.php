@@ -2,6 +2,9 @@
 
 namespace Siak\Tontine\Model\Traits;
 
+use Siak\Tontine\Service\LocaleService;
+
+use function app;
 use function intval;
 
 trait HasCurrency
@@ -16,6 +19,6 @@ trait HasCurrency
      */
     public function money(string $attr, bool $hideSymbol = false): string
     {
-        return intval($this->$attr); // Currency::format(intval($this->$attr), $hideSymbol);
+        return app(LocaleService::class)->formatCurrency(intval($this->$attr), $hideSymbol);
     }
 }

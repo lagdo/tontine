@@ -26,13 +26,13 @@
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('country', trans('common.labels.country'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+              {!! Form::label('country_code', trans('common.labels.country'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
               <div class="col-sm-9">
-                {!! Form::select('country', $countries, '', ['class' => 'form-control', 'id' => 'select_country_dropdown']) !!}
+                {!! Form::select('country_code', $countries, '', ['class' => 'form-control', 'id' => 'select_country_dropdown']) !!}
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('currency', trans('common.labels.currency'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+              {!! Form::label('currency_code', trans('common.labels.currency'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
               <div class="col-sm-9" id="select_currency_container">
 @include('tontine.pages.tontine.currency')
               </div>

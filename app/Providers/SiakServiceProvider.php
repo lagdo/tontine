@@ -33,7 +33,7 @@ use Siak\Tontine\Service\Report\ReportServiceInterface;
 use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\Tontine\PoolService as TontinePoolService;
 use Siak\Tontine\Service\Tontine\MemberService;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\ChargeValidator;
 use Siak\Tontine\Validation\MemberValidator;

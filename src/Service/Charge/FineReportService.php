@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Settlement;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 
 class FineReportService
 {

@@ -5,7 +5,7 @@ namespace App\Ajax\App\Tontine;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Tontine\MemberService;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Model\Tontine as TontineModel;
 use App\Ajax\App\Locale;

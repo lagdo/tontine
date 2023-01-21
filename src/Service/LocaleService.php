@@ -2,12 +2,22 @@
 
 namespace Siak\Tontine\Service;
 
+use Akaunting\Money\Currency;
+use Akaunting\Money\Money;
 use Illuminate\Support\Collection;
 use Rinvex\Country\CountryLoader;
 use Siak\Tontine\Model\Tontine;
+use NumberFormatter;
+
+use function strtoupper;
 
 class LocaleService
 {
+    /**
+     * @var Currency
+     */
+    private $currency;
+
     /**
      * @var string
      */
@@ -28,6 +38,18 @@ class LocaleService
         $this->locale = $locale;
         $this->countriesDataDir = $countriesDataDir;
         $this->currenciesDataDir = $currenciesDataDir;
+    }
+
+    /**
+     * Set the currency to be used for money
+     *
+     * @param string $currency
+     *
+     * @return void
+     */
+    public function setCurrency(string $currency)
+    {
+        $this->currency = new Currency(strtoupper($currency));
     }
 
     /**
@@ -113,6 +135,21 @@ class LocaleService
         return $this->getNames($tontines->pluck('country_code')->toArray(), $tontines->pluck('currency_code')->toArray());
     }
 
+    private function _locale()
+    {
+        $locales = ['en' => 'en_GB', 'fr' => 'fr_FR'];
+        return $locales[$this->locale] ?? 'en_GB';
+    }
+
+    private function decimalFormatter()
+    {
+        $formatter = new NumberFormatter($this->_locale(), NumberFormatter::DECIMAL);
+        $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 0);
+        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $this->currency->getPrecision());
+
+        return $formatter;
+    }
+
     /**
      * Get a formatted amount.
      *
@@ -121,8 +158,13 @@ class LocaleService
      *
      * @return string
      */
-    public function getFormattedAmount(int $amount, bool $hideSymbol = false): string
+    public function formatCurrency(int $amount, bool $hideSymbol = false): string
     {
-        return $amount; // Currency::format($amount, $hideSymbol);
+        $money = new Money($amount, $this->currency);
+        if($hideSymbol)
+        {
+            return $this->decimalFormatter()->format($money->getValue());
+        }
+        return $money->formatLocale($this->_locale());
     }
 }

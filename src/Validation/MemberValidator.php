@@ -3,7 +3,7 @@
 namespace Siak\Tontine\Validation;
 
 use Illuminate\Support\Facades\Validator;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\AbstractValidator;
 
 use function strtoupper;

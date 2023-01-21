@@ -2,6 +2,7 @@
 
 namespace App\Ajax\App\Charge;
 
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Charge\FeeService;
 use Siak\Tontine\Service\Charge\FeeReportService;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -15,6 +16,12 @@ use function Jaxon\jq;
  */
 class Fee extends CallableClass
 {
+    /**
+     * @di
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @di
      * @var FeeService
@@ -77,7 +84,7 @@ class Fee extends CallableClass
             ->with('fees', $fees)
             ->with('settlements', $settlements['total'])
             ->with('bills', $bills['total'])
-            ->with('zero', $this->reportService->getFormattedAmount(0))
+            ->with('zero', $this->localeService->formatCurrency(0))
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $feeCount));
         // if($this->session->closed)
         // {

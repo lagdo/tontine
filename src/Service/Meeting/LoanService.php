@@ -5,26 +5,33 @@ namespace Siak\Tontine\Service\Meeting;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Loan;
-use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Refund;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\TenantService;
 use stdClass;
 
 class LoanService
 {
+    /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @var TenantService
      */
     protected TenantService $tenantService;
 
     /**
+     * @param LocaleService $localeService
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService)
     {
+        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
     }
 
@@ -133,7 +140,7 @@ class LoanService
      */
     public function getFormattedAmountAvailable(Session $session): string
     {
-        return Currency::format($this->getAmountAvailable($session));
+        return $this->localeService->formatCurrency($this->getAmountAvailable($session));
     }
 
     /**
@@ -147,8 +154,8 @@ class LoanService
     {
         $loans = $session->loans()->with(['member'])->get();
         $loans->each(function($loan) {
-            $loan->amount = Currency::format($loan->amount);
-            $loan->interest = Currency::format($loan->interest);
+            $loan->amount = $this->localeService->formatCurrency($loan->amount);
+            $loan->interest = $this->localeService->formatCurrency($loan->interest);
         });
         return $loans;
     }
