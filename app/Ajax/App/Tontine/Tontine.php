@@ -2,11 +2,13 @@
 
 namespace App\Ajax\App\Tontine;
 
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Model\Tontine as TontineModel;
+use App\Ajax\App\Locale;
 use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
@@ -16,6 +18,12 @@ use function trans;
 
 class Tontine extends CallableClass
 {
+    /**
+     * @di
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @var TenantService
      */
@@ -69,11 +77,13 @@ class Tontine extends CallableClass
 
         $tontines = $this->tontineService->getTontines($pageNumber);
         $tontineCount = $this->tontineService->getTontineCount();
+        [$countries, $currencies] = $this->localeService->getNamesFromTontines($tontines);
 
         $html = $this->view()->render('tontine.pages.tontine.page')
             ->with('types', $this->tontineService->getTontineTypes())
-            ->with('countries', $this->tontineService->getcountries())
             ->with('tontines', $tontines)
+            ->with('countries', $countries)
+            ->with('currencies', $currencies)
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $tontineCount));
         $this->response->html('tontine-page', $html);
 
@@ -84,11 +94,15 @@ class Tontine extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $localeService
+     */
     public function add()
     {
         $title = trans('tontine.titles.add');
         $content = $this->view()->render('tontine.pages.tontine.add')
-            ->with('types', $this->tontineService->getTontineTypes());
+            ->with('types', $this->tontineService->getTontineTypes())
+            ->with('countries', $this->localeService->getCountries());
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -99,6 +113,7 @@ class Tontine extends CallableClass
             'click' => $this->rq()->create(pm()->form('tontine-form')),
         ]];
         $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+        $this->jq('#select_country_dropdown')->change($this->cl(Locale::class)->rq()->selectCurrencies(jq()->val()));
 
         return $this->response;
     }
@@ -114,14 +129,20 @@ class Tontine extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $localeService
+     */
     public function edit(int $tontineId)
     {
         $tontine = $this->tontineService->getTontine($tontineId);
 
         $title = trans('tontine.titles.edit');
+        [, $currencies] = $this->localeService->getNamesFromTontine($tontine);
         $content = $this->view()->render('tontine.pages.tontine.edit')
             ->with('tontine', $tontine)
-            ->with('types', $this->tontineService->getTontineTypes());
+            ->with('types', $this->tontineService->getTontineTypes())
+            ->with('countries', $this->localeService->getCountries())
+            ->with('currencies', $currencies);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -132,6 +153,7 @@ class Tontine extends CallableClass
             'click' => $this->rq()->update($tontine->id, pm()->form('tontine-form')),
         ]];
         $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+        $this->jq('#select_country_dropdown')->change($this->cl(Locale::class)->rq()->selectCurrencies(jq()->val()));
 
         return $this->response;
     }

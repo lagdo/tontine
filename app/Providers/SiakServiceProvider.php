@@ -7,7 +7,9 @@ use HeadlessChromium\Browser;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Charge\ChargeService;
 use Siak\Tontine\Service\Charge\FeeService;
 use Siak\Tontine\Service\Charge\FeeReportService;
@@ -69,6 +71,18 @@ class SiakServiceProvider extends ServiceProvider
             $browserFactory = new BrowserFactory(config('chrome.binary'));
             // Starts headless chrome
             return $browserFactory->createBrowser(config('chrome.browser', []));
+        });
+
+        $this->app->singleton(LocaleService::class, function() {
+            $locale = LaravelLocalization::getCurrentLocale();
+            // Vendor dir
+            $vendorDir = __DIR__ . '/../../vendor';
+            // Read country list from the umpirsky/country-list package data.
+            $countriesDataDir = $vendorDir . '/umpirsky/country-list/data';
+            // Read currency list from the umpirsky/currency-list package data.
+            $currenciesDataDir = $vendorDir . '/umpirsky/currency-list/data';
+
+            return new LocaleService($locale, $countriesDataDir, $currenciesDataDir);
         });
 
         $this->app->singleton(ChargeService::class, ChargeService::class);
