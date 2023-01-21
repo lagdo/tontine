@@ -8,6 +8,7 @@
         "php": "^7.4|^8.0",
         "ext-gmp": "*",
         "ext-json": "*",
+        "brick/money": "^0.5.3",
         "chrome-php/chrome": "^1.6",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -21,7 +22,10 @@
         "laravel/tinker": "^2.5",
         "laravelcollective/html": "^6.3",
         "mcamara/laravel-localization": "^1.7",
-        "propaganistas/laravel-phone": "^4.3"
+        "propaganistas/laravel-phone": "^4.3",
+        "rinvex/countries": "^9.0",
+        "umpirsky/country-list": "^2.0",
+        "umpirsky/currency-list": "^1.1"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
