@@ -80,10 +80,12 @@ class ReportService implements ReportServiceInterface
         $tontine = $this->meetingReportService->getTontine();
         $session = $this->meetingReportService->getSession($sessionId);
         $report = $this->meetingReportService->getPoolsReport($session);
+        [$countries] = $this->localeService->getNamesFromTontine($tontine);
 
         return [
             'tontine' => $tontine,
             'session' => $session,
+            'countries' => $countries,
             'deposits' => [
                 'session' => $session,
                 'pools' => $this->meetingReportService->getPoolsWithReceivables($session),
@@ -136,10 +138,14 @@ class ReportService implements ReportServiceInterface
     public function getPool(int $poolId): array
     {
         $pool = $this->subscriptionService->getPool($poolId);
+        $tontine = $this->meetingReportService->getTontine();
+        [$countries, $currencies] = $this->localeService->getNamesFromTontine($tontine);
 
         return [
             'figures' => $this->meetingReportService->getFigures($pool),
-            'tontine' => $this->meetingService->getTontine(),
+            'tontine' => $tontine,
+            'countries' => $countries,
+            'currencies' => $currencies,
             'pool' => $pool,
             'pools' > $this->subscriptionService->getPools(),
         ];
