@@ -10,6 +10,7 @@ use App\Ajax\App\Planning\Report as PlanningReport;
 use App\Ajax\App\Planning\Session;
 use App\Ajax\CallableClass;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
 use function intval;
@@ -34,6 +35,11 @@ class Select extends CallableClass
      * @var TontineService
      */
     protected TontineService $tontineService;
+
+    /**
+     * @var MemberService
+     */
+    protected MemberService $memberService;
 
     /**
      * @exclude
@@ -68,6 +74,9 @@ class Select extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $memberService
+     */
     public function saveTontine(int $tontineId)
     {
         $tontine = $this->tontineService->getTontine($tontineId);
@@ -91,6 +100,9 @@ class Select extends CallableClass
 
         // Reset the round sidebar menu
         $this->response->html('sidebar-menu-round', $this->view()->render('tontine.parts.sidebar.round'));
+
+        // Show the selected tontine member page
+        $this->cl(Member::class)->show($this->memberService);
 
         $this->dialog->hide();
 
