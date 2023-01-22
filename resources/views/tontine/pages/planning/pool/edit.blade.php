@@ -10,7 +10,7 @@
             <div class="form-group row">
               {!! Form::label('amount', trans('common.labels.amount'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
               <div class="col-md-6">
-                {!! Form::text('amount', $pool->amount, ['class' => 'form-control']) !!}
+                {!! Form::text('amount', $pool->amount_value, ['class' => 'form-control']) !!}
               </div>
             </div>
             <div class="form-group row">

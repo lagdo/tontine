@@ -177,10 +177,20 @@ class LocaleService
     /**
      * @param float $amount
      *
-     * @return integer
+     * @return int
      */
     public function convertMoneyToInt(float $amount): int
     {
         return (int)(new Money($amount, $this->currency, true))->getAmount();
+    }
+
+    /**
+     * @param int $amount
+     *
+     * @return float
+     */
+    public function getMoneyValue(int $amount): float
+    {
+        return (new Money($amount, $this->currency, false))->getValue();
     }
 }
