@@ -17,7 +17,7 @@
             </div>
             <div class="form-group row">
               {!! Form::label('shortname', trans('common.labels.shortname'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
-              <div class="col-sm-5">
+              <div class="col-sm-7">
                 {!! Form::text('shortname', $tontine->shortname, ['class' => 'form-control']) !!}
               </div>
             </div>

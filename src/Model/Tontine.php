@@ -37,6 +37,8 @@ class Tontine extends Model
         'address',
         'city',
         'website',
+        'country_code',
+        'currency_code',
     ];
 
     /**

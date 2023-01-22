@@ -7,6 +7,7 @@ use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
+use Siak\Tontine\Validation\Tontine\TontineValidator;
 use Siak\Tontine\Model\Tontine as TontineModel;
 use App\Ajax\App\Locale;
 use App\Ajax\CallableClass;
@@ -46,6 +47,11 @@ class Tontine extends CallableClass
     protected MemberService $memberService;
 
     /**
+     * @var TontineValidator
+     */
+    protected TontineValidator $validator;
+
+    /**
      * @di $tenantService
      * @di $roundService
      * @databag tontine
@@ -54,9 +60,6 @@ class Tontine extends CallableClass
     {
         $this->response->html('section-title', trans('tontine.menus.tontines'));
         $this->response->html('content-home', $this->view()->render('tontine.pages.tontine.home'));
-
-        // Reset the sidebar menu
-        // $this->cl(Select::class)->resetSidebarMenu();
 
         $this->jq('#btn-tontine-create')->click($this->rq()->add());
         $this->jq('#btn-tontine-refresh')->click($this->rq()->home());
@@ -118,8 +121,13 @@ class Tontine extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function create(array $formValues)
     {
+        $formValues = $this->validator->validateItem($formValues);
+
         $this->tontineService->createTontine($formValues);
         $this->page(); // Back to current page
 
@@ -158,8 +166,13 @@ class Tontine extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function update(int $tontineId, array $formValues)
     {
+        $formValues = $this->validator->validateItem($formValues);
+
         $this->tontineService->updateTontine($tontineId, $formValues);
         $this->page(); // Back to current page
 
