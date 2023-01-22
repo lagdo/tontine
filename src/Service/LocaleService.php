@@ -173,4 +173,14 @@ class LocaleService
         }
         return $money->formatLocale($this->_locale());
     }
+
+    /**
+     * @param float $amount
+     *
+     * @return integer
+     */
+    public function convertMoneyToInt(float $amount): int
+    {
+        return (int)(new Money($amount, $this->currency, true))->getAmount();
+    }
 }
