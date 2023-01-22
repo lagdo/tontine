@@ -29,7 +29,7 @@ class ChargeValidator extends AbstractValidator
      */
     public function validateItem(array $values): array
     {
-        $validator = Validator::make($values, [
+        $validator = Validator::make($this->values($values), [
             'type' => 'required|integer|between:0,1',
             'period' => 'required|integer|between:0,3',
             'name' => 'required|string|min:1',

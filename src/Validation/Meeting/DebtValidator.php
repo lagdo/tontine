@@ -21,7 +21,7 @@ class DebtValidator
             'type' => $values[0] ?? '',
             'loan_id' => $values[1] ?? 0,
         ];
-        $validator = Validator::make($values, [
+        $validator = Validator::make($this->values($values), [
             'type' => 'required|in:p,i',
             'loan_id' => 'required|integer|min:1',
         ]);

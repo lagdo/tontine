@@ -15,7 +15,7 @@ class CreatePayablesTable extends Migration
     {
         Schema::create('payables', function (Blueprint $table) {
             $table->id();
-            $table->string('notes')->default('');
+            $table->string('notes')->nullable();
             $table->unsignedBigInteger('session_id')->nullable();
             $table->foreign('session_id')->references('id')->on('sessions');
             $table->unsignedBigInteger('subscription_id');

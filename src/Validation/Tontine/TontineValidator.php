@@ -19,16 +19,16 @@ class TontineValidator extends AbstractValidator
      */
     public function validateItem(array $values): array
     {
-        $validator = Validator::make($values, [
+        $validator = Validator::make($this->values($values), [
             'type' => 'required|in:m,f',
             'name' => 'required|string|min:1',
             'shortname' => 'required|string|min:1',
-            // 'biography' => 'sometimes|required|string',
-            // 'email' => 'sometimes|required|email',
-            // 'phone' => 'sometimes|required|phone:AUTO',
-            'city' => 'sometimes|required|string|min:1',
-            // 'address' => 'sometimes|required|string',
-            // 'website' => 'sometimes|required|string',
+            'biography' => 'nullable|string',
+            'email' => 'nullable|email',
+            'phone' => 'nullable|phone:AUTO',
+            'city' => 'nullable|string|min:1',
+            'address' => 'nullable|string',
+            'website' => 'nullable|string',
             'country_code' => ['required', new CountryCode()],
             'currency_code' => ['required', new CurrencyCode()],
         ]);

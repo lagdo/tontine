@@ -16,10 +16,10 @@ class CreateMembersTable extends Migration
         Schema::create('members', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->string('email', 100)->default('');
-            $table->string('phone', 20)->default('');
-            $table->string('address', 500)->default('');
-            $table->string('city', 100)->default('');
+            $table->string('email', 100)->nullable();
+            $table->string('phone', 20)->nullable();
+            $table->string('address', 500)->nullable();
+            $table->string('city', 100)->nullable();
             $table->date('registered_at')->nullable();
             $table->date('birthday')->nullable();
             $table->boolean('active')->default(true);

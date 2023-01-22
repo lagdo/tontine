@@ -21,7 +21,7 @@ class CreateSessionsTable extends Migration
             $table->tinyInteger('status')->default(0);
             $table->text('agenda')->nullable();
             $table->text('report')->nullable();
-            $table->string('notes')->default('');
+            $table->string('notes')->nullable();
             $table->datetime('start_at');
             $table->datetime('end_at');
             $table->unsignedBigInteger('round_id');

@@ -17,7 +17,7 @@ class CreatePoolsTable extends Migration
             $table->id();
             $table->string('title', 100);
             $table->integer('amount');
-            $table->string('notes')->default('');
+            $table->string('notes')->nullable();
             $table->unsignedBigInteger('round_id');
             $table->foreign('round_id')->references('id')->on('rounds');
         });

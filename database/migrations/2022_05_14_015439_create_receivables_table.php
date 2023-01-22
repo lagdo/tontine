@@ -15,7 +15,7 @@ class CreateReceivablesTable extends Migration
     {
         Schema::create('receivables', function (Blueprint $table) {
             $table->id();
-            $table->string('notes')->default('');
+            $table->string('notes')->nullable();
             $table->unsignedBigInteger('session_id');
             $table->foreign('session_id')->references('id')->on('sessions');
             $table->unsignedBigInteger('subscription_id');

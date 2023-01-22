@@ -19,11 +19,11 @@ class CreateTontinesTable extends Migration
             $table->string('name', 100);
             $table->string('shortname', 25);
             $table->text('biography')->nullable();
-            $table->string('email', 100)->default('');
-            $table->string('phone', 100)->default('');
-            $table->string('address', 500)->default('');
-            $table->string('city', 100)->default('');
-            $table->string('website', 100)->default('');
+            $table->string('email', 100)->nullable();
+            $table->string('phone', 100)->nullable();
+            $table->string('address', 500)->nullable();
+            $table->string('city', 100)->nullable();
+            $table->string('website', 100)->nullable();
             $table->string('country_code', 2);
             $table->string('currency_code', 3);
             $table->timestamps();

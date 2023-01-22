@@ -29,7 +29,7 @@ class LoanValidator extends AbstractValidator
      */
     public function validateItem(array $values): array
     {
-        $validator = Validator::make($values, [
+        $validator = Validator::make($this->values($values), [
             'member' => 'required|integer|min:1',
             'amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
             'interest' => 'required|integer|min:0',

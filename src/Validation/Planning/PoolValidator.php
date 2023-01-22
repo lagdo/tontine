@@ -29,10 +29,10 @@ class PoolValidator extends AbstractValidator
      */
     public function validateItem(array $values): array
     {
-        $validator = Validator::make($values, [
+        $validator = Validator::make($this->values($values), [
             'title' => 'required|string|min:1',
             'amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
-            'notes' => 'present|string',
+            'notes' => 'nullable|string',
         ]);
         if($validator->fails())
         {

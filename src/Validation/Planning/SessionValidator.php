@@ -15,12 +15,12 @@ class SessionValidator extends AbstractValidator
      */
     public function validateItem(array $values): array
     {
-        $validator = Validator::make($values, [
+        $validator = Validator::make($this->values($values), [
             'title' => 'required|string|min:1',
             'date' => 'required|date_format:Y-m-d',
             'start' => 'required|date_format:H:i',
             'end' => 'required|date_format:H:i',
-            'host_id' => 'sometimes|required|integer|min:0',
+            'host_id' => 'integer|min:0',
         ]);
         if($validator->fails())
         {
@@ -36,9 +36,9 @@ class SessionValidator extends AbstractValidator
      */
     public function validateVenue(array $values): array
     {
-        $validator = Validator::make($values, [
-            'venue' => 'present|string',
-            'notes' => 'present|string',
+        $validator = Validator::make($this->values($values), [
+            'venue' => 'nullable|string',
+            'notes' => 'nullable|string',
         ]);
         if($validator->fails())
         {
