@@ -134,22 +134,22 @@ class PoolService
                     return $session->enabled($pool);
                 })->count();
                 $payableSum += $payable->amount * $count;
-                $payable->amount = $this->localeService->formatCurrency($payable->amount * $count);
+                $payable->amount = $this->localeService->formatMoney($payable->amount * $count);
             })->pluck('amount', 'id');
 
         $receivableSum = 0;
         $receivableAmounts = $session->receivableAmounts()->get()
             ->each(function($receivable) use(&$receivableSum) {
                 $receivableSum += $receivable->amount;
-                $receivable->amount = $this->localeService->formatCurrency($receivable->amount);
+                $receivable->amount = $this->localeService->formatMoney($receivable->amount);
             })->pluck('amount', 'id');
 
         return [
             'payables' => $payableAmounts,
             'receivables' => $receivableAmounts,
             'sum' => [
-                'payables' => $this->localeService->formatCurrency($payableSum),
-                'receivables' => $this->localeService->formatCurrency($receivableSum),
+                'payables' => $this->localeService->formatMoney($payableSum),
+                'receivables' => $this->localeService->formatMoney($receivableSum),
             ],
         ];
     }

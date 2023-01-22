@@ -84,7 +84,7 @@ class Fine extends CallableClass
             ->with('fines', $fines)
             ->with('settlements', $settlements['total'])
             ->with('bills', $bills['total'])
-            ->with('zero', $this->localeService->formatCurrency(0))
+            ->with('zero', $this->localeService->formatMoney(0))
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $fineCount));
         // if($this->session->closed)
         // {

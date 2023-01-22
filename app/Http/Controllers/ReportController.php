@@ -55,7 +55,7 @@ class ReportController extends Controller
     public function session(Request $request, PdfGeneratorInterface $pdfGenerator,
         ReportServiceInterface $reportService, LocaleService $localeService, int $sessionId)
     {
-        view()->share(['zero' => $localeService->formatCurrency(0)]);
+        view()->share(['zero' => $localeService->formatMoney(0)]);
         $html = view('tontine.report.session', $reportService->getSession($sessionId));
 
         // Show the html page

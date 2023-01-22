@@ -92,7 +92,7 @@ class RemitmentService
         }
         $payables = $query->get();
         // Set the amount
-        $amount = $this->localeService->formatCurrency($pool->amount * $pool->subscriptions->count());
+        $amount = $this->localeService->formatMoney($pool->amount * $pool->subscriptions->count());
         $payables->each(function($payable) use($amount) {
             $payable->amount = $amount;
         });

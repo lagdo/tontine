@@ -126,7 +126,7 @@ class ReportService
         })->count();
         $subscriptionCount = $pool->subscriptions()->count();
         $remitmentAmount = $pool->amount * $sessionCount;
-        $formattedAmount = $this->localeService->formatCurrency($remitmentAmount);
+        $formattedAmount = $this->localeService->formatMoney($remitmentAmount);
 
         $figures = [];
         $position = 0;

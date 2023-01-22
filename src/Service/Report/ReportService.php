@@ -118,7 +118,7 @@ class ReportService implements ReportServiceInterface
                 'session' => $session,
                 'loans' => $loans,
                 'sum' => $sum,
-                'amountAvailable' => $this->localeService->formatCurrency($amountAvailable),
+                'amountAvailable' => $this->localeService->formatMoney($amountAvailable),
             ]);
             $html->with('refunds', [
                 'session' => $session,

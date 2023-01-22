@@ -140,7 +140,7 @@ class LoanService
      */
     public function getFormattedAmountAvailable(Session $session): string
     {
-        return $this->localeService->formatCurrency($this->getAmountAvailable($session));
+        return $this->localeService->formatMoney($this->getAmountAvailable($session));
     }
 
     /**
@@ -154,8 +154,8 @@ class LoanService
     {
         $loans = $session->loans()->with(['member'])->get();
         $loans->each(function($loan) {
-            $loan->amount = $this->localeService->formatCurrency($loan->amount);
-            $loan->interest = $this->localeService->formatCurrency($loan->interest);
+            $loan->amount = $this->localeService->formatMoney($loan->amount);
+            $loan->interest = $this->localeService->formatMoney($loan->interest);
         });
         return $loans;
     }

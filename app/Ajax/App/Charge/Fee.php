@@ -84,7 +84,7 @@ class Fee extends CallableClass
             ->with('fees', $fees)
             ->with('settlements', $settlements['total'])
             ->with('bills', $bills['total'])
-            ->with('zero', $this->localeService->formatCurrency(0))
+            ->with('zero', $this->localeService->formatMoney(0))
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $feeCount));
         // if($this->session->closed)
         // {

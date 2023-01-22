@@ -135,13 +135,19 @@ class LocaleService
         return $this->getNames($tontines->pluck('country_code')->toArray(), $tontines->pluck('currency_code')->toArray());
     }
 
-    private function _locale()
+    /**
+     * @return string
+     */
+    private function _locale(): string
     {
         $locales = ['en' => 'en_GB', 'fr' => 'fr_FR'];
         return $locales[$this->locale] ?? 'en_GB';
     }
 
-    private function decimalFormatter()
+    /**
+     * @return NumberFormatter
+     */
+    private function decimalFormatter(): NumberFormatter
     {
         $formatter = new NumberFormatter($this->_locale(), NumberFormatter::DECIMAL);
         $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 0);
@@ -158,7 +164,7 @@ class LocaleService
      *
      * @return string
      */
-    public function formatCurrency(int $amount, bool $hideSymbol = false): string
+    public function formatMoney(int $amount, bool $hideSymbol = false): string
     {
         $money = new Money($amount, $this->currency);
         if($hideSymbol)

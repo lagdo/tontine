@@ -19,6 +19,6 @@ trait HasCurrency
      */
     public function money(string $attr, bool $hideSymbol = false): string
     {
-        return app(LocaleService::class)->formatCurrency(intval($this->$attr), $hideSymbol);
+        return app(LocaleService::class)->formatMoney(intval($this->$attr), $hideSymbol);
     }
 }

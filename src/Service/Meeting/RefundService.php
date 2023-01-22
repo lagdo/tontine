@@ -166,7 +166,7 @@ class RefundService
         }
         $debts = $query->get();
         $debts->each(function($debt) {
-            $debt->amount = $this->localeService->formatCurrency($debt->amount);
+            $debt->amount = $this->localeService->formatMoney($debt->amount);
         });
         return $debts;
     }
@@ -232,7 +232,7 @@ class RefundService
      */
     public function getRefundSum(Session $session): string
     {
-        return $this->localeService->formatCurrency($session->refunds()
+        return $this->localeService->formatMoney($session->refunds()
             ->join('loans', 'loans.id', '=', 'refunds.loan_id')
             ->sum('loans.amount'));
     }
