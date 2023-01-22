@@ -32,7 +32,7 @@ class LoanValidator extends AbstractValidator
         $validator = Validator::make($this->values($values), [
             'member' => 'required|integer|min:1',
             'amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
-            'interest' => 'required|integer|min:0',
+            'interest' => 'required|regex:/^\d+(\.\d{1,2})?$/',
         ]);
         if($validator->fails())
         {
@@ -41,6 +41,7 @@ class LoanValidator extends AbstractValidator
 
         $validated = $validator->validated();
         $validated['amount'] = $this->localeService->convertMoneyToInt((float)$validated['amount']);
+        $validated['interest'] = $this->localeService->convertMoneyToInt((float)$validated['interest']);
         return $validated;
     }
 }

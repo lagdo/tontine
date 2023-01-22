@@ -201,10 +201,15 @@ class RefundService
      */
     public function createRefund(Session $session, int $loanId, string $type): void
     {
+        $types = [
+            'interest' => Refund::TYPE_INTEREST,
+            'principal' => Refund::TYPE_PRINCIPAL,
+        ];
         $sessionIds = $this->tenantService->round()->sessions()->pluck('id');
         $loan = Loan::whereIn('session_id', $sessionIds)->find($loanId);
+
         $refund = new Refund();
-        $refund->type = $type;
+        $refund->type = $types[$type];
         $refund->loan()->associate($loan);
         $refund->session()->associate($session);
         $refund->save();

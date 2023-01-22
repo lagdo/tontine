@@ -4,6 +4,7 @@ namespace App\Ajax\App\Credit;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Meeting\LoanService;
 use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
@@ -20,6 +21,11 @@ class Refund extends CallableClass
      * @var RefundService
      */
     protected RefundService $refundService;
+
+    /**
+     * @var LoanService
+     */
+    protected LoanService $loanService;
 
     /**
      * @var DebtValidator
@@ -103,6 +109,7 @@ class Refund extends CallableClass
 
     /**
      * @di $validator
+     * @di $loanService
      */
     public function createRefund(string $debtId)
     {
@@ -110,12 +117,21 @@ class Refund extends CallableClass
 
         $this->refundService->createRefund($this->session, $values['loan_id'], $values['type']);
 
+        // Refresh the loans page
+        $this->cl(Loan::class)->show($this->session, $this->loanService);
+
         return $this->page();
     }
 
+    /**
+     * @di $loanService
+     */
     public function deleteRefund(int $refundId)
     {
         $this->refundService->deleteRefund($this->session, $refundId);
+
+        // Refresh the loans page
+        $this->cl(Loan::class)->show($this->session, $this->loanService);
 
         return $this->page();
     }

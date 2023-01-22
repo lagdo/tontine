@@ -108,7 +108,7 @@ class LoanService
      *
      * @return int
      */
-    public function getAmountAvailable(Session $session): int
+    private function _getAmountAvailable(Session $session): int
     {
         // Get the ids of all the sessions until the current one.
         $sessionIds = $this->tenantService->round()->sessions()
@@ -134,13 +134,25 @@ class LoanService
     }
 
     /**
+     * Get the amount available for loan.
+     *
+     * @param Session $session    The session
+     *
+     * @return float
+     */
+    public function getAmountAvailable(Session $session): float
+    {
+        return $this->localeService->getMoneyValue($this->_getAmountAvailable($session));
+    }
+
+    /**
      * @param Session $session    The session
      *
      * @return string
      */
     public function getFormattedAmountAvailable(Session $session): string
     {
-        return $this->localeService->formatMoney($this->getAmountAvailable($session));
+        return $this->localeService->formatMoney($this->_getAmountAvailable($session));
     }
 
     /**
