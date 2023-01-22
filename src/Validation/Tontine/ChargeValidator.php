@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Validation;
+namespace Siak\Tontine\Validation\Tontine;
 
 use Illuminate\Support\Facades\Validator;
 use Siak\Tontine\Validation\AbstractValidator;

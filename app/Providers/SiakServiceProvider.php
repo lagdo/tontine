@@ -35,13 +35,13 @@ use Siak\Tontine\Service\Tontine\PoolService as TontinePoolService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
-use Siak\Tontine\Validation\ChargeValidator;
-use Siak\Tontine\Validation\MemberValidator;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 use Siak\Tontine\Validation\Meeting\RemitmentValidator;
 use Siak\Tontine\Validation\Planning\PoolValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
+use Siak\Tontine\Validation\Tontine\ChargeValidator;
+use Siak\Tontine\Validation\Tontine\MemberValidator;
 use Siak\Tontine\Validation\Tontine\TontineValidator;
 
 use function config;
