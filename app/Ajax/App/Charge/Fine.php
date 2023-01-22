@@ -82,9 +82,9 @@ class Fine extends CallableClass
         $html = $this->view()->render('tontine.pages.meeting.fine.page')
             ->with('session', $this->session)
             ->with('fines', $fines)
-            ->with('settlements', $settlements['total'])
             ->with('bills', $bills['total'])
-            ->with('zero', $this->localeService->formatMoney(0))
+            ->with('settlements', $settlements['total'])
+            ->with('zero', $settlements['zero'])
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $fineCount));
         // if($this->session->closed)
         // {

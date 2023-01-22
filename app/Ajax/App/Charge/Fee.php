@@ -82,9 +82,9 @@ class Fee extends CallableClass
         $html = $this->view()->render('tontine.pages.meeting.fee.page')
             ->with('session', $this->session)
             ->with('fees', $fees)
-            ->with('settlements', $settlements['total'])
             ->with('bills', $bills['total'])
-            ->with('zero', $this->localeService->formatMoney(0))
+            ->with('settlements', $settlements['total'])
+            ->with('zero', $settlements['zero'])
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $feeCount));
         // if($this->session->closed)
         // {

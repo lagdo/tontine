@@ -7,20 +7,28 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Settlement;
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
 class FineReportService
 {
+    /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @var TenantService
      */
     protected TenantService $tenantService;
 
     /**
+     * @param LocaleService $localeService
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService)
     {
+        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
     }
 
@@ -125,6 +133,7 @@ class FineReportService
         $currentSettlements = $this->getCurrentSessionSettlements($session);
         $previousSettlements = $this->getPreviousSessionsSettlements($session);
         return [
+            'zero' => $this->localeService->formatMoney(0),
             'total' => [
                 'current' => $currentSettlements->pluck('total', 'charge_id'),
                 'previous' => $previousSettlements->pluck('total', 'charge_id'),
