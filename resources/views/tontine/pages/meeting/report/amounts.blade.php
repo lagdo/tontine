@@ -13,9 +13,9 @@
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right" role="group" aria-label="">
+                  <button type="button" class="btn btn-primary" id="btn-meeting-report-deposits"><i class="fa fa-user"></i></button>
+                  <button type="button" class="btn btn-primary" id="btn-meeting-report-refresh"><i class="fa fa-sync"></i></button>
                   <a type="button" class="btn btn-primary" target="_blank" href="{{ route('report.pool', ['poolId' => $pool->id]) }}"><i class="fa fa-file-pdf"></i></a>
-                  <button type="button" class="btn btn-primary" id="btn-meeting-table-deposits"><i class="fa fa-user-times"></i></button>
-                  <button type="button" class="btn btn-primary" id="btn-meeting-table-refresh"><i class="fa fa-sync"></i></button>
                 </div>
               </div>
             </div>

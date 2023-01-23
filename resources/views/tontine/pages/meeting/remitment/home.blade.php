@@ -39,7 +39,7 @@
                             'pool' => $pool,
                             'paid' => $pool->pay_paid,
                             'count' => $pool->pay_count,
-                            'report' => $report['payables'],
+                            'amounts' => $summary['payables'],
                         ])
 @else
                         @include('tontine.pages.meeting.pool.pending', [
@@ -52,7 +52,7 @@
 @if($session->closed)
                         <tr>
                           <td colspan="2">{!! __('common.labels.total') !!}</td>
-                          <td>{{ $report['sum']['payables'] }}</td>
+                          <td>{{ $summary['total'] }}</td>
                         </tr>
 @endif
                       </tbody>

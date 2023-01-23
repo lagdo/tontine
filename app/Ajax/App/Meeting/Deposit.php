@@ -84,7 +84,7 @@ class Deposit extends CallableClass
             ->with('pools', $this->poolService->getPoolsWithReceivables($this->session));
         if($this->session->closed)
         {
-            $html->with('report', $this->poolService->getPoolsReport($this->session));
+            $html->with('summary', $this->poolService->getReceivablesSummary($this->session));
         }
         $this->response->html('meeting-deposits', $html);
 

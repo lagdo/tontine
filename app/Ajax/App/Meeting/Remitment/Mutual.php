@@ -87,7 +87,7 @@ class Mutual extends CallableClass
             ->with('pools', $this->poolService->getPoolsWithPayables($this->session));
         if($this->session->closed)
         {
-            $html->with('report', $this->poolService->getPoolsReport($this->session));
+            $html->with('summary', $this->poolService->getPayablesSummary($this->session));
         }
         $this->response->html('meeting-remitments', $html);
 

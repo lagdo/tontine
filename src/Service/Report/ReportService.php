@@ -79,7 +79,7 @@ class ReportService implements ReportServiceInterface
     {
         $tontine = $this->meetingReportService->getTontine();
         $session = $this->meetingReportService->getSession($sessionId);
-        $report = $this->meetingReportService->getPoolsReport($session);
+        // $report = $this->meetingReportService->getPoolsReport($session);
         [$countries] = $this->localeService->getNamesFromTontine($tontine);
 
         return [
