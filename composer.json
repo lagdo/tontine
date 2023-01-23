@@ -8,7 +8,7 @@
         "php": "^7.4|^8.0",
         "ext-gmp": "*",
         "ext-json": "*",
-        "brick/money": "^0.5.3",
+        "akaunting/laravel-money": "^3.1",
         "chrome-php/chrome": "^1.6",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -24,6 +24,7 @@
         "mcamara/laravel-localization": "^1.7",
         "propaganistas/laravel-phone": "^4.3",
         "rinvex/countries": "^9.0",
+        "spatie/laravel-validation-rules": "^3.2",
         "umpirsky/country-list": "^2.0",
         "umpirsky/currency-list": "^1.1"
     },
