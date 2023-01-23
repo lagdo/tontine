@@ -64,6 +64,7 @@ class Loan extends CallableClass
         $amountAvailable = $this->loanService->getFormattedAmountAvailable($this->session);
 
         $html = $this->view()->render('tontine.pages.meeting.loan.home')
+            ->with('session', $this->session)
             ->with('loans', $loans)
             ->with('amountAvailable', $amountAvailable);
         $this->response->html('meeting-loans', $html);

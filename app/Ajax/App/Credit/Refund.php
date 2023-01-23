@@ -84,6 +84,7 @@ class Refund extends CallableClass
         $refunded = $this->bag('meeting')->get('debt.filter', null);
         $debtCount = $this->refundService->getDebtCount($this->session, $refunded);
         $html = $this->view()->render('tontine.pages.meeting.refund.page', [
+            'session' => $this->session,
             'debts' => $this->refundService->getDebts($this->session, $refunded, $pageNumber),
             'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $debtCount),
         ]);

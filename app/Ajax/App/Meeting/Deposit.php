@@ -3,6 +3,7 @@
 namespace App\Ajax\App\Meeting;
 
 use Siak\Tontine\Service\Meeting\DepositService;
+use Siak\Tontine\Service\Meeting\PoolService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Pool as PoolModel;
 use App\Ajax\CallableClass;
@@ -23,6 +24,11 @@ class Deposit extends CallableClass
     protected DepositService $depositService;
 
     /**
+     * @var PoolService
+     */
+    protected PoolService $poolService;
+
+    /**
      * @var SessionModel|null
      */
     protected ?SessionModel $session;
@@ -35,9 +41,17 @@ class Deposit extends CallableClass
     protected function getPool()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $poolId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('pool.id');
+
+        // No pool id on the "home" page
+        if($this->target()->method() === 'home')
+        {
+            $this->session = $this->poolService->getSession($sessionId);
+            return;
+        }
+
         $this->session = $this->depositService->getSession($sessionId);
+        $poolId = $this->target()->method() === 'pool' ?
+            $this->target()->args()[0] : $this->bag('meeting')->get('pool.id');
         $this->pool = $this->depositService->getPool($poolId);
         if($this->session->disabled($this->pool))
         {
@@ -47,19 +61,54 @@ class Deposit extends CallableClass
     }
 
     /**
+     * @exclude
+     */
+    public function show(SessionModel $session, PoolService $poolService)
+    {
+        $this->session = $session;
+        $this->poolService = $poolService;
+
+        return $this->home();
+    }
+
+    /**
+     * @di $poolService
+     */
+    public function home()
+    {
+        $tontine = $this->poolService->getTontine();
+
+        $html = $this->view()->render('tontine.pages.meeting.deposit.home')
+            ->with('tontine', $tontine)
+            ->with('session', $this->session)
+            ->with('pools', $this->poolService->getPoolsWithReceivables($this->session));
+        if($this->session->closed)
+        {
+            $html->with('report', $this->poolService->getPoolsReport($this->session));
+        }
+        $this->response->html('meeting-deposits', $html);
+
+        $this->jq('#btn-deposits-refresh')->click($this->rq()->deposits());
+        $poolId = jq()->parent()->attr('data-pool-id')->toInt();
+        $this->jq('.btn-pool-deposits')->click($this->rq()->pool($poolId));
+
+        return $this->response;
+    }
+
+    /**
      * @param int $poolId
      *
      * @return mixed
      */
-    public function home(int $poolId)
+    public function pool(int $poolId)
     {
         $this->bag('meeting')->set('pool.id', $poolId);
 
-        $html = $this->view()->render('tontine.pages.meeting.deposit.home', [
+        $html = $this->view()->render('tontine.pages.meeting.deposit.pool', [
             'pool' => $this->pool,
         ]);
         $this->response->html('meeting-deposits', $html);
-        $this->jq('#btn-deposits-back')->click($this->cl(Pool::class)->rq()->deposits());
+        $this->jq('#btn-deposits-back')->click($this->rq()->home());
 
         return $this->page(1);
     }

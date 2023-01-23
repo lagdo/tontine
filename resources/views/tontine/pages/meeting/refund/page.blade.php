@@ -13,7 +13,11 @@
                       <td>{{ $debt->member->name }}</td>
                       <td>{{ __('tontine.loan.labels.' . $debt->type) }}</td>
                       <td>{{ $debt->amount }}</td>
-@if ($debt->refund_count)
+@if ($session->closed)
+                      <td>
+                        @if ($debt->refund_count) <i class="fa fa-toggle-on"></i> @else <i class="fa fa-toggle-off"> @endif
+                      </td>
+@elseif (($debt->refund_count))
                       <td data-refund-id="{{ $debt->refund->id }}">
                         <a href="javascript:void(0)" class="btn-del-refund"><i class="fa fa-toggle-on"></i></a>
                       </td>

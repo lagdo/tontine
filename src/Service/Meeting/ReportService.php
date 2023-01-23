@@ -45,10 +45,6 @@ class ReportService
      */
     private function getCollectedFigures(Pool $pool, Collection $sessions, Collection $subscriptions): array
     {
-        \Log::debug('Get collected figures', [
-            'sessions' => $sessions->toArray(),
-            'subscriptions' => $subscriptions->toArray(),
-        ]);
         $cashier = 0;
         $remitmentAmount = $pool->amount * $sessions->filter(function($session) use($pool) {
             return $session->enabled($pool);

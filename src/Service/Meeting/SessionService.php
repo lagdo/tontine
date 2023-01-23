@@ -56,7 +56,7 @@ class SessionService
      */
     public function openRound(Round $round)
     {
-        if($round->is_opened)
+        if($round->opened)
         {
             return;
         }
@@ -90,7 +90,7 @@ class SessionService
         // Make sure the round is also opened.
         $this->openRound($session->round);
 
-        if($session->is_opened)
+        if($session->opened)
         {
             return;
         }
