@@ -4,5 +4,8 @@
                             {{ $charge->paid_bills_count }}/{{ $charge->bills_count }}<br/>
                             {{ $charge->all_paid_bills_count }}/{{ $charge->all_bills_count }}
                           </td>
-                          <td></td>
+                          <td>
+                            {{ $amounts['current'][$charge->id] ?? $zero }}<br/>
+                            {{ $amounts['previous'][$charge->id] ?? $zero }}
+                          </td>
                         </tr>

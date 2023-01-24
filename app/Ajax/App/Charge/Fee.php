@@ -86,10 +86,10 @@ class Fee extends CallableClass
             ->with('settlements', $settlements['total'])
             ->with('zero', $settlements['zero'])
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $feeCount));
-        // if($this->session->closed)
-        // {
-        //     $html->with('report', $this->feeService->getFeesReport($this->session));
-        // }
+        if($this->session->closed)
+        {
+            $html->with('amounts', $settlements['amount']);
+        }
         $this->response->html('meeting-fees-page', $html);
 
         $feeId = jq()->parent()->attr('data-fee-id')->toInt();

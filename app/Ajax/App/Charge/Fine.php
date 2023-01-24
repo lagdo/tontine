@@ -86,10 +86,10 @@ class Fine extends CallableClass
             ->with('settlements', $settlements['total'])
             ->with('zero', $settlements['zero'])
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $fineCount));
-        // if($this->session->closed)
-        // {
-        //     $html->with('report', $this->fineService->getFeesReport($this->session));
-        // }
+        if($this->session->closed)
+        {
+            $html->with('amounts', $settlements['amount']);
+        }
         $this->response->html('meeting-fines-page', $html);
 
         $fineId = jq()->parent()->attr('data-fine-id')->toInt();

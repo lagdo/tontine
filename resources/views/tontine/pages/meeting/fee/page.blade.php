@@ -9,7 +9,7 @@
                       <tbody>
 @foreach ($fees as $charge)
 @if($session->closed)
-                        @include('tontine.pages.meeting.charge.closed', compact('charge', 'session'))
+                        @include('tontine.pages.meeting.charge.closed', compact('charge', 'amounts', 'zero'))
 @elseif($session->pending)
                         @include('tontine.pages.meeting.charge.pending', compact('charge'))
 @else
