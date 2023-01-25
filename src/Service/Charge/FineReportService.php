@@ -78,7 +78,7 @@ class FineReportService
             DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
-            ->where('fine_bills.session_id', $session->id)
+            ->where('settlements.session_id', $session->id)
             ->groupBy('fine_bills.charge_id');
         return $query->get();
     }
@@ -97,7 +97,7 @@ class FineReportService
             DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
-            ->whereIn('fine_bills.session_id', $sessionIds)
+            ->whereIn('settlements.session_id', $sessionIds)
             ->groupBy('fine_bills.charge_id');
         return $query->get();
     }

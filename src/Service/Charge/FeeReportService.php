@@ -99,27 +99,26 @@ class FeeReportService
      */
     private function getCurrentSessionSettlements(Session $session): Collection
     {
-        // Count the session bills
+        // Count the session bills settlements
         $sessionQuery = Settlement::select('session_bills.charge_id',
             DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('session_bills', 'session_bills.bill_id', '=', 'bills.id')
-            ->where('session_bills.session_id', $session->id)
+            ->where('settlements.session_id', $session->id)
             ->groupBy('session_bills.charge_id');
-        // Count the round bills
+        // Count the round bills settlements
         $roundQuery = Settlement::select('round_bills.charge_id',
             DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('round_bills', 'round_bills.bill_id', '=', 'bills.id')
-            ->where('round_bills.round_id', $session->round_id)
+            ->where('settlements.session_id', $session->id)
             ->groupBy('round_bills.charge_id');
-        // Count the tontine bills only for active members
-        $memberIds = $this->tenantService->tontine()->members()->pluck('id');
+        // Count the tontine bills settlements
         $tontineQuery = Settlement::select('tontine_bills.charge_id',
             DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('tontine_bills', 'tontine_bills.bill_id', '=', 'bills.id')
-            ->whereIn('tontine_bills.member_id', $memberIds)
+            ->where('settlements.session_id', $session->id)
             ->groupBy('tontine_bills.charge_id');
         return $sessionQuery->union($roundQuery)->union($tontineQuery)->get();
     }
@@ -131,29 +130,28 @@ class FeeReportService
      */
     private function getPreviousSessionsSettlements(Session $session): Collection
     {
-        // Count the session bills
+        // Count the session bills settlements
         $sessionIds = $this->tenantService->round()->sessions()
             ->where('start_at', '<=', $session->start_at)->pluck('id');
         $sessionQuery = Settlement::select('session_bills.charge_id',
             DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('session_bills', 'session_bills.bill_id', '=', 'bills.id')
-            ->whereIn('session_bills.session_id', $sessionIds)
+            ->whereIn('settlements.session_id', $sessionIds)
             ->groupBy('session_bills.charge_id');
-        // Count the round bills
+        // Count the round bills settlements
         $roundQuery = Settlement::select('round_bills.charge_id',
             DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('round_bills', 'round_bills.bill_id', '=', 'bills.id')
-            ->where('round_bills.round_id', $session->round_id)
+            ->whereIn('settlements.session_id', $sessionIds)
             ->groupBy('round_bills.charge_id');
-        // Count the tontine bills only for active members
-        $memberIds = $this->tenantService->tontine()->members()->pluck('id');
+        // Count the tontine bills settlements
         $tontineQuery = Settlement::select('tontine_bills.charge_id',
             DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('tontine_bills', 'tontine_bills.bill_id', '=', 'bills.id')
-            ->whereIn('tontine_bills.member_id', $memberIds)
+            ->whereIn('settlements.session_id', $sessionIds)
             ->groupBy('tontine_bills.charge_id');
         return $sessionQuery->union($roundQuery)->union($tontineQuery)->get();
     }

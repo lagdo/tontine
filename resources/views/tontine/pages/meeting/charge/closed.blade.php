@@ -1,11 +1,11 @@
                         <tr>
                           <td>{{ $charge->name }}<br/>{{ $charge->money('amount') }}</td>
                           <td>
-                            {{ $charge->paid_bills_count }}/{{ $charge->bills_count }}<br/>
-                            {{ $charge->all_paid_bills_count }}/{{ $charge->all_bills_count }}
+                            {{ $settlements['total']['current'][$charge->id] ?? 0 }}/{{ $bills['total']['current'][$charge->id] ?? 0 }}<br/>
+                            {{ $settlements['total']['previous'][$charge->id] ?? 0 }}/{{ $bills['total']['previous'][$charge->id] ?? 0 }}
                           </td>
                           <td>
-                            {{ $amounts['current'][$charge->id] ?? $zero }}<br/>
-                            {{ $amounts['previous'][$charge->id] ?? $zero }}
+                            {{ $settlements['amount']['current'][$charge->id] ?? $zero }}<br/>
+                            {{ $settlements['amount']['previous'][$charge->id] ?? $zero }}
                           </td>
                         </tr>

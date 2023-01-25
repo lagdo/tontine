@@ -72,24 +72,20 @@ class Fine extends CallableClass
 
     public function page(int $pageNumber)
     {
-        $fines = $this->fineService->getFines($this->session, $pageNumber);
+        $fines = $this->fineService->getFines($pageNumber);
         $fineCount = $this->fineService->getFineCount();
-        // Settlement report
-        $settlements = $this->reportService->getSettlements($this->session);
-        // Bill counts
+        // Bill counts and amounts
         $bills = $this->reportService->getBills($this->session);
+        // Settlement counts and amounts
+        $settlements = $this->reportService->getSettlements($this->session);
 
         $html = $this->view()->render('tontine.pages.meeting.fine.page')
             ->with('session', $this->session)
             ->with('fines', $fines)
-            ->with('bills', $bills['total'])
-            ->with('settlements', $settlements['total'])
+            ->with('bills', $bills)
+            ->with('settlements', $settlements)
             ->with('zero', $settlements['zero'])
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $fineCount));
-        if($this->session->closed)
-        {
-            $html->with('amounts', $settlements['amount']);
-        }
         $this->response->html('meeting-fines-page', $html);
 
         $fineId = jq()->parent()->attr('data-fine-id')->toInt();
