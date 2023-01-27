@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service\Charge;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Charge;
@@ -30,43 +31,93 @@ class SettlementService
     }
 
     /**
+     * @param Builder $query
+     * @param boolean|null $onlyPaid
+     *
+     * @return Builder
+     */
+    private function filterQuery(Builder $query, ?bool $onlyPaid): Builder
+    {
+        if($onlyPaid === false)
+        {
+            return $query->whereDoesntHave('bill.settlement');
+        }
+        if($onlyPaid === true)
+        {
+            return $query->whereHas('bill.settlement');
+        }
+        return $query;
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Session $session
+     * @param bool $onlyPaid|null
+     *
+     * @return mixed
+     */
+    private function getFinesQuery(Charge $charge, Session $session, ?bool $onlyPaid)
+    {
+        // The fines of the current session.
+        $query = FineBill::select('fine_bills.*')
+            ->where('fine_bills.charge_id', $charge->id)
+            ->where('fine_bills.session_id', $session->id);
+        // The filter applies only to this query.
+        $query = $this->filterQuery($query, $onlyPaid);
+
+        $prevSessions = $this->tenantService->round()->sessions()
+            ->where('start_at', '<', $session->start_at)->pluck('id');
+        if($prevSessions->count() === 0)
+        {
+            return $query;
+        }
+
+        // The fines of the previous sessions that are not yet settled.
+        $unpaidQuery = FineBill::select('fine_bills.*')
+            ->where('fine_bills.charge_id', $charge->id)
+            ->whereIn('fine_bills.session_id', $prevSessions)
+            ->whereNotExists(function($whereQuery) {
+                $whereQuery->select(DB::raw(1))
+                    ->from('settlements')
+                    ->whereColumn('settlements.bill_id', 'fine_bills.bill_id');
+            });
+        // The fines of the previous sessions that are settled in the session.
+        $paidQuery = FineBill::select('fine_bills.*')
+            ->join('settlements', 'fine_bills.bill_id', '=', 'settlements.bill_id')
+            ->where('fine_bills.charge_id', $charge->id)
+            ->whereIn('fine_bills.session_id', $prevSessions)
+            ->where('settlements.session_id', $session->id);
+
+        if($onlyPaid === false)
+        {
+            return $query->union($unpaidQuery);
+        }
+        if($onlyPaid === true)
+        {
+            return $query->union($paidQuery);
+        }
+        return $query->union($unpaidQuery)->union($paidQuery);
+    }
+
+    /**
      * @param Charge $charge
      * @param Session $session
      *
      * @return mixed
      */
-    private function getBillsQuery(Charge $charge, Session $session)
+    private function getFeesQuery(Charge $charge, Session $session)
     {
-        if($charge->is_fine)
-        {
-            // Take all the fines of the current session, and those
-            // of the previous sessions that are not yet settled.
-            $query = FineBill::where('session_id', $session->id);
-
-            $prevSessions = $this->tenantService->round()->sessions()
-                ->where('start_at', '<', $session->start_at)->pluck('id');
-            if($prevSessions->count() > 0)
-            {
-                $prevQuery = FineBill::whereIn('session_id', $prevSessions)
-                    ->whereNotExists(function($whereQuery) {
-                        $whereQuery->select(DB::raw(1))
-                            ->from('settlements')
-                            ->whereColumn('settlements.bill_id', 'fine_bills.bill_id');
-                    });
-                return $query->union($prevQuery);
-            }
-        }
         if($charge->period_session)
         {
-            return SessionBill::where('session_id', $session->id);
+            return SessionBill::where('charge_id', $charge->id)->where('session_id', $session->id);
         }
         if($charge->period_round)
         {
-            return RoundBill::where('round_id', $session->round_id);
+            return RoundBill::where('charge_id', $charge->id)->where('round_id', $session->round_id);
         }
         // if($charge->period_once)
         $memberIds = $this->tenantService->tontine()->members()->pluck('id');
-        return TontineBill::whereIn('member_id', $memberIds);
+        return TontineBill::where('charge_id', $charge->id)->whereIn('member_id', $memberIds);
     }
 
     /**
@@ -78,16 +129,11 @@ class SettlementService
      */
     private function getQuery(Charge $charge, Session $session, ?bool $onlyPaid)
     {
-        $query = $this->getBillsQuery($charge, $session);
-        if($onlyPaid === false)
+        if($charge->is_fine)
         {
-            $query->whereDoesntHave('bill.settlement');
+            return $this->getFinesQuery($charge, $session, $onlyPaid);
         }
-        elseif($onlyPaid === true)
-        {
-            $query->whereHas('bill.settlement');
-        }
-        return $query->where('charge_id', $charge->id);
+        return $this->filterQuery($this->getFeesQuery($charge, $session), $onlyPaid);
     }
 
     /**
