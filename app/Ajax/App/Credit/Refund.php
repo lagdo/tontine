@@ -81,11 +81,11 @@ class Refund extends CallableClass
         }
         $this->bag('meeting')->set('debt.page', $pageNumber);
 
-        $refunded = $this->bag('meeting')->get('debt.filter', null);
-        $debtCount = $this->refundService->getDebtCount($this->session, $refunded);
+        $filtered = $this->bag('meeting')->get('debt.filter', null);
+        $debtCount = $this->refundService->getDebtCount($this->session, $filtered);
         $html = $this->view()->render('tontine.pages.meeting.refund.page', [
             'session' => $this->session,
-            'debts' => $this->refundService->getDebts($this->session, $refunded, $pageNumber),
+            'debts' => $this->refundService->getDebts($this->session, $filtered, $pageNumber),
             'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $debtCount),
         ]);
         $this->response->html('meeting-debts-page', $html);
@@ -100,10 +100,10 @@ class Refund extends CallableClass
 
     public function toggleFilter()
     {
-        $refunded = $this->bag('meeting')->get('debt.filter', null);
+        $filtered = $this->bag('meeting')->get('debt.filter', null);
         // Switch between null, true and false
-        $refunded = $refunded === null ? true : ($refunded === true ? false : null);
-        $this->bag('meeting')->set('debt.filter', $refunded);
+        $filtered = $filtered === null ? true : ($filtered === true ? false : null);
+        $this->bag('meeting')->set('debt.filter', $filtered);
 
         return $this->page(1);
     }

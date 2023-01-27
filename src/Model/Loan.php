@@ -40,8 +40,18 @@ class Loan extends Model
         return $this->belongsTo(Remitment::class);
     }
 
-    public function refund()
+    public function refunds()
     {
-        return $this->hasOne(Refund::class);
+        return $this->hasMany(Refund::class);
+    }
+
+    public function principal_refund()
+    {
+        return $this->hasOne(Refund::class)->where('type', Refund::TYPE_PRINCIPAL);
+    }
+
+    public function interest_refund()
+    {
+        return $this->hasOne(Refund::class)->where('type', Refund::TYPE_INTEREST);
     }
 }

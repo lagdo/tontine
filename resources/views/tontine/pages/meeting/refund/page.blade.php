@@ -15,10 +15,10 @@
                       <td>{{ $debt->amount }}</td>
 @if ($session->closed)
                       <td>
-                        @if ($debt->refund_count) <i class="fa fa-toggle-on"></i> @else <i class="fa fa-toggle-off"> @endif
+                        @if ($debt->refund_id) <i class="fa fa-toggle-on"></i> @else <i class="fa fa-toggle-off"> @endif
                       </td>
-@elseif (($debt->refund_count))
-                      <td data-refund-id="{{ $debt->refund->id }}">
+@elseif ($debt->refund_id)
+                      <td data-refund-id="{{ $debt->refund_id }}">
                         <a href="javascript:void(0)" class="btn-del-refund"><i class="fa fa-toggle-on"></i></a>
                       </td>
 @else
