@@ -59,9 +59,7 @@ class SettlementService
     private function getFinesQuery(Charge $charge, Session $session, ?bool $onlyPaid)
     {
         // The fines of the current session.
-        $query = FineBill::select('fine_bills.*')
-            ->where('fine_bills.charge_id', $charge->id)
-            ->where('fine_bills.session_id', $session->id);
+        $query = FineBill::where('charge_id', $charge->id)->where('session_id', $session->id);
         // The filter applies only to this query.
         $query = $this->filterQuery($query, $onlyPaid);
 
@@ -73,20 +71,15 @@ class SettlementService
         }
 
         // The fines of the previous sessions that are not yet settled.
-        $unpaidQuery = FineBill::select('fine_bills.*')
-            ->where('fine_bills.charge_id', $charge->id)
-            ->whereIn('fine_bills.session_id', $prevSessions)
-            ->whereNotExists(function($whereQuery) {
-                $whereQuery->select(DB::raw(1))
-                    ->from('settlements')
-                    ->whereColumn('settlements.bill_id', 'fine_bills.bill_id');
-            });
+        $unpaidQuery = FineBill::where('charge_id', $charge->id)
+            ->whereIn('session_id', $prevSessions)
+            ->whereDoesntHave('bill.settlement');
         // The fines of the previous sessions that are settled in the session.
-        $paidQuery = FineBill::select('fine_bills.*')
-            ->join('settlements', 'fine_bills.bill_id', '=', 'settlements.bill_id')
-            ->where('fine_bills.charge_id', $charge->id)
-            ->whereIn('fine_bills.session_id', $prevSessions)
-            ->where('settlements.session_id', $session->id);
+        $paidQuery = FineBill::where('charge_id', $charge->id)
+            ->whereIn('session_id', $prevSessions)
+            ->whereHas('bill.settlement', function(Builder $query) use($session) {
+                $query->where('session_id', $session->id);
+            });
 
         if($onlyPaid === false)
         {
@@ -152,7 +145,8 @@ class SettlementService
             $query->take($this->tenantService->getLimit());
             $query->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $query->with(['member', 'bill', 'bill.settlement'])->get();
+        return $charge->is_fee ? $query->with(['member', 'bill', 'bill.settlement'])->get() :
+            $query->with(['member', 'session', 'bill', 'bill.settlement'])->get();
     }
 
     /**
