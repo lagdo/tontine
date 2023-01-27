@@ -76,7 +76,7 @@ class RefundService
         // The loans of the previous sessions that are not yet settled.
         $unpaidQuery = $query()->whereIn('session_id', $prevSessions)->whereDoesntHave($refundRelation);
         // The loans of the previous sessions that are settled in the session.
-        $paidQuery = $query()->whereHas($refundRelation, function($query) use($sessionId) {
+        $paidQuery = $query()->whereHas($refundRelation, function(Builder $query) use($sessionId) {
             $query->where('session_id', $sessionId);
         });
 
@@ -173,7 +173,8 @@ class RefundService
             $query->take($this->tenantService->getLimit());
             $query->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        $debts = $query->with(['interest_refund', 'principal_refund', 'member'])->get();
+        $debts = $query->with(['interest_refund', 'principal_refund', 'member', 'session'])
+            ->orderBy('member_id', 'desc')->orderBy('type', 'desc')->get();
         $debts->each(function($debt) {
             $debt->amount = $this->localeService->formatMoney($debt->amount);
             $debt->refund_id = ($debt->type === 'interest' && ($debt->interest_refund)) ? $debt->interest_refund->id :

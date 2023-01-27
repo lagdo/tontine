@@ -17,7 +17,6 @@
                         <tr>
                           <th>{!! __('meeting.labels.member') !!}</th>
                           <th>{!! __('common.labels.amount') !!}</th>
-                          <th>{!! __('common.labels.price') !!}</th>
                           <th>&nbsp;</th>
                         </tr>
                       </thead>
@@ -25,8 +24,7 @@
 @foreach ($loans as $loan)
                         <tr>
                           <td>{{ $loan->member->name }}</td>
-                          <td>{{ $loan->amount }}</td>
-                          <td>{{ $loan->interest }}</td>
+                          <td>{{ $loan->amount }}<br/>{{ $loan->interest }}</td>
 @if ($session->closed || ($loan->remitment_id))
                           <td class="table-item-menu">
                             <i class="fa fa-toggle-on"></i>

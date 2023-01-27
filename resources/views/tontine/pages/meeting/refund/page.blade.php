@@ -2,7 +2,6 @@
                   <thead>
                     <tr>
                       <th>{!! __('meeting.labels.member') !!}</th>
-                      <th>{!! __('common.labels.type') !!}</th>
                       <th>{!! __('common.labels.amount') !!}</th>
                       <th>&nbsp;</th>
                     </tr>
@@ -10,9 +9,8 @@
                   <tbody>
 @foreach($debts as $debt)
                     <tr>
-                      <td>{{ $debt->member->name }}</td>
-                      <td>{{ __('tontine.loan.labels.' . $debt->type) }}</td>
-                      <td>{{ $debt->amount }}</td>
+                      <td>{{ $debt->member->name }}<br/>{{ $debt->session->title }}</td>
+                      <td>{{ __('tontine.loan.labels.' . $debt->type) }}<br/>{{ $debt->amount }}</td>
 @if ($session->closed)
                       <td>
                         @if ($debt->refund_id) <i class="fa fa-toggle-on"></i> @else <i class="fa fa-toggle-off"> @endif
