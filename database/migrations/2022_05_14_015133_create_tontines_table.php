@@ -19,19 +19,16 @@ class CreateTontinesTable extends Migration
             $table->string('name', 100);
             $table->string('shortname', 25);
             $table->text('biography')->nullable();
-            $table->string('email', 100)->default('');
-            $table->string('phone', 100)->default('');
-            $table->string('address', 500)->default('');
-            $table->string('city', 100)->default('');
-            $table->string('website', 100)->default('');
-            $table->string('numbers', 200)->default('{}');
+            $table->string('email', 100)->nullable();
+            $table->string('phone', 100)->nullable();
+            $table->string('address', 500)->nullable();
+            $table->string('city', 100)->nullable();
+            $table->string('website', 100)->nullable();
+            $table->string('country_code', 2);
+            $table->string('currency_code', 3);
             $table->timestamps();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->unsignedInteger('country_id');
-            $table->foreign('country_id')->references('id')->on('countries');
-            $table->unsignedInteger('currency_id');
-            $table->foreign('currency_id')->references('id')->on('currencies');
         });
     }
 

@@ -19,7 +19,7 @@ class CreateBillsTables extends Migration
             $table->integer('amount');
             $table->date('issued_at')->nullable();
             $table->date('deadline')->nullable();
-            $table->string('notes')->default('');
+            $table->string('notes')->nullable();
         });
 
         Schema::create('tontine_bills', function (Blueprint $table) {

@@ -6,8 +6,6 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 
 use Siak\Tontine\Model\Charge;
-use Siak\Tontine\Model\Country;
-use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Model\Pool;
 
@@ -22,15 +20,10 @@ class TontineSeeder extends Seeder
     {
         // The user
         $user = User::first();
-        // The default country and currency
-        $currency = Currency::where('code', 'XAF')->first();
-        $country = Country::where('code', 'CM')->first();
 
         // Populate the tontines
         $tontines = Tontine::factory()->count(2)->create([
             'user_id' => $user->id,
-            'country_id' => $country->id,
-            'currency_id' => $currency->id,
         ]);
 
         // Bills

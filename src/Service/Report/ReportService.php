@@ -2,7 +2,7 @@
 
 namespace Siak\Tontine\Service\Report;
 
-use Siak\Tontine\Model\Currency;
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Charge\FeeService;
 use Siak\Tontine\Service\Charge\FeeReportService;
 use Siak\Tontine\Service\Charge\FineService;
@@ -12,6 +12,11 @@ use Siak\Tontine\Service\Planning\SubscriptionService;
 
 class ReportService implements ReportServiceInterface
 {
+    /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @var FeeService
      */
@@ -43,17 +48,19 @@ class ReportService implements ReportServiceInterface
     private $subscriptionService;
 
     /**
-     * @param FeeService $feeService
+     * @param LocaleService $localeService
      * @param FeeReportService $feeReportService
-     * @param FineService $fineService
+     * @param FeeService $feeService
      * @param FineReportService $fineReportService
+     * @param FineService $fineService
      * @param MeetingReportService $meetingReportService
      * @param SubscriptionService $subscriptionService
      */
-    public function __construct(FeeService $feeService, FeeReportService $feeReportService,
-        FineService $fineService, FineReportService $fineReportService,
+    public function __construct(LocaleService $localeService, FeeReportService $feeReportService,
+        FeeService $feeService, FineReportService $fineReportService, FineService $fineService,
         MeetingReportService $meetingReportService, SubscriptionService $subscriptionService)
     {
+        $this->localeService = $localeService;
         $this->feeService = $feeService;
         $this->feeReportService = $feeReportService;
         $this->fineService = $fineService;
@@ -72,11 +79,13 @@ class ReportService implements ReportServiceInterface
     {
         $tontine = $this->meetingReportService->getTontine();
         $session = $this->meetingReportService->getSession($sessionId);
-        $report = $this->meetingReportService->getPoolsReport($session);
+        // $report = $this->meetingReportService->getPoolsReport($session);
+        [$countries] = $this->localeService->getNamesFromTontine($tontine);
 
         return [
             'tontine' => $tontine,
             'session' => $session,
+            'countries' => $countries,
             'deposits' => [
                 'session' => $session,
                 'pools' => $this->meetingReportService->getPoolsWithReceivables($session),
@@ -94,14 +103,12 @@ class ReportService implements ReportServiceInterface
                 'fees' => $this->feeService->getFees($session),
                 'settlements' => $this->feeReportService->getSettlements($session),
                 'bills' => $this->feeReportService->getBills($session),
-                'zero' => $this->feeReportService->getFormattedAmount(0),
             ],
             'fines' => [
                 'session' => $session,
                 'fines' => $this->fineService>getFines($session),
                 'settlements' => $this->fineReportService->getSettlements($sessions),
                 'bills' => $this->fineReportService->getBills($session),
-                'zero' => $this->fineReportService->getFormattedAmount(0),
             ],
         ];
 
@@ -113,7 +120,7 @@ class ReportService implements ReportServiceInterface
                 'session' => $session,
                 'loans' => $loans,
                 'sum' => $sum,
-                'amountAvailable' => Currency::format($amountAvailable),
+                'amountAvailable' => $this->localeService->formatMoney($amountAvailable),
             ]);
             $html->with('refunds', [
                 'session' => $session,
@@ -131,10 +138,14 @@ class ReportService implements ReportServiceInterface
     public function getPool(int $poolId): array
     {
         $pool = $this->subscriptionService->getPool($poolId);
+        $tontine = $this->meetingReportService->getTontine();
+        [$countries, $currencies] = $this->localeService->getNamesFromTontine($tontine);
 
         return [
             'figures' => $this->meetingReportService->getFigures($pool),
-            'tontine' => $this->meetingService->getTontine(),
+            'tontine' => $tontine,
+            'countries' => $countries,
+            'currencies' => $currencies,
             'pool' => $pool,
             'pools' > $this->subscriptionService->getPools(),
         ];

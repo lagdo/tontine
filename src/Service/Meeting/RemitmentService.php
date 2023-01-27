@@ -4,15 +4,20 @@ namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\TenantService;
 
 class RemitmentService
 {
+    /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @var TenantService
      */
@@ -24,11 +29,13 @@ class RemitmentService
     protected ReportService $reportService;
 
     /**
+     * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param ReportService $reportService
      */
-    public function __construct(TenantService $tenantService, ReportService $reportService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService, ReportService $reportService)
     {
+        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
         $this->reportService = $reportService;
     }
@@ -85,7 +92,7 @@ class RemitmentService
         }
         $payables = $query->get();
         // Set the amount
-        $amount = Currency::format($pool->amount * $pool->subscriptions->count());
+        $amount = $this->localeService->formatMoney($pool->amount * $pool->subscriptions->count());
         $payables->each(function($payable) use($amount) {
             $payable->amount = $amount;
         });

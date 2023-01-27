@@ -2,6 +2,7 @@
 
 namespace App\Ajax\App\Charge;
 
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Charge\FeeService;
 use Siak\Tontine\Service\Charge\FeeReportService;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -15,6 +16,12 @@ use function Jaxon\jq;
  */
 class Fee extends CallableClass
 {
+    /**
+     * @di
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @di
      * @var FeeService
@@ -65,24 +72,20 @@ class Fee extends CallableClass
 
     public function page(int $pageNumber)
     {
-        $fees = $this->feeService->getFees($this->session, $pageNumber);
+        $fees = $this->feeService->getFees($pageNumber);
         $feeCount = $this->feeService->getFeeCount();
-        // Settlement report
-        $settlements = $this->reportService->getSettlements($this->session);
-        // Bill counts
+        // Bill counts and amounts
         $bills = $this->reportService->getBills($this->session);
+        // Settlement counts and amounts
+        $settlements = $this->reportService->getSettlements($this->session);
 
         $html = $this->view()->render('tontine.pages.meeting.fee.page')
             ->with('session', $this->session)
             ->with('fees', $fees)
-            ->with('settlements', $settlements['total'])
-            ->with('bills', $bills['total'])
-            ->with('zero', $this->reportService->getFormattedAmount(0))
+            ->with('bills', $bills)
+            ->with('settlements', $settlements)
+            ->with('zero', $settlements['zero'])
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $feeCount));
-        // if($this->session->closed)
-        // {
-        //     $html->with('report', $this->feeService->getFeesReport($this->session));
-        // }
         $this->response->html('meeting-fees-page', $html);
 
         $feeId = jq()->parent()->attr('data-fee-id')->toInt();

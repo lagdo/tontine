@@ -9,19 +9,13 @@
                       <tbody>
 @foreach ($fees as $charge)
 @if($session->closed)
-                        @include('tontine.pages.meeting.charge.closed', compact('charge', 'session'))
+                        @include('tontine.pages.meeting.charge.closed', compact('charge', 'bills', 'settlements'))
 @elseif($session->pending)
-                        @include('tontine.pages.meeting.charge.pending', compact('charge'))
+                        @include('tontine.pages.meeting.charge.pending', compact('charge', 'bills', 'settlements'))
 @else
-                        @include('tontine.pages.meeting.charge.fee', compact('charge'))
+                        @include('tontine.pages.meeting.charge.fee', compact('charge', 'bills', 'settlements'))
 @endif
 @endforeach
-@if($session->closed)
-                        <tr>
-                          <td colspan="2">{!! __('common.labels.total') !!}</td>
-                          <td>{{ $report['sum']['settlements'] }}</td>
-                        </tr>
-@endif
                       </tbody>
                     </table>
                     {!! $pagination !!}

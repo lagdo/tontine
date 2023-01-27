@@ -3,8 +3,8 @@
 namespace App\Ajax\App\Credit;
 
 use Siak\Tontine\Service\Meeting\LoanService;
+use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
-use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 
@@ -22,6 +22,11 @@ class Loan extends CallableClass
      * @var LoanService
      */
     protected LoanService $loanService;
+
+    /**
+     * @var RefundService
+     */
+    protected RefundService $refundService;
 
     /**
      * @var LoanValidator
@@ -59,6 +64,7 @@ class Loan extends CallableClass
         $amountAvailable = $this->loanService->getFormattedAmountAvailable($this->session);
 
         $html = $this->view()->render('tontine.pages.meeting.loan.home')
+            ->with('session', $this->session)
             ->with('loans', $loans)
             ->with('amountAvailable', $amountAvailable);
         $this->response->html('meeting-loans', $html);
@@ -100,6 +106,7 @@ class Loan extends CallableClass
 
     /**
      * @di $validator
+     * @di $refundService
      */
     public function saveLoan(array $formValues)
     {
@@ -112,12 +119,21 @@ class Loan extends CallableClass
 
         $this->dialog->hide();
 
+        // Refresh the refunds page
+        $this->cl(Refund::class)->show($this->session, $this->refundService);
+
         return $this->home();
     }
 
+    /**
+     * @di $refundService
+     */
     public function deleteLoan(int $loanId)
     {
         $this->loanService->deleteLoan($this->session, $loanId);
+
+        // Refresh the refunds page
+        $this->cl(Refund::class)->show($this->session, $this->refundService);
 
         return $this->home();
     }

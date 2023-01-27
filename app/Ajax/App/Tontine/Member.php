@@ -3,7 +3,7 @@
 namespace App\Ajax\App\Tontine;
 
 use Siak\Tontine\Service\Tontine\MemberService;
-use Siak\Tontine\Validation\MemberValidator;
+use Siak\Tontine\Validation\Tontine\MemberValidator;
 use App\Ajax\App\Faker;
 use App\Ajax\CallableClass;
 

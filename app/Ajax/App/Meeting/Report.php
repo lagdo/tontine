@@ -65,8 +65,7 @@ class Report extends CallableClass
 
     public function home()
     {
-        // Don't try to show the page if there is no pool selected.
-        return ($this->pool) ? $this->amounts() : $this->response;
+        return $this->amounts();
     }
 
     public function amounts()

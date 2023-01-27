@@ -4,7 +4,7 @@ namespace App\Ajax\App\Tontine;
 
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Tontine\PoolService;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 use App\Ajax\App\Meeting\Meeting;
 use App\Ajax\App\Meeting\Report as MeetingReport;
 use App\Ajax\App\Planning\Planning;
@@ -101,7 +101,7 @@ class Round extends CallableClass
 
     public function add()
     {
-        $title = trans('tontine.round.labels.add');
+        $title = trans('tontine.round.titles.add');
         $content = $this->view()->render('tontine.pages.round.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -132,7 +132,7 @@ class Round extends CallableClass
     {
         $round = $this->roundService->getRound($roundId);
 
-        $title = trans('tontine.round.labels.edit');
+        $title = trans('tontine.round.titles.edit');
         $content = $this->view()->render('tontine.pages.round.edit')->with('round', $round);
         $buttons = [[
             'title' => trans('common.actions.cancel'),

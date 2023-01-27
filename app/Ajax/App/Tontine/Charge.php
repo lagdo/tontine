@@ -3,7 +3,7 @@
 namespace App\Ajax\App\Tontine;
 
 use Siak\Tontine\Service\Charge\ChargeService;
-use Siak\Tontine\Validation\ChargeValidator;
+use Siak\Tontine\Validation\Tontine\ChargeValidator;
 use App\Ajax\App\Faker;
 use App\Ajax\CallableClass;
 

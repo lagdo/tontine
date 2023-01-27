@@ -31,6 +31,8 @@ class TontineFactory extends Factory
             'address' => $this->faker->address(),
             'city' => $this->faker->city(),
             'type' => $this->faker->randomElement(['f', 'm']),
+            'country_code' => 'CM',
+            'currency_code' => 'XAF',
         ];
     }
 }

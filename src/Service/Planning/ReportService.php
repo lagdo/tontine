@@ -3,7 +3,8 @@
 namespace Siak\Tontine\Service\Planning;
 
 use Siak\Tontine\Model\Pool;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\ReportTrait;
 use stdClass;
 
@@ -15,15 +16,22 @@ class ReportService
     use ReportTrait;
 
     /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
+    /**
      * @var TenantService
      */
     protected TenantService $tenantService;
 
     /**
+     * @param LocaleService $localeService
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService)
     {
+        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
     }
 

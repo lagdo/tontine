@@ -3,14 +3,19 @@
 namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Support\Collection;
-use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\TenantService;
 
 class PoolService
 {
+    /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @var TenantService
      */
@@ -22,11 +27,13 @@ class PoolService
     protected ReportService $reportService;
 
     /**
+     * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param ReportService $reportService
      */
-    public function __construct(TenantService $tenantService, ReportService $reportService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService, ReportService $reportService)
     {
+        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
         $this->reportService = $reportService;
     }
@@ -108,42 +115,53 @@ class PoolService
     }
 
     /**
-     * Get pools report for a session
+     * Get receivable summary for a session
      *
      * @param Session $session
      *
      * @return array
      */
-    public function getPoolsReport(Session $session): array
+    public function getReceivablesSummary(Session $session): array
+    {
+        $receivableTotal = 0;
+        $receivableAmounts = $session->receivableAmounts()->get()
+            ->each(function($receivable) use(&$receivableTotal) {
+                $receivableTotal += $receivable->amount;
+                $receivable->amount = $this->localeService->formatMoney($receivable->amount);
+            })->pluck('amount', 'id');
+
+        return [
+            'receivables' => $receivableAmounts,
+            'total' => $this->localeService->formatMoney($receivableTotal),
+        ];
+    }
+
+    /**
+     * Get payable summary for a session
+     *
+     * @param Session $session
+     *
+     * @return array
+     */
+    public function getPayablesSummary(Session $session): array
     {
         $pools = $this->tenantService->round()->pools->keyBy('id');
         $sessions = $this->tenantService->round()->sessions;
 
-        $payableSum = 0;
+        $payableTotal = 0;
         $payableAmounts = $session->payableAmounts()->get()
-            ->each(function($payable) use($pools, $sessions, &$payableSum) {
+            ->each(function($payable) use($pools, $sessions, &$payableTotal) {
                 $pool = $pools[$payable->id];
                 $count = $sessions->filter(function($session) use($pool) {
                     return $session->enabled($pool);
                 })->count();
-                $payableSum += $payable->amount * $count;
-                $payable->amount = Currency::format($payable->amount * $count);
-            })->pluck('amount', 'id');
-
-        $receivableSum = 0;
-        $receivableAmounts = $session->receivableAmounts()->get()
-            ->each(function($receivable) use(&$receivableSum) {
-                $receivableSum += $receivable->amount;
-                $receivable->amount = Currency::format($receivable->amount);
+                $payableTotal += $payable->amount * $count;
+                $payable->amount = $this->localeService->formatMoney($payable->amount * $count);
             })->pluck('amount', 'id');
 
         return [
             'payables' => $payableAmounts,
-            'receivables' => $receivableAmounts,
-            'sum' => [
-                'payables' => Currency::format($payableSum),
-                'receivables' => Currency::format($receivableSum),
-            ],
+            'total' => $this->localeService->formatMoney($payableTotal),
         ];
     }
 }

@@ -22,7 +22,7 @@
             <div class="form-group row">
               {!! Form::label('amount', trans('common.labels.amount'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
               <div class="col-md-5">
-                {!! Form::text('amount', $charge->amount, ['class' => 'form-control']) !!}
+                {!! Form::text('amount', $charge->amount_value, ['class' => 'form-control']) !!}
               </div>
             </div>
           </div>

@@ -9,7 +9,7 @@ use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\FineBill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 
 class FineService
 {
@@ -41,12 +41,11 @@ class FineService
     /**
      * Get a paginated list of fines.
      *
-     * @param Session $session
      * @param int $page
      *
      * @return Collection
      */
-    public function getFines(Session $session, int $page = 0): Collection
+    public function getFines(int $page = 0): Collection
     {
         $fines = $this->tenantService->tontine()->charges()->fine()->orderBy('id', 'desc');
         if($page > 0 )
@@ -54,33 +53,7 @@ class FineService
             $fines->take($this->tenantService->getLimit());
             $fines->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        $sessionIds = $this->tenantService->round()->sessions()
-            ->where('start_at', '<=', $session->start_at)->pluck('id');
-
-        return $fines->withCount([
-            'fine_bills' => function(Builder $query) use($session) {
-                $query->where('session_id', $session->id);
-            },
-            'fine_bills as all_fine_bills_count' => function(Builder $query) use($sessionIds) {
-                $query->whereIn('session_id', $sessionIds);
-            },
-            'fine_bills as paid_fine_bills_count' => function(Builder $query) use($session) {
-                $query->where('session_id', $session->id)
-                    ->whereExists(function($whereQuery) {
-                        $whereQuery->select(DB::raw(1))
-                            ->from('settlements')
-                            ->whereColumn('settlements.bill_id', 'fine_bills.bill_id');
-                    });
-            },
-            'fine_bills as all_paid_fine_bills_count' => function(Builder $query) use($sessionIds) {
-                $query->whereIn('session_id', $sessionIds)
-                    ->whereExists(function($whereQuery) {
-                        $whereQuery->select(DB::raw(1))
-                            ->from('settlements')
-                            ->whereColumn('settlements.bill_id', 'fine_bills.bill_id');
-                    });
-            },
-        ])->get();
+        return $fines->get();
     }
 
     /**

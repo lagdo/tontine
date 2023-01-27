@@ -4,7 +4,7 @@ namespace App\Ajax\App\Planning;
 
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\SubscriptionService;
-use Siak\Tontine\Service\Tontine\TenantService;
+use Siak\Tontine\Service\TenantService;
 use App\Ajax\CallableClass;
 
 use function intval;
@@ -97,6 +97,7 @@ class Subscription extends CallableClass
         // Toggle the filter
         $filter = $this->bag('subscription')->get('filter', false);
         $this->bag('subscription')->set('filter', !$filter);
+
         // Show the first page
         return $this->page(1);
     }
@@ -104,8 +105,9 @@ class Subscription extends CallableClass
     public function create(int $memberId)
     {
         $this->subscriptionService->createSubscription($this->pool, $memberId);
-        $this->page(); // Refresh the current page
-        // $this->notify->success(trans('tontine.subscription.messages.created'), trans('common.titles.success'));
+
+        // Refresh the current page
+        $this->page();
 
         return $this->response;
     }
@@ -113,8 +115,9 @@ class Subscription extends CallableClass
     public function delete(int $memberId)
     {
         $this->subscriptionService->deleteSubscription($this->pool, $memberId);
-        $this->page(); // Refresh the current page
-        // $this->notify->success(trans('tontine.subscription.messages.deleted'), trans('common.titles.success'));
+
+        // Refresh the current page
+        $this->page();
 
         return $this->response;
     }

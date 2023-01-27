@@ -3,7 +3,6 @@
 namespace Siak\Tontine\Service\Traits;
 
 use Illuminate\Support\Collection;
-use Siak\Tontine\Model\Currency;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use stdClass;
@@ -20,11 +19,11 @@ trait ReportTrait
      */
     private function formatCurrencies(stdClass $figures): stdClass
     {
-        $figures->cashier->start = Currency::format($figures->cashier->start, true);
-        $figures->cashier->recv = Currency::format($figures->cashier->recv, true);
-        $figures->cashier->end = Currency::format($figures->cashier->end, true);
-        $figures->deposit->amount = Currency::format($figures->deposit->amount, true);
-        $figures->remitment->amount = Currency::format($figures->remitment->amount, true);
+        $figures->cashier->start = $this->localeService->formatMoney($figures->cashier->start, true);
+        $figures->cashier->recv = $this->localeService->formatMoney($figures->cashier->recv, true);
+        $figures->cashier->end = $this->localeService->formatMoney($figures->cashier->end, true);
+        $figures->deposit->amount = $this->localeService->formatMoney($figures->deposit->amount, true);
+        $figures->remitment->amount = $this->localeService->formatMoney($figures->remitment->amount, true);
 
         return $figures;
     }

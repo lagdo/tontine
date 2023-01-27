@@ -17,7 +17,7 @@ class CreateRoundsTable extends Migration
             $table->id();
             $table->string('title', 100);
             $table->tinyInteger('status')->default(0);
-            $table->string('notes')->default('');
+            $table->string('notes')->nullable();
             $table->date('start_at');
             $table->date('end_at');
             $table->unsignedBigInteger('tontine_id');

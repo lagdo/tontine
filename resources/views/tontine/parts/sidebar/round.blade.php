@@ -1,10 +1,10 @@
             <ul class="sidebar-menu">
               <li class="menu-header">{{ __('tontine.menus.planning') }}</li>
-              <li><a class="nav-link" id="planning-menu-subscriptions" href="javascript:void(0)">
-                <i class="fa fa-user"></i> <span>{{ __('tontine.menus.subscriptions') }}</span>
-              </a></li>
               <li><a class="nav-link" id="planning-menu-sessions" href="javascript:void(0)">
                 <i class="fa fa-calendar"></i> <span>{{ __('tontine.menus.sessions') }}</span>
+              </a></li>
+              <li><a class="nav-link" id="planning-menu-subscriptions" href="javascript:void(0)">
+                <i class="fa fa-user"></i> <span>{{ __('tontine.menus.subscriptions') }}</span>
               </a></li>
               <li><a class="nav-link" id="planning-menu-beneficiaries" href="javascript:void(0)">
                 <i class="fa fa-user"></i> <span>{{ __('tontine.menus.beneficiaries') }}</span>

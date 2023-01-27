@@ -3,12 +3,23 @@
 namespace Siak\Tontine\Validation\Meeting;
 
 use Illuminate\Support\Facades\Validator;
+use Siak\Tontine\Validation\AbstractValidator;
 use Siak\Tontine\Validation\ValidationException;
 
 use function explode;
 
-class DebtValidator
+class DebtValidator extends AbstractValidator
 {
+    /**
+     * @param array $values
+     *
+     * @return array
+     */
+    public function validateItem(array $values): array
+    {
+        return []; // Not implemented.
+    }
+
     /**
      * @param string $debtId
      *
@@ -21,8 +32,8 @@ class DebtValidator
             'type' => $values[0] ?? '',
             'loan_id' => $values[1] ?? 0,
         ];
-        $validator = Validator::make($values, [
-            'type' => 'required|in:p,i',
+        $validator = Validator::make($this->values($values), [
+            'type' => 'required|in:principal,interest',
             'loan_id' => 'required|integer|min:1',
         ]);
         if($validator->fails())

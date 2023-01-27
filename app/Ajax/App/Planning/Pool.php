@@ -149,6 +149,9 @@ class Pool extends CallableClass
     }
 
     /**
+     * @databag pool
+     * @databag subscription
+     * @di $subscriptionService
      * @di $validator
      */
     public function create(array $formValues)
@@ -189,12 +192,13 @@ class Pool extends CallableClass
     public function update(int $poolId, array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
-
         $pool = $this->poolService->getPool($poolId);
 
         $this->poolService->updatePool($pool, $values);
-        $this->page(); // Back to current page
+
         $this->dialog->hide();
+        // Back to current page
+        $this->page();
         $this->notify->success(trans('tontine.pool.messages.updated'), trans('common.titles.success'));
 
         return $this->response;
