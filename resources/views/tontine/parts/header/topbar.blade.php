@@ -2,6 +2,8 @@
           <div class="section-header-breadcrumb" id="section-header-breadcrumb">
             <h3 id="section-tontine-name"></h3>
             <div class="float-right ml-2">
-              <button type="button" class="btn btn-primary" id="btn-show-select"><i class="fa fa-check-square"></i></button>
+              <button type="button" class="btn btn-primary" id="btn-show-select">
+                <i class="fa fa-check-square"></i> {{ __('tontine.actions.choose') }}
+              </button>
             </div>
           </div>

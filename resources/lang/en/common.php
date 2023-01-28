@@ -96,5 +96,6 @@ return [
         'end' => "End",
         'total' => "Total",
         'birthday' => "Birthday",
+        'status' => "Status",
     ],
 ];

@@ -28,6 +28,9 @@ return [
         'report' => "Report",
         'report' => "Report",
         'fine' => "Fine",
+        'pools' => "Pools",
+        'charges' => "Fees&Fines",
+        'credits' => "Credits",
     ],
     'labels' => [
         'member' => "Member",

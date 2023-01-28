@@ -11,6 +11,10 @@ return [
         'end' => "End of session",
         'beneficiaries' => "Beneficiaries",
     ],
+    'actions' => [
+        'amounts' => "Amounts",
+        'deposits' => "Deposits",
+    ],
     'deposit' => [
         'titles' => [
             'count' => "Number of deposits",

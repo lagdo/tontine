@@ -5,6 +5,7 @@ namespace App\Ajax\App\Planning;
 use App\Ajax\CallableClass;
 use Carbon\Carbon;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 
@@ -49,9 +50,15 @@ class Session extends CallableClass
 
         $sessions = $this->sessionService->getSessions($pageNumber);
         $sessionCount = $this->sessionService->getSessionCount();
+        $statuses = [
+            SessionModel::STATUS_PENDING => trans('tontine.session.status.pending'),
+            SessionModel::STATUS_OPENED => trans('tontine.session.status.opened'),
+            SessionModel::STATUS_CLOSED => trans('tontine.session.status.closed'),
+        ];
 
         $html = $this->view()->render('tontine.pages.planning.session.page')
             ->with('sessions', $sessions)
+            ->with('statuses', $statuses)
             ->with('members', $this->sessionService->getMembers())
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $sessionCount));
         $this->response->html('content-page', $html);

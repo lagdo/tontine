@@ -2,6 +2,7 @@
 
 namespace App\Ajax\App\Meeting;
 
+use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SessionService;
 use App\Ajax\CallableClass;
 
@@ -39,9 +40,15 @@ class Meeting extends CallableClass
 
         $sessions = $this->sessionService->getSessions($pageNumber);
         $sessionCount = $this->sessionService->getSessionCount();
+        $statuses = [
+            SessionModel::STATUS_PENDING => trans('tontine.session.status.pending'),
+            SessionModel::STATUS_OPENED => trans('tontine.session.status.opened'),
+            SessionModel::STATUS_CLOSED => trans('tontine.session.status.closed'),
+        ];
 
         $html = $this->view()->render('tontine.pages.meeting.page')
             ->with('sessions', $sessions)
+            ->with('statuses', $statuses)
             ->with('members', $this->sessionService->getMembers())
             ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $sessionCount));
         $this->response->html('content-page', $html);
