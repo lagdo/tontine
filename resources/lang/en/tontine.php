@@ -19,7 +19,7 @@ return [
         'rounds' => "Rounds",
         'add' => "Add a tontine",
         'edit' => "Edit a tontine",
-        'select' => "Select a tontine",
+        'choose' => "Choose a tontine",
     ],
     'labels' => [
         'tontine' => "Tontine",
@@ -34,6 +34,7 @@ return [
         'open' => "Open",
         'enter' => "Enter",
         'select' => "Select",
+        'choose' => "Choose",
     ],
     'messages' => [
         'created' => "The tontine was successfully created.",
@@ -43,7 +44,7 @@ return [
         'titles' => [
             'add' => "Add a round",
             'edit' => "Edit a round",
-            'select' => "Select a round",
+            'choose' => "Choose a round",
         ],
         'messages' => [
             'created' => "The round was successfully created.",
@@ -78,6 +79,11 @@ return [
         ],
     ],
     'session' => [
+        'status' => [
+            'pending' => "Pending",
+            'opened' => "Opened",
+            'closed' => "Closed",
+        ],
         'titles' => [
             'add' => "Add sessions",
             'edit' => "Edit a session",

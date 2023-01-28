@@ -57,7 +57,7 @@ class Select extends CallableClass
 
     private function showTontine()
     {
-        $title = trans('tontine.titles.select');
+        $title = trans('tontine.titles.choose');
         $content = $this->view()->render('tontine.pages.select.tontine')
             ->with('tontines', $this->tontineService->getTontines()->pluck('name', 'id'));
         $buttons = [[
@@ -111,7 +111,7 @@ class Select extends CallableClass
 
     private function showRound()
     {
-        $title = trans('tontine.round.titles.select');
+        $title = trans('tontine.round.titles.choose');
         $content = $this->view()->render('tontine.pages.select.round')
             ->with('rounds', $this->tontineService->getRounds()->pluck('title', 'id'));
         $buttons = [[

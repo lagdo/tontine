@@ -7,9 +7,13 @@
 @include('tontine.pages.meeting.session.action', ['session' => $session])
                 <div class="btn-group float-right ml-2" role="group" aria-label="">
 @if($tontine->is_financial)
-                  <button type="button" class="btn btn-primary" id="btn-session-credits"><i class="fa fa-handshake"></i></button>
+                  <button type="button" class="btn btn-primary" id="btn-session-credits">
+                    <i class="fa fa-handshake"></i> {{ __('meeting.actions.credits') }}
+                  </button>
 @endif
-                  <button type="button" class="btn btn-primary" id="btn-session-charges"><i class="fa fa-money-check"></i></button>
+                  <button type="button" class="btn btn-primary" id="btn-session-charges">
+                    <i class="fa fa-money-check"></i> {{ __('meeting.actions.charges') }}
+                  </button>
                 </div>
 @include('tontine.pages.meeting.session.open', ['session' => $session])
               </div>

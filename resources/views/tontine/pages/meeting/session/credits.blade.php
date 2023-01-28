@@ -6,8 +6,12 @@
               <div class="col">
 @include('tontine.pages.meeting.session.action', ['session' => $session])
                 <div class="btn-group float-right ml-2" role="group" aria-label="">
-                  <button type="button" class="btn btn-primary" id="btn-session-pools"><i class="fa fa-wallet"></i></button>
-                  <button type="button" class="btn btn-primary" id="btn-session-charges"><i class="fa fa-money-check"></i></button>
+                  <button type="button" class="btn btn-primary" id="btn-session-pools">
+                    <i class="fa fa-wallet"></i> {{ __('meeting.actions.pools') }}
+                  </button>
+                  <button type="button" class="btn btn-primary" id="btn-session-charges">
+                    <i class="fa fa-money-check"></i> {{ __('meeting.actions.charges') }}
+                  </button>
                 </div>
 @include('tontine.pages.meeting.session.open', ['session' => $session])
               </div>

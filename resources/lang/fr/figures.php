@@ -11,6 +11,10 @@ return [
         'end' => "Fin de séance",
         'beneficiaries' => "Bénéficiaires",
     ],
+    'actions' => [
+        'amounts' => "Montants",
+        'deposits' => "Cotisations",
+    ],
     'deposit' => [
         'titles' => [
             'count' => "Nombre de cotisations",

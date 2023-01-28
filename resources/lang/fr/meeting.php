@@ -28,6 +28,9 @@ return [
         'report' => "Rapport",
         'report' => "Résumé",
         'fine' => "Appliquer",
+        'pools' => "Cotisations",
+        'charges' => "Frais&Amendes",
+        'credits' => "Crédits",
     ],
     'labels' => [
         'member' => "Membre",

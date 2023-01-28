@@ -70,7 +70,7 @@ class RefundService
         }
         if($prevSessions->count() === 0)
         {
-            return $query;
+            return $sessionQuery;
         }
 
         // The loans of the previous sessions that are not yet settled.

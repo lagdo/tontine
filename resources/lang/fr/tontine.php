@@ -19,7 +19,7 @@ return [
         'rounds' => "Tours",
         'add' => "Ajouter une tontine",
         'edit' => "Modifier une tontine",
-        'select' => "Sélectionner une tontine",
+        'choose' => "Choisir une tontine",
     ],
     'labels' => [
         'tontine' => "Tontine",
@@ -34,6 +34,7 @@ return [
         'open' => "Ouvrir",
         'enter' => "Entrer",
         'select' => "Sélectionner",
+        'choose' => "Choisir",
     ],
     'messages' => [
         'created' => "La tontine a été ajoutée",
@@ -43,7 +44,7 @@ return [
         'titles' => [
             'add' => "Ajouter un tour",
             'edit' => "Modifier un tour",
-            'select' => "Sélectionner un tour",
+            'choose' => "Choisir un tour",
         ],
         'messages' => [
             'created' => "le tour a été ajouté.",
@@ -78,6 +79,11 @@ return [
         ],
     ],
     'session' => [
+        'status' => [
+            'pending' => "En attente",
+            'opened' => "Ouverte",
+            'closed' => "Fermée",
+        ],
         'titles' => [
             'add' => "Ajouter des séances",
             'edit' => "Modifier une séance",
