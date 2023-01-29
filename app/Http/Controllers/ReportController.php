@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\PdfGenerator;
+use App\Facades\Report;
 use Illuminate\Http\Request;
-use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Report\PdfGeneratorInterface;
-use Siak\Tontine\Service\Report\ReportServiceInterface;
 
 use function base64_decode;
 use function view;
@@ -15,16 +14,13 @@ class ReportController extends Controller
 {
     /**
      * @param Request $request
-     * @param PdfGeneratorInterface $pdfGenerator
-     * @param ReportServiceInterface $reportService
      * @param int $poolId
      *
      * @return View|Response
      */
-    public function pool(Request $request, PdfGeneratorInterface $pdfGenerator,
-        ReportServiceInterface $reportService, int $poolId)
+    public function pool(Request $request, int $poolId)
     {
-        $html = view('tontine.report.pool', $reportService->getPool($poolId));
+        $html = view('tontine.report.pool', Report::getPoolReport($poolId));
 
         // Show the html page
         if($request->has('html'))
@@ -33,7 +29,7 @@ class ReportController extends Controller
         }
 
         // Print the pdf
-        return response(base64_decode($pdfGenerator->getPdf("$html")), 200)
+        return response(base64_decode(PdfGenerator::getPdf("$html")), 200)
             ->header('Content-Description', 'Pool Report')
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'inline; filename=report.pdf')
@@ -45,18 +41,13 @@ class ReportController extends Controller
 
     /**
      * @param Request $request
-     * @param PdfGeneratorInterface $pdfGenerator
-     * @param ReportServiceInterface $reportService
-     * @param LocaleService $localeService
      * @param int $sessionId
      *
      * @return View|Response
      */
-    public function session(Request $request, PdfGeneratorInterface $pdfGenerator,
-        ReportServiceInterface $reportService, LocaleService $localeService, int $sessionId)
+    public function session(Request $request, int $sessionId)
     {
-        view()->share(['zero' => $localeService->formatMoney(0)]);
-        $html = view('tontine.report.session', $reportService->getSession($sessionId));
+        $html = view('tontine.report.session', Report::getSessionReport($sessionId));
 
         // Show the html page
         if($request->has('html'))
@@ -65,7 +56,7 @@ class ReportController extends Controller
         }
 
         // Print the pdf
-        return response(base64_decode($pdfGenerator->getPdf("$html")), 200)
+        return response(base64_decode(PdfGenerator::getPdf("$html")), 200)
             ->header('Content-Description', 'Session Report')
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'inline; filename=report.pdf')

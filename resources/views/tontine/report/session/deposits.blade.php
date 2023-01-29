@@ -25,15 +25,15 @@
 @else
                 <tr>
                   <td>{{ $pool->title }}</td>
+                  <td>{{ $pool->deposits_count }}/{{ $pool->receivables_count }}</td>
                   <td>{{ $pool->money('amount') }}</td>
-                  <td>{{ $pool->recv_paid }}/{{ $pool->recv_count }}</td>
-                  <td>{{ $report[$pool->id] ?? 0 }}</td>
+                  <td>{{ $pool->deposits_amount }}</td>
                 </tr>
 @endif
 @endforeach
                 <tr>
                   <th colspan="3">{!! __('common.labels.total') !!}</th>
-                  <th>{{ $sum }}</th>
+                  <th>{{ $amount }}</th>
                 </tr>
               </tbody>
             </table>

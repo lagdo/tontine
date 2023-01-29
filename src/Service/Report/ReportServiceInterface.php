@@ -9,12 +9,12 @@ interface ReportServiceInterface
      *
      * @return array
      */
-    public function getSession(int $sessionId): array;
+    public function getSessionReport(int $sessionId): array;
 
     /**
      * @param integer $poolId
      *
      * @return array
      */
-    public function getPool(int $poolId): array;
+    public function getPoolReport(int $poolId): array;
 }

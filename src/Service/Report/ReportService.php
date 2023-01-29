@@ -2,11 +2,13 @@
 
 namespace Siak\Tontine\Service\Report;
 
+use Illuminate\Support\Collection;
+use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Charge\FeeService;
-use Siak\Tontine\Service\Charge\FeeReportService;
 use Siak\Tontine\Service\Charge\FineService;
-use Siak\Tontine\Service\Charge\FineReportService;
+use Siak\Tontine\Service\Meeting\PoolService;
 use Siak\Tontine\Service\Meeting\ReportService as MeetingReportService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 
@@ -18,24 +20,24 @@ class ReportService implements ReportServiceInterface
     protected LocaleService $localeService;
 
     /**
+     * @var TenantService
+     */
+    protected TenantService $tenantService;
+
+    /**
+     * @var PoolService
+     */
+    private $poolService;
+
+    /**
      * @var FeeService
      */
     private $feeService;
 
     /**
-     * @var FeeReportService
-     */
-    private $feeReportService;
-
-    /**
      * @var FineService
      */
     private $fineService;
-
-    /**
-     * @var FineReportService
-     */
-    private $fineReportService;
 
     /**
      * @var MeetingReportService
@@ -48,39 +50,115 @@ class ReportService implements ReportServiceInterface
     private $subscriptionService;
 
     /**
+     * @var int
+     */
+    private $depositsAmount;
+
+    /**
+     * @var int
+     */
+    private $remitmentsAmount;
+
+    /**
      * @param LocaleService $localeService
-     * @param FeeReportService $feeReportService
+     * @param TenantService $tenantService
+     * @param PoolService $poolService
      * @param FeeService $feeService
-     * @param FineReportService $fineReportService
      * @param FineService $fineService
      * @param MeetingReportService $meetingReportService
      * @param SubscriptionService $subscriptionService
      */
-    public function __construct(LocaleService $localeService, FeeReportService $feeReportService,
-        FeeService $feeService, FineReportService $fineReportService, FineService $fineService,
+    public function __construct(LocaleService $localeService, TenantService $tenantService,
+        PoolService $poolService, FeeService $feeService, FineService $fineService,
         MeetingReportService $meetingReportService, SubscriptionService $subscriptionService)
     {
         $this->localeService = $localeService;
+        $this->tenantService = $tenantService;
+        $this->poolService = $poolService;
         $this->feeService = $feeService;
-        $this->feeReportService = $feeReportService;
         $this->fineService = $fineService;
-        $this->fineReportService = $fineReportService;
         $this->meetingReportService = $meetingReportService;
         $this->subscriptionService = $subscriptionService;
     }
 
+    /**
+     * Get pools with receivables and payables.
+     *
+     * @param Session $session
+     *
+     * @return Collection
+     */
+    public function getPools(Session $session): Collection
+    {
+        $this->depositsAmount = 0;
+        $this->remitmentsAmount = 0;
+        $pools = $this->tenantService->round()->pools;
+
+        return $pools->each(function($pool) use($session) {
+            $subscriptionCount = $pool->subscriptions()->count();
+            $subscriptionIds = $pool->subscriptions()->pluck('id');
+            // Receivables
+            $query = $session->receivables()->whereIn('subscription_id', $subscriptionIds);
+            // Expected
+            $pool->receivables_count = $query->count();
+            // Paid
+            $pool->deposits_count = $query->whereHas('deposit')->count();
+            // Amount
+            $amount = $pool->deposits_count * $pool->amount;
+            $this->depositsAmount += $amount;
+            $pool->deposits_amount = $this->localeService->formatMoney($amount);
+
+            // Payables
+            $query = $session->payables()->whereIn('subscription_id', $subscriptionIds);
+            // Expected
+            $pool->payables_count = $this->meetingReportService->getSessionRemitmentCount($pool, $session);
+            // Paid
+            $pool->remitments_count = $query->whereHas('remitment')->count();
+            // Amount
+            $amount = $pool->remitments_count * $pool->amount * $subscriptionCount;
+            $this->remitmentsAmount += $amount;
+            $pool->remitments_amount = $this->localeService->formatMoney($amount);
+        });
+    }
 
     /**
      * @param integer $sessionId
      *
      * @return array
      */
-    public function getSession(int $sessionId): array
+    public function getSessionReport(int $sessionId): array
     {
-        $tontine = $this->meetingReportService->getTontine();
-        $session = $this->meetingReportService->getSession($sessionId);
-        // $report = $this->meetingReportService->getPoolsReport($session);
+        $tontine = $this->tenantService->tontine();
+        $session = $this->tenantService->getSession($sessionId);
         [$countries] = $this->localeService->getNamesFromTontine($tontine);
+
+        $pools = $this->getPools($session);
+
+        $charges = $this->tenantService->tontine()->charges;
+        // Fees
+        [$bills, $settlements] = $this->feeService->getBills($session);
+        $fees = [
+            'bills' => $bills,
+            'settlements' => $settlements,
+            'zero' => $settlements['zero'],
+            'fees' => $charges->filter(function($charge) use($bills, $settlements) {
+                return $charge->is_fee &&
+                    (isset($bills['total']['current'][$charge->id]) ||
+                    isset($settlements['total']['current'][$charge->id]));
+            })
+        ];
+        // Fines
+        [$bills, $settlements] = $this->fineService->getBills($session);
+        $fines = [
+            'bills' => $bills,
+            'settlements' => $settlements,
+            'zero' => $settlements['zero'],
+            'fines' => $charges->filter(function($charge) use($bills, $settlements) {
+                return $charge->is_fine &&
+                    (isset($bills['total']['current'][$charge->id]) ||
+                    isset($settlements['total']['current'][$charge->id]));
+            })
+        ];
 
         return [
             'tontine' => $tontine,
@@ -88,28 +166,16 @@ class ReportService implements ReportServiceInterface
             'countries' => $countries,
             'deposits' => [
                 'session' => $session,
-                'pools' => $this->meetingReportService->getPoolsWithReceivables($session),
-                'report' => $report['receivables'],
-                'sum' => $report['sum']['receivables'],
+                'pools' => $pools,
+                'amount' => $this->localeService->formatMoney($this->depositsAmount),
             ],
             'remitments' => [
                 'session' => $session,
-                'pools' => $this->meetingReportService->getPoolsWithPayables($session),
-                'report' => $report['payables'],
-                'sum' => $report['sum']['payables'],
+                'pools' => $pools,
+                'amount' => $this->localeService->formatMoney($this->remitmentsAmount),
             ],
-            'fees' => [
-                'session' => $session,
-                'fees' => $this->feeService->getFees($session),
-                'settlements' => $this->feeReportService->getSettlements($session),
-                'bills' => $this->feeReportService->getBills($session),
-            ],
-            'fines' => [
-                'session' => $session,
-                'fines' => $this->fineService>getFines($session),
-                'settlements' => $this->fineReportService->getSettlements($sessions),
-                'bills' => $this->fineReportService->getBills($session),
-            ],
+            'fees' => $fees,
+            'fines' => $fines,
         ];
 
         /*if($tontine->is_financial)
@@ -135,19 +201,17 @@ class ReportService implements ReportServiceInterface
      *
      * @return array
      */
-    public function getPool(int $poolId): array
+    public function getPoolReport(int $poolId): array
     {
         $pool = $this->subscriptionService->getPool($poolId);
-        $tontine = $this->meetingReportService->getTontine();
+        $report = $this->meetingReportService->getFigures($pool);
+        $tontine = $this->tenantService->tontine();
         [$countries, $currencies] = $this->localeService->getNamesFromTontine($tontine);
 
-        return [
-            'figures' => $this->meetingReportService->getFigures($pool),
-            'tontine' => $tontine,
-            'countries' => $countries,
-            'currencies' => $currencies,
-            'pool' => $pool,
-            'pools' > $this->subscriptionService->getPools(),
-        ];
+        $report['tontine'] = $tontine;
+        $report['countries'] = $countries;
+        $report['currencies'] = $currencies;
+
+        return $report;
     }
 }

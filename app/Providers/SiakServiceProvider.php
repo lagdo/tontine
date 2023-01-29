@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use HeadlessChromium\BrowserFactory;
-use HeadlessChromium\Browser;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -29,10 +27,6 @@ use Siak\Tontine\Service\Planning\ReportService as PlanningReportService;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Planning\SessionService as PlanningSessionService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
-use Siak\Tontine\Service\Report\PdfGeneratorInterface;
-use Siak\Tontine\Service\Report\LocalPdfGenerator;
-use Siak\Tontine\Service\Report\ReportServiceInterface;
-use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\Tontine\PoolService as TontinePoolService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\TenantService;
@@ -45,8 +39,6 @@ use Siak\Tontine\Validation\Planning\SessionValidator;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
 use Siak\Tontine\Validation\Tontine\MemberValidator;
 use Siak\Tontine\Validation\Tontine\TontineValidator;
-
-use function config;
 
 class SiakServiceProvider extends ServiceProvider
 {
@@ -70,12 +62,6 @@ class SiakServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(Browser::class, function() {
-            $browserFactory = new BrowserFactory(config('chrome.binary'));
-            // Starts headless chrome
-            return $browserFactory->createBrowser(config('chrome.browser', []));
-        });
-
         $this->app->singleton(LocaleService::class, function() {
             $locale = LaravelLocalization::getCurrentLocale();
             // Vendor dir
@@ -114,13 +100,6 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(TontinePoolService::class, TontinePoolService::class);
         $this->app->singleton(MemberService::class, MemberService::class);
         $this->app->singleton(TontineService::class, TontineService::class);
-
-        $this->app->bind(PdfGeneratorInterface::class, LocalPdfGenerator::class);
-        $this->app->singleton(LocalPdfGenerator::class, function($app) {
-            return new LocalPdfGenerator($app->make(Browser::class), config('chrome.page'));
-        });
-        $this->app->singleton(ReportService::class, ReportService::class);
-        $this->app->bind(ReportServiceInterface::class, ReportService::class);
 
         $this->app->singleton(ChargeValidator::class, ChargeValidator::class);
         $this->app->singleton(DebtValidator::class, DebtValidator::class);

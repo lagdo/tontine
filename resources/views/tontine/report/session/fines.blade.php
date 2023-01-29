@@ -17,19 +17,18 @@
 @foreach ($fines as $charge)
                 <tr>
                   <td>{{ $charge->name }}</td>
+                  <td>
+                    {{ $settlements['total']['current'][$charge->id] ?? 0 }}/{{ $bills['total']['current'][$charge->id] ?? 0 }}
+                  </td>
                   <td>{{ $charge->money('amount') }}</td>
                   <td>
-                    {{ $charge->getCurrSettlementCount($settlements) }}/
-                    {{ $charge->getCurrBillCount($bills) }}
-                  </td>
-                  <td>
-                    {{ $report['settlements'][$charge->id] ?? $zero }}
+                    {{ $settlements['amount']['current'][$charge->id] ?? $zero }}
                   </td>
                 </tr>
 @endforeach
                 <tr>
                   <th colspan="3">{!! __('common.labels.total') !!}</th>
-                  <th>{{ $report['sum']['settlements'] }}</th>
+                  <th></th>
                 </tr>
               </tbody>
             </table>
