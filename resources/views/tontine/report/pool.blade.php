@@ -129,12 +129,16 @@
                     <tr class="no-pagebreak">
                       <td rowspan="2">{{ $subscription->member->name }}</td>
 @foreach($sessions as $session)
-                      <td class="currency"><b>{!! $subscription->receivables[$session->id]->deposit ? $pool->money('amount', true) : ($session->opened ? 0 : '&nbsp;') !!}</b></td>
+@isset($subscription->receivables[$session->id])
+                      <td class="currency"><b>{!! $subscription->receivables[$session->id]->deposit ? $pool->money('amount', true) : 0 !!}</b></td>
+@else
+                      <td class="currency">&nbsp;</td>
+@endisset
 @endforeach
                     </tr>
                     <tr>
 @foreach($sessions as $session)
-                      <td class="currency">{{ $session->disabled($pool) ? '' : $pool->money('amount', true) }}</td>
+                      <td class="currency">{{ $session->disabled($pool) ? '&nbsp;' : $pool->money('amount', true) }}</td>
 @endforeach
                     </tr>
 @endforeach

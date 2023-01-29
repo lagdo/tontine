@@ -204,16 +204,14 @@ class ReportService implements ReportServiceInterface
     public function getPoolReport(int $poolId): array
     {
         $pool = $this->subscriptionService->getPool($poolId);
-        $tontine = $this->meetingReportService->getTontine();
+        $report = $this->meetingReportService->getFigures($pool);
+        $tontine = $this->tenantService->tontine();
         [$countries, $currencies] = $this->localeService->getNamesFromTontine($tontine);
 
-        return [
-            'figures' => $this->meetingReportService->getFigures($pool),
-            'tontine' => $tontine,
-            'countries' => $countries,
-            'currencies' => $currencies,
-            'pool' => $pool,
-            'pools' > $this->subscriptionService->getPools(),
-        ];
+        $report['tontine'] = $tontine;
+        $report['countries'] = $countries;
+        $report['currencies'] = $currencies;
+
+        return $report;
     }
 }
