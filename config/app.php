@@ -166,6 +166,7 @@ return [
          * Package Service Providers...
          */
         App\Providers\SiakServiceProvider::class,
+        App\Providers\SiakPdfServiceProvider::class,
 
         /*
          * Application Service Providers...
