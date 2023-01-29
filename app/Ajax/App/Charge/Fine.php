@@ -90,7 +90,7 @@ class Fine extends CallableClass
 
         $fineId = jq()->parent()->attr('data-fine-id')->toInt();
         $this->jq('.btn-fine-add')->click($this->cl(Member::class)->rq()->home($fineId));
-        $this->jq('.btn-fine-settlements')->click($this->cl(Settlement::class)->rq()->home($fineId));
+        $this->jq('.btn-fine-settlements')->click($this->cl(Settlement\Fine::class)->rq()->home($fineId));
 
         return $this->response;
     }

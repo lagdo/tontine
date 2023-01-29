@@ -4,9 +4,7 @@ namespace Siak\Tontine\Service\Charge;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
@@ -40,11 +38,11 @@ class FineReportService
     private function getCurrentSessionBills(Session $session): Collection
     {
         // Count the session bills
-        return Bill::select('fine_bills.charge_id',
-            DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
-            ->join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
+        return DB::table('fine_bills')
+            ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
+            ->join('bills', 'fine_bills.bill_id', '=', 'bills.id')
             ->where('fine_bills.session_id', $session->id)
-            ->groupBy('fine_bills.charge_id')
+            ->groupBy('charge_id')
             ->get();
     }
 
@@ -58,11 +56,11 @@ class FineReportService
         // Count the session bills
         $sessionIds = $this->tenantService->round()->sessions()
             ->where('start_at', '<=', $session->start_at)->pluck('id');
-        return Bill::select('fine_bills.charge_id',
-            DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
-            ->join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
+        return DB::table('fine_bills')
+            ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
+            ->join('bills', 'fine_bills.bill_id', '=', 'bills.id')
             ->whereIn('fine_bills.session_id', $sessionIds)
-            ->groupBy('fine_bills.charge_id')
+            ->groupBy('charge_id')
             ->get();
     }
 
@@ -74,12 +72,12 @@ class FineReportService
     private function getCurrentSessionSettlements(Session $session): Collection
     {
         // Count the session bills
-        $query = Settlement::select('fine_bills.charge_id',
-            DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
+        $query = DB::table('settlements')->select('charge_id',
+            DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
             ->where('settlements.session_id', $session->id)
-            ->groupBy('fine_bills.charge_id');
+            ->groupBy('charge_id');
         return $query->get();
     }
 
@@ -93,12 +91,12 @@ class FineReportService
         // Count the session bills
         $sessionIds = $this->tenantService->round()->sessions()
             ->where('start_at', '<=', $session->start_at)->pluck('id');
-        $query = Settlement::select('fine_bills.charge_id',
-            DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
+        $query = DB::table('settlements')->select('charge_id',
+            DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
             ->whereIn('settlements.session_id', $sessionIds)
-            ->groupBy('fine_bills.charge_id');
+            ->groupBy('charge_id');
         return $query->get();
     }
 

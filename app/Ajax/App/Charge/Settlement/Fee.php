@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Ajax\App\Charge;
+namespace App\Ajax\App\Charge\Settlement;
 
-use Siak\Tontine\Service\Charge\ChargeService;
+use Siak\Tontine\Service\Charge\FeeBillService;
 use Siak\Tontine\Service\Charge\SettlementService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Charge as ChargeModel;
@@ -15,13 +15,13 @@ use function trans;
  * @databag meeting
  * @before getCharge
  */
-class Settlement extends CallableClass
+class Fee extends CallableClass
 {
     /**
      * @di
-     * @var ChargeService
+     * @var FeeBillService
      */
-    protected ChargeService $chargeService;
+    protected FeeBillService $billService;
 
     /**
      * @di
@@ -44,8 +44,8 @@ class Settlement extends CallableClass
         $sessionId = $this->bag('meeting')->get('session.id');
         $chargeId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('charge.id');
-        $this->session = $this->chargeService->getSession($sessionId);
-        $this->charge = $this->chargeService->getCharge($chargeId);
+        $this->session = $this->settlementService->getSession($sessionId);
+        $this->charge = $this->settlementService->getCharge($chargeId);
     }
 
     /**
@@ -61,16 +61,8 @@ class Settlement extends CallableClass
         $html = $this->view()->render('tontine.pages.meeting.settlement.home', [
             'charge' => $this->charge,
         ]);
-        if($this->charge->is_fee)
-        {
-            $this->response->html('meeting-fees', $html);
-            $this->jq('#btn-settlements-back')->click($this->cl(Fee::class)->rq()->home());
-        }
-        if($this->charge->is_fine)
-        {
-            $this->response->html('meeting-fines', $html);
-            $this->jq('#btn-settlements-back')->click($this->cl(Fine::class)->rq()->home());
-        }
+        $this->response->html('meeting-fees', $html);
+        $this->jq('#btn-settlements-back')->click($this->cl(\App\Ajax\App\Charge\Fee::class)->rq()->home());
         $this->jq('#btn-settlements-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
@@ -90,10 +82,10 @@ class Settlement extends CallableClass
         $this->bag('meeting')->set('settlement.page', $pageNumber);
 
         $onlyUnpaid = $this->bag('meeting')->get('settlement.filter', null);
-        $billCount = $this->settlementService->getBillCount($this->charge, $this->session, $onlyUnpaid);
+        $billCount = $this->billService->getBillCount($this->charge, $this->session, $onlyUnpaid);
         $html = $this->view()->render('tontine.pages.meeting.settlement.page', [
             'charge' => $this->charge,
-            'bills' => $this->settlementService->getBills($this->charge, $this->session, $onlyUnpaid, $pageNumber),
+            'bills' => $this->billService->getBills($this->charge, $this->session, $onlyUnpaid, $pageNumber),
             'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $billCount),
         ]);
         $this->response->html('meeting-charge-bills', $html);
