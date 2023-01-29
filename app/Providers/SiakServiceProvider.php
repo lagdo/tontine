@@ -11,8 +11,10 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Charge\ChargeService;
+use Siak\Tontine\Service\Charge\FeeBillService;
 use Siak\Tontine\Service\Charge\FeeService;
 use Siak\Tontine\Service\Charge\FeeReportService;
+use Siak\Tontine\Service\Charge\FineBillService;
 use Siak\Tontine\Service\Charge\FineService;
 use Siak\Tontine\Service\Charge\FineReportService;
 use Siak\Tontine\Service\Charge\SettlementService;
@@ -87,8 +89,10 @@ class SiakServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(ChargeService::class, ChargeService::class);
+        $this->app->singleton(FeeBillService::class, FeeBillService::class);
         $this->app->singleton(FeeService::class, FeeService::class);
         $this->app->singleton(FeeReportService::class, FeeReportService::class);
+        $this->app->singleton(FineBillService::class, FineBillService::class);
         $this->app->singleton(FineService::class, FineService::class);
         $this->app->singleton(FineReportService::class, FineReportService::class);
         $this->app->singleton(SettlementService::class, SettlementService::class);

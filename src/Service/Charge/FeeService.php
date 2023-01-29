@@ -14,11 +14,17 @@ class FeeService
     protected TenantService $tenantService;
 
     /**
+     * @var FeeReportService
+     */
+    protected FeeReportService $reportService;
+
+    /**
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
+    public function __construct(TenantService $tenantService, FeeReportService $reportService)
     {
         $this->tenantService = $tenantService;
+        $this->reportService = $reportService;
     }
 
     /**
@@ -59,5 +65,20 @@ class FeeService
     public function getFeeCount(): int
     {
         return $this->tenantService->tontine()->charges()->fee()->count();
+    }
+
+    /**
+     * Get the bills and settlements for a given session
+     *
+     * @param Session $session
+     *
+     * @return array
+     */
+    public function getBills(Session $session): array
+    {
+        return [
+            $this->reportService->getBills($session),
+            $this->reportService->getSettlements($session),
+        ];
     }
 }

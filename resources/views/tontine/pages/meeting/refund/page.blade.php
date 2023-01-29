@@ -10,7 +10,7 @@
 @foreach($debts as $debt)
                     <tr>
                       <td>{{ $debt->member->name }}<br/>{{ $debt->session->title }}</td>
-                      <td>{{ __('tontine.loan.labels.' . $debt->type) }}<br/>{{ $debt->amount }}</td>
+                      <td>{{ $debt->amount }}<br/>{{ __('tontine.loan.labels.' . $debt->type) }}</td>
 @if ($session->closed)
                       <td>
                         @if ($debt->refund_id) <i class="fa fa-toggle-on"></i> @else <i class="fa fa-toggle-off"> @endif

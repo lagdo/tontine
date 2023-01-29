@@ -4,7 +4,6 @@ namespace App\Ajax\App\Charge;
 
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Charge\FineService;
-use Siak\Tontine\Service\Charge\FineReportService;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 
@@ -29,12 +28,6 @@ class Fine extends CallableClass
     protected FineService $fineService;
 
     /**
-     * @di
-     * @var FineReportService
-     */
-    protected FineReportService $reportService;
-
-    /**
      * @var SessionModel|null
      */
     protected ?SessionModel $session;
@@ -51,11 +44,10 @@ class Fine extends CallableClass
     /**
      * @exclude
      */
-    public function show($session, $fineService, $reportService)
+    public function show(SessionModel $session, FineService $fineService)
     {
         $this->session = $session;
         $this->fineService = $fineService;
-        $this->reportService = $reportService;
 
         return $this->home();
     }
@@ -74,10 +66,8 @@ class Fine extends CallableClass
     {
         $fines = $this->fineService->getFines($pageNumber);
         $fineCount = $this->fineService->getFineCount();
-        // Bill counts and amounts
-        $bills = $this->reportService->getBills($this->session);
-        // Settlement counts and amounts
-        $settlements = $this->reportService->getSettlements($this->session);
+        // Bill and settlement counts and amounts
+        [$bills, $settlements] = $this->fineService->getBills($this->session);
 
         $html = $this->view()->render('tontine.pages.meeting.fine.page')
             ->with('session', $this->session)
@@ -90,7 +80,7 @@ class Fine extends CallableClass
 
         $fineId = jq()->parent()->attr('data-fine-id')->toInt();
         $this->jq('.btn-fine-add')->click($this->cl(Member::class)->rq()->home($fineId));
-        $this->jq('.btn-fine-settlements')->click($this->cl(Settlement::class)->rq()->home($fineId));
+        $this->jq('.btn-fine-settlements')->click($this->cl(Settlement\Fine::class)->rq()->home($fineId));
 
         return $this->response;
     }

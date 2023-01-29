@@ -4,7 +4,6 @@ namespace App\Ajax\App\Charge;
 
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Charge\FeeService;
-use Siak\Tontine\Service\Charge\FeeReportService;
 use Siak\Tontine\Model\Session as SessionModel;
 use App\Ajax\CallableClass;
 
@@ -29,12 +28,6 @@ class Fee extends CallableClass
     protected FeeService $feeService;
 
     /**
-     * @di
-     * @var FeeReportService
-     */
-    protected FeeReportService $reportService;
-
-    /**
      * @var SessionModel|null
      */
     protected ?SessionModel $session;
@@ -51,11 +44,10 @@ class Fee extends CallableClass
     /**
      * @exclude
      */
-    public function show($session, $feeService, $reportService)
+    public function show(SessionModel $session, FeeService $feeService)
     {
         $this->session = $session;
         $this->feeService = $feeService;
-        $this->reportService = $reportService;
 
         return $this->home();
     }
@@ -74,10 +66,8 @@ class Fee extends CallableClass
     {
         $fees = $this->feeService->getFees($pageNumber);
         $feeCount = $this->feeService->getFeeCount();
-        // Bill counts and amounts
-        $bills = $this->reportService->getBills($this->session);
-        // Settlement counts and amounts
-        $settlements = $this->reportService->getSettlements($this->session);
+        // Bill and settlement counts and amounts
+        [$bills, $settlements] = $this->feeService->getBills($this->session);
 
         $html = $this->view()->render('tontine.pages.meeting.fee.page')
             ->with('session', $this->session)
@@ -89,7 +79,7 @@ class Fee extends CallableClass
         $this->response->html('meeting-fees-page', $html);
 
         $feeId = jq()->parent()->attr('data-fee-id')->toInt();
-        $this->jq('.btn-fee-settlements')->click($this->cl(Settlement::class)->rq()->home($feeId));
+        $this->jq('.btn-fee-settlements')->click($this->cl(Settlement\Fee::class)->rq()->home($feeId));
 
         return $this->response;
     }
