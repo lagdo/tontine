@@ -30,22 +30,23 @@ class FeeBillService
     /**
      * @param Charge $charge
      * @param Session $session
+     * @param bool $onlyPaid|null
      *
-     * @return mixed
+     * @return Builder
      */
-    private function getBillsQuery(Charge $charge, Session $session)
+    private function getSessionBillsQuery(Charge $charge, Session $session, ?bool $onlyPaid)
     {
-        if($charge->period_session)
+        $query = SessionBill::where('session_id', $session->id)
+            ->where('charge_id', $charge->id);
+        if($onlyPaid === false)
         {
-            return SessionBill::where('session_id', $session->id);
+            $query = $query->whereDoesntHave('bill.settlement');
         }
-        if($charge->period_round)
+        if($onlyPaid === true)
         {
-            return RoundBill::where('round_id', $session->round_id);
+            $query = $query->whereHas('bill.settlement');
         }
-        // if($charge->period_once)
-        $memberIds = $this->tenantService->tontine()->members()->pluck('id');
-        return TontineBill::whereIn('member_id', $memberIds);
+        return $query;
     }
 
     /**
@@ -53,20 +54,79 @@ class FeeBillService
      * @param Session $session
      * @param bool $onlyPaid|null
      *
-     * @return mixed
+     * @return Builder
      */
-    private function getQuery(Charge $charge, Session $session, ?bool $onlyPaid)
+    private function getRoundBillsQuery(Charge $charge, Session $session, ?bool $onlyPaid)
     {
-        $query = $this->getBillsQuery($charge, $session)->where('charge_id', $charge->id);
+        $unpaidQuery = RoundBill::where('round_id', $session->round_id)
+            ->where('charge_id', $charge->id)
+            ->whereDoesntHave('bill.settlement');
+        // Only the bills that are paid in this session.
+        $paidQuery = RoundBill::where('round_id', $session->round_id)
+            ->where('charge_id', $charge->id)
+            ->whereHas('bill.settlement', function(Builder $query) use($session) {
+                $query->where('session_id', $session->id);
+            });
         if($onlyPaid === false)
         {
-            return $query->whereDoesntHave('bill.settlement');
+            return $unpaidQuery;
         }
         if($onlyPaid === true)
         {
-            return $query->whereHas('bill.settlement');
+            return $paidQuery;
         }
-        return $query;
+        return $paidQuery->union($unpaidQuery);
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Session $session
+     * @param bool $onlyPaid|null
+     *
+     * @return Builder
+     */
+    private function getTontineBillsQuery(Charge $charge, Session $session, ?bool $onlyPaid)
+    {
+        $memberIds = $this->tenantService->tontine()->members()->pluck('id');
+        $unpaidQuery = TontineBill::whereIn('member_id', $memberIds)
+            ->where('charge_id', $charge->id)
+            ->whereDoesntHave('bill.settlement');
+        // Only the bills that are paid in this session.
+        $paidQuery = TontineBill::whereIn('member_id', $memberIds)
+            ->where('charge_id', $charge->id)
+            ->whereHas('bill.settlement', function(Builder $query) use($session) {
+                $query->where('session_id', $session->id);
+            });
+        if($onlyPaid === false)
+        {
+            return $unpaidQuery;
+        }
+        if($onlyPaid === true)
+        {
+            return $paidQuery;
+        }
+        return $paidQuery->union($unpaidQuery);
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Session $session
+     * @param bool $onlyPaid|null
+     *
+     * @return Builder
+     */
+    private function getQuery(Charge $charge, Session $session, ?bool $onlyPaid)
+    {
+        if($charge->period_session)
+        {
+            return $this->getSessionBillsQuery($charge, $session, $onlyPaid);
+        }
+        if($charge->period_round)
+        {
+            return $this->getRoundBillsQuery($charge, $session, $onlyPaid);
+        }
+        // if($charge->period_once)
+        return $this->getTontineBillsQuery($charge, $session, $onlyPaid);
     }
 
     /**
