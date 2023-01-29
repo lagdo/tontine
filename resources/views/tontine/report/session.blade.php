@@ -1,4 +1,4 @@
-@extends('report.layout')
+@extends('tontine.report.layout')
 
 @section('page-title', 'Siak Tontine')
 
