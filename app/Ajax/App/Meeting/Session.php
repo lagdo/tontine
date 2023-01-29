@@ -8,9 +8,7 @@ use App\Ajax\App\Charge\Fine;
 use App\Ajax\App\Credit\Loan;
 use App\Ajax\App\Credit\Refund;
 use Siak\Tontine\Service\Charge\FeeService;
-use Siak\Tontine\Service\Charge\FeeReportService;
 use Siak\Tontine\Service\Charge\FineService;
-use Siak\Tontine\Service\Charge\FineReportService;
 use Siak\Tontine\Service\Meeting\LoanService;
 use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Service\Meeting\PoolService;
@@ -35,16 +33,6 @@ class Session extends CallableClass
      * @var FineService
      */
     protected FineService $fineService;
-
-    /**
-     * @var FeeReportService
-     */
-    protected FeeReportService $feeReportService;
-
-    /**
-     * @var FineReportService
-     */
-    protected FineReportService $fineReportService;
 
     /**
      * @var LoanService
@@ -148,8 +136,6 @@ class Session extends CallableClass
     /**
      * @di $feeService
      * @di $fineService
-     * @di $feeReportService
-     * @di $fineReportService
      */
     public function charges()
     {
@@ -170,8 +156,8 @@ class Session extends CallableClass
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 
-        $this->cl(Fee::class)->show($this->session, $this->feeService, $this->feeReportService);
-        $this->cl(Fine::class)->show($this->session, $this->fineService, $this->fineReportService);
+        $this->cl(Fee::class)->show($this->session, $this->feeService);
+        $this->cl(Fine::class)->show($this->session, $this->fineService);
 
         return $this->response;
     }

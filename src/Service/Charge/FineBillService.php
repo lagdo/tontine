@@ -36,8 +36,7 @@ class FineBillService
     private function getQuery(Charge $charge, Session $session, ?bool $onlyPaid)
     {
         // The fines of the current session.
-        $query = FineBill::where('charge_id', $charge->id)
-            ->where('session_id', $session->id);
+        $query = FineBill::where('charge_id', $charge->id)->where('session_id', $session->id);
         // The filter applies only to this query.
         if($onlyPaid === false)
         {

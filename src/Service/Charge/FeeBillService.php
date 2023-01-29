@@ -57,7 +57,7 @@ class FeeBillService
      */
     private function getQuery(Charge $charge, Session $session, ?bool $onlyPaid)
     {
-        $query = $this->getBillsQuery($charge, $session);
+        $query = $this->getBillsQuery($charge, $session)->where('charge_id', $charge->id);
         if($onlyPaid === false)
         {
             return $query->whereDoesntHave('bill.settlement');
@@ -66,7 +66,7 @@ class FeeBillService
         {
             return $query->whereHas('bill.settlement');
         }
-        return $query->where('charge_id', $charge->id);
+        return $query;
     }
 
     /**
