@@ -14,6 +14,7 @@ After downloading this package, install the dependencies with `Composer`.
 
 ```bash
 composer install
+php artisan key:generate
 ```
 
 Set the database name and credentials in the `.env` file.
