@@ -3,7 +3,7 @@
                    <thead>
                     <tr>
                       <th>{!! __('common.labels.name') !!}</th>
-                      <th>&nbsp;</th>
+                      <th style="text-align: center">{{ $count }}</th>
                     </tr>
                   </thead>
                  <tbody>
