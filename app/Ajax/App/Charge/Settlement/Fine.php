@@ -75,18 +75,16 @@ class Fine extends CallableClass
      */
     public function page(int $pageNumber = 0)
     {
-        if($pageNumber < 1)
-        {
-            $pageNumber = $this->bag('meeting')->get('settlement.page', 1);
-        }
-        $this->bag('meeting')->set('settlement.page', $pageNumber);
-
         $onlyUnpaid = $this->bag('meeting')->get('settlement.filter', null);
         $billCount = $this->billService->getBillCount($this->charge, $this->session, $onlyUnpaid);
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $billCount, 'meeting', 'settlement.page');
+        $bills = $this->billService->getBills($this->charge, $this->session, $onlyUnpaid, $pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $billCount);
+
         $html = $this->view()->render('tontine.pages.meeting.settlement.page', [
             'charge' => $this->charge,
-            'bills' => $this->billService->getBills($this->charge, $this->session, $onlyUnpaid, $pageNumber),
-            'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $billCount),
+            'bills' => $bills,
+            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-charge-bills', $html);
 

@@ -62,19 +62,15 @@ class Subscription extends CallableClass
 
     public function page(int $pageNumber = 0)
     {
-        if($pageNumber < 1)
-        {
-            $pageNumber = $this->bag('subscription')->get('page', 1);
-        }
-        $this->bag('subscription')->set('page', $pageNumber);
         $filter = $this->bag('subscription')->get('filter', false);
-
-        $members = $this->subscriptionService->getMembers($this->pool, $filter, $pageNumber);
         $memberCount = $this->subscriptionService->getMemberCount($this->pool, $filter);
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount, 'subscription', 'page');
+        $members = $this->subscriptionService->getMembers($this->pool, $filter, $pageNumber);
+        $pagination = $this->rq()->page(pm()->page())->paginate($pageNumber, $perPage, $memberCount);
 
         $html = $this->view()->render('tontine.pages.planning.subscription.page')
             ->with('members', $members)
-            ->with('pagination', $this->rq()->page(pm()->page(), $filter)->paginate($pageNumber, 10, $memberCount));
+            ->with('pagination', $pagination);
         $this->response->html('subscription-page', $html);
 
         $memberId = jq()->parent()->parent()->attr('data-member-id')->toInt();

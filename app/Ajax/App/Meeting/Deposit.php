@@ -120,16 +120,14 @@ class Deposit extends CallableClass
      */
     public function page(int $pageNumber = 0)
     {
-        if($pageNumber < 1)
-        {
-            $pageNumber = $this->bag('meeting')->get('deposit.page', 1);
-        }
-        $this->bag('meeting')->set('deposit.page', $pageNumber);
-
         $receivableCount = $this->depositService->getReceivableCount($this->pool, $this->session);
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $receivableCount, 'meeting', 'deposit.page');
+        $receivables = $this->depositService->getReceivables($this->pool, $this->session, $pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $receivableCount);
+
         $html = $this->view()->render('tontine.pages.meeting.deposit.page', [
-            'receivables' => $this->depositService->getReceivables($this->pool, $this->session, $pageNumber),
-            'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $receivableCount),
+            'receivables' => $receivables,
+            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-pool-deposits', $html);
 

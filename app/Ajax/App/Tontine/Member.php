@@ -54,20 +54,17 @@ class Member extends CallableClass
      */
     public function page(int $pageNumber = 0)
     {
-        if($pageNumber < 1)
-        {
-            $pageNumber = $this->bag('member')->get('page', 1);
-        }
-        $this->bag('member')->set('page', $pageNumber);
-
-        $members = $this->memberService->getMembers($pageNumber);
         $memberCount = $this->memberService->getMemberCount();
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount, 'member', 'page');
+        $members = $this->memberService->getMembers($pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
-        $html = $this->view()->render('tontine.pages.member.page')->with('members', $members)
-            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $memberCount));
+        $html = $this->view()->render('tontine.pages.member.page')
+            ->with('members', $members)
+            ->with('pagination', $pagination);
         $this->response->html('content-page', $html);
 
-        $memberId = jq()->parent()->attr('data-member-id')->toInt()->toInt();
+        $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $this->jq('.btn-member-edit')->click($this->rq()->edit($memberId));
 
         return $this->response;

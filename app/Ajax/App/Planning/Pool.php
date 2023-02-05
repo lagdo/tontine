@@ -70,17 +70,14 @@ class Pool extends CallableClass
      */
     public function page(int $pageNumber = 0)
     {
-        if($pageNumber < 1)
-        {
-            $pageNumber = $this->bag('pool')->get('page', 1);
-        }
-        $this->bag('pool')->set('page', $pageNumber);
-
-        $pools = $this->poolService->getPools($pageNumber);
         $poolCount = $this->poolService->getPoolCount();
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $poolCount, 'pool', 'page');
+        $pools = $this->poolService->getPools($pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $poolCount);
 
-        $html = $this->view()->render('tontine.pages.planning.pool.page')->with('pools', $pools)
-            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $poolCount));
+        $html = $this->view()->render('tontine.pages.planning.pool.page')
+            ->with('pools', $pools)
+            ->with('pagination', $pagination);
         $this->response->html('pool-page', $html);
 
         if($this->fromHome && $poolCount > 0)

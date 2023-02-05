@@ -32,14 +32,11 @@ class Meeting extends CallableClass
 
     public function page(int $pageNumber = 0)
     {
-        if($pageNumber < 1)
-        {
-            $pageNumber = $this->bag('session')->get('page', 1);
-        }
-        $this->bag('session')->set('page', $pageNumber);
-
-        $sessions = $this->sessionService->getSessions($pageNumber);
         $sessionCount = $this->sessionService->getSessionCount();
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $sessionCount, 'session', 'page');
+        $sessions = $this->sessionService->getSessions($pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
+
         $statuses = [
             SessionModel::STATUS_PENDING => trans('tontine.session.status.pending'),
             SessionModel::STATUS_OPENED => trans('tontine.session.status.opened'),
@@ -50,7 +47,7 @@ class Meeting extends CallableClass
             ->with('sessions', $sessions)
             ->with('statuses', $statuses)
             ->with('members', $this->sessionService->getMembers())
-            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $sessionCount));
+            ->with('pagination', $pagination);
         $this->response->html('content-page', $html);
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();

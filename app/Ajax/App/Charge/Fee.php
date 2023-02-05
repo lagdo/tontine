@@ -64,8 +64,11 @@ class Fee extends CallableClass
 
     public function page(int $pageNumber)
     {
-        $fees = $this->feeService->getFees($pageNumber);
         $feeCount = $this->feeService->getFeeCount();
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $feeCount, 'meeting', 'fee.page');
+        $fees = $this->feeService->getFees($pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $feeCount);
+
         // Bill and settlement counts and amounts
         [$bills, $settlements] = $this->feeService->getBills($this->session);
 
@@ -75,7 +78,7 @@ class Fee extends CallableClass
             ->with('bills', $bills)
             ->with('settlements', $settlements)
             ->with('zero', $settlements['zero'])
-            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $feeCount));
+            ->with('pagination', $pagination);
         $this->response->html('meeting-fees-page', $html);
 
         $feeId = jq()->parent()->attr('data-fee-id')->toInt();

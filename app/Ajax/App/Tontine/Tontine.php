@@ -8,13 +8,11 @@ use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Tontine\TontineValidator;
-use Siak\Tontine\Model\Tontine as TontineModel;
 use App\Ajax\App\Locale;
 use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
-use function session;
 use function trans;
 
 class Tontine extends CallableClass
@@ -72,14 +70,10 @@ class Tontine extends CallableClass
      */
     public function page(int $pageNumber = 0)
     {
-        if($pageNumber < 1)
-        {
-            $pageNumber = $this->bag('tontine')->get('page', 1);
-        }
-        $this->bag('tontine')->set('page', $pageNumber);
-
-        $tontines = $this->tontineService->getTontines($pageNumber);
         $tontineCount = $this->tontineService->getTontineCount();
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $tontineCount, 'tontine', 'page');
+        $tontines = $this->tontineService->getTontines($pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $tontineCount);
         [$countries, $currencies] = $this->localeService->getNamesFromTontines($tontines);
 
         $html = $this->view()->render('tontine.pages.tontine.page')
@@ -87,7 +81,7 @@ class Tontine extends CallableClass
             ->with('tontines', $tontines)
             ->with('countries', $countries)
             ->with('currencies', $currencies)
-            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $tontineCount));
+            ->with('pagination', $pagination);
         $this->response->html('tontine-page', $html);
 
         $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();

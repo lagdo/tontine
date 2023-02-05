@@ -14,7 +14,7 @@ use function Jaxon\pm;
 use function trans;
 
 /**
- * @databag session
+ * @databag planning
  */
 class Session extends CallableClass
 {
@@ -37,19 +37,16 @@ class Session extends CallableClass
         $this->jq('#btn-refresh')->click($this->rq()->home());
         $this->jq('#btn-create')->click($this->rq()->number());
 
-        return $this->page($this->bag('session')->get('page', 1));
+        return $this->page($this->bag('planning')->get('session.page', 1));
     }
 
     public function page(int $pageNumber = 0)
     {
-        if($pageNumber < 1)
-        {
-            $pageNumber = $this->bag('session')->get('page', 1);
-        }
-        $this->bag('session')->set('page', $pageNumber);
-
-        $sessions = $this->sessionService->getSessions($pageNumber);
         $sessionCount = $this->sessionService->getSessionCount();
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $sessionCount, 'planning', 'session.page');
+        $sessions = $this->sessionService->getSessions($pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
+
         $statuses = [
             SessionModel::STATUS_PENDING => trans('tontine.session.status.pending'),
             SessionModel::STATUS_OPENED => trans('tontine.session.status.opened'),
@@ -60,7 +57,7 @@ class Session extends CallableClass
             ->with('sessions', $sessions)
             ->with('statuses', $statuses)
             ->with('members', $this->sessionService->getMembers())
-            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $sessionCount));
+            ->with('pagination', $pagination);
         $this->response->html('content-page', $html);
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
@@ -170,7 +167,8 @@ class Session extends CallableClass
         $session = $this->sessionService->getSession($sessionId);
 
         $title = trans('tontine.session.titles.edit');
-        $content = $this->view()->render('tontine.pages.planning.session.edit')->with('session', $session)
+        $content = $this->view()->render('tontine.pages.planning.session.edit')
+            ->with('session', $session)
             ->with('members', $this->sessionService->getMembers());
         $buttons = [[
             'title' => trans('common.actions.cancel'),

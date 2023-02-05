@@ -64,8 +64,10 @@ class Fine extends CallableClass
 
     public function page(int $pageNumber)
     {
-        $fines = $this->fineService->getFines($pageNumber);
         $fineCount = $this->fineService->getFineCount();
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $fineCount, 'meeting', 'fine.page');
+        $fines = $this->fineService->getFines($pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $fineCount);
         // Bill and settlement counts and amounts
         [$bills, $settlements] = $this->fineService->getBills($this->session);
 
@@ -75,7 +77,7 @@ class Fine extends CallableClass
             ->with('bills', $bills)
             ->with('settlements', $settlements)
             ->with('zero', $settlements['zero'])
-            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $fineCount));
+            ->with('pagination', $pagination);
         $this->response->html('meeting-fines-page', $html);
 
         $fineId = jq()->parent()->attr('data-fine-id')->toInt();

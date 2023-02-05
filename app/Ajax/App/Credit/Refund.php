@@ -75,18 +75,16 @@ class Refund extends CallableClass
      */
     public function page(int $pageNumber = 0)
     {
-        if($pageNumber < 1)
-        {
-            $pageNumber = $this->bag('meeting')->get('debt.page', 1);
-        }
-        $this->bag('meeting')->set('debt.page', $pageNumber);
-
         $filtered = $this->bag('meeting')->get('debt.filter', null);
         $debtCount = $this->refundService->getDebtCount($this->session, $filtered);
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $debtCount, 'meeting', 'debt.page');
+        $debts = $this->refundService->getDebts($this->session, $filtered, $pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $debtCount);
+
         $html = $this->view()->render('tontine.pages.meeting.refund.page', [
             'session' => $this->session,
-            'debts' => $this->refundService->getDebts($this->session, $filtered, $pageNumber),
-            'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $debtCount),
+            'debts' => $debts,
+            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-debts-page', $html);
 

@@ -44,20 +44,18 @@ class Charge extends CallableClass
      */
     public function page(int $pageNumber = 0)
     {
-        if($pageNumber < 1)
-        {
-            $pageNumber = $this->bag('charge')->get('page', 1);
-        }
-        $this->bag('charge')->set('page', $pageNumber);
-
-        $charges = $this->chargeService->getCharges($pageNumber);
         $chargeCount = $this->chargeService->getChargeCount();
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $chargeCount, 'charge', 'page');
+        $charges = $this->chargeService->getCharges($pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $chargeCount);
 
         $types = ['Frais', 'Amende'];
         $periods = ['Aucune', 'Unique', 'Année', 'Séance'];
         $html = $this->view()->render('tontine.pages.charge.page')
-            ->with('charges', $charges)->with('types', $types)->with('periods', $periods)
-            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $chargeCount));
+            ->with('charges', $charges)
+            ->with('types', $types)
+            ->with('periods', $periods)
+            ->with('pagination', $pagination);
         $this->response->html('content-page', $html);
 
         $chargeId = jq()->parent()->attr('data-charge-id')->toInt();

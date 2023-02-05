@@ -77,18 +77,14 @@ class Round extends CallableClass
 
     public function page(int $pageNumber = 0)
     {
-        if($pageNumber < 1)
-        {
-            $pageNumber = $this->bag('tontine')->get('round.page', 1);
-        }
-        $this->bag('tontine')->set('round.page', $pageNumber);
-
-        $rounds = $this->roundService->getRounds($pageNumber);
         $roundCount = $this->roundService->getRoundCount();
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $roundCount, 'tontine', 'round.page');
+        $rounds = $this->roundService->getRounds($pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $roundCount);
 
         $html = $this->view()->render('tontine.pages.round.page')
             ->with('rounds', $rounds)
-            ->with('pagination', $this->rq()->page()->paginate($pageNumber, 10, $roundCount));
+            ->with('pagination', $pagination);
         $this->response->html('round-page', $html);
 
         $roundId = jq()->parent()->attr('data-round-id')->toInt();

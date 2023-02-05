@@ -75,18 +75,16 @@ class Member extends CallableClass
      */
     public function page(int $pageNumber = 0)
     {
-        if($pageNumber < 1)
-        {
-            $pageNumber = $this->bag('meeting')->get('fine.page', 1);
-        }
-        $this->bag('meeting')->set('fine.page', $pageNumber);
-
         $onlyFined = $this->bag('meeting')->get('fine.filter', null);
         $memberCount = $this->fineService->getMemberCount($this->charge, $this->session, $onlyFined);
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount, 'meeting', 'member.page');
+        $members = $this->fineService->getMembers($this->charge, $this->session, $onlyFined, $pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
+
         $html = $this->view()->render('tontine.pages.meeting.fine.member.page', [
             'charge' => $this->charge,
-            'members' => $this->fineService->getMembers($this->charge, $this->session, $onlyFined, $pageNumber),
-            'pagination' => $this->rq()->page()->paginate($pageNumber, 10, $memberCount),
+            'members' => $members,
+            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-charge-members', $html);
 
