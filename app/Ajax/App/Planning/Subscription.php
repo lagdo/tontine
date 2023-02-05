@@ -2,10 +2,9 @@
 
 namespace App\Ajax\App\Planning;
 
+use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\SubscriptionService;
-use Siak\Tontine\Service\TenantService;
-use App\Ajax\CallableClass;
 
 use function intval;
 use function Jaxon\jq;
@@ -17,11 +16,6 @@ use function Jaxon\pm;
  */
 class Subscription extends CallableClass
 {
-    /**
-     * @var TenantService
-     */
-    public TenantService $tenantService;
-
     /**
      * @di
      * @var SubscriptionService
@@ -60,8 +54,6 @@ class Subscription extends CallableClass
         $this->response->html('subscription-home', $html);
         $this->jq('#btn-subscription-filter')->click($this->rq()->filter());
         $this->jq('#btn-subscription-refresh')->click($this->rq()->home($poolId));
-        $this->jq('#btn-subscription-deposits')->click($this->rq()->deposits());
-        $this->jq('#btn-subscription-remitments')->click($this->rq()->remitments());
 
         $this->bag('subscription')->set('pool.id', $poolId);
         $this->bag('subscription')->set('filter', false);
@@ -107,9 +99,7 @@ class Subscription extends CallableClass
         $this->subscriptionService->createSubscription($this->pool, $memberId);
 
         // Refresh the current page
-        $this->page();
-
-        return $this->response;
+        return $this->page();
     }
 
     public function delete(int $memberId)
@@ -117,8 +107,6 @@ class Subscription extends CallableClass
         $this->subscriptionService->deleteSubscription($this->pool, $memberId);
 
         // Refresh the current page
-        $this->page();
-
-        return $this->response;
+        return $this->page();
     }
 }
