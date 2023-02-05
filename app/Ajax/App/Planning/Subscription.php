@@ -70,7 +70,7 @@ class Subscription extends CallableClass
 
         $html = $this->view()->render('tontine.pages.planning.subscription.page')
             ->with('members', $members)
-            ->with('count', $this->subscriptionService->getMemberCount($this->pool, true))
+            ->with('count', $this->subscriptionService->getSubscriptionCount($this->pool))
             ->with('pagination', $pagination);
         $this->response->html('subscription-page', $html);
 

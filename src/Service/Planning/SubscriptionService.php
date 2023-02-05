@@ -156,6 +156,18 @@ class SubscriptionService
     }
 
     /**
+     * Get the number of subscriptions.
+     *
+     * @param Pool $pool
+     *
+     * @return int
+     */
+    public function getSubscriptionCount(Pool $pool): int
+    {
+        return $pool->subscriptions()->count();
+    }
+
+    /**
      * Enable or disable a session for a pool.
      *
      * @param Pool $pool
