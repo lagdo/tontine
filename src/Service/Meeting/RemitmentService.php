@@ -84,23 +84,27 @@ class RemitmentService
      */
     public function getPayables(Pool $pool, Session $session, int $page = 0): Collection
     {
+        // The remitment amount
+        $sessionCount = $this->tenantService->round()->sessions
+            ->filter(function($session) use($pool) {
+                return $session->enabled($pool);
+            })->count();
+        $remitmentAmount = $this->localeService->formatMoney($pool->amount * $sessionCount);
+
         $query = $this->getQuery($pool, $session)->with(['subscription.member', 'remitment']);
         if($page > 0 )
         {
             $query->take($this->tenantService->getLimit());
             $query->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        $payables = $query->get();
-        // Set the amount
-        $amount = $this->localeService->formatMoney($pool->amount * $pool->subscriptions->count());
-        $payables->each(function($payable) use($amount) {
-            $payable->amount = $amount;
+        $payables = $query->get()->each(function($payable) use($remitmentAmount) {
+            $payable->amount = $remitmentAmount;
         });
 
         $remitmentCount = $this->reportService->getSessionRemitmentCount($pool, $session);
         $emptyPayable = (object)[
             'id' => 0,
-            'amount' => $amount,
+            'amount' => $remitmentAmount,
             'remitment' => null,
         ];
 
