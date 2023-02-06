@@ -92,7 +92,8 @@ class FineBillService
             $query->take($this->tenantService->getLimit());
             $query->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $query->with(['member', 'session', 'bill', 'bill.settlement'])->get();
+        return $query->with(['member', 'session', 'bill', 'bill.settlement'])
+            ->orderBy('id', 'asc')->get();
     }
 
     /**

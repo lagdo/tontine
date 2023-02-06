@@ -73,7 +73,7 @@ class DepositService
             $receivables->take($this->tenantService->getLimit());
             $receivables->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $receivables->get();
+        return $receivables->orderBy('id', 'asc')->get();
     }
 
     /**

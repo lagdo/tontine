@@ -2,7 +2,6 @@
 
 namespace App\Ajax\App\Meeting\Remitment;
 
-use App\Ajax\App\Meeting\Pool;
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Model\Session as SessionModel;

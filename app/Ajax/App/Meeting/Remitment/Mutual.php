@@ -2,14 +2,12 @@
 
 namespace App\Ajax\App\Meeting\Remitment;
 
-use App\Ajax\App\Meeting\Pool;
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\PoolService;
 use Siak\Tontine\Service\Meeting\RemitmentService;
 
-use function intval;
 use function Jaxon\jq;
 use function trans;
 

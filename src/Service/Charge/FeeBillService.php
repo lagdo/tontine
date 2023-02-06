@@ -145,7 +145,8 @@ class FeeBillService
             $query->take($this->tenantService->getLimit());
             $query->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $query->with(['member', 'bill', 'bill.settlement'])->get();
+        return $query->with(['member', 'bill', 'bill.settlement'])
+            ->orderBy('id', 'asc')->get();
     }
 
     /**
