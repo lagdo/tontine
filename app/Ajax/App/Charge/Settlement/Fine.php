@@ -60,10 +60,11 @@ class Fine extends CallableClass
 
         $html = $this->view()->render('tontine.pages.meeting.settlement.home', [
             'charge' => $this->charge,
+            'type' => 'fine',
         ]);
         $this->response->html('meeting-fines', $html);
-        $this->jq('#btn-settlements-back')->click($this->cl(\App\Ajax\App\Charge\Fine::class)->rq()->home());
-        $this->jq('#btn-settlements-filter')->click($this->rq()->toggleFilter());
+        $this->jq('#btn-fine-settlements-back')->click($this->cl(\App\Ajax\App\Charge\Fine::class)->rq()->home());
+        $this->jq('#btn-fine-settlements-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
     }
@@ -86,7 +87,7 @@ class Fine extends CallableClass
             'bills' => $bills,
             'pagination' => $pagination,
         ]);
-        $this->response->html('meeting-charge-bills', $html);
+        $this->response->html('meeting-fine-bills', $html);
 
         $billId = jq()->parent()->attr('data-bill-id')->toInt();
         $this->jq('.btn-add-settlement')->click($this->rq()->addSettlement($billId));

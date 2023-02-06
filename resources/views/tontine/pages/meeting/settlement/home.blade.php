@@ -4,10 +4,10 @@
                     </div>
                     <div class="col">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
-                        <button type="button" class="btn btn-primary" id="btn-settlements-back"><i class="fa fa-arrow-left"></i></button>
-                        <button type="button" class="btn btn-primary" id="btn-settlements-filter"><i class="fa fa-filter"></i></button>
+                        <button type="button" class="btn btn-primary" id="btn-{{ $type }}-settlements-back"><i class="fa fa-arrow-left"></i></button>
+                        <button type="button" class="btn btn-primary" id="btn-{{ $type }}-settlements-filter"><i class="fa fa-filter"></i></button>
                       </div>
                     </div>
                   </div>
-                  <div class="table-responsive" id="meeting-charge-bills">
+                  <div class="table-responsive" id="meeting-{{ $type }}-bills">
                   </div> <!-- End table -->
