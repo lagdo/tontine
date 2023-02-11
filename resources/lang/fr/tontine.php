@@ -145,6 +145,11 @@ return [
             'not-assigned' => "** Pas attribué **",
         ],
     ],
+    'funding' => [
+        'titles' => [
+            'add' => "Ajouter un dépôt",
+        ],
+    ],
     'loan' => [
         'titles' => [
             'add' => "Ajouter une enchère",

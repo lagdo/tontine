@@ -5,10 +5,12 @@ namespace App\Ajax\App\Meeting;
 use App\Ajax\CallableClass;
 use App\Ajax\App\Charge\Fee;
 use App\Ajax\App\Charge\Fine;
+use App\Ajax\App\Credit\Funding;
 use App\Ajax\App\Credit\Loan;
 use App\Ajax\App\Credit\Refund;
 use Siak\Tontine\Service\Charge\FeeService;
 use Siak\Tontine\Service\Charge\FineService;
+use Siak\Tontine\Service\Meeting\FundingService;
 use Siak\Tontine\Service\Meeting\LoanService;
 use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Service\Meeting\PoolService;
@@ -33,6 +35,11 @@ class Session extends CallableClass
      * @var FineService
      */
     protected FineService $fineService;
+
+    /**
+     * @var FundingService
+     */
+    protected FundingService $fundingService;
 
     /**
      * @var LoanService
@@ -105,6 +112,7 @@ class Session extends CallableClass
     }
 
     /**
+     * @di $fundingService
      * @di $loanService
      * @di $refundService
      */
@@ -127,6 +135,7 @@ class Session extends CallableClass
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 
+        $this->cl(Funding::class)->show($this->session, $this->fundingService);
         $this->cl(Loan::class)->show($this->session, $this->loanService);
         $this->cl(Refund::class)->show($this->session, $this->refundService);
 

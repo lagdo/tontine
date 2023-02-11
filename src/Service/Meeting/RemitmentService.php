@@ -232,17 +232,14 @@ class RemitmentService
     public function deleteFinancialRemitment(Pool $pool, Session $session, int $payableId): void
     {
         $payable = $this->getQuery($pool, $session)
-            ->with(['remitment', 'remitment.loan', 'remitment.loan.refund'])
+            ->with(['remitment', 'remitment.loan'])
             ->find($payableId);
         if(($payable) && ($remitment = $payable->remitment))
         {
             DB::transaction(function() use($payable, $remitment) {
                 if(($loan = $remitment->loan) != null)
                 {
-                    if(($refund = $loan->refund))
-                    {
-                        $refund->delete();
-                    }
+                    $loan->refunds()->delete();
                     $loan->delete();
                 }
                 $remitment->delete();

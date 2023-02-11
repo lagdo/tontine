@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Model\Funding;
 use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Member;
@@ -114,9 +115,9 @@ class LoanService
         $sessionIds = $this->tenantService->round()->sessions()
             ->where('start_at', '<=', $session->start_at)->pluck('id');
 
-        // The amount available for lending is the sum of the refunds,
+        // The amount available for lending is the sum of the fundings and refunds,
         // minus the sum of the loans, for all the sessions before the selected.
-        $loan = Loan::select(DB::raw('sum(amount) as total'))
+        $funding = Funding::select(DB::raw('sum(amount) as total'))
             ->whereIn('session_id', $sessionIds)
             ->value('total');
         $interest = Refund::interest()
@@ -129,8 +130,11 @@ class LoanService
             ->select(DB::raw('sum(loans.amount) as total'))
             ->whereIn('refunds.session_id', $sessionIds)
             ->value('total');
+        $loan = Loan::select(DB::raw('sum(amount) as total'))
+            ->whereIn('session_id', $sessionIds)
+            ->value('total');
 
-        return $principal + $interest - $loan;
+        return $funding + $principal + $interest - $loan;
     }
 
     /**

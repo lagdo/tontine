@@ -145,6 +145,11 @@ return [
             'not-assigned' => "** Not assigned **",
         ],
     ],
+    'funding' => [
+        'titles' => [
+            'add' => "Add a funding",
+        ],
+    ],
     'loan' => [
         'titles' => [
             'add' => "Add a loan",
