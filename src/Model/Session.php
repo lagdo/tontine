@@ -157,6 +157,11 @@ class Session extends Model
         return $this->hasMany(Refund::class);
     }
 
+    public function fundings()
+    {
+        return $this->hasMany(Funding::class);
+    }
+
     public function disabledPools()
     {
         return $this->belongsToMany(Pool::class, 'pool_session_disabled');
