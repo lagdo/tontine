@@ -26,7 +26,7 @@
                           <td>{{ $funding->member->name }}</td>
                           <td>{{ $funding->amount }}</td>
                           <td class="table-item-menu" data-funding-id="{{ $funding->id }}">
-                            <a href="javascript:void(0)" class="btn-funding-delete"><i class="fa fa-toggle-on"></i></a>
+                            <a href="javascript:void(0)" class="btn-funding-delete"><i class="fa fa-times-circle"></i></a>
                           </td>
                         </tr>
 @endforeach

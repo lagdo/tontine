@@ -10,6 +10,7 @@ use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
+use function trans;
 
 /**
  * @databag meeting
@@ -72,7 +73,8 @@ class Loan extends CallableClass
         $this->jq('#btn-loans-refresh')->click($this->rq()->home());
         $this->jq('#btn-loan-add')->click($this->rq()->addLoan());
         $loanId = jq()->parent()->attr('data-loan-id')->toInt();
-        $this->jq('.btn-loan-delete')->click($this->rq()->deleteLoan($loanId));
+        $this->jq('.btn-loan-delete')->click($this->rq()->deleteLoan($loanId)
+            ->confirm(trans('tontine.loan.questions.delete')));
 
         return $this->response;
     }

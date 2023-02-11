@@ -149,6 +149,9 @@ return [
         'titles' => [
             'add' => "Ajouter un dépôt",
         ],
+        'questions' => [
+            'delete' => "Supprimer ce dépôt ?",
+        ],
     ],
     'loan' => [
         'titles' => [
@@ -158,6 +161,9 @@ return [
             'principal' => "Principal",
             'interest' => "Intérêt",
             'amount_to_lend' => "Montant à prêter",
+        ],
+        'questions' => [
+            'delete' => "Supprimer cette enchère ?",
         ],
     ],
 ];

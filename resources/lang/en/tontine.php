@@ -149,6 +149,9 @@ return [
         'titles' => [
             'add' => "Add a funding",
         ],
+        'questions' => [
+            'delete' => "Delete this funding?",
+        ],
     ],
     'loan' => [
         'titles' => [
@@ -158,6 +161,9 @@ return [
             'principal' => "Principal",
             'interest' => "Interest",
             'amount_to_lend' => "Amount to lend",
+        ],
+        'questions' => [
+            'delete' => "Delete this loan?",
         ],
     ],
 ];

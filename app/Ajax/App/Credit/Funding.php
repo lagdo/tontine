@@ -10,6 +10,7 @@ use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
+use function trans;
 
 /**
  * @databag meeting
@@ -70,7 +71,8 @@ class Funding extends CallableClass
         $this->jq('#btn-fundings-refresh')->click($this->rq()->home());
         $this->jq('#btn-funding-add')->click($this->rq()->addFunding());
         $fundingId = jq()->parent()->attr('data-funding-id')->toInt();
-        $this->jq('.btn-funding-delete')->click($this->rq()->deleteFunding($fundingId));
+        $this->jq('.btn-funding-delete')->click($this->rq()->deleteFunding($fundingId)
+            ->confirm(trans('tontine.funding.questions.delete')));
 
         return $this->response;
     }
