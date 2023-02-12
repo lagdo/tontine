@@ -2,11 +2,11 @@
 
 namespace App\Ajax\App\Meeting\Credit;
 
+use App\Ajax\CallableClass;
 use Siak\Tontine\Service\Meeting\FundingService;
 use Siak\Tontine\Service\Meeting\LoanService;
 use Siak\Tontine\Validation\Meeting\FundingValidator;
 use Siak\Tontine\Model\Session as SessionModel;
-use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 use function Jaxon\pm;

@@ -7,7 +7,8 @@ use App\Ajax\App\Meeting\Charge\Fee;
 use App\Ajax\App\Meeting\Charge\Fine;
 use App\Ajax\App\Meeting\Credit\Funding;
 use App\Ajax\App\Meeting\Credit\Loan;
-use App\Ajax\App\Meeting\Credit\Refund;
+use App\Ajax\App\Meeting\Refund\Interest;
+use App\Ajax\App\Meeting\Refund\Principal;
 use Siak\Tontine\Service\Charge\FeeService;
 use Siak\Tontine\Service\Charge\FineService;
 use Siak\Tontine\Service\Meeting\FundingService;
@@ -77,9 +78,13 @@ class Session extends CallableClass
         $this->session = $this->poolService->getSession($sessionId);
     }
 
+    /**
+     * @databag refund
+     */
     public function home(int $sessionId)
     {
         $this->bag('meeting')->set('session.id', $sessionId);
+        $this->bag('refund')->set('session.id', $sessionId);
 
         return $this->pools();
     }
@@ -112,6 +117,7 @@ class Session extends CallableClass
     }
 
     /**
+     * @databag refund
      * @di $fundingService
      * @di $loanService
      * @di $refundService
@@ -137,7 +143,8 @@ class Session extends CallableClass
 
         $this->cl(Funding::class)->show($this->session, $this->fundingService);
         $this->cl(Loan::class)->show($this->session, $this->loanService);
-        $this->cl(Refund::class)->show($this->session, $this->refundService);
+        $this->cl(Principal::class)->show($this->session, $this->refundService);
+        $this->cl(Interest::class)->show($this->session, $this->refundService);
 
         return $this->response;
     }
