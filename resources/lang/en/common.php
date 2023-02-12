@@ -39,6 +39,7 @@ return [
         'comment' => "Comment",
         'view' => "View",
         'preview' => "Preview",
+        'give' => "Give",
         'year' => "Year",
     ],
     'labels' => [

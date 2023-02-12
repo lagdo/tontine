@@ -39,6 +39,7 @@ return [
         'comment' => "Commentaire",
         'view' => "Voir",
         'preview' => "Aperçu",
+        'give' => "Donner",
         'year' => "Année",
     ],
     'labels' => [

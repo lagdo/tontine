@@ -10,7 +10,7 @@
   'dataIdValue' => $charge->id,
   'menus' => [[
     'class' => 'btn-fine-add',
-    'text' => __('meeting.actions.fine'),
+    'text' => __('common.actions.give'),
   ],[
     'class' => 'btn-fine-settlements',
     'text' => __('meeting.actions.settlements'),
