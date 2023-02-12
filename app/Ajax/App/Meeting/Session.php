@@ -3,11 +3,11 @@
 namespace App\Ajax\App\Meeting;
 
 use App\Ajax\CallableClass;
-use App\Ajax\App\Charge\Fee;
-use App\Ajax\App\Charge\Fine;
-use App\Ajax\App\Credit\Funding;
-use App\Ajax\App\Credit\Loan;
-use App\Ajax\App\Credit\Refund;
+use App\Ajax\App\Meeting\Charge\Fee;
+use App\Ajax\App\Meeting\Charge\Fine;
+use App\Ajax\App\Meeting\Credit\Funding;
+use App\Ajax\App\Meeting\Credit\Loan;
+use App\Ajax\App\Meeting\Credit\Refund;
 use Siak\Tontine\Service\Charge\FeeService;
 use Siak\Tontine\Service\Charge\FineService;
 use Siak\Tontine\Service\Meeting\FundingService;

@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Ajax\App\Charge\Settlement;
+namespace App\Ajax\App\Meeting\Settlement;
 
+use App\Ajax\CallableClass;
+use App\Ajax\App\Meeting\Charge\Fine as Charge;
 use Siak\Tontine\Service\Charge\FineBillService;
 use Siak\Tontine\Service\Charge\SettlementService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Charge as ChargeModel;
-use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 use function trans;
@@ -63,7 +64,7 @@ class Fine extends CallableClass
             'type' => 'fine',
         ]);
         $this->response->html('meeting-fines', $html);
-        $this->jq('#btn-fine-settlements-back')->click($this->cl(\App\Ajax\App\Charge\Fine::class)->rq()->home());
+        $this->jq('#btn-fine-settlements-back')->click($this->cl(Charge::class)->rq()->home());
         $this->jq('#btn-fine-settlements-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);

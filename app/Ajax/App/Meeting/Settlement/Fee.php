@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Ajax\App\Charge\Settlement;
+namespace App\Ajax\App\Meeting\Settlement;
 
+use App\Ajax\CallableClass;
+use App\Ajax\App\Meeting\Charge\Fee as Charge;
 use Siak\Tontine\Service\Charge\FeeBillService;
 use Siak\Tontine\Service\Charge\SettlementService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Charge as ChargeModel;
-use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 use function trans;
@@ -63,7 +64,7 @@ class Fee extends CallableClass
             'type' => 'fee',
         ]);
         $this->response->html('meeting-fees', $html);
-        $this->jq('#btn-fee-settlements-back')->click($this->cl(\App\Ajax\App\Charge\Fee::class)->rq()->home());
+        $this->jq('#btn-fee-settlements-back')->click($this->cl(Charge::class)->rq()->home());
         $this->jq('#btn-fee-settlements-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);

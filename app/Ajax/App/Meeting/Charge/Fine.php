@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Ajax\App\Charge;
+namespace App\Ajax\App\Meeting\Charge;
 
+use App\Ajax\CallableClass;
+use App\Ajax\App\Meeting\Settlement\Fine as Settlement;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Charge\FineService;
 use Siak\Tontine\Model\Session as SessionModel;
-use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 
@@ -82,7 +83,7 @@ class Fine extends CallableClass
 
         $fineId = jq()->parent()->attr('data-fine-id')->toInt();
         $this->jq('.btn-fine-add')->click($this->cl(Member::class)->rq()->home($fineId));
-        $this->jq('.btn-fine-settlements')->click($this->cl(Settlement\Fine::class)->rq()->home($fineId));
+        $this->jq('.btn-fine-settlements')->click($this->cl(Settlement::class)->rq()->home($fineId));
 
         return $this->response;
     }
