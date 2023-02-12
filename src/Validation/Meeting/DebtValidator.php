@@ -27,13 +27,10 @@ class DebtValidator extends AbstractValidator
      */
     public function validate(string $debtId): array
     {
-        $values = explode(':', $debtId);
         $values = [
-            'type' => $values[0] ?? '',
-            'loan_id' => $values[1] ?? 0,
+            'loan_id' => $debtId,
         ];
         $validator = Validator::make($this->values($values), [
-            'type' => 'required|in:principal,interest',
             'loan_id' => 'required|integer|min:1',
         ]);
         if($validator->fails())

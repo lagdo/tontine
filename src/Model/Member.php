@@ -98,6 +98,11 @@ class Member extends Model
         return $this->hasMany(TontineBill::class);
     }
 
+    public function fundings()
+    {
+        return $this->hasMany(Funding::class);
+    }
+
     /**
      * @param  Builder  $query
      *

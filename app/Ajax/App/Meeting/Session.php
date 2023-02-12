@@ -3,12 +3,15 @@
 namespace App\Ajax\App\Meeting;
 
 use App\Ajax\CallableClass;
-use App\Ajax\App\Charge\Fee;
-use App\Ajax\App\Charge\Fine;
-use App\Ajax\App\Credit\Loan;
-use App\Ajax\App\Credit\Refund;
+use App\Ajax\App\Meeting\Charge\Fee;
+use App\Ajax\App\Meeting\Charge\Fine;
+use App\Ajax\App\Meeting\Credit\Funding;
+use App\Ajax\App\Meeting\Credit\Loan;
+use App\Ajax\App\Meeting\Refund\Interest;
+use App\Ajax\App\Meeting\Refund\Principal;
 use Siak\Tontine\Service\Charge\FeeService;
 use Siak\Tontine\Service\Charge\FineService;
+use Siak\Tontine\Service\Meeting\FundingService;
 use Siak\Tontine\Service\Meeting\LoanService;
 use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Service\Meeting\PoolService;
@@ -33,6 +36,11 @@ class Session extends CallableClass
      * @var FineService
      */
     protected FineService $fineService;
+
+    /**
+     * @var FundingService
+     */
+    protected FundingService $fundingService;
 
     /**
      * @var LoanService
@@ -70,9 +78,13 @@ class Session extends CallableClass
         $this->session = $this->poolService->getSession($sessionId);
     }
 
+    /**
+     * @databag refund
+     */
     public function home(int $sessionId)
     {
         $this->bag('meeting')->set('session.id', $sessionId);
+        $this->bag('refund')->set('session.id', $sessionId);
 
         return $this->pools();
     }
@@ -105,6 +117,8 @@ class Session extends CallableClass
     }
 
     /**
+     * @databag refund
+     * @di $fundingService
      * @di $loanService
      * @di $refundService
      */
@@ -127,8 +141,10 @@ class Session extends CallableClass
         $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
         $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 
+        $this->cl(Funding::class)->show($this->session, $this->fundingService);
         $this->cl(Loan::class)->show($this->session, $this->loanService);
-        $this->cl(Refund::class)->show($this->session, $this->refundService);
+        $this->cl(Principal::class)->show($this->session, $this->refundService);
+        $this->cl(Interest::class)->show($this->session, $this->refundService);
 
         return $this->response;
     }

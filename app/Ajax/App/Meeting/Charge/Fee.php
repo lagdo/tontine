@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Ajax\App\Charge;
+namespace App\Ajax\App\Meeting\Charge;
 
+use App\Ajax\CallableClass;
+use App\Ajax\App\Meeting\Settlement\Fee as Settlement;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Charge\FeeService;
 use Siak\Tontine\Model\Session as SessionModel;
-use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 
@@ -82,7 +83,7 @@ class Fee extends CallableClass
         $this->response->html('meeting-fees-page', $html);
 
         $feeId = jq()->parent()->attr('data-fee-id')->toInt();
-        $this->jq('.btn-fee-settlements')->click($this->cl(Settlement\Fee::class)->rq()->home($feeId));
+        $this->jq('.btn-fee-settlements')->click($this->cl(Settlement::class)->rq()->home($feeId));
 
         return $this->response;
     }

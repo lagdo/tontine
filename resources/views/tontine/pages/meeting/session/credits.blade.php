@@ -29,9 +29,13 @@
                 </div>
               </div>
               <div class="row">
+                <div class="col-md-6 col-sm-12" id="meeting-fundings">
+                </div>
                 <div class="col-md-6 col-sm-12" id="meeting-loans">
                 </div>
-                <div class="col-md-6 col-sm-12" id="meeting-refunds">
+                <div class="col-md-6 col-sm-12" id="meeting-principal-refunds">
+                </div>
+                <div class="col-md-6 col-sm-12" id="meeting-interest-refunds">
                 </div>
               </div>
             </div>

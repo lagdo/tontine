@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Ajax\App\Credit;
+namespace App\Ajax\App\Meeting\Refund;
 
 use App\Ajax\CallableClass;
+use App\Ajax\App\Meeting\Credit\Loan;
+use Siak\Tontine\Model\Refund as RefundModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\LoanService;
 use Siak\Tontine\Service\Meeting\RefundService;
@@ -11,10 +13,10 @@ use Siak\Tontine\Validation\Meeting\DebtValidator;
 use function Jaxon\jq;
 
 /**
- * @databag meeting
+ * @databag refund
  * @before getSession
  */
-class Refund extends CallableClass
+class Principal extends CallableClass
 {
     /**
      * @di
@@ -42,7 +44,7 @@ class Refund extends CallableClass
      */
     protected function getSession()
     {
-        $sessionId = $this->bag('meeting')->get('session.id');
+        $sessionId = $this->bag('refund')->get('session.id');
         $this->session = $this->refundService->getSession($sessionId);
     }
 
@@ -60,10 +62,11 @@ class Refund extends CallableClass
     public function home()
     {
         $html = $this->view()->render('tontine.pages.meeting.refund.home')
-            ->with('session', $this->session);
-        $this->response->html('meeting-refunds', $html);
-        $this->jq('#btn-refunds-refresh')->click($this->rq()->home());
-        $this->jq('#btn-refunds-filter')->click($this->rq()->toggleFilter());
+            ->with('session', $this->session)
+            ->with('type', 'principal');
+        $this->response->html('meeting-principal-refunds', $html);
+        $this->jq('#btn-principal-refunds-refresh')->click($this->rq()->home());
+        $this->jq('#btn-principal-refunds-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
     }
@@ -75,10 +78,10 @@ class Refund extends CallableClass
      */
     public function page(int $pageNumber = 0)
     {
-        $filtered = $this->bag('meeting')->get('debt.filter', null);
-        $debtCount = $this->refundService->getDebtCount($this->session, $filtered);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $debtCount, 'meeting', 'debt.page');
-        $debts = $this->refundService->getDebts($this->session, $filtered, $pageNumber);
+        $filtered = $this->bag('refund')->get('principal.filter', null);
+        $debtCount = $this->refundService->getPrincipalDebtCount($this->session, $filtered);
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $debtCount, 'refund', 'principal.page');
+        $debts = $this->refundService->getPrincipalDebts($this->session, $filtered, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $debtCount);
 
         $html = $this->view()->render('tontine.pages.meeting.refund.page', [
@@ -86,22 +89,22 @@ class Refund extends CallableClass
             'debts' => $debts,
             'pagination' => $pagination,
         ]);
-        $this->response->html('meeting-debts-page', $html);
+        $this->response->html('meeting-principal-debts-page', $html);
 
         $debtId = jq()->parent()->attr('data-debt-id');
-        $this->jq('.btn-add-refund')->click($this->rq()->createRefund($debtId));
+        $this->jq('.btn-add-principal-refund')->click($this->rq()->createRefund($debtId));
         $refundId = jq()->parent()->attr('data-refund-id')->toInt();
-        $this->jq('.btn-del-refund')->click($this->rq()->deleteRefund($refundId));
+        $this->jq('.btn-del-principal-refund')->click($this->rq()->deleteRefund($refundId));
 
         return $this->response;
     }
 
     public function toggleFilter()
     {
-        $filtered = $this->bag('meeting')->get('debt.filter', null);
+        $filtered = $this->bag('refund')->get('principal.filter', null);
         // Switch between null, true and false
         $filtered = $filtered === null ? true : ($filtered === true ? false : null);
-        $this->bag('meeting')->set('debt.filter', $filtered);
+        $this->bag('refund')->set('principal.filter', $filtered);
 
         return $this->page(1);
     }
@@ -110,11 +113,11 @@ class Refund extends CallableClass
      * @di $validator
      * @di $loanService
      */
-    public function createRefund(string $debtId)
+    public function createRefund(string $loanId)
     {
-        $values = $this->validator->validate($debtId);
+        $this->validator->validate($loanId);
 
-        $this->refundService->createRefund($this->session, $values['loan_id'], $values['type']);
+        $this->refundService->createRefund($this->session, $loanId, RefundModel::TYPE_PRINCIPAL);
 
         // Refresh the loans page
         $this->cl(Loan::class)->show($this->session, $this->loanService);
