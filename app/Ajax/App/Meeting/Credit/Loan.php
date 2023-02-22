@@ -15,7 +15,7 @@ use function Jaxon\pm;
 use function trans;
 
 /**
- * @databag meeting
+ * @databag refund
  * @before getSession
  */
 class Loan extends CallableClass
@@ -46,7 +46,7 @@ class Loan extends CallableClass
      */
     protected function getSession()
     {
-        $sessionId = $this->bag('meeting')->get('session.id');
+        $sessionId = $this->bag('refund')->get('session.id');
         $this->session = $this->loanService->getSession($sessionId);
     }
 
