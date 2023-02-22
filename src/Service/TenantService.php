@@ -100,6 +100,14 @@ class TenantService
     }
 
     /**
+     * @return mixed
+     */
+    public function sessions()
+    {
+        return Session::whereIn('round_id', $this->tontine->rounds->pluck('id'));
+    }
+
+    /**
      * Get a single session.
      *
      * @param int $sessionId    The session id

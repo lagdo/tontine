@@ -71,6 +71,11 @@ class Fine extends CallableClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $fineCount);
         // Bill and settlement counts and amounts
         [$bills, $settlements] = $this->fineService->getBills($this->session);
+        foreach($fines as $fine)
+        {
+            $fine->currentBillCount = ($bills['total']['current'][$fine->id] ?? 0);
+            $fine->previousBillCount = ($bills['total']['previous'][$fine->id] ?? 0);
+        }
 
         $html = $this->view()->render('tontine.pages.meeting.fine.page')
             ->with('session', $this->session)

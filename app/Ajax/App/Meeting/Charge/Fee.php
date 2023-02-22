@@ -69,9 +69,17 @@ class Fee extends CallableClass
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $feeCount, 'meeting', 'fee.page');
         $fees = $this->feeService->getFees($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $feeCount);
-
         // Bill and settlement counts and amounts
         [$bills, $settlements] = $this->feeService->getBills($this->session);
+        foreach($fees as $fee)
+        {
+            $fee->currentBillCount = ($bills['total']['current'][$fee->id] ?? 0);
+            if(!$fee->period_session)
+            {
+                $fee->currentBillCount -= ($settlements['total']['previous'][$fee->id] ?? 0);
+            }
+            $fee->previousBillCount = ($bills['total']['previous'][$fee->id] ?? 0);
+        }
 
         $html = $this->view()->render('tontine.pages.meeting.fee.page')
             ->with('session', $this->session)
