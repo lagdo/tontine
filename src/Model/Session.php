@@ -57,6 +57,15 @@ class Session extends Model
         'end_at',
     ];
 
+    /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = [
+        'disabledPools',
+    ];
+ 
     public function getNotFirstAttribute()
     {
         return $this->round->sessions()->where('start_at', '<', $this->start_at)->exists();
@@ -169,11 +178,11 @@ class Session extends Model
 
     public function enabled(Pool $pool)
     {
-        return $this->disabledPools()->where('pool_id', $pool->id)->doesntExist();
+        return $this->disabledPools->find($pool->id) === null;
     }
 
     public function disabled(Pool $pool)
     {
-        return $this->disabledPools()->where('pool_id', $pool->id)->exists();
+        return $this->disabledPools->find($pool->id) !== null;
     }
 }
