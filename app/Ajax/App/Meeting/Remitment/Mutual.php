@@ -81,7 +81,8 @@ class Mutual extends CallableClass
     {
         $tontine = $this->poolService->getTontine();
         $html = $this->view()->render('tontine.pages.meeting.remitment.home')
-            ->with('tontine', $tontine)->with('session', $this->session)
+            ->with('tontine', $tontine)
+            ->with('session', $this->session)
             ->with('pools', $this->poolService->getPoolsWithPayables($this->session));
         if($this->session->closed)
         {

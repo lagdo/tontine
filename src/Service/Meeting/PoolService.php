@@ -2,10 +2,12 @@
 
 namespace Siak\Tontine\Service\Meeting;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Siak\Tontine\Model\Pool;
+use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
+use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
@@ -27,15 +29,23 @@ class PoolService
     protected ReportService $reportService;
 
     /**
+     * @var SessionService
+     */
+    public SessionService $sessionService;
+
+    /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param ReportService $reportService
+     * @param SessionService $sessionService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService, ReportService $reportService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService,
+        ReportService $reportService, SessionService $sessionService)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
         $this->reportService = $reportService;
+        $this->sessionService = $sessionService;
     }
 
     /**
@@ -75,15 +85,15 @@ class PoolService
             $pools->skip($this->tenantService->getLimit() * ($page - 1));
         }
 
-        return $pools->get()->each(function($pool) use($session) {
-            // Receivables
-            $query = $session->receivables()
-                ->whereIn('subscription_id', $pool->subscriptions()->pluck('id'));
-            // Expected
-            $pool->recv_count = $query->count();
-            // Paid
-            $pool->recv_paid = $query->whereHas('deposit')->count();
-        });
+        // Receivables
+        return $pools->withCount([
+            'subscriptions as recv_count',
+            'subscriptions as recv_paid' => function(Builder $query) use($session) {
+                $query->whereHas('receivables', function(Builder $query) use($session) {
+                    $query->where('session_id', $session->id)->whereHas('deposit');
+                });
+            },
+        ])->get();
     }
 
     /**
@@ -103,14 +113,15 @@ class PoolService
             $pools->skip($this->tenantService->getLimit() * ($page - 1));
         }
 
-        return $pools->get()->each(function($pool) use($session) {
+        return $pools->withCount([
+            'subscriptions as pay_paid' => function(Builder $query) use($session) {
+                $query->whereHas('payable', function(Builder $query) use($session) {
+                    $query->where('session_id', $session->id)->whereHas('remitment');
+                });
+            },
+        ])->get()->each(function($pool) use($session) {
             // Expected
             $pool->pay_count = $this->reportService->getSessionRemitmentCount($pool, $session);
-            // Paid
-            $pool->pay_paid = $session->payables()
-                ->whereIn('subscription_id', $pool->subscriptions()->pluck('id'))
-                ->whereHas('remitment')
-                ->count();
         });
     }
 
@@ -146,17 +157,13 @@ class PoolService
     public function getPayablesSummary(Session $session): array
     {
         $pools = $this->tenantService->round()->pools->keyBy('id');
-        $sessions = $this->tenantService->round()->sessions;
 
         $payableTotal = 0;
         $payableAmounts = $session->payableAmounts()->get()
-            ->each(function($payable) use($pools, $sessions, &$payableTotal) {
-                $pool = $pools[$payable->id];
-                $count = $sessions->filter(function($session) use($pool) {
-                    return $session->enabled($pool);
-                })->count();
-                $payableTotal += $payable->amount * $count;
-                $payable->amount = $this->localeService->formatMoney($payable->amount * $count);
+            ->each(function($payable) use($pools, &$payableTotal) {
+                $payableAmount = $payable->amount * $this->sessionService->enabledSessionCount($pools[$payable->id]);
+                $payableTotal += $payableAmount;
+                $payable->amount = $this->localeService->formatMoney($payableAmount);
             })->pluck('amount', 'id');
 
         return [

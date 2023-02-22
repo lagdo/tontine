@@ -56,10 +56,4 @@ class Pool extends Model
     {
         return $this->belongsToMany(Session::class, 'pool_session_disabled');
     }
-
-    public function sessions()
-    {
-        return Session::whereNotIn('id',
-            DB::table('pool_session_disabled')->where('pool_id', $this->id)->pluck('session_id'));
-    }
 }

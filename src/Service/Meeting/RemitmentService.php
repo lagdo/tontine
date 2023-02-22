@@ -8,6 +8,7 @@ use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
@@ -29,15 +30,23 @@ class RemitmentService
     protected ReportService $reportService;
 
     /**
+     * @var SessionService
+     */
+    public SessionService $sessionService;
+
+    /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param ReportService $reportService
+     * @param SessionService $sessionService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService, ReportService $reportService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService,
+        ReportService $reportService, SessionService $sessionService)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
         $this->reportService = $reportService;
+        $this->sessionService = $sessionService;
     }
 
     /**
@@ -85,10 +94,7 @@ class RemitmentService
     public function getPayables(Pool $pool, Session $session, int $page = 0): Collection
     {
         // The remitment amount
-        $sessionCount = $this->tenantService->round()->sessions
-            ->filter(function($session) use($pool) {
-                return $session->enabled($pool);
-            })->count();
+        $sessionCount = $this->sessionService->enabledSessionCount($pool);
         $remitmentAmount = $this->localeService->formatMoney($pool->amount * $sessionCount);
 
         $query = $this->getQuery($pool, $session)->with(['subscription.member', 'remitment']);

@@ -5,6 +5,7 @@ namespace App\Ajax\App\Planning;
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\ReportService;
+use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\TenantService;
 
@@ -34,6 +35,11 @@ class Report extends CallableClass
      * @var ReportService
      */
     public ReportService $reportService;
+
+    /**
+     * @var SessionService
+     */
+    public SessionService $sessionService;
 
     /**
      * @var PoolModel|null
@@ -93,11 +99,12 @@ class Report extends CallableClass
 
     /**
      * @di $tenantService
+     * @di $sessionService
      */
     public function toggleSession(int $sessionId)
     {
         $session = $this->tenantService->getSession($sessionId);
-        $this->subscriptionService->toggleSession($this->pool, $session);
+        $this->sessionService->toggleSession($this->pool, $session);
 
         return $this->amounts();
     }

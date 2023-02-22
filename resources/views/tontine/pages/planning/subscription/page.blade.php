@@ -15,7 +15,7 @@
                           <div class="input-group-prepend">
                             <button type="button" class="btn btn-primary btn-sm btn-subscription-del"><i class="fas fa-minus"></i></button>
                           </div>
-                          <span class="input-group-text">{{ $member->subscriptionCount }}</span>
+                          <span class="input-group-text">{{ $member->subscriptions_count }}</span>
                           <div class="input-group-append">
                             <button type="button" class="btn btn-primary btn-sm btn-subscription-add"><i class="fas fa-plus"></i></button>
                           </div>
