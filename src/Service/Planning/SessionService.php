@@ -5,6 +5,8 @@ namespace Siak\Tontine\Service\Planning;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Model\Payable;
+use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
 
@@ -149,6 +151,33 @@ class SessionService
     {
         return $this->tenantService->tontine()->members()
             ->orderBy('name', 'asc')->pluck('name', 'id')->prepend('', 0);
+    }
+
+    /**
+     * Enable or disable a session for a pool.
+     *
+     * @param Pool $pool
+     * @param Session $session
+     *
+     * @return void
+     */
+    public function toggleSession(Pool $pool, Session $session)
+    {
+        if($session->disabled($pool))
+        {
+            // Enable the session for the pool.
+            $pool->disabledSessions()->detach($session->id);
+            return;
+        }
+
+        DB::transaction(function() use($pool, $session) {
+            // Disable the session for the pool.
+            $pool->disabledSessions()->attach($session->id);
+            // Delete the beneficiaries for the pool on this session.
+            Payable::where('session_id', $session->id)
+                ->whereIn('subscription_id', $pool->subscriptions->pluck('id'))
+                ->update(['session_id' => null]);
+        });
     }
 
     /**
