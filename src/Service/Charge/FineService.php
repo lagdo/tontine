@@ -128,10 +128,11 @@ class FineService
             $members->take($this->tenantService->getLimit());
             $members->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $members
-            ->withCount(['fine_bills' => function(Builder $query) use($charge, $session) {
+        return $members->withCount([
+            'fine_bills' => function(Builder $query) use($charge, $session) {
                 $query->where('charge_id', $charge->id)->where('session_id', $session->id);
-            }])->get();
+            },
+        ])->get();
     }
 
     /**
