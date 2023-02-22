@@ -181,6 +181,32 @@ class SessionService
     }
 
     /**
+     * Get the sessions enabled for a pool.
+     *
+     * @param Pool $pool
+     *
+     * @return Collection
+     */
+    public function enabledSessions(Pool $pool): Collection
+    {
+        return $this->tenantService->round()->sessions->filter(function($session) use($pool) {
+            return $session->enabled($pool);
+        });
+    }
+
+    /**
+     * Get the number of sessions enabled for a pool.
+     *
+     * @param Pool $pool
+     *
+     * @return int
+     */
+    public function enabledSessionCount(Pool $pool): int
+    {
+        return $this->tenantService->round()->sessions->count() - $pool->disabledSessions->count();
+    }
+
+    /**
      * @return array
      */
     public function getYearSessions(): array

@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
+use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
@@ -28,15 +29,23 @@ class PoolService
     protected ReportService $reportService;
 
     /**
+     * @var SessionService
+     */
+    public SessionService $sessionService;
+
+    /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param ReportService $reportService
+     * @param SessionService $sessionService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService, ReportService $reportService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService,
+        ReportService $reportService, SessionService $sessionService)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
         $this->reportService = $reportService;
+        $this->sessionService = $sessionService;
     }
 
     /**
@@ -148,17 +157,13 @@ class PoolService
     public function getPayablesSummary(Session $session): array
     {
         $pools = $this->tenantService->round()->pools->keyBy('id');
-        $sessions = $this->tenantService->round()->sessions;
 
         $payableTotal = 0;
         $payableAmounts = $session->payableAmounts()->get()
-            ->each(function($payable) use($pools, $sessions, &$payableTotal) {
-                $pool = $pools[$payable->id];
-                $count = $sessions->filter(function($session) use($pool) {
-                    return $session->enabled($pool);
-                })->count();
-                $payableTotal += $payable->amount * $count;
-                $payable->amount = $this->localeService->formatMoney($payable->amount * $count);
+            ->each(function($payable) use($pools, &$payableTotal) {
+                $payableAmount = $payable->amount * $this->sessionService->enabledSessionCount($pools[$payable->id]);
+                $payableTotal += $payableAmount;
+                $payable->amount = $this->localeService->formatMoney($payableAmount);
             })->pluck('amount', 'id');
 
         return [

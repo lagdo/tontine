@@ -5,6 +5,7 @@ namespace Siak\Tontine\Service\Meeting;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\ReportTrait;
@@ -27,13 +28,20 @@ class ReportService
     protected TenantService $tenantService;
 
     /**
+     * @var SessionService
+     */
+    public SessionService $sessionService;
+
+    /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
+     * @param SessionService $sessionService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService, SessionService $sessionService)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
+        $this->sessionService = $sessionService;
     }
 
     /**
@@ -46,9 +54,7 @@ class ReportService
     private function getCollectedFigures(Pool $pool, Collection $sessions, Collection $subscriptions): array
     {
         $cashier = 0;
-        $remitmentAmount = $pool->amount * $sessions->filter(function($session) use($pool) {
-            return $session->enabled($pool);
-        })->count();
+        $remitmentAmount = $pool->amount * $this->sessionService->enabledSessionCount($pool);
 
         $collectedFigures = [];
         foreach($sessions as $session)
@@ -121,9 +127,7 @@ class ReportService
     public function getRemitmentFigures(Pool $pool, int $sessionId = 0)
     {
         $sessions = $this->_getSessions($this->tenantService->round(), $pool, ['payables.subscription.member']);
-        $sessionCount = $sessions->filter(function($session) use($pool) {
-            return $session->enabled($pool);
-        })->count();
+        $sessionCount = $this->sessionService->enabledSessionCount($pool);
         $subscriptionCount = $pool->subscriptions()->count();
         $remitmentAmount = $pool->amount * $sessionCount;
         $formattedAmount = $this->localeService->formatMoney($remitmentAmount);
@@ -155,9 +159,7 @@ class ReportService
      */
     public function getSessionRemitmentCount(Pool $pool, Session $session): int
     {
-        $sessions = $this->tenantService->round()->sessions->filter(function($_session) use($pool) {
-            return $_session->enabled($pool);
-        });
+        $sessions = $this->sessionService->enabledSessions($pool);
         $position = $sessions->filter(function($_session) use($session) {
             return $_session->start_at->lt($session->start_at);
         })->count();
