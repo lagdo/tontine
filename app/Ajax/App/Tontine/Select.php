@@ -13,8 +13,6 @@ use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
-use function intval;
-use function Jaxon\jq;
 use function Jaxon\pm;
 use function session;
 use function trans;
@@ -100,9 +98,6 @@ class Select extends CallableClass
 
         // Reset the round sidebar menu
         $this->response->html('sidebar-menu-round', $this->view()->render('tontine.parts.sidebar.round'));
-
-        // Show the selected tontine member page
-        $this->cl(Member::class)->show($this->memberService);
 
         $this->dialog->hide();
 
