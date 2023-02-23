@@ -1,8 +1,12 @@
-preset: laravel
-version: 8
-disabled:
-  - no_unused_imports
+preset: psr1
+
+risky: false
+
 finder:
+  exclude:
+    - "tests"
+  name:
+    - "*.php"
   not-name:
     - index.php
     - server.php
