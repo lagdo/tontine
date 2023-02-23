@@ -1,11 +1,15 @@
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/lagdo/tontine/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/lagdo/tontine/?branch=main)
+[![StyleCI](https://github.styleci.io/repos/500135711/shield?branch=main)](https://github.styleci.io/repos/500135711?branch=main)
+
+[![Latest Stable Version](https://poser.pugx.org/lagdo/tontine/v/stable)](https://packagist.org/packages/lagdo/tontine)
+[![License](https://poser.pugx.org/lagdo/tontine/license)](https://packagist.org/packages/lagdo/tontine)
+
 Siak Tontine
 ============
 
 Web application for online tontine management.
 
 Made with [Laravel](https://laravel.com) and [Jaxon](https://www.jaxon-php.org).
-
-**This package development is still in progress. It is not yet ready for production.**
 
 Installation
 ------------
