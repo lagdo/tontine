@@ -1,4 +1,4 @@
-@extends('auth.layout')
+@extends('tontine.auth.layout')
 
 @section('page-title', 'Reset Password')
 

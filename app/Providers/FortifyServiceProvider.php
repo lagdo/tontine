@@ -35,19 +35,19 @@ class FortifyServiceProvider extends ServiceProvider
     {
         // Login view
         Fortify::loginView(function() {
-            return view('auth.login');
+            return view('tontine.auth.login');
         });
         Fortify::registerView(function() {
-            return view('auth.register');
+            return view('tontine.auth.register');
         });
         Fortify::requestPasswordResetLinkView(function() {
-            return view('auth.forgot-password');
+            return view('tontine.auth.forgot-password');
         });
         Fortify::resetPasswordView(function($request) {
-            return view('auth.reset-password', ['request' => $request]);
+            return view('tontine.auth.reset-password', ['request' => $request]);
         });
         /*Fortify::verifyEmailView(function () {
-            return view('auth.verify-email');
+            return view('tontine.auth.verify-email');
         });*/
 
         Fortify::createUsersUsing(CreateNewUser::class);
