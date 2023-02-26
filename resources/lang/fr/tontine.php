@@ -13,6 +13,8 @@ return [
         'reports' => "Rapports",
         'subscriptions' => "Souscriptions",
         'beneficiaries' => "Bénéficiaires",
+        'profile' => "Profil",
+        'logout' => "Se déconnecter",
     ],
     'titles' => [
         'tontines' => "Tontines",

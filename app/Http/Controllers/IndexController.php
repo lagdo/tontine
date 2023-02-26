@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\View\View;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Ajax\App\Tontine\Tontine;
+use Illuminate\View\View;
 use Jaxon\Laravel\Jaxon;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Siak\Tontine\Service\LocaleService;
 
 use function auth;
 use function view;
@@ -33,10 +34,26 @@ class IndexController extends Controller
         ]);
 
         return view('tontine.base.home', [
-            'pageTitle' => "Siak Tontine",
             'jaxonCss' => $jaxon->css(),
             'jaxonJs' => $jaxon->js(),
             'jaxonScript' => $jaxon->script(),
         ]);
+    }
+
+    /**
+     * Show the user profile page.
+     *
+     * @return View
+     */
+    public function profile(LocaleService $localeService): View
+    {
+        view()->share([
+            'user' => auth()->user(),
+            'locales' => LaravelLocalization::getSupportedLocales(),
+            'locale' => LaravelLocalization::getCurrentLocale(),
+            'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
+         ]);
+
+        return view('tontine.base.profile', ['countries' => $localeService->getCountries()]);
     }
 }

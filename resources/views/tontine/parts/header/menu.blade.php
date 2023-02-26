@@ -19,23 +19,18 @@
           </ul>
         </form>
         <ul class="navbar-nav navbar-right">
-          {{-- <li>
-            <span class="nav-link nav-link-lg">
-              <div class="d-sm-none d-lg-inline-block">{{ $tontine->name }} - {{ $tontine->city }} - {{ $country->name }}</div>
-            </span>
-          </li> --}}
           <li class="dropdown">
             <a href="javascript:void(0)" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
               <img alt="image" src="/tpl/assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
               <div class="d-sm-none d-lg-inline-block">Hi, {{ $user->name }}</div>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-              {{-- <a href="javascript:void(0)" class="dropdown-item has-icon" id="user-menu-profile">
-                <i class="far fa-user"></i> Tontines
+              <a href="{{ route('user.profile') }}" class="dropdown-item has-icon">
+                <i class="far fa-user"></i> {{ __('tontine.menus.profile') }}
               </a>
-              <div class="dropdown-divider"></div> --}}
+              <div class="dropdown-divider"></div>
               <a href="{{ route('logout.get') }}" class="dropdown-item has-icon text-danger">
-                <i class="fa fa-sign-out-alt"></i> Logout
+                <i class="fa fa-sign-out-alt"></i> {{ __('tontine.menus.logout') }}
               </a>
             </div>
           </li>
