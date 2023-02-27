@@ -72,33 +72,33 @@
                     <div class="form-group">
                       {!! Form::label('current_password', __('user.password.labels.current')) !!}
                       {!! Form::password('current_password', [
-                        'class' => $errors->updatePassword->has('current_password') ? 'form-control is-invalid' : 'form-control',
+                        'class' => $errors->password->has('current_password') ? 'form-control is-invalid' : 'form-control',
                       ]) !!}
-@if($errors->updatePassword->has('current_password'))
+@if($errors->password->has('current_password'))
                       <div class="invalid-feedback">
-                        {{ $errors->updatePassword->first('current_password') }}
+                        {{ $errors->password->first('current_password') }}
                       </div>
 @endif
                     </div>
                     <div class="form-group">
                       {!! Form::label('password', __('user.password.labels.new')) !!}
                       {!! Form::password('password', [
-                        'class' => $errors->updatePassword->has('password') ? 'form-control is-invalid' : 'form-control',
+                        'class' => $errors->password->has('password') ? 'form-control is-invalid' : 'form-control',
                       ]) !!}
-@if($errors->updatePassword->has('password'))
+@if($errors->password->has('password'))
                       <div class="invalid-feedback">
-                        {{ $errors->updatePassword->first('password') }}
+                        {{ $errors->password->first('password') }}
                       </div>
 @endif
                     </div>
                     <div class="form-group">
                       {!! Form::label('password_confirmation', __('user.password.labels.confirm')) !!}
                       {!! Form::password('password_confirmation', [
-                        'class' => $errors->updatePassword->has('password_confirmation') ? 'form-control is-invalid' : 'form-control',
+                        'class' => $errors->password->has('password_confirmation') ? 'form-control is-invalid' : 'form-control',
                       ]) !!}
-@if($errors->updatePassword->has('password_confirmation'))
+@if($errors->password->has('password_confirmation'))
                       <div class="invalid-feedback">
-                        {{ $errors->updatePassword->first('password_confirmation') }}
+                        {{ $errors->password->first('password_confirmation') }}
                       </div>
 @endif
                     </div>

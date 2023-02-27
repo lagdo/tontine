@@ -6,7 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 
-class UpdateUserProfileInformation implements UpdatesUserProfileInformation
+class UpdateUserProfile implements UpdatesUserProfileInformation
 {
     /**
      * Validate and update the given user's profile information.
