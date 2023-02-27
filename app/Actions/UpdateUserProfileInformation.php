@@ -21,7 +21,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'name' => ['required', 'string', 'max:255'],
             'city' => ['string', 'max:100'],
             'country_code' => ['string', 'size:2'],
-        ])->validateWithBag('updateProfileInformation');
+        ])->validateWithBag('profile');
 
         $user->forceFill(Arr::only($input, ['name', 'city', 'country_code']))->save();
     }

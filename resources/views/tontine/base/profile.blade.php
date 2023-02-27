@@ -10,6 +10,16 @@
 
 @section('content')
           <div class="row">
+@if (session('status'))
+            <div class="col-12">
+              <div class="alert alert-success alert-dismissible show fade">
+                <div class="alert-body">
+                  <button class="close" data-dismiss="alert"><span>×</span></button>
+                  {{ session('status') }}
+                </div>
+              </div>
+            </div>
+@endif
             <div class="col-md-6 col-sm-12">
               <div class="card">
                 <form method="POST" action="{{ route('user-profile-information.update') }}" class="needs-validation" novalidate="">
@@ -20,17 +30,25 @@
                   <div class="card-body">
                     <div class="form-group">
                       {!! Form::label('name', __('common.labels.name')) !!}
-                      {!! Form::text('name', old('name', $user->name), ['class' => 'form-control']) !!}
+                      {!! Form::text('name', old('name', $user->name), [
+                        'class' => $errors->profile->has('name') ? 'form-control is-invalid' : 'form-control',
+                      ]) !!}
+@if($errors->profile->has('name'))
                       <div class="invalid-feedback">
-                        Please fill in the name
+                        {{ $errors->profile->first('name') }}
                       </div>
+@endif
                     </div>
                     <div class="form-group">
                       {!! Form::label('city', __('common.labels.city')) !!}
-                      {!! Form::text('city', old('city', $user->city), ['class' => 'form-control']) !!}
+                      {!! Form::text('city', old('city', $user->city), [
+                        'class' => $errors->profile->has('city') ? 'form-control is-invalid' : 'form-control',
+                      ]) !!}
+@if($errors->profile->has('city'))
                       <div class="invalid-feedback">
-                        Please fill in the city
+                        {{ $errors->profile->first('city') }}
                       </div>
+@endif
                     </div>
                     <div class="form-group">
                       {!! Form::label('country_code', __('common.labels.country')) !!}
@@ -53,24 +71,36 @@
                   <div class="card-body">
                     <div class="form-group">
                       {!! Form::label('current_password', __('user.password.labels.current')) !!}
-                      <input type="password" class="form-control" name="current_password" value="" required="">
+                      {!! Form::password('current_password', [
+                        'class' => $errors->updatePassword->has('current_password') ? 'form-control is-invalid' : 'form-control',
+                      ]) !!}
+@if($errors->updatePassword->has('current_password'))
                       <div class="invalid-feedback">
-                        Please fill in the current password
+                        {{ $errors->updatePassword->first('current_password') }}
                       </div>
+@endif
                     </div>
                     <div class="form-group">
                       {!! Form::label('password', __('user.password.labels.new')) !!}
-                      <input type="password" class="form-control" name="password" value="" required="">
+                      {!! Form::password('password', [
+                        'class' => $errors->updatePassword->has('password') ? 'form-control is-invalid' : 'form-control',
+                      ]) !!}
+@if($errors->updatePassword->has('password'))
                       <div class="invalid-feedback">
-                        Please fill in the new password
+                        {{ $errors->updatePassword->first('password') }}
                       </div>
+@endif
                     </div>
                     <div class="form-group">
                       {!! Form::label('password_confirmation', __('user.password.labels.confirm')) !!}
-                      <input type="password" class="form-control" name="password_confirmation" value="" required="">
+                      {!! Form::password('password_confirmation', [
+                        'class' => $errors->updatePassword->has('password_confirmation') ? 'form-control is-invalid' : 'form-control',
+                      ]) !!}
+@if($errors->updatePassword->has('password_confirmation'))
                       <div class="invalid-feedback">
-                        Please fill in the password confirmation
+                        {{ $errors->updatePassword->first('password_confirmation') }}
                       </div>
+@endif
                     </div>
                   </div>
                   <div class="card-footer text-right">
