@@ -12,13 +12,23 @@
             <div class="card card-primary">
               <div class="card-header"><h4>Login</h4></div>
 
+@if (session('status'))
+              <div class="card-body">
+                <div class="alert alert-success alert-dismissible show fade">
+                  <div class="alert-body">
+                    <button class="close" data-dismiss="alert"><span>×</span></button>
+                    {{ session('status') }}
+                  </div>
+                </div>
+              </div>
+@endif
               <div class="card-body">
                 <form method="POST" action="{{ route('login') }}" class="needs-validation" novalidate="">
                   @csrf
 
                   <div class="form-group">
                     <label for="email">Email</label>
-                    <input id="email" type="email" class="form-control" name="email" value="admin@company.com" tabindex="1" required autofocus>
+                    <input id="email" type="email" class="form-control @error('name')is-invalid @enderror" name="email" value="admin@company.com" tabindex="1" required autofocus>
                     <div class="invalid-feedback">
                       Please fill in your email
                     </div>
@@ -33,7 +43,7 @@
                         </a>
                       </div>
                     </div>
-                    <input id="password" type="password" class="form-control" name="password" value="password" tabindex="2" required>
+                    <input id="password" type="password" class="form-control @error('name')is-invalid @enderror" name="password" value="password" tabindex="2" required>
                     <div class="invalid-feedback">
                       please fill in your password
                     </div>

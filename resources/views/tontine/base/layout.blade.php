@@ -75,7 +75,7 @@
       </nav>
       <div class="main-sidebar">
 
-@include('tontine.parts.sidebar.menu')
+@yield('sidebar')
 
       </div>
 
@@ -99,8 +99,6 @@
 </body>
 
 @include('tontine.parts.footer.html')
-
-@include('tontine.parts.footer.ajax', compact('jaxonJs', 'jaxonScript', 'jaxonCss'))
 
 @yield('script')
 </html>

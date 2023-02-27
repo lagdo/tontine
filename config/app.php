@@ -167,6 +167,8 @@ return [
          */
         App\Providers\SiakServiceProvider::class,
         App\Providers\SiakPdfServiceProvider::class,
+        // Laravel Fortify Service Provider
+        App\Providers\FortifyServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -176,8 +178,6 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        // Laravel Fortify Service Provider
-        App\Providers\FortifyServiceProvider::class,
     ],
 
     /*
