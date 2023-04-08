@@ -5,18 +5,11 @@ namespace App\Ajax\App\Tontine;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Tontine\PoolService;
 use Siak\Tontine\Service\TenantService;
-use App\Ajax\App\Meeting\Meeting;
-use App\Ajax\App\Meeting\Report as MeetingReport;
-use App\Ajax\App\Planning\Planning;
-use App\Ajax\App\Planning\Pool;
-use App\Ajax\App\Planning\Report as PlanningReport;
-use App\Ajax\App\Planning\Session;
 use App\Ajax\CallableClass;
 
 use function intval;
 use function Jaxon\jq;
 use function Jaxon\pm;
-use function session;
 use function trans;
 
 /**
@@ -70,6 +63,8 @@ class Round extends CallableClass
         $html = $this->view()->render('tontine.pages.round.home')->with('tontine', $this->tontine);
         $this->response->html('content-home', $html);
 
+        $this->jq('#btn-round-back')->click($this->cl(Tontine::class)->rq()->home());
+        $this->jq('#btn-round-refresh')->click($this->rq()->home($tontineId));
         $this->jq('#btn-round-create')->click($this->rq()->add());
 
         return $this->page();
