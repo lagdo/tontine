@@ -57,6 +57,7 @@ class Select extends CallableClass
     {
         $title = trans('tontine.titles.choose');
         $content = $this->view()->render('tontine.pages.select.tontine')
+            ->with('default', session('tontine.id', 0))
             ->with('tontines', $this->tontineService->getTontines()->pluck('name', 'id'));
         $buttons = [[
             'title' => trans('common.actions.close'),
