@@ -63,6 +63,7 @@ class Round extends CallableClass
         $html = $this->view()->render('tontine.pages.round.home')->with('tontine', $this->tontine);
         $this->response->html('content-home', $html);
 
+        $this->jq('#btn-show-select')->click($this->cl(Select::class)->rq()->show());
         $this->jq('#btn-round-back')->click($this->cl(Tontine::class)->rq()->home());
         $this->jq('#btn-round-refresh')->click($this->rq()->home($tontineId));
         $this->jq('#btn-round-create')->click($this->rq()->add());
@@ -84,8 +85,6 @@ class Round extends CallableClass
 
         $roundId = jq()->parent()->attr('data-round-id')->toInt();
         $this->jq('.btn-round-edit')->click($this->rq()->edit($roundId));
-        // $this->jq('.btn-round-open')->click($this->rq()->open($roundId)
-        //     ->confirm(trans('tontine.round.questions.open')));
 
         return $this->response;
     }
