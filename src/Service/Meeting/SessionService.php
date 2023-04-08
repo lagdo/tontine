@@ -87,6 +87,11 @@ class SessionService
      */
     public function openSession(Session $session)
     {
+        // Don't open a session if there are pools with no subscription.
+        if($session->round->pools()->whereDoesntHave(['subscriptions'])->count() > 0)
+        {
+            return; // Todo: throw an exception
+        }
         // Make sure the round is also opened.
         $this->openRound($session->round);
 
