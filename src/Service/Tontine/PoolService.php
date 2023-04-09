@@ -99,23 +99,16 @@ class PoolService
      *
      * @param Pool $pool
      *
-     * @return void
+     * @return bool
      */
-    public function deletePool(Pool $pool)
+    public function deletePool(Pool $pool): bool
     {
-        // Todo: soft delete this model.
-        DB::transaction(function() use($pool) {
-            // Delete the payables
-            Payable::join('subscriptions', 'subscriptions.id', '=', 'payables.subscription_id')
-                ->where('subscriptions.pool_id', $pool->id)
-                ->delete();
-            // Delete the receivables
-            Receivable::join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
-                ->where('subscriptions.pool_id', $pool->id)
-                ->delete();
-            // Delete the pool
-            $pool->delete();
-        });
+        if($pool->subscriptions()->count() > 0)
+        {
+            return false;
+        }
+        // Delete the pool
+        return (bool)$pool->delete();
     }
 
     /**

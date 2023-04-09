@@ -124,6 +124,9 @@ return [
         'actions' => [
             'subscriptions' => "Souscriptions",
         ],
+        'questions' => [
+            'delete' => "Supprimer ce fond?<br/>Il ne faut pas qu'il ait de souscription.",
+        ],
         'messages' => [
             'created' => "Le fond a été ajouté.",
             'updated' => "Le fond a été modifié.",
@@ -133,6 +136,9 @@ return [
             'number' => [
                 'invalid' => "Vous devez entrer un nombre valide.",
                 'max' => "Vous pouvez ajouter au plus :max entrées.",
+            ],
+            'delete' => [
+                'subscriptions' => "Ce fond ne peut être supprimé car il a encore des souscriptions.",
             ],
         ],
     ],

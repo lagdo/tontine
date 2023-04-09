@@ -124,6 +124,9 @@ return [
         'actions' => [
             'subscriptions' => "Subscriptions",
         ],
+        'questions' => [
+            'delete' => "Delete this pool?<br/>Please, make sure it has no subscription.",
+        ],
         'messages' => [
             'created' => "The pool was successfully created.",
             'updated' => "The pool was successfully updated.",
@@ -133,6 +136,9 @@ return [
             'number' => [
                 'invalid' => "Please provide a valid number.",
                 'max' => "You can add a maximum of :max entries.",
+            ],
+            'delete' => [
+                'subscriptions' => "This pool can't be deleted because it still has subscriptions.",
             ],
         ],
     ],
