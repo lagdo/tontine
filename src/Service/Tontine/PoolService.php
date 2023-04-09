@@ -74,6 +74,11 @@ class PoolService
      */
     public function createPools(array $values): bool
     {
+        // Cannot modify pools if a session is already opened.
+        if($this->tenantService->hasActiveSessions())
+        {
+            return false; // Todo: throw an exception
+        }
         DB::transaction(function() use($values) {
             $this->tenantService->round()->pools()->createMany($values);
         });
@@ -103,6 +108,11 @@ class PoolService
      */
     public function deletePool(Pool $pool): bool
     {
+        // Cannot modify pools if a session is already opened.
+        if($this->tenantService->hasActiveSessions())
+        {
+            return false; // Todo: throw an exception
+        }
         if($pool->subscriptions()->count() > 0)
         {
             return false;

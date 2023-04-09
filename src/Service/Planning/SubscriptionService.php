@@ -123,13 +123,19 @@ class SubscriptionService
      */
     public function createSubscription(Pool $pool, int $memberId)
     {
+        // Cannot modify subscriptions if a session is already opened.
+        if($this->tenantService->hasActiveSessions())
+        {
+            return; // Todo: throw an exception
+        }
+
         $member = $this->tenantService->tontine()->members()->find($memberId);
         $subscription = new Subscription();
         $subscription->title = '';
         $subscription->pool()->associate($pool);
         $subscription->member()->associate($member);
 
-        DB::transaction(function() use($pool, $subscription) {
+        DB::transaction(function() use($subscription) {
             // Create the subscription
             $subscription->save();
             // Create the payable
@@ -145,6 +151,12 @@ class SubscriptionService
      */
     public function deleteSubscription(Pool $pool, int $memberId)
     {
+        // Cannot modify subscriptions if a session is already opened.
+        if($this->tenantService->hasActiveSessions())
+        {
+            return; // Todo: throw an exception
+        }
+
         $subscription = $pool->subscriptions()->where('member_id', $memberId)->first();
         if(!$subscription)
         {
