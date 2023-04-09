@@ -3,12 +3,15 @@
 namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\Events\EventTrait;
 use Siak\Tontine\Service\TenantService;
+
+use function trans;
 
 class SessionService
 {
@@ -48,6 +51,35 @@ class SessionService
     }
 
     /**
+     * Check if some pools still have no subscriptions.
+     *
+     * @return void
+     */
+    public function checkPoolsSubscriptions()
+    {
+        if($this->tenantService->round()->pools()->whereDoesntHave('subscriptions')->count() > 0)
+        {
+            throw new MessageException(trans('tontine.errors.action') .
+                '<br/>' . trans('tontine.pool.errors.no_subscription'));
+        }
+    }
+
+    /**
+     * Check if a session has already been opened.
+     *
+     * @return void
+     */
+    public function checkActiveSessions()
+    {
+        $activeStatuses = [Session::STATUS_OPENED, Session::STATUS_CLOSED];
+        if($this->tenantService->round()->sessions()->whereIn('status', $activeStatuses)->count() > 0)
+        {
+            throw new MessageException(trans('tontine.errors.action') .
+                '<br/>' . trans('tontine.session.errors.opened'));
+        }
+    }
+
+    /**
      * Open a round.
      *
      * @param Round $round
@@ -60,6 +92,10 @@ class SessionService
         {
             return;
         }
+
+        // Don't open a round if there are pools with no subscription.
+        $this->checkPoolsSubscriptions();
+
         DB::transaction(function() use($round) {
             $round->update(['status' => Round::STATUS_OPENED]);
             $this->roundOpened($this->tenantService->tontine(), $round);
@@ -87,18 +123,14 @@ class SessionService
      */
     public function openSession(Session $session)
     {
-        // Don't open a session if there are pools with no subscription.
-        if($session->round->pools()->whereDoesntHave('subscriptions')->count() > 0)
-        {
-            return; // Todo: throw an exception
-        }
-        // Make sure the round is also opened.
-        $this->openRound($session->round);
-
         if($session->opened)
         {
             return;
         }
+
+        // Make sure the round is also opened.
+        $this->openRound($session->round);
+
         DB::transaction(function() use($session) {
             // Open the session
             $session->update(['status' => Session::STATUS_OPENED]);

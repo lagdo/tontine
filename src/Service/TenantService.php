@@ -108,17 +108,6 @@ class TenantService
     }
 
     /**
-     * Check if a session was already opened in the current round
-     *
-     * @return bool
-     */
-    public function hasActiveSessions(): bool
-    {
-        $activeStatuses = [Session::STATUS_OPENED, Session::STATUS_CLOSED];
-        return ($this->round()->sessions()->whereIn('status', $activeStatuses)->count() > 0);
-    }
-
-    /**
      * Get a single session.
      *
      * @param int $sessionId    The session id

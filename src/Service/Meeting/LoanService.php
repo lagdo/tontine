@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Funding;
 use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Pool;
@@ -12,7 +13,8 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
-use stdClass;
+
+use function trans;
 
 class LoanService
 {
@@ -191,7 +193,7 @@ class LoanService
         $member = $this->getMember($memberId);
         if(!$member)
         {
-            return; // Todo: throw an exception.
+            throw new MessageException(trans('tontine.member.errors.not_found'));
         }
 
         $loan = new Loan();

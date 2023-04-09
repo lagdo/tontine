@@ -42,6 +42,9 @@ return [
         'created' => "La tontine a été ajoutée",
         'updated' => "La tontine a été modifiée",
     ],
+    'errors' => [
+        'action' => "Action impossible.",
+    ],
     'round' => [
         'titles' => [
             'add' => "Ajouter un tour",
@@ -68,6 +71,9 @@ return [
             'updated' => "Le membre a été modifié.",
             'deleted' => "Le membre a été supprimé.",
         ],
+        'errors' => [
+            'not_found' => "Impossible de trouver le membre correspondant.",
+        ],
     ],
     'charge' => [
         'titles' => [
@@ -78,6 +84,11 @@ return [
             'created' => "La charge a été ajoutée.",
             'updated' => "La charge a été modifiée.",
             'deleted' => "La charge a été supprimée.",
+        ],
+    ],
+    'bill' => [
+        'errors' => [
+            'not_found' => "Impossible de trouver la facture correspondante.",
         ],
     ],
     'session' => [
@@ -108,9 +119,13 @@ return [
             'deleted' => "La séance a été supprimée.",
         ],
         'questions' => [
-            'open' => "Ouvrir cette séance ? Assurez-vous d'avoir bien entré toutes les informations " .
+            'open' => "Ouvrir cette séance ?",
+            'warning' => "Assurez-vous d'avoir bien entré toutes les informations " .
                 "nécessaires sur les souscriptions des membres, dans la section planning.",
             'close' => "Fermer cette séance ?",
+        ],
+        'errors' => [
+            'opened' => "Une séance a déjà été ouverte.",
         ],
     ],
     'pool' => [
@@ -137,15 +152,17 @@ return [
                 'invalid' => "Vous devez entrer un nombre valide.",
                 'max' => "Vous pouvez ajouter au plus :max entrées.",
             ],
-            'delete' => [
-                'subscriptions' => "Ce fond ne peut être supprimé car il a encore des souscriptions.",
-            ],
+            'subscription' => "Ce fond a encore des souscriptions.",
+            'no_subscription' => "Il y a encore des fonds sans souscription.",
         ],
     ],
     'subscription' => [
         'messages' => [
             'created' => "La souscription du membre a été enregistrée.",
             'deleted' => "La souscription du membre a été supprimée.",
+        ],
+        'errors' => [
+            'not_found' => "Impossible de  trouver la souscription correspondante.",
         ],
     ],
     'remitment' => [

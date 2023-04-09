@@ -42,6 +42,9 @@ return [
         'created' => "The tontine was successfully created.",
         'updated' => "The tontine was successfully updated.",
     ],
+    'errors' => [
+        'action' => "Cannot proceed.",
+    ],
     'round' => [
         'titles' => [
             'add' => "Add a round",
@@ -68,6 +71,9 @@ return [
             'updated' => "The member was successfully updated.",
             'deleted' => "The member was successfully deleted.",
         ],
+        'errors' => [
+            'not_found' => "Cannot find the corresponding member.",
+        ],
     ],
     'charge' => [
         'titles' => [
@@ -78,6 +84,11 @@ return [
             'created' => "The charge was successfully created.",
             'updated' => "The charge was successfully updated.",
             'deleted' => "The charge was successfully deleted.",
+        ],
+    ],
+    'bill' => [
+        'errors' => [
+            'not_found' => "Cannot find the corresponding bill.",
         ],
     ],
     'session' => [
@@ -108,9 +119,13 @@ return [
             'deleted' => "The session was successfully deleted.",
         ],
         'questions' => [
-            'open' => "Open this session? First make sure that you have entered all " .
-                "the informations required about members subscriptions, in the planning section.",
+            'open' => "Open this session?",
+            'warning' => "First make sure that you have entered all the informations " .
+                "required about members subscriptions, in the planning section.",
             'close' => "Close this session?",
+        ],
+        'errors' => [
+            'opened' => "A session has already been opened.",
         ],
     ],
     'pool' => [
@@ -137,15 +152,17 @@ return [
                 'invalid' => "Please provide a valid number.",
                 'max' => "You can add a maximum of :max entries.",
             ],
-            'delete' => [
-                'subscriptions' => "This pool can't be deleted because it still has subscriptions.",
-            ],
+            'subscription' => "The pool still has subscriptions.",
+            'no_subscription' => "There are pools with no subscription.",
         ],
     ],
     'subscription' => [
         'messages' => [
             'created' => "The member subscription was created.",
             'deleted' => "The member subscription was deleted.",
+        ],
+        'errors' => [
+            'not_found' => "Cannot find the corresponding subscription.",
         ],
     ],
     'remitment' => [
