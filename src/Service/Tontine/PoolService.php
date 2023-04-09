@@ -2,13 +2,14 @@
 
 namespace Siak\Tontine\Service\Tontine;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Pool;
-use Siak\Tontine\Model\Payable;
-use Siak\Tontine\Model\Receivable;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\TenantService;
+
+use function trans;
 
 class PoolService
 {
@@ -18,11 +19,18 @@ class PoolService
     protected TenantService $tenantService;
 
     /**
-     * @param TenantService $tenantService
+     * @var SessionService
      */
-    public function __construct(TenantService $tenantService)
+    protected SessionService $sessionService;
+
+    /**
+     * @param TenantService $tenantService
+     * @param SessionService $sessionService
+     */
+    public function __construct(TenantService $tenantService, SessionService $sessionService)
     {
         $this->tenantService = $tenantService;
+        $this->sessionService = $sessionService;
     }
 
     /**
@@ -74,6 +82,9 @@ class PoolService
      */
     public function createPools(array $values): bool
     {
+        // Cannot modify pools if a session is already opened.
+        $this->sessionService->checkActiveSessions();
+
         DB::transaction(function() use($values) {
             $this->tenantService->round()->pools()->createMany($values);
         });
@@ -103,19 +114,16 @@ class PoolService
      */
     public function deletePool(Pool $pool)
     {
-        // Todo: soft delete this model.
-        DB::transaction(function() use($pool) {
-            // Delete the payables
-            Payable::join('subscriptions', 'subscriptions.id', '=', 'payables.subscription_id')
-                ->where('subscriptions.pool_id', $pool->id)
-                ->delete();
-            // Delete the receivables
-            Receivable::join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
-                ->where('subscriptions.pool_id', $pool->id)
-                ->delete();
-            // Delete the pool
-            $pool->delete();
-        });
+        // Cannot modify pools if a session is already opened.
+        $this->sessionService->checkActiveSessions();
+
+        if($pool->subscriptions()->count() > 0)
+        {
+            throw new MessageException(trans('tontine.errors.action') .
+                '<br/>' . trans('tontine.pool.errors.subscription'));
+        }
+        // Delete the pool
+        $pool->delete();
     }
 
     /**

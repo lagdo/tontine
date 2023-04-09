@@ -5,11 +5,14 @@ namespace Siak\Tontine\Service\Charge;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\FineBill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
+
+use function trans;
 
 class FineService
 {
@@ -159,7 +162,7 @@ class FineService
         $member = $this->tenantService->tontine()->members()->find($memberId);
         if(!$member)
         {
-            return;
+            throw new MessageException(trans('tontine.member.errors.not_found'));
         }
 
         DB::transaction(function() use($charge, $session, $member) {
@@ -189,7 +192,7 @@ class FineService
         $member = $this->tenantService->tontine()->members()->find($memberId);
         if(!$member)
         {
-            return;
+            throw new MessageException(trans('tontine.member.errors.not_found'));
         }
         $fine = FineBill::where('charge_id', $charge->id)
             ->where('session_id', $session->id)
@@ -197,7 +200,7 @@ class FineService
             ->first();
         if(!$fine)
         {
-            return;
+            throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
 
         DB::transaction(function() use($fine) {

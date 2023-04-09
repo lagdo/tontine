@@ -21,6 +21,9 @@
   ],[
     'class' => 'btn-pool-subscriptions',
     'text' => __('tontine.pool.actions.subscriptions'),
+  ],[
+    'class' => 'btn-pool-delete',
+    'text' => __('common.actions.delete'),
   ]],
 ])
                           </td>

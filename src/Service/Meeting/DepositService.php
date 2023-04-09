@@ -3,10 +3,13 @@
 namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Support\Collection;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
+
+use function trans;
 
 class DepositService
 {
@@ -117,7 +120,7 @@ class DepositService
         $receivable = $this->getReceivable($pool, $session, $receivableId);
         if(!$receivable || $receivable->deposit)
         {
-            return;
+            throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
         $receivable->deposit()->create(['paid_at' => now()]);
     }
@@ -136,7 +139,7 @@ class DepositService
         $receivable = $this->getReceivable($pool, $session, $receivableId);
         if(!$receivable || !$receivable->deposit)
         {
-            return;
+            throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
         $receivable->deposit()->delete();
     }

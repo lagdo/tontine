@@ -2,11 +2,14 @@
 
 namespace Siak\Tontine\Service\Charge;
 
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Service\TenantService;
+
+use function trans;
 
 class SettlementService
 {
@@ -93,7 +96,7 @@ class SettlementService
         // Return if the bill is not found or the bill is already settled.
         if(!$bill || ($bill->settlement))
         {
-            return;
+            throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
         $settlement = new Settlement();
         $settlement->bill()->associate($bill);
@@ -116,7 +119,7 @@ class SettlementService
         // Return if the bill is not found or the bill is not settled.
         if(!$bill || !($bill->settlement) || $bill->settlement->session_id !== $session->id)
         {
-            return;
+            throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
         $bill->settlement()->delete();
     }

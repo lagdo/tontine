@@ -5,10 +5,14 @@ namespace Siak\Tontine\Service\Planning;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\TenantService;
+
+use function trans;
 
 class SubscriptionService
 {
@@ -18,11 +22,18 @@ class SubscriptionService
     protected TenantService $tenantService;
 
     /**
-     * @param TenantService $tenantService
+     * @var SessionService
      */
-    public function __construct(TenantService $tenantService)
+    protected SessionService $sessionService;
+
+    /**
+     * @param TenantService $tenantService
+     * @param SessionService $sessionService
+     */
+    public function __construct(TenantService $tenantService, SessionService $sessionService)
     {
         $this->tenantService = $tenantService;
+        $this->sessionService = $sessionService;
     }
 
     /**
@@ -123,13 +134,16 @@ class SubscriptionService
      */
     public function createSubscription(Pool $pool, int $memberId)
     {
+        // Cannot modify subscriptions if a session is already opened.
+        $this->sessionService->checkActiveSessions();
+
         $member = $this->tenantService->tontine()->members()->find($memberId);
         $subscription = new Subscription();
         $subscription->title = '';
         $subscription->pool()->associate($pool);
         $subscription->member()->associate($member);
 
-        DB::transaction(function() use($pool, $subscription) {
+        DB::transaction(function() use($subscription) {
             // Create the subscription
             $subscription->save();
             // Create the payable
@@ -145,10 +159,13 @@ class SubscriptionService
      */
     public function deleteSubscription(Pool $pool, int $memberId)
     {
+        // Cannot modify subscriptions if a session is already opened.
+        $this->sessionService->checkActiveSessions();
+
         $subscription = $pool->subscriptions()->where('member_id', $memberId)->first();
         if(!$subscription)
         {
-            return;
+            throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
 
         DB::transaction(function() use($subscription) {

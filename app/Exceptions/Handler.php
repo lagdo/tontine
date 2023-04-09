@@ -3,7 +3,12 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Jaxon\Laravel\Jaxon;
+use Siak\Tontine\Exception\MessageException;
 use Throwable;
+
+use function app;
+use function trans;
 
 class Handler extends ExceptionHandler
 {
@@ -13,7 +18,7 @@ class Handler extends ExceptionHandler
      * @var array<int, class-string<Throwable>>
      */
     protected $dontReport = [
-        //
+        MessageException::class,
     ];
 
     /**
@@ -36,6 +41,16 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        // Show the error message in a dialog
+        $this->renderable(function (MessageException $e) {
+            $jaxon = app()->make(Jaxon::class);
+            $ajaxResponse = $jaxon->ajaxResponse();
+            $ajaxResponse->clearCommands();
+            $ajaxResponse->dialog->error($e->getMessage(), trans('common.titles.error'));
+
+            return $jaxon->httpResponse();
         });
     }
 }

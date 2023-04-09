@@ -89,6 +89,8 @@ class Pool extends CallableClass
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
         $this->jq('.btn-pool-edit')->click($this->rq()->edit($poolId));
         $this->jq('.btn-pool-subscriptions')->click($this->cl(Subscription::class)->rq()->home($poolId));
+        $this->jq('.btn-pool-delete')->click($this->rq()->delete($poolId)
+            ->confirm(trans('tontine.pool.questions.delete')));
 
         return $this->response;
     }
@@ -201,10 +203,17 @@ class Pool extends CallableClass
         return $this->response;
     }
 
-    /*public function delete(int $poolId)
+    public function delete(int $poolId)
     {
-        $this->notify->error("Cette fonction n'est pas encore disponible", trans('common.titles.error'));
+        $pool = $this->poolService->getPool($poolId);
+        if($pool->subscriptions()->count() > 0)
+        {
+            $this->notify->error(trans('tontine.pool.errors.delete.subscriptions'), trans('common.titles.error'));
+            return $this->response;
+        }
 
-        return $this->response;
-    }*/
+        $this->poolService->deletePool($pool);
+
+        return $this->page();
+    }
 }

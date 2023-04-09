@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Refund;
@@ -11,6 +12,8 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
+
+use function trans;
 
 class RemitmentService
 {
@@ -158,9 +161,9 @@ class RemitmentService
         $payable = $this->getPayable($pool, $session, $payableId);
         if(!$payable || $payable->remitment)
         {
-            return;
+            throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
-        $remitment = $payable->remitment()->create([]);
+        $payable->remitment()->create([]);
     }
 
     /**
@@ -200,7 +203,7 @@ class RemitmentService
             ->find($payableId);
         if(!$payable)
         {
-            return;
+            throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
 
         DB::transaction(function() use($session, $payable, $interest) {
