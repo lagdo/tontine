@@ -69,6 +69,23 @@ class PoolService
     }
 
     /**
+     * @param int $page
+     *
+     * @return Builder
+     */
+    public function getPoolsQuery(int $page = 0)
+    {
+        // Take only pools with at least one subscription.
+        $query = $this->tenantService->round()->pools()->whereHas('subscriptions');
+        if($page < 1)
+        {
+            return $query;
+        }
+        return $query->take($this->tenantService->getLimit())
+            ->skip($this->tenantService->getLimit() * ($page - 1));
+    }
+
+    /**
      * Get a paginated list of pools with receivables.
      *
      * @param Session $session
@@ -78,15 +95,7 @@ class PoolService
      */
     public function getPoolsWithReceivables(Session $session, int $page = 0): Collection
     {
-        $pools = $this->tenantService->round()->pools();
-        if($page > 0 )
-        {
-            $pools->take($this->tenantService->getLimit());
-            $pools->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-
-        // Receivables
-        return $pools->withCount([
+        return $this->getPoolsQuery($page)->withCount([
             'subscriptions as recv_count',
             'subscriptions as recv_paid' => function(Builder $query) use($session) {
                 $query->whereHas('receivables', function(Builder $query) use($session) {
@@ -106,14 +115,7 @@ class PoolService
      */
     public function getPoolsWithPayables(Session $session, int $page = 0): Collection
     {
-        $pools = $this->tenantService->round()->pools();
-        if($page > 0 )
-        {
-            $pools->take($this->tenantService->getLimit());
-            $pools->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-
-        return $pools->withCount([
+        return $this->getPoolsQuery($page)->withCount([
             'subscriptions as pay_paid' => function(Builder $query) use($session) {
                 $query->whereHas('payable', function(Builder $query) use($session) {
                     $query->where('session_id', $session->id)->whereHas('remitment');
