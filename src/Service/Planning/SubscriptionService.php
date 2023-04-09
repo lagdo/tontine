@@ -43,7 +43,7 @@ class SubscriptionService
      */
     public function getPools(): Collection
     {
-        return $this->tenantService->round()->pools()->pluck('title', 'id');
+        return $this->tenantService->round()->pools()->whereHas('subscriptions')->pluck('title', 'id');
     }
 
     /**
