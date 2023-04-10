@@ -3,6 +3,7 @@
 namespace App\Ajax\App\Tontine;
 
 use App\Ajax\App\Meeting\Meeting;
+use App\Ajax\App\Meeting\Member;
 use App\Ajax\App\Meeting\Report as MeetingReport;
 use App\Ajax\App\Planning\Planning;
 use App\Ajax\App\Planning\Pool;
@@ -148,6 +149,7 @@ class Select extends CallableClass
         $this->jq('#planning-menu-beneficiaries')->click($this->cl(Planning::class)->rq()->beneficiaries());
         $this->jq('#planning-menu-reports')->click($this->cl(PlanningReport::class)->rq()->home());
         $this->jq('#meeting-menu-sessions')->click($this->cl(Meeting::class)->rq()->home());
+        $this->jq('#meeting-menu-members')->click($this->cl(Member::class)->rq()->home());
         $this->jq('#meeting-menu-reports')->click($this->cl(MeetingReport::class)->rq()->home());
 
         $this->dialog->hide();
