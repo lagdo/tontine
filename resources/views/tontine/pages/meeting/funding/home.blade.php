@@ -26,7 +26,11 @@
                           <td>{{ $funding->member->name }}</td>
                           <td>{{ $funding->amount }}</td>
                           <td class="table-item-menu" data-funding-id="{{ $funding->id }}">
+@if($session->opened)
                             <a href="javascript:void(0)" class="btn-funding-delete"><i class="fa fa-times-circle"></i></a>
+@else
+                            <i class="fa fa-times-circle"></i>
+@endif
                           </td>
                         </tr>
 @endforeach
