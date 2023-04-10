@@ -3,6 +3,9 @@
 namespace App\Ajax\App\Meeting;
 
 use App\Ajax\CallableClass;
+use Siak\Tontine\Model\Member as MemberModel;
+use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Meeting\MemberService;
 use Siak\Tontine\Service\Meeting\SessionService;
 
 use function compact;
@@ -15,6 +18,22 @@ class Member extends CallableClass
      * @var SessionService
      */
     protected SessionService $sessionService;
+
+    /**
+     * @di
+     * @var MemberService
+     */
+    protected MemberService $memberService;
+
+    /**
+     * @var SessionModel
+     */
+    private SessionModel $session;
+
+    /**
+     * @var MemberModel
+     */
+    private MemberModel $member;
 
     public function home()
     {
@@ -43,6 +62,32 @@ class Member extends CallableClass
 
     public function page(int $memberId, int $sessionId)
     {
+        $this->member = $this->sessionService->getMember($memberId);
+        $this->session = $this->sessionService->getSession($sessionId);
+
+        $this->deposits();
+        $this->remitments();
+
+        return $this->response;
+    }
+
+    public function deposits()
+    {
+        $html = $this->view()->render('tontine.pages.meeting.member.deposits', [
+            'subscriptions' => $this->memberService->getDeposits($this->member, $this->session),
+        ]);
+        $this->response->html('member-deposits', $html);
+
+        return $this->response;
+    }
+
+    public function remitments()
+    {
+        $html = $this->view()->render('tontine.pages.meeting.member.remitments', [
+            'subscriptions' => $this->memberService->getRemitments($this->member, $this->session),
+        ]);
+        $this->response->html('member-remitments', $html);
+
         return $this->response;
     }
 }

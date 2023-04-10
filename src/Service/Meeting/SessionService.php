@@ -5,6 +5,7 @@ namespace Siak\Tontine\Service\Meeting;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
@@ -40,7 +41,7 @@ class SessionService
     }
 
     /**
-     * Get a single session.
+     * Find a session.
      *
      * @param int $sessionId    The session id
      *
@@ -60,6 +61,18 @@ class SessionService
     {
         return $this->tenantService->round()->sessions()
             ->orderBy('start_at', 'asc')->pluck('title', 'id');
+    }
+
+    /**
+     * Find a member.
+     *
+     * @param int $memberId
+     *
+     * @return Member|null
+     */
+    public function getMember(int $memberId): ?Member
+    {
+        return $this->tenantService->tontine()->members()->find($memberId);
     }
 
     /**

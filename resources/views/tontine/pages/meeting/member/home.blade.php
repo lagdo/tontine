@@ -25,5 +25,11 @@
           <!-- Data tables -->
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">
+              <div class="row">
+                <div class="col-md-6 col-sm-12" id="member-deposits">
+                </div>
+                <div class="col-md-6 col-sm-12" id="member-remitments">
+                </div>
+              </div>
             </div>
           </div>
