@@ -67,6 +67,8 @@ class Member extends CallableClass
 
         $this->deposits();
         $this->remitments();
+        $this->fees();
+        $this->fines();
 
         return $this->response;
     }
@@ -87,6 +89,26 @@ class Member extends CallableClass
             'subscriptions' => $this->memberService->getRemitments($this->member, $this->session),
         ]);
         $this->response->html('member-remitments', $html);
+
+        return $this->response;
+    }
+
+    public function fees()
+    {
+        $html = $this->view()->render('tontine.pages.meeting.member.fees', [
+            'fees' => $this->memberService->getFees($this->member, $this->session),
+        ]);
+        $this->response->html('member-fees', $html);
+
+        return $this->response;
+    }
+
+    public function fines()
+    {
+        $html = $this->view()->render('tontine.pages.meeting.member.fines', [
+            'fines' => $this->memberService->getFines($this->member, $this->session),
+        ]);
+        $this->response->html('member-fines', $html);
 
         return $this->response;
     }

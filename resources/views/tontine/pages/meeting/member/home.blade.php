@@ -31,5 +31,11 @@
                 <div class="col-md-6 col-sm-12" id="member-remitments">
                 </div>
               </div>
+              <div class="row">
+                <div class="col-md-6 col-sm-12" id="member-fees">
+                </div>
+                <div class="col-md-6 col-sm-12" id="member-fines">
+                </div>
+              </div>
             </div>
           </div>
