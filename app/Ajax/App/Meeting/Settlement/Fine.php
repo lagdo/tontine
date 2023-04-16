@@ -84,6 +84,7 @@ class Fine extends CallableClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $billCount);
 
         $html = $this->view()->render('tontine.pages.meeting.settlement.page', [
+            'session' => $this->session,
             'charge' => $this->charge,
             'bills' => $bills,
             'pagination' => $pagination,

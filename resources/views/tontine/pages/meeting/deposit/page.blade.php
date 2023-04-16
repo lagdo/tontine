@@ -10,10 +10,12 @@
                     <tr>
                       <td>{{ $receivable->subscription->member->name }}</td>
                       <td data-receivable-id="{{ $receivable->id }}">
-@if ($receivable->deposit)
-                          <a href="javascript:void(0)" class="btn-del-deposit"><i class="fa fa-toggle-on"></i></a>
+@if ($session->closed)
+                        @if ($receivable->deposit)<i class="fa fa-toggle-on"></i>@else<i class="fa fa-toggle-off">@endif
+@elseif ($receivable->deposit)
+                        <a href="javascript:void(0)" class="btn-del-deposit"><i class="fa fa-toggle-on"></i></a>
 @else
-                          <a href="javascript:void(0)" class="btn-add-deposit"><i class="fa fa-toggle-off"></i></a>
+                        <a href="javascript:void(0)" class="btn-add-deposit"><i class="fa fa-toggle-off"></i></a>
 @endif
                       </td>
                     </tr>

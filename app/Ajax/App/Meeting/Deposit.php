@@ -82,10 +82,6 @@ class Deposit extends CallableClass
             ->with('tontine', $tontine)
             ->with('session', $this->session)
             ->with('pools', $this->poolService->getPoolsWithReceivables($this->session));
-        if($this->session->closed)
-        {
-            $html->with('summary', $this->poolService->getReceivablesSummary($this->session));
-        }
         $this->response->html('meeting-deposits', $html);
 
         $this->jq('#btn-deposits-refresh')->click($this->rq()->deposits());
@@ -126,6 +122,7 @@ class Deposit extends CallableClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $receivableCount);
 
         $html = $this->view()->render('tontine.pages.meeting.deposit.page', [
+            'session' => $this->session,
             'receivables' => $receivables,
             'pagination' => $pagination,
         ]);

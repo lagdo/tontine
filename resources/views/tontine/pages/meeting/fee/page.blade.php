@@ -8,9 +8,7 @@
                       </thead>
                       <tbody>
 @foreach ($fees as $charge)
-@if($session->closed)
-                        @include('tontine.pages.meeting.charge.closed', compact('charge', 'bills', 'settlements'))
-@elseif($session->pending)
+@if($session->pending)
                         @include('tontine.pages.meeting.charge.pending', compact('charge', 'bills', 'settlements'))
 @else
                         @include('tontine.pages.meeting.charge.fee', compact('charge', 'bills', 'settlements'))

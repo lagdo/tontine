@@ -25,36 +25,22 @@
                         @include('tontine.pages.meeting.pool.disabled', [
                             'pool' => $pool,
                         ])
-@elseif($session->opened)
+@elseif($session->pending)
+                        @include('tontine.pages.meeting.pool.pending', [
+                            'pool' => $pool,
+                            'paid' => $pool->recv_paid,
+                            'count' => $pool->recv_count,
+                        ])
+@else
                         @include('tontine.pages.meeting.pool.opened', [
                             'pool' => $pool,
                             'paid' => $pool->recv_paid,
                             'count' => $pool->recv_count,
                             'tontine' => $tontine,
                             'menuClass' => 'btn-pool-deposits',
-                            'menuText' => __('meeting.actions.deposits'),
-                        ])
-@elseif($session->closed)
-                        @include('tontine.pages.meeting.pool.closed', [
-                            'pool' => $pool,
-                            'paid' => $pool->recv_paid,
-                            'count' => $pool->recv_count,
-                            'amounts' => $summary['receivables'],
-                        ])
-@else
-                        @include('tontine.pages.meeting.pool.pending', [
-                            'pool' => $pool,
-                            'paid' => $pool->recv_paid,
-                            'count' => $pool->recv_count,
                         ])
 @endif
 @endforeach
-@if($session->closed)
-                        <tr>
-                          <td colspan="2">{!! __('common.labels.total') !!}</td>
-                          <td>{{ $summary['total'] }}</td>
-                        </tr>
-@endif
                       </tbody>
                     </table>
                   </div> <!-- End table -->

@@ -26,7 +26,7 @@
                           <td>{{ $loan->member->name }}</td>
                           <td>{{ $loan->amount }}<br/>{{ $loan->interest }}</td>
 @if ($session->closed || ($loan->remitment_id))
-                          <td class="table-item-menu">&nbsp;</td>
+                          <td class="table-item-menu"><i class="fa fa-times-circle"></i></td>
 @else
                           <td class="table-item-menu" data-loan-id="{{ $loan->id }}">
                             <a href="javascript:void(0)" class="btn-loan-delete"><i class="fa fa-times-circle"></i></a>

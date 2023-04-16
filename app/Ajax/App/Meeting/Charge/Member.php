@@ -82,6 +82,7 @@ class Member extends CallableClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
         $html = $this->view()->render('tontine.pages.meeting.fine.member.page', [
+            'session' => $this->session,
             'charge' => $this->charge,
             'members' => $members,
             'pagination' => $pagination,
