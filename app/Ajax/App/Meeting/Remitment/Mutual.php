@@ -134,6 +134,12 @@ class Mutual extends CallableClass
      */
     public function saveRemitment(int $payableId)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $this->remitmentService->saveMutualRemitment($this->pool, $this->session, $payableId);
         // $this->notify->success(trans('session.remitment.created'), trans('common.titles.success'));
 
@@ -147,6 +153,12 @@ class Mutual extends CallableClass
      */
     public function deleteRemitment(int $payableId)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $this->remitmentService->deleteMutualRemitment($this->pool, $this->session, $payableId);
         // $this->notify->success(trans('session.remitment.deleted'), trans('common.titles.success'));
 

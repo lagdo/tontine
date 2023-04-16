@@ -143,6 +143,12 @@ class Deposit extends CallableClass
      */
     public function addDeposit(int $receivableId)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $this->depositService->createDeposit($this->pool, $this->session, $receivableId);
         // $this->notify->success(trans('session.deposit.created'), trans('common.titles.success'));
 
@@ -156,6 +162,12 @@ class Deposit extends CallableClass
      */
     public function delDeposit(int $receivableId)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $this->depositService->deleteDeposit($this->pool, $this->session, $receivableId);
         // $this->notify->success(trans('session.deposit.deleted'), trans('common.titles.success'));
 

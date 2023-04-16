@@ -45,4 +45,9 @@ return [
             'updated' => "Enregistré !",
         ],
     ],
+    'warnings' => [
+        'session' => [
+            'closed' => "Cette opération n'est pas permise lorsque la session est fermée.",
+        ],
+    ],
 ];

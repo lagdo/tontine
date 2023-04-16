@@ -198,8 +198,8 @@ class MemberService
     public function getFees(Member $member, Session $session): Collection
     {
         return $this->getTontineFees($member, $session)
-            ->merge($this->getRoundFees($member, $session))
-            ->merge($this->getSessionFees($member, $session))
+            ->concat($this->getRoundFees($member, $session))
+            ->concat($this->getSessionFees($member, $session))
             ->map(function($fee) {
                 $fee->paid = ($fee->bill->settlement !== null);
                 $fee->amount = $this->localeService->formatMoney($fee->bill->amount);

@@ -45,4 +45,9 @@ return [
             'updated' => "Saved!",
         ],
     ],
+    'warnings' => [
+        'session' => [
+            'closed' => "This operation is not allowed when the session is closed.",
+        ],
+    ],
 ];

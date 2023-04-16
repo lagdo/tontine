@@ -114,6 +114,12 @@ class Member extends CallableClass
      */
     public function addFine(int $memberId)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $this->fineService->createFine($this->charge, $this->session, $memberId);
 
         return $this->page();
@@ -126,6 +132,12 @@ class Member extends CallableClass
      */
     public function delFine(int $memberId)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $this->fineService->deleteFine($this->charge, $this->session, $memberId);
 
         return $this->page();

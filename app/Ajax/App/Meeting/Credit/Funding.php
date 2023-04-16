@@ -79,6 +79,12 @@ class Funding extends CallableClass
 
     public function addFunding()
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $members = $this->fundingService->getMembers();
         $title = trans('tontine.funding.titles.add');
         $content = $this->view()->render('tontine.pages.meeting.funding.add')
@@ -103,6 +109,12 @@ class Funding extends CallableClass
      */
     public function saveFunding(array $formValues)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $values = $this->validator->validateItem($formValues);
 
         $memberId = $values['member'];
@@ -122,6 +134,12 @@ class Funding extends CallableClass
      */
     public function deleteFunding(int $fundingId)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $this->fundingService->deleteFunding($this->session, $fundingId);
 
         // Refresh the loans page

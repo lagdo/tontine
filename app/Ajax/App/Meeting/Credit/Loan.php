@@ -83,6 +83,12 @@ class Loan extends CallableClass
 
     public function addLoan()
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $amountAvailable = $this->loanService->getAmountAvailable($this->session);
         if($amountAvailable <= 0)
         {
@@ -114,6 +120,12 @@ class Loan extends CallableClass
      */
     public function saveLoan(array $formValues)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $values = $this->validator->validateItem($formValues);
 
         $memberId = $values['member'];
@@ -135,6 +147,12 @@ class Loan extends CallableClass
      */
     public function deleteLoan(int $loanId)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $this->loanService->deleteLoan($this->session, $loanId);
 
         // Refresh the refunds pages

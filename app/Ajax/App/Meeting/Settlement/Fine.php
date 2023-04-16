@@ -116,6 +116,12 @@ class Fine extends CallableClass
      */
     public function addSettlement(int $billId)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $this->settlementService->createSettlement($this->charge, $this->session, $billId);
         // $this->notify->success(trans('session.settlement.created'), trans('common.titles.success'));
 
@@ -129,6 +135,12 @@ class Fine extends CallableClass
      */
     public function delSettlement(int $billId)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $this->settlementService->deleteSettlement($this->charge, $this->session, $billId);
         // $this->notify->success(trans('session.settlement.deleted'), trans('common.titles.success'));
 
