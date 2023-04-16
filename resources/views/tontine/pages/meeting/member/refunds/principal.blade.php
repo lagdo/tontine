@@ -1,6 +1,6 @@
                   <div class="row align-items-center">
                     <div class="col">
-                      <div class="section-title mt-0">{{ __('meeting.titles.remitments') }}</div>
+                      <div class="section-title mt-0">{{ __('meeting.titles.refunds') }} - {{ __('tontine.loan.labels.principal') }}</div>
                     </div>
                   </div>
                   <div class="table-responsive">
@@ -13,11 +13,11 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach($subscriptions as $subscription)
+@foreach($loans as $loan)
                         <tr>
-                          <td>{{ $subscription->pool->title }}</td>
-                          <td>{{ $subscription->amount }}</td>
-                          <td><i class="fa fa-toggle-{{ $subscription->paid ? 'on' : 'off' }}"></i></td>
+                          <td>{{ $loan->session->title }}@if(($loan->refund))<br/>{{ $loan->refund->session->title }}@endif</td>
+                          <td>{{ $loan->amount }}</td>
+                          <td><i class="fa fa-toggle-{{ $loan->refunded ? 'on' : 'off' }}"></i></td>
                         </tr>
 @endforeach
                       </tbody>

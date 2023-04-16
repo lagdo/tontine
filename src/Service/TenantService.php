@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service;
 
+use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
@@ -117,6 +118,27 @@ class TenantService
     public function getSession(int $sessionId): ?Session
     {
         return $this->round->sessions()->find($sessionId);
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return Collection
+     */
+    public function getSessions(Session $session): Collection
+    {
+        return $this->round()->sessions()->where('start_at', '<=', $session->start_at)->get();
+    }
+
+    /**
+     * @param Session $session
+     * @param string $field
+     *
+     * @return Collection
+     */
+    public function getFieldInSessions(Session $session, string $field = 'id'): Collection
+    {
+        return $this->round()->sessions()->where('start_at', '<=', $session->start_at)->pluck($field);
     }
 
     /**

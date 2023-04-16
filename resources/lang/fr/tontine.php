@@ -180,7 +180,7 @@ return [
     ],
     'loan' => [
         'titles' => [
-            'add' => "Ajouter une enchère",
+            'add' => "Ajouter un emprunt",
         ],
         'labels' => [
             'principal' => "Principal",
@@ -188,7 +188,7 @@ return [
             'amount_to_lend' => "Montant à prêter",
         ],
         'questions' => [
-            'delete' => "Supprimer cette enchère ?",
+            'delete' => "Supprimer cet emprunt ?",
         ],
     ],
 ];

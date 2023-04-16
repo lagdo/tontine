@@ -1,15 +1,15 @@
                   <div class="row align-items-center">
                     <div class="col">
-                      <div class="section-title mt-0">{!! __('meeting.titles.fees') !!}</div>
+                      <div class="section-title mt-0">{{ __('meeting.titles.fees') }}</div>
                     </div>
                   </div>
                   <div class="table-responsive">
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>{!! __('common.labels.title') !!}</th>
-                          <th>{!! __('common.labels.amount') !!}</th>
-                          <th>{!! __('common.labels.paid') !!}</th>
+                          <th>{{ __('common.labels.title') }}</th>
+                          <th>{{ __('common.labels.amount') }}</th>
+                          <th>{{ __('common.labels.paid') }}</th>
                         </tr>
                       </thead>
                       <tbody>

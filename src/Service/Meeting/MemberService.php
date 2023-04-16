@@ -9,6 +9,8 @@ use Siak\Tontine\Model\FineBill;
 use Siak\Tontine\Model\RoundBill;
 use Siak\Tontine\Model\SessionBill;
 use Siak\Tontine\Model\TontineBill;
+use Siak\Tontine\Model\Funding;
+use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
@@ -117,7 +119,7 @@ class MemberService
             ->where(function($query) use($session) {
                 return $query
                     // Fees that are not yet settled.
-                    ->orWhere(function(Builder $query) {
+                    ->where(function(Builder $query) {
                         return $query->whereDoesntHave('bill.settlement');
                     })
                     // Fees settled on this session.
@@ -144,7 +146,7 @@ class MemberService
             ->where(function($query) use($session) {
                 return $query
                     // Fees that are not yet settled.
-                    ->orWhere(function(Builder $query) {
+                    ->where(function(Builder $query) {
                         return $query->whereDoesntHave('bill.settlement');
                     })
                     // Fees settled on this session.
@@ -165,8 +167,7 @@ class MemberService
      */
     private function getSessionFees(Member $member, Session $session): Collection
     {
-        $sessionIds = $this->tenantService->round()->sessions()
-            ->where('start_at', '<=', $session->start_at)->pluck('id');
+        $sessionIds = $this->tenantService->getFieldInSessions($session);
         return SessionBill::with(['bill', 'bill.settlement', 'session'])
             ->where('member_id', $member->id)
             ->whereIn('session_id', $sessionIds)
@@ -214,8 +215,7 @@ class MemberService
      */
     public function getFines(Member $member, Session $session): Collection
     {
-        $sessionIds = $this->tenantService->round()->sessions()
-            ->where('start_at', '<=', $session->start_at)->pluck('id');
+        $sessionIds = $this->tenantService->getFieldInSessions($session);
         return FineBill::with(['bill', 'bill.settlement', 'session'])
             ->where('member_id', $member->id)
             ->whereIn('session_id', $sessionIds)
@@ -239,6 +239,115 @@ class MemberService
                 $fine->paid = ($fine->bill->settlement !== null);
                 $fine->amount = $this->localeService->formatMoney($fine->bill->amount);
                 return $fine;
+            });
+    }
+
+    /**
+     * @param Member $member
+     * @param Session $session
+     *
+     * @return Collection
+     */
+    public function getFundings(Member $member, Session $session): Collection
+    {
+        return Funding::where('member_id', $member->id)
+            ->where('session_id', $session->id)
+            ->get()
+            ->map(function($funding) {
+                $funding->amount = $this->localeService->formatMoney($funding->amount);
+                return $funding;
+            });
+    }
+
+    /**
+     * @param Member $member
+     * @param Session $session
+     *
+     * @return Collection
+     */
+    public function getLoans(Member $member, Session $session): Collection
+    {
+        return Loan::where('member_id', $member->id)
+            ->where('session_id', $session->id)
+            ->get()
+            ->map(function($loan) {
+                $loan->amount = $this->localeService->formatMoney($loan->amount);
+                $loan->interest = $this->localeService->formatMoney($loan->interest);
+                return $loan;
+            });
+    }
+
+    /**
+     * @param Member $member
+     * @param Session $session
+     *
+     * @return Collection
+     */
+    public function getPrincipalRefunds(Member $member, Session $session): Collection
+    {
+        $sessionIds = $this->tenantService->getFieldInSessions($session);
+        return Loan::with(['principal_refund', 'principal_refund.session'])
+            ->where('member_id', $member->id)
+            ->where('amount', '>', 0)
+            ->whereIn('session_id', $sessionIds)
+            ->where(function($query) use($session) {
+                return $query
+                    // Loans given on this session.
+                    ->where('session_id', $session->id)
+                    // Loans that are not yet refunded.
+                    ->orWhere(function(Builder $query) {
+                        return $query->whereDoesntHave('principal_refund');
+                    })
+                    // Loans refunded on this session.
+                    ->orWhere(function(Builder $query) use($session) {
+                        return $query->whereHas('principal_refund', function(Builder $query) use($session) {
+                            $query->where('session_id', $session->id);
+                        });
+                    });
+            })
+            ->get()
+            ->map(function($loan) {
+                $loan->refunded = ($loan->principal_refund !== null);
+                $loan->refund = $loan->principal_refund;
+                $loan->amount = $this->localeService->formatMoney($loan->amount);
+                return $loan;
+            });
+    }
+
+    /**
+     * @param Member $member
+     * @param Session $session
+     *
+     * @return Collection
+     */
+    public function getInterestRefunds(Member $member, Session $session): Collection
+    {
+        $sessionIds = $this->tenantService->getFieldInSessions($session);
+        return Loan::with(['interest_refund', 'interest_refund.session'])
+            ->where('member_id', $member->id)
+            ->where('interest', '>', 0)
+            ->whereIn('session_id', $sessionIds)
+            ->where(function($query) use($session) {
+                return $query
+                    // Loans given on this session.
+                    ->where('session_id', $session->id)
+                    // Loans that are not yet refunded.
+                    ->orWhere(function(Builder $query) {
+                        return $query->whereDoesntHave('interest_refund');
+                    })
+                    // Loans refunded on this session.
+                    ->orWhere(function(Builder $query) use($session) {
+                        return $query->whereHas('interest_refund', function(Builder $query) use($session) {
+                            $query->where('session_id', $session->id);
+                        });
+                    });
+            })
+            ->get()
+            ->map(function($loan) {
+                $loan->refunded = ($loan->interest_refund !== null);
+                $loan->refund = $loan->interest_refund;
+                $loan->interest = $this->localeService->formatMoney($loan->interest);
+                return $loan;
             });
     }
 }

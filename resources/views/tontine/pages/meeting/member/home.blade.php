@@ -4,10 +4,10 @@
                 <h2 class="section-title">{{ __('tontine.menus.members') }}</h2>
               </div>
               <div class="col-auto">
-                {!! Form::select('member_id', $members, 0, ['class' => 'form-control', 'id' => 'select-member']) !!}
+                {{ Form::select('member_id', $members, 0, ['class' => 'form-control', 'id' => 'select-member']) }}
               </div>
               <div class="col-auto">
-                {!! Form::select('session_id', $sessions, 0, ['class' => 'form-control', 'id' => 'select-session']) !!}
+                {{ Form::select('session_id', $sessions, 0, ['class' => 'form-control', 'id' => 'select-session']) }}
               </div>
               <div class="col-auto">
                 <div class="input-group-append">
@@ -26,16 +26,30 @@
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">
               <div class="row">
-                <div class="col-md-6 col-sm-12" id="member-deposits">
-                </div>
-                <div class="col-md-6 col-sm-12" id="member-remitments">
-                </div>
-              </div>
-              <div class="row">
                 <div class="col-md-6 col-sm-12" id="member-fees">
                 </div>
                 <div class="col-md-6 col-sm-12" id="member-fines">
                 </div>
               </div>
+              <div class="row">
+                <div class="col-md-6 col-sm-12" id="member-deposits">
+                </div>
+                <div class="col-md-6 col-sm-12" id="member-remitments">
+                </div>
+              </div>
+@if( $tontine->is_financial )
+              <div class="row">
+                <div class="col-md-6 col-sm-12" id="member-fundings">
+                </div>
+                <div class="col-md-6 col-sm-12" id="member-loans">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 col-sm-12" id="member-refunds-principal">
+                </div>
+                <div class="col-md-6 col-sm-12" id="member-refunds-interest">
+                </div>
+              </div>
+@endif
             </div>
           </div>

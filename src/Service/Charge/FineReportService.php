@@ -54,8 +54,7 @@ class FineReportService
     private function getPreviousSessionsBills(Session $session): Collection
     {
         // Count the session bills
-        $sessionIds = $this->tenantService->round()->sessions()
-            ->where('start_at', '<=', $session->start_at)->pluck('id');
+        $sessionIds = $this->tenantService->getFieldInSessions($session);
         return DB::table('fine_bills')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'fine_bills.bill_id', '=', 'bills.id')
@@ -89,8 +88,7 @@ class FineReportService
     private function getPreviousSessionsSettlements(Session $session): Collection
     {
         // Count the session bills
-        $sessionIds = $this->tenantService->round()->sessions()
-            ->where('start_at', '<=', $session->start_at)->pluck('id');
+        $sessionIds = $this->tenantService->getFieldInSessions($session);
         $query = DB::table('settlements')->select('charge_id',
             DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
