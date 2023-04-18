@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service\Meeting;
+namespace Siak\Tontine\Service\Meeting\Summary;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -14,9 +14,9 @@ use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
-use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Tontine\PoolService;
 
 class MemberService
 {
@@ -31,28 +31,20 @@ class MemberService
     protected TenantService $tenantService;
 
     /**
-     * @var ReportService
+     * @var PoolService
      */
-    protected ReportService $reportService;
-
-    /**
-     * @var SessionService
-     */
-    protected SessionService $sessionService;
+    protected PoolService $poolService;
 
     /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
-     * @param ReportService $reportService
-     * @param SessionService $sessionService
+     * @param PoolService $poolService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService,
-        ReportService $reportService, SessionService $sessionService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService, PoolService $poolService)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
-        $this->reportService = $reportService;
-        $this->sessionService = $sessionService;
+        $this->poolService = $poolService;
     }
 
     /**
@@ -99,7 +91,7 @@ class MemberService
             ->get()
             ->map(function($subscription) {
                 $subscription->paid = ($subscription->payable !== null);
-                $sessionCount = $this->sessionService->enabledSessionCount($subscription->pool);
+                $sessionCount = $this->poolService->enabledSessionCount($subscription->pool);
                 $remitmentAmount = $subscription->pool->amount * $sessionCount;
                 $subscription->amount = $this->localeService->formatMoney($remitmentAmount);
                 return $subscription;
