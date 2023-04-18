@@ -8,9 +8,10 @@ return [
         'meeting' => "Meeting",
         'members' => "Members",
         'charges' => "Fees and fines",
+        'rounds' => "Rounds",
         'sessions' => "Sessions",
         'pools' => "Pools",
-        'reports' => "Reports",
+        'balance' => "Balance",
         'subscriptions' => "Subscriptions",
         'beneficiaries' => "Beneficiaries",
         'profile' => "Profile",
@@ -132,8 +133,8 @@ return [
         'titles' => [
             'add' => "Add pools",
             'edit' => "Edit a pool",
-            'deposits' => "Deposits report",
-            'remitments' => "Remitments report",
+            'deposits' => "Deposits balance",
+            'remitments' => "Remitments balance",
             'subscriptions' => "Subscriptions",
         ],
         'actions' => [

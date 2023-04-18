@@ -11,6 +11,7 @@ use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 use function Jaxon\jq;
+use function trans;
 
 /**
  * @databag refund
@@ -115,6 +116,12 @@ class Interest extends CallableClass
      */
     public function createRefund(string $loanId)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $this->validator->validate($loanId);
 
         $this->refundService->createRefund($this->session, $loanId, RefundModel::TYPE_INTEREST);
@@ -130,6 +137,12 @@ class Interest extends CallableClass
      */
     public function deleteRefund(int $refundId)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $this->refundService->deleteRefund($this->session, $refundId);
 
         // Refresh the loans page

@@ -82,6 +82,7 @@ class Member extends CallableClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
         $html = $this->view()->render('tontine.pages.meeting.fine.member.page', [
+            'session' => $this->session,
             'charge' => $this->charge,
             'members' => $members,
             'pagination' => $pagination,
@@ -113,6 +114,12 @@ class Member extends CallableClass
      */
     public function addFine(int $memberId)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $this->fineService->createFine($this->charge, $this->session, $memberId);
 
         return $this->page();
@@ -125,6 +132,12 @@ class Member extends CallableClass
      */
     public function delFine(int $memberId)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $this->fineService->deleteFine($this->charge, $this->session, $memberId);
 
         return $this->page();

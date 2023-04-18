@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Meeting\SessionService as MeetingSessionService;
 use Siak\Tontine\Service\TenantService;
 
 use function intval;
@@ -21,11 +22,17 @@ class SessionService
     protected TenantService $tenantService;
 
     /**
+     * @var MeetingSessionService
+     */
+    protected MeetingSessionService $sessionService;
+
+    /**
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
+    public function __construct(TenantService $tenantService, MeetingSessionService $sessionService)
     {
         $this->tenantService = $tenantService;
+        $this->sessionService = $sessionService;
     }
 
     /**
@@ -77,13 +84,16 @@ class SessionService
      */
     public function createSessions(array $values): bool
     {
+        // Cannot create sessions if a session is already opened.
+        $this->sessionService->checkActiveSessions();
+
         foreach($values as &$value)
         {
             $value['start_at'] = $value['date'] . ' ' . $value['start'] . ':00';
             $value['end_at'] = $value['date'] . ' ' . $value['end'] . ':00';
         }
         DB::transaction(function() use($values) {
-            $sessions = $this->tenantService->round()->sessions()->createMany($values);
+            $this->tenantService->round()->sessions()->createMany($values);
         });
 
         return true;
@@ -134,6 +144,9 @@ class SessionService
      */
     public function deleteSession(Session $session)
     {
+        // Cannot delete sessions if a session is already opened.
+        $this->sessionService->checkActiveSessions();
+
         DB::transaction(function() use($session) {
             // Detach from the payables. Don't delete.
             $session->payables()->update(['session_id' => null]);
@@ -163,6 +176,9 @@ class SessionService
      */
     public function toggleSession(Pool $pool, Session $session)
     {
+        // Cannot enable or disable sessions if a session is already opened.
+        $this->sessionService->checkActiveSessions();
+
         if($session->disabled($pool))
         {
             // Enable the session for the pool.

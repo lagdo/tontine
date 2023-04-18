@@ -97,10 +97,6 @@ class Financial extends CallableClass
             ->with('tontine', $tontine)
             ->with('session', $this->session)
             ->with('pools', $this->poolService->getPoolsWithPayables($this->session));
-        if($this->session->closed)
-        {
-            $html->with('summary', $this->poolService->getPayablesSummary($this->session));
-        }
         $this->response->html('meeting-remitments', $html);
 
         $this->jq('#btn-remitments-refresh')->click($this->rq()->home());
@@ -132,6 +128,7 @@ class Financial extends CallableClass
     public function page()
     {
         $html = $this->view()->render('tontine.pages.meeting.remitment.financial', [
+            'session' => $this->session,
             'payables' => $this->remitmentService->getPayables($this->pool, $this->session),
         ]);
         $this->response->html('meeting-pool-remitments', $html);
@@ -145,6 +142,12 @@ class Financial extends CallableClass
 
     public function addRemitment()
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $members = $this->remitmentService->getSubscriptions($this->pool);
         $title = trans('tontine.loan.titles.add');
         $content = $this->view()->render('tontine.pages.meeting.remitment.add')
@@ -171,6 +174,12 @@ class Financial extends CallableClass
      */
     public function saveRemitment(array $formValues)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $values = $this->validator->validateItem($formValues);
 
         $this->remitmentService->saveFinancialRemitment($this->pool,
@@ -188,6 +197,12 @@ class Financial extends CallableClass
      */
     public function deleteRemitment(int $subscriptionId)
     {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
         $this->remitmentService->deleteFinancialRemitment($this->pool, $this->session, $subscriptionId);
         // $this->notify->success(trans('session.remitment.deleted'), trans('common.titles.success'));
 

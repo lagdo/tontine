@@ -2,8 +2,10 @@
 
 namespace Siak\Tontine\Service\Meeting;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
@@ -39,7 +41,7 @@ class SessionService
     }
 
     /**
-     * Get a single session.
+     * Find a session.
      *
      * @param int $sessionId    The session id
      *
@@ -48,6 +50,40 @@ class SessionService
     public function getSession(int $sessionId): ?Session
     {
         return $this->tenantService->round()->sessions()->find($sessionId);
+    }
+
+    /**
+     * Get a list of sessions for the dropdown select component.
+     *
+     * @return Collection
+     */
+    public function getSessions(): Collection
+    {
+        return $this->tenantService->round()->sessions()
+            ->orderBy('start_at', 'asc')->pluck('title', 'id');
+    }
+
+    /**
+     * Find a member.
+     *
+     * @param int $memberId
+     *
+     * @return Member|null
+     */
+    public function getMember(int $memberId): ?Member
+    {
+        return $this->tenantService->tontine()->members()->find($memberId);
+    }
+
+    /**
+     * Get a list of members for the dropdown select component.
+     *
+     * @return Collection
+     */
+    public function getMembers(): Collection
+    {
+        return $this->tenantService->tontine()->members()
+            ->orderBy('name', 'asc')->pluck('name', 'id');
     }
 
     /**

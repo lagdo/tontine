@@ -28,9 +28,9 @@ class UpdateUserProfile extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('address', 500);
-            $table->dropColumn('city', 100);
-            $table->dropColumn('country_code', 2);
+            $table->dropColumn('address');
+            $table->dropColumn('city');
+            $table->dropColumn('country_code');
         });
     }
 }

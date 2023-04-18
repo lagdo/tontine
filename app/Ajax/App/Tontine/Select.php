@@ -4,10 +4,12 @@ namespace App\Ajax\App\Tontine;
 
 use App\Ajax\App\Meeting\Meeting;
 use App\Ajax\App\Meeting\Report as MeetingReport;
+use App\Ajax\App\Meeting\Summary\Summary;
 use App\Ajax\App\Planning\Planning;
 use App\Ajax\App\Planning\Pool;
 use App\Ajax\App\Planning\Report as PlanningReport;
 use App\Ajax\App\Planning\Session;
+use App\Ajax\App\Tontine\Member;
 use App\Ajax\CallableClass;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\MemberService;
@@ -146,9 +148,10 @@ class Select extends CallableClass
         $this->jq('#planning-menu-subscriptions')->click($this->cl(Pool::class)->rq()->home());
         $this->jq('#planning-menu-sessions')->click($this->cl(Session::class)->rq()->home());
         $this->jq('#planning-menu-beneficiaries')->click($this->cl(Planning::class)->rq()->beneficiaries());
-        $this->jq('#planning-menu-reports')->click($this->cl(PlanningReport::class)->rq()->home());
+        $this->jq('#planning-menu-balance')->click($this->cl(PlanningReport::class)->rq()->home());
         $this->jq('#meeting-menu-sessions')->click($this->cl(Meeting::class)->rq()->home());
-        $this->jq('#meeting-menu-reports')->click($this->cl(MeetingReport::class)->rq()->home());
+        $this->jq('#meeting-menu-members')->click($this->cl(Summary::class)->rq()->home());
+        $this->jq('#meeting-menu-balance')->click($this->cl(MeetingReport::class)->rq()->home());
 
         $this->dialog->hide();
 

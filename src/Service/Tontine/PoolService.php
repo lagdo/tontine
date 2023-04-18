@@ -137,4 +137,16 @@ class PoolService
             'round_id' => $this->tenantService->round(),
         ]);
     }
+
+    /**
+     * Get the number of sessions enabled for a pool.
+     *
+     * @param Pool $pool
+     *
+     * @return int
+     */
+    public function enabledSessionCount(Pool $pool): int
+    {
+        return $this->tenantService->round()->sessions->count() - $pool->disabledSessions->count();
+    }
 }

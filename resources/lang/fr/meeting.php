@@ -12,7 +12,7 @@ return [
         'deposits' => "Versements",
         'remitments' => "Remises",
         'fundings' => "Dépôts",
-        'loans' => "Enchères",
+        'loans' => "Emprunts",
         'amounts' => "Montants",
         'settlements' => "Règlements",
         'fine' => "Appliquer",
@@ -24,7 +24,7 @@ return [
         'deposits' => "Versements",
         'remitments' => "Remises",
         'settlements' => "Règlements",
-        'loans' => "Enchères",
+        'loans' => "Emprunts",
         'amounts' => "Montants",
         'report' => "Rapport",
         'summary' => "Résumé",
@@ -43,6 +43,11 @@ return [
         ],
         'report' => [
             'updated' => "Enregistré !",
+        ],
+    ],
+    'warnings' => [
+        'session' => [
+            'closed' => "Cette opération n'est pas permise lorsque la session est fermée.",
         ],
     ],
 ];
