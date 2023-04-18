@@ -8,9 +8,10 @@ return [
         'meeting' => "Réunion",
         'members' => "Membres",
         'charges' => "Frais et amendes",
+        'rounds' => "Tours",
         'sessions' => "Séances",
         'pools' => "Fonds",
-        'reports' => "Rapports",
+        'balance' => "Bilan",
         'subscriptions' => "Souscriptions",
         'beneficiaries' => "Bénéficiaires",
         'profile' => "Profil",
@@ -132,8 +133,8 @@ return [
         'titles' => [
             'add' => "Ajouter des fonds",
             'edit' => "Modifier un fond",
-            'deposits' => "Rapport des dépôts",
-            'remitments' => "Rapport des remises",
+            'deposits' => "Bilan des dépôts",
+            'remitments' => "Bilan des remises",
             'subscriptions' => "Souscriptions",
         ],
         'actions' => [

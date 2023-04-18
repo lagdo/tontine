@@ -148,10 +148,10 @@ class Select extends CallableClass
         $this->jq('#planning-menu-subscriptions')->click($this->cl(Pool::class)->rq()->home());
         $this->jq('#planning-menu-sessions')->click($this->cl(Session::class)->rq()->home());
         $this->jq('#planning-menu-beneficiaries')->click($this->cl(Planning::class)->rq()->beneficiaries());
-        $this->jq('#planning-menu-reports')->click($this->cl(PlanningReport::class)->rq()->home());
+        $this->jq('#planning-menu-balance')->click($this->cl(PlanningReport::class)->rq()->home());
         $this->jq('#meeting-menu-sessions')->click($this->cl(Meeting::class)->rq()->home());
         $this->jq('#meeting-menu-members')->click($this->cl(Summary::class)->rq()->home());
-        $this->jq('#meeting-menu-reports')->click($this->cl(MeetingReport::class)->rq()->home());
+        $this->jq('#meeting-menu-balance')->click($this->cl(MeetingReport::class)->rq()->home());
 
         $this->dialog->hide();
 
