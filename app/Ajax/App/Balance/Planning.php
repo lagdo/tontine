@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Planning;
+namespace App\Ajax\App\Balance;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
@@ -17,7 +17,7 @@ use function Jaxon\pm;
  * @databag report
  * @before getPool
  */
-class Report extends CallableClass
+class Planning extends CallableClass
 {
     /**
      * @var TenantService

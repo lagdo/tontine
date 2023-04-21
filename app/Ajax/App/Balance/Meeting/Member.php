@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Meeting\Summary;
+namespace App\Ajax\App\Balance\Meeting;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Member as MemberModel;

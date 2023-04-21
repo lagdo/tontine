@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Meeting;
+namespace App\Ajax\App\Balance\Meeting;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
@@ -14,7 +14,7 @@ use function intval;
  * @databag meeting
  * @before getPool
  */
-class Report extends CallableClass
+class Round extends CallableClass
 {
     /**
      * @di
