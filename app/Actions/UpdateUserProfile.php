@@ -2,20 +2,20 @@
 
 namespace App\Actions;
 
-use Illuminate\Support\Arr;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Validator;
+// use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
+use Siak\Tontine\Model\User;
 
 class UpdateUserProfile implements UpdatesUserProfileInformation
 {
     /**
      * Validate and update the given user's profile information.
      *
-     * @param  mixed  $user
-     * @param  array  $input
-     * @return void
+     * @param  array<string, string>  $input
      */
-    public function update($user, array $input)
+    public function update(User $user, array $input): void
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
@@ -23,17 +23,19 @@ class UpdateUserProfile implements UpdatesUserProfileInformation
             'country_code' => ['string', 'size:2'],
         ])->validateWithBag('profile');
 
-        $user->forceFill(Arr::only($input, ['name', 'city', 'country_code']))->save();
+        $user->forceFill([
+            'name' => $input['name'],
+            'city' => $input['city'],
+            'country_code' => $input['country_code'],
+        ])->save();
     }
 
     /**
      * Update the given verified user's profile information.
      *
-     * @param  mixed  $user
-     * @param  array  $input
-     * @return void
+     * @param  array<string, string>  $input
      */
-    protected function updateVerifiedUser($user, array $input)
+    protected function updateVerifiedUser(User $user, array $input): void
     {
         $user->forceFill([
             'name' => $input['name'],

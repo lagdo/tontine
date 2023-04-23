@@ -1,43 +1,42 @@
 {
-    "name": "lagdo/tontine",
+    "name": "laravel/laravel",
     "type": "project",
-    "description": "An online tontine management application.",
-    "keywords": ["tontine"],
+    "description": "The Laravel Framework.",
+    "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^7.4|^8.0",
+        "php": "^8.0.2",
         "ext-gmp": "*",
         "ext-json": "*",
-        "akaunting/laravel-money": "^1.2",
-        "chrome-php/chrome": "^1.6",
-        "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^7.0.1",
+        "akaunting/laravel-money": "^4.0",
+        "chrome-php/chrome": "^1.8",
+        "guzzlehttp/guzzle": "^7.2",
         "jaxon-php/jaxon-annotations": "^2.1",
-        "jaxon-php/jaxon-core": "^4.0",
+        "jaxon-php/jaxon-core": "^4.1",
         "jaxon-php/jaxon-dialogs": "^4.0",
         "jaxon-php/jaxon-laravel": "^4.0",
-        "laravel/fortify": "^1.13",
-        "laravel/framework": "^8.75",
-        "laravel/sanctum": "^2.11",
-        "laravel/tinker": "^2.5",
-        "laravelcollective/html": "^6.3",
-        "league/iso3166": "^4.1",
-        "mcamara/laravel-localization": "^1.7",
-        "propaganistas/laravel-phone": "^4.3",
-        "rinvex/countries": "^7.3",
+        "laravel/fortify": "^1.17",
+        "laravel/framework": "^9.19",
+        "laravel/sanctum": "^3.0",
+        "laravel/tinker": "^2.7",
+        "laravelcollective/html": "^6.4",
+        "league/iso3166": "^4.2",
+        "mcamara/laravel-localization": "^1.8",
+        "propaganistas/laravel-phone": "^5.0",
+        "rinvex/countries": "^9.0",
         "spatie/laravel-validation-rules": "^3.2",
         "umpirsky/country-list": "^2.0",
         "umpirsky/currency-list": "^1.1"
     },
     "require-dev": {
-        "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
+        "laravel-lang/common": "^3.1",
+        "laravel/pint": "^1.0",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^5.10",
-        "laravel-lang/lang": "^10.2",
-        "laravel-lang/publisher": "^12.2",
-        "phpunit/phpunit": "^9.5.10"
+        "nunomaduro/collision": "^6.1",
+        "phpunit/phpunit": "^9.5.10",
+        "spatie/laravel-ignition": "^1.0"
     },
     "autoload": {
         "psr-4": {
@@ -61,9 +60,7 @@
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
-            "@php -r \"is_dir('storage/annotations') || mkdir('storage/annotations');\""
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -80,7 +77,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
