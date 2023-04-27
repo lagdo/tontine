@@ -71,6 +71,10 @@ class Planning extends CallableClass
 
     public function beneficiaries()
     {
+        if(!$this->pool)
+        {
+            return $this->response;
+        }
         $payables = $this->reportService->getPayables($this->pool);
         $this->view()->shareValues($payables);
         $html = $this->view()->render('tontine.pages.planning.report.remitments')

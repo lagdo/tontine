@@ -65,6 +65,10 @@ class Round extends CallableClass
 
     public function home()
     {
+        if(!$this->pool)
+        {
+            return $this->response;
+        }
         return $this->amounts();
     }
 
