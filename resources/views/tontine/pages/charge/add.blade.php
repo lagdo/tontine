@@ -25,7 +25,7 @@
                       {!! Form::label('type', trans('common.labels.type'), ['class' => 'col-sm-2 col-form-label']) !!}
                       {!! Form::label('period', trans('common.labels.period'), ['class' => 'col-sm-3 col-form-label']) !!}
                       {!! Form::label('name', trans('common.labels.name'), ['class' => 'col-sm-5 col-form-label']) !!}
-                      {!! Form::label('amount', trans('common.labels.amount'), ['class' => 'col-sm-2 col-form-label']) !!}
+                      {!! Form::label('amount', trans('common.labels.amount') . " ($currency)", ['class' => 'col-sm-2 col-form-label']) !!}
                     </div>
 @for($i = 0; $i < $count; $i++)
                     <div class="form-group row">

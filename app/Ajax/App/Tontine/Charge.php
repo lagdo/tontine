@@ -3,6 +3,7 @@
 namespace App\Ajax\App\Tontine;
 
 use Siak\Tontine\Service\Charge\ChargeService;
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
 use App\Ajax\App\Faker;
 use App\Ajax\CallableClass;
@@ -14,6 +15,11 @@ use function trans;
 
 class Charge extends CallableClass
 {
+    /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @di
      * @var ChargeService
@@ -83,6 +89,7 @@ class Charge extends CallableClass
     }
 
     /**
+     * @di $localeService
      * @databag faker
      */
     public function add(int $count)
@@ -100,12 +107,16 @@ class Charge extends CallableClass
 
         $this->dialog->hide();
 
+        $tontine = $this->chargeService->getTontine();
+        [, $currency] = $this->localeService->getNameFromTontine($tontine);
+
         $useFaker = config('jaxon.app.faker', false);
         $types = ['Frais', 'Amende'];
         $periods = ['Aucune', 'Unique', 'Année', 'Séance'];
         $html = $this->view()->render('tontine.pages.charge.add')
             ->with('useFaker', $useFaker)
             ->with('count', $count)
+            ->with('currency', $currency)
             ->with('types', $types)
             ->with('periods', $periods);
         $this->response->html('content-home', $html);
@@ -133,15 +144,25 @@ class Charge extends CallableClass
         return $this->home();
     }
 
+    /**
+     * @di $localeService
+     */
     public function edit(int $chargeId)
     {
         $charge = $this->chargeService->getCharge($chargeId);
 
+        $tontine = $this->chargeService->getTontine();
+        [, $currency] = $this->localeService->getNameFromTontine($tontine);
+
         $title = trans('tontine.charge.titles.edit');
         $types = ['Frais', 'Amende'];
         $periods = ['Aucune', 'Unique', 'Année', 'Séance'];
-        $content = $this->view()->render('tontine.pages.charge.edit')->with('charge', $charge)
-            ->with('types', $types)->with('periods', $periods);
+        $content = $this->view()
+            ->render('tontine.pages.charge.edit')
+            ->with('charge', $charge)
+            ->with('currency', $currency)
+            ->with('types', $types)
+            ->with('periods', $periods);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

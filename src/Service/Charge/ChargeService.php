@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\Events\EventTrait;
 use Siak\Tontine\Service\TenantService;
 
@@ -24,6 +25,16 @@ class ChargeService
     public function __construct(TenantService $tenantService)
     {
         $this->tenantService = $tenantService;
+    }
+
+    /**
+     * Get the current tontine.
+     *
+     * @return Tontine|null
+     */
+    public function getTontine(): ?Tontine
+    {
+        return $this->tenantService->tontine();
     }
 
     /**
