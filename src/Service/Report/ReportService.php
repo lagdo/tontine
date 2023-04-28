@@ -130,7 +130,7 @@ class ReportService implements ReportServiceInterface
     {
         $tontine = $this->tenantService->tontine();
         $session = $this->tenantService->getSession($sessionId);
-        [$countries] = $this->localeService->getNamesFromTontine($tontine);
+        [$country] = $this->localeService->getNameFromTontine($tontine);
 
         $pools = $this->getPools($session);
 
@@ -163,7 +163,7 @@ class ReportService implements ReportServiceInterface
         return [
             'tontine' => $tontine,
             'session' => $session,
-            'countries' => $countries,
+            'country' => $country,
             'deposits' => [
                 'session' => $session,
                 'pools' => $pools,
@@ -206,11 +206,11 @@ class ReportService implements ReportServiceInterface
         $pool = $this->subscriptionService->getPool($poolId);
         $report = $this->meetingReportService->getFigures($pool);
         $tontine = $this->tenantService->tontine();
-        [$countries, $currencies] = $this->localeService->getNamesFromTontine($tontine);
+        [$country, $currency] = $this->localeService->getNameFromTontine($tontine);
 
         $report['tontine'] = $tontine;
-        $report['countries'] = $countries;
-        $report['currencies'] = $currencies;
+        $report['country'] = $country;
+        $report['currency'] = $currency;
 
         return $report;
     }

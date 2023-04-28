@@ -8,7 +8,7 @@
               <h3>{{ $tontine->name }}</h3>
             </div>
             <div class="col">
-              <h3 class="float-right">{{ $countries[$tontine->country_code] ?? '' }}</h3>
+              <h3 class="float-right">{{ $country }}</h3>
             </div>
           </div>
           <div class="row mt-2">

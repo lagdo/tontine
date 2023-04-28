@@ -118,9 +118,10 @@ class LocaleService
      *
      * @return array
      */
-    public function getNamesFromTontine(Tontine $tontine): array
+    public function getNameFromTontine(Tontine $tontine): array
     {
-        return $this->getNames([$tontine->country_code], [$tontine->currency_code]);
+        [$countries, $currencies] = $this->getNames([$tontine->country_code], [$tontine->currency_code]);
+        return [$countries[$tontine->country_code] ?? '', $currencies[$tontine->currency_code] ?? ''];
     }
 
     /**
@@ -132,7 +133,9 @@ class LocaleService
      */
     public function getNamesFromTontines(Collection $tontines): array
     {
-        return $this->getNames($tontines->pluck('country_code')->toArray(), $tontines->pluck('currency_code')->toArray());
+        $countryCodes = $tontines->pluck('country_code')->toArray();
+        $currencyCodes = $tontines->pluck('currency_code')->toArray();
+        return $this->getNames($countryCodes, $currencyCodes);
     }
 
     /**

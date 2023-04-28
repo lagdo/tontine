@@ -13,6 +13,7 @@ use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
+use function collect;
 use function trans;
 
 class Tontine extends CallableClass
@@ -140,7 +141,7 @@ class Tontine extends CallableClass
         $tontine = $this->tontineService->getTontine($tontineId);
 
         $title = trans('tontine.titles.edit');
-        [, $currencies] = $this->localeService->getNamesFromTontine($tontine);
+        [, $currencies] = $this->localeService->getNamesFromTontines(collect([$tontine]));
         $content = $this->view()->render('tontine.pages.tontine.edit')
             ->with('tontine', $tontine)
             ->with('types', $this->tontineService->getTontineTypes())
@@ -155,6 +156,7 @@ class Tontine extends CallableClass
             'class' => 'btn btn-primary',
             'click' => $this->rq()->update($tontine->id, pm()->form('tontine-form')),
         ]];
+
         $this->dialog->show($title, $content, $buttons, ['width' => '800']);
         $this->jq('#select_country_dropdown')->change($this->cl(Locale::class)->rq()->selectCurrencies(jq()->val()));
 
