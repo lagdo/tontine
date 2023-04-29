@@ -86,6 +86,16 @@ return [
             'updated' => "The charge was successfully updated.",
             'deleted' => "The charge was successfully deleted.",
         ],
+        'types' => [
+            'fee' => "Fee",
+            'fine' => "Fine",
+        ],
+        'periods' => [
+            'none' => "None",
+            'unique' => "Unique",
+            'round' => "Round",
+            'session' => "Session",
+        ],
     ],
     'bill' => [
         'errors' => [

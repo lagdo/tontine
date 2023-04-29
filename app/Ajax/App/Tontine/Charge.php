@@ -88,6 +88,24 @@ class Charge extends CallableClass
         return $this->response;
     }
 
+    private function getChargeTypes()
+    {
+        return [
+            trans('tontine.charge.types.fee'),
+            trans('tontine.charge.types.fine'),
+        ];
+    }
+
+    private function getChargePeriods()
+    {
+        return [
+            trans('tontine.charge.periods.none') . ' (' . trans('tontine.charge.types.fine') . ')',
+            trans('tontine.charge.periods.unique'),
+            trans('tontine.charge.periods.round'),
+            trans('tontine.charge.periods.session'),
+        ];
+    }
+
     /**
      * @di $localeService
      * @databag faker
@@ -111,14 +129,12 @@ class Charge extends CallableClass
         [, $currency] = $this->localeService->getNameFromTontine($tontine);
 
         $useFaker = config('jaxon.app.faker', false);
-        $types = ['Frais', 'Amende'];
-        $periods = ['Aucune', 'Unique', 'Année', 'Séance'];
         $html = $this->view()->render('tontine.pages.charge.add')
             ->with('useFaker', $useFaker)
             ->with('count', $count)
             ->with('currency', $currency)
-            ->with('types', $types)
-            ->with('periods', $periods);
+            ->with('types', $this->getChargeTypes())
+            ->with('periods', $this->getChargePeriods());
         $this->response->html('content-home', $html);
         $this->jq('#btn-cancel')->click($this->rq()->home());
         $this->jq('#btn-save')->click($this->rq()->create(pm()->form('charge-form')));
@@ -155,14 +171,12 @@ class Charge extends CallableClass
         [, $currency] = $this->localeService->getNameFromTontine($tontine);
 
         $title = trans('tontine.charge.titles.edit');
-        $types = ['Frais', 'Amende'];
-        $periods = ['Aucune', 'Unique', 'Année', 'Séance'];
         $content = $this->view()
             ->render('tontine.pages.charge.edit')
             ->with('charge', $charge)
             ->with('currency', $currency)
-            ->with('types', $types)
-            ->with('periods', $periods);
+            ->with('types', $this->getChargeTypes())
+            ->with('periods', $this->getChargePeriods());
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

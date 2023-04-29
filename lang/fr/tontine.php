@@ -86,6 +86,16 @@ return [
             'updated' => "La charge a été modifiée.",
             'deleted' => "La charge a été supprimée.",
         ],
+        'types' => [
+            'fee' => "Frais",
+            'fine' => "Amende",
+        ],
+        'periods' => [
+            'none' => "Aucune",
+            'unique' => "Unique",
+            'round' => "Tour",
+            'session' => "Séance",
+        ],
     ],
     'bill' => [
         'errors' => [
