@@ -20,14 +20,14 @@
           <div class="row mt-5">
             <div class="col">
               <h6 class="section-title">{{ __('meeting.titles.agenda') }}</h6>
-              <p>{{ $session->agenda }}</p>
+              <p>{!! $session->agenda !!}</p>
             </div>
           </div>
 
           <div class="row mt-5">
             <div class="col">
               <h6 class="section-title">{{ __('meeting.titles.report') }}</h6>
-              <p>{{ $session->report }}</p>
+              <p>{!! $session->report !!}</p>
             </div>
           </div>
           <div class="pagebreak"></div>

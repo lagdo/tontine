@@ -23,7 +23,7 @@ class Meeting extends CallableClass
     public function home()
     {
         $this->response->html('section-title', trans('tontine.menus.meeting'));
-        $html = $this->view()->render('tontine.pages.meeting.session.home');
+        $html = $this->view()->render('tontine.pages.meeting.session.list');
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-sessions-refresh')->click($this->rq()->page());

@@ -26,6 +26,7 @@ return [
         'settlements' => "Règlements",
         'loans' => "Emprunts",
         'amounts' => "Montants",
+        'reports' => "Rapports",
         'report' => "Rapport",
         'summary' => "Résumé",
         'fine' => "Appliquer",

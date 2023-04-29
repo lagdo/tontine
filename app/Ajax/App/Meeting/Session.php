@@ -18,6 +18,7 @@ use Siak\Tontine\Service\Meeting\PoolService;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Model\Session as SessionModel;
 
+use function Jaxon\jq;
 use function Jaxon\pm;
 use function trans;
 
@@ -79,42 +80,60 @@ class Session extends CallableClass
     }
 
     /**
-     * @databag refund
+     * @param bool $isMutual
+     *
+     * @return void
      */
-    public function home(int $sessionId)
+    private function pools(bool $isMutual)
     {
-        $this->bag('meeting')->set('session.id', $sessionId);
-        $this->bag('refund')->set('session.id', $sessionId);
-
-        return $this->pools();
+        $this->cl(Deposit::class)->show($this->session, $this->poolService);
+        $remitmentClass = ($isMutual ? Remitment\Mutual::class : Remitment\Financial::class);
+        $this->cl($remitmentClass)->show($this->session, $this->poolService);
     }
 
-    public function pools()
+    /**
+     * @return void
+     */
+    private function credits()
     {
-        $tontine = $this->poolService->getTontine();
-        $html = $this->view()->render('tontine.pages.meeting.session.pools', [
-            'tontine' => $tontine,
-            'session' => $this->session,
-        ]);
-        $this->response->html('content-home', $html);
+        $this->cl(Funding::class)->show($this->session, $this->fundingService);
+        $this->cl(Loan::class)->show($this->session, $this->loanService);
+        $this->cl(Principal::class)->show($this->session, $this->refundService);
+        $this->cl(Interest::class)->show($this->session, $this->refundService);
+    }
 
-        $openQuestion = trans('tontine.session.questions.open') . '<br/>' .
-            trans('tontine.session.questions.warning');
-        $this->jq('#btn-session-back')->click($this->cl(Meeting::class)->rq()->home());
-        $this->jq('#btn-session-refresh')->click($this->rq()->pools());
-        $this->jq('#btn-session-credits')->click($this->rq()->credits());
-        $this->jq('#btn-session-charges')->click($this->rq()->charges());
-        $this->jq('#btn-session-open')->click($this->rq()->open()->confirm($openQuestion));
-        $this->jq('#btn-session-close')->click($this->rq()->close()
-            ->confirm(trans('tontine.session.questions.close')));
-        $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
-        $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
+    /**
+     * @return void
+     */
+    private function charges()
+    {
+        $this->cl(Fee::class)->show($this->session, $this->feeService);
+        $this->cl(Fine::class)->show($this->session, $this->fineService);
+    }
 
-        $this->cl(Deposit::class)->show($this->session, $this->poolService);
-        $remitmentClass = ($tontine->is_mutual ? Remitment\Mutual::class : Remitment\Financial::class);
-        $this->cl($remitmentClass)->show($this->session, $this->poolService);
-
-        return $this->response;
+    /**
+     * @return void
+     */
+    private function reports()
+    {
+        $options = [
+            'height' => 300,
+            'toolbar' => [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                // ['height', ['height']],
+            ],
+        ];
+        $this->jq('#session-agenda')->summernote($options);
+        $this->jq('#session-report')->summernote($options);
+        $agendaText = jq('#session-agenda')->summernote('code');
+        $reportText = jq('#session-report')->summernote('code');
+        $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda($agendaText));
+        $this->jq('#btn-save-report')->click($this->rq()->saveReport($reportText));
     }
 
     /**
@@ -122,67 +141,35 @@ class Session extends CallableClass
      * @di $fundingService
      * @di $loanService
      * @di $refundService
-     */
-    public function credits()
-    {
-        $html = $this->view()->render('tontine.pages.meeting.session.credits', [
-            'tontine' => $this->poolService->getTontine(),
-            'session' => $this->session,
-        ]);
-        $this->response->html('content-home', $html);
-
-        $openQuestion = trans('tontine.session.questions.open') . '<br/>' .
-            trans('tontine.session.questions.warning');
-        $this->jq('#btn-session-back')->click($this->cl(Meeting::class)->rq()->home());
-        $this->jq('#btn-session-refresh')->click($this->rq()->credits());
-        $this->jq('#btn-session-pools')->click($this->rq()->pools());
-        $this->jq('#btn-session-charges')->click($this->rq()->charges());
-        $this->jq('#btn-session-open')->click($this->rq()->open()->confirm($openQuestion));
-        $this->jq('#btn-session-close')->click($this->rq()->close()
-            ->confirm(trans('tontine.session.questions.close')));
-        $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
-        $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
-
-        $this->cl(Funding::class)->show($this->session, $this->fundingService);
-        $this->cl(Loan::class)->show($this->session, $this->loanService);
-        $this->cl(Principal::class)->show($this->session, $this->refundService);
-        $this->cl(Interest::class)->show($this->session, $this->refundService);
-
-        return $this->response;
-    }
-
-    /**
      * @di $feeService
      * @di $fineService
      */
-    public function charges()
+    public function home(int $sessionId)
     {
-        $html = $this->view()->render('tontine.pages.meeting.session.charges', [
-            'tontine' => $this->poolService->getTontine(),
+        $this->bag('meeting')->set('session.id', $sessionId);
+        $this->bag('refund')->set('session.id', $sessionId);
+
+        $tontine = $this->poolService->getTontine();
+        $html = $this->view()->render('tontine.pages.meeting.session.home', [
+            'tontine' => $tontine,
             'session' => $this->session,
         ]);
         $this->response->html('content-home', $html);
+        $this->jq('a', '#session-tabs')->click(pm()->js('function(){' . jq()->tab('show') . '}'));
 
         $openQuestion = trans('tontine.session.questions.open') . '<br/>' .
             trans('tontine.session.questions.warning');
         $this->jq('#btn-session-back')->click($this->cl(Meeting::class)->rq()->home());
-        $this->jq('#btn-session-refresh')->click($this->rq()->charges());
-        $this->jq('#btn-session-pools')->click($this->rq()->pools());
-        $this->jq('#btn-session-credits')->click($this->rq()->credits());
+        $this->jq('#btn-session-refresh')->click($this->rq()->home());
         $this->jq('#btn-session-open')->click($this->rq()->open()->confirm($openQuestion));
         $this->jq('#btn-session-close')->click($this->rq()->close()
             ->confirm(trans('tontine.session.questions.close')));
-        $this->jq('#btn-save-agenda')->click($this->rq()->saveAgenda(pm()->input('text-session-agenda')));
-        $this->jq('#btn-save-report')->click($this->rq()->saveReport(pm()->input('text-session-report')));
 
-        $this->cl(Fee::class)->show($this->session, $this->feeService);
-        $this->cl(Fine::class)->show($this->session, $this->fineService);
+        $this->pools($tontine->is_mutual);
+        $this->credits();
+        $this->charges();
+        $this->reports();
 
-        return $this->response;
-    }
-
-    public function report()
-    {
         return $this->response;
     }
 
