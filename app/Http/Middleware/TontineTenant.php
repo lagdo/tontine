@@ -3,6 +3,9 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Siak\Tontine\Model\Round;
+use Siak\Tontine\Model\Tontine;
+use Siak\Tontine\Model\User;
 use Siak\Tontine\Service\TenantService;
 use Closure;
 
@@ -24,25 +27,38 @@ class TontineTenant
         $this->tenantService = $tenantService;
     }
 
-    private function initTontine()
+    /**
+     * Get the latest user tontine, from the session or the database.
+     *
+     * @param User $user
+     *
+     * @return Tontine|null
+     */
+    private function getLatestTontine(User $user): ?Tontine
     {
-        $user = auth()->user();
-        $this->tenantService->setUser($user);
-        $tontine = $user->tontines()->find(session('tontine.id', 0));
-        if(!$tontine)
+        $tontine = null;
+        if(($tontineId = session('tontine.id', 0)) > 0)
         {
-            session(['tontine.id' => 0, 'round.id' => 0]);
-            return;
+            $tontine = $user->tontines()->find($tontineId);
         }
+        return $tontine !== null ? $tontine : $user->tontines()->first();
+    }
 
-        $this->tenantService->setTontine($tontine);
-        $round = $tontine->rounds()->find(session('round.id', 0));
-        if(!$round)
+    /**
+     * Get the latest tontine round, from the session or the database.
+     *
+     * @param Tontine $tontine
+     *
+     * @return Round|null
+     */
+    private function getLatestRound(Tontine $tontine): ?Round
+    {
+        $round = null;
+        if(($roundId = session('round.id', 0)) > 0)
         {
-            session(['round.id' => 0]);
-            return;
+            $round = $tontine->rounds()->find($roundId);
         }
-        $this->tenantService->setRound($round);
+        return $round !== null ? $round : $tontine->rounds()->first();
     }
 
     /**
@@ -50,11 +66,28 @@ class TontineTenant
      *
      * @param Request $request
      * @param Closure $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        $this->initTontine();
+        /** @var User */
+        $user = auth()->user();
+        $this->tenantService->setUser($user);
+
+        $tontineId = 0;
+        $roundId = 0;
+        if(($tontine = $this->getLatestTontine($user)) !== null)
+        {
+            $tontineId = $tontine->id;
+            $this->tenantService->setTontine($tontine);
+            if(($round = $this->getLatestRound($tontine)) !== null)
+            {
+                $roundId = $round->id;
+                $this->tenantService->setRound($round);
+            }
+        }
+        session(['tontine.id' => $tontineId, 'round.id' => $roundId]);
 
         return $next($request);
     }

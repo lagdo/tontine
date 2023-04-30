@@ -60,6 +60,15 @@ class Tontine extends CallableClass
         $this->response->html('section-title', trans('tontine.menus.tontines'));
         $this->response->html('content-home', $this->view()->render('tontine.pages.tontine.home'));
 
+        if(($tontine = $this->tenantService->tontine()))
+        {
+            $this->selectTontine($tontine);
+        }
+        if(($round = $this->tenantService->round()))
+        {
+            $this->selectRound($round);
+        }
+
         $this->jq('#btn-tontine-create')->click($this->rq()->add());
         $this->jq('#btn-tontine-refresh')->click($this->rq()->home());
         $this->jq('#btn-show-select')->click($this->cl(Select::class)->rq()->show());

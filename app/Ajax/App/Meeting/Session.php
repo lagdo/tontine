@@ -116,6 +116,7 @@ class Session extends CallableClass
      */
     private function reports()
     {
+        // Summernote options
         $options = [
             'height' => 300,
             'toolbar' => [
@@ -174,6 +175,12 @@ class Session extends CallableClass
     }
 
     /**
+     * @databag refund
+     * @di $fundingService
+     * @di $loanService
+     * @di $refundService
+     * @di $feeService
+     * @di $fineService
      * @di $sessionService
      */
     public function open()
@@ -185,6 +192,12 @@ class Session extends CallableClass
     }
 
     /**
+     * @databag refund
+     * @di $fundingService
+     * @di $loanService
+     * @di $refundService
+     * @di $feeService
+     * @di $fineService
      * @di $sessionService
      */
     public function close()
