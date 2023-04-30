@@ -15,12 +15,11 @@ return new class extends Migration
     {
         Schema::create('refunds', function (Blueprint $table) {
             $table->id();
-            $table->char('type', 1); // enum('type', ['p', 'i']); // "principal" and "interest".
             $table->unsignedBigInteger('session_id');
             $table->foreign('session_id')->references('id')->on('sessions');
-            $table->unsignedBigInteger('loan_id');
-            $table->foreign('loan_id')->references('id')->on('loans');
-            $table->unique(['type', 'loan_id']);
+            $table->unsignedBigInteger('debt_id');
+            $table->foreign('debt_id')->references('id')->on('debts');
+            $table->unique('debt_id'); // There can't be more than one refund for a debt.
         });
     }
 
