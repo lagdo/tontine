@@ -4,7 +4,6 @@ namespace App\Ajax\App\Tontine;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
 use function Jaxon\pm;
@@ -27,20 +26,6 @@ class Select extends CallableClass
      * @var TontineService
      */
     protected TontineService $tontineService;
-
-    /**
-     * @var MemberService
-     */
-    protected MemberService $memberService;
-
-    /**
-     * @exclude
-     */
-    public function resetSidebarMenu()
-    {
-        $this->response->html('sidebar-menu-tontine', $this->view()->render('tontine.parts.sidebar.tontine'));
-        $this->response->html('sidebar-menu-round', $this->view()->render('tontine.parts.sidebar.round'));
-    }
 
     public function show()
     {
@@ -67,13 +52,9 @@ class Select extends CallableClass
         return $this->response;
     }
 
-    /**
-     * @di $memberService
-     */
     public function saveTontine(int $tontineId)
     {
-        $tontine = $this->tontineService->getTontine($tontineId);
-        if(!$tontine)
+        if(!($tontine = $this->tontineService->getTontine($tontineId)))
         {
             return $this->response;
         }
@@ -109,8 +90,7 @@ class Select extends CallableClass
 
     public function saveRound(int $roundId)
     {
-        $round = $this->tontineService->getRound($roundId);
-        if(!$round)
+        if(!($round = $this->tontineService->getRound($roundId)))
         {
             return $this->response;
         }
