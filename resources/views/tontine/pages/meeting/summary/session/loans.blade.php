@@ -7,8 +7,8 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>{{ __('common.labels.title') }}</th>
-                          <th>{{ __('tontine.loan.labels.principal') }}</th>
+                          <th>&nbsp;</th>
+                          <th>{{ __('common.labels.amount') }}</th>
                           <th>{{ __('tontine.loan.labels.interest') }}</th>
                         </tr>
                       </thead>

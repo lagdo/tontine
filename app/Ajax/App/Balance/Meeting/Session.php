@@ -70,8 +70,8 @@ class Session extends CallableClass
             $this->remitments($session);
             if($tontine->is_financial)
             {
-                $this->fundings($session);
                 $this->loans($session);
+                $this->refunds($session);
             }
             $this->fees($session);
             $this->fines($session);
@@ -99,31 +99,20 @@ class Session extends CallableClass
         $this->response->html('member-remitments', $html);
     }
 
-    private function fundings(SessionModel $session)
-    {
-        $html = $this->view()->render('tontine.pages.meeting.summary.session.fundings', [
-            'funding' => $this->sessionSummaryService->getFunding($session),
-        ]);
-        $this->response->html('member-fundings', $html);
-    }
-
     private function loans(SessionModel $session)
     {
         $html = $this->view()->render('tontine.pages.meeting.summary.session.loans', [
             'loan' => $this->sessionSummaryService->getLoan($session),
         ]);
         $this->response->html('member-loans', $html);
+    }
 
-        $refund = $this->sessionSummaryService->getRefund($session);
-        $html = $this->view()->render('tontine.pages.meeting.summary.session.refunds.principal', [
-            'refund' => $refund,
+    private function refunds(SessionModel $session)
+    {
+        $html = $this->view()->render('tontine.pages.meeting.summary.session.refunds', [
+            'refund' => $this->sessionSummaryService->getRefund($session),
         ]);
-        $this->response->html('member-refunds-principal', $html);
-
-        $html = $this->view()->render('tontine.pages.meeting.summary.session.refunds.interest', [
-            'refund' => $refund,
-        ]);
-        $this->response->html('member-refunds-interest', $html);
+        $this->response->html('member-refunds', $html);
     }
 
     private function fees(SessionModel $session)
