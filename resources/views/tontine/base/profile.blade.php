@@ -41,7 +41,7 @@
                     </div>
                     <div class="form-group">
                       {!! Form::label('city', __('common.labels.city')) !!}
-                      {!! Form::text('city', old('city', $user->city), [
+                      {!! Form::text('city', old('city', $user->profile->city), [
                         'class' => $errors->profile->has('city') ? 'form-control is-invalid' : 'form-control',
                       ]) !!}
 @if($errors->profile->has('city'))
@@ -51,8 +51,15 @@
 @endif
                     </div>
                     <div class="form-group">
-                      {!! Form::label('country_code', __('common.labels.country')) !!}
-                      {!! Form::select('country_code', $countries, old('country_code', $user->country_code), ['class' => 'form-control']) !!}
+                      {!! Form::label('country', __('common.labels.country')) !!}
+                      {!! Form::select('country', $countries, old('country', $user->profile->country_code), [
+                        'class' => $errors->profile->has('country') ? 'form-control is-invalid' : 'form-control'
+                      ]) !!}
+@if($errors->profile->has('country'))
+                      <div class="invalid-feedback">
+                        {{ $errors->profile->first('country') }}
+                      </div>
+@endif
                     </div>
                   </div>
                   <div class="card-footer text-right">

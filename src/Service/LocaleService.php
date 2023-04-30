@@ -57,7 +57,7 @@ class LocaleService
      */
     public function getCountries(): array
     {
-        return ['' => ''] + include($this->countriesDataDir . "/{$this->locale}/country.php");
+        return include($this->countriesDataDir . "/{$this->locale}/country.php");
     }
 
     /**

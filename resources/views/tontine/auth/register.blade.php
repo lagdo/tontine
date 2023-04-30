@@ -29,6 +29,14 @@
                   </div>
 
                   <div class="form-group">
+                    {!! Form::label('country', __('common.labels.country')) !!}
+                    {!! Form::select('country', $countries, old('country', ''), [
+                      'class' => $errors->has('country') ? 'form-control is-invalid' : 'form-control'
+                    ]) !!}
+                    <div class="invalid-feedback">{{ $errors->first('country') }}</div>
+                  </div>
+
+                  <div class="form-group">
                     <label for="password" class="d-block">Password</label>
                     <input id="password" type="password" class="form-control pwstrength @error('password')is-invalid @enderror" data-indicator="pwindicator" name="password">
                     <div class="invalid-feedback">{{ $errors->first('password') }}</div>

@@ -64,12 +64,11 @@ class TontineTenant
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param Closure $next
-     *
-     * @return mixed
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         /** @var User */
         $user = auth()->user();

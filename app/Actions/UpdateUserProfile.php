@@ -19,14 +19,16 @@ class UpdateUserProfile implements UpdatesUserProfileInformation
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-            'city' => ['string', 'max:100'],
-            'country_code' => ['string', 'size:2'],
+            'city' => ['nullable', 'string', 'max:100'],
+            'country' => ['required', 'string', 'size:2'],
         ])->validateWithBag('profile');
 
         $user->forceFill([
             'name' => $input['name'],
-            'city' => $input['city'],
-            'country_code' => $input['country_code'],
+        ])->save();
+        $user->profile->fill([
+            'city' => $input['city'] ?? '',
+            'country_code' => $input['country'],
         ])->save();
     }
 
@@ -41,6 +43,9 @@ class UpdateUserProfile implements UpdatesUserProfileInformation
             'name' => $input['name'],
             'email' => $input['email'],
             'email_verified_at' => null,
+        ])->save();
+        $user->profile->fill([
+            'country_code' => $input['country'],
         ])->save();
 
         $user->sendEmailVerificationNotification();
