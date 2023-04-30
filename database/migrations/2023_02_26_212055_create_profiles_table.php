@@ -13,10 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::create('profiles', function (Blueprint $table) {
+            $table->id();
             $table->string('address', 500)->nullable();
             $table->string('city', 100)->nullable();
-            $table->string('country_code', 2)->nullable();
+            $table->string('country_code', 2);
+            $table->json('properties');
+            $table->bigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->unique('user_id');
         });
     }
 
@@ -27,10 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('address');
-            $table->dropColumn('city');
-            $table->dropColumn('country_code');
-        });
+        Schema::dropIfExists('profiles');
     }
 };
