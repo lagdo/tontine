@@ -161,7 +161,7 @@ class Session extends CallableClass
         $openQuestion = trans('tontine.session.questions.open') . '<br/>' .
             trans('tontine.session.questions.warning');
         $this->jq('#btn-session-back')->click($this->cl(Meeting::class)->rq()->home());
-        $this->jq('#btn-session-refresh')->click($this->rq()->home());
+        $this->jq('#btn-session-refresh')->click($this->rq()->home($sessionId));
         $this->jq('#btn-session-open')->click($this->rq()->open()->confirm($openQuestion));
         $this->jq('#btn-session-close')->click($this->rq()->close()
             ->confirm(trans('tontine.session.questions.close')));

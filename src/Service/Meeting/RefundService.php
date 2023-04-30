@@ -4,8 +4,7 @@ namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Siak\Tontine\Model\Loan;
+use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
@@ -46,39 +45,45 @@ class RefundService
     }
 
     /**
-     * @param callable $query           A callable that returns the base query
-     * @param string $refundRelation
+     * @param string $type
      * @param int $sessionId
      * @param Collection $prevSessions
      * @param bool $onlyPaid
      *
      * @return Builder
      */
-    private function getQuery(callable $query, string $refundRelation, int $sessionId,
-        Collection $prevSessions, ?bool $onlyPaid): Builder
+    private function getQuery(string $type, int $sessionId, Collection $prevSessions, ?bool $onlyPaid): Builder
     {
-        // The loans of the current session.
-        $sessionQuery = $query()->where('session_id', $sessionId);
+        // The debts of the current session.
+        $sessionQuery = Debt::whereType($type)
+            ->select('debts.*')
+            ->join('loans', 'loans.id', '=', 'debts.loan_id')
+            ->where('loans.session_id', $sessionId);
         // The filter applies only to this query.
         if($onlyPaid === false)
         {
-            $sessionQuery->whereDoesntHave($refundRelation);
+            $sessionQuery->whereDoesntHave('refund');
         }
         elseif($onlyPaid === true)
         {
-            $sessionQuery->whereHas($refundRelation);
+            $sessionQuery->whereHas('refund');
         }
         if($prevSessions->count() === 0)
         {
             return $sessionQuery;
         }
 
-        // The loans of the previous sessions that are not yet settled.
-        $unpaidQuery = $query()->whereIn('session_id', $prevSessions)->whereDoesntHave($refundRelation);
-        // The loans of the previous sessions that are settled in the session.
-        $paidQuery = $query()->whereHas($refundRelation, function(Builder $query) use($sessionId) {
-            $query->where('session_id', $sessionId);
-        });
+        // The debts of the previous sessions that are not yet settled.
+        $unpaidQuery = Debt::whereType($type)
+            ->select('debts.*')
+            ->join('loans', 'loans.id', '=', 'debts.loan_id')
+            ->whereIn('loans.session_id', $prevSessions)
+            ->whereDoesntHave('refund');
+        // The debts of the previous sessions that are settled in the session.
+        $paidQuery = Debt::whereType($type)
+            ->whereHas('refund', function(Builder $query) use($sessionId) {
+                $query->where('session_id', $sessionId);
+            });
 
         if($onlyPaid === false)
         {
@@ -89,56 +94,6 @@ class RefundService
             return $sessionQuery->union($paidQuery);
         }
         return $sessionQuery->union($unpaidQuery)->union($paidQuery);
-    }
-
-    /**
-     * @param int $sessionId
-     * @param Collection $prevSessions
-     * @param bool $onlyPaid
-     *
-     * @return Builder
-     */
-    private function getPrincipalQuery(int $sessionId, Collection $prevSessions, ?bool $onlyPaid): Builder
-    {
-        $query = function() {
-            return Loan::select('id', 'amount', DB::raw("'principal' as type"),
-                'session_id', 'member_id')->where('amount', '>', 0);
-        };
-        return $this->getQuery($query, 'principal_refund', $sessionId, $prevSessions, $onlyPaid);
-    }
-
-    /**
-     * @param int $sessionId
-     * @param Collection $prevSessions
-     * @param bool $onlyPaid
-     *
-     * @return mixed
-     */
-    private function getInterestQuery(int $sessionId, Collection $prevSessions, ?bool $onlyPaid)
-    {
-        $query = function() {
-            return Loan::select('id', DB::raw('interest as amount'), DB::raw("'interest' as type"),
-                'session_id', 'member_id')->where('interest', '>', 0);
-        };
-        return $this->getQuery($query, 'interest_refund', $sessionId, $prevSessions, $onlyPaid);
-    }
-
-    /**
-     * @param Session $session The session
-     * @param bool $onlyPaid
-     *
-     * @return mixed
-     */
-    private function getDebtQuery(Session $session, ?bool $onlyPaid)
-    {
-        $prevSessions = $this->tenantService->round()->sessions()
-            ->where('start_at', '<', $session->start_at)->pluck('id');
-        // For each loan, 2 "debts" will be displayed:
-        // one for the principal, another one for the interest.
-        $principal = $this->getPrincipalQuery($session->id, $prevSessions, $onlyPaid);
-        $interest = $this->getInterestQuery($session->id, $prevSessions, $onlyPaid);
-
-        return $principal->union($interest);
     }
 
     /**
@@ -153,7 +108,7 @@ class RefundService
     {
         $prevSessions = $this->tenantService->round()->sessions()
             ->where('start_at', '<', $session->start_at)->pluck('id');
-        return $this->getPrincipalQuery($session->id, $prevSessions, $onlyPaid)->count();
+        return $this->getQuery(Debt::TYPE_PRINCIPAL, $session->id, $prevSessions, $onlyPaid)->count();
     }
 
     /**
@@ -168,7 +123,7 @@ class RefundService
     {
         $prevSessions = $this->tenantService->round()->sessions()
             ->where('start_at', '<', $session->start_at)->pluck('id');
-        return $this->getInterestQuery($session->id, $prevSessions, $onlyPaid)->count();
+        return $this->getQuery(Debt::TYPE_INTEREST, $session->id, $prevSessions, $onlyPaid)->count();
     }
 
     /**
@@ -184,19 +139,18 @@ class RefundService
     {
         $prevSessions = $this->tenantService->round()->sessions()
             ->where('start_at', '<', $session->start_at)->pluck('id');
-        $query = $this->getPrincipalQuery($session->id, $prevSessions, $onlyPaid);
+        $query = $this->getQuery(Debt::TYPE_PRINCIPAL, $session->id, $prevSessions, $onlyPaid);
         if($page > 0 )
         {
             $query->take($this->tenantService->getLimit());
             $query->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        $debts = $query->with(['principal_refund', 'member', 'session'])
-            ->orderBy('member_id', 'desc')->orderBy('type', 'desc')->get();
-
-        return $debts->each(function($debt) {
-            $debt->amount = $this->localeService->formatMoney($debt->amount);
-            $debt->refund_id = $debt->principal_refund ? $debt->principal_refund->id : 0;
-        });
+        return $query->with(['loan', 'loan.member', 'loan.session', 'refund'])
+            ->orderBy('type', 'desc')
+            ->get()
+            ->each(function($debt) {
+                $debt->amount = $this->localeService->formatMoney($debt->due);
+            });
     }
 
     /**
@@ -212,19 +166,18 @@ class RefundService
     {
         $prevSessions = $this->tenantService->round()->sessions()
             ->where('start_at', '<', $session->start_at)->pluck('id');
-        $query = $this->getInterestQuery($session->id, $prevSessions, $onlyPaid);
+        $query = $this->getQuery(Debt::TYPE_INTEREST, $session->id, $prevSessions, $onlyPaid);
         if($page > 0 )
         {
             $query->take($this->tenantService->getLimit());
             $query->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        $debts = $query->with(['interest_refund', 'member', 'session'])
-            ->orderBy('member_id', 'desc')->orderBy('type', 'desc')->get();
-
-        return $debts->each(function($debt) {
-            $debt->amount = $this->localeService->formatMoney($debt->amount);
-            $debt->refund_id = $debt->interest_refund ? $debt->interest_refund->id : 0;
-        });
+        return $query->with(['loan', 'loan.member', 'loan.session', 'refund'])
+            ->orderBy('type', 'desc')
+            ->get()
+            ->each(function($debt) {
+                $debt->amount = $this->localeService->formatMoney($debt->due);
+            });
     }
 
     /**
@@ -243,26 +196,30 @@ class RefundService
             $refunds->take($this->tenantService->getLimit());
             $refunds->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $refunds->with('loan.member')->get();
+        return $refunds->with('debt.loan.member')->get();
     }
 
     /**
      * Create a refund.
      *
      * @param Session $session The session
-     * @param int $loanId
-     * @param string $type
+     * @param int $debtId
      *
      * @return void
      */
-    public function createRefund(Session $session, int $loanId, string $type): void
+    public function createRefund(Session $session, int $debtId): void
     {
         $sessionIds = $this->tenantService->round()->sessions()->pluck('id');
-        $loan = Loan::whereIn('session_id', $sessionIds)->find($loanId);
+        $debt = Debt::whereHas('loan', function(Builder $query) use($sessionIds) {
+            $query->whereIn('session_id', $sessionIds);
+        })->find($debtId);
+        if(!$debt)
+        {
+            return;
+        }
 
         $refund = new Refund();
-        $refund->type = $type;
-        $refund->loan()->associate($loan);
+        $refund->debt()->associate($debt);
         $refund->session()->associate($session);
         $refund->save();
     }
@@ -278,19 +235,5 @@ class RefundService
     public function deleteRefund(Session $session, int $refundId): void
     {
         $session->refunds()->where('id', $refundId)->delete();
-    }
-
-    /**
-     * Get the refund sum.
-     *
-     * @param Session $session The session
-     *
-     * @return string
-     */
-    public function getRefundSum(Session $session): string
-    {
-        return $this->localeService->formatMoney($session->refunds()
-            ->join('loans', 'loans.id', '=', 'refunds.loan_id')
-            ->sum('loans.amount'));
     }
 }

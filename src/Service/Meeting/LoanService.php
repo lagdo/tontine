@@ -2,15 +2,15 @@
 
 namespace Siak\Tontine\Service\Meeting;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Funding;
 use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
@@ -117,25 +117,23 @@ class LoanService
         $sessionIds = $this->tenantService->getFieldInSessions($session);
 
         // The amount available for lending is the sum of the fundings and refunds,
-        // minus the sum of the loans, for all the sessions before the selected.
+        // minus the sum of the loans, for all the sessions until the selected.
         $funding = Funding::select(DB::raw('sum(amount) as total'))
             ->whereIn('session_id', $sessionIds)
             ->value('total');
-        $interest = Refund::interest()
-            ->join('loans', 'refunds.loan_id', '=', 'loans.id')
-            ->select(DB::raw('sum(loans.interest) as total'))
-            ->whereIn('refunds.session_id', $sessionIds)
-            ->value('total');
-        $principal = Refund::principal()
-            ->join('loans', 'refunds.loan_id', '=', 'loans.id')
-            ->select(DB::raw('sum(loans.amount) as total'))
-            ->whereIn('refunds.session_id', $sessionIds)
+        $debtAmountValue = "CASE WHEN debts.type='" . Debt::TYPE_PRINCIPAL .
+            "' THEN loans.amount ELSE loans.interest END";
+        $refund = Debt::join('loans', 'debts.loan_id', '=', 'loans.id')
+            ->select(DB::raw("sum($debtAmountValue) as total"))
+            ->whereHas('refund', function(Builder $query) use($sessionIds) {
+                $query->whereIn('session_id', $sessionIds);
+            })
             ->value('total');
         $loan = Loan::select(DB::raw('sum(amount) as total'))
             ->whereIn('session_id', $sessionIds)
             ->value('total');
 
-        return $funding + $principal + $interest - $loan;
+        return $funding + $refund - $loan;
     }
 
     /**
@@ -181,26 +179,32 @@ class LoanService
      * Create a loan.
      *
      * @param Session $session The session
-     * @param int $memberId
+     * @param Member $member
      * @param int $amount
      * @param int $interest
      *
-     * @return void
+     * @return Loan
      */
-    public function createLoan(Session $session, int $memberId, int $amount, int $interest): void
+    public function createLoan(Session $session, Member $member, int $amount, int $interest): Loan
     {
-        $member = $this->getMember($memberId);
-        if(!$member)
-        {
-            throw new MessageException(trans('tontine.member.errors.not_found'));
-        }
-
         $loan = new Loan();
         $loan->amount = $amount;
         $loan->interest = $interest;
         $loan->member()->associate($member);
         $loan->session()->associate($session);
-        $loan->save();
+        return DB::transaction(function() use($loan) {
+            $loan->save();
+            // Create an entry for each type of debt
+            if($loan->amount > 0)
+            {
+                $loan->debts()->create(['type' => Debt::TYPE_PRINCIPAL]);
+            }
+            if($loan->interest > 0)
+            {
+                $loan->debts()->create(['type' => Debt::TYPE_INTEREST]);
+            }
+            return $loan;
+        });
     }
 
     /**
@@ -213,6 +217,12 @@ class LoanService
      */
     public function deleteLoan(Session $session, int $loanId): void
     {
-        $session->loans()->where('id', $loanId)->delete();
+        if(($loan = $session->loans()->find($loanId)) !== null)
+        {
+            DB::transaction(function() use($loan) {
+                $loan->debts()->delete();
+                $loan->delete();
+            });
+        }
     }
 }

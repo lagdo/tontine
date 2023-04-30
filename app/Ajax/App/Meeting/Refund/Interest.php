@@ -4,7 +4,6 @@ namespace App\Ajax\App\Meeting\Refund;
 
 use App\Ajax\CallableClass;
 use App\Ajax\App\Meeting\Credit\Loan;
-use Siak\Tontine\Model\Refund as RefundModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\LoanService;
 use Siak\Tontine\Service\Meeting\RefundService;
@@ -88,6 +87,7 @@ class Interest extends CallableClass
         $html = $this->view()->render('tontine.pages.meeting.refund.page', [
             'session' => $this->session,
             'debts' => $debts,
+            'type' => 'interest',
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-interest-debts-page', $html);
@@ -114,7 +114,7 @@ class Interest extends CallableClass
      * @di $validator
      * @di $loanService
      */
-    public function createRefund(string $loanId)
+    public function createRefund(string $debtId)
     {
         if($this->session->closed)
         {
@@ -122,9 +122,9 @@ class Interest extends CallableClass
             return $this->response;
         }
 
-        $this->validator->validate($loanId);
+        $this->validator->validate($debtId);
 
-        $this->refundService->createRefund($this->session, $loanId, RefundModel::TYPE_INTEREST);
+        $this->refundService->createRefund($this->session, $debtId);
 
         // Refresh the loans page
         $this->cl(Loan::class)->show($this->session, $this->loanService);

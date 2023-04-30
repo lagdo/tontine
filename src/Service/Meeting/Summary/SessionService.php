@@ -5,6 +5,7 @@ namespace Siak\Tontine\Service\Meeting\Summary;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
@@ -247,29 +248,19 @@ class SessionService
      */
     public function getRefund(Session $session): object
     {
-        $principal = DB::table('loans')
-            ->select(DB::raw('sum(amount) as amount'))
-            ->whereExists(function(Builder $query) use($session) {
-                return $query->select(DB::raw(1))
-                    ->from('refunds')
-                    ->where('session_id', $session->id)
-                    ->where('type', Refund::TYPE_PRINCIPAL)
-                    ->whereColumn('refunds.loan_id', 'loans.id');
-            })
-            ->first();
-        $interest = DB::table('loans')
-            ->select(DB::raw('sum(interest) as amount'))
-            ->whereExists(function(Builder $query) use($session) {
-                return $query->select(DB::raw(1))
-                    ->from('refunds')
-                    ->where('session_id', $session->id)
-                    ->where('type', Refund::TYPE_INTEREST)
-                    ->whereColumn('refunds.loan_id', 'loans.id');
-            })
+        $amount = "CASE WHEN debts.type='" . Debt::TYPE_PRINCIPAL .
+            "' THEN loans.amount ELSE 0 END";
+        $interest = "CASE WHEN debts.type='" . Debt::TYPE_INTEREST .
+            "' THEN loans.interest ELSE 0 END";
+        $refund = DB::table('refunds')
+            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
+            ->join('loans', 'debts.loan_id', '=', 'loans.id')
+            ->select(DB::raw("sum($amount) as amount"), DB::raw("sum($interest) as interest"))
+            ->where('refunds.session_id', $session->id)
             ->first();
         return (object)[
-            'amount' => $this->localeService->formatMoney($principal->amount ?? 0),
-            'interest' => $this->localeService->formatMoney($interest->amount ?? 0),
+            'amount' => $this->localeService->formatMoney($refund->amount ?? 0),
+            'interest' => $this->localeService->formatMoney($refund->interest ?? 0),
         ];
     }
 }

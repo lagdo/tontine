@@ -5,6 +5,7 @@ namespace App\Ajax\App\Meeting\Credit;
 use App\Ajax\CallableClass;
 use App\Ajax\App\Meeting\Refund\Interest;
 use App\Ajax\App\Meeting\Refund\Principal;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\LoanService;
 use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
@@ -127,11 +128,16 @@ class Loan extends CallableClass
         }
 
         $values = $this->validator->validateItem($formValues);
-
         $memberId = $values['member'];
         $amount = $values['amount'];
         $interest = $values['interest'];
-        $this->loanService->createLoan($this->session, $memberId, $amount, $interest);
+
+        if(!($member = $this->loanService->getMember($memberId)))
+        {
+            throw new MessageException(trans('tontine.member.errors.not_found'));
+        }
+
+        $this->loanService->createLoan($this->session, $member, $amount, $interest);
 
         $this->dialog->hide();
 
