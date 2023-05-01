@@ -48,6 +48,11 @@ class Debt extends Model
         return $this->type === self::TYPE_PRINCIPAL ? $this->loan->amount : $this->loan->interest;
     }
 
+    public function getTypeStrAttribute()
+    {
+        return $this->type === self::TYPE_PRINCIPAL ? 'principal' : 'interest';
+    }
+
     /**
      * @param  Builder  $query
      *

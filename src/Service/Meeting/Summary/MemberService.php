@@ -10,6 +10,7 @@ use Siak\Tontine\Model\RoundBill;
 use Siak\Tontine\Model\SessionBill;
 use Siak\Tontine\Model\TontineBill;
 use Siak\Tontine\Model\Funding;
+use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
@@ -275,71 +276,35 @@ class MemberService
      *
      * @return Collection
      */
-    public function getPrincipalRefunds(Member $member, Session $session): Collection
+    public function getDebts(Member $member, Session $session): Collection
     {
         $sessionIds = $this->tenantService->getFieldInSessions($session);
-        return Loan::with(['principal_refund', 'principal_refund.session'])
-            ->where('member_id', $member->id)
-            ->where('amount', '>', 0)
-            ->whereIn('session_id', $sessionIds)
+        return Debt::with(['refund', 'refund.session'])
+            ->whereHas('loan', function(Builder $query) use($member, $sessionIds) {
+                $query->where('member_id', $member->id)
+                    ->whereIn('session_id', $sessionIds);
+            })
             ->where(function($query) use($session) {
                 return $query
-                    // Loans given on this session.
-                    ->where('session_id', $session->id)
-                    // Loans that are not yet refunded.
-                    ->orWhere(function(Builder $query) {
-                        return $query->whereDoesntHave('principal_refund');
+                    // Loans at this session.
+                    ->whereHas('loan', function(Builder $query) use($session) {
+                        $query->where('session_id', $session->id);
                     })
-                    // Loans refunded on this session.
+                    // Debts that are not yet refunded.
+                    ->orWhere(function(Builder $query) {
+                        return $query->whereDoesntHave('refund');
+                    })
+                    // Debts refunded on this session.
                     ->orWhere(function(Builder $query) use($session) {
-                        return $query->whereHas('principal_refund', function(Builder $query) use($session) {
+                        return $query->whereHas('refund', function(Builder $query) use($session) {
                             $query->where('session_id', $session->id);
                         });
                     });
             })
             ->get()
-            ->map(function($loan) {
-                $loan->refunded = ($loan->principal_refund !== null);
-                $loan->refund = $loan->principal_refund;
-                $loan->amount = $this->localeService->formatMoney($loan->amount);
-                return $loan;
-            });
-    }
-
-    /**
-     * @param Member $member
-     * @param Session $session
-     *
-     * @return Collection
-     */
-    public function getInterestRefunds(Member $member, Session $session): Collection
-    {
-        $sessionIds = $this->tenantService->getFieldInSessions($session);
-        return Loan::with(['interest_refund', 'interest_refund.session'])
-            ->where('member_id', $member->id)
-            ->where('interest', '>', 0)
-            ->whereIn('session_id', $sessionIds)
-            ->where(function($query) use($session) {
-                return $query
-                    // Loans given on this session.
-                    ->where('session_id', $session->id)
-                    // Loans that are not yet refunded.
-                    ->orWhere(function(Builder $query) {
-                        return $query->whereDoesntHave('interest_refund');
-                    })
-                    // Loans refunded on this session.
-                    ->orWhere(function(Builder $query) use($session) {
-                        return $query->whereHas('interest_refund', function(Builder $query) use($session) {
-                            $query->where('session_id', $session->id);
-                        });
-                    });
-            })
-            ->get()
-            ->map(function($loan) {
-                $loan->refunded = ($loan->interest_refund !== null);
-                $loan->refund = $loan->interest_refund;
-                $loan->interest = $this->localeService->formatMoney($loan->interest);
-                return $loan;
+            ->map(function($debt) {
+                $debt->amount = $this->localeService->formatMoney($debt->due);
+                return $debt;
             });
     }
 }

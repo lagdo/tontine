@@ -56,9 +56,9 @@ class RefundService
     {
         // The debts of the current session.
         $sessionQuery = Debt::whereType($type)
-            ->select('debts.*')
-            ->join('loans', 'loans.id', '=', 'debts.loan_id')
-            ->where('loans.session_id', $sessionId);
+            ->whereHas('loan', function(Builder $query) use($sessionId) {
+                $query->where('session_id', $sessionId);
+            });
         // The filter applies only to this query.
         if($onlyPaid === false)
         {
@@ -75,9 +75,9 @@ class RefundService
 
         // The debts of the previous sessions that are not yet settled.
         $unpaidQuery = Debt::whereType($type)
-            ->select('debts.*')
-            ->join('loans', 'loans.id', '=', 'debts.loan_id')
-            ->whereIn('loans.session_id', $prevSessions)
+            ->whereHas('loan', function(Builder $query) use($prevSessions) {
+                $query->whereIn('session_id', $prevSessions);
+            })
             ->whereDoesntHave('refund');
         // The debts of the previous sessions that are settled in the session.
         $paidQuery = Debt::whereType($type)
@@ -146,7 +146,6 @@ class RefundService
             $query->skip($this->tenantService->getLimit() * ($page - 1));
         }
         return $query->with(['loan', 'loan.member', 'loan.session', 'refund'])
-            ->orderBy('type', 'desc')
             ->get()
             ->each(function($debt) {
                 $debt->amount = $this->localeService->formatMoney($debt->due);
@@ -173,7 +172,6 @@ class RefundService
             $query->skip($this->tenantService->getLimit() * ($page - 1));
         }
         return $query->with(['loan', 'loan.member', 'loan.session', 'refund'])
-            ->orderBy('type', 'desc')
             ->get()
             ->each(function($debt) {
                 $debt->amount = $this->localeService->formatMoney($debt->due);
