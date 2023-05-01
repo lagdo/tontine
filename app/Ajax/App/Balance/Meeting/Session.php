@@ -3,9 +3,6 @@
 namespace App\Ajax\App\Balance\Meeting;
 
 use App\Ajax\CallableClass;
-use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Service\Meeting\Summary\MemberService as MemberSummaryService;
-use Siak\Tontine\Service\Meeting\Summary\SessionService as SessionSummaryService;
 use Siak\Tontine\Service\Meeting\SessionService;
 
 use function compact;
@@ -18,18 +15,6 @@ class Session extends CallableClass
      * @var SessionService
      */
     protected SessionService $sessionService;
-
-    /**
-     * @di
-     * @var MemberSummaryService
-     */
-    protected MemberSummaryService $memberSummaryService;
-
-    /**
-     * @di
-     * @var SessionSummaryService
-     */
-    protected SessionSummaryService $sessionSummaryService;
 
     public function home()
     {
@@ -48,7 +33,7 @@ class Session extends CallableClass
 
         $tontine = $this->sessionService->getTontine();
         $this->response->html('section-title', trans('tontine.menus.meeting'));
-        $html = $this->view()->render('tontine.pages.meeting.summary.home',
+        $html = $this->view()->render('tontine.pages.balance.home',
             compact('sessions', 'members', 'tontine'));
         $this->response->html('content-home', $html);
 
@@ -57,77 +42,30 @@ class Session extends CallableClass
         $memberId = pm()->select('select-member')->toInt();
         $this->jq('#btn-member-select')->click($this->rq()->show($sessionId, $memberId));
 
-        return $this->show($sessions->keys()->first(), $members->keys()->first());
+        $session = $this->sessionService->getSession($sessions->keys()->first());
+        $this->cl(Session\Session::class)->show($session, $tontine->is_financial);
+
+        return $this->response;
     }
 
     public function show(int $sessionId, int $memberId)
     {
         $tontine = $this->sessionService->getTontine();
-        $session = $this->sessionService->getSession($sessionId);
+        if(!($session = $this->sessionService->getSession($sessionId)))
+        {
+            return $this->response;
+        }
         if($memberId === 0)
         {
-            $this->deposits($session);
-            $this->remitments($session);
-            if($tontine->is_financial)
-            {
-                $this->loans($session);
-                $this->refunds($session);
-            }
-            $this->fees($session);
-            $this->fines($session);
-
+            $this->cl(Session\Session::class)->show($session, $tontine->is_financial);
             return $this->response;
         }
 
-        return $this->cl(Member::class)->show($session, $this->sessionService->getMember($memberId),
-            $tontine->is_financial, $this->memberSummaryService);
-    }
-
-    private function deposits(SessionModel $session)
-    {
-        $html = $this->view()->render('tontine.pages.meeting.summary.session.deposits', [
-            'pools' => $this->sessionSummaryService->getDeposits($session),
-        ]);
-        $this->response->html('member-deposits', $html);
-    }
-
-    private function remitments(SessionModel $session)
-    {
-        $html = $this->view()->render('tontine.pages.meeting.summary.session.remitments', [
-            'pools' => $this->sessionSummaryService->getRemitments($session),
-        ]);
-        $this->response->html('member-remitments', $html);
-    }
-
-    private function loans(SessionModel $session)
-    {
-        $html = $this->view()->render('tontine.pages.meeting.summary.session.loans', [
-            'loan' => $this->sessionSummaryService->getLoan($session),
-        ]);
-        $this->response->html('member-loans', $html);
-    }
-
-    private function refunds(SessionModel $session)
-    {
-        $html = $this->view()->render('tontine.pages.meeting.summary.session.refunds', [
-            'refund' => $this->sessionSummaryService->getRefund($session),
-        ]);
-        $this->response->html('member-refunds', $html);
-    }
-
-    private function fees(SessionModel $session)
-    {
-        $html = $this->view()->render('tontine.pages.meeting.summary.session.fees', [
-            'fees' => $this->sessionSummaryService->getFees($session),
-        ]);
-        $this->response->html('member-fees', $html);
-    }
-
-    private function fines(SessionModel $session)
-    {
-        $html = $this->view()->render('tontine.pages.meeting.summary.session.fines', [
-            'fines' => $this->sessionSummaryService->getFines($session),
-        ]);
-        $this->response->html('member-fines', $html);
+        if(!($member = $this->sessionService->getMember($memberId)))
+        {
+            return $this->response;
+        }
+        $this->cl(Session\Member::class)->show($session, $member, $tontine->is_financial);
+        return $this->response;
     }
 }

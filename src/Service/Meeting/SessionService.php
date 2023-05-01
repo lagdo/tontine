@@ -53,14 +53,16 @@ class SessionService
     }
 
     /**
-     * Get a list of sessions for the dropdown select component.
+     * Get a list of sessions.
+     *
+     * @param bool $pluck
      *
      * @return Collection
      */
-    public function getSessions(): Collection
+    public function getSessions(bool $pluck = true): Collection
     {
-        return $this->tenantService->round()->sessions()
-            ->orderBy('start_at', 'asc')->pluck('title', 'id');
+        $query = $this->tenantService->round()->sessions()->orderBy('start_at', 'asc');
+        return $pluck ? $query->pluck('title', 'id') : $query->get();
     }
 
     /**
@@ -76,14 +78,16 @@ class SessionService
     }
 
     /**
-     * Get a list of members for the dropdown select component.
+     * Get a list of members.
+     *
+     * @param bool $pluck
      *
      * @return Collection
      */
-    public function getMembers(): Collection
+    public function getMembers(bool $pluck = true): Collection
     {
-        return $this->tenantService->tontine()->members()
-            ->orderBy('name', 'asc')->pluck('name', 'id');
+        $query = $this->tenantService->tontine()->members()->orderBy('name', 'asc');
+        return $pluck ? $query->pluck('name', 'id') : $query->get();
     }
 
     /**

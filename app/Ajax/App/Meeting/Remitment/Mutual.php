@@ -56,7 +56,7 @@ class Mutual extends CallableClass
         $poolId = $this->target()->method() === 'pool' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('pool.id');
         $this->pool = $this->remitmentService->getPool($poolId);
-        if($this->session->disabled($this->pool))
+        if(!$this->session || !$this->pool || $this->session->disabled($this->pool))
         {
             $this->notify->error(trans('tontine.session.errors.disabled'), trans('common.titles.error'));
             $this->pool = null;

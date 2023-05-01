@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Facades\PdfGenerator;
 use App\Facades\Report;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\View\View;
 
 use function base64_decode;
 use function view;
