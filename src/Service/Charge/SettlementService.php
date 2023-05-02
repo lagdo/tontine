@@ -117,10 +117,10 @@ class SettlementService
     {
         $bill = $this->getQuery($charge)->find($billId);
         // Return if the bill is not found or the bill is not settled.
-        if(!$bill || !($bill->settlement) || $bill->settlement->session_id !== $session->id)
+        if(!$bill || !($bill->settlement))
         {
             throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
-        $bill->settlement()->delete();
+        $bill->settlement()->where('session_id', $session->id)->delete();
     }
 }

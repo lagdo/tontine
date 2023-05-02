@@ -9,14 +9,8 @@
 @foreach ($bills as $bill)
                         <tr>
                           <td>{{ $bill->member->name }}@if ($charge->is_fine) <br/>{{ $bill->session->title }} @endif</td>
-                          <td data-bill-id="{{ $bill->bill_id }}">
-@if ($session->closed)
-                            @if ($bill->bill->settlement)<i class="fa fa-toggle-on"></i>@else<i class="fa fa-toggle-off">@endif
-@elseif ($bill->bill->settlement)
-                            <a href="javascript:void(0)" class="btn-del-settlement"><i class="fa fa-toggle-on"></i></a>
-@else
-                            <a href="javascript:void(0)" class="btn-add-settlement"><i class="fa fa-toggle-off"></i></a>
-@endif
+                          <td data-bill-id="{{ $bill->bill->id }}">
+                            {!! paymentLink($bill->bill->settlement, 'settlement', $session->closed) !!}
                           </td>
                         </tr>
 @endforeach

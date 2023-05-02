@@ -11,19 +11,9 @@
                     <tr>
                       <td>{{ $debt->loan->member->name }}<br/>{{ $debt->loan->session->title }}</td>
                       <td>{{ $debt->amount }}</td>
-@if ($session->closed)
-                      <td>
-                        @if ($debt->refund) <i class="fa fa-toggle-on"></i> @else <i class="fa fa-toggle-off"> @endif
-                      </td>
-@elseif ($debt->refund)
-                      <td data-refund-id="{{ $debt->refund->id }}">
-                        <a href="javascript:void(0)" class="btn-del-{{ $type }}-refund"><i class="fa fa-toggle-on"></i></a>
-                      </td>
-@else
                       <td data-debt-id="{{ $debt->id }}">
-                        <a href="javascript:void(0)" class="btn-add-{{ $type }}-refund"><i class="fa fa-toggle-off"></i></a>
+                        {!! paymentLink($debt->refund, $type . '-refund', $session->closed) !!}
                       </td>
-@endif
                     </tr>
 @endforeach
                   </tbody>

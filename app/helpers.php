@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Database\Eloquent\Model;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 function localizedRoute(string $route, array $options = [])
@@ -26,4 +27,28 @@ function localizedIcon(string $locale)
 function currentLocalizedIcon()
 {
     return localizedIcon(LaravelLocalization::getCurrentLocale());
+}
+
+function paymentLink(?Model $payment, string $name, bool $sessionIsClosed)
+{
+    $icon = '<i class="fa fa-toggle-off"></i>';
+    $linkClass = "btn-add-$name";
+    if(($payment))
+    {
+        $icon = '<i class="fa fa-toggle-on"></i>';
+        $linkClass = "btn-del-$name";
+        if(($payment->online))
+        {
+            $icon .= '&nbsp;<i class="fa fa-link"></i>';
+            // Different class for online payment
+            $linkClass = 'online-payment';
+        }
+    }
+
+    if($sessionIsClosed)
+    {
+        return $icon;
+    }
+
+    return '<a href="javascript:void(0)" class="' . $linkClass . '">' . $icon . '</a>';
 }

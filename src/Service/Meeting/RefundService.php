@@ -211,9 +211,9 @@ class RefundService
         $debt = Debt::whereHas('loan', function(Builder $query) use($sessionIds) {
             $query->whereIn('session_id', $sessionIds);
         })->find($debtId);
-        if(!$debt)
+        if(!$debt || $debt->refund)
         {
-            return;
+            return; // Todo: throw an exception
         }
 
         $refund = new Refund();
@@ -226,12 +226,20 @@ class RefundService
      * Delete a refund.
      *
      * @param Session $session The session
-     * @param int $refundId
+     * @param int $debtId
      *
      * @return void
      */
-    public function deleteRefund(Session $session, int $refundId): void
+    public function deleteRefund(Session $session, int $debtId): void
     {
-        $session->refunds()->where('id', $refundId)->delete();
+        $sessionIds = $this->tenantService->round()->sessions()->pluck('id');
+        $debt = Debt::whereHas('loan', function(Builder $query) use($sessionIds) {
+            $query->whereIn('session_id', $sessionIds);
+        })->find($debtId);
+        if(!$debt || !$debt->refund)
+        {
+            return; // Todo: throw an exception
+        }
+        $debt->refund()->where('session_id', $session->id)->delete();
     }
 }

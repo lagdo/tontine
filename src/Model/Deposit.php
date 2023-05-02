@@ -31,4 +31,9 @@ class Deposit extends Model
     {
         return $this->belongsTo(Receivable::class);
     }
+
+    public function getOnlineAttribute()
+    {
+        return false;
+    }
 }

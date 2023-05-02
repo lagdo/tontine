@@ -10,13 +10,7 @@
                     <tr>
                       <td>{{ $receivable->subscription->member->name }}</td>
                       <td data-receivable-id="{{ $receivable->id }}">
-@if ($session->closed)
-                        @if ($receivable->deposit)<i class="fa fa-toggle-on"></i>@else<i class="fa fa-toggle-off">@endif
-@elseif ($receivable->deposit)
-                        <a href="javascript:void(0)" class="btn-del-deposit"><i class="fa fa-toggle-on"></i></a>
-@else
-                        <a href="javascript:void(0)" class="btn-add-deposit"><i class="fa fa-toggle-off"></i></a>
-@endif
+                        {!! paymentLink($receivable->deposit, 'deposit', $session->closed) !!}
                       </td>
                     </tr>
 @endforeach

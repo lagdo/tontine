@@ -13,3 +13,4 @@
   <!-- Template CSS -->
   <link rel="stylesheet" href="/tpl/assets/css/style.css">
   <link rel="stylesheet" href="/tpl/assets/css/components.css">
+  <link rel="stylesheet" href="/tpl/assets/css/custom.css">

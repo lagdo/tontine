@@ -92,10 +92,9 @@ class Principal extends CallableClass
         ]);
         $this->response->html('meeting-principal-debts-page', $html);
 
-        $debtId = jq()->parent()->attr('data-debt-id');
+        $debtId = jq()->parent()->attr('data-debt-id')->toInt();
         $this->jq('.btn-add-principal-refund')->click($this->rq()->createRefund($debtId));
-        $refundId = jq()->parent()->attr('data-refund-id')->toInt();
-        $this->jq('.btn-del-principal-refund')->click($this->rq()->deleteRefund($refundId));
+        $this->jq('.btn-del-principal-refund')->click($this->rq()->deleteRefund($debtId));
 
         return $this->response;
     }
@@ -135,7 +134,7 @@ class Principal extends CallableClass
     /**
      * @di $loanService
      */
-    public function deleteRefund(int $refundId)
+    public function deleteRefund(int $debtId)
     {
         if($this->session->closed)
         {
@@ -143,7 +142,7 @@ class Principal extends CallableClass
             return $this->response;
         }
 
-        $this->refundService->deleteRefund($this->session, $refundId);
+        $this->refundService->deleteRefund($this->session, $debtId);
 
         // Refresh the loans page
         $this->cl(Loan::class)->show($this->session, $this->loanService);

@@ -22,4 +22,9 @@ class Settlement extends Model
     {
         return $this->belongsTo(Session::class);
     }
+
+    public function getOnlineAttribute()
+    {
+        return false;
+    }
 }

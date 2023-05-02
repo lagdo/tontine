@@ -22,4 +22,9 @@ class Refund extends Model
     {
         return $this->belongsTo(Debt::class);
     }
+
+    public function getOnlineAttribute()
+    {
+        return false;
+    }
 }
