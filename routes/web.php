@@ -4,14 +4,12 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\JaxonController;
 use App\Http\Controllers\ReportController;
 use App\Http\Middleware\AnnotationCache;
-use App\Http\Middleware\ShareCountryList;
 use App\Http\Middleware\TontineTenant;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\PasswordController;
 use Laravel\Fortify\Http\Controllers\ProfileInformationController;
-use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use Laravel\Fortify\RoutePath;
 
 /*
@@ -32,7 +30,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function()
     Route::get('/', [IndexController::class, 'index'])->name('tontine.home')
         ->middleware(['auth', AnnotationCache::class, TontineTenant::class]);
 
-    // Route to Jaxon controller
+    // Route to handle Jaxon ajax requests
+    //----------------------------------
     Route::post('ajax', [JaxonController::class, 'jaxon'])->name('tontine.ajax')
         ->middleware(['auth', AnnotationCache::class, TontineTenant::class]);
 
@@ -49,21 +48,16 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function()
         ->name('report.session')->middleware(['auth', TontineTenant::class]);
 });
 
-// Redefine Fortify routes with additional middlewares
-//--------------------------------------------------------
-// Registration...
-Route::get(RoutePath::for('register', '/register'), [RegisteredUserController::class, 'create'])
-    ->middleware(['guest:'.config('fortify.guard'), ShareCountryList::class])
-    ->name('register');
-
 // Redefine Fortify routes with different HTTP verbs
 //--------------------------------------------------------
 // Profile Information...
-Route::post(RoutePath::for('user-profile-information.update', '/user/profile-information'), [ProfileInformationController::class, 'update'])
+$path = RoutePath::for('user-profile-information.update', '/user/profile-information');
+Route::post($path, [ProfileInformationController::class, 'update'])
     ->middleware([config('fortify.auth_middleware', 'auth').':'.config('fortify.guard')]);
 
 // Passwords...
-Route::post(RoutePath::for('user-password.update', '/user/password'), [PasswordController::class, 'update'])
+$path = RoutePath::for('user-password.update', '/user/password');
+Route::post($path, [PasswordController::class, 'update'])
     ->middleware([config('fortify.auth_middleware', 'auth').':'.config('fortify.guard')]);
 
 // Logout

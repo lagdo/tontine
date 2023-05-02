@@ -1,5 +1,7 @@
 @extends('tontine.auth.layout')
 
+@inject('localeService', 'Siak\Tontine\Service\LocaleService')
+
 @section('page-title', 'Register')
 
 @section('css')
@@ -30,7 +32,7 @@
 
                   <div class="form-group">
                     {!! Form::label('country', __('common.labels.country')) !!}
-                    {!! Form::select('country', $countries, old('country', ''), [
+                    {!! Form::select('country', $localeService->getCountries(), old('country', ''), [
                       'class' => $errors->has('country') ? 'form-control is-invalid' : 'form-control'
                     ]) !!}
                     <div class="invalid-feedback">{{ $errors->first('country') }}</div>
