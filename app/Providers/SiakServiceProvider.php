@@ -24,8 +24,8 @@ use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Service\Meeting\RemitmentService;
 use Siak\Tontine\Service\Meeting\ReportService as MeetingReportService;
 use Siak\Tontine\Service\Meeting\SessionService as MeetingSessionService;
-use Siak\Tontine\Service\Meeting\Summary\MemberService as MemberSummaryService;
-use Siak\Tontine\Service\Meeting\Summary\SessionService as SessionSummaryService;
+use Siak\Tontine\Service\Balance\MemberService as MemberBalanceService;
+use Siak\Tontine\Service\Balance\SessionService as SessionBalanceService;
 use Siak\Tontine\Service\Planning\ReportService as PlanningReportService;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Planning\SessionService as PlanningSessionService;
@@ -95,8 +95,8 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(RemitmentService::class, RemitmentService::class);
         $this->app->singleton(MeetingReportService::class, MeetingReportService::class);
         $this->app->singleton(MeetingSessionService::class, MeetingSessionService::class);
-        $this->app->singleton(MemberSummaryService::class, MemberSummaryService::class);
-        $this->app->singleton(SessionSummaryService::class, SessionSummaryService::class);
+        $this->app->singleton(MemberBalanceService::class, MemberBalanceService::class);
+        $this->app->singleton(SessionBalanceService::class, SessionBalanceService::class);
 
         $this->app->singleton(RoundService::class, RoundService::class);
         $this->app->singleton(PlanningSessionService::class, PlanningSessionService::class);

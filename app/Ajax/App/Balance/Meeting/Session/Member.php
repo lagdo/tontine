@@ -5,7 +5,7 @@ namespace App\Ajax\App\Balance\Meeting\Session;
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Member as MemberModel;
 use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Service\Meeting\Summary\MemberService;
+use Siak\Tontine\Service\Balance\MemberService;
 
 /**
  * @exclude

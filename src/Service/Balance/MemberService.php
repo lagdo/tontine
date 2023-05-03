@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service\Meeting\Summary;
+namespace Siak\Tontine\Service\Balance;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
