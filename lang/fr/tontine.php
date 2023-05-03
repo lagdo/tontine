@@ -201,5 +201,8 @@ return [
         'questions' => [
             'delete' => "Supprimer cet emprunt ?",
         ],
+        'errors' => [
+            'not_found' => "Impossible de trouver l'emprunt correspondant.",
+        ],
     ],
 ];

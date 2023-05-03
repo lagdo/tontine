@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
@@ -238,7 +239,11 @@ class RefundService
         })->find($debtId);
         if(!$debt || !$debt->refund)
         {
-            return; // Todo: throw an exception
+            throw new MessageException(trans('tontine.loan.errors.not_found'));
+        }
+        if(($debt->refund->online))
+        {
+            throw new MessageException(trans('tontine.loan.errors.online'));
         }
         $debt->refund()->where('session_id', $session->id)->delete();
     }

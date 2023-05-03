@@ -141,6 +141,10 @@ class DepositService
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
+        if(($receivable->deposit->online))
+        {
+            throw new MessageException(trans('tontine.subscription.errors.online'));
+        }
         $receivable->deposit()->delete();
     }
 }

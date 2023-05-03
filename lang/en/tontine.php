@@ -201,5 +201,8 @@ return [
         'questions' => [
             'delete' => "Delete this loan?",
         ],
+        'errors' => [
+            'not_found' => "Cannot find the corresponding loan.",
+        ],
     ],
 ];

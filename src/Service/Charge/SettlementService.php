@@ -121,6 +121,10 @@ class SettlementService
         {
             throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
+        if(($bill->settlement->online))
+        {
+            throw new MessageException(trans('tontine.bill.errors.online'));
+        }
         $bill->settlement()->where('session_id', $session->id)->delete();
     }
 }

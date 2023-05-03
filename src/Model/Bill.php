@@ -42,6 +42,26 @@ class Bill extends Model
         return $this->hasOne(Settlement::class);
     }
 
+    public function tontine_bill()
+    {
+        return $this->hasOne(TontineBill::class);
+    }
+
+    public function round_bill()
+    {
+        return $this->hasOne(RoundBill::class);
+    }
+
+    public function session_bill()
+    {
+        return $this->hasOne(SessionBill::class);
+    }
+
+    public function fine_bill()
+    {
+        return $this->hasOne(FineBill::class);
+    }
+
     /**
      * @param  Builder  $query
      *
@@ -49,9 +69,7 @@ class Bill extends Model
      */
     public function scopePaid(Builder $query): Builder
     {
-        return $query->whereExists(function($query) {
-            $query->from('settlements')->where('bill_id', $this->id);
-        });
+        return $query->whereHas('settlement');
     }
 
     /**
@@ -61,8 +79,6 @@ class Bill extends Model
      */
     public function scopeUnpaid(Builder $query): Builder
     {
-        return $query->whereNotExists(function($query) {
-            $query->from('settlements')->where('bill_id', $this->id);
-        });
+        return $query->whereDoesntHave('settlement');
     }
 }
