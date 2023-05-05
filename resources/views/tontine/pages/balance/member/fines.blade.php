@@ -13,11 +13,11 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach($fines as $fine)
+@foreach($bills as $bill)
                         <tr>
-                          <td>{{ $fine->bill->charge }}<br/>{{ $fine->session->title }}</td>
-                          <td>{{ $fine->amount }}</td>
-                          <td><i class="fa fa-toggle-{{ $fine->paid ? 'on' : 'off' }}"></i></td>
+                          <td>{{ $bill->charge }}<br/>{{ $bill->session->title }}</td>
+                          <td>{{ $bill->amount }}</td>
+                          <td><i class="fa fa-toggle-{{ $bill->settlement ? 'on' : 'off' }}"></i></td>
                         </tr>
 @endforeach
                       </tbody>

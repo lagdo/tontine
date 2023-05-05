@@ -4,11 +4,7 @@ namespace Siak\Tontine\Service\Balance;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Siak\Tontine\Model\FineBill;
-use Siak\Tontine\Model\RoundBill;
-use Siak\Tontine\Model\SessionBill;
-use Siak\Tontine\Model\TontineBill;
+use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Funding;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Loan;
@@ -105,98 +101,51 @@ class MemberService
      *
      * @return Collection
      */
-    private function getTontineFees(Member $member, Session $session): Collection
-    {
-        return TontineBill::with(['bill', 'bill.settlement'])
-            ->where('member_id', $member->id)
-            ->where(function($query) use($session) {
-                return $query
-                    // Fees that are not yet settled.
-                    ->where(function(Builder $query) {
-                        return $query->whereDoesntHave('bill.settlement');
-                    })
-                    // Fees settled on this session.
-                    ->orWhere(function(Builder $query) use($session) {
-                        return $query->whereHas('bill.settlement', function(Builder $query) use($session) {
-                            $query->where('session_id', $session->id);
-                        });
-                    });
-            })
-            ->get();
-    }
-
-    /**
-     * @param Member $member
-     * @param Session $session
-     *
-     * @return Collection
-     */
-    private function getRoundFees(Member $member, Session $session): Collection
-    {
-        return RoundBill::with(['bill', 'bill.settlement'])
-            ->where('member_id', $member->id)
-            ->where('round_id', $session->round_id)
-            ->where(function($query) use($session) {
-                return $query
-                    // Fees that are not yet settled.
-                    ->where(function(Builder $query) {
-                        return $query->whereDoesntHave('bill.settlement');
-                    })
-                    // Fees settled on this session.
-                    ->orWhere(function(Builder $query) use($session) {
-                        return $query->whereHas('bill.settlement', function(Builder $query) use($session) {
-                            $query->where('session_id', $session->id);
-                        });
-                    });
-            })
-            ->get();
-    }
-
-    /**
-     * @param Member $member
-     * @param Session $session
-     *
-     * @return Collection
-     */
-    private function getSessionFees(Member $member, Session $session): Collection
+    public function getFeeBills(Member $member, Session $session): Collection
     {
         $sessionIds = $this->tenantService->getFieldInSessions($session);
-        return SessionBill::with(['bill', 'bill.settlement', 'session'])
-            ->where('member_id', $member->id)
-            ->whereIn('session_id', $sessionIds)
+        return Bill::with(['settlement', 'session_bill.session'])
+            ->where(function($query) use($member, $session, $sessionIds) {
+                return $query
+                    // Tontine bills.
+                    ->orWhere(function(Builder $query) use($member) {
+                        return $query->whereHas('tontine_bill', function(Builder $query) use($member) {
+                            return $query->where('member_id', $member->id);
+                        });
+                    })
+                    // Round bills.
+                    ->orWhere(function(Builder $query) use($member, $session) {
+                        return $query->whereHas('round_bill', function(Builder $query) use($member, $session) {
+                            return $query->where('member_id', $member->id)
+                                ->where('round_id', $session->round_id);
+                        });
+                    })
+                    // Session bills.
+                    ->orWhere(function(Builder $query) use($member, $sessionIds) {
+                        return $query->whereHas('session_bill', function(Builder $query) use($member, $sessionIds) {
+                            return $query->where('member_id', $member->id)
+                                ->whereIn('session_id', $sessionIds);
+                        });
+                    });
+            })
             ->where(function($query) use($session) {
                 return $query
-                    // Fees on this session.
-                    ->where('session_id', $session->id)
-                    // Fees that are not yet settled.
+                    // Bills that are not yet settled.
                     ->orWhere(function(Builder $query) {
-                        return $query->whereDoesntHave('bill.settlement');
+                        return $query->whereDoesntHave('settlement');
                     })
-                    // Fees settled on this session.
+                    // Bills settled on this session.
                     ->orWhere(function(Builder $query) use($session) {
-                        return $query->whereHas('bill.settlement', function(Builder $query) use($session) {
+                        return $query->whereHas('settlement', function(Builder $query) use($session) {
                             $query->where('session_id', $session->id);
                         });
                     });
             })
-            ->get();
-    }
-
-    /**
-     * @param Member $member
-     * @param Session $session
-     *
-     * @return Collection
-     */
-    public function getFees(Member $member, Session $session): Collection
-    {
-        return $this->getTontineFees($member, $session)
-            ->concat($this->getRoundFees($member, $session))
-            ->concat($this->getSessionFees($member, $session))
-            ->map(function($fee) {
-                $fee->paid = ($fee->bill->settlement !== null);
-                $fee->amount = $this->localeService->formatMoney($fee->bill->amount);
-                return $fee;
+            ->get()
+            ->map(function($bill) {
+                $bill->amount = $this->localeService->formatMoney($bill->amount);
+                $bill->session = $bill->session_bill ? $bill->session_bill->session : null;
+                return $bill;
             });
     }
 
@@ -206,32 +155,32 @@ class MemberService
      *
      * @return Collection
      */
-    public function getFines(Member $member, Session $session): Collection
+    public function getFineBills(Member $member, Session $session): Collection
     {
         $sessionIds = $this->tenantService->getFieldInSessions($session);
-        return FineBill::with(['bill', 'bill.settlement', 'session'])
-            ->where('member_id', $member->id)
-            ->whereIn('session_id', $sessionIds)
+        return Bill::with(['settlement', 'fine_bill.session'])
+            ->whereHas('fine_bill', function(Builder $query) use($member, $sessionIds) {
+                return $query->where('member_id', $member->id)
+                    ->whereIn('session_id', $sessionIds);
+            })
             ->where(function($query) use($session) {
                 return $query
-                    // Fines given on this session.
-                    ->where('session_id', $session->id)
-                    // Fines that are not yet settled.
+                    // Bills that are not yet settled.
                     ->orWhere(function(Builder $query) {
-                        return $query->whereDoesntHave('bill.settlement');
+                        return $query->whereDoesntHave('settlement');
                     })
-                    // Fines settled on this session.
+                    // Bills settled on this session.
                     ->orWhere(function(Builder $query) use($session) {
-                        return $query->whereHas('bill.settlement', function(Builder $query) use($session) {
+                        return $query->whereHas('settlement', function(Builder $query) use($session) {
                             $query->where('session_id', $session->id);
                         });
                     });
             })
             ->get()
-            ->map(function($fine) {
-                $fine->paid = ($fine->bill->settlement !== null);
-                $fine->amount = $this->localeService->formatMoney($fine->bill->amount);
-                return $fine;
+            ->map(function($bill) {
+                $bill->amount = $this->localeService->formatMoney($bill->amount);
+                $bill->session = $bill->fine_bill->session;
+                return $bill;
             });
     }
 
