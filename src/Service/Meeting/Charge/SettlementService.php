@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service\Charge;
+namespace Siak\Tontine\Service\Meeting\Charge;
 
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Bill;

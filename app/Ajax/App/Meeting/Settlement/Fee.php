@@ -4,8 +4,8 @@ namespace App\Ajax\App\Meeting\Settlement;
 
 use App\Ajax\CallableClass;
 use App\Ajax\App\Meeting\Charge\Fee as Charge;
-use Siak\Tontine\Service\Charge\FeeBillService;
-use Siak\Tontine\Service\Charge\SettlementService;
+use Siak\Tontine\Service\Meeting\Charge\BillService;
+use Siak\Tontine\Service\Meeting\Charge\SettlementService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Charge as ChargeModel;
 
@@ -20,9 +20,9 @@ class Fee extends CallableClass
 {
     /**
      * @di
-     * @var FeeBillService
+     * @var BillService
      */
-    protected FeeBillService $billService;
+    protected BillService $billService;
 
     /**
      * @di
