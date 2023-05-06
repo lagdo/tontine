@@ -5,7 +5,6 @@ namespace Siak\Tontine\Service\Meeting;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
@@ -49,45 +48,35 @@ class SessionService
      */
     public function getSession(int $sessionId): ?Session
     {
-        return $this->tenantService->round()->sessions()->find($sessionId);
+        return $this->tenantService->round()->sessions()->with(['host'])->find($sessionId);
     }
 
     /**
-     * Get a list of sessions.
+     * Get the number of sessions in the selected round.
      *
-     * @param bool $pluck
+     * @return int
+     */
+    public function getSessionCount(): int
+    {
+        return $this->tenantService->round()->sessions()->count();
+    }
+
+    /**
+     * Get a paginated list of sessions in the selected round.
+     *
+     * @param int $page
      *
      * @return Collection
      */
-    public function getSessions(bool $pluck = true): Collection
+    public function getSessions(int $page = 0): Collection
     {
-        $query = $this->tenantService->round()->sessions()->orderBy('start_at', 'asc');
-        return $pluck ? $query->pluck('title', 'id') : $query->get();
-    }
-
-    /**
-     * Find a member.
-     *
-     * @param int $memberId
-     *
-     * @return Member|null
-     */
-    public function getMember(int $memberId): ?Member
-    {
-        return $this->tenantService->tontine()->members()->find($memberId);
-    }
-
-    /**
-     * Get a list of members.
-     *
-     * @param bool $pluck
-     *
-     * @return Collection
-     */
-    public function getMembers(bool $pluck = true): Collection
-    {
-        $query = $this->tenantService->tontine()->members()->orderBy('name', 'asc');
-        return $pluck ? $query->pluck('name', 'id') : $query->get();
+        $sessions = $this->tenantService->round()->sessions()->with(['host']);
+        if($page > 0 )
+        {
+            $sessions->take($this->tenantService->getLimit());
+            $sessions->skip($this->tenantService->getLimit() * ($page - 1));
+        }
+        return $sessions->get();
     }
 
     /**

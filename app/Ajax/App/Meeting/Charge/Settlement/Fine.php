@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Meeting\Settlement;
+namespace App\Ajax\App\Meeting\Charge\Settlement;
 
 use App\Ajax\CallableClass;
 use App\Ajax\App\Meeting\Charge\Fine as Charge;

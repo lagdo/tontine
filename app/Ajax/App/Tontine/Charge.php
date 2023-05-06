@@ -2,8 +2,8 @@
 
 namespace App\Ajax\App\Tontine;
 
-use Siak\Tontine\Service\Charge\ChargeService;
 use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\Planning\ChargeService;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
 use App\Ajax\App\Faker;
 use App\Ajax\CallableClass;

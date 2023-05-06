@@ -4,8 +4,8 @@ namespace App\Ajax\App\Planning;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
-use Siak\Tontine\Service\Planning\ReportService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
+use Siak\Tontine\Service\Planning\SummaryService;
 use Siak\Tontine\Service\TenantService;
 
 use function intval;
@@ -31,9 +31,9 @@ class Planning extends CallableClass
 
     /**
      * @di
-     * @var ReportService
+     * @var SummaryService
      */
-    public ReportService $reportService;
+    public SummaryService $summaryService;
 
     /**
      * @var PoolModel|null
@@ -75,7 +75,7 @@ class Planning extends CallableClass
         {
             return $this->response;
         }
-        $payables = $this->reportService->getPayables($this->pool);
+        $payables = $this->summaryService->getPayables($this->pool);
         $this->view()->shareValues($payables);
         $html = $this->view()->render('tontine.pages.planning.report.remitments')
             ->with('pool', $this->pool)

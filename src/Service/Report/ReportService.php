@@ -6,10 +6,9 @@ use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Charge\FeeService;
-use Siak\Tontine\Service\Charge\FineService;
-use Siak\Tontine\Service\Meeting\PoolService;
-use Siak\Tontine\Service\Meeting\ReportService as MeetingReportService;
+use Siak\Tontine\Service\Meeting\Charge\FeeService;
+use Siak\Tontine\Service\Meeting\Charge\FineService;
+use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 
 class ReportService implements ReportServiceInterface
@@ -25,29 +24,24 @@ class ReportService implements ReportServiceInterface
     protected TenantService $tenantService;
 
     /**
-     * @var PoolService
-     */
-    private $poolService;
-
-    /**
      * @var FeeService
      */
-    private $feeService;
+    private FeeService $feeService;
 
     /**
      * @var FineService
      */
-    private $fineService;
-
-    /**
-     * @var MeetingReportService
-     */
-    private $meetingReportService;
+    private FineService $fineService;
 
     /**
      * @var SubscriptionService
      */
-    private $subscriptionService;
+    private SubscriptionService $subscriptionService;
+
+    /**
+     * @var SummaryService
+     */
+    private SummaryService $summaryService;
 
     /**
      * @var int
@@ -62,23 +56,20 @@ class ReportService implements ReportServiceInterface
     /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
-     * @param PoolService $poolService
      * @param FeeService $feeService
      * @param FineService $fineService
-     * @param MeetingReportService $meetingReportService
      * @param SubscriptionService $subscriptionService
+     * @param SummaryService $summaryService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService,
-        PoolService $poolService, FeeService $feeService, FineService $fineService,
-        MeetingReportService $meetingReportService, SubscriptionService $subscriptionService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService, FeeService $feeService,
+        FineService $fineService, SubscriptionService $subscriptionService, SummaryService $summaryService)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
-        $this->poolService = $poolService;
         $this->feeService = $feeService;
         $this->fineService = $fineService;
-        $this->meetingReportService = $meetingReportService;
         $this->subscriptionService = $subscriptionService;
+        $this->summaryService = $summaryService;
     }
 
     /**
@@ -111,7 +102,7 @@ class ReportService implements ReportServiceInterface
             // Payables
             $query = $session->payables()->whereIn('subscription_id', $subscriptionIds);
             // Expected
-            $pool->payables_count = $this->meetingReportService->getSessionRemitmentCount($pool, $session);
+            $pool->payables_count = $this->summaryService->getSessionRemitmentCount($pool, $session);
             // Paid
             $pool->remitments_count = $query->whereHas('remitment')->count();
             // Amount
@@ -136,7 +127,8 @@ class ReportService implements ReportServiceInterface
 
         $charges = $this->tenantService->tontine()->charges;
         // Fees
-        [$bills, $settlements] = $this->feeService->getBills($session);
+        $bills = $this->feeService->getBills($session);
+        $settlements = $this->feeService->getSettlements($session);
         $fees = [
             'bills' => $bills,
             'settlements' => $settlements,
@@ -148,7 +140,8 @@ class ReportService implements ReportServiceInterface
             })
         ];
         // Fines
-        [$bills, $settlements] = $this->fineService->getBills($session);
+        $bills = $this->fineService->getBills($session);
+        $settlements = $this->fineService->getSettlements($session);
         $fines = [
             'bills' => $bills,
             'settlements' => $settlements,
@@ -204,7 +197,7 @@ class ReportService implements ReportServiceInterface
     public function getPoolReport(int $poolId): array
     {
         $pool = $this->subscriptionService->getPool($poolId);
-        $report = $this->meetingReportService->getFigures($pool);
+        $report = $this->summaryService->getFigures($pool);
         $tontine = $this->tenantService->tontine();
         [$country, $currency] = $this->localeService->getNameFromTontine($tontine);
 

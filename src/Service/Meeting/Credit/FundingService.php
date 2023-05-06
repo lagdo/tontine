@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service\Meeting;
+namespace Siak\Tontine\Service\Meeting\Credit;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;

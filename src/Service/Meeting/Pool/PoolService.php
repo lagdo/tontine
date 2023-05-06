@@ -1,12 +1,13 @@
 <?php
 
-namespace Siak\Tontine\Service\Meeting;
+namespace Siak\Tontine\Service\Meeting\Pool;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
+use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
@@ -24,9 +25,9 @@ class PoolService
     protected TenantService $tenantService;
 
     /**
-     * @var ReportService
+     * @var SummaryService
      */
-    protected ReportService $reportService;
+    protected SummaryService $summaryService;
 
     /**
      * @var SessionService
@@ -36,15 +37,15 @@ class PoolService
     /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
-     * @param ReportService $reportService
+     * @param SummaryService $summaryService
      * @param SessionService $sessionService
      */
     public function __construct(LocaleService $localeService, TenantService $tenantService,
-        ReportService $reportService, SessionService $sessionService)
+        SummaryService $summaryService, SessionService $sessionService)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
-        $this->reportService = $reportService;
+        $this->summaryService = $summaryService;
         $this->sessionService = $sessionService;
     }
 
@@ -123,7 +124,7 @@ class PoolService
             },
         ])->get()->each(function($pool) use($session) {
             // Expected
-            $pool->pay_count = $this->reportService->getSessionRemitmentCount($pool, $session);
+            $pool->pay_count = $this->summaryService->getSessionRemitmentCount($pool, $session);
         });
     }
 }

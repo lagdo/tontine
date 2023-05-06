@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Ajax\App\Meeting\Refund;
+namespace App\Ajax\App\Meeting\Credit\Refund;
 
 use App\Ajax\CallableClass;
 use App\Ajax\App\Meeting\Credit\Loan;
 use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Service\Meeting\RefundService;
+use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 use function Jaxon\jq;
@@ -16,7 +16,7 @@ use function trans;
  * @databag refund
  * @before getSession
  */
-class Interest extends CallableClass
+class Principal extends CallableClass
 {
     /**
      * @var RefundService
@@ -66,10 +66,10 @@ class Interest extends CallableClass
     {
         $html = $this->view()->render('tontine.pages.meeting.refund.home')
             ->with('session', $this->session)
-            ->with('type', 'interest');
-        $this->response->html('meeting-interest-refunds', $html);
-        $this->jq('#btn-interest-refunds-refresh')->click($this->rq()->home());
-        $this->jq('#btn-interest-refunds-filter')->click($this->rq()->toggleFilter());
+            ->with('type', 'principal');
+        $this->response->html('meeting-principal-refunds', $html);
+        $this->jq('#btn-principal-refunds-refresh')->click($this->rq()->home());
+        $this->jq('#btn-principal-refunds-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
     }
@@ -81,33 +81,33 @@ class Interest extends CallableClass
      */
     public function page(int $pageNumber = 0)
     {
-        $filtered = $this->bag('refund')->get('interest.filter', null);
-        $debtCount = $this->refundService->getInterestDebtCount($this->session, $filtered);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $debtCount, 'refund', 'interest.page');
-        $debts = $this->refundService->getInterestDebts($this->session, $filtered, $pageNumber);
+        $filtered = $this->bag('refund')->get('principal.filter', null);
+        $debtCount = $this->refundService->getPrincipalDebtCount($this->session, $filtered);
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $debtCount, 'refund', 'principal.page');
+        $debts = $this->refundService->getPrincipalDebts($this->session, $filtered, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $debtCount);
 
         $html = $this->view()->render('tontine.pages.meeting.refund.page', [
             'session' => $this->session,
             'debts' => $debts,
-            'type' => 'interest',
+            'type' => 'principal',
             'pagination' => $pagination,
         ]);
-        $this->response->html('meeting-interest-debts-page', $html);
+        $this->response->html('meeting-principal-debts-page', $html);
 
         $debtId = jq()->parent()->attr('data-debt-id')->toInt();
-        $this->jq('.btn-add-interest-refund')->click($this->rq()->createRefund($debtId));
-        $this->jq('.btn-del-interest-refund')->click($this->rq()->deleteRefund($debtId));
+        $this->jq('.btn-add-principal-refund')->click($this->rq()->createRefund($debtId));
+        $this->jq('.btn-del-principal-refund')->click($this->rq()->deleteRefund($debtId));
 
         return $this->response;
     }
 
     public function toggleFilter()
     {
-        $filtered = $this->bag('refund')->get('interest.filter', null);
+        $filtered = $this->bag('refund')->get('principal.filter', null);
         // Switch between null, true and false
         $filtered = $filtered === null ? true : ($filtered === true ? false : null);
-        $this->bag('refund')->set('interest.filter', $filtered);
+        $this->bag('refund')->set('principal.filter', $filtered);
 
         return $this->page(1);
     }

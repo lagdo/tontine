@@ -13,7 +13,7 @@ use stdClass;
 
 use function compact;
 
-class ReportService
+class SummaryService
 {
     use ReportTrait;
 

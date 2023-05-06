@@ -4,8 +4,8 @@ namespace App\Ajax\App\Balance\Meeting;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
+use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
-use Siak\Tontine\Service\Meeting\ReportService;
 
 use function Jaxon\pm;
 use function intval;
@@ -18,9 +18,9 @@ class Round extends CallableClass
 {
     /**
      * @di
-     * @var ReportService
+     * @var SummaryService
      */
-    public ReportService $reportService;
+    public SummaryService $summaryService;
 
     /**
      * @di
@@ -74,7 +74,7 @@ class Round extends CallableClass
 
     public function amounts()
     {
-        $this->view()->shareValues($this->reportService->getFigures($this->pool));
+        $this->view()->shareValues($this->summaryService->getFigures($this->pool));
         $html = $this->view()->render('tontine.pages.meeting.report.amounts')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());
@@ -90,7 +90,7 @@ class Round extends CallableClass
 
     public function deposits()
     {
-        $this->view()->shareValues($this->reportService->getFigures($this->pool));
+        $this->view()->shareValues($this->summaryService->getFigures($this->pool));
         $html = $this->view()->render('tontine.pages.meeting.report.deposits')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());

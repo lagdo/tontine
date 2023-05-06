@@ -4,12 +4,19 @@ namespace App\Ajax\App\Balance\Meeting;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Tontine\TontineService;
 
 use function compact;
 use function Jaxon\pm;
 
 class Session extends CallableClass
 {
+    /**
+     * @di
+     * @var TontineService
+     */
+    protected TontineService $tontineService;
+
     /**
      * @di
      * @var SessionService
@@ -19,12 +26,12 @@ class Session extends CallableClass
     public function home()
     {
         // Don't show the page if there is no session or no member.
-        $sessions = $this->sessionService->getSessions();
+        $sessions = $this->tontineService->getSessions();
         if($sessions->count() === 0)
         {
             return $this->response;
         }
-        $members = $this->sessionService->getMembers();
+        $members = $this->tontineService->getMembers();
         if($members->count() === 0)
         {
             return $this->response;
@@ -61,7 +68,7 @@ class Session extends CallableClass
             return $this->response;
         }
 
-        if(!($member = $this->sessionService->getMember($memberId)))
+        if(!($member = $this->tontineService->getMember($memberId)))
         {
             return $this->response;
         }

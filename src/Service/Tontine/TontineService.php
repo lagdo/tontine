@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Tontine;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\TenantService;
@@ -97,6 +98,44 @@ class TontineService
     public function getRound(int $roundId): ?Round
     {
         return $this->tenantService->tontine()->rounds()->find($roundId);
+    }
+
+    /**
+     * Get a list of sessions.
+     *
+     * @param bool $pluck
+     *
+     * @return Collection
+     */
+    public function getSessions(bool $pluck = true): Collection
+    {
+        $query = $this->tenantService->round()->sessions()->orderBy('start_at', 'asc');
+        return $pluck ? $query->pluck('title', 'id') : $query->get();
+    }
+
+    /**
+     * Get a list of members.
+     *
+     * @param bool $pluck
+     *
+     * @return Collection
+     */
+    public function getMembers(bool $pluck = true): Collection
+    {
+        $query = $this->tenantService->tontine()->members()->orderBy('name', 'asc');
+        return $pluck ? $query->pluck('name', 'id') : $query->get();
+    }
+
+    /**
+     * Find a member.
+     *
+     * @param int $memberId
+     *
+     * @return Member|null
+     */
+    public function getMember(int $memberId): ?Member
+    {
+        return $this->tenantService->tontine()->members()->find($memberId);
     }
 
     /**

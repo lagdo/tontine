@@ -3,9 +3,8 @@
 namespace App\Ajax\App\Meeting\Charge;
 
 use App\Ajax\CallableClass;
-use App\Ajax\App\Meeting\Settlement\Fee as Settlement;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Charge\FeeService;
+use Siak\Tontine\Service\Meeting\Charge\FeeService;
 use Siak\Tontine\Model\Session as SessionModel;
 
 use function Jaxon\jq;
@@ -78,7 +77,8 @@ class Fee extends CallableClass
         $fees = $this->feeService->getFees($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $feeCount);
         // Bill and settlement counts and amounts
-        [$bills, $settlements] = $this->feeService->getBills($this->session);
+        $bills = $this->feeService->getBills($this->session);
+        $settlements = $this->feeService->getSettlements($this->session);
         foreach($fees as $fee)
         {
             $fee->currentBillCount = ($bills['total']['current'][$fee->id] ?? 0);
@@ -99,7 +99,7 @@ class Fee extends CallableClass
         $this->response->html('meeting-fees-page', $html);
 
         $feeId = jq()->parent()->attr('data-fee-id')->toInt();
-        $this->jq('.btn-fee-settlements')->click($this->cl(Settlement::class)->rq()->home($feeId));
+        $this->jq('.btn-fee-settlements')->click($this->cl(Settlement\Fee::class)->rq()->home($feeId));
 
         return $this->response;
     }

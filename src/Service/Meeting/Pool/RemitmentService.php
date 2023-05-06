@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service\Meeting;
+namespace Siak\Tontine\Service\Meeting\Pool;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +11,7 @@ use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
@@ -30,9 +31,9 @@ class RemitmentService
     protected TenantService $tenantService;
 
     /**
-     * @var ReportService
+     * @var SummaryService
      */
-    protected ReportService $reportService;
+    protected SummaryService $summaryService;
 
     /**
      * @var SessionService
@@ -42,15 +43,15 @@ class RemitmentService
     /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
-     * @param ReportService $reportService
+     * @param SummaryService $summaryService
      * @param SessionService $sessionService
      */
     public function __construct(LocaleService $localeService, TenantService $tenantService,
-        ReportService $reportService, SessionService $sessionService)
+        SummaryService $summaryService, SessionService $sessionService)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
-        $this->reportService = $reportService;
+        $this->summaryService = $summaryService;
         $this->sessionService = $sessionService;
     }
 
@@ -112,7 +113,7 @@ class RemitmentService
             $payable->amount = $remitmentAmount;
         });
 
-        $remitmentCount = $this->reportService->getSessionRemitmentCount($pool, $session);
+        $remitmentCount = $this->summaryService->getSessionRemitmentCount($pool, $session);
         $emptyPayable = (object)[
             'id' => 0,
             'amount' => $remitmentAmount,

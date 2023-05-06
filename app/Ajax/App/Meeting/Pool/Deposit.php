@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Ajax\App\Meeting;
+namespace App\Ajax\App\Meeting\Pool;
 
-use Siak\Tontine\Service\Meeting\DepositService;
-use Siak\Tontine\Service\Meeting\PoolService;
+use Siak\Tontine\Service\Meeting\Pool\DepositService;
+use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Pool as PoolModel;
 use App\Ajax\CallableClass;

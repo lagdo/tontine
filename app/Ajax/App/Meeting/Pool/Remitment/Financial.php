@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Ajax\App\Meeting\Remitment;
+namespace App\Ajax\App\Meeting\Pool\Remitment;
 
 use App\Ajax\CallableClass;
 use App\Ajax\App\Meeting\Credit\Loan;
-use App\Ajax\App\Meeting\Refund\Interest;
+use App\Ajax\App\Meeting\Credit\Refund\Interest;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Service\Meeting\PoolService;
-use Siak\Tontine\Service\Meeting\RemitmentService;
-use Siak\Tontine\Service\Meeting\ReportService;
+use Siak\Tontine\Service\Meeting\Pool\PoolService;
+use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
 use Siak\Tontine\Validation\Meeting\RemitmentValidator;
 
 use function Jaxon\jq;
@@ -27,11 +26,6 @@ class Financial extends CallableClass
      * @var RemitmentService
      */
     protected RemitmentService $remitmentService;
-
-    /**
-     * @var ReportService
-     */
-    protected ReportService $reportService;
 
     /**
      * @var PoolService

@@ -3,9 +3,8 @@
 namespace App\Ajax\App\Meeting\Charge;
 
 use App\Ajax\CallableClass;
-use App\Ajax\App\Meeting\Settlement\Fine as Settlement;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Charge\FineService;
+use Siak\Tontine\Service\Meeting\Charge\FineService;
 use Siak\Tontine\Model\Session as SessionModel;
 
 use function Jaxon\jq;
@@ -78,7 +77,8 @@ class Fine extends CallableClass
         $fines = $this->fineService->getFines($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $fineCount);
         // Bill and settlement counts and amounts
-        [$bills, $settlements] = $this->fineService->getBills($this->session);
+        $bills = $this->fineService->getBills($this->session);
+        $settlements = $this->fineService->getSettlements($this->session);
         foreach($fines as $fine)
         {
             $fine->currentBillCount = ($bills['total']['current'][$fine->id] ?? 0);
@@ -95,8 +95,8 @@ class Fine extends CallableClass
         $this->response->html('meeting-fines-page', $html);
 
         $fineId = jq()->parent()->attr('data-fine-id')->toInt();
-        $this->jq('.btn-fine-add')->click($this->cl(Member::class)->rq()->home($fineId));
-        $this->jq('.btn-fine-settlements')->click($this->cl(Settlement::class)->rq()->home($fineId));
+        $this->jq('.btn-fine-add')->click($this->cl(Member\Fine::class)->rq()->home($fineId));
+        $this->jq('.btn-fine-settlements')->click($this->cl(Settlement\Fine::class)->rq()->home($fineId));
 
         return $this->response;
     }

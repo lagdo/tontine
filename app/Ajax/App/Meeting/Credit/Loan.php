@@ -3,10 +3,8 @@
 namespace App\Ajax\App\Meeting\Credit;
 
 use App\Ajax\CallableClass;
-use App\Ajax\App\Meeting\Refund\Interest;
-use App\Ajax\App\Meeting\Refund\Principal;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Service\Meeting\LoanService;
+use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 use Siak\Tontine\Model\Session as SessionModel;
 
@@ -143,8 +141,8 @@ class Loan extends CallableClass
         $this->dialog->hide();
 
         // Refresh the refunds pages
-        $this->cl(Principal::class)->show($this->session);
-        $this->cl(Interest::class)->show($this->session);
+        $this->cl(Refund\Principal::class)->show($this->session);
+        $this->cl(Refund\Interest::class)->show($this->session);
 
         return $this->home();
     }
@@ -160,8 +158,8 @@ class Loan extends CallableClass
         $this->loanService->deleteLoan($this->session, $loanId);
 
         // Refresh the refunds pages
-        $this->cl(Principal::class)->show($this->session);
-        $this->cl(Interest::class)->show($this->session);
+        $this->cl(Refund\Principal::class)->show($this->session);
+        $this->cl(Refund\Interest::class)->show($this->session);
 
         return $this->home();
     }

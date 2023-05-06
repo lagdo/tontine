@@ -29,7 +29,7 @@
                           <td class="table-item-menu"><i class="fa fa-times-circle"></i></td>
 @else
                           <td class="table-item-menu" data-loan-id="{{ $loan->id }}">
-                            <a href="javascript:void(0)" class="btn-loan-delete"><i class="fa fa-times-circle"></i></a>
+                            <a href="javascript:void(0)" class="btn-loan-delete" style="color:#aa1717;"><i class="fa fa-times-circle"></i></a>
                           </td>
 @endif
                         </tr>

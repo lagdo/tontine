@@ -4,9 +4,9 @@ namespace App\Ajax\App\Balance;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
-use Siak\Tontine\Service\Planning\ReportService;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
+use Siak\Tontine\Service\Planning\SummaryService;
 use Siak\Tontine\Service\TenantService;
 
 use function intval;
@@ -32,9 +32,9 @@ class Planning extends CallableClass
 
     /**
      * @di
-     * @var ReportService
+     * @var SummaryService
      */
-    public ReportService $reportService;
+    public SummaryService $summaryService;
 
     /**
      * @var SessionService
@@ -83,7 +83,7 @@ class Planning extends CallableClass
 
     public function amounts()
     {
-        $receivables = $this->reportService->getReceivables($this->pool);
+        $receivables = $this->summaryService->getReceivables($this->pool);
         $this->view()->shareValues($receivables);
         $html = $this->view()->render('tontine.pages.planning.report.amounts')
             ->with('pool', $this->pool)

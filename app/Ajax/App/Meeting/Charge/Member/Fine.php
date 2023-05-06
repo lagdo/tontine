@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Ajax\App\Meeting\Charge;
+namespace App\Ajax\App\Meeting\Charge\Member;
 
-use Siak\Tontine\Service\Charge\ChargeService;
-use Siak\Tontine\Service\Charge\FineService;
+use App\Ajax\CallableClass;
+use App\Ajax\App\Meeting\Charge\Fine as Charge;
+use Siak\Tontine\Service\Meeting\Charge\FineService;
+use Siak\Tontine\Service\Planning\ChargeService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Charge as ChargeModel;
-use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 use function trans;
@@ -15,7 +16,7 @@ use function trans;
  * @databag meeting
  * @before getCharge
  */
-class Member extends CallableClass
+class Fine extends CallableClass
 {
     /**
      * @di
@@ -62,7 +63,7 @@ class Member extends CallableClass
             'charge' => $this->charge,
         ]);
         $this->response->html('meeting-fines', $html);
-        $this->jq('#btn-fine-back')->click($this->cl(Fine::class)->rq()->home());
+        $this->jq('#btn-fine-back')->click($this->cl(Charge::class)->rq()->home());
         $this->jq('#btn-fine-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);

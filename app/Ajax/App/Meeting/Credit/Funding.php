@@ -3,7 +3,7 @@
 namespace App\Ajax\App\Meeting\Credit;
 
 use App\Ajax\CallableClass;
-use Siak\Tontine\Service\Meeting\FundingService;
+use Siak\Tontine\Service\Meeting\Credit\FundingService;
 use Siak\Tontine\Validation\Meeting\FundingValidator;
 use Siak\Tontine\Model\Session as SessionModel;
 

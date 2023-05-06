@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SessionService;
+use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 
 use function Jaxon\jq;
@@ -19,6 +20,11 @@ use function trans;
 class Session extends CallableClass
 {
     /**
+     * @var TontineService
+     */
+    protected TontineService $tontineService;
+
+    /**
      * @di
      * @var SessionService
      */
@@ -29,6 +35,9 @@ class Session extends CallableClass
      */
     protected SessionValidator $validator;
 
+    /**
+     * @di $tontineService
+     */
     public function home()
     {
         $html = $this->view()->render('tontine.pages.planning.session.home');
@@ -40,6 +49,9 @@ class Session extends CallableClass
         return $this->page($this->bag('planning')->get('session.page', 1));
     }
 
+    /**
+     * @di $tontineService
+     */
     public function page(int $pageNumber = 0)
     {
         $sessionCount = $this->sessionService->getSessionCount();
@@ -56,7 +68,7 @@ class Session extends CallableClass
         $html = $this->view()->render('tontine.pages.planning.session.page')
             ->with('sessions', $sessions)
             ->with('statuses', $statuses)
-            ->with('members', $this->sessionService->getMembers())
+            ->with('members', $this->tontineService->getMembers())
             ->with('pagination', $pagination);
         $this->response->html('content-page', $html);
 
@@ -162,6 +174,9 @@ class Session extends CallableClass
         return $this->home();
     }
 
+    /**
+     * @di $tontineService
+     */
     public function edit(int $sessionId)
     {
         $session = $this->sessionService->getSession($sessionId);
@@ -169,7 +184,7 @@ class Session extends CallableClass
         $title = trans('tontine.session.titles.edit');
         $content = $this->view()->render('tontine.pages.planning.session.edit')
             ->with('session', $session)
-            ->with('members', $this->sessionService->getMembers());
+            ->with('members', $this->tontineService->getMembers());
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

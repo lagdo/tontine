@@ -11,7 +11,7 @@ use stdClass;
 use function collect;
 use function compact;
 
-class ReportService
+class SummaryService
 {
     use ReportTrait;
 

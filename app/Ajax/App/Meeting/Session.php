@@ -7,11 +7,14 @@ use App\Ajax\App\Meeting\Charge\Fee;
 use App\Ajax\App\Meeting\Charge\Fine;
 use App\Ajax\App\Meeting\Credit\Funding;
 use App\Ajax\App\Meeting\Credit\Loan;
-use App\Ajax\App\Meeting\Refund\Interest;
-use App\Ajax\App\Meeting\Refund\Principal;
-use Siak\Tontine\Service\Meeting\PoolService;
-use Siak\Tontine\Service\Meeting\SessionService;
+use App\Ajax\App\Meeting\Credit\Refund\Interest;
+use App\Ajax\App\Meeting\Credit\Refund\Principal;
+use App\Ajax\App\Meeting\Pool\Deposit;
+use App\Ajax\App\Meeting\Pool\Remitment\Financial;
+use App\Ajax\App\Meeting\Pool\Remitment\Mutual;
 use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Tontine\TontineService;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
@@ -19,17 +22,16 @@ use function trans;
 
 /**
  * @databag meeting
- * @before getSession
  */
 class Session extends CallableClass
 {
     /**
-     * @di
-     * @var PoolService
+     * @var TontineService
      */
-    protected PoolService $poolService;
+    protected TontineService $tontineService;
 
     /**
+     * @di
      * @var SessionService
      */
     protected SessionService $sessionService;
@@ -42,11 +44,63 @@ class Session extends CallableClass
     /**
      * @return void
      */
+    protected function getSessionFromArgs()
+    {
+        $sessionId = $this->target()->args()[0];
+        $this->session = $this->sessionService->getSession($sessionId);
+        $this->bag('meeting')->set('session.id', $sessionId);
+    }
+
+    /**
+     * @return void
+     */
     protected function getSession()
     {
-        $sessionId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('session.id');
-        $this->session = $this->poolService->getSession($sessionId);
+        $sessionId = $this->bag('meeting')->get('session.id');
+        $this->session = $this->sessionService->getSession($sessionId);
+    }
+
+    /**
+     * @di $tontineService
+     */
+    public function home()
+    {
+        $this->response->html('section-title', trans('tontine.menus.meeting'));
+        $html = $this->view()->render('tontine.pages.meeting.session.list');
+        $this->response->html('content-home', $html);
+
+        $this->jq('#btn-sessions-refresh')->click($this->rq()->page());
+
+        return $this->page();
+    }
+
+    /**
+     * @di $tontineService
+     */
+    public function page(int $pageNumber = 0)
+    {
+        $sessionCount = $this->sessionService->getSessionCount();
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $sessionCount, 'session', 'page');
+        $sessions = $this->sessionService->getSessions($pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
+
+        $statuses = [
+            SessionModel::STATUS_PENDING => trans('tontine.session.status.pending'),
+            SessionModel::STATUS_OPENED => trans('tontine.session.status.opened'),
+            SessionModel::STATUS_CLOSED => trans('tontine.session.status.closed'),
+        ];
+
+        $html = $this->view()->render('tontine.pages.meeting.session.page')
+            ->with('sessions', $sessions)
+            ->with('statuses', $statuses)
+            ->with('members', $this->tontineService->getMembers())
+            ->with('pagination', $pagination);
+        $this->response->html('content-page', $html);
+
+        $sessionId = jq()->parent()->attr('data-session-id')->toInt();
+        $this->jq('.btn-session-show')->click($this->rq()->show($sessionId));
+
+        return $this->response;
     }
 
     /**
@@ -57,7 +111,7 @@ class Session extends CallableClass
     private function pools(bool $isMutual)
     {
         $this->cl(Deposit::class)->show($this->session);
-        $remitmentClass = ($isMutual ? Remitment\Mutual::class : Remitment\Financial::class);
+        $remitmentClass = ($isMutual ? Mutual::class : Financial::class);
         $this->cl($remitmentClass)->show($this->session);
     }
 
@@ -109,12 +163,11 @@ class Session extends CallableClass
 
     /**
      * @databag refund
+     * @before getSessionFromArgs
      */
-    public function home(int $sessionId)
+    public function show(int $sessionId)
     {
-        $this->bag('meeting')->set('session.id', $sessionId);
-
-        $tontine = $this->poolService->getTontine();
+        $tontine = $this->sessionService->getTontine();
         $html = $this->view()->render('tontine.pages.meeting.session.home', [
             'tontine' => $tontine,
             'session' => $this->session,
@@ -124,8 +177,8 @@ class Session extends CallableClass
 
         $openQuestion = trans('tontine.session.questions.open') . '<br/>' .
             trans('tontine.session.questions.warning');
-        $this->jq('#btn-session-back')->click($this->cl(Meeting::class)->rq()->home());
-        $this->jq('#btn-session-refresh')->click($this->rq()->home($sessionId));
+        $this->jq('#btn-session-back')->click($this->rq()->home());
+        $this->jq('#btn-session-refresh')->click($this->rq()->show($sessionId));
         $this->jq('#btn-session-open')->click($this->rq()->open()->confirm($openQuestion));
         $this->jq('#btn-session-close')->click($this->rq()->close()
             ->confirm(trans('tontine.session.questions.close')));
@@ -140,30 +193,30 @@ class Session extends CallableClass
 
     /**
      * @databag refund
-     * @di $sessionService
+     * @before getSession
      */
     public function open()
     {
         $this->sessionService->openSession($this->session);
-        $this->home($this->session->id);
+        $this->show($this->session->id);
 
         return $this->response;
     }
 
     /**
      * @databag refund
-     * @di $sessionService
+     * @before getSession
      */
     public function close()
     {
         $this->sessionService->closeSession($this->session);
-        $this->home($this->session->id);
+        $this->show($this->session->id);
 
         return $this->response;
     }
 
     /**
-     * @di $sessionService
+     * @before getSession
      */
     public function saveAgenda(string $text)
     {
@@ -174,7 +227,7 @@ class Session extends CallableClass
     }
 
     /**
-     * @di $sessionService
+     * @before getSession
      */
     public function saveReport(string $text)
     {
