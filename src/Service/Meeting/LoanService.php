@@ -14,8 +14,6 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
-use function trans;
-
 class LoanService
 {
     /**
@@ -220,6 +218,7 @@ class LoanService
         if(($loan = $session->loans()->find($loanId)) !== null)
         {
             DB::transaction(function() use($loan) {
+                $loan->refunds()->delete();
                 $loan->debts()->delete();
                 $loan->delete();
             });

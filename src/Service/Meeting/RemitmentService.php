@@ -254,9 +254,10 @@ class RemitmentService
             return;
         }
         DB::transaction(function() use($payable, $remitment) {
-            if(($loan = $remitment->loan) != null)
+            if(($loan = $remitment->loan) !== null)
             {
                 $loan->refunds()->delete();
+                $loan->debts()->delete();
                 $loan->delete();
             }
             $remitment->delete();

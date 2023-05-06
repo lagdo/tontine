@@ -45,6 +45,11 @@ class Loan extends Model
         return $this->hasMany(Debt::class);
     }
 
+    public function refunds()
+    {
+        return $this->hasManyThrough(Refund::class, Debt::class);
+    }
+
     public function principal_debt()
     {
         return $this->hasOne(Debt::class)->where('type', Debt::TYPE_PRINCIPAL);
