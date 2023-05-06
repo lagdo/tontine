@@ -4,7 +4,6 @@ namespace App\Ajax\App\Meeting\Credit;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Service\Meeting\FundingService;
-use Siak\Tontine\Service\Meeting\LoanService;
 use Siak\Tontine\Validation\Meeting\FundingValidator;
 use Siak\Tontine\Model\Session as SessionModel;
 
@@ -13,13 +12,12 @@ use function Jaxon\pm;
 use function trans;
 
 /**
- * @databag refund
+ * @databag meeting
  * @before getSession
  */
 class Funding extends CallableClass
 {
     /**
-     * @di
      * @var FundingService
      */
     protected FundingService $fundingService;
@@ -30,31 +28,35 @@ class Funding extends CallableClass
     protected FundingValidator $validator;
 
     /**
-     * @var LoanService
-     */
-    protected LoanService $loanService;
-
-    /**
      * @var SessionModel|null
      */
     protected ?SessionModel $session = null;
+
+    /**
+     * The constructor
+     *
+     * @param FundingService $fundingService
+     */
+    public function __construct(FundingService $fundingService)
+    {
+        $this->fundingService = $fundingService;
+    }
 
     /**
      * @return void
      */
     protected function getSession()
     {
-        $sessionId = $this->bag('refund')->get('session.id');
+        $sessionId = $this->bag('meeting')->get('session.id');
         $this->session = $this->fundingService->getSession($sessionId);
     }
 
     /**
      * @exclude
      */
-    public function show(SessionModel $session, FundingService $fundingService)
+    public function show(SessionModel $session)
     {
         $this->session = $session;
-        $this->fundingService = $fundingService;
 
         return $this->home();
     }
@@ -105,7 +107,6 @@ class Funding extends CallableClass
 
     /**
      * @di $validator
-     * @di $loanService
      */
     public function saveFunding(array $formValues)
     {
@@ -124,14 +125,11 @@ class Funding extends CallableClass
         $this->dialog->hide();
 
         // Refresh the loans page
-        $this->cl(Loan::class)->show($this->session, $this->loanService);
+        $this->cl(Loan::class)->show($this->session);
 
         return $this->home();
     }
 
-    /**
-     * @di $loanService
-     */
     public function deleteFunding(int $fundingId)
     {
         if($this->session->closed)
@@ -143,7 +141,7 @@ class Funding extends CallableClass
         $this->fundingService->deleteFunding($this->session, $fundingId);
 
         // Refresh the loans page
-        $this->cl(Loan::class)->show($this->session, $this->loanService);
+        $this->cl(Loan::class)->show($this->session);
 
         return $this->home();
     }

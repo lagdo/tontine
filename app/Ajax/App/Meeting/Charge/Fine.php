@@ -23,7 +23,6 @@ class Fine extends CallableClass
     protected LocaleService $localeService;
 
     /**
-     * @di
      * @var FineService
      */
     protected FineService $fineService;
@@ -32,6 +31,16 @@ class Fine extends CallableClass
      * @var SessionModel|null
      */
     protected ?SessionModel $session;
+
+    /**
+     * The constructor
+     *
+     * @param FineService $fineService
+     */
+    public function __construct(FineService $fineService)
+    {
+        $this->fineService = $fineService;
+    }
 
     /**
      * @return void
@@ -45,10 +54,9 @@ class Fine extends CallableClass
     /**
      * @exclude
      */
-    public function show(SessionModel $session, FineService $fineService)
+    public function show(SessionModel $session)
     {
         $this->session = $session;
-        $this->fineService = $fineService;
 
         return $this->home();
     }

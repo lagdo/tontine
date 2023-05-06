@@ -9,11 +9,6 @@ use App\Ajax\App\Meeting\Credit\Funding;
 use App\Ajax\App\Meeting\Credit\Loan;
 use App\Ajax\App\Meeting\Refund\Interest;
 use App\Ajax\App\Meeting\Refund\Principal;
-use Siak\Tontine\Service\Charge\FeeService;
-use Siak\Tontine\Service\Charge\FineService;
-use Siak\Tontine\Service\Meeting\FundingService;
-use Siak\Tontine\Service\Meeting\LoanService;
-use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Service\Meeting\PoolService;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -28,31 +23,6 @@ use function trans;
  */
 class Session extends CallableClass
 {
-    /**
-     * @var FeeService
-     */
-    protected FeeService $feeService;
-
-    /**
-     * @var FineService
-     */
-    protected FineService $fineService;
-
-    /**
-     * @var FundingService
-     */
-    protected FundingService $fundingService;
-
-    /**
-     * @var LoanService
-     */
-    protected LoanService $loanService;
-
-    /**
-     * @var RefundService
-     */
-    protected RefundService $refundService;
-
     /**
      * @di
      * @var PoolService
@@ -86,9 +56,9 @@ class Session extends CallableClass
      */
     private function pools(bool $isMutual)
     {
-        $this->cl(Deposit::class)->show($this->session, $this->poolService);
+        $this->cl(Deposit::class)->show($this->session);
         $remitmentClass = ($isMutual ? Remitment\Mutual::class : Remitment\Financial::class);
-        $this->cl($remitmentClass)->show($this->session, $this->poolService);
+        $this->cl($remitmentClass)->show($this->session);
     }
 
     /**
@@ -96,10 +66,10 @@ class Session extends CallableClass
      */
     private function credits()
     {
-        $this->cl(Funding::class)->show($this->session, $this->fundingService);
-        $this->cl(Loan::class)->show($this->session, $this->loanService);
-        $this->cl(Principal::class)->show($this->session, $this->refundService);
-        $this->cl(Interest::class)->show($this->session, $this->refundService);
+        $this->cl(Funding::class)->show($this->session);
+        $this->cl(Loan::class)->show($this->session);
+        $this->cl(Principal::class)->show($this->session);
+        $this->cl(Interest::class)->show($this->session);
     }
 
     /**
@@ -107,8 +77,8 @@ class Session extends CallableClass
      */
     private function charges()
     {
-        $this->cl(Fee::class)->show($this->session, $this->feeService);
-        $this->cl(Fine::class)->show($this->session, $this->fineService);
+        $this->cl(Fee::class)->show($this->session);
+        $this->cl(Fine::class)->show($this->session);
     }
 
     /**
@@ -139,16 +109,10 @@ class Session extends CallableClass
 
     /**
      * @databag refund
-     * @di $fundingService
-     * @di $loanService
-     * @di $refundService
-     * @di $feeService
-     * @di $fineService
      */
     public function home(int $sessionId)
     {
         $this->bag('meeting')->set('session.id', $sessionId);
-        $this->bag('refund')->set('session.id', $sessionId);
 
         $tontine = $this->poolService->getTontine();
         $html = $this->view()->render('tontine.pages.meeting.session.home', [
@@ -176,11 +140,6 @@ class Session extends CallableClass
 
     /**
      * @databag refund
-     * @di $fundingService
-     * @di $loanService
-     * @di $refundService
-     * @di $feeService
-     * @di $fineService
      * @di $sessionService
      */
     public function open()
@@ -193,11 +152,6 @@ class Session extends CallableClass
 
     /**
      * @databag refund
-     * @di $fundingService
-     * @di $loanService
-     * @di $refundService
-     * @di $feeService
-     * @di $fineService
      * @di $sessionService
      */
     public function close()

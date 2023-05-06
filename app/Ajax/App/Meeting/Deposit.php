@@ -38,6 +38,16 @@ class Deposit extends CallableClass
      */
     protected ?PoolModel $pool;
 
+    /**
+     * The constructor
+     *
+     * @param PoolService $poolService
+     */
+    public function __construct(PoolService $poolService)
+    {
+        $this->poolService = $poolService;
+    }
+
     protected function getPool()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
@@ -63,10 +73,9 @@ class Deposit extends CallableClass
     /**
      * @exclude
      */
-    public function show(SessionModel $session, PoolService $poolService)
+    public function show(SessionModel $session)
     {
         $this->session = $session;
-        $this->poolService = $poolService;
 
         return $this->home();
     }

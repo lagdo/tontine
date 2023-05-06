@@ -23,7 +23,6 @@ class Fee extends CallableClass
     protected LocaleService $localeService;
 
     /**
-     * @di
      * @var FeeService
      */
     protected FeeService $feeService;
@@ -32,6 +31,16 @@ class Fee extends CallableClass
      * @var SessionModel|null
      */
     protected ?SessionModel $session;
+
+    /**
+     * The constructor
+     *
+     * @param FeeService $feeService
+     */
+    public function __construct(FeeService $feeService)
+    {
+        $this->feeService = $feeService;
+    }
 
     /**
      * @return void
@@ -45,10 +54,9 @@ class Fee extends CallableClass
     /**
      * @exclude
      */
-    public function show(SessionModel $session, FeeService $feeService)
+    public function show(SessionModel $session)
     {
         $this->session = $session;
-        $this->feeService = $feeService;
 
         return $this->home();
     }

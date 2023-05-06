@@ -17,15 +17,24 @@ use function Jaxon\pm;
 class Subscription extends CallableClass
 {
     /**
-     * @di
      * @var SubscriptionService
      */
-    public SubscriptionService $subscriptionService;
+    protected SubscriptionService $subscriptionService;
 
     /**
      * @var PoolModel|null
      */
     protected ?PoolModel $pool;
+
+    /**
+     * The constructor
+     *
+     * @param SubscriptionService $subscriptionService
+     */
+    public function __construct(SubscriptionService $subscriptionService)
+    {
+        $this->subscriptionService = $subscriptionService;
+    }
 
     /**
      * @return void
@@ -40,9 +49,8 @@ class Subscription extends CallableClass
     /**
      * @exclude
      */
-    public function show(SubscriptionService $subscriptionService, PoolModel $pool)
+    public function show(PoolModel $pool)
     {
-        $this->subscriptionService = $subscriptionService;
         $this->pool = $pool;
         return $this->home($pool->id);
     }

@@ -39,6 +39,16 @@ class Mutual extends CallableClass
     protected ?PoolModel $pool;
 
     /**
+     * The constructor
+     *
+     * @param PoolService $poolService
+     */
+    public function __construct(PoolService $poolService)
+    {
+        $this->poolService = $poolService;
+    }
+
+    /**
      * @return void
      */
     protected function getPool()
@@ -66,10 +76,9 @@ class Mutual extends CallableClass
     /**
      * @exclude
      */
-    public function show(SessionModel $session, PoolService $poolService)
+    public function show(SessionModel $session)
     {
         $this->session = $session;
-        $this->poolService = $poolService;
 
         return $this->home();
     }

@@ -5,7 +5,6 @@ namespace App\Ajax\App\Meeting\Refund;
 use App\Ajax\CallableClass;
 use App\Ajax\App\Meeting\Credit\Loan;
 use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Service\Meeting\LoanService;
 use Siak\Tontine\Service\Meeting\RefundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
@@ -13,21 +12,16 @@ use function Jaxon\jq;
 use function trans;
 
 /**
+ * @databag meeting
  * @databag refund
  * @before getSession
  */
 class Interest extends CallableClass
 {
     /**
-     * @di
      * @var RefundService
      */
     protected RefundService $refundService;
-
-    /**
-     * @var LoanService
-     */
-    protected LoanService $loanService;
 
     /**
      * @var DebtValidator
@@ -40,21 +34,30 @@ class Interest extends CallableClass
     protected ?SessionModel $session = null;
 
     /**
+     * The constructor
+     *
+     * @param RefundService $refundService
+     */
+    public function __construct(RefundService $refundService)
+    {
+        $this->refundService = $refundService;
+    }
+
+    /**
      * @return void
      */
     protected function getSession()
     {
-        $sessionId = $this->bag('refund')->get('session.id');
+        $sessionId = $this->bag('meeting')->get('session.id');
         $this->session = $this->refundService->getSession($sessionId);
     }
 
     /**
      * @exclude
      */
-    public function show(SessionModel $session, RefundService $refundService)
+    public function show(SessionModel $session)
     {
         $this->session = $session;
-        $this->refundService = $refundService;
 
         return $this->home();
     }
@@ -111,7 +114,6 @@ class Interest extends CallableClass
 
     /**
      * @di $validator
-     * @di $loanService
      */
     public function createRefund(string $debtId)
     {
@@ -126,14 +128,11 @@ class Interest extends CallableClass
         $this->refundService->createRefund($this->session, $debtId);
 
         // Refresh the loans page
-        $this->cl(Loan::class)->show($this->session, $this->loanService);
+        $this->cl(Loan::class)->show($this->session);
 
         return $this->page();
     }
 
-    /**
-     * @di $loanService
-     */
     public function deleteRefund(int $debtId)
     {
         if($this->session->closed)
@@ -145,7 +144,7 @@ class Interest extends CallableClass
         $this->refundService->deleteRefund($this->session, $debtId);
 
         // Refresh the loans page
-        $this->cl(Loan::class)->show($this->session, $this->loanService);
+        $this->cl(Loan::class)->show($this->session);
 
         return $this->page();
     }

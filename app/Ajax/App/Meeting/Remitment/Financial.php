@@ -3,6 +3,8 @@
 namespace App\Ajax\App\Meeting\Remitment;
 
 use App\Ajax\CallableClass;
+use App\Ajax\App\Meeting\Credit\Loan;
+use App\Ajax\App\Meeting\Refund\Interest;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\PoolService;
@@ -52,6 +54,16 @@ class Financial extends CallableClass
     protected ?PoolModel $pool = null;
 
     /**
+     * The constructor
+     *
+     * @param PoolService $poolService
+     */
+    public function __construct(PoolService $poolService)
+    {
+        $this->poolService = $poolService;
+    }
+
+    /**
      * @return void
      */
     protected function getPool()
@@ -79,10 +91,9 @@ class Financial extends CallableClass
     /**
      * @exclude
      */
-    public function show(SessionModel $session, PoolService $poolService)
+    public function show(SessionModel $session)
     {
         $this->session = $session;
-        $this->poolService = $poolService;
 
         return $this->home();
     }
@@ -181,11 +192,14 @@ class Financial extends CallableClass
         }
 
         $values = $this->validator->validateItem($formValues);
-
         $this->remitmentService->saveFinancialRemitment($this->pool,
             $this->session, $values['payable'], $values['amount']);
         $this->dialog->hide();
         // $this->notify->success(trans('session.remitment.created'), trans('common.titles.success'));
+
+        // Refresh the refunds pages
+        $this->cl(Loan::class)->show($this->session);
+        $this->cl(Interest::class)->show($this->session);
 
         return $this->page();
     }
@@ -205,6 +219,10 @@ class Financial extends CallableClass
 
         $this->remitmentService->deleteFinancialRemitment($this->pool, $this->session, $subscriptionId);
         // $this->notify->success(trans('session.remitment.deleted'), trans('common.titles.success'));
+
+        // Refresh the refunds pages
+        $this->cl(Loan::class)->show($this->session);
+        $this->cl(Interest::class)->show($this->session);
 
         return $this->page();
     }

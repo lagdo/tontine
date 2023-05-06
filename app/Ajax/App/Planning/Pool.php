@@ -2,7 +2,6 @@
 
 namespace App\Ajax\App\Planning;
 
-use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Tontine\PoolService;
 use Siak\Tontine\Validation\Planning\PoolValidator;
 use App\Ajax\App\Faker;
@@ -29,11 +28,6 @@ class Pool extends CallableClass
     protected PoolValidator $validator;
 
     /**
-     * @var SubscriptionService
-     */
-    public SubscriptionService $subscriptionService;
-
-    /**
      * @var bool
      */
     protected bool $fromHome = false;
@@ -51,7 +45,6 @@ class Pool extends CallableClass
     /**
      * @databag pool
      * @databag subscription
-     * @di $subscriptionService
      */
     public function home()
     {
@@ -83,7 +76,7 @@ class Pool extends CallableClass
         if($this->fromHome && $poolCount > 0)
         {
             // Show the subscriptions of the first pool in the list
-            $this->cl(Subscription::class)->show($this->subscriptionService, $pools[0]);
+            $this->cl(Subscription::class)->show($pools[0]);
         }
 
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
@@ -150,7 +143,6 @@ class Pool extends CallableClass
     /**
      * @databag pool
      * @databag subscription
-     * @di $subscriptionService
      * @di $validator
      */
     public function create(array $formValues)
