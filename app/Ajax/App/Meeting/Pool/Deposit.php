@@ -93,7 +93,7 @@ class Deposit extends CallableClass
             ->with('pools', $this->poolService->getPoolsWithReceivables($this->session));
         $this->response->html('meeting-deposits', $html);
 
-        $this->jq('#btn-deposits-refresh')->click($this->rq()->deposits());
+        $this->jq('#btn-deposits-refresh')->click($this->rq()->home());
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
         $this->jq('.btn-pool-deposits')->click($this->rq()->pool($poolId));
 
