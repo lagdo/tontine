@@ -46,7 +46,7 @@ class SessionService
      *
      * @return Collection
      */
-    public function getDeposits(Session $session): Collection
+    public function getReceivables(Session $session): Collection
     {
         return Pool::where('round_id', $session->round_id)
             ->withCount([
@@ -75,7 +75,7 @@ class SessionService
      *
      * @return Collection
      */
-    public function getRemitments(Session $session): Collection
+    public function getPayables(Session $session): Collection
     {
         return Pool::where('round_id', $session->round_id)
             ->withCount([

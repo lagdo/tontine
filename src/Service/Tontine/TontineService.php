@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Round;
+use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\TenantService;
 
@@ -111,6 +112,18 @@ class TontineService
     {
         $query = $this->tenantService->round()->sessions()->orderBy('start_at', 'asc');
         return $pluck ? $query->pluck('title', 'id') : $query->get();
+    }
+
+    /**
+     * Get a single session.
+     *
+     * @param int $sessionId    The session id
+     *
+     * @return Session|null
+     */
+    public function getSession(int $sessionId): ?Session
+    {
+        return $this->tenantService->round()->sessions()->find($sessionId);
     }
 
     /**

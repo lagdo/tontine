@@ -50,7 +50,7 @@ class MemberService
      *
      * @return Collection
      */
-    public function getDeposits(Member $member, Session $session): Collection
+    public function getReceivables(Member $member, Session $session): Collection
     {
         return Subscription::where('member_id', $member->id)
             ->with([
@@ -60,10 +60,9 @@ class MemberService
                 },
             ])
             ->get()
-            ->map(function($subscription) {
+            ->each(function($subscription) {
                 $subscription->paid = ($subscription->receivables->count() > 0);
                 $subscription->amount = $this->localeService->formatMoney($subscription->pool->amount);
-                return $subscription;
             });
     }
 
@@ -73,7 +72,7 @@ class MemberService
      *
      * @return Collection
      */
-    public function getRemitments(Member $member, Session $session): Collection
+    public function getPayables(Member $member, Session $session): Collection
     {
         return Subscription::where('member_id', $member->id)
             ->whereHas('payable', function($query) use($session) {

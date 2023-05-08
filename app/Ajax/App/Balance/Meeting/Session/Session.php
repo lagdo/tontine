@@ -46,7 +46,7 @@ class Session extends CallableClass
     private function deposits(SessionModel $session)
     {
         $html = $this->view()->render('tontine.pages.balance.session.deposits', [
-            'pools' => $this->sessionService->getDeposits($session),
+            'pools' => $this->sessionService->getReceivables($session),
         ]);
         $this->response->html('member-deposits', $html);
     }
@@ -54,7 +54,7 @@ class Session extends CallableClass
     private function remitments(SessionModel $session)
     {
         $html = $this->view()->render('tontine.pages.balance.session.remitments', [
-            'pools' => $this->sessionService->getRemitments($session),
+            'pools' => $this->sessionService->getPayables($session),
         ]);
         $this->response->html('member-remitments', $html);
     }
