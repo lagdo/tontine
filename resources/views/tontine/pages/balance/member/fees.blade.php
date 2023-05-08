@@ -13,11 +13,11 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach($bills as $bill)
+@foreach($fees as $fee)
                         <tr>
-                          <td>{{ $bill->charge }}@isset($bill->session)<br/>{{ $bill->session->title }}@endisset</td>
-                          <td>{{ $bill->amount }}</td>
-                          <td><i class="fa fa-toggle-{{ $bill->settlement ? 'on' : 'off' }}"></i></td>
+                          <td>{{ $fee->name }}@isset($fee->session)<br/>{{ $fee->session->title }}@endisset</td>
+                          <td>{{ $fee->amount }}</td>
+                          <td><i class="fa fa-toggle-{{ $fee->paid ? 'on' : 'off' }}"></i></td>
                         </tr>
 @endforeach
                       </tbody>

@@ -86,12 +86,11 @@ class MemberService
                 },
             ])
             ->get()
-            ->map(function($subscription) {
+            ->each(function($subscription) {
                 $subscription->paid = ($subscription->payable !== null);
                 $sessionCount = $this->poolService->enabledSessionCount($subscription->pool);
                 $remitmentAmount = $subscription->pool->amount * $sessionCount;
                 $subscription->amount = $this->localeService->formatMoney($remitmentAmount);
-                return $subscription;
             });
     }
 
@@ -104,7 +103,7 @@ class MemberService
     public function getFeeBills(Member $member, Session $session): Collection
     {
         $sessionIds = $this->tenantService->getFieldInSessions($session);
-        return Bill::with(['settlement', 'session_bill.session'])
+        return Bill::with(['settlement', 'tontine_bill', 'round_bill', 'session_bill', 'session_bill.session'])
             ->where(function($query) use($member, $session, $sessionIds) {
                 return $query
                     // Tontine bills.
@@ -142,12 +141,39 @@ class MemberService
                     });
             })
             ->get()
-            ->map(function($bill) {
+            ->each(function($bill) {
                 $bill->amount = $this->localeService->formatMoney($bill->amount);
                 $bill->session = $bill->session_bill ? $bill->session_bill->session : null;
-                return $bill;
             });
     }
+
+        /**
+         * @param Member $member
+         * @param Session $session
+         *
+         * @return Collection
+         */
+        public function getFees(Member $member, Session $session): Collection
+        {
+            $bills = $this->getFeeBills($member, $session)
+                ->each(function($bill) {
+                    $bill->charge_id = $bill->session_bill ? $bill->session_bill->charge_id :
+                        ($bill->round_bill ? $bill->round_bill->charge_id : $bill->tontine_bill->charge_id);
+                })
+                ->keyBy('charge_id');
+
+            return $this->tenantService->tontine()->charges()->fee()->get()
+                ->each(function($charge) use($bills) {
+                    $charge->paid = false;
+                    $charge->session = null;
+                    $charge->amount = $this->localeService->formatMoney($charge->amount);
+                    if(($bill = $bills->get($charge->id)) !== null)
+                    {
+                        $charge->paid = $bill->settlement !== null;
+                        $charge->session = $bill->session;
+                    }
+                });
+        }
 
     /**
      * @param Member $member
@@ -177,12 +203,11 @@ class MemberService
                     });
             })
             ->get()
-            ->map(function($bill) {
+            ->each(function($bill) {
                 $bill->amount = $this->localeService->formatMoney($bill->amount);
                 $bill->session = $bill->fine_bill->session;
-                return $bill;
             });
-    }
+        }
 
     /**
      * @param Member $member

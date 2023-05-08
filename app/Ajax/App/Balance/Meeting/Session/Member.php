@@ -80,7 +80,7 @@ class Member extends CallableClass
     private function fees(SessionModel $session, MemberModel $member)
     {
         $html = $this->view()->render('tontine.pages.balance.member.fees', [
-            'bills' => $this->memberService->getFeeBills($member, $session),
+            'fees' => $this->memberService->getFees($member, $session),
         ]);
         $this->response->html('member-fees', $html);
     }
