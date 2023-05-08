@@ -11,7 +11,7 @@ class Locale extends CallableClass
      * @di
      * @var LocaleService
      */
-    public LocaleService $localeService;
+    protected LocaleService $localeService;
 
     public function selectCurrencies(string $countryCode)
     {

@@ -14,6 +14,7 @@ return [
         'balance' => "Bilan",
         'subscriptions' => "Souscriptions",
         'beneficiaries' => "Bénéficiaires",
+        'payments' => "Paiements",
         'profile' => "Profil",
         'logout' => "Se déconnecter",
     ],
@@ -134,6 +135,7 @@ return [
             'warning' => "Assurez-vous d'avoir bien entré toutes les informations " .
                 "nécessaires sur les souscriptions des membres, dans la section planning.",
             'close' => "Fermer cette séance ?",
+            'delete' => "Supprimer cette séance ?",
         ],
         'errors' => [
             'opened' => "Une séance a déjà été ouverte.",

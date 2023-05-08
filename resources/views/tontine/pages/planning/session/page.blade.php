@@ -26,6 +26,9 @@
   ],[
     'class' => 'btn-session-venue',
     'text' => __('tontine.session.actions.venue'),
+  ],[
+    'class' => 'btn-session-delete',
+    'text' => __('common.actions.delete'),
   ]],
 ])
                       </td>

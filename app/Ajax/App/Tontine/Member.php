@@ -26,16 +26,6 @@ class Member extends CallableClass
     protected MemberValidator $validator;
 
     /**
-     * @exclude
-     */
-    public function show(MemberService $memberService)
-    {
-        $this->memberService = $memberService;
-
-        return $this->home();
-    }
-
-    /**
      * @databag member
      */
     public function home()

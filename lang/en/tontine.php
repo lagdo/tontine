@@ -14,6 +14,7 @@ return [
         'balance' => "Balance",
         'subscriptions' => "Subscriptions",
         'beneficiaries' => "Beneficiaries",
+        'payments' => "Payments",
         'profile' => "Profile",
         'logout' => "Logout",
     ],
@@ -134,6 +135,7 @@ return [
             'warning' => "First make sure that you have entered all the informations " .
                 "required about members subscriptions, in the planning section.",
             'close' => "Close this session?",
+            'delete' => "Delete this session?",
         ],
         'errors' => [
             'opened' => "A session has already been opened.",

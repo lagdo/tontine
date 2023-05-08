@@ -20,6 +20,7 @@ use function trans;
 class Session extends CallableClass
 {
     /**
+     * @di
      * @var TontineService
      */
     protected TontineService $tontineService;
@@ -35,9 +36,6 @@ class Session extends CallableClass
      */
     protected SessionValidator $validator;
 
-    /**
-     * @di $tontineService
-     */
     public function home()
     {
         $html = $this->view()->render('tontine.pages.planning.session.home');
@@ -49,9 +47,6 @@ class Session extends CallableClass
         return $this->page($this->bag('planning')->get('session.page', 1));
     }
 
-    /**
-     * @di $tontineService
-     */
     public function page(int $pageNumber = 0)
     {
         $sessionCount = $this->sessionService->getSessionCount();
@@ -75,6 +70,8 @@ class Session extends CallableClass
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.btn-session-edit')->click($this->rq()->edit($sessionId));
         $this->jq('.btn-session-venue')->click($this->rq()->editVenue($sessionId));
+        $this->jq('.btn-session-delete')->click($this->rq()->del($sessionId)
+            ->confirm(trans('tontine.session.questions.delete')));
 
         return $this->response;
     }
@@ -171,12 +168,9 @@ class Session extends CallableClass
         $this->sessionService->createSessions($values);
         $this->notify->success(trans('tontine.session.messages.created'), trans('common.titles.success'));
 
-        return $this->home();
+        return $this->page();
     }
 
-    /**
-     * @di $tontineService
-     */
     public function edit(int $sessionId)
     {
         $session = $this->sessionService->getSession($sessionId);
@@ -205,7 +199,6 @@ class Session extends CallableClass
     public function update(int $sessionId, array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
-
         $session = $this->sessionService->getSession($sessionId);
 
         $this->sessionService->updateSession($session, $values);
@@ -243,20 +236,20 @@ class Session extends CallableClass
     public function saveVenue(int $sessionId, array $formValues)
     {
         $values = $this->validator->validateVenue($formValues);
-
         $session = $this->sessionService->getSession($sessionId);
 
         $this->sessionService->saveSessionVenue($session, $values);
         $this->dialog->hide();
         $this->notify->success(trans('tontine.session.messages.updated'), trans('common.titles.success'));
 
-        return  $this->page();
+        return $this->page();
     }
 
-    /*public function delete(int $sessionId)
+    public function del(int $sessionId)
     {
-        $this->notify->error("Cette fonction n'est pas encore disponible", trans('common.titles.error'));
+        $session = $this->sessionService->getSession($sessionId);
+        $this->sessionService->deleteSession($session);
 
-        return $this->response;
-    }*/
+        return $this->page();
+    }
 }
