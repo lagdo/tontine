@@ -149,7 +149,7 @@ class RefundService
         return $query->with(['loan', 'loan.member', 'loan.session', 'refund'])
             ->get()
             ->each(function($debt) {
-                $debt->amount = $this->localeService->formatMoney($debt->due);
+                $debt->amount = $this->localeService->formatMoney($debt->amount);
             });
     }
 
@@ -175,7 +175,7 @@ class RefundService
         return $query->with(['loan', 'loan.member', 'loan.session', 'refund'])
             ->get()
             ->each(function($debt) {
-                $debt->amount = $this->localeService->formatMoney($debt->due);
+                $debt->amount = $this->localeService->formatMoney($debt->amount);
             });
     }
 

@@ -276,7 +276,7 @@ class MemberService
             })
             ->get()
             ->map(function($debt) {
-                $debt->amount = $this->localeService->formatMoney($debt->due);
+                $debt->amount = $this->localeService->formatMoney($debt->amount);
                 return $debt;
             });
     }

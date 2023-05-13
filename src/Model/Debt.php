@@ -43,7 +43,7 @@ class Debt extends Model
         return $this->type === self::TYPE_INTEREST;
     }
 
-    public function getDueAttribute()
+    public function getAmountAttribute()
     {
         return $this->type === self::TYPE_PRINCIPAL ? $this->loan->amount : $this->loan->interest;
     }
