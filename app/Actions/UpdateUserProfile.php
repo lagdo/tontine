@@ -4,7 +4,6 @@ namespace App\Actions;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Validator;
-// use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 use Siak\Tontine\Model\User;
 
@@ -26,10 +25,14 @@ class UpdateUserProfile implements UpdatesUserProfileInformation
         $user->forceFill([
             'name' => $input['name'],
         ])->save();
-        $user->profile->fill([
+
+        $user->profile ? $user->profile->fill([
             'city' => $input['city'] ?? '',
             'country_code' => $input['country'],
-        ])->save();
+        ])->save() : $user->profile()->create([
+            'city' => $input['city'] ?? '',
+            'country_code' => $input['country'],
+        ]);
     }
 
     /**
@@ -44,9 +47,12 @@ class UpdateUserProfile implements UpdatesUserProfileInformation
             'email' => $input['email'],
             'email_verified_at' => null,
         ])->save();
-        $user->profile->fill([
+
+        $user->profile ? $user->profile->fill([
             'country_code' => $input['country'],
-        ])->save();
+        ])->save() : $user->profile()->create([
+            'country_code' => $input['country'],
+        ]);
 
         $user->sendEmailVerificationNotification();
     }

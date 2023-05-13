@@ -18,6 +18,7 @@ return new class extends Migration
             $table->json('content');
             $table->bigInteger('owner_id');
             $table->string('owner_type');
+            $table->unique(['owner_id', 'owner_type']);
         });
     }
 

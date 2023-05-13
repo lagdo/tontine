@@ -18,7 +18,7 @@ trait HasProperty
     /**
      * Get the values of the properties.
      *
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     * @return Attribute
      */
     protected function properties(): Attribute
     {

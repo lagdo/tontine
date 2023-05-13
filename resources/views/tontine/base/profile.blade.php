@@ -41,7 +41,7 @@
                     </div>
                     <div class="form-group">
                       {!! Form::label('city', __('common.labels.city')) !!}
-                      {!! Form::text('city', old('city', $user->profile->city), [
+                      {!! Form::text('city', old('city', $user->city), [
                         'class' => $errors->profile->has('city') ? 'form-control is-invalid' : 'form-control',
                       ]) !!}
 @if($errors->profile->has('city'))
@@ -52,7 +52,7 @@
                     </div>
                     <div class="form-group">
                       {!! Form::label('country', __('common.labels.country')) !!}
-                      {!! Form::select('country', $countries, old('country', $user->profile->country_code), [
+                      {!! Form::select('country', $countries, old('country', $user->country_code), [
                         'class' => $errors->profile->has('country') ? 'form-control is-invalid' : 'form-control'
                       ]) !!}
 @if($errors->profile->has('country'))

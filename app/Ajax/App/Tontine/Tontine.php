@@ -95,9 +95,7 @@ class Tontine extends CallableClass
             ->with('pagination', $pagination);
         $this->response->html('tontine-page', $html);
 
-        $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
-        $this->jq('.btn-tontine-edit')->click($this->rq()->edit($tontineId));
-        $this->jq('.btn-tontine-rounds')->click($this->cl(Round::class)->rq()->home($tontineId));
+        $this->setTontineMenuHandlers();
 
         return $this->response;
     }

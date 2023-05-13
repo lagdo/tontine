@@ -13,7 +13,6 @@ class Tontine extends Model
     use HasFactory;
     use Traits\HasProperty;
 
-
     /**
      * @const
      */
