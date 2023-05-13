@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
 {
+    use Traits\HasProperty;
+
     /**
      * Indicates if the model should be timestamped.
      *
@@ -19,28 +21,9 @@ class Profile extends Model
      * @var array
      */
     protected $fillable = [
-        'properties',
         'address',
         'city',
         'country_code',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'properties' => 'array',
-    ];
-
-    /**
-     * The model's default values for attributes.
-     *
-     * @var array
-     */
-    protected $attributes = [
-        'properties' => '{}',
     ];
 
     public function user()

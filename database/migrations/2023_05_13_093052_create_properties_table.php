@@ -13,14 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('profiles', function (Blueprint $table) {
+        Schema::create('properties', function (Blueprint $table) {
             $table->id();
-            $table->string('address', 500)->nullable();
-            $table->string('city', 100)->nullable();
-            $table->string('country_code', 2);
-            $table->bigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->unique('user_id');
+            $table->json('content');
+            $table->bigInteger('owner_id');
+            $table->string('owner_type');
         });
     }
 
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('profiles');
+        Schema::dropIfExists('properties');
     }
 };

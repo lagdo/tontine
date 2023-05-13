@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 class Tontine extends Model
 {
     use HasFactory;
+    use Traits\HasProperty;
+
 
     /**
      * @const
