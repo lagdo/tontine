@@ -1,7 +1,9 @@
         <form class="form-inline mr-auto">
+@if (!isset($hideSidebar) || !$hideSidebar)
           <ul class="navbar-nav mr-3">
             <li><a href="javascript:void(0)" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fa fa-bars"></i></a></li>
           </ul>
+@endif
           <ul class="navbar-nav">
             <li class="dropdown language">
               <a href="javascript:void(0)" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
@@ -18,6 +20,7 @@
             </li>
           </ul>
         </form>
+@if (!isset($hideSidebar) || !$hideSidebar)
         <ul class="navbar-nav navbar-right">
           <li class="dropdown">
             <a href="javascript:void(0)" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
@@ -35,3 +38,4 @@
             </div>
           </li>
         </ul>
+@endif

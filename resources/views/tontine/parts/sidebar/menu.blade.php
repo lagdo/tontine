@@ -1,3 +1,5 @@
+@if (!isset($hideSidebar) || !$hideSidebar)
+      <div class="main-sidebar">
         <aside id="sidebar-wrapper">
           <div class="sidebar-brand">
             <a href="/">Siak Tontine</a>
@@ -24,3 +26,5 @@
 @include('tontine.parts.sidebar.round')
           </div>
         </aside>
+      </div>
+@endif
