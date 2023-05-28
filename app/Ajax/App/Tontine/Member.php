@@ -141,7 +141,7 @@ class Member extends CallableClass
             'class' => 'btn btn-primary',
             'click' => $this->rq()->update($member->id, pm()->form('member-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+        $this->dialog->show($title, $content, $buttons);
 
         return $this->response;
     }

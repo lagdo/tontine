@@ -47,7 +47,7 @@ class Select extends CallableClass
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveTontine(pm()->select('tontine_id')->toInt()),
         ]];
-        $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+        $this->dialog->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -83,7 +83,7 @@ class Select extends CallableClass
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveRound(pm()->select('round_id')->toInt()),
         ]];
-        $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+        $this->dialog->show($title, $content, $buttons);
 
         return $this->response;
     }

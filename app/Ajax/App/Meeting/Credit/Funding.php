@@ -100,7 +100,7 @@ class Funding extends CallableClass
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveFunding(pm()->form('funding-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+        $this->dialog->show($title, $content, $buttons);
 
         return $this->response;
     }

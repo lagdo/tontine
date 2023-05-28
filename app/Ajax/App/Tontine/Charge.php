@@ -186,7 +186,7 @@ class Charge extends CallableClass
             'class' => 'btn btn-primary',
             'click' => $this->rq()->update($charge->id, pm()->form('charge-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+        $this->dialog->show($title, $content, $buttons);
 
         return $this->response;
     }

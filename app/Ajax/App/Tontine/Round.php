@@ -102,7 +102,7 @@ class Round extends CallableClass
             'class' => 'btn btn-primary',
             'click' => $this->rq()->create(pm()->form('round-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+        $this->dialog->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -133,7 +133,7 @@ class Round extends CallableClass
             'class' => 'btn btn-primary',
             'click' => $this->rq()->update($round->id, pm()->form('round-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+        $this->dialog->show($title, $content, $buttons);
 
         return $this->response;
     }

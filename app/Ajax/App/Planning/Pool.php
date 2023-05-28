@@ -162,7 +162,7 @@ class Pool extends CallableClass
             'class' => 'btn btn-primary',
             'click' => $this->rq()->update($pool->id, pm()->form('pool-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+        $this->dialog->show($title, $content, $buttons);
 
         return $this->response;
     }

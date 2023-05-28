@@ -118,7 +118,7 @@ class Tontine extends CallableClass
             'class' => 'btn btn-primary',
             'click' => $this->rq()->create(pm()->form('tontine-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+        $this->dialog->show($title, $content, $buttons);
         $this->jq('#select_country_dropdown')->change($this->cl(Locale::class)->rq()->selectCurrencies(jq()->val()));
 
         return $this->response;
@@ -164,7 +164,7 @@ class Tontine extends CallableClass
             'click' => $this->rq()->update($tontine->id, pm()->form('tontine-form')),
         ]];
 
-        $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+        $this->dialog->show($title, $content, $buttons);
         $this->jq('#select_country_dropdown')->change($this->cl(Locale::class)->rq()->selectCurrencies(jq()->val()));
 
         return $this->response;

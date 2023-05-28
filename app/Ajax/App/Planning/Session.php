@@ -188,7 +188,7 @@ class Session extends CallableClass
             'class' => 'btn btn-primary',
             'click' => $this->rq()->update($session->id, pm()->form('session-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+        $this->dialog->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -225,7 +225,7 @@ class Session extends CallableClass
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveVenue($session->id, pm()->form('session-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+        $this->dialog->show($title, $content, $buttons);
 
         return $this->response;
     }
