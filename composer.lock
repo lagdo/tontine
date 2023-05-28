@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9b99f5803d62f4e25a4cc4d7c0692eae",
+    "content-hash": "504e3b3f31c3bb4faad2607ce865e102",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -1517,16 +1517,16 @@
         },
         {
             "name": "jaxon-php/jaxon-core",
-            "version": "v4.1.1",
+            "version": "v4.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-core.git",
-                "reference": "c158b7f542fc40bc2be3086d2fd80aebaf2cb44b"
+                "reference": "efd4156a67101e55a9d2ac4276d751b6bc8ef611"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/c158b7f542fc40bc2be3086d2fd80aebaf2cb44b",
-                "reference": "c158b7f542fc40bc2be3086d2fd80aebaf2cb44b",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/efd4156a67101e55a9d2ac4276d751b6bc8ef611",
+                "reference": "efd4156a67101e55a9d2ac4276d751b6bc8ef611",
                 "shasum": ""
             },
             "require": {
@@ -1548,8 +1548,8 @@
                 "jaxon-php/jaxon-upload": "dev-test",
                 "lagdo/twitter-feed": "dev-test",
                 "php-coveralls/php-coveralls": "^2.5",
-                "phpunit/phpcov": "6.*",
-                "phpunit/phpunit": "^8.5"
+                "phpunit/phpcov": "^8.2",
+                "phpunit/phpunit": "^9.5"
             },
             "type": "library",
             "autoload": {
@@ -1594,7 +1594,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-core/issues",
                 "source": "https://github.com/jaxon-php/jaxon-core"
             },
-            "time": "2023-02-12T23:08:35+00:00"
+            "time": "2023-05-28T20:50:31+00:00"
         },
         {
             "name": "jaxon-php/jaxon-dialogs",

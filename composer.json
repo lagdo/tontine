@@ -12,7 +12,7 @@
         "chrome-php/chrome": "^1.8",
         "guzzlehttp/guzzle": "^7.2",
         "jaxon-php/jaxon-annotations": "^2.1",
-        "jaxon-php/jaxon-core": "^4.1",
+        "jaxon-php/jaxon-core": "^4.3",
         "jaxon-php/jaxon-dialogs": "^4.0",
         "jaxon-php/jaxon-laravel": "^4.0",
         "laravel/fortify": "^1.17",

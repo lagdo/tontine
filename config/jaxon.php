@@ -69,6 +69,11 @@ return [
                 'message' => 'toastr',
                 'question' => 'noty',
             ],
+            'bootbox' => [
+                'assets' => [
+                    'js' => "https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.all.min.js",
+                ],
+            ],
             'toastr' => [
                 'options' => [
                     'closeButton' => true,

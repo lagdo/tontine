@@ -5,6 +5,7 @@ namespace Siak\Tontine\Validation\Tontine;
 use Illuminate\Support\Facades\Validator;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\AbstractValidator;
+use Siak\Tontine\Validation\ValidationException;
 use Spatie\ValidationRules\Rules\CountryCode;
 use Spatie\ValidationRules\Rules\Currency as CurrencyCode;
 
