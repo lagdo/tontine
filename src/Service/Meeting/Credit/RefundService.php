@@ -8,28 +8,20 @@ use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
 class RefundService
 {
-    /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
     /**
      * @var TenantService
      */
     protected TenantService $tenantService;
 
     /**
-     * @param LocaleService $localeService
      * @param TenantService $tenantService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService)
+    public function __construct(TenantService $tenantService)
     {
-        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
     }
 
@@ -146,11 +138,7 @@ class RefundService
             $query->take($this->tenantService->getLimit());
             $query->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $query->with(['loan', 'loan.member', 'loan.session', 'refund'])
-            ->get()
-            ->each(function($debt) {
-                $debt->amount = $this->localeService->formatMoney($debt->amount);
-            });
+        return $query->with(['loan', 'loan.member', 'loan.session', 'refund'])->get();
     }
 
     /**
@@ -172,11 +160,7 @@ class RefundService
             $query->take($this->tenantService->getLimit());
             $query->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $query->with(['loan', 'loan.member', 'loan.session', 'refund'])
-            ->get()
-            ->each(function($debt) {
-                $debt->amount = $this->localeService->formatMoney($debt->amount);
-            });
+        return $query->with(['loan', 'loan.member', 'loan.session', 'refund'])->get();
     }
 
     /**

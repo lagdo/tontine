@@ -1,3 +1,4 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
                 <table class="table table-bordered">
                   <thead>
                     <tr>
@@ -10,7 +11,7 @@
 @foreach($debts as $debt)
                     <tr>
                       <td>{{ $debt->loan->member->name }}<br/>{{ $debt->loan->session->title }}</td>
-                      <td>{{ $debt->amount }}</td>
+                      <td>{{ $locale->formatMoney($debt->amount) }}</td>
                       <td data-debt-id="{{ $debt->id }}">
                         {!! paymentLink($debt->refund, $type . '-refund', $session->closed) !!}
                       </td>

@@ -11,6 +11,7 @@ use Closure;
 
 use function auth;
 use function session;
+use function view;
 
 class TontineTenant
 {
@@ -86,6 +87,7 @@ class TontineTenant
                 $this->tenantService->setRound($round);
             }
         }
+        view()->share('tontine', $tontine);
         session(['tontine.id' => $tontineId, 'round.id' => $roundId]);
 
         return $next($request);
