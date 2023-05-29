@@ -58,7 +58,8 @@ class FineService
      */
     public function getFines(int $page = 0): Collection
     {
-        $fines = $this->tenantService->tontine()->charges()->fine()->orderBy('id', 'desc');
+        $fines = $this->tenantService->tontine()->charges()
+            ->active()->fine()->orderBy('id', 'desc');
         if($page > 0 )
         {
             $fines->take($this->tenantService->getLimit());

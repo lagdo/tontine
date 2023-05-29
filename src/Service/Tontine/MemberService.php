@@ -101,6 +101,18 @@ class MemberService
     }
 
     /**
+     * Toggle a member.
+     *
+     * @param Member $member
+     *
+     * @return void
+     */
+    public function toggleMember(Member $member)
+    {
+        $member->update(['active' => !$member->active]);
+    }
+
+    /**
      * Delete a member.
      *
      * @param Member $member

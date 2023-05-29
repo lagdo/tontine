@@ -51,7 +51,8 @@ class FeeService
      */
     public function getFees(int $page = 0): Collection
     {
-        $fees = $this->tenantService->tontine()->charges()->fee()->orderBy('id', 'desc');
+        $fees = $this->tenantService->tontine()->charges()
+            ->active()->fee()->orderBy('id', 'desc');
         if($page > 0 )
         {
             $fees->take($this->tenantService->getLimit());
@@ -90,7 +91,7 @@ class FeeService
             ->where('round_bills.round_id', $session->round_id)
             ->groupBy('charge_id');
         // Count the tontine bills only for active members
-        $memberIds = $this->tenantService->tontine()->members()->pluck('id');
+        $memberIds = $this->tenantService->tontine()->members()->active()->pluck('id');
         $tontineQuery = DB::table('tontine_bills')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'tontine_bills.bill_id', '=', 'bills.id')
@@ -121,7 +122,7 @@ class FeeService
             ->where('round_bills.round_id', $session->round_id)
             ->groupBy('charge_id');
         // Count the tontine bills only for active members.
-        $memberIds = $this->tenantService->tontine()->members()->pluck('id');
+        $memberIds = $this->tenantService->tontine()->members()->active()->pluck('id');
         $tontineQuery = DB::table('tontine_bills')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'tontine_bills.bill_id', '=', 'bills.id')

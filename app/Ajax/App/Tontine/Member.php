@@ -56,6 +56,7 @@ class Member extends CallableClass
 
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $this->jq('.btn-member-edit')->click($this->rq()->edit($memberId));
+        $this->jq('.btn-member-toggle')->click($this->rq()->toggle($memberId));
 
         return $this->response;
     }
@@ -161,6 +162,17 @@ class Member extends CallableClass
         $this->notify->success(trans('tontine.member.messages.updated'), trans('common.titles.success'));
 
         return $this->response;
+    }
+
+    /**
+     * @databag member
+     */
+    public function toggle(int $memberId)
+    {
+        $member = $this->memberService->getMember($memberId);
+        $this->memberService->toggleMember($member);
+
+        return $this->page();
     }
 
     /*public function delete(int $memberId)

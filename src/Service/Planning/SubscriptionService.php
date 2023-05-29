@@ -78,7 +78,7 @@ class SubscriptionService
      */
     public function getQuery(Pool $pool, bool $filter)
     {
-        $query = $this->tenantService->tontine()->members();
+        $query = $this->tenantService->tontine()->members()->active();
         if($filter)
         {
             // Return only members with subscription in this pool

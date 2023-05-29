@@ -135,7 +135,7 @@ class TontineService
      */
     public function getMembers(bool $pluck = true): Collection
     {
-        $query = $this->tenantService->tontine()->members()->orderBy('name', 'asc');
+        $query = $this->tenantService->tontine()->members()->active()->orderBy('name', 'asc');
         return $pluck ? $query->pluck('name', 'id') : $query->get();
     }
 

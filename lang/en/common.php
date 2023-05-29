@@ -46,6 +46,7 @@ return [
         'all' => "All",
         'yes' => "Yes",
         'no' => "No",
+        'active' => "Active",
         'address' => "Address",
         'email' => "Email",
         'fullname' => "Fullname",

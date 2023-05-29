@@ -6,6 +6,7 @@
                       <th>{!! __('common.labels.period') !!}</th>
                       <th>{!! __('common.labels.name') !!}</th>
                       <th class="currency">{!! __('common.labels.amount') !!}</th>
+                      <th>{!! __('common.labels.active') !!}</th>
                       <th class="table-menu"></th>
                     </tr>
                   </thead>
@@ -16,6 +17,9 @@
                       <td>{{ $periods[$charge->period] ?? '' }}</td>
                       <td>{{ $charge->name }}</td>
                       <td class="currency">{{ $charge->money('amount') }}</td>
+                      <td class="table-item-menu" data-charge-id="{{ $charge->id }}">
+                        <a href="javascript:void(0)" class="btn-charge-toggle"><i class="fa fa-toggle-{{ $charge->active ? 'on' : 'off' }}"></i></a>
+                      </td>
                       <td class="table-item-menu">
 @include('tontine.parts.table.menu', [
   'dataIdKey' => 'data-charge-id',

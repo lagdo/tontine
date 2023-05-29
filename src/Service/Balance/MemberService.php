@@ -45,6 +45,34 @@ class MemberService
     }
 
     /**
+     * Get a paginated list of members.
+     *
+     * @param int $page
+     *
+     * @return Collection
+     */
+    public function getMembers(int $page = 0): Collection
+    {
+        $members = $this->tenantService->tontine()->members()->active();
+        if($page > 0 )
+        {
+            $members->take($this->tenantService->getLimit());
+            $members->skip($this->tenantService->getLimit() * ($page - 1));
+        }
+        return $members->get();
+    }
+
+    /**
+     * Get the number of members.
+     *
+     * @return int
+     */
+    public function getMemberCount(): int
+    {
+        return $this->tenantService->tontine()->members()->active()->count();
+    }
+
+    /**
      * @param Member $member
      * @param Session $session
      *

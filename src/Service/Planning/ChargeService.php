@@ -124,6 +124,18 @@ class ChargeService
     }
 
     /**
+     * Toggle a charge.
+     *
+     * @param Charge $charge
+     *
+     * @return void
+     */
+    public function toggleCharge(Charge $charge)
+    {
+        $charge->update(['active' => !$charge->active]);
+    }
+
+    /**
      * Delete a charge.
      *
      * @param Charge $charge

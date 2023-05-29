@@ -66,6 +66,7 @@ class Charge extends CallableClass
 
         $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
         $this->jq('.btn-charge-edit')->click($this->rq()->edit($chargeId));
+        $this->jq('.btn-charge-toggle')->click($this->rq()->toggle($chargeId));
 
         return $this->response;
     }
@@ -207,6 +208,17 @@ class Charge extends CallableClass
         $this->notify->success(trans('tontine.charge.messages.updated'), trans('common.titles.success'));
 
         return $this->response;
+    }
+
+    /**
+     * @databag charge
+     */
+    public function toggle(int $chargeId)
+    {
+        $charge = $this->chargeService->getCharge($chargeId);
+        $this->chargeService->toggleCharge($charge);
+
+        return $this->page();
     }
 
     /*public function delete(int $chargeId)

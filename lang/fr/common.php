@@ -46,6 +46,7 @@ return [
         'all' => "Tous",
         'yes' => "Oui",
         'no' => "Non",
+        'active' => "Actif",
         'fullname' => "Nom complet",
         'firstname' => "Prénom",
         'lastname' => "Nom",
