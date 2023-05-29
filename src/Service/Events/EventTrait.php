@@ -2,6 +2,8 @@
 
 namespace Siak\Tontine\Service\Events;
 
+use DateTime;
+use Illuminate\Support\Facades\Log;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\TontineBill;
 use Siak\Tontine\Model\RoundBill;
@@ -16,6 +18,76 @@ use function now;
 
 trait EventTrait
 {
+    /**
+     * @param Charge $charge
+     * @param DateTime $today
+     *
+     * @return Bill
+     */
+    private function createBill(Charge $charge, DateTime $today): Bill
+    {
+        return Bill::create([
+            'charge' => $charge->name,
+            'amount' => $charge->amount,
+            'issued_at' => $today,
+        ]);
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Member $member
+     * @param DateTime $today
+     *
+     * @return void
+     */
+    private function createTontineBill(Charge $charge, Member $member, DateTime $today)
+    {
+        $bill = $this->createBill($charge, $today);
+        $tontineBill = new TontineBill();
+        $tontineBill->bill()->associate($bill);
+        $tontineBill->charge()->associate($charge);
+        $tontineBill->member()->associate($member);
+        $tontineBill->save();
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Member $member
+     * @param Round $round
+     * @param DateTime $today
+     *
+     * @return void
+     */
+    private function createRoundBill(Charge $charge, Member $member, Round $round, DateTime $today)
+    {
+        $bill = $this->createBill($charge, $today);
+        $roundBill = new RoundBill();
+        $roundBill->bill()->associate($bill);
+        $roundBill->charge()->associate($charge);
+        $roundBill->member()->associate($member);
+        $roundBill->round()->associate($round);
+        $roundBill->save();
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Member $member
+     * @param Session $session
+     * @param DateTime $today
+     *
+     * @return void
+     */
+    private function createSessionBill(Charge $charge, Member $member, Session $session, DateTime $today)
+    {
+        $bill = $this->createBill($charge, $today);
+        $sessionBill = new SessionBill();
+        $sessionBill->bill()->associate($bill);
+        $sessionBill->charge()->associate($charge);
+        $sessionBill->member()->associate($member);
+        $sessionBill->session()->associate($session);
+        $sessionBill->save();
+    }
+
     /**
      * @param Tontine $tontine
      * @param Charge $charge
@@ -32,16 +104,7 @@ trait EventTrait
         // Create a tontine bill for each member
         foreach($tontine->members()->get() as $member)
         {
-            $bill = new Bill();
-            $bill->charge = $charge->name;
-            $bill->amount = $charge->amount;
-            $bill->issued_at = $today;
-            $bill->save();
-            $tontineBill = new TontineBill();
-            $tontineBill->bill()->associate($bill);
-            $tontineBill->charge()->associate($charge);
-            $tontineBill->member()->associate($member);
-            $tontineBill->save();
+            $this->createTontineBill($charge, $member, $today);
         }
     }
 
@@ -57,16 +120,7 @@ trait EventTrait
         // Create a tontine bill for each charge
         foreach($tontine->charges()->once()->get() as $charge)
         {
-            $bill = new Bill();
-            $bill->charge = $charge->name;
-            $bill->amount = $charge->amount;
-            $bill->issued_at = $today;
-            $bill->save();
-            $tontineBill = new TontineBill();
-            $tontineBill->bill()->associate($bill);
-            $tontineBill->charge()->associate($charge);
-            $tontineBill->member()->associate($member);
-            $tontineBill->save();
+            $this->createTontineBill($charge, $member, $today);
         }
     }
 
@@ -79,24 +133,35 @@ trait EventTrait
     protected function roundOpened(Tontine $tontine, Round $round)
     {
         $today = now();
-        foreach($tontine->charges()->round()->get() as $charge)
+        $members = $tontine->members()->with([
+            'round_bills' => function($query) use($round) {
+                $query->where('round_id', $round->id);
+            },
+        ])->get();
+        $charges = $tontine->charges()->round()->get();
+        Log::debug('Creating round bills for members', [
+            'members' => $members->count(),
+            'charges' => $charges->count(),
+        ]);
+        // Create a round bill for each member
+        foreach($members as $member)
         {
-            // Create a round bill for each member
-            foreach($tontine->members()->get() as $member)
+            foreach($charges as $charge)
             {
-                $bill = new Bill();
-                $bill->charge = $charge->name;
-                $bill->amount = $charge->amount;
-                $bill->issued_at = $today;
-                $bill->save();
-                $roundBill = new RoundBill();
-                $roundBill->bill()->associate($bill);
-                $roundBill->charge()->associate($charge);
-                $roundBill->member()->associate($member);
-                $roundBill->round()->associate($round);
-                $roundBill->save();
+                $count = $member->round_bills->filter(function($bill) use($charge) {
+                    return $bill->charge_id = $charge->id;
+                })->count();
+                Log::debug('Creating round bill for member', [
+                    'member' => $member->name,
+                    'charge' => $charge->name,
+                    'count' => $count,
+                ]);
+                if($count === 0)
+                {
+                    $this->createRoundBill($charge, $member, $round, $today);
+                }
             }
-        };
+        }
     }
 
     /**
@@ -107,23 +172,37 @@ trait EventTrait
      */
     protected function sessionOpened(Tontine $tontine, Session $session)
     {
+        // Make sure the round is also opened.
+        $this->roundOpened($tontine, $session->round);
+
         $today = now();
+        $members = $tontine->members()->with([
+            'session_bills' => function($query) use($session) {
+                $query->where('session_id', $session->id);
+            },
+        ])->get();
+        $charges = $tontine->charges()->session()->get();
+        Log::debug('Creating session bills for members', [
+            'members' => $members->count(),
+            'charges' => $charges->count(),
+        ]);
         // Create a session bill for each member and each session charge
-        foreach($tontine->charges()->session()->get() as $charge)
+        foreach($charges as $charge)
         {
-            foreach($tontine->members()->get() as $member)
+            foreach($members as $member)
             {
-                $bill = new Bill();
-                $bill->charge = $charge->name;
-                $bill->amount = $charge->amount;
-                $bill->issued_at = $today;
-                $bill->save();
-                $sessionBill = new SessionBill();
-                $sessionBill->bill()->associate($bill);
-                $sessionBill->charge()->associate($charge);
-                $sessionBill->member()->associate($member);
-                $sessionBill->session()->associate($session);
-                $sessionBill->save();
+                $count = $member->session_bills->filter(function($bill) use($charge) {
+                    return $bill->charge_id = $charge->id;
+                })->count();
+                Log::debug('Creating session bill for member', [
+                    'member' => $member->name,
+                    'charge' => $charge->name,
+                    'count' => $count,
+                ]);
+                if($count === 0)
+                {
+                    $this->createSessionBill($charge, $member, $session, $today);
+                }
             }
         };
 

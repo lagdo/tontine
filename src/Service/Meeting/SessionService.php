@@ -157,9 +157,6 @@ class SessionService
             return;
         }
 
-        // Make sure the round is also opened.
-        $this->openRound($session->round);
-
         DB::transaction(function() use($session) {
             // Open the session
             $session->update(['status' => Session::STATUS_OPENED]);

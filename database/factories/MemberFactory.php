@@ -27,7 +27,7 @@ class MemberFactory extends Factory
         return [
             'name' => $this->faker->name($isMale ? 'male' : 'female'),
             'email' => $this->faker->email(),
-            'phone' => $this->faker->phoneNumber(),
+            'phone' => '', // $this->faker->phoneNumber(),
             'address' => $this->faker->address(),
             'city' => $this->faker->city(),
             'birthday' => $this->faker->date(),
