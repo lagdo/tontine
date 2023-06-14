@@ -139,10 +139,6 @@ trait EventTrait
             },
         ])->get();
         $charges = $tontine->charges()->round()->get();
-        Log::debug('Creating round bills for members', [
-            'members' => $members->count(),
-            'charges' => $charges->count(),
-        ]);
         // Create a round bill for each member
         foreach($members as $member)
         {
@@ -151,11 +147,6 @@ trait EventTrait
                 $count = $member->round_bills->filter(function($bill) use($charge) {
                     return $bill->charge_id = $charge->id;
                 })->count();
-                Log::debug('Creating round bill for member', [
-                    'member' => $member->name,
-                    'charge' => $charge->name,
-                    'count' => $count,
-                ]);
                 if($count === 0)
                 {
                     $this->createRoundBill($charge, $member, $round, $today);
@@ -182,10 +173,6 @@ trait EventTrait
             },
         ])->get();
         $charges = $tontine->charges()->session()->get();
-        Log::debug('Creating session bills for members', [
-            'members' => $members->count(),
-            'charges' => $charges->count(),
-        ]);
         // Create a session bill for each member and each session charge
         foreach($charges as $charge)
         {
@@ -194,11 +181,6 @@ trait EventTrait
                 $count = $member->session_bills->filter(function($bill) use($charge) {
                     return $bill->charge_id = $charge->id;
                 })->count();
-                Log::debug('Creating session bill for member', [
-                    'member' => $member->name,
-                    'charge' => $charge->name,
-                    'count' => $count,
-                ]);
                 if($count === 0)
                 {
                     $this->createSessionBill($charge, $member, $session, $today);
