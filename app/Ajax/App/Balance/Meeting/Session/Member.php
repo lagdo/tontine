@@ -28,19 +28,15 @@ class Member extends CallableClass
     /**
      * @param SessionModel $session
      * @param MemberModel $member
-     * @param boolean $isFinancial
      *
      * @return void
      */
-    public function show(SessionModel $session, MemberModel $member, bool $isFinancial)
+    public function show(SessionModel $session, MemberModel $member)
     {
         $this->deposits($session, $member);
         $this->remitments($session, $member);
-        if($isFinancial)
-        {
-            $this->loans($session, $member);
-            $this->debts($session, $member);
-        }
+        $this->loans($session, $member);
+        $this->debts($session, $member);
         $this->fees($session, $member);
         $this->fines($session, $member);
     }

@@ -37,13 +37,11 @@
                 <div class="col-md-6 col-sm-12" id="member-remitments">
                 </div>
               </div>
-@if( $tontine->is_financial )
               <div class="row">
                 <div class="col-md-6 col-sm-12" id="member-loans">
                 </div>
                 <div class="col-md-6 col-sm-12" id="member-refunds">
                 </div>
               </div>
-@endif
             </div>
           </div>

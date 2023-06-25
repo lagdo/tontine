@@ -26,19 +26,15 @@ class Session extends CallableClass
 
     /**
      * @param SessionModel $session
-     * @param boolean $isFinancial
      *
      * @return void
      */
-    public function show(SessionModel $session, bool $isFinancial)
+    public function show(SessionModel $session)
     {
         $this->deposits($session);
         $this->remitments($session);
-        if($isFinancial)
-        {
-            $this->loans($session);
-            $this->refunds($session);
-        }
+        $this->loans($session);
+        $this->refunds($session);
         $this->fees($session);
         $this->fines($session);
     }

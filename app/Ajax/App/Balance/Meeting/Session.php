@@ -38,10 +38,8 @@ class Session extends CallableClass
         }
         $members->prepend('', 0);
 
-        $tontine = $this->sessionService->getTontine();
         $this->response->html('section-title', trans('tontine.menus.meeting'));
-        $html = $this->view()->render('tontine.pages.balance.home',
-            compact('sessions', 'members', 'tontine'));
+        $html = $this->view()->render('tontine.pages.balance.home', compact('sessions', 'members'));
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-members-refresh')->click($this->rq()->home());
@@ -50,21 +48,20 @@ class Session extends CallableClass
         $this->jq('#btn-member-select')->click($this->rq()->show($sessionId, $memberId));
 
         $session = $this->sessionService->getSession($sessions->keys()->first());
-        $this->cl(Session\Session::class)->show($session, $tontine->is_financial);
+        $this->cl(Session\Session::class)->show($session);
 
         return $this->response;
     }
 
     public function show(int $sessionId, int $memberId)
     {
-        $tontine = $this->sessionService->getTontine();
         if(!($session = $this->sessionService->getSession($sessionId)))
         {
             return $this->response;
         }
         if($memberId === 0)
         {
-            $this->cl(Session\Session::class)->show($session, $tontine->is_financial);
+            $this->cl(Session\Session::class)->show($session);
             return $this->response;
         }
 
@@ -72,7 +69,7 @@ class Session extends CallableClass
         {
             return $this->response;
         }
-        $this->cl(Session\Member::class)->show($session, $member, $tontine->is_financial);
+        $this->cl(Session\Member::class)->show($session, $member);
         return $this->response;
     }
 }
