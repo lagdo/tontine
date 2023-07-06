@@ -13,11 +13,11 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach($subscriptions as $subscription)
+@foreach($receivables as $receivable)
                         <tr>
-                          <td>{{ $subscription->pool->title }}</td>
-                          <td>{{ $subscription->amount }}</td>
-                          <td><i class="fa fa-toggle-{{ $subscription->paid ? 'on' : 'off' }}"></i></td>
+                          <td>{{ $receivable->subscription->pool->title }}</td>
+                          <td>{{ $receivable->amount }}</td>
+                          <td><i class="fa fa-toggle-{{ $receivable->paid ? 'on' : 'off' }}"></i></td>
                         </tr>
 @endforeach
                       </tbody>

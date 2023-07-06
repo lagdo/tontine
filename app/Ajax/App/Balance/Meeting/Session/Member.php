@@ -44,7 +44,7 @@ class Member extends CallableClass
     private function deposits(SessionModel $session, MemberModel $member)
     {
         $html = $this->view()->render('tontine.pages.balance.member.deposits', [
-            'subscriptions' => $this->memberService->getReceivables($member, $session),
+            'receivables' => $this->memberService->getReceivables($member, $session),
         ]);
         $this->response->html('member-deposits', $html);
     }

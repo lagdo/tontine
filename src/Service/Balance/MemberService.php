@@ -9,6 +9,7 @@ use Siak\Tontine\Model\Funding;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
 use Siak\Tontine\Service\LocaleService;
@@ -80,17 +81,15 @@ class MemberService
      */
     public function getReceivables(Member $member, Session $session): Collection
     {
-        return Subscription::where('member_id', $member->id)
-            ->with([
-                'pool',
-                'receivables' => function($query) use($session) {
-                    $query->where('session_id', $session->id)->whereHas('deposit');
-                },
-            ])
+        return Receivable::where('session_id', $session->id)
+            ->whereHas('subscription', function(Builder $query) use($member) {
+                $query->where('member_id', $member->id);
+            })
+            ->with(['deposit', 'subscription.pool'])
             ->get()
-            ->each(function($subscription) {
-                $subscription->paid = ($subscription->receivables->count() > 0);
-                $subscription->amount = $this->localeService->formatMoney($subscription->pool->amount);
+            ->each(function($receivable) {
+                $receivable->paid = ($receivable->deposit !== null);
+                $receivable->amount = $this->localeService->formatMoney($receivable->subscription->pool->amount);
             });
     }
 
