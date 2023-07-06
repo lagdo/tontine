@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Meeting\Pool;
 
 use Illuminate\Support\Collection;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Deposit;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
@@ -122,7 +123,10 @@ class DepositService
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
-        $receivable->deposit()->create(['paid_at' => now()]);
+        $deposit = new Deposit();
+        $deposit->receivable()->associate($receivable);
+        $deposit->session()->associate($session);
+        $deposit->save();
     }
 
     /**

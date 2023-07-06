@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('deposits', function (Blueprint $table) {
             $table->id();
-            $table->datetime('paid_at');
-            $table->timestamps();
+            $table->unsignedBigInteger('session_id');
+            $table->foreign('session_id')->references('id')->on('sessions');
             $table->unsignedBigInteger('receivable_id');
             $table->foreign('receivable_id')->references('id')->on('receivables');
             $table->unique('receivable_id');

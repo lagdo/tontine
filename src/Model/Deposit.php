@@ -7,25 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Deposit extends Model
 {
     /**
-     * The attributes that are mass assignable.
+     * Indicates if the model should be timestamped.
      *
-     * @var array
+     * @var bool
      */
-    protected $fillable = [
-        'paid_at',
-    ];
+    public $timestamps = false;
 
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'paid_at',
-    ];
+    public function session()
+    {
+        return $this->belongsTo(Session::class);
+    }
 
     public function receivable()
     {
