@@ -5,6 +5,7 @@ namespace App\Ajax\App\Planning;
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\SubscriptionService;
+use Siak\Tontine\Service\TenantService;
 
 use function intval;
 use function Jaxon\jq;
@@ -16,6 +17,11 @@ use function Jaxon\pm;
  */
 class Subscription extends CallableClass
 {
+    /**
+     * @var TenantService
+     */
+    protected TenantService $tenantService;
+
     /**
      * @var SubscriptionService
      */
@@ -29,10 +35,12 @@ class Subscription extends CallableClass
     /**
      * The constructor
      *
+     * @param TenantService $tenantService
      * @param SubscriptionService $subscriptionService
      */
-    public function __construct(SubscriptionService $subscriptionService)
+    public function __construct(TenantService $tenantService, SubscriptionService $subscriptionService)
     {
+        $this->tenantService = $tenantService;
         $this->subscriptionService = $subscriptionService;
     }
 
@@ -76,13 +84,16 @@ class Subscription extends CallableClass
         $members = $this->subscriptionService->getMembers($this->pool, $filter, $pageNumber);
         $pagination = $this->rq()->page(pm()->page())->paginate($pageNumber, $perPage, $memberCount);
 
+        $tontine = $this->tenantService->tontine();
         $html = $this->view()->render('tontine.pages.planning.subscription.page')
+            ->with('tontine', $tontine)
             ->with('members', $members)
             ->with('count', $this->subscriptionService->getSubscriptionCount($this->pool))
             ->with('pagination', $pagination);
         $this->response->html('subscription-page', $html);
 
-        $memberId = jq()->parent()->parent()->attr('data-member-id')->toInt();
+        $memberId = $tontine->is_libre ? jq()->parent()->attr('data-member-id')->toInt() :
+            jq()->parent()->parent()->parent()->attr('data-member-id')->toInt();
         $this->jq('.btn-subscription-add')->click($this->rq()->create($memberId));
         $this->jq('.btn-subscription-del')->click($this->rq()->delete($memberId));
 

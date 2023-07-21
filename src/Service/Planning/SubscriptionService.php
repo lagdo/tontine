@@ -137,7 +137,14 @@ class SubscriptionService
         // Cannot modify subscriptions if a session is already opened.
         $this->sessionService->checkActiveSessions();
 
-        $member = $this->tenantService->tontine()->members()->find($memberId);
+        // Enforce unique subscription per member in libre pool.
+        $tontine = $this->tenantService->tontine();
+        if($tontine->is_libre && $pool->subscriptions()->where('member_id', $memberId)->count() > 0)
+        {
+            return;
+        }
+
+        $member = $tontine->members()->find($memberId);
         $subscription = new Subscription();
         $subscription->title = '';
         $subscription->pool()->associate($pool);
