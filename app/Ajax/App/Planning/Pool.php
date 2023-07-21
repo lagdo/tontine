@@ -2,7 +2,7 @@
 
 namespace App\Ajax\App\Planning;
 
-use Siak\Tontine\Service\Tontine\PoolService;
+use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Validation\Planning\PoolValidator;
 use App\Ajax\App\Faker;
 use App\Ajax\CallableClass;

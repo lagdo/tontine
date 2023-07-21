@@ -10,7 +10,7 @@ use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Tontine\PoolService;
+use Siak\Tontine\Service\Planning\PoolService;
 
 class SessionService
 {
