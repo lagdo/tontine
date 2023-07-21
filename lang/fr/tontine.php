@@ -29,6 +29,7 @@ return [
         'tontine' => "Tontine",
         'round' => "Tour",
         'types' => [
+            'libre' => "Libre",
             'mutual' => "Mutuelle",
             'financial' => "Financière",
         ],

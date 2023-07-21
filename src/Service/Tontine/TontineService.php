@@ -33,6 +33,7 @@ class TontineService
     public function getTontineTypes(): array
     {
         return [
+            Tontine::TYPE_LIBRE => trans('tontine.labels.types.libre'),
             Tontine::TYPE_MUTUAL => trans('tontine.labels.types.mutual'),
             Tontine::TYPE_FINANCIAL => trans('tontine.labels.types.financial'),
         ];

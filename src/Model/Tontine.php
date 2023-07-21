@@ -16,6 +16,11 @@ class Tontine extends Model
     /**
      * @const
      */
+    const TYPE_LIBRE = 'l';
+
+    /**
+     * @const
+     */
     const TYPE_MUTUAL = 'm';
 
     /**
@@ -52,6 +57,11 @@ class Tontine extends Model
         return TontineFactory::new();
     }
 
+    public function getIsLibreAttribute()
+    {
+        return $this->type === self::TYPE_LIBRE;
+    }
+
     public function getIsMutualAttribute()
     {
         return $this->type === self::TYPE_MUTUAL;
@@ -60,6 +70,16 @@ class Tontine extends Model
     public function getIsFinancialAttribute()
     {
         return $this->type === self::TYPE_FINANCIAL;
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeLibre(Builder $query): Builder
+    {
+        return $query->where('type', self::TYPE_LIBRE);
     }
 
     /**
