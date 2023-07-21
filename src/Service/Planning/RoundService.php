@@ -18,11 +18,18 @@ class RoundService
     protected TenantService $tenantService;
 
     /**
-     * @param TenantService $tenantService
+     * @var PoolService
      */
-    public function __construct(TenantService $tenantService)
+    protected PoolService $poolService;
+
+    /**
+     * @param TenantService $tenantService
+     * @param PoolService $poolService
+     */
+    public function __construct(TenantService $tenantService, PoolService $poolService)
     {
         $this->tenantService = $tenantService;
+        $this->poolService = $poolService;
     }
 
     /**
@@ -101,7 +108,19 @@ class RoundService
      */
     public function createRound(array $values): bool
     {
-        $this->tenantService->tontine()->rounds()->create($values);
+        DB::transaction(function() use($values) {
+            $tontine = $this->tenantService->tontine();
+            $round = $tontine->rounds()->create($values);
+            // Create the only and unique pool for free tontine
+            if($tontine->is_libre)
+            {
+                $round->pools()->create([
+                    'title' => $round->title, // Same title as the round
+                    'amount' => 0, // No fixed amount
+                    'notes' => '',
+                ]);
+            }
+        });
 
         return true;
     }
