@@ -2,12 +2,12 @@
 
 namespace App\Ajax\App\Planning;
 
-use Siak\Tontine\Service\Planning\PoolService;
-use Siak\Tontine\Validation\Planning\PoolValidator;
 use App\Ajax\App\Faker;
 use App\Ajax\CallableClass;
-
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Siak\Tontine\Service\Planning\PoolService;
+use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Validation\Planning\PoolValidator;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
@@ -16,6 +16,12 @@ use function trans;
 
 class Pool extends CallableClass
 {
+    /**
+     * @di
+     * @var TenantService
+     */
+    protected TenantService $tenantService;
+
     /**
      * @di
      * @var PoolService
@@ -38,7 +44,8 @@ class Pool extends CallableClass
      */
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.planning.pool.home');
+        $html = $this->view()->render('tontine.pages.planning.pool.home')
+            ->with('tontine', $this->tenantService->tontine());
         $this->response->html('section-title', trans('tontine.menus.planning'));
         $this->response->html('content-home', $html);
         $this->jq('#btn-refresh')->click($this->rq()->home());
@@ -59,11 +66,12 @@ class Pool extends CallableClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $poolCount);
 
         $html = $this->view()->render('tontine.pages.planning.pool.page')
+            ->with('tontine', $this->tenantService->tontine())
             ->with('pools', $pools)
             ->with('pagination', $pagination);
         $this->response->html('pool-page', $html);
 
-        if($this->fromHome && $poolCount > 0)
+        if($this->tenantService->tontine()->is_libre || ($this->fromHome && $poolCount > 0))
         {
             // Show the subscriptions of the first pool in the list
             $this->cl(Subscription::class)->show($pools[0]);
@@ -80,6 +88,12 @@ class Pool extends CallableClass
 
     public function number()
     {
+        // Disabled for libre tontines
+        if($this->tenantService->tontine()->is_libre)
+        {
+            return $this->response;
+        }
+
         $title = trans('number.labels.title');
         $content = $this->view()->render('tontine.pages.planning.pool.number');
         $buttons = [[
@@ -101,6 +115,11 @@ class Pool extends CallableClass
      */
     public function add(int $count)
     {
+        // Disabled for libre tontines
+        if($this->tenantService->tontine()->is_libre)
+        {
+            return $this->response;
+        }
         if($count <= 0)
         {
             $this->notify->warning(trans('number.errors.invalid'));
@@ -137,6 +156,12 @@ class Pool extends CallableClass
      */
     public function create(array $formValues)
     {
+        // Disabled for libre tontines
+        if($this->tenantService->tontine()->is_libre)
+        {
+            return $this->response;
+        }
+
         $values = $this->validator->validateList($formValues['pools'] ?? []);
 
         $this->poolService->createPools($values);
@@ -147,6 +172,12 @@ class Pool extends CallableClass
 
     public function edit(int $poolId)
     {
+        // Disabled for libre tontines
+        if($this->tenantService->tontine()->is_libre)
+        {
+            return $this->response;
+        }
+
         $pool = $this->poolService->getPool($poolId);
 
         $title = trans('tontine.pool.titles.edit');
@@ -172,6 +203,12 @@ class Pool extends CallableClass
      */
     public function update(int $poolId, array $formValues)
     {
+        // Disabled for libre tontines
+        if($this->tenantService->tontine()->is_libre)
+        {
+            return $this->response;
+        }
+
         $values = $this->validator->validateItem($formValues);
         $pool = $this->poolService->getPool($poolId);
 
@@ -187,6 +224,12 @@ class Pool extends CallableClass
 
     public function delete(int $poolId)
     {
+        // Disabled for libre tontines
+        if($this->tenantService->tontine()->is_libre)
+        {
+            return $this->response;
+        }
+
         $pool = $this->poolService->getPool($poolId);
         if($pool->subscriptions()->count() > 0)
         {

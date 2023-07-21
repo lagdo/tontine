@@ -10,8 +10,10 @@
 @foreach ($pools as $pool)
                         <tr>
                           <td>{{ $pool->title }}</td>
-                          <td class="currency">{{ $pool->money('amount') }}</td>
+                          <td class="currency">{{ $tontine->is_libre ?
+                            __('tontine.labels.types.libre') : $pool->money('amount') }}</td>
                           <td class="table-item-menu">
+@if (!$tontine->is_libre)
 @include('tontine.parts.table.menu', [
   'dataIdKey' => 'data-pool-id',
   'dataIdValue' => $pool->id,
@@ -26,6 +28,7 @@
     'text' => __('common.actions.delete'),
   ]],
 ])
+@endif
                           </td>
                         </tr>
 @endforeach
