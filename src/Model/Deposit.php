@@ -13,6 +13,15 @@ class Deposit extends Model
      */
     public $timestamps = false;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'amount',
+    ];
+
     public function session()
     {
         return $this->belongsTo(Session::class);
