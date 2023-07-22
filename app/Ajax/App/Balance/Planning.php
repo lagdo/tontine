@@ -20,6 +20,7 @@ use function Jaxon\pm;
 class Planning extends CallableClass
 {
     /**
+     * @di
      * @var TenantService
      */
     public TenantService $tenantService;
@@ -78,14 +79,15 @@ class Planning extends CallableClass
     public function home()
     {
         // Don't try to show the page if there is no pool selected.
-        return ($this->pool) ? $this->amounts() : $this->response;
+        return !$this->pool || $this->tenantService->tontine()->is_libre ?
+            $this->response : $this->amounts();
     }
 
     public function amounts()
     {
         $receivables = $this->summaryService->getReceivables($this->pool);
         $this->view()->shareValues($receivables);
-        $html = $this->view()->render('tontine.pages.planning.report.amounts')
+        $html = $this->view()->render('tontine.pages.planning.beneficiary.amounts')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
@@ -98,7 +100,6 @@ class Planning extends CallableClass
     }
 
     /**
-     * @di $tenantService
      * @di $sessionService
      */
     public function toggleSession(int $sessionId)

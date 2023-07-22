@@ -6,7 +6,7 @@ use App\Ajax\App\Balance\Meeting\Round as RoundBalance;
 use App\Ajax\App\Balance\Meeting\Session as SessionBalance;
 use App\Ajax\App\Balance\Planning as PlanningBalance;
 use App\Ajax\App\Meeting\Session as MeetingSession;
-use App\Ajax\App\Planning\Planning;
+use App\Ajax\App\Planning\Beneficiary;
 use App\Ajax\App\Planning\Pool;
 use App\Ajax\App\Planning\Session as PlanningSession;
 use App\Ajax\App\Tontine\Charge;
@@ -106,7 +106,7 @@ class CallableClass extends JaxonCallableClass
 
         $this->jq('#planning-menu-subscriptions')->click($this->cl(Pool::class)->rq()->home());
         $this->jq('#planning-menu-sessions')->click($this->cl(PlanningSession::class)->rq()->home());
-        $this->jq('#planning-menu-beneficiaries')->click($this->cl(Planning::class)->rq()->beneficiaries());
+        $this->jq('#planning-menu-beneficiaries')->click($this->cl(Beneficiary::class)->rq()->home());
         $this->jq('#planning-menu-balance')->click($this->cl(PlanningBalance::class)->rq()->home());
         $this->jq('#meeting-menu-sessions')->click($this->cl(MeetingSession::class)->rq()->home());
         $this->jq('#balance-menu-session')->click($this->cl(SessionBalance::class)->rq()->home());
