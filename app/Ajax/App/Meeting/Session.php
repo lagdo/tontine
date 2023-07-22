@@ -11,8 +11,10 @@ use App\Ajax\App\Meeting\Credit\Refund\Interest;
 use App\Ajax\App\Meeting\Credit\Refund\Principal;
 use App\Ajax\App\Meeting\Pool\Deposit;
 use App\Ajax\App\Meeting\Pool\Remitment\Financial;
+use App\Ajax\App\Meeting\Pool\Remitment\Libre;
 use App\Ajax\App\Meeting\Pool\Remitment\Mutual;
 use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Model\Tontine as TontineModel;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
@@ -104,14 +106,18 @@ class Session extends CallableClass
     }
 
     /**
-     * @param bool $isMutual
+     * @param TontineModel $tontine
      *
      * @return void
      */
-    private function pools(bool $isMutual)
+    private function pools(TontineModel $tontine)
     {
         $this->cl(Deposit::class)->show($this->session);
-        $remitmentClass = ($isMutual ? Mutual::class : Financial::class);
+        $remitmentClass = match($tontine->type) {
+            TontineModel::TYPE_MUTUAL => Mutual::class,
+            TontineModel::TYPE_FINANCIAL => Financial::class,
+            TontineModel::TYPE_LIBRE => Libre::class,
+        };
         $this->cl($remitmentClass)->show($this->session);
     }
 
@@ -183,7 +189,7 @@ class Session extends CallableClass
         $this->jq('#btn-session-close')->click($this->rq()->close()
             ->confirm(trans('tontine.session.questions.close')));
 
-        $this->pools($tontine->is_mutual);
+        $this->pools($tontine);
         $this->credits();
         $this->charges();
         $this->reports();

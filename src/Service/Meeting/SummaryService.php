@@ -159,6 +159,11 @@ class SummaryService
      */
     public function getSessionRemitmentCount(Pool $pool, Session $session): int
     {
+        if($this->tenantService->tontine()->is_libre)
+        {
+            return 1;
+        }
+
         $sessions = $this->sessionService->enabledSessions($pool);
         $position = $sessions->filter(function($_session) use($session) {
             return $_session->start_at->lt($session->start_at);
