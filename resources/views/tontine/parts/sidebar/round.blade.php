@@ -21,11 +21,14 @@
               <li><a class="nav-link" id="meeting-menu-sessions" href="javascript:void(0)">
                 <i class="fa fa-calendar-day"></i> <span>{{ __('tontine.menus.sessions') }}</span>
               </a></li>
+
               <li class="menu-header">{{ __('tontine.menus.balance') }}</li>
               <li><a class="nav-link" id="balance-menu-session" href="javascript:void(0)">
                 <i class="fa fa-calendar-day"></i> <span>{{ __('tontine.menus.sessions') }}</span>
               </a></li>
+@if ($tontine !== null && !$tontine->is_libre)
               <li><a class="nav-link" id="balance-menu-round" href="javascript:void(0)">
                 <i class="fa fa-calendar-week"></i> <span>{{ __('tontine.menus.rounds') }}</span>
               </a></li>
+@endif
             </ul>

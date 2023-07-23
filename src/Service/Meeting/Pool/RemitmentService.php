@@ -2,18 +2,17 @@
 
 namespace Siak\Tontine\Service\Meeting\Pool;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Debt;
-use Siak\Tontine\Model\Deposit;
 use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Meeting\SummaryService;
+use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
@@ -43,18 +42,24 @@ class RemitmentService
     public SessionService $sessionService;
 
     /**
+     * @var PoolService
+     */
+    protected PoolService $poolService;
+
+    /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param SummaryService $summaryService
      * @param SessionService $sessionService
      */
     public function __construct(LocaleService $localeService, TenantService $tenantService,
-        SummaryService $summaryService, SessionService $sessionService)
+        SummaryService $summaryService, SessionService $sessionService, PoolService $poolService)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
         $this->summaryService = $summaryService;
         $this->sessionService = $sessionService;
+        $this->poolService = $poolService;
     }
 
     /**
@@ -134,26 +139,18 @@ class RemitmentService
      */
     public function getLibrePayables(Pool $pool, Session $session, int $page = 0): Collection
     {
-        // Sum the amounts for all deposits
-        $receivableClosure = function(Builder $query) use($pool, $session) {
-            $query->where('session_id', $session->id)
-                ->whereHas('subscription', function(Builder $query) use($pool) {
-                    $query->where('pool_id', $pool->id);
-                });
-        };
-        $remitmentAmount = Deposit::whereHas('receivable', $receivableClosure)->sum('amount');
-
         $query = $this->getQuery($pool, $session)->with(['subscription.member', 'remitment']);
         if($page > 0 )
         {
             $query->take($this->tenantService->getLimit());
             $query->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        $payables = $query->get()->each(function($payable) use($remitmentAmount) {
+
+        $remitmentAmount = $this->poolService->getLibrePoolAmount($pool, $session);
+
+        return $query->get()->each(function($payable) use($remitmentAmount) {
             $payable->amount = $this->localeService->formatMoney($remitmentAmount);
         });
-
-        return $payables;
     }
 
     /**

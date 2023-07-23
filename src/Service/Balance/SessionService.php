@@ -42,6 +42,24 @@ class SessionService
     }
 
     /**
+     * @param Pool $pool
+     * @param Session $session
+     * @param int $sessionCount
+     *
+     * @return string
+     */
+    private function getPoolAmountPaid(Pool $pool, Session $session, int $sessionCount = 1): string
+    {
+        if($this->tenantService->tontine()->is_libre)
+        {
+            $remitmentAmount = $this->poolService->getLibrePoolAmount($pool, $session);
+            return $this->localeService->formatMoney($remitmentAmount);
+        }
+
+        return $this->localeService->formatMoney($pool->amount * $pool->paid * $sessionCount);
+    }
+
+    /**
      * @param Session $session
      *
      * @return Collection
@@ -62,9 +80,9 @@ class SessionService
                 },
             ])
             ->get()
-            ->map(function($pool) {
+            ->map(function($pool) use($session) {
                 $pool->total = $this->localeService->formatMoney($pool->amount * $pool->total);
-                $pool->paid = $this->localeService->formatMoney($pool->amount * $pool->paid);
+                $pool->paid = $this->getPoolAmountPaid($pool, $session);
                 $pool->amount = $this->localeService->formatMoney($pool->amount);
                 return $pool;
             });
@@ -91,10 +109,10 @@ class SessionService
                 },
             ])
             ->get()
-            ->map(function($pool) {
+            ->map(function($pool) use($session) {
                 $sessionCount = $this->poolService->enabledSessionCount($pool);
                 $pool->total = $this->localeService->formatMoney($pool->amount * $pool->total * $sessionCount);
-                $pool->paid = $this->localeService->formatMoney($pool->amount * $pool->paid * $sessionCount);
+                $pool->paid = $this->getPoolAmountPaid($pool, $session, $sessionCount);
                 $pool->amount = $this->localeService->formatMoney($pool->amount);
                 return $pool;
             });
