@@ -65,37 +65,43 @@ class SummaryService
     {
         $sessions = $this->_getSessions($this->tenantService->round(), $pool, ['payables.subscription']);
         $subscriptions = $pool->subscriptions()->with(['payable', 'payable.session', 'member'])->get();
-        $figures = new stdClass();
-        $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
-
-        // Set the subscriptions that will be pay at each session.
-        // Pad with 0's when the beneficiaries are not yet set.
-        $sessions->each(function($session) use($figures, $pool) {
-            if($session->disabled($pool))
-            {
-                return;
-            }
-            // Pick the subscriptions ids, and fill with 0's to the max available.
-            $session->beneficiaries = $session->payables->map(function($payable) {
-                return $payable->subscription_id;
-            })->pad($figures->expected[$session->id]->remitment->count, 0);
-        });
-
         // Separate subscriptions that already have a beneficiary assigned from the others.
         [$beneficiaries, $subscriptions] = $subscriptions->partition(function($subscription) use($pool) {
             $session = $subscription->payable->session;
             return $session !== null && $session->enabled($pool);
         });
         $beneficiaries = $beneficiaries->pluck('member.name', 'id');
-        // Show the list of subscriptions only for mutual tontines
-        if($this->tenantService->tontine()->is_mutual)
+
+        $figures = new stdClass();
+        // No expected figures for libre tontines
+        if(!$this->tenantService->tontine()->is_libre)
+        {
+            $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
+        }
+
+        // Set the subscriptions that will be pay at each session.
+        // Pad with 0's when the beneficiaries are not yet set.
+        $sessions->each(function($session) use($figures, $pool) {
+            if($session->enabled($pool))
+            {
+                // Pick the subscriptions ids, and fill with 0's to the max available.
+                $remitmentCount = $this->tenantService->tontine()->is_libre ? 1 :
+                    $figures->expected[$session->id]->remitment->count;
+                $session->beneficiaries = $session->payables->map(function($payable) {
+                    return $payable->subscription_id;
+                })->pad($remitmentCount, 0);
+            }
+        });
+
+        // Do not show the list of subscriptions for financial tontines
+        if($this->tenantService->tontine()->is_financial)
+        {
+            $subscriptions = collect([]);
+        }
+        else
         {
             $subscriptions = $subscriptions->pluck('member.name', 'id');
             $subscriptions->prepend('', 0);
-        }
-        else // if($this->tenantService->tontine()->is_financial)
-        {
-            $subscriptions = collect([]);
         }
 
         return compact('pool', 'sessions', 'subscriptions', 'beneficiaries', 'figures');

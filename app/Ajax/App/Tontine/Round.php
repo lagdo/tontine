@@ -2,8 +2,8 @@
 
 namespace App\Ajax\App\Tontine;
 
+use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\RoundService;
-use Siak\Tontine\Service\Tontine\PoolService;
 use Siak\Tontine\Service\TenantService;
 use App\Ajax\CallableClass;
 

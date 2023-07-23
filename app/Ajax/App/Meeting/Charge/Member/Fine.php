@@ -5,7 +5,7 @@ namespace App\Ajax\App\Meeting\Charge\Member;
 use App\Ajax\CallableClass;
 use App\Ajax\App\Meeting\Charge\Fine as Charge;
 use Siak\Tontine\Service\Meeting\Charge\FineService;
-use Siak\Tontine\Service\Planning\ChargeService;
+use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Charge as ChargeModel;
 

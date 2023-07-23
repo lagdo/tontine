@@ -16,7 +16,7 @@
 @foreach($pools as $pool)
                         <tr>
                           <td>{{ $pool->title }}</td>
-                          <td>{{ $pool->amount }}</td>
+                          <td>{{ $tontine->is_libre ? __('tontine.labels.types.libre') : $pool->amount }}</td>
                           <td>{{ $pool->paid }}</td>
                         </tr>
 @endforeach

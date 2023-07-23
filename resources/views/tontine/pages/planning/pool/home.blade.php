@@ -5,12 +5,14 @@
                   <div class="col-auto">
                     <h2 class="section-title">{{ __('tontine.menus.pools') }}</h2>
                   </div>
+@if (!$tontine->is_libre)
                   <div class="col">
                     <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
                       <button type="button" class="btn btn-primary" id="btn-refresh"><i class="fa fa-sync"></i></button>
                       <button type="button" class="btn btn-primary" id="btn-create"><i class="fa fa-plus"></i></button>
                     </div>
                   </div>
+@endif
                 </div>
               </div>
 

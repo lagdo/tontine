@@ -9,12 +9,13 @@ use Siak\Tontine\Model\Funding;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Tontine\PoolService;
+use Siak\Tontine\Service\Planning\PoolService;
 
 class MemberService
 {
@@ -74,6 +75,22 @@ class MemberService
     }
 
     /**
+     * @param Receivable $receivable
+     *
+     * @return string
+     */
+    private function getReceivableAmount(Receivable $receivable): string
+    {
+        if($this->tenantService->tontine()->is_libre)
+        {
+            return !$receivable->deposit ? trans('tontine.labels.types.libre') :
+                $this->localeService->formatMoney($receivable->deposit->amount);
+        }
+
+        return $this->localeService->formatMoney($receivable->subscription->pool->amount);
+    }
+
+    /**
      * @param Member $member
      * @param Session $session
      *
@@ -89,8 +106,27 @@ class MemberService
             ->get()
             ->each(function($receivable) {
                 $receivable->paid = ($receivable->deposit !== null);
-                $receivable->amount = $this->localeService->formatMoney($receivable->subscription->pool->amount);
+                $receivable->amountPaid = $this->getReceivableAmount($receivable);
             });
+    }
+
+    /**
+     * @param Pool $pool
+     * @param Session $session
+     *
+     * @return string
+     */
+    private function getPayableAmount(Pool $pool, Session $session): string
+    {
+        if(!$this->tenantService->tontine()->is_libre)
+        {
+            $sessionCount = $this->poolService->enabledSessionCount($pool);
+            $remitmentAmount = $pool->amount * $sessionCount;
+            return $this->localeService->formatMoney($remitmentAmount);
+        }
+
+        $remitmentAmount = $this->poolService->getLibrePoolAmount($pool, $session);
+        return $this->localeService->formatMoney($remitmentAmount);
     }
 
     /**
@@ -112,11 +148,9 @@ class MemberService
                 },
             ])
             ->get()
-            ->each(function($subscription) {
+            ->each(function($subscription) use($session) {
                 $subscription->paid = ($subscription->payable !== null);
-                $sessionCount = $this->poolService->enabledSessionCount($subscription->pool);
-                $remitmentAmount = $subscription->pool->amount * $sessionCount;
-                $subscription->amount = $this->localeService->formatMoney($remitmentAmount);
+                $subscription->amount = $this->getPayableAmount($subscription->pool, $session);
             });
     }
 

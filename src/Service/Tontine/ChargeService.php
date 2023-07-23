@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service\Planning;
+namespace Siak\Tontine\Service\Tontine;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;

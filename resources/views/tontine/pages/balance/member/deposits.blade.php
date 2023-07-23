@@ -16,7 +16,7 @@
 @foreach($receivables as $receivable)
                         <tr>
                           <td>{{ $receivable->subscription->pool->title }}</td>
-                          <td>{{ $receivable->amount }}</td>
+                          <td>{{ $receivable->amountPaid }}</td>
                           <td><i class="fa fa-toggle-{{ $receivable->paid ? 'on' : 'off' }}"></i></td>
                         </tr>
 @endforeach

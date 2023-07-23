@@ -16,9 +16,10 @@ use function Jaxon\pm;
  * @databag report
  * @before getPool
  */
-class Planning extends CallableClass
+class Beneficiary extends CallableClass
 {
     /**
+     * @di
      * @var TenantService
      */
     public TenantService $tenantService;
@@ -66,38 +67,37 @@ class Planning extends CallableClass
             $this->bag('report')->set('pool.id', $this->pool->id);
         }
 
-        return $this->beneficiaries();
+        return $this->home();
     }
 
-    public function beneficiaries()
+    public function home()
     {
         if(!$this->pool)
         {
             return $this->response;
         }
+
         $payables = $this->summaryService->getPayables($this->pool);
         $this->view()->shareValues($payables);
-        $html = $this->view()->render('tontine.pages.planning.report.remitments')
+        $html = $this->view()->render('tontine.pages.planning.beneficiary.page')
+            ->with('tontine', $this->tenantService->tontine())
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt()));
-        $this->jq('#btn-subscription-refresh')->click($this->rq()->beneficiaries());
-        $this->jq('.select-beneficiary')->change($this->rq()->saveBeneficiary(jq()->attr('data-session-id')->toInt(),
+        $this->jq('#btn-subscription-refresh')->click($this->rq()->home());
+        $this->jq('.select-beneficiary')->change($this->rq()->save(jq()->attr('data-session-id')->toInt(),
             jq()->attr('data-subscription-id')->toInt(), jq()->val()->toInt()));
 
         return $this->response;
     }
 
-    /**
-     * @di $tenantService
-     */
-    public function saveBeneficiary(int $sessionId, int $currSubscriptionId, int $nextSubscriptionId)
+    public function save(int $sessionId, int $currSubscriptionId, int $nextSubscriptionId)
     {
         $session = $this->tenantService->getSession($sessionId);
         $this->subscriptionService->saveBeneficiary($this->pool, $session, $currSubscriptionId, $nextSubscriptionId);
 
-        return $this->beneficiaries();
+        return $this->home();
     }
 }

@@ -45,9 +45,15 @@
 @else
                     <tr>
                       <td>{{ $session->title }}</td>
+@if ($tontine->is_libre)
+                      <td class="currency">0</td>
+                      <td class="currency">1</td>
+                      <td class="currency">{{ __('tontine.labels.types.libre') }}</td>
+@else
                       <td class="currency">{{ $figures->expected[$session->id]->cashier->recv }}</td>
                       <td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>
                       <td class="currency">{{ $figures->expected[$session->id]->remitment->amount }}</td>
+@endif
                       <td>
 @foreach ($session->beneficiaries as $subscription)
                         {!! Form::select('', $subscription === 0 ? $subscriptions :

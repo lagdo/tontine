@@ -168,7 +168,7 @@ class Session extends CallableClass
         $this->sessionService->createSessions($values);
         $this->notify->success(trans('tontine.session.messages.created'), trans('common.titles.success'));
 
-        return $this->page();
+        return $this->home();
     }
 
     public function edit(int $sessionId)

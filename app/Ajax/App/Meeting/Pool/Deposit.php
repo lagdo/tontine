@@ -131,6 +131,7 @@ class Deposit extends CallableClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $receivableCount);
 
         $html = $this->view()->render('tontine.pages.meeting.deposit.page', [
+            'tontine' => $this->poolService->getTontine(),
             'session' => $this->session,
             'receivables' => $receivables,
             'pagination' => $pagination,
@@ -138,9 +139,11 @@ class Deposit extends CallableClass
         $this->response->html('meeting-pool-deposits', $html);
 
         $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
+        $amount = jq('input', jq()->parent()->parent())->val()->toInt();
         $this->jq('.btn-add-deposit')->click($this->rq()->addDeposit($receivableId));
         $this->jq('.btn-del-deposit')->click($this->rq()->delDeposit($receivableId));
-        $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($receivableId));
+        $this->jq('.btn-save-deposit')->click($this->rq()->saveAmount($receivableId, $amount));
+        $this->jq('.btn-edit-deposit')->click($this->rq()->editAmount($receivableId));
 
         return $this->response;
     }
@@ -159,6 +162,57 @@ class Deposit extends CallableClass
         }
 
         $this->depositService->createDeposit($this->pool, $this->session, $receivableId);
+        // $this->notify->success(trans('session.deposit.created'), trans('common.titles.success'));
+
+        return $this->page();
+    }
+
+    /**
+     * @param int $receivableId
+     *
+     * @return mixed
+     */
+    public function editAmount(int $receivableId)
+    {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+        $receivable = $this->depositService->getReceivable($this->pool, $this->session, $receivableId);
+        if(!$receivable || !$receivable->deposit)
+        {
+            return $this->page();
+        }
+
+        $html = $this->view()->render('tontine.pages.meeting.deposit.libre.edit', [
+            'id' => $receivable->id,
+            'amount' => !$receivable->deposit ? '' : $receivable->deposit->amount,
+        ]);
+        $fieldId = 'receivable-' . $receivable->id;
+        $this->response->html($fieldId, $html);
+        $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
+        $amount = jq('input', jq()->parent()->parent())->val()->toInt();
+        $this->jq('.btn-save-deposit', "#$fieldId")->click($this->rq()->saveAmount($receivableId, $amount));
+
+        return $this->response;
+    }
+
+    /**
+     * @param int $receivableId
+     * @param int $amount
+     *
+     * @return mixed
+     */
+    public function saveAmount(int $receivableId, int $amount)
+    {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
+        $this->depositService->saveDepositAmount($this->pool, $this->session, $receivableId, $amount);
         // $this->notify->success(trans('session.deposit.created'), trans('common.titles.success'));
 
         return $this->page();
