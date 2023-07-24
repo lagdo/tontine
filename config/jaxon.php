@@ -2,7 +2,7 @@
 
 return [
     'app' => [
-        'faker' => true,
+        'faker' => env('APP_FAKER', false),
         /*'request' => [
             'route' => 'ajax',
         ],*/
