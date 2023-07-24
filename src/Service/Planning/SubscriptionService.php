@@ -110,7 +110,7 @@ class SubscriptionService
             'subscriptions' => function(Builder $query) use($pool) {
                 $query->where('pool_id', $pool->id);
             },
-        ])->get();
+        ])->orderBy('name', 'asc')->get();
     }
 
     /**

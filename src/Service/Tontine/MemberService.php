@@ -40,7 +40,7 @@ class MemberService
             $members->take($this->tenantService->getLimit());
             $members->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $members->get();
+        return $members->orderBy('name', 'asc')->get();
     }
 
     /**

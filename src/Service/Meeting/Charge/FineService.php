@@ -249,7 +249,7 @@ class FineService
             'fine_bills' => function(Builder $query) use($charge, $session) {
                 $query->where('charge_id', $charge->id)->where('session_id', $session->id);
             },
-        ])->get();
+        ])->orderBy('name', 'asc')->get();
     }
 
     /**
