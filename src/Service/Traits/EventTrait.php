@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service\Events;
+namespace Siak\Tontine\Service\Traits;
 
 use DateTime;
 use Illuminate\Support\Facades\Log;
