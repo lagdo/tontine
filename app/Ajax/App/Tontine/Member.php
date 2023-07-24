@@ -115,6 +115,7 @@ class Member extends CallableClass
 
     /**
      * @di $validator
+     * @databag member
      */
     public function create(array $formValues)
     {
@@ -123,7 +124,7 @@ class Member extends CallableClass
         $this->memberService->createMembers($values);
         $this->notify->success(trans('tontine.member.messages.created'), trans('common.titles.success'));
 
-        return $this->home();
+        return $this->page();
     }
 
     public function edit(int $memberId)
@@ -149,6 +150,7 @@ class Member extends CallableClass
 
     /**
      * @di $validator
+     * @databag member
      */
     public function update(int $memberId, array $formValues)
     {
