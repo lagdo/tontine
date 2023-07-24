@@ -39,63 +39,60 @@
                   <thead>
                     <tr>
                       <th></th>
-@foreach($sessions as $session)
-                      <th>
-                        {{ $session->abbrev }}
-                      </th>
-@endforeach
+@if ($tontine->is_libre)
+                      <th>{{ __('figures.titles.start') }}</th>
+                      <th>{{ __('figures.deposit.titles.count') }}</th>
+                      <th>{{ __('figures.deposit.titles.amount') }}</th>
+                      <th>{{ __('figures.titles.recv') }}</th>
+                      <th>{{ __('figures.remitment.titles.count') }}</th>
+                      <th>{{ __('figures.remitment.titles.amount') }}</th>
+                      <th>{{ __('figures.titles.end') }}</th>
+@else
+                      <th @if(!$tontine->is_libre)colspan="2"@endif>{{ __('figures.titles.start') }}</th>
+                      <th @if(!$tontine->is_libre)colspan="2"@endif>{{ __('figures.deposit.titles.count') }}</th>
+                      <th @if(!$tontine->is_libre)colspan="2"@endif>{{ __('figures.deposit.titles.amount') }}</th>
+                      <th @if(!$tontine->is_libre)colspan="2"@endif>{{ __('figures.titles.recv') }}</th>
+                      <th @if(!$tontine->is_libre)colspan="2"@endif>{{ __('figures.remitment.titles.count') }}</th>
+                      <th @if(!$tontine->is_libre)colspan="2"@endif>{{ __('figures.remitment.titles.amount') }}</th>
+                      <th @if(!$tontine->is_libre)colspan="2"@endif>{{ __('figures.titles.end') }}</th>
+@endif
                     </tr>
                   </thead>
                   <tbody>
+@if ($tontine->is_libre)
+@foreach ($sessions as $session)
                     <tr>
-                      <td rowspan="2">{{ __('figures.titles.start') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->collected[$session->id]->cashier->start !!}</b></td>@endforeach
+                      <th>{{ $session->title }}</th>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->cashier->start !!}</b></td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->deposit->count !!}</b></td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->deposit->amount !!}</b></td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->cashier->recv !!}</b></td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->remitment->count !!}</b></td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->remitment->amount !!}</b></td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->cashier->end !!}</b></td>
                     </tr>
+@endforeach
+@else
+@foreach ($sessions as $session)
                     <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->cashier->start }}</td>@endforeach
+                      <th>{{ $session->title }}</th>
+                      <td class="currency">{{ $figures->expected[$session->id]->cashier->start }}</td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->cashier->start !!}</b></td>
+                      <td class="currency">{{ $figures->expected[$session->id]->deposit->count }}</td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->deposit->count !!}</b></td>
+                      <td class="currency">{{ $figures->expected[$session->id]->deposit->amount }}</td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->deposit->amount !!}</b></td>
+                      <td class="currency">{{ $figures->expected[$session->id]->cashier->recv }}</td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->cashier->recv !!}</b></td>
+                      <td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->remitment->count !!}</b></td>
+                      <td class="currency">{{ $figures->expected[$session->id]->remitment->amount }}</td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->remitment->amount !!}</b></td>
+                      <td class="currency">{{ $figures->expected[$session->id]->cashier->end }}</td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->cashier->end !!}</b></td>
                     </tr>
-                    <tr>
-                      <td rowspan="2">{{ __('figures.deposit.titles.count') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->collected[$session->id]->deposit->count !!}</b></td>@endforeach
-                    </tr>
-                    <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->deposit->count }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td rowspan="2">{{ __('figures.deposit.titles.amount') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->collected[$session->id]->deposit->amount !!}</b></td>@endforeach
-                    </tr>
-                    <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->deposit->amount }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td rowspan="2">{{ __('figures.titles.recv') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->collected[$session->id]->cashier->recv !!}</b></td>@endforeach
-                    </tr>
-                    <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->cashier->recv }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td rowspan="2">{{ __('figures.remitment.titles.count') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->collected[$session->id]->remitment->count !!}</b></td>@endforeach
-                    </tr>
-                    <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td rowspan="2">{{ __('figures.remitment.titles.amount') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->collected[$session->id]->remitment->amount !!}</b></td>@endforeach
-                    </tr>
-                    <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->remitment->amount }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td rowspan="2">{{ __('figures.titles.end') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->collected[$session->id]->cashier->end !!}</b></td>@endforeach
-                    </tr>
-                    <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->cashier->end }}</td>@endforeach
-                    </tr>
+@endforeach
+@endif
                   </tbody>
                 </table>
               </div>
