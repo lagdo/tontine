@@ -7,7 +7,7 @@ return [
         'planning' => "Planning",
         'meeting' => "Meeting",
         'members' => "Members",
-        'charges' => "Fees and fines",
+        'charges' => "Fees",
         'rounds' => "Rounds",
         'sessions' => "Sessions",
         'pools' => "Pools",
@@ -32,6 +32,10 @@ return [
             'libre' => "Free",
             'mutual' => "Mutual",
             'financial' => "Financial",
+        ],
+        'fees' => [
+            'variable' => "Variable",
+            'fixed' => "Fixed",
         ],
     ],
     'actions' => [
@@ -80,13 +84,13 @@ return [
     ],
     'charge' => [
         'titles' => [
-            'add' => "Add fees and fines",
-            'edit' => "Edit a fee or fine",
+            'add' => "Add fees",
+            'edit' => "Edit a fee",
         ],
         'messages' => [
-            'created' => "The charge was successfully created.",
-            'updated' => "The charge was successfully updated.",
-            'deleted' => "The charge was successfully deleted.",
+            'created' => "The fee was successfully created.",
+            'updated' => "The fee was successfully updated.",
+            'deleted' => "The fee was successfully deleted.",
         ],
         'types' => [
             'fee' => "Fee",
@@ -97,6 +101,10 @@ return [
             'unique' => "Unique",
             'round' => "Round",
             'session' => "Session",
+        ],
+        'groups' => [
+            'fixed' => "Fixed",
+            'variable' => "Variable",
         ],
     ],
     'bill' => [

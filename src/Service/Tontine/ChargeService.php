@@ -90,7 +90,7 @@ class ChargeService
     }
 
     /**
-     * Add a new charge.
+     * Add new charges.
      *
      * @param array $values
      *

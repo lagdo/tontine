@@ -126,6 +126,21 @@ class Charge extends Model
         return intval($this->period) === self::PERIOD_SESSION;
     }
 
+    public function getIsFixedAttribute()
+    {
+        return intval($this->period) !== self::PERIOD_NONE;
+    }
+
+    public function getIsVariableAttribute()
+    {
+        return intval($this->period) === self::PERIOD_NONE;
+    }
+
+    public function getHasAmountAttribute()
+    {
+        return $this->is_fixed || $this->amount > 0;
+    }
+
     /**
      * @param  Builder  $query
      *
@@ -184,5 +199,25 @@ class Charge extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('active', true);
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeFixed(Builder $query): Builder
+    {
+        return $query->where('period', '!=', self::PERIOD_NONE);
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeVariable(Builder $query): Builder
+    {
+        return $query->where('period', self::PERIOD_NONE);
     }
 }

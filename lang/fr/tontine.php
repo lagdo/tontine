@@ -7,7 +7,7 @@ return [
         'planning' => "Planning",
         'meeting' => "Réunion",
         'members' => "Membres",
-        'charges' => "Frais et amendes",
+        'charges' => "Frais",
         'rounds' => "Tours",
         'sessions' => "Séances",
         'pools' => "Fonds",
@@ -32,6 +32,10 @@ return [
             'libre' => "Libre",
             'mutual' => "Mutuelle",
             'financial' => "Financière",
+        ],
+        'fees' => [
+            'variable' => "Variable",
+            'fixed' => "Fixe",
         ],
     ],
     'actions' => [
@@ -80,13 +84,13 @@ return [
     ],
     'charge' => [
         'titles' => [
-            'add' => "Ajouter des frais et amendes",
-            'edit' => "Modifier un frais ou une amende",
+            'add' => "Ajouter des frais",
+            'edit' => "Modifier un frais",
         ],
         'messages' => [
-            'created' => "La charge a été ajoutée.",
-            'updated' => "La charge a été modifiée.",
-            'deleted' => "La charge a été supprimée.",
+            'created' => "Le frais a été ajouté.",
+            'updated' => "Le frais a été modifié.",
+            'deleted' => "Le frais a été supprimé.",
         ],
         'types' => [
             'fee' => "Frais",
@@ -97,6 +101,10 @@ return [
             'unique' => "Unique",
             'round' => "Tour",
             'session' => "Séance",
+        ],
+        'groups' => [
+            'fixed' => "Fixe",
+            'variable' => "Variable",
         ],
     ],
     'bill' => [
