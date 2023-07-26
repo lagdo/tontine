@@ -96,7 +96,7 @@ trait EventTrait
      */
     protected function chargeCreated(Tontine $tontine, Charge $charge)
     {
-        if($charge->is_fine || !$charge->period_once)
+        if(!$charge->period_once)
         {
             return;
         }

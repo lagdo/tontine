@@ -62,7 +62,7 @@ class Fine extends CallableClass
 
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.meeting.fine.home')
+        $html = $this->view()->render('tontine.pages.meeting.charge.variable.home')
             ->with('session', $this->session);
         $this->response->html('meeting-fines', $html);
         $this->jq('#btn-fines-refresh')->click($this->rq()->home());
@@ -85,7 +85,7 @@ class Fine extends CallableClass
             $fine->previousBillCount = ($bills['total']['previous'][$fine->id] ?? 0);
         }
 
-        $html = $this->view()->render('tontine.pages.meeting.fine.page')
+        $html = $this->view()->render('tontine.pages.meeting.charge.variable.page')
             ->with('session', $this->session)
             ->with('fines', $fines)
             ->with('bills', $bills)

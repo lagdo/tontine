@@ -162,7 +162,7 @@ class MemberService
      */
     public function getFeeBills(Member $member, Session $session): Collection
     {
-        $sessionIds = $this->tenantService->getFieldInSessions($session);
+        $sessionIds = $this->tenantService->getPreviousSessions($session);
         return Bill::with(['settlement', 'tontine_bill', 'round_bill', 'session_bill', 'session_bill.session'])
             ->where(function($query) use($member, $session, $sessionIds) {
                 return $query
@@ -222,7 +222,7 @@ class MemberService
                 })
                 ->keyBy('charge_id');
 
-            return $this->tenantService->tontine()->charges()->fee()->get()
+            return $this->tenantService->tontine()->charges()->fixed()->get()
                 ->each(function($charge) use($bills) {
                     $charge->paid = false;
                     $charge->session = null;
@@ -243,7 +243,7 @@ class MemberService
      */
     public function getFineBills(Member $member, Session $session): Collection
     {
-        $sessionIds = $this->tenantService->getFieldInSessions($session);
+        $sessionIds = $this->tenantService->getPreviousSessions($session);
         return Bill::with(['settlement', 'fine_bill.session'])
             ->whereHas('fine_bill', function(Builder $query) use($member, $sessionIds) {
                 return $query->where('member_id', $member->id)
@@ -312,7 +312,7 @@ class MemberService
      */
     public function getDebts(Member $member, Session $session): Collection
     {
-        $sessionIds = $this->tenantService->getFieldInSessions($session);
+        $sessionIds = $this->tenantService->getPreviousSessions($session);
         return Debt::with(['refund', 'refund.session'])
             ->whereHas('loan', function(Builder $query) use($member, $sessionIds) {
                 $query->where('member_id', $member->id)

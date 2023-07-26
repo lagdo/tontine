@@ -132,13 +132,14 @@ class TenantService
 
     /**
      * @param Session $session
-     * @param string $field
+     * @param bool $withCurrent
      *
      * @return Collection
      */
-    public function getFieldInSessions(Session $session, string $field = 'id'): Collection
+    public function getPreviousSessions(Session $session, bool $withCurrent = true): Collection
     {
-        return $this->round()->sessions()->where('start_at', '<=', $session->start_at)->pluck($field);
+        $op = $withCurrent ? '<=' : '<';
+        return $this->round()->sessions()->where('start_at', $op, $session->start_at)->pluck('id');
     }
 
     /**

@@ -61,7 +61,7 @@ class SettlementService
         // The select('bills.*') is important here, otherwise Eloquent overrides the
         // Bill model id fields with those of another model, then making the dataset incorrect.
         $query = Bill::select('bills.*')->with('settlement');
-        if($charge->is_fine)
+        if($charge->is_variable)
         {
             return $query->join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
                 ->whereIn('fine_bills.member_id', $memberIds);

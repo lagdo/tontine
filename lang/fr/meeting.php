@@ -51,4 +51,10 @@ return [
             'closed' => "Cette opération n'est pas permise lorsque la session est fermée.",
         ],
     ],
+    'charge' => [
+        'titles' => [
+            'fixed' => "Frais fixes",
+            'variable' => "Frais variables",
+        ],
+    ],
 ];

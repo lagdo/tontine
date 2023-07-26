@@ -191,6 +191,7 @@ class Deposit extends CallableClass
         ]);
         $fieldId = 'receivable-' . $receivable->id;
         $this->response->html($fieldId, $html);
+
         $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
         $amount = jq('input', jq()->parent()->parent())->val()->toInt();
         $this->jq('.btn-save-deposit', "#$fieldId")->click($this->rq()->saveAmount($receivableId, $amount));

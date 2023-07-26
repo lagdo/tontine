@@ -189,7 +189,7 @@ class SessionService
             ->concat($this->getRoundFees($session))
             ->concat($this->getSessionFees($session))
             ->pluck('total', 'charge_id');
-        return $this->tenantService->tontine()->charges()->fee()->get()
+        return $this->tenantService->tontine()->charges()->fixed()->get()
             ->map(function($fee) use($bills) {
                 $fee->amount = $this->localeService->formatMoney($fee->amount);
                 $fee->total = $this->localeService->formatMoney($bills[$fee->id] ?? 0);
@@ -215,7 +215,7 @@ class SessionService
                     ->whereColumn('settlements.bill_id', 'bills.id');
             })
             ->get()->pluck('total', 'charge_id');
-        return $this->tenantService->tontine()->charges()->fine()->get()
+        return $this->tenantService->tontine()->charges()->variable()->get()
             ->map(function($fine) use($bills) {
                 $fine->amount = $this->localeService->formatMoney($fine->amount);
                 $fine->total = $this->localeService->formatMoney($bills[$fine->id] ?? 0);

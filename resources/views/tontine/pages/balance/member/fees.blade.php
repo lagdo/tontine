@@ -1,6 +1,6 @@
                   <div class="row align-items-center">
                     <div class="col">
-                      <div class="section-title mt-0">{{ __('meeting.titles.fees') }}</div>
+                      <div class="section-title mt-0">{{ __('meeting.charge.titles.fixed') }}</div>
                     </div>
                   </div>
                   <div class="table-responsive">

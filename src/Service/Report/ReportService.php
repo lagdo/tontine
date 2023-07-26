@@ -134,7 +134,7 @@ class ReportService implements ReportServiceInterface
             'settlements' => $settlements,
             'zero' => $settlements['zero'],
             'fees' => $charges->filter(function($charge) use($bills, $settlements) {
-                return $charge->is_fee &&
+                return $charge->is_fixed &&
                     (isset($bills['total']['current'][$charge->id]) ||
                     isset($settlements['total']['current'][$charge->id]));
             })
@@ -147,7 +147,7 @@ class ReportService implements ReportServiceInterface
             'settlements' => $settlements,
             'zero' => $settlements['zero'],
             'fines' => $charges->filter(function($charge) use($bills, $settlements) {
-                return $charge->is_fine &&
+                return $charge->is_variable &&
                     (isset($bills['total']['current'][$charge->id]) ||
                     isset($settlements['total']['current'][$charge->id]));
             })

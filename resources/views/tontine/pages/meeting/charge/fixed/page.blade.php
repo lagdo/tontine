@@ -11,7 +11,7 @@
 @if($session->pending)
                         @include('tontine.pages.meeting.charge.pending', compact('charge', 'bills', 'settlements'))
 @else
-                        @include('tontine.pages.meeting.charge.fee', compact('charge', 'bills', 'settlements'))
+                        @include('tontine.pages.meeting.charge.fixed.item', compact('charge', 'bills', 'settlements'))
 @endif
 @endforeach
                       </tbody>
