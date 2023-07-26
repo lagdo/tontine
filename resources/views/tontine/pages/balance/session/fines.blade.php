@@ -1,3 +1,4 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.charge.titles.variable') }}</div>
@@ -16,7 +17,7 @@
 @foreach($fines as $fine)
                         <tr>
                           <td>{{ $fine->name }}</td>
-                          <td>{{ $fine->amount }}</td>
+                          <td>{{ $fine->has_amount ? $locale->formatMoney($fine->amount) : __('tontine.labels.fees.variable') }}</td>
                           <td>{{ $fine->total }}</td>
                         </tr>
 @endforeach

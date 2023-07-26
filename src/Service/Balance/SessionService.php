@@ -189,6 +189,7 @@ class SessionService
             ->concat($this->getRoundFees($session))
             ->concat($this->getSessionFees($session))
             ->pluck('total', 'charge_id');
+
         return $this->tenantService->tontine()->charges()->fixed()->get()
             ->map(function($fee) use($bills) {
                 $fee->amount = $this->localeService->formatMoney($fee->amount);
@@ -215,9 +216,14 @@ class SessionService
                     ->whereColumn('settlements.bill_id', 'bills.id');
             })
             ->get()->pluck('total', 'charge_id');
+
         return $this->tenantService->tontine()->charges()->variable()->get()
+            ->filter(function($fine) use($bills) {
+                // Filter on fees with paid bills.
+                return isset($bills[$fine->id]);
+            })
             ->map(function($fine) use($bills) {
-                $fine->amount = $this->localeService->formatMoney($fine->amount);
+                // $fine->amount = $this->localeService->formatMoney($fine->amount);
                 $fine->total = $this->localeService->formatMoney($bills[$fine->id] ?? 0);
                 return $fine;
             });
@@ -234,6 +240,7 @@ class SessionService
             ->select(DB::raw('sum(amount) as amount'))
             ->where('session_id', $session->id)
             ->first();
+
         return (object)[
             'amount' => $this->localeService->formatMoney($funding->amount ?? 0),
         ];
@@ -250,6 +257,7 @@ class SessionService
             ->select(DB::raw('sum(amount) as amount'), DB::raw('sum(interest) as interest'))
             ->where('session_id', $session->id)
             ->first();
+
         return (object)[
             'amount' => $this->localeService->formatMoney($loan->amount ?? 0),
             'interest' => $this->localeService->formatMoney($loan->interest ?? 0),
@@ -273,6 +281,7 @@ class SessionService
             ->select(DB::raw("sum($amount) as amount"), DB::raw("sum($interest) as interest"))
             ->where('refunds.session_id', $session->id)
             ->first();
+
         return (object)[
             'amount' => $this->localeService->formatMoney($refund->amount ?? 0),
             'interest' => $this->localeService->formatMoney($refund->interest ?? 0),
