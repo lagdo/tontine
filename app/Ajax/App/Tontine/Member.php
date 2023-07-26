@@ -124,7 +124,7 @@ class Member extends CallableClass
         $this->memberService->createMembers($values);
         $this->notify->success(trans('tontine.member.messages.created'), trans('common.titles.success'));
 
-        return $this->page();
+        return $this->home(); // Reset the entire page
     }
 
     public function edit(int $memberId)
