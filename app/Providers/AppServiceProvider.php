@@ -25,5 +25,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(190);
+
+        // Force redirect to HTTPS.
+        $url = $this->app['url'];
+        if($this->app->environment('production'))
+        {
+            $url->forceScheme('https');
+        }
     }
 }

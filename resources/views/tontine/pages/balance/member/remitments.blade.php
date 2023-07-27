@@ -1,3 +1,4 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.remitments') }}</div>
@@ -8,16 +9,16 @@
                       <thead>
                         <tr>
                           <th>{{ __('common.labels.title') }}</th>
-                          <th>{{ __('common.labels.amount') }}</th>
-                          <th>{{ __('common.labels.paid') }}</th>
+                          <th class="currency">{{ __('common.labels.amount') }}</th>
+                          <th class="table-item-menu">{{ __('common.labels.paid') }}</th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach($subscriptions as $subscription)
                         <tr>
                           <td>{{ $subscription->pool->title }}</td>
-                          <td>{{ $subscription->amount }}</td>
-                          <td><i class="fa fa-toggle-{{ $subscription->paid ? 'on' : 'off' }}"></i></td>
+                          <td class="currency">{{ $locale->formatMoney($subscription->amount, true) }}</td>
+                          <td class="table-item-menu"><i class="fa fa-toggle-{{ $subscription->paid ? 'on' : 'off' }}"></i></td>
                         </tr>
 @endforeach
                       </tbody>

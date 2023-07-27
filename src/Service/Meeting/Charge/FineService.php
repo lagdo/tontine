@@ -2,7 +2,6 @@
 
 namespace Siak\Tontine\Service\Meeting\Charge;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
@@ -10,7 +9,6 @@ use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\FineBill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
@@ -18,22 +16,15 @@ use function trans;
 class FineService
 {
     /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
      * @var TenantService
      */
     protected TenantService $tenantService;
 
     /**
-     * @param LocaleService $localeService
      * @param TenantService $tenantService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService)
+    public function __construct(TenantService $tenantService)
     {
-        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
     }
 
@@ -59,7 +50,7 @@ class FineService
     public function getFines(int $page = 0): Collection
     {
         $fines = $this->tenantService->tontine()->charges()
-            ->active()->fine()->orderBy('id', 'desc');
+            ->active()->variable()->orderBy('id', 'desc');
         if($page > 0 )
         {
             $fines->take($this->tenantService->getLimit());
@@ -75,7 +66,7 @@ class FineService
      */
     public function getFineCount(): int
     {
-        return $this->tenantService->tontine()->charges()->fine()->count();
+        return $this->tenantService->tontine()->charges()->variable()->count();
     }
 
     /**
@@ -102,7 +93,7 @@ class FineService
     private function getPreviousSessionsBills(Session $session): Collection
     {
         // Count the session bills
-        $sessionIds = $this->tenantService->getFieldInSessions($session);
+        $sessionIds = $this->tenantService->getPreviousSessions($session, false);
         return DB::table('fine_bills')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'fine_bills.bill_id', '=', 'bills.id')
@@ -136,7 +127,7 @@ class FineService
     private function getPreviousSessionsSettlements(Session $session): Collection
     {
         // Count the session bills
-        $sessionIds = $this->tenantService->getFieldInSessions($session);
+        $sessionIds = $this->tenantService->getPreviousSessions($session, false);
         $query = DB::table('settlements')->select('charge_id',
             DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
@@ -144,21 +135,6 @@ class FineService
             ->whereIn('settlements.session_id', $sessionIds)
             ->groupBy('charge_id');
         return $query->get();
-    }
-
-    /**
-     * Format the amounts in the settlements
-     *
-     * @param Collection $settlements
-     *
-     * @return Collection
-     */
-    private function formatAmounts(Collection $settlements): Collection
-    {
-        return $settlements->map(function($settlement) {
-            $settlement->amount = $this->localeService->formatMoney((int)$settlement->amount);
-            return $settlement;
-        });
     }
 
     /**
@@ -192,14 +168,13 @@ class FineService
         $currentSettlements = $this->getCurrentSessionSettlements($session);
         $previousSettlements = $this->getPreviousSessionsSettlements($session);
         return [
-            'zero' => $this->localeService->formatMoney(0),
             'total' => [
                 'current' => $currentSettlements->pluck('total', 'charge_id'),
                 'previous' => $previousSettlements->pluck('total', 'charge_id'),
             ],
             'amount' => [
-                'current' => $this->formatAmounts($currentSettlements)->pluck('amount', 'charge_id'),
-                'previous' => $this->formatAmounts($previousSettlements)->pluck('amount', 'charge_id'),
+                'current' => $currentSettlements->pluck('amount', 'charge_id'),
+                'previous' => $previousSettlements->pluck('amount', 'charge_id'),
             ],
         ];
     }
@@ -245,11 +220,13 @@ class FineService
             $members->take($this->tenantService->getLimit());
             $members->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $members->withCount([
-            'fine_bills' => function(Builder $query) use($charge, $session) {
+        return $members->with([
+            'fine_bills' => function($query) use($charge, $session) {
                 $query->where('charge_id', $charge->id)->where('session_id', $session->id);
             },
-        ])->get();
+        ])->orderBy('name', 'asc')->get()->each(function($member) {
+            $member->bill = $member->fine_bills->count() > 0 ? $member->fine_bills->first()->bill : null;
+        });
     }
 
     /**
@@ -268,10 +245,11 @@ class FineService
      * @param Charge $charge
      * @param Session $session
      * @param int $memberId
+     * @param int $amount
      *
      * @return void
      */
-    public function createFine(Charge $charge, Session $session, int $memberId): void
+    public function createFine(Charge $charge, Session $session, int $memberId, int $amount = 0): void
     {
         $member = $this->tenantService->tontine()->members()->find($memberId);
         if(!$member)
@@ -279,10 +257,10 @@ class FineService
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }
 
-        DB::transaction(function() use($charge, $session, $member) {
+        DB::transaction(function() use($charge, $session, $member, $amount) {
             $bill = Bill::create([
                 'charge' => $charge->name,
-                'amount' => $charge->amount,
+                'amount' => $charge->has_amount ? $charge->amount : $amount,
                 'issued_at' => now(),
             ]);
             $fine = new FineBill();
@@ -299,22 +277,34 @@ class FineService
      * @param Session $session
      * @param int $memberId
      *
+     * @return FineBill|null
+     */
+    public function getBill(Charge $charge, Session $session, int $memberId): ?FineBill
+    {
+        if(!($member = $this->tenantService->tontine()->members()->find($memberId)))
+        {
+            throw new MessageException(trans('tontine.member.errors.not_found'));
+        }
+
+        return FineBill::with(['bill'])
+            ->where('charge_id', $charge->id)
+            ->where('session_id', $session->id)
+            ->where('member_id', $member->id)
+            ->first();
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Session $session
+     * @param int $memberId
+     *
      * @return void
      */
     public function deleteFine(Charge $charge, Session $session, int $memberId): void
     {
-        $member = $this->tenantService->tontine()->members()->find($memberId);
-        if(!$member)
+        if(!($fine = $this->getBill($charge, $session, $memberId)))
         {
-            throw new MessageException(trans('tontine.member.errors.not_found'));
-        }
-        $fine = FineBill::where('charge_id', $charge->id)
-            ->where('session_id', $session->id)
-            ->where('member_id', $member->id)
-            ->first();
-        if(!$fine)
-        {
-            throw new MessageException(trans('tontine.bill.errors.not_found'));
+            return; // throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
 
         DB::transaction(function() use($fine) {

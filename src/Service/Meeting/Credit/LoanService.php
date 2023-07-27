@@ -112,7 +112,7 @@ class LoanService
     private function _getAmountAvailable(Session $session): int
     {
         // Get the ids of all the sessions until the current one.
-        $sessionIds = $this->tenantService->getFieldInSessions($session);
+        $sessionIds = $this->tenantService->getPreviousSessions($session);
 
         // The amount available for lending is the sum of the fundings and refunds,
         // minus the sum of the loans, for all the sessions until the selected.
@@ -147,16 +147,6 @@ class LoanService
     }
 
     /**
-     * @param Session $session    The session
-     *
-     * @return string
-     */
-    public function getFormattedAmountAvailable(Session $session): string
-    {
-        return $this->localeService->formatMoney($this->_getAmountAvailable($session));
-    }
-
-    /**
      * Get the amount available for loan.
      *
      * @param Session $session
@@ -165,12 +155,7 @@ class LoanService
      */
     public function getSessionLoans(Session $session): Collection
     {
-        $loans = $session->loans()->with(['member'])->get();
-        $loans->each(function($loan) {
-            $loan->amount = $this->localeService->formatMoney($loan->amount);
-            $loan->interest = $this->localeService->formatMoney($loan->interest);
-        });
-        return $loans;
+        return $session->loans()->with(['member'])->get();
     }
 
     /**

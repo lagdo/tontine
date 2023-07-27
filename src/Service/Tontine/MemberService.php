@@ -5,8 +5,8 @@ namespace Siak\Tontine\Service\Tontine;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Member;
-use Siak\Tontine\Service\Events\EventTrait;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Traits\EventTrait;
 
 class MemberService
 {
@@ -40,7 +40,7 @@ class MemberService
             $members->take($this->tenantService->getLimit());
             $members->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $members->get();
+        return $members->orderBy('name', 'asc')->get();
     }
 
     /**

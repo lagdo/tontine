@@ -41,6 +41,7 @@ class Pool extends CallableClass
     /**
      * @databag pool
      * @databag subscription
+     * @after hideMenuOnMobile
      */
     public function home()
     {

@@ -9,8 +9,8 @@ use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
-use Siak\Tontine\Service\Events\EventTrait;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Traits\EventTrait;
 
 use function trans;
 

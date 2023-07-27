@@ -1,3 +1,4 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
                     <table class="table table-bordered">
                       <thead>
                         <tr>
@@ -11,7 +12,7 @@
                         <tr>
                           <td>{{ $pool->title }}</td>
                           <td class="currency">{{ $tontine->is_libre ?
-                            __('tontine.labels.types.libre') : $pool->money('amount') }}</td>
+                            __('tontine.labels.types.libre') : $locale->formatMoney($pool->amount) }}</td>
                           <td class="table-item-menu">
 @if (!$tontine->is_libre)
 @include('tontine.parts.table.menu', [

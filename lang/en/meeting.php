@@ -6,7 +6,7 @@ return [
         'agenda' => "Agenda",
         'report' => "Report",
         'pools' => "Pools",
-        'charges' => "Fees and fines",
+        'charges' => "Fees",
         'fees' => "Fees",
         'fines' => "Fines",
         'deposits' => "Deposits",
@@ -31,7 +31,7 @@ return [
         'summary' => "Summary",
         'fine' => "Fine",
         'pools' => "Pools",
-        'charges' => "Fees&Fines",
+        'charges' => "Fees",
         'credits' => "Credits",
     ],
     'labels' => [
@@ -49,6 +49,12 @@ return [
     'warnings' => [
         'session' => [
             'closed' => "This operation is not allowed when the session is closed.",
+        ],
+    ],
+    'charge' => [
+        'titles' => [
+            'fixed' => "Fixed fees",
+            'variable' => "Variable fees",
         ],
     ],
 ];

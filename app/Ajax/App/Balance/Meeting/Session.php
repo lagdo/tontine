@@ -23,6 +23,9 @@ class Session extends CallableClass
      */
     protected SessionService $sessionService;
 
+    /**
+     * @after hideMenuOnMobile
+     */
     public function home()
     {
         // Don't show the page if there is no session or no member.

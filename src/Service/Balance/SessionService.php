@@ -8,17 +8,11 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Planning\PoolService;
 
 class SessionService
 {
-    /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
     /**
      * @var TenantService
      */
@@ -30,13 +24,11 @@ class SessionService
     protected PoolService $poolService;
 
     /**
-     * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param PoolService $poolService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService, PoolService $poolService)
+    public function __construct(TenantService $tenantService, PoolService $poolService)
     {
-        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
         $this->poolService = $poolService;
     }
@@ -50,13 +42,9 @@ class SessionService
      */
     private function getPoolAmountPaid(Pool $pool, Session $session, int $sessionCount = 1): string
     {
-        if($this->tenantService->tontine()->is_libre)
-        {
-            $remitmentAmount = $this->poolService->getLibrePoolAmount($pool, $session);
-            return $this->localeService->formatMoney($remitmentAmount);
-        }
-
-        return $this->localeService->formatMoney($pool->amount * $pool->paid * $sessionCount);
+        return $this->tenantService->tontine()->is_libre ?
+            $this->poolService->getLibrePoolAmount($pool, $session) :
+            $pool->amount * $pool->paid * $sessionCount;
     }
 
     /**
@@ -80,11 +68,9 @@ class SessionService
                 },
             ])
             ->get()
-            ->map(function($pool) use($session) {
-                $pool->total = $this->localeService->formatMoney($pool->amount * $pool->total);
+            ->each(function($pool) use($session) {
+                $pool->total = $pool->amount * $pool->total;
                 $pool->paid = $this->getPoolAmountPaid($pool, $session);
-                $pool->amount = $this->localeService->formatMoney($pool->amount);
-                return $pool;
             });
     }
 
@@ -109,12 +95,10 @@ class SessionService
                 },
             ])
             ->get()
-            ->map(function($pool) use($session) {
+            ->each(function($pool) use($session) {
                 $sessionCount = $this->poolService->enabledSessionCount($pool);
-                $pool->total = $this->localeService->formatMoney($pool->amount * $pool->total * $sessionCount);
+                $pool->total = $pool->amount * $pool->total * $sessionCount;
                 $pool->paid = $this->getPoolAmountPaid($pool, $session, $sessionCount);
-                $pool->amount = $this->localeService->formatMoney($pool->amount);
-                return $pool;
             });
     }
 
@@ -189,11 +173,10 @@ class SessionService
             ->concat($this->getRoundFees($session))
             ->concat($this->getSessionFees($session))
             ->pluck('total', 'charge_id');
-        return $this->tenantService->tontine()->charges()->fee()->get()
-            ->map(function($fee) use($bills) {
-                $fee->amount = $this->localeService->formatMoney($fee->amount);
-                $fee->total = $this->localeService->formatMoney($bills[$fee->id] ?? 0);
-                return $fee;
+
+        return $this->tenantService->tontine()->charges()->fixed()->get()
+            ->each(function($fee) use($bills) {
+                $fee->total = $bills[$fee->id] ?? 0;
             });
     }
 
@@ -215,11 +198,14 @@ class SessionService
                     ->whereColumn('settlements.bill_id', 'bills.id');
             })
             ->get()->pluck('total', 'charge_id');
-        return $this->tenantService->tontine()->charges()->fine()->get()
-            ->map(function($fine) use($bills) {
-                $fine->amount = $this->localeService->formatMoney($fine->amount);
-                $fine->total = $this->localeService->formatMoney($bills[$fine->id] ?? 0);
-                return $fine;
+
+        return $this->tenantService->tontine()->charges()->variable()->get()
+            ->filter(function($fine) use($bills) {
+                // Filter on fees with paid bills.
+                return isset($bills[$fine->id]);
+            })
+            ->each(function($fine) use($bills) {
+                $fine->total = $bills[$fine->id] ?? 0;
             });
     }
 
@@ -234,9 +220,12 @@ class SessionService
             ->select(DB::raw('sum(amount) as amount'))
             ->where('session_id', $session->id)
             ->first();
-        return (object)[
-            'amount' => $this->localeService->formatMoney($funding->amount ?? 0),
-        ];
+        if(!$funding->amount)
+        {
+            $funding->amount = 0;
+        }
+
+        return $funding;
     }
 
     /**
@@ -250,10 +239,16 @@ class SessionService
             ->select(DB::raw('sum(amount) as amount'), DB::raw('sum(interest) as interest'))
             ->where('session_id', $session->id)
             ->first();
-        return (object)[
-            'amount' => $this->localeService->formatMoney($loan->amount ?? 0),
-            'interest' => $this->localeService->formatMoney($loan->interest ?? 0),
-        ];
+        if(!$loan->amount)
+        {
+            $loan->amount = 0;
+        }
+        if(!$loan->interest)
+        {
+            $loan->interest = 0;
+        }
+
+        return $loan;
     }
 
     /**
@@ -273,9 +268,15 @@ class SessionService
             ->select(DB::raw("sum($amount) as amount"), DB::raw("sum($interest) as interest"))
             ->where('refunds.session_id', $session->id)
             ->first();
-        return (object)[
-            'amount' => $this->localeService->formatMoney($refund->amount ?? 0),
-            'interest' => $this->localeService->formatMoney($refund->interest ?? 0),
-        ];
+        if(!$refund->amount)
+        {
+            $refund->amount = 0;
+        }
+        if(!$refund->interest)
+        {
+            $refund->interest = 0;
+        }
+
+        return $refund;
     }
 }

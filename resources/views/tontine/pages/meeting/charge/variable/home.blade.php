@@ -1,6 +1,6 @@
                   <div class="row align-items-center">
                     <div class="col-auto">
-                      <div class="section-title mt-0">{!! __('meeting.titles.fines') !!}</div>
+                      <div class="section-title mt-0">{!! __('meeting.charge.titles.variable') !!}</div>
                     </div>
 @if($session->opened)
                     <div class="col">

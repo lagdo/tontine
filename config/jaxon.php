@@ -2,7 +2,7 @@
 
 return [
     'app' => [
-        'faker' => true,
+        'faker' => env('APP_FAKER', false),
         /*'request' => [
             'route' => 'ajax',
         ],*/
@@ -71,7 +71,7 @@ return [
             ],
             'bootbox' => [
                 'assets' => [
-                    'js' => "https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.all.min.js",
+                    'js' => "https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.min.js",
                 ],
             ],
             'toastr' => [

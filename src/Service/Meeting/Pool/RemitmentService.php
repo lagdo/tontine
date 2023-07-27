@@ -108,7 +108,7 @@ class RemitmentService
     {
         // The remitment amount
         $sessionCount = $this->sessionService->enabledSessionCount($pool);
-        $remitmentAmount = $this->localeService->formatMoney($pool->amount * $sessionCount);
+        $remitmentAmount = $pool->amount * $sessionCount;
 
         $query = $this->getQuery($pool, $session)->with(['subscription.member', 'remitment']);
         if($page > 0 )
@@ -149,7 +149,7 @@ class RemitmentService
         $remitmentAmount = $this->poolService->getLibrePoolAmount($pool, $session);
 
         return $query->get()->each(function($payable) use($remitmentAmount) {
-            $payable->amount = $this->localeService->formatMoney($remitmentAmount);
+            $payable->amount = $remitmentAmount;
         });
     }
 

@@ -1,3 +1,4 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
           <div class="row align-items-center">
             <div class="col-auto">
               <h6 class="section-title mt-0">{!! __('meeting.titles.fines') !!}</h6>
@@ -20,9 +21,9 @@
                   <td>
                     {{ $settlements['total']['current'][$charge->id] ?? 0 }}/{{ $bills['total']['current'][$charge->id] ?? 0 }}
                   </td>
-                  <td>{{ $charge->money('amount') }}</td>
+                  <td>{{ $locale->formatMoney($charge->amount) }}</td>
                   <td>
-                    {{ $settlements['amount']['current'][$charge->id] ?? $zero }}
+                    {{ $settlements['amount']['current'][$charge->id] ?? $locale->formatMoney(0) }}
                   </td>
                 </tr>
 @endforeach

@@ -52,7 +52,7 @@ class FeeService
     public function getFees(int $page = 0): Collection
     {
         $fees = $this->tenantService->tontine()->charges()
-            ->active()->fee()->orderBy('id', 'desc');
+            ->active()->fixed()->orderBy('id', 'desc');
         if($page > 0 )
         {
             $fees->take($this->tenantService->getLimit());
@@ -68,7 +68,7 @@ class FeeService
      */
     public function getFeeCount(): int
     {
-        return $this->tenantService->tontine()->charges()->fee()->count();
+        return $this->tenantService->tontine()->charges()->active()->fixed()->count();
     }
 
     /**
@@ -197,21 +197,6 @@ class FeeService
     }
 
     /**
-     * Format the amounts in the settlements
-     *
-     * @param Collection $settlements
-     *
-     * @return Collection
-     */
-    private function formatAmounts(Collection $settlements): Collection
-    {
-        return $settlements->map(function($settlement) {
-            $settlement->amount = $this->localeService->formatMoney((int)$settlement->amount);
-            return $settlement;
-        });
-    }
-
-    /**
      * Get the report of bills
      *
      * @param Session $session
@@ -242,14 +227,13 @@ class FeeService
         $currentSettlements = $this->getCurrentSessionSettlements($session);
         $previousSettlements = $this->getPreviousSessionsSettlements($session);
         return [
-            'zero' => $this->localeService->formatMoney(0),
             'total' => [
                 'current' => $currentSettlements->pluck('total', 'charge_id'),
                 'previous' => $previousSettlements->pluck('total', 'charge_id'),
             ],
             'amount' => [
-                'current' => $this->formatAmounts($currentSettlements)->pluck('amount', 'charge_id'),
-                'previous' => $this->formatAmounts($previousSettlements)->pluck('amount', 'charge_id'),
+                'current' => $currentSettlements->pluck('amount', 'charge_id'),
+                'previous' => $previousSettlements->pluck('amount', 'charge_id'),
             ],
         ];
     }

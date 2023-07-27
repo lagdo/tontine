@@ -65,7 +65,7 @@ class Session extends Model
     protected $with = [
         'disabledPools',
     ];
- 
+
     public function getNotFirstAttribute()
     {
         return $this->round->sessions()->where('start_at', '<', $this->start_at)->exists();
@@ -133,7 +133,7 @@ class Session extends Model
 
     public function receivables()
     {
-        return $this->hasMany(Receivable::class)->orderBy('receivables.id', 'asc');
+        return $this->hasMany(Receivable::class);
     }
 
     public function receivableAmounts()

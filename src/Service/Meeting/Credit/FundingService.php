@@ -97,11 +97,7 @@ class FundingService
      */
     public function getSessionFundings(Session $session): Collection
     {
-        $fundings = $session->fundings()->with(['member'])->get();
-        $fundings->each(function($funding) {
-            $funding->amount = $this->localeService->formatMoney($funding->amount);
-        });
-        return $fundings;
+        return $session->fundings()->with(['member'])->get();
     }
 
     /**

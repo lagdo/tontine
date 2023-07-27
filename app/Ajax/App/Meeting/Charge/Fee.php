@@ -62,7 +62,7 @@ class Fee extends CallableClass
 
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.meeting.fee.home')
+        $html = $this->view()->render('tontine.pages.meeting.charge.fixed.home')
             ->with('session', $this->session);
         $this->response->html('meeting-fees', $html);
         $this->jq('#btn-fees-refresh')->click($this->rq()->home());
@@ -89,12 +89,11 @@ class Fee extends CallableClass
             $fee->previousBillCount = ($bills['total']['previous'][$fee->id] ?? 0);
         }
 
-        $html = $this->view()->render('tontine.pages.meeting.fee.page')
+        $html = $this->view()->render('tontine.pages.meeting.charge.fixed.page')
             ->with('session', $this->session)
             ->with('fees', $fees)
             ->with('bills', $bills)
             ->with('settlements', $settlements)
-            ->with('zero', $settlements['zero'])
             ->with('pagination', $pagination);
         $this->response->html('meeting-fees-page', $html);
 

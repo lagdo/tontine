@@ -85,7 +85,10 @@ class SessionService
     public function createSessions(array $values): bool
     {
         // Cannot create sessions if a session is already opened.
-        $this->sessionService->checkActiveSessions();
+        if(!$this->tenantService->tontine()->is_libre)
+        {
+            $this->sessionService->checkActiveSessions();
+        }
 
         foreach($values as &$value)
         {

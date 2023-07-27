@@ -58,8 +58,14 @@ class BillService
      */
     private function getBillsQuery(Charge $charge, Session $session, string $relation, ?bool $onlyPaid)
     {
-        $query = Bill::whereHas($relation, function(Builder $query) use($charge) {
+        $query = Bill::whereHas($relation, function(Builder $query) use($charge, $session, $relation) {
             $query->where('charge_id', $charge->id);
+            // Filter fine bills on current and previous sessions
+            if($relation === 'fine_bill')
+            {
+                $sessionIds = $this->tenantService->getPreviousSessions($session);
+                $query->whereIn('session_id', $sessionIds);
+            }
         });
         if($onlyPaid === false)
         {
@@ -73,10 +79,12 @@ class BillService
         }
         return $query->where(function(Builder $query) use($session) {
             // The bills that are paid in this session, or that are not yet paid.
-            $query->whereHas('settlement', function(Builder $query) use($session) {
-                $query->where('session_id', $session->id);
-            })->orWhere(function(Builder $query) {
+            $query->orWhere(function(Builder $query) {
                 $query->whereDoesntHave('settlement');
+            })->orWhere(function(Builder $query) use($session) {
+                $query->whereHas('settlement', function(Builder $query) use($session) {
+                    $query->where('session_id', $session->id);
+                });
             });
         });
     }
@@ -89,7 +97,7 @@ class BillService
     private function getBillRelation(Charge $charge): string
     {
         // The intermediate relation to reach the member model.
-        return $charge->is_fine ? 'fine_bill' :
+        return $charge->is_variable ? 'fine_bill' :
             ($charge->period_session ? 'session_bill' :
             ($charge->period_round ? 'round_bill' : 'tontine_bill'));
     }

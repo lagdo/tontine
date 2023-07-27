@@ -191,6 +191,7 @@ class Deposit extends CallableClass
         ]);
         $fieldId = 'receivable-' . $receivable->id;
         $this->response->html($fieldId, $html);
+
         $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
         $amount = jq('input', jq()->parent()->parent())->val()->toInt();
         $this->jq('.btn-save-deposit', "#$fieldId")->click($this->rq()->saveAmount($receivableId, $amount));
@@ -212,7 +213,9 @@ class Deposit extends CallableClass
             return $this->response;
         }
 
-        $this->depositService->saveDepositAmount($this->pool, $this->session, $receivableId, $amount);
+        $amount > 0 ?
+            $this->depositService->saveDepositAmount($this->pool, $this->session, $receivableId, $amount):
+            $this->depositService->deleteDeposit($this->pool, $this->session, $receivableId);
         // $this->notify->success(trans('session.deposit.created'), trans('common.titles.success'));
 
         return $this->page();

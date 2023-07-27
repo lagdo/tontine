@@ -6,7 +6,7 @@ return [
         'agenda' => "Ordre du jour",
         'report' => "Rapport",
         'pools' => "Fonds",
-        'charges' => "Frais et amendes",
+        'charges' => "Frais",
         'fees' => "Frais",
         'fines' => "Amendes",
         'deposits' => "Versements",
@@ -31,7 +31,7 @@ return [
         'summary' => "Résumé",
         'fine' => "Appliquer",
         'pools' => "Cotisations",
-        'charges' => "Frais&Amendes",
+        'charges' => "Frais",
         'credits' => "Crédits",
     ],
     'labels' => [
@@ -49,6 +49,12 @@ return [
     'warnings' => [
         'session' => [
             'closed' => "Cette opération n'est pas permise lorsque la session est fermée.",
+        ],
+    ],
+    'charge' => [
+        'titles' => [
+            'fixed' => "Frais fixes",
+            'variable' => "Frais variables",
         ],
     ],
 ];

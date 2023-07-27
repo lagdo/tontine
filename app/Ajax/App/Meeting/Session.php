@@ -64,6 +64,7 @@ class Session extends CallableClass
 
     /**
      * @di $tontineService
+     * @after hideMenuOnMobile
      */
     public function home()
     {

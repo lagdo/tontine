@@ -1,3 +1,4 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @extends('tontine.report.layout')
 
 @section('page-title', 'Siak Tontine')
@@ -39,63 +40,102 @@
                   <thead>
                     <tr>
                       <th></th>
-@foreach($sessions as $session)
-                      <th>
-                        {{ $session->abbrev }}
-                      </th>
-@endforeach
+@if ($tontine->is_libre)
+                      <th>{{ __('figures.titles.start') }}</th>
+                      <th>{{ __('figures.deposit.titles.count') }}</th>
+                      <th>{{ __('figures.deposit.titles.amount') }}</th>
+                      <th>{{ __('figures.titles.recv') }}</th>
+                      <th>{{ __('figures.remitment.titles.count') }}</th>
+                      <th>{{ __('figures.remitment.titles.amount') }}</th>
+                      <th>{{ __('figures.titles.end') }}</th>
+@else
+                      <th colspan="2">{{ __('figures.titles.start') }}</th>
+                      <th colspan="2">{{ __('figures.deposit.titles.count') }}</th>
+                      <th colspan="2">{{ __('figures.deposit.titles.amount') }}</th>
+                      <th colspan="2">{{ __('figures.titles.recv') }}</th>
+                      <th colspan="2">{{ __('figures.remitment.titles.count') }}</th>
+                      <th colspan="2">{{ __('figures.remitment.titles.amount') }}</th>
+                      <th colspan="2">{{ __('figures.titles.end') }}</th>
+@endif
                     </tr>
                   </thead>
                   <tbody>
+@if ($tontine->is_libre)
+@foreach ($sessions as $session)
                     <tr>
-                      <td rowspan="2">{{ __('figures.titles.start') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->collected[$session->id]->cashier->start !!}</b></td>@endforeach
+                      <th>{{ $session->title }}</th>
+@if($session->disabled($pool))
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+@else
+                      <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->start, true) !!}</b></td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->deposit->count !!}</b></td>
+                      <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->deposit->amount, true) !!}</b></td>
+                      <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->recv, true) !!}</b></td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->remitment->count !!}</b></td>
+                      <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->remitment->amount, true) !!}</b></td>
+                      <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->end, true) !!}</b></td>
+@endif
                     </tr>
+@endforeach
+@else
+@foreach ($sessions as $session)
                     <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->cashier->start }}</td>@endforeach
+                      <th>{{ $session->title }}</th>
+@if($session->disabled($pool))
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+@elseif($session->pending)
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, true) }}</td>
+                      <td class="currency"></td>
+                      <td class="currency">{{ $figures->expected[$session->id]->deposit->count }}</td>
+                      <td class="currency"></td>
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, true) }}</td>
+                      <td class="currency"></td>
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, true) }}</td>
+                      <td class="currency"></td>
+                      <td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>
+                      <td class="currency"></td>
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, true) }}</td>
+                      <td class="currency"></td>
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->end, true) }}</td>
+                      <td class="currency"></td>
+@else
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, true) }}</td>
+                      <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->start, true) !!}</b></td>
+                      <td class="currency">{{ $figures->expected[$session->id]->deposit->count }}</td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->deposit->count !!}</b></td>
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, true) }}</td>
+                      <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->deposit->amount, true) !!}</b></td>
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, true) }}</td>
+                      <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->recv, true) !!}</b></td>
+                      <td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>
+                      <td class="currency"><b>{!! $figures->collected[$session->id]->remitment->count !!}</b></td>
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, true) }}</td>
+                      <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->remitment->amount, true) !!}</b></td>
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->end, true) }}</td>
+                      <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->end, true) !!}</b></td>
+@endif
                     </tr>
-                    <tr>
-                      <td rowspan="2">{{ __('figures.deposit.titles.count') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->collected[$session->id]->deposit->count !!}</b></td>@endforeach
-                    </tr>
-                    <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->deposit->count }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td rowspan="2">{{ __('figures.deposit.titles.amount') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->collected[$session->id]->deposit->amount !!}</b></td>@endforeach
-                    </tr>
-                    <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->deposit->amount }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td rowspan="2">{{ __('figures.titles.recv') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->collected[$session->id]->cashier->recv !!}</b></td>@endforeach
-                    </tr>
-                    <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->cashier->recv }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td rowspan="2">{{ __('figures.remitment.titles.count') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->collected[$session->id]->remitment->count !!}</b></td>@endforeach
-                    </tr>
-                    <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td rowspan="2">{{ __('figures.remitment.titles.amount') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->collected[$session->id]->remitment->amount !!}</b></td>@endforeach
-                    </tr>
-                    <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->remitment->amount }}</td>@endforeach
-                    </tr>
-                    <tr>
-                      <td rowspan="2">{{ __('figures.titles.end') }}</td>
-                      @foreach($sessions as $session)<td class="currency"><b>{!! $figures->collected[$session->id]->cashier->end !!}</b></td>@endforeach
-                    </tr>
-                    <tr>
-                      @foreach($sessions as $session)<td class="currency">{{ $figures->expected[$session->id]->cashier->end }}</td>@endforeach
-                    </tr>
+@endforeach
+@endif
                   </tbody>
                 </table>
               </div>
@@ -130,7 +170,7 @@
                       <td rowspan="2">{{ $subscription->member->name }}</td>
 @foreach($sessions as $session)
 @isset($subscription->receivables[$session->id])
-                      <td class="currency"><b>{!! $subscription->receivables[$session->id]->deposit ? $pool->money('amount', true) : 0 !!}</b></td>
+                      <td class="currency"><b>{!! $subscription->receivables[$session->id]->deposit ? $locale->formatMoney($pool->amount, true) : 0 !!}</b></td>
 @else
                       <td class="currency">&nbsp;</td>
 @endisset
@@ -138,7 +178,7 @@
                     </tr>
                     <tr>
 @foreach($sessions as $session)
-                      <td class="currency">{{ $session->disabled($pool) ? '&nbsp;' : $pool->money('amount', true) }}</td>
+                      <td class="currency">{{ $session->disabled($pool) ? '&nbsp;' : $locale->formatMoney($pool->amount, true) }}</td>
 @endforeach
                     </tr>
 @endforeach

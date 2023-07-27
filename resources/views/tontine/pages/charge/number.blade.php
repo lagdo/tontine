@@ -2,11 +2,17 @@
         <form class="form-horizontal" role="form">
           <div class="module-body">
             <div class="form-group row">
-              {!! Form::label('number', trans('number.labels.charge'), ['class' => 'col-md-8 col-form-label']) !!}
+              {!! Form::label('group', trans('number.charge.type'), ['class' => 'col-md-8 col-form-label']) !!}
               <div class="col-md-4">
-                {!! Form::text('number', '', ['class' => 'form-control', 'id' => 'text-number']) !!}
+                {!! Form::select('group', $groups, 0, ['class' => 'form-control', 'id' => 'charge-group']) !!}
               </div>
             </div>
-          </div>
+            <div class="form-group row">
+                {!! Form::label('number', trans('number.labels.charge'), ['class' => 'col-md-8 col-form-label']) !!}
+                <div class="col-md-4">
+                  {!! Form::text('number', '', ['class' => 'form-control', 'id' => 'text-number']) !!}
+                </div>
+              </div>
+            </div>
         </form>
       </div>

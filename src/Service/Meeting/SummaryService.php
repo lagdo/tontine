@@ -5,8 +5,8 @@ namespace Siak\Tontine\Service\Meeting;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SessionService;
-use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\ReportTrait;
 use stdClass;
@@ -16,11 +16,6 @@ use function compact;
 class SummaryService
 {
     use ReportTrait;
-
-    /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
 
     /**
      * @var TenantService
@@ -33,15 +28,21 @@ class SummaryService
     public SessionService $sessionService;
 
     /**
-     * @param LocaleService $localeService
+     * @var PoolService
+     */
+    protected PoolService $poolService;
+
+    /**
      * @param TenantService $tenantService
      * @param SessionService $sessionService
+     * @param PoolService $poolService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService, SessionService $sessionService)
+    public function __construct(TenantService $tenantService,
+        SessionService $sessionService, PoolService $poolService)
     {
-        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
         $this->sessionService = $sessionService;
+        $this->poolService = $poolService;
     }
 
     /**
@@ -54,7 +55,8 @@ class SummaryService
     private function getCollectedFigures(Pool $pool, Collection $sessions, Collection $subscriptions): array
     {
         $cashier = 0;
-        $remitmentAmount = $pool->amount * $this->sessionService->enabledSessionCount($pool);
+        $remitmentAmount = $this->tenantService->tontine()->is_libre ? 0 :
+            $pool->amount * $this->sessionService->enabledSessionCount($pool);
 
         $collectedFigures = [];
         foreach($sessions as $session)
@@ -70,12 +72,18 @@ class SummaryService
             $figures->cashier->recv = $cashier;
             foreach($subscriptions as $subscription)
             {
-                if(($subscription->receivables[$session->id]->deposit))
+                if(($deposit = $subscription->receivables[$session->id]->deposit))
                 {
+                    $amount = $this->tenantService->tontine()->is_libre ? $deposit->amount : $pool->amount;
                     $figures->deposit->count++;
-                    $figures->deposit->amount += $pool->amount;
-                    $figures->cashier->recv += $pool->amount;
+                    $figures->deposit->amount += $amount;
+                    $figures->cashier->recv += $amount;
                 }
+            }
+
+            if($this->tenantService->tontine()->is_libre)
+            {
+                $remitmentAmount = $this->poolService->getLibrePoolAmount($pool, $session);
             }
             $figures->cashier->end = $figures->cashier->recv;
             foreach($session->payables as $payable)
@@ -89,7 +97,7 @@ class SummaryService
             }
 
             $cashier = $figures->cashier->end;
-            $collectedFigures[$session->id] = $this->formatCurrencies($figures);
+            $collectedFigures[$session->id] = $figures;
         }
 
         return $collectedFigures;
@@ -112,7 +120,10 @@ class SummaryService
             });
         $sessions = $this->_getSessions($this->tenantService->round(), $pool, ['payables.remitment']);
         $figures = new stdClass();
-        $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
+        if(!$this->tenantService->tontine()->is_libre)
+        {
+            $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
+        }
         $figures->collected = $this->getCollectedFigures($pool, $sessions, $subscriptions);
 
         return compact('pool', 'sessions', 'subscriptions', 'figures');
@@ -130,7 +141,6 @@ class SummaryService
         $sessionCount = $this->sessionService->enabledSessionCount($pool);
         $subscriptionCount = $pool->subscriptions()->count();
         $remitmentAmount = $pool->amount * $sessionCount;
-        $formattedAmount = $this->localeService->formatMoney($remitmentAmount);
 
         $figures = [];
         $position = 0;
@@ -144,7 +154,7 @@ class SummaryService
             {
                 $figures[$session->id]->count =
                     $this->getRemitmentCount($sessionCount, $subscriptionCount, $position++);
-                $figures[$session->id]->amount = $formattedAmount;
+                $figures[$session->id]->amount = $remitmentAmount;
             }
         }
 

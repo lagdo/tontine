@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
-use Siak\Tontine\Service\Events\EventTrait;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Traits\EventTrait;
 
 class ChargeService
 {
@@ -90,7 +90,7 @@ class ChargeService
     }
 
     /**
-     * Add a new charge.
+     * Add new charges.
      *
      * @param array $values
      *

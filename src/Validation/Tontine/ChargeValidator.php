@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Validation\Tontine;
 
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Validation\AbstractValidator;
 use Siak\Tontine\Validation\ValidationException;
@@ -33,7 +34,12 @@ class ChargeValidator extends AbstractValidator
             'type' => 'required|integer|between:0,1',
             'period' => 'required|integer|between:0,3',
             'name' => 'required|string|min:1',
-            'amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+            'fixed' => [
+                Rule::requiredIf((int)$values['type'] === 0 && (int)$values['period'] > 0),
+                'in:1',
+                'exclude',
+            ],
+            'amount' => 'required_if:fixed,1|regex:/^\d+(\.\d{1,2})?$/',
         ]);
         if($validator->fails())
         {
@@ -41,7 +47,9 @@ class ChargeValidator extends AbstractValidator
         }
 
         $validated = $validator->validated();
-        $validated['amount'] = $this->localeService->convertMoneyToInt((float)$validated['amount']);
+        $validated['amount'] = empty($values['fixed']) ? 0 :
+            $this->localeService->convertMoneyToInt((float)$validated['amount']);
+
         return $validated;
     }
 }

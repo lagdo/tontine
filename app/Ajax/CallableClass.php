@@ -11,7 +11,6 @@ use App\Ajax\App\Planning\Pool;
 use App\Ajax\App\Planning\Session as PlanningSession;
 use App\Ajax\App\Tontine\Charge;
 use App\Ajax\App\Tontine\Member;
-use App\Ajax\App\Tontine\Round as TontineRound;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Model\User;
@@ -116,10 +115,10 @@ class CallableClass extends JaxonCallableClass
     /**
      * @return void
      */
-    protected function setTontineMenuHandlers()
+    protected function hideMenuOnMobile()
     {
-        $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
-        $this->jq('.btn-tontine-edit')->click($this->rq()->edit($tontineId));
-        $this->jq('.btn-tontine-rounds')->click($this->cl(TontineRound::class)->rq()->home($tontineId));
+        // The current template main menu doesn't hide automatically
+        // after a click on mobile devices. We need to do that manually.
+        $this->jq('body')->trigger('touchend');
     }
 }

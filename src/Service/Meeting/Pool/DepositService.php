@@ -71,13 +71,19 @@ class DepositService
      */
     public function getReceivables(Pool $pool, Session $session, int $page = 0): Collection
     {
-        $receivables = $this->getQuery($pool, $session)->with(['subscription.member', 'deposit']);
+        // The jointure with the subscriptions and members tables is needed,
+        // so the final records can be ordered by member name.
+        $receivables = $this->getQuery($pool, $session)
+            ->select('receivables.*')
+            ->join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
+            ->join('members', 'members.id', '=', 'subscriptions.member_id')
+            ->with(['subscription.member', 'deposit']);
         if($page > 0 )
         {
             $receivables->take($this->tenantService->getLimit());
             $receivables->skip($this->tenantService->getLimit() * ($page - 1));
         }
-        return $receivables->orderBy('id', 'asc')->get();
+        return $receivables->orderBy('members.name', 'asc')->get();
     }
 
     /**

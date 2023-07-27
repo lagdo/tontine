@@ -44,7 +44,7 @@ class Fee extends CallableClass
     {
         $sessionId = $this->bag('meeting')->get('session.id');
         $chargeId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('charge.id');
+            $this->target()->args()[0] : $this->bag('meeting')->get('charge.f.id');
         $this->session = $this->settlementService->getSession($sessionId);
         $this->charge = $this->settlementService->getCharge($chargeId);
     }
@@ -56,7 +56,7 @@ class Fee extends CallableClass
      */
     public function home(int $chargeId)
     {
-        $this->bag('meeting')->set('charge.id', $chargeId);
+        $this->bag('meeting')->set('charge.f.id', $chargeId);
         $this->bag('meeting')->set('settlement.filter', null);
 
         $html = $this->view()->render('tontine.pages.meeting.settlement.home', [
