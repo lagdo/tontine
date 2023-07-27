@@ -70,6 +70,9 @@ class Beneficiary extends CallableClass
         return $this->home();
     }
 
+    /**
+     * @after hideMenuOnMobile
+     */
     public function home()
     {
         if(!$this->pool)

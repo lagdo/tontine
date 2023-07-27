@@ -54,6 +54,7 @@ class Tontine extends CallableClass
      * @di $tenantService
      * @di $roundService
      * @databag tontine
+     * @after hideMenuOnMobile
      */
     public function home()
     {

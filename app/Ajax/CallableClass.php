@@ -111,4 +111,14 @@ class CallableClass extends JaxonCallableClass
         $this->jq('#balance-menu-session')->click($this->cl(SessionBalance::class)->rq()->home());
         $this->jq('#balance-menu-round')->click($this->cl(RoundBalance::class)->rq()->home());
     }
+
+    /**
+     * @return void
+     */
+    protected function hideMenuOnMobile()
+    {
+        // The current template main menu doesn't hide automatically
+        // after a click on mobile devices. We need to do that manually.
+        $this->jq('body')->trigger('touchend');
+    }
 }

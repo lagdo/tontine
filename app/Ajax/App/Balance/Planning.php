@@ -76,6 +76,9 @@ class Planning extends CallableClass
         return $this->amounts();
     }
 
+    /**
+     * @after hideMenuOnMobile
+     */
     public function home()
     {
         // Don't try to show the page if there is no pool selected.

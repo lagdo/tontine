@@ -27,6 +27,7 @@ class Member extends CallableClass
 
     /**
      * @databag member
+     * @after hideMenuOnMobile
      */
     public function home()
     {

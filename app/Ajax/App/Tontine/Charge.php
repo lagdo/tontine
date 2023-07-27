@@ -45,6 +45,7 @@ class Charge extends CallableClass
 
     /**
      * @databag charge
+     * @after hideMenuOnMobile
      */
     public function home()
     {

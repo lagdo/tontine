@@ -63,6 +63,9 @@ class Round extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @after hideMenuOnMobile
+     */
     public function home()
     {
         if(!$this->pool)

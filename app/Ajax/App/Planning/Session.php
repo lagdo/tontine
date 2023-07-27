@@ -36,6 +36,9 @@ class Session extends CallableClass
      */
     protected SessionValidator $validator;
 
+    /**
+     * @after hideMenuOnMobile
+     */
     public function home()
     {
         $html = $this->view()->render('tontine.pages.planning.session.home');
