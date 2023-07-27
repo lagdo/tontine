@@ -95,7 +95,10 @@ class Tontine extends CallableClass
             ->with('pagination', $pagination);
         $this->response->html('tontine-page', $html);
 
-        $this->setTontineMenuHandlers();
+        $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
+        $this->jq('.btn-tontine-edit')->click($this->rq()->edit($tontineId));
+        $this->jq('.btn-tontine-choose')->click($this->cl(Select::class)->rq()->saveTontine($tontineId));
+        $this->jq('.btn-tontine-rounds')->click($this->cl(Round::class)->rq()->home($tontineId));
 
         return $this->response;
     }
@@ -119,7 +122,8 @@ class Tontine extends CallableClass
             'click' => $this->rq()->create(pm()->form('tontine-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
-        $this->jq('#select_country_dropdown')->change($this->cl(Locale::class)->rq()->selectCurrencies(jq()->val()));
+        $this->jq('#select_country_dropdown')
+            ->change($this->cl(Locale::class)->rq()->selectCurrencies(jq()->val()));
 
         return $this->response;
     }
