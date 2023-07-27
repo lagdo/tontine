@@ -71,7 +71,7 @@ return [
             ],
             'bootbox' => [
                 'assets' => [
-                    'js' => "https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.all.min.js",
+                    'js' => "https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.min.js",
                 ],
             ],
             'toastr' => [
