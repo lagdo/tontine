@@ -94,7 +94,6 @@ class Fee extends CallableClass
             ->with('fees', $fees)
             ->with('bills', $bills)
             ->with('settlements', $settlements)
-            ->with('zero', $settlements['zero'])
             ->with('pagination', $pagination);
         $this->response->html('meeting-fees-page', $html);
 

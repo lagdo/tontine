@@ -10,16 +10,6 @@
 
 @section('content')
           <div class="row">
-@if (session('status'))
-            <div class="col-12">
-              <div class="alert alert-success alert-dismissible show fade">
-                <div class="alert-body">
-                  <button class="close" data-dismiss="alert"><span>×</span></button>
-                  {{ session('status') }}
-                </div>
-              </div>
-            </div>
-@endif
             <div class="col-md-6 col-sm-12">
               <div class="card">
                 <form method="POST" action="{{ route('user-profile-information.update') }}" class="needs-validation" novalidate="">

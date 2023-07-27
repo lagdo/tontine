@@ -13,17 +13,11 @@ use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
-use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Planning\PoolService;
 
 class MemberService
 {
-    /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
     /**
      * @var TenantService
      */
@@ -35,13 +29,11 @@ class MemberService
     protected PoolService $poolService;
 
     /**
-     * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param PoolService $poolService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService, PoolService $poolService)
+    public function __construct(TenantService $tenantService, PoolService $poolService)
     {
-        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
         $this->poolService = $poolService;
     }
@@ -83,11 +75,10 @@ class MemberService
     {
         if($this->tenantService->tontine()->is_libre)
         {
-            return !$receivable->deposit ? trans('tontine.labels.types.libre') :
-                $this->localeService->formatMoney($receivable->deposit->amount);
+            return !$receivable->deposit ? 0 : $receivable->deposit->amount;
         }
 
-        return $this->localeService->formatMoney($receivable->subscription->pool->amount);
+        return $receivable->subscription->pool->amount;
     }
 
     /**
@@ -106,7 +97,7 @@ class MemberService
             ->get()
             ->each(function($receivable) {
                 $receivable->paid = ($receivable->deposit !== null);
-                $receivable->amountPaid = $this->getReceivableAmount($receivable);
+                $receivable->amount = $this->getReceivableAmount($receivable);
             });
     }
 
@@ -118,15 +109,9 @@ class MemberService
      */
     private function getPayableAmount(Pool $pool, Session $session): string
     {
-        if(!$this->tenantService->tontine()->is_libre)
-        {
-            $sessionCount = $this->poolService->enabledSessionCount($pool);
-            $remitmentAmount = $pool->amount * $sessionCount;
-            return $this->localeService->formatMoney($remitmentAmount);
-        }
-
-        $remitmentAmount = $this->poolService->getLibrePoolAmount($pool, $session);
-        return $this->localeService->formatMoney($remitmentAmount);
+        return $this->tenantService->tontine()->is_libre ?
+            $this->poolService->getLibrePoolAmount($pool, $session) :
+            $pool->amount * $this->poolService->enabledSessionCount($pool);
     }
 
     /**
@@ -202,7 +187,6 @@ class MemberService
             })
             ->get()
             ->each(function($bill) {
-                $bill->amount = $this->localeService->formatMoney($bill->amount);
                 $bill->session = $bill->session_bill ? $bill->session_bill->session : null;
             });
     }
@@ -226,7 +210,6 @@ class MemberService
                 ->each(function($charge) use($bills) {
                     $charge->paid = false;
                     $charge->session = null;
-                    $charge->amount = $this->localeService->formatMoney($charge->amount);
                     if(($bill = $bills->get($charge->id)) !== null)
                     {
                         $charge->paid = $bill->settlement !== null;
@@ -264,7 +247,6 @@ class MemberService
             })
             ->get()
             ->each(function($bill) {
-                $bill->amount = $this->localeService->formatMoney($bill->amount);
                 $bill->session = $bill->fine_bill->session;
             });
         }
@@ -279,11 +261,7 @@ class MemberService
     {
         return Funding::where('member_id', $member->id)
             ->where('session_id', $session->id)
-            ->get()
-            ->map(function($funding) {
-                $funding->amount = $this->localeService->formatMoney($funding->amount);
-                return $funding;
-            });
+            ->get();
     }
 
     /**
@@ -296,12 +274,7 @@ class MemberService
     {
         return Loan::where('member_id', $member->id)
             ->where('session_id', $session->id)
-            ->get()
-            ->map(function($loan) {
-                $loan->amount = $this->localeService->formatMoney($loan->amount);
-                $loan->interest = $this->localeService->formatMoney($loan->interest);
-                return $loan;
-            });
+            ->get();
     }
 
     /**
@@ -335,10 +308,6 @@ class MemberService
                         });
                     });
             })
-            ->get()
-            ->map(function($debt) {
-                $debt->amount = $this->localeService->formatMoney($debt->amount);
-                return $debt;
-            });
+            ->get();
     }
 }

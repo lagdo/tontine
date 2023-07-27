@@ -147,16 +147,6 @@ class LoanService
     }
 
     /**
-     * @param Session $session    The session
-     *
-     * @return string
-     */
-    public function getFormattedAmountAvailable(Session $session): string
-    {
-        return $this->localeService->formatMoney($this->_getAmountAvailable($session));
-    }
-
-    /**
      * Get the amount available for loan.
      *
      * @param Session $session
@@ -165,12 +155,7 @@ class LoanService
      */
     public function getSessionLoans(Session $session): Collection
     {
-        $loans = $session->loans()->with(['member'])->get();
-        $loans->each(function($loan) {
-            $loan->amount = $this->localeService->formatMoney($loan->amount);
-            $loan->interest = $this->localeService->formatMoney($loan->interest);
-        });
-        return $loans;
+        return $session->loans()->with(['member'])->get();
     }
 
     /**

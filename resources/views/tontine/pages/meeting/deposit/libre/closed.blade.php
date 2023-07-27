@@ -1,3 +1,2 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
-                        {!! Form::text('amount', !$amount ? '': $locale->formatMoney($amount, true),
+                        {!! Form::text('amount', $amount,
                           ['class' => 'form-control', 'readonly' => 'readonly', 'style' => 'text-align:right']) !!}

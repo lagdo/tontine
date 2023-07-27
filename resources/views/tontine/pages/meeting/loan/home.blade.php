@@ -1,6 +1,7 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col-auto">
-                      <div class="section-title mt-0">{{ __('meeting.titles.loans') }} ({{ $amountAvailable }})</div>
+                      <div class="section-title mt-0">{{ __('meeting.titles.loans') }} ({{ $locale->formatMoney($amountAvailable, true) }})</div>
                     </div>
 @if($session->opened)
                     <div class="col">
@@ -16,15 +17,15 @@
                       <thead>
                         <tr>
                           <th>{!! __('meeting.labels.member') !!}</th>
-                          <th>{!! __('common.labels.amount') !!}</th>
-                          <th>&nbsp;</th>
+                          <th class="currency">{!! __('common.labels.amount') !!}</th>
+                          <th class="table-item-menu">&nbsp;</th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach ($loans as $loan)
                         <tr>
                           <td>{{ $loan->member->name }}</td>
-                          <td>{{ $loan->amount }}<br/>{{ $loan->interest }}</td>
+                          <td class="currency">{{ $locale->formatMoney($loan->amount, true) }}<br/>{{ $locale->formatMoney($loan->interest, true) }}</td>
 @if ($session->closed || ($loan->remitment_id))
                           <td class="table-item-menu"><i class="fa fa-times-circle"></i></td>
 @else

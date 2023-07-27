@@ -1,9 +1,10 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
                         <tr>
                           <td>
                             {{ $charge->name }}<br/>
-                            {{ $charge->has_amount ? $charge->money('amount') : __('tontine.labels.fees.variable') }}
+                            {{ $charge->has_amount ? $locale->formatMoney($charge->amount, true) : __('tontine.labels.fees.variable') }}
                           </td>
-                          <td>
+                          <td class="currency">
                             {{ $settlements['total']['current'][$charge->id] ?? 0 }}/{{ $charge->currentBillCount }}<br/>
                             {{ $settlements['total']['previous'][$charge->id] ?? 0 }}/{{ $charge->previousBillCount }}
                           </td>

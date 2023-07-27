@@ -1,3 +1,4 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
           <div class="section-body">
             <div class="row align-items-center">
               <div class="col">
@@ -50,9 +51,9 @@
                       <td class="currency">1</td>
                       <td class="currency">{{ __('tontine.labels.types.libre') }}</td>
 @else
-                      <td class="currency">{{ $figures->expected[$session->id]->cashier->recv }}</td>
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, true) }}</td>
                       <td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>
-                      <td class="currency">{{ $figures->expected[$session->id]->remitment->amount }}</td>
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, true) }}</td>
 @endif
                       <td>
 @foreach ($session->beneficiaries as $subscription)

@@ -95,9 +95,8 @@ class ReportService implements ReportServiceInterface
             // Paid
             $pool->deposits_count = $query->whereHas('deposit')->count();
             // Amount
-            $amount = $pool->deposits_count * $pool->amount;
-            $this->depositsAmount += $amount;
-            $pool->deposits_amount = $this->localeService->formatMoney($amount);
+            $pool->deposits_amount = $pool->deposits_count * $pool->amount;
+            $this->depositsAmount += $pool->deposits_amount;
 
             // Payables
             $query = $session->payables()->whereIn('subscription_id', $subscriptionIds);
@@ -106,9 +105,8 @@ class ReportService implements ReportServiceInterface
             // Paid
             $pool->remitments_count = $query->whereHas('remitment')->count();
             // Amount
-            $amount = $pool->remitments_count * $pool->amount * $subscriptionCount;
-            $this->remitmentsAmount += $amount;
-            $pool->remitments_amount = $this->localeService->formatMoney($amount);
+            $pool->remitments_amount = $pool->remitments_count * $pool->amount * $subscriptionCount;
+            $this->remitmentsAmount += $pool->remitments_amount;
         });
     }
 
@@ -160,33 +158,16 @@ class ReportService implements ReportServiceInterface
             'deposits' => [
                 'session' => $session,
                 'pools' => $pools,
-                'amount' => $this->localeService->formatMoney($this->depositsAmount),
+                'amount' => $this->depositsAmount,
             ],
             'remitments' => [
                 'session' => $session,
                 'pools' => $pools,
-                'amount' => $this->localeService->formatMoney($this->remitmentsAmount),
+                'amount' => $this->remitmentsAmount,
             ],
             'fees' => $fees,
             'fines' => $fines,
         ];
-
-        /*if($tontine->is_financial)
-        {
-            [$loans, $sum] = $loanService->getSessionLoans($session);
-            $amountAvailable = $loanService->getAmountAvailable($session);
-            $html->with('loans', [
-                'session' => $session,
-                'loans' => $loans,
-                'sum' => $sum,
-                'amountAvailable' => $this->localeService->formatMoney($amountAvailable),
-            ]);
-            $html->with('refunds', [
-                'session' => $session,
-                'loans' => $refundService->getLoans($session, true),
-                'refundSum' => $refundService->getRefundSum($session),
-            ]);
-        }*/
     }
 
     /**

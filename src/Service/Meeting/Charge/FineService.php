@@ -9,7 +9,6 @@ use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\FineBill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
@@ -17,22 +16,15 @@ use function trans;
 class FineService
 {
     /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
      * @var TenantService
      */
     protected TenantService $tenantService;
 
     /**
-     * @param LocaleService $localeService
      * @param TenantService $tenantService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService)
+    public function __construct(TenantService $tenantService)
     {
-        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
     }
 
@@ -146,21 +138,6 @@ class FineService
     }
 
     /**
-     * Format the amounts in the settlements
-     *
-     * @param Collection $settlements
-     *
-     * @return Collection
-     */
-    private function formatAmounts(Collection $settlements): Collection
-    {
-        return $settlements->map(function($settlement) {
-            $settlement->amount = $this->localeService->formatMoney((int)$settlement->amount);
-            return $settlement;
-        });
-    }
-
-    /**
      * Get the report of bills
      *
      * @param Session $session
@@ -191,14 +168,13 @@ class FineService
         $currentSettlements = $this->getCurrentSessionSettlements($session);
         $previousSettlements = $this->getPreviousSessionsSettlements($session);
         return [
-            'zero' => $this->localeService->formatMoney(0),
             'total' => [
                 'current' => $currentSettlements->pluck('total', 'charge_id'),
                 'previous' => $previousSettlements->pluck('total', 'charge_id'),
             ],
             'amount' => [
-                'current' => $this->formatAmounts($currentSettlements)->pluck('amount', 'charge_id'),
-                'previous' => $this->formatAmounts($previousSettlements)->pluck('amount', 'charge_id'),
+                'current' => $currentSettlements->pluck('amount', 'charge_id'),
+                'previous' => $previousSettlements->pluck('amount', 'charge_id'),
             ],
         ];
     }

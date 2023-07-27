@@ -44,9 +44,9 @@
           @include('tontine.report.session.fines', $fines)
 @endif
 
-{{-- @if($tontine->is_financial)
+{{--
           @include('tontine.report.session.loans', $loans)
 
           @include('tontine.report.session.refunds', $refunds)
-@endif --}}
+--}}
 @endsection

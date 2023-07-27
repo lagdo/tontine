@@ -1,3 +1,4 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.deposits') }}</div>
@@ -8,16 +9,16 @@
                       <thead>
                         <tr>
                           <th>{{ __('common.labels.title') }}</th>
-                          <th>{{ __('common.labels.amount') }}</th>
-                          <th>{{ __('common.labels.paid') }}</th>
+                          <th class="currency">{{ __('common.labels.amount') }}</th>
+                          <th class="currency">{{ __('common.labels.total') }}</th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach($pools as $pool)
                         <tr>
                           <td>{{ $pool->title }}</td>
-                          <td>{{ $tontine->is_libre ? __('tontine.labels.types.libre') : $pool->amount }}</td>
-                          <td>{{ $pool->paid }}</td>
+                          <td class="currency">{{ $tontine->is_libre ? __('tontine.labels.types.libre') : $locale->formatMoney($pool->amount, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($pool->paid, true) }}</td>
                         </tr>
 @endforeach
                       </tbody>

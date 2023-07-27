@@ -1,3 +1,4 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.fundings') }}</div>
@@ -7,13 +8,13 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>{{ __('common.labels.amount') }}</th>
+                          <th class="currency">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach($fundings as $funding)
                         <tr>
-                          <td>{{ $funding->amount }}</td>
+                          <td class="currency">{{ $locale->formatMoney($funding->amount, true) }}</td>
                         </tr>
 @endforeach
                       </tbody>

@@ -13,22 +13,6 @@ use function gmp_gcd;
 trait ReportTrait
 {
     /**
-     * @param stdClass $figures
-     *
-     * @return stdClass
-     */
-    private function formatCurrencies(stdClass $figures): stdClass
-    {
-        $figures->cashier->start = $this->localeService->formatMoney($figures->cashier->start, true);
-        $figures->cashier->recv = $this->localeService->formatMoney($figures->cashier->recv, true);
-        $figures->cashier->end = $this->localeService->formatMoney($figures->cashier->end, true);
-        $figures->deposit->amount = $this->localeService->formatMoney($figures->deposit->amount, true);
-        $figures->remitment->amount = $this->localeService->formatMoney($figures->remitment->amount, true);
-
-        return $figures;
-    }
-
-    /**
      * @param mixed $defaultValue
      *
      * @return stdClass
@@ -116,11 +100,9 @@ trait ReportTrait
         $sessionCount = $sessions->filter(function($session) use($pool) {
             return $session->enabled($pool);
         })->count();
-        $subscriptionCount = $pool->subscriptions()->count();
-        $depositCount = $subscriptions->count();
-
+        $subscriptionCount = $depositCount = $subscriptions->count();
+        $depositAmount = $pool->amount * $depositCount;
         $remitmentAmount = $pool->amount * $sessionCount;
-        $depositAmount = $pool->amount * $subscriptions->count();
 
         $position = 0;
         $cashier = 0;
@@ -134,7 +116,6 @@ trait ReportTrait
             }
 
             $figures = $this->makeFigures(0);
-
             $figures->cashier->start = $cashier;
             $figures->cashier->recv = $cashier + $depositAmount;
             $figures->deposit->count = $depositCount;
@@ -145,7 +126,7 @@ trait ReportTrait
             $figures->cashier->end = $cashier + $depositAmount - $figures->remitment->amount;
             $cashier = $figures->cashier->end;
 
-            $expectedFigures[$session->id] = $this->formatCurrencies($figures);
+            $expectedFigures[$session->id] = $figures;
         }
 
         return $expectedFigures;

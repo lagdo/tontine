@@ -5,7 +5,6 @@ namespace Siak\Tontine\Service\Meeting;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\TenantService;
@@ -17,11 +16,6 @@ use function compact;
 class SummaryService
 {
     use ReportTrait;
-
-    /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
 
     /**
      * @var TenantService
@@ -39,15 +33,13 @@ class SummaryService
     protected PoolService $poolService;
 
     /**
-     * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param SessionService $sessionService
      * @param PoolService $poolService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService,
+    public function __construct(TenantService $tenantService,
         SessionService $sessionService, PoolService $poolService)
     {
-        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
         $this->sessionService = $sessionService;
         $this->poolService = $poolService;
@@ -105,7 +97,7 @@ class SummaryService
             }
 
             $cashier = $figures->cashier->end;
-            $collectedFigures[$session->id] = $this->formatCurrencies($figures);
+            $collectedFigures[$session->id] = $figures;
         }
 
         return $collectedFigures;
@@ -149,7 +141,6 @@ class SummaryService
         $sessionCount = $this->sessionService->enabledSessionCount($pool);
         $subscriptionCount = $pool->subscriptions()->count();
         $remitmentAmount = $pool->amount * $sessionCount;
-        $formattedAmount = $this->localeService->formatMoney($remitmentAmount);
 
         $figures = [];
         $position = 0;
@@ -163,7 +154,7 @@ class SummaryService
             {
                 $figures[$session->id]->count =
                     $this->getRemitmentCount($sessionCount, $subscriptionCount, $position++);
-                $figures[$session->id]->amount = $formattedAmount;
+                $figures[$session->id]->amount = $remitmentAmount;
             }
         }
 

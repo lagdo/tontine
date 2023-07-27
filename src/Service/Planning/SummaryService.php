@@ -65,12 +65,6 @@ class SummaryService
     {
         $sessions = $this->_getSessions($this->tenantService->round(), $pool, ['payables.subscription']);
         $subscriptions = $pool->subscriptions()->with(['payable', 'payable.session', 'member'])->get();
-        // Separate subscriptions that already have a beneficiary assigned from the others.
-        [$beneficiaries, $subscriptions] = $subscriptions->partition(function($subscription) use($pool) {
-            $session = $subscription->payable->session;
-            return $session !== null && $session->enabled($pool);
-        });
-        $beneficiaries = $beneficiaries->pluck('member.name', 'id');
 
         $figures = new stdClass();
         // No expected figures for libre tontines
@@ -93,6 +87,12 @@ class SummaryService
             }
         });
 
+        // Separate subscriptions that already have a beneficiary assigned from the others.
+        [$beneficiaries, $subscriptions] = $subscriptions->partition(function($subscription) use($pool) {
+            $session = $subscription->payable->session;
+            return $session !== null && $session->enabled($pool);
+        });
+        $beneficiaries = $beneficiaries->pluck('member.name', 'id');
         // Do not show the list of subscriptions for financial tontines
         if($this->tenantService->tontine()->is_financial)
         {

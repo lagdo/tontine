@@ -1,3 +1,4 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.refunds') }}</div>
@@ -8,15 +9,15 @@
                       <thead>
                         <tr>
                           <th>&nbsp;</th>
-                          <th>{{ __('tontine.loan.labels.principal') }}</th>
-                          <th>{{ __('tontine.loan.labels.interest') }}</th>
+                          <th class="currency">{{ __('tontine.loan.labels.principal') }}</th>
+                          <th class="currency">{{ __('tontine.loan.labels.interest') }}</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
                           <td>{{ __('common.labels.total') }}</td>
-                          <td>{{ $refund->amount }}</td>
-                          <td>{{ $refund->interest }}</td>
+                          <td class="currency">{{ $locale->formatMoney($refund->amount, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($refund->interest, true) }}</td>
                         </tr>
                       </tbody>
                     </table>

@@ -1,3 +1,4 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.deposits') }}</div>
@@ -8,16 +9,17 @@
                       <thead>
                         <tr>
                           <th>{{ __('common.labels.title') }}</th>
-                          <th>{{ __('common.labels.amount') }}</th>
-                          <th>{{ __('common.labels.paid') }}</th>
+                          <th class="currency">{{ __('common.labels.amount') }}</th>
+                          <th class="table-item-menu">{{ __('common.labels.paid') }}</th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach($receivables as $receivable)
                         <tr>
                           <td>{{ $receivable->subscription->pool->title }}</td>
-                          <td>{{ $receivable->amountPaid }}</td>
-                          <td><i class="fa fa-toggle-{{ $receivable->paid ? 'on' : 'off' }}"></i></td>
+                          <td class="currency">{{ $receivable->amount > 0 ?
+                            $locale->formatMoney($receivable->amount, true) : __('tontine.labels.types.libre') }}</td>
+                          <td class="table-item-menu"><i class="fa fa-toggle-{{ $receivable->paid ? 'on' : 'off' }}"></i></td>
                         </tr>
 @endforeach
                       </tbody>

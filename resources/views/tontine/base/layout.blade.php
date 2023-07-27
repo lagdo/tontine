@@ -42,7 +42,7 @@
     .main-sidebar .sidebar-menu li a#tontine-menu-tontines {
       color: #6777ef;
     }
-    .table td.table-item-menu {
+    .table td.table-item-menu, .table th.table-item-menu {
       width: 90px;
     }
     .table td.table-member-subscription {
@@ -77,7 +77,8 @@
 @yield('sidebar')
 
       <!-- Main Content -->
-      <div class="main-content"><section class="section">
+      <div class="main-content">
+        <section class="section">
         <!-- Page heading -->
         <div class="section-header">
 
@@ -89,7 +90,8 @@
 @yield('content')
 
         </div>
-      </section></div>
+        </section>
+      </div>
 
     </div>
   </div>

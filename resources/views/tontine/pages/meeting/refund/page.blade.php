@@ -3,16 +3,16 @@
                   <thead>
                     <tr>
                       <th>{!! __('meeting.labels.member') !!}</th>
-                      <th>{!! __('common.labels.amount') !!}</th>
-                      <th>&nbsp;</th>
+                      <th class="currency">{!! __('common.labels.amount') !!}</th>
+                      <th class="table-item-menu">&nbsp;</th>
                     </tr>
                   </thead>
                   <tbody>
 @foreach($debts as $debt)
                     <tr>
                       <td>{{ $debt->loan->member->name }}<br/>{{ $debt->loan->session->title }}</td>
-                      <td>{{ $locale->formatMoney($debt->amount) }}</td>
-                      <td data-debt-id="{{ $debt->id }}">
+                      <td class="currency">{{ $locale->formatMoney($debt->amount, true) }}</td>
+                      <td class="table-item-menu" data-debt-id="{{ $debt->id }}">
                         {!! paymentLink($debt->refund, $type . '-refund', $session->closed) !!}
                       </td>
                     </tr>

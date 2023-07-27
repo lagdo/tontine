@@ -1,3 +1,4 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col-auto">
                       <div class="section-title mt-0">{!! __('meeting.titles.remitments') !!}</div>
@@ -21,25 +22,17 @@
                       </thead>
                       <tbody>
 @foreach($pools as $pool)
-@if($session->disabled($pool))
-                        @include('tontine.pages.meeting.pool.disabled', [
-                            'pool' => $pool,
+@php
+    $template = $session->disabled($pool) ? 'disabled' :
+      ($session->closed ? 'closed' : ($session->pending ? 'pending' : 'opened'));
+@endphp
+                        @include('tontine.pages.meeting.pool.' . $template, [
+                          'pool' => $pool,
+                          'amount' => $tontine->is_libre ? __('tontine.labels.types.libre') : $locale->formatMoney($pool->amount, true),
+                          'paid' => $pool->pay_paid,
+                          'count' => $pool->pay_count,
+                          'menuClass' => 'btn-pool-remitments',
                         ])
-@elseif($session->pending)
-                        @include('tontine.pages.meeting.pool.pending', [
-                            'pool' => $pool,
-                            'paid' => $pool->pay_paid,
-                            'count' => $pool->pay_count,
-                        ])
-@else
-                        @include('tontine.pages.meeting.pool.opened', [
-                            'pool' => $pool,
-                            'paid' => $pool->pay_paid,
-                            'count' => $pool->pay_count,
-                            'tontine' => $tontine,
-                            'menuClass' => 'btn-pool-remitments',
-                        ])
-@endif
 @endforeach
                       </tbody>
                     </table>

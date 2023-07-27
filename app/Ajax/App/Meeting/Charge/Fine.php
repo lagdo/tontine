@@ -90,7 +90,6 @@ class Fine extends CallableClass
             ->with('fines', $fines)
             ->with('bills', $bills)
             ->with('settlements', $settlements)
-            ->with('zero', $settlements['zero'])
             ->with('pagination', $pagination);
         $this->response->html('meeting-fines-page', $html);
 
