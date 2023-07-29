@@ -184,7 +184,12 @@ return [
             'deleted' => "La souscription du membre a été supprimée.",
         ],
         'errors' => [
-            'not_found' => "Impossible de  trouver la souscription correspondante.",
+            'not_found' => "Impossible de trouver la souscription correspondante.",
+        ],
+    ],
+    'beneficiary' => [
+        'errors' => [
+            'cant_change' => "Impossible de modifier le bénéficiaire.",
         ],
     ],
     'remitment' => [

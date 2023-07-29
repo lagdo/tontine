@@ -229,23 +229,39 @@ class SubscriptionService
      * @param int $currSubscriptionId
      * @param int $nextSubscriptionId
      *
-     * @return void
+     * @return bool
      */
-    public function saveBeneficiary(Pool $pool, Session $session, int $currSubscriptionId, int $nextSubscriptionId)
+    public function saveBeneficiary(Pool $pool, Session $session,
+        int $currSubscriptionId, int $nextSubscriptionId): bool
     {
-        DB::transaction(function() use($pool, $session, $currSubscriptionId, $nextSubscriptionId) {
-            // If the beneficiary already has a session assigned, first remove it.
-            if($currSubscriptionId > 0)
+        $currSubscription = null;
+        if($currSubscriptionId > 0)
+        {
+            $currSubscription = $pool->subscriptions()->find($currSubscriptionId);
+            if(($currSubscription !== null && $currSubscription->payable !== null &&
+                $currSubscription->payable->remitment !== null) || $session->closed)
             {
-                $subscription = $pool->subscriptions()->find($currSubscriptionId);
-                $this->unsetPayableSession($subscription);
+                // Can't chage the beneficiary if the session is closed or if
+                // the collected amount has already been remitted.
+                return false;
+            }
+        }
+        $nextSubscription = $nextSubscriptionId > 0 ?
+            $pool->subscriptions()->find($nextSubscriptionId) : null;
+
+        DB::transaction(function() use($session, $currSubscription, $nextSubscription) {
+            // If the beneficiary already has a session assigned, first remove it.
+            if($currSubscription !== null)
+            {
+                $this->unsetPayableSession($currSubscription);
             }
             // If there is a new session assigned to the beneficiary, then save it.
-            if($nextSubscriptionId > 0)
+            if($nextSubscription !== null)
             {
-                $subscription = $pool->subscriptions()->find($nextSubscriptionId);
-                $this->setPayableSession($subscription, $session);
+                $this->setPayableSession($nextSubscription, $session);
             }
         });
+
+        return true;
     }
 }
