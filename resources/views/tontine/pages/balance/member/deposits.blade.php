@@ -17,8 +17,9 @@
 @foreach($receivables as $receivable)
                         <tr>
                           <td>{{ $receivable->subscription->pool->title }}</td>
-                          <td class="currency">{{ $receivable->amount > 0 ?
-                            $locale->formatMoney($receivable->amount, true) : __('tontine.labels.types.libre') }}</td>
+                          <td class="currency">{{ !$tontine->is_libre ? $locale->formatMoney($receivable->amount, true) :
+                            ($receivable->paid ? $locale->formatMoney($receivable->deposit->amount, true) :
+                              __('tontine.labels.types.libre')) }}</td>
                           <td class="table-item-menu"><i class="fa fa-toggle-{{ $receivable->paid ? 'on' : 'off' }}"></i></td>
                         </tr>
 @endforeach

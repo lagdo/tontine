@@ -58,11 +58,11 @@
                       <td>
 @foreach ($session->beneficiaries as $subscription)
                         {!! Form::select('', $subscription === 0 ? $subscriptions :
-                            collect($subscriptions->all())->put($subscription, $beneficiaries[$subscription] ?? 'Not found'), $subscription, [
-                                'class' => 'form-control my-2 select-beneficiary',
-                                'data-session-id' => $session->id,
-                                'data-subscription-id' => $subscription,
-                            ]) !!}
+                          collect($subscriptions->all())->put($subscription, $beneficiaries[$subscription] ?? 'Not found'), $subscription, [
+                            'class' => 'form-control my-2 select-beneficiary',
+                            'data-session-id' => $session->id,
+                            'data-subscription-id' => $subscription,
+                          ]) !!}
 @endforeach
                       </td>
                     </tr>
