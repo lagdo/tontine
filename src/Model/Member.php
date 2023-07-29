@@ -6,9 +6,8 @@ use Database\Factories\MemberFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
-class Member extends Model
+class Member extends Base
 {
     use HasFactory;
 

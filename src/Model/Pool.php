@@ -5,11 +5,9 @@ namespace Siak\Tontine\Model;
 use Database\Factories\PoolFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Traits\HasCurrency;
 
-class Pool extends Model
+class Pool extends Base
 {
     use HasFactory;
     use HasCurrency;

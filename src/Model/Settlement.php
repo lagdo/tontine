@@ -2,9 +2,7 @@
 
 namespace Siak\Tontine\Model;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Settlement extends Model
+class Settlement extends Base
 {
     /**
      * Indicates if the model should be timestamped.

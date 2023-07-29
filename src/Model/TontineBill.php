@@ -2,10 +2,7 @@
 
 namespace Siak\Tontine\Model;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-
-class TontineBill extends Model
+class TontineBill extends Base
 {
     /**
      * Indicates if the model should be timestamped.

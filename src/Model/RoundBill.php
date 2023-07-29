@@ -2,10 +2,7 @@
 
 namespace Siak\Tontine\Model;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-
-class RoundBill extends Model
+class RoundBill extends Base
 {
     /**
      * Indicates if the model should be timestamped.
