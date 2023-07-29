@@ -67,13 +67,9 @@ class RoundService
         {
             return collect([]);
         }
-        $rounds = $tontine->rounds();
-        if($page > 0 )
-        {
-            $rounds->take($this->tenantService->getLimit());
-            $rounds->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        return $rounds->get();
+        return $tontine->rounds()
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
     }
 
     /**

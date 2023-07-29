@@ -44,13 +44,9 @@ class PoolService
      */
     public function getPools(int $page = 0)
     {
-        $pools = $this->tenantService->round()->pools();
-        if($page > 0 )
-        {
-            $pools->take($this->tenantService->getLimit());
-            $pools->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        return $pools->get();
+        return $this->tenantService->round()->pools()
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
     }
 
     /**

@@ -58,13 +58,9 @@ class ChargeService
      */
     public function getCharges(int $page = 0): Collection
     {
-        $charges = $this->tenantService->tontine()->charges();
-        if($page > 0 )
-        {
-            $charges->take($this->tenantService->getLimit());
-            $charges->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        return $charges->get();
+        return $this->tenantService->tontine()->charges()
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
     }
 
     /**

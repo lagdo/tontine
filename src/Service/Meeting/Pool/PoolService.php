@@ -77,13 +77,9 @@ class PoolService
     public function getPoolsQuery(int $page = 0)
     {
         // Take only pools with at least one subscription.
-        $query = $this->tenantService->round()->pools()->whereHas('subscriptions');
-        if($page < 1)
-        {
-            return $query;
-        }
-        return $query->take($this->tenantService->getLimit())
-            ->skip($this->tenantService->getLimit() * ($page - 1));
+        return $this->tenantService->round()->pools()
+            ->whereHas('subscriptions')
+            ->page($page, $this->tenantService->getLimit());
     }
 
     /**

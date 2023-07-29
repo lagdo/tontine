@@ -100,17 +100,14 @@ class SubscriptionService
      */
     public function getMembers(Pool $pool, bool $filter, int $page = 0): Collection
     {
-        $query = $this->getQuery($pool, $filter);
-        if($page > 0 )
-        {
-            $query->take($this->tenantService->getLimit());
-            $query->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        return $query->withCount([
-            'subscriptions' => function(Builder $query) use($pool) {
-                $query->where('pool_id', $pool->id);
-            },
-        ])->orderBy('name', 'asc')->get();
+        return $this->getQuery($pool, $filter)
+            ->page($page, $this->tenantService->getLimit())
+            ->withCount([
+                'subscriptions' => function(Builder $query) use($pool) {
+                    $query->where('pool_id', $pool->id);
+                },
+            ])
+            ->orderBy('name', 'asc')->get();
     }
 
     /**

@@ -93,13 +93,9 @@ class LoanService
      */
     public function getLoans(Session $session, int $page = 0): Collection
     {
-        $loans = $session->loans()->with('member');
-        if($page > 0 )
-        {
-            $loans->take($this->tenantService->getLimit());
-            $loans->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        return $loans->get();
+        return $session->loans()->with('member')
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
     }
 
     /**
