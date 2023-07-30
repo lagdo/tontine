@@ -47,44 +47,42 @@ class RefundService
      */
     private function getQuery(string $type, int $sessionId, Collection $prevSessions, ?bool $onlyPaid): Builder
     {
-        // The debts of the current session.
-        $sessionQuery = Debt::whereType($type)
-            ->whereHas('loan', function(Builder $query) use($sessionId) {
-                $query->where('session_id', $sessionId);
-            })
+        return Debt::whereType($type)
             ->when($onlyPaid === false, function($query) {
                 return $query->whereDoesntHave('refund');
             })
             ->when($onlyPaid === true, function($query) {
                 return $query->whereHas('refund');
-            });
-        // The filter applies only to the curent session.
-        if($prevSessions->count() === 0)
-        {
-            return $sessionQuery;
-        }
-
-        // The debts of the previous sessions that are not yet settled.
-        $unpaidQuery = Debt::whereType($type)
-            ->whereHas('loan', function(Builder $query) use($prevSessions) {
-                $query->whereIn('session_id', $prevSessions);
             })
-            ->whereDoesntHave('refund');
-        // The debts of the previous sessions that are settled in the session.
-        $paidQuery = Debt::whereType($type)
-            ->whereHas('refund', function(Builder $query) use($sessionId) {
-                $query->where('session_id', $sessionId);
-            });
-
-        return $sessionQuery
-            ->when($onlyPaid === false, function($query) use($unpaidQuery) {
-                return $query->union($unpaidQuery);
-            })
-            ->when($onlyPaid === true, function($query) use($paidQuery) {
-                return $query->union($paidQuery);
-            })
-            ->when($onlyPaid === null, function($query) use($unpaidQuery, $paidQuery) {
-                return $query->union($unpaidQuery)->union($paidQuery);
+            ->where(function($query) use($sessionId, $prevSessions) {
+                // Take all the debts in the current session
+                $query->where(function($query) use($sessionId) {
+                    $query->whereHas('loan', function(Builder $query) use($sessionId) {
+                        $query->where('session_id', $sessionId);
+                    });
+                });
+                if($prevSessions->count() === 0)
+                {
+                    return;
+                }
+                // The debts in the previous sessions.
+                $query->orWhere(function($query) use($sessionId, $prevSessions) {
+                    $query->whereHas('loan', function(Builder $query) use($prevSessions) {
+                        $query->whereIn('session_id', $prevSessions);
+                    })
+                    ->where(function($query) use($sessionId) {
+                        // The debts that are not yet refunded.
+                        $query->orWhere(function($query) {
+                            $query->whereDoesntHave('refund');
+                        });
+                        // The debts that are refunded in the current session.
+                        $query->orWhere(function($query) use($sessionId) {
+                            $query->whereHas('refund', function(Builder $query) use($sessionId) {
+                                $query->where('session_id', $sessionId);
+                            });
+                        });
+                    });
+                });
             });
     }
 
