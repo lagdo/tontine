@@ -79,13 +79,8 @@ class FundingService
      */
     public function getFundings(int $page = 0): Collection
     {
-        $fundings = Funding::with(['member', 'session']);
-        if($page > 0 )
-        {
-            $fundings->take($this->tenantService->getLimit());
-            $fundings->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        return $fundings->get();
+        return Funding::with(['member', 'session'])
+            ->page($page, $this->tenantService->getLimit())->get();
     }
 
     /**

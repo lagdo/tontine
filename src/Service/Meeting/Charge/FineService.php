@@ -49,14 +49,10 @@ class FineService
      */
     public function getFines(int $page = 0): Collection
     {
-        $fines = $this->tenantService->tontine()->charges()
-            ->active()->variable()->orderBy('id', 'desc');
-        if($page > 0 )
-        {
-            $fines->take($this->tenantService->getLimit());
-            $fines->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        return $fines->get();
+        return $this->tenantService->tontine()->charges()
+            ->active()->variable()->orderBy('id', 'desc')
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
     }
 
     /**
@@ -188,20 +184,17 @@ class FineService
      */
     private function getMembersQuery(Charge $charge, Session $session, ?bool $onlyFined)
     {
-        $query = $this->tenantService->tontine()->members();
-        if($onlyFined === false)
-        {
-            $query->whereDoesntHave('fine_bills', function($query) use($charge, $session) {
-                $query->where('charge_id', $charge->id)->where('session_id', $session->id);
+        $filterFunction = function($query) use($charge, $session) {
+            $query->where('charge_id', $charge->id)->where('session_id', $session->id);
+        };
+
+        return $this->tenantService->tontine()->members()
+            ->when($onlyFined === false, function($query) use($filterFunction) {
+                return $query->whereDoesntHave('fine_bills', $filterFunction);
+            })
+            ->when($onlyFined === true, function($query) use($filterFunction) {
+                $query->whereHas('fine_bills', $filterFunction);
             });
-        }
-        elseif($onlyFined === true)
-        {
-            $query->whereHas('fine_bills', function($query) use($charge, $session) {
-                $query->where('charge_id', $charge->id)->where('session_id', $session->id);
-            });
-        }
-        return $query;
     }
 
     /**
@@ -214,19 +207,17 @@ class FineService
      */
     public function getMembers(Charge $charge, Session $session, ?bool $onlyFined = null, int $page = 0): Collection
     {
-        $members = $this->getMembersQuery($charge, $session, $onlyFined);
-        if($page > 0 )
-        {
-            $members->take($this->tenantService->getLimit());
-            $members->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        return $members->with([
-            'fine_bills' => function($query) use($charge, $session) {
-                $query->where('charge_id', $charge->id)->where('session_id', $session->id);
-            },
-        ])->orderBy('name', 'asc')->get()->each(function($member) {
-            $member->bill = $member->fine_bills->count() > 0 ? $member->fine_bills->first()->bill : null;
-        });
+        return $this->getMembersQuery($charge, $session, $onlyFined)
+            ->page($page, $this->tenantService->getLimit())
+            ->with([
+                'fine_bills' => function($query) use($charge, $session) {
+                    $query->where('charge_id', $charge->id)->where('session_id', $session->id);
+                },
+            ])
+            ->orderBy('name', 'asc')->get()
+            ->each(function($member) {
+                $member->bill = $member->fine_bills->count() > 0 ? $member->fine_bills->first()->bill : null;
+            });
     }
 
     /**

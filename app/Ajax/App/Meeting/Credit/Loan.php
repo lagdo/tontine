@@ -90,7 +90,7 @@ class Loan extends CallableClass
             return $this->response;
         }
 
-        $amountAvailable = $this->loanService->getAmountAvailable($this->session);
+        $amountAvailable = $this->loanService->getAmountAvailableValue($this->session);
         if($amountAvailable <= 0)
         {
             return $this->response;

@@ -34,18 +34,15 @@ class BillService
      */
     private function getSessionBillsQuery(Charge $charge, Session $session, ?bool $onlyPaid)
     {
-        $query = Bill::whereHas('session_bill', function(Builder $query) use($charge, $session) {
-            $query->where('session_id', $session->id)->where('charge_id', $charge->id);
-        });
-        if($onlyPaid === false)
-        {
-            return $query->whereDoesntHave('settlement');
-        }
-        if($onlyPaid === true)
-        {
-            return $query->whereHas('settlement');
-        }
-        return $query;
+        return Bill::when($onlyPaid === false, function($query){
+                return $query->whereDoesntHave('settlement');
+            })
+            ->when($onlyPaid === true, function($query) {
+                return $query->whereHas('settlement');
+            })
+            ->whereHas('session_bill', function(Builder $query) use($charge, $session) {
+                $query->where('session_id', $session->id)->where('charge_id', $charge->id);
+            });
     }
 
     /**
@@ -58,35 +55,35 @@ class BillService
      */
     private function getBillsQuery(Charge $charge, Session $session, string $relation, ?bool $onlyPaid)
     {
-        $query = Bill::whereHas($relation, function(Builder $query) use($charge, $session, $relation) {
-            $query->where('charge_id', $charge->id);
-            // Filter fine bills on current and previous sessions
-            if($relation === 'fine_bill')
-            {
-                $sessionIds = $this->tenantService->getPreviousSessions($session);
-                $query->whereIn('session_id', $sessionIds);
-            }
-        });
-        if($onlyPaid === false)
-        {
-            return $query->whereDoesntHave('settlement');
-        }
-        if($onlyPaid === true)
-        {
-            return $query->whereHas('settlement', function(Builder $query) use($session) {
-                $query->where('session_id', $session->id);
-            });
-        }
-        return $query->where(function(Builder $query) use($session) {
-            // The bills that are paid in this session, or that are not yet paid.
-            $query->orWhere(function(Builder $query) {
-                $query->whereDoesntHave('settlement');
-            })->orWhere(function(Builder $query) use($session) {
-                $query->whereHas('settlement', function(Builder $query) use($session) {
+        return Bill::whereHas($relation, function(Builder $query) use($charge, $session, $relation) {
+                $query->where('charge_id', $charge->id);
+                // Filter fine bills on current and previous sessions
+                if($relation === 'fine_bill')
+                {
+                    $sessionIds = $this->tenantService->getPreviousSessions($session);
+                    $query->whereIn('session_id', $sessionIds);
+                }
+            })
+            ->when($onlyPaid === false, function($query) {
+                return $query->whereDoesntHave('settlement');
+            })
+            ->when($onlyPaid === true, function($query) use($session) {
+                return $query->whereHas('settlement', function(Builder $query) use($session) {
                     $query->where('session_id', $session->id);
                 });
+            })
+            ->when($onlyPaid === null, function($query) use($session) {
+                return $query->where(function(Builder $query) use($session) {
+                    // The bills that are paid in this session, or that are not yet paid.
+                    $query->orWhere(function(Builder $query) {
+                        $query->whereDoesntHave('settlement');
+                    })->orWhere(function(Builder $query) use($session) {
+                        $query->whereHas('settlement', function(Builder $query) use($session) {
+                            $query->where('session_id', $session->id);
+                        });
+                    });
+                });
             });
-        });
     }
 
     /**
@@ -116,13 +113,9 @@ class BillService
         $query = $billRelation === 'session_bill' ?
             $this->getSessionBillsQuery($charge, $session, $onlyPaid) :
             $this->getBillsQuery($charge, $session, $billRelation, $onlyPaid);
-        if($page > 0 )
-        {
-            $query->take($this->tenantService->getLimit());
-            $query->skip($this->tenantService->getLimit() * ($page - 1));
-        }
 
         return $query->with([$billRelation . '.member', 'settlement'])
+            ->page($page, $this->tenantService->getLimit())
             ->orderBy('id', 'asc')
             ->get()
             ->each(function($bill) use($billRelation) {

@@ -109,17 +109,6 @@ class RemitmentService
         // The remitment amount
         $sessionCount = $this->sessionService->enabledSessionCount($pool);
         $remitmentAmount = $pool->amount * $sessionCount;
-
-        $query = $this->getQuery($pool, $session)->with(['subscription.member', 'remitment']);
-        if($page > 0 )
-        {
-            $query->take($this->tenantService->getLimit());
-            $query->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        $payables = $query->get()->each(function($payable) use($remitmentAmount) {
-            $payable->amount = $remitmentAmount;
-        });
-
         $remitmentCount = $this->summaryService->getSessionRemitmentCount($pool, $session);
         $emptyPayable = (object)[
             'id' => 0,
@@ -127,7 +116,13 @@ class RemitmentService
             'remitment' => null,
         ];
 
-        return $payables->pad($remitmentCount, $emptyPayable);
+        return $this->getQuery($pool, $session)->with(['subscription.member', 'remitment'])
+            ->page($page, $this->tenantService->getLimit())
+            ->get()
+            ->each(function($payable) use($remitmentAmount) {
+                $payable->amount = $remitmentAmount;
+            })
+            ->pad($remitmentCount, $emptyPayable);
     }
 
     /**
@@ -139,18 +134,15 @@ class RemitmentService
      */
     public function getLibrePayables(Pool $pool, Session $session, int $page = 0): Collection
     {
-        $query = $this->getQuery($pool, $session)->with(['subscription.member', 'remitment']);
-        if($page > 0 )
-        {
-            $query->take($this->tenantService->getLimit());
-            $query->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-
         $remitmentAmount = $this->poolService->getLibrePoolAmount($pool, $session);
 
-        return $query->get()->each(function($payable) use($remitmentAmount) {
-            $payable->amount = $remitmentAmount;
-        });
+        return $this->getQuery($pool, $session)
+            ->with(['subscription.member', 'remitment'])
+            ->page($page, $this->tenantService->getLimit())
+            ->get()
+            ->each(function($payable) use($remitmentAmount) {
+                $payable->amount = $remitmentAmount;
+            });
     }
 
     /**

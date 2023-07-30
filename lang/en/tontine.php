@@ -187,6 +187,11 @@ return [
             'not_found' => "Cannot find the corresponding subscription.",
         ],
     ],
+    'beneficiary' => [
+        'errors' => [
+            'cant_change' => "Cannot change the beneficiary.",
+        ],
+    ],
     'remitment' => [
         'labels' => [
             'not-assigned' => "** Not assigned **",

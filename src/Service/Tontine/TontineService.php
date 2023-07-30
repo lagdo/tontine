@@ -48,13 +48,9 @@ class TontineService
      */
     public function getTontines(int $page = 0): Collection
     {
-        $tontines = $this->tenantService->user()->tontines();
-        if($page > 0 )
-        {
-            $tontines->take($this->tenantService->getLimit());
-            $tontines->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        return $tontines->get();
+        return $this->tenantService->user()->tontines()
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
     }
 
     /**

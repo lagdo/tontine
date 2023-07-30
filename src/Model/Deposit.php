@@ -2,9 +2,7 @@
 
 namespace Siak\Tontine\Model;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Deposit extends Model
+class Deposit extends Base
 {
     /**
      * Indicates if the model should be timestamped.

@@ -6,9 +6,8 @@ use Database\Factories\TontineFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class Tontine extends Model
+class Tontine extends Base
 {
     use HasFactory;
     use Traits\HasProperty;

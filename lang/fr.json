@@ -63,5 +63,15 @@
     "Verify Email Address": "Vérifier l'adresse e-mail",
     "Verify Your Email Address": "Vérifiez votre adresse e-mail",
     "Whoops!": "Oups !",
-    "You are receiving this email because we received a password reset request for your account.": "Vous recevez cet e-mail car nous avons reçu une demande de réinitialisation de mot de passe pour votre compte."
+    "You are receiving this email because we received a password reset request for your account.": "Vous recevez cet e-mail car nous avons reçu une demande de réinitialisation de mot de passe pour votre compte.",
+    "Create Account": "Créer un compte",
+    "I agree to the :terms_of_service and :privacy_policy": "Je suis d'accord avec :terms_of_service et :privacy_policy",
+    "Privacy Policy": "la politique de confidentialité",
+    "Terms of Service": "les conditions d'utilisation",
+    "If you do not have an account, you may create one by clicking the button below.": "Si vous n'avez pas de compte, vous pouvez en créer un en cliquant sur le bouton ci-dessous.",
+    "Back to the login page": "Retour à la page de connexion",
+    "Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.": "Mot de passe oublié ? Pas de soucis. Veuillez nous indiquer votre adresse e-mail et nous vous enverrons un lien de réinitialisation du mot de passe.",
+    "Email Password Reset Link": "Lien de réinitialisation du mot de passe",
+    "New Password": "Nouveau mot de passe",
+    "We have emailed your password reset link!": "Nous avons envoyé par e-mail le lien de réinitialisation de votre mot de passe !"
 }

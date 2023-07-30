@@ -100,7 +100,7 @@ class SummaryService
         }
         else
         {
-            $subscriptions = $subscriptions->pluck('member.name', 'id');
+            $subscriptions = $subscriptions->pluck('member.name', 'id')->sort();
             $subscriptions->prepend('', 0);
         }
 

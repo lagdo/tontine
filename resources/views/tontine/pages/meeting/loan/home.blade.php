@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col-auto">
-                      <div class="section-title mt-0">{{ __('meeting.titles.loans') }} ({{ $locale->formatMoney($amountAvailable, true) }})</div>
+                      <div class="section-title mt-0">{{ __('meeting.titles.loans') }} ({{ $locale->formatMoney($amountAvailable, false) }})</div>
                     </div>
 @if($session->opened)
                     <div class="col">
@@ -27,10 +27,10 @@
                           <td>{{ $loan->member->name }}</td>
                           <td class="currency">{{ $locale->formatMoney($loan->amount, true) }}<br/>{{ $locale->formatMoney($loan->interest, true) }}</td>
 @if ($session->closed || ($loan->remitment_id))
-                          <td class="table-item-menu"><i class="fa fa-times-circle"></i></td>
+                          <td class="table-item-menu"><i class="fa fa-trash-alt"></i></td>
 @else
                           <td class="table-item-menu" data-loan-id="{{ $loan->id }}">
-                            <a href="javascript:void(0)" class="btn-loan-delete" style="color:#aa1717;"><i class="fa fa-times-circle"></i></a>
+                            <a href="javascript:void(0)" class="btn-loan-delete"><i class="fa fa-trash-alt"></i></a>
                           </td>
 @endif
                         </tr>

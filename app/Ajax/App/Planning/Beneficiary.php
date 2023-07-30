@@ -99,8 +99,14 @@ class Beneficiary extends CallableClass
     public function save(int $sessionId, int $currSubscriptionId, int $nextSubscriptionId)
     {
         $session = $this->tenantService->getSession($sessionId);
-        $this->subscriptionService->saveBeneficiary($this->pool, $session, $currSubscriptionId, $nextSubscriptionId);
+        if(!$this->subscriptionService->saveBeneficiary($this->pool, $session,
+            $currSubscriptionId, $nextSubscriptionId))
+        {
+            $message = trans('tontine.beneficiary.errors.cant_change');
+            $this->response->dialog->error($message, trans('common.titles.error'));
+        }
 
+        // Refresh the page, even in case of error, since the displayed beneficiary has changed.
         return $this->home();
     }
 }

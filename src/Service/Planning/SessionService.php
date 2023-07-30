@@ -44,13 +44,8 @@ class SessionService
      */
     public function getSessions(int $page = 0): Collection
     {
-        $sessions = $this->tenantService->round()->sessions()->with(['host']);
-        if($page > 0 )
-        {
-            $sessions->take($this->tenantService->getLimit());
-            $sessions->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        return $sessions->get();
+        return $this->tenantService->round()->sessions()->with(['host'])
+            ->page($page, $this->tenantService->getLimit())->get();
     }
 
     /**

@@ -28,9 +28,9 @@
                           <td class="currency">{{ $locale->formatMoney($funding->amount, true) }}</td>
                           <td class="table-item-menu" data-funding-id="{{ $funding->id }}">
 @if($session->opened)
-                            <a href="javascript:void(0)" class="btn-funding-delete"><i class="fa fa-times-circle"></i></a>
+                            <a href="javascript:void(0)" class="btn-funding-delete"><i class="fa fa-trash-alt"></i></a>
 @else
-                            <i class="fa fa-times-circle"></i>
+                            <i class="fa fa-trash-alt"></i>
 @endif
                           </td>
                         </tr>

@@ -1,4 +1,8 @@
-@if (session('success'))
+@if (session('status'))
+              <div class="alert alert-success" role="alert">
+                <p>{!! session('status') !!}</p>
+              </div>
+@elseif (session('success'))
               <div class="alert alert-success" role="alert">
                 <h4 class="alert-heading">{{ __('common.titles.success') }}</h4>
                 <p>{!! session('success') !!}</p>

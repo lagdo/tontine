@@ -2,9 +2,7 @@
 
 namespace Siak\Tontine\Model;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Profile extends Model
+class Profile extends Base
 {
     use Traits\HasProperty;
 

@@ -93,13 +93,9 @@ class LoanService
      */
     public function getLoans(Session $session, int $page = 0): Collection
     {
-        $loans = $session->loans()->with('member');
-        if($page > 0 )
-        {
-            $loans->take($this->tenantService->getLimit());
-            $loans->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        return $loans->get();
+        return $session->loans()->with('member')
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
     }
 
     /**
@@ -109,7 +105,7 @@ class LoanService
      *
      * @return int
      */
-    private function _getAmountAvailable(Session $session): int
+    public function getAmountAvailable(Session $session): int
     {
         // Get the ids of all the sessions until the current one.
         $sessionIds = $this->tenantService->getPreviousSessions($session);
@@ -141,9 +137,9 @@ class LoanService
      *
      * @return float
      */
-    public function getAmountAvailable(Session $session): float
+    public function getAmountAvailableValue(Session $session): float
     {
-        return $this->localeService->getMoneyValue($this->_getAmountAvailable($session));
+        return $this->localeService->getMoneyValue($this->getAmountAvailable($session));
     }
 
     /**

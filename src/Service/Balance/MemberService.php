@@ -47,13 +47,9 @@ class MemberService
      */
     public function getMembers(int $page = 0): Collection
     {
-        $members = $this->tenantService->tontine()->members()->active();
-        if($page > 0 )
-        {
-            $members->take($this->tenantService->getLimit());
-            $members->skip($this->tenantService->getLimit() * ($page - 1));
-        }
-        return $members->orderBy('name', 'asc')->get();
+        return $this->tenantService->tontine()->members()->active()
+            ->page($page, $this->tenantService->getLimit())
+            ->orderBy('name', 'asc')->get();
     }
 
     /**

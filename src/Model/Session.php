@@ -2,10 +2,9 @@
 
 namespace Siak\Tontine\Model;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class Session extends Model
+class Session extends Base
 {
     /**
      * @const
