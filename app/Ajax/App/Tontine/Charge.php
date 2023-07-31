@@ -280,7 +280,6 @@ class Charge extends CallableClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        $this->logger()->debug('Update charge', compact('values'));
 
         $this->chargeService->updateCharge($charge, $values);
         $this->dialog->hide();

@@ -29,6 +29,11 @@ class LocaleService
     private $countriesDataDir;
 
     /**
+     * @var NumberFormatter
+     */
+    private $formatter = null;
+
+    /**
      * @var string
      */
     private $currenciesDataDir;
@@ -50,6 +55,16 @@ class LocaleService
     public function setCurrency(string $currency)
     {
         $this->currency = new Currency(strtoupper($currency));
+    }
+
+    /**
+     * Get the currency name
+     *
+     * @return string
+     */
+    public function getCurrencyName(): string
+    {
+        return $this->currency->getName();
     }
 
     /**
@@ -152,29 +167,29 @@ class LocaleService
      */
     private function decimalFormatter(): NumberFormatter
     {
-        $formatter = new NumberFormatter($this->_locale(), NumberFormatter::DECIMAL);
-        $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 0);
-        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $this->currency->getPrecision());
-
-        return $formatter;
+        if($this->formatter === null)
+        {
+            $this->formatter = new NumberFormatter($this->_locale(), NumberFormatter::DECIMAL);
+            $precision = $this->currency->getPrecision();
+            $this->formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $precision);
+            $this->formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $precision);
+        }
+        return $this->formatter;
     }
 
     /**
      * Get a formatted amount.
      *
      * @param int $amount
-     * @param bool $hideSymbol
+     * @param bool $showSymbol
      *
      * @return string
      */
-    public function formatMoney(int $amount, bool $hideSymbol = false): string
+    public function formatMoney(int $amount, bool $showSymbol = true): string
     {
         $money = new Money($amount, $this->currency);
-        if($hideSymbol)
-        {
-            return $this->decimalFormatter()->format($money->getValue());
-        }
-        return $money->formatLocale($this->_locale());
+        return $showSymbol ? $money->formatLocale($this->_locale()) :
+            $this->decimalFormatter()->format($money->getValue());
     }
 
     /**

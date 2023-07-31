@@ -6,7 +6,7 @@
                             {{ $settlements['total']['previous'][$charge->id] ?? 0 }}/{{ $charge->previousBillCount }}
                           </td>
                           <td class="currency">
-                            {{ $locale->formatMoney($settlements['amount']['current'][$charge->id] ?? 0) }}<br/>
-                            {{ $locale->formatMoney($settlements['amount']['previous'][$charge->id] ?? 0) }}
+                            {{ $locale->formatMoney($settlements['amount']['current'][$charge->id] ?? 0, false) }}<br/>
+                            {{ $locale->formatMoney($settlements['amount']['previous'][$charge->id] ?? 0, false) }}
                           </td>
                         </tr>

@@ -212,7 +212,7 @@ return [
         'labels' => [
             'principal' => "Principal",
             'interest' => "Interest",
-            'amount_to_lend' => "Amount to lend",
+            'amount_available' => "Amount available: :amount",
         ],
         'questions' => [
             'delete' => "Delete this loan?",

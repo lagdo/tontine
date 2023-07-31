@@ -212,7 +212,7 @@ return [
         'labels' => [
             'principal' => "Principal",
             'interest' => "Intérêt",
-            'amount_to_lend' => "Montant à prêter",
+            'amount_available' => "Montant disponible : :amount",
         ],
         'questions' => [
             'delete' => "Supprimer cet emprunt ?",

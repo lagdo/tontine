@@ -2,7 +2,7 @@
           <div class="section-body">
             <div class="row align-items-center">
               <div class="col">
-                <h2 class="section-title">{{ __('tontine.pool.titles.deposits') }} - {{ $pool->title }}</h2>
+                <h2 class="section-title">{{ __('tontine.pool.titles.deposits') }} - {{ $pool->title }} ({{ $locale->getCurrencyName() }})</h2>
               </div>
               <div class="col-auto">
                 <div class="input-group float-right ml-2">
@@ -54,13 +54,13 @@
                       <td></td>
                       <td></td>
 @else
-                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, true) }}</td>
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, false) }}</td>
                       <td class="currency">{{ $figures->expected[$session->id]->deposit->count }}</td>
-                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, true) }}</td>
-                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, true) }}</td>
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, false) }}</td>
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, false) }}</td>
                       <td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>
-                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, true) }}</td>
-                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->end, true) }}</td>
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, false) }}</td>
+                      <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->end, false) }}</td>
 @endif
                     </tr>
 @endforeach
