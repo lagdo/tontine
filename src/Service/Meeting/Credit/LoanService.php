@@ -121,12 +121,16 @@ class LoanService
             ->join('debts', 'refunds.debt_id', '=', 'debts.id')
             ->whereIn('session_id', $sessionIds)
             ->value('total');
+        $settlement = Settlement::select(DB::raw('sum(bills.amount) as total'))
+            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->whereIn('session_id', $sessionIds)
+            ->value('total');
         $debt = Debt::principal()->select(DB::raw('sum(debts.amount) as total'))
             ->join('loans', 'debts.loan_id', '=', 'loans.id')
             ->whereIn('loans.session_id', $sessionIds)
             ->value('total');
 
-        return $funding + $refund - $debt;
+        return $funding + $refund + $settlement - $debt;
     }
 
     /**
