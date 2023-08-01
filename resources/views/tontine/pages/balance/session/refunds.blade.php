@@ -16,7 +16,7 @@
                       <tbody>
                         <tr>
                           <td>{{ __('common.labels.total') }}</td>
-                          <td class="currency">{{ $locale->formatMoney($refund->amount, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($refund->principal, true) }}</td>
                           <td class="currency">{{ $locale->formatMoney($refund->interest, true) }}</td>
                         </tr>
                       </tbody>

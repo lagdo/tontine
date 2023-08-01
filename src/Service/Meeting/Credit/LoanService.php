@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Funding;
 use Siak\Tontine\Model\Loan;
-use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\Pool;
+use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
@@ -93,7 +95,7 @@ class LoanService
      */
     public function getLoans(Session $session, int $page = 0): Collection
     {
-        return $session->loans()->with('member')
+        return $session->loans()->with(['member', 'principal_debt', 'interest_debt'])
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -115,19 +117,20 @@ class LoanService
         $funding = Funding::select(DB::raw('sum(amount) as total'))
             ->whereIn('session_id', $sessionIds)
             ->value('total');
-        $debtAmountValue = "CASE WHEN debts.type='" . Debt::TYPE_PRINCIPAL .
-            "' THEN loans.amount ELSE loans.interest END";
-        $refund = Debt::join('loans', 'debts.loan_id', '=', 'loans.id')
-            ->select(DB::raw("sum($debtAmountValue) as total"))
-            ->whereHas('refund', function(Builder $query) use($sessionIds) {
-                $query->whereIn('session_id', $sessionIds);
-            })
-            ->value('total');
-        $loan = Loan::select(DB::raw('sum(amount) as total'))
+        $refund = Refund::select(DB::raw('sum(debts.amount) as total'))
+            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
             ->whereIn('session_id', $sessionIds)
             ->value('total');
+        $settlement = Settlement::select(DB::raw('sum(bills.amount) as total'))
+            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->whereIn('session_id', $sessionIds)
+            ->value('total');
+        $debt = Debt::principal()->select(DB::raw('sum(debts.amount) as total'))
+            ->join('loans', 'debts.loan_id', '=', 'loans.id')
+            ->whereIn('loans.session_id', $sessionIds)
+            ->value('total');
 
-        return $funding + $refund - $loan;
+        return $funding + $refund + $settlement - $debt;
     }
 
     /**
@@ -143,7 +146,7 @@ class LoanService
     }
 
     /**
-     * Get the amount available for loan.
+     * Get the loans for a given session.
      *
      * @param Session $session
      *
@@ -155,35 +158,68 @@ class LoanService
     }
 
     /**
+     * Get a loan for a given session.
+     *
+     * @param Session $session
+     * @param int $loanId
+     *
+     * @return Loan|null
+     */
+    public function getSessionLoan(Session $session, int $loanId): ?Loan
+    {
+        return $session->loans()->with(['member'])->find($loanId);
+    }
+
+    /**
      * Create a loan.
      *
      * @param Session $session The session
      * @param Member $member
-     * @param int $amount
+     * @param int $principal
      * @param int $interest
      *
-     * @return Loan
+     * @return void
      */
-    public function createLoan(Session $session, Member $member, int $amount, int $interest): Loan
+    public function createLoan(Session $session, Member $member, int $principal, int $interest): void
     {
         $loan = new Loan();
-        $loan->amount = $amount;
-        $loan->interest = $interest;
         $loan->member()->associate($member);
         $loan->session()->associate($session);
-        return DB::transaction(function() use($loan) {
+        DB::transaction(function() use($loan, $principal, $interest) {
             $loan->save();
             // Create an entry for each type of debt
-            if($loan->amount > 0)
+            if($principal > 0)
             {
-                $loan->debts()->create(['type' => Debt::TYPE_PRINCIPAL]);
+                $loan->debts()->create(['type' => Debt::TYPE_PRINCIPAL, 'amount' => $principal]);
             }
-            if($loan->interest > 0)
+            if($interest > 0)
             {
-                $loan->debts()->create(['type' => Debt::TYPE_INTEREST]);
+                $loan->debts()->create(['type' => Debt::TYPE_INTEREST, 'amount' => $interest]);
             }
-            return $loan;
         });
+    }
+
+    /**
+     * Update a loan.
+     *
+     * @param Session $session The session
+     * @param int $loanId
+     * @param int $principal
+     * @param int $interest
+     *
+     * @return void
+     */
+    public function updateLoan(Session $session, int $loanId, int $principal, int $interest): void
+    {
+        // A loan that was created from a remitment cannot be updated.
+        if(($loan = $session->loans()->find($loanId)) !== null && !$loan->remitment_id)
+        {
+            DB::transaction(function() use($loan, $principal, $interest) {
+                $loan->debts()->principal()->update(['amount' => $principal]);
+                // The interest debt may need to be created.
+                $loan->debts()->updateOrCreate(['type' => Debt::TYPE_INTEREST], ['amount' => $interest]);
+            });
+        }
     }
 
     /**

@@ -30,6 +30,7 @@ class Debt extends Base
      */
     protected $fillable = [
         'type',
+        'amount',
     ];
 
     public function getIsPrincipalAttribute()
@@ -40,11 +41,6 @@ class Debt extends Base
     public function getIsInterestAttribute()
     {
         return $this->type === self::TYPE_INTEREST;
-    }
-
-    public function getAmountAttribute()
-    {
-        return $this->type === self::TYPE_PRINCIPAL ? $this->loan->amount : $this->loan->interest;
     }
 
     public function getTypeStrAttribute()

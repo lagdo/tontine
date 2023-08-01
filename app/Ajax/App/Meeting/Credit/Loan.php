@@ -76,6 +76,7 @@ class Loan extends CallableClass
         $this->jq('#btn-loans-refresh')->click($this->rq()->home());
         $this->jq('#btn-loan-add')->click($this->rq()->addLoan());
         $loanId = jq()->parent()->attr('data-loan-id')->toInt();
+        $this->jq('.btn-loan-edit')->click($this->rq()->editLoan($loanId));
         $this->jq('.btn-loan-delete')->click($this->rq()->deleteLoan($loanId)
             ->confirm(trans('tontine.loan.questions.delete')));
 
@@ -100,7 +101,7 @@ class Loan extends CallableClass
         $title = trans('tontine.loan.titles.add');
         $content = $this->view()->render('tontine.pages.meeting.loan.add')
             ->with('members', $members)
-            ->with('amount', $amountAvailable);
+            ->with('amountAvailable', $amountAvailable);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -108,7 +109,7 @@ class Loan extends CallableClass
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveLoan(pm()->form('loan-form')),
+            'click' => $this->rq()->createLoan(pm()->form('loan-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
 
@@ -118,7 +119,7 @@ class Loan extends CallableClass
     /**
      * @di $validator
      */
-    public function saveLoan(array $formValues)
+    public function createLoan(array $formValues)
     {
         if($this->session->closed)
         {
@@ -128,7 +129,7 @@ class Loan extends CallableClass
 
         $values = $this->validator->validateItem($formValues);
         $memberId = $values['member'];
-        $amount = $values['amount'];
+        $principal = $values['principal'];
         $interest = $values['interest'];
 
         if(!($member = $this->loanService->getMember($memberId)))
@@ -136,7 +137,58 @@ class Loan extends CallableClass
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }
 
-        $this->loanService->createLoan($this->session, $member, $amount, $interest);
+        $this->loanService->createLoan($this->session, $member, $principal, $interest);
+
+        $this->dialog->hide();
+
+        // Refresh the refunds pages
+        $this->cl(Refund\Principal::class)->show($this->session);
+        $this->cl(Refund\Interest::class)->show($this->session);
+
+        return $this->home();
+    }
+
+    public function editLoan(int $loanId)
+    {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
+        $loan = $this->loanService->getSessionLoan($this->session, $loanId);
+        $title = trans('tontine.loan.titles.edit');
+        $content = $this->view()->render('tontine.pages.meeting.loan.edit')
+            ->with('loan', $loan);
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.save'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->updateLoan($loanId, pm()->form('loan-form')),
+        ]];
+        $this->dialog->show($title, $content, $buttons);
+
+        return $this->response;
+    }
+
+    /**
+     * @di $validator
+     */
+    public function updateLoan(int $loanId, array $formValues)
+    {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
+        $values = $this->validator->validateItem($formValues);
+        $principal = $values['principal'];
+        $interest = $values['interest'];
+        $this->loanService->updateLoan($this->session, $loanId, $principal, $interest);
 
         $this->dialog->hide();
 

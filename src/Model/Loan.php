@@ -17,11 +17,19 @@ class Loan extends Base
      * @var array
      */
     protected $fillable = [
-        'amount',
-        'interest',
         'member_id',
         'session_id',
     ];
+
+    public function getPrincipalAttribute()
+    {
+        return $this->principal_debt ? $this->principal_debt->amount : 0;
+    }
+
+    public function getInterestAttribute()
+    {
+        return $this->interest_debt ? $this->interest_debt->amount : 0;
+    }
 
     public function session()
     {

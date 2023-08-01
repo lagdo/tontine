@@ -71,7 +71,7 @@ class FundingService
     }
 
     /**
-     * Get the fundings for a given session.
+     * Get the fundings.
      *
      * @param int $page
      *
@@ -84,7 +84,7 @@ class FundingService
     }
 
     /**
-     * Get the amount available for funding.
+     * Get the fundings for a given session.
      *
      * @param Session $session
      *
@@ -93,6 +93,19 @@ class FundingService
     public function getSessionFundings(Session $session): Collection
     {
         return $session->fundings()->with(['member'])->get();
+    }
+
+    /**
+     * Get a funding for a given session.
+     *
+     * @param Session $session
+     * @param int $fundingId
+     *
+     * @return Funding|null
+     */
+    public function getSessionFunding(Session $session, int $fundingId): ?Funding
+    {
+        return $session->fundings()->with(['member'])->find($fundingId);
     }
 
     /**
@@ -117,6 +130,20 @@ class FundingService
         $funding->member()->associate($member);
         $funding->session()->associate($session);
         $funding->save();
+    }
+
+    /**
+     * Update a funding.
+     *
+     * @param Session $session The session
+     * @param int $fundingId
+     * @param int $amount
+     *
+     * @return void
+     */
+    public function updateFunding(Session $session, int $fundingId, int $amount): void
+    {
+        $session->fundings()->where('id', $fundingId)->update(['amount' => $amount]);
     }
 
     /**

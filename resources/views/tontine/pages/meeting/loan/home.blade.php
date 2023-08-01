@@ -29,16 +29,26 @@
                         <tr>
                           <td>{{ $loan->member->name }}</td>
                           <td class="currency">
-                            {{ $locale->formatMoney($loan->amount, true) }}<br/>
+                            {{ $locale->formatMoney($loan->principal, true) }}<br/>
                             {{ $locale->formatMoney($loan->interest, true) }}
                           </td>
+                          <td class="table-item-menu">
 @if ($session->closed || ($loan->remitment_id))
-                          <td class="table-item-menu"><i class="fa fa-trash-alt"></i></td>
+                            <i class="fa fa-trash-alt"></i>
 @else
-                          <td class="table-item-menu" data-loan-id="{{ $loan->id }}">
-                            <a href="javascript:void(0)" class="btn-loan-delete"><i class="fa fa-trash-alt"></i></a>
-                          </td>
+@include('tontine.parts.table.menu', [
+  'dataIdKey' => 'data-loan-id',
+  'dataIdValue' => $loan->id,
+  'menus' => [[
+    'class' => 'btn-loan-edit',
+    'text' => __('common.actions.edit'),
+  ],[
+    'class' => 'btn-loan-delete',
+    'text' => __('common.actions.delete'),
+  ]],
+])
 @endif
+                          </td>
                         </tr>
 @endforeach
                       </tbody>
