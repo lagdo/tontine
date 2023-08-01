@@ -73,6 +73,7 @@ class Funding extends CallableClass
         $this->jq('#btn-fundings-refresh')->click($this->rq()->home());
         $this->jq('#btn-funding-add')->click($this->rq()->addFunding());
         $fundingId = jq()->parent()->attr('data-funding-id')->toInt();
+        $this->jq('.btn-funding-edit')->click($this->rq()->editFunding($fundingId));
         $this->jq('.btn-funding-delete')->click($this->rq()->deleteFunding($fundingId)
             ->confirm(trans('tontine.funding.questions.delete')));
 
@@ -98,7 +99,7 @@ class Funding extends CallableClass
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveFunding(pm()->form('funding-form')),
+            'click' => $this->rq()->createFunding(pm()->form('funding-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
 
@@ -108,7 +109,7 @@ class Funding extends CallableClass
     /**
      * @di $validator
      */
-    public function saveFunding(array $formValues)
+    public function createFunding(array $formValues)
     {
         if($this->session->closed)
         {
@@ -121,6 +122,55 @@ class Funding extends CallableClass
         $memberId = $values['member'];
         $amount = $values['amount'];
         $this->fundingService->createFunding($this->session, $memberId, $amount);
+
+        $this->dialog->hide();
+
+        // Refresh the loans page
+        $this->cl(Loan::class)->show($this->session);
+
+        return $this->home();
+    }
+
+    public function editFunding(int $fundingId)
+    {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
+        $funding = $this->fundingService->getSessionFunding($this->session, $fundingId);
+        $title = trans('tontine.funding.titles.edit');
+        $content = $this->view()->render('tontine.pages.meeting.funding.edit')
+            ->with('funding', $funding);
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.save'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->updateFunding($fundingId, pm()->form('funding-form')),
+        ]];
+        $this->dialog->show($title, $content, $buttons);
+
+        return $this->response;
+    }
+
+    /**
+     * @di $validator
+     */
+    public function updateFunding(int $fundingId, array $formValues)
+    {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
+        $values = $this->validator->validateItem($formValues);
+        $amount = $values['amount'];
+        $this->fundingService->updateFunding($this->session, $fundingId, $amount);
 
         $this->dialog->hide();
 

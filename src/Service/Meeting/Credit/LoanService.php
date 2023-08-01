@@ -146,7 +146,7 @@ class LoanService
     }
 
     /**
-     * Get the amount available for loan.
+     * Get the loans for a given session.
      *
      * @param Session $session
      *
@@ -158,6 +158,19 @@ class LoanService
     }
 
     /**
+     * Get a loan for a given session.
+     *
+     * @param Session $session
+     * @param int $loanId
+     *
+     * @return Loan|null
+     */
+    public function getSessionLoan(Session $session, int $loanId): ?Loan
+    {
+        return $session->loans()->with(['member'])->find($loanId);
+    }
+
+    /**
      * Create a loan.
      *
      * @param Session $session The session
@@ -165,14 +178,14 @@ class LoanService
      * @param int $principal
      * @param int $interest
      *
-     * @return Loan
+     * @return void
      */
-    public function createLoan(Session $session, Member $member, int $principal, int $interest): Loan
+    public function createLoan(Session $session, Member $member, int $principal, int $interest): void
     {
         $loan = new Loan();
         $loan->member()->associate($member);
         $loan->session()->associate($session);
-        return DB::transaction(function() use($loan, $principal, $interest) {
+        DB::transaction(function() use($loan, $principal, $interest) {
             $loan->save();
             // Create an entry for each type of debt
             if($principal > 0)
@@ -183,8 +196,30 @@ class LoanService
             {
                 $loan->debts()->create(['type' => Debt::TYPE_INTEREST, 'amount' => $interest]);
             }
-            return $loan;
         });
+    }
+
+    /**
+     * Update a loan.
+     *
+     * @param Session $session The session
+     * @param int $loanId
+     * @param int $principal
+     * @param int $interest
+     *
+     * @return void
+     */
+    public function updateLoan(Session $session, int $loanId, int $principal, int $interest): void
+    {
+        // A loan that was created from a remitment cannot be updated.
+        if(($loan = $session->loans()->find($loanId)) !== null && !$loan->remitment_id)
+        {
+            DB::transaction(function() use($loan, $principal, $interest) {
+                $loan->debts()->principal()->update(['amount' => $principal]);
+                // The interest debt may need to be created.
+                $loan->debts()->updateOrCreate(['type' => Debt::TYPE_INTEREST], ['amount' => $interest]);
+            });
+        }
     }
 
     /**

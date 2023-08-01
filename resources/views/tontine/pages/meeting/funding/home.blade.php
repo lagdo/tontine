@@ -26,9 +26,19 @@
                         <tr>
                           <td>{{ $funding->member->name }}</td>
                           <td class="currency">{{ $locale->formatMoney($funding->amount, true) }}</td>
-                          <td class="table-item-menu" data-funding-id="{{ $funding->id }}">
+                          <td class="table-item-menu">
 @if($session->opened)
-                            <a href="javascript:void(0)" class="btn-funding-delete"><i class="fa fa-trash-alt"></i></a>
+@include('tontine.parts.table.menu', [
+  'dataIdKey' => 'data-funding-id',
+  'dataIdValue' => $funding->id,
+  'menus' => [[
+    'class' => 'btn-funding-edit',
+    'text' => __('common.actions.edit'),
+  ],[
+    'class' => 'btn-funding-delete',
+    'text' => __('common.actions.delete'),
+  ]],
+])
 @else
                             <i class="fa fa-trash-alt"></i>
 @endif
