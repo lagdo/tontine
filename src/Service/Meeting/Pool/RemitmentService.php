@@ -239,8 +239,6 @@ class RemitmentService
             $remitment = $payable->remitment()->create([]);
             // Create the corresponding loan.
             $loan = new Loan();
-            $loan->amount = 0;
-            $loan->interest = $interest;
             $loan->member()->associate($payable->subscription->member);
             $loan->session()->associate($session);
             $loan->remitment()->associate($remitment);
@@ -248,6 +246,7 @@ class RemitmentService
             // Create a debt for the interest
             $debt = new Debt();
             $debt->type = Debt::TYPE_INTEREST;
+            $debt->amount = $interest;
             $debt->loan()->associate($loan);
             $debt->save();
             // The debt is supposed to have been immediatly refunded.

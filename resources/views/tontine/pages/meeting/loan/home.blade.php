@@ -29,7 +29,7 @@
                         <tr>
                           <td>{{ $loan->member->name }}</td>
                           <td class="currency">
-                            {{ $locale->formatMoney($loan->amount, true) }}<br/>
+                            {{ $locale->formatMoney($loan->principal, true) }}<br/>
                             {{ $locale->formatMoney($loan->interest, true) }}
                           </td>
 @if ($session->closed || ($loan->remitment_id))

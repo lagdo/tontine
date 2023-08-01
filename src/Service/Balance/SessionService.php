@@ -235,13 +235,16 @@ class SessionService
      */
     public function getLoan(Session $session): object
     {
+        $principal = "CASE WHEN debts.type='" . Debt::TYPE_PRINCIPAL . "' THEN amount ELSE 0 END";
+        $interest = "CASE WHEN debts.type='" . Debt::TYPE_INTEREST . "' THEN amount ELSE 0 END";
         $loan = DB::table('loans')
-            ->select(DB::raw('sum(amount) as amount'), DB::raw('sum(interest) as interest'))
+            ->join('debts', 'loans.id', '=', 'debts.loan_id')
+            ->select(DB::raw("sum($principal) as principal"), DB::raw("sum($interest) as interest"))
             ->where('session_id', $session->id)
             ->first();
-        if(!$loan->amount)
+        if(!$loan->principal)
         {
-            $loan->amount = 0;
+            $loan->principal = 0;
         }
         if(!$loan->interest)
         {
@@ -258,19 +261,16 @@ class SessionService
      */
     public function getRefund(Session $session): object
     {
-        $amount = "CASE WHEN debts.type='" . Debt::TYPE_PRINCIPAL .
-            "' THEN loans.amount ELSE 0 END";
-        $interest = "CASE WHEN debts.type='" . Debt::TYPE_INTEREST .
-            "' THEN loans.interest ELSE 0 END";
+        $principal = "CASE WHEN debts.type='" . Debt::TYPE_PRINCIPAL . "' THEN amount ELSE 0 END";
+        $interest = "CASE WHEN debts.type='" . Debt::TYPE_INTEREST . "' THEN amount ELSE 0 END";
         $refund = DB::table('refunds')
             ->join('debts', 'refunds.debt_id', '=', 'debts.id')
-            ->join('loans', 'debts.loan_id', '=', 'loans.id')
-            ->select(DB::raw("sum($amount) as amount"), DB::raw("sum($interest) as interest"))
+            ->select(DB::raw("sum($principal) as principal"), DB::raw("sum($interest) as interest"))
             ->where('refunds.session_id', $session->id)
             ->first();
-        if(!$refund->amount)
+        if(!$refund->principal)
         {
-            $refund->amount = 0;
+            $refund->principal = 0;
         }
         if(!$refund->interest)
         {

@@ -100,7 +100,7 @@ class Loan extends CallableClass
         $title = trans('tontine.loan.titles.add');
         $content = $this->view()->render('tontine.pages.meeting.loan.add')
             ->with('members', $members)
-            ->with('amount', $amountAvailable);
+            ->with('amountAvailable', $amountAvailable);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -128,7 +128,7 @@ class Loan extends CallableClass
 
         $values = $this->validator->validateItem($formValues);
         $memberId = $values['member'];
-        $amount = $values['amount'];
+        $principal = $values['principal'];
         $interest = $values['interest'];
 
         if(!($member = $this->loanService->getMember($memberId)))
@@ -136,7 +136,7 @@ class Loan extends CallableClass
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }
 
-        $this->loanService->createLoan($this->session, $member, $amount, $interest);
+        $this->loanService->createLoan($this->session, $member, $principal, $interest);
 
         $this->dialog->hide();
 

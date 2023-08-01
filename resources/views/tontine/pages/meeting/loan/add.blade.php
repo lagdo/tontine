@@ -8,9 +8,9 @@
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('amount', trans('common.labels.amount'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+              {!! Form::label('principal', trans('tontine.loan.labels.principal'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
               <div class="col-sm-5">
-                {!! Form::text('amount', $amount, ['class' => 'form-control']) !!}
+                {!! Form::text('principal', $amountAvailable, ['class' => 'form-control']) !!}
               </div>
             </div>
             <div class="form-group row">
