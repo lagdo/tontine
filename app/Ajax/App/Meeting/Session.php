@@ -5,6 +5,7 @@ namespace App\Ajax\App\Meeting;
 use App\Ajax\CallableClass;
 use App\Ajax\App\Meeting\Charge\Fee;
 use App\Ajax\App\Meeting\Charge\Fine;
+use App\Ajax\App\Meeting\Credit\Disbursement;
 use App\Ajax\App\Meeting\Credit\Funding;
 use App\Ajax\App\Meeting\Credit\Loan;
 use App\Ajax\App\Meeting\Credit\Refund\Interest;
@@ -131,6 +132,7 @@ class Session extends CallableClass
         $this->cl(Loan::class)->show($this->session);
         $this->cl(Principal::class)->show($this->session);
         $this->cl(Interest::class)->show($this->session);
+        $this->cl(Disbursement::class)->show($this->session);
     }
 
     /**

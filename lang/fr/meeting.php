@@ -19,6 +19,7 @@ return [
         'amount_to_lend' => "Montant à prêter",
         'benefit' => "Bénéfice",
         'refunds' => "Remboursements",
+        'disbursements' => "Décaissements",
     ],
     'actions' => [
         'deposits' => "Versements",
@@ -37,6 +38,7 @@ return [
     'labels' => [
         'member' => "Membre",
         'members' => "Membres",
+        'category' => "Catégorie",
     ],
     'messages' => [
         'agenda' => [
@@ -62,6 +64,21 @@ return [
             'expense' => "Dépense",
             'support' => "Aide",
             'other' => "Autre",
+        ],
+        'errors' => [
+            'not_found' => "Impossible de trouver la catégorie correspondante.",
+        ],
+    ],
+    'disbursement' => [
+        'titles' => [
+            'add' => "Ajouter un décaissement",
+            'edit' => "Modifier un décaissement",
+        ],
+        'questions' => [
+            'delete' => "Supprimer ce décaissement ?",
+        ],
+        'errors' => [
+            'not_found' => "Impossible de trouver le décaissement correspondant.",
         ],
     ],
 ];

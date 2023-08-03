@@ -52,6 +52,8 @@
                         </div>
                         <div class="col-md-6 col-sm-12" id="meeting-interest-refunds">
                         </div>
+                        <div class="col-md-6 col-sm-12" id="meeting-disbursements">
+                        </div>
                       </div>
                     </div>
                     <div class="tab-pane fade" id="session-charges" role="tabpanel" aria-labelledby="session-tab-charges">

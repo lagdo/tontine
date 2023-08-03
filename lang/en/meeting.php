@@ -19,6 +19,7 @@ return [
         'amount_to_lend' => "Amount to lend",
         'benefit' => "Benefit",
         'refunds' => "Refunds",
+        'disbursements' => "Disbursements",
     ],
     'actions' => [
         'deposits' => "Deposits",
@@ -37,6 +38,7 @@ return [
     'labels' => [
         'member' => "Member",
         'members' => "Members",
+        'category' => "Category",
     ],
     'messages' => [
         'agenda' => [
@@ -62,6 +64,21 @@ return [
             'expense' => "Expense",
             'support' => "Support",
             'other' => "Other",
+        ],
+        'errors' => [
+            'not_found' => "Cannot find the corresponding category.",
+        ],
+    ],
+    'disbursement' => [
+        'titles' => [
+            'add' => "Add a disbursement",
+            'edit' => "Edit a disbursement",
+        ],
+        'questions' => [
+            'delete' => "Delete this disbursement?",
+        ],
+        'errors' => [
+            'not_found' => "Cannot find the corresponding disbursement.",
         ],
     ],
 ];
