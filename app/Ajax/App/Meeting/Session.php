@@ -127,9 +127,16 @@ class Session extends CallableClass
      */
     private function credits()
     {
-        $this->cl(Funding::class)->show($this->session);
         $this->cl(Loan::class)->show($this->session);
         $this->cl(Refund::class)->show($this->session);
+    }
+
+    /**
+     * @return void
+     */
+    private function cash()
+    {
+        $this->cl(Funding::class)->show($this->session);
         $this->cl(Disbursement::class)->show($this->session);
     }
 
@@ -190,10 +197,11 @@ class Session extends CallableClass
         $this->jq('#btn-session-close')->click($this->rq()->close()
             ->confirm(trans('tontine.session.questions.close')));
 
-        $this->pools($tontine);
-        $this->credits();
-        $this->charges();
         $this->reports();
+        $this->pools($tontine);
+        $this->charges();
+        $this->credits();
+        $this->cash();
 
         return $this->response;
     }

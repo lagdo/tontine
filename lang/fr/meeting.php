@@ -34,6 +34,7 @@ return [
         'pools' => "Cotisations",
         'charges' => "Frais",
         'credits' => "Crédits",
+        'cash' => "Caisse",
     ],
     'labels' => [
         'member' => "Membre",
