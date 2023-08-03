@@ -38,17 +38,15 @@ class RefundService
     }
 
     /**
-     * @param string $type
      * @param int $sessionId
      * @param Collection $prevSessions
      * @param bool $onlyPaid
      *
      * @return Builder
      */
-    private function getQuery(string $type, int $sessionId, Collection $prevSessions, ?bool $onlyPaid): Builder
+    private function getQuery(int $sessionId, Collection $prevSessions, ?bool $onlyPaid): Builder
     {
-        return Debt::whereType($type)
-            ->when($onlyPaid === false, function($query) {
+        return Debt::when($onlyPaid === false, function($query) {
                 return $query->whereDoesntHave('refund');
             })
             ->when($onlyPaid === true, function($query) {
@@ -94,26 +92,11 @@ class RefundService
      *
      * @return int
      */
-    public function getPrincipalDebtCount(Session $session, ?bool $onlyPaid): int
+    public function getDebtCount(Session $session, ?bool $onlyPaid): int
     {
         $prevSessions = $this->tenantService->round()->sessions()
             ->where('start_at', '<', $session->start_at)->pluck('id');
-        return $this->getQuery(Debt::TYPE_PRINCIPAL, $session->id, $prevSessions, $onlyPaid)->count();
-    }
-
-    /**
-     * Get the number of debts.
-     *
-     * @param Session $session The session
-     * @param bool $onlyPaid
-     *
-     * @return int
-     */
-    public function getInterestDebtCount(Session $session, ?bool $onlyPaid): int
-    {
-        $prevSessions = $this->tenantService->round()->sessions()
-            ->where('start_at', '<', $session->start_at)->pluck('id');
-        return $this->getQuery(Debt::TYPE_INTEREST, $session->id, $prevSessions, $onlyPaid)->count();
+        return $this->getQuery($session->id, $prevSessions, $onlyPaid)->count();
     }
 
     /**
@@ -125,32 +108,12 @@ class RefundService
      *
      * @return Collection
      */
-    public function getPrincipalDebts(Session $session, ?bool $onlyPaid, int $page = 0): Collection
+    public function getDebts(Session $session, ?bool $onlyPaid, int $page = 0): Collection
     {
         $prevSessions = $this->tenantService->round()->sessions()
             ->where('start_at', '<', $session->start_at)->pluck('id');
 
-        return $this->getQuery(Debt::TYPE_PRINCIPAL, $session->id, $prevSessions, $onlyPaid)
-            ->page($page, $this->tenantService->getLimit())
-            ->with(['loan', 'loan.member', 'loan.session', 'refund'])
-            ->get();
-    }
-
-    /**
-     * Get the debts.
-     *
-     * @param Session $session The session
-     * @param bool $onlyPaid
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getInterestDebts(Session $session, ?bool $onlyPaid, int $page = 0): Collection
-    {
-        $prevSessions = $this->tenantService->round()->sessions()
-            ->where('start_at', '<', $session->start_at)->pluck('id');
-
-        return $this->getQuery(Debt::TYPE_INTEREST, $session->id, $prevSessions, $onlyPaid)
+        return $this->getQuery($session->id, $prevSessions, $onlyPaid)
             ->page($page, $this->tenantService->getLimit())
             ->with(['loan', 'loan.member', 'loan.session', 'refund'])
             ->get();

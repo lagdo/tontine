@@ -197,28 +197,4 @@ return [
             'not-assigned' => "** Pas attribué **",
         ],
     ],
-    'funding' => [
-        'titles' => [
-            'add' => "Ajouter un dépôt",
-        ],
-        'questions' => [
-            'delete' => "Supprimer ce dépôt ?",
-        ],
-    ],
-    'loan' => [
-        'titles' => [
-            'add' => "Ajouter un emprunt",
-        ],
-        'labels' => [
-            'principal' => "Principal",
-            'interest' => "Intérêt",
-            'amount_available' => "Montant disponible : :amount",
-        ],
-        'questions' => [
-            'delete' => "Supprimer cet emprunt ?",
-        ],
-        'errors' => [
-            'not_found' => "Impossible de trouver l'emprunt correspondant.",
-        ],
-    ],
 ];

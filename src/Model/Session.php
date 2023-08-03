@@ -170,6 +170,11 @@ class Session extends Base
         return $this->hasMany(Funding::class);
     }
 
+    public function disbursements()
+    {
+        return $this->hasMany(Disbursement::class);
+    }
+
     public function disabledPools()
     {
         return $this->belongsToMany(Pool::class, 'pool_session_disabled');

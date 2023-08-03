@@ -112,21 +112,20 @@ class FundingService
      * Create a funding.
      *
      * @param Session $session The session
-     * @param int $memberId
-     * @param int $amount
+     * @param array $values
      *
      * @return void
      */
-    public function createFunding(Session $session, int $memberId, int $amount): void
+    public function createFunding(Session $session, array $values): void
     {
-        $member = $this->getMember($memberId);
+        $member = $this->getMember($values['member']);
         if(!$member)
         {
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }
 
         $funding = new Funding();
-        $funding->amount = $amount;
+        $funding->amount = $values['amount'];
         $funding->member()->associate($member);
         $funding->session()->associate($session);
         $funding->save();
@@ -136,14 +135,26 @@ class FundingService
      * Update a funding.
      *
      * @param Session $session The session
-     * @param int $fundingId
-     * @param int $amount
+     * @param array $values
      *
      * @return void
      */
-    public function updateFunding(Session $session, int $fundingId, int $amount): void
+    public function updateFunding(Session $session, int $fundingId, array $values): void
     {
-        $session->fundings()->where('id', $fundingId)->update(['amount' => $amount]);
+        $member = $this->getMember($values['member']);
+        if(!$member)
+        {
+            throw new MessageException(trans('tontine.member.errors.not_found'));
+        }
+        $funding = $session->fundings()->find($fundingId);
+        if(!$funding)
+        {
+            throw new MessageException(trans('meeting.funding.errors.not_found'));
+        }
+
+        $funding->amount = $values['amount'];
+        $funding->member()->associate($member);
+        $funding->save();
     }
 
     /**

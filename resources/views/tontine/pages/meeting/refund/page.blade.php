@@ -10,10 +10,16 @@
                   <tbody>
 @foreach($debts as $debt)
                     <tr>
-                      <td>{{ $debt->loan->member->name }}<br/>{{ $debt->loan->session->title }}</td>
-                      <td class="currency">{{ $locale->formatMoney($debt->amount, true) }}</td>
+                      <td>
+                        {{ $debt->loan->member->name }}<br/>
+                        {{ $debt->loan->session->title }}
+                      </td>
+                      <td class="currency">
+                        {{ $locale->formatMoney($debt->amount, true) }}<br/>
+                        {{ __('meeting.loan.labels.' . $debt->type) }}
+                      </td>
                       <td class="table-item-menu" data-debt-id="{{ $debt->id }}">
-                        {!! paymentLink($debt->refund, $type . '-refund', $session->closed) !!}
+                        {!! paymentLink($debt->refund, 'refund', $session->closed) !!}
                       </td>
                     </tr>
 @endforeach

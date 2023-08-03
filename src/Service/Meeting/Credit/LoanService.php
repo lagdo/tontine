@@ -5,6 +5,8 @@ namespace Siak\Tontine\Service\Meeting\Credit;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Disbursement;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Funding;
 use Siak\Tontine\Model\Loan;
@@ -117,20 +119,23 @@ class LoanService
         $funding = Funding::select(DB::raw('sum(amount) as total'))
             ->whereIn('session_id', $sessionIds)
             ->value('total');
-        $refund = Refund::select(DB::raw('sum(debts.amount) as total'))
-            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
-            ->whereIn('session_id', $sessionIds)
-            ->value('total');
         $settlement = Settlement::select(DB::raw('sum(bills.amount) as total'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->whereIn('session_id', $sessionIds)
+            ->value('total');
+        $refund = Refund::select(DB::raw('sum(debts.amount) as total'))
+            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
             ->whereIn('session_id', $sessionIds)
             ->value('total');
         $debt = Debt::principal()->select(DB::raw('sum(debts.amount) as total'))
             ->join('loans', 'debts.loan_id', '=', 'loans.id')
             ->whereIn('loans.session_id', $sessionIds)
             ->value('total');
+        $disbursement = Disbursement::select(DB::raw('sum(amount) as total'))
+            ->whereIn('session_id', $sessionIds)
+            ->value('total');
 
-        return $funding + $refund + $settlement - $debt;
+        return $funding + $settlement + $refund - $debt - $disbursement;
     }
 
     /**
@@ -174,14 +179,21 @@ class LoanService
      * Create a loan.
      *
      * @param Session $session The session
-     * @param Member $member
-     * @param int $principal
-     * @param int $interest
+     * @param array $values
      *
      * @return void
      */
-    public function createLoan(Session $session, Member $member, int $principal, int $interest): void
+    public function createLoan(Session $session, array $values): void
     {
+        $member = $this->getMember($values['member']);
+        if(!$member)
+        {
+            throw new MessageException(trans('tontine.member.errors.not_found'));
+        }
+
+        $principal = $values['principal'];
+        $interest = $values['interest'];
+
         $loan = new Loan();
         $loan->member()->associate($member);
         $loan->session()->associate($session);
@@ -204,16 +216,17 @@ class LoanService
      *
      * @param Session $session The session
      * @param int $loanId
-     * @param int $principal
-     * @param int $interest
+     * @param array $values
      *
      * @return void
      */
-    public function updateLoan(Session $session, int $loanId, int $principal, int $interest): void
+    public function updateLoan(Session $session, int $loanId, array $values): void
     {
         // A loan that was created from a remitment cannot be updated.
         if(($loan = $session->loans()->find($loanId)) !== null && !$loan->remitment_id)
         {
+            $principal = $values['principal'];
+            $interest = $values['interest'];
             DB::transaction(function() use($loan, $principal, $interest) {
                 $loan->debts()->principal()->update(['amount' => $principal]);
                 // The interest debt may need to be created.

@@ -3,8 +3,8 @@
 namespace App\Ajax\App\Meeting\Credit;
 
 use App\Ajax\CallableClass;
-use Siak\Tontine\Service\Meeting\Credit\FundingService;
-use Siak\Tontine\Validation\Meeting\FundingValidator;
+use Siak\Tontine\Service\Meeting\Credit\DisbursementService;
+use Siak\Tontine\Validation\Meeting\DisbursementValidator;
 use Siak\Tontine\Model\Session as SessionModel;
 
 use function Jaxon\jq;
@@ -15,17 +15,17 @@ use function trans;
  * @databag meeting
  * @before getSession
  */
-class Funding extends CallableClass
+class Disbursement extends CallableClass
 {
     /**
-     * @var FundingService
+     * @var DisbursementService
      */
-    protected FundingService $fundingService;
+    protected DisbursementService $disbursementService;
 
     /**
-     * @var FundingValidator
+     * @var DisbursementValidator
      */
-    protected FundingValidator $validator;
+    protected DisbursementValidator $validator;
 
     /**
      * @var SessionModel|null
@@ -35,11 +35,11 @@ class Funding extends CallableClass
     /**
      * The constructor
      *
-     * @param FundingService $fundingService
+     * @param DisbursementService $disbursementService
      */
-    public function __construct(FundingService $fundingService)
+    public function __construct(DisbursementService $disbursementService)
     {
-        $this->fundingService = $fundingService;
+        $this->disbursementService = $disbursementService;
     }
 
     /**
@@ -48,7 +48,7 @@ class Funding extends CallableClass
     protected function getSession()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->fundingService->getSession($sessionId);
+        $this->session = $this->disbursementService->getSession($sessionId);
     }
 
     /**
@@ -63,24 +63,24 @@ class Funding extends CallableClass
 
     public function home()
     {
-        $fundings = $this->fundingService->getSessionFundings($this->session);
+        $disbursements = $this->disbursementService->getSessionDisbursements($this->session);
 
-        $html = $this->view()->render('tontine.pages.meeting.funding.home')
+        $html = $this->view()->render('tontine.pages.meeting.disbursement.home')
             ->with('session', $this->session)
-            ->with('fundings', $fundings);
-        $this->response->html('meeting-fundings', $html);
+            ->with('disbursements', $disbursements);
+        $this->response->html('meeting-disbursements', $html);
 
-        $this->jq('#btn-fundings-refresh')->click($this->rq()->home());
-        $this->jq('#btn-funding-add')->click($this->rq()->addFunding());
-        $fundingId = jq()->parent()->attr('data-funding-id')->toInt();
-        $this->jq('.btn-funding-edit')->click($this->rq()->editFunding($fundingId));
-        $this->jq('.btn-funding-delete')->click($this->rq()->deleteFunding($fundingId)
-            ->confirm(trans('meeting.funding.questions.delete')));
+        $this->jq('#btn-disbursements-refresh')->click($this->rq()->home());
+        $this->jq('#btn-disbursement-add')->click($this->rq()->addDisbursement());
+        $disbursementId = jq()->parent()->attr('data-disbursement-id')->toInt();
+        $this->jq('.btn-disbursement-edit')->click($this->rq()->editDisbursement($disbursementId));
+        $this->jq('.btn-disbursement-delete')->click($this->rq()->deleteDisbursement($disbursementId)
+            ->confirm(trans('meeting.disbursement.questions.delete')));
 
         return $this->response;
     }
 
-    public function addFunding()
+    public function addDisbursement()
     {
         if($this->session->closed)
         {
@@ -88,10 +88,10 @@ class Funding extends CallableClass
             return $this->response;
         }
 
-        $members = $this->fundingService->getMembers();
-        $title = trans('meeting.funding.titles.add');
-        $content = $this->view()->render('tontine.pages.meeting.funding.add')
-            ->with('members', $members);
+        $title = trans('meeting.disbursement.titles.add');
+        $content = $this->view()->render('tontine.pages.meeting.disbursement.add')
+            ->with('categories', $this->disbursementService->getCategories())
+            ->with('members', $this->disbursementService->getMembers());
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -99,7 +99,7 @@ class Funding extends CallableClass
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->createFunding(pm()->form('funding-form')),
+            'click' => $this->rq()->createDisbursement(pm()->form('disbursement-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
 
@@ -109,7 +109,7 @@ class Funding extends CallableClass
     /**
      * @di $validator
      */
-    public function createFunding(array $formValues)
+    public function createDisbursement(array $formValues)
     {
         if($this->session->closed)
         {
@@ -118,7 +118,7 @@ class Funding extends CallableClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        $this->fundingService->createFunding($this->session, $values);
+        $this->disbursementService->createDisbursement($this->session, $values);
 
         $this->dialog->hide();
 
@@ -128,7 +128,7 @@ class Funding extends CallableClass
         return $this->home();
     }
 
-    public function editFunding(int $fundingId)
+    public function editDisbursement(int $disbursementId)
     {
         if($this->session->closed)
         {
@@ -136,10 +136,12 @@ class Funding extends CallableClass
             return $this->response;
         }
 
-        $funding = $this->fundingService->getSessionFunding($this->session, $fundingId);
-        $title = trans('meeting.funding.titles.edit');
-        $content = $this->view()->render('tontine.pages.meeting.funding.edit')
-            ->with('funding', $funding);
+        $disbursement = $this->disbursementService->getSessionDisbursement($this->session, $disbursementId);
+        $title = trans('meeting.disbursement.titles.edit');
+        $content = $this->view()->render('tontine.pages.meeting.disbursement.edit')
+            ->with('categories', $this->disbursementService->getCategories())
+            ->with('members', $this->disbursementService->getMembers())
+            ->with('disbursement', $disbursement);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -147,7 +149,7 @@ class Funding extends CallableClass
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->updateFunding($fundingId, pm()->form('funding-form')),
+            'click' => $this->rq()->updateDisbursement($disbursementId, pm()->form('disbursement-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
 
@@ -157,7 +159,7 @@ class Funding extends CallableClass
     /**
      * @di $validator
      */
-    public function updateFunding(int $fundingId, array $formValues)
+    public function updateDisbursement(int $disbursementId, array $formValues)
     {
         if($this->session->closed)
         {
@@ -166,7 +168,7 @@ class Funding extends CallableClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        $this->fundingService->updateFunding($this->session, $fundingId, $values);
+        $this->disbursementService->updateDisbursement($this->session, $disbursementId, $values);
 
         $this->dialog->hide();
 
@@ -176,7 +178,7 @@ class Funding extends CallableClass
         return $this->home();
     }
 
-    public function deleteFunding(int $fundingId)
+    public function deleteDisbursement(int $disbursementId)
     {
         if($this->session->closed)
         {
@@ -184,7 +186,7 @@ class Funding extends CallableClass
             return $this->response;
         }
 
-        $this->fundingService->deleteFunding($this->session, $fundingId);
+        $this->disbursementService->deleteDisbursement($this->session, $disbursementId);
 
         // Refresh the loans page
         $this->cl(Loan::class)->show($this->session);

@@ -5,10 +5,10 @@ namespace App\Ajax\App\Meeting;
 use App\Ajax\CallableClass;
 use App\Ajax\App\Meeting\Charge\Fee;
 use App\Ajax\App\Meeting\Charge\Fine;
+use App\Ajax\App\Meeting\Credit\Disbursement;
 use App\Ajax\App\Meeting\Credit\Funding;
 use App\Ajax\App\Meeting\Credit\Loan;
-use App\Ajax\App\Meeting\Credit\Refund\Interest;
-use App\Ajax\App\Meeting\Credit\Refund\Principal;
+use App\Ajax\App\Meeting\Credit\Refund;
 use App\Ajax\App\Meeting\Pool\Deposit;
 use App\Ajax\App\Meeting\Pool\Remitment\Financial;
 use App\Ajax\App\Meeting\Pool\Remitment\Libre;
@@ -127,10 +127,17 @@ class Session extends CallableClass
      */
     private function credits()
     {
-        $this->cl(Funding::class)->show($this->session);
         $this->cl(Loan::class)->show($this->session);
-        $this->cl(Principal::class)->show($this->session);
-        $this->cl(Interest::class)->show($this->session);
+        $this->cl(Refund::class)->show($this->session);
+    }
+
+    /**
+     * @return void
+     */
+    private function cash()
+    {
+        $this->cl(Funding::class)->show($this->session);
+        $this->cl(Disbursement::class)->show($this->session);
     }
 
     /**
@@ -190,10 +197,11 @@ class Session extends CallableClass
         $this->jq('#btn-session-close')->click($this->rq()->close()
             ->confirm(trans('tontine.session.questions.close')));
 
-        $this->pools($tontine);
-        $this->credits();
-        $this->charges();
         $this->reports();
+        $this->pools($tontine);
+        $this->charges();
+        $this->credits();
+        $this->cash();
 
         return $this->response;
     }
