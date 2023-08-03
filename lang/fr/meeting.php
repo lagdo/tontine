@@ -69,6 +69,35 @@ return [
             'not_found' => "Impossible de trouver la catégorie correspondante.",
         ],
     ],
+    'funding' => [
+        'titles' => [
+            'add' => "Ajouter un dépôt",
+            'edit' => "Modifier un dépôt",
+        ],
+        'questions' => [
+            'delete' => "Supprimer ce dépôt ?",
+        ],
+        'errors' => [
+            'not_found' => "Impossible de trouver le dépôt correspondant.",
+        ],
+    ],
+    'loan' => [
+        'titles' => [
+            'add' => "Ajouter un emprunt",
+            'edit' => "Modifier un emprunt",
+        ],
+        'labels' => [
+            'principal' => "Principal",
+            'interest' => "Intérêt",
+            'amount_available' => "Montant disponible : :amount",
+        ],
+        'questions' => [
+            'delete' => "Supprimer cet emprunt ?",
+        ],
+        'errors' => [
+            'not_found' => "Impossible de trouver l'emprunt correspondant.",
+        ],
+    ],
     'disbursement' => [
         'titles' => [
             'add' => "Ajouter un décaissement",

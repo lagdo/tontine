@@ -69,6 +69,35 @@ return [
             'not_found' => "Cannot find the corresponding category.",
         ],
     ],
+    'funding' => [
+        'titles' => [
+            'add' => "Add a funding",
+            'edit' => "Edit a funding",
+        ],
+        'questions' => [
+            'delete' => "Delete this funding?",
+        ],
+        'errors' => [
+            'not_found' => "Cannot find the corresponding funding.",
+        ],
+    ],
+    'loan' => [
+        'titles' => [
+            'add' => "Add a loan",
+            'edit' => "Edit a loan",
+        ],
+        'labels' => [
+            'principal' => "Principal",
+            'interest' => "Interest",
+            'amount_available' => "Amount available: :amount",
+        ],
+        'questions' => [
+            'delete' => "Delete this loan?",
+        ],
+        'errors' => [
+            'not_found' => "Cannot find the corresponding loan.",
+        ],
+    ],
     'disbursement' => [
         'titles' => [
             'add' => "Add a disbursement",

@@ -2,7 +2,7 @@
                   <div class="row align-items-center">
                     <div class="col-auto">
                       <div class="section-title mt-0">
-                        {{ __('meeting.titles.loans') }} ({{ __('tontine.loan.labels.amount_available',
+                        {{ __('meeting.titles.loans') }} ({{ __('meeting.loan.labels.amount_available',
                           ['amount' => $locale->formatMoney($amountAvailable, true)]) }})
                       </div>
                     </div>

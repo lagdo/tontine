@@ -3,7 +3,6 @@
 namespace App\Ajax\App\Meeting\Credit;
 
 use App\Ajax\CallableClass;
-use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -78,7 +77,7 @@ class Loan extends CallableClass
         $loanId = jq()->parent()->attr('data-loan-id')->toInt();
         $this->jq('.btn-loan-edit')->click($this->rq()->editLoan($loanId));
         $this->jq('.btn-loan-delete')->click($this->rq()->deleteLoan($loanId)
-            ->confirm(trans('tontine.loan.questions.delete')));
+            ->confirm(trans('meeting.loan.questions.delete')));
 
         return $this->response;
     }
@@ -98,7 +97,7 @@ class Loan extends CallableClass
         }
 
         $members = $this->loanService->getMembers();
-        $title = trans('tontine.loan.titles.add');
+        $title = trans('meeting.loan.titles.add');
         $content = $this->view()->render('tontine.pages.meeting.loan.add')
             ->with('members', $members)
             ->with('amountAvailable', $amountAvailable);
@@ -128,16 +127,7 @@ class Loan extends CallableClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        $memberId = $values['member'];
-        $principal = $values['principal'];
-        $interest = $values['interest'];
-
-        if(!($member = $this->loanService->getMember($memberId)))
-        {
-            throw new MessageException(trans('tontine.member.errors.not_found'));
-        }
-
-        $this->loanService->createLoan($this->session, $member, $principal, $interest);
+        $this->loanService->createLoan($this->session, $values);
 
         $this->dialog->hide();
 
@@ -157,7 +147,7 @@ class Loan extends CallableClass
         }
 
         $loan = $this->loanService->getSessionLoan($this->session, $loanId);
-        $title = trans('tontine.loan.titles.edit');
+        $title = trans('meeting.loan.titles.edit');
         $content = $this->view()->render('tontine.pages.meeting.loan.edit')
             ->with('loan', $loan);
         $buttons = [[
@@ -186,9 +176,7 @@ class Loan extends CallableClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        $principal = $values['principal'];
-        $interest = $values['interest'];
-        $this->loanService->updateLoan($this->session, $loanId, $principal, $interest);
+        $this->loanService->updateLoan($this->session, $loanId, $values);
 
         $this->dialog->hide();
 

@@ -197,28 +197,4 @@ return [
             'not-assigned' => "** Not assigned **",
         ],
     ],
-    'funding' => [
-        'titles' => [
-            'add' => "Add a funding",
-        ],
-        'questions' => [
-            'delete' => "Delete this funding?",
-        ],
-    ],
-    'loan' => [
-        'titles' => [
-            'add' => "Add a loan",
-        ],
-        'labels' => [
-            'principal' => "Principal",
-            'interest' => "Interest",
-            'amount_available' => "Amount available: :amount",
-        ],
-        'questions' => [
-            'delete' => "Delete this loan?",
-        ],
-        'errors' => [
-            'not_found' => "Cannot find the corresponding loan.",
-        ],
-    ],
 ];

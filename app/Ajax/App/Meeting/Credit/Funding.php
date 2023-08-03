@@ -75,7 +75,7 @@ class Funding extends CallableClass
         $fundingId = jq()->parent()->attr('data-funding-id')->toInt();
         $this->jq('.btn-funding-edit')->click($this->rq()->editFunding($fundingId));
         $this->jq('.btn-funding-delete')->click($this->rq()->deleteFunding($fundingId)
-            ->confirm(trans('tontine.funding.questions.delete')));
+            ->confirm(trans('meeting.funding.questions.delete')));
 
         return $this->response;
     }
@@ -89,7 +89,7 @@ class Funding extends CallableClass
         }
 
         $members = $this->fundingService->getMembers();
-        $title = trans('tontine.funding.titles.add');
+        $title = trans('meeting.funding.titles.add');
         $content = $this->view()->render('tontine.pages.meeting.funding.add')
             ->with('members', $members);
         $buttons = [[
@@ -118,10 +118,7 @@ class Funding extends CallableClass
         }
 
         $values = $this->validator->validateItem($formValues);
-
-        $memberId = $values['member'];
-        $amount = $values['amount'];
-        $this->fundingService->createFunding($this->session, $memberId, $amount);
+        $this->fundingService->createFunding($this->session, $values);
 
         $this->dialog->hide();
 
@@ -140,7 +137,7 @@ class Funding extends CallableClass
         }
 
         $funding = $this->fundingService->getSessionFunding($this->session, $fundingId);
-        $title = trans('tontine.funding.titles.edit');
+        $title = trans('meeting.funding.titles.edit');
         $content = $this->view()->render('tontine.pages.meeting.funding.edit')
             ->with('funding', $funding);
         $buttons = [[
@@ -169,8 +166,7 @@ class Funding extends CallableClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        $amount = $values['amount'];
-        $this->fundingService->updateFunding($this->session, $fundingId, $amount);
+        $this->fundingService->updateFunding($this->session, $fundingId, $values);
 
         $this->dialog->hide();
 

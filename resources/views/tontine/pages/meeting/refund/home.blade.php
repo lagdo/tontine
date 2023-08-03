@@ -1,6 +1,6 @@
                   <div class="row align-items-center">
                     <div class="col-auto">
-                      <div class="section-title mt-0">{{ __('meeting.titles.refunds') }} - {{ __('tontine.loan.labels.' . $type) }}</div>
+                      <div class="section-title mt-0">{{ __('meeting.titles.refunds') }} - {{ __('meeting.loan.labels.' . $type) }}</div>
                     </div>
 @if($session->opened)
                     <div class="col">
