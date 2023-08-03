@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Disbursement;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Funding;
 use Siak\Tontine\Model\Loan;
@@ -118,20 +119,23 @@ class LoanService
         $funding = Funding::select(DB::raw('sum(amount) as total'))
             ->whereIn('session_id', $sessionIds)
             ->value('total');
-        $refund = Refund::select(DB::raw('sum(debts.amount) as total'))
-            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
-            ->whereIn('session_id', $sessionIds)
-            ->value('total');
         $settlement = Settlement::select(DB::raw('sum(bills.amount) as total'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->whereIn('session_id', $sessionIds)
+            ->value('total');
+        $refund = Refund::select(DB::raw('sum(debts.amount) as total'))
+            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
             ->whereIn('session_id', $sessionIds)
             ->value('total');
         $debt = Debt::principal()->select(DB::raw('sum(debts.amount) as total'))
             ->join('loans', 'debts.loan_id', '=', 'loans.id')
             ->whereIn('loans.session_id', $sessionIds)
             ->value('total');
+        $disbursement = Disbursement::select(DB::raw('sum(amount) as total'))
+            ->whereIn('session_id', $sessionIds)
+            ->value('total');
 
-        return $funding + $refund + $settlement - $debt;
+        return $funding + $settlement + $refund - $debt - $disbursement;
     }
 
     /**
