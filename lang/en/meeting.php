@@ -87,6 +87,8 @@ return [
             'edit' => "Edit a loan",
         ],
         'labels' => [
+            'p' => "Principal",
+            'i' => "Interest",
             'principal' => "Principal",
             'interest' => "Interest",
             'amount_available' => "Amount available: :amount",

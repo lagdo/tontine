@@ -8,8 +8,7 @@ use App\Ajax\App\Meeting\Charge\Fine;
 use App\Ajax\App\Meeting\Credit\Disbursement;
 use App\Ajax\App\Meeting\Credit\Funding;
 use App\Ajax\App\Meeting\Credit\Loan;
-use App\Ajax\App\Meeting\Credit\Refund\Interest;
-use App\Ajax\App\Meeting\Credit\Refund\Principal;
+use App\Ajax\App\Meeting\Credit\Refund;
 use App\Ajax\App\Meeting\Pool\Deposit;
 use App\Ajax\App\Meeting\Pool\Remitment\Financial;
 use App\Ajax\App\Meeting\Pool\Remitment\Libre;
@@ -130,8 +129,7 @@ class Session extends CallableClass
     {
         $this->cl(Funding::class)->show($this->session);
         $this->cl(Loan::class)->show($this->session);
-        $this->cl(Principal::class)->show($this->session);
-        $this->cl(Interest::class)->show($this->session);
+        $this->cl(Refund::class)->show($this->session);
         $this->cl(Disbursement::class)->show($this->session);
     }
 

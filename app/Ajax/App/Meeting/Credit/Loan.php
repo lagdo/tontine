@@ -132,8 +132,7 @@ class Loan extends CallableClass
         $this->dialog->hide();
 
         // Refresh the refunds pages
-        $this->cl(Refund\Principal::class)->show($this->session);
-        $this->cl(Refund\Interest::class)->show($this->session);
+        $this->cl(Refund::class)->show($this->session);
 
         return $this->home();
     }
@@ -181,8 +180,7 @@ class Loan extends CallableClass
         $this->dialog->hide();
 
         // Refresh the refunds pages
-        $this->cl(Refund\Principal::class)->show($this->session);
-        $this->cl(Refund\Interest::class)->show($this->session);
+        $this->cl(Refund::class)->show($this->session);
 
         return $this->home();
     }
@@ -198,8 +196,7 @@ class Loan extends CallableClass
         $this->loanService->deleteLoan($this->session, $loanId);
 
         // Refresh the refunds pages
-        $this->cl(Refund\Principal::class)->show($this->session);
-        $this->cl(Refund\Interest::class)->show($this->session);
+        $this->cl(Refund::class)->show($this->session);
 
         return $this->home();
     }

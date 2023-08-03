@@ -87,6 +87,8 @@ return [
             'edit' => "Modifier un emprunt",
         ],
         'labels' => [
+            'p' => "Principal",
+            'i' => "Intérêt",
             'principal' => "Principal",
             'interest' => "Intérêt",
             'amount_available' => "Montant disponible : :amount",
