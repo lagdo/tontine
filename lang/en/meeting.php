@@ -57,4 +57,11 @@ return [
             'variable' => "Variable fees",
         ],
     ],
+    'category' => [
+        'types' => [
+            'expense' => "Expense",
+            'support' => "Support",
+            'other' => "Other",
+        ],
+    ],
 ];

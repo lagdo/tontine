@@ -57,4 +57,11 @@ return [
             'variable' => "Frais variables",
         ],
     ],
+    'category' => [
+        'types' => [
+            'expense' => "Dépense",
+            'support' => "Aide",
+            'other' => "Autre",
+        ],
+    ],
 ];
