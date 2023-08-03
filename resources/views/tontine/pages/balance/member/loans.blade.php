@@ -8,8 +8,8 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th class="currency">{{ __('tontine.loan.labels.principal') }}</th>
-                          <th class="currency">{{ __('tontine.loan.labels.interest') }}</th>
+                          <th class="currency">{{ __('meeting.loan.labels.principal') }}</th>
+                          <th class="currency">{{ __('meeting.loan.labels.interest') }}</th>
                         </tr>
                       </thead>
                       <tbody>
