@@ -2,14 +2,17 @@
                 <table class="table table-bordered">
                    <thead>
                     <tr>
-                      <th>{!! __('common.labels.name') !!}</th>
+@if ($tontine->is_libre)
+                      <th style="padding-left: 10px">{{ $count }}</th>
+@else
                       <th style="text-align: center">{{ $count }}</th>
+@endif
+                      <th>{!! __('common.labels.name') !!}</th>
                     </tr>
                   </thead>
                  <tbody>
 @foreach ($members as $member)
                     <tr>
-                      <td>{{ $member->name }}</td>
                       <td class="table-member-subscription" data-member-id="{{ $member->id }}">
 @if ($tontine->is_libre)
 @if ($member->subscriptions_count > 0)
@@ -29,6 +32,7 @@
                         </div>
 @endif
                       </td>
+                      <td>{{ $member->name }}</td>
                     </tr>
 @endforeach
                   </tbody>
