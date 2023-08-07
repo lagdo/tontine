@@ -82,7 +82,7 @@ class Session extends Base
 
     public function getDateAttribute()
     {
-        return $this->start_at->format('l jS F Y');
+        return $this->start_at->translatedFormat(trans('tontine.date.format'));
     }
 
     public function getTimesAttribute()

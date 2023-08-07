@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'date' => [
+        'format' => 'D, M j, Y',
+    ],
     'menus' => [
         'tontines' => "Tontines",
         'tontine' => "Tontine",

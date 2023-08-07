@@ -2,15 +2,16 @@
 
 namespace App\Http\Middleware;
 
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Closure;
 
-use function Jaxon\jaxon;
-use function storage_path;
+use function setlocale;
 
-class AnnotationCache
+class SetDateFormat
 {
     /**
      * Handle an incoming request.
@@ -22,7 +23,9 @@ class AnnotationCache
      */
     public function handle(Request $request, Closure $next)
     {
-        jaxon()->di()->val('jaxon_annotations_cache_dir', storage_path('annotations'));
+        $locale = LaravelLocalization::getCurrentLocale();
+        Carbon::setLocale($locale);
+        setlocale(LC_TIME, $locale);
 
         return $next($request);
     }

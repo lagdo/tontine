@@ -92,8 +92,7 @@ class Subscription extends CallableClass
             ->with('pagination', $pagination);
         $this->response->html('subscription-page', $html);
 
-        $memberId = $tontine->is_libre ? jq()->parent()->attr('data-member-id')->toInt() :
-            jq()->parent()->parent()->parent()->attr('data-member-id')->toInt();
+        $memberId = jq()->parent()->parent()->attr('data-member-id')->toInt();
         $this->jq('.btn-subscription-add')->click($this->rq()->create($memberId));
         $this->jq('.btn-subscription-del')->click($this->rq()->delete($memberId));
 
