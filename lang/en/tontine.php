@@ -51,6 +51,9 @@ return [
     'messages' => [
         'created' => "The tontine was successfully created.",
         'updated' => "The tontine was successfully updated.",
+        'screen' => [
+            'orientation' => "If you are using a mobile device, we advise you to place it in landscape mode, for a better display.",
+        ],
     ],
     'errors' => [
         'action' => "Cannot proceed.",

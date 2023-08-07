@@ -51,6 +51,9 @@ return [
     'messages' => [
         'created' => "La tontine a été ajoutée",
         'updated' => "La tontine a été modifiée",
+        'screen' => [
+            'orientation' => "Si vous utilisez un appareil mobile, nous vous conseillons de le placer en mode paysage, pour un meilleur affichage.",
+        ],
     ],
     'errors' => [
         'action' => "Action impossible.",

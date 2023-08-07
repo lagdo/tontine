@@ -4,7 +4,8 @@
     if('ontouchstart' in document.documentElement)
     {
       // Lock screen in landscape mode
-      screen.orientation.lock('landscape');
+      // screen.orientation.lock('landscape');
+      jaxon.ajax.message.info("{{ __('tontine.messages.screen.orientation') }}", "{{ __('common.titles.message') }}");
     }
   });
 </script>
