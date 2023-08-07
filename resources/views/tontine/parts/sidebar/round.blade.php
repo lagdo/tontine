@@ -22,11 +22,11 @@
                 <i class="fa fa-calendar-day"></i> <span>{{ __('tontine.menus.sessions') }}</span>
               </a></li>
 
-              <li class="menu-header">{{ __('tontine.menus.balance') }}</li>
-              <li><a class="nav-link" id="balance-menu-session" href="javascript:void(0)">
-                <i class="fa fa-calendar-day"></i> <span>{{ __('tontine.menus.sessions') }}</span>
+              <li class="menu-header">{{ __('tontine.menus.report') }}</li>
+              <li><a class="nav-link" id="report-menu-session" href="javascript:void(0)">
+                <i class="fa fa-calendar-day"></i> <span>{{ __('tontine.menus.session') }}</span>
               </a></li>
-              <li><a class="nav-link" id="balance-menu-round" href="javascript:void(0)">
-                <i class="fa fa-calendar-week"></i> <span>{{ __('tontine.menus.rounds') }}</span>
+              <li><a class="nav-link" id="report-menu-round" href="javascript:void(0)">
+                <i class="fa fa-calendar-week"></i> <span>{{ __('tontine.menus.round') }}</span>
               </a></li>
             </ul>

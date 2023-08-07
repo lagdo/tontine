@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Balance\Meeting;
+namespace App\Ajax\App\Report;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Service\Meeting\SessionService;
@@ -41,37 +41,48 @@ class Session extends CallableClass
         }
         $members->prepend('', 0);
 
-        $this->response->html('section-title', trans('tontine.menus.meeting'));
-        $html = $this->view()->render('tontine.pages.balance.home', compact('sessions', 'members'));
+        $this->response->html('section-title', trans('tontine.menus.report'));
+        $html = $this->view()->render('tontine.pages.report.session.home',
+            compact('sessions', 'members'));
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-members-refresh')->click($this->rq()->home());
         $sessionId = pm()->select('select-session')->toInt();
         $memberId = pm()->select('select-member')->toInt();
-        $this->jq('#btn-member-select')->click($this->rq()->show($sessionId, $memberId));
+        $this->jq('#btn-session-select')->click($this->rq()->showSession($sessionId));
+        $this->jq('#btn-member-select')->click($this->rq()->showMember($sessionId, $memberId));
 
         $session = $this->sessionService->getSession($sessions->keys()->first());
+        $this->response->html('session-report-title', $session->title);
         $this->cl(Session\Session::class)->show($session);
 
         return $this->response;
     }
 
-    public function show(int $sessionId, int $memberId)
+    public function showSession(int $sessionId)
     {
         if(!($session = $this->sessionService->getSession($sessionId)))
         {
             return $this->response;
         }
-        if($memberId === 0)
+
+        $this->response->html('session-report-title', $session->title);
+        $this->cl(Session\Session::class)->show($session);
+        return $this->response;
+    }
+
+    public function showMember(int $sessionId, int $memberId)
+    {
+        if(!($session = $this->sessionService->getSession($sessionId)))
         {
-            $this->cl(Session\Session::class)->show($session);
             return $this->response;
         }
-
         if(!($member = $this->tontineService->getMember($memberId)))
         {
             return $this->response;
         }
+
+        $this->response->html('session-report-title', $session->title . ' - ' . $member->name);
         $this->cl(Session\Member::class)->show($session, $member);
         return $this->response;
     }

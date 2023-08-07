@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Balance\Meeting;
+namespace App\Ajax\App\Report;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
@@ -78,7 +78,7 @@ class Round extends CallableClass
     public function amounts()
     {
         $this->view()->shareValues($this->summaryService->getFigures($this->pool));
-        $html = $this->view()->render('tontine.pages.meeting.report.amounts')
+        $html = $this->view()->render('tontine.page.report.round.amounts')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
@@ -94,7 +94,7 @@ class Round extends CallableClass
     public function deposits()
     {
         $this->view()->shareValues($this->summaryService->getFigures($this->pool));
-        $html = $this->view()->render('tontine.pages.meeting.report.deposits')
+        $html = $this->view()->render('tontine.page.report.round.deposits')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);

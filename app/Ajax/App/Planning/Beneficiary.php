@@ -80,6 +80,7 @@ class Beneficiary extends CallableClass
             return $this->response;
         }
 
+        $this->response->html('section-title', trans('tontine.menus.planning'));
         $payables = $this->summaryService->getPayables($this->pool);
         $this->view()->shareValues($payables);
         $html = $this->view()->render('tontine.pages.planning.beneficiary.page')

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\App\Balance;
+namespace App\Ajax\App\Planning;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
@@ -17,7 +17,7 @@ use function Jaxon\pm;
  * @databag report
  * @before getPool
  */
-class Planning extends CallableClass
+class Summary extends CallableClass
 {
     /**
      * @di
@@ -82,8 +82,13 @@ class Planning extends CallableClass
     public function home()
     {
         // Don't try to show the page if there is no pool selected.
-        return !$this->pool || $this->tenantService->tontine()->is_libre ?
-            $this->response : $this->amounts();
+        if(!$this->pool || $this->tenantService->tontine()->is_libre)
+        {
+            return $this->response;
+        }
+
+        $this->response->html('section-title', trans('tontine.menus.planning'));
+        return $this->amounts();
     }
 
     public function amounts()

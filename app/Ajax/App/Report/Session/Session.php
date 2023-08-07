@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Ajax\App\Balance\Meeting\Session;
+namespace App\Ajax\App\Report\Session;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Service\Balance\SessionService;
+use Siak\Tontine\Service\Report\SessionService;
 
 /**
  * @exclude
@@ -41,7 +41,7 @@ class Session extends CallableClass
 
     private function deposits(SessionModel $session)
     {
-        $html = $this->view()->render('tontine.pages.balance.session.deposits', [
+        $html = $this->view()->render('tontine.pages.report.session.session.deposits', [
             'pools' => $this->sessionService->getReceivables($session),
         ]);
         $this->response->html('member-deposits', $html);
@@ -49,7 +49,7 @@ class Session extends CallableClass
 
     private function remitments(SessionModel $session)
     {
-        $html = $this->view()->render('tontine.pages.balance.session.remitments', [
+        $html = $this->view()->render('tontine.pages.report.session.session.remitments', [
             'pools' => $this->sessionService->getPayables($session),
         ]);
         $this->response->html('member-remitments', $html);
@@ -57,7 +57,7 @@ class Session extends CallableClass
 
     private function loans(SessionModel $session)
     {
-        $html = $this->view()->render('tontine.pages.balance.session.loans', [
+        $html = $this->view()->render('tontine.pages.report.session.session.loans', [
             'loan' => $this->sessionService->getLoan($session),
         ]);
         $this->response->html('member-loans', $html);
@@ -65,7 +65,7 @@ class Session extends CallableClass
 
     private function refunds(SessionModel $session)
     {
-        $html = $this->view()->render('tontine.pages.balance.session.refunds', [
+        $html = $this->view()->render('tontine.pages.report.session.session.refunds', [
             'refund' => $this->sessionService->getRefund($session),
         ]);
         $this->response->html('member-refunds', $html);
@@ -73,7 +73,7 @@ class Session extends CallableClass
 
     private function fees(SessionModel $session)
     {
-        $html = $this->view()->render('tontine.pages.balance.session.fees', [
+        $html = $this->view()->render('tontine.pages.report.session.session.fees', [
             'fees' => $this->sessionService->getFees($session),
         ]);
         $this->response->html('member-fees', $html);
@@ -81,7 +81,7 @@ class Session extends CallableClass
 
     private function fines(SessionModel $session)
     {
-        $html = $this->view()->render('tontine.pages.balance.session.fines', [
+        $html = $this->view()->render('tontine.pages.report.session.session.fines', [
             'fines' => $this->sessionService->getFines($session),
         ]);
         $this->response->html('member-fines', $html);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service\Balance;
+namespace Siak\Tontine\Service\Report;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;

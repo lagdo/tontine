@@ -9,8 +9,6 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Balance\MemberService as MemberBalanceService;
-use Siak\Tontine\Service\Balance\SessionService as SessionBalanceService;
 use Siak\Tontine\Service\Meeting\Charge\FeeService;
 use Siak\Tontine\Service\Meeting\Charge\FineService;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
@@ -29,6 +27,8 @@ use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Planning\SessionService as PlanningSessionService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Planning\SummaryService as PlanningSummaryService;
+use Siak\Tontine\Service\Report\MemberService as MemberReportService;
+use Siak\Tontine\Service\Report\SessionService as SessionReportService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
@@ -92,8 +92,8 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(RemitmentService::class, RemitmentService::class);
         $this->app->singleton(MeetingSummaryService::class, MeetingSummaryService::class);
         $this->app->singleton(MeetingSessionService::class, MeetingSessionService::class);
-        $this->app->singleton(MemberBalanceService::class, MemberBalanceService::class);
-        $this->app->singleton(SessionBalanceService::class, SessionBalanceService::class);
+        $this->app->singleton(MemberReportService::class, MemberReportService::class);
+        $this->app->singleton(SessionReportService::class, SessionReportService::class);
 
         $this->app->singleton(RoundService::class, RoundService::class);
         $this->app->singleton(PlanningSessionService::class, PlanningSessionService::class);

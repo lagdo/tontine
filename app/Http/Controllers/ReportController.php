@@ -16,13 +16,13 @@ class ReportController extends Controller
 {
     /**
      * @param Request $request
-     * @param int $poolId
+     * @param int $roundId
      *
      * @return View|Response
      */
-    public function pool(Request $request, int $poolId)
+    public function round(Request $request, int $roundId)
     {
-        $html = view('tontine.report.pool', Report::getPoolReport($poolId));
+        $html = view('tontine.report.round', Report::getRoundReport($roundId));
 
         // Show the html page
         if($request->has('html'))
@@ -32,7 +32,7 @@ class ReportController extends Controller
 
         // Print the pdf
         return response(base64_decode(PdfGenerator::getPdf("$html")), 200)
-            ->header('Content-Description', 'Pool Report')
+            ->header('Content-Description', 'Round Report')
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'inline; filename=report.pdf')
             ->header('Content-Transfer-Encoding', 'binary')
@@ -60,6 +60,34 @@ class ReportController extends Controller
         // Print the pdf
         return response(base64_decode(PdfGenerator::getPdf("$html")), 200)
             ->header('Content-Description', 'Session Report')
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename=report.pdf')
+            ->header('Content-Transfer-Encoding', 'binary')
+            ->header('Expires', '0')
+            ->header('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+            ->header('Pragma', 'public');
+    }
+
+    /**
+     * @param Request $request
+     * @param int $sessionId
+     * @param int $memberId
+     *
+     * @return View|Response
+     */
+    public function member(Request $request, int $sessionId, int $memberId)
+    {
+        $html = view('tontine.report.member', Report::getSessionReport($sessionId));
+
+        // Show the html page
+        if($request->has('html'))
+        {
+            return $html;
+        }
+
+        // Print the pdf
+        return response(base64_decode(PdfGenerator::getPdf("$html")), 200)
+            ->header('Content-Description', 'Member Report')
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'inline; filename=report.pdf')
             ->header('Content-Transfer-Encoding', 'binary')

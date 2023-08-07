@@ -2,13 +2,13 @@
 
 namespace App\Ajax;
 
-use App\Ajax\App\Balance\Meeting\Round as RoundBalance;
-use App\Ajax\App\Balance\Meeting\Session as SessionBalance;
-use App\Ajax\App\Balance\Planning as PlanningBalance;
 use App\Ajax\App\Meeting\Session as MeetingSession;
 use App\Ajax\App\Planning\Beneficiary;
 use App\Ajax\App\Planning\Pool;
 use App\Ajax\App\Planning\Session as PlanningSession;
+use App\Ajax\App\Planning\Summary as PlanningSummary;
+use App\Ajax\App\Report\Round as RoundReport;
+use App\Ajax\App\Report\Session as SessionReport;
 use App\Ajax\App\Tontine\Charge;
 use App\Ajax\App\Tontine\Member;
 use Siak\Tontine\Model\Round;
@@ -18,7 +18,6 @@ use Jaxon\App\CallableClass as JaxonCallableClass;
 use Jaxon\App\Dialog\MessageInterface;
 use Jaxon\App\Dialog\ModalInterface;
 
-use function Jaxon\jq;
 use function floor;
 
 class CallableClass extends JaxonCallableClass
@@ -106,10 +105,10 @@ class CallableClass extends JaxonCallableClass
         $this->jq('#planning-menu-subscriptions')->click($this->cl(Pool::class)->rq()->home());
         $this->jq('#planning-menu-sessions')->click($this->cl(PlanningSession::class)->rq()->home());
         $this->jq('#planning-menu-beneficiaries')->click($this->cl(Beneficiary::class)->rq()->home());
-        $this->jq('#planning-menu-balance')->click($this->cl(PlanningBalance::class)->rq()->home());
+        $this->jq('#planning-menu-balance')->click($this->cl(PlanningSummary::class)->rq()->home());
         $this->jq('#meeting-menu-sessions')->click($this->cl(MeetingSession::class)->rq()->home());
-        $this->jq('#balance-menu-session')->click($this->cl(SessionBalance::class)->rq()->home());
-        $this->jq('#balance-menu-round')->click($this->cl(RoundBalance::class)->rq()->home());
+        $this->jq('#report-menu-session')->click($this->cl(SessionReport::class)->rq()->home());
+        $this->jq('#report-menu-round')->click($this->cl(RoundReport::class)->rq()->home());
     }
 
     /**
