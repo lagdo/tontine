@@ -78,7 +78,7 @@ class Round extends CallableClass
     public function amounts()
     {
         $this->view()->shareValues($this->summaryService->getFigures($this->pool));
-        $html = $this->view()->render('tontine.page.report.round.amounts')
+        $html = $this->view()->render('tontine.pages.report.round.amounts')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
@@ -94,7 +94,7 @@ class Round extends CallableClass
     public function deposits()
     {
         $this->view()->shareValues($this->summaryService->getFigures($this->pool));
-        $html = $this->view()->render('tontine.page.report.round.deposits')
+        $html = $this->view()->render('tontine.pages.report.round.deposits')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
