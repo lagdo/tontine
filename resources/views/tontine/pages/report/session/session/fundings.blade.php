@@ -8,7 +8,7 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>{{ __('common.labels.title') }}</th>
+                          <th>&nbsp;</th>
                           <th>&nbsp;</th>
                           <th class="currency">{{ __('common.labels.amount') }}</th>
                         </tr>

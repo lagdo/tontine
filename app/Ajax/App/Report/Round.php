@@ -3,16 +3,14 @@
 namespace App\Ajax\App\Report;
 
 use App\Ajax\CallableClass;
-use Siak\Tontine\Model\Pool as PoolModel;
+use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
-
-use function Jaxon\pm;
-use function intval;
+use Siak\Tontine\Service\Report\PoolService;
+use Siak\Tontine\Service\TenantService;
 
 /**
  * @databag meeting
- * @before getPool
  */
 class Round extends CallableClass
 {
@@ -20,95 +18,68 @@ class Round extends CallableClass
      * @di
      * @var SummaryService
      */
-    public SummaryService $summaryService;
+    protected SummaryService $summaryService;
 
     /**
      * @di
      * @var SubscriptionService
      */
-    public SubscriptionService $subscriptionService;
+    protected SubscriptionService $subscriptionService;
 
     /**
-     * @var PoolModel|null
+     * @di
+     * @var PoolService
      */
-    protected ?PoolModel $pool = null;
+    protected PoolService $poolService;
 
     /**
-     * @return void
+     * @di
+     * @var TenantService
      */
-    protected function getPool()
-    {
-        $poolId = intval($this->target()->method() === 'select' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('pool.id', 0));
-        if($poolId !== 0)
-        {
-            $this->pool = $this->subscriptionService->getPool($poolId);
-        }
-        if(!$this->pool)
-        {
-            $this->pool = $this->subscriptionService->getFirstPool();
-            // Save the current pool id
-            $this->bag('meeting')->set('pool.id', $this->pool ? $this->pool->id : 0);
-        }
-    }
-
-    public function select(int $poolId, bool $showAmounts)
-    {
-        if(($this->pool))
-        {
-            $this->bag('meeting')->set('pool.id', $this->pool->id);
-            return $showAmounts ? $this->amounts() : $this->deposits();
-        }
-
-        return $this->response;
-    }
+    protected TenantService $tenantService;
 
     /**
      * @after hideMenuOnMobile
      */
     public function home()
     {
-        if(!$this->pool)
-        {
-            return $this->response;
-        }
-        return $this->amounts();
-    }
-
-    public function amounts()
-    {
-        $this->view()->shareValues($this->summaryService->getFigures($this->pool));
-        $html = $this->view()->render('tontine.pages.report.round.amounts')
-            ->with('pool', $this->pool)
-            ->with('pools', $this->subscriptionService->getPools());
+        $html = $this->view()->render('tontine.pages.report.round.home');
         $this->response->html('content-home', $html);
+        $this->jq('#btn-meeting-report-refresh')->click($this->rq()->home());
 
-        $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt(), true));
-        $this->jq('#btn-meeting-report-refresh')->click($this->rq()->amounts());
-        $this->jq('#btn-meeting-report-deposits')->click($this->rq()->deposits());
-        $this->jq('#btn-meeting-report-print')->click($this->rq()->print());
-
-        return $this->response;
-    }
-
-    public function deposits()
-    {
-        $this->view()->shareValues($this->summaryService->getFigures($this->pool));
-        $html = $this->view()->render('tontine.pages.report.round.deposits')
-            ->with('pool', $this->pool)
-            ->with('pools', $this->subscriptionService->getPools());
-        $this->response->html('content-home', $html);
-
-        $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt(), false));
-        $this->jq('#btn-meeting-report-refresh')->click($this->rq()->deposits());
-        $this->jq('#btn-meeting-report-amounts')->click($this->rq()->amounts());
-        $this->jq('#btn-meeting-report-print')->click($this->rq()->print());
+        $this->pools();
+        $this->amounts();
 
         return $this->response;
     }
 
-    public function print()
+    private function pools()
     {
-        return $this->response;
+        $html = '';
+        $this->subscriptionService->getPools(false)
+            ->each(function($pool) use(&$html) {
+                $html .= $this->view()->render('tontine.pages.report.round.pool',
+                    $this->summaryService->getFigures($pool));
+            });
+        $this->response->html('content-pools', $html);
+    }
+
+    private function amounts()
+    {
+        $sessions = $this->tenantService->round()->sessions;
+        // Sessions with data
+        $sessionIds = $sessions->filter(function($session) {
+            return $session->status === SessionModel::STATUS_CLOSED ||
+                $session->status === SessionModel::STATUS_OPENED;
+        })->pluck('id');
+        $html = $this->view()->render('tontine.pages.report.round.amounts', [
+            'sessions' => $sessions,
+            'settlements' => $this->poolService->getSettlementAmounts($sessionIds),
+            'loans' => $this->poolService->getLoanAmounts($sessionIds),
+            'refunds' => $this->poolService->getRefundAmounts($sessionIds),
+            'fundings' => $this->poolService->getFundingAmounts($sessionIds),
+            'disbursements' => $this->poolService->getDisbursementAmounts($sessionIds),
+        ]);
+        $this->response->html('content-amounts', $html);
     }
 }

@@ -28,6 +28,7 @@ use Siak\Tontine\Service\Planning\SessionService as PlanningSessionService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Planning\SummaryService as PlanningSummaryService;
 use Siak\Tontine\Service\Report\MemberService as MemberReportService;
+use Siak\Tontine\Service\Report\PoolService as PoolReportService;
 use Siak\Tontine\Service\Report\SessionService as SessionReportService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Service\Tontine\MemberService;
@@ -93,6 +94,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(MeetingSummaryService::class, MeetingSummaryService::class);
         $this->app->singleton(MeetingSessionService::class, MeetingSessionService::class);
         $this->app->singleton(MemberReportService::class, MemberReportService::class);
+        $this->app->singleton(PoolReportService::class, PoolReportService::class);
         $this->app->singleton(SessionReportService::class, SessionReportService::class);
 
         $this->app->singleton(RoundService::class, RoundService::class);
