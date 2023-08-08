@@ -16,12 +16,7 @@
                       <tbody>
 @foreach($debts as $debt)
                         <tr>
-                          <td>
-                            {{ $debt->loan->session->title }} - {{ __('tontine.loan.labels.' . $debt->type_str) }}
-@if(($debt->refund))
-                            <br/>{{ $debt->refund->session->title }}
-@endif
-                          </td>
+                          <td>{{ __('meeting.loan.labels.' . $debt->type_str) }}<br/>{{ $debt->loan->session->title }}</td>
                           <td class="currency">{{ $locale->formatMoney($debt->amount, true) }}</td>
                           <td class="table-item-menu"><i class="fa fa-toggle-{{ $debt->refund ? 'on' : 'off' }}"></i></td>
                         </tr>

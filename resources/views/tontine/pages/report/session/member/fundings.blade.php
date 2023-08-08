@@ -8,12 +8,14 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
+                          <th>&nbsp;</th>
                           <th class="currency">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach($fundings as $funding)
                         <tr>
+                          <td>{{ $funding->session->title }}</td>
                           <td class="currency">{{ $locale->formatMoney($funding->amount, true) }}</td>
                         </tr>
 @endforeach

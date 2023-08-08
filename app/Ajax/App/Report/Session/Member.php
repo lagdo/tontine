@@ -39,53 +39,71 @@ class Member extends CallableClass
         $this->debts($session, $member);
         $this->fees($session, $member);
         $this->fines($session, $member);
+        $this->fundings($session, $member);
+        $this->disbursements($session, $member);
     }
 
     private function deposits(SessionModel $session, MemberModel $member)
     {
         $html = $this->view()->render('tontine.pages.report.session.member.deposits', [
-            'receivables' => $this->memberService->getReceivables($member, $session),
+            'receivables' => $this->memberService->getReceivables($session, $member),
         ]);
-        $this->response->html('member-deposits', $html);
+        $this->response->html('report-deposits', $html);
     }
 
     private function remitments(SessionModel $session, MemberModel $member)
     {
         $html = $this->view()->render('tontine.pages.report.session.member.remitments', [
-            'subscriptions' => $this->memberService->getPayables($member, $session),
+            'subscriptions' => $this->memberService->getPayables($session, $member),
         ]);
-        $this->response->html('member-remitments', $html);
+        $this->response->html('report-remitments', $html);
     }
 
     private function loans(SessionModel $session, MemberModel $member)
     {
         $html = $this->view()->render('tontine.pages.report.session.member.loans', [
-            'loans' => $this->memberService->getLoans($member, $session),
+            'loans' => $this->memberService->getLoans($session, $member),
         ]);
-        $this->response->html('member-loans', $html);
+        $this->response->html('report-loans', $html);
     }
 
     private function debts(SessionModel $session, MemberModel $member)
     {
         $html = $this->view()->render('tontine.pages.report.session.member.debts', [
-            'debts' => $this->memberService->getDebts($member, $session),
+            'debts' => $this->memberService->getDebts($session, $member),
         ]);
-        $this->response->html('member-refunds', $html);
+        $this->response->html('report-refunds', $html);
     }
 
     private function fees(SessionModel $session, MemberModel $member)
     {
         $html = $this->view()->render('tontine.pages.report.session.member.fees', [
-            'fees' => $this->memberService->getFees($member, $session),
+            'bills' => $this->memberService->getFees($session, $member),
         ]);
-        $this->response->html('member-fees', $html);
+        $this->response->html('report-fees', $html);
     }
 
     private function fines(SessionModel $session, MemberModel $member)
     {
         $html = $this->view()->render('tontine.pages.report.session.member.fines', [
-            'bills' => $this->memberService->getFineBills($member, $session),
+            'bills' => $this->memberService->getFines($session, $member),
         ]);
-        $this->response->html('member-fines', $html);
+        $this->response->html('report-fines', $html);
+    }
+
+    private function fundings(SessionModel $session, MemberModel $member)
+    {
+        $html = $this->view()->render('tontine.pages.report.session.member.fundings', [
+            'fundings' => $this->memberService->getFundings($session, $member),
+        ]);
+        $this->response->html('report-fundings', $html);
+    }
+
+    private function disbursements(SessionModel $session, MemberModel $member)
+    {
+        $html = $this->view()->render('tontine.pages.report.session.member.disbursements', [
+            'disbursements' => $this->memberService->getDisbursements($session, $member),
+        ]);
+        $this->response->html('report-disbursements', $html);
     }
 }

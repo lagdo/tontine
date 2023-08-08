@@ -5,9 +5,7 @@ namespace Siak\Tontine\Service\Report;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Bill;
-use Siak\Tontine\Model\Funding;
 use Siak\Tontine\Model\Debt;
-use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
@@ -78,14 +76,14 @@ class MemberService
     }
 
     /**
-     * @param Member $member
      * @param Session $session
+     * @param Member $member
      *
      * @return Collection
      */
-    public function getReceivables(Member $member, Session $session): Collection
+    public function getReceivables(Session $session, Member $member): Collection
     {
-        return Receivable::where('session_id', $session->id)
+        return $session->receivables()
             ->whereHas('subscription', function(Builder $query) use($member) {
                 $query->where('member_id', $member->id);
             })
@@ -111,12 +109,12 @@ class MemberService
     }
 
     /**
-     * @param Member $member
      * @param Session $session
+     * @param Member $member
      *
      * @return Collection
      */
-    public function getPayables(Member $member, Session $session): Collection
+    public function getPayables(Session $session, Member $member): Collection
     {
         return Subscription::where('member_id', $member->id)
             ->whereHas('payable', function($query) use($session) {
@@ -136,16 +134,20 @@ class MemberService
     }
 
     /**
-     * @param Member $member
      * @param Session $session
+     * @param Member $member
      *
      * @return Collection
      */
-    public function getFeeBills(Member $member, Session $session): Collection
+    public function getFees(Session $session, Member $member): Collection
     {
-        $sessionIds = $this->tenantService->getPreviousSessions($session);
-        return Bill::with(['settlement', 'tontine_bill', 'round_bill', 'session_bill', 'session_bill.session'])
-            ->where(function($query) use($member, $session, $sessionIds) {
+        return Bill::with(['settlement'])
+            // Bills settled on this session.
+            ->whereHas('settlement', function(Builder $query) use($session) {
+                $query->where('session_id', $session->id);
+            })
+            // Member bills.
+            ->where(function($query) use($member, $session) {
                 return $query
                     // Tontine bills.
                     ->orWhere(function(Builder $query) use($member) {
@@ -161,83 +163,44 @@ class MemberService
                         });
                     })
                     // Session bills.
-                    ->orWhere(function(Builder $query) use($member, $sessionIds) {
-                        return $query->whereHas('session_bill', function(Builder $query) use($member, $sessionIds) {
+                    ->orWhere(function(Builder $query) use($member, $session) {
+                        return $query->whereHas('session_bill', function(Builder $query) use($member, $session) {
                             return $query->where('member_id', $member->id)
-                                ->whereIn('session_id', $sessionIds);
-                        });
-                    });
-            })
-            ->where(function($query) use($session) {
-                return $query
-                    // Bills that are not yet settled.
-                    ->orWhere(function(Builder $query) {
-                        return $query->whereDoesntHave('settlement');
-                    })
-                    // Bills settled on this session.
-                    ->orWhere(function(Builder $query) use($session) {
-                        return $query->whereHas('settlement', function(Builder $query) use($session) {
-                            $query->where('session_id', $session->id);
+                                ->where('session_id', $session->id);
                         });
                     });
             })
             ->get()
             ->each(function($bill) {
+                $bill->paid = $bill->settlement !== null;
                 $bill->session = $bill->session_bill ? $bill->session_bill->session : null;
             });
     }
 
-        /**
-         * @param Member $member
-         * @param Session $session
-         *
-         * @return Collection
-         */
-        public function getFees(Member $member, Session $session): Collection
-        {
-            $bills = $this->getFeeBills($member, $session)
-                ->each(function($bill) {
-                    $bill->charge_id = $bill->session_bill ? $bill->session_bill->charge_id :
-                        ($bill->round_bill ? $bill->round_bill->charge_id : $bill->tontine_bill->charge_id);
-                })
-                ->keyBy('charge_id');
-
-            return $this->tenantService->tontine()->charges()->fixed()->get()
-                ->each(function($charge) use($bills) {
-                    $charge->paid = false;
-                    $charge->session = null;
-                    if(($bill = $bills->get($charge->id)) !== null)
-                    {
-                        $charge->paid = $bill->settlement !== null;
-                        $charge->session = $bill->session;
-                    }
-                });
-        }
-
     /**
-     * @param Member $member
      * @param Session $session
+     * @param Member $member
      *
      * @return Collection
      */
-    public function getFineBills(Member $member, Session $session): Collection
+    public function getFines(Session $session, Member $member): Collection
     {
-        $sessionIds = $this->tenantService->getPreviousSessions($session);
         return Bill::with(['settlement', 'fine_bill.session'])
-            ->whereHas('fine_bill', function(Builder $query) use($member, $sessionIds) {
-                return $query->where('member_id', $member->id)
-                    ->whereIn('session_id', $sessionIds);
+            ->whereHas('fine_bill', function(Builder $query) use($member) {
+                return $query->where('member_id', $member->id);
             })
             ->where(function($query) use($session) {
                 return $query
-                    // Bills that are not yet settled.
-                    ->orWhere(function(Builder $query) {
-                        return $query->whereDoesntHave('settlement');
-                    })
                     // Bills settled on this session.
                     ->orWhere(function(Builder $query) use($session) {
                         return $query->whereHas('settlement', function(Builder $query) use($session) {
                             $query->where('session_id', $session->id);
+                        });
+                    })
+                    // Bills created on this session.
+                    ->orWhere(function(Builder $query) use($session) {
+                        return $query->whereHas('fine_bill', function(Builder $query) use($session) {
+                            return $query->where('session_id', $session->id);
                         });
                     });
             })
@@ -245,65 +208,59 @@ class MemberService
             ->each(function($bill) {
                 $bill->session = $bill->fine_bill->session;
             });
-        }
+    }
 
     /**
-     * @param Member $member
      * @param Session $session
+     * @param Member $member
      *
      * @return Collection
      */
-    public function getFundings(Member $member, Session $session): Collection
+    public function getLoans(Session $session, Member $member): Collection
     {
-        return Funding::where('member_id', $member->id)
-            ->where('session_id', $session->id)
+        return $session->loans()->with(['session'])->where('member_id', $member->id)->get();
+    }
+
+    /**
+     * @param Session $session
+     * @param Member $member
+     *
+     * @return Collection
+     */
+    public function getDebts(Session $session, Member $member): Collection
+    {
+        return Debt::with(['loan', 'loan.session'])
+            // Member debts
+            ->whereHas('loan', function(Builder $query) use($member) {
+                $query->where('member_id', $member->id);
+            })
+            // Debts refunded on this session.
+            ->whereHas('refund', function(Builder $query) use($session) {
+                $query->where('session_id', $session->id);
+            })
             ->get();
     }
 
     /**
-     * @param Member $member
      * @param Session $session
+     * @param Member $member
      *
      * @return Collection
      */
-    public function getLoans(Member $member, Session $session): Collection
+    public function getFundings(Session $session, Member $member): Collection
     {
-        return Loan::where('member_id', $member->id)
-            ->where('session_id', $session->id)
-            ->get();
+        return $session->fundings()->with(['session'])->where('member_id', $member->id)->get();
     }
 
     /**
-     * @param Member $member
      * @param Session $session
+     * @param Member $member
      *
      * @return Collection
      */
-    public function getDebts(Member $member, Session $session): Collection
+    public function getDisbursements(Session $session, Member $member): Collection
     {
-        $sessionIds = $this->tenantService->getPreviousSessions($session);
-        return Debt::with(['refund', 'refund.session'])
-            ->whereHas('loan', function(Builder $query) use($member, $sessionIds) {
-                $query->where('member_id', $member->id)
-                    ->whereIn('session_id', $sessionIds);
-            })
-            ->where(function($query) use($session) {
-                return $query
-                    // Loans at this session.
-                    ->whereHas('loan', function(Builder $query) use($session) {
-                        $query->where('session_id', $session->id);
-                    })
-                    // Debts that are not yet refunded.
-                    ->orWhere(function(Builder $query) {
-                        return $query->whereDoesntHave('refund');
-                    })
-                    // Debts refunded on this session.
-                    ->orWhere(function(Builder $query) use($session) {
-                        return $query->whereHas('refund', function(Builder $query) use($session) {
-                            $query->where('session_id', $session->id);
-                        });
-                    });
-            })
-            ->get();
+        return $session->disbursements()->with(['session', 'category'])
+            ->where('member_id', $member->id)->get();
     }
 }

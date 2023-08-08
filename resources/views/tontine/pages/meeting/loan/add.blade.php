@@ -8,13 +8,13 @@
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('principal', trans('tontine.loan.labels.principal'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+              {!! Form::label('principal', __('meeting.loan.labels.principal'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
               <div class="col-sm-5">
                 {!! Form::text('principal', $amountAvailable, ['class' => 'form-control']) !!}
               </div>
             </div>
             <div class="form-group row">
-                {!! Form::label('interest', trans('tontine.loan.labels.interest'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+                {!! Form::label('interest', __('meeting.loan.labels.interest'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
                 <div class="col-sm-5">
                   {!! Form::text('interest', '', ['class' => 'form-control']) !!}
                 </div>
