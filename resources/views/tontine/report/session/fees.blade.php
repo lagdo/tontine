@@ -1,36 +1,28 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-          <div class="row align-items-center">
-            <div class="col-auto">
-              <h6 class="section-title mt-0">{!! __('meeting.titles.fees') !!}</h6>
-            </div>
-          </div>
-          <div class="table-responsive">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>{!! __('common.labels.title') !!}</th>
-                  <th>&nbsp;</th>
-                  <th>&nbsp;</th>
-                  <th>&nbsp;</th>
-                </tr>
-              </thead>
-              <tbody>
-@foreach ($fees as $charge)
-                <tr>
-                  <td>{{ $charge->name }}</td>
-                  <td>
-                    {{ $settlements['total']['current'][$charge->id] ?? 0 }}/{{ $bills['total']['current'][$charge->id] ?? 0 }}
-                  </td>
-                  <td>{{ $locale->formatMoney($charge->amount) }}</td>
-                  <td>
-                    {{ $settlements['amount']['current'][$charge->id] ?? $locale->formatMoney(0) }}
-                  </td>
-                </tr>
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <div class="section-title mt-0">{{ __('meeting.charge.titles.fixed') }}</div>
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>{{ __('common.labels.title') }}</th>
+                          <th>&nbsp;</th>
+                          <th>&nbsp;</th>
+                          <th class="currency">{{ __('common.labels.total') }}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+@foreach($fees as $fee)
+                        <tr>
+                          <td>{{ $fee->name }}</td>
+                          <td>{{ $locale->formatMoney($fee->amount, true) }}</td>
+                          <td>{{ $fee->total_count }}</td>
+                          <td class="currency">{{ $locale->formatMoney($fee->total_amount, true) }}</td>
+                        </tr>
 @endforeach
-                <tr>
-                  <th colspan="3">{!! __('common.labels.total') !!}</th>
-                  <th></th>
-                </tr>
-              </tbody>
-            </table>
-          </div> <!-- End table -->
+                      </tbody>
+                    </table>
+                  </div> <!-- End table -->

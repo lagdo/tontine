@@ -52,6 +52,9 @@ class Session extends CallableClass
         $this->jq('#btn-session-select')->click($this->rq()->showSession($sessionId));
         $this->jq('#btn-member-select')->click($this->rq()->showMember($sessionId, $memberId));
 
+        // Route to session report export
+        $this->jq('#btn-session-export')->click(pm()->js('setSessionExportLink'));
+
         $session = $this->sessionService->getSession($sessions->keys()->first());
         $this->response->html('session-report-title', $session->title);
         $this->cl(Session\Session::class)->show($session);

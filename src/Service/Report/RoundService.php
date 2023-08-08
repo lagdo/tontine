@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
 
-class PoolService
+class RoundService
 {
     /**
      * @param Collection $sessionIds

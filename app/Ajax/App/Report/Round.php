@@ -6,7 +6,7 @@ use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
-use Siak\Tontine\Service\Report\PoolService;
+use Siak\Tontine\Service\Report\RoundService;
 use Siak\Tontine\Service\TenantService;
 
 /**
@@ -28,9 +28,9 @@ class Round extends CallableClass
 
     /**
      * @di
-     * @var PoolService
+     * @var RoundService
      */
-    protected PoolService $poolService;
+    protected RoundService $roundService;
 
     /**
      * @di
@@ -74,11 +74,11 @@ class Round extends CallableClass
         })->pluck('id');
         $html = $this->view()->render('tontine.pages.report.round.amounts', [
             'sessions' => $sessions,
-            'settlements' => $this->poolService->getSettlementAmounts($sessionIds),
-            'loans' => $this->poolService->getLoanAmounts($sessionIds),
-            'refunds' => $this->poolService->getRefundAmounts($sessionIds),
-            'fundings' => $this->poolService->getFundingAmounts($sessionIds),
-            'disbursements' => $this->poolService->getDisbursementAmounts($sessionIds),
+            'settlements' => $this->roundService->getSettlementAmounts($sessionIds),
+            'loans' => $this->roundService->getLoanAmounts($sessionIds),
+            'refunds' => $this->roundService->getRefundAmounts($sessionIds),
+            'fundings' => $this->roundService->getFundingAmounts($sessionIds),
+            'disbursements' => $this->roundService->getDisbursementAmounts($sessionIds),
         ]);
         $this->response->html('content-amounts', $html);
     }

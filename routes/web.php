@@ -43,10 +43,10 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function()
 
     // Report pages
     //----------------------------------
-    Route::get('/report/pool/{poolId}', [ReportController::class, 'pool'])
-        ->name('report.pool')->middleware(['auth', TontineTenant::class, SetDateFormat::class]);
     Route::get('/report/session/{sessionId}', [ReportController::class, 'session'])
         ->name('report.session')->middleware(['auth', TontineTenant::class, SetDateFormat::class]);
+    Route::get('/report/round', [ReportController::class, 'round'])
+        ->name('report.round')->middleware(['auth', TontineTenant::class, SetDateFormat::class]);
 });
 
 // Redefine Fortify routes with different HTTP verbs

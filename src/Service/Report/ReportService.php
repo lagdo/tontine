@@ -6,10 +6,9 @@ use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Meeting\Charge\FeeService;
-use Siak\Tontine\Service\Meeting\Charge\FineService;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
+use Siak\Tontine\Service\Report\RoundService;
 
 class ReportService implements ReportServiceInterface
 {
@@ -24,14 +23,9 @@ class ReportService implements ReportServiceInterface
     protected TenantService $tenantService;
 
     /**
-     * @var FeeService
+     * @var SessionService
      */
-    private FeeService $feeService;
-
-    /**
-     * @var FineService
-     */
-    private FineService $fineService;
+    private SessionService $sessionService;
 
     /**
      * @var SubscriptionService
@@ -42,6 +36,11 @@ class ReportService implements ReportServiceInterface
      * @var SummaryService
      */
     private SummaryService $summaryService;
+
+    /**
+     * @var RoundService
+     */
+    protected RoundService $roundService;
 
     /**
      * @var int
@@ -56,19 +55,19 @@ class ReportService implements ReportServiceInterface
     /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
-     * @param FeeService $feeService
-     * @param FineService $fineService
+     * @param SessionService $sessionService
      * @param SubscriptionService $subscriptionService
+     * @param RoundService $roundService
      * @param SummaryService $summaryService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService, FeeService $feeService,
-        FineService $fineService, SubscriptionService $subscriptionService, SummaryService $summaryService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService, RoundService $roundService,
+        SessionService $sessionService, SubscriptionService $subscriptionService, SummaryService $summaryService)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
-        $this->feeService = $feeService;
-        $this->fineService = $fineService;
+        $this->sessionService = $sessionService;
         $this->subscriptionService = $subscriptionService;
+        $this->roundService = $roundService;
         $this->summaryService = $summaryService;
     }
 
@@ -121,71 +120,68 @@ class ReportService implements ReportServiceInterface
         $session = $this->tenantService->getSession($sessionId);
         [$country] = $this->localeService->getNameFromTontine($tontine);
 
-        $pools = $this->getPools($session);
-
-        $charges = $this->tenantService->tontine()->charges;
-        // Fees
-        $bills = $this->feeService->getBills($session);
-        $settlements = $this->feeService->getSettlements($session);
-        $fees = [
-            'bills' => $bills,
-            'settlements' => $settlements,
-            'zero' => $settlements['zero'],
-            'fees' => $charges->filter(function($charge) use($bills, $settlements) {
-                return $charge->is_fixed &&
-                    (isset($bills['total']['current'][$charge->id]) ||
-                    isset($settlements['total']['current'][$charge->id]));
-            })
-        ];
-        // Fines
-        $bills = $this->fineService->getBills($session);
-        $settlements = $this->fineService->getSettlements($session);
-        $fines = [
-            'bills' => $bills,
-            'settlements' => $settlements,
-            'zero' => $settlements['zero'],
-            'fines' => $charges->filter(function($charge) use($bills, $settlements) {
-                return $charge->is_variable &&
-                    (isset($bills['total']['current'][$charge->id]) ||
-                    isset($settlements['total']['current'][$charge->id]));
-            })
-        ];
-
         return [
             'tontine' => $tontine,
             'session' => $session,
             'country' => $country,
             'deposits' => [
                 'session' => $session,
-                'pools' => $pools,
-                'amount' => $this->depositsAmount,
+                'pools' => $this->sessionService->getReceivables($session),
             ],
             'remitments' => [
                 'session' => $session,
-                'pools' => $pools,
-                'amount' => $this->remitmentsAmount,
+                'pools' => $this->sessionService->getPayables($session),
             ],
-            'fees' => $fees,
-            'fines' => $fines,
+            'loans' => [
+                'loan' => $this->sessionService->getLoan($session),
+            ],
+            'refunds' => [
+                'refund' => $this->sessionService->getRefund($session),
+            ],
+            'fees' => [
+                'fees' => $this->sessionService->getFees($session),
+            ],
+            'fines' => [
+                'fines' => $this->sessionService->getFines($session),
+            ],
+            'fundings' => [
+                'funding' => $this->sessionService->getFunding($session),
+            ],
+            'disbursements' => [
+                'disbursement' => $this->sessionService->getDisbursement($session),
+            ],
         ];
     }
 
     /**
-     * @param integer $poolId
-     *
      * @return array
      */
-    public function getPoolReport(int $poolId): array
+    public function getRoundReport(): array
     {
-        $pool = $this->subscriptionService->getPool($poolId);
-        $report = $this->summaryService->getFigures($pool);
         $tontine = $this->tenantService->tontine();
+        $round = $this->tenantService->round();
         [$country, $currency] = $this->localeService->getNameFromTontine($tontine);
 
-        $report['tontine'] = $tontine;
-        $report['country'] = $country;
-        $report['currency'] = $currency;
+        $pools = $this->subscriptionService->getPools(false)
+            ->each(function($pool) {
+                $pool->figures = $this->summaryService->getFigures($pool);
+            });
 
-        return $report;
+        $sessions = $this->tenantService->round()->sessions;
+        // Sessions with data
+        $sessionIds = $sessions->filter(function($session) {
+            return $session->status === Session::STATUS_CLOSED ||
+                $session->status === Session::STATUS_OPENED;
+        })->pluck('id');
+        $amounts = [
+            'sessions' => $sessions,
+            'settlements' => $this->roundService->getSettlementAmounts($sessionIds),
+            'loans' => $this->roundService->getLoanAmounts($sessionIds),
+            'refunds' => $this->roundService->getRefundAmounts($sessionIds),
+            'fundings' => $this->roundService->getFundingAmounts($sessionIds),
+            'disbursements' => $this->roundService->getDisbursementAmounts($sessionIds),
+        ];
+
+        return compact('tontine', 'round', 'country', 'currency', 'pools', 'amounts');
     }
 }

@@ -36,17 +36,15 @@
 
           @include('tontine.report.session.remitments', $remitments)
 
-@if ($fees['fees']->count() > 0)
           @include('tontine.report.session.fees', $fees)
-@endif
 
-@if ($fines['fines']->count() > 0)
           @include('tontine.report.session.fines', $fines)
-@endif
 
-{{--
           @include('tontine.report.session.loans', $loans)
 
           @include('tontine.report.session.refunds', $refunds)
---}}
+
+          @include('tontine.report.session.fundings', $fundings)
+
+          @include('tontine.report.session.disbursements', $disbursements)
 @endsection
