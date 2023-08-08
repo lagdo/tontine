@@ -27,21 +27,27 @@
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">
               <div class="row">
-                <div class="col-md-6 col-sm-12" id="member-deposits">
+                <div class="col-md-6 col-sm-12" id="report-deposits">
                 </div>
-                <div class="col-md-6 col-sm-12" id="member-remitments">
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 col-sm-12" id="member-fees">
-                </div>
-                <div class="col-md-6 col-sm-12" id="member-fines">
+                <div class="col-md-6 col-sm-12" id="report-remitments">
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 col-sm-12" id="member-loans">
+                <div class="col-md-6 col-sm-12" id="report-fees">
                 </div>
-                <div class="col-md-6 col-sm-12" id="member-refunds">
+                <div class="col-md-6 col-sm-12" id="report-fines">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 col-sm-12" id="report-loans">
+                </div>
+                <div class="col-md-6 col-sm-12" id="report-refunds">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 col-sm-12" id="report-fundings">
+                </div>
+                <div class="col-md-6 col-sm-12" id="report-disbursements">
                 </div>
               </div>
             </div>

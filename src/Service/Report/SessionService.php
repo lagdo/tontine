@@ -44,7 +44,7 @@ class SessionService
     {
         return $this->tenantService->tontine()->is_libre ?
             $this->poolService->getLibrePoolAmount($pool, $session) :
-            $pool->amount * $pool->paid * $sessionCount;
+            $pool->amount * $pool->paid_count * $sessionCount;
     }
 
     /**
@@ -56,12 +56,12 @@ class SessionService
     {
         return Pool::where('round_id', $session->round_id)
             ->withCount([
-                'subscriptions as total' => function($query) use($session) {
+                'subscriptions as total_count' => function($query) use($session) {
                     $query->whereHas('receivables', function($query) use($session) {
                         $query->where('session_id', $session->id);
                     });
                 },
-                'subscriptions as paid' => function($query) use($session) {
+                'subscriptions as paid_count' => function($query) use($session) {
                     $query->whereHas('receivables', function($query) use($session) {
                         $query->where('session_id', $session->id)->whereHas('deposit');
                     });
@@ -69,8 +69,8 @@ class SessionService
             ])
             ->get()
             ->each(function($pool) use($session) {
-                $pool->total = $pool->amount * $pool->total;
-                $pool->paid = $this->getPoolAmountPaid($pool, $session);
+                $pool->total_amount = $pool->amount * $pool->total_count;
+                $pool->paid_amount = $this->getPoolAmountPaid($pool, $session);
             });
     }
 
@@ -83,12 +83,12 @@ class SessionService
     {
         return Pool::where('round_id', $session->round_id)
             ->withCount([
-                'subscriptions as total' => function($query) use($session) {
+                'subscriptions as total_count' => function($query) use($session) {
                     $query->whereHas('payable', function($query) use($session) {
                         $query->where('session_id', $session->id);
                     });
                 },
-                'subscriptions as paid' => function($query) use($session) {
+                'subscriptions as paid_count' => function($query) use($session) {
                     $query->whereHas('payable', function($query) use($session) {
                         $query->where('session_id', $session->id)->whereHas('remitment');
                     });
@@ -97,8 +97,9 @@ class SessionService
             ->get()
             ->each(function($pool) use($session) {
                 $sessionCount = $this->poolService->enabledSessionCount($pool);
-                $pool->total = $pool->amount * $pool->total * $sessionCount;
-                $pool->paid = $this->getPoolAmountPaid($pool, $session, $sessionCount);
+                $pool->total_amount = $pool->amount * $pool->total_count * $sessionCount;
+                $pool->paid_amount =  $pool->paid_count === 0 ? 0 :
+                    $this->getPoolAmountPaid($pool, $session, $sessionCount);
             });
     }
 
@@ -111,7 +112,8 @@ class SessionService
     {
         return DB::table('bills')
             ->join('tontine_bills', 'bills.id', '=', 'tontine_bills.bill_id')
-            ->select(DB::raw('sum(bills.amount) as total'), 'tontine_bills.charge_id')
+            ->select(DB::raw('sum(bills.amount) as total_amount'),
+                DB::raw('count(bills.id) as total_count'), 'tontine_bills.charge_id')
             ->groupBy('tontine_bills.charge_id')
             ->whereExists(function(Builder $query) use($session) {
                 return $query->select(DB::raw(1))
@@ -131,7 +133,8 @@ class SessionService
     {
         return DB::table('bills')
             ->join('round_bills', 'bills.id', '=', 'round_bills.bill_id')
-            ->select(DB::raw('sum(bills.amount) as total'), 'round_bills.charge_id')
+            ->select(DB::raw('sum(bills.amount) as total_amount'),
+                DB::raw('count(bills.id) as total_count'), 'round_bills.charge_id')
             ->groupBy('round_bills.charge_id')
             ->whereExists(function(Builder $query) use($session) {
                 return $query->select(DB::raw(1))
@@ -151,7 +154,8 @@ class SessionService
     {
         return DB::table('bills')
             ->join('session_bills', 'bills.id', '=', 'session_bills.bill_id')
-            ->select(DB::raw('sum(bills.amount) as total'), 'session_bills.charge_id')
+            ->select(DB::raw('sum(bills.amount) as total_amount'),
+                DB::raw('count(bills.id) as total_count'), 'session_bills.charge_id')
             ->groupBy('session_bills.charge_id')
             ->whereExists(function(Builder $query) use($session) {
                 return $query->select(DB::raw(1))
@@ -172,11 +176,13 @@ class SessionService
         $bills = $this->getTontineFees($session)
             ->concat($this->getRoundFees($session))
             ->concat($this->getSessionFees($session))
-            ->pluck('total', 'charge_id');
+            ->keyBy('charge_id');
 
         return $this->tenantService->tontine()->charges()->fixed()->get()
             ->each(function($fee) use($bills) {
-                $fee->total = $bills[$fee->id] ?? 0;
+                $bill = $bills[$fee->id] ?? null;
+                $fee->total_count = $bill ? $bill->total_count : 0;
+                $fee->total_amount = $bill ? $bill->total_amount : 0;
             });
     }
 
@@ -189,7 +195,8 @@ class SessionService
     {
         $bills = DB::table('bills')
             ->join('fine_bills', 'bills.id', '=', 'fine_bills.bill_id')
-            ->select(DB::raw('sum(bills.amount) as total'), 'fine_bills.charge_id')
+            ->select(DB::raw('sum(bills.amount) as total_amount'),
+                DB::raw('count(bills.id) as total_count'), 'fine_bills.charge_id')
             ->groupBy('fine_bills.charge_id')
             ->whereExists(function(Builder $query) use($session) {
                 return $query->select(DB::raw(1))
@@ -197,35 +204,18 @@ class SessionService
                     ->where('session_id', $session->id)
                     ->whereColumn('settlements.bill_id', 'bills.id');
             })
-            ->get()->pluck('total', 'charge_id');
+            ->get()->keyBy('charge_id');
 
         return $this->tenantService->tontine()->charges()->variable()->get()
-            ->filter(function($fine) use($bills) {
-                // Filter on fees with paid bills.
-                return isset($bills[$fine->id]);
-            })
+            // ->filter(function($fine) use($bills) {
+            //     // Filter on fees with paid bills.
+            //     return isset($bills[$fine->id]);
+            // })
             ->each(function($fine) use($bills) {
-                $fine->total = $bills[$fine->id] ?? 0;
+                $bill = $bills[$fine->id] ?? null;
+                $fine->total_count = $bill ? $bill->total_count : 0;
+                $fine->total_amount = $bill ? $bill->total_amount : 0;
             });
-    }
-
-    /**
-     * @param Session $session
-     *
-     * @return object
-     */
-    public function getFunding(Session $session): object
-    {
-        $funding = DB::table('fundings')
-            ->select(DB::raw('sum(amount) as amount'))
-            ->where('session_id', $session->id)
-            ->first();
-        if(!$funding->amount)
-        {
-            $funding->amount = 0;
-        }
-
-        return $funding;
     }
 
     /**
@@ -278,5 +268,51 @@ class SessionService
         }
 
         return $refund;
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return object
+     */
+    public function getFunding(Session $session): object
+    {
+        $funding = DB::table('fundings')
+            ->select(DB::raw('sum(amount) as total_amount'), DB::raw('count(id) as total_count'))
+            ->where('session_id', $session->id)
+            ->first();
+        if(!$funding->total_amount)
+        {
+            $funding->total_amount = 0;
+        }
+        if(!$funding->total_count)
+        {
+            $funding->total_count = 0;
+        }
+
+        return $funding;
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return object
+     */
+    public function getDisbursement(Session $session): object
+    {
+        $disbursement = DB::table('disbursements')
+            ->select(DB::raw('sum(amount) as total_amount'), DB::raw('count(id) as total_count'))
+            ->where('session_id', $session->id)
+            ->first();
+        if(!$disbursement->total_amount)
+        {
+            $disbursement->total_amount = 0;
+        }
+        if(!$disbursement->total_count)
+        {
+            $disbursement->total_count = 0;
+        }
+
+        return $disbursement;
     }
 }

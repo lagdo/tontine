@@ -8,16 +8,16 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
+                          <th>&nbsp;</th>
                           <th class="currency">{{ __('meeting.loan.labels.principal') }}</th>
                           <th class="currency">{{ __('meeting.loan.labels.interest') }}</th>
-                          <th class="currency">{{ __('common.labels.total') }}</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
+                          <td>{{ __('common.labels.total') }}</td>
                           <td class="currency">{{ $locale->formatMoney($loan->principal, true) }}</td>
                           <td class="currency">{{ $locale->formatMoney($loan->interest, true) }}</td>
-                          <td class="currency">{{ $locale->formatMoney($loan->principal + $loan->interest, true) }}</td>
                         </tr>
                       </tbody>
                     </table>

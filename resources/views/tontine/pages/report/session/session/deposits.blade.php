@@ -9,16 +9,17 @@
                       <thead>
                         <tr>
                           <th>{{ __('common.labels.title') }}</th>
-                          <th class="currency">{{ __('common.labels.amount') }}</th>
+                          <th>&nbsp;</th>
                           <th class="currency">{{ __('common.labels.total') }}</th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach($pools as $pool)
                         <tr>
-                          <td>{{ $pool->title }}</td>
-                          <td class="currency">{{ $tontine->is_libre ? __('tontine.labels.types.libre') : $locale->formatMoney($pool->amount, true) }}</td>
-                          <td class="currency">{{ $locale->formatMoney($pool->paid, true) }}</td>
+                          <td>{{ $pool->title }}<br/>{{ $tontine->is_libre ?
+                            __('tontine.labels.types.libre') : $locale->formatMoney($pool->amount, true) }}</td>
+                          <td>{{ $pool->paid_count }}/{{ $pool->total_count }}</td>
+                          <td class="currency">{{ $locale->formatMoney($pool->paid_amount, true) }}</td>
                         </tr>
 @endforeach
                       </tbody>

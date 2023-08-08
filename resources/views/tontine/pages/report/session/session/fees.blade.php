@@ -9,16 +9,16 @@
                       <thead>
                         <tr>
                           <th>{{ __('common.labels.title') }}</th>
-                          <th class="currency">{{ __('common.labels.amount') }}</th>
+                          <th>&nbsp;</th>
                           <th class="currency">{{ __('common.labels.total') }}</th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach($fees as $fee)
                         <tr>
-                          <td>{{ $fee->name }}</td>
-                          <td class="currency">{{ $locale->formatMoney($fee->amount, true) }}</td>
-                          <td class="currency">{{ $locale->formatMoney($fee->total, true) }}</td>
+                          <td>{{ $fee->name }}<br/>{{ $locale->formatMoney($fee->amount, true) }}</td>
+                          <td>{{ $fee->total_count }}</td>
+                          <td class="currency">{{ $locale->formatMoney($fee->total_amount, true) }}</td>
                         </tr>
 @endforeach
                       </tbody>

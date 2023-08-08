@@ -9,13 +9,15 @@
                       <thead>
                         <tr>
                           <th>{{ __('common.labels.title') }}</th>
+                          <th>&nbsp;</th>
                           <th class="currency">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
                           <td>{{ __('common.labels.total') }}</td>
-                          <td class="currency">{{ $locale->formatMoney($funding->amount, true) }}</td>
+                          <td>{{ $funding->total_count }}</td>
+                          <td class="currency">{{ $locale->formatMoney($funding->total_amount, true) }}</td>
                         </tr>
                       </tbody>
                     </table>

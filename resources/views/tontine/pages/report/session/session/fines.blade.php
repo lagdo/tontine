@@ -9,16 +9,17 @@
                       <thead>
                         <tr>
                           <th>{{ __('common.labels.title') }}</th>
-                          <th class="currency">{{ __('common.labels.amount') }}</th>
+                          <th>&nbsp;</th>
                           <th class="currency">{{ __('common.labels.total') }}</th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach($fines as $fine)
                         <tr>
-                          <td>{{ $fine->name }}</td>
-                          <td class="currency">{{ $fine->has_amount ? $locale->formatMoney($fine->amount, true) : __('tontine.labels.fees.variable') }}</td>
-                          <td class="currency">{{ $locale->formatMoney($fine->total, true) }}</td>
+                          <td>{{ $fine->name }}<br/>{{ $fine->has_amount ?
+                            $locale->formatMoney($fine->amount, true) : __('tontine.labels.fees.variable') }}</td>
+                          <td>{{ $fine->total_count }}</td>
+                          <td class="currency">{{ $locale->formatMoney($fine->total_amount, true) }}</td>
                         </tr>
 @endforeach
                       </tbody>
