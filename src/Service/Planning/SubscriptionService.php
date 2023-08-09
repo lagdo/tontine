@@ -39,11 +39,14 @@ class SubscriptionService
     /**
      * Get pools for the dropdown list.
      *
+     * @param bool $pluck
+     *
      * @return Collection
      */
-    public function getPools(): Collection
+    public function getPools(bool $pluck = true): Collection
     {
-        return $this->tenantService->round()->pools()->whereHas('subscriptions')->pluck('title', 'id');
+        $query = $this->tenantService->round()->pools()->whereHas('subscriptions');
+        return $pluck ? $query->pluck('title', 'id') : $query->get();
     }
 
     /**

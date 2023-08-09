@@ -4,6 +4,7 @@ namespace App\Ajax\App\Planning;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
+use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Planning\SummaryService;
 use Siak\Tontine\Service\TenantService;
@@ -16,7 +17,7 @@ use function Jaxon\pm;
  * @databag report
  * @before getPool
  */
-class Beneficiary extends CallableClass
+class Summary extends CallableClass
 {
     /**
      * @di
@@ -35,6 +36,11 @@ class Beneficiary extends CallableClass
      * @var SummaryService
      */
     public SummaryService $summaryService;
+
+    /**
+     * @var SessionService
+     */
+    public SessionService $sessionService;
 
     /**
      * @var PoolModel|null
@@ -67,7 +73,7 @@ class Beneficiary extends CallableClass
             $this->bag('report')->set('pool.id', $this->pool->id);
         }
 
-        return $this->home();
+        return $this->amounts();
     }
 
     /**
@@ -75,39 +81,40 @@ class Beneficiary extends CallableClass
      */
     public function home()
     {
-        if(!$this->pool)
+        // Don't try to show the page if there is no pool selected.
+        if(!$this->pool || $this->tenantService->tontine()->is_libre)
         {
             return $this->response;
         }
 
         $this->response->html('section-title', trans('tontine.menus.planning'));
-        $payables = $this->summaryService->getPayables($this->pool);
-        $this->view()->shareValues($payables);
-        $html = $this->view()->render('tontine.pages.planning.beneficiary.page')
-            ->with('tontine', $this->tenantService->tontine())
+        return $this->amounts();
+    }
+
+    public function amounts()
+    {
+        $receivables = $this->summaryService->getReceivables($this->pool);
+        $this->view()->shareValues($receivables);
+        $html = $this->view()->render('tontine.pages.planning.beneficiary.amounts')
             ->with('pool', $this->pool)
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt()));
-        $this->jq('#btn-subscription-refresh')->click($this->rq()->home());
-        $this->jq('.select-beneficiary')->change($this->rq()->save(jq()->attr('data-session-id')->toInt(),
-            jq()->attr('data-subscription-id')->toInt(), jq()->val()->toInt()));
+        $this->jq('#btn-subscription-refresh')->click($this->rq()->amounts());
+        $this->jq('.pool-session-toggle')->click($this->rq()->toggleSession(jq()->attr('data-session-id')->toInt()));
 
         return $this->response;
     }
 
-    public function save(int $sessionId, int $currSubscriptionId, int $nextSubscriptionId)
+    /**
+     * @di $sessionService
+     */
+    public function toggleSession(int $sessionId)
     {
         $session = $this->tenantService->getSession($sessionId);
-        if(!$this->subscriptionService->saveBeneficiary($this->pool, $session,
-            $currSubscriptionId, $nextSubscriptionId))
-        {
-            $message = trans('tontine.beneficiary.errors.cant_change');
-            $this->response->dialog->error($message, trans('common.titles.error'));
-        }
+        $this->sessionService->toggleSession($this->pool, $session);
 
-        // Refresh the page, even in case of error, since the displayed beneficiary has changed.
-        return $this->home();
+        return $this->amounts();
     }
 }

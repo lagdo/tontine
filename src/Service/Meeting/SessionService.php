@@ -158,7 +158,10 @@ class SessionService
         DB::transaction(function() use($session) {
             // Open the session
             $session->update(['status' => Session::STATUS_OPENED]);
-            $this->sessionOpened($this->tenantService->tontine(), $session);
+            if($session->pending)
+            {
+                $this->sessionOpened($this->tenantService->tontine(), $session);
+            }
         });
     }
 

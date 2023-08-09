@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col">
-                      <div class="section-title mt-0">{{ __('meeting.charge.titles.variable') }}</div>
+                      <div class="section-title mt-0">{{ __('meeting.titles.refunds') }}</div>
                     </div>
                   </div>
                   <div class="table-responsive">
@@ -9,18 +9,16 @@
                       <thead>
                         <tr>
                           <th>{{ __('common.labels.title') }}</th>
-                          <th>&nbsp;</th>
-                          <th>&nbsp;</th>
-                          <th class="currency">{{ __('common.labels.total') }}</th>
+                          <th class="currency">{{ __('common.labels.amount') }}</th>
+                          <th class="table-item-menu">{{ __('common.labels.paid') }}</th>
                         </tr>
                       </thead>
                       <tbody>
-@foreach($fines as $fine)
+@foreach($debts as $debt)
                         <tr>
-                          <td>{{ $fine->name }}</td>
-                          <td>{{ $fine->has_amount ? $locale->formatMoney($fine->amount, true) : __('tontine.labels.fees.variable') }}</td>
-                          <td>{{ $fine->total_count }}</td>
-                          <td class="currency">{{ $locale->formatMoney($fine->total_amount, true) }}</td>
+                          <td>{{ __('meeting.loan.labels.' . $debt->type_str) }}<br/>{{ $debt->loan->session->title }}</td>
+                          <td class="currency">{{ $locale->formatMoney($debt->amount, true) }}</td>
+                          <td class="table-item-menu"><i class="fa fa-toggle-{{ $debt->refund ? 'on' : 'off' }}"></i></td>
                         </tr>
 @endforeach
                       </tbody>

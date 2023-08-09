@@ -1,26 +1,24 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col">
-                      <div class="section-title mt-0">{{ __('meeting.charge.titles.fixed') }}</div>
+                      <div class="section-title mt-0">{{ __('meeting.titles.loans') }}</div>
                     </div>
                   </div>
                   <div class="table-responsive">
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>{{ __('common.labels.title') }}</th>
                           <th>&nbsp;</th>
-                          <th>&nbsp;</th>
-                          <th class="currency">{{ __('common.labels.total') }}</th>
+                          <th class="currency">{{ __('meeting.loan.labels.principal') }}</th>
+                          <th class="currency">{{ __('meeting.loan.labels.interest') }}</th>
                         </tr>
                       </thead>
                       <tbody>
-@foreach($fees as $fee)
+@foreach($loans as $loan)
                         <tr>
-                          <td>{{ $fee->name }}</td>
-                          <td>{{ $locale->formatMoney($fee->amount, true) }}</td>
-                          <td>{{ $fee->total_count }}</td>
-                          <td class="currency">{{ $locale->formatMoney($fee->total_amount, true) }}</td>
+                          <td>{{ $loan->session->title }}</td>
+                          <td class="currency">{{ $locale->formatMoney($loan->principal, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($loan->interest, true) }}</td>
                         </tr>
 @endforeach
                       </tbody>

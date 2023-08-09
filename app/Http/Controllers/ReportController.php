@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Facades\PdfGenerator;
-use App\Facades\Report;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
+use Siak\Tontine\Service\Report\ReportServiceInterface;
 
 use function base64_decode;
 use function view;
@@ -16,14 +16,14 @@ class ReportController extends Controller
 {
     /**
      * @param Request $request
-     * @param int $poolId
+     * @param ReportServiceInterface $reportService
+     * @param int $sessionId
      *
      * @return View|Response
      */
-    public function pool(Request $request, int $poolId)
+    public function session(Request $request, ReportServiceInterface $reportService, int $sessionId)
     {
-        $html = view('tontine.report.pool', Report::getPoolReport($poolId));
-
+        $html = view('tontine.report.session', $reportService->getSessionReport($sessionId));
         // Show the html page
         if($request->has('html'))
         {
@@ -32,7 +32,7 @@ class ReportController extends Controller
 
         // Print the pdf
         return response(base64_decode(PdfGenerator::getPdf("$html")), 200)
-            ->header('Content-Description', 'Pool Report')
+            ->header('Content-Description', 'Session Report')
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'inline; filename=report.pdf')
             ->header('Content-Transfer-Encoding', 'binary')
@@ -43,14 +43,14 @@ class ReportController extends Controller
 
     /**
      * @param Request $request
-     * @param int $sessionId
+     * @param ReportServiceInterface $reportService
+     * @param int $roundId
      *
      * @return View|Response
      */
-    public function session(Request $request, int $sessionId)
+    public function round(Request $request, ReportServiceInterface $reportService, int $roundId)
     {
-        $html = view('tontine.report.session', Report::getSessionReport($sessionId));
-
+        $html = view('tontine.report.round', $reportService->getRoundReport($roundId));
         // Show the html page
         if($request->has('html'))
         {
@@ -59,7 +59,7 @@ class ReportController extends Controller
 
         // Print the pdf
         return response(base64_decode(PdfGenerator::getPdf("$html")), 200)
-            ->header('Content-Description', 'Session Report')
+            ->header('Content-Description', 'Round Report')
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'inline; filename=report.pdf')
             ->header('Content-Transfer-Encoding', 'binary')

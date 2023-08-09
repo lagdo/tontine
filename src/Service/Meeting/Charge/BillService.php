@@ -113,13 +113,16 @@ class BillService
         $query = $billRelation === 'session_bill' ?
             $this->getSessionBillsQuery($charge, $session, $onlyPaid) :
             $this->getBillsQuery($charge, $session, $billRelation, $onlyPaid);
+        $billRelations = !$charge->is_variable ? [$billRelation . '.member', 'settlement'] :
+            ['fine_bill.session', 'fine_bill.member', 'settlement'];
 
-        return $query->with([$billRelation . '.member', 'settlement'])
+        return $query->with($billRelations)
             ->page($page, $this->tenantService->getLimit())
             ->orderBy('id', 'asc')
             ->get()
-            ->each(function($bill) use($billRelation) {
+            ->each(function($bill) use($billRelation, $charge) {
                 $bill->member = $bill->$billRelation->member;
+                $bill->session = $charge->is_variable ? $bill->fine_bill->session : null;
             });
     }
 
