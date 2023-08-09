@@ -12,7 +12,9 @@ interface ReportServiceInterface
     public function getSessionReport(int $sessionId): array;
 
     /**
+     * @param int $roundId
+     *
      * @return array
      */
-    public function getRoundReport(): array;
+    public function getRoundReport(int $roundId): array;
 }

@@ -24,7 +24,6 @@ class ReportController extends Controller
     public function session(Request $request, ReportServiceInterface $reportService, int $sessionId)
     {
         $html = view('tontine.report.session', $reportService->getSessionReport($sessionId));
-
         // Show the html page
         if($request->has('html'))
         {
@@ -45,13 +44,13 @@ class ReportController extends Controller
     /**
      * @param Request $request
      * @param ReportServiceInterface $reportService
+     * @param int $roundId
      *
      * @return View|Response
      */
-    public function round(Request $request, ReportServiceInterface $reportService)
+    public function round(Request $request, ReportServiceInterface $reportService, int $roundId)
     {
-        $html = view('tontine.report.round', $reportService->getRoundReport());
-
+        $html = view('tontine.report.round', $reportService->getRoundReport($roundId));
         // Show the html page
         if($request->has('html'))
         {

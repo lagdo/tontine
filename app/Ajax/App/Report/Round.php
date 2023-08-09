@@ -43,7 +43,8 @@ class Round extends CallableClass
      */
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.report.round.home');
+        $html = $this->view()->render('tontine.pages.report.round.home')
+            ->with('round', $this->tenantService->round());
         $this->response->html('content-home', $html);
         $this->jq('#btn-meeting-report-refresh')->click($this->rq()->home());
 

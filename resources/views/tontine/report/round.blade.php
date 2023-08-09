@@ -35,6 +35,8 @@
 
 @foreach ($pools as $pool)
           @include('tontine.report.round.pool', $pool->figures)
+
+          <div class="pagebreak"></div>
 @endforeach
 
           @include('tontine.report.round.amounts', $amounts)

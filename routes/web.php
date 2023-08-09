@@ -24,29 +24,28 @@ use Laravel\Fortify\RoutePath;
 |
 */
 
-Route::group(['prefix' => LaravelLocalization::setLocale()], function()
+Route::middleware(['auth', TontineTenant::class, SetDateFormat::class])
+->prefix(LaravelLocalization::setLocale())
+->group(function()
 {
     // Home page
     //----------------------------------
     Route::get('/', [IndexController::class, 'index'])->name('tontine.home')
-        ->middleware(['auth', AnnotationCache::class, TontineTenant::class, SetDateFormat::class]);
+        ->middleware([AnnotationCache::class]);
 
     // Route to handle Jaxon ajax requests
     //----------------------------------
     Route::post('ajax', [JaxonController::class, 'jaxon'])->name('tontine.ajax')
-        ->middleware(['auth', AnnotationCache::class, TontineTenant::class, SetDateFormat::class]);
+        ->middleware([AnnotationCache::class]);
 
     // User profile page
     //----------------------------------
-    Route::get('/profile', [IndexController::class, 'profile'])->name('user.profile')
-        ->middleware(['auth', TontineTenant::class, SetDateFormat::class]);
+    Route::get('/profile', [IndexController::class, 'profile'])->name('user.profile');
 
     // Report pages
     //----------------------------------
-    Route::get('/report/session/{sessionId}', [ReportController::class, 'session'])
-        ->name('report.session')->middleware(['auth', TontineTenant::class, SetDateFormat::class]);
-    Route::get('/report/round', [ReportController::class, 'round'])
-        ->name('report.round')->middleware(['auth', TontineTenant::class, SetDateFormat::class]);
+    Route::get('/report/session/{sessionId}', [ReportController::class, 'session'])->name('report.session');
+    Route::get('/report/round/{roundId}', [ReportController::class, 'round'])->name('report.round');
 });
 
 // Redefine Fortify routes with different HTTP verbs

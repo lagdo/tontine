@@ -154,12 +154,14 @@ class ReportService implements ReportServiceInterface
     }
 
     /**
+     * @param int $roundId
+     *
      * @return array
      */
-    public function getRoundReport(): array
+    public function getRoundReport(int $roundId): array
     {
         $tontine = $this->tenantService->tontine();
-        $round = $this->tenantService->round();
+        $round = $tontine->rounds()->find($roundId);
         [$country, $currency] = $this->localeService->getNameFromTontine($tontine);
 
         $pools = $this->subscriptionService->getPools(false)
@@ -167,7 +169,7 @@ class ReportService implements ReportServiceInterface
                 $pool->figures = $this->summaryService->getFigures($pool);
             });
 
-        $sessions = $this->tenantService->round()->sessions;
+        $sessions = $round->sessions;
         // Sessions with data
         $sessionIds = $sessions->filter(function($session) {
             return $session->status === Session::STATUS_CLOSED ||

@@ -7,7 +7,8 @@
               <div class="col-auto">
                 <div class="btn-group float-right ml-2" role="group" aria-label="">
                   <button type="button" class="btn btn-primary" id="btn-meeting-report-refresh"><i class="fa fa-sync"></i></button>
-                  <a type="button" class="btn btn-primary" target="_blank" href="{{ route('report.round') }}"><i class="fa fa-file-pdf"></i></a>
+                  <a type="button" class="btn btn-primary" target="_blank" href="{{
+                    route('report.round', ['roundId' => $round->id]) }}"><i class="fa fa-file-pdf"></i></a>
                 </div>
               </div>
             </div>
