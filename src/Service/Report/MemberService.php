@@ -95,6 +95,10 @@ class MemberService
                 $receivable->member = $receivable->subscription->member;
                 $receivable->paid = ($receivable->deposit !== null);
                 $receivable->amount = $this->getReceivableAmount($receivable);
+            })
+            // Sort by member name
+            ->when($member === null, function($collection) {
+                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
             });
     }
 
@@ -132,6 +136,10 @@ class MemberService
                 $payable->member = $payable->subscription->member;
                 $payable->paid = ($payable->remitment !== null);
                 $payable->amount = $this->getPayableAmount($payable->pool, $session);
+            })
+            // Sort by member name
+            ->when($member === null, function($collection) {
+                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
             });
     }
 
@@ -186,6 +194,10 @@ class MemberService
                     ($bill->round_bill ? $bill->round_bill->member : $bill->tontine_bill->member);
                 $bill->charge_id = $bill->session_bill ? $bill->session_bill->charge_id :
                     ($bill->round_bill ? $bill->round_bill->charge_id : $bill->tontine_bill->charge_id);
+            })
+            // Sort by member name
+            ->when($member === null, function($collection) {
+                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
             });
     }
 
@@ -225,6 +237,10 @@ class MemberService
                 $bill->session = $bill->fine_bill->session;
                 $bill->member = $bill->fine_bill->member;
                 $bill->charge_id = $bill->fine_bill->charge_id;
+            })
+            // Sort by member name
+            ->when($member === null, function($collection) {
+                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
             });
     }
 
@@ -240,7 +256,11 @@ class MemberService
             ->when($member !== null, function($query) use($member) {
                 return $query->where('member_id', $member->id);
             })
-            ->get();
+            ->get()
+            // Sort by member name
+            ->when($member === null, function($collection) {
+                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
+            });
     }
 
     /**
@@ -266,6 +286,10 @@ class MemberService
             ->each(function($debt) {
                 $debt->session = $debt->loan->session;
                 $debt->member = $debt->loan->member;
+            })
+            // Sort by member name
+            ->when($member === null, function($collection) {
+                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
             });
     }
 
@@ -281,7 +305,11 @@ class MemberService
             ->when($member !== null, function($query) use($member) {
                 return $query->where('member_id', $member->id);
             })
-            ->get();
+            ->get()
+            // Sort by member name
+            ->when($member === null, function($collection) {
+                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
+            });
     }
 
     /**
@@ -296,6 +324,10 @@ class MemberService
             ->when($member !== null, function($query) use($member) {
                 return $query->where('member_id', $member->id);
             })
-            ->get();
+            ->get()
+            // Sort by member name
+            ->when($member === null, function($collection) {
+                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
+            });
     }
 }

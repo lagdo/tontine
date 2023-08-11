@@ -11,7 +11,7 @@ use Closure;
 
 use function setlocale;
 
-class SetDateFormat
+class SetAppLocale
 {
     /**
      * Handle an incoming request.
@@ -26,6 +26,8 @@ class SetDateFormat
         $locale = LaravelLocalization::getCurrentLocale();
         Carbon::setLocale($locale);
         setlocale(LC_TIME, $locale);
+        // For comparison of strings with accented characters in french
+        setlocale(LC_COLLATE, LaravelLocalization::getCurrentLocaleRegional() . '.utf8');
 
         return $next($request);
     }
