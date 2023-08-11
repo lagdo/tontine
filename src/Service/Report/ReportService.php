@@ -10,7 +10,7 @@ use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Report\RoundService;
 
-class ReportService implements ReportServiceInterface
+class ReportService
 {
     /**
      * @var LocaleService

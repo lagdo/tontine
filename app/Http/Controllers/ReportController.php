@@ -6,7 +6,7 @@ use App\Facades\PdfGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
-use Siak\Tontine\Service\Report\ReportServiceInterface;
+use Siak\Tontine\Service\Report\ReportService;
 
 use function base64_decode;
 use function view;
@@ -16,12 +16,12 @@ class ReportController extends Controller
 {
     /**
      * @param Request $request
-     * @param ReportServiceInterface $reportService
+     * @param ReportService $reportService
      * @param int $sessionId
      *
      * @return View|Response
      */
-    public function session(Request $request, ReportServiceInterface $reportService, int $sessionId)
+    public function session(Request $request, ReportService $reportService, int $sessionId)
     {
         $html = view('tontine.report.session', $reportService->getSessionReport($sessionId));
         // Show the html page
@@ -43,12 +43,12 @@ class ReportController extends Controller
 
     /**
      * @param Request $request
-     * @param ReportServiceInterface $reportService
+     * @param ReportService $reportService
      * @param int $roundId
      *
      * @return View|Response
      */
-    public function round(Request $request, ReportServiceInterface $reportService, int $roundId)
+    public function round(Request $request, ReportService $reportService, int $roundId)
     {
         $html = view('tontine.report.round', $reportService->getRoundReport($roundId));
         // Show the html page
