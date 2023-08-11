@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'binary' => null, // Autodetected
+    'binary' => env('CHROME_BINARY'),
     'browser' => [
         'startupTimeout' => 30,
     ],
