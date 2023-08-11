@@ -40,6 +40,8 @@ return [
         'member' => "Membre",
         'members' => "Membres",
         'category' => "Catégorie",
+        'session' => "Séance",
+        'payments' => "Paiements",
     ],
     'messages' => [
         'agenda' => [

@@ -30,7 +30,6 @@
               <p>{!! $session->report !!}</p>
             </div>
           </div>
-          <div class="pagebreak"></div>
 
           @include('tontine.report.session.deposits', $deposits)
 

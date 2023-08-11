@@ -1,6 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-                  <div class="row align-items-center">
-                    <div class="col">
+                  <div class="pagebreak"></div>
+
+                  <div class="row">
+                    <div class="col d-flex justify-content-center flex-nowrap">
                       <div class="section-title mt-0">{{ __('meeting.titles.fundings') }}</div>
                     </div>
                   </div>
@@ -8,16 +10,23 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>&nbsp;</th>
-                          <th>&nbsp;</th>
+                          <th>{{ __('meeting.labels.category') }}</th>
+                          <th>{{ __('meeting.labels.member') }}</th>
                           <th class="currency">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
                       <tbody>
+@foreach ($fundings as $funding)
                         <tr>
-                          <td>{{ __('common.labels.total') }}</td>
-                          <td>{{ $funding->total_count }}</td>
-                          <td class="currency">{{ $locale->formatMoney($funding->total_amount, true) }}</td>
+                          <td>&nbsp;</td>
+                          <td>{{ $funding->member->name }}</td>
+                          <td class="currency">{{ $locale->formatMoney($funding->amount, true) }}</td>
+                        </tr>
+@endforeach
+                        <tr>
+                          <th>{{ __('common.labels.total') }}</th>
+                          <th>{{ $total->total_count }}</th>
+                          <th class="currency">{{ $locale->formatMoney($total->total_amount, true) }}</th>
                         </tr>
                       </tbody>
                     </table>

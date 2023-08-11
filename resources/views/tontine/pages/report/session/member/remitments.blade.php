@@ -14,11 +14,11 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach($subscriptions as $subscription)
+@foreach($payables as $payable)
                         <tr>
-                          <td>{{ $subscription->pool->title }}</td>
-                          <td class="currency">{{ $locale->formatMoney($subscription->amount, true) }}</td>
-                          <td class="table-item-menu"><i class="fa fa-toggle-{{ $subscription->paid ? 'on' : 'off' }}"></i></td>
+                          <td>{{ $payable->pool->title }}</td>
+                          <td class="currency">{{ $locale->formatMoney($payable->amount, true) }}</td>
+                          <td class="table-item-menu"><i class="fa fa-toggle-{{ $payable->paid ? 'on' : 'off' }}"></i></td>
                         </tr>
 @endforeach
                       </tbody>
