@@ -8,8 +8,6 @@ use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 use Siak\Tontine\Service\Report\PdfGeneratorInterface;
 use Siak\Tontine\Service\Report\LocalPdfGenerator;
-use Siak\Tontine\Service\Report\ReportServiceInterface;
-use Siak\Tontine\Service\Report\ReportService;
 
 class SiakPdfServiceProvider extends ServiceProvider implements DeferrableProvider
 {
@@ -30,8 +28,6 @@ class SiakPdfServiceProvider extends ServiceProvider implements DeferrableProvid
         $this->app->singleton(LocalPdfGenerator::class, function($app) {
             return new LocalPdfGenerator($app->make(Browser::class), config('chrome.page'));
         });
-        $this->app->singleton(ReportService::class, ReportService::class);
-        $this->app->bind(ReportServiceInterface::class, ReportService::class);
     }
 
     /**
@@ -41,6 +37,6 @@ class SiakPdfServiceProvider extends ServiceProvider implements DeferrableProvid
      */
     public function provides()
     {
-        return [ReportServiceInterface::class, PdfGeneratorInterface::class];
+        return [PdfGeneratorInterface::class];
     }
 }

@@ -54,7 +54,7 @@ class Member extends CallableClass
     private function remitments(SessionModel $session, MemberModel $member)
     {
         $html = $this->view()->render('tontine.pages.report.session.member.remitments', [
-            'subscriptions' => $this->memberService->getPayables($session, $member),
+            'payables' => $this->memberService->getPayables($session, $member),
         ]);
         $this->response->html('report-remitments', $html);
     }

@@ -10,7 +10,7 @@ use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Report\RoundService;
 
-class ReportService implements ReportServiceInterface
+class ReportService
 {
     /**
      * @var LocaleService
@@ -26,6 +26,11 @@ class ReportService implements ReportServiceInterface
      * @var SessionService
      */
     private SessionService $sessionService;
+
+    /**
+     * @var MemberService
+     */
+    private MemberService $memberService;
 
     /**
      * @var SubscriptionService
@@ -56,16 +61,19 @@ class ReportService implements ReportServiceInterface
      * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param SessionService $sessionService
-     * @param SubscriptionService $subscriptionService
+     * @param MemberService $memberService
      * @param RoundService $roundService
+     * @param SubscriptionService $subscriptionService
      * @param SummaryService $summaryService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService, RoundService $roundService,
-        SessionService $sessionService, SubscriptionService $subscriptionService, SummaryService $summaryService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService,
+        SessionService $sessionService, MemberService $memberService, RoundService $roundService,
+        SubscriptionService $subscriptionService, SummaryService $summaryService)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
         $this->sessionService = $sessionService;
+        $this->memberService = $memberService;
         $this->subscriptionService = $subscriptionService;
         $this->roundService = $roundService;
         $this->summaryService = $summaryService;
@@ -127,28 +135,36 @@ class ReportService implements ReportServiceInterface
             'deposits' => [
                 'session' => $session,
                 'pools' => $this->sessionService->getReceivables($session),
+                'receivables' => $this->memberService->getReceivables($session),
             ],
             'remitments' => [
                 'session' => $session,
                 'pools' => $this->sessionService->getPayables($session),
-            ],
-            'loans' => [
-                'loan' => $this->sessionService->getLoan($session),
-            ],
-            'refunds' => [
-                'refund' => $this->sessionService->getRefund($session),
+                'payables' => $this->memberService->getPayables($session),
             ],
             'fees' => [
                 'fees' => $this->sessionService->getFees($session),
+                'bills' => $this->memberService->getFees($session),
             ],
             'fines' => [
                 'fines' => $this->sessionService->getFines($session),
+                'bills' => $this->memberService->getFines($session),
+            ],
+            'loans' => [
+                'loans' => $this->memberService->getLoans($session),
+                'total' => $this->sessionService->getLoan($session),
+            ],
+            'refunds' => [
+                'debts' => $this->memberService->getDebts($session),
+                'total' => $this->sessionService->getRefund($session),
             ],
             'fundings' => [
-                'funding' => $this->sessionService->getFunding($session),
+                'fundings' => $this->memberService->getFundings($session),
+                'total' => $this->sessionService->getFunding($session),
             ],
             'disbursements' => [
-                'disbursement' => $this->sessionService->getDisbursement($session),
+                'disbursements' => $this->memberService->getDisbursements($session),
+                'total' => $this->sessionService->getDisbursement($session),
             ],
         ];
     }
