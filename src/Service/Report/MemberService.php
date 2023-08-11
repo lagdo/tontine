@@ -12,7 +12,6 @@ use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Planning\PoolService;
-use Intl;
 
 class MemberService
 {
