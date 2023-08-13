@@ -207,7 +207,7 @@ class Charge extends Base
      */
     public function scopeFixed(Builder $query): Builder
     {
-        return $query->where('period', '!=', self::PERIOD_NONE);
+        return $query->where('period', '!=', self::PERIOD_NONE)->where('active', true);
     }
 
     /**
@@ -217,6 +217,6 @@ class Charge extends Base
      */
     public function scopeVariable(Builder $query): Builder
     {
-        return $query->where('period', self::PERIOD_NONE);
+        return $query->where('period', self::PERIOD_NONE)->where('active', true);
     }
 }

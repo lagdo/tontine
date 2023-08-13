@@ -134,21 +134,21 @@ class ReportService
             'country' => $country,
             'deposits' => [
                 'session' => $session,
-                'pools' => $this->sessionService->getReceivables($session),
                 'receivables' => $this->memberService->getReceivables($session),
+                'pools' => $this->sessionService->getReceivables($session),
             ],
             'remitments' => [
                 'session' => $session,
-                'pools' => $this->sessionService->getPayables($session),
                 'payables' => $this->memberService->getPayables($session),
+                'pools' => $this->sessionService->getPayables($session),
             ],
             'fees' => [
-                'fees' => $this->sessionService->getFees($session),
                 'bills' => $this->memberService->getFees($session),
+                'fees' => $this->sessionService->getFees($session),
             ],
             'fines' => [
-                'fines' => $this->sessionService->getFines($session),
                 'bills' => $this->memberService->getFines($session),
+                'fines' => $this->sessionService->getFines($session),
             ],
             'loans' => [
                 'loans' => $this->memberService->getLoans($session),

@@ -50,7 +50,7 @@ class FineService
     public function getFines(int $page = 0): Collection
     {
         return $this->tenantService->tontine()->charges()
-            ->active()->variable()->orderBy('id', 'desc')
+            ->variable()->orderBy('id', 'desc')
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
