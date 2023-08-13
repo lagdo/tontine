@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Tontine;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
@@ -59,6 +60,7 @@ class ChargeService
     public function getCharges(int $page = 0): Collection
     {
         return $this->tenantService->tontine()->charges()
+            ->withCount(['tontine_bills', 'round_bills', 'session_bills', 'fine_bills'])
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -82,7 +84,9 @@ class ChargeService
      */
     public function getCharge(int $chargeId): ?Charge
     {
-        return $this->tenantService->tontine()->charges()->find($chargeId);
+        return $this->tenantService->tontine()->charges()
+            ->withCount(['tontine_bills', 'round_bills', 'session_bills', 'fine_bills'])
+            ->find($chargeId);
     }
 
     /**
@@ -140,7 +144,11 @@ class ChargeService
      */
     public function deleteCharge(Charge $charge)
     {
-        $charge->update(['active' => false]);
+        if($charge->bills_count > 0)
+        {
+            throw new MessageException(trans('tontine.charge.errors.cannot_delete'));
+        }
+        $charge->delete();
     }
 
     /**

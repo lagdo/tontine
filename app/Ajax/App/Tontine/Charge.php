@@ -131,6 +131,8 @@ class Charge extends CallableClass
         $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
         $this->jq('.btn-charge-edit')->click($this->rq()->edit($chargeId));
         $this->jq('.btn-charge-toggle')->click($this->rq()->toggle($chargeId));
+        $this->jq('.btn-charge-delete')->click($this->rq()->delete($chargeId)
+            ->confirm(trans('tontine.charge.questions.delete')));
 
         return $this->response;
     }
@@ -300,10 +302,11 @@ class Charge extends CallableClass
         return $this->page();
     }
 
-    /*public function delete(int $chargeId)
+    public function delete(int $chargeId)
     {
-        $this->notify->error("Cette fonction n'est pas encore disponible", trans('common.titles.error'));
+        $charge = $this->chargeService->getCharge($chargeId);
+        $this->chargeService->deleteCharge($charge);
 
-        return $this->response;
-    }*/
+        return $this->page();
+    }
 }

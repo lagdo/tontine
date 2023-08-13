@@ -101,6 +101,12 @@ return [
             'updated' => "The fee was successfully updated.",
             'deleted' => "The fee was successfully deleted.",
         ],
+        'questions' => [
+            'delete' => "Delete this fee?",
+        ],
+        'errors' => [
+            'cannot_delete' => "Cannot delete this fee.",
+        ],
         'types' => [
             'fee' => "Fee",
             'fine' => "Fine",

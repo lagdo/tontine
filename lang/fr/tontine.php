@@ -101,6 +101,12 @@ return [
             'updated' => "Le frais a été modifié.",
             'deleted' => "Le frais a été supprimé.",
         ],
+        'questions' => [
+            'delete' => "Supprimer ce frais ?",
+        ],
+        'errors' => [
+            'cannot_delete' => "Impossible de supprimer ce frais.",
+        ],
         'types' => [
             'fee' => "Frais",
             'fine' => "Amende",

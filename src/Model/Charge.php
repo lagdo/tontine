@@ -100,6 +100,12 @@ class Charge extends Base
         return $this->hasMany(FineBill::class);
     }
 
+    public function getBillsCountAttribute()
+    {
+        return $this->tontine_bills_count + $this->round_bills_count +
+            $this->session_bills_count + $this->fine_bills_count;
+    }
+
     public function getIsFeeAttribute()
     {
         return intval($this->type) === self::TYPE_FEE;
