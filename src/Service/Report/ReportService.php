@@ -3,12 +3,17 @@
 namespace Siak\Tontine\Service\Report;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Report\RoundService;
+
+use function strtolower;
+use function trans;
 
 class ReportService
 {
@@ -118,14 +123,13 @@ class ReportService
     }
 
     /**
-     * @param integer $sessionId
+     * @param Session $session
      *
      * @return array
      */
-    public function getSessionReport(int $sessionId): array
+    public function getSessionReport(Session $session): array
     {
         $tontine = $this->tenantService->tontine();
-        $session = $this->tenantService->getSession($sessionId);
         [$country] = $this->localeService->getNameFromTontine($tontine);
 
         return [
@@ -170,14 +174,13 @@ class ReportService
     }
 
     /**
-     * @param int $roundId
+     * @param Round $round
      *
      * @return array
      */
-    public function getRoundReport(int $roundId): array
+    public function getRoundReport(Round $round): array
     {
         $tontine = $this->tenantService->tontine();
-        $round = $tontine->rounds()->find($roundId);
         [$country, $currency] = $this->localeService->getNameFromTontine($tontine);
 
         $pools = $this->subscriptionService->getPools(false)
@@ -201,5 +204,25 @@ class ReportService
         ];
 
         return compact('tontine', 'round', 'country', 'currency', 'pools', 'amounts');
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return string
+     */
+    public function getSessionReportFilename(Session $session): string
+    {
+        return strtolower(trans('meeting.titles.report')) . '-' . Str::slug($session->title) . '.pdf';
+    }
+
+    /**
+     * @param Round $round
+     *
+     * @return string
+     */
+    public function getRoundReportFilename(Round $round): string
+    {
+        return strtolower(trans('meeting.titles.report')) . '-' . Str::slug($round->title) . '.pdf';
     }
 }
