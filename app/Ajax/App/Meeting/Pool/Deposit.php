@@ -2,14 +2,18 @@
 
 namespace App\Ajax\App\Meeting\Pool;
 
+use App\Ajax\CallableClass;
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Pool as PoolModel;
-use App\Ajax\CallableClass;
 
+use function filter_var;
 use function Jaxon\jq;
+use function str_replace;
 use function trans;
+use function trim;
 
 /**
  * @databag meeting
@@ -17,6 +21,11 @@ use function trans;
  */
 class Deposit extends CallableClass
 {
+    /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @di
      * @var DepositService
@@ -168,6 +177,7 @@ class Deposit extends CallableClass
     }
 
     /**
+     * @di $localeService
      * @param int $receivableId
      *
      * @return mixed
@@ -187,31 +197,40 @@ class Deposit extends CallableClass
 
         $html = $this->view()->render('tontine.pages.meeting.deposit.libre.edit', [
             'id' => $receivable->id,
-            'amount' => !$receivable->deposit ? '' : $receivable->deposit->amount,
+            'amount' => !$receivable->deposit ? '' :
+                $this->localeService->getMoneyValue($receivable->deposit->amount),
         ]);
         $fieldId = 'receivable-' . $receivable->id;
         $this->response->html($fieldId, $html);
 
         $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
-        $amount = jq('input', jq()->parent()->parent())->val()->toInt();
+        $amount = jq('input', jq()->parent()->parent())->val();
         $this->jq('.btn-save-deposit', "#$fieldId")->click($this->rq()->saveAmount($receivableId, $amount));
 
         return $this->response;
     }
 
     /**
+     * @di $localeService
      * @param int $receivableId
-     * @param int $amount
+     * @param string $amount
      *
      * @return mixed
      */
-    public function saveAmount(int $receivableId, int $amount)
+    public function saveAmount(int $receivableId, string $amount)
     {
         if($this->session->closed)
         {
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
+        $amount = str_replace(',', '.', trim($amount));
+        if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
+        {
+            $this->notify->error(trans('meeting.errors.amount.invalid', ['amount' => $amount]));
+            return $this->response;
+        }
+        $amount = $amount === '' ? 0 : $this->localeService->convertMoneyToInt((float)$amount);
 
         $amount > 0 ?
             $this->depositService->saveDepositAmount($this->pool, $this->session, $receivableId, $amount):

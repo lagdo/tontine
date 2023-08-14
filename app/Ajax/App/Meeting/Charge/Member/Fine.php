@@ -4,13 +4,17 @@ namespace App\Ajax\App\Meeting\Charge\Member;
 
 use App\Ajax\CallableClass;
 use App\Ajax\App\Meeting\Charge\Fine as Charge;
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Charge\FineService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Charge as ChargeModel;
 
+use function filter_var;
 use function Jaxon\jq;
+use function str_replace;
 use function trans;
+use function trim;
 
 /**
  * @databag meeting
@@ -18,6 +22,11 @@ use function trans;
  */
 class Fine extends CallableClass
 {
+    /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @di
      * @var ChargeService
@@ -148,6 +157,7 @@ class Fine extends CallableClass
     }
 
     /**
+     * @di $localeService
      * @param int $memberId
      *
      * @return mixed
@@ -167,31 +177,39 @@ class Fine extends CallableClass
 
         $html = $this->view()->render('tontine.pages.meeting.charge.variable.member.edit', [
             'id' => $memberId,
-            'amount' => $bill->bill->amount,
+            'amount' => $this->localeService->getMoneyValue($bill->bill->amount),
         ]);
         $fieldId = 'member-' . $memberId;
         $this->response->html($fieldId, $html);
 
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
-        $amount = jq('input', jq()->parent()->parent())->val()->toInt();
+        $amount = jq('input', jq()->parent()->parent())->val();
         $this->jq('.btn-save-bill', "#$fieldId")->click($this->rq()->saveBill($memberId, $amount));
 
         return $this->response;
     }
 
     /**
+     * @di $localeService
      * @param int $memberId
-     * @param int $amount
+     * @param string $amount
      *
      * @return mixed
      */
-    public function saveBill(int $memberId, int $amount)
+    public function saveBill(int $memberId, string $amount)
     {
         if($this->session->closed)
         {
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
+        $amount = str_replace(',', '.', trim($amount));
+        if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
+        {
+            $this->notify->error(trans('meeting.errors.amount.invalid', ['amount' => $amount]));
+            return $this->response;
+        }
+        $amount = $amount === '' ? 0 : $this->localeService->convertMoneyToInt((float)$amount);
 
         $this->fineService->deleteFine($this->charge, $this->session, $memberId);
         if($amount > 0)

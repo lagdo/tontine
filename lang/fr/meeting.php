@@ -56,6 +56,11 @@ return [
             'closed' => "Cette opération n'est pas permise lorsque la session est fermée.",
         ],
     ],
+    'errors' => [
+        'amount' => [
+            'invalid' => ":amount n'est pas un montant valide.",
+        ],
+    ],
     'charge' => [
         'titles' => [
             'fixed' => "Frais fixes",
