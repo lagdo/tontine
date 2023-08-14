@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Siak\Tontine\Model\Traits\HasCurrency;
 
+use function trans;
+
 class Pool extends Base
 {
     use HasFactory;
@@ -38,6 +40,12 @@ class Pool extends Base
     protected static function newFactory()
     {
         return PoolFactory::new();
+    }
+
+    public function getTitleAttribute($value)
+    {
+        return $this->round !== null && $this->round->tontine->is_libre ?
+            trans('tontine.pool.titles.free') : $value;
     }
 
     public function round()

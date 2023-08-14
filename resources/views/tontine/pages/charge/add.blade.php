@@ -50,7 +50,7 @@
                         <div class="input-group">
                           <div class="input-group-prepend">
                             <div class="input-group-text">
-                              {!! Form::checkbox('charges[' . $i . '][fixed]', '1', true) !!}
+                              {!! Form::checkbox('charges[' . $i . '][fixed]', '1', false) !!}
                             </div>
                           </div>
                           {!! Form::text('charges[' . $i . '][amount]', '', ['class' => 'form-control', 'id' => "charge_amount_$i"]) !!}

@@ -168,10 +168,11 @@ return [
     'pool' => [
         'titles' => [
             'add' => "Ajouter des fonds",
-            'edit' => "Modifier un fond",
+            'edit' => "Modifier un fonds",
             'deposits' => "Bilan des dépôts",
             'remitments' => "Bilan des remises",
             'subscriptions' => "Souscriptions",
+            'free' => "Fonds libre",
         ],
         'actions' => [
             'subscriptions' => "Souscriptions",
@@ -180,16 +181,16 @@ return [
             'delete' => "Supprimer ce fond?<br/>Il ne faut pas qu'il ait de souscription.",
         ],
         'messages' => [
-            'created' => "Le fond a été ajouté.",
-            'updated' => "Le fond a été modifié.",
-            'deleted' => "Le fond a été supprimé.",
+            'created' => "Le fonds a été ajouté.",
+            'updated' => "Le fonds a été modifié.",
+            'deleted' => "Le fonds a été supprimé.",
         ],
         'errors' => [
             'number' => [
                 'invalid' => "Vous devez entrer un nombre valide.",
                 'max' => "Vous pouvez ajouter au plus :max entrées.",
             ],
-            'subscription' => "Ce fond a encore des souscriptions.",
+            'subscription' => "Ce fonds a encore des souscriptions.",
             'no_subscription' => "Il y a encore des fonds sans souscription.",
         ],
     ],

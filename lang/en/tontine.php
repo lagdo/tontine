@@ -172,6 +172,7 @@ return [
             'deposits' => "Deposits balance",
             'remitments' => "Remitments balance",
             'subscriptions' => "Subscriptions",
+            'free' => "Free pool",
         ],
         'actions' => [
             'subscriptions' => "Subscriptions",

@@ -45,8 +45,9 @@ class SubscriptionService
      */
     public function getPools(bool $pluck = true): Collection
     {
-        $query = $this->tenantService->round()->pools()->whereHas('subscriptions');
-        return $pluck ? $query->pluck('title', 'id') : $query->get();
+        $query = $this->tenantService->round()->pools()
+            ->with(['round.tontine'])->whereHas('subscriptions');
+        return $pluck ? $query->get()->pluck('title', 'id') : $query->get();
     }
 
     /**
