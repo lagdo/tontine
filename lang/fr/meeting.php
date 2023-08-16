@@ -71,6 +71,7 @@ return [
         'types' => [
             'expense' => "Dépense",
             'support' => "Aide",
+            'reception' => "Réception",
             'other' => "Autre",
         ],
         'errors' => [

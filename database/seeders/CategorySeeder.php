@@ -24,6 +24,10 @@ class CategorySeeder extends Seeder
                 'item_type' => 'disbursement',
             ],
             [
+                'name' => 'reception',
+                'item_type' => 'disbursement',
+            ],
+            [
                 'name' => 'other',
                 'item_type' => 'disbursement',
             ],
