@@ -38,7 +38,7 @@ class Faker extends CallableClass
         {
             $this->jq("#member_name_$i")->val($members[$i]->name);
             $this->jq("#member_email_$i")->val($members[$i]->email);
-            $this->jq("#member_phone_$i")->val($members[$i]->phone);
+            // $this->jq("#member_phone_$i")->val($members[$i]->phone);
         }
 
         return $this->response;

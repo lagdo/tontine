@@ -233,8 +233,8 @@ class SessionService
             $session = new \stdClass();
             $session->title = 'Séance de ' . $date->isoFormat('MMMM YYYY');
             $session->date = $date->format('Y-m-d');
-            $session->start = '16:00';
-            $session->end = '20:00';
+            $session->start = '00:00';
+            $session->end = '00:00';
             $sessions[] = $session;
             $date->addMonth(1);
         }
