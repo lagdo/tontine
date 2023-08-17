@@ -54,6 +54,7 @@ return [
     'messages' => [
         'created' => "The tontine was successfully created.",
         'updated' => "The tontine was successfully updated.",
+        'selected' => "You have selected the tontine :tontine. You still need to add some rounds to this tontine.",
         'screen' => [
             'orientation' => "If you are using a mobile device, we advise you to place it in landscape mode, for a better display.",
         ],
@@ -71,6 +72,7 @@ return [
             'created' => "The round was successfully created.",
             'updated' => "The round was successfully updated.",
             'deleted' => "The round was successfully deleted.",
+            'selected' => "You have selected the tontine :tontine and round :round.",
         ],
         'questions' => [
             'open' => "Open this round? Make sure you have set its data correctly.",

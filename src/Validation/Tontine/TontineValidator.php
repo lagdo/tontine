@@ -3,13 +3,10 @@
 namespace Siak\Tontine\Validation\Tontine;
 
 use Illuminate\Support\Facades\Validator;
-use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\AbstractValidator;
 use Siak\Tontine\Validation\ValidationException;
 use Spatie\ValidationRules\Rules\CountryCode;
 use Spatie\ValidationRules\Rules\Currency as CurrencyCode;
-
-use function strtoupper;
 
 class TontineValidator extends AbstractValidator
 {
@@ -23,7 +20,7 @@ class TontineValidator extends AbstractValidator
         $validator = Validator::make($this->values($values), [
             'type' => 'required|in:l,m,f',
             'name' => 'required|string|min:1',
-            'shortname' => 'required|string|min:1',
+            'shortname' => 'required|string|between:1,25',
             'biography' => 'nullable|string',
             'email' => 'nullable|email',
             'phone' => 'nullable|phone:AUTO',

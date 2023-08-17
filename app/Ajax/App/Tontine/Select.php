@@ -3,6 +3,7 @@
 namespace App\Ajax\App\Tontine;
 
 use App\Ajax\CallableClass;
+use Siak\Tontine\Model\Tontine as TontineModel;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
@@ -29,10 +30,10 @@ class Select extends CallableClass
 
     public function show()
     {
-        return $this->showTontine();
+        return $this->showTontines();
     }
 
-    private function showTontine()
+    private function showTontines()
     {
         $title = trans('tontine.titles.choose');
         $content = $this->view()->render('tontine.pages.select.tontine')
@@ -66,14 +67,20 @@ class Select extends CallableClass
 
         $this->dialog->hide();
 
-        return $this->showRound();
+        return $this->showRounds($tontine);
     }
 
-    private function showRound()
+    private function showRounds(TontineModel $tontine)
     {
+        if($tontine->rounds->count() === 0)
+        {
+            $this->notify->info(trans('tontine.messages.selected', ['tontine' => $tontine->name]));
+            return $this->response;
+        }
+
         $title = trans('tontine.round.titles.choose');
         $content = $this->view()->render('tontine.pages.select.round')
-            ->with('rounds', $this->tontineService->getRounds()->pluck('title', 'id'));
+            ->with('rounds', $tontine->rounds->pluck('title', 'id'));
         $buttons = [[
             'title' => trans('common.actions.close'),
             'class' => 'btn btn-tertiary',
@@ -90,11 +97,14 @@ class Select extends CallableClass
 
     public function saveRound(int $roundId)
     {
+        if(!($tontine = $this->tenantService->tontine()))
+        {
+            return $this->response;
+        }
         if(!($round = $this->tontineService->getRound($roundId)))
         {
             return $this->response;
         }
-        $tontine = $this->tenantService->tontine();
 
         // Save the tontine and round ids in the user session.
         session(['tontine.id' => $tontine->id, 'round.id' => $round->id]);
@@ -103,6 +113,8 @@ class Select extends CallableClass
         $this->selectRound($round);
 
         $this->dialog->hide();
+        $this->notify->info(trans('tontine.round.messages.selected',
+            ['tontine' => $tontine->name, 'round' => $round->title]));
 
         return $this->response;
     }

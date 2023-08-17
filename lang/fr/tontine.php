@@ -54,6 +54,7 @@ return [
     'messages' => [
         'created' => "La tontine a été ajoutée",
         'updated' => "La tontine a été modifiée",
+        'selected' => "Vous avez sélectionné la tontine :tontine. Vous devez encore ajouter des tours sur cette tontine.",
         'screen' => [
             'orientation' => "Si vous utilisez un appareil mobile, nous vous conseillons de le placer en mode paysage, pour un meilleur affichage.",
         ],
@@ -71,6 +72,7 @@ return [
             'created' => "le tour a été ajouté.",
             'updated' => "le tour a été modifié.",
             'deleted' => "le tour a été supprimé.",
+            'selected' => "Vous avez sélectionné la tontine :tontine et le tour :round.",
         ],
         'questions' => [
             'open' => "Ouvrir ce tour ? Assurez-vous d'avoir saisi toutes ses données.",
