@@ -29,7 +29,16 @@ return [
         'rounds' => "Rounds",
         'add' => "Add a tontine",
         'edit' => "Edit a tontine",
-        'choose' => "Choose a tontine",
+        'choose' => "Select a tontine",
+        'type' => "Select the tontine type",
+    ],
+    'descriptions' => [
+        'types' => [
+            'help' => "The type of tontine depends on how the contributions are defined.",
+            'libre' => "each member chooses the amount he contributes at each meeting.",
+            'mutual' => "each member contributes a fixed amount. The remitments are planned in advance.",
+            'financial' => "each member contributes a fixed amount. The remitments are done after auction.",
+        ],
     ],
     'labels' => [
         'tontine' => "Tontine",
@@ -66,7 +75,7 @@ return [
         'titles' => [
             'add' => "Add a round",
             'edit' => "Edit a round",
-            'choose' => "Choose a round",
+            'choose' => "Select a round",
         ],
         'messages' => [
             'created' => "The round was successfully created.",

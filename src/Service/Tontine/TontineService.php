@@ -40,6 +40,18 @@ class TontineService
     }
 
     /**
+     * @return array
+     */
+    public function getTontineDescriptions(): array
+    {
+        return [
+            Tontine::TYPE_LIBRE => trans('tontine.descriptions.types.libre'),
+            Tontine::TYPE_MUTUAL => trans('tontine.descriptions.types.mutual'),
+            Tontine::TYPE_FINANCIAL => trans('tontine.descriptions.types.financial'),
+        ];
+    }
+
+    /**
      * Get a paginated list of tontines in the selected round.
      *
      * @param int $page

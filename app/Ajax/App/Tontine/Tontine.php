@@ -70,7 +70,7 @@ class Tontine extends CallableClass
             $this->selectRound($round);
         }
 
-        $this->jq('#btn-tontine-create')->click($this->rq()->add());
+        $this->jq('#btn-tontine-create')->click($this->rq()->selectType());
         $this->jq('#btn-tontine-refresh')->click($this->rq()->home());
         $this->jq('#btn-show-select')->click($this->cl(Select::class)->rq()->show());
 
@@ -96,10 +96,28 @@ class Tontine extends CallableClass
             ->with('pagination', $pagination);
         $this->response->html('tontine-page', $html);
 
-        $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
-        $this->jq('.btn-tontine-edit')->click($this->rq()->edit($tontineId));
-        $this->jq('.btn-tontine-choose')->click($this->cl(Select::class)->rq()->saveTontine($tontineId));
-        $this->jq('.btn-tontine-rounds')->click($this->cl(Round::class)->rq()->home($tontineId));
+        $this->setTontineButtonHandlers();
+
+        return $this->response;
+    }
+
+    public function selectType()
+    {
+        $title = trans('tontine.titles.type');
+        $content = $this->view()->render('tontine.pages.tontine.type')
+            ->with('types', $this->tontineService->getTontineTypes())
+            ->with('descriptions', $this->tontineService->getTontineDescriptions());
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.add'),
+            'class' => 'btn btn-primary btn-select-type',
+            'click' => '',
+        ]];
+        $this->dialog->show($title, $content, $buttons);
+        $this->jq('.btn-select-type')->on('click', $this->rq()->add(jq('input[name="type"]:checked')->val()));
 
         return $this->response;
     }
@@ -107,11 +125,11 @@ class Tontine extends CallableClass
     /**
      * @di $localeService
      */
-    public function add()
+    public function add(string $type)
     {
         $title = trans('tontine.titles.add');
         $content = $this->view()->render('tontine.pages.tontine.add')
-            ->with('types', $this->tontineService->getTontineTypes())
+            ->with('type', $type)
             ->with('countries', $this->localeService->getCountries());
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -122,6 +140,8 @@ class Tontine extends CallableClass
             'class' => 'btn btn-primary',
             'click' => $this->rq()->create(pm()->form('tontine-form')),
         ]];
+
+        $this->dialog->hide();
         $this->dialog->show($title, $content, $buttons);
         $this->jq('#select_country_dropdown')
             ->change($this->cl(Locale::class)->rq()->selectCurrencies(jq()->val()));
@@ -170,7 +190,8 @@ class Tontine extends CallableClass
         ]];
 
         $this->dialog->show($title, $content, $buttons);
-        $this->jq('#select_country_dropdown')->change($this->cl(Locale::class)->rq()->selectCurrencies(jq()->val()));
+        $this->jq('#select_country_dropdown')
+            ->change($this->cl(Locale::class)->rq()->selectCurrencies(jq()->val()));
 
         return $this->response;
     }

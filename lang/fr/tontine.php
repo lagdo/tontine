@@ -30,6 +30,15 @@ return [
         'add' => "Ajouter une tontine",
         'edit' => "Modifier une tontine",
         'choose' => "Choisir une tontine",
+        'type' => "Choisir un type de tontine",
+    ],
+    'descriptions' => [
+        'types' => [
+            'help' => "Le type de tontine dépend de comment sont définies les cotisations.",
+            'libre' => "chaque membre choisit le montant de ses cotisations à chaque séance.",
+            'mutual' => "le montant des cotisations est fixe. Les remises sont planifiées à l'avance.",
+            'financial' => "le montant des cotisations est fixe. Les remises se font après enchères.",
+        ],
     ],
     'labels' => [
         'tontine' => "Tontine",
