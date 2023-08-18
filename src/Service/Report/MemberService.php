@@ -151,44 +151,46 @@ class MemberService
      */
     public function getFees(Session $session, ?Member $member = null): Collection
     {
-        return Bill::with(['round_bill.member', 'session_bill.member', 'tontine_bill.member'])
-            // Bills settled on this session.
-            ->whereHas('settlement', function(Builder $query) use($session) {
-                $query->where('session_id', $session->id);
+        return Bill::with(['settlement', 'round_bill.member', 'session_bill.member', 'tontine_bill.member'])
+            ->where(function($query) use($session) {
+                return $query
+                    // Unsettled bills.
+                    ->orWhereDoesntHave('settlement')
+                    // Bills settled on this session.
+                    ->orWhereHas('settlement', function(Builder $query) use($session) {
+                        $query->where('session_id', $session->id);
+                    });
             })
-            // Member bills.
             ->where(function($query) use($member, $session) {
                 return $query
-                    // Round bills.
-                    ->orWhere(function(Builder $query) use($member, $session) {
-                        return $query->whereHas('round_bill', function(Builder $query) use($member, $session) {
-                            return $query->where('round_id', $session->round_id)
-                                ->when($member !== null, function($query) use($member) {
-                                    return $query->where('member_id', $member->id);
-                                });
-                        });
-                    })
-                    // Session bills.
-                    ->orWhere(function(Builder $query) use($member, $session) {
-                        return $query->whereHas('session_bill', function(Builder $query) use($member, $session) {
-                            return $query->where('session_id', $session->id)
-                                ->when($member !== null, function($query) use($member) {
-                                    return $query->where('member_id', $member->id);
-                                });
-                        });
-                    })
                     // Tontine bills.
-                    ->when($member !== null, function($query) use($member) {
-                        return $query->orWhere(function(Builder $query) use($member) {
-                            return $query->whereHas('tontine_bill', function(Builder $query) use($member) {
+                    ->orWhereHas('tontine_bill', function(Builder $query) use($member) {
+                        return $query->when($member !== null, function($query) use($member) {
+                                return $query->where('member_id', $member->id);
+                            })
+                            ->when($member === null, function($query) {
+                                return $query->whereIn('member_id',
+                                    $this->tenantService->tontine()->members()->active()->pluck('id'));
+                            });
+                    })
+                    // Round bills.
+                    ->orWhereHas('round_bill', function(Builder $query) use($member, $session) {
+                        return $query->where('round_id', $session->round_id)
+                            ->when($member !== null, function($query) use($member) {
                                 return $query->where('member_id', $member->id);
                             });
-                        });
+                    })
+                    // Session bills.
+                    ->orWhereHas('session_bill', function(Builder $query) use($member, $session) {
+                        return $query->where('session_id', $session->id)
+                            ->when($member !== null, function($query) use($member) {
+                                return $query->where('member_id', $member->id);
+                            });
                     });
             })
             ->get()
             ->each(function($bill) {
-                $bill->paid = true; // $bill->settlement !== null;
+                $bill->paid = $bill->settlement !== null;
                 $bill->session = $bill->session_bill ? $bill->session_bill->session : null;
                 $bill->member = $bill->session_bill ? $bill->session_bill->member :
                     ($bill->round_bill ? $bill->round_bill->member : $bill->tontine_bill->member);
