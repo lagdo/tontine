@@ -78,6 +78,14 @@ return [
             'not_found' => "Impossible de trouver la catégorie correspondante.",
         ],
     ],
+    'remitment' => [
+        'titles' => [
+            'add' => "Ajouter une remise",
+        ],
+        'labels' => [
+            'auction' => "Enchère",
+        ],
+    ],
     'funding' => [
         'titles' => [
             'add' => "Ajouter un dépôt",

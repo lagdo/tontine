@@ -4,7 +4,7 @@ namespace App\Ajax\App\Meeting\Pool\Remitment;
 
 use App\Ajax\CallableClass;
 use App\Ajax\App\Meeting\Credit\Loan;
-use App\Ajax\App\Meeting\Credit\Refund\Interest;
+use App\Ajax\App\Meeting\Credit\Refund;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
@@ -154,7 +154,7 @@ class Financial extends CallableClass
         }
 
         $members = $this->remitmentService->getSubscriptions($this->pool);
-        $title = trans('tontine.loan.titles.add');
+        $title = trans('meeting.remitment.titles.add');
         $content = $this->view()->render('tontine.pages.meeting.remitment.add')
             ->with('members', $members);
         $buttons = [[
@@ -193,7 +193,7 @@ class Financial extends CallableClass
 
         // Refresh the refunds pages
         $this->cl(Loan::class)->show($this->session);
-        $this->cl(Interest::class)->show($this->session);
+        $this->cl(Refund::class)->show($this->session);
 
         return $this->page();
     }
@@ -216,7 +216,7 @@ class Financial extends CallableClass
 
         // Refresh the refunds pages
         $this->cl(Loan::class)->show($this->session);
-        $this->cl(Interest::class)->show($this->session);
+        $this->cl(Refund::class)->show($this->session);
 
         return $this->page();
     }
