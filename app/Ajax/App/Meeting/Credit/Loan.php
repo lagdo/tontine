@@ -100,7 +100,8 @@ class Loan extends CallableClass
         $title = trans('meeting.loan.titles.add');
         $content = $this->view()->render('tontine.pages.meeting.loan.add')
             ->with('members', $members)
-            ->with('amountAvailable', $amountAvailable);
+            ->with('amountAvailable', $amountAvailable)
+            ->with('interestTypes', $this->loanService->getInterestTypes());
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -111,6 +112,7 @@ class Loan extends CallableClass
             'click' => $this->rq()->createLoan(pm()->form('loan-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
+        $this->response->script('setLoanInterestLabel()');
 
         return $this->response;
     }
