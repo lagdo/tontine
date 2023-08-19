@@ -30,7 +30,8 @@
                           <td>{{ $loan->member->name }}</td>
                           <td class="currency">
                             {{ $locale->formatMoney($loan->principal, true) }}<br/>
-                            {{ $locale->formatMoney($loan->interest, true) }}
+                            {{ __('meeting.loan.interest.i' . $loan->interest_type) }}: {{ $loan->fixed_interest ?
+                              $locale->formatMoney($loan->interest, true) : ($loan->interest_rate / 100) . '%' }}
                           </td>
                           <td class="table-item-menu">
 @if ($session->closed || ($loan->remitment_id))

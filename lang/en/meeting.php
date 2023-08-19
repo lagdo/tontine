@@ -116,6 +116,9 @@ return [
             'f' => "Fixed",
             's' => "Simple",
             'c' => "Compound",
+            'if' => "Fixed interest",
+            'is' => "Simple interest",
+            'ic' => "Compound interest",
         ],
         'questions' => [
             'delete' => "Delete this loan?",

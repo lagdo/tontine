@@ -20,13 +20,14 @@
                         <tr>
                           <td>{{ $loan->member->name }}</td>
                           <td class="currency">{{ $locale->formatMoney($loan->principal, true) }}</td>
-                          <td class="currency">{{ $locale->formatMoney($loan->interest, true) }}</td>
+                          <td class="currency">{{ __('meeting.loan.interest.' . $loan->interest_type) }}: {{ $loan->fixed_interest ?
+                            $locale->formatMoney($loan->interest, true) : ($loan->interest_rate / 100) . '%' }}</td>
                         </tr>
 @endforeach
                         <tr>
-                          <td>{{ __('common.labels.total') }}</td>
-                          <td class="currency">{{ $locale->formatMoney($total->principal, true) }}</td>
-                          <td class="currency">{{ $locale->formatMoney($total->interest, true) }}</td>
+                          <th>{{ __('common.labels.total') }}</th>
+                          <th class="currency">{{ $locale->formatMoney($total->principal, true) }}</th>
+                          <th>&nbsp;</th>
                         </tr>
                       </tbody>
                     </table>

@@ -48,6 +48,21 @@ class Loan extends Base
         return $this->interest_debt ? $this->interest_debt->amount : 0;
     }
 
+    public function getFixedInterestAttribute()
+    {
+        return $this->interest_type === self::INTEREST_FIXED;
+    }
+
+    public function getSimpleInterestAttribute()
+    {
+        return $this->interest_type === self::INTEREST_SIMPLE;
+    }
+
+    public function getCompoundInterestAttribute()
+    {
+        return $this->interest_type === self::INTEREST_COMPOUND;
+    }
+
     public function session()
     {
         return $this->belongsTo(Session::class);

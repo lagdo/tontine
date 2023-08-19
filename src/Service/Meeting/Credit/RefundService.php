@@ -10,6 +10,8 @@ use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
 
+use function pow;
+
 class RefundService
 {
     /**
@@ -117,6 +119,40 @@ class RefundService
             ->page($page, $this->tenantService->getLimit())
             ->with(['loan', 'loan.member', 'loan.session', 'refund'])
             ->get();
+    }
+
+    /**
+     * Compound interest calculation.
+     *
+     * @param Session $session The session
+     * @param Debt $debt
+     *
+     * @return int
+     */
+    private function getCompoundInterestAmount(Session $currentSession, Debt $debt): int
+    {
+        $principalAmount = $debt->loan->principal_debt->amount;
+        $interestRate = $debt->loan->interest_rate / 10000;
+        // Count the sessions.
+        $sessionCount = $this->tenantService->round()->sessions()
+            ->where('start_at', '>', $debt->loan->session->start_at)
+            ->where('start_at', '<=', $currentSession->start_at)
+            ->count();
+        return (int)($principalAmount * pow(1 + $interestRate, $sessionCount)) - $principalAmount;
+    }
+
+    /**
+     * Get the amount of a given debt.
+     *
+     * @param Session $session The session
+     * @param Debt $debt
+     *
+     * @return int
+     */
+    public function getDebtAmount(Session $currentSession, Debt $debt): int
+    {
+        return ($debt->is_principal || !$debt->loan->compound_interest) ?
+            $debt->amount : $this->getCompoundInterestAmount($currentSession, $debt);
     }
 
     /**

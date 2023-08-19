@@ -116,6 +116,9 @@ return [
             'f' => "Fixe",
             's' => "Simple",
             'c' => "Composé",
+            'if' => "Intérêt fixe",
+            'is' => "Intérêt simple",
+            'ic' => "Intérêt composé",
         ],
         'questions' => [
             'delete' => "Supprimer cet emprunt ?",

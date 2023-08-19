@@ -37,7 +37,7 @@
                         <tr>
                           <th>{{ __('common.labels.total') }}</th>
                           <th class="currency">{{ $locale->formatMoney($pool->paid_amount, true) }}</th>
-                          <th class="currency">&nbsp;</th>
+                          <th>&nbsp;</th>
                         </tr>
                       </tbody>
                     </table>
