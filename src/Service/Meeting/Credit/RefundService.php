@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Meeting\Credit;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Refund;
@@ -151,7 +152,7 @@ class RefundService
      */
     public function getDebtAmount(Session $currentSession, Debt $debt): int
     {
-        return ($debt->is_principal || !$debt->loan->compound_interest) ?
+        return ($debt->refund || $debt->is_principal || !$debt->loan->compound_interest) ?
             $debt->amount : $this->getCompoundInterestAmount($currentSession, $debt);
     }
 
@@ -193,7 +194,15 @@ class RefundService
         $refund = new Refund();
         $refund->debt()->associate($debt);
         $refund->session()->associate($session);
-        $refund->save();
+        DB::transaction(function() use($session, $debt, $refund) {
+            $refund->save();
+            // For compound interest, also save the final amount.
+            if($debt->is_interest && $debt->loan->compound_interest)
+            {
+                $debt->amount = $this->getCompoundInterestAmount($session, $debt);
+                $debt->save();
+            }
+        });
     }
 
     /**
