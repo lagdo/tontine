@@ -45,7 +45,7 @@
                         <tr>
                           <th>{{ __('common.labels.total') }}</th>
                           <th class="currency">{{ $locale->formatMoney($total, true) }}</th>
-                          <th class="currency">&nbsp;</th>
+                          <th>&nbsp;</th>
                         </tr>
                       </tbody>
                     </table>

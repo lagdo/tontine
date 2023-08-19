@@ -109,7 +109,16 @@ return [
             'i' => "Interest",
             'principal' => "Principal",
             'interest' => "Interest",
+            'percentage' => "Percentage",
             'amount_available' => "Amount available: :amount",
+        ],
+        'interest' => [
+            'f' => "Fixed",
+            's' => "Simple",
+            'c' => "Compound",
+            'if' => "Fixed interest",
+            'is' => "Simple interest",
+            'ic' => "Compound interest",
         ],
         'questions' => [
             'delete' => "Delete this loan?",

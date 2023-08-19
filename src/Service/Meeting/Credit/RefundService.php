@@ -4,11 +4,14 @@ namespace Siak\Tontine\Service\Meeting\Credit;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
+
+use function pow;
 
 class RefundService
 {
@@ -120,6 +123,40 @@ class RefundService
     }
 
     /**
+     * Compound interest calculation.
+     *
+     * @param Session $session The session
+     * @param Debt $debt
+     *
+     * @return int
+     */
+    private function getCompoundInterestAmount(Session $currentSession, Debt $debt): int
+    {
+        $principalAmount = $debt->loan->principal_debt->amount;
+        $interestRate = $debt->loan->interest_rate / 10000;
+        // Count the sessions.
+        $sessionCount = $this->tenantService->round()->sessions()
+            ->where('start_at', '>', $debt->loan->session->start_at)
+            ->where('start_at', '<=', $currentSession->start_at)
+            ->count();
+        return (int)($principalAmount * pow(1 + $interestRate, $sessionCount)) - $principalAmount;
+    }
+
+    /**
+     * Get the amount of a given debt.
+     *
+     * @param Session $session The session
+     * @param Debt $debt
+     *
+     * @return int
+     */
+    public function getDebtAmount(Session $currentSession, Debt $debt): int
+    {
+        return ($debt->refund || $debt->is_principal || !$debt->loan->compound_interest) ?
+            $debt->amount : $this->getCompoundInterestAmount($currentSession, $debt);
+    }
+
+    /**
      * Get the refunds for a given session.
      *
      * @param Session $session The session
@@ -157,7 +194,15 @@ class RefundService
         $refund = new Refund();
         $refund->debt()->associate($debt);
         $refund->session()->associate($session);
-        $refund->save();
+        DB::transaction(function() use($session, $debt, $refund) {
+            $refund->save();
+            // For compound interest, also save the final amount.
+            if($debt->is_interest && $debt->loan->compound_interest)
+            {
+                $debt->amount = $this->getCompoundInterestAmount($session, $debt);
+                $debt->save();
+            }
+        });
     }
 
     /**

@@ -109,7 +109,16 @@ return [
             'i' => "Intérêt",
             'principal' => "Principal",
             'interest' => "Intérêt",
+            'percentage' => "Pourcentage",
             'amount_available' => "Montant disponible : :amount",
+        ],
+        'interest' => [
+            'f' => "Fixe",
+            's' => "Simple",
+            'c' => "Composé",
+            'if' => "Intérêt fixe",
+            'is' => "Intérêt simple",
+            'ic' => "Intérêt composé",
         ],
         'questions' => [
             'delete' => "Supprimer cet emprunt ?",

@@ -88,6 +88,18 @@ class LoanService
     }
 
     /**
+     * @return array
+     */
+    public function getInterestTypes(): array
+    {
+        return [
+            Loan::INTEREST_FIXED => trans('meeting.loan.interest.f'),
+            Loan::INTEREST_SIMPLE => trans('meeting.loan.interest.s'),
+            Loan::INTEREST_COMPOUND => trans('meeting.loan.interest.c'),
+        ];
+    }
+
+    /**
      * Get the loans for a given session.
      *
      * @param Session $session    The session
@@ -195,6 +207,8 @@ class LoanService
         $interest = $values['interest'];
 
         $loan = new Loan();
+        $loan->interest_type = $values['interest_type'];
+        $loan->interest_rate = $values['interest_rate'];
         $loan->member()->associate($member);
         $loan->session()->associate($session);
         DB::transaction(function() use($loan, $principal, $interest) {
