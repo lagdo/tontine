@@ -81,6 +81,7 @@ return [
     'remitment' => [
         'titles' => [
             'add' => "Ajouter une remise",
+            'auctions' => "Enchères",
         ],
         'labels' => [
             'auction' => "Enchère",

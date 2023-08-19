@@ -81,6 +81,7 @@ return [
     'remitment' => [
         'titles' => [
             'add' => "Add a remitment",
+            'auctions' => "Auctions",
         ],
         'labels' => [
             'auction' => "Auction",

@@ -159,7 +159,7 @@ class LoanService
      */
     public function getSessionLoans(Session $session): Collection
     {
-        return $session->loans()->with(['member'])->get();
+        return $session->loans()->whereDoesntHave('remitment')->with(['member'])->get();
     }
 
     /**

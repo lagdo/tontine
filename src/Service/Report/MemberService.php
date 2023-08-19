@@ -248,21 +248,52 @@ class MemberService
 
     /**
      * @param Session $session
-     * @param Member $member|null
+     * @param Member $member
+     * @param bool $withRemitment
      *
      * @return Collection
      */
-    public function getLoans(Session $session, ?Member $member = null): Collection
+    private function _getLoans(Session $session, ?Member $member, bool $withRemitment): Collection
     {
-        return $session->loans()->with(['member', 'principal_debt', 'interest_debt'])
+        return $session->loans()
             ->when($member !== null, function($query) use($member) {
                 return $query->where('member_id', $member->id);
+            })
+            ->when($withRemitment, function($query) {
+                return $query->whereHas('remitment')
+                    ->with(['member', 'interest_debt.refund', 'remitment.payable.subscription']);
+            })
+            ->when(!$withRemitment, function($query) {
+                return $query->whereDoesntHave('remitment')
+                    ->with(['member', 'principal_debt.refund', 'interest_debt.refund']);
             })
             ->get()
             // Sort by member name
             ->when($member === null, function($collection) {
                 return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
             });
+    }
+
+    /**
+     * @param Session $session
+     * @param Member $member|null
+     *
+     * @return Collection
+     */
+    public function getLoans(Session $session, ?Member $member = null): Collection
+    {
+        return $this->_getLoans($session, $member, false);
+    }
+
+    /**
+     * @param Session $session
+     * @param Member $member|null
+     *
+     * @return Collection
+     */
+    public function getAuctions(Session $session, ?Member $member = null): Collection
+    {
+        return $this->_getLoans($session, $member, true);
     }
 
     /**
@@ -280,6 +311,7 @@ class MemberService
                     $query->where('member_id', $member->id);
                 });
             })
+            ->whereDoesntHave('loan.remitment')
             // Debts refunded on this session.
             ->whereHas('refund', function(Builder $query) use($session) {
                 $query->where('session_id', $session->id);

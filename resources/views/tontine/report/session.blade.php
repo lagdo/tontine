@@ -35,6 +35,10 @@
 
           @include('tontine.report.session.remitments', $remitments)
 
+@if ($tontine->is_financial)
+          @include('tontine.report.session.auctions', $remitments)
+@endif
+
           @include('tontine.report.session.fees', $fees)
 
           @include('tontine.report.session.fines', $fines)

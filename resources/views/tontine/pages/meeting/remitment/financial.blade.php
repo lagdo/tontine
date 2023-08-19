@@ -11,7 +11,13 @@
 @foreach ($payables as $payable)
                         <tr>
                           <td>{{ $payable->subscription->member->name ?? __('tontine.remitment.labels.not-assigned') }}</td>
-                          <td class="currency">{{ $locale->formatMoney($payable->amount, true) }}</td>
+                          <td class="currency">
+                            {{ $locale->formatMoney($payable->amount, true) }}
+@if ($payable->remitment && $payable->remitment->loan)
+                            <br/>{{ __('meeting.remitment.labels.auction') }}: {{
+                              $locale->formatMoney($payable->remitment->loan->interest_debt->amount) }}
+@endif
+                          </td>
                           <td class="table-item-menu" data-payable-id="{{ $payable->id }}">
 @if ($session->closed)
                             @if ($payable->id > 0)<i class="fa fa-toggle-on"></i>@else<i class="fa fa-toggle-off">@endif
