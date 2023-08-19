@@ -5,6 +5,21 @@ namespace Siak\Tontine\Model;
 class Loan extends Base
 {
     /**
+     * @const
+     */
+    const INTEREST_FIXED = 'f';
+
+    /**
+     * @const
+     */
+    const INTEREST_SIMPLE = 's';
+
+    /**
+     * @const
+     */
+    const INTEREST_COMPOUND = 'c';
+
+    /**
      * Indicates if the model should be timestamped.
      *
      * @var bool
@@ -17,6 +32,8 @@ class Loan extends Base
      * @var array
      */
     protected $fillable = [
+        'interest_type',
+        'interest_rate',
         'member_id',
         'session_id',
     ];
