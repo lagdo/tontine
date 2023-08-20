@@ -125,6 +125,7 @@ return [
         ],
         'errors' => [
             'not_found' => "Impossible de trouver l'emprunt correspondant.",
+            'update' => "Cet emprunt ne peut pas être modifié.",
         ],
     ],
     'disbursement' => [

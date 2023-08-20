@@ -18,6 +18,8 @@ use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
+use function trans;
+
 class LoanService
 {
     /**
@@ -184,7 +186,7 @@ class LoanService
      */
     public function getSessionLoan(Session $session, int $loanId): ?Loan
     {
-        return $session->loans()->with(['member'])->find($loanId);
+        return $session->loans()->with(['member'])->withCount('refunds')->find($loanId);
     }
 
     /**
@@ -203,16 +205,16 @@ class LoanService
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }
 
-        $principal = $values['principal'];
-        $interest = $values['interest'];
-
         $loan = new Loan();
         $loan->interest_type = $values['interest_type'];
         $loan->interest_rate = $values['interest_rate'];
         $loan->member()->associate($member);
         $loan->session()->associate($session);
-        DB::transaction(function() use($loan, $principal, $interest) {
+        DB::transaction(function() use($loan, $values) {
             $loan->save();
+
+            $principal = $values['principal'];
+            $interest = $values['interest'];
             // Create an entry for each type of debt
             if($principal > 0)
             {
@@ -229,24 +231,29 @@ class LoanService
      * Update a loan.
      *
      * @param Session $session The session
-     * @param int $loanId
+     * @param Loan $loan
      * @param array $values
      *
      * @return void
      */
-    public function updateLoan(Session $session, int $loanId, array $values): void
+    public function updateLoan(Session $session, Loan $loan, array $values): void
     {
-        // A loan that was created from a remitment cannot be updated.
-        if(($loan = $session->loans()->find($loanId)) !== null && !$loan->remitment_id)
-        {
+        $loan->interest_type = $values['interest_type'];
+        $loan->interest_rate = $values['interest_rate'];
+        DB::transaction(function() use($loan, $values) {
+            $loan->save();
+
             $principal = $values['principal'];
             $interest = $values['interest'];
-            DB::transaction(function() use($loan, $principal, $interest) {
-                $loan->debts()->principal()->update(['amount' => $principal]);
-                // The interest debt may need to be created.
-                $loan->debts()->updateOrCreate(['type' => Debt::TYPE_INTEREST], ['amount' => $interest]);
-            });
-        }
+            $loan->debts()->principal()->update(['amount' => $principal]);
+            // The interest debt may need to be created or deleted.
+            if($interest <= 0)
+            {
+                $loan->debts()->where('type', Debt::TYPE_INTEREST)->delete();
+                return;
+            }
+            $loan->debts()->updateOrCreate(['type' => Debt::TYPE_INTEREST], ['amount' => $interest]);
+        });
     }
 
     /**

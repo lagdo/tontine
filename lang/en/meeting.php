@@ -125,6 +125,7 @@ return [
         ],
         'errors' => [
             'not_found' => "Cannot find the corresponding loan.",
+            'update' => "This loan cannot be updated.",
         ],
     ],
     'disbursement' => [

@@ -73,14 +73,10 @@ class RefundService
                     })
                     ->where(function($query) use($sessionId) {
                         // The debts that are not yet refunded.
-                        $query->orWhere(function($query) {
-                            $query->whereDoesntHave('refund');
-                        });
+                        $query->orWhereDoesntHave('refund');
                         // The debts that are refunded in the current session.
-                        $query->orWhere(function($query) use($sessionId) {
-                            $query->whereHas('refund', function(Builder $query) use($sessionId) {
-                                $query->where('session_id', $sessionId);
-                            });
+                        $query->orWhereHas('refund', function(Builder $query) use($sessionId) {
+                            $query->where('session_id', $sessionId);
                         });
                     });
                 });

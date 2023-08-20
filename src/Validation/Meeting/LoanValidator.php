@@ -7,20 +7,15 @@ use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Validation\AbstractValidator;
 use Siak\Tontine\Validation\ValidationException;
 
+use function trans;
+
 class LoanValidator extends AbstractValidator
 {
     /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
      * @param LocaleService $localeService
      */
-    public function __construct(LocaleService $localeService)
-    {
-        $this->localeService = $localeService;
-    }
+    public function __construct(protected LocaleService $localeService)
+    {}
 
     /**
      * @param array $values
@@ -35,6 +30,15 @@ class LoanValidator extends AbstractValidator
             'interest_type' => 'required|in:f,s,c',
             'interest' => 'required|regex:/^\d+(\.\d{1,2})?$/',
         ]);
+        $validator->after(function($validator) use($values) {
+            if((float)$values['principal'] <= 0)
+            {
+                $validator->errors()->add('principal', trans('validation.gt.numeric', [
+                    'attribute' => trans('meeting.loan.labels.principal'),
+                    'value' => 0,
+                ]));
+            }
+        });
         if($validator->fails())
         {
             throw new ValidationException($validator);
