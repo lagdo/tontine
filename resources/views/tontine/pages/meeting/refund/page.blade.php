@@ -20,7 +20,7 @@
                         {{ !$debt->loan->remitment ? __('meeting.loan.labels.' . $debt->type) : __('meeting.remitment.labels.auction') }}
                       </td>
                       <td class="table-item-menu" data-debt-id="{{ $debt->id }}">
-                        {!! paymentLink($debt->refund, 'refund', $session->closed) !!}
+                        {!! paymentLink($debt->refund, 'refund', !$session->opened) !!}
                       </td>
                     </tr>
 @endforeach

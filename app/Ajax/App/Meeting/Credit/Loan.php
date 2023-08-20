@@ -146,11 +146,23 @@ class Loan extends CallableClass
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
-
         $loan = $this->loanService->getSessionLoan($this->session, $loanId);
+        if(!$loan)
+        {
+            $this->notify->warning(trans('meeting.loan.errors.not_found'));
+            return $this->response;
+        }
+        // A refunded loan, or that was created from a remitment cannot be updated.
+        if($loan->refunds_count > 0 || $loan->remitment_id)
+        {
+            $this->notify->warning(trans('meeting.loan.errors.update'));
+            return $this->response;
+        }
+
         $title = trans('meeting.loan.titles.edit');
         $content = $this->view()->render('tontine.pages.meeting.loan.edit')
-            ->with('loan', $loan);
+            ->with('loan', $loan)
+            ->with('interestTypes', $this->loanService->getInterestTypes());
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -161,6 +173,7 @@ class Loan extends CallableClass
             'click' => $this->rq()->updateLoan($loanId, pm()->form('loan-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
+        $this->response->script('setLoanInterestLabel()');
 
         return $this->response;
     }
@@ -175,12 +188,23 @@ class Loan extends CallableClass
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
+        $loan = $this->loanService->getSessionLoan($this->session, $loanId);
+        if(!$loan)
+        {
+            $this->notify->warning(trans('meeting.loan.errors.not_found'));
+            return $this->response;
+        }
+        // A refunded loan, or that was created from a remitment cannot be updated.
+        if($loan->refunds_count > 0 || $loan->remitment_id)
+        {
+            $this->notify->warning(trans('meeting.loan.errors.update'));
+            return $this->response;
+        }
 
         $values = $this->validator->validateItem($formValues);
-        $this->loanService->updateLoan($this->session, $loanId, $values);
+        $this->loanService->updateLoan($this->session, $loan, $values);
 
         $this->dialog->hide();
-
         // Refresh the refunds pages
         $this->cl(Refund::class)->show($this->session);
 

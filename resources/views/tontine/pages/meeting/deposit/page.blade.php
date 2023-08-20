@@ -36,7 +36,7 @@
 @else
                       <td class="currency">{{ $locale->formatMoney($receivable->subscription->pool->amount, true) }}</td>
                       <td class="table-item-menu" id="receivable-{{ $receivable->id }}" data-receivable-id="{{ $receivable->id }}">
-                        {!! paymentLink($receivable->deposit, 'deposit', $session->closed) !!}
+                        {!! paymentLink($receivable->deposit, 'deposit', !$session->opened) !!}
                       </td>
 @endif
                     </tr>
