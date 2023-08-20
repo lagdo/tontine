@@ -13,7 +13,7 @@
                           <td>{{ $bill->member->name }}@if ($bill->session) <br/>{{ $bill->session->title }} @endif</td>
                           <td class="currency">{{ $locale->formatMoney($bill->amount, true) }}</td>
                           <td class="table-item-menu" data-bill-id="{{ $bill->id }}">
-                            {!! paymentLink($bill->settlement, 'settlement', $session->closed) !!}
+                            {!! paymentLink($bill->settlement, 'settlement', !$session->opened) !!}
                           </td>
                         </tr>
 @endforeach

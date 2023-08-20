@@ -115,11 +115,47 @@ class RefundService
         return $this->getQuery($session->id, $prevSessions, $onlyPaid)
             ->page($page, $this->tenantService->getLimit())
             ->with(['loan', 'loan.member', 'loan.session', 'refund'])
-            ->get();
+            ->get()
+            ->sortBy('loan.member.name', SORT_LOCALE_STRING)
+            ->values();
     }
 
     /**
-     * Compound interest calculation.
+     * Count the sessions.
+     *
+     * @param Session $session The session
+     * @param Debt $debt
+     *
+     * @return int
+     */
+    private function getSessionCount(Session $currentSession, Debt $debt): int
+    {
+        // Count the sessions.
+        return $this->tenantService->round()->sessions()
+            ->where('start_at', '>', $debt->loan->session->start_at)
+            ->where('start_at', '<=', $currentSession->start_at)
+            ->count();
+    }
+
+    /**
+     * Get the simple interest amount.
+     *
+     * @param Session $session The session
+     * @param Debt $debt
+     *
+     * @return int
+     */
+    private function getSimpleInterestAmount(Session $currentSession, Debt $debt): int
+    {
+        $principalAmount = $debt->loan->principal_debt->amount;
+        $interestRate = $debt->loan->interest_rate / 10000;
+        $sessionCount = $this->getSessionCount($currentSession, $debt);
+
+        return (int)($principalAmount * $interestRate * $sessionCount);
+    }
+
+    /**
+     * Get the compound interest amount.
      *
      * @param Session $session The session
      * @param Debt $debt
@@ -130,11 +166,8 @@ class RefundService
     {
         $principalAmount = $debt->loan->principal_debt->amount;
         $interestRate = $debt->loan->interest_rate / 10000;
-        // Count the sessions.
-        $sessionCount = $this->tenantService->round()->sessions()
-            ->where('start_at', '>', $debt->loan->session->start_at)
-            ->where('start_at', '<=', $currentSession->start_at)
-            ->count();
+        $sessionCount = $this->getSessionCount($currentSession, $debt);
+
         return (int)($principalAmount * pow(1 + $interestRate, $sessionCount)) - $principalAmount;
     }
 
@@ -148,8 +181,9 @@ class RefundService
      */
     public function getDebtAmount(Session $currentSession, Debt $debt): int
     {
-        return ($debt->refund || $debt->is_principal || !$debt->loan->compound_interest) ?
-            $debt->amount : $this->getCompoundInterestAmount($currentSession, $debt);
+        return ($debt->refund || $debt->is_principal || $debt->loan->fixed_interest) ? $debt->amount :
+            ($debt->loan->simple_interest ? $this->getSimpleInterestAmount($currentSession, $debt) :
+            $this->getCompoundInterestAmount($currentSession, $debt));
     }
 
     /**
@@ -192,10 +226,12 @@ class RefundService
         $refund->session()->associate($session);
         DB::transaction(function() use($session, $debt, $refund) {
             $refund->save();
-            // For compound interest, also save the final amount.
-            if($debt->is_interest && $debt->loan->compound_interest)
+            // For simple or compound interest, also save the final amount.
+            if($debt->is_interest && ($debt->loan->simple_interest || $debt->loan->compound_interest))
             {
-                $debt->amount = $this->getCompoundInterestAmount($session, $debt);
+                $debt->amount = $debt->loan->simple_interest ?
+                    $this->getSimpleInterestAmount($session, $debt) :
+                    $this->getCompoundInterestAmount($session, $debt);
                 $debt->save();
             }
         });

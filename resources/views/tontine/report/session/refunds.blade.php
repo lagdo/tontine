@@ -23,13 +23,9 @@
 @endforeach
                         <tr>
                           <th>{{ __('common.labels.total') }}</th>
-                          <th>{{ __('meeting.loan.labels.principal') }}</th>
-                          <th class="currency">{{ $locale->formatMoney($total->principal, true) }}</th>
-                        </tr>
-                        <tr>
-                          <th>{{ __('common.labels.total') }}</th>
-                          <th>{{ __('meeting.loan.labels.interest') }}</th>
-                          <th class="currency">{{ $locale->formatMoney($total->interest, true) }}</th>
+                          <td class="currency">{{ $locale->formatMoney($total->principal, true)
+                            }} + {{ $locale->formatMoney($total->interest, true) }}</td>
+                          <th class="currency">{{ $locale->formatMoney($total->principal + $total->interest, true) }}</th>
                         </tr>
                       </tbody>
                     </table>
