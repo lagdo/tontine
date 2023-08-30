@@ -85,7 +85,7 @@ trait ReportTrait
             $query->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
                 ->where('subscriptions.pool_id', $pool->id);
         };
-        return $round->sessions()->with($with)->get();
+        return $round->sessions()->orderBy('start_at', 'asc')->with($with)->get();
     }
 
     /**
