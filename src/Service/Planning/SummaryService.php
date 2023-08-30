@@ -46,7 +46,7 @@ class SummaryService
      */
     public function getReceivables(Pool $pool): array
     {
-        $sessions = $this->tenantService->round()->sessions()->get();
+        $sessions = $this->tenantService->round()->sessions()->orderBy('start_at', 'asc')->get();
         $subscriptions = $pool->subscriptions()->with(['member'])->get();
         $figures = new stdClass();
         $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);

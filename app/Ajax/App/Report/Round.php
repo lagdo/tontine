@@ -8,6 +8,7 @@ use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Report\RoundService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Tontine\TontineService;
 
 /**
  * @databag meeting
@@ -39,6 +40,12 @@ class Round extends CallableClass
     protected TenantService $tenantService;
 
     /**
+     * @di
+     * @var TontineService
+     */
+    protected TontineService $tontineService;
+
+    /**
      * @after hideMenuOnMobile
      */
     public function home()
@@ -67,7 +74,7 @@ class Round extends CallableClass
 
     private function amounts()
     {
-        $sessions = $this->tenantService->round()->sessions;
+        $sessions = $this->tontineService->getSessions(false);
         // Sessions with data
         $sessionIds = $sessions->filter(function($session) {
             return $session->status === SessionModel::STATUS_CLOSED ||

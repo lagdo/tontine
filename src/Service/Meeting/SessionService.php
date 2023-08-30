@@ -70,8 +70,8 @@ class SessionService
      */
     public function getSessions(int $page = 0): Collection
     {
-        return $this->tenantService->round()->sessions()->with(['host'])
-            ->page($page, $this->tenantService->getLimit())->get();
+        return $this->tenantService->round()->sessions()->orderBy('start_at', 'asc')
+            ->with(['host'])->page($page, $this->tenantService->getLimit())->get();
     }
 
     /**

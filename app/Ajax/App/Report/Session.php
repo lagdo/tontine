@@ -29,7 +29,9 @@ class Session extends CallableClass
     public function home()
     {
         // Don't show the page if there is no session or no member.
-        $sessions = $this->tontineService->getSessions();
+        $sessions = $this->tontineService->getSessions(false, false)->filter(function($session) {
+            return $session->opened;
+        })->pluck('title', 'id');
         if($sessions->count() === 0)
         {
             return $this->response;

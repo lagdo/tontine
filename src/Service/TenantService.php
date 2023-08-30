@@ -127,7 +127,8 @@ class TenantService
      */
     public function getSessions(Session $session): Collection
     {
-        return $this->round()->sessions()->where('start_at', '<=', $session->start_at)->get();
+        return $this->round()->sessions()->where('start_at', '<=', $session->start_at)
+            ->orderBy('start_at', 'asc')->get();
     }
 
     /**
@@ -139,7 +140,8 @@ class TenantService
     public function getPreviousSessions(Session $session, bool $withCurrent = true): Collection
     {
         $op = $withCurrent ? '<=' : '<';
-        return $this->round()->sessions()->where('start_at', $op, $session->start_at)->pluck('id');
+        return $this->round()->sessions()->where('start_at', $op, $session->start_at)
+            ->orderBy('start_at', 'asc')->pluck('id');
     }
 
     /**

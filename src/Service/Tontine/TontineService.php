@@ -114,12 +114,14 @@ class TontineService
      * Get a list of sessions.
      *
      * @param bool $pluck
+     * @param bool $orderAsc
      *
      * @return Collection
      */
-    public function getSessions(bool $pluck = true): Collection
+    public function getSessions(bool $pluck = true, bool $orderAsc = true): Collection
     {
-        $query = $this->tenantService->round()->sessions()->orderBy('start_at', 'asc');
+        $query = $this->tenantService->round()->sessions()
+            ->orderBy('start_at', $orderAsc ? 'asc' : 'desc');
         return $pluck ? $query->pluck('title', 'id') : $query->get();
     }
 
