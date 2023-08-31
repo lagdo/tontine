@@ -14,3 +14,11 @@
   <link rel="stylesheet" href="/tpl/assets/css/style.css">
   <link rel="stylesheet" href="/tpl/assets/css/components.css">
   <link rel="stylesheet" href="/tpl/assets/css/custom.css">
+  <style>
+    /* Fix for template style */
+    @media (max-width: 575.98px) {
+      .table-responsive table {
+          min-width: 400px;
+      }
+    }
+  </style>
