@@ -89,12 +89,20 @@ return [
         ],
     ],
     'member' => [
+        'actions' => [
+            'list' => "Liste",
+        ],
+        'tips' => [
+            'list' => 'Cliquez sur le bouton "Liste" pour saisir une liste des membres dans une zone de texte.',
+            'add' => "Saisir un nom sur chaque ligne. S'il y a un numéro de téléphone ou un email, le séparer avec un point-virgule.",
+            'example' => 'Par example,<br/>"Jean Amadou"<br/>ou<br/>"Jean Amadou;jean.amadou@gmail.com;237670000000"',
+        ],
         'titles' => [
             'add' => "Ajouter des membres",
             'edit' => "Modifier un membre",
         ],
         'messages' => [
-            'created' => "Le membre a été ajouté.",
+            'created' => "Les membres ont été ajoutés.",
             'updated' => "Le membre a été modifié.",
             'deleted' => "Le membre a été supprimé.",
         ],

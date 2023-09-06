@@ -22,9 +22,9 @@
                 <form class="form-horizontal" role="form" id="member-form">
                   <div class="module-body">
                     <div class="form-group row">
-                      {!! Form::label('name', trans('common.labels.name'), ['class' => 'col-sm-3 col-form-label']) !!}
-                      {!! Form::label('email', trans('common.labels.email'), ['class' => 'col-sm-4 col-form-label']) !!}
-                      {!! Form::label('phone', trans('common.labels.phone'), ['class' => 'col-sm-3 col-form-label']) !!}
+                      {!! Form::label('name', __('common.labels.name'), ['class' => 'col-sm-3 col-form-label']) !!}
+                      {!! Form::label('email', __('common.labels.email'), ['class' => 'col-sm-4 col-form-label']) !!}
+                      {!! Form::label('phone', __('common.labels.phone'), ['class' => 'col-sm-3 col-form-label']) !!}
                     </div>
 @for($i = 0; $i < $count; $i++)
                     <div class="form-group row">

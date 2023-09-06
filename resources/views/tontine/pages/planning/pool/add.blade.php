@@ -22,9 +22,9 @@
                 <form class="form-horizontal" role="form" id="pool-form">
                   <div class="module-body">
                     <div class="form-group row">
-                      {!! Form::label('title', trans('common.labels.title'), ['class' => 'col-sm-4 col-form-label']) !!}
-                      {!! Form::label('amount', trans('common.labels.amount'), ['class' => 'col-sm-2 col-form-label']) !!}
-                      {!! Form::label('notes', trans('common.labels.notes'), ['class' => 'col-sm-6 col-form-label']) !!}
+                      {!! Form::label('title', __('common.labels.title'), ['class' => 'col-sm-4 col-form-label']) !!}
+                      {!! Form::label('amount', __('common.labels.amount'), ['class' => 'col-sm-2 col-form-label']) !!}
+                      {!! Form::label('notes', __('common.labels.notes'), ['class' => 'col-sm-6 col-form-label']) !!}
                     </div>
 @for($i = 0; $i < $count; $i++)
                     <div class="form-group row">

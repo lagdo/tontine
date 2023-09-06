@@ -20,8 +20,8 @@
                 <form class="form-horizontal" role="form" id="session-form">
                   <div class="module-body">
                     <div class="form-group row">
-                      {!! Form::label('title', trans('common.labels.title'), ['class' => 'col-sm-6 col-form-label']) !!}
-                      {!! Form::label('date', trans('common.labels.date'), ['class' => 'col-sm-5 col-form-label']) !!}
+                      {!! Form::label('title', __('common.labels.title'), ['class' => 'col-sm-6 col-form-label']) !!}
+                      {!! Form::label('date', __('common.labels.date'), ['class' => 'col-sm-5 col-form-label']) !!}
                     </div>
 @for($i = 0; $i < $count; $i++)
                     <div class="form-group row">

@@ -89,12 +89,20 @@ return [
         ],
     ],
     'member' => [
+        'actions' => [
+            'list' => "List",
+        ],
+        'tips' => [
+            'list' => 'Click on the "List" button to enter a list of members in a text box.',
+            'add' => "Enter a member name on each line. If a phone number or email is available, separate it with a semi-colon.",
+            'example' => 'For example,<br/>"Jean Amadou"<br/>or<br/>"Jean Amadou;jean.amadou@gmail.com;237670000000"',
+        ],
         'titles' => [
             'add' => "Add members",
             'edit' => "Edit a member",
         ],
         'messages' => [
-            'created' => "The member was successfully created.",
+            'created' => "The members was successfully created.",
             'updated' => "The member was successfully updated.",
             'deleted' => "The member was successfully deleted.",
         ],

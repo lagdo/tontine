@@ -9,8 +9,14 @@ use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
+use function array_filter;
+use function array_map;
 use function config;
+use function count;
+use function explode;
+use function strpos;
 use function trans;
+use function trim;
 
 class Member extends CallableClass
 {
@@ -71,6 +77,10 @@ class Member extends CallableClass
             'class' => 'btn btn-tertiary',
             'click' => 'close',
         ],[
+            'title' => trans('tontine.member.actions.list'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->addList(pm()->input('text-number')),
+        ],[
             'title' => trans('common.actions.add'),
             'class' => 'btn btn-primary',
             'click' => $this->rq()->add(pm()->input('text-number')),
@@ -128,6 +138,79 @@ class Member extends CallableClass
         return $this->home(); // Reset the entire page
     }
 
+    public function addList()
+    {
+        $this->dialog->hide();
+
+        $title = trans('tontine.member.titles.add');
+        $content = $this->view()->render('tontine.pages.member.list');
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.save'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->createList(pm()->form('member-list')),
+        ]];
+        $this->dialog->show($title, $content, $buttons);
+
+        return $this->response;
+    }
+
+    /**
+     * @param string $members
+     *
+     * @return array
+     */
+    private function parseMemberList(string $members): array
+    {
+        $members = array_map(function($value) {
+            $values = explode(";", trim($value, " \t\n\r;"));
+            if(count($values) === 0 || trim($values[0]) === '')
+            {
+                return [];
+            }
+            $member = [
+                'name' => $values[0],
+                'email' => '',
+                'phone' => '',
+            ];
+            // The next values are either the phone number or the email, in any order.
+            foreach([1, 2] as $count)
+            {
+                if(count($values) > $count)
+                {
+                    $field = strpos($values[$count], '@') !== false ? 'email' : 'phone';
+                    $member[$field] = trim($values[$count]);
+                }
+            }
+
+            return $member;
+        }, explode("\n", trim($members, " \t\n\r;")));
+        // Filter empty lines.
+        $members = array_filter($members, function($member) {
+            return count($member) > 0;
+        });
+
+        return $this->validator->validateList($members);
+    }
+
+    /**
+     * @di $validator
+     * @databag member
+     */
+    public function createList(array $formValues)
+    {
+        $values = $this->parseMemberList($formValues['members'] ?? '');
+
+        $this->memberService->createMembers($values);
+        $this->dialog->hide();
+        $this->notify->success(trans('tontine.member.messages.created'), trans('common.titles.success'));
+
+        return $this->home(); // Reset the entire page
+    }
+
     public function edit(int $memberId)
     {
         $member = $this->memberService->getMember($memberId);
@@ -156,7 +239,6 @@ class Member extends CallableClass
     public function update(int $memberId, array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
-
         $member = $this->memberService->getMember($memberId);
 
         $this->memberService->updateMember($member, $values);
