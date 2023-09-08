@@ -3,6 +3,7 @@
 namespace App\Ajax\App\Meeting\Credit;
 
 use App\Ajax\CallableClass;
+use App\Ajax\App\Meeting\Cash\Disbursement;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -49,6 +50,16 @@ class Loan extends CallableClass
     {
         $sessionId = $this->bag('meeting')->get('session.id');
         $this->session = $this->loanService->getSession($sessionId);
+    }
+
+    /**
+     * @exclude
+     */
+    public function refreshAmount(SessionModel $session)
+    {
+        $amount = $this->loanService->getAmountAvailableValue($session);
+        $html = trans('meeting.loan.labels.amount_available', ['amount' => $amount]);
+        $this->response->html('loan_amount_available', $html);
     }
 
     /**
@@ -130,6 +141,8 @@ class Loan extends CallableClass
 
         // Refresh the refunds pages
         $this->cl(Refund::class)->show($this->session);
+        // Refresh the amounts available
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->home();
     }
@@ -202,6 +215,8 @@ class Loan extends CallableClass
         $this->dialog->hide();
         // Refresh the refunds pages
         $this->cl(Refund::class)->show($this->session);
+        // Refresh the amounts available
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->home();
     }
@@ -218,6 +233,8 @@ class Loan extends CallableClass
 
         // Refresh the refunds pages
         $this->cl(Refund::class)->show($this->session);
+        // Refresh the amounts available
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->home();
     }

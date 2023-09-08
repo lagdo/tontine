@@ -3,7 +3,7 @@
 namespace App\Ajax\App\Meeting\Credit;
 
 use App\Ajax\CallableClass;
-use App\Ajax\App\Meeting\Credit\Loan;
+use App\Ajax\App\Meeting\Cash\Disbursement;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
@@ -124,8 +124,9 @@ class Refund extends CallableClass
         $this->validator->validate($debtId);
         $this->refundService->createRefund($this->session, $debtId);
 
-        // Refresh the loans page
-        // $this->cl(Loan::class)->show($this->session);
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->page();
     }
@@ -140,8 +141,9 @@ class Refund extends CallableClass
 
         $this->refundService->deleteRefund($this->session, $debtId);
 
-        // Refresh the loans page
-        // $this->cl(Loan::class)->show($this->session);
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->page();
     }

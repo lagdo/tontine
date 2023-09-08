@@ -3,6 +3,7 @@
 namespace App\Ajax\App\Meeting\Cash;
 
 use App\Ajax\CallableClass;
+use App\Ajax\App\Meeting\Credit\Loan;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -49,6 +50,16 @@ class Disbursement extends CallableClass
     {
         $sessionId = $this->bag('meeting')->get('session.id');
         $this->session = $this->disbursementService->getSession($sessionId);
+    }
+
+    /**
+     * @exclude
+     */
+    public function refreshAmount(SessionModel $session)
+    {
+        $amount = $this->disbursementService->getAmountAvailableValue($session);
+        $html = trans('meeting.disbursement.labels.amount_available', ['amount' => $amount]);
+        $this->response->html('total_amount_available', $html);
     }
 
     /**
@@ -124,8 +135,8 @@ class Disbursement extends CallableClass
 
         $this->dialog->hide();
 
-        // Refresh the loans page
-        // $this->cl(Loan::class)->show($this->session);
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
 
         return $this->home();
     }
@@ -174,8 +185,8 @@ class Disbursement extends CallableClass
 
         $this->dialog->hide();
 
-        // Refresh the loans page
-        // $this->cl(Loan::class)->show($this->session);
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
 
         return $this->home();
     }
@@ -190,8 +201,8 @@ class Disbursement extends CallableClass
 
         $this->disbursementService->deleteDisbursement($this->session, $disbursementId);
 
-        // Refresh the loans page
-        // $this->cl(Loan::class)->show($this->session);
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
 
         return $this->home();
     }

@@ -3,6 +3,7 @@
 namespace App\Ajax\App\Meeting\Cash;
 
 use App\Ajax\CallableClass;
+use App\Ajax\App\Meeting\Credit\Loan;
 use Siak\Tontine\Service\Meeting\Cash\FundingService;
 use Siak\Tontine\Validation\Meeting\FundingValidator;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -122,8 +123,9 @@ class Funding extends CallableClass
 
         $this->dialog->hide();
 
-        // Refresh the loans page
-        // $this->cl(Loan::class)->show($this->session);
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->home();
     }
@@ -170,8 +172,9 @@ class Funding extends CallableClass
 
         $this->dialog->hide();
 
-        // Refresh the loans page
-        // $this->cl(Loan::class)->show($this->session);
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->home();
     }
@@ -186,8 +189,9 @@ class Funding extends CallableClass
 
         $this->fundingService->deleteFunding($this->session, $fundingId);
 
-        // Refresh the loans page
-        // $this->cl(Loan::class)->show($this->session);
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->home();
     }
