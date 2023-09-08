@@ -116,6 +116,7 @@ return [
             'edit' => "Edit a fee",
         ],
         'labels' => [
+            'lend' => "For lend",
             'lendable' => "Available for loan",
         ],
         'messages' => [

@@ -116,6 +116,7 @@ return [
             'edit' => "Modifier un frais",
         ],
         'labels' => [
+            'lend' => "&Agrave; prêter",
             'lendable' => "Disponible pour prêt",
         ],
         'messages' => [

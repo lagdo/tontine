@@ -7,6 +7,7 @@
                       <th>{!! __('common.labels.period') !!}</th>
                       <th>{!! __('common.labels.name') !!}</th>
                       <th class="currency">{!! __('common.labels.amount') !!}</th>
+                      <th>{!! __('tontine.charge.labels.lend') !!}</th>
                       <th>{!! __('common.labels.active') !!}</th>
                       <th class="table-menu"></th>
                     </tr>
@@ -33,6 +34,9 @@
                       <td>{{ $charge->name }}</td>
                       <td class="currency">{{ $charge->has_amount ?
                         $locale->formatMoney($charge->amount, true) : __('tontine.labels.fees.variable') }}</td>
+                      <td class="table-item-menu">
+                        <i class="fa fa-toggle-{{ $charge->lendable ? 'on' : 'off' }}"></i>
+                      </td>
                       <td class="table-item-menu" data-charge-id="{{ $charge->id }}">
                         <a href="javascript:void(0)" class="btn-charge-toggle"><i class="fa fa-toggle-{{ $charge->active ? 'on' : 'off' }}"></i></a>
                       </td>

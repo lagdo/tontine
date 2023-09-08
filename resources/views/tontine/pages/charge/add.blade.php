@@ -23,26 +23,27 @@
                   <div class="module-body">
                     <div class="form-group row">
 @if ($fixed)
-                      {!! Form::label('period', __('common.labels.period'), ['class' => 'col-sm-2 col-form-label']) !!}
+                      {!! Form::label('period', __('common.labels.period'), ['class' => 'col-sm-3 col-form-label']) !!}
 @else
-                      {!! Form::label('type', __('common.labels.type'), ['class' => 'col-sm-2 col-form-label']) !!}
+                      {!! Form::label('type', __('common.labels.type'), ['class' => 'col-sm-3 col-form-label']) !!}
 @endif
-                      {!! Form::label('name', __('common.labels.name'), ['class' => 'col-sm-6 col-form-label']) !!}
-                      {!! Form::label('amount', __('common.labels.amount') . " ($currency)", ['class' => 'col-sm-2 col-form-label']) !!}
+                      {!! Form::label('name', __('common.labels.name'), ['class' => 'col-sm-4 col-form-label']) !!}
+                      {!! Form::label('amount', __('common.labels.amount') . " ($currency)", ['class' => 'col-sm-3 col-form-label']) !!}
+                      {!! Form::label('lendable', __('tontine.charge.labels.lendable'), ['class' => 'col-sm-2 col-form-label']) !!}
                     </div>
 @for($i = 0; $i < $count; $i++)
                     <div class="form-group row">
-                      <div class="col-sm-2">
+                      <div class="col-sm-3">
 @if ($fixed)
                         {!! Form::select('charges[' . $i . '][period]', $periods, '', ['class' => 'form-control', 'id' => "charge_period_$i"]) !!}
 @else
                         {!! Form::select('charges[' . $i . '][type]', $types, '', ['class' => 'form-control', 'id' => "charge_type_$i"]) !!}
 @endif
                       </div>
-                      <div class="col-sm-6">
+                      <div class="col-sm-4">
                         {!! Form::text('charges[' . $i . '][name]', '', ['class' => 'form-control', 'id' => "charge_name_$i"]) !!}
                       </div>
-                      <div class="col-sm-2">
+                      <div class="col-sm-3">
 @if ($fixed)
                         {!! Form::text('charges[' . $i . '][amount]', '', ['class' => 'form-control', 'id' => "charge_amount_$i"]) !!}
                         {!! Form::hidden('charges[' . $i . '][fixed]', '1') !!}
@@ -56,6 +57,9 @@
                           {!! Form::text('charges[' . $i . '][amount]', '', ['class' => 'form-control', 'id' => "charge_amount_$i"]) !!}
                         </div>
 @endif
+                      </div>
+                      <div class="col-sm-2 pt-2">
+                        {!! Form::checkbox('charges[' . $i . '][lendable]', '1', false) !!}
                       </div>
                     </div>
 @endfor
