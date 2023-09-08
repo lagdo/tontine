@@ -133,6 +133,9 @@ return [
             'add' => "Add a disbursement",
             'edit' => "Edit a disbursement",
         ],
+        'labels' => [
+            'amount_available' => "Amount available: :amount",
+        ],
         'questions' => [
             'delete' => "Delete this disbursement?",
         ],

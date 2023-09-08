@@ -1,7 +1,10 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col-auto">
-                      <div class="section-title mt-0">{{ __('meeting.titles.disbursements') }}</div>
+                      <div class="section-title mt-0">
+                        {{ __('meeting.titles.disbursements') }} ({{ __('meeting.disbursement.labels.amount_available',
+                          ['amount' => $locale->formatMoney($amountAvailable, true)]) }})
+                      </div>
                     </div>
 @if($session->opened)
                     <div class="col">

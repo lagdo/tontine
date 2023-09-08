@@ -133,6 +133,9 @@ return [
             'add' => "Ajouter un décaissement",
             'edit' => "Modifier un décaissement",
         ],
+        'labels' => [
+            'amount_available' => "Montant disponible : :amount",
+        ],
         'questions' => [
             'delete' => "Supprimer ce décaissement ?",
         ],

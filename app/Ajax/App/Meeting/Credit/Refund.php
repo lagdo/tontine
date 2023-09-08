@@ -125,7 +125,7 @@ class Refund extends CallableClass
         $this->refundService->createRefund($this->session, $debtId);
 
         // Refresh the loans page
-        $this->cl(Loan::class)->show($this->session);
+        // $this->cl(Loan::class)->show($this->session);
 
         return $this->page();
     }
@@ -141,7 +141,7 @@ class Refund extends CallableClass
         $this->refundService->deleteRefund($this->session, $debtId);
 
         // Refresh the loans page
-        $this->cl(Loan::class)->show($this->session);
+        // $this->cl(Loan::class)->show($this->session);
 
         return $this->page();
     }

@@ -123,7 +123,7 @@ class Funding extends CallableClass
         $this->dialog->hide();
 
         // Refresh the loans page
-        $this->cl(Loan::class)->show($this->session);
+        // $this->cl(Loan::class)->show($this->session);
 
         return $this->home();
     }
@@ -171,7 +171,7 @@ class Funding extends CallableClass
         $this->dialog->hide();
 
         // Refresh the loans page
-        $this->cl(Loan::class)->show($this->session);
+        // $this->cl(Loan::class)->show($this->session);
 
         return $this->home();
     }
@@ -187,7 +187,7 @@ class Funding extends CallableClass
         $this->fundingService->deleteFunding($this->session, $fundingId);
 
         // Refresh the loans page
-        $this->cl(Loan::class)->show($this->session);
+        // $this->cl(Loan::class)->show($this->session);
 
         return $this->home();
     }

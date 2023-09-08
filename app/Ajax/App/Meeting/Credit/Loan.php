@@ -91,11 +91,6 @@ class Loan extends CallableClass
         }
 
         $amountAvailable = $this->loanService->getAmountAvailableValue($this->session);
-        if($amountAvailable <= 0)
-        {
-            return $this->response;
-        }
-
         $members = $this->loanService->getMembers();
         $title = trans('meeting.loan.titles.add');
         $content = $this->view()->render('tontine.pages.meeting.loan.add')

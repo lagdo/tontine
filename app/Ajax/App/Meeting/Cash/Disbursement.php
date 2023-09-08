@@ -64,10 +64,12 @@ class Disbursement extends CallableClass
     public function home()
     {
         $disbursements = $this->disbursementService->getSessionDisbursements($this->session);
+        $amountAvailable = $this->disbursementService->getAmountAvailable($this->session);
 
         $html = $this->view()->render('tontine.pages.meeting.disbursement.home')
             ->with('session', $this->session)
-            ->with('disbursements', $disbursements);
+            ->with('disbursements', $disbursements)
+            ->with('amountAvailable', $amountAvailable);
         $this->response->html('meeting-disbursements', $html);
 
         $this->jq('#btn-disbursements-refresh')->click($this->rq()->home());
@@ -123,7 +125,7 @@ class Disbursement extends CallableClass
         $this->dialog->hide();
 
         // Refresh the loans page
-        $this->cl(Loan::class)->show($this->session);
+        // $this->cl(Loan::class)->show($this->session);
 
         return $this->home();
     }
@@ -173,7 +175,7 @@ class Disbursement extends CallableClass
         $this->dialog->hide();
 
         // Refresh the loans page
-        $this->cl(Loan::class)->show($this->session);
+        // $this->cl(Loan::class)->show($this->session);
 
         return $this->home();
     }
@@ -189,7 +191,7 @@ class Disbursement extends CallableClass
         $this->disbursementService->deleteDisbursement($this->session, $disbursementId);
 
         // Refresh the loans page
-        $this->cl(Loan::class)->show($this->session);
+        // $this->cl(Loan::class)->show($this->session);
 
         return $this->home();
     }

@@ -6,9 +6,13 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Category;
+use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Disbursement;
+use Siak\Tontine\Model\Funding;
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
@@ -93,6 +97,54 @@ class DisbursementService
     public function getCategory(int $categoryId): ?Category
     {
         return Category::disbursement()->find($categoryId);
+    }
+
+    /**
+     * Get the amount available for loan.
+     *
+     * @param Session $session    The session
+     *
+     * @return int
+     */
+    public function getAmountAvailable(Session $session): int
+    {
+        // Get the ids of all the sessions until the current one.
+        $sessionIds = $this->tenantService->getPreviousSessions($session);
+
+        // The amount available for lending is the sum of the fundings and refunds,
+        // minus the sum of the loans, for all the sessions until the selected.
+        $funding = Funding::select(DB::raw('sum(amount) as total'))
+            ->whereIn('session_id', $sessionIds)
+            ->value('total');
+        $settlement = Settlement::select(DB::raw('sum(bills.amount) as total'))
+            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->whereIn('settlements.session_id', $sessionIds)
+            ->value('total');
+        $refund = Refund::select(DB::raw('sum(debts.amount) as total'))
+            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
+            ->whereIn('refunds.session_id', $sessionIds)
+            ->value('total');
+        $debt = Debt::principal()->select(DB::raw('sum(debts.amount) as total'))
+            ->join('loans', 'debts.loan_id', '=', 'loans.id')
+            ->whereIn('loans.session_id', $sessionIds)
+            ->value('total');
+        $disbursement = Disbursement::select(DB::raw('sum(amount) as total'))
+            ->whereIn('session_id', $sessionIds)
+            ->value('total');
+
+        return $funding + $settlement + $refund - $debt - $disbursement;
+    }
+
+    /**
+     * Get the amount available for loan.
+     *
+     * @param Session $session    The session
+     *
+     * @return float
+     */
+    public function getAmountAvailableValue(Session $session): float
+    {
+        return $this->localeService->getMoneyValue($this->getAmountAvailable($session));
     }
 
     /**
