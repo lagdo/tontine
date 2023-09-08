@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Ajax\App\Meeting\Credit;
+namespace App\Ajax\App\Meeting\Cash;
 
 use App\Ajax\CallableClass;
-use Siak\Tontine\Service\Meeting\Credit\FundingService;
+use Siak\Tontine\Service\Meeting\Cash\FundingService;
 use Siak\Tontine\Validation\Meeting\FundingValidator;
 use Siak\Tontine\Model\Session as SessionModel;
 

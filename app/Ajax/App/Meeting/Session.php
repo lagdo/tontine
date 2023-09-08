@@ -3,10 +3,10 @@
 namespace App\Ajax\App\Meeting;
 
 use App\Ajax\CallableClass;
+use App\Ajax\App\Meeting\Cash\Disbursement;
+use App\Ajax\App\Meeting\Cash\Funding;
 use App\Ajax\App\Meeting\Charge\Fee;
 use App\Ajax\App\Meeting\Charge\Fine;
-use App\Ajax\App\Meeting\Credit\Disbursement;
-use App\Ajax\App\Meeting\Credit\Funding;
 use App\Ajax\App\Meeting\Credit\Loan;
 use App\Ajax\App\Meeting\Credit\Refund;
 use App\Ajax\App\Meeting\Pool\Deposit;
