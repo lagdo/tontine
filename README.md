@@ -11,6 +11,8 @@ Web application for online tontine management.
 
 Made with [Laravel](https://laravel.com) and [Jaxon](https://www.jaxon-php.org).
 
+A demo is [available here](https://demo.ton.siakapp.net).
+
 Installation
 ------------
 
