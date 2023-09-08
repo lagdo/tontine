@@ -115,6 +115,9 @@ return [
             'add' => "Ajouter des frais",
             'edit' => "Modifier un frais",
         ],
+        'labels' => [
+            'lendable' => "Disponible pour prêt",
+        ],
         'messages' => [
             'created' => "Le frais a été ajouté.",
             'updated' => "Le frais a été modifié.",

@@ -49,6 +49,7 @@ class ChargeValidator extends AbstractValidator
         $validated = $validator->validated();
         $validated['amount'] = empty($values['fixed']) ? 0 :
             $this->localeService->convertMoneyToInt((float)$validated['amount']);
+        $validated['lendable'] = isset($values['lendable']);
 
         return $validated;
     }

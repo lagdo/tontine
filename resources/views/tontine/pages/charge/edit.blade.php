@@ -4,15 +4,13 @@
             <div class="form-group row">
               {!! Form::label('type', __('common.labels.type'), ['class' => 'col-sm-4 col-form-label text-right']) !!}
               <div class="col-md-5">
-                {{-- {!! Form::select('type', $types, $charge->type, ['class' => 'form-control', 'disabled' => 'disabled']) !!} --}}
-                {!! Form::label('type', $types[$charge->type], ['class' => 'col-sm-4 col-form-label text-right']) !!}
+                {!! Form::label('type', $types[$charge->type], ['class' => 'col-form-label text-right']) !!}
               </div>
             </div>
             <div class="form-group row">
               {!! Form::label('period', __('common.labels.period'), ['class' => 'col-sm-4 col-form-label text-right']) !!}
               <div class="col-md-5">
-                {{-- {!! Form::select('period', $periods, $charge->period, ['class' => 'form-control', 'disabled' => 'disabled']) !!} --}}
-                {!! Form::label('period', $periods[$charge->period], ['class' => 'col-sm-4 col-form-label text-right']) !!}
+                {!! Form::label('period', $periods[$charge->period], ['class' => 'col-form-label text-right']) !!}
               </div>
             </div>
             <div class="form-group row">
@@ -37,6 +35,12 @@
                   {!! Form::text('amount', $charge->has_amount ? $charge->amount_value : '', ['class' => 'form-control']) !!}
                 </div>
 @endif
+              </div>
+            </div>
+            <div class="form-group row">
+              {!! Form::label('lendable', __('tontine.charge.labels.lendable'), ['class' => 'col-sm-4 col-form-label text-right']) !!}
+              <div class="col-md-3 pt-2">
+                {!! Form::checkbox('lendable', '1', $charge->lendable) !!}
               </div>
             </div>
           </div>

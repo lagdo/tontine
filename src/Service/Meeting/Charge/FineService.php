@@ -252,6 +252,7 @@ class FineService
             $bill = Bill::create([
                 'charge' => $charge->name,
                 'amount' => $charge->has_amount ? $charge->amount : $amount,
+                'lendable' => $charge->lendable,
                 'issued_at' => now(),
             ]);
             $fine = new FineBill();

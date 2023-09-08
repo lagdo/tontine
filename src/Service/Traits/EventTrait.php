@@ -29,6 +29,7 @@ trait EventTrait
         return Bill::create([
             'charge' => $charge->name,
             'amount' => $charge->amount,
+            'lendable' => $charge->lendable,
             'issued_at' => $today,
         ]);
     }

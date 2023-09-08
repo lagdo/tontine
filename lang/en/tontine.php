@@ -115,6 +115,9 @@ return [
             'add' => "Add fees",
             'edit' => "Edit a fee",
         ],
+        'labels' => [
+            'lendable' => "Available for loan",
+        ],
         'messages' => [
             'created' => "The fee was successfully created.",
             'updated' => "The fee was successfully updated.",

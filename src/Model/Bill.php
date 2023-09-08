@@ -21,6 +21,7 @@ class Bill extends Base
     protected $fillable = [
         'charge',
         'amount',
+        'lendable',
         'issued_at',
         'deadline',
         'notes',

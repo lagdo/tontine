@@ -135,11 +135,12 @@ class LoanService
             ->value('total');
         $settlement = Settlement::select(DB::raw('sum(bills.amount) as total'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-            ->whereIn('session_id', $sessionIds)
+            ->whereIn('settlements.session_id', $sessionIds)
+            ->where('bills.lendable', true)
             ->value('total');
         $refund = Refund::select(DB::raw('sum(debts.amount) as total'))
             ->join('debts', 'refunds.debt_id', '=', 'debts.id')
-            ->whereIn('session_id', $sessionIds)
+            ->whereIn('refunds.session_id', $sessionIds)
             ->value('total');
         $debt = Debt::principal()->select(DB::raw('sum(debts.amount) as total'))
             ->join('loans', 'debts.loan_id', '=', 'loans.id')

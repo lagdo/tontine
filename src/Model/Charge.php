@@ -63,6 +63,7 @@ class Charge extends Base
         'period',
         'amount',
         'active',
+        'lendable',
     ];
 
     /**
