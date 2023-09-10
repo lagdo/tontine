@@ -75,10 +75,14 @@ return [
                 ],
             ],
             'toastr' => [
+                'assets' => [
+                    'js' => false,
+                    'css' => false,
+                ],
                 'options' => [
                     'closeButton' => true,
                     'closeDuration' => 0,
-                    'positionClass' => 'toast-top-center'
+                    'positionClass' => 'toast-top-center',
                 ],
             ],
         ],
