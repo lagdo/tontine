@@ -172,11 +172,12 @@ class Session extends CallableClass
     public function edit(int $sessionId)
     {
         $session = $this->sessionService->getSession($sessionId);
+        $members = $this->tontineService->getMembers()->prepend('', 0);
 
         $title = trans('tontine.session.titles.edit');
         $content = $this->view()->render('tontine.pages.planning.session.edit')
             ->with('session', $session)
-            ->with('members', $this->tontineService->getMembers());
+            ->with('members', $members);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
