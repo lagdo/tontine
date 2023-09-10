@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Category;
+use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Disbursement;
 use Siak\Tontine\Model\Funding;
@@ -60,7 +61,7 @@ class DisbursementService
      */
     public function getMembers(): Collection
     {
-        return $this->tenantService->tontine()->members()
+        return $this->tenantService->tontine()->members()->active()
             ->orderBy('name', 'asc')->pluck('name', 'id')->prepend('', 0);
     }
 
@@ -74,6 +75,29 @@ class DisbursementService
     public function getMember(int $memberId): ?Member
     {
         return $this->tenantService->tontine()->members()->find($memberId);
+    }
+
+    /**
+     * Get a list of charges for the dropdown select component.
+     *
+     * @return Collection
+     */
+    public function getCharges(): Collection
+    {
+        return $this->tenantService->tontine()->charges()->fee()->active()
+            ->orderBy('name', 'asc')->pluck('name', 'id')->prepend('', 0);
+    }
+
+    /**
+     * Find a charge.
+     *
+     * @param int $chargeId
+     *
+     * @return Charge|null
+     */
+    public function getCharge(int $chargeId): ?Charge
+    {
+        return $this->tenantService->tontine()->charges()->fee()->find($chargeId);
     }
 
     /**
@@ -156,7 +180,7 @@ class DisbursementService
      */
     public function getDisbursements(int $page = 0): Collection
     {
-        return Disbursement::with(['member', 'category', 'session'])
+        return Disbursement::with(['member', 'charge', 'category', 'session'])
             ->page($page, $this->tenantService->getLimit())->get();
     }
 
@@ -169,7 +193,7 @@ class DisbursementService
      */
     public function getSessionDisbursements(Session $session): Collection
     {
-        return $session->disbursements()->with(['member', 'category'])->get();
+        return $session->disbursements()->with(['member', 'charge', 'category'])->get();
     }
 
     /**
@@ -182,7 +206,7 @@ class DisbursementService
      */
     public function getSessionDisbursement(Session $session, int $disbursementId): ?Disbursement
     {
-        return $session->disbursements()->with(['member', 'category'])->find($disbursementId);
+        return $session->disbursements()->find($disbursementId);
     }
 
     /**
@@ -196,6 +220,7 @@ class DisbursementService
     public function createDisbursement(Session $session, array $values): void
     {
         $member = $this->getMember($values['member']);
+        $charge = $this->getCharge($values['charge']);
         $category = $this->getCategory($values['category']);
         if(!$category)
         {
@@ -208,6 +233,15 @@ class DisbursementService
         if(($member))
         {
             $disbursement->member()->associate($member);
+        }
+        if(($charge))
+        {
+            $disbursement->charge_lendable = $charge->lendable;
+            $disbursement->charge()->associate($charge);
+        }
+        else
+        {
+            $disbursement->charge_lendable = true;
         }
         $disbursement->category()->associate($category);
         $disbursement->session()->associate($session);
@@ -226,6 +260,7 @@ class DisbursementService
     public function updateDisbursement(Session $session, int $disbursementId, array $values): void
     {
         $member = $this->getMember($values['member']);
+        $charge = $this->getCharge($values['charge']);
         $category = $this->getCategory($values['category']);
         if(!$category)
         {
@@ -246,6 +281,16 @@ class DisbursementService
         else
         {
             $disbursement->member()->dissociate();
+        }
+        if(($charge))
+        {
+            $disbursement->charge_lendable = $charge->lendable;
+            $disbursement->charge()->associate($charge);
+        }
+        else
+        {
+            $disbursement->charge_lendable = true;
+            $disbursement->charge()->dissociate();
         }
         $disbursement->category()->associate($category);
         $disbursement->save();

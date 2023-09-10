@@ -2,7 +2,6 @@
 
 namespace Siak\Tontine\Service\Meeting\Credit;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
@@ -148,6 +147,7 @@ class LoanService
             ->value('total');
         $disbursement = Disbursement::select(DB::raw('sum(amount) as total'))
             ->whereIn('session_id', $sessionIds)
+            ->where('charge_lendable', true)
             ->value('total');
 
         return $funding + $settlement + $refund - $debt - $disbursement;

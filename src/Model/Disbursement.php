@@ -31,6 +31,11 @@ class Disbursement extends Base
         return $this->belongsTo(Member::class);
     }
 
+    public function charge()
+    {
+        return $this->belongsTo(Charge::class);
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);

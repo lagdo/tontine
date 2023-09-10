@@ -31,6 +31,7 @@ class DisbursementValidator extends AbstractValidator
     {
         $validator = Validator::make($this->values($values), [
             'member' => 'required|integer|min:0',
+            'charge' => 'required|integer|min:0',
             'category' => 'required|integer|min:1',
             'amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
             'comment' => 'present|between:0,150',

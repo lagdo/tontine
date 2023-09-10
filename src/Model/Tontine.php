@@ -118,6 +118,6 @@ class Tontine extends Base
 
     public function charges()
     {
-        return $this->hasMany(Charge::class)->orderBy('charges.id', 'asc');
+        return $this->hasMany(Charge::class);
     }
 }

@@ -104,7 +104,8 @@ class Disbursement extends CallableClass
         $title = trans('meeting.disbursement.titles.add');
         $content = $this->view()->render('tontine.pages.meeting.disbursement.add')
             ->with('categories', $this->disbursementService->getCategories())
-            ->with('members', $this->disbursementService->getMembers());
+            ->with('members', $this->disbursementService->getMembers())
+            ->with('charges', $this->disbursementService->getCharges());
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -154,6 +155,7 @@ class Disbursement extends CallableClass
         $content = $this->view()->render('tontine.pages.meeting.disbursement.edit')
             ->with('categories', $this->disbursementService->getCategories())
             ->with('members', $this->disbursementService->getMembers())
+            ->with('charges', $this->disbursementService->getCharges())
             ->with('disbursement', $disbursement);
         $buttons = [[
             'title' => trans('common.actions.cancel'),

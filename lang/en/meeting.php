@@ -39,6 +39,7 @@ return [
     'labels' => [
         'member' => "Member",
         'members' => "Members",
+        'charge' => "Corresponding fee",
         'category' => "Category",
         'session' => "Session",
         'payments' => "Payments",
