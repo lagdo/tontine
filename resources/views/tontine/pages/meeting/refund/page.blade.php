@@ -13,14 +13,15 @@
                     <tr>
                       <td>
                         {{ $debt->loan->member->name }}<br/>
-                        {{ $debt->loan->session->title }}
+                        {{ $debt->loan->session->title }}@if ($debt->refund) - {{ $debt->refund->session->title }}@endif
                       </td>
                       <td class="currency">
                         {{ $locale->formatMoney($refundService->getDebtAmount($session, $debt), true) }}<br/>
                         {{ !$debt->loan->remitment ? __('meeting.loan.labels.' . $debt->type) : __('meeting.remitment.labels.auction') }}
                       </td>
                       <td class="table-item-menu" data-debt-id="{{ $debt->id }}">
-                        {!! paymentLink($debt->refund, 'refund', !$session->opened) !!}
+                        {!! paymentLink($debt->refund, 'refund', !$session->opened ||
+                          ($debt->refund !== null && $debt->refund->session_id !== $session->id)) !!}
                       </td>
                     </tr>
 @endforeach

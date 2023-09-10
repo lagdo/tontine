@@ -29,7 +29,7 @@ function currentLocalizedIcon()
     return localizedIcon(LaravelLocalization::getCurrentLocale());
 }
 
-function paymentLink(?Model $payment, string $name, bool $sessionIsClosed)
+function paymentLink(?Model $payment, string $name, bool $disableLink)
 {
     $icon = '<i class="fa fa-toggle-off"></i>';
     $linkClass = "btn-add-$name";
@@ -45,10 +45,6 @@ function paymentLink(?Model $payment, string $name, bool $sessionIsClosed)
         }
     }
 
-    if($sessionIsClosed)
-    {
-        return $icon;
-    }
-
-    return '<a href="javascript:void(0)" class="' . $linkClass . '">' . $icon . '</a>';
+    return $disableLink ? $icon :
+        '<a href="javascript:void(0)" class="' . $linkClass . '">' . $icon . '</a>';
 }
