@@ -57,7 +57,7 @@ class Disbursement extends CallableClass
      */
     public function refreshAmount(SessionModel $session)
     {
-        $amount = $this->disbursementService->getAmountAvailableValue($session);
+        $amount = $this->disbursementService->getFormattedAmountAvailable($session);
         $html = trans('meeting.disbursement.labels.amount_available', ['amount' => $amount]);
         $this->response->html('total_amount_available', $html);
     }

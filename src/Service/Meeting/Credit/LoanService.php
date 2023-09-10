@@ -166,6 +166,18 @@ class LoanService
     }
 
     /**
+     * Get the amount available for loan.
+     *
+     * @param Session $session    The session
+     *
+     * @return string
+     */
+    public function getFormattedAmountAvailable(Session $session): string
+    {
+        return $this->localeService->formatMoney($this->getAmountAvailable($session));
+    }
+
+    /**
      * Get the loans for a given session.
      *
      * @param Session $session

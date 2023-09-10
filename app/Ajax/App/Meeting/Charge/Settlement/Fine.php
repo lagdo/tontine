@@ -3,6 +3,8 @@
 namespace App\Ajax\App\Meeting\Charge\Settlement;
 
 use App\Ajax\CallableClass;
+use App\Ajax\App\Meeting\Cash\Disbursement;
+use App\Ajax\App\Meeting\Credit\Loan;
 use App\Ajax\App\Meeting\Charge\Fine as Charge;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementService;
@@ -123,7 +125,10 @@ class Fine extends CallableClass
         }
 
         $this->settlementService->createSettlement($this->charge, $this->session, $billId);
-        // $this->notify->success(trans('session.settlement.created'), trans('common.titles.success'));
+
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->page();
     }
@@ -142,7 +147,10 @@ class Fine extends CallableClass
         }
 
         $this->settlementService->deleteSettlement($this->charge, $this->session, $billId);
-        // $this->notify->success(trans('session.settlement.deleted'), trans('common.titles.success'));
+
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->page();
     }

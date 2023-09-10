@@ -57,7 +57,7 @@ class Loan extends CallableClass
      */
     public function refreshAmount(SessionModel $session)
     {
-        $amount = $this->loanService->getAmountAvailableValue($session);
+        $amount = $this->loanService->getFormattedAmountAvailable($session);
         $html = trans('meeting.loan.labels.amount_available', ['amount' => $amount]);
         $this->response->html('loan_amount_available', $html);
     }

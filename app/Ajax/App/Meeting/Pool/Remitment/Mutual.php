@@ -3,6 +3,8 @@
 namespace App\Ajax\App\Meeting\Pool\Remitment;
 
 use App\Ajax\CallableClass;
+use App\Ajax\App\Meeting\Cash\Disbursement;
+use App\Ajax\App\Meeting\Credit\Loan;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
@@ -150,7 +152,10 @@ class Mutual extends CallableClass
         }
 
         $this->remitmentService->saveMutualRemitment($this->pool, $this->session, $payableId);
-        // $this->notify->success(trans('session.remitment.created'), trans('common.titles.success'));
+
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->page();
     }
@@ -169,7 +174,10 @@ class Mutual extends CallableClass
         }
 
         $this->remitmentService->deleteMutualRemitment($this->pool, $this->session, $payableId);
-        // $this->notify->success(trans('session.remitment.deleted'), trans('common.titles.success'));
+
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->page();
     }
