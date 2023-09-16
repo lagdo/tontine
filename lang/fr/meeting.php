@@ -11,6 +11,7 @@ return [
         'fines' => "Amendes",
         'deposits' => "Versements",
         'remitments' => "Remises",
+        'auctions' => "Enchères",
         'fundings' => "Dépôts",
         'loans' => "Emprunts",
         'amounts' => "Montants",

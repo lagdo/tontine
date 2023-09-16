@@ -12,6 +12,7 @@ use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Report\RoundService;
 
+use function compact;
 use function strtolower;
 use function trans;
 
@@ -190,7 +191,7 @@ class ReportService
                 $pool->figures = $this->summaryService->getFigures($pool);
             });
 
-        $sessions = $round->sessions;
+        $sessions = $round->sessions()->orderBy('start_at', 'asc')->get();
         // Sessions with data
         $sessionIds = $sessions->filter(function($session) {
             return $session->status === Session::STATUS_CLOSED ||
@@ -198,6 +199,7 @@ class ReportService
         })->pluck('id');
         $amounts = [
             'sessions' => $sessions,
+            'auctions' => $this->roundService->getAuctionAmounts($sessionIds),
             'settlements' => $this->roundService->getSettlementAmounts($sessionIds),
             'loans' => $this->roundService->getLoanAmounts($sessionIds),
             'refunds' => $this->roundService->getRefundAmounts($sessionIds),

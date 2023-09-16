@@ -11,6 +11,7 @@ return [
         'fines' => "Fines",
         'deposits' => "Deposits",
         'remitments' => "Remitments",
+        'auctions' => "Auctions",
         'fundings' => "Fundings",
         'loans' => "Loans",
         'amounts' => "Amounts",

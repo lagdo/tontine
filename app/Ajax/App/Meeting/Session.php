@@ -10,6 +10,7 @@ use App\Ajax\App\Meeting\Charge\Fine;
 use App\Ajax\App\Meeting\Credit\Loan;
 use App\Ajax\App\Meeting\Credit\Refund;
 use App\Ajax\App\Meeting\Pool\Deposit;
+use App\Ajax\App\Meeting\Pool\Remitment\Auction;
 use App\Ajax\App\Meeting\Pool\Remitment\Financial;
 use App\Ajax\App\Meeting\Pool\Remitment\Libre;
 use App\Ajax\App\Meeting\Pool\Remitment\Mutual;
@@ -120,6 +121,10 @@ class Session extends CallableClass
             TontineModel::TYPE_LIBRE => Libre::class,
         };
         $this->cl($remitmentClass)->show($this->session);
+        if($tontine->is_financial)
+        {
+            $this->cl(Auction::class)->show($this->session);
+        }
     }
 
     /**

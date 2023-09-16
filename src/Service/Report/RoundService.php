@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service\Report;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
@@ -42,15 +43,39 @@ class RoundService
     /**
      * @param Collection $sessionIds
      *
+     * @return Builder
+     */
+    private function getRefundRequest(Collection $sessionIds): Builder
+    {
+        return DB::table('refunds')
+            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
+            ->join('loans', 'loans.id', '=', 'debts.loan_id')
+            ->select(DB::raw('sum(debts.amount) as total_amount'), 'refunds.session_id')
+            ->whereIn('refunds.session_id', $sessionIds)
+            ->groupBy('refunds.session_id');
+    }
+
+    /**
+     * @param Collection $sessionIds
+     *
      * @return Collection
      */
     public function getRefundAmounts(Collection $sessionIds): Collection
     {
-        return DB::table('debts')
-            ->join('refunds', 'refunds.debt_id', '=', 'debts.id')
-            ->select(DB::raw('sum(debts.amount) as total_amount'), 'refunds.session_id')
-            ->whereIn('refunds.session_id', $sessionIds)
-            ->groupBy('refunds.session_id')
+        return $this->getRefundRequest($sessionIds)
+            ->whereNull('loans.remitment_id')
+            ->pluck('total_amount', 'session_id');
+    }
+
+    /**
+     * @param Collection $sessionIds
+     *
+     * @return Collection
+     */
+    public function getAuctionAmounts(Collection $sessionIds): Collection
+    {
+        return $this->getRefundRequest($sessionIds)
+            ->whereNotNull('loans.remitment_id')
             ->pluck('total_amount', 'session_id');
     }
 
