@@ -8,8 +8,10 @@ use App\Ajax\App\Meeting\Cash\Funding;
 use App\Ajax\App\Meeting\Charge\Fee;
 use App\Ajax\App\Meeting\Charge\Fine;
 use App\Ajax\App\Meeting\Credit\Loan;
+use App\Ajax\App\Meeting\Credit\Profit;
 use App\Ajax\App\Meeting\Credit\Refund;
 use App\Ajax\App\Meeting\Pool\Deposit;
+use App\Ajax\App\Meeting\Pool\Remitment\Auction;
 use App\Ajax\App\Meeting\Pool\Remitment\Financial;
 use App\Ajax\App\Meeting\Pool\Remitment\Libre;
 use App\Ajax\App\Meeting\Pool\Remitment\Mutual;
@@ -120,6 +122,10 @@ class Session extends CallableClass
             TontineModel::TYPE_LIBRE => Libre::class,
         };
         $this->cl($remitmentClass)->show($this->session);
+        if($tontine->is_financial)
+        {
+            $this->cl(Auction::class)->show($this->session);
+        }
     }
 
     /**
@@ -138,6 +144,14 @@ class Session extends CallableClass
     {
         $this->cl(Funding::class)->show($this->session);
         $this->cl(Disbursement::class)->show($this->session);
+    }
+
+    /**
+     * @return void
+     */
+    private function profits()
+    {
+        $this->cl(Profit::class)->show($this->session);
     }
 
     /**
@@ -200,8 +214,9 @@ class Session extends CallableClass
         $this->reports();
         $this->pools($tontine);
         $this->charges();
-        $this->credits();
         $this->cash();
+        $this->credits();
+        $this->profits();
 
         return $this->response;
     }

@@ -11,6 +11,7 @@ return [
         'fines' => "Fines",
         'deposits' => "Deposits",
         'remitments' => "Remitments",
+        'auctions' => "Auctions",
         'fundings' => "Fundings",
         'loans' => "Loans",
         'amounts' => "Amounts",
@@ -20,6 +21,7 @@ return [
         'benefit' => "Benefit",
         'refunds' => "Refunds",
         'disbursements' => "Disbursements",
+        'profits' => "Profits distribution",
     ],
     'actions' => [
         'deposits' => "Deposits",
@@ -33,8 +35,9 @@ return [
         'fine' => "Fine",
         'pools' => "Pools",
         'charges' => "Fees",
-        'credits' => "Credits",
         'cash' => "Cash",
+        'credits' => "Credits",
+        'profits' => "Profits",
     ],
     'labels' => [
         'member' => "Member",
@@ -43,6 +46,10 @@ return [
         'category' => "Category",
         'session' => "Session",
         'payments' => "Payments",
+        'funding' => "Funding",
+        'profit' => "Profit",
+        'duration' => "Duration",
+        'distribution' => "Distribution",
     ],
     'messages' => [
         'agenda' => [
@@ -50,6 +57,9 @@ return [
         ],
         'report' => [
             'updated' => "Saved!",
+        ],
+        'profit' => [
+            'saved' => "Saved!",
         ],
     ],
     'warnings' => [

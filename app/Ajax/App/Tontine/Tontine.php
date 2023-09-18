@@ -72,7 +72,7 @@ class Tontine extends CallableClass
 
         $this->jq('#btn-tontine-create')->click($this->rq()->selectType());
         $this->jq('#btn-tontine-refresh')->click($this->rq()->home());
-        $this->jq('#btn-show-select')->click($this->cl(Select::class)->rq()->show());
+        $this->jq('#btn-show-select')->click($this->cl(Select::class)->rq()->showTontines());
 
         return $this->page();
     }

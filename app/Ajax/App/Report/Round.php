@@ -82,6 +82,7 @@ class Round extends CallableClass
         })->pluck('id');
         $html = $this->view()->render('tontine.pages.report.round.amounts', [
             'sessions' => $sessions,
+            'auctions' => $this->roundService->getAuctionAmounts($sessionIds),
             'settlements' => $this->roundService->getSettlementAmounts($sessionIds),
             'loans' => $this->roundService->getLoanAmounts($sessionIds),
             'refunds' => $this->roundService->getRefundAmounts($sessionIds),

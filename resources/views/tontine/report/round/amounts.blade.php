@@ -8,12 +8,12 @@
                   <thead>
                     <tr>
                       <th></th>
+                      <th>{{ __('meeting.titles.auctions') }}</th>
                       <th>{{ __('meeting.titles.fees') }}</th>
+                      <th>{{ __('meeting.titles.loans') }}</th>
                       <th>{{ __('meeting.titles.refunds') }}</th>
                       <th>{{ __('meeting.titles.fundings') }}</th>
-                      <th>{{ __('meeting.titles.loans') }}</th>
                       <th>{{ __('meeting.titles.disbursements') }}</th>
-                      <th>{{ __('common.labels.total') }}</th>
                       <th>{{ __('figures.titles.end') }}</th>
                     </tr>
                   </thead>
@@ -32,20 +32,21 @@
 @else
 @php
   $settlement = $settlements[$session->id] ?? 0;
-  $refund = $refunds[$session->id] ?? 0;
+  $auction = $auctions[$session->id] ?? 0;
   $funding = $fundings[$session->id] ?? 0;
   $loan = $loans[$session->id] ?? 0;
+  $refund = $refunds[$session->id] ?? 0;
   $disbursement = $disbursements[$session->id] ?? 0;
-  $balance = $settlement + $refund + $funding - $loan - $disbursement;
+  $balance = $auction + $settlement + $refund + $funding - $loan - $disbursement;
   $cash += $balance;
 @endphp
+                      <td class="currency"><b>{!! $locale->formatMoney($auction, false) !!}</b></td>
                       <td class="currency"><b>{!! $locale->formatMoney($settlement, false) !!}</b></td>
+                      <td class="currency"><b>{!! $locale->formatMoney($loan, false) !!}</b></td>
                       <td class="currency"><b>{!! $locale->formatMoney($refund, false) !!}</b></td>
                       <td class="currency"><b>{!! $locale->formatMoney($funding, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($loan, false) !!}</b></td>
                       <td class="currency"><b>{!! $locale->formatMoney($disbursement, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($balance, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($cash, false) !!}</b></td>
+                      <td class="currency"><b>{!! $locale->formatMoney($balance, false) !!} : {!! $locale->formatMoney($cash, false) !!}</b></td>
 @endif
                     </tr>
 @endforeach

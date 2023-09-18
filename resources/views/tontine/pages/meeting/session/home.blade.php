@@ -25,10 +25,13 @@
                       <a class="nav-link" id="session-tab-charges" data-target="#session-charges" href="javascript:void(0)">{{ __('meeting.actions.charges') }}</a>
                     </li>
                     <li class="nav-item" role="presentation">
+                      <a class="nav-link" id="session-tab-cash" data-target="#session-cash" href="javascript:void(0)">{{ __('meeting.actions.cash') }}</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
                       <a class="nav-link" id="session-tab-credits" data-target="#session-credits" href="javascript:void(0)">{{ __('meeting.actions.credits') }}</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                      <a class="nav-link" id="session-tab-cash" data-target="#session-cash" href="javascript:void(0)">{{ __('meeting.actions.cash') }}</a>
+                      <a class="nav-link" id="session-tab-profits" data-target="#session-profits" href="javascript:void(0)">{{ __('meeting.actions.profits') }}</a>
                     </li>
                   </nav>
                 </div>
@@ -51,7 +54,11 @@
                       <div class="row">
                         <div class="col-md-6 col-sm-12" id="meeting-deposits">
                         </div>
-                        <div class="col-md-6 col-sm-12" id="meeting-remitments">
+                        <div class="col-md-6 col-sm-12">
+                          <div id="meeting-remitments">
+                          </div>
+                          <div id="meeting-auctions">
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -63,6 +70,14 @@
                         </div>
                       </div>
                     </div>
+                    <div class="tab-pane fade" id="session-cash" role="tabpanel" aria-labelledby="session-tab-cash">
+                      <div class="row">
+                        <div class="col-md-6 col-sm-12" id="meeting-fundings">
+                        </div>
+                        <div class="col-md-6 col-sm-12" id="meeting-disbursements">
+                        </div>
+                      </div>
+                    </div>
                     <div class="tab-pane fade" id="session-credits" role="tabpanel" aria-labelledby="session-tab-credits">
                       <div class="row">
                         <div class="col-md-6 col-sm-12" id="meeting-loans">
@@ -71,11 +86,9 @@
                         </div>
                       </div>
                     </div>
-                    <div class="tab-pane fade" id="session-cash" role="tabpanel" aria-labelledby="session-tab-cash">
+                    <div class="tab-pane fade" id="session-profits" role="tabpanel" aria-labelledby="session-tab-profits">
                       <div class="row">
-                        <div class="col-md-6 col-sm-12" id="meeting-fundings">
-                        </div>
-                        <div class="col-md-6 col-sm-12" id="meeting-disbursements">
+                        <div class="col-12" id="meeting-profits">
                         </div>
                       </div>
                     </div>

@@ -4,6 +4,7 @@ namespace App\Ajax\App\Report\Session;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Meeting\Credit\ProfitService;
 use Siak\Tontine\Service\Report\SessionService;
 
 /**
@@ -17,11 +18,18 @@ class Session extends CallableClass
     protected SessionService $sessionService;
 
     /**
-     * @param SessionService $sessionService
+     * @var ProfitService
      */
-    public function __construct(SessionService $sessionService)
+    protected ProfitService $profitService;
+
+    /**
+     * @param SessionService $sessionService
+     * @param ProfitService $profitService
+     */
+    public function __construct(SessionService $sessionService, ProfitService $profitService)
     {
         $this->sessionService = $sessionService;
+        $this->profitService = $profitService;
     }
 
     /**
@@ -39,6 +47,7 @@ class Session extends CallableClass
         $this->fines($session);
         $this->fundings($session);
         $this->disbursements($session);
+        $this->profits($session);
     }
 
     private function deposits(SessionModel $session)
@@ -103,5 +112,17 @@ class Session extends CallableClass
             'disbursement' => $this->sessionService->getDisbursement($session),
         ]);
         $this->response->html('report-disbursements', $html);
+    }
+
+    private function profits(SessionModel $session)
+    {
+        // Show the profits only if they were saved on this session.
+        $profitSessionId = $session->round->properties['profit']['session'] ?? 0;
+        $html = $profitSessionId !== $session->id ? '' :
+            $this->view()->render('tontine.pages.report.session.session.profits', [
+                'fundings' => $this->profitService->getDistributions($session),
+                'profitAmount' => $session->round->properties['profit']['amount'] ?? 0,
+            ]);
+        $this->response->html('report-profits', $html);
     }
 }
