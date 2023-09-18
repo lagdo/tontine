@@ -5,6 +5,20 @@ namespace Siak\Tontine\Model;
 class Funding extends Base
 {
     /**
+     * This is a custom attribute used to calculate profit distribution
+     *
+     * @var bool
+     */
+    public $duration = 0;
+
+    /**
+     * This is a custom attribute used to calculate profit distribution
+     *
+     * @var bool
+     */
+    public $distribution = 0;
+
+    /**
      * Indicates if the model should be timestamped.
      *
      * @var bool

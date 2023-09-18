@@ -21,6 +21,7 @@ return [
         'benefit' => "Bénéfice",
         'refunds' => "Remboursements",
         'disbursements' => "Décaissements",
+        'profits' => "Répartition des gains",
     ],
     'actions' => [
         'deposits' => "Versements",
@@ -34,8 +35,9 @@ return [
         'fine' => "Appliquer",
         'pools' => "Cotisations",
         'charges' => "Frais",
-        'credits' => "Crédits",
         'cash' => "Caisse",
+        'credits' => "Crédits",
+        'profits' => "Gains",
     ],
     'labels' => [
         'member' => "Membre",
@@ -44,6 +46,10 @@ return [
         'category' => "Catégorie",
         'session' => "Séance",
         'payments' => "Paiements",
+        'funding' => "Dépôt",
+        'profit' => "Gain",
+        'duration' => "Durée",
+        'distribution' => "Distribution",
     ],
     'messages' => [
         'agenda' => [
@@ -51,6 +57,9 @@ return [
         ],
         'report' => [
             'updated' => "Enregistré !",
+        ],
+        'profit' => [
+            'saved' => "Enregistré !",
         ],
     ],
     'warnings' => [

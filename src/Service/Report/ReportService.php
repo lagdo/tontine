@@ -8,6 +8,7 @@ use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Meeting\Credit\ProfitService;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Report\RoundService;
@@ -54,6 +55,11 @@ class ReportService
     protected RoundService $roundService;
 
     /**
+     * @var ProfitService
+     */
+    protected ProfitService $profitService;
+
+    /**
      * @var int
      */
     private $depositsAmount;
@@ -71,10 +77,12 @@ class ReportService
      * @param RoundService $roundService
      * @param SubscriptionService $subscriptionService
      * @param SummaryService $summaryService
+     * @param ReportService $reportService
      */
     public function __construct(LocaleService $localeService, TenantService $tenantService,
-        SessionService $sessionService, MemberService $memberService, RoundService $roundService,
-        SubscriptionService $subscriptionService, SummaryService $summaryService)
+        SessionService $sessionService, MemberService $memberService,
+        RoundService $roundService, SubscriptionService $subscriptionService,
+        SummaryService $summaryService, ProfitService $profitService)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
@@ -83,6 +91,7 @@ class ReportService
         $this->subscriptionService = $subscriptionService;
         $this->roundService = $roundService;
         $this->summaryService = $summaryService;
+        $this->profitService = $profitService;
     }
 
     /**
@@ -132,6 +141,7 @@ class ReportService
     {
         $tontine = $this->tenantService->tontine();
         [$country] = $this->localeService->getNameFromTontine($tontine);
+        $profitSessionId = $session->round->properties['profit']['session'] ?? 0;
 
         return [
             'tontine' => $tontine,
@@ -172,6 +182,12 @@ class ReportService
             'disbursements' => [
                 'disbursements' => $this->memberService->getDisbursements($session),
                 'total' => $this->sessionService->getDisbursement($session),
+            ],
+            'profits' => [
+                'show' => $profitSessionId === $session->id,
+                'fundings' => $profitSessionId !== $session->id ? null :
+                    $this->profitService->getDistributions($session),
+                'profitAmount' => $session->round->properties['profit']['amount'] ?? 0,
             ],
         ];
     }

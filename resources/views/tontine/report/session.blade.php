@@ -50,4 +50,8 @@
           @include('tontine.report.session.fundings', $fundings)
 
           @include('tontine.report.session.disbursements', $disbursements)
+
+@if ($profits['show'])
+          @include('tontine.report.session.profits', $profits)
+@endif
 @endsection

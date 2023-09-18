@@ -4,6 +4,8 @@ namespace Siak\Tontine\Model;
 
 class Round extends Base
 {
+    use Traits\HasProperty;
+
     /**
      * @const
      */
