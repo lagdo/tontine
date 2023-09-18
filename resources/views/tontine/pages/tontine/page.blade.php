@@ -2,7 +2,7 @@
                       <thead>
                         <tr>
                           <th>{!! __('common.labels.name') !!}</th>
-                          <th>{!! __('common.labels.type') !!}</th>
+                          <th>{!! __('tontine.titles.tontine') !!}</th>
                           <th>{!! __('common.labels.city') !!}</th>
                           <th>{!! __('common.labels.country') !!}</th>
                           <th>{!! __('common.labels.currency') !!}</th>

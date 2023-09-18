@@ -5,7 +5,7 @@
                     <tr>
                       <th>{!! __('meeting.labels.member') !!}</th>
                       <th class="currency">{!! __('common.labels.amount') !!}</th>
-                      <th class="table-item-menu">&nbsp;</th>
+                      <th class="table-item-menu">{!! __('common.labels.paid') !!}</th>
                     </tr>
                   </thead>
                   <tbody>
