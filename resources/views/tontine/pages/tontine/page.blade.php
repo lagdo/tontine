@@ -27,9 +27,6 @@
   ],[
     'class' => 'btn-tontine-choose',
     'text' => __('tontine.actions.choose'),
-  ],[
-    'class' => 'btn-tontine-rounds',
-    'text' => __('tontine.actions.rounds'),
   ]],
 ])
                           </td>

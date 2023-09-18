@@ -3,7 +3,6 @@
 namespace App\Ajax\App\Tontine;
 
 use App\Ajax\CallableClass;
-use Siak\Tontine\Model\Tontine as TontineModel;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
@@ -28,12 +27,7 @@ class Select extends CallableClass
      */
     protected TontineService $tontineService;
 
-    public function show()
-    {
-        return $this->showTontines();
-    }
-
-    private function showTontines()
+    public function showTontines()
     {
         $title = trans('tontine.titles.choose');
         $content = $this->view()->render('tontine.pages.select.tontine')
@@ -65,19 +59,23 @@ class Select extends CallableClass
 
         $this->selectTontine($tontine);
 
-        $this->dialog->hide();
-
-        return $this->showRounds($tontine);
-    }
-
-    private function showRounds(TontineModel $tontine)
-    {
         if($tontine->rounds->count() === 0)
         {
+            $this->dialog->hide();
             $this->notify->info(trans('tontine.messages.selected', ['tontine' => $tontine->name]));
+
             return $this->response;
         }
 
+        return $this->saveRound($tontine->rounds->first()->id);
+    }
+
+    public function showRounds()
+    {
+        if(!($tontine = $this->tenantService->tontine()))
+        {
+            return $this->response;
+        }
         $title = trans('tontine.round.titles.choose');
         $content = $this->view()->render('tontine.pages.select.round')
             ->with('rounds', $tontine->rounds->pluck('title', 'id'));

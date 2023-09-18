@@ -87,6 +87,7 @@ class CallableClass extends JaxonCallableClass
 
         $this->jq('#tontine-menu-members')->click($this->cl(Member::class)->rq()->home());
         $this->jq('#tontine-menu-charges')->click($this->cl(Charge::class)->rq()->home());
+        $this->jq('#tontine-menu-rounds')->click($this->cl(TontineRound::class)->rq()->home());
 
         // Reset the round sidebar menu
         $this->response->html('sidebar-menu-round', $this->view()->render('tontine.parts.sidebar.round'));
@@ -122,7 +123,6 @@ class CallableClass extends JaxonCallableClass
         $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
         $this->jq('.btn-tontine-edit')->click($this->rq()->edit($tontineId));
         $this->jq('.btn-tontine-choose')->click($this->cl(Select::class)->rq()->saveTontine($tontineId));
-        $this->jq('.btn-tontine-rounds')->click($this->cl(TontineRound::class)->rq()->home($tontineId));
     }
 
     /**

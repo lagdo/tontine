@@ -4,26 +4,17 @@ namespace App\Ajax\App\Tontine;
 
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\RoundService;
-use Siak\Tontine\Service\TenantService;
 use App\Ajax\CallableClass;
 
-use function intval;
 use function Jaxon\jq;
 use function Jaxon\pm;
 use function trans;
 
 /**
  * @databag tontine
- * @before getTontine
  */
 class Round extends CallableClass
 {
-    /**
-     * @di
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
     /**
      * @di
      * @var RoundService
@@ -35,37 +26,13 @@ class Round extends CallableClass
      */
     protected PoolService $poolService;
 
-    /**
-     * @return void
-     */
-    protected function getTontine()
+    public function home()
     {
-        $tontineId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('tontine')->get('tontine.id');
-        $this->tontine = $this->roundService->getTontine(intval($tontineId));
-        $this->tenantService->setTontine($this->tontine);
-    }
-
-    /**
-     * @exclude
-     */
-    public function show($tontine, $roundService)
-    {
-        $this->tontine = $tontine;
-        $this->roundService = $roundService;
-
-        return $this->home(0); // The parameter here is not relevant
-    }
-
-    public function home(int $tontineId)
-    {
-        $this->bag('tontine')->set('tontine.id', $this->tontine->id);
-        $html = $this->view()->render('tontine.pages.round.home')->with('tontine', $this->tontine);
+        $html = $this->view()->render('tontine.pages.round.home');
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-show-select')->click($this->cl(Select::class)->rq()->show());
-        $this->jq('#btn-round-back')->click($this->cl(Tontine::class)->rq()->home());
-        $this->jq('#btn-round-refresh')->click($this->rq()->home($tontineId));
+        $this->jq('#btn-show-select')->click($this->cl(Select::class)->rq()->showRounds());
+        $this->jq('#btn-round-refresh')->click($this->rq()->home());
         $this->jq('#btn-round-create')->click($this->rq()->add());
 
         return $this->page();
