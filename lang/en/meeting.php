@@ -20,6 +20,7 @@ return [
         'amount_to_lend' => "Amount to lend",
         'benefit' => "Benefit",
         'refunds' => "Refunds",
+        'partial-refunds' => "Partial refunds",
         'disbursements' => "Disbursements",
         'profits' => "Profits distribution",
     ],
@@ -46,6 +47,7 @@ return [
         'category' => "Category",
         'session' => "Session",
         'payments' => "Payments",
+        'debt' => "Debt",
         'funding' => "Funding",
         'profit' => "Profit",
         'duration' => "Duration",
@@ -135,8 +137,21 @@ return [
             'delete' => "Delete this loan?",
         ],
         'errors' => [
-            'not_found' => "Cannot find the corresponding loan.",
+            'not_found' => "Cannot find the loan.",
             'update' => "This loan cannot be updated.",
+        ],
+    ],
+    'refund' => [
+        'titles' => [
+            'add' => "Add a partial refund",
+        ],
+        'questions' => [
+            'delete' => "Delete this partial refund?",
+        ],
+        'errors' => [
+            'not_found' => "Cannot find the partial refund.",
+            'cannot_delete' => "Cannot delete this partial refund.",
+            'pr_amount' => "The partial refund amount must be lower than the amount due.",
         ],
     ],
     'disbursement' => [
@@ -151,7 +166,7 @@ return [
             'delete' => "Delete this disbursement?",
         ],
         'errors' => [
-            'not_found' => "Cannot find the corresponding disbursement.",
+            'not_found' => "Cannot find the disbursement.",
         ],
     ],
 ];

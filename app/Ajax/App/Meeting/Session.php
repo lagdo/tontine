@@ -9,6 +9,7 @@ use App\Ajax\App\Meeting\Charge\Fee;
 use App\Ajax\App\Meeting\Charge\Fine;
 use App\Ajax\App\Meeting\Credit\Loan;
 use App\Ajax\App\Meeting\Credit\Profit;
+use App\Ajax\App\Meeting\Credit\PartialRefund;
 use App\Ajax\App\Meeting\Credit\Refund;
 use App\Ajax\App\Meeting\Pool\Deposit;
 use App\Ajax\App\Meeting\Pool\Remitment\Auction;
@@ -134,6 +135,7 @@ class Session extends CallableClass
     private function credits()
     {
         $this->cl(Loan::class)->show($this->session);
+        $this->cl(PartialRefund::class)->show($this->session);
         $this->cl(Refund::class)->show($this->session);
     }
 

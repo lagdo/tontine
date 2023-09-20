@@ -20,6 +20,7 @@ return [
         'amount_to_lend' => "Montant à prêter",
         'benefit' => "Bénéfice",
         'refunds' => "Remboursements",
+        'partial-refunds' => "Remboursements partiels",
         'disbursements' => "Décaissements",
         'profits' => "Répartition des gains",
     ],
@@ -46,6 +47,7 @@ return [
         'category' => "Catégorie",
         'session' => "Séance",
         'payments' => "Paiements",
+        'debt' => "Dette",
         'funding' => "Dépôt",
         'profit' => "Gain",
         'duration' => "Durée",
@@ -135,8 +137,21 @@ return [
             'delete' => "Supprimer cet emprunt ?",
         ],
         'errors' => [
-            'not_found' => "Impossible de trouver l'emprunt correspondant.",
+            'not_found' => "Impossible de trouver l'emprunt.",
             'update' => "Cet emprunt ne peut pas être modifié.",
+        ],
+    ],
+    'refund' => [
+        'titles' => [
+            'add' => "Ajouter un remboursement partiel",
+        ],
+        'questions' => [
+            'delete' => "Supprimer ce remboursement partiel ?",
+        ],
+        'errors' => [
+            'not_found' => "Impossible de trouver le remboursement partiel.",
+            'cannot_delete' => "Impossible de supprimer ce remboursement partiel.",
+            'pr_amount' => "Le montant du remboursement partiel doit être inférieur au montant dû.",
         ],
     ],
     'disbursement' => [
@@ -151,7 +166,7 @@ return [
             'delete' => "Supprimer ce décaissement ?",
         ],
         'errors' => [
-            'not_found' => "Impossible de trouver le décaissement correspondant.",
+            'not_found' => "Impossible de trouver le décaissement.",
         ],
     ],
 ];
