@@ -191,6 +191,8 @@ class Financial extends CallableClass
         $this->dialog->hide();
         // $this->notify->success(trans('session.remitment.created'), trans('common.titles.success'));
 
+        // Refresh the auction page
+        $this->cl(Auction::class)->show($this->session);
         // Refresh the refunds pages
         $this->cl(Loan::class)->show($this->session);
         $this->cl(Refund::class)->show($this->session);
@@ -214,6 +216,8 @@ class Financial extends CallableClass
         $this->remitmentService->deleteFinancialRemitment($this->pool, $this->session, $subscriptionId);
         // $this->notify->success(trans('session.remitment.deleted'), trans('common.titles.success'));
 
+        // Refresh the auction page
+        $this->cl(Auction::class)->show($this->session);
         // Refresh the refunds pages
         $this->cl(Loan::class)->show($this->session);
         $this->cl(Refund::class)->show($this->session);
