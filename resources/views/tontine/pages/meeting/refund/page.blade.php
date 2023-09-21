@@ -1,5 +1,5 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('refundService', 'Siak\Tontine\Service\Meeting\Credit\RefundService')
+@inject('debtCalculator', 'Siak\Tontine\Service\Meeting\Credit\DebtCalculator')
                 <table class="table table-bordered">
                   <thead>
                     <tr>
@@ -11,7 +11,7 @@
                   <tbody>
 @foreach($debts as $debt)
 @php
-  $debtAmount = $refundService->getDebtAmount($session, $debt);
+  $debtAmount = $debtCalculator->getDebtAmount($session, $debt);
 @endphp
                     <tr>
                       <td>
@@ -28,8 +28,7 @@
 @endif
                       </td>
                       <td class="table-item-menu" data-debt-id="{{ $debt->id }}">
-                        {!! paymentLink($debt->refund, 'refund', !$session->opened ||
-                          $debtAmount === 0 || !debtIsEditable($debt, $session)) !!}
+                        {!! paymentLink($debt->refund, 'refund', $debtAmount === 0 || !$debtCalculator->debtIsEditable($session, $debt)) !!}
                       </td>
                     </tr>
 @endforeach

@@ -14,7 +14,6 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
-use function pow;
 use function trans;
 
 class RefundService
@@ -30,13 +29,21 @@ class RefundService
     protected LocaleService $localeService;
 
     /**
+     * @var DebtCalculator
+     */
+    protected DebtCalculator $debtCalculator;
+
+    /**
      * @param TenantService $tenantService
      * @param LocaleService $localeService
+     * @param DebtCalculator $debtCalculator
      */
-    public function __construct(TenantService $tenantService, LocaleService $localeService)
+    public function __construct(TenantService $tenantService,
+        LocaleService $localeService, DebtCalculator $debtCalculator)
     {
         $this->tenantService = $tenantService;
         $this->localeService = $localeService;
+        $this->debtCalculator = $debtCalculator;
     }
 
     /**
@@ -155,6 +162,7 @@ class RefundService
     {
         $prevSessions = $this->tenantService->round()->sessions()
             ->where('start_at', '<', $session->start_at)->pluck('id');
+
         return $this->getQuery($session->id, $prevSessions, false, $onlyPaid)->count();
     }
 
@@ -178,133 +186,6 @@ class RefundService
             ->get()
             ->sortBy('loan.member.name', SORT_LOCALE_STRING)
             ->values();
-    }
-
-    /**
-     * Count the sessions.
-     *
-     * @param Session $fromSession The session to start from
-     * @param Session $toSession The session to end to
-     *
-     * @return int
-     */
-    private function getSessionCount(Session $fromSession, Session $toSession): int
-    {
-        // Count the sessions.
-        return $this->tenantService->round()->sessions
-            ->filter(function($session) use($fromSession, $toSession) {
-                return $session->start_at > $fromSession->start_at &&
-                    $session->start_at <= $toSession->start_at;
-            })
-            ->count();
-    }
-
-    /**
-     * Get the last session for interest calculation
-     *
-     * @param Session $currentSession
-     * @param Debt $principalDebt
-     *
-     * @return Session
-     */
-    private function getLastSession(Session $currentSession, Debt $principalDebt): Session
-    {
-        return $principalDebt->refund &&
-            $principalDebt->refund->session->start_at < $currentSession->start_at ?
-            $principalDebt->refund->session : $currentSession;
-    }
-
-    /**
-     * Get the simple interest amount.
-     *
-     * @param Session $currentSession
-     * @param Debt $debt
-     *
-     * @return int
-     */
-    private function getSimpleInterestAmount(Session $currentSession, Debt $debt): int
-    {
-        $principalDebt = $debt->loan->principal_debt;
-        $loanAmount = $principalDebt->amount;
-        $interestRate = $debt->loan->interest_rate / 10000;
-
-        $interestAmount = 0;
-        $fromSession = $debt->loan->session;
-        // Take refunds before the current session and filter by session date.
-        $partialRefunds = $principalDebt->partial_refunds
-            ->filter(function($refund) use($currentSession) {
-                return $refund->session->start_at < $currentSession->start_at;
-            })
-            ->sortBy('session.start_at');
-        foreach($partialRefunds as $refund)
-        {
-            $sessionCount = $this->getSessionCount($fromSession, $refund->session);
-            $interestAmount += (int)($loanAmount * $interestRate * $sessionCount);
-            // For the next loop
-            $loanAmount -= $refund->amount;
-            $fromSession = $refund->session;
-        }
-
-        $lastSession = $this->getLastSession($currentSession, $principalDebt);
-        $sessionCount = $this->getSessionCount($fromSession, $lastSession);
-
-        return $interestAmount + (int)($loanAmount * $interestRate * $sessionCount);
-    }
-
-    /**
-     * Get the compound interest amount.
-     *
-     * @param Session $currentSession
-     * @param Debt $debt
-     *
-     * @return int
-     */
-    private function getCompoundInterestAmount(Session $currentSession, Debt $debt): int
-    {
-        $principalDebt = $debt->loan->principal_debt;
-        $loanAmount = $principalDebt->amount;
-        $interestRate = $debt->loan->interest_rate / 10000;
-
-        $interestAmount = 0;
-        $fromSession = $debt->loan->session;
-        // Take refunds before the current session and filter by session date.
-        $partialRefunds = $principalDebt->partial_refunds
-            ->filter(function($refund) use($currentSession) {
-                return $refund->session->start_at < $currentSession->start_at;
-            })
-            ->sortBy('session.start_at');
-        foreach($partialRefunds as $refund)
-        {
-            $sessionCount = $this->getSessionCount($fromSession, $refund->session);
-            $interestAmount += (int)($loanAmount * (pow(1 + $interestRate, $sessionCount) - 1));
-            // For the next loop
-            $loanAmount -= $refund->amount - $interestAmount;
-            $fromSession = $refund->session;
-        }
-
-        $lastSession = $this->getLastSession($currentSession, $principalDebt);
-        $sessionCount = $this->getSessionCount($fromSession, $lastSession);
-
-        return $interestAmount + (int)($loanAmount * (pow(1 + $interestRate, $sessionCount) - 1));
-    }
-
-    /**
-     * Get the amount of a given debt.
-     *
-     * @param Session $session The session
-     * @param Debt $debt
-     *
-     * @return int
-     */
-    public function getDebtAmount(Session $currentSession, Debt $debt): int
-    {
-        if($debt->is_principal || $debt->refund || $debt->loan->fixed_interest)
-        {
-            return $debt->amount;
-        }
-        return $debt->loan->simple_interest ?
-            $this->getSimpleInterestAmount($currentSession, $debt) :
-            $this->getCompoundInterestAmount($currentSession, $debt);
     }
 
     /**
@@ -341,6 +222,10 @@ class RefundService
         {
             throw new MessageException(trans('tontine.loan.errors.not_found'));
         }
+        if(!$this->debtCalculator->debtIsEditable($session, $debt))
+        {
+            throw new MessageException(trans('meeting.refund.errors.cannot_refund'));
+        }
 
         $refund = new Refund();
         $refund->debt()->associate($debt);
@@ -348,11 +233,9 @@ class RefundService
         DB::transaction(function() use($session, $debt, $refund) {
             $refund->save();
             // For simple or compound interest, also save the final amount.
-            if($debt->is_interest && ($debt->loan->simple_interest || $debt->loan->compound_interest))
+            if($debt->is_interest && !$debt->loan->fixed_interest)
             {
-                $debt->amount = $debt->loan->simple_interest ?
-                    $this->getSimpleInterestAmount($session, $debt) :
-                    $this->getCompoundInterestAmount($session, $debt);
+                $debt->amount = $this->debtCalculator->getDebtAmount($session, $debt);
                 $debt->save();
             }
         });
@@ -368,7 +251,8 @@ class RefundService
      */
     public function deleteRefund(Session $session, int $debtId): void
     {
-        $refund = Refund::where('session_id', $session->id)->where('debt_id', $debtId)->first();
+        $refund = Refund::with('debt')->where('session_id', $session->id)
+            ->where('debt_id', $debtId)->first();
         if(!$refund)
         {
             throw new MessageException(trans('meeting.refund.errors.not_found'));
@@ -376,6 +260,10 @@ class RefundService
         if(($refund->online))
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_delete'));
+        }
+        if(!$this->debtCalculator->debtIsEditable($session, $refund->debt))
+        {
+            throw new MessageException(trans('meeting.refund.errors.cannot_refund'));
         }
         $refund->delete();
     }
@@ -421,12 +309,13 @@ class RefundService
     {
         return $this->getDebts($session, false)
             ->filter(function($debt) use($session) {
-                return $this->getDebtAmount($session, $debt) > 0;
+                return $this->debtCalculator->debtIsEditable($session, $debt) &&
+                    $this->debtCalculator->getDebtAmount($session, $debt) > 0;
             })
             ->keyBy('id')
             ->map(function($debt) use($session) {
-                $amount = $this->getDebtAmount($session, $debt) -
-                    $debt->partial_refunds->sum('amount');
+                $amount = $this->debtCalculator->getDebtDueAmount($session, $debt);
+
                 return $debt->loan->member->name . ' - ' . $debt->loan->session->title .
                     ' - ' . trans('meeting.loan.labels.' . $debt->type) .
                     ' - ' . $this->localeService->formatMoney($amount, true);

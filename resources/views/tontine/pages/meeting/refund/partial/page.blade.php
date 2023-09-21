@@ -1,5 +1,5 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('refundService', 'Siak\Tontine\Service\Meeting\Credit\RefundService')
+@inject('debtCalculator', 'Siak\Tontine\Service\Meeting\Credit\DebtCalculator')
                 <table class="table table-bordered">
                   <thead>
                     <tr>
@@ -16,7 +16,7 @@
                       </td>
                       <td class="currency">
                         {{ $locale->formatMoney($refund->amount, true) }}<br/>
-                        {{ $locale->formatMoney($refundService->getDebtAmount($session, $refund->debt), true)
+                        {{ $locale->formatMoney($debtCalculator->getDebtAmount($session, $refund->debt), true)
                           }} - {{ __('meeting.loan.labels.' . $refund->debt->type) }}
                       </td>
                       <td class="table-item-menu">
