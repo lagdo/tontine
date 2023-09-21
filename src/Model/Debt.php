@@ -48,6 +48,11 @@ class Debt extends Base
         return $this->type === self::TYPE_PRINCIPAL ? 'principal' : 'interest';
     }
 
+    public function getDueAmountAttribute()
+    {
+        return $this->amount - $this->partial_refunds->sum('amount');
+    }
+
     /**
      * @param  Builder  $query
      *
@@ -76,5 +81,10 @@ class Debt extends Base
     public function refund()
     {
         return $this->hasOne(Refund::class);
+    }
+
+    public function partial_refunds()
+    {
+        return $this->hasMany(PartialRefund::class);
     }
 }

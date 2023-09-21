@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service\Meeting\Cash;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
@@ -11,6 +12,7 @@ use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Disbursement;
 use Siak\Tontine\Model\Funding;
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\PartialRefund;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Settlement;
@@ -148,6 +150,15 @@ class DisbursementService
             ->join('debts', 'refunds.debt_id', '=', 'debts.id')
             ->whereIn('refunds.session_id', $sessionIds)
             ->value('total');
+        // Partial refunds on debts that are not yet refunded.
+        $partialRefund = PartialRefund::select(DB::raw('sum(partial_refunds.amount) as total'))
+            ->join('debts', 'partial_refunds.debt_id', '=', 'debts.id')
+            ->whereIn('partial_refunds.session_id', $sessionIds)
+            ->whereNotExists(function (Builder $query) {
+                $query->select(DB::raw(1))->from('refunds')
+                    ->whereColumn('refunds.debt_id', 'debts.id');
+            })
+            ->value('total');
         $debt = Debt::principal()->select(DB::raw('sum(debts.amount) as total'))
             ->join('loans', 'debts.loan_id', '=', 'loans.id')
             ->whereIn('loans.session_id', $sessionIds)
@@ -156,7 +167,7 @@ class DisbursementService
             ->whereIn('session_id', $sessionIds)
             ->value('total');
 
-        return $funding + $settlement + $refund - $debt - $disbursement;
+        return $funding + $settlement + $refund + $partialRefund - $debt - $disbursement;
     }
 
     /**
