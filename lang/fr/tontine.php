@@ -17,7 +17,6 @@ return [
         'rounds' => "Tours",
         'sessions' => "Séances",
         'pools' => "Fonds",
-        'balance' => "Bilan",
         'subscriptions' => "Souscriptions",
         'beneficiaries' => "Bénéficiaires",
         'payments' => "Paiements",
@@ -198,6 +197,12 @@ return [
             'subscriptions' => "Souscriptions",
             'free' => "Fonds libre",
         ],
+        'labels' => [
+            'fixed' => "Montant fixe",
+            'planned' => "Planifiée",
+            'auction' => "Aux enchères",
+            'lendable' => "Disponible pour prêt",
+        ],
         'actions' => [
             'subscriptions' => "Souscriptions",
         ],
@@ -219,6 +224,9 @@ return [
         ],
     ],
     'subscription' => [
+        'titles' => [
+            'planning' => "Planning",
+        ],
         'messages' => [
             'created' => "La souscription du membre a été enregistrée.",
             'deleted' => "La souscription du membre a été supprimée.",

@@ -17,7 +17,6 @@ return [
         'rounds' => "Rounds",
         'sessions' => "Sessions",
         'pools' => "Pools",
-        'balance' => "Balance",
         'subscriptions' => "Subscriptions",
         'beneficiaries' => "Beneficiaries",
         'payments' => "Payments",
@@ -198,6 +197,12 @@ return [
             'subscriptions' => "Subscriptions",
             'free' => "Free pool",
         ],
+        'labels' => [
+            'fixed' => "Amount fixed",
+            'planned' => "Planned",
+            'auction' => "At auction",
+            'lendable' => "Available for loan",
+        ],
         'actions' => [
             'subscriptions' => "Subscriptions",
         ],
@@ -219,6 +224,9 @@ return [
         ],
     ],
     'subscription' => [
+        'titles' => [
+            'planning' => "Planning",
+        ],
         'messages' => [
             'created' => "The member subscription was created.",
             'deleted' => "The member subscription was deleted.",
