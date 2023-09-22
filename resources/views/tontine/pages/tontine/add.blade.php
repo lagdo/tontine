@@ -1,7 +1,6 @@
       <div class="portlet-body form">
         <form class="form-horizontal" role="form" id="tontine-form">
           <div class="module-body">
-            {!! Form::hidden('type', $type) !!}
             <div class="form-group row">
               {!! Form::label('name', __('common.labels.name'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
               <div class="col-sm-9">

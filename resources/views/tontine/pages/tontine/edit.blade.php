@@ -1,14 +1,6 @@
       <div class="portlet-body form">
         <form class="form-horizontal" role="form" id="tontine-form">
           <div class="module-body">
-@if(!$tontine->started)
-            <div class="form-group row">
-              {!! Form::label('type', __('common.labels.type'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
-              <div class="col-sm-5">
-                {!! Form::select('type', $types, $tontine->type, ['class' => 'form-control']) !!}
-              </div>
-            </div>
-@endif
             <div class="form-group row">
               {!! Form::label('name', __('common.labels.name'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
               <div class="col-sm-9">

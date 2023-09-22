@@ -2,7 +2,6 @@
                       <thead>
                         <tr>
                           <th>{!! __('common.labels.name') !!}</th>
-                          <th>{!! __('tontine.titles.tontine') !!}</th>
                           <th>{!! __('common.labels.city') !!}</th>
                           <th>{!! __('common.labels.country') !!}</th>
                           <th>{!! __('common.labels.currency') !!}</th>
@@ -13,7 +12,6 @@
 @foreach ($tontines as $tontine)
                         <tr>
                           <td>{{ $tontine->name }}</td>
-                          <td>{{ $types[$tontine->type] ?? '' }}</td>
                           <td>{{ $tontine->city }}</td>
                           <td>{{ $countries[$tontine->country_code] }}</td>
                           <td>{{ $currencies[$tontine->currency_code] }}</td>
