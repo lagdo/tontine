@@ -67,8 +67,8 @@ class SummaryService
         $subscriptions = $pool->subscriptions()->with(['payable', 'payable.session', 'member'])->get();
 
         $figures = new stdClass();
-        // No expected figures for libre tontines
-        if(!$this->tenantService->tontine()->is_libre)
+        // Expected figures only for pools with fixed deposit amount
+        if($pool->deposit_fixed)
         {
             $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
         }
@@ -79,7 +79,7 @@ class SummaryService
             if($session->enabled($pool))
             {
                 // Pick the subscriptions ids, and fill with 0's to the max available.
-                $remitmentCount = $this->tenantService->tontine()->is_libre ? 1 :
+                $remitmentCount = !$pool->deposit_fixed ? 1 :
                     $figures->expected[$session->id]->remitment->count;
                 $session->beneficiaries = $session->payables->map(function($payable) {
                     return $payable->subscription_id;
@@ -93,8 +93,8 @@ class SummaryService
             return $session !== null && $session->enabled($pool);
         });
         $beneficiaries = $beneficiaries->pluck('member.name', 'id');
-        // Do not show the list of subscriptions for financial tontines
-        if($this->tenantService->tontine()->is_financial)
+        // Do not show the list of subscriptions for pools with auctions
+        if($pool->remit_auction || !$pool->remit_fixed)
         {
             $subscriptions = collect([]);
         }

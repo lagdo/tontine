@@ -40,9 +40,9 @@ class PoolService
      *
      * @param int $page
      *
-     * @return array
+     * @return Collection
      */
-    public function getPools(int $page = 0)
+    public function getPools(int $page = 0): Collection
     {
         return $this->tenantService->round()->pools()
             ->page($page, $this->tenantService->getLimit())
@@ -69,6 +69,16 @@ class PoolService
     public function getPool(int $poolId): ?Pool
     {
         return $this->tenantService->getPool($poolId);
+    }
+
+    /**
+     * Get the first pool.
+     *
+     * @return Pool|null
+     */
+    public function getFirstPool(): ?Pool
+    {
+        return $this->tenantService->round()->pools()->first();
     }
 
     /**
