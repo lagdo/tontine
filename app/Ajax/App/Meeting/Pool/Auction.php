@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Ajax\App\Meeting\Pool\Remitment;
+namespace App\Ajax\App\Meeting\Pool;
 
 use App\Ajax\CallableClass;
 use App\Ajax\App\Meeting\Cash\Disbursement;
 use App\Ajax\App\Meeting\Credit\Loan;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
+use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 use function Jaxon\jq;
@@ -19,6 +20,11 @@ use function trans;
  */
 class Auction extends CallableClass
 {
+    /**
+     * @var TontineService
+     */
+    protected TontineService $tontineService;
+
     /**
      * @var RefundService
      */
@@ -37,10 +43,12 @@ class Auction extends CallableClass
     /**
      * The constructor
      *
+     * @param TontineService $tontineService
      * @param RefundService $refundService
      */
-    public function __construct(RefundService $refundService)
+    public function __construct(TontineService $tontineService, RefundService $refundService)
     {
+        $this->tontineService = $tontineService;
         $this->refundService = $refundService;
     }
 
@@ -58,6 +66,10 @@ class Auction extends CallableClass
      */
     public function show(SessionModel $session)
     {
+        if(!$this->tontineService->hasPoolWithAuction())
+        {
+            return $this->response;
+        }
         $this->session = $session;
 
         return $this->home();
@@ -83,7 +95,7 @@ class Auction extends CallableClass
     {
         $filtered = $this->bag('auction')->get('filter', null);
         $debtCount = $this->refundService->getAuctionCount($this->session, $filtered);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $debtCount, 'auction', 'principal.page');
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $debtCount, 'auction');
         $debts = $this->refundService->getAuctions($this->session, $filtered, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $debtCount);
 

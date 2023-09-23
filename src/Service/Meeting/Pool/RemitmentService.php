@@ -119,8 +119,9 @@ class RemitmentService
         return $this->getQuery($pool, $session)->with(['subscription.member', 'remitment'])
             ->page($page, $this->tenantService->getLimit())
             ->get()
-            ->each(function($payable) use($remitmentAmount) {
-                $payable->amount = $remitmentAmount;
+            ->each(function($payable) use($pool, $remitmentAmount) {
+                $payable->amount = $pool->remit_fixed ? $remitmentAmount :
+                    ($payable->remitment ? $payable->remitment->amount : 0);
             })
             ->pad($remitmentCount, $emptyPayable);
     }
@@ -140,8 +141,9 @@ class RemitmentService
             ->with(['subscription.member', 'remitment'])
             ->page($page, $this->tenantService->getLimit())
             ->get()
-            ->each(function($payable) use($remitmentAmount) {
-                $payable->amount = $remitmentAmount;
+            ->each(function($payable) use($pool, $remitmentAmount) {
+                $payable->amount = $pool->remit_fixed ? $remitmentAmount :
+                    ($payable->remitment ? $payable->remitment->amount : 0);
             });
     }
 
@@ -215,13 +217,16 @@ class RemitmentService
      * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $payableId
-     * @param int $interest
+     * @param int $amount
+     * @param int $auction
      *
      * @return void
      */
-    public function saveFinancialRemitment(Pool $pool, Session $session, int $payableId, int $interest = 0): void
+    public function saveFinancialRemitment(Pool $pool, Session $session,
+        int $payableId, int $amount, int $auction): void
     {
-        // Cannot use the getPayable() method here, because there's no session attached to the payable.
+        // Cannot use the getPayable() method here,
+        // because there's no session attached to the payable.
         $payable = Payable::with(['subscription.member'])
             ->whereDoesntHave('remitment')
             ->whereIn('subscription_id', $pool->subscriptions()->pluck('id'))
@@ -231,29 +236,33 @@ class RemitmentService
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
 
-        DB::transaction(function() use($session, $payable, $interest) {
+        DB::transaction(function() use($pool, $session, $payable, $amount, $auction) {
             // Associate the payable with the session.
             $payable->session()->associate($session);
             $payable->save();
             // Create the remitment.
-            $remitment = $payable->remitment()->create([]);
-            // Create the corresponding loan.
-            $loan = new Loan();
-            $loan->member()->associate($payable->subscription->member);
-            $loan->session()->associate($session);
-            $loan->remitment()->associate($remitment);
-            $loan->save();
-            // Create a debt for the interest
-            $debt = new Debt();
-            $debt->type = Debt::TYPE_INTEREST;
-            $debt->amount = $interest;
-            $debt->loan()->associate($loan);
-            $debt->save();
-            // The debt is supposed to have been immediatly refunded.
-            $refund = new Refund();
-            $refund->debt()->associate($debt);
-            $refund->session()->associate($session);
-            $refund->save();
+            $remitment = $payable->remitment()->create(['amount' => $amount]);
+
+            if($pool->remit_auction && $auction > 0)
+            {
+                // Create the corresponding loan.
+                $loan = new Loan();
+                $loan->member()->associate($payable->subscription->member);
+                $loan->session()->associate($session);
+                $loan->remitment()->associate($remitment);
+                $loan->save();
+                // Create a debt for the interest
+                $debt = new Debt();
+                $debt->type = Debt::TYPE_INTEREST;
+                $debt->amount = $auction;
+                $debt->loan()->associate($loan);
+                $debt->save();
+                // The debt is supposed to have been immediatly refunded.
+                $refund = new Refund();
+                $refund->debt()->associate($debt);
+                $refund->session()->associate($session);
+                $refund->save();
+            }
         });
     }
 

@@ -5,6 +5,7 @@ namespace Siak\Tontine\Service\Meeting\Pool;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\Meeting\SummaryService;
@@ -122,5 +123,17 @@ class PoolService
             // Expected
             $pool->pay_count = $this->summaryService->getSessionRemitmentCount($pool, $session);
         });
+    }
+
+    /**
+     * Get a single pool.
+     *
+     * @param int $poolId    The pool id
+     *
+     * @return Pool|null
+     */
+    public function getPool(int $poolId): ?Pool
+    {
+        return $this->tenantService->getPool($poolId);
     }
 }

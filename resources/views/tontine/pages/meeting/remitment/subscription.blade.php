@@ -21,10 +21,12 @@
                           <td class="table-item-menu" data-payable-id="{{ $payable->id }}">
 @if ($session->closed)
                             @if ($payable->id > 0)<i class="fa fa-toggle-on"></i>@else<i class="fa fa-toggle-off">@endif
-@elseif ($payable->id > 0)
+@elseif ($payable->remitment)
                             <a href="javascript:void(0)" class="btn-del-remitment"><i class="fa fa-toggle-on"></i></a>
-@else
+@elseif ($payable->id > 0)
                             <a href="javascript:void(0)" class="btn-add-remitment"><i class="fa fa-toggle-off"></i></a>
+@else
+                            <i class="fa fa-toggle-off"></i>
 @endif
                           </td>
                         </tr>

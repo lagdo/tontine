@@ -3,6 +3,9 @@
 namespace App\Ajax\App\Meeting\Pool\Remitment;
 
 use App\Ajax\CallableClass;
+use App\Ajax\App\Meeting\Cash\Disbursement;
+use App\Ajax\App\Meeting\Credit\Loan;
+use App\Ajax\App\Meeting\Pool\Remitment;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
@@ -15,10 +18,9 @@ use function trans;
  * @databag meeting
  * @before getPool
  */
-class Libre extends CallableClass
+class Payable extends CallableClass
 {
     /**
-     * @di
      * @var RemitmentService
      */
     protected RemitmentService $remitmentService;
@@ -42,10 +44,12 @@ class Libre extends CallableClass
      * The constructor
      *
      * @param PoolService $poolService
+     * @param RemitmentService $remitmentService
      */
-    public function __construct(PoolService $poolService)
+    public function __construct(PoolService $poolService, RemitmentService $remitmentService)
     {
         $this->poolService = $poolService;
+        $this->remitmentService = $remitmentService;
     }
 
     /**
@@ -55,15 +59,8 @@ class Libre extends CallableClass
     {
         $sessionId = $this->bag('meeting')->get('session.id');
 
-        // No pool id on the "home" page
-        if($this->target()->method() === 'home')
-        {
-            $this->session = $this->poolService->getSession($sessionId);
-            return;
-        }
-
         $this->session = $this->remitmentService->getSession($sessionId);
-        $poolId = $this->target()->method() === 'pool' ?
+        $poolId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('pool.id');
         $this->pool = $this->remitmentService->getPool($poolId);
         if(!$this->session || !$this->pool || $this->session->disabled($this->pool))
@@ -76,30 +73,12 @@ class Libre extends CallableClass
     /**
      * @exclude
      */
-    public function show(SessionModel $session)
+    public function show(SessionModel $session, PoolModel $pool)
     {
         $this->session = $session;
+        $this->pool = $pool;
 
-        return $this->home();
-    }
-
-    /**
-     * @di $poolService
-     */
-    public function home()
-    {
-        $tontine = $this->poolService->getTontine();
-        $html = $this->view()->render('tontine.pages.meeting.remitment.home')
-            ->with('tontine', $tontine)
-            ->with('session', $this->session)
-            ->with('pools', $this->poolService->getPoolsWithPayables($this->session));
-        $this->response->html('meeting-remitments', $html);
-
-        $this->jq('#btn-remitments-refresh')->click($this->rq()->home());
-        $poolId = jq()->parent()->attr('data-pool-id')->toInt();
-        $this->jq('.btn-pool-remitments')->click($this->rq()->pool($poolId));
-
-        return $this->response;
+        return $this->home($pool->id);
     }
 
     /**
@@ -107,7 +86,7 @@ class Libre extends CallableClass
      *
      * @return mixed
      */
-    public function pool(int $poolId)
+    public function home(int $poolId)
     {
         $this->bag('meeting')->set('pool.id', $poolId);
 
@@ -116,16 +95,18 @@ class Libre extends CallableClass
         ]);
         $this->response->html('meeting-remitments', $html);
 
-        $this->jq('#btn-remitments-back')->click($this->rq()->home());
+        $this->jq('#btn-remitments-back')->click($this->cl(Remitment::class)->rq()->home());
 
         return $this->page();
     }
 
     public function page()
     {
-        $html = $this->view()->render('tontine.pages.meeting.remitment.mutual', [
+        $html = $this->view()->render('tontine.pages.meeting.remitment.payable', [
             'session' => $this->session,
-            'payables' => $this->remitmentService->getLibrePayables($this->pool, $this->session),
+            'payables' => $this->pool->deposit_fixed ?
+                $this->remitmentService->getPayables($this->pool, $this->session) :
+                $this->remitmentService->getLibrePayables($this->pool, $this->session),
         ]);
         $this->response->html('meeting-pool-remitments', $html);
 
@@ -150,7 +131,10 @@ class Libre extends CallableClass
         }
 
         $this->remitmentService->saveMutualRemitment($this->pool, $this->session, $payableId);
-        // $this->notify->success(trans('session.remitment.created'), trans('common.titles.success'));
+
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->page();
     }
@@ -169,7 +153,10 @@ class Libre extends CallableClass
         }
 
         $this->remitmentService->deleteMutualRemitment($this->pool, $this->session, $payableId);
-        // $this->notify->success(trans('session.remitment.deleted'), trans('common.titles.success'));
+
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->page();
     }

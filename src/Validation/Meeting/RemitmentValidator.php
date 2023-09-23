@@ -31,7 +31,8 @@ class RemitmentValidator extends AbstractValidator
     {
         $validator = Validator::make($this->values($values), [
             'payable' => 'required|integer|min:1',
-            'amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+            'amount' => 'required_if:remit_amount,1|regex:/^\d+(\.\d{1,2})?$/',
+            'auction' => 'required_if:remit_auction,1|regex:/^\d+(\.\d{1,2})?$/',
         ]);
         if($validator->fails())
         {
@@ -39,7 +40,10 @@ class RemitmentValidator extends AbstractValidator
         }
 
         $validated = $validator->validated();
-        $validated['amount'] = $this->localeService->convertMoneyToInt((float)$validated['amount']);
+        $validated['amount'] = empty($validated['amount']) ? 0 :
+            $this->localeService->convertMoneyToInt((float)$validated['amount']);
+        $validated['auction'] = empty($validated['auction']) ? 0 :
+            $this->localeService->convertMoneyToInt((float)$validated['auction']);
         return $validated;
     }
 }

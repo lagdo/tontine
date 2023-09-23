@@ -68,7 +68,7 @@ class SummaryService
 
         $figures = new stdClass();
         // Expected figures only for pools with fixed deposit amount
-        if($pool->deposit_fixed)
+        if($pool->remit_planned /*$pool->deposit_fixed*/)
         {
             $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
         }

@@ -13,7 +13,7 @@
                           <td>{{ $payable->subscription->member->name ?? __('tontine.remitment.labels.not-assigned') }}</td>
                           <td class="currency">{{ $locale->formatMoney($payable->amount, true) }}</td>
                           <td class="table-item-menu" data-payable-id="{{ $payable->id }}">
-@if ($session->closed)
+@if (!$session->opened)
                             @if ($payable->remitment)<i class="fa fa-toggle-on"></i>@else<i class="fa fa-toggle-off">@endif
 @elseif ($payable->remitment)
                             <a href="javascript:void(0)" class="btn-del-remitment"><i class="fa fa-toggle-on"></i></a>
