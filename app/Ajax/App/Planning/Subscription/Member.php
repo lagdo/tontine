@@ -3,6 +3,7 @@
 namespace App\Ajax\App\Planning\Subscription;
 
 use App\Ajax\CallableClass;
+use App\Ajax\App\Planning\Subscription;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
@@ -70,6 +71,11 @@ class Member extends CallableClass
         $this->response->html('pool-subscription-members', $html);
         $this->jq('#btn-subscription-members-filter')->click($this->rq()->filter());
         $this->jq('#btn-subscription-members-refresh')->click($this->rq()->home($poolId));
+        if($this->pool->remit_planned)
+        {
+            $this->jq('#btn-subscription-beneficiaries')
+                ->click($this->cl(Subscription::class)->rq()->beneficiaries($poolId));
+        }
 
         $this->bag('subscription')->set('pool.id', $poolId);
         $this->bag('subscription')->set('member.filter', false);

@@ -94,7 +94,7 @@ class SummaryService
         });
         $beneficiaries = $beneficiaries->pluck('member.name', 'id');
         // Do not show the list of subscriptions for pools with auctions
-        if($pool->remit_auction || !$pool->remit_fixed)
+        if($pool->remit_auction)
         {
             $subscriptions = collect([]);
         }

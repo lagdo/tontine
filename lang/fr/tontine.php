@@ -18,7 +18,6 @@ return [
         'sessions' => "Séances",
         'pools' => "Fonds",
         'subscriptions' => "Souscriptions",
-        'beneficiaries' => "Bénéficiaires",
         'payments' => "Paiements",
         'profile' => "Profil",
         'logout' => "Se déconnecter",
@@ -195,6 +194,8 @@ return [
             'deposits' => "Bilan des dépôts",
             'remitments' => "Bilan des remises",
             'subscriptions' => "Souscriptions",
+            'members' => "Membres",
+            'sessions' => "Séances",
             'free' => "Fonds libre",
         ],
         'labels' => [
@@ -225,6 +226,7 @@ return [
     ],
     'subscription' => [
         'titles' => [
+            'beneficiaries' => "Bénéficiaires",
             'planning' => "Planning",
         ],
         'messages' => [

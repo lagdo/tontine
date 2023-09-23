@@ -3,7 +3,6 @@
 namespace App\Ajax;
 
 use App\Ajax\App\Meeting\Session as MeetingSession;
-use App\Ajax\App\Planning\Beneficiary;
 use App\Ajax\App\Planning\Pool;
 use App\Ajax\App\Planning\Session as PlanningSession;
 use App\Ajax\App\Planning\Subscription;
@@ -109,7 +108,6 @@ class CallableClass extends JaxonCallableClass
         $this->jq('#planning-menu-sessions')->click($this->cl(PlanningSession::class)->rq()->home());
         $this->jq('#planning-menu-pools')->click($this->cl(Pool::class)->rq()->home());
         $this->jq('#planning-menu-subscriptions')->click($this->cl(Subscription::class)->rq()->home());
-        $this->jq('#planning-menu-beneficiaries')->click($this->cl(Beneficiary::class)->rq()->home());
         $this->jq('#meeting-menu-sessions')->click($this->cl(MeetingSession::class)->rq()->home());
         $this->jq('#report-menu-session')->click($this->cl(SessionReport::class)->rq()->home());
         $this->jq('#report-menu-round')->click($this->cl(RoundReport::class)->rq()->home());

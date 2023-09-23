@@ -204,15 +204,16 @@ class SubscriptionService
      * Set or unset the beneficiary of a given pool.
      *
      * @param Pool $pool
-     * @param Session $session
+     * @param int $sessionId
      * @param int $currSubscriptionId
      * @param int $nextSubscriptionId
      *
      * @return bool
      */
-    public function saveBeneficiary(Pool $pool, Session $session,
+    public function saveBeneficiary(Pool $pool, int $sessionId,
         int $currSubscriptionId, int $nextSubscriptionId): bool
     {
+        $session = $this->sessionService->getSession($sessionId);
         $currSubscription = null;
         if($currSubscriptionId > 0)
         {
