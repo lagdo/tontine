@@ -100,27 +100,6 @@ class Tontine extends CallableClass
         return $this->response;
     }
 
-    // public function selectType()
-    // {
-    //     $title = trans('tontine.titles.type');
-    //     $content = $this->view()->render('tontine.pages.tontine.type')
-    //         ->with('types', $this->tontineService->getTontineTypes())
-    //         ->with('descriptions', $this->tontineService->getTontineDescriptions());
-    //     $buttons = [[
-    //         'title' => trans('common.actions.cancel'),
-    //         'class' => 'btn btn-tertiary',
-    //         'click' => 'close',
-    //     ],[
-    //         'title' => trans('common.actions.add'),
-    //         'class' => 'btn btn-primary btn-select-type',
-    //         'click' => '',
-    //     ]];
-    //     $this->dialog->show($title, $content, $buttons);
-    //     $this->jq('.btn-select-type')->on('click', $this->rq()->add(jq('input[name="type"]:checked')->val()));
-
-    //     return $this->response;
-    // }
-
     /**
      * @di $localeService
      */
@@ -152,9 +131,8 @@ class Tontine extends CallableClass
      */
     public function create(array $formValues)
     {
-        $formValues = $this->validator->validateItem($formValues);
-
-        $this->tontineService->createTontine($formValues);
+        $values = $this->validator->validateItem($formValues);
+        $this->tontineService->createTontine($values);
         $this->page(); // Back to current page
 
         $this->dialog->hide();
@@ -198,9 +176,8 @@ class Tontine extends CallableClass
      */
     public function update(int $tontineId, array $formValues)
     {
-        $formValues = $this->validator->validateItem($formValues);
-
-        $this->tontineService->updateTontine($tontineId, $formValues);
+        $values = $this->validator->validateItem($formValues);
+        $this->tontineService->updateTontine($tontineId, $values);
         $this->page(); // Back to current page
 
         $this->dialog->hide();
