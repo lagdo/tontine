@@ -140,7 +140,7 @@ class Deposit extends CallableClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $receivableCount);
 
         $html = $this->view()->render('tontine.pages.meeting.deposit.page', [
-            'tontine' => $this->poolService->getTontine(),
+            'pool' => $this->pool,
             'session' => $this->session,
             'receivables' => $receivables,
             'pagination' => $pagination,
