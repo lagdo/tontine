@@ -21,7 +21,7 @@
             </div>
             <div class="form-group row">
               {!! Form::label('amount', __('common.labels.amount') . " ($currency)", ['class' => 'col-sm-4 col-form-label text-right']) !!}
-              <div class="col-md-5">
+              <div class="col-md-6">
 @if ($charge->is_fixed)
                 {!! Form::text('amount', $charge->amount_value, ['class' => 'form-control']) !!}
                 {!! Form::hidden('fixed', '1') !!}

@@ -53,7 +53,7 @@ class Charge extends CallableClass
         $this->response->html('section-title', trans('tontine.menus.tontine'));
         $this->response->html('content-home', $html);
         $this->jq('#btn-refresh')->click($this->rq()->home());
-        $this->jq('#btn-create')->click($this->rq()->number());
+        $this->jq('#btn-create')->click($this->rq()->select());
 
         return $this->page();
     }
@@ -137,13 +137,12 @@ class Charge extends CallableClass
         return $this->response;
     }
 
-    public function number()
+    public function select()
     {
-        $title = trans('number.labels.title');
-        $content = $this->view()->render('tontine.pages.charge.number')
+        $title = '';
+        $content = $this->view()->render('tontine.pages.charge.select')
             ->with('groups', $this->getChargeGroups());
         $group = pm()->input('charge-group')->toInt();
-        $number = pm()->input('text-number')->toInt();
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -151,7 +150,7 @@ class Charge extends CallableClass
         ],[
             'title' => trans('common.actions.add'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->add($group, $number),
+            'click' => $this->rq()->add($group),
         ]];
         $this->dialog->show($title, $content, $buttons);
 
@@ -162,41 +161,30 @@ class Charge extends CallableClass
      * @di $localeService
      * @databag faker
      */
-    public function add(int $group, int $count)
+    public function add(int $group)
     {
-        if($count <= 0)
-        {
-            $this->notify->warning(trans('number.errors.invalid'));
-            return $this->response;
-        }
-        if($count > 10)
-        {
-            $this->notify->warning(trans('number.errors.max', ['max' => 10]));
-            return $this->response;
-        }
-
         $this->dialog->hide();
 
         $tontine = $this->chargeService->getTontine();
         [, $currency] = $this->localeService->getNameFromTontine($tontine);
 
-        $useFaker = config('jaxon.app.faker', false);
-        $html = $this->view()->render('tontine.pages.charge.add')
-            ->with('useFaker', $useFaker)
+        $title = trans('tontine.charge.titles.add');
+        $content = $this->view()->render('tontine.pages.charge.add')
             ->with('fixed', $group === self::GROUP_FIXED)
             ->with('label', $this->getChargeGroups()[$group])
-            ->with('count', $count)
             ->with('currency', $currency)
             ->with('types', $this->getChargeTypes($group))
             ->with('periods', $this->getChargePeriods($group));
-        $this->response->html('content-home', $html);
-        $this->jq('#btn-cancel')->click($this->rq()->home());
-        $this->jq('#btn-save')->click($this->rq()->create($group, pm()->form('charge-form')));
-        if($useFaker)
-        {
-            $this->bag('faker')->set('charge.count', $count);
-            $this->jq('#btn-fakes')->click($this->cl(Faker::class)->rq()->charges());
-        }
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.save'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->create($group, pm()->form('charge-form')),
+        ]];
+        $this->dialog->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -211,28 +199,25 @@ class Charge extends CallableClass
             $this->response;
         }
         // Set the missing field in each item of the charge array.
-        $charges = array_map(function($charge) use($group) {
-            if($group === self::GROUP_FIXED) // Fixed charge
+        if($group === self::GROUP_FIXED) // Fixed charge
+        {
+            $formValues['type'] = ChargeModel::TYPE_FEE;
+        }
+        if($group === self::GROUP_VARIABLE) // Variable charge
+        {
+            $formValues['period'] = ChargeModel::PERIOD_NONE;
+            if(empty($formValues['fixed']))
             {
-                $charge['type'] = ChargeModel::TYPE_FEE;
+                $formValues['amount'] = 0;
             }
-            if($group === self::GROUP_VARIABLE) // Variable charge
-            {
-                $charge['period'] = ChargeModel::PERIOD_NONE;
-                if(empty($charge['fixed']))
-                {
-                    $charge['amount'] = 0;
-                }
-            }
-            return $charge;
-        }, $formValues['charges'] ?? []);
-
-        $values = $this->validator->validateList($charges);
+        }
+        $values = $this->validator->validateitem($formValues);
 
         $this->chargeService->createCharges($values);
         $this->notify->success(trans('tontine.charge.messages.created'), trans('common.titles.success'));
+        $this->dialog->hide();
 
-        return $this->home();
+        return $this->page();
     }
 
     /**
@@ -285,10 +270,9 @@ class Charge extends CallableClass
 
         $this->chargeService->updateCharge($charge, $values);
         $this->dialog->hide();
-        $this->page(); // Back to current page
         $this->notify->success(trans('tontine.charge.messages.updated'), trans('common.titles.success'));
 
-        return $this->response;
+        return $this->page();
     }
 
     /**
