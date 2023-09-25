@@ -213,7 +213,7 @@ class Charge extends CallableClass
         }
         $values = $this->validator->validateitem($formValues);
 
-        $this->chargeService->createCharges($values);
+        $this->chargeService->createCharge($values);
         $this->notify->success(trans('tontine.charge.messages.created'), trans('common.titles.success'));
         $this->dialog->hide();
 

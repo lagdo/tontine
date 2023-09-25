@@ -25,6 +25,9 @@
   'menus' => [[
     'class' => 'btn-member-edit',
     'text' => __('common.actions.edit'),
+   ],[
+    'class' => 'btn-member-delete',
+    'text' => __('common.actions.delete'),
   ]],
   'links' => [],
 ])

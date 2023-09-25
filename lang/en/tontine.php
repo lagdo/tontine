@@ -109,6 +109,9 @@ return [
             'updated' => "The member was successfully updated.",
             'deleted' => "The member was successfully deleted.",
         ],
+        'questions' => [
+            'delete' => "Delete this member?",
+        ],
         'errors' => [
             'not_found' => "Cannot find the corresponding member.",
         ],

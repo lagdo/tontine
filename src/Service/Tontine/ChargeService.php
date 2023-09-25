@@ -96,7 +96,7 @@ class ChargeService
      *
      * @return bool
      */
-    public function createCharges(array $values): bool
+    public function createCharge(array $values): bool
     {
         DB::transaction(function() use($values) {
             $tontine = $this->tenantService->tontine();

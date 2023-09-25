@@ -109,6 +109,9 @@ return [
             'updated' => "Le membre a été modifié.",
             'deleted' => "Le membre a été supprimé.",
         ],
+        'questions' => [
+            'delete' => "Supprimer ce membre ?",
+        ],
         'errors' => [
             'not_found' => "Impossible de trouver le membre correspondant.",
         ],

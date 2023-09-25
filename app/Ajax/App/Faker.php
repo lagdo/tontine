@@ -32,14 +32,12 @@ class Faker extends CallableClass
      */
     public function members()
     {
-        $count = intval($this->bag('faker')->get('member.count'));
+        $count = intval($this->bag('faker')->get('member.count', 10));
         $members = $this->memberService->getFakeMembers($count);
-        for($i = 0; $i < $count; $i++)
-        {
-            $this->jq("#member_name_$i")->val($members[$i]->name);
-            $this->jq("#member_email_$i")->val($members[$i]->email);
-            // $this->jq("#member_phone_$i")->val($members[$i]->phone);
-        }
+        $html = $members->map(function($member) {
+            return $member->name . ';' . $member->email;
+        })->join("\n");
+        $this->response->html('new-members-list', $html);
 
         return $this->response;
     }
