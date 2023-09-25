@@ -3,7 +3,6 @@
 namespace Siak\Tontine\Service\Planning;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\TenantService;
@@ -104,20 +103,7 @@ class RoundService
      */
     public function createRound(array $values): bool
     {
-        DB::transaction(function() use($values) {
-            $tontine = $this->tenantService->tontine();
-            $round = $tontine->rounds()->create($values);
-            // Create the only and unique pool for free tontine
-            if($tontine->is_libre)
-            {
-                $round->pools()->create([
-                    'title' => $round->title, // Same title as the round
-                    'amount' => 0, // No fixed amount
-                    'notes' => '',
-                ]);
-            }
-        });
-
+        $this->tenantService->tontine()->rounds()->create($values);
         return true;
     }
 

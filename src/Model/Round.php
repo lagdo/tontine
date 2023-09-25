@@ -61,6 +61,16 @@ class Round extends Base
         'end_at' => 'datetime:Y-m-d',
     ];
 
+    /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'start_at' => '2000-01-01',
+        'end_at' => '2000-01-01',
+    ];
+
     public function getStartAttribute()
     {
         return $this->start_at->toFormattedDateString();
