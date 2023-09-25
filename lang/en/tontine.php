@@ -62,10 +62,14 @@ return [
     'messages' => [
         'created' => "The association was successfully created.",
         'updated' => "The association was successfully updated.",
+        'deleted' => "The association was successfully deleted.",
         'selected' => "You have selected the association :tontine. You still need to add some rounds to its tontine.",
         'screen' => [
             'orientation' => "If you are using a mobile device, we advise you to place it in landscape mode, for a better display.",
         ],
+    ],
+    'questions' => [
+        'delete' => "Delete the association? The related members, rounds and charges will also be deleted.",
     ],
     'errors' => [
         'action' => "Cannot proceed.",

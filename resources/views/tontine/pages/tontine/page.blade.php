@@ -25,6 +25,9 @@
   ],[
     'class' => 'btn-tontine-choose',
     'text' => __('tontine.actions.choose'),
+  ],[
+    'class' => 'btn-tontine-delete',
+    'text' => __('common.actions.delete'),
   ]],
 ])
                           </td>

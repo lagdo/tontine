@@ -95,7 +95,11 @@ class Tontine extends CallableClass
             ->with('pagination', $pagination);
         $this->response->html('tontine-page', $html);
 
-        $this->setTontineButtonHandlers();
+        $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
+        $this->jq('.btn-tontine-edit')->click($this->rq()->edit($tontineId));
+        $this->jq('.btn-tontine-choose')->click($this->cl(Select::class)->rq()->saveTontine($tontineId));
+        $this->jq('.btn-tontine-delete')->click($this->rq()->delete($tontineId)
+            ->confirm(trans('tontine.questions.delete')));
 
         return $this->response;
     }
@@ -184,5 +188,12 @@ class Tontine extends CallableClass
         $this->notify->success(trans('tontine.messages.updated'), trans('common.titles.success'));
 
         return $this->response;
+    }
+
+    public function delete(int $tontineId)
+    {
+        $this->tontineService->deleteTontine($tontineId);
+        $this->page(); // Back to current page
+        $this->notify->success(trans('tontine.messages.deleted'), trans('common.titles.success'));
     }
 }

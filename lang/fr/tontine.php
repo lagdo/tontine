@@ -62,10 +62,14 @@ return [
     'messages' => [
         'created' => "L'association a été ajoutée",
         'updated' => "L'association a été modifiée",
+        'deleted' => "L'association a été supprimée",
         'selected' => "Vous avez sélectionné l'association :tontine. Vous devez encore ajouter des tours sur sa tontine.",
         'screen' => [
             'orientation' => "Si vous utilisez un appareil mobile, nous vous conseillons de le placer en mode paysage, pour un meilleur affichage.",
         ],
+    ],
+    'questions' => [
+        'delete' => "Supprimer cette association ? Ses members, tours et frais seront également supprimés.",
     ],
     'errors' => [
         'action' => "Action impossible.",

@@ -116,16 +116,6 @@ class CallableClass extends JaxonCallableClass
     /**
      * @return void
      */
-    protected function setTontineButtonHandlers()
-    {
-        $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
-        $this->jq('.btn-tontine-edit')->click($this->rq()->edit($tontineId));
-        $this->jq('.btn-tontine-choose')->click($this->cl(Select::class)->rq()->saveTontine($tontineId));
-    }
-
-    /**
-     * @return void
-     */
     protected function hideMenuOnMobile()
     {
         // The current template main menu doesn't hide automatically

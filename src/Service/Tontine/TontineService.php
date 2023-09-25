@@ -10,8 +10,6 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\TenantService;
 
-use function trans;
-
 class TontineService
 {
     /**
@@ -161,7 +159,6 @@ class TontineService
     public function createTontine(array $values): bool
     {
         $this->tenantService->user()->tontines()->create($values);
-
         return true;
     }
 
@@ -187,6 +184,16 @@ class TontineService
      */
     public function deleteTontine(int $id)
     {
-        $this->tenantService->user()->tontines()->where('id', $id)->delete();
+        $tontine = $this->tenantService->user()->tontines()->find($id);
+        if(!$tontine)
+        {
+            return;
+        }
+        DB::transaction(function() use($tontine) {
+            $tontine->members()->delete();
+            $tontine->rounds()->delete();
+            $tontine->charges()->delete();
+            $tontine->delete();
+        });
     }
 }
