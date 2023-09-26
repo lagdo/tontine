@@ -88,6 +88,23 @@ class PoolService
      *
      * @return bool
      */
+    public function createPool(array $values): bool
+    {
+        // Cannot modify pools if a session is already opened.
+        $this->sessionService->checkActiveSessions();
+
+        $this->tenantService->round()->pools()->create($values);
+
+        return true;
+    }
+
+    /**
+     * Add new pools.
+     *
+     * @param array $values
+     *
+     * @return bool
+     */
     public function createPools(array $values): bool
     {
         // Cannot modify pools if a session is already opened.

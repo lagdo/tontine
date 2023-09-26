@@ -31,8 +31,6 @@ return [
         'delete' => "Supprimer",
         'check' => "Activer",
         'uncheck' => "Désactiver",
-        'news' => "Articles",
-        'index' => "Indexer",
         'reset' => "Effacer",
         'refresh' => "Rafraîchir",
         'share' => "Partager",
@@ -42,6 +40,8 @@ return [
         'ask' => "Demander",
         'give' => "Donner",
         'year' => "Année",
+        'next' => "Suivant",
+        'prev' => "Précédent",
     ],
     'labels' => [
         'all' => "Tous",

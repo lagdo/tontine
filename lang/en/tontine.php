@@ -16,7 +16,7 @@ return [
         'session' => "Session",
         'rounds' => "Rounds",
         'sessions' => "Sessions",
-        'pools' => "Pools",
+        'pools' => "Tontines",
         'subscriptions' => "Subscriptions",
         'payments' => "Payments",
         'profile' => "Profile",
@@ -196,39 +196,62 @@ return [
     ],
     'pool' => [
         'titles' => [
-            'add' => "Add pools",
-            'edit' => "Edit a pool",
+            'add' => "Add a tontine",
+            'add_many' => "Add tontines",
+            'edit' => "Edit a tontine",
+            'characteristics' => "Characteristics",
             'deposits' => "Deposits balance",
             'remitments' => "Remitments balance",
             'subscriptions' => "Subscriptions",
             'members' => "Members",
             'sessions' => "Sessions",
-            'free' => "Free pool",
         ],
         'labels' => [
             'fixed' => "Amount fixed",
             'planned' => "Planned",
             'auction' => "At auction",
             'lendable' => "Available for loan",
+            'deposit' => [
+                'fixed' => "The amount of deposits is fixed",
+            ],
+            'remit' => [
+                'fixed' => "The amount of remitments is fixed",
+                'planned' => "The number of remitments is set automatically",
+                'auction' => "The amounts are remitted after auction",
+                'lendable' => "The remaining amounts can be loaned",
+            ],
+        ],
+        'help' => [
+            'intro' => "You are going to add a new tontine.<br/>" .
+                "We are going to ask you to specify its characteristics.",
+            'deposit' => [
+                'fixed' => "The amount of deposits is fixed",
+            ],
+            'remit' => [
+                'fixed' => "The amount of remitments is fixed",
+                'planned' => "The number of remitments is set automatically",
+                'auction' => "The amounts are remitted after auction",
+                'lendable' => "The remaining amounts can be loaned",
+            ],
         ],
         'actions' => [
             'subscriptions' => "Subscriptions",
         ],
         'questions' => [
-            'delete' => "Delete this pool?<br/>Please, make sure it has no subscription.",
+            'delete' => "Delete this tontine?<br/>Please, make sure it has no subscription.",
         ],
         'messages' => [
-            'created' => "The pool was successfully created.",
-            'updated' => "The pool was successfully updated.",
-            'deleted' => "The pool was successfully deleted.",
+            'created' => "The tontine was successfully created.",
+            'updated' => "The tontine was successfully updated.",
+            'deleted' => "The tontine was successfully deleted.",
         ],
         'errors' => [
             'number' => [
                 'invalid' => "Please provide a valid number.",
                 'max' => "You can add a maximum of :max entries.",
             ],
-            'subscription' => "The pool still has subscriptions.",
-            'no_subscription' => "There are pools with no subscription.",
+            'subscription' => "The tontine still has subscriptions.",
+            'no_subscription' => "There are tontines with no subscription.",
         ],
     ],
     'subscription' => [

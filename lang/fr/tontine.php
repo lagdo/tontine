@@ -16,7 +16,7 @@ return [
         'session' => "Séance",
         'rounds' => "Tours",
         'sessions' => "Séances",
-        'pools' => "Fonds",
+        'pools' => "Tontines",
         'subscriptions' => "Souscriptions",
         'payments' => "Paiements",
         'profile' => "Profil",
@@ -196,38 +196,61 @@ return [
     ],
     'pool' => [
         'titles' => [
-            'add' => "Ajouter des fonds",
-            'edit' => "Modifier un fonds",
+            'add' => "Ajouter une tontine",
+            'add_many' => "Ajouter des tontines",
+            'edit' => "Modifier une tontine",
+            'characteristics' => "Caractéristiques",
             'deposits' => "Bilan des dépôts",
             'remitments' => "Bilan des remises",
             'subscriptions' => "Souscriptions",
             'members' => "Membres",
             'sessions' => "Séances",
-            'free' => "Fonds libre",
         ],
         'labels' => [
             'fixed' => "Montant fixe",
             'planned' => "Planifiée",
             'auction' => "Aux enchères",
             'lendable' => "Disponible pour prêt",
+            'deposit' => [
+                'fixed' => "Le montant des dépôts est fixe",
+            ],
+            'remit' => [
+                'fixed' => "Le montant des remises est fixe",
+                'planned' => "Le nombre de remises est calculé automatiquement",
+                'auction' => "Les remises se font après enchères",
+                'lendable' => "Les montants en caisse peuvent être prêtés",
+            ],
+        ],
+        'help' => [
+            'intro' => "Vous allez ajouter une nouvelle tontine.<br/>" .
+                "Nous allons vous demander de préciser ses caractéristiques.",
+            'deposit' => [
+                'fixed' => "Le montant des dépôts est fixe",
+            ],
+            'remit' => [
+                'fixed' => "Le montant des remises est fixe",
+                'planned' => "Le nombre de remises est calculé automatiquement",
+                'auction' => "Les remises se font après enchères",
+                'lendable' => "Les montants en caisse peuvent être prêtés",
+            ],
         ],
         'actions' => [
             'subscriptions' => "Souscriptions",
         ],
         'questions' => [
-            'delete' => "Supprimer ce fond?<br/>Il ne faut pas qu'il ait de souscription.",
+            'delete' => "Supprimer cette tontine?<br/>Il ne faut pas qu'il ait de souscription.",
         ],
         'messages' => [
-            'created' => "Le fonds a été ajouté.",
-            'updated' => "Le fonds a été modifié.",
-            'deleted' => "Le fonds a été supprimé.",
+            'created' => "La tontine a été ajoutée.",
+            'updated' => "La tontine a été modifiée.",
+            'deleted' => "La tontine a été supprimée.",
         ],
         'errors' => [
             'number' => [
                 'invalid' => "Vous devez entrer un nombre valide.",
                 'max' => "Vous pouvez ajouter au plus :max entrées.",
             ],
-            'subscription' => "Ce fonds a encore des souscriptions.",
+            'subscription' => "Cette tontines a encore des souscriptions.",
             'no_subscription' => "Il y a encore des fonds sans souscription.",
         ],
     ],
