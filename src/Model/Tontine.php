@@ -31,6 +31,15 @@ class Tontine extends Base
     ];
 
     /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'type' => 'x',
+    ];
+
+    /**
      * Create a new factory instance for the model.
      *
      * @return Factory
