@@ -120,7 +120,7 @@ trait ReportTrait
             $figures->cashier->recv = $cashier + $depositAmount;
             $figures->deposit->count = $depositCount;
             $figures->deposit->amount = $depositAmount;
-            $figures->remitment->count =
+            $figures->remitment->count = !$pool->deposit_fixed ? 1 :
                 $this->getRemitmentCount($sessionCount, $subscriptionCount, $position++);
             $figures->remitment->amount = $remitmentAmount * $figures->remitment->count;
             $figures->cashier->end = $cashier + $depositAmount - $figures->remitment->amount;

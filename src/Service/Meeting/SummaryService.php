@@ -55,7 +55,7 @@ class SummaryService
     private function getCollectedFigures(Pool $pool, Collection $sessions, Collection $subscriptions): array
     {
         $cashier = 0;
-        $remitmentAmount = $this->tenantService->tontine()->is_libre ? 0 :
+        $remitmentAmount = !$pool->deposit_fixed ? 0 :
             $pool->amount * $this->sessionService->enabledSessionCount($pool);
 
         $collectedFigures = [];
@@ -74,14 +74,14 @@ class SummaryService
             {
                 if(($deposit = $subscription->receivables[$session->id]->deposit))
                 {
-                    $amount = $this->tenantService->tontine()->is_libre ? $deposit->amount : $pool->amount;
+                    $amount = $pool->deposit_fixed ? $pool->amount : $deposit->amount;
                     $figures->deposit->count++;
                     $figures->deposit->amount += $amount;
                     $figures->cashier->recv += $amount;
                 }
             }
 
-            if($this->tenantService->tontine()->is_libre)
+            if(!$pool->deposit_fixed)
             {
                 $remitmentAmount = $this->poolService->getLibrePoolAmount($pool, $session);
             }
@@ -120,7 +120,7 @@ class SummaryService
             });
         $sessions = $this->_getSessions($this->tenantService->round(), $pool, ['payables.remitment']);
         $figures = new stdClass();
-        if(!$this->tenantService->tontine()->is_libre)
+        if($pool->remit_planned)
         {
             $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
         }
@@ -169,7 +169,7 @@ class SummaryService
      */
     public function getSessionRemitmentCount(Pool $pool, Session $session): int
     {
-        if($this->tenantService->tontine()->is_libre)
+        if(!$pool->deposit_fixed)
         {
             return 1;
         }

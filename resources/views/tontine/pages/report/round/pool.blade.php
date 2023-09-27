@@ -18,7 +18,7 @@
 @foreach ($sessions as $session)
                     <tr>
                       <th>{{ $session->title }}</th>
-@if($session->disabled($pool) || ($tontine->is_libre && $session->pending))
+@if($session->disabled($pool) || ($session->pending && !$pool->remit_planned))
                       <td></td>
                       <td></td>
                       <td></td>
@@ -26,7 +26,7 @@
                       <td></td>
                       <td></td>
                       <td></td>
-@elseif ($tontine->is_libre)
+@elseif (!$pool->remit_planned)
                       <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->start, false) !!}</b></td>
                       <td class="currency"><b>{!! $figures->collected[$session->id]->deposit->count !!}</b></td>
                       <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->deposit->amount, false) !!}</b></td>
