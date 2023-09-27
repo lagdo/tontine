@@ -129,8 +129,8 @@ class LoanService
         // Get the ids of all the sessions until the current one.
         $sessionIds = $this->tenantService->getPreviousSessions($session);
 
-        // The amount available for lending is the sum of the fundings and refunds,
-        // minus the sum of the loans, for all the sessions until the selected.
+        // The amount available for lending is the sum of the fundings, settlements and refunds,
+        // minus the sum of the loans and disbursements, for all the sessions until the selected.
         $funding = Funding::select(DB::raw('sum(amount) as total'))
             ->whereIn('session_id', $sessionIds)
             ->value('total');
