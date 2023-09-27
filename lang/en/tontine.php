@@ -98,7 +98,7 @@ return [
         'tips' => [
             'list' => 'Click on the "List" button to enter a list of members in a text box.',
             'add' => "Enter a member name on each line. If a phone number or email is available, separate it with a semi-colon.",
-            'example' => 'For example,<br/>"Jean Amadou"<br/>or<br/>"Jean Amadou;jean.amadou@gmail.com;237670000000"',
+            'example' => "For example,<br/>Jean Amadou<br/>or<br/>Jean Amadou;jean.amadou@gmail.com;237670000000",
         ],
         'titles' => [
             'add' => "Add members",
@@ -163,11 +163,16 @@ return [
             'closed' => "Closed",
         ],
         'titles' => [
-            'add' => "Add sessions",
+            'add' => "Add a session",
+            'add-list' => "Add sessions",
             'edit' => "Edit a session",
             'title' => "Session of :month :year",
             'host' => "Edit the host",
             'venue' => "Venue",
+        ],
+        'tips' => [
+            'add' => "Enter a session on each line. Separate the title and date with a semicolon. The date must be in 'YYYY-MM-DD' format.",
+            'example' => "For example,<br/>November 2023 session;2023-11-03",
         ],
         'labels' => [
             'times' => "Times",

@@ -42,6 +42,7 @@ class Member extends CallableClass
         $html = $this->view()->render('tontine.pages.member.home');
         $this->response->html('section-title', trans('tontine.menus.tontine'));
         $this->response->html('content-home', $html);
+
         $this->jq('#btn-member-refresh')->click($this->rq()->home());
         $this->jq('#btn-member-add')->click($this->rq()->add());
         $this->jq('#btn-member-add-list')->click($this->rq()->addList());

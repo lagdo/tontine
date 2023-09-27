@@ -77,10 +77,34 @@ class SessionService
      *
      * @return bool
      */
+    public function createSession(array $values): bool
+    {
+        // Cannot create sessions if a session is already opened.
+        // if(!$this->tenantService->tontine()->is_libre)
+        {
+            $this->sessionService->checkActiveSessions();
+        }
+
+        $values['start_at'] = $values['date'] . ' ' . $values['start'] . ':00';
+        $values['end_at'] = $values['date'] . ' ' . $values['end'] . ':00';
+        DB::transaction(function() use($values) {
+            $this->tenantService->round()->sessions()->create($values);
+        });
+
+        return true;
+    }
+
+    /**
+     * Add a new session.
+     *
+     * @param array $values
+     *
+     * @return bool
+     */
     public function createSessions(array $values): bool
     {
         // Cannot create sessions if a session is already opened.
-        if(!$this->tenantService->tontine()->is_libre)
+        // if(!$this->tenantService->tontine()->is_libre)
         {
             $this->sessionService->checkActiveSessions();
         }

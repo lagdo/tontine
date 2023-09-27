@@ -98,7 +98,7 @@ return [
         'tips' => [
             'list' => 'Cliquez sur le bouton "Liste" pour saisir une liste des membres dans une zone de texte.',
             'add' => "Saisir un nom sur chaque ligne. S'il y a un numéro de téléphone ou un email, le séparer avec un point-virgule.",
-            'example' => 'Par example,<br/>"Jean Amadou"<br/>ou<br/>"Jean Amadou;jean.amadou@gmail.com;237670000000"',
+            'example' => "Par example,<br/>Jean Amadou<br/>ou<br/>Jean Amadou;jean.amadou@gmail.com;237670000000",
         ],
         'titles' => [
             'add' => "Ajouter des membres",
@@ -163,11 +163,16 @@ return [
             'closed' => "Fermée",
         ],
         'titles' => [
-            'add' => "Ajouter des séances",
+            'add' => "Ajouter une séance",
+            'add-list' => "Ajouter des séances",
             'edit' => "Modifier une séance",
             'title' => "Séance de :month :year",
             'host' => "Choisir l'hôte",
             'venue' => "Lieu",
+        ],
+        'tips' => [
+            'add' => "Saisir une séance sur chaque ligne. Séparer le titre et la date avec un point-virgule. La date doit être au format AAAA-MM-JJ",
+            'example' => "Par example,<br/>Séance de novembre 2023;2023-11-03",
         ],
         'labels' => [
             'times' => "Horaires",
