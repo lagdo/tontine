@@ -98,56 +98,6 @@ class RemitmentService
     }
 
     /**
-     * @param Pool $pool
-     * @param Session $session
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getPayables(Pool $pool, Session $session, int $page = 0): Collection
-    {
-        // The remitment amount
-        $sessionCount = $this->sessionService->enabledSessionCount($pool);
-        $remitmentAmount = $pool->amount * $sessionCount;
-        $remitmentCount = $this->summaryService->getSessionRemitmentCount($pool, $session);
-        $emptyPayable = (object)[
-            'id' => 0,
-            'amount' => $remitmentAmount,
-            'remitment' => null,
-        ];
-
-        return $this->getQuery($pool, $session)->with(['subscription.member', 'remitment'])
-            ->page($page, $this->tenantService->getLimit())
-            ->get()
-            ->each(function($payable) use($pool, $remitmentAmount) {
-                $payable->amount = $pool->remit_fixed ? $remitmentAmount :
-                    ($payable->remitment ? $payable->remitment->amount : 0);
-            })
-            ->pad($remitmentCount, $emptyPayable);
-    }
-
-    /**
-     * @param Pool $pool
-     * @param Session $session
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getLibrePayables(Pool $pool, Session $session, int $page = 0): Collection
-    {
-        $remitmentAmount = $this->poolService->getLibrePoolAmount($pool, $session);
-
-        return $this->getQuery($pool, $session)
-            ->with(['subscription.member', 'remitment'])
-            ->page($page, $this->tenantService->getLimit())
-            ->get()
-            ->each(function($payable) use($pool, $remitmentAmount) {
-                $payable->amount = $pool->remit_fixed ? $remitmentAmount :
-                    ($payable->remitment ? $payable->remitment->amount : 0);
-            });
-    }
-
-    /**
      * Get the number of payables in the selected round.
      *
      * @param Pool $pool
@@ -158,6 +108,49 @@ class RemitmentService
     public function getPayableCount(Pool $pool, Session $session): int
     {
         return $this->getQuery($pool, $session)->count();
+    }
+
+    /**
+     * @param Pool $pool
+     * @param Session $session
+     * @param int $page
+     *
+     * @return Collection
+     */
+    public function getPayables(Pool $pool, Session $session, int $page = 0): Collection
+    {
+        $payables = $this->getQuery($pool, $session)
+            ->with(['subscription.member', 'remitment'])
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
+        if(!$pool->remit_fixed)
+        {
+            // When the remitment amount is not fixed, the user decides the amount.
+            return $payables->each(function($payable) {
+                $payable->amount = $payable->remitment ? $payable->remitment->amount : 0;
+            });
+        }
+
+        $remitmentAmount = $pool->deposit_fixed ?
+            $pool->amount * $this->sessionService->enabledSessionCount($pool) :
+            $this->poolService->getLibrePoolAmount($pool, $session);
+        // Set the amount on the payables
+        $payables = $payables->each(function($payable) use($remitmentAmount) {
+            $payable->amount = $remitmentAmount;
+        });
+        if(!$pool->remit_planned)
+        {
+            return $payables;
+        }
+
+        // When the number of remitments is planned, the list is padded to the expected number.
+        $remitmentCount = $this->summaryService->getSessionRemitmentCount($pool, $session);
+        $emptyPayable = (object)[
+            'id' => 0,
+            'amount' => $remitmentAmount,
+            'remitment' => null,
+        ];
+        return $payables->pad($remitmentCount, $emptyPayable);
     }
 
     /**
@@ -175,7 +168,7 @@ class RemitmentService
     }
 
     /**
-     * Save a remitment for a mutual tontine.
+     * Create a remitment.
      *
      * @param Pool $pool The pool
      * @param Session $session The session
@@ -183,32 +176,24 @@ class RemitmentService
      *
      * @return void
      */
-    public function saveMutualRemitment(Pool $pool, Session $session, int $payableId): void
+    public function savePlannedRemitment(Pool $pool, Session $session, int $payableId): void
     {
+        if(!$pool->remit_planned || $pool->remit_auction)
+        {
+            // Only when remitments are planned and without auctions.
+            return;
+        }
+        // The payable is supposed to already have been associated to the session.
         $payable = $this->getPayable($pool, $session, $payableId);
-        if(!$payable || $payable->remitment)
+        if(!$payable)
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
-        $payable->remitment()->create([]);
-    }
-
-    /**
-     * Delete a remitment.
-     *
-     * @param Pool $pool The pool
-     * @param Session $session The session
-     * @param int $payableId
-     *
-     * @return void
-     */
-    public function deleteMutualRemitment(Pool $pool, Session $session, int $payableId): void
-    {
-        $payable = $this->getPayable($pool, $session, $payableId);
-        if(($payable) && ($payable->remitment))
+        if($payable->remitment)
         {
-            $payable->remitment->delete();
+            return;
         }
+        $payable->remitment()->create([]);
     }
 
     /**
@@ -222,7 +207,7 @@ class RemitmentService
      *
      * @return void
      */
-    public function saveFinancialRemitment(Pool $pool, Session $session,
+    public function saveRemitment(Pool $pool, Session $session,
         int $payableId, int $amount, int $auction): void
     {
         // Cannot use the getPayable() method here,
@@ -234,6 +219,10 @@ class RemitmentService
         if(!$payable)
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
+        }
+        if($payable->remitment)
+        {
+            return;
         }
 
         DB::transaction(function() use($pool, $session, $payable, $amount, $auction) {
@@ -275,7 +264,7 @@ class RemitmentService
      *
      * @return void
      */
-    public function deleteFinancialRemitment(Pool $pool, Session $session, int $payableId): void
+    public function deleteRemitment(Pool $pool, Session $session, int $payableId): void
     {
         $payable = $this->getQuery($pool, $session)
             ->with(['remitment', 'remitment.loan'])
@@ -284,7 +273,9 @@ class RemitmentService
         {
             return;
         }
-        DB::transaction(function() use($payable, $remitment) {
+        DB::transaction(function() use($pool, $payable, $remitment) {
+            // Delete the corresponding loan, debt and refund,
+            // in case there was an auction on the remitment.
             if(($loan = $remitment->loan) !== null)
             {
                 $loan->refunds()->delete();
@@ -292,9 +283,12 @@ class RemitmentService
                 $loan->delete();
             }
             $remitment->delete();
-            // Detach from the session
-            $payable->session()->dissociate();
-            $payable->save();
+            // Detach from the session, but only if the remitment was not planned.
+            if(!$pool->remit_planned || $pool->remit_auction)
+            {
+                $payable->session()->dissociate();
+                $payable->save();
+            }
         });
     }
 

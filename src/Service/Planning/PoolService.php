@@ -184,13 +184,11 @@ class PoolService
     public function getLibrePoolAmount(Pool $pool, Session $session): int
     {
         // Sum the amounts for all deposits
-        $receivableClosure = function($query) use($pool, $session) {
+        return Deposit::whereHas('receivable', function($query) use($pool, $session) {
             $query->where('session_id', $session->id)
                 ->whereHas('subscription', function($query) use($pool) {
                     $query->where('pool_id', $pool->id);
                 });
-        };
-
-        return Deposit::whereHas('receivable', $receivableClosure)->sum('amount');
+        })->sum('amount');
     }
 }

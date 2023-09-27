@@ -158,7 +158,7 @@ class RefundService
      *
      * @return int
      */
-    public function getAuctionCount(Session $session, ?bool $onlyPaid): int
+    public function getAuctionCount(Session $session, ?bool $onlyPaid = null): int
     {
         $prevSessions = $this->tenantService->round()->sessions()
             ->where('start_at', '<', $session->start_at)->pluck('id');

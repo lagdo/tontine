@@ -10,7 +10,7 @@ use function Jaxon\jq;
 
 /**
  * @databag meeting
- * @before getPool
+ * @before getSession
  */
 class Remitment extends CallableClass
 {
@@ -37,7 +37,7 @@ class Remitment extends CallableClass
     /**
      * @return void
      */
-    protected function getPool()
+    protected function getSession()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
         $this->session = $this->poolService->getSession($sessionId);
@@ -62,25 +62,9 @@ class Remitment extends CallableClass
 
         $this->jq('#btn-remitments-refresh')->click($this->rq()->home());
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
-        $this->jq('.btn-pool-remitments')->click($this->rq()->pool($poolId));
+        $this->jq('.btn-pool-remitments')
+            ->click($this->cl(Remitment\Pool::class)->rq()->home($poolId));
 
         return $this->response;
-    }
-
-    public function pool(int $poolId)
-    {
-        $pool = $this->poolService->getPool($poolId);
-        if(!$pool || $this->session->disabled($pool))
-        {
-            $this->notify->error(trans('tontine.session.errors.disabled'), trans('common.titles.error'));
-            return $this->response;
-        }
-
-        $this->bag('meeting')->set('remitment.pool.id', $poolId);
-
-        $remitmentClass = $pool->remit_payable ?
-            Remitment\Payable::class : Remitment\Subscription::class;
-
-        return $this->cl($remitmentClass)->show($this->session, $pool);
     }
 }
