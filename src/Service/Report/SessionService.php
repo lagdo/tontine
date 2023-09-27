@@ -42,9 +42,9 @@ class SessionService
      */
     private function getPoolAmountPaid(Pool $pool, Session $session, int $sessionCount = 1): string
     {
-        return $this->tenantService->tontine()->is_libre ?
-            $this->poolService->getLibrePoolAmount($pool, $session) :
-            $pool->amount * $pool->paid_count * $sessionCount;
+        return $pool->deposit_fixed ?
+            $pool->amount * $pool->paid_count * $sessionCount :
+            $this->poolService->getLibrePoolAmount($pool, $session);
     }
 
     /**

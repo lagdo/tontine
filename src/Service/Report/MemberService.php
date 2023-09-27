@@ -66,12 +66,12 @@ class MemberService
      */
     private function getReceivableAmount(Receivable $receivable): int
     {
-        if($this->tenantService->tontine()->is_libre)
+        if($receivable->subscription->pool->deposit_fixed)
         {
-            return !$receivable->deposit ? 0 : $receivable->deposit->amount;
+            return $receivable->subscription->pool->amount;
         }
 
-        return $receivable->subscription->pool->amount;
+        return !$receivable->deposit ? 0 : $receivable->deposit->amount;
     }
 
     /**
@@ -110,9 +110,9 @@ class MemberService
      */
     private function getPayableAmount(Pool $pool, Session $session): int
     {
-        return $this->tenantService->tontine()->is_libre ?
-            $this->poolService->getLibrePoolAmount($pool, $session) :
-            $pool->amount * $this->poolService->enabledSessionCount($pool);
+        return $pool->deposit_fixed ?
+            $pool->amount * $this->poolService->enabledSessionCount($pool) :
+            $this->poolService->getLibrePoolAmount($pool, $session);
     }
 
     /**

@@ -8,7 +8,7 @@
 @php
   $total = 0;
 @endphp
-@if ($session->enabled($pool))
+@if ($pool->remit_auction && $session->enabled($pool))
                   <div class="row">
                     <div class="col">
                       <h6>{{ $pool->title }}</h6>
