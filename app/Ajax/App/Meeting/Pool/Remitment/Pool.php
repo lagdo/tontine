@@ -5,6 +5,7 @@ namespace App\Ajax\App\Meeting\Pool\Remitment;
 use App\Ajax\CallableClass;
 use App\Ajax\App\Meeting\Cash\Disbursement;
 use App\Ajax\App\Meeting\Credit\Loan;
+use App\Ajax\App\Meeting\Pool\Auction;
 use App\Ajax\App\Meeting\Pool\Remitment;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Model\Session as SessionModel;

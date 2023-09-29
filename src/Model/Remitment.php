@@ -25,8 +25,8 @@ class Remitment extends Base
         return $this->belongsTo(Payable::class);
     }
 
-    public function loan()
+    public function auction()
     {
-        return $this->hasOne(Loan::class);
+        return $this->hasOne(Auction::class);
     }
 }

@@ -6,11 +6,11 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Auction;
 use Siak\Tontine\Model\Category;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Disbursement;
-use Siak\Tontine\Model\Funding;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\PartialRefund;
 use Siak\Tontine\Model\Refund;
@@ -139,6 +139,10 @@ class DisbursementService
 
         // The amount available for lending is the sum of the settlements and refunds,
         // minus the sum of the loans and disbursements, for all the sessions until the selected.
+        $auction = Auction::select(DB::raw('sum(amount) as total'))
+            ->whereIn('session_id', $sessionIds)
+            ->where('paid', true)
+            ->value('total');
         $settlement = Settlement::select(DB::raw('sum(bills.amount) as total'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->whereIn('settlements.session_id', $sessionIds)
@@ -164,7 +168,7 @@ class DisbursementService
             ->whereIn('session_id', $sessionIds)
             ->value('total');
 
-        return $settlement + $refund + $partialRefund - $debt - $disbursement;
+        return $auction + $settlement + $refund + $partialRefund - $debt - $disbursement;
     }
 
     /**

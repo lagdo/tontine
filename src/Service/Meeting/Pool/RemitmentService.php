@@ -5,11 +5,9 @@ namespace Siak\Tontine\Service\Meeting\Pool;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Model\Debt;
-use Siak\Tontine\Model\Loan;
+use Siak\Tontine\Model\Auction;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Payable;
-use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\PoolService;
@@ -120,7 +118,7 @@ class RemitmentService
     public function getPayables(Pool $pool, Session $session, int $page = 0): Collection
     {
         $payables = $this->getQuery($pool, $session)
-            ->with(['subscription.member', 'remitment'])
+            ->with(['subscription.member', 'remitment', 'remitment.auction'])
             ->page($page, $this->tenantService->getLimit())
             ->get();
         if(!$pool->remit_fixed)
@@ -164,7 +162,8 @@ class RemitmentService
      */
     public function getPayable(Pool $pool, Session $session, int $payableId): ?Payable
     {
-        return $this->getQuery($pool, $session)->with(['remitment'])->find($payableId);
+        return $this->getQuery($pool, $session)
+            ->with(['remitment', 'remitment.auction'])->find($payableId);
     }
 
     /**
@@ -220,10 +219,11 @@ class RemitmentService
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
-        if($payable->remitment)
-        {
-            return;
-        }
+        // Not needed, since the query filters on remitment inexistence.
+        // if($payable->remitment)
+        // {
+        //     return;
+        // }
 
         DB::transaction(function() use($pool, $session, $payable, $amount, $auction) {
             // Associate the payable with the session.
@@ -234,23 +234,13 @@ class RemitmentService
 
             if($pool->remit_auction && $auction > 0)
             {
-                // Create the corresponding loan.
-                $loan = new Loan();
-                $loan->member()->associate($payable->subscription->member);
-                $loan->session()->associate($session);
-                $loan->remitment()->associate($remitment);
-                $loan->save();
-                // Create a debt for the interest
-                $debt = new Debt();
-                $debt->type = Debt::TYPE_INTEREST;
-                $debt->amount = $auction;
-                $debt->loan()->associate($loan);
-                $debt->save();
-                // The debt is supposed to have been immediatly refunded.
-                $refund = new Refund();
-                $refund->debt()->associate($debt);
-                $refund->session()->associate($session);
-                $refund->save();
+                // Create the corresponding auction.
+                Auction::create([
+                    'amount' => $auction,
+                    'paid' => true, // The auction is supposed to have been immediatly paid.
+                    'session_id' => $session->id,
+                    'remitment_id' => $remitment->id,
+                ]);
             }
         });
     }
@@ -267,21 +257,15 @@ class RemitmentService
     public function deleteRemitment(Pool $pool, Session $session, int $payableId): void
     {
         $payable = $this->getQuery($pool, $session)
-            ->with(['remitment', 'remitment.loan'])
+            ->with(['remitment', 'remitment.auction'])
             ->find($payableId);
         if(!$payable || !($remitment = $payable->remitment))
         {
             return;
         }
         DB::transaction(function() use($pool, $payable, $remitment) {
-            // Delete the corresponding loan, debt and refund,
-            // in case there was an auction on the remitment.
-            if(($loan = $remitment->loan) !== null)
-            {
-                $loan->refunds()->delete();
-                $loan->debts()->delete();
-                $loan->delete();
-            }
+            // Delete the corresponding auction, in case there was one on the remitment.
+            $remitment->auction()->delete();
             $remitment->delete();
             // Detach from the session, but only if the remitment was not planned.
             if(!$pool->remit_planned || $pool->remit_auction)
@@ -302,7 +286,9 @@ class RemitmentService
     public function getSubscriptions(Pool $pool): Collection
     {
         // Return the member names, keyed by payable id.
-        return $pool->subscriptions()->with(['payable', 'member'])->get()
+        return $pool->subscriptions()
+            ->with(['payable', 'member'])
+            ->get()
             ->filter(function($subscription) {
                 return !$subscription->payable->session_id;
             })->pluck('member.name', 'payable.id');

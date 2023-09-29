@@ -13,9 +13,9 @@
                           <td>{{ $payable->subscription->member->name ?? __('tontine.remitment.labels.not-assigned') }}</td>
                           <td class="currency">
                             {{ $locale->formatMoney($payable->amount, true) }}
-@if ($payable->remitment && $payable->remitment->loan)
+@if ($payable->remitment && $payable->remitment->auction)
                             <br/>{{ __('meeting.remitment.labels.auction') }}: {{
-                              $locale->formatMoney($payable->remitment->loan->interest_debt->amount) }}
+                              $locale->formatMoney($payable->remitment->auction->amount) }}
 @endif
                           </td>
                           <td class="table-item-menu" data-payable-id="{{ $payable->id }}">

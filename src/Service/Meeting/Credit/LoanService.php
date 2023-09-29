@@ -6,6 +6,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Auction;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Disbursement;
 use Siak\Tontine\Model\Funding;
@@ -131,6 +132,10 @@ class LoanService
 
         // The amount available for lending is the sum of the fundings, settlements and refunds,
         // minus the sum of the loans and disbursements, for all the sessions until the selected.
+        $auction = Auction::select(DB::raw('sum(amount) as total'))
+            ->whereIn('session_id', $sessionIds)
+            ->where('paid', true)
+            ->value('total');
         $funding = Funding::select(DB::raw('sum(amount) as total'))
             ->whereIn('session_id', $sessionIds)
             ->value('total');
@@ -161,7 +166,7 @@ class LoanService
             ->where('charge_lendable', true)
             ->value('total');
 
-        return $funding + $settlement + $refund + $partialRefund - $debt - $disbursement;
+        return $auction + $funding + $settlement + $refund + $partialRefund - $debt - $disbursement;
     }
 
     /**
@@ -197,7 +202,7 @@ class LoanService
      */
     public function getSessionLoans(Session $session): Collection
     {
-        return $session->loans()->whereDoesntHave('remitment')->with(['member'])->get();
+        return $session->loans()->with(['member'])->get();
     }
 
     /**
