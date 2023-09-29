@@ -9,6 +9,7 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Meeting\Cash\BalanceCalculator;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Service\Meeting\Cash\FundingService;
 use Siak\Tontine\Service\Meeting\Charge\FeeService;
@@ -93,6 +94,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(LoanService::class, LoanService::class);
         $this->app->singleton(AuctionService::class, AuctionService::class);
         $this->app->singleton(DepositService::class, DepositService::class);
+        $this->app->singleton(BalanceCalculator::class, BalanceCalculator::class);
         $this->app->singleton(DisbursementService::class, DisbursementService::class);
         $this->app->singleton(MeetingPoolService::class, MeetingPoolService::class);
         $this->app->singleton(RefundService::class, RefundService::class);

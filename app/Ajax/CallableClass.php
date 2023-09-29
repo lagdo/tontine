@@ -11,7 +11,6 @@ use App\Ajax\App\Report\Session as SessionReport;
 use App\Ajax\App\Tontine\Charge;
 use App\Ajax\App\Tontine\Member;
 use App\Ajax\App\Tontine\Round as TontineRound;
-use App\Ajax\App\Tontine\Select;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Model\User;
@@ -20,7 +19,6 @@ use Jaxon\App\Dialog\MessageInterface;
 use Jaxon\App\Dialog\ModalInterface;
 
 use function floor;
-use function Jaxon\jq;
 
 class CallableClass extends JaxonCallableClass
 {
