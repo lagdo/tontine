@@ -11,7 +11,7 @@
                       <h6>{{ $pool->title }}</h6>
                     </div>
                     <div class="col">
-                      <h6>{{ $pool->title }}<br/>{{ $pool->deposit_fixed ?
+                      <h6>{{ __('common.labels.amount') }}: {{ $pool->deposit_fixed ?
                         $locale->formatMoney($pool->amount, true) : __('tontine.labels.types.libre') }}</h6>
                     </div>
                   </div>

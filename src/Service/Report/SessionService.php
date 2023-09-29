@@ -108,6 +108,24 @@ class SessionService
      *
      * @return Collection
      */
+    public function getAuctions(Session $session): Collection
+    {
+        return DB::table('auctions')
+            ->select(DB::raw('sum(auctions.amount) as total'), 'subscriptions.pool_id')
+            ->join('remitments', 'auctions.remitment_id', '=', 'remitments.id')
+            ->join('payables', 'remitments.payable_id', '=', 'payables.id')
+            ->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
+            ->where('auctions.session_id', $session->id)
+            ->where('paid', true)
+            ->groupBy('subscriptions.pool_id')
+            ->pluck('total', 'pool_id');
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return Collection
+     */
     private function getTontineFees(Session $session): Collection
     {
         return DB::table('bills')
@@ -220,30 +238,17 @@ class SessionService
 
     /**
      * @param Session $session
-     * @param bool $withRemitment
      *
      * @return object
      */
-    public function _getLoan(Session $session, bool $withRemitment): object
+    public function getLoan(Session $session): object
     {
-        $remitmentQuery = function(Builder $query) {
-            return $query->select(DB::raw(1))->from('remitments')
-                ->whereColumn('loans.remitment_id', 'remitments.id');
-        };
         $principal = "CASE WHEN debts.type='" . Debt::TYPE_PRINCIPAL . "' THEN amount ELSE 0 END";
         $interest = "CASE WHEN debts.type='" . Debt::TYPE_INTEREST . "' THEN amount ELSE 0 END";
         $loan = DB::table('loans')
             ->join('debts', 'loans.id', '=', 'debts.loan_id')
             ->select(DB::raw("sum($principal) as principal"), DB::raw("sum($interest) as interest"))
-            ->where('session_id', $session->id)
-            ->when($withRemitment, function(Builder $query) use($remitmentQuery) {
-                return $query->whereExists($remitmentQuery);
-            })
-            ->when(!$withRemitment, function(Builder $query) use($remitmentQuery) {
-                return $query->whereNot(function(Builder $query) use($remitmentQuery) {
-                    return $query->whereExists($remitmentQuery);
-                });
-            })
+            ->where('loans.session_id', $session->id)
             ->first();
         if(!$loan->principal)
         {
@@ -262,36 +267,14 @@ class SessionService
      *
      * @return object
      */
-    public function getLoan(Session $session): object
-    {
-        return $this->_getLoan($session, false);
-    }
-
-    /**
-     * @param Session $session
-     *
-     * @return object
-     */
-    public function getAuction(Session $session): object
-    {
-        return $this->_getLoan($session, true);
-    }
-
-    /**
-     * @param Session $session
-     *
-     * @return object
-     */
     public function getRefund(Session $session): object
     {
         $principal = "CASE WHEN debts.type='" . Debt::TYPE_PRINCIPAL . "' THEN amount ELSE 0 END";
         $interest = "CASE WHEN debts.type='" . Debt::TYPE_INTEREST . "' THEN amount ELSE 0 END";
         $refund = DB::table('refunds')
             ->join('debts', 'refunds.debt_id', '=', 'debts.id')
-            ->join('loans', 'loans.id', '=', 'debts.loan_id')
             ->select(DB::raw("sum($principal) as principal"), DB::raw("sum($interest) as interest"))
             ->where('refunds.session_id', $session->id)
-            ->whereNull('loans.remitment_id')
             ->first();
         if(!$refund->principal)
         {

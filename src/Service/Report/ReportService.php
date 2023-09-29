@@ -156,7 +156,7 @@ class ReportService
                 'session' => $session,
                 'payables' => $this->memberService->getPayables($session),
                 'pools' => $this->sessionService->getPayables($session),
-                'loans' => $this->memberService->getAuctions($session),
+                'auctions' => $this->memberService->getAuctions($session),
                 // 'total' => $this->sessionService->getAuction($session),
             ],
             'fees' => [
