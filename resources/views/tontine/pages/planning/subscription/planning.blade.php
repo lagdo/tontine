@@ -2,7 +2,7 @@
           <div class="section-body">
             <div class="row align-items-center">
               <div class="col">
-                <h2 class="section-title">{{ __('tontine.pool.titles.deposits') }} - {{ $pool->title }} ({{ $locale->getCurrencyName() }})</h2>
+                <h2 class="section-title">{{ __('tontine.subscription.titles.deposits') }} - {{ $pool->title }} ({{ $locale->getCurrencyName() }})</h2>
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right" role="group" aria-label="">

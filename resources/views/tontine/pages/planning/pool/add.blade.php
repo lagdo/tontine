@@ -2,36 +2,31 @@
         <form class="form-horizontal" role="form" id="pool-form">
           <div class="module-body">
             <div class="form-group row">
-              {!! Form::label('', '', ['class' => 'col-sm-2 col-form-label text-right']) !!}
-              <div class="col-md-9">
+              <div class="col-md-11">
                 {!! Form::checkbox('', '1', $options['deposit']['fixed'], ['disabled' => 'disabled']) !!}
                 {!! Form::label('', __('tontine.pool.labels.deposit.fixed'), ['class' => 'form-check-label']) !!}
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('', '', ['class' => 'col-sm-2 col-form-label text-right']) !!}
-              <div class="col-md-9">
+              <div class="col-md-11">
                 {!! Form::checkbox('', '1', $options['remit']['fixed'], ['disabled' => 'disabled']) !!}
                 {!! Form::label('', __('tontine.pool.labels.remit.fixed'), ['class' => 'form-check-label']) !!}
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('', '', ['class' => 'col-sm-2 col-form-label text-right']) !!}
-              <div class="col-md-9">
+              <div class="col-md-11">
                 {!! Form::checkbox('', '1', $options['remit']['planned'], ['disabled' => 'disabled']) !!}
                 {!! Form::label('', __('tontine.pool.labels.remit.planned'), ['class' => 'form-check-label']) !!}
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('', '', ['class' => 'col-sm-2 col-form-label text-right']) !!}
-              <div class="col-md-9">
+              <div class="col-md-11">
                 {!! Form::checkbox('', '1', $options['remit']['auction'], ['disabled' => 'disabled']) !!}
                 {!! Form::label('', __('tontine.pool.labels.remit.auction'), ['class' => 'form-check-label']) !!}
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('', '', ['class' => 'col-sm-2 col-form-label text-right']) !!}
-              <div class="col-md-9">
+              <div class="col-md-11">
                 {!! Form::checkbox('', '1', $options['remit']['lendable'], ['disabled' => 'disabled']) !!}
                 {!! Form::label('', __('tontine.pool.labels.remit.lendable'), ['class' => 'form-check-label']) !!}
               </div>

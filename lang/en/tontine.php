@@ -204,9 +204,8 @@ return [
             'add' => "Add a tontine",
             'add_many' => "Add tontines",
             'edit' => "Edit a tontine",
-            'characteristics' => "Characteristics",
-            'deposits' => "Deposits balance",
-            'remitments' => "Remitments balance",
+            'deposits' => "Deposits",
+            'remitments' => "Remitments",
             'subscriptions' => "Subscriptions",
             'members' => "Members",
             'sessions' => "Sessions",
@@ -221,7 +220,7 @@ return [
             ],
             'remit' => [
                 'fixed' => "The amount of remitments is fixed",
-                'planned' => "The number of remitments is set automatically",
+                'planned' => "The number of remitments is defined in advance",
                 'auction' => "The amounts are remitted after auction",
                 'lendable' => "The remaining amounts can be loaned",
             ],
@@ -230,13 +229,13 @@ return [
             'intro' => "You are going to add a new tontine.<br/>" .
                 "We are going to ask you to specify its characteristics.",
             'deposit' => [
-                'fixed' => "The amount of deposits is fixed",
+                'fixed' => "Check the box below each member who subscribes to this tontine must pay a fixed amount at each session.",
             ],
             'remit' => [
-                'fixed' => "The amount of remitments is fixed",
-                'planned' => "The number of remitments is set automatically",
-                'auction' => "The amounts are remitted after auction",
-                'lendable' => "The remaining amounts can be loaned",
+                'fixed' => "Check the box below if each beneficiary will receive the full amount corresponding to its deposits.",
+                'planned' => "Check the box below if the number of beneficiaries at each session is defined in advance.",
+                'auction' => "Check the box below if the choice of the tontine beneficiaries is subject to auction.",
+                'lendable' => "Check the box below if the amounts remaining in the pool after remitments can be loaned.",
             ],
         ],
         'actions' => [
@@ -263,6 +262,8 @@ return [
         'titles' => [
             'beneficiaries' => "Beneficiaries",
             'planning' => "Planning",
+            'deposits' => "Deposits balance",
+            'remitments' => "Remitments balance",
         ],
         'messages' => [
             'created' => "The member subscription was created.",

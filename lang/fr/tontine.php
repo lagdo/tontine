@@ -204,9 +204,8 @@ return [
             'add' => "Ajouter une tontine",
             'add_many' => "Ajouter des tontines",
             'edit' => "Modifier une tontine",
-            'characteristics' => "Caractéristiques",
-            'deposits' => "Bilan des dépôts",
-            'remitments' => "Bilan des remises",
+            'deposits' => "Dépôts",
+            'remitments' => "Remises",
             'subscriptions' => "Souscriptions",
             'members' => "Membres",
             'sessions' => "Séances",
@@ -221,7 +220,7 @@ return [
             ],
             'remit' => [
                 'fixed' => "Le montant des remises est fixe",
-                'planned' => "Le nombre de remises est calculé automatiquement",
+                'planned' => "Le nombre de remises est défini à l'avance",
                 'auction' => "Les remises se font après enchères",
                 'lendable' => "Les montants en caisse peuvent être prêtés",
             ],
@@ -230,13 +229,13 @@ return [
             'intro' => "Vous allez ajouter une nouvelle tontine.<br/>" .
                 "Nous allons vous demander de préciser ses caractéristiques.",
             'deposit' => [
-                'fixed' => "Le montant des dépôts est fixe",
+                'fixed' => "Cochez la case ci-dessous chaque membre qui souscrit à cette tontine doit verser un montant fixe à chaque séance.",
             ],
             'remit' => [
-                'fixed' => "Le montant des remises est fixe",
-                'planned' => "Le nombre de remises est calculé automatiquement",
-                'auction' => "Les remises se font après enchères",
-                'lendable' => "Les montants en caisse peuvent être prêtés",
+                'fixed' => "Cochez la case ci-dessous si chaque bénéficiaire recevra la totalité du montant correspondant à ses dépôts.",
+                'planned' => "Cochez la case ci-dessous si le nombre de bénéficiaires à chaque séance est déterminé à l'avance.",
+                'auction' => "Cochez la case ci-dessous si le choix des bénéficiaires des cotisations est soumis aux enchères.",
+                'lendable' => "Cochez la case ci-dessous si les montants des cotisations restant en caisse peuvent être prêtés.",
             ],
         ],
         'actions' => [
@@ -263,6 +262,8 @@ return [
         'titles' => [
             'beneficiaries' => "Bénéficiaires",
             'planning' => "Planning",
+            'deposits' => "Bilan des dépôts",
+            'remitments' => "Bilan des remises",
         ],
         'messages' => [
             'created' => "La souscription du membre a été enregistrée.",

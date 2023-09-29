@@ -101,7 +101,7 @@ class Pool extends CallableClass
     {
         $this->dialog->hide();
 
-        $title = trans('tontine.pool.titles.characteristics');
+        $title = trans('tontine.pool.titles.deposits');
         $properties = $this->bag('pool')->get('add', []);
         $content = $this->view()->render('tontine.pages.planning.pool.deposit_fixed')
             ->with('fixed', $properties['deposit']['fixed'] ?? true);
@@ -132,7 +132,7 @@ class Pool extends CallableClass
     {
         $this->dialog->hide();
 
-        $title = trans('tontine.pool.titles.characteristics');
+        $title = trans('tontine.pool.titles.remitments');
         $properties = $this->bag('pool')->get('add', []);
         $content = $this->view()->render('tontine.pages.planning.pool.remit_fixed')
             ->with('fixed', $properties['remit']['fixed'] ?? true);
@@ -158,6 +158,32 @@ class Pool extends CallableClass
     {
         $properties = $this->bag('pool')->get('add', []);
         $properties['remit']['fixed'] = $fixed;
+
+        if(!$properties['deposit']['fixed'] && !$properties['remit']['fixed'])
+        {
+            $properties['remit']['planned'] = true;
+            $properties['remit']['auction'] = false;
+            $this->bag('pool')->set('add', $properties);
+
+            return $this->showRemitLendable();
+        }
+        if(!$properties['deposit']['fixed'] && $properties['remit']['fixed'])
+        {
+            $properties['remit']['planned'] = true;
+            $properties['remit']['auction'] = false;
+            $properties['remit']['lendable'] = false;
+            $this->bag('pool')->set('add', $properties);
+
+            return $this->add();
+        }
+        if($properties['deposit']['fixed'] && !$properties['remit']['fixed'])
+        {
+            $properties['remit']['planned'] = false;
+            $this->bag('pool')->set('add', $properties);
+
+            return $this->showRemitAuction();
+        }
+
         $this->bag('pool')->set('add', $properties);
 
         return $this->showRemitPlanned();
@@ -167,7 +193,7 @@ class Pool extends CallableClass
     {
         $this->dialog->hide();
 
-        $title = trans('tontine.pool.titles.characteristics');
+        $title = trans('tontine.pool.titles.remitments');
         $properties = $this->bag('pool')->get('add', []);
         $content = $this->view()->render('tontine.pages.planning.pool.remit_planned')
             ->with('planned', $properties['remit']['planned'] ?? true);
@@ -202,8 +228,14 @@ class Pool extends CallableClass
     {
         $this->dialog->hide();
 
-        $title = trans('tontine.pool.titles.characteristics');
         $properties = $this->bag('pool')->get('add', []);
+        $prevAction = $this->rq()->showRemitPlanned();
+        if($properties['deposit']['fixed'] && !$properties['remit']['fixed'])
+        {
+            $prevAction = $this->rq()->showRemitFixed();
+        }
+
+        $title = trans('tontine.pool.titles.remitments');
         $content = $this->view()->render('tontine.pages.planning.pool.remit_auction')
             ->with('auction', $properties['remit']['auction'] ?? false);
         $buttons = [[
@@ -213,7 +245,7 @@ class Pool extends CallableClass
         ],[
             'title' => trans('common.actions.prev'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->showRemitPlanned(),
+            'click' => $prevAction,
         ],[
             'title' => trans('common.actions.next'),
             'class' => 'btn btn-primary',
@@ -237,8 +269,14 @@ class Pool extends CallableClass
     {
         $this->dialog->hide();
 
-        $title = trans('tontine.pool.titles.characteristics');
         $properties = $this->bag('pool')->get('add', []);
+        $prevAction = $this->rq()->showRemitAuction();
+        if(!$properties['deposit']['fixed'] && !$properties['remit']['fixed'])
+        {
+            $prevAction = $this->rq()->showRemitFixed();
+        }
+
+        $title = trans('tontine.pool.titles.remitments');
         $content = $this->view()->render('tontine.pages.planning.pool.remit_lendable')
             ->with('lendable', $properties['remit']['lendable'] ?? false);
         $buttons = [[
@@ -248,7 +286,7 @@ class Pool extends CallableClass
         ],[
             'title' => trans('common.actions.prev'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->showRemitAuction(),
+            'click' => $prevAction,
         ],[
             'title' => trans('common.actions.next'),
             'class' => 'btn btn-primary',
