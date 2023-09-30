@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Planning\PoolService;
 
 class SessionService
 {
@@ -19,32 +19,18 @@ class SessionService
     protected TenantService $tenantService;
 
     /**
-     * @var PoolService
+     * @var BalanceCalculator
      */
-    protected PoolService $poolService;
+    protected BalanceCalculator $balanceCalculator;
 
     /**
      * @param TenantService $tenantService
-     * @param PoolService $poolService
+     * @param BalanceCalculator $balanceCalculator
      */
-    public function __construct(TenantService $tenantService, PoolService $poolService)
+    public function __construct(TenantService $tenantService, BalanceCalculator $balanceCalculator)
     {
         $this->tenantService = $tenantService;
-        $this->poolService = $poolService;
-    }
-
-    /**
-     * @param Pool $pool
-     * @param Session $session
-     * @param int $sessionCount
-     *
-     * @return string
-     */
-    private function getPoolAmountPaid(Pool $pool, Session $session, int $sessionCount = 1): string
-    {
-        return $pool->deposit_fixed ?
-            $pool->amount * $pool->paid_count * $sessionCount :
-            $this->poolService->getLibrePoolAmount($pool, $session);
+        $this->balanceCalculator = $balanceCalculator;
     }
 
     /**
@@ -70,7 +56,7 @@ class SessionService
             ->get()
             ->each(function($pool) use($session) {
                 $pool->total_amount = $pool->amount * $pool->total_count;
-                $pool->paid_amount = $this->getPoolAmountPaid($pool, $session);
+                $pool->paid_amount = $this->balanceCalculator->getPoolDepositAmount($pool, $session);
             });
     }
 
@@ -96,10 +82,9 @@ class SessionService
             ])
             ->get()
             ->each(function($pool) use($session) {
-                $sessionCount = $this->poolService->enabledSessionCount($pool);
+                $sessionCount = $this->balanceCalculator->enabledSessionCount($pool);
                 $pool->total_amount = $pool->amount * $pool->total_count * $sessionCount;
-                $pool->paid_amount =  $pool->paid_count === 0 ? 0 :
-                    $this->getPoolAmountPaid($pool, $session, $sessionCount);
+                $pool->paid_amount = $this->balanceCalculator->getPoolRemitmentAmount($pool, $session);
             });
     }
 

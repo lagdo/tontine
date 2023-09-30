@@ -9,11 +9,10 @@ use Siak\Tontine\Model\Auction;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Meeting\SummaryService;
-use Siak\Tontine\Service\Planning\PoolService;
-use Siak\Tontine\Service\Planning\SessionService;
+use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Meeting\SummaryService;
 
 use function trans;
 
@@ -35,29 +34,23 @@ class RemitmentService
     protected SummaryService $summaryService;
 
     /**
-     * @var SessionService
+     * @var BalanceCalculator
      */
-    public SessionService $sessionService;
-
-    /**
-     * @var PoolService
-     */
-    protected PoolService $poolService;
+    protected BalanceCalculator $balanceCalculator;
 
     /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param SummaryService $summaryService
-     * @param SessionService $sessionService
+     * @param BalanceCalculator $balanceCalculator
      */
     public function __construct(LocaleService $localeService, TenantService $tenantService,
-        SummaryService $summaryService, SessionService $sessionService, PoolService $poolService)
+        SummaryService $summaryService, BalanceCalculator $balanceCalculator)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
         $this->summaryService = $summaryService;
-        $this->sessionService = $sessionService;
-        $this->poolService = $poolService;
+        $this->balanceCalculator = $balanceCalculator;
     }
 
     /**
@@ -129,12 +122,9 @@ class RemitmentService
             });
         }
 
-        $remitmentAmount = $pool->deposit_fixed ?
-            $pool->amount * $this->sessionService->enabledSessionCount($pool) :
-            $this->poolService->getLibrePoolAmount($pool, $session);
         // Set the amount on the payables
-        $payables = $payables->each(function($payable) use($remitmentAmount) {
-            $payable->amount = $remitmentAmount;
+        $payables = $payables->each(function($payable) use($session) {
+            $payable->amount = $this->balanceCalculator->getPayableAmount($payable, $session);
         });
         if(!$pool->remit_planned)
         {
@@ -145,7 +135,7 @@ class RemitmentService
         $remitmentCount = $this->summaryService->getSessionRemitmentCount($pool, $session);
         $emptyPayable = (object)[
             'id' => 0,
-            'amount' => $remitmentAmount,
+            'amount' => $pool->amount * $this->balanceCalculator->enabledSessionCount($pool),
             'remitment' => null,
         ];
         return $payables->pad($remitmentCount, $emptyPayable);
@@ -206,8 +196,8 @@ class RemitmentService
      *
      * @return void
      */
-    public function saveRemitment(Pool $pool, Session $session,
-        int $payableId, int $amount, int $auction): void
+    public function saveRemitment(Pool $pool, Session $session, int $payableId,
+        int $amount, int $auction): void
     {
         // Cannot use the getPayable() method here,
         // because there's no session attached to the payable.

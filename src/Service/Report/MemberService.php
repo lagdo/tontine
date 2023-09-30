@@ -8,11 +8,9 @@ use Siak\Tontine\Model\Auction;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Member;
-use Siak\Tontine\Model\Pool;
-use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Planning\PoolService;
 
 class MemberService
 {
@@ -22,18 +20,18 @@ class MemberService
     protected TenantService $tenantService;
 
     /**
-     * @var PoolService
+     * @var BalanceCalculator
      */
-    protected PoolService $poolService;
+    protected BalanceCalculator $balanceCalculator;
 
     /**
      * @param TenantService $tenantService
-     * @param PoolService $poolService
+     * @param BalanceCalculator $balanceCalculator
      */
-    public function __construct(TenantService $tenantService, PoolService $poolService)
+    public function __construct(TenantService $tenantService, BalanceCalculator $balanceCalculator)
     {
         $this->tenantService = $tenantService;
-        $this->poolService = $poolService;
+        $this->balanceCalculator = $balanceCalculator;
     }
 
     /**
@@ -61,21 +59,6 @@ class MemberService
     }
 
     /**
-     * @param Receivable $receivable
-     *
-     * @return int
-     */
-    private function getReceivableAmount(Receivable $receivable): int
-    {
-        if($receivable->subscription->pool->deposit_fixed)
-        {
-            return $receivable->subscription->pool->amount;
-        }
-
-        return !$receivable->deposit ? 0 : $receivable->deposit->amount;
-    }
-
-    /**
      * @param Session $session
      * @param Member $member|null
      *
@@ -95,25 +78,12 @@ class MemberService
                 $receivable->pool = $receivable->subscription->pool;
                 $receivable->member = $receivable->subscription->member;
                 $receivable->paid = ($receivable->deposit !== null);
-                $receivable->amount = $this->getReceivableAmount($receivable);
+                $receivable->amount = $this->balanceCalculator->getReceivableAmount($receivable);
             })
             // Sort by member name
             ->when($member === null, function($collection) {
                 return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
             });
-    }
-
-    /**
-     * @param Pool $pool
-     * @param Session $session
-     *
-     * @return int
-     */
-    private function getPayableAmount(Pool $pool, Session $session): int
-    {
-        return $pool->deposit_fixed ?
-            $pool->amount * $this->poolService->enabledSessionCount($pool) :
-            $this->poolService->getLibrePoolAmount($pool, $session);
     }
 
     /**
@@ -136,7 +106,7 @@ class MemberService
                 $payable->pool = $payable->subscription->pool;
                 $payable->member = $payable->subscription->member;
                 $payable->paid = ($payable->remitment !== null);
-                $payable->amount = $this->getPayableAmount($payable->pool, $session);
+                $payable->amount = $this->balanceCalculator->getPayableAmount($payable, $session);
             })
             // Sort by member name
             ->when($member === null, function($collection) {

@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
+use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Meeting\Cash\BalanceCalculator;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Service\Meeting\Cash\FundingService;
 use Siak\Tontine\Service\Meeting\Charge\FeeService;
