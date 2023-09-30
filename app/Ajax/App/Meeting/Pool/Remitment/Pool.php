@@ -9,6 +9,7 @@ use App\Ajax\App\Meeting\Pool\Auction;
 use App\Ajax\App\Meeting\Pool\Remitment;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
 use Siak\Tontine\Validation\Meeting\RemitmentValidator;
@@ -32,6 +33,11 @@ class Pool extends CallableClass
      * @var PoolService
      */
     protected PoolService $poolService;
+
+    /**
+     * @var BalanceCalculator
+     */
+    protected BalanceCalculator $balanceCalculator;
 
     /**
      * @var RemitmentValidator
@@ -80,9 +86,7 @@ class Pool extends CallableClass
     }
 
     /**
-     * @param int $poolId
-     *
-     * @return mixed
+     * @di $balanceCalculator
      */
     public function home(int $poolId)
     {
@@ -90,12 +94,13 @@ class Pool extends CallableClass
 
         $html = $this->view()->render('tontine.pages.meeting.remitment.pool.home', [
             'pool' => $this->pool,
+            'depositAmount' => $this->balanceCalculator->getPoolDepositAmount($this->pool, $this->session),
         ]);
         $this->response->html('meeting-remitments', $html);
 
         if(!$this->pool->remit_planned)
         {
-            $this->jq('#btn-new-remitment')->click($this->rq()->addRemitment());
+            $this->jq('#btn-new-remitment')->click($this->rq()->addRemitment(0));
         }
         $this->jq('#btn-remitments-back')->click($this->cl(Remitment::class)->rq()->home());
 
@@ -112,18 +117,13 @@ class Pool extends CallableClass
         $this->response->html('meeting-pool-remitments', $html);
 
         $payableId = jq()->parent()->attr('data-payable-id')->toInt();
-        $this->jq('.btn-new-remitment')->click($this->rq()->addRemitment());
+        $this->jq('.btn-new-remitment')->click($this->rq()->addRemitment($payableId));
         $this->jq('.btn-add-remitment')->click($this->rq()->createRemitment($payableId));
         $this->jq('.btn-del-remitment')->click($this->rq()->deleteRemitment($payableId));
 
         return $this->response;
     }
 
-    /**
-     * @param int $payableId
-     *
-     * @return mixed
-     */
     public function createRemitment(int $payableId)
     {
         if($this->session->closed)
@@ -146,23 +146,24 @@ class Pool extends CallableClass
         return $this->page();
     }
 
-    public function addRemitment()
+    public function addRemitment(int $payableId)
     {
         if($this->session->closed)
         {
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
-        if($this->pool->remit_planned && !$this->pool->remit_auction)
-        {
-            // Only when remitments are not planned or with auctions.
-            return $this->response;
-        }
+        // if($this->pool->remit_planned && !$this->pool->remit_auction)
+        // {
+        //     // Only when remitments are not planned or with auctions.
+        //     return $this->response;
+        // }
 
-        $members = $this->remitmentService->getSubscriptions($this->pool);
+        $members = $this->remitmentService->getSubscriptions($this->pool, $this->session);
         $title = trans('meeting.remitment.titles.add');
         $content = $this->view()->render('tontine.pages.meeting.remitment.pool.add')
             ->with('pool', $this->pool)
+            ->with('payableId', $payableId)
             ->with('members', $members);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -180,9 +181,6 @@ class Pool extends CallableClass
 
     /**
      * @di $validator
-     * @param array $formValues
-     *
-     * @return mixed
      */
     public function saveRemitment(array $formValues)
     {
@@ -192,12 +190,12 @@ class Pool extends CallableClass
             $this->dialog->hide();
             return $this->response;
         }
-        if($this->pool->remit_planned && !$this->pool->remit_auction)
-        {
-            // Only when remitments are not planned or with auctions.
-            $this->dialog->hide();
-            return $this->response;
-        }
+        // if($this->pool->remit_planned && !$this->pool->remit_auction)
+        // {
+        //     // Only when remitments are not planned or with auctions.
+        //     $this->dialog->hide();
+        //     return $this->response;
+        // }
 
         // Add some data in the input values to help validation.
         $formValues['remit_amount'] = $this->pool->remit_fixed ? 0 : 1;
@@ -222,8 +220,6 @@ class Pool extends CallableClass
 
     /**
      * @param int $payableId
-     *
-     * @return mixed
      */
     public function deleteRemitment(int $payableId)
     {

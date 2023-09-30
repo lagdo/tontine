@@ -113,19 +113,10 @@ class RemitmentService
         $payables = $this->getQuery($pool, $session)
             ->with(['subscription.member', 'remitment', 'remitment.auction'])
             ->page($page, $this->tenantService->getLimit())
-            ->get();
-        if(!$pool->remit_fixed)
-        {
-            // When the remitment amount is not fixed, the user decides the amount.
-            return $payables->each(function($payable) {
-                $payable->amount = $payable->remitment ? $payable->remitment->amount : 0;
+            ->get()
+            ->each(function($payable) use($session) {
+                $payable->amount = $this->balanceCalculator->getPayableAmount($payable, $session);
             });
-        }
-
-        // Set the amount on the payables
-        $payables = $payables->each(function($payable) use($session) {
-            $payable->amount = $this->balanceCalculator->getPayableAmount($payable, $session);
-        });
         if(!$pool->remit_planned)
         {
             return $payables;
@@ -138,6 +129,7 @@ class RemitmentService
             'amount' => $pool->amount * $this->balanceCalculator->enabledSessionCount($pool),
             'remitment' => null,
         ];
+
         return $payables->pad($remitmentCount, $emptyPayable);
     }
 
@@ -209,11 +201,11 @@ class RemitmentService
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
-        // Not needed, since the query filters on remitment inexistence.
-        // if($payable->remitment)
-        // {
-        //     return;
-        // }
+        if($payable->session_id !== null && $payable->session_id !== $session->id)
+        {
+            // The selected member is already planned on another session.
+            throw new MessageException(trans('tontine.remitment.errors.planning'));
+        }
 
         DB::transaction(function() use($pool, $session, $payable, $amount, $auction) {
             // Associate the payable with the session.
@@ -253,6 +245,7 @@ class RemitmentService
         {
             return;
         }
+
         DB::transaction(function() use($pool, $payable, $remitment) {
             // Delete the corresponding auction, in case there was one on the remitment.
             $remitment->auction()->delete();
@@ -270,17 +263,29 @@ class RemitmentService
      * Get the unpaid subscriptions of a given pool.
      *
      * @param Pool $pool
+     * @param Session $session The session
      *
      * @return Collection
      */
-    public function getSubscriptions(Pool $pool): Collection
+    public function getSubscriptions(Pool $pool, Session $session): Collection
     {
-        // Return the member names, keyed by payable id.
-        return $pool->subscriptions()
-            ->with(['payable', 'member'])
-            ->get()
-            ->filter(function($subscription) {
-                return !$subscription->payable->session_id;
-            })->pluck('member.name', 'payable.id');
+        $subscriptions = $pool->subscriptions()->with(['payable', 'member'])->get();
+        if($pool->remit_planned && !$pool->remit_auction)
+        {
+            // Only the beneficiaries planned for this session.
+            return $subscriptions
+                ->filter(function($subscription) use($session) {
+                    return $subscription->payable->session_id === $session->id;
+                })
+                ->pluck('member.name', 'payable.id');
+        }
+
+        // Return also the beneficiaries that have not yet been remitted.
+        return $subscriptions
+            ->filter(function($subscription) use($session) {
+                return !$subscription->payable->session_id ||
+                    $subscription->payable->session_id === $session->id;
+            })
+            ->pluck('member.name', 'payable.id');
     }
 }

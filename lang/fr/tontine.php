@@ -282,5 +282,8 @@ return [
         'labels' => [
             'not-assigned' => "** Pas attribué **",
         ],
+        'errors' => [
+            'planning' => "Le bénéficiaire choisi est déjà planifié sur une autre séance.",
+        ],
     ],
 ];

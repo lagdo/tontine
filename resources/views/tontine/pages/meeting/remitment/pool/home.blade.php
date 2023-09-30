@@ -1,6 +1,8 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col">
-                      <div class="section-title mt-0">{{ __('meeting.titles.remitments') }} - {{ $pool->title }}</div>
+                      <div class="section-title mt-0">{{ __('meeting.titles.remitments') }} - {{
+                        $pool->title }} ({{ $locale->formatMoney($depositAmount) }})</div>
                     </div>
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
