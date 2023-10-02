@@ -136,7 +136,7 @@ class DisbursementService
      */
     public function getAmountAvailable(Session $session): int
     {
-        return $this->balanceCalculator->getBalanceForDisbursement($session);
+        return $this->balanceCalculator->getTotalBalance($session);
     }
 
     /**
