@@ -84,7 +84,7 @@ class Session extends CallableClass
     public function page(int $pageNumber = 0)
     {
         $sessionCount = $this->sessionService->getSessionCount();
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $sessionCount, 'planning', 'session.page');
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $sessionCount, 'subscription', 'session.page');
         $sessions = $this->sessionService->getSessions($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
 

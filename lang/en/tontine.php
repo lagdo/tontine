@@ -197,6 +197,7 @@ return [
         ],
         'errors' => [
             'opened' => "A session has already been opened.",
+            'delete' => "Cannot delete this session.",
         ],
     ],
     'pool' => [
@@ -271,6 +272,8 @@ return [
         ],
         'errors' => [
             'not_found' => "Cannot find the corresponding subscription.",
+            'create' => "Cannot create a new subscription.",
+            'delete' => "Cannot delete this subscription.",
         ],
     ],
     'beneficiary' => [

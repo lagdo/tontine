@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service\Planning;
 
+use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
@@ -88,9 +89,6 @@ class PoolService
      */
     public function createPool(array $values): bool
     {
-        // Cannot modify pools if a session is already opened.
-        $this->sessionService->checkActiveSessions();
-
         $this->tenantService->round()->pools()->create($values);
 
         return true;
@@ -105,9 +103,6 @@ class PoolService
      */
     public function createPools(array $values): bool
     {
-        // Cannot modify pools if a session is already opened.
-        $this->sessionService->checkActiveSessions();
-
         DB::transaction(function() use($values) {
             $this->tenantService->round()->pools()->createMany($values);
         });
@@ -137,16 +132,17 @@ class PoolService
      */
     public function deletePool(Pool $pool)
     {
-        // Cannot modify pools if a session is already opened.
-        $this->sessionService->checkActiveSessions();
-
-        if($pool->subscriptions()->count() > 0)
+        try
+        {
+            DB::table('pool_session_disabled')->where('pool_id', $pool->id)->delete();
+            // Delete the pool
+            $pool->delete();
+        }
+        catch(Exception $e)
         {
             throw new MessageException(trans('tontine.errors.action') .
                 '<br/>' . trans('tontine.pool.errors.subscription'));
         }
-        // Delete the pool
-        $pool->delete();
     }
 
     /**

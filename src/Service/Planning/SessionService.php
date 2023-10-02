@@ -3,16 +3,18 @@
 namespace Siak\Tontine\Service\Planning;
 
 use Carbon\Carbon;
+use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Siak\Tontine\Model\Payable;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Meeting\SessionService as MeetingSessionService;
 use Siak\Tontine\Service\TenantService;
 
 use function intval;
 use function now;
+use function trans;
 
 class SessionService
 {
@@ -22,17 +24,11 @@ class SessionService
     protected TenantService $tenantService;
 
     /**
-     * @var MeetingSessionService
-     */
-    protected MeetingSessionService $sessionService;
-
-    /**
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService, MeetingSessionService $sessionService)
+    public function __construct(TenantService $tenantService)
     {
         $this->tenantService = $tenantService;
-        $this->sessionService = $sessionService;
     }
 
     /**
@@ -70,6 +66,17 @@ class SessionService
         return $this->tenantService->round()->sessions()->with(['host'])->find($sessionId);
     }
 
+    private function disableSessionOnPools(Session $session)
+    {
+        // Disable this session on all planned pools
+        $this->tenantService->round()->pools()
+            ->where('properties->remit->planned', true)
+            ->get()
+            ->each(function($pool) use($session) {
+                $pool->disabledSessions()->attach($session->id);
+            });
+    }
+
     /**
      * Add a new session.
      *
@@ -79,16 +86,11 @@ class SessionService
      */
     public function createSession(array $values): bool
     {
-        // Cannot create sessions if a session is already opened.
-        // if(!$this->tenantService->tontine()->is_libre)
-        {
-            $this->sessionService->checkActiveSessions();
-        }
-
         $values['start_at'] = $values['date'] . ' ' . $values['start'] . ':00';
         $values['end_at'] = $values['date'] . ' ' . $values['end'] . ':00';
         DB::transaction(function() use($values) {
-            $this->tenantService->round()->sessions()->create($values);
+            $session = $this->tenantService->round()->sessions()->create($values);
+            $this->disableSessionOnPools($session);
         });
 
         return true;
@@ -103,19 +105,17 @@ class SessionService
      */
     public function createSessions(array $values): bool
     {
-        // Cannot create sessions if a session is already opened.
-        // if(!$this->tenantService->tontine()->is_libre)
-        {
-            $this->sessionService->checkActiveSessions();
-        }
-
         foreach($values as &$value)
         {
             $value['start_at'] = $value['date'] . ' ' . $value['start'] . ':00';
             $value['end_at'] = $value['date'] . ' ' . $value['end'] . ':00';
         }
         DB::transaction(function() use($values) {
-            $this->tenantService->round()->sessions()->createMany($values);
+            $sessions = $this->tenantService->round()->sessions()->createMany($values);
+            foreach($sessions as $session)
+            {
+                $this->disableSessionOnPools($session);
+            }
         });
 
         return true;
@@ -166,15 +166,15 @@ class SessionService
      */
     public function deleteSession(Session $session)
     {
-        // Cannot delete sessions if a session is already opened.
-        $this->sessionService->checkActiveSessions();
-
-        DB::transaction(function() use($session) {
-            // Detach from the payables. Don't delete.
-            $session->payables()->update(['session_id' => null]);
-            // Delete the session
+        // Delete the session. Will fail if there's still some data attached.
+        try
+        {
             $session->delete();
-        });
+        }
+        catch(Exception $e)
+        {
+            throw new MessageException(trans('tontine.session.errors.delete'));
+        }
     }
 
     /**
@@ -198,8 +198,13 @@ class SessionService
      */
     public function toggleSession(Pool $pool, Session $session)
     {
-        // Cannot enable or disable sessions if a session is already opened.
-        $this->sessionService->checkActiveSessions();
+        // When the remitments are planned, don't enable or disable a session
+        // if receivables already exist on the pool.
+        if($pool->remit_planned &&
+            $pool->subscriptions()->whereHas('receivables')->count() > 0)
+        {
+            return;
+        }
 
         if($session->disabled($pool))
         {
@@ -208,14 +213,19 @@ class SessionService
             return;
         }
 
-        DB::transaction(function() use($pool, $session) {
-            // Disable the session for the pool.
-            $pool->disabledSessions()->attach($session->id);
-            // Delete the beneficiaries for the pool on this session.
-            Payable::where('session_id', $session->id)
-                ->whereIn('subscription_id', $pool->subscriptions->pluck('id'))
-                ->update(['session_id' => null]);
-        });
+        // Don't disable session with existing receivables for the pool.
+        $receivableQuery = $pool->subscriptions()
+            ->whereHas('receivables', function(Builder $query) use($session) {
+                $query->where('session_id', $session->id);
+            })
+            ->count();
+        if($receivableQuery > 0)
+        {
+            return;
+        }
+
+        // Disable the session for the pool.
+        $pool->disabledSessions()->attach($session->id);
     }
 
     /**

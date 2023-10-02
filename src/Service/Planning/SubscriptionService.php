@@ -113,14 +113,18 @@ class SubscriptionService
      */
     public function createSubscription(Pool $pool, int $memberId)
     {
-        // Cannot modify subscriptions if a session is already opened.
-        $this->sessionService->checkActiveSessions();
-
-        // Enforce unique subscription per member in pool with variable deposit amount.
+        // When the remitments are planned, don't create a subscription
+        // if receivables already exist on the pool.
+        if($pool->remit_planned &&
+            $pool->subscriptions()->whereHas('receivables')->count() > 0)
+        {
+            throw new MessageException(trans('tontine.subscription.errors.create'));
+        }
+        // Enforce unique subscription per member in pool with libre deposit amount.
         if(!$pool->deposit_fixed &&
             $pool->subscriptions()->where('member_id', $memberId)->count() > 0)
         {
-            return;
+            throw new MessageException(trans('tontine.subscription.errors.create'));
         }
 
         $member = $this->tenantService->tontine()->members()->find($memberId);
@@ -145,13 +149,22 @@ class SubscriptionService
      */
     public function deleteSubscription(Pool $pool, int $memberId)
     {
-        // Cannot modify subscriptions if a session is already opened.
-        $this->sessionService->checkActiveSessions();
-
-        $subscription = $pool->subscriptions()->where('member_id', $memberId)->first();
+        // When the remitments are planned, don't delete a subscription
+        // if receivables already exist on the pool.
+        if($pool->remit_planned &&
+            $pool->subscriptions()->whereHas('receivables')->count() > 0)
+        {
+            throw new MessageException(trans('tontine.subscription.errors.delete'));
+        }
+        $subscription = $pool->subscriptions()->where('member_id', $memberId)
+            ->with(['payable', 'payable.remitment'])->first();
         if(!$subscription)
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
+        }
+        if($subscription->payable->remitment !== null)
+        {
+            throw new MessageException(trans('tontine.subscription.errors.delete'));
         }
 
         DB::transaction(function() use($subscription) {

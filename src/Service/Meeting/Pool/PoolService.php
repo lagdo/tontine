@@ -71,15 +71,20 @@ class PoolService
     }
 
     /**
+     * @param Session $session
      * @param int $page
      *
      * @return Builder
      */
-    public function getPoolsQuery(int $page = 0)
+    public function getPoolsQuery(Session $session, int $page = 0)
     {
-        // Take only pools with at least one subscription.
+        // Take only pools which have subscriptions with receivables for the session.
         return $this->tenantService->round()->pools()
-            ->whereHas('subscriptions')
+            ->whereHas('subscriptions', function(Builder $query) use($session) {
+                $query->whereHas('receivables', function(Builder $query) use($session) {
+                    $query->where('session_id', $session->id);
+                });
+            })
             ->page($page, $this->tenantService->getLimit());
     }
 
@@ -93,7 +98,7 @@ class PoolService
      */
     public function getPoolsWithReceivables(Session $session, int $page = 0): Collection
     {
-        return $this->getPoolsQuery($page)->withCount([
+        return $this->getPoolsQuery($session, $page)->withCount([
             'subscriptions as recv_count',
             'subscriptions as recv_paid' => function(Builder $query) use($session) {
                 $query->whereHas('receivables', function(Builder $query) use($session) {
@@ -113,7 +118,7 @@ class PoolService
      */
     public function getPoolsWithPayables(Session $session, int $page = 0): Collection
     {
-        return $this->getPoolsQuery($page)->withCount([
+        return $this->getPoolsQuery($session, $page)->withCount([
             'subscriptions as pay_paid' => function(Builder $query) use($session) {
                 $query->whereHas('payable', function(Builder $query) use($session) {
                     $query->where('session_id', $session->id)->whereHas('remitment');

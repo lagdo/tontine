@@ -197,6 +197,7 @@ return [
         ],
         'errors' => [
             'opened' => "Une séance a déjà été ouverte.",
+            'delete' => "Impossible de supprimer cette séance.",
         ],
     ],
     'pool' => [
@@ -271,6 +272,8 @@ return [
         ],
         'errors' => [
             'not_found' => "Impossible de trouver la souscription correspondante.",
+            'create' => "Impossible de créer une nouvelle souscription.",
+            'delete' => "Impossible de supprimer la souscription.",
         ],
     ],
     'beneficiary' => [
