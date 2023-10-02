@@ -89,21 +89,6 @@ class SessionService
     }
 
     /**
-     * Check if a session has already been opened.
-     *
-     * @return void
-     */
-    public function checkActiveSessions()
-    {
-        $activeStatuses = [Session::STATUS_OPENED, Session::STATUS_CLOSED];
-        if($this->tenantService->round()->sessions()->whereIn('status', $activeStatuses)->count() > 0)
-        {
-            throw new MessageException(trans('tontine.errors.action') .
-                '<br/>' . trans('tontine.session.errors.opened'));
-        }
-    }
-
-    /**
      * Open a round.
      *
      * @param Round $round
@@ -157,12 +142,8 @@ class SessionService
 
         DB::transaction(function() use($session) {
             // Open the session
-            $pending = $session->pending;
             $session->update(['status' => Session::STATUS_OPENED]);
-            if($pending)
-            {
-                $this->sessionOpened($this->tenantService->tontine(), $session);
-            }
+            $this->sessionOpened($this->tenantService->tontine(), $session);
         });
     }
 

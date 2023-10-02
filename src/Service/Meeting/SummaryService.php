@@ -5,7 +5,7 @@ namespace Siak\Tontine\Service\Meeting;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Planning\PoolService;
+use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\ReportTrait;
@@ -28,21 +28,21 @@ class SummaryService
     public SessionService $sessionService;
 
     /**
-     * @var PoolService
+     * @var BalanceCalculator
      */
-    protected PoolService $poolService;
+    protected BalanceCalculator $balanceCalculator;
 
     /**
      * @param TenantService $tenantService
      * @param SessionService $sessionService
-     * @param PoolService $poolService
+     * @param BalanceCalculator $balanceCalculator
      */
     public function __construct(TenantService $tenantService,
-        SessionService $sessionService, PoolService $poolService)
+        SessionService $sessionService, BalanceCalculator $balanceCalculator)
     {
         $this->tenantService = $tenantService;
         $this->sessionService = $sessionService;
-        $this->poolService = $poolService;
+        $this->balanceCalculator = $balanceCalculator;
     }
 
     /**
@@ -52,12 +52,10 @@ class SummaryService
      *
      * @return array
      */
-    private function getCollectedFigures(Pool $pool, Collection $sessions, Collection $subscriptions): array
+    private function getCollectedFigures(Pool $pool, Collection $sessions,
+        Collection $subscriptions): array
     {
         $cashier = 0;
-        $remitmentAmount = $this->tenantService->tontine()->is_libre ? 0 :
-            $pool->amount * $this->sessionService->enabledSessionCount($pool);
-
         $collectedFigures = [];
         foreach($sessions as $session)
         {
@@ -70,31 +68,21 @@ class SummaryService
             $figures = $this->makeFigures(0);
             $figures->cashier->start = $cashier;
             $figures->cashier->recv = $cashier;
-            foreach($subscriptions as $subscription)
-            {
-                if(($deposit = $subscription->receivables[$session->id]->deposit))
-                {
-                    $amount = $this->tenantService->tontine()->is_libre ? $deposit->amount : $pool->amount;
-                    $figures->deposit->count++;
-                    $figures->deposit->amount += $amount;
-                    $figures->cashier->recv += $amount;
-                }
-            }
 
-            if($this->tenantService->tontine()->is_libre)
-            {
-                $remitmentAmount = $this->poolService->getLibrePoolAmount($pool, $session);
-            }
+            $depositAmount = $this->balanceCalculator->getPoolDepositAmount($pool, $session);
+            $figures->deposit->amount += $depositAmount;
+            $figures->cashier->recv += $depositAmount;
+            $figures->deposit->count = $subscriptions->filter(function($subscription) use($session) {
+                return $subscription->receivables[$session->id]->deposit !== null;
+            })->count();
+
+            $remitmentAmount = $this->balanceCalculator->getPoolRemitmentAmount($pool, $session);
             $figures->cashier->end = $figures->cashier->recv;
-            foreach($session->payables as $payable)
-            {
-                if(($payable->remitment))
-                {
-                    $figures->remitment->count++;
-                    $figures->remitment->amount += $remitmentAmount;
-                    $figures->cashier->end -= $remitmentAmount;
-                }
-            }
+            $figures->remitment->amount += $remitmentAmount;
+            $figures->cashier->end -= $remitmentAmount;
+            $figures->remitment->count += $session->payables->filter(function($payable) {
+                return $payable->remitment !== null;
+            })->count();
 
             $cashier = $figures->cashier->end;
             $collectedFigures[$session->id] = $figures;
@@ -116,11 +104,13 @@ class SummaryService
     {
         $subscriptions = $pool->subscriptions()->with(['member', 'receivables.deposit'])
             ->get()->each(function($subscription) {
-                $subscription->setRelation('receivables', $subscription->receivables->keyBy('session_id'));
+                $subscription->setRelation('receivables',
+                    $subscription->receivables->keyBy('session_id'));
             });
-        $sessions = $this->_getSessions($this->tenantService->round(), $pool, ['payables.remitment']);
+        $sessions = $this->_getSessions($this->tenantService->round(),
+            $pool, ['payables.remitment']);
         $figures = new stdClass();
-        if(!$this->tenantService->tontine()->is_libre)
+        if($pool->remit_planned)
         {
             $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
         }
@@ -137,7 +127,8 @@ class SummaryService
      */
     public function getRemitmentFigures(Pool $pool, int $sessionId = 0)
     {
-        $sessions = $this->_getSessions($this->tenantService->round(), $pool, ['payables.subscription.member']);
+        $sessions = $this->_getSessions($this->tenantService->round(),
+            $pool, ['payables.subscription.member']);
         $sessionCount = $this->sessionService->enabledSessionCount($pool);
         $subscriptionCount = $pool->subscriptions()->count();
         $remitmentAmount = $pool->amount * $sessionCount;
@@ -169,7 +160,7 @@ class SummaryService
      */
     public function getSessionRemitmentCount(Pool $pool, Session $session): int
     {
-        if($this->tenantService->tontine()->is_libre)
+        if(!$pool->deposit_fixed)
         {
             return 1;
         }

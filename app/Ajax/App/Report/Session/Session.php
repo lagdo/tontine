@@ -62,6 +62,7 @@ class Session extends CallableClass
     {
         $html = $this->view()->render('tontine.pages.report.session.session.remitments', [
             'pools' => $this->sessionService->getPayables($session),
+            'auctions' => $this->sessionService->getAuctions($session),
         ]);
         $this->response->html('report-remitments', $html);
     }

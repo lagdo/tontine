@@ -38,7 +38,7 @@ class Select extends CallableClass
             'class' => 'btn btn-tertiary',
             'click' => 'close',
         ],[
-            'title' => trans('tontine.actions.choose'),
+            'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveTontine(pm()->select('tontine_id')->toInt()),
         ]];
@@ -84,7 +84,7 @@ class Select extends CallableClass
             'class' => 'btn btn-tertiary',
             'click' => 'close',
         ],[
-            'title' => trans('tontine.actions.choose'),
+            'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveRound(pm()->select('round_id')->toInt()),
         ]];

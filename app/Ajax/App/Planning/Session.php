@@ -3,8 +3,6 @@
 namespace App\Ajax\App\Planning;
 
 use App\Ajax\CallableClass;
-use Carbon\Carbon;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Tontine\TontineService;
@@ -12,7 +10,13 @@ use Siak\Tontine\Validation\Planning\SessionValidator;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
+use function array_filter;
+use function array_map;
+use function collect;
+use function count;
+use function explode;
 use function trans;
+use function trim;
 
 /**
  * @databag planning
@@ -44,10 +48,12 @@ class Session extends CallableClass
         $html = $this->view()->render('tontine.pages.planning.session.home');
         $this->response->html('section-title', trans('tontine.menus.planning'));
         $this->response->html('content-home', $html);
-        $this->jq('#btn-refresh')->click($this->rq()->home());
-        $this->jq('#btn-create')->click($this->rq()->number());
 
-        return $this->page($this->bag('planning')->get('session.page', 1));
+        $this->jq('#btn-sessions-refresh')->click($this->rq()->home());
+        $this->jq('#btn-sessions-add')->click($this->rq()->add());
+        $this->jq('#btn-sessions-add-list')->click($this->rq()->addList());
+
+        return $this->page();
     }
 
     public function page(int $pageNumber = 0)
@@ -73,85 +79,27 @@ class Session extends CallableClass
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.btn-session-edit')->click($this->rq()->edit($sessionId));
         $this->jq('.btn-session-venue')->click($this->rq()->editVenue($sessionId));
-        $this->jq('.btn-session-delete')->click($this->rq()->del($sessionId)
+        $this->jq('.btn-session-delete')->click($this->rq()->delete($sessionId)
             ->confirm(trans('tontine.session.questions.delete')));
 
         return $this->response;
     }
 
-    public function number()
+    public function add()
     {
-        $title = trans('number.labels.title');
-        $content = $this->view()->render('tontine.pages.planning.session.number');
+        $title = trans('tontine.session.titles.add');
+        $content = $this->view()->render('tontine.pages.planning.session.add')
+            ->with('members', $this->tontineService->getMembers()->prepend('', 0));
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
             'click' => 'close',
         ],[
-            'title' => trans('common.actions.year'),
+            'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->years(),
-        ],[
-            'title' => trans('common.actions.add'),
-            'class' => 'btn btn-primary',
-            'click' => $this->rq()->add(pm()->input('text-number')->toInt()),
+            'click' => $this->rq()->create(pm()->form('session-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
-
-        return $this->response;
-    }
-
-    public function add(int $count)
-    {
-        if($count <= 0)
-        {
-            $this->notify->warning(trans('number.errors.invalid'));
-            return $this->response;
-        }
-        if($count > 12)
-        {
-            $this->notify->warning(trans('number.errors.max', ['max' => 12]));
-            return $this->response;
-        }
-
-        $this->dialog->hide();
-
-        $html = $this->view()->render('tontine.pages.planning.session.add')->with('count', $count);
-        $this->response->html('content-home', $html);
-        $this->jq('#btn-cancel')->click($this->rq()->home());
-        $this->jq('#btn-copy')->click($this->rq()->copy(jq('#session_date_0')->val(), $count));
-        $this->jq('#btn-save')->click($this->rq()->create(pm()->form('session-form')));
-
-        return $this->response;
-    }
-
-    public function years()
-    {
-        $count = 12;
-        $this->add($count);
-        $sessions = $this->sessionService->getYearSessions();
-        for($i = 0; $i < $count; $i++)
-        {
-            $this->jq("#session_title_$i")->val($sessions[$i]->title);
-            $this->jq("#session_date_$i")->val($sessions[$i]->date);
-        }
-
-        return $this->response;
-    }
-
-    public function copy(string $date, int $count)
-    {
-        $locale = LaravelLocalization::getCurrentLocale();
-        $date = Carbon::createFromFormat('Y-m-d', $date);
-        $this->jq("#session_title_0")->val(trans('tontine.session.titles.title',
-            ['month' => $date->locale($locale)->monthName, 'year' => $date->year]));
-        for($i = 1; $i < $count; $i++)
-        {
-            $date->addMonth();
-            $this->jq("#session_title_$i")->val(trans('tontine.session.titles.title',
-                ['month' => $date->locale($locale)->monthName, 'year' => $date->year]));
-            $this->jq("#session_date_$i")->val($date->toDateString());
-        }
 
         return $this->response;
     }
@@ -161,9 +109,89 @@ class Session extends CallableClass
      */
     public function create(array $formValues)
     {
-        $values = $this->validator->validateList($formValues['sessions'] ?? []);
+        $values = $this->validator->validateItem($formValues);
+        $this->sessionService->createSession($values);
+        $this->dialog->hide();
+        $this->notify->success(trans('tontine.session.messages.created'), trans('common.titles.success'));
+
+        return $this->page();
+    }
+
+    public function addList()
+    {
+        $title = trans('tontine.session.titles.add-list');
+        $content = $this->view()->render('tontine.pages.planning.session.list');
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.year'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->years(),
+        ],[
+            'title' => trans('common.actions.save'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->createList(pm()->form('session-list')),
+        ]];
+        $this->dialog->show($title, $content, $buttons);
+
+        return $this->response;
+    }
+
+    public function years()
+    {
+        $sessions = $this->sessionService->getYearSessions();
+        $html = collect($sessions)->map(function($session) {
+            return $session->title . ';' . $session->date;
+        })->join("\n");
+        $this->response->html('new-sessions-list', $html);
+
+        return $this->response;
+    }
+
+    /**
+     * @param string $sessions
+     *
+     * @return array
+     */
+    private function parseSessionList(string $sessions): array
+    {
+        $sessions = array_map(function($value) {
+            if(!($value = trim($value, " \t\n\r;")))
+            {
+                return [];
+            }
+            $values = explode(";", $value);
+            if(count($values) !== 2)
+            {
+                return []; // Todo: throw an exception
+            }
+            return [
+                'title' => trim($values[0]),
+                'date' => trim($values[1]),
+                'start' => '00:00',
+                'end' => '00:00',
+                'host_id' => 0,
+            ];
+        }, explode("\n", trim($sessions, " \t\n\r;")));
+        // Filter empty lines.
+        $sessions = array_filter($sessions, function($session) {
+            return count($session) > 0;
+        });
+
+        return $this->validator->validateList($sessions);
+    }
+
+    /**
+     * @di $validator
+     */
+    public function createList(array $formValues)
+    {
+        $values = $this->parseSessionList($formValues['sessions'] ?? '');
 
         $this->sessionService->createSessions($values);
+        $this->dialog->hide();
         $this->notify->success(trans('tontine.session.messages.created'), trans('common.titles.success'));
 
         return $this->home();
@@ -172,12 +200,10 @@ class Session extends CallableClass
     public function edit(int $sessionId)
     {
         $session = $this->sessionService->getSession($sessionId);
-        $members = $this->tontineService->getMembers()->prepend('', 0);
-
         $title = trans('tontine.session.titles.edit');
         $content = $this->view()->render('tontine.pages.planning.session.edit')
             ->with('session', $session)
-            ->with('members', $members);
+            ->with('members', $this->tontineService->getMembers()->prepend('', 0));
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -244,10 +270,11 @@ class Session extends CallableClass
         return $this->page();
     }
 
-    public function del(int $sessionId)
+    public function delete(int $sessionId)
     {
         $session = $this->sessionService->getSession($sessionId);
         $this->sessionService->deleteSession($session);
+        $this->notify->success(trans('tontine.session.messages.deleted'), trans('common.titles.success'));
 
         return $this->page();
     }

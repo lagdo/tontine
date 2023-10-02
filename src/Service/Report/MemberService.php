@@ -4,14 +4,13 @@ namespace Siak\Tontine\Service\Report;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Siak\Tontine\Model\Auction;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Member;
-use Siak\Tontine\Model\Pool;
-use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Planning\PoolService;
 
 class MemberService
 {
@@ -21,18 +20,18 @@ class MemberService
     protected TenantService $tenantService;
 
     /**
-     * @var PoolService
+     * @var BalanceCalculator
      */
-    protected PoolService $poolService;
+    protected BalanceCalculator $balanceCalculator;
 
     /**
      * @param TenantService $tenantService
-     * @param PoolService $poolService
+     * @param BalanceCalculator $balanceCalculator
      */
-    public function __construct(TenantService $tenantService, PoolService $poolService)
+    public function __construct(TenantService $tenantService, BalanceCalculator $balanceCalculator)
     {
         $this->tenantService = $tenantService;
-        $this->poolService = $poolService;
+        $this->balanceCalculator = $balanceCalculator;
     }
 
     /**
@@ -60,21 +59,6 @@ class MemberService
     }
 
     /**
-     * @param Receivable $receivable
-     *
-     * @return int
-     */
-    private function getReceivableAmount(Receivable $receivable): int
-    {
-        if($this->tenantService->tontine()->is_libre)
-        {
-            return !$receivable->deposit ? 0 : $receivable->deposit->amount;
-        }
-
-        return $receivable->subscription->pool->amount;
-    }
-
-    /**
      * @param Session $session
      * @param Member $member|null
      *
@@ -94,25 +78,12 @@ class MemberService
                 $receivable->pool = $receivable->subscription->pool;
                 $receivable->member = $receivable->subscription->member;
                 $receivable->paid = ($receivable->deposit !== null);
-                $receivable->amount = $this->getReceivableAmount($receivable);
+                $receivable->amount = $this->balanceCalculator->getReceivableAmount($receivable);
             })
             // Sort by member name
             ->when($member === null, function($collection) {
                 return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
             });
-    }
-
-    /**
-     * @param Pool $pool
-     * @param Session $session
-     *
-     * @return int
-     */
-    private function getPayableAmount(Pool $pool, Session $session): int
-    {
-        return $this->tenantService->tontine()->is_libre ?
-            $this->poolService->getLibrePoolAmount($pool, $session) :
-            $pool->amount * $this->poolService->enabledSessionCount($pool);
     }
 
     /**
@@ -135,8 +106,41 @@ class MemberService
                 $payable->pool = $payable->subscription->pool;
                 $payable->member = $payable->subscription->member;
                 $payable->paid = ($payable->remitment !== null);
-                $payable->amount = $this->getPayableAmount($payable->pool, $session);
+                $payable->amount = $this->balanceCalculator->getPayableAmount($payable, $session);
             })
+            // Sort by member name
+            ->when($member === null, function($collection) {
+                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
+            });
+    }
+
+    /**
+     * @param Session $session
+     * @param Member $member|null
+     *
+     * @return Collection
+     */
+    public function getAuctions(Session $session, ?Member $member = null): Collection
+    {
+        return $session->auctions()
+            ->when($member !== null, function($query) use($member) {
+                return $query->whereHas('remitment', function($query) use($member) {
+                    $query->whereHas('payable', function($query) use($member) {
+                        $query->whereHas('subscription', function($query) use($member) {
+                            $query->where('member_id', $member->id);
+                        });
+                    });
+                });
+            })
+            ->with(['remitment.payable.subscription.pool',
+                'remitment.payable.subscription.member'])
+            ->get()
+            ->each(function(Auction $auction) {
+                $subscription = $auction->remitment->payable->subscription;
+                $auction->member = $subscription->member;
+                $auction->pool = $subscription->pool;
+            })
+            ->keyBy('remitment.payable.id')
             // Sort by member name
             ->when($member === null, function($collection) {
                 return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
@@ -248,52 +252,22 @@ class MemberService
 
     /**
      * @param Session $session
-     * @param Member $member
-     * @param bool $withRemitment
-     *
-     * @return Collection
-     */
-    private function _getLoans(Session $session, ?Member $member, bool $withRemitment): Collection
-    {
-        return $session->loans()
-            ->when($member !== null, function($query) use($member) {
-                return $query->where('member_id', $member->id);
-            })
-            ->when($withRemitment, function($query) {
-                return $query->whereHas('remitment')
-                    ->with(['member', 'interest_debt.refund', 'remitment.payable.subscription']);
-            })
-            ->when(!$withRemitment, function($query) {
-                return $query->whereDoesntHave('remitment')
-                    ->with(['member', 'principal_debt.refund', 'interest_debt.refund']);
-            })
-            ->get()
-            // Sort by member name
-            ->when($member === null, function($collection) {
-                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
-            });
-    }
-
-    /**
-     * @param Session $session
      * @param Member $member|null
      *
      * @return Collection
      */
     public function getLoans(Session $session, ?Member $member = null): Collection
     {
-        return $this->_getLoans($session, $member, false);
-    }
-
-    /**
-     * @param Session $session
-     * @param Member $member|null
-     *
-     * @return Collection
-     */
-    public function getAuctions(Session $session, ?Member $member = null): Collection
-    {
-        return $this->_getLoans($session, $member, true);
+        return $session->loans()
+            ->when($member !== null, function($query) use($member) {
+                return $query->where('member_id', $member->id);
+            })
+            ->with(['member', 'principal_debt.refund', 'interest_debt.refund'])
+            ->get()
+            // Sort by member name
+            ->when($member === null, function($collection) {
+                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
+            });
     }
 
     /**
@@ -311,7 +285,6 @@ class MemberService
                     $query->where('member_id', $member->id);
                 });
             })
-            ->whereDoesntHave('loan.remitment')
             // Debts refunded on this session.
             ->whereHas('refund', function(Builder $query) use($session) {
                 $query->where('session_id', $session->id);

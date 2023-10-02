@@ -51,28 +51,6 @@ class SubscriptionService
     }
 
     /**
-     * Get a single pool.
-     *
-     * @param int $poolId    The pool id
-     *
-     * @return Pool|null
-     */
-    public function getPool(int $poolId): ?Pool
-    {
-        return $this->tenantService->round()->pools()->find($poolId);
-    }
-
-    /**
-     * Get the first pool.
-     *
-     * @return Pool|null
-     */
-    public function getFirstPool(): ?Pool
-    {
-        return $this->tenantService->round()->pools()->first();
-    }
-
-    /**
      * Get a paginated list of members.
      *
      * @param Pool $pool
@@ -135,17 +113,21 @@ class SubscriptionService
      */
     public function createSubscription(Pool $pool, int $memberId)
     {
-        // Cannot modify subscriptions if a session is already opened.
-        $this->sessionService->checkActiveSessions();
-
-        // Enforce unique subscription per member in libre pool.
-        $tontine = $this->tenantService->tontine();
-        if($tontine->is_libre && $pool->subscriptions()->where('member_id', $memberId)->count() > 0)
+        // When the remitments are planned, don't create a subscription
+        // if receivables already exist on the pool.
+        if($pool->remit_planned &&
+            $pool->subscriptions()->whereHas('receivables')->count() > 0)
         {
-            return;
+            throw new MessageException(trans('tontine.subscription.errors.create'));
+        }
+        // Enforce unique subscription per member in pool with libre deposit amount.
+        if(!$pool->deposit_fixed &&
+            $pool->subscriptions()->where('member_id', $memberId)->count() > 0)
+        {
+            throw new MessageException(trans('tontine.subscription.errors.create'));
         }
 
-        $member = $tontine->members()->find($memberId);
+        $member = $this->tenantService->tontine()->members()->find($memberId);
         $subscription = new Subscription();
         $subscription->title = '';
         $subscription->pool()->associate($pool);
@@ -167,13 +149,22 @@ class SubscriptionService
      */
     public function deleteSubscription(Pool $pool, int $memberId)
     {
-        // Cannot modify subscriptions if a session is already opened.
-        $this->sessionService->checkActiveSessions();
-
-        $subscription = $pool->subscriptions()->where('member_id', $memberId)->first();
+        // When the remitments are planned, don't delete a subscription
+        // if receivables already exist on the pool.
+        if($pool->remit_planned &&
+            $pool->subscriptions()->whereHas('receivables')->count() > 0)
+        {
+            throw new MessageException(trans('tontine.subscription.errors.delete'));
+        }
+        $subscription = $pool->subscriptions()->where('member_id', $memberId)
+            ->with(['payable', 'payable.remitment'])->first();
         if(!$subscription)
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
+        }
+        if($subscription->payable->remitment !== null)
+        {
+            throw new MessageException(trans('tontine.subscription.errors.delete'));
         }
 
         DB::transaction(function() use($subscription) {
@@ -226,15 +217,16 @@ class SubscriptionService
      * Set or unset the beneficiary of a given pool.
      *
      * @param Pool $pool
-     * @param Session $session
+     * @param int $sessionId
      * @param int $currSubscriptionId
      * @param int $nextSubscriptionId
      *
      * @return bool
      */
-    public function saveBeneficiary(Pool $pool, Session $session,
+    public function saveBeneficiary(Pool $pool, int $sessionId,
         int $currSubscriptionId, int $nextSubscriptionId): bool
     {
+        $session = $this->sessionService->getSession($sessionId);
         $currSubscription = null;
         if($currSubscriptionId > 0)
         {

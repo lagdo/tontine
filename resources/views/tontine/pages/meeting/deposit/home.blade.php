@@ -28,7 +28,8 @@
 @endphp
                         @include('tontine.pages.meeting.pool.' . $template, [
                           'pool' => $pool,
-                          'amount' => $tontine->is_libre ? __('tontine.labels.types.libre') : $locale->formatMoney($pool->amount, true),
+                          'amount' => $pool->deposit_fixed ?
+                            $locale->formatMoney($pool->amount, true) : __('tontine.labels.types.libre'),
                           'paid' => $pool->recv_paid,
                           'count' => $pool->recv_count,
                           'menuClass' => 'btn-pool-deposits',

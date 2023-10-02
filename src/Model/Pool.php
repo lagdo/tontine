@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Siak\Tontine\Model\Traits\HasCurrency;
 
-use function trans;
-
 class Pool extends Base
 {
     use HasFactory;
@@ -30,6 +28,16 @@ class Pool extends Base
         'title',
         'amount',
         'notes',
+        'properties',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'properties' => 'array',
     ];
 
     /**
@@ -42,10 +50,34 @@ class Pool extends Base
         return PoolFactory::new();
     }
 
-    public function getTitleAttribute($value)
+    public function getDepositFixedAttribute()
     {
-        return $this->round !== null && $this->round->tontine->is_libre ?
-            trans('tontine.pool.titles.free') : $value;
+        return $this->properties['deposit']['fixed'] === true;
+    }
+
+    public function getRemitFixedAttribute()
+    {
+        return $this->properties['remit']['fixed'] === true;
+    }
+
+    public function getRemitPlannedAttribute()
+    {
+        return $this->properties['remit']['planned'] === true;
+    }
+
+    public function getRemitAuctionAttribute()
+    {
+        return $this->properties['remit']['auction'] === true;
+    }
+
+    public function getRemitLendableAttribute()
+    {
+        return $this->properties['remit']['lendable'] === true;
+    }
+
+    public function getRemitPayableAttribute()
+    {
+        return $this->remit_fixed && $this->remit_planned && !$this->remit_auction;
     }
 
     public function round()

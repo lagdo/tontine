@@ -10,8 +10,6 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\TenantService;
 
-use function trans;
-
 class TontineService
 {
     /**
@@ -25,30 +23,6 @@ class TontineService
     public function __construct(TenantService $tenantService)
     {
         $this->tenantService = $tenantService;
-    }
-
-    /**
-     * @return array
-     */
-    public function getTontineTypes(): array
-    {
-        return [
-            Tontine::TYPE_LIBRE => trans('tontine.labels.types.libre'),
-            Tontine::TYPE_MUTUAL => trans('tontine.labels.types.mutual'),
-            Tontine::TYPE_FINANCIAL => trans('tontine.labels.types.financial'),
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getTontineDescriptions(): array
-    {
-        return [
-            Tontine::TYPE_LIBRE => trans('tontine.descriptions.types.libre'),
-            Tontine::TYPE_MUTUAL => trans('tontine.descriptions.types.mutual'),
-            Tontine::TYPE_FINANCIAL => trans('tontine.descriptions.types.financial'),
-        ];
     }
 
     /**
@@ -163,6 +137,19 @@ class TontineService
     }
 
     /**
+     * Check if the current tontine has at least financial pool.
+     *
+     * @return bool
+     */
+    public function hasPoolWithAuction(): bool
+    {
+        $round = $this->tenantService->round();
+        return $round && $round->pools->contains(function($pool) {
+            return $pool->remit_auction;
+        });
+    }
+
+    /**
      * Add a new tontine.
      *
      * @param array $values
@@ -172,7 +159,6 @@ class TontineService
     public function createTontine(array $values): bool
     {
         $this->tenantService->user()->tontines()->create($values);
-
         return true;
     }
 
@@ -198,6 +184,16 @@ class TontineService
      */
     public function deleteTontine(int $id)
     {
-        $this->tenantService->user()->tontines()->where('id', $id)->delete();
+        $tontine = $this->tenantService->user()->tontines()->find($id);
+        if(!$tontine)
+        {
+            return;
+        }
+        DB::transaction(function() use($tontine) {
+            $tontine->members()->delete();
+            $tontine->rounds()->delete();
+            $tontine->charges()->delete();
+            $tontine->delete();
+        });
     }
 }

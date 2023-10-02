@@ -16,6 +16,12 @@
                 {!! Form::date('end_at', substr($round->end_at, 0, 10), ['class' => 'form-control']) !!}
               </div>
             </div>
+            <div class="form-group row">
+              {!! Form::label('notes', __('common.labels.notes'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+              <div class="col-sm-8">
+                {!! Form::text('notes', $round->notes, ['class' => 'form-control']) !!}
+              </div>
+            </div>
           </div>
         </form>
       </div>

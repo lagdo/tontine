@@ -11,13 +11,10 @@ use App\Ajax\App\Meeting\Credit\Loan;
 use App\Ajax\App\Meeting\Credit\Profit;
 use App\Ajax\App\Meeting\Credit\PartialRefund;
 use App\Ajax\App\Meeting\Credit\Refund;
+use App\Ajax\App\Meeting\Pool\Auction;
 use App\Ajax\App\Meeting\Pool\Deposit;
-use App\Ajax\App\Meeting\Pool\Remitment\Auction;
-use App\Ajax\App\Meeting\Pool\Remitment\Financial;
-use App\Ajax\App\Meeting\Pool\Remitment\Libre;
-use App\Ajax\App\Meeting\Pool\Remitment\Mutual;
+use App\Ajax\App\Meeting\Pool\Remitment;
 use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Model\Tontine as TontineModel;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
@@ -95,7 +92,6 @@ class Session extends CallableClass
             SessionModel::STATUS_OPENED => trans('tontine.session.status.opened'),
             SessionModel::STATUS_CLOSED => trans('tontine.session.status.closed'),
         ];
-
         $html = $this->view()->render('tontine.pages.meeting.session.page')
             ->with('sessions', $sessions)
             ->with('statuses', $statuses)
@@ -110,23 +106,13 @@ class Session extends CallableClass
     }
 
     /**
-     * @param TontineModel $tontine
-     *
      * @return void
      */
-    private function pools(TontineModel $tontine)
+    private function pools()
     {
         $this->cl(Deposit::class)->show($this->session);
-        $remitmentClass = match($tontine->type) {
-            TontineModel::TYPE_MUTUAL => Mutual::class,
-            TontineModel::TYPE_FINANCIAL => Financial::class,
-            TontineModel::TYPE_LIBRE => Libre::class,
-        };
-        $this->cl($remitmentClass)->show($this->session);
-        if($tontine->is_financial)
-        {
-            $this->cl(Auction::class)->show($this->session);
-        }
+        $this->cl(Remitment::class)->show($this->session);
+        $this->cl(Auction::class)->show($this->session);
     }
 
     /**
@@ -194,12 +180,11 @@ class Session extends CallableClass
     /**
      * @databag refund
      * @before getSessionFromArgs
+     * @di $tontineService
      */
     public function show(int $sessionId)
     {
-        $tontine = $this->sessionService->getTontine();
         $html = $this->view()->render('tontine.pages.meeting.session.home', [
-            'tontine' => $tontine,
             'session' => $this->session,
         ]);
         $this->response->html('content-home', $html);
@@ -214,7 +199,7 @@ class Session extends CallableClass
             ->confirm(trans('tontine.session.questions.close')));
 
         $this->reports();
-        $this->pools($tontine);
+        $this->pools();
         $this->charges();
         $this->cash();
         $this->credits();
@@ -226,6 +211,7 @@ class Session extends CallableClass
     /**
      * @databag refund
      * @before getSession
+     * @di $tontineService
      */
     public function open()
     {
@@ -238,6 +224,7 @@ class Session extends CallableClass
     /**
      * @databag refund
      * @before getSession
+     * @di $tontineService
      */
     public function close()
     {

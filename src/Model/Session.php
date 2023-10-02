@@ -160,6 +160,11 @@ class Session extends Base
         return $this->hasMany(Loan::class);
     }
 
+    public function auctions()
+    {
+        return $this->hasMany(Auction::class);
+    }
+
     public function refunds()
     {
         return $this->hasMany(Refund::class);

@@ -4,6 +4,7 @@
                           <th>{!! __('common.labels.title') !!}</th>
                           <th>{!! __('common.labels.start') !!}</th>
                           <th>{!! __('common.labels.end') !!}</th>
+                          <th>{!! __('common.labels.notes') !!}</th>
                           <th class="table-menu"></th>
                         </tr>
                       </thead>
@@ -13,6 +14,7 @@
                           <td>{{ $round->title }}</td>
                           <td>{{ $round->start }}</td>
                           <td>{{ $round->end }}</td>
+                          <td>{{ $round->notes }}</td>
                           <td class="table-item-menu">
 @include('tontine.parts.table.menu', [
   'dataIdKey' => 'data-round-id',

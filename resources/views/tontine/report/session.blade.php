@@ -35,7 +35,7 @@
 
           @include('tontine.report.session.remitments', $remitments)
 
-@if ($tontine->is_financial)
+@if ($remitments['pools']->filter(function($pool) { return $pool->remit_auction; })->count() > 0)
           @include('tontine.report.session.auctions', $remitments)
 @endif
 

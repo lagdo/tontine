@@ -2,20 +2,15 @@
 
 namespace Siak\Tontine\Service\Meeting\Credit;
 
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Debt;
-use Siak\Tontine\Model\Disbursement;
-use Siak\Tontine\Model\Funding;
 use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Pool;
-use Siak\Tontine\Model\PartialRefund;
-use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Model\Settlement;
+use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
@@ -34,13 +29,21 @@ class LoanService
     protected TenantService $tenantService;
 
     /**
+     * @var BalanceCalculator
+     */
+    protected BalanceCalculator $balanceCalculator;
+
+    /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
+     * @param BalanceCalculator $balanceCalculator
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService,
+        BalanceCalculator $balanceCalculator)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
+        $this->balanceCalculator = $balanceCalculator;
     }
 
     /**
@@ -126,42 +129,7 @@ class LoanService
      */
     public function getAmountAvailable(Session $session): int
     {
-        // Get the ids of all the sessions until the current one.
-        $sessionIds = $this->tenantService->getPreviousSessions($session);
-
-        // The amount available for lending is the sum of the fundings and refunds,
-        // minus the sum of the loans, for all the sessions until the selected.
-        $funding = Funding::select(DB::raw('sum(amount) as total'))
-            ->whereIn('session_id', $sessionIds)
-            ->value('total');
-        $settlement = Settlement::select(DB::raw('sum(bills.amount) as total'))
-            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-            ->whereIn('settlements.session_id', $sessionIds)
-            ->where('bills.lendable', true)
-            ->value('total');
-        // Partial refunds on debts that are not yet refunded.
-        $partialRefund = PartialRefund::select(DB::raw('sum(partial_refunds.amount) as total'))
-            ->join('debts', 'partial_refunds.debt_id', '=', 'debts.id')
-            ->whereIn('partial_refunds.session_id', $sessionIds)
-            ->whereNotExists(function (Builder $query) {
-                $query->select(DB::raw(1))->from('refunds')
-                    ->whereColumn('refunds.debt_id', 'debts.id');
-            })
-            ->value('total');
-        $refund = Refund::select(DB::raw('sum(debts.amount) as total'))
-            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
-            ->whereIn('refunds.session_id', $sessionIds)
-            ->value('total');
-        $debt = Debt::principal()->select(DB::raw('sum(debts.amount) as total'))
-            ->join('loans', 'debts.loan_id', '=', 'loans.id')
-            ->whereIn('loans.session_id', $sessionIds)
-            ->value('total');
-        $disbursement = Disbursement::select(DB::raw('sum(amount) as total'))
-            ->whereIn('session_id', $sessionIds)
-            ->where('charge_lendable', true)
-            ->value('total');
-
-        return $funding + $settlement + $refund + $partialRefund - $debt - $disbursement;
+        return $this->balanceCalculator->getBalanceForLoan($session);
     }
 
     /**
@@ -197,7 +165,7 @@ class LoanService
      */
     public function getSessionLoans(Session $session): Collection
     {
-        return $session->loans()->whereDoesntHave('remitment')->with(['member'])->get();
+        return $session->loans()->with(['member'])->get();
     }
 
     /**

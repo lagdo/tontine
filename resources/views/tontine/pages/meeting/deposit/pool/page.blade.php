@@ -3,11 +3,11 @@
                   <thead>
                     <tr>
                       <th>{!! __('common.labels.name') !!}</th>
-@if ($tontine->is_libre)
-                      <th class="currency">{!! __('common.labels.paid') !!}</th>
-@else
+@if ($pool->deposit_fixed)
                       <th class="currency">{!! __('common.labels.amount') !!}</th>
                       <th class="table-item-menu">{!! __('common.labels.paid') !!}</th>
+@else
+                      <th class="currency">{!! __('common.labels.paid') !!}</th>
 @endif
                     </tr>
                   </thead>
@@ -15,7 +15,12 @@
 @foreach ($receivables as $receivable)
                     <tr>
                       <td>{{ $receivable->subscription->member->name }}</td>
-@if ($tontine->is_libre)
+@if ($pool->deposit_fixed)
+                      <td class="currency">{{ $locale->formatMoney($receivable->subscription->pool->amount, true) }}</td>
+                      <td class="table-item-menu" id="receivable-{{ $receivable->id }}" data-receivable-id="{{ $receivable->id }}">
+                        {!! paymentLink($receivable->deposit, 'deposit', !$session->opened) !!}
+                      </td>
+@else
                       <td class="currency" id="receivable-{{ $receivable->id }}" data-receivable-id="{{ $receivable->id }}" style="width:200px">
 @if ($session->closed)
                         @include('tontine.pages.meeting.deposit.libre.closed', [
@@ -32,11 +37,6 @@
                           'amount' => $locale->formatMoney($receivable->deposit->amount, true),
                         ])
 @endif
-                      </td>
-@else
-                      <td class="currency">{{ $locale->formatMoney($receivable->subscription->pool->amount, true) }}</td>
-                      <td class="table-item-menu" id="receivable-{{ $receivable->id }}" data-receivable-id="{{ $receivable->id }}">
-                        {!! paymentLink($receivable->deposit, 'deposit', !$session->opened) !!}
                       </td>
 @endif
                     </tr>

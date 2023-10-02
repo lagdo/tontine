@@ -16,10 +16,8 @@ return [
         'session' => "Séance",
         'rounds' => "Tours",
         'sessions' => "Séances",
-        'pools' => "Fonds",
-        'balance' => "Bilan",
+        'pools' => "Tontines",
         'subscriptions' => "Souscriptions",
-        'beneficiaries' => "Bénéficiaires",
         'payments' => "Paiements",
         'profile' => "Profil",
         'logout' => "Se déconnecter",
@@ -64,10 +62,14 @@ return [
     'messages' => [
         'created' => "L'association a été ajoutée",
         'updated' => "L'association a été modifiée",
+        'deleted' => "L'association a été supprimée",
         'selected' => "Vous avez sélectionné l'association :tontine. Vous devez encore ajouter des tours sur sa tontine.",
         'screen' => [
             'orientation' => "Si vous utilisez un appareil mobile, nous vous conseillons de le placer en mode paysage, pour un meilleur affichage.",
         ],
+    ],
+    'questions' => [
+        'delete' => "Supprimer cette association ? Ses members, tours et frais seront également supprimés.",
     ],
     'errors' => [
         'action' => "Action impossible.",
@@ -96,7 +98,7 @@ return [
         'tips' => [
             'list' => 'Cliquez sur le bouton "Liste" pour saisir une liste des membres dans une zone de texte.',
             'add' => "Saisir un nom sur chaque ligne. S'il y a un numéro de téléphone ou un email, le séparer avec un point-virgule.",
-            'example' => 'Par example,<br/>"Jean Amadou"<br/>ou<br/>"Jean Amadou;jean.amadou@gmail.com;237670000000"',
+            'example' => "Par example,<br/>Jean Amadou<br/>ou<br/>Jean Amadou;jean.amadou@gmail.com;237670000000",
         ],
         'titles' => [
             'add' => "Ajouter des membres",
@@ -106,6 +108,9 @@ return [
             'created' => "Les membres ont été ajoutés.",
             'updated' => "Le membre a été modifié.",
             'deleted' => "Le membre a été supprimé.",
+        ],
+        'questions' => [
+            'delete' => "Supprimer ce membre ?",
         ],
         'errors' => [
             'not_found' => "Impossible de trouver le membre correspondant.",
@@ -158,11 +163,16 @@ return [
             'closed' => "Fermée",
         ],
         'titles' => [
-            'add' => "Ajouter des séances",
+            'add' => "Ajouter une séance",
+            'add-list' => "Ajouter des séances",
             'edit' => "Modifier une séance",
             'title' => "Séance de :month :year",
             'host' => "Choisir l'hôte",
             'venue' => "Lieu",
+        ],
+        'tips' => [
+            'add' => "Saisir une séance sur chaque ligne. Séparer le titre et la date avec un point-virgule. La date doit être au format AAAA-MM-JJ",
+            'example' => "Par example,<br/>Séance de novembre 2023;2023-11-03",
         ],
         'labels' => [
             'times' => "Horaires",
@@ -187,44 +197,83 @@ return [
         ],
         'errors' => [
             'opened' => "Une séance a déjà été ouverte.",
+            'delete' => "Impossible de supprimer cette séance.",
         ],
     ],
     'pool' => [
         'titles' => [
-            'add' => "Ajouter des fonds",
-            'edit' => "Modifier un fonds",
-            'deposits' => "Bilan des dépôts",
-            'remitments' => "Bilan des remises",
+            'add' => "Ajouter une tontine",
+            'add_many' => "Ajouter des tontines",
+            'edit' => "Modifier une tontine",
+            'deposits' => "Dépôts",
+            'remitments' => "Remises",
             'subscriptions' => "Souscriptions",
-            'free' => "Fonds libre",
+            'members' => "Membres",
+            'sessions' => "Séances",
+        ],
+        'labels' => [
+            'fixed' => "Montant fixe",
+            'planned' => "Planifiée",
+            'auction' => "Aux enchères",
+            'lendable' => "Disponible pour prêt",
+            'deposit' => [
+                'fixed' => "Le montant des dépôts est fixe",
+            ],
+            'remit' => [
+                'fixed' => "Le montant des remises est fixe",
+                'planned' => "Le nombre de remises est défini à l'avance",
+                'auction' => "Les remises se font après enchères",
+                'lendable' => "Les montants en caisse peuvent être prêtés",
+            ],
+        ],
+        'help' => [
+            'intro' => "Vous allez ajouter une nouvelle tontine.<br/>" .
+                "Nous allons vous demander de préciser ses caractéristiques.",
+            'deposit' => [
+                'fixed' => "Cochez la case ci-dessous chaque membre qui souscrit à cette tontine doit verser un montant fixe à chaque séance.",
+            ],
+            'remit' => [
+                'fixed' => "Cochez la case ci-dessous si chaque bénéficiaire recevra la totalité du montant correspondant à ses dépôts.",
+                'planned' => "Cochez la case ci-dessous si le nombre de bénéficiaires à chaque séance est déterminé à l'avance.",
+                'auction' => "Cochez la case ci-dessous si le choix des bénéficiaires des cotisations est soumis aux enchères.",
+                'lendable' => "Cochez la case ci-dessous si les montants des cotisations restant en caisse peuvent être prêtés.",
+            ],
         ],
         'actions' => [
             'subscriptions' => "Souscriptions",
         ],
         'questions' => [
-            'delete' => "Supprimer ce fond?<br/>Il ne faut pas qu'il ait de souscription.",
+            'delete' => "Supprimer cette tontine?<br/>Il ne faut pas qu'il ait de souscription.",
         ],
         'messages' => [
-            'created' => "Le fonds a été ajouté.",
-            'updated' => "Le fonds a été modifié.",
-            'deleted' => "Le fonds a été supprimé.",
+            'created' => "La tontine a été ajoutée.",
+            'updated' => "La tontine a été modifiée.",
+            'deleted' => "La tontine a été supprimée.",
         ],
         'errors' => [
             'number' => [
                 'invalid' => "Vous devez entrer un nombre valide.",
                 'max' => "Vous pouvez ajouter au plus :max entrées.",
             ],
-            'subscription' => "Ce fonds a encore des souscriptions.",
+            'subscription' => "Cette tontines a encore des souscriptions.",
             'no_subscription' => "Il y a encore des fonds sans souscription.",
         ],
     ],
     'subscription' => [
+        'titles' => [
+            'beneficiaries' => "Bénéficiaires",
+            'planning' => "Planning",
+            'deposits' => "Bilan des dépôts",
+            'remitments' => "Bilan des remises",
+        ],
         'messages' => [
             'created' => "La souscription du membre a été enregistrée.",
             'deleted' => "La souscription du membre a été supprimée.",
         ],
         'errors' => [
             'not_found' => "Impossible de trouver la souscription correspondante.",
+            'create' => "Impossible de créer une nouvelle souscription.",
+            'delete' => "Impossible de supprimer la souscription.",
         ],
     ],
     'beneficiary' => [
@@ -235,6 +284,9 @@ return [
     'remitment' => [
         'labels' => [
             'not-assigned' => "** Pas attribué **",
+        ],
+        'errors' => [
+            'planning' => "Le bénéficiaire choisi est déjà planifié sur une autre séance.",
         ],
     ],
 ];

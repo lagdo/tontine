@@ -3,16 +3,14 @@
 namespace App\Ajax;
 
 use App\Ajax\App\Meeting\Session as MeetingSession;
-use App\Ajax\App\Planning\Beneficiary;
 use App\Ajax\App\Planning\Pool;
 use App\Ajax\App\Planning\Session as PlanningSession;
-use App\Ajax\App\Planning\Summary as PlanningSummary;
+use App\Ajax\App\Planning\Subscription;
 use App\Ajax\App\Report\Round as RoundReport;
 use App\Ajax\App\Report\Session as SessionReport;
 use App\Ajax\App\Tontine\Charge;
 use App\Ajax\App\Tontine\Member;
 use App\Ajax\App\Tontine\Round as TontineRound;
-use App\Ajax\App\Tontine\Select;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Model\User;
@@ -21,7 +19,6 @@ use Jaxon\App\Dialog\MessageInterface;
 use Jaxon\App\Dialog\ModalInterface;
 
 use function floor;
-use function Jaxon\jq;
 
 class CallableClass extends JaxonCallableClass
 {
@@ -106,23 +103,12 @@ class CallableClass extends JaxonCallableClass
         $this->response->html('sidebar-menu-round', $this->view()->render('tontine.parts.sidebar.round'));
         $this->jq('a', '#sidebar-menu-round')->css('color', '#6777ef');
 
-        $this->jq('#planning-menu-subscriptions')->click($this->cl(Pool::class)->rq()->home());
         $this->jq('#planning-menu-sessions')->click($this->cl(PlanningSession::class)->rq()->home());
-        $this->jq('#planning-menu-beneficiaries')->click($this->cl(Beneficiary::class)->rq()->home());
-        $this->jq('#planning-menu-balance')->click($this->cl(PlanningSummary::class)->rq()->home());
+        $this->jq('#planning-menu-pools')->click($this->cl(Pool::class)->rq()->home());
+        $this->jq('#planning-menu-subscriptions')->click($this->cl(Subscription::class)->rq()->home());
         $this->jq('#meeting-menu-sessions')->click($this->cl(MeetingSession::class)->rq()->home());
         $this->jq('#report-menu-session')->click($this->cl(SessionReport::class)->rq()->home());
         $this->jq('#report-menu-round')->click($this->cl(RoundReport::class)->rq()->home());
-    }
-
-    /**
-     * @return void
-     */
-    protected function setTontineButtonHandlers()
-    {
-        $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
-        $this->jq('.btn-tontine-edit')->click($this->rq()->edit($tontineId));
-        $this->jq('.btn-tontine-choose')->click($this->cl(Select::class)->rq()->saveTontine($tontineId));
     }
 
     /**

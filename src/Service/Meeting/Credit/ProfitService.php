@@ -125,11 +125,9 @@ class ProfitService
         // Sum the interest refunds.
         $refund = DB::table('refunds')
             ->join('debts', 'refunds.debt_id', '=', 'debts.id')
-            ->join('loans', 'loans.id', '=', 'debts.loan_id')
             ->select(DB::raw("sum(debts.amount) as interest"))
             ->where('debts.type', Debt::TYPE_INTEREST)
             ->whereIn('refunds.session_id', $sessionIds)
-            ->whereNull('loans.remitment_id')
             ->first();
 
         return $refund->interest ?? 0;

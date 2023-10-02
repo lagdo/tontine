@@ -41,6 +41,8 @@ class Member extends CallableClass
         $this->fines($session, $member);
         $this->fundings($session, $member);
         $this->disbursements($session, $member);
+        // Empty the profits section.
+        $this->response->html('report-profits', '');
     }
 
     private function deposits(SessionModel $session, MemberModel $member)
@@ -55,6 +57,7 @@ class Member extends CallableClass
     {
         $html = $this->view()->render('tontine.pages.report.session.member.remitments', [
             'payables' => $this->memberService->getPayables($session, $member),
+            'auctions' => $this->memberService->getAuctions($session, $member),
         ]);
         $this->response->html('report-remitments', $html);
     }

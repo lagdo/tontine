@@ -97,6 +97,7 @@ return [
             'auctions' => "Enchères",
         ],
         'labels' => [
+            'amount' => "Amount à remettre",
             'auction' => "Enchère",
         ],
     ],

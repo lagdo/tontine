@@ -90,22 +90,19 @@ class ChargeService
     }
 
     /**
-     * Add new charges.
+     * Add new charge.
      *
      * @param array $values
      *
      * @return bool
      */
-    public function createCharges(array $values): bool
+    public function createCharge(array $values): bool
     {
         DB::transaction(function() use($values) {
             $tontine = $this->tenantService->tontine();
-            $charges = $tontine->charges()->createMany($values);
+            $charge = $tontine->charges()->create($values);
             // Create charges bills
-            foreach($charges as $charge)
-            {
-                $this->chargeCreated($tontine, $charge);
-            }
+            $this->chargeCreated($tontine, $charge);
         });
         return true;
     }

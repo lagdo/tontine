@@ -16,10 +16,15 @@
                       <tbody>
 @foreach($pools as $pool)
                         <tr>
-                          <td>{{ $pool->title }}<br/>{{ $tontine->is_libre ?
-                            __('tontine.labels.types.libre') : $locale->formatMoney($pool->amount, true) }}</td>
-                          <td>{{ $pool->paid_count }}</td>
-                          <td class="currency">{{ $locale->formatMoney($pool->paid_amount, true) }}</td>
+                          <td>{{ $pool->title }}<br/>{{ $pool->deposit_fixed ?
+                            $locale->formatMoney($pool->amount, true) : __('tontine.labels.types.libre') }}</td>
+                          <td>{{ $pool->paid_count }}@if ($pool->remit_planned && !$pool->remit_auction) / {{ $pool->total_count }}@endif</td>
+                          <td class="currency">
+                            {{ $locale->formatMoney($pool->paid_amount, true) }}
+@isset($auctions[$pool->id])
+                            <br/>{{ __('meeting.remitment.labels.auction') }}: {{ $locale->formatMoney($auctions[$pool->id]) }}
+@endisset
+                          </td>
                         </tr>
 @endforeach
                       </tbody>

@@ -3,7 +3,7 @@
 namespace Siak\Tontine\Service\Traits;
 
 use DateTime;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Builder;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\TontineBill;
 use Siak\Tontine\Model\RoundBill;
@@ -174,7 +174,8 @@ trait EventTrait
             },
         ])->get();
         $charges = $tontine->charges()->session()->get();
-        // Create a session bill for each member and each session charge
+
+        // Sync the session bills for each member and each session charge
         foreach($charges as $charge)
         {
             foreach($members as $member)
@@ -189,12 +190,16 @@ trait EventTrait
             }
         };
 
-        // Create the receivables for each subscription on each pool
+        // Sync the receivables for each subscription on each pool
         foreach($session->round->pools as $pool)
         {
             if($session->enabled($pool))
             {
-                foreach($pool->subscriptions as $subscription)
+                $subscriptions = $pool->subscriptions()
+                    ->whereDoesntHave('receivables', function(Builder $query) use($session) {
+                        return $query->where('session_id', $session->id);
+                    });
+                foreach($subscriptions->get() as $subscription)
                 {
                     $subscription->receivables()->create(['session_id' => $session->id]);
                 }

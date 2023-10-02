@@ -2,18 +2,20 @@
 
 namespace App\Ajax\App\Planning;
 
-use App\Ajax\App\Faker;
 use App\Ajax\CallableClass;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Service\Planning\PoolService;
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\Planning\PoolValidator;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
-use function config;
 use function trans;
 
+/**
+ * @databag pool
+ */
 class Pool extends CallableClass
 {
     /**
@@ -21,6 +23,11 @@ class Pool extends CallableClass
      * @var TenantService
      */
     protected TenantService $tenantService;
+
+    /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
 
     /**
      * @di
@@ -34,12 +41,6 @@ class Pool extends CallableClass
     protected PoolValidator $validator;
 
     /**
-     * @var bool
-     */
-    protected bool $fromHome = false;
-
-    /**
-     * @databag pool
      * @databag subscription
      * @after hideMenuOnMobile
      */
@@ -50,15 +51,11 @@ class Pool extends CallableClass
         $this->response->html('section-title', trans('tontine.menus.planning'));
         $this->response->html('content-home', $html);
         $this->jq('#btn-refresh')->click($this->rq()->home());
-        $this->jq('#btn-create')->click($this->rq()->number());
+        $this->jq('#btn-create')->click($this->rq()->showIntro());
 
-        $this->fromHome = true;
-        return $this->page($this->bag('pool')->get('page', 1));
+        return $this->page();
     }
 
-    /**
-     * @databag pool
-     */
     public function page(int $pageNumber = 0)
     {
         $poolCount = $this->poolService->getPoolCount();
@@ -70,41 +67,260 @@ class Pool extends CallableClass
             ->with('tontine', $this->tenantService->tontine())
             ->with('pools', $pools)
             ->with('pagination', $pagination);
-        $this->response->html('pool-page', $html);
-
-        if($this->tenantService->tontine()->is_libre || ($this->fromHome && $poolCount > 0))
-        {
-            // Show the subscriptions of the first pool in the list
-            $this->cl(Subscription::class)->show($pools[0]);
-        }
+        $this->response->html('content-page', $html);
 
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
         $this->jq('.btn-pool-edit')->click($this->rq()->edit($poolId));
-        $this->jq('.btn-pool-subscriptions')->click($this->cl(Subscription::class)->rq()->home($poolId));
+        // $this->jq('.btn-pool-subscriptions')->click($this->cl(Subscription::class)->rq()->home($poolId));
         $this->jq('.btn-pool-delete')->click($this->rq()->delete($poolId)
             ->confirm(trans('tontine.pool.questions.delete')));
 
         return $this->response;
     }
 
-    public function number()
+    public function showIntro()
     {
-        // Disabled for libre tontines
-        if($this->tenantService->tontine()->is_libre)
-        {
-            return $this->response;
-        }
-
-        $title = trans('number.labels.title');
-        $content = $this->view()->render('tontine.pages.planning.pool.number');
+        $title = trans('tontine.pool.titles.add');
+        $content = $this->view()->render('tontine.pages.planning.pool.add_intro');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
             'click' => 'close',
         ],[
-            'title' => trans('common.actions.add'),
+            'title' => trans('common.actions.next'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->add(pm()->input('text-number')->toInt()),
+            'click' => $this->rq()->showDepositFixed(),
+        ]];
+        $this->dialog->show($title, $content, $buttons);
+        $this->bag('pool')->set('add', []);
+
+        return $this->response;
+    }
+
+    public function showDepositFixed()
+    {
+        $this->dialog->hide();
+
+        $title = trans('tontine.pool.titles.deposits');
+        $properties = $this->bag('pool')->get('add', []);
+        $content = $this->view()->render('tontine.pages.planning.pool.deposit_fixed')
+            ->with('fixed', $properties['deposit']['fixed'] ?? true);
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.next'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->saveDepositFixed(pm()->checked('pool_deposit_fixed')),
+        ]];
+        $this->dialog->show($title, $content, $buttons);
+
+        return $this->response;
+    }
+
+    public function saveDepositFixed(bool $fixed)
+    {
+        $properties = $this->bag('pool')->get('add', []);
+        $properties['deposit']['fixed'] = $fixed;
+        $this->bag('pool')->set('add', $properties);
+
+        return $this->showRemitFixed();
+    }
+
+    public function showRemitFixed()
+    {
+        $this->dialog->hide();
+
+        $title = trans('tontine.pool.titles.remitments');
+        $properties = $this->bag('pool')->get('add', []);
+        $content = $this->view()->render('tontine.pages.planning.pool.remit_fixed')
+            ->with('fixed', $properties['remit']['fixed'] ?? true);
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.prev'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->showDepositFixed(),
+        ],[
+            'title' => trans('common.actions.next'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->saveRemitFixed(pm()->checked('pool_remit_fixed')),
+        ]];
+        $this->dialog->show($title, $content, $buttons);
+
+        return $this->response;
+    }
+
+    public function saveRemitFixed(bool $fixed)
+    {
+        $properties = $this->bag('pool')->get('add', []);
+        $properties['remit']['fixed'] = $fixed;
+
+        if(!$properties['deposit']['fixed'] && !$properties['remit']['fixed'])
+        {
+            $properties['remit']['planned'] = true;
+            $properties['remit']['auction'] = false;
+            $this->bag('pool')->set('add', $properties);
+
+            return $this->showRemitLendable();
+        }
+        if(!$properties['deposit']['fixed'] && $properties['remit']['fixed'])
+        {
+            $properties['remit']['planned'] = true;
+            $properties['remit']['auction'] = false;
+            $properties['remit']['lendable'] = false;
+            $this->bag('pool')->set('add', $properties);
+
+            return $this->add();
+        }
+        if($properties['deposit']['fixed'] && !$properties['remit']['fixed'])
+        {
+            $properties['remit']['planned'] = false;
+            $this->bag('pool')->set('add', $properties);
+
+            return $this->showRemitAuction();
+        }
+
+        $this->bag('pool')->set('add', $properties);
+
+        return $this->showRemitPlanned();
+    }
+
+    public function showRemitPlanned()
+    {
+        $this->dialog->hide();
+
+        $title = trans('tontine.pool.titles.remitments');
+        $properties = $this->bag('pool')->get('add', []);
+        $content = $this->view()->render('tontine.pages.planning.pool.remit_planned')
+            ->with('planned', $properties['remit']['planned'] ?? true);
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.prev'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->showRemitFixed(),
+        ],[
+            'title' => trans('common.actions.next'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->saveRemitPlanned(pm()->checked('pool_remit_planned')),
+        ]];
+        $this->dialog->show($title, $content, $buttons);
+
+        return $this->response;
+    }
+
+    public function saveRemitPlanned(bool $planned)
+    {
+        $properties = $this->bag('pool')->get('add', []);
+        $properties['remit']['planned'] = $planned;
+        $this->bag('pool')->set('add', $properties);
+
+        return $this->showRemitAuction();
+    }
+
+    public function showRemitAuction()
+    {
+        $this->dialog->hide();
+
+        $properties = $this->bag('pool')->get('add', []);
+        $prevAction = $this->rq()->showRemitPlanned();
+        if($properties['deposit']['fixed'] && !$properties['remit']['fixed'])
+        {
+            $prevAction = $this->rq()->showRemitFixed();
+        }
+
+        $title = trans('tontine.pool.titles.remitments');
+        $content = $this->view()->render('tontine.pages.planning.pool.remit_auction')
+            ->with('auction', $properties['remit']['auction'] ?? false);
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.prev'),
+            'class' => 'btn btn-primary',
+            'click' => $prevAction,
+        ],[
+            'title' => trans('common.actions.next'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->saveRemitAuction(pm()->checked('pool_remit_auction')),
+        ]];
+        $this->dialog->show($title, $content, $buttons);
+
+        return $this->response;
+    }
+
+    public function saveRemitAuction(bool $auction)
+    {
+        $properties = $this->bag('pool')->get('add', []);
+        $properties['remit']['auction'] = $auction;
+        $this->bag('pool')->set('add', $properties);
+
+        return $this->showRemitLendable();
+    }
+
+    public function showRemitLendable()
+    {
+        $this->dialog->hide();
+
+        $properties = $this->bag('pool')->get('add', []);
+        $prevAction = $this->rq()->showRemitAuction();
+        if(!$properties['deposit']['fixed'] && !$properties['remit']['fixed'])
+        {
+            $prevAction = $this->rq()->showRemitFixed();
+        }
+
+        $title = trans('tontine.pool.titles.remitments');
+        $content = $this->view()->render('tontine.pages.planning.pool.remit_lendable')
+            ->with('lendable', $properties['remit']['lendable'] ?? false);
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.prev'),
+            'class' => 'btn btn-primary',
+            'click' => $prevAction,
+        ],[
+            'title' => trans('common.actions.next'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->saveRemitLendable(pm()->checked('pool_remit_lendable')),
+        ]];
+        $this->dialog->show($title, $content, $buttons);
+
+        return $this->response;
+    }
+
+    public function saveRemitLendable(bool $lendable)
+    {
+        $properties = $this->bag('pool')->get('add', []);
+        $properties['remit']['lendable'] = $lendable;
+        $this->bag('pool')->set('add', $properties);
+
+        return $this->add();
+    }
+
+    public function add()
+    {
+        $this->dialog->hide();
+
+        $title = trans('tontine.pool.titles.add');
+        $content = $this->view()->render('tontine.pages.planning.pool.add')
+            ->with('options', $this->bag('pool')->get('add', []));
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.save'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->create(pm()->form('pool-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
 
@@ -112,75 +328,24 @@ class Pool extends CallableClass
     }
 
     /**
-     * @databag faker
-     */
-    public function add(int $count)
-    {
-        // Disabled for libre tontines
-        if($this->tenantService->tontine()->is_libre)
-        {
-            return $this->response;
-        }
-        if($count <= 0)
-        {
-            $this->notify->warning(trans('number.errors.invalid'));
-            return $this->response;
-        }
-        if($count > 10)
-        {
-            $this->notify->warning(trans('number.errors.max', ['max' => 10]));
-            return $this->response;
-        }
-
-        $this->dialog->hide();
-
-        $useFaker = config('jaxon.app.faker');
-        $html = $this->view()->render('tontine.pages.planning.pool.add')
-            ->with('useFaker', $useFaker)
-            ->with('count', $count);
-        $this->response->html('content-home', $html);
-        $this->jq('#btn-cancel')->click($this->rq()->home());
-        $this->jq('#btn-save')->click($this->rq()->create(pm()->form('pool-form')));
-        if($useFaker)
-        {
-            $this->bag('faker')->set('pool.count', $count);
-            $this->jq('#btn-fakes')->click($this->cl(Faker::class)->rq()->pools());
-        }
-
-        return $this->response;
-    }
-
-    /**
-     * @databag pool
      * @databag subscription
      * @di $validator
      */
     public function create(array $formValues)
     {
-        // Disabled for libre tontines
-        if($this->tenantService->tontine()->is_libre)
-        {
-            return $this->response;
-        }
+        $formValues['properties'] = $this->bag('pool')->get('add', []);
+        $values = $this->validator->validateItem($formValues);
+        $this->poolService->createPool($values);
 
-        $values = $this->validator->validateList($formValues['pools'] ?? []);
-
-        $this->poolService->createPools($values);
+        $this->dialog->hide();
         $this->notify->success(trans('tontine.pool.messages.created'), trans('common.titles.success'));
 
-        return $this->home();
+        return $this->page();
     }
 
     public function edit(int $poolId)
     {
-        // Disabled for libre tontines
-        if($this->tenantService->tontine()->is_libre)
-        {
-            return $this->response;
-        }
-
         $pool = $this->poolService->getPool($poolId);
-
         $title = trans('tontine.pool.titles.edit');
         $content = $this->view()->render('tontine.pages.planning.pool.edit')
             ->with('pool', $pool)
@@ -204,33 +369,20 @@ class Pool extends CallableClass
      */
     public function update(int $poolId, array $formValues)
     {
-        // Disabled for libre tontines
-        if($this->tenantService->tontine()->is_libre)
-        {
-            return $this->response;
-        }
-
-        $values = $this->validator->validateItem($formValues);
         $pool = $this->poolService->getPool($poolId);
-
+        // The properties field cannot be changed.
+        $formValues['properties'] = $pool->properties;
+        $values = $this->validator->validateItem($formValues);
         $this->poolService->updatePool($pool, $values);
 
         $this->dialog->hide();
-        // Back to current page
-        $this->page();
         $this->notify->success(trans('tontine.pool.messages.updated'), trans('common.titles.success'));
 
-        return $this->response;
+        return $this->page();
     }
 
     public function delete(int $poolId)
     {
-        // Disabled for libre tontines
-        if($this->tenantService->tontine()->is_libre)
-        {
-            return $this->response;
-        }
-
         $pool = $this->poolService->getPool($poolId);
         if($pool->subscriptions()->count() > 0)
         {

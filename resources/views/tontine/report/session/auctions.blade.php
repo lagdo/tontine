@@ -8,7 +8,7 @@
 @php
   $total = 0;
 @endphp
-@if ($session->enabled($pool))
+@if ($pool->remit_auction && $session->enabled($pool))
                   <div class="row">
                     <div class="col">
                       <h6>{{ $pool->title }}</h6>
@@ -27,18 +27,15 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($loans as $loan)
+@foreach ($auctions as $auction)
+@if ($auction->pool->id === $pool->id)
 @php
-  $payable = $loan->remitment->payable;
-@endphp
-@if ($payable->subscription->pool_id === $pool->id)
-@php
-  $total += $loan->interest_debt->amount;
+  $total += $auction->amount;
 @endphp
                         <tr>
-                          <td>{{ $loan->member->name }}</td>
-                          <td class="currency">{{ $locale->formatMoney($loan->interest_debt->amount, true) }}</td>
-                          <td class="currency">{{ $loan->interest_debt->refund ? __('common.labels.yes') : __('common.labels.no') }}</td>
+                          <td>{{ $auction->member->name }}</td>
+                          <td class="currency">{{ $locale->formatMoney($auction->amount, true) }}</td>
+                          <td class="currency">{{ $auction->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
                         </tr>
 @endif
 @endforeach

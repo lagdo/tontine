@@ -4,124 +4,156 @@ namespace App\Ajax\App\Planning;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
+use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
-use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Planning\SummaryService;
+use Siak\Tontine\Service\LocaleService;
 
-use function intval;
 use function Jaxon\jq;
 use function Jaxon\pm;
+use function trans;
 
-/**
- * @databag subscription
- * @before getPool
- */
 class Subscription extends CallableClass
 {
     /**
-     * @var TenantService
+     * @di
+     * @var LocaleService
      */
-    protected TenantService $tenantService;
+    protected LocaleService $localeService;
+
+    /**
+     * @di
+     * @var PoolService
+     */
+    protected PoolService $poolService;
+
+    /**
+     * @var SummaryService
+     */
+    public SummaryService $summaryService;
 
     /**
      * @var SubscriptionService
      */
-    protected SubscriptionService $subscriptionService;
+    public SubscriptionService $subscriptionService;
 
     /**
-     * @var PoolModel|null
+     * @after hideMenuOnMobile
      */
-    protected ?PoolModel $pool;
-
-    /**
-     * The constructor
-     *
-     * @param TenantService $tenantService
-     * @param SubscriptionService $subscriptionService
-     */
-    public function __construct(TenantService $tenantService, SubscriptionService $subscriptionService)
+    public function home(int $poolId = 0)
     {
-        $this->tenantService = $tenantService;
-        $this->subscriptionService = $subscriptionService;
-    }
-
-    /**
-     * @return void
-     */
-    protected function getPool()
-    {
-        $poolId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : intval($this->bag('subscription')->get('pool.id'));
-        $this->pool = $this->subscriptionService->getPool($poolId);
-    }
-
-    /**
-     * @exclude
-     */
-    public function show(PoolModel $pool)
-    {
-        $this->pool = $pool;
-        return $this->home($pool->id);
-    }
-
-    public function home(int $poolId)
-    {
+        $pools = $this->poolService->getPools();
+        $poolLabels = $pools->keyBy('id')->map(function($pool) {
+            return $pool->title . ' - ' . ($pool->deposit_fixed ?
+                $this->localeService->formatMoney($pool->amount) :
+                trans('tontine.labels.types.libre'));
+        });
         $html = $this->view()->render('tontine.pages.planning.subscription.home')
-            ->with('pool', $this->pool);
-        $this->response->html('subscription-home', $html);
-        $this->jq('#btn-subscription-filter')->click($this->rq()->filter());
-        $this->jq('#btn-subscription-refresh')->click($this->rq()->home($poolId));
+            ->with('pools', $poolLabels)
+            ->with('poolId', $poolId);
+        $this->response->html('section-title', trans('tontine.menus.planning'));
+        $this->response->html('content-home', $html);
 
-        $this->bag('subscription')->set('pool.id', $poolId);
-        $this->bag('subscription')->set('filter', false);
-        return $this->page($this->bag('subscription')->get('page', 1));
-    }
+        $selectPoolId = pm()->select('select-pool')->toInt();
+        $this->jq('#btn-pool-select')->click($this->rq()->pool($selectPoolId));
 
-    public function page(int $pageNumber = 0)
-    {
-        $filter = $this->bag('subscription')->get('filter', false);
-        $memberCount = $this->subscriptionService->getMemberCount($this->pool, $filter);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount, 'subscription', 'page');
-        $members = $this->subscriptionService->getMembers($this->pool, $filter, $pageNumber);
-        $pagination = $this->rq()->page(pm()->page())->paginate($pageNumber, $perPage, $memberCount);
-
-        $tontine = $this->tenantService->tontine();
-        $html = $this->view()->render('tontine.pages.planning.subscription.page')
-            ->with('tontine', $tontine)
-            ->with('members', $members)
-            ->with('count', $this->subscriptionService->getSubscriptionCount($this->pool))
-            ->with('pagination', $pagination);
-        $this->response->html('subscription-page', $html);
-
-        $memberId = jq()->parent()->parent()->attr('data-member-id')->toInt();
-        $this->jq('.btn-subscription-add')->click($this->rq()->create($memberId));
-        $this->jq('.btn-subscription-del')->click($this->rq()->delete($memberId));
+        $pool = $pools->firstWhere('id', $poolId) ?? ($pools->count() > 0 ? $pools[0] : null);
+        if(($pool))
+        {
+            return $this->show($pool);
+        }
 
         return $this->response;
     }
 
-    public function filter()
+    private function show(PoolModel $pool)
     {
-        // Toggle the filter
-        $filter = $this->bag('subscription')->get('filter', false);
-        $this->bag('subscription')->set('filter', !$filter);
+        $this->cl(Subscription\Member::class)->show($pool);
+        $this->cl(Subscription\Session::class)->show($pool);
 
-        // Show the first page
-        return $this->page(1);
+        return $this->response;
     }
 
-    public function create(int $memberId)
+    public function pool(int $poolId)
     {
-        $this->subscriptionService->createSubscription($this->pool, $memberId);
+        $pool = $this->poolService->getPool($poolId);
 
-        // Refresh the current page
-        return $this->page();
+        return !$pool ? $this->response : $this->show($pool);
     }
 
-    public function delete(int $memberId)
+    /**
+     * @di $summaryService
+     */
+    public function planning(int $poolId)
     {
-        $this->subscriptionService->deleteSubscription($this->pool, $memberId);
+        $pool = $this->poolService->getPool($poolId);
+        if(!$pool || !$pool->remit_planned)
+        {
+            return $this->response;
+        }
 
-        // Refresh the current page
-        return $this->page();
+        $receivables = $this->summaryService->getReceivables($pool);
+        $this->view()->shareValues($receivables);
+        $html = $this->view()->render('tontine.pages.planning.subscription.planning')
+            ->with('pool', $pool);
+        $this->response->html('content-home', $html);
+
+        $this->jq('#btn-subscription-refresh')->click($this->rq()->planning($poolId));
+        $this->jq('#btn-subscription-back')->click($this->rq()->home($poolId));
+
+        return $this->response;
+    }
+
+    /**
+     * @di $summaryService
+     * @di $subscriptionService
+     */
+    public function beneficiaries(int $poolId)
+    {
+        $pool = $this->poolService->getPool($poolId);
+        if(!$pool || !$pool->remit_planned)
+        {
+            return $this->response;
+        }
+
+        $this->response->html('section-title', trans('tontine.menus.planning'));
+        $payables = $this->summaryService->getPayables($pool);
+        $this->view()->shareValues($payables);
+        $html = $this->view()->render('tontine.pages.planning.subscription.beneficiaries')
+            ->with('pool', $pool)
+            ->with('pools', $this->subscriptionService->getPools());
+        $this->response->html('content-home', $html);
+
+        $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt()));
+        $this->jq('#btn-subscription-refresh')->click($this->rq()->beneficiaries($poolId));
+        $this->jq('#btn-subscription-back')->click($this->rq()->home($poolId));
+        $this->jq('.select-beneficiary')->change($this->rq()->saveBeneficiary($poolId,
+            jq()->attr('data-session-id')->toInt(), jq()->val()->toInt(),
+            jq()->attr('data-subscription-id')->toInt()));
+
+        return $this->response;
+    }
+
+    /**
+     * @di $summaryService
+     * @di $subscriptionService
+     */
+    public function saveBeneficiary(int $poolId, int $sessionId, int $nextSubscriptionId,
+        int $currSubscriptionId)
+    {
+        $pool = $this->poolService->getPool($poolId);
+        if(!$pool || !$pool->remit_planned || $pool->remit_auction)
+        {
+            return $this->response;
+        }
+
+        if(!$this->subscriptionService->saveBeneficiary($pool, $sessionId,
+            $currSubscriptionId, $nextSubscriptionId))
+        {
+            $message = trans('tontine.beneficiary.errors.cant_change');
+            $this->response->dialog->error($message, trans('common.titles.error'));
+        }
+
+        return $this->beneficiaries($poolId);
     }
 }

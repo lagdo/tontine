@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Ajax\App\Meeting\Pool\Remitment;
+namespace App\Ajax\App\Meeting\Pool;
 
 use App\Ajax\CallableClass;
 use App\Ajax\App\Meeting\Cash\Disbursement;
 use App\Ajax\App\Meeting\Credit\Loan;
 use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Service\Meeting\Credit\RefundService;
+use Siak\Tontine\Service\Meeting\Pool\AuctionService;
+use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 use function Jaxon\jq;
@@ -20,9 +21,14 @@ use function trans;
 class Auction extends CallableClass
 {
     /**
-     * @var RefundService
+     * @var TontineService
      */
-    protected RefundService $refundService;
+    protected TontineService $tontineService;
+
+    /**
+     * @var AuctionService
+     */
+    protected AuctionService $auctionService;
 
     /**
      * @var DebtValidator
@@ -37,11 +43,13 @@ class Auction extends CallableClass
     /**
      * The constructor
      *
-     * @param RefundService $refundService
+     * @param TontineService $tontineService
+     * @param AuctionService $auctionService
      */
-    public function __construct(RefundService $refundService)
+    public function __construct(TontineService $tontineService, AuctionService $auctionService)
     {
-        $this->refundService = $refundService;
+        $this->tontineService = $tontineService;
+        $this->auctionService = $auctionService;
     }
 
     /**
@@ -50,7 +58,7 @@ class Auction extends CallableClass
     protected function getSession()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->refundService->getSession($sessionId);
+        $this->session = $this->auctionService->getSession($sessionId);
     }
 
     /**
@@ -58,6 +66,10 @@ class Auction extends CallableClass
      */
     public function show(SessionModel $session)
     {
+        if(!$this->tontineService->hasPoolWithAuction())
+        {
+            return $this->response;
+        }
         $this->session = $session;
 
         return $this->home();
@@ -82,21 +94,21 @@ class Auction extends CallableClass
     public function page(int $pageNumber = 0)
     {
         $filtered = $this->bag('auction')->get('filter', null);
-        $debtCount = $this->refundService->getAuctionCount($this->session, $filtered);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $debtCount, 'auction', 'principal.page');
-        $debts = $this->refundService->getAuctions($this->session, $filtered, $pageNumber);
-        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $debtCount);
+        $auctionCount = $this->auctionService->getAuctionCount($this->session, $filtered);
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $auctionCount, 'auction');
+        $auctions = $this->auctionService->getAuctions($this->session, $filtered, $pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $auctionCount);
 
         $html = $this->view()->render('tontine.pages.meeting.auction.page', [
             'session' => $this->session,
-            'debts' => $debts,
+            'auctions' => $auctions,
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-auctions-page', $html);
 
-        $debtId = jq()->parent()->attr('data-debt-id')->toInt();
-        $this->jq('.btn-add-refund', '#meeting-auctions-page')->click($this->rq()->createRefund($debtId));
-        $this->jq('.btn-del-refund', '#meeting-auctions-page')->click($this->rq()->deleteRefund($debtId));
+        $auctionId = jq()->parent()->attr('data-auction-id')->toInt();
+        $this->jq('.btn-toggle-payment', '#meeting-auctions-page')
+            ->click($this->rq()->togglePayment($auctionId));
 
         return $this->response;
     }
@@ -114,7 +126,7 @@ class Auction extends CallableClass
     /**
      * @di $validator
      */
-    public function createRefund(string $debtId)
+    public function togglePayment(string $auctionId)
     {
         if($this->session->closed)
         {
@@ -122,25 +134,8 @@ class Auction extends CallableClass
             return $this->response;
         }
 
-        $this->validator->validate($debtId);
-        $this->refundService->createRefund($this->session, $debtId);
-
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
-
-        return $this->page();
-    }
-
-    public function deleteRefund(int $debtId)
-    {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
-        $this->refundService->deleteRefund($this->session, $debtId);
+        $this->validator->validate($auctionId);
+        $this->auctionService->toggleAuctionPayment($this->session, $auctionId);
 
         // Refresh the amounts available
         $this->cl(Loan::class)->refreshAmount($this->session);

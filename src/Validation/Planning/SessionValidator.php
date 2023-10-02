@@ -26,7 +26,13 @@ class SessionValidator extends AbstractValidator
         {
             throw new ValidationException($validator);
         }
-        return $validator->validated();
+
+        $validated = $validator->validated();
+        if(!$validated['host_id'])
+        {
+            $validated['host_id'] = null;
+        }
+        return $validated;
     }
 
     /**

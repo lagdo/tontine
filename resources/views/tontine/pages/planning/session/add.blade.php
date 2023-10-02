@@ -1,42 +1,39 @@
-          <div class="section-body">
-            <div class="row align-items-center">
+      <div class="portlet-body form">
+        <form class="form-horizontal" role="form" id="session-form">
+          <div class="module-body">
+            <div class="form-group row">
+              {!! Form::label('title', __('common.labels.title'), ['class' => 'col-sm-3 col-form-label text-right']) !!}*
               <div class="col-sm-8">
-                <h2 class="section-title">{{ __('tontine.session.titles.add') }}</h2>
+                {!! Form::text('title', '', ['class' => 'form-control']) !!}
+              </div>
+            </div>
+            <div class="form-group row">
+              {!! Form::label('host_id', __('tontine.session.labels.host'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+              <div class="col-md-8">
+                {!! Form::select('host_id', $members, 0, ['class' => 'form-control']) !!}
+              </div>
+            </div>
+            <div class="form-group row">
+              {!! Form::label('date', __('common.labels.date'), ['class' => 'col-sm-3 col-form-label text-right']) !!}*
+              <div class="col-sm-6">
+                {!! Form::date('date', '', ['class' => 'form-control']) !!}
+              </div>
+            </div>
+            <div class="form-group row">
+              {!! Form::label('start', __('tontine.session.labels.times'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+              <div class="col-sm-4">
+                {!! Form::time('start', '00:00', ['class' => 'form-control']) !!}
               </div>
               <div class="col-sm-4">
-                <div class="btn-group float-right" role="group" aria-label="">
-                  <button type="button" class="btn btn-primary" id="btn-cancel"><i class="fa fa-arrow-left"></i></button>
-                  <button type="button" class="btn btn-primary" id="btn-copy"><i class="fa fa-copy"></i></button>
-                  <button type="button" class="btn btn-primary" id="btn-save"><i class="fa fa-save"></i></button>
-                </div>
+                {!! Form::time('end', '00:00', ['class' => 'form-control']) !!}
+              </div>
+            </div>
+            <div class="form-group row">
+              {!! Form::label('notes', __('common.labels.notes'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+              <div class="col-sm-8">
+                {!! Form::textarea('notes', '', ['class' => 'form-control']) !!}
               </div>
             </div>
           </div>
-
-          <!-- Data tables -->
-          <div class="card shadow mb-4">
-            <div class="card-body" id="content-page">
-              <div class="portlet-body form">
-                <form class="form-horizontal" role="form" id="session-form">
-                  <div class="module-body">
-                    <div class="form-group row">
-                      {!! Form::label('title', __('common.labels.title'), ['class' => 'col-sm-6 col-form-label']) !!}
-                      {!! Form::label('date', __('common.labels.date'), ['class' => 'col-sm-5 col-form-label']) !!}
-                    </div>
-@for($i = 0; $i < $count; $i++)
-                    <div class="form-group row">
-                      <div class="col-sm-6">
-                        {!! Form::text('sessions[' . $i . '][title]', '', ['class' => 'form-control', 'id' => "session_title_$i"]) !!}
-                      </div>
-                      <div class="col-sm-5">
-                        {!! Form::date('sessions[' . $i . '][date]', '', ['class' => 'form-control', 'id' => "session_date_$i"]) !!}
-                        {!! Form::hidden('sessions[' . $i . '][start]', '00:00') !!}
-                        {!! Form::hidden('sessions[' . $i . '][end]', '00:00') !!}
-                      </div>
-                    </div>
-@endfor
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
+        </form>
+      </div>

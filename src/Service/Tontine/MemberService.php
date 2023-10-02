@@ -69,6 +69,25 @@ class MemberService
      *
      * @return bool
      */
+    public function createMember(array $values): bool
+    {
+        DB::transaction(function() use($values) {
+            $tontine = $this->tenantService->tontine();
+            $member = $tontine->members()->create($values);
+            // Create members bills
+            $this->memberCreated($tontine, $member);
+        });
+
+        return true;
+    }
+
+    /**
+     * Add new members.
+     *
+     * @param array $values
+     *
+     * @return bool
+     */
     public function createMembers(array $values): bool
     {
         DB::transaction(function() use($values) {
@@ -118,7 +137,8 @@ class MemberService
      */
     public function deleteMember(Member $member)
     {
-        $member->update(['active' => false]);
+        // Will fail if the member has related data.
+        $member->delete();
     }
 
     /**

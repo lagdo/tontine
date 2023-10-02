@@ -16,10 +16,8 @@ return [
         'session' => "Session",
         'rounds' => "Rounds",
         'sessions' => "Sessions",
-        'pools' => "Pools",
-        'balance' => "Balance",
+        'pools' => "Tontines",
         'subscriptions' => "Subscriptions",
-        'beneficiaries' => "Beneficiaries",
         'payments' => "Payments",
         'profile' => "Profile",
         'logout' => "Logout",
@@ -64,10 +62,14 @@ return [
     'messages' => [
         'created' => "The association was successfully created.",
         'updated' => "The association was successfully updated.",
+        'deleted' => "The association was successfully deleted.",
         'selected' => "You have selected the association :tontine. You still need to add some rounds to its tontine.",
         'screen' => [
             'orientation' => "If you are using a mobile device, we advise you to place it in landscape mode, for a better display.",
         ],
+    ],
+    'questions' => [
+        'delete' => "Delete the association? The related members, rounds and charges will also be deleted.",
     ],
     'errors' => [
         'action' => "Cannot proceed.",
@@ -96,7 +98,7 @@ return [
         'tips' => [
             'list' => 'Click on the "List" button to enter a list of members in a text box.',
             'add' => "Enter a member name on each line. If a phone number or email is available, separate it with a semi-colon.",
-            'example' => 'For example,<br/>"Jean Amadou"<br/>or<br/>"Jean Amadou;jean.amadou@gmail.com;237670000000"',
+            'example' => "For example,<br/>Jean Amadou<br/>or<br/>Jean Amadou;jean.amadou@gmail.com;237670000000",
         ],
         'titles' => [
             'add' => "Add members",
@@ -106,6 +108,9 @@ return [
             'created' => "The members was successfully created.",
             'updated' => "The member was successfully updated.",
             'deleted' => "The member was successfully deleted.",
+        ],
+        'questions' => [
+            'delete' => "Delete this member?",
         ],
         'errors' => [
             'not_found' => "Cannot find the corresponding member.",
@@ -158,11 +163,16 @@ return [
             'closed' => "Closed",
         ],
         'titles' => [
-            'add' => "Add sessions",
+            'add' => "Add a session",
+            'add-list' => "Add sessions",
             'edit' => "Edit a session",
             'title' => "Session of :month :year",
             'host' => "Edit the host",
             'venue' => "Venue",
+        ],
+        'tips' => [
+            'add' => "Enter a session on each line. Separate the title and date with a semicolon. The date must be in 'YYYY-MM-DD' format.",
+            'example' => "For example,<br/>November 2023 session;2023-11-03",
         ],
         'labels' => [
             'times' => "Times",
@@ -187,44 +197,83 @@ return [
         ],
         'errors' => [
             'opened' => "A session has already been opened.",
+            'delete' => "Cannot delete this session.",
         ],
     ],
     'pool' => [
         'titles' => [
-            'add' => "Add pools",
-            'edit' => "Edit a pool",
-            'deposits' => "Deposits balance",
-            'remitments' => "Remitments balance",
+            'add' => "Add a tontine",
+            'add_many' => "Add tontines",
+            'edit' => "Edit a tontine",
+            'deposits' => "Deposits",
+            'remitments' => "Remitments",
             'subscriptions' => "Subscriptions",
-            'free' => "Free pool",
+            'members' => "Members",
+            'sessions' => "Sessions",
+        ],
+        'labels' => [
+            'fixed' => "Amount fixed",
+            'planned' => "Planned",
+            'auction' => "At auction",
+            'lendable' => "Available for loan",
+            'deposit' => [
+                'fixed' => "The amount of deposits is fixed",
+            ],
+            'remit' => [
+                'fixed' => "The amount of remitments is fixed",
+                'planned' => "The number of remitments is defined in advance",
+                'auction' => "The amounts are remitted after auction",
+                'lendable' => "The remaining amounts can be loaned",
+            ],
+        ],
+        'help' => [
+            'intro' => "You are going to add a new tontine.<br/>" .
+                "We are going to ask you to specify its characteristics.",
+            'deposit' => [
+                'fixed' => "Check the box below each member who subscribes to this tontine must pay a fixed amount at each session.",
+            ],
+            'remit' => [
+                'fixed' => "Check the box below if each beneficiary will receive the full amount corresponding to its deposits.",
+                'planned' => "Check the box below if the number of beneficiaries at each session is defined in advance.",
+                'auction' => "Check the box below if the choice of the tontine beneficiaries is subject to auction.",
+                'lendable' => "Check the box below if the amounts remaining in the pool after remitments can be loaned.",
+            ],
         ],
         'actions' => [
             'subscriptions' => "Subscriptions",
         ],
         'questions' => [
-            'delete' => "Delete this pool?<br/>Please, make sure it has no subscription.",
+            'delete' => "Delete this tontine?<br/>Please, make sure it has no subscription.",
         ],
         'messages' => [
-            'created' => "The pool was successfully created.",
-            'updated' => "The pool was successfully updated.",
-            'deleted' => "The pool was successfully deleted.",
+            'created' => "The tontine was successfully created.",
+            'updated' => "The tontine was successfully updated.",
+            'deleted' => "The tontine was successfully deleted.",
         ],
         'errors' => [
             'number' => [
                 'invalid' => "Please provide a valid number.",
                 'max' => "You can add a maximum of :max entries.",
             ],
-            'subscription' => "The pool still has subscriptions.",
-            'no_subscription' => "There are pools with no subscription.",
+            'subscription' => "The tontine still has subscriptions.",
+            'no_subscription' => "There are tontines with no subscription.",
         ],
     ],
     'subscription' => [
+        'titles' => [
+            'beneficiaries' => "Beneficiaries",
+            'planning' => "Planning",
+            'deposits' => "Deposits balance",
+            'remitments' => "Remitments balance",
+        ],
         'messages' => [
             'created' => "The member subscription was created.",
             'deleted' => "The member subscription was deleted.",
         ],
         'errors' => [
             'not_found' => "Cannot find the corresponding subscription.",
+            'create' => "Cannot create a new subscription.",
+            'delete' => "Cannot delete this subscription.",
         ],
     ],
     'beneficiary' => [
@@ -235,6 +284,9 @@ return [
     'remitment' => [
         'labels' => [
             'not-assigned' => "** Not assigned **",
+        ],
+        'errors' => [
+            'planning' => "The selected beneficiary is already planned on another session.",
         ],
     ],
 ];

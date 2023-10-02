@@ -122,7 +122,7 @@ class DepositService
     public function createDeposit(Pool $pool, Session $session, int $receivableId): void
     {
         $receivable = $this->getReceivable($pool, $session, $receivableId);
-        if(!$receivable || $receivable->deposit || $this->tenantService->tontine()->is_libre)
+        if(!$receivable || $receivable->deposit || !$pool->deposit_fixed)
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
@@ -146,7 +146,7 @@ class DepositService
     public function saveDepositAmount(Pool $pool, Session $session, int $receivableId, int $amount): void
     {
         $receivable = $this->getReceivable($pool, $session, $receivableId);
-        if(!$receivable || !$this->tenantService->tontine()->is_libre)
+        if(!$receivable || $pool->deposit_fixed)
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
