@@ -32,6 +32,7 @@
                             __('tontine.labels.types.libre'),
                           'paid' => $pool->pay_paid,
                           'count' => $pool->pay_count,
+                          'total' => $pool->amount_paid,
                           'menuClass' => 'btn-pool-remitments',
                         ])
 @endforeach

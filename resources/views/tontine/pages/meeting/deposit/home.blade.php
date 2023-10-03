@@ -32,6 +32,7 @@
                             $locale->formatMoney($pool->amount, true) : __('tontine.labels.types.libre'),
                           'paid' => $pool->recv_paid,
                           'count' => $pool->recv_count,
+                          'total' => $pool->amount_recv,
                           'menuClass' => 'btn-pool-deposits',
                         ])
 @endforeach

@@ -9,7 +9,7 @@ use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\Meeting\SummaryService;
-use Siak\Tontine\Service\Planning\SessionService;
+use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
@@ -31,23 +31,23 @@ class PoolService
     protected SummaryService $summaryService;
 
     /**
-     * @var SessionService
+     * @var BalanceCalculator
      */
-    public SessionService $sessionService;
+    public BalanceCalculator $balanceCalculator;
 
     /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
+     * @param BalanceCalculator $balanceCalculator
      * @param SummaryService $summaryService
-     * @param SessionService $sessionService
      */
     public function __construct(LocaleService $localeService, TenantService $tenantService,
-        SummaryService $summaryService, SessionService $sessionService)
+        BalanceCalculator $balanceCalculator, SummaryService $summaryService)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
+        $this->balanceCalculator = $balanceCalculator;
         $this->summaryService = $summaryService;
-        $this->sessionService = $sessionService;
     }
 
     /**
@@ -76,7 +76,7 @@ class PoolService
      *
      * @return Builder
      */
-    public function getPoolsQuery(Session $session, int $page = 0)
+    private function getPoolsQuery(Session $session, int $page = 0)
     {
         // Take only pools which have subscriptions with receivables for the session.
         return $this->tenantService->round()->pools()
@@ -98,14 +98,20 @@ class PoolService
      */
     public function getPoolsWithReceivables(Session $session, int $page = 0): Collection
     {
-        return $this->getPoolsQuery($session, $page)->withCount([
-            'subscriptions as recv_count',
-            'subscriptions as recv_paid' => function(Builder $query) use($session) {
-                $query->whereHas('receivables', function(Builder $query) use($session) {
-                    $query->where('session_id', $session->id)->whereHas('deposit');
-                });
-            },
-        ])->get();
+        return $this->getPoolsQuery($session, $page)
+            ->withCount([
+                'subscriptions as recv_count',
+                'subscriptions as recv_paid' => function(Builder $query) use($session) {
+                    $query->whereHas('receivables', function(Builder $query) use($session) {
+                        $query->where('session_id', $session->id)->whereHas('deposit');
+                    });
+                },
+            ])
+            ->get()
+            ->each(function($pool) use($session) {
+                // Amount paid
+                $pool->amount_recv = $this->balanceCalculator->getPoolDepositAmount($pool, $session);
+            });
     }
 
     /**
@@ -118,16 +124,21 @@ class PoolService
      */
     public function getPoolsWithPayables(Session $session, int $page = 0): Collection
     {
-        return $this->getPoolsQuery($session, $page)->withCount([
-            'subscriptions as pay_paid' => function(Builder $query) use($session) {
-                $query->whereHas('payable', function(Builder $query) use($session) {
-                    $query->where('session_id', $session->id)->whereHas('remitment');
-                });
-            },
-        ])->get()->each(function($pool) use($session) {
-            // Expected
-            $pool->pay_count = $this->summaryService->getSessionRemitmentCount($pool, $session);
-        });
+        return $this->getPoolsQuery($session, $page)
+            ->withCount([
+                'subscriptions as pay_paid' => function(Builder $query) use($session) {
+                    $query->whereHas('payable', function(Builder $query) use($session) {
+                        $query->where('session_id', $session->id)->whereHas('remitment');
+                    });
+                },
+            ])
+            ->get()
+            ->each(function($pool) use($session) {
+                // Expected
+                $pool->pay_count = $this->summaryService->getSessionRemitmentCount($pool, $session);
+                // Amount paid
+                $pool->amount_paid = $this->balanceCalculator->getPoolRemitmentAmount($pool, $session);
+            });
     }
 
     /**
