@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Ajax\App\Tontine\Tontine;
+use App\Ajax\Web\Tontine\Tontine;
 use Illuminate\View\View;
 use Jaxon\Laravel\Jaxon;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;

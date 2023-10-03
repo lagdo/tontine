@@ -7,8 +7,8 @@ return [
             'route' => 'ajax',
         ],*/
         'directories' => [
-            app_path('Ajax/App') => [
-                'namespace' => '\\App\\Ajax\\App',
+            app_path('Ajax/Web') => [
+                'namespace' => '\\App\\Ajax\\Web',
             ],
         ],
         'views' => [

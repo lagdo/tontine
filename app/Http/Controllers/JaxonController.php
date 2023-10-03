@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Log;
-
 use Jaxon\Laravel\Jaxon;
 
 class JaxonController extends Controller

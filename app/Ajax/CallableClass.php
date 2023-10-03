@@ -2,15 +2,15 @@
 
 namespace App\Ajax;
 
-use App\Ajax\App\Meeting\Session as MeetingSession;
-use App\Ajax\App\Planning\Pool;
-use App\Ajax\App\Planning\Session as PlanningSession;
-use App\Ajax\App\Planning\Subscription;
-use App\Ajax\App\Report\Round as RoundReport;
-use App\Ajax\App\Report\Session as SessionReport;
-use App\Ajax\App\Tontine\Charge;
-use App\Ajax\App\Tontine\Member;
-use App\Ajax\App\Tontine\Round as TontineRound;
+use App\Ajax\Web\Meeting\Session as MeetingSession;
+use App\Ajax\Web\Planning\Pool;
+use App\Ajax\Web\Planning\Session as PlanningSession;
+use App\Ajax\Web\Planning\Subscription;
+use App\Ajax\Web\Report\Round as RoundReport;
+use App\Ajax\Web\Report\Session as SessionReport;
+use App\Ajax\Web\Tontine\Charge;
+use App\Ajax\Web\Tontine\Member;
+use App\Ajax\Web\Tontine\Round as TontineRound;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Model\User;
