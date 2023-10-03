@@ -6,18 +6,10 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Siak\Tontine\Model\Auction;
 use Siak\Tontine\Model\Debt;
-use Siak\Tontine\Model\Deposit;
-use Siak\Tontine\Model\Disbursement;
-use Siak\Tontine\Model\Funding;
-use Siak\Tontine\Model\PartialRefund;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Receivable;
-use Siak\Tontine\Model\Refund;
-use Siak\Tontine\Model\Remitment;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Model\Pool;
 
@@ -64,6 +56,36 @@ class BalanceCalculator
     }
 
     /**
+     * @param bool $withPoolTable
+     *
+     * @return Builder
+     */
+    private function getDepositQuery(bool $withPoolTable): Builder
+    {
+        return DB::table('deposits')
+            ->join('receivables', 'deposits.receivable_id', '=', 'receivables.id')
+            ->join('subscriptions', 'receivables.subscription_id', '=', 'subscriptions.id')
+            ->when($withPoolTable, function(Builder $query) {
+                $query->join('pools', 'subscriptions.pool_id', '=', 'pools.id');
+            });
+    }
+
+    /**
+     * @param bool $withPoolTable
+     *
+     * @return Builder
+     */
+    private function getRemitmentQuery(bool $withPoolTable): Builder
+    {
+        return DB::table('remitments')
+            ->join('payables', 'remitments.payable_id', '=', 'payables.id')
+            ->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
+            ->when($withPoolTable, function(Builder $query) {
+                $query->join('pools', 'subscriptions.pool_id', '=', 'pools.id');
+            });
+    }
+
+    /**
      * @param Pool $pool
      * @param Session $session
      *
@@ -71,14 +93,12 @@ class BalanceCalculator
      */
     public function getPoolDepositAmount(Pool $pool, Session $session): int
     {
-        $query = Deposit::whereHas('receivable', function($query) use($pool, $session) {
-            $query->where('session_id', $session->id)
-                ->whereHas('subscription', function($query) use($pool) {
-                    $query->where('pool_id', $pool->id);
-                });
-        });
+        $query = $this->getDepositQuery(false)
+            ->where('receivables.session_id', $session->id)
+            ->where('subscriptions.pool_id', $pool->id);
+
         return $pool->deposit_fixed ?
-            $pool->amount * $query->count() : ($query->sum('amount') ?? 0);
+            $pool->amount * $query->count() : $query->sum('deposits.amount');
     }
 
     /**
@@ -97,14 +117,18 @@ class BalanceCalculator
                 return $pool->amount * $this->enabledSessionCount($pool);
             }
             // Sum the amounts for all deposits
-            return Deposit::whereHas('receivable', function($query) use($pool, $session) {
-                $query->where('session_id', $session->id)
-                    ->whereHas('subscription', function($query) use($pool) {
-                        $query->where('pool_id', $pool->id);
-                    });
-            })->sum('amount') ?? 0;
+            return $this->getPoolDepositAmount($pool, $session);
         }
         return $payable->remitment ? $payable->remitment->amount : 0;
+    }
+
+    /**
+     * @return string
+     */
+    private function getRemitmentAmountSqlValue(): string
+    {
+        return 'pools.amount * (' . $this->tenantService->round()->sessions->count() .
+            ' - (select count(*) from pool_session_disabled where pool_id = pools.id))';
     }
 
     /**
@@ -118,31 +142,21 @@ class BalanceCalculator
         if(!$pool->remit_fixed)
         {
             // Sum the amounts for all remitments
-            return Remitment::whereHas('payable', function($query) use($pool, $session) {
-                $query->where('session_id', $session->id)
-                    ->whereHas('subscription', function($query) use($pool) {
-                        $query->where('pool_id', $pool->id);
-                    });
-            })->sum('amount') ?? 0;
+            return $this->getRemitmentQuery(false)
+                ->where('payables.session_id', $session->id)
+                ->where('subscriptions.pool_id', $pool->id)
+                ->sum('remitments.amount');
         }
         if(!$pool->deposit_fixed)
         {
             // Sum the amounts for all deposits
-            return Deposit::whereHas('receivable', function($query) use($pool, $session) {
-                $query->where('session_id', $session->id)
-                    ->whereHas('subscription', function($query) use($pool) {
-                        $query->where('pool_id', $pool->id);
-                    });
-            })->sum('amount') ?? 0;
+            return $this->getPoolDepositAmount($pool, $session);
         }
 
-        // Multiply the number of remitments by the number of sessions by the pool amount
-        return Remitment::whereHas('payable', function($query) use($pool, $session) {
-            $query->where('session_id', $session->id)
-                ->whereHas('subscription', function($query) use($pool) {
-                    $query->where('pool_id', $pool->id);
-                });
-        })->count() * $pool->amount * $this->enabledSessionCount($pool);
+        return $this->getRemitmentQuery(true)
+            ->where('payables.session_id', $session->id)
+            ->where('subscriptions.pool_id', $pool->id)
+            ->sum(DB::raw($this->getRemitmentAmountSqlValue()));
     }
 
     /**
@@ -153,15 +167,12 @@ class BalanceCalculator
      */
     private function depositAmount(Collection $sessionIds, bool $lendable)
     {
-        return Deposit::select(DB::raw('sum(deposits.amount + pools.amount) as total'))
-            ->join('receivables', 'deposits.receivable_id', '=', 'receivables.id')
-            ->join('subscriptions', 'receivables.subscription_id', '=', 'subscriptions.id')
-            ->join('pools', 'subscriptions.pool_id', '=', 'pools.id')
+        return $this->getDepositQuery(true)
             ->whereIn('deposits.session_id', $sessionIds)
-            ->when($lendable, function($query) {
+            ->when($lendable, function(Builder $query) {
                 $query->where('pools.properties->remit->lendable', true);
             })
-            ->value('total') ?? 0;
+            ->sum(DB::raw('deposits.amount + pools.amount'));
     }
 
     /**
@@ -172,31 +183,22 @@ class BalanceCalculator
      */
     private function remitmentAmount(Collection $sessionIds, bool $lendable)
     {
-        $sessionCount = $this->tenantService->round()->sessions->count();
-        $sqlSessionCount = "$sessionCount - " .
-            "(select count(*) from pool_session_disabled where pool_id = pools.id)";
         return
             // Remitment sum for pools with fixed deposits and fixed remitments.
             // Each value is the pool amount multiply by the number od sessions.
-            Remitment::select(DB::raw("sum(pools.amount * ($sqlSessionCount)) as total"))
-                ->join('payables', 'remitments.payable_id', '=', 'payables.id')
-                ->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
-                ->join('pools', 'subscriptions.pool_id', '=', 'pools.id')
+            $this->getRemitmentQuery(true)
                 ->whereIn('payables.session_id', $sessionIds)
                 ->where('pools.properties->deposit->fixed', true)
                 ->where('pools.properties->remit->fixed', true)
-                ->when($lendable, function($query) {
+                ->when($lendable, function(Builder $query) {
                     $query->where('pools.properties->remit->lendable', true);
                 })
-                ->value('total') ?? 0
+                ->sum(DB::raw($this->getRemitmentAmountSqlValue()))
             // Remitment sum for pools with libre deposits and fixed remitments.
             // Each value is the sum of deposits for the given pool.
-            + Deposit::select(DB::raw('sum(deposits.amount) as total'))
-                ->join('receivables', 'deposits.receivable_id', '=', 'receivables.id')
-                ->join('subscriptions', 'receivables.subscription_id', '=', 'subscriptions.id')
-                ->join('pools', 'subscriptions.pool_id', '=', 'pools.id')
+            + $this->getDepositQuery(true)
                 ->whereIn('deposits.session_id', $sessionIds)
-                ->whereExists(function ($query) {
+                ->whereExists(function(Builder $query) {
                     $query->select(DB::raw(1))->from('remitments')
                         ->join(DB::raw('payables p'), 'remitments.payable_id', '=', 'p.id')
                         ->join(DB::raw('subscriptions s'), 'p.subscription_id', '=', 's.id')
@@ -205,21 +207,18 @@ class BalanceCalculator
                 })
                 ->where('pools.properties->deposit->fixed', false)
                 ->where('pools.properties->remit->fixed', true)
-                ->when($lendable, function($query) {
+                ->when($lendable, function(Builder $query) {
                     $query->where('pools.properties->remit->lendable', true);
                 })
-                ->value('total') ?? 0
+                ->sum('deposits.amount')
             // Remitment sum for pools with libre remitments.
-            + Remitment::select(DB::raw('sum(remitments.amount) as total'))
-                ->join('payables', 'remitments.payable_id', '=', 'payables.id')
-                ->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
-                ->join('pools', 'subscriptions.pool_id', '=', 'pools.id')
+            + $this->getRemitmentQuery(true)
                 ->whereIn('payables.session_id', $sessionIds)
                 ->where('pools.properties->remit->fixed', false)
-                ->when($lendable, function($query) {
+                ->when($lendable, function(Builder $query) {
                     $query->where('pools.properties->remit->lendable', true);
                 })
-                ->value('total') ?? 0;
+                ->sum('remitments.amount');
     }
 
     /**
@@ -229,10 +228,10 @@ class BalanceCalculator
      */
     private function auctionAmount(Collection $sessionIds)
     {
-        return Auction::select(DB::raw('sum(amount) as total'))
+        return DB::table('auctions')
             ->whereIn('session_id', $sessionIds)
             ->where('paid', true)
-            ->value('total') ?? 0;
+            ->sum('amount');
     }
 
     /**
@@ -242,9 +241,9 @@ class BalanceCalculator
      */
     private function fundingAmount(Collection $sessionIds)
     {
-        return Funding::select(DB::raw('sum(amount) as total'))
+        return DB::table('fundings')
             ->whereIn('session_id', $sessionIds)
-            ->value('total') ?? 0;
+            ->sum('amount');
     }
 
     /**
@@ -255,13 +254,13 @@ class BalanceCalculator
      */
     private function settlementAmount(Collection $sessionIds, bool $lendable)
     {
-        return Settlement::select(DB::raw('sum(bills.amount) as total'))
+        return DB::table('settlements')
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->whereIn('settlements.session_id', $sessionIds)
-            ->when($lendable, function($query) {
+            ->when($lendable, function(Builder $query) {
                 $query->where('bills.lendable', true);
             })
-            ->value('total') ?? 0;
+            ->sum('bills.amount');
     }
 
     /**
@@ -271,10 +270,10 @@ class BalanceCalculator
      */
     private function refundAmount(Collection $sessionIds)
     {
-        return Refund::select(DB::raw('sum(debts.amount) as total'))
+        return DB::table('refunds')
             ->join('debts', 'refunds.debt_id', '=', 'debts.id')
             ->whereIn('refunds.session_id', $sessionIds)
-            ->value('total') ?? 0;
+            ->sum('debts.amount');
     }
 
     /**
@@ -285,14 +284,14 @@ class BalanceCalculator
     private function partialRefundAmount(Collection $sessionIds)
     {
         // Filter on debts that are not yet refunded.
-        return PartialRefund::select(DB::raw('sum(partial_refunds.amount) as total'))
+        return DB::table('partial_refunds')
             ->join('debts', 'partial_refunds.debt_id', '=', 'debts.id')
             ->whereIn('partial_refunds.session_id', $sessionIds)
             ->whereNotExists(function (Builder $query) {
                 $query->select(DB::raw(1))->from('refunds')
                     ->whereColumn('refunds.debt_id', 'debts.id');
             })
-            ->value('total') ?? 0;
+            ->sum('partial_refunds.amount');
     }
 
     /**
@@ -302,10 +301,11 @@ class BalanceCalculator
      */
     private function debtAmount(Collection $sessionIds)
     {
-        return Debt::principal()->select(DB::raw('sum(debts.amount) as total'))
+        return DB::table('debts')
+            ->where('type', Debt::TYPE_PRINCIPAL)
             ->join('loans', 'debts.loan_id', '=', 'loans.id')
             ->whereIn('loans.session_id', $sessionIds)
-            ->value('total') ?? 0;
+            ->sum('amount');
     }
 
     /**
@@ -316,15 +316,17 @@ class BalanceCalculator
      */
     private function disbursementAmount(Collection $sessionIds, bool $lendable)
     {
-        return Disbursement::select(DB::raw('sum(amount) as total'))
+        return DB::table('disbursements')
             ->whereIn('session_id', $sessionIds)
-            ->when($lendable, function($query) {
+            ->when($lendable, function(Builder $query) {
                 $query->whereNull('charge_id')
-                    ->orWhereHas('charge', function($query) {
-                        $query->where('lendable', true);
+                    ->orWhereExists(function(Builder $query) {
+                        $query->select(DB::raw(1))->from('charges')
+                            ->whereColumn('charges.id', 'disbursements.charge_id')
+                            ->where('lendable', true);
                     });
             })
-            ->value('total') ?? 0;
+            ->sum('amount');
     }
 
     /**
