@@ -25,28 +25,33 @@ use Laravel\Fortify\RoutePath;
 */
 
 Route::middleware(['auth', TontineTenant::class, SetAppLocale::class])
-->prefix(LaravelLocalization::setLocale())
-->group(function()
-{
-    // Home page
-    //----------------------------------
-    Route::get('/', [IndexController::class, 'index'])->name('tontine.home')
-        ->middleware([AnnotationCache::class]);
+    ->prefix(LaravelLocalization::setLocale())
+    ->group(function()
+    {
+        // Home page
+        //----------------------------------
+        Route::get('/', [IndexController::class, 'index'])
+            ->name('tontine.home')
+            ->middleware([AnnotationCache::class]);
 
-    // Route to handle Jaxon ajax requests
-    //----------------------------------
-    Route::post('ajax', [JaxonController::class, 'jaxon'])->name('tontine.ajax')
-        ->middleware([AnnotationCache::class]);
+        // Route to handle Jaxon ajax requests
+        //----------------------------------
+        Route::post('ajax', [JaxonController::class, 'jaxon'])
+            ->name('tontine.ajax')
+            ->middleware([AnnotationCache::class]);
 
-    // User profile page
-    //----------------------------------
-    Route::get('/profile', [IndexController::class, 'profile'])->name('user.profile');
+        // User profile page
+        //----------------------------------
+        Route::get('/profile', [IndexController::class, 'profile'])
+            ->name('user.profile');
 
-    // Report pages
-    //----------------------------------
-    Route::get('/report/session/{sessionId}', [ReportController::class, 'session'])->name('report.session');
-    Route::get('/report/round/{roundId}', [ReportController::class, 'round'])->name('report.round');
-});
+        // Report pages
+        //----------------------------------
+        Route::get('/report/session/{sessionId}', [ReportController::class, 'session'])
+            ->name('report.session');
+        Route::get('/report/round/{roundId}', [ReportController::class, 'round'])
+            ->name('report.round');
+    });
 
 // Redefine Fortify routes with different HTTP verbs
 //--------------------------------------------------------

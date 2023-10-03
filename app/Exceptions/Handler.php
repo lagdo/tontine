@@ -4,10 +4,12 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Jaxon\Laravel\Jaxon;
+use Siak\Tontine\Exception\AuthenticationException;
 use Siak\Tontine\Exception\MessageException;
 use Throwable;
 
 use function app;
+use function route;
 use function trans;
 
 class Handler extends ExceptionHandler
@@ -27,6 +29,7 @@ class Handler extends ExceptionHandler
      * @var array<int, class-string<\Throwable>>
      */
     protected $dontReport = [
+        AuthenticationException::class,
         MessageException::class,
     ];
 
@@ -50,6 +53,14 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        // Redirect to the login page
+        $this->renderable(function (AuthenticationException $e) {
+            $jaxon = app()->make(Jaxon::class);
+            $jaxon->ajaxResponse()->redirect(route('login'));
+
+            return $jaxon->httpResponse();
         });
 
         // Show the error message in a dialog
