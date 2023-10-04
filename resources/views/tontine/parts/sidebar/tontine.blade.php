@@ -6,4 +6,8 @@
               <li><a class="nav-link" id="tontine-menu-charges" href="javascript:void(0)">
                 <i class="fa fa-envelope-open"></i> <span>{{ __('tontine.menus.charges') }}</span>
               </a></li>
+              <li class="menu-header">{{ __('tontine.menus.planning') }}</li>
+              <li><a class="nav-link" id="planning-menu-rounds" href="javascript:void(0)">
+                <i class="fa fa-calendar-week"></i> <span>{{ __('tontine.menus.rounds') }}</span>
+              </a></li>
             </ul>
