@@ -3,11 +3,11 @@
                 <thead>
                   <tr>
                     <th>{!! __('common.labels.title') !!}</th>
-                    <th class="currency">{!! __('common.labels.amount') !!}</th>
-                    <th>{!! __('tontine.pool.labels.fixed') !!}</th>
-                    <th>{!! __('tontine.pool.labels.planned') !!}</th>
-                    <th>{!! __('tontine.pool.labels.auction') !!}</th>
-                    <th>{!! __('tontine.pool.labels.lendable') !!}</th>
+                    <th>{!! __('tontine.pool.titles.deposits') !!}:<br/>{!! __('common.labels.amount') !!}</th>
+                    <th>{!! __('tontine.pool.titles.remitments') !!}:<br/>{!! __('tontine.pool.labels.fixed') !!}</th>
+                    <th>{!! __('tontine.pool.titles.remitments') !!}:<br/>{!! __('tontine.pool.labels.planned') !!}</th>
+                    <th>{!! __('tontine.pool.titles.remitments') !!}:<br/>{!! __('tontine.pool.labels.auction') !!}</th>
+                    <th>{!! __('tontine.pool.titles.remitments') !!}:<br/>{!! __('tontine.pool.labels.lendable') !!}</th>
                     <th class="table-menu"></th>
                   </tr>
                 </thead>
@@ -15,7 +15,7 @@
 @foreach ($pools as $pool)
                   <tr>
                     <td>{{ $pool->title }}</td>
-                    <td class="currency">{{ $pool->deposit_fixed ?
+                    <td>{{ $pool->deposit_fixed ?
                       $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre') }}</td>
                     <td>{{ __('common.labels.' . ($pool->remit_fixed ? 'yes' : 'no')) }}</td>
                     <td>{{ __('common.labels.' . ($pool->remit_planned ? 'yes' : 'no')) }}</td>
