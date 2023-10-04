@@ -49,13 +49,11 @@ return [
                 // 'uri' => '',
             ],
             'app' => [
-                // 'uri' => env('JAXON_JS_APP_URI', ''),
-                // 'dir' => env('JAXON_JS_APP_DIR', ''),
-                // 'file' => env('JAXON_JS_APP_FILE', ''),
-                // 'export' => env('JAXON_JS_APP_EXPORT', false),
-                // 'minify' => env('JAXON_JS_APP_MINIFY', false),
-                'export' => false,
-                'minify' => false,
+                'uri' => env('JAXON_JS_APP_URI', '/jaxon'),
+                'dir' => env('JAXON_JS_APP_DIR', public_path('/jaxon')),
+                'file' => env('JAXON_JS_APP_FILE', 'js-2.0.0'),
+                'export' => env('JAXON_JS_APP_EXPORT', !env('APP_DEBUG')),
+                'minify' => env('JAXON_JS_APP_MINIFY', !env('APP_DEBUG')),
             ],
         ],
         // 'assets' => [
