@@ -20,6 +20,9 @@ class Round extends CallableClass
     public function __construct(protected RoundService $roundService)
     {}
 
+    /**
+     * @after hideMenuOnMobile
+     */
     public function home()
     {
         $html = $this->view()->render('tontine.pages.round.home');
