@@ -1,5 +1,8 @@
             <ul class="sidebar-menu">
               <li class="menu-header">{{ __('tontine.menus.planning') }}</li>
+              <li><a class="nav-link" id="planning-menu-rounds" href="javascript:void(0)">
+                <i class="fa fa-calendar-week"></i> <span>{{ __('tontine.menus.rounds') }}</span>
+              </a></li>
               <li><a class="nav-link" id="planning-menu-sessions" href="javascript:void(0)">
                 <i class="fa fa-calendar-day"></i> <span>{{ __('tontine.menus.sessions') }}</span>
               </a></li>
@@ -7,7 +10,7 @@
                 <i class="fa fa-calendar-week"></i> <span>{{ __('tontine.menus.pools') }}</span>
               </a></li>
               <li><a class="nav-link" id="planning-menu-subscriptions" href="javascript:void(0)">
-                <i class="fa fa-user"></i> <span>{{ __('tontine.menus.subscriptions') }}</span>
+                <i class="fa fa-clipboard-list"></i> <span>{{ __('tontine.menus.subscriptions') }}</span>
               </a></li>
 
               <li class="menu-header">{{ __('tontine.menus.meeting') }}</li>

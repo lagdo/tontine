@@ -9,15 +9,9 @@
           </div>
           <ul class="sidebar-menu">
             <li class="menu-header">{{ __('tontine.menus.tontines') }}</li>
-@if ($ajax)
-            <li><a class="nav-link" id="tontine-menu-tontines" href="javascript:void(0)">
-              <i class="fa fa-landmark"></i> <span>{{ __('tontine.menus.tontines') }}</span>
+            <li><a class="nav-link" id="tontine-menu-tontines" href="{{ $ajax ? 'javascript:void(0)' : route('tontine.home') }}">
+              <i class="fas fa-boxes"></i> <span>{{ __('tontine.menus.tontines') }}</span>
             </a></li>
-@else
-            <li><a class="nav-link" id="tontine-menu-tontines" href="{{ route('tontine.home') }}">
-              <i class="fa fa-landmark"></i> <span>{{ __('tontine.menus.tontines') }}</span>
-            </a></li>
-@endif
           </ul>
           <div id="sidebar-menu-tontine">
 @include('tontine.parts.sidebar.tontine')
