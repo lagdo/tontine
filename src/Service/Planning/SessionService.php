@@ -127,9 +127,9 @@ class SessionService
      * @param Session $session
      * @param array $values
      *
-     * @return int
+     * @return bool
      */
-    public function updateSession(Session $session, array $values): int
+    public function updateSession(Session $session, array $values): bool
     {
         $values['start_at'] = $values['date'] . ' ' . $values['start'] . ':00';
         $values['end_at'] = $values['date'] . ' ' . $values['end'] . ':00';
@@ -150,9 +150,9 @@ class SessionService
      * @param Session $session
      * @param array $values
      *
-     * @return int
+     * @return bool
      */
-    public function saveSessionVenue(Session $session, array $values): int
+    public function saveSessionVenue(Session $session, array $values): bool
     {
         return $session->update($values);
     }

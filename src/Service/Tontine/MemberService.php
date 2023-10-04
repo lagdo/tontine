@@ -109,9 +109,9 @@ class MemberService
      * @param Member $member
      * @param array $values    The member data
      *
-     * @return int
+     * @return bool
      */
-    public function updateMember(Member $member, array $values): int
+    public function updateMember(Member $member, array $values): bool
     {
         return $member->update($values);
     }

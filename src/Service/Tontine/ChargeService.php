@@ -113,9 +113,9 @@ class ChargeService
      * @param Charge $charge
      * @param array $values
      *
-     * @return int
+     * @return bool
      */
-    public function updateCharge(Charge $charge, array $values): int
+    public function updateCharge(Charge $charge, array $values): bool
     {
         return $charge->update($values);
     }

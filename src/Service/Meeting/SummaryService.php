@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
-use Siak\Tontine\Service\Planning\SessionService;
+use Siak\Tontine\Service\Planning\SessionService as PlanningSessionService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\ReportTrait;
 use stdClass;
@@ -23,9 +23,9 @@ class SummaryService
     protected TenantService $tenantService;
 
     /**
-     * @var SessionService
+     * @var PlanningSessionService
      */
-    public SessionService $sessionService;
+    public PlanningSessionService $sessionService;
 
     /**
      * @var BalanceCalculator
@@ -34,11 +34,11 @@ class SummaryService
 
     /**
      * @param TenantService $tenantService
-     * @param SessionService $sessionService
+     * @param PlanningSessionService $sessionService
      * @param BalanceCalculator $balanceCalculator
      */
     public function __construct(TenantService $tenantService,
-        SessionService $sessionService, BalanceCalculator $balanceCalculator)
+        PlanningSessionService $sessionService, BalanceCalculator $balanceCalculator)
     {
         $this->tenantService = $tenantService;
         $this->sessionService = $sessionService;

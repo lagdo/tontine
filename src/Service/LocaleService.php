@@ -76,7 +76,7 @@ class LocaleService
     }
 
     /**
-     * @param string code
+     * @param string $code
      *
      * @return array
      */

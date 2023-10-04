@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Pool;
-use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Meeting\SessionService as MeetingSessionService;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
@@ -20,15 +20,15 @@ class PoolService
     protected TenantService $tenantService;
 
     /**
-     * @var SessionService
+     * @var MeetingSessionService
      */
-    protected SessionService $sessionService;
+    protected MeetingSessionService $sessionService;
 
     /**
      * @param TenantService $tenantService
-     * @param SessionService $sessionService
+     * @param MeetingSessionService $sessionService
      */
-    public function __construct(TenantService $tenantService, SessionService $sessionService)
+    public function __construct(TenantService $tenantService, MeetingSessionService $sessionService)
     {
         $this->tenantService = $tenantService;
         $this->sessionService = $sessionService;
@@ -116,9 +116,9 @@ class PoolService
      * @param Pool $pool
      * @param array $values
      *
-     * @return int
+     * @return bool
      */
-    public function updatePool(Pool $pool, array $values): int
+    public function updatePool(Pool $pool, array $values): bool
     {
         return $pool->update($values);
     }

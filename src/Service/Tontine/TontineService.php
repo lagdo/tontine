@@ -168,9 +168,9 @@ class TontineService
      * @param int $id
      * @param array $values
      *
-     * @return int
+     * @return bool
      */
-    public function updateTontine(int $id, array $values): int
+    public function updateTontine(int $id, array $values): bool
     {
         return $this->tenantService->user()->tontines()->where('id', $id)->update($values);
     }
