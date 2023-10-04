@@ -35,7 +35,7 @@
 @else
                         @include('tontine.pages.meeting.deposit.libre.show', [
                           'id' => $receivable->id,
-                          'amount' => $locale->formatMoney($receivable->deposit->amount, true),
+                          'amount' => $locale->formatMoney($receivable->deposit->amount, false),
                         ])
 @endif
                       </td>
