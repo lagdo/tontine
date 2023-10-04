@@ -84,6 +84,7 @@ class CallableClass extends JaxonCallableClass
 
         $this->jq('#tontine-menu-members')->click($this->cl(Member::class)->rq()->home());
         $this->jq('#tontine-menu-charges')->click($this->cl(Charge::class)->rq()->home());
+        $this->jq('#planning-menu-rounds')->click($this->cl(TontineRound::class)->rq()->home());
 
         // Reset the round sidebar menu
         $this->response->html('sidebar-menu-round', $this->view()->render('tontine.parts.sidebar.round'));
@@ -102,7 +103,6 @@ class CallableClass extends JaxonCallableClass
         $this->response->html('sidebar-menu-round', $this->view()->render('tontine.parts.sidebar.round'));
         $this->jq('a', '#sidebar-menu-round')->css('color', '#6777ef');
 
-        $this->jq('#planning-menu-rounds')->click($this->cl(TontineRound::class)->rq()->home());
         $this->jq('#planning-menu-sessions')->click($this->cl(PlanningSession::class)->rq()->home());
         $this->jq('#planning-menu-pools')->click($this->cl(Pool::class)->rq()->home());
         $this->jq('#planning-menu-subscriptions')->click($this->cl(Subscription::class)->rq()->home());
