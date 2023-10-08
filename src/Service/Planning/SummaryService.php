@@ -46,7 +46,7 @@ class SummaryService
      */
     public function getReceivables(Pool $pool): array
     {
-        $sessions = $this->tenantService->round()->sessions()->orderBy('start_at', 'asc')->get();
+        $sessions = $this->tenantService->getSessions();
         $subscriptions = $pool->subscriptions()->with(['member'])->get();
         $figures = new stdClass();
         $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
@@ -63,7 +63,7 @@ class SummaryService
      */
     public function getPayables(Pool $pool): array
     {
-        $sessions = $this->_getSessions($this->tenantService->round(), $pool, ['payables.subscription']);
+        $sessions = $this->_getSessions($pool, ['payables.subscription']);
         $subscriptions = $pool->subscriptions()->with(['payable', 'payable.session', 'member'])->get();
 
         $figures = new stdClass();

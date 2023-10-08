@@ -37,7 +37,7 @@ class FineService
      */
     public function getSession(int $sessionId): ?Session
     {
-        return $this->tenantService->round()->sessions()->find($sessionId);
+        return $this->tenantService->getSession($sessionId);
     }
 
     /**
@@ -89,7 +89,7 @@ class FineService
     private function getPreviousSessionsBills(Session $session): Collection
     {
         // Count the session bills
-        $sessionIds = $this->tenantService->getPreviousSessions($session, false);
+        $sessionIds = $this->tenantService->getSessionIds($session, false);
         return DB::table('fine_bills')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'fine_bills.bill_id', '=', 'bills.id')
@@ -123,7 +123,7 @@ class FineService
     private function getPreviousSessionsSettlements(Session $session): Collection
     {
         // Count the session bills
-        $sessionIds = $this->tenantService->getPreviousSessions($session, false);
+        $sessionIds = $this->tenantService->getSessionIds($session, false);
         $query = DB::table('settlements')->select('charge_id',
             DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')

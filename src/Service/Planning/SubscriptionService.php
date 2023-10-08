@@ -9,7 +9,6 @@ use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
-use Siak\Tontine\Service\Meeting\SessionService as MeetingSessionService;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
@@ -22,18 +21,11 @@ class SubscriptionService
     protected TenantService $tenantService;
 
     /**
-     * @var MeetingSessionService
-     */
-    protected MeetingSessionService $sessionService;
-
-    /**
      * @param TenantService $tenantService
-     * @param MeetingSessionService $sessionService
      */
-    public function __construct(TenantService $tenantService, MeetingSessionService $sessionService)
+    public function __construct(TenantService $tenantService)
     {
         $this->tenantService = $tenantService;
-        $this->sessionService = $sessionService;
     }
 
     /**
@@ -226,7 +218,7 @@ class SubscriptionService
     public function saveBeneficiary(Pool $pool, int $sessionId,
         int $currSubscriptionId, int $nextSubscriptionId): bool
     {
-        $session = $this->sessionService->getSession($sessionId);
+        $session = $this->tenantService->getSession($sessionId);
         $currSubscription = null;
         if($currSubscriptionId > 0)
         {

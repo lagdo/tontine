@@ -62,7 +62,7 @@ class RemitmentService
      */
     public function getSession(int $sessionId): ?Session
     {
-        return $this->tenantService->round()->sessions()->find($sessionId);
+        return $this->tenantService->getSession($sessionId);
     }
 
     /**
@@ -74,7 +74,9 @@ class RemitmentService
      */
     public function getPool(int $poolId): ?Pool
     {
-        return $this->tenantService->round()->pools()->with(['subscriptions.payable.remitment'])->find($poolId);
+        return $this->tenantService->round()->pools()
+            ->with(['subscriptions.payable.remitment'])
+            ->find($poolId);
     }
 
     /**
@@ -126,7 +128,7 @@ class RemitmentService
         $remitmentCount = $this->summaryService->getSessionRemitmentCount($pool, $session);
         $emptyPayable = (object)[
             'id' => 0,
-            'amount' => $pool->amount * $this->balanceCalculator->enabledSessionCount($pool),
+            'amount' => $pool->amount * $this->tenantService->countEnabledSessions($pool),
             'remitment' => null,
         ];
 

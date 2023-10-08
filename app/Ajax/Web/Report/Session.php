@@ -3,7 +3,7 @@
 namespace App\Ajax\Web\Report;
 
 use App\Ajax\CallableClass;
-use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
 use function compact;
@@ -19,9 +19,9 @@ class Session extends CallableClass
 
     /**
      * @di
-     * @var SessionService
+     * @var TenantService
      */
-    protected SessionService $sessionService;
+    protected TenantService $tenantService;
 
     /**
      * @after hideMenuOnMobile
@@ -29,9 +29,11 @@ class Session extends CallableClass
     public function home()
     {
         // Don't show the page if there is no session or no member.
-        $sessions = $this->tontineService->getSessions(false, false)->filter(function($session) {
-            return $session->opened;
-        })->pluck('title', 'id');
+        $sessions = $this->tenantService->getSessions(orderAsc: false)
+            ->filter(function($session) {
+                return $session->opened;
+            })
+            ->pluck('title', 'id');
         if($sessions->count() === 0)
         {
             return $this->response;
@@ -57,7 +59,7 @@ class Session extends CallableClass
         // Route to session report export
         $this->jq('#btn-session-export')->click(pm()->js('setSessionExportLink'));
 
-        $session = $this->sessionService->getSession($sessions->keys()->first());
+        $session = $this->tenantService->getSession($sessions->keys()->first());
         $this->response->html('session-report-title', $session->title);
         $this->cl(Session\Session::class)->show($session);
 
@@ -66,19 +68,20 @@ class Session extends CallableClass
 
     public function showSession(int $sessionId)
     {
-        if(!($session = $this->sessionService->getSession($sessionId)))
+        if(!($session = $this->tenantService->getSession($sessionId)))
         {
             return $this->response;
         }
 
         $this->response->html('session-report-title', $session->title);
         $this->cl(Session\Session::class)->show($session);
+
         return $this->response;
     }
 
     public function showMember(int $sessionId, int $memberId)
     {
-        if(!($session = $this->sessionService->getSession($sessionId)))
+        if(!($session = $this->tenantService->getSession($sessionId)))
         {
             return $this->response;
         }
@@ -89,6 +92,7 @@ class Session extends CallableClass
 
         $this->response->html('session-report-title', $session->title . ' - ' . $member->name);
         $this->cl(Session\Member::class)->show($session, $member);
+
         return $this->response;
     }
 }

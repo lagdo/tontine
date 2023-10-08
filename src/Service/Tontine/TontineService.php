@@ -85,21 +85,6 @@ class TontineService
     }
 
     /**
-     * Get a list of sessions.
-     *
-     * @param bool $pluck
-     * @param bool $orderAsc
-     *
-     * @return Collection
-     */
-    public function getSessions(bool $pluck = true, bool $orderAsc = true): Collection
-    {
-        $query = $this->tenantService->round()->sessions()
-            ->orderBy('start_at', $orderAsc ? 'asc' : 'desc');
-        return $pluck ? $query->pluck('title', 'id') : $query->get();
-    }
-
-    /**
      * Get a single session.
      *
      * @param int $sessionId    The session id
@@ -108,7 +93,7 @@ class TontineService
      */
     public function getSession(int $sessionId): ?Session
     {
-        return $this->tenantService->round()->sessions()->find($sessionId);
+        return $this->tenantService->getSession($sessionId);
     }
 
     /**

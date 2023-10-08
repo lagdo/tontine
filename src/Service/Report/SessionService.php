@@ -82,7 +82,7 @@ class SessionService
             ])
             ->get()
             ->each(function($pool) use($session) {
-                $sessionCount = $this->balanceCalculator->enabledSessionCount($pool);
+                $sessionCount = $this->tenantService->countEnabledSessions($pool);
                 $pool->total_amount = $pool->amount * $pool->total_count * $sessionCount;
                 $pool->paid_amount = $this->balanceCalculator->getPoolRemitmentAmount($pool, $session);
             });

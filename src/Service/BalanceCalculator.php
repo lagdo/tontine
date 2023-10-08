@@ -29,18 +29,6 @@ class BalanceCalculator
     }
 
     /**
-     * Get the number of sessions enabled for a pool.
-     *
-     * @param Pool $pool
-     *
-     * @return int
-     */
-    public function enabledSessionCount(Pool $pool): int
-    {
-        return $this->tenantService->round()->sessions->count() - $pool->disabledSessions->count();
-    }
-
-    /**
      * @param Receivable $receivable
      *
      * @return int
@@ -114,7 +102,7 @@ class BalanceCalculator
         {
             if($pool->deposit_fixed)
             {
-                return $pool->amount * $this->enabledSessionCount($pool);
+                return $pool->amount * $this->tenantService->countEnabledSessions($pool);
             }
             // Sum the amounts for all deposits
             return $this->getPoolDepositAmount($pool, $session);
@@ -127,7 +115,7 @@ class BalanceCalculator
      */
     private function getRemitmentAmountSqlValue(): string
     {
-        return 'pools.amount * (' . $this->tenantService->round()->sessions->count() .
+        return 'pools.amount * (' . $this->tenantService->getSessions()->count() .
             ' - (select count(*) from pool_session_disabled where pool_id = pools.id))';
     }
 
@@ -339,7 +327,7 @@ class BalanceCalculator
     public function getBalanceForLoan(Session $session): int
     {
         // Get the ids of all the sessions until the current one.
-        $sessionIds = $this->tenantService->getPreviousSessions($session);
+        $sessionIds = $this->tenantService->getSessionIds($session);
 
         return $this->auctionAmount($sessionIds) + $this->fundingAmount($sessionIds) +
             $this->settlementAmount($sessionIds, true) + $this->refundAmount($sessionIds) +
@@ -358,7 +346,7 @@ class BalanceCalculator
     public function getTotalBalance(Session $session): int
     {
         // Get the ids of all the sessions until the current one.
-        $sessionIds = $this->tenantService->getPreviousSessions($session);
+        $sessionIds = $this->tenantService->getSessionIds($session);
 
         return $this->auctionAmount($sessionIds) + $this->fundingAmount($sessionIds) +
             $this->settlementAmount($sessionIds, false) + $this->refundAmount($sessionIds) +

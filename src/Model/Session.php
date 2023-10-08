@@ -62,6 +62,7 @@ class Session extends Base
      * @var array
      */
     protected $with = [
+        'host',
         'disabledPools',
     ];
 

@@ -107,8 +107,7 @@ class SummaryService
                 $subscription->setRelation('receivables',
                     $subscription->receivables->keyBy('session_id'));
             });
-        $sessions = $this->_getSessions($this->tenantService->round(),
-            $pool, ['payables.remitment']);
+        $sessions = $this->_getSessions($pool, ['payables.remitment']);
         $figures = new stdClass();
         if($pool->remit_planned)
         {
@@ -127,9 +126,8 @@ class SummaryService
      */
     public function getRemitmentFigures(Pool $pool, int $sessionId = 0)
     {
-        $sessions = $this->_getSessions($this->tenantService->round(),
-            $pool, ['payables.subscription.member']);
-        $sessionCount = $this->sessionService->enabledSessionCount($pool);
+        $sessions = $this->_getSessions($pool, ['payables.subscription.member']);
+        $sessionCount = $this->tenantService->countEnabledSessions($pool);
         $subscriptionCount = $pool->subscriptions()->count();
         $remitmentAmount = $pool->amount * $sessionCount;
 
@@ -165,7 +163,7 @@ class SummaryService
             return 1;
         }
 
-        $sessions = $this->sessionService->enabledSessions($pool);
+        $sessions = $this->tenantService->getEnabledSessions($pool);
         $position = $sessions->filter(function($_session) use($session) {
             return $_session->start_at->lt($session->start_at);
         })->count();

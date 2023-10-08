@@ -40,8 +40,10 @@ class SessionService
      */
     public function getSessions(int $page = 0): Collection
     {
-        return $this->tenantService->round()->sessions()->orderBy('start_at', 'asc')
-            ->with(['host'])->page($page, $this->tenantService->getLimit())->get();
+        return $this->tenantService->round()->sessions()
+            ->orderBy('start_at', 'asc')
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
     }
 
     /**
@@ -63,7 +65,7 @@ class SessionService
      */
     public function getSession(int $sessionId): ?Session
     {
-        return $this->tenantService->round()->sessions()->with(['host'])->find($sessionId);
+        return $this->tenantService->round()->sessions()->find($sessionId);
     }
 
     private function disableSessionOnPools(Session $session)
@@ -226,32 +228,6 @@ class SessionService
 
         // Disable the session for the pool.
         $pool->disabledSessions()->attach($session->id);
-    }
-
-    /**
-     * Get the sessions enabled for a pool.
-     *
-     * @param Pool $pool
-     *
-     * @return Collection
-     */
-    public function enabledSessions(Pool $pool): Collection
-    {
-        return $this->tenantService->round()->sessions->filter(function($session) use($pool) {
-            return $session->enabled($pool);
-        });
-    }
-
-    /**
-     * Get the number of sessions enabled for a pool.
-     *
-     * @param Pool $pool
-     *
-     * @return int
-     */
-    public function enabledSessionCount(Pool $pool): int
-    {
-        return $this->tenantService->round()->sessions->count() - $pool->disabledSessions->count();
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Ajax\CallableClass;
 use App\Ajax\Web\Planning\Subscription;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\PoolService;
+use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Planning\SessionService;
 
 use function intval;
@@ -28,6 +29,11 @@ class Session extends CallableClass
     public SessionService $sessionService;
 
     /**
+     * @var TenantService
+     */
+    protected TenantService $tenantService;
+
+    /**
      * @var PoolModel|null
      */
     protected ?PoolModel $pool = null;
@@ -36,11 +42,14 @@ class Session extends CallableClass
      * The constructor
      *
      * @param PoolService $poolService
+     * @param TenantService $tenantService
      * @param SessionService $sessionService
      */
-    public function __construct(PoolService $poolService, SessionService $sessionService)
+    public function __construct(PoolService $poolService, TenantService $tenantService,
+        SessionService $sessionService)
     {
         $this->poolService = $poolService;
+        $this->tenantService = $tenantService;
         $this->sessionService = $sessionService;
     }
 
@@ -91,7 +100,7 @@ class Session extends CallableClass
         $html = $this->view()->render('tontine.pages.planning.subscription.session.page')
             ->with('pool', $this->pool)
             ->with('sessions', $sessions)
-            ->with('total', $this->sessionService->enabledSessionCount($this->pool))
+            ->with('total', $this->tenantService->countEnabledSessions($this->pool))
             ->with('pagination', $pagination);
         $this->response->html('pool-subscription-sessions-page', $html);
 

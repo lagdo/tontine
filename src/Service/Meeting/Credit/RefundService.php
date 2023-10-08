@@ -55,7 +55,7 @@ class RefundService
      */
     public function getSession(int $sessionId): ?Session
     {
-        return $this->tenantService->round()->sessions()->find($sessionId);
+        return $this->tenantService->getSession($sessionId);
     }
 
     /**
@@ -164,7 +164,7 @@ class RefundService
      */
     public function createRefund(Session $session, int $debtId): void
     {
-        $sessionIds = $this->tenantService->round()->sessions()->pluck('id');
+        $sessionIds = $this->tenantService->getSessionIds();
         $debt = Debt::whereHas('loan', function(Builder $query) use($sessionIds) {
             $query->whereIn('session_id', $sessionIds);
         })->with(['partial_refunds'])->find($debtId);
@@ -283,7 +283,7 @@ class RefundService
      */
     public function createPartialRefund(Session $session, int $debtId, int $amount): void
     {
-        $sessionIds = $this->tenantService->round()->sessions()->pluck('id');
+        $sessionIds = $this->tenantService->getSessionIds();
         $debt = Debt::whereHas('loan', function(Builder $query) use($sessionIds) {
             $query->whereIn('session_id', $sessionIds);
         })->find($debtId);

@@ -73,19 +73,18 @@ trait ReportTrait
      * Get the payables of a given pool.
      *
      * @param Pool $pool
-     * @param Round $round
      * @param array $with
      *
      * @return Collection
      */
-    private function _getSessions(Round $round, Pool $pool, array $with = []): Collection
+    private function _getSessions(Pool $pool, array $with = []): Collection
     {
         $with['payables'] = function($query) use($pool) {
             // Keep only the subscriptions of the current pool.
             $query->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
                 ->where('subscriptions.pool_id', $pool->id);
         };
-        return $round->sessions()->orderBy('start_at', 'asc')->with($with)->get();
+        return $this->tenantService->getSessions()->load($with);
     }
 
     /**

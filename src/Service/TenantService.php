@@ -117,31 +117,75 @@ class TenantService
      */
     public function getSession(int $sessionId): ?Session
     {
-        return $this->round->sessions()->find($sessionId);
+        return $this->round->sessions->firstWhere('id', '===', $sessionId);
     }
 
     /**
-     * @param Session $session
+     * @param Session $lastSession
+     * @param bool $withCurrent
+     * @param bool $orderAsc
      *
      * @return Collection
      */
-    public function getSessions(Session $session): Collection
+    public function getSessions(?Session $lastSession = null,
+        bool $withCurrent = true, bool $orderAsc = true): Collection
     {
-        return $this->round()->sessions()->where('start_at', '<=', $session->start_at)
-            ->orderBy('start_at', 'asc')->get();
+        if($lastSession === null)
+        {
+            // Return all the sessions
+            return $this->round()->sessions
+                ->when(!$orderAsc, function($collection, $session) {
+                    return $collection->sortByDesc('start_at')->values();
+                });
+        }
+
+        return $this->round()->sessions
+            ->filter(function($session) use($lastSession, $withCurrent) {
+                return $withCurrent ? $session->start_at <= $lastSession->start_at :
+                    $session->start_at < $lastSession->start_at;
+            })
+            ->when(!$orderAsc, function($collection, $session) {
+                return $collection->sortByDesc('start_at')->values();
+            });
     }
 
     /**
      * @param Session $session
      * @param bool $withCurrent
+     * @param bool $orderAsc
      *
      * @return Collection
      */
-    public function getPreviousSessions(Session $session, bool $withCurrent = true): Collection
+    public function getSessionIds(?Session $lastSession = null,
+        bool $withCurrent = true, bool $orderAsc = true): Collection
     {
-        $op = $withCurrent ? '<=' : '<';
-        return $this->round()->sessions()->where('start_at', $op, $session->start_at)
-            ->orderBy('start_at', 'asc')->pluck('id');
+        return $this->getSessions($lastSession, $withCurrent, $orderAsc)->pluck('id');
+    }
+
+    /**
+     * Get the number of sessions enabled for a pool.
+     *
+     * @param Pool $pool
+     *
+     * @return int
+     */
+    public function countEnabledSessions(Pool $pool): int
+    {
+        return $this->round->sessions->count() - $pool->disabledSessions->count();
+    }
+
+    /**
+     * Get the sessions enabled for a pool.
+     *
+     * @param Pool $pool
+     *
+     * @return Collection
+     */
+    public function getEnabledSessions(Pool $pool): Collection
+    {
+        return $this->round->sessions->filter(function($session) use($pool) {
+            return $session->enabled($pool);
+        });
     }
 
     /**

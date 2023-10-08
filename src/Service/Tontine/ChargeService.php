@@ -47,7 +47,7 @@ class ChargeService
      */
     public function getSession(int $sessionId): ?Session
     {
-        return $this->tenantService->round()->sessions()->find($sessionId);
+        return $this->tenantService->getSession($sessionId);
     }
 
     /**

@@ -60,7 +60,7 @@ class BillService
                 // Filter fine bills on current and previous sessions
                 if($relation === 'fine_bill')
                 {
-                    $sessionIds = $this->tenantService->getPreviousSessions($session);
+                    $sessionIds = $this->tenantService->getSessionIds($session);
                     $query->whereIn('session_id', $sessionIds);
                 }
             })

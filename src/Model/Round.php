@@ -108,7 +108,7 @@ class Round extends Base
 
     public function sessions()
     {
-        return $this->hasMany(Session::class);
+        return $this->hasMany(Session::class)->orderBy('start_at', 'asc');
     }
 
     public function bills()
