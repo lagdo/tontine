@@ -46,7 +46,8 @@
                       <td class="currency"><b>{!! $locale->formatMoney($refund, false) !!}</b></td>
                       <td class="currency"><b>{!! $locale->formatMoney($funding, false) !!}</b></td>
                       <td class="currency"><b>{!! $locale->formatMoney($disbursement, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($balance, false) !!} : {!! $locale->formatMoney($cash, false) !!}</b></td>
+                      <td class="currency"><b>{!! $locale->formatMoney($balance, false) !!}<br/>{!!
+                        $locale->formatMoney($cash, false) !!}</b></td>
 @endif
                     </tr>
 @endforeach
