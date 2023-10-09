@@ -88,7 +88,8 @@ class Fine extends CallableClass
         $html = $this->view()->render('tontine.pages.meeting.settlement.page', [
             'session' => $this->session,
             'charge' => $this->charge,
-            'amount' => $this->settlementService->getSettlementAmount($this->charge, $this->session),
+            'billCount' => $billCount,
+            'settlement' => $this->settlementService->getSettlement($this->charge, $this->session),
             'bills' => $bills,
             'pagination' => $pagination,
         ]);

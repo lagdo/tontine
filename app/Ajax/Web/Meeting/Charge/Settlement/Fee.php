@@ -88,12 +88,15 @@ class Fee extends CallableClass
         $html = $this->view()->render('tontine.pages.meeting.settlement.page', [
             'session' => $this->session,
             'charge' => $this->charge,
-            'amount' => $this->settlementService->getSettlementAmount($this->charge, $this->session),
+            'billCount' => $billCount,
+            'settlement' => $this->settlementService->getSettlement($this->charge, $this->session),
             'bills' => $bills,
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-fee-bills', $html);
 
+        $this->jq('.btn-add-all-settlements')->click($this->rq()->addAllSettlements());
+        $this->jq('.btn-del-all-settlements')->click($this->rq()->delAllSettlements());
         $billId = jq()->parent()->attr('data-bill-id')->toInt();
         $this->jq('.btn-add-settlement')->click($this->rq()->addSettlement($billId));
         $this->jq('.btn-del-settlement')->click($this->rq()->delSettlement($billId));
@@ -148,6 +151,46 @@ class Fee extends CallableClass
         }
 
         $this->settlementService->deleteSettlement($this->charge, $this->session, $billId);
+
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
+
+        return $this->page();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function addAllSettlements()
+    {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
+        $this->settlementService->createAllSettlements($this->charge, $this->session);
+
+        // Refresh the amounts available
+        $this->cl(Loan::class)->refreshAmount($this->session);
+        $this->cl(Disbursement::class)->refreshAmount($this->session);
+
+        return $this->page();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function delAllSettlements()
+    {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
+        $this->settlementService->deleteAllSettlements($this->charge, $this->session);
 
         // Refresh the amounts available
         $this->cl(Loan::class)->refreshAmount($this->session);

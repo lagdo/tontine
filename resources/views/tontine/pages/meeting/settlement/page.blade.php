@@ -1,10 +1,23 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $settlementCount = $settlement->total ?? 0;
+  $settlementAmount = $settlement->amount ?? 0;
+@endphp
                     <table class="table table-bordered">
                       <thead>
                         <tr>
                           <th>{!! __('common.labels.name') !!}</th>
-                          <th class="currency">{!! $amount > 0 ? $locale->formatMoney($amount, true) : '&nbsp' !!}</th>
-                          <th class="table-item-menu">{!! __('common.labels.paid') !!}</th>
+                          <th class="currency">{!! $settlementAmount > 0 ?
+                            $locale->formatMoney($settlementAmount, true) : '&nbsp' !!}</th>
+                          <th class="table-item-menu">
+@if ($charge->is_variable)
+                            {!! __('common.labels.paid') !!}
+@elseif ($settlementCount < $billCount)
+                            <a href="javascript:void(0)" class="btn-add-all-settlements"><i class="fa fa-toggle-off"></i></a>
+@else
+                            <a href="javascript:void(0)" class="btn-del-all-settlements"><i class="fa fa-toggle-on"></i></a>
+@endif
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
