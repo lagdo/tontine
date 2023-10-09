@@ -108,11 +108,15 @@ class Pool extends CallableClass
         $html = $this->view()->render('tontine.pages.meeting.deposit.pool.page', [
             'pool' => $this->pool,
             'session' => $this->session,
+            'receivableCount' => $receivableCount,
+            'depositCount' => $this->depositService->countDeposits($this->pool, $this->session),
             'receivables' => $receivables,
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-pool-deposits', $html);
 
+        $this->jq('.btn-add-all-deposits')->click($this->rq()->addAllDeposits());
+        $this->jq('.btn-del-all-deposits')->click($this->rq()->delAllDeposits());
         $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
         $amount = jq('input', jq()->parent()->parent())->val()->toInt();
         $this->jq('.btn-add-deposit')->click($this->rq()->addDeposit($receivableId));
@@ -218,6 +222,46 @@ class Pool extends CallableClass
         }
 
         $this->depositService->deleteDeposit($this->pool, $this->session, $receivableId);
+
+        return $this->page();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function addAllDeposits()
+    {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+        if(!$this->pool->deposit_fixed)
+        {
+            return $this->response;
+        }
+
+        $this->depositService->createAllDeposits($this->pool, $this->session);
+
+        return $this->page();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function delAllDeposits()
+    {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+        if(!$this->pool->deposit_fixed)
+        {
+            return $this->response;
+        }
+
+        $this->depositService->deleteAllDeposits($this->pool, $this->session);
 
         return $this->page();
     }

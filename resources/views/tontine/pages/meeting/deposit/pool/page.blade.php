@@ -9,7 +9,13 @@
                       <th>{!! __('common.labels.name') !!}</th>
 @if ($pool->deposit_fixed)
                       <th class="currency">{!! $depositAmount > 0 ? $locale->formatMoney($depositAmount, true) : '&nbsp;' !!}</th>
-                      <th class="table-item-menu">{!! __('common.labels.paid') !!}</th>
+                      <th class="table-item-menu">
+@if ($depositCount < $receivableCount)
+                        <a href="javascript:void(0)" class="btn-add-all-deposits"><i class="fa fa-toggle-off"></i></a>
+@else
+                        <a href="javascript:void(0)" class="btn-del-all-deposits"><i class="fa fa-toggle-on"></i></a>
+@endif
+                      </th>
 @else
                       <th class="currency">{!! $depositAmount > 0 ? $locale->formatMoney($depositAmount, true) : '&nbsp;' !!}</th>
 @endif

@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service\Meeting\Pool;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Deposit;
@@ -107,7 +108,7 @@ class DepositService
      */
     public function getReceivable(Pool $pool, Session $session, int $receivableId): ?Receivable
     {
-        return $this->getQuery($pool, $session)->where('id', $receivableId)->first();
+        return $this->getQuery($pool, $session)->find($receivableId);
     }
 
     /**
@@ -186,5 +187,69 @@ class DepositService
             throw new MessageException(trans('tontine.subscription.errors.online'));
         }
         $receivable->deposit()->delete();
+    }
+
+    /**
+     * Create all deposits for a pool.
+     *
+     * @param Pool $pool The pool
+     * @param Session $session The session
+     *
+     * @return void
+     */
+    public function createAllDeposits(Pool $pool, Session $session): void
+    {
+        $receivables = $this->getQuery($pool, $session)->whereDoesntHave('deposit')->get();
+        if($receivables->count() === 0)
+        {
+            return;
+        }
+
+        DB::transaction(function() use($session, $receivables) {
+            foreach($receivables as $receivable)
+            {
+                $deposit = new Deposit();
+                $deposit->receivable()->associate($receivable);
+                $deposit->session()->associate($session);
+                $deposit->save();
+            }
+        });
+    }
+
+    /**
+     * Delete all deposits for a pool.
+     *
+     * @param Pool $pool The pool
+     * @param Session $session The session
+     *
+     * @return void
+     */
+    public function deleteAllDeposits(Pool $pool, Session $session): void
+    {
+        $receivables = $this->getQuery($pool, $session)->whereHas('deposit')->get();
+        if($receivables->count() === 0)
+        {
+            return;
+        }
+
+        DB::transaction(function() use($session, $receivables) {
+            foreach($receivables as $receivable)
+            {
+                $receivable->deposit()->where('session_id', $session->id)->delete();
+            }
+        });
+    }
+
+    /**
+     * Delete all deposits for a pool.
+     *
+     * @param Pool $pool The pool
+     * @param Session $session The session
+     *
+     * @return int
+     */
+    public function countDeposits(Pool $pool, Session $session): int
+    {
+        return $this->getQuery($pool, $session)->whereHas('deposit')->count();
     }
 }
