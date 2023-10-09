@@ -79,11 +79,6 @@ class Fine extends CallableClass
         // Bill and settlement counts and amounts
         $bills = $this->fineService->getBills($this->session);
         $settlements = $this->fineService->getSettlements($this->session);
-        foreach($fines as $fine)
-        {
-            $fine->currentBillCount = ($bills['total']['current'][$fine->id] ?? 0);
-            $fine->previousBillCount = ($bills['total']['previous'][$fine->id] ?? 0);
-        }
 
         $html = $this->view()->render('tontine.pages.meeting.charge.variable.page')
             ->with('session', $this->session)

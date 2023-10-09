@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service\Meeting\Charge;
 
+use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Charge;
@@ -126,5 +127,48 @@ class SettlementService
             throw new MessageException(trans('tontine.bill.errors.online'));
         }
         $bill->settlement()->where('session_id', $session->id)->delete();
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Session $session
+     *
+     * @return int
+     */
+    public function getSettlementAmount(Charge $charge, Session $session): int
+    {
+        if($charge->is_fine)
+        {
+            return DB::table('settlements')
+                ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+                ->join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
+                ->where('settlements.session_id', $session->id)
+                ->where('fine_bills.charge_id', $charge->id)
+                ->sum('bills.amount');
+        }
+        if($charge->period_session)
+        {
+            return DB::table('settlements')
+                ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+                ->join('session_bills', 'session_bills.bill_id', '=', 'bills.id')
+                ->where('settlements.session_id', $session->id)
+                ->where('session_bills.charge_id', $charge->id)
+                ->sum('bills.amount');
+        }
+        if($charge->period_round)
+        {
+            return DB::table('settlements')
+                ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+                ->join('round_bills', 'round_bills.bill_id', '=', 'bills.id')
+                ->where('settlements.session_id', $session->id)
+                ->where('round_bills.charge_id', $charge->id)
+                ->sum('bills.amount');
+        }
+        return DB::table('settlements')
+            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->join('tontine_bills', 'tontine_bills.bill_id', '=', 'bills.id')
+            ->where('settlements.session_id', $session->id)
+            ->where('tontine_bills.charge_id', $charge->id)
+            ->sum('bills.amount');
     }
 }

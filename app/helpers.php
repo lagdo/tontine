@@ -39,12 +39,6 @@ function paymentLink(?Model $payment, string $name, bool $disableLink)
     {
         $icon = '<i class="fa fa-toggle-on"></i>';
         $linkClass = "btn-del-$name";
-        if(($payment->online))
-        {
-            $icon .= '&nbsp;<i class="fa fa-link"></i>';
-            // Different class for online payment
-            $linkClass = 'online-payment';
-        }
     }
 
     return $disableLink ? $icon :

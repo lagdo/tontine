@@ -79,15 +79,6 @@ class Fee extends CallableClass
         // Bill and settlement counts and amounts
         $bills = $this->feeService->getBills($this->session);
         $settlements = $this->feeService->getSettlements($this->session);
-        foreach($fees as $fee)
-        {
-            $fee->currentBillCount = ($bills['total']['current'][$fee->id] ?? 0);
-            if(!$fee->period_session)
-            {
-                $fee->currentBillCount -= ($settlements['total']['previous'][$fee->id] ?? 0);
-            }
-            $fee->previousBillCount = ($bills['total']['previous'][$fee->id] ?? 0);
-        }
 
         $html = $this->view()->render('tontine.pages.meeting.charge.fixed.page')
             ->with('session', $this->session)

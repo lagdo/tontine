@@ -1,14 +1,17 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('balance', 'Siak\Tontine\Service\BalanceCalculator')
+@php
+  $depositAmount = $balance->getPoolDepositAmount($pool, $session);
+@endphp
                 <table class="table table-bordered">
                   <thead>
                     <tr>
                       <th>{!! __('common.labels.name') !!}</th>
 @if ($pool->deposit_fixed)
-                      <th class="currency">{!! $locale->formatMoney($balance->getPoolDepositAmount($pool, $session), true) !!}</th>
+                      <th class="currency">{!! $depositAmount > 0 ? $locale->formatMoney($depositAmount, true) : '&nbsp;' !!}</th>
                       <th class="table-item-menu">{!! __('common.labels.paid') !!}</th>
 @else
-                      <th class="currency">{!! $locale->formatMoney($balance->getPoolDepositAmount($pool, $session), true) !!}</th>
+                      <th class="currency">{!! $depositAmount > 0 ? $locale->formatMoney($depositAmount, true) : '&nbsp;' !!}</th>
 @endif
                     </tr>
                   </thead>
