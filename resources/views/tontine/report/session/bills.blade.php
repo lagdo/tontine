@@ -6,13 +6,13 @@
                       <div class="section-title mt-0">{{ __('meeting.charge.titles.fixed') }}</div>
                     </div>
                   </div>
-@foreach($fees as $fee)
+@foreach($charges as $charge)
                   <div class="row">
                     <div class="col">
-                      <h6>{{ $fee->name }}</h6>
+                      <h6>{{ $charge->name }}</h6>
                     </div>
                     <div class="col">
-                      <h6>{{ $locale->formatMoney($fee->amount, true) }}</h6>
+                      <h6>{{ $locale->formatMoney($charge->amount, true) }}</h6>
                     </div>
                   </div>
                   <div class="table-responsive">
@@ -26,9 +26,9 @@
                       </thead>
                       <tbody>
 @foreach ($bills as $bill)
-@if ($bill->charge_id === $fee->id)
+@if ($bill->charge_id === $charge->id)
                         <tr>
-                          <td>{{ $bill->member->name }}</td>
+                          <td>{{ $bill->member->name }}@if (($bill->session)) - {{ $bill->session->title }}@endif</td>
                           <td class="currency">{{ $locale->formatMoney($bill->amount, true) }}</td>
                           <td class="currency">{{ $bill->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
                         </tr>
@@ -36,8 +36,8 @@
 @endforeach
                         <tr>
                           <th>{{ __('common.labels.total') }}</th>
-                          <th class="currency">{{ $locale->formatMoney($fee->total_amount, true) }}</th>
-                          <th class="currency">{{ $fee->total_count }}</th>
+                          <th class="currency">{{ $locale->formatMoney($charge->total_amount, true) }}</th>
+                          <th class="currency">{{ $charge->total_count }}</th>
                         </tr>
                       </tbody>
                     </table>

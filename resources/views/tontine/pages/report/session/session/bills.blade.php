@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col">
-                      <div class="section-title mt-0">{{ __('meeting.charge.titles.fixed') }}</div>
+                      <div class="section-title mt-0">{{ $title }}</div>
                     </div>
                   </div>
                   <div class="table-responsive">
@@ -14,11 +14,12 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach($fees as $fee)
+@foreach($charges as $charge)
                         <tr>
-                          <td>{{ $fee->name }}<br/>{{ $locale->formatMoney($fee->amount, true) }}</td>
-                          <td>{{ $fee->total_count }}</td>
-                          <td class="currency">{{ $locale->formatMoney($fee->total_amount, true) }}</td>
+                          <td>{{ $charge->name }}<br/>{{ $charge->has_amount ?
+                            $locale->formatMoney($charge->amount, true) : __('tontine.labels.fees.variable') }}</td>
+                          <td>{{ $charge->total_count }}</td>
+                          <td class="currency">{{ $locale->formatMoney($charge->total_amount, true) }}</td>
                         </tr>
 @endforeach
                       </tbody>

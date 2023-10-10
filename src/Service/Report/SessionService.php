@@ -2,10 +2,12 @@
 
 namespace Siak\Tontine\Service\Report;
 
+use Closure;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
+use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
@@ -107,64 +109,81 @@ class SessionService
     }
 
     /**
-     * @param Session $session
+     * @param Closure $settlementFilter
+     * @param Member $member|null
      *
      * @return Collection
      */
-    private function getTontineFees(Session $session): Collection
+    private function getTontineBills(Closure $settlementFilter, ?Member $member = null): Collection
     {
         return DB::table('bills')
             ->join('tontine_bills', 'bills.id', '=', 'tontine_bills.bill_id')
             ->select(DB::raw('sum(bills.amount) as total_amount'),
                 DB::raw('count(bills.id) as total_count'), 'tontine_bills.charge_id')
             ->groupBy('tontine_bills.charge_id')
-            ->whereExists(function(Builder $query) use($session) {
-                return $query->select(DB::raw(1))
-                    ->from('settlements')
-                    ->where('session_id', $session->id)
-                    ->whereColumn('settlements.bill_id', 'bills.id');
+            ->whereExists($settlementFilter)
+            ->when($member !== null, function($query) use($member) {
+                return $query->where('tontine_bills.member_id', $member->id);
             })
             ->get();
     }
 
     /**
-     * @param Session $session
+     * @param Closure $settlementFilter
+     * @param Member $member|null
      *
      * @return Collection
      */
-    private function getRoundFees(Session $session): Collection
+    private function getRoundBills(Closure $settlementFilter, ?Member $member = null): Collection
     {
         return DB::table('bills')
             ->join('round_bills', 'bills.id', '=', 'round_bills.bill_id')
             ->select(DB::raw('sum(bills.amount) as total_amount'),
                 DB::raw('count(bills.id) as total_count'), 'round_bills.charge_id')
             ->groupBy('round_bills.charge_id')
-            ->whereExists(function(Builder $query) use($session) {
-                return $query->select(DB::raw(1))
-                    ->from('settlements')
-                    ->where('session_id', $session->id)
-                    ->whereColumn('settlements.bill_id', 'bills.id');
+            ->whereExists($settlementFilter)
+            ->when($member !== null, function($query) use($member) {
+                return $query->where('round_bills.member_id', $member->id);
             })
             ->get();
     }
 
     /**
-     * @param Session $session
+     * @param Closure $settlementFilter
+     * @param Member $member|null
      *
      * @return Collection
      */
-    private function getSessionFees(Session $session): Collection
+    private function getSessionBills(Closure $settlementFilter, ?Member $member = null): Collection
     {
         return DB::table('bills')
             ->join('session_bills', 'bills.id', '=', 'session_bills.bill_id')
             ->select(DB::raw('sum(bills.amount) as total_amount'),
                 DB::raw('count(bills.id) as total_count'), 'session_bills.charge_id')
             ->groupBy('session_bills.charge_id')
-            ->whereExists(function(Builder $query) use($session) {
-                return $query->select(DB::raw(1))
-                    ->from('settlements')
-                    ->where('session_id', $session->id)
-                    ->whereColumn('settlements.bill_id', 'bills.id');
+            ->whereExists($settlementFilter)
+            ->when($member !== null, function($query) use($member) {
+                return $query->where('session_bills.member_id', $member->id);
+            })
+            ->get();
+    }
+
+    /**
+     * @param Closure $settlementFilter
+     * @param Member $member|null
+     *
+     * @return Collection
+     */
+    private function getFineBills(Closure $settlementFilter, ?Member $member = null): Collection
+    {
+        return DB::table('bills')
+            ->join('fine_bills', 'bills.id', '=', 'fine_bills.bill_id')
+            ->select(DB::raw('sum(bills.amount) as total_amount'),
+                DB::raw('count(bills.id) as total_count'), 'fine_bills.charge_id')
+            ->groupBy('fine_bills.charge_id')
+            ->whereExists($settlementFilter)
+            ->when($member !== null, function($query) use($member) {
+                return $query->where('fine_bills.member_id', $member->id);
             })
             ->get();
     }
@@ -174,14 +193,21 @@ class SessionService
      *
      * @return Collection
      */
-    public function getFees(Session $session): Collection
+    public function getSessionCharges(Session $session): Collection
     {
-        $bills = $this->getTontineFees($session)
-            ->concat($this->getRoundFees($session))
-            ->concat($this->getSessionFees($session))
+        $settlementFilter = function(Builder $query) use($session) {
+            return $query->select(DB::raw(1))
+                ->from('settlements')
+                ->where('session_id', $session->id)
+                ->whereColumn('settlements.bill_id', 'bills.id');
+        };
+        $bills = $this->getTontineBills($settlementFilter)
+            ->concat($this->getRoundBills($settlementFilter))
+            ->concat($this->getSessionBills($settlementFilter))
+            ->concat($this->getFineBills($settlementFilter))
             ->keyBy('charge_id');
 
-        return $this->tenantService->tontine()->charges()->fixed()->get()
+        return $this->tenantService->tontine()->charges()->active()->get()
             ->each(function($fee) use($bills) {
                 $bill = $bills[$fee->id] ?? null;
                 $fee->total_count = $bill ? $bill->total_count : 0;
@@ -191,33 +217,30 @@ class SessionService
 
     /**
      * @param Session $session
+     * @param Member $member|null
      *
      * @return Collection
      */
-    public function getFines(Session $session): Collection
+    public function getTotalCharges(Session $session, ?Member $member = null): Collection
     {
-        $bills = DB::table('bills')
-            ->join('fine_bills', 'bills.id', '=', 'fine_bills.bill_id')
-            ->select(DB::raw('sum(bills.amount) as total_amount'),
-                DB::raw('count(bills.id) as total_count'), 'fine_bills.charge_id')
-            ->groupBy('fine_bills.charge_id')
-            ->whereExists(function(Builder $query) use($session) {
-                return $query->select(DB::raw(1))
-                    ->from('settlements')
-                    ->where('session_id', $session->id)
-                    ->whereColumn('settlements.bill_id', 'bills.id');
-            })
-            ->get()->keyBy('charge_id');
+        $sessionIds = $this->tenantService->getSessionIds($session);
+        $settlementFilter = function(Builder $query) use($sessionIds) {
+            return $query->select(DB::raw(1))
+                ->from('settlements')
+                ->whereIn('session_id', $sessionIds)
+                ->whereColumn('settlements.bill_id', 'bills.id');
+        };
+        $bills = $this->getTontineBills($settlementFilter, $member)
+            ->concat($this->getRoundBills($settlementFilter, $member))
+            ->concat($this->getSessionBills($settlementFilter, $member))
+            ->concat($this->getFineBills($settlementFilter, $member))
+            ->keyBy('charge_id');
 
-        return $this->tenantService->tontine()->charges()->variable()->get()
-            // ->filter(function($fine) use($bills) {
-            //     // Filter on fees with paid bills.
-            //     return isset($bills[$fine->id]);
-            // })
-            ->each(function($fine) use($bills) {
-                $bill = $bills[$fine->id] ?? null;
-                $fine->total_count = $bill ? $bill->total_count : 0;
-                $fine->total_amount = $bill ? $bill->total_amount : 0;
+        return $this->tenantService->tontine()->charges()->active()->get()
+            ->each(function($fee) use($bills) {
+                $bill = $bills[$fee->id] ?? null;
+                $fee->total_count = $bill ? $bill->total_count : 0;
+                $fee->total_amount = $bill ? $bill->total_amount : 0;
             });
     }
 

@@ -43,8 +43,8 @@ class Session extends CallableClass
         $this->remitments($session);
         $this->loans($session);
         $this->refunds($session);
-        $this->fees($session);
-        $this->fines($session);
+        $this->sessionBills($session);
+        $this->totalBills($session);
         $this->fundings($session);
         $this->disbursements($session);
         $this->profits($session);
@@ -83,20 +83,22 @@ class Session extends CallableClass
         $this->response->html('report-refunds', $html);
     }
 
-    private function fees(SessionModel $session)
+    private function sessionBills(SessionModel $session)
     {
-        $html = $this->view()->render('tontine.pages.report.session.session.fees', [
-            'fees' => $this->sessionService->getFees($session),
+        $html = $this->view()->render('tontine.pages.report.session.session.bills', [
+            'title' => trans('tontine.report.titles.bills.session'),
+            'charges' => $this->sessionService->getSessionCharges($session),
         ]);
-        $this->response->html('report-fees', $html);
+        $this->response->html('report-session-bills', $html);
     }
 
-    private function fines(SessionModel $session)
+    private function totalBills(SessionModel $session)
     {
-        $html = $this->view()->render('tontine.pages.report.session.session.fines', [
-            'fines' => $this->sessionService->getFines($session),
+        $html = $this->view()->render('tontine.pages.report.session.session.bills', [
+            'title' => trans('tontine.report.titles.bills.total'),
+            'charges' => $this->sessionService->getTotalCharges($session),
         ]);
-        $this->response->html('report-fines', $html);
+        $this->response->html('report-total-bills', $html);
     }
 
     private function fundings(SessionModel $session)

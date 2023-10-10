@@ -289,4 +289,12 @@ return [
             'planning' => "The selected beneficiary is already planned on another session.",
         ],
     ],
+    'report' => [
+        'titles' => [
+            'bills' => [
+                'session' => "Session bill amounts",
+                'total' => "Total bill amounts",
+            ],
+        ],
+    ],
 ];

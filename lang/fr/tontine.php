@@ -289,4 +289,12 @@ return [
             'planning' => "Le bénéficiaire choisi est déjà planifié sur une autre séance.",
         ],
     ],
+    'report' => [
+        'titles' => [
+            'bills' => [
+                'session' => "Montants des frais de la session",
+                'total' => "Montants totaux des frais",
+            ],
+        ],
+    ],
 ];
