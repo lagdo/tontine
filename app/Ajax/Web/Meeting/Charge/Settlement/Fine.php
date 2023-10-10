@@ -13,6 +13,7 @@ use Siak\Tontine\Model\Charge as ChargeModel;
 
 use function Jaxon\jq;
 use function trans;
+use function trim;
 
 /**
  * @databag meeting
@@ -46,7 +47,7 @@ class Fine extends CallableClass
     {
         $sessionId = $this->bag('meeting')->get('session.id');
         $chargeId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('charge.v.id');
+            $this->target()->args()[0] : $this->bag('meeting')->get('charge.variable.id');
         $this->session = $this->settlementService->getSession($sessionId);
         $this->charge = $this->settlementService->getCharge($chargeId);
     }
@@ -58,8 +59,9 @@ class Fine extends CallableClass
      */
     public function home(int $chargeId)
     {
-        $this->bag('meeting')->set('charge.v.id', $chargeId);
-        $this->bag('meeting')->set('settlement.filter', null);
+        $this->bag('meeting')->set('charge.variable.id', $chargeId);
+        $this->bag('meeting')->set('settlement.variable.search', '');
+        $this->bag('meeting')->set('settlement.variable.filter', null);
 
         $html = $this->view()->render('tontine.pages.meeting.settlement.home', [
             'charge' => $this->charge,
@@ -79,17 +81,22 @@ class Fine extends CallableClass
      */
     public function page(int $pageNumber = 0)
     {
-        $onlyUnpaid = $this->bag('meeting')->get('settlement.filter', null);
-        $billCount = $this->billService->getBillCount($this->charge, $this->session, $onlyUnpaid);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $billCount, 'meeting', 'settlement.page');
-        $bills = $this->billService->getBills($this->charge, $this->session, $onlyUnpaid, $pageNumber);
+        $search = trim($this->bag('meeting')->get('settlement.variable.search', ''));
+        $onlyUnpaid = $this->bag('meeting')->get('settlement.variable.filter', null);
+        $billCount = $this->billService->getBillCount($this->charge,
+            $this->session, $search, $onlyUnpaid);
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber,
+            $billCount, 'meeting', 'settlement.page');
+        $bills = $this->billService->getBills($this->charge, $this->session,
+            $search, $onlyUnpaid, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $billCount);
+        $settlement = $this->settlementService->getSettlement($this->charge, $this->session);
 
         $html = $this->view()->render('tontine.pages.meeting.settlement.page', [
             'session' => $this->session,
             'charge' => $this->charge,
             'billCount' => $billCount,
-            'settlement' => $this->settlementService->getSettlement($this->charge, $this->session),
+            'settlement' => $settlement,
             'bills' => $bills,
             'pagination' => $pagination,
         ]);
@@ -105,10 +112,10 @@ class Fine extends CallableClass
 
     public function toggleFilter()
     {
-        $onlyUnpaid = $this->bag('meeting')->get('settlement.filter', null);
+        $onlyUnpaid = $this->bag('meeting')->get('settlement.variable.filter', null);
         // Switch between null, true and false
         $onlyUnpaid = $onlyUnpaid === null ? true : ($onlyUnpaid === true ? false : null);
-        $this->bag('meeting')->set('settlement.filter', $onlyUnpaid);
+        $this->bag('meeting')->set('settlement.variable.filter', $onlyUnpaid);
 
         return $this->page();
     }
