@@ -100,6 +100,4 @@
 @include('tontine.parts.footer.html')
 
 @yield('script')
-
-@include('tontine.parts.footer.screen')
 </html>
