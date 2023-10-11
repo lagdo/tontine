@@ -10,6 +10,8 @@ use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
 
+use function strtolower;
+
 class BillService
 {
     /**
@@ -28,42 +30,49 @@ class BillService
     /**
      * @param Charge $charge
      * @param Session $session
-     * @param bool $onlyPaid|null
-     *
-     * @return Builder
-     */
-    private function getSessionBillsQuery(Charge $charge, Session $session, ?bool $onlyPaid)
-    {
-        return Bill::when($onlyPaid === false, function($query){
-                return $query->whereDoesntHave('settlement');
-            })
-            ->when($onlyPaid === true, function($query) {
-                return $query->whereHas('settlement');
-            })
-            ->whereHas('session_bill', function(Builder $query) use($charge, $session) {
-                $query->where('session_id', $session->id)->where('charge_id', $charge->id);
-            });
-    }
-
-    /**
-     * @param Charge $charge
-     * @param Session $session
      * @param string $relation
+     * @param string $search
      * @param bool $onlyPaid|null
      *
      * @return Builder
      */
-    private function getBillsQuery(Charge $charge, Session $session, string $relation, ?bool $onlyPaid)
+    private function getBillsQuery(Charge $charge, Session $session,
+        string $relation, string $search, ?bool $onlyPaid)
     {
-        return Bill::whereHas($relation, function(Builder $query) use($charge, $session, $relation) {
-                $query->where('charge_id', $charge->id);
-                // Filter fine bills on current and previous sessions
-                if($relation === 'fine_bill')
-                {
+        $relationFilter = function(Builder $query) use($charge, $session, $relation) {
+            $query->where('charge_id', $charge->id)
+                ->when($relation === 'session_bill', function($query) use($session) {
+                    // Filter session bills only on current session
+                    return $query->where('session_id', $session->id);
+                })
+                ->when($relation === 'fine_bill', function($query) use($session) {
+                    // Filter fine bills on current and previous sessions
                     $sessionIds = $this->tenantService->getSessionIds($session);
-                    $query->whereIn('session_id', $sessionIds);
-                }
-            })
+                    return $query->whereIn('session_id', $sessionIds);
+                });
+        };
+        $allBillsFilter = function($query) use($session) {
+            return $query->where(function(Builder $query) use($session) {
+                // The bills that are paid in this session, or that are not yet paid.
+                $query->orWhere(function(Builder $query) {
+                    $query->whereDoesntHave('settlement');
+                })->orWhere(function(Builder $query) use($session) {
+                    $query->whereHas('settlement', function(Builder $query) use($session) {
+                        $query->where('session_id', $session->id);
+                    });
+                });
+            });
+        };
+        $searchFilter = function($query) use($search, $relation) {
+            $relationTable = $relation . 's';
+            $search = '%' . strtolower($search) . '%';
+            return $query->select('bills.*')
+                ->join($relationTable, "$relationTable.bill_id", '=', 'bills.id')
+                ->join('members', "$relationTable.member_id", '=', 'members.id')
+                ->where(DB::raw('lower(members.name)'), 'like', $search);
+        };
+
+        return Bill::whereHas($relation, $relationFilter)
             ->when($onlyPaid === false, function($query) {
                 return $query->whereDoesntHave('settlement');
             })
@@ -72,18 +81,8 @@ class BillService
                     $query->where('session_id', $session->id);
                 });
             })
-            ->when($onlyPaid === null, function($query) use($session) {
-                return $query->where(function(Builder $query) use($session) {
-                    // The bills that are paid in this session, or that are not yet paid.
-                    $query->orWhere(function(Builder $query) {
-                        $query->whereDoesntHave('settlement');
-                    })->orWhere(function(Builder $query) use($session) {
-                        $query->whereHas('settlement', function(Builder $query) use($session) {
-                            $query->where('session_id', $session->id);
-                        });
-                    });
-                });
-            });
+            ->when($onlyPaid === null && $relation !== 'session_bill', $allBillsFilter)
+            ->when($search !== '', $searchFilter);
     }
 
     /**
@@ -102,19 +101,19 @@ class BillService
     /**
      * @param Charge $charge
      * @param Session $session
+     * @param string $search
      * @param bool $onlyPaid|null
      * @param int $page
      *
      * @return Collection
      */
-    public function getBills(Charge $charge, Session $session, ?bool $onlyPaid = null, int $page = 0): Collection
+    public function getBills(Charge $charge, Session $session,
+        string $search = '', ?bool $onlyPaid = null, int $page = 0): Collection
     {
         $billRelation = $this->getBillRelation($charge);
-        $query = $billRelation === 'session_bill' ?
-            $this->getSessionBillsQuery($charge, $session, $onlyPaid) :
-            $this->getBillsQuery($charge, $session, $billRelation, $onlyPaid);
         $billRelations = !$charge->is_variable ? [$billRelation . '.member', 'settlement'] :
             ['fine_bill.session', 'fine_bill.member', 'settlement'];
+        $query = $this->getBillsQuery($charge, $session, $billRelation, $search, $onlyPaid);
 
         return $query->with($billRelations)
             ->page($page, $this->tenantService->getLimit())
@@ -129,16 +128,17 @@ class BillService
     /**
      * @param Charge $charge
      * @param Session $session
+     * @param string $search
      * @param bool $onlyPaid|null
      *
      * @return int
      */
-    public function getBillCount(Charge $charge, Session $session, ?bool $onlyPaid = null): int
+    public function getBillCount(Charge $charge, Session $session,
+        string $search = '', ?bool $onlyPaid = null): int
     {
         $billRelation = $this->getBillRelation($charge);
 
-        return $billRelation === 'session_bill' ?
-            $this->getSessionBillsQuery($charge, $session, $onlyPaid)->count() :
-            $this->getBillsQuery($charge, $session, $billRelation, $onlyPaid)->count();
+        return $this->getBillsQuery($charge, $session, $billRelation, $search, $onlyPaid)
+            ->count();
     }
 }

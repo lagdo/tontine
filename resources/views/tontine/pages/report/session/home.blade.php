@@ -33,9 +33,9 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 col-sm-12" id="report-fees">
+                <div class="col-md-6 col-sm-12" id="report-session-bills">
                 </div>
-                <div class="col-md-6 col-sm-12" id="report-fines">
+                <div class="col-md-6 col-sm-12" id="report-total-bills">
                 </div>
               </div>
               <div class="row">

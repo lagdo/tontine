@@ -6,6 +6,7 @@ use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Member as MemberModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Report\MemberService;
+use Siak\Tontine\Service\Report\SessionService;
 
 /**
  * @exclude
@@ -18,11 +19,18 @@ class Member extends CallableClass
     protected MemberService $memberService;
 
     /**
-     * @param MemberService $memberService
+     * @var SessionService
      */
-    public function __construct(MemberService $memberService)
+    protected SessionService $sessionService;
+
+    /**
+     * @param MemberService $memberService
+     * @param SessionService $sessionService
+     */
+    public function __construct(MemberService $memberService, SessionService $sessionService)
     {
         $this->memberService = $memberService;
+        $this->sessionService = $sessionService;
     }
 
     /**
@@ -37,8 +45,8 @@ class Member extends CallableClass
         $this->remitments($session, $member);
         $this->loans($session, $member);
         $this->debts($session, $member);
-        $this->fees($session, $member);
-        $this->fines($session, $member);
+        $this->sessionBills($session, $member);
+        $this->totalBills($session, $member);
         $this->fundings($session, $member);
         $this->disbursements($session, $member);
         // Empty the profits section.
@@ -78,20 +86,20 @@ class Member extends CallableClass
         $this->response->html('report-refunds', $html);
     }
 
-    private function fees(SessionModel $session, MemberModel $member)
+    private function sessionBills(SessionModel $session, MemberModel $member)
     {
-        $html = $this->view()->render('tontine.pages.report.session.member.fees', [
-            'bills' => $this->memberService->getFees($session, $member),
+        $html = $this->view()->render('tontine.pages.report.session.member.bills.session', [
+            'bills' => $this->memberService->getBills($session, $member),
         ]);
-        $this->response->html('report-fees', $html);
+        $this->response->html('report-session-bills', $html);
     }
 
-    private function fines(SessionModel $session, MemberModel $member)
+    private function totalBills(SessionModel $session, MemberModel $member)
     {
-        $html = $this->view()->render('tontine.pages.report.session.member.fines', [
-            'bills' => $this->memberService->getFines($session, $member),
+        $html = $this->view()->render('tontine.pages.report.session.member.bills.total', [
+            'charges' => $this->sessionService->getTotalCharges($session, $member),
         ]);
-        $this->response->html('report-fines', $html);
+        $this->response->html('report-total-bills', $html);
     }
 
     private function fundings(SessionModel $session, MemberModel $member)

@@ -159,13 +159,10 @@ class ReportService
                 'auctions' => $this->memberService->getAuctions($session),
                 // 'total' => $this->sessionService->getAuction($session),
             ],
-            'fees' => [
-                'bills' => $this->memberService->getFees($session),
-                'fees' => $this->sessionService->getFees($session),
-            ],
-            'fines' => [
-                'bills' => $this->memberService->getFines($session),
-                'fines' => $this->sessionService->getFines($session),
+            'bills' => [
+                'charges' => $this->sessionService->getSessionCharges($session),
+                'bills' => $this->memberService->getBills($session),
+                // 'total' => $this->sessionService->getTotalCharges($session),
             ],
             'loans' => [
                 'loans' => $this->memberService->getLoans($session),

@@ -12,6 +12,7 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
+use function strtolower;
 
 class FineService
 {
@@ -178,17 +179,22 @@ class FineService
     /**
      * @param Charge $charge
      * @param Session $session
+     * @param string $search
      * @param bool $onlyFined|null
      *
      * @return mixed
      */
-    private function getMembersQuery(Charge $charge, Session $session, ?bool $onlyFined)
+    private function getMembersQuery(Charge $charge, Session $session,
+        string $search = '', ?bool $onlyFined)
     {
         $filterFunction = function($query) use($charge, $session) {
             $query->where('charge_id', $charge->id)->where('session_id', $session->id);
         };
 
-        return $this->tenantService->tontine()->members()
+        return $this->tenantService->tontine()->members()->active()
+            ->when($search !== '', function($query) use($search) {
+                return $query->where(DB::raw('lower(name)'), 'like', '%' . strtolower($search) . '%');
+            })
             ->when($onlyFined === false, function($query) use($filterFunction) {
                 return $query->whereDoesntHave('fine_bills', $filterFunction);
             })
@@ -200,14 +206,16 @@ class FineService
     /**
      * @param Charge $charge
      * @param Session $session
+     * @param string $search
      * @param bool $onlyFined|null
      * @param int $page
      *
      * @return Collection
      */
-    public function getMembers(Charge $charge, Session $session, ?bool $onlyFined = null, int $page = 0): Collection
+    public function getMembers(Charge $charge, Session $session,
+        string $search = '', ?bool $onlyFined = null, int $page = 0): Collection
     {
-        return $this->getMembersQuery($charge, $session, $onlyFined)
+        return $this->getMembersQuery($charge, $session, $search, $onlyFined)
             ->page($page, $this->tenantService->getLimit())
             ->with([
                 'fine_bills' => function($query) use($charge, $session) {
@@ -216,20 +224,23 @@ class FineService
             ])
             ->orderBy('name', 'asc')->get()
             ->each(function($member) {
-                $member->bill = $member->fine_bills->count() > 0 ? $member->fine_bills->first()->bill : null;
+                $member->bill = $member->fine_bills->count() > 0 ?
+                    $member->fine_bills->first()->bill : null;
             });
     }
 
     /**
      * @param Charge $charge
      * @param Session $session
+     * @param string $search
      * @param bool $onlyFined|null
      *
      * @return int
      */
-    public function getMemberCount(Charge $charge, Session $session, ?bool $onlyFined = null): int
+    public function getMemberCount(Charge $charge, Session $session,
+        string $search = '', ?bool $onlyFined = null): int
     {
-        return $this->getMembersQuery($charge, $session, $onlyFined)->count();
+        return $this->getMembersQuery($charge, $session, $search, $onlyFined)->count();
     }
 
     /**

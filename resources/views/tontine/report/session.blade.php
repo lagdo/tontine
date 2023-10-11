@@ -39,9 +39,7 @@
           @include('tontine.report.session.auctions', $remitments)
 @endif
 
-          @include('tontine.report.session.fees', $fees)
-
-          @include('tontine.report.session.fines', $fines)
+          @include('tontine.report.session.bills', $bills)
 
           @include('tontine.report.session.loans', $loans)
 

@@ -13,6 +13,7 @@ use Siak\Tontine\Model\Charge as ChargeModel;
 
 use function Jaxon\jq;
 use function trans;
+use function trim;
 
 /**
  * @databag meeting
@@ -46,7 +47,7 @@ class Fee extends CallableClass
     {
         $sessionId = $this->bag('meeting')->get('session.id');
         $chargeId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('charge.f.id');
+            $this->target()->args()[0] : $this->bag('meeting')->get('charge.fixed.id');
         $this->session = $this->settlementService->getSession($sessionId);
         $this->charge = $this->settlementService->getCharge($chargeId);
     }
@@ -58,15 +59,19 @@ class Fee extends CallableClass
      */
     public function home(int $chargeId)
     {
-        $this->bag('meeting')->set('charge.f.id', $chargeId);
-        $this->bag('meeting')->set('settlement.filter', null);
+        $this->bag('meeting')->set('charge.fixed.id', $chargeId);
+        $this->bag('meeting')->set('settlement.fixed.search', '');
+        $this->bag('meeting')->set('settlement.fixed.filter', null);
 
         $html = $this->view()->render('tontine.pages.meeting.settlement.home', [
             'charge' => $this->charge,
             'type' => 'fee',
         ]);
         $this->response->html('meeting-fees', $html);
-        $this->jq('#btn-fee-settlements-back')->click($this->cl(Charge::class)->rq()->home());
+        $this->jq('#btn-fee-settlements-back')
+            ->click($this->cl(Charge::class)->rq()->home());
+        $this->jq('#btn-fee-settlements-search')
+            ->click($this->rq()->search(jq('#txt-fee-settlements-search')->val()));
         $this->jq('#btn-fee-settlements-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
@@ -79,17 +84,22 @@ class Fee extends CallableClass
      */
     public function page(int $pageNumber = 0)
     {
-        $onlyUnpaid = $this->bag('meeting')->get('settlement.filter', null);
-        $billCount = $this->billService->getBillCount($this->charge, $this->session, $onlyUnpaid);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $billCount, 'meeting', 'settlement.page');
-        $bills = $this->billService->getBills($this->charge, $this->session, $onlyUnpaid, $pageNumber);
+        $search = trim($this->bag('meeting')->get('settlement.fixed.search', ''));
+        $onlyUnpaid = $this->bag('meeting')->get('settlement.fixed.filter', null);
+        $billCount = $this->billService->getBillCount($this->charge,
+            $this->session, $search, $onlyUnpaid);
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber,
+            $billCount, 'meeting', 'settlement.page');
+        $bills = $this->billService->getBills($this->charge, $this->session,
+            $search, $onlyUnpaid, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $billCount);
+        $settlement = $this->settlementService->getSettlement($this->charge, $this->session);
 
         $html = $this->view()->render('tontine.pages.meeting.settlement.page', [
             'session' => $this->session,
             'charge' => $this->charge,
             'billCount' => $billCount,
-            'settlement' => $this->settlementService->getSettlement($this->charge, $this->session),
+            'settlement' => $settlement,
             'bills' => $bills,
             'pagination' => $pagination,
         ]);
@@ -107,10 +117,17 @@ class Fee extends CallableClass
 
     public function toggleFilter()
     {
-        $onlyUnpaid = $this->bag('meeting')->get('settlement.filter', null);
+        $onlyUnpaid = $this->bag('meeting')->get('settlement.fixed.filter', null);
         // Switch between null, true and false
         $onlyUnpaid = $onlyUnpaid === null ? true : ($onlyUnpaid === true ? false : null);
-        $this->bag('meeting')->set('settlement.filter', $onlyUnpaid);
+        $this->bag('meeting')->set('settlement.fixed.filter', $onlyUnpaid);
+
+        return $this->page();
+    }
+
+    public function search(string $search)
+    {
+        $this->bag('meeting')->set('settlement.fixed.search', trim($search));
 
         return $this->page();
     }

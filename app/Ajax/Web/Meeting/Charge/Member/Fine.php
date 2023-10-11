@@ -66,6 +66,7 @@ class Fine extends CallableClass
     public function home(int $chargeId)
     {
         $this->bag('meeting')->set('charge.id', $chargeId);
+        $this->bag('meeting')->set('fine.search', '');
         $this->bag('meeting')->set('fine.filter', null);
 
         $html = $this->view()->render('tontine.pages.meeting.charge.variable.member.home', [
@@ -73,6 +74,7 @@ class Fine extends CallableClass
         ]);
         $this->response->html('meeting-fines', $html);
         $this->jq('#btn-fine-back')->click($this->cl(Charge::class)->rq()->home());
+        $this->jq('#btn-fine-search')->click($this->rq()->search(jq('#txt-fine-search')->val()));
         $this->jq('#btn-fine-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
@@ -85,10 +87,14 @@ class Fine extends CallableClass
      */
     public function page(int $pageNumber = 0)
     {
+        $search = trim($this->bag('meeting')->get('fine.search', ''));
         $onlyFined = $this->bag('meeting')->get('fine.filter', null);
-        $memberCount = $this->fineService->getMemberCount($this->charge, $this->session, $onlyFined);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount, 'meeting', 'member.page');
-        $members = $this->fineService->getMembers($this->charge, $this->session, $onlyFined, $pageNumber);
+        $memberCount = $this->fineService->getMemberCount($this->charge,
+            $this->session, $search, $onlyFined);
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount,
+            'meeting', 'member.page');
+        $members = $this->fineService->getMembers($this->charge, $this->session,
+            $search, $onlyFined, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
         $html = $this->view()->render('tontine.pages.meeting.charge.variable.member.page', [
@@ -116,6 +122,13 @@ class Fine extends CallableClass
         // Switch between null, true and false
         $onlyFined = $onlyFined === null ? true : ($onlyFined === true ? false : null);
         $this->bag('meeting')->set('fine.filter', $onlyFined);
+
+        return $this->page();
+    }
+
+    public function search(string $search)
+    {
+        $this->bag('meeting')->set('fine.search', trim($search));
 
         return $this->page();
     }
