@@ -295,6 +295,10 @@ return [
                 'session' => "Session bill amounts",
                 'total' => "Total bill amounts",
             ],
+            'amounts' => [
+                'cashed' => "Cashed",
+                'disbursed' => "Disbursed",
+            ],
         ],
     ],
 ];

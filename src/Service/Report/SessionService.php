@@ -13,6 +13,10 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\TenantService;
 
+use function collect;
+use function count;
+use function is_array;
+
 class SessionService
 {
     /**
@@ -189,12 +193,36 @@ class SessionService
     }
 
     /**
+     * @param Collection $chargeIds
+     * @param Collection $sessionIds
+     *
+     * @return Collection
+     */
+    public function getDisbursedAmounts(Collection $chargeIds, Collection $sessionIds): Collection
+    {
+        if($chargeIds->count() === 0)
+        {
+            return collect();
+        }
+
+        return DB::table('disbursements')
+            ->select(DB::raw('sum(amount) as total_amount'),
+                DB::raw('count(*) as total_count'), 'charge_id')
+            ->groupBy('charge_id')
+            ->whereIn('charge_id', $chargeIds)
+            ->whereIn('session_id', $sessionIds)
+            ->get()
+            ->keyBy('charge_id');
+    }
+
+    /**
      * @param Session $session
      *
      * @return Collection
      */
     public function getSessionCharges(Session $session): Collection
     {
+        $charges = $this->tenantService->tontine()->charges()->active()->get();
         $settlementFilter = function(Builder $query) use($session) {
             return $query->select(DB::raw(1))
                 ->from('settlements')
@@ -206,13 +234,48 @@ class SessionService
             ->concat($this->getSessionBills($settlementFilter))
             ->concat($this->getFineBills($settlementFilter))
             ->keyBy('charge_id');
+        $sessionIds = collect([$session->id]);
+        $disbursements = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
 
-        return $this->tenantService->tontine()->charges()->active()->get()
-            ->each(function($fee) use($bills) {
-                $bill = $bills[$fee->id] ?? null;
-                $fee->total_count = $bill ? $bill->total_count : 0;
-                $fee->total_amount = $bill ? $bill->total_amount : 0;
-            });
+        return $charges->each(function($charge) use($bills, $disbursements) {
+            $bill = $bills[$charge->id] ?? null;
+            $charge->total_count = $bill ? $bill->total_count : 0;
+            $charge->total_amount = $bill ? $bill->total_amount : 0;
+            $charge->disbursement = $disbursements[$charge->id] ?? null;
+        });
+    }
+
+    /**
+     * @return int
+     */
+    private function countActiveMembers(): int
+    {
+        // The number of active members is saved in the round, so its current
+        // value can be retrieved forever, even when the membership will change.
+        $tontine = $this->tenantService->tontine();
+        $round = $this->tenantService->round();
+        if($round->property === null)
+        {
+            // Create and save the property with the content
+            $memberIds = $tontine->members()->active()->pluck('id')->all();
+            $round->property()->create(['content' => ['members' => $memberIds]]);
+
+            return count($memberIds);
+        }
+
+        $content = $round->property->content;
+        if(isset($content['members']) && is_array($content['members']))
+        {
+            // Return the existing content value
+            return count($content['members']);
+        }
+
+        // Update the existing content with the members
+        $content['members'] = $tontine->members()->active()->pluck('id')->all();
+        $round->property->content = $content;
+        $round->property->save();
+
+        return count($content['members']);
     }
 
     /**
@@ -223,6 +286,7 @@ class SessionService
      */
     public function getTotalCharges(Session $session, ?Member $member = null): Collection
     {
+        $charges = $this->tenantService->tontine()->charges()->active()->get();
         $sessionIds = $this->tenantService->getSessionIds($session);
         $settlementFilter = function(Builder $query) use($sessionIds) {
             return $query->select(DB::raw(1))
@@ -235,13 +299,24 @@ class SessionService
             ->concat($this->getSessionBills($settlementFilter, $member))
             ->concat($this->getFineBills($settlementFilter, $member))
             ->keyBy('charge_id');
+        $disbursements = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
+        if($member !== null)
+        {
+            // The disbursement part of each member id calculated by dividing each amount
+            // by the number of members.
+            $memberCount = $this->countActiveMembers();
+            foreach($disbursements as $disbursement)
+            {
+                $disbursement->total_amount /= $memberCount;
+            }
+        }
 
-        return $this->tenantService->tontine()->charges()->active()->get()
-            ->each(function($fee) use($bills) {
-                $bill = $bills[$fee->id] ?? null;
-                $fee->total_count = $bill ? $bill->total_count : 0;
-                $fee->total_amount = $bill ? $bill->total_amount : 0;
-            });
+        return $charges->each(function($charge) use($bills, $disbursements) {
+            $bill = $bills[$charge->id] ?? null;
+            $charge->total_count = $bill ? $bill->total_count : 0;
+            $charge->total_amount = $bill ? $bill->total_amount : 0;
+            $charge->disbursement = $disbursements[$charge->id] ?? null;
+        });
     }
 
     /**

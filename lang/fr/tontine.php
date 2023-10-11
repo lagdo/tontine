@@ -295,6 +295,10 @@ return [
                 'session' => "Montants des frais de la session",
                 'total' => "Montants totaux des frais",
             ],
+            'amounts' => [
+                'cashed' => "Encaissé",
+                'disbursed' => "Décaissé",
+            ],
         ],
     ],
 ];

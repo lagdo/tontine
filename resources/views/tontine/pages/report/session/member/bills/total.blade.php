@@ -9,8 +9,8 @@
                       <thead>
                         <tr>
                           <th>{{ __('common.labels.title') }}</th>
-                          <th>&nbsp;</th>
-                          <th class="currency">{{ __('common.labels.total') }}</th>
+                          <th class="currency">{{ __('tontine.report.titles.amounts.cashed') }}</th>
+                          <th class="currency">{{ __('tontine.report.titles.amounts.disbursed') }}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -18,8 +18,12 @@
                         <tr>
                           <td>{{ $charge->name }}<br/>{{ $charge->has_amount ?
                             $locale->formatMoney($charge->amount, true) : __('tontine.labels.fees.variable') }}</td>
-                          <td>{{ $charge->total_count }}</td>
-                          <td class="currency">{{ $locale->formatMoney($charge->total_amount, true) }}</td>
+                          <td class="currency">@if ($charge->total_count > 0){{
+                            $locale->formatMoney($charge->total_amount, true) }}<br/>{{
+                            $charge->total_count }}@else &nbsp; @endif</td>
+                          <td class="currency">@if ($charge->disbursement !== null){{
+                            $locale->formatMoney($charge->disbursement->total_amount, true) }}<br/>{{
+                            $charge->disbursement->total_count }}@else &nbsp; @endif</td>
                         </tr>
 @endforeach
                       </tbody>
