@@ -26,7 +26,10 @@ class SiakPdfServiceProvider extends ServiceProvider implements DeferrableProvid
 
         $this->app->bind(PdfGeneratorInterface::class, LocalPdfGenerator::class);
         $this->app->singleton(LocalPdfGenerator::class, function($app) {
-            return new LocalPdfGenerator($app->make(Browser::class), config('chrome.page'));
+            $config = config('chrome.page');
+            $config['footerTemplate'] = '<div style="font-size:8px;margin-left:40px;">' .
+                'page <span class="pageNumber"></span> / <span class="totalPages"></span></div>';
+            return new LocalPdfGenerator($app->make(Browser::class), $config);
         });
     }
 
