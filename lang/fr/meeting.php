@@ -76,6 +76,7 @@ return [
     ],
     'charge' => [
         'titles' => [
+            'fees' => "Frais",
             'fixed' => "Frais fixes",
             'variable' => "Frais variables",
         ],

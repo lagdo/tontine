@@ -160,9 +160,11 @@ class ReportService
                 // 'total' => $this->sessionService->getAuction($session),
             ],
             'bills' => [
-                'charges' => $this->sessionService->getSessionCharges($session),
                 'bills' => $this->memberService->getBills($session),
-                // 'total' => $this->sessionService->getTotalCharges($session),
+                'charges' => [
+                    'session' => $this->sessionService->getSessionCharges($session),
+                    'total' => $this->sessionService->getTotalCharges($session),
+                ],
             ],
             'loans' => [
                 'loans' => $this->memberService->getLoans($session),
