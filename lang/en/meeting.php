@@ -23,6 +23,7 @@ return [
         'partial-refunds' => "Partial refunds",
         'disbursements' => "Disbursements",
         'profits' => "Profits distribution",
+        'summary' => "Summary",
     ],
     'actions' => [
         'deposits' => "Deposits",

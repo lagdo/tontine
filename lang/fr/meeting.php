@@ -23,6 +23,7 @@ return [
         'partial-refunds' => "Remboursements partiels",
         'disbursements' => "Décaissements",
         'profits' => "Répartition des gains",
+        'summary' => "Résumé",
     ],
     'actions' => [
         'deposits' => "Versements",

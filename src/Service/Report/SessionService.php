@@ -8,7 +8,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Member;
-use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\TenantService;
@@ -46,7 +45,7 @@ class SessionService
      */
     public function getReceivables(Session $session): Collection
     {
-        return Pool::where('round_id', $session->round_id)
+        return $session->round->pools()
             ->withCount([
                 'subscriptions as total_count' => function($query) use($session) {
                     $query->whereHas('receivables', function($query) use($session) {
@@ -73,7 +72,7 @@ class SessionService
      */
     public function getPayables(Session $session): Collection
     {
-        return Pool::where('round_id', $session->round_id)
+        return $session->round->pools()
             ->withCount([
                 'subscriptions as total_count' => function($query) use($session) {
                     $query->whereHas('payable', function($query) use($session) {

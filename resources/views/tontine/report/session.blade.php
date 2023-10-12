@@ -39,6 +39,9 @@
           @include('tontine.report.session.auctions', $remitments)
 @endif
 
+          @include('tontine.report.session.pools', ['session' => $session,
+            'pools' => ['deposit' => $deposits['pools'], 'remitment' => $remitments['pools']]])
+
           @include('tontine.report.session.bills', $bills)
 
           @include('tontine.report.session.loans', $loans)
