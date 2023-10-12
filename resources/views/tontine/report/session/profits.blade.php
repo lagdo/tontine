@@ -2,8 +2,6 @@
 @php
   $distributionSum = $fundings->sum('distribution');
 @endphp
-                  <div class="pagebreak"></div>
-
                   <div class="row">
                     <div class="col d-flex justify-content-center flex-nowrap">
                       <div class="section-title mt-0">{{ __('meeting.titles.profits') }} ({{ $locale->formatMoney($profitAmount, true) }})</div>

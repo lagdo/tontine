@@ -31,6 +31,8 @@
             </div>
           </div>
 
+          <div class="pagebreak"></div>
+
           @include('tontine.report.session.deposits', $deposits)
 
           @include('tontine.report.session.remitments', $remitments)
@@ -42,17 +44,25 @@
           @include('tontine.report.session.pools', ['session' => $session,
             'pools' => ['deposit' => $deposits['pools'], 'remitment' => $remitments['pools']]])
 
+          <div class="pagebreak"></div>
+
           @include('tontine.report.session.bills', $bills)
+
+          <div class="pagebreak"></div>
 
           @include('tontine.report.session.loans', $loans)
 
           @include('tontine.report.session.refunds', $refunds)
+
+          <div class="pagebreak"></div>
 
           @include('tontine.report.session.fundings', $fundings)
 
           @include('tontine.report.session.disbursements', $disbursements)
 
 @if ($profits['show'])
+          <div class="pagebreak"></div>
+
           @include('tontine.report.session.profits', $profits)
 @endif
 @endsection
