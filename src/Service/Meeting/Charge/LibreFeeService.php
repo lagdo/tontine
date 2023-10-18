@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Bill;
-use Siak\Tontine\Model\FineBill;
+use Siak\Tontine\Model\LibreBill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
@@ -42,7 +42,7 @@ class LibreFeeService
     }
 
     /**
-     * Get a paginated list of fines.
+     * Get a paginated list of fees.
      *
      * @param int $page
      *
@@ -57,7 +57,7 @@ class LibreFeeService
     }
 
     /**
-     * Get the number of fines.
+     * Get the number of fees.
      *
      * @return int
      */
@@ -74,10 +74,10 @@ class LibreFeeService
     private function getCurrentSessionBills(Session $session): Collection
     {
         // Count the session bills
-        return DB::table('fine_bills')
+        return DB::table('libre_bills')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
-            ->join('bills', 'fine_bills.bill_id', '=', 'bills.id')
-            ->where('fine_bills.session_id', $session->id)
+            ->join('bills', 'libre_bills.bill_id', '=', 'bills.id')
+            ->where('libre_bills.session_id', $session->id)
             ->groupBy('charge_id')
             ->get();
     }
@@ -91,10 +91,10 @@ class LibreFeeService
     {
         // Count the session bills
         $sessionIds = $this->tenantService->getSessionIds($session, false);
-        return DB::table('fine_bills')
+        return DB::table('libre_bills')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
-            ->join('bills', 'fine_bills.bill_id', '=', 'bills.id')
-            ->whereIn('fine_bills.session_id', $sessionIds)
+            ->join('bills', 'libre_bills.bill_id', '=', 'bills.id')
+            ->whereIn('libre_bills.session_id', $sessionIds)
             ->groupBy('charge_id')
             ->get();
     }
@@ -107,10 +107,10 @@ class LibreFeeService
     private function getCurrentSessionSettlements(Session $session): Collection
     {
         // Count the session bills
-        $query = DB::table('settlements')->select('charge_id',
-            DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
+        $query = DB::table('settlements')
+            ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-            ->join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
+            ->join('libre_bills', 'libre_bills.bill_id', '=', 'bills.id')
             ->where('settlements.session_id', $session->id)
             ->groupBy('charge_id');
         return $query->get();
@@ -125,10 +125,10 @@ class LibreFeeService
     {
         // Count the session bills
         $sessionIds = $this->tenantService->getSessionIds($session, false);
-        $query = DB::table('settlements')->select('charge_id',
-            DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
+        $query = DB::table('settlements')
+            ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-            ->join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
+            ->join('libre_bills', 'libre_bills.bill_id', '=', 'bills.id')
             ->whereIn('settlements.session_id', $sessionIds)
             ->groupBy('charge_id');
         return $query->get();
@@ -180,12 +180,12 @@ class LibreFeeService
      * @param Charge $charge
      * @param Session $session
      * @param string $search
-     * @param bool $onlyFined|null
+     * @param bool $filter|null
      *
      * @return mixed
      */
     private function getMembersQuery(Charge $charge, Session $session,
-        string $search = '', ?bool $onlyFined)
+        string $search = '', ?bool $filter)
     {
         $filterFunction = function($query) use($charge, $session) {
             $query->where('charge_id', $charge->id)->where('session_id', $session->id);
@@ -195,11 +195,11 @@ class LibreFeeService
             ->when($search !== '', function($query) use($search) {
                 return $query->where(DB::raw('lower(name)'), 'like', '%' . strtolower($search) . '%');
             })
-            ->when($onlyFined === false, function($query) use($filterFunction) {
-                return $query->whereDoesntHave('fine_bills', $filterFunction);
+            ->when($filter === false, function($query) use($filterFunction) {
+                return $query->whereDoesntHave('libre_bills', $filterFunction);
             })
-            ->when($onlyFined === true, function($query) use($filterFunction) {
-                $query->whereHas('fine_bills', $filterFunction);
+            ->when($filter === true, function($query) use($filterFunction) {
+                $query->whereHas('libre_bills', $filterFunction);
             });
     }
 
@@ -207,25 +207,25 @@ class LibreFeeService
      * @param Charge $charge
      * @param Session $session
      * @param string $search
-     * @param bool $onlyFined|null
+     * @param bool $filter|null
      * @param int $page
      *
      * @return Collection
      */
     public function getMembers(Charge $charge, Session $session,
-        string $search = '', ?bool $onlyFined = null, int $page = 0): Collection
+        string $search = '', ?bool $filter = null, int $page = 0): Collection
     {
-        return $this->getMembersQuery($charge, $session, $search, $onlyFined)
+        return $this->getMembersQuery($charge, $session, $search, $filter)
             ->page($page, $this->tenantService->getLimit())
             ->with([
-                'fine_bills' => function($query) use($charge, $session) {
+                'libre_bills' => function($query) use($charge, $session) {
                     $query->where('charge_id', $charge->id)->where('session_id', $session->id);
                 },
             ])
             ->orderBy('name', 'asc')->get()
             ->each(function($member) {
-                $member->bill = $member->fine_bills->count() > 0 ?
-                    $member->fine_bills->first()->bill : null;
+                $member->bill = $member->libre_bills->count() > 0 ?
+                    $member->libre_bills->first()->bill : null;
             });
     }
 
@@ -233,14 +233,14 @@ class LibreFeeService
      * @param Charge $charge
      * @param Session $session
      * @param string $search
-     * @param bool $onlyFined|null
+     * @param bool $filter|null
      *
      * @return int
      */
     public function getMemberCount(Charge $charge, Session $session,
-        string $search = '', ?bool $onlyFined = null): int
+        string $search = '', ?bool $filter = null): int
     {
-        return $this->getMembersQuery($charge, $session, $search, $onlyFined)->count();
+        return $this->getMembersQuery($charge, $session, $search, $filter)->count();
     }
 
     /**
@@ -266,12 +266,12 @@ class LibreFeeService
                 'lendable' => $charge->lendable,
                 'issued_at' => now(),
             ]);
-            $fine = new FineBill();
-            $fine->charge()->associate($charge);
-            $fine->member()->associate($member);
-            $fine->session()->associate($session);
-            $fine->bill()->associate($bill);
-            $fine->save();
+            $libreBill = new LibreBill();
+            $libreBill->charge()->associate($charge);
+            $libreBill->member()->associate($member);
+            $libreBill->session()->associate($session);
+            $libreBill->bill()->associate($bill);
+            $libreBill->save();
         });
     }
 
@@ -280,16 +280,16 @@ class LibreFeeService
      * @param Session $session
      * @param int $memberId
      *
-     * @return FineBill|null
+     * @return LibreBill|null
      */
-    public function getBill(Charge $charge, Session $session, int $memberId): ?FineBill
+    public function getBill(Charge $charge, Session $session, int $memberId): ?LibreBill
     {
         if(!($member = $this->tenantService->tontine()->members()->find($memberId)))
         {
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }
 
-        return FineBill::with(['bill'])
+        return LibreBill::with(['bill'])
             ->where('charge_id', $charge->id)
             ->where('session_id', $session->id)
             ->where('member_id', $member->id)
@@ -305,14 +305,14 @@ class LibreFeeService
      */
     public function deleteBill(Charge $charge, Session $session, int $memberId): void
     {
-        if(!($fine = $this->getBill($charge, $session, $memberId)))
+        if(!($libreBill = $this->getBill($charge, $session, $memberId)))
         {
             return; // throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
 
-        DB::transaction(function() use($fine) {
-            $billId = $fine->bill_id;
-            $fine->delete();
+        DB::transaction(function() use($libreBill) {
+            $billId = $libreBill->bill_id;
+            $libreBill->delete();
             Bill::where('id', $billId)->delete();
         });
     }

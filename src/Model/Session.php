@@ -146,14 +146,14 @@ class Session extends Base
             ->select('pools.id', DB::raw('sum(pools.amount) as amount'));
     }
 
-    public function bills()
+    public function session_bills()
     {
         return $this->hasMany(SessionBill::class);
     }
 
-    public function fines()
+    public function libre_bills()
     {
-        return $this->hasMany(FineBill::class);
+        return $this->hasMany(LibreBill::class);
     }
 
     public function loans()

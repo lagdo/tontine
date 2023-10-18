@@ -57,9 +57,9 @@ class Bill extends Base
         return $this->hasOne(SessionBill::class);
     }
 
-    public function fine_bill()
+    public function libre_bill()
     {
-        return $this->hasOne(FineBill::class);
+        return $this->hasOne(LibreBill::class);
     }
 
     /**

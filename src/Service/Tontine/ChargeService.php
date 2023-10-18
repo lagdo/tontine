@@ -60,7 +60,7 @@ class ChargeService
     public function getCharges(int $page = 0): Collection
     {
         return $this->tenantService->tontine()->charges()
-            ->withCount(['tontine_bills', 'round_bills', 'session_bills', 'fine_bills'])
+            ->withCount(['tontine_bills', 'round_bills', 'session_bills', 'libre_bills'])
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -85,7 +85,7 @@ class ChargeService
     public function getCharge(int $chargeId): ?Charge
     {
         return $this->tenantService->tontine()->charges()
-            ->withCount(['tontine_bills', 'round_bills', 'session_bills', 'fine_bills'])
+            ->withCount(['tontine_bills', 'round_bills', 'session_bills', 'libre_bills'])
             ->find($chargeId);
     }
 

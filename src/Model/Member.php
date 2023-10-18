@@ -77,9 +77,9 @@ class Member extends Base
         return $this->hasMany(Loan::class);
     }
 
-    public function fine_bills()
+    public function libre_bills()
     {
-        return $this->hasMany(FineBill::class);
+        return $this->hasMany(LibreBill::class);
     }
 
     public function session_bills()
