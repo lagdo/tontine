@@ -177,7 +177,7 @@ class SessionService
      *
      * @return Collection
      */
-    private function getFineBills(Closure $settlementFilter, ?Member $member = null): Collection
+    private function getFeeBills(Closure $settlementFilter, ?Member $member = null): Collection
     {
         return DB::table('bills')
             ->join('fine_bills', 'bills.id', '=', 'fine_bills.bill_id')
@@ -231,7 +231,7 @@ class SessionService
         $bills = $this->getTontineBills($settlementFilter)
             ->concat($this->getRoundBills($settlementFilter))
             ->concat($this->getSessionBills($settlementFilter))
-            ->concat($this->getFineBills($settlementFilter))
+            ->concat($this->getFeeBills($settlementFilter))
             ->keyBy('charge_id');
         $sessionIds = collect([$session->id]);
         $disbursements = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
@@ -296,7 +296,7 @@ class SessionService
         $bills = $this->getTontineBills($settlementFilter, $member)
             ->concat($this->getRoundBills($settlementFilter, $member))
             ->concat($this->getSessionBills($settlementFilter, $member))
-            ->concat($this->getFineBills($settlementFilter, $member))
+            ->concat($this->getFeeBills($settlementFilter, $member))
             ->keyBy('charge_id');
         $disbursements = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
         if($member !== null)

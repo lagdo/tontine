@@ -12,9 +12,9 @@ use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Service\Meeting\Cash\FundingService;
-use Siak\Tontine\Service\Meeting\Charge\FeeService;
-use Siak\Tontine\Service\Meeting\Charge\FineService;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
+use Siak\Tontine\Service\Meeting\Charge\FixedFeeService;
+use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementService;
 use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
@@ -84,8 +84,8 @@ class SiakServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(ChargeService::class, ChargeService::class);
-        $this->app->singleton(FeeService::class, FeeService::class);
-        $this->app->singleton(FineService::class, FineService::class);
+        $this->app->singleton(FixedFeeService::class, FixedFeeService::class);
+        $this->app->singleton(LibreFeeService::class, LibreFeeService::class);
         $this->app->singleton(BillService::class, BillService::class);
         $this->app->singleton(SettlementService::class, SettlementService::class);
 

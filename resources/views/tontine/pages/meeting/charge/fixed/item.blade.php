@@ -17,7 +17,7 @@
                               $prevSettlementTotal }}/{{ $prevBillTotal }}@endif @if ($currSettlementAmount > 0)<br/>{{
                               $locale->formatMoney($currSettlementAmount, true) }}@endif
                           </td>
-                          <td class="table-item-menu" data-fee-id="{{ $charge->id }}">
-                            <button type="button" class="btn btn-primary btn-fee-settlements"><i class="fa fa-arrow-circle-right"></i></button>
+                          <td class="table-item-menu" data-charge-id="{{ $charge->id }}">
+                            <button type="button" class="btn btn-primary btn-fee-fixed-settlements"><i class="fa fa-arrow-circle-right"></i></button>
                           </td>
                         </tr>

@@ -155,9 +155,9 @@ class MemberService
      */
     public function getBills(Session $session, ?Member $member = null): Collection
     {
-        return Bill::with(['settlement', 'tontine_bill.member', 'round_bill.member',
-            'session_bill.member', 'session_bill.session',
-            'fine_bill.session', 'fine_bill.member'])
+        return Bill::select('bills.*')
+            ->with(['settlement', 'fine_bill.session', 'fine_bill.member', 'round_bill.member',
+                'tontine_bill.member', 'session_bill.member', 'session_bill.session'])
             ->where(function($query) use($session) {
                 return $query
                     // Unsettled bills.

@@ -8,7 +8,7 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
-class FeeService
+class FixedFeeService
 {
     /**
      * @var LocaleService

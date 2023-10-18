@@ -14,7 +14,7 @@ use Siak\Tontine\Service\TenantService;
 use function trans;
 use function strtolower;
 
-class FineService
+class LibreFeeService
 {
     /**
      * @var TenantService
@@ -48,7 +48,7 @@ class FineService
      *
      * @return Collection
      */
-    public function getFines(int $page = 0): Collection
+    public function getFees(int $page = 0): Collection
     {
         return $this->tenantService->tontine()->charges()
             ->variable()->orderBy('id', 'desc')
@@ -61,7 +61,7 @@ class FineService
      *
      * @return int
      */
-    public function getFineCount(): int
+    public function getFeeCount(): int
     {
         return $this->tenantService->tontine()->charges()->variable()->count();
     }
@@ -251,7 +251,7 @@ class FineService
      *
      * @return void
      */
-    public function createFine(Charge $charge, Session $session, int $memberId, int $amount = 0): void
+    public function createBill(Charge $charge, Session $session, int $memberId, int $amount = 0): void
     {
         $member = $this->tenantService->tontine()->members()->find($memberId);
         if(!$member)
@@ -303,7 +303,7 @@ class FineService
      *
      * @return void
      */
-    public function deleteFine(Charge $charge, Session $session, int $memberId): void
+    public function deleteBill(Charge $charge, Session $session, int $memberId): void
     {
         if(!($fine = $this->getBill($charge, $session, $memberId)))
         {

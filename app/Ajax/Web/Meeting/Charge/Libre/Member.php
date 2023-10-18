@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Ajax\Web\Meeting\Charge\Member;
+namespace App\Ajax\Web\Meeting\Charge\Libre;
 
 use App\Ajax\CallableClass;
-use App\Ajax\Web\Meeting\Charge\Fine as Charge;
+use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Meeting\Charge\FineService;
+use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Charge as ChargeModel;
@@ -20,7 +20,7 @@ use function trim;
  * @databag meeting
  * @before getCharge
  */
-class Fine extends CallableClass
+class Member extends CallableClass
 {
     /**
      * @var LocaleService
@@ -35,9 +35,9 @@ class Fine extends CallableClass
 
     /**
      * @di
-     * @var FineService
+     * @var LibreFeeService
      */
-    protected FineService $fineService;
+    protected LibreFeeService $fineService;
 
     /**
      * @var SessionModel|null
@@ -69,13 +69,13 @@ class Fine extends CallableClass
         $this->bag('meeting')->set('fine.search', '');
         $this->bag('meeting')->set('fine.filter', null);
 
-        $html = $this->view()->render('tontine.pages.meeting.charge.variable.member.home', [
+        $html = $this->view()->render('tontine.pages.meeting.charge.libre.member.home', [
             'charge' => $this->charge,
         ]);
-        $this->response->html('meeting-fines', $html);
-        $this->jq('#btn-fine-back')->click($this->cl(Charge::class)->rq()->home());
-        $this->jq('#btn-fine-search')->click($this->rq()->search(jq('#txt-fine-search')->val()));
-        $this->jq('#btn-fine-filter')->click($this->rq()->toggleFilter());
+        $this->response->html('meeting-fees-libre', $html);
+        $this->jq('#btn-fee-libre-back')->click($this->cl(Charge::class)->rq()->home());
+        $this->jq('#btn-fee-libre-search')->click($this->rq()->search(jq('#txt-fine-search')->val()));
+        $this->jq('#btn-fee-libre-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
     }
@@ -97,13 +97,13 @@ class Fine extends CallableClass
             $search, $onlyFined, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
-        $html = $this->view()->render('tontine.pages.meeting.charge.variable.member.page', [
+        $html = $this->view()->render('tontine.pages.meeting.charge.libre.member.page', [
             'session' => $this->session,
             'charge' => $this->charge,
             'members' => $members,
             'pagination' => $pagination,
         ]);
-        $this->response->html('meeting-charge-members', $html);
+        $this->response->html('meeting-fee-libre-members', $html);
 
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $amount = jq('input', jq()->parent()->parent())->val()->toInt();
@@ -146,7 +146,7 @@ class Fine extends CallableClass
             return $this->response;
         }
 
-        $this->fineService->createFine($this->charge, $this->session, $memberId);
+        $this->fineService->createBill($this->charge, $this->session, $memberId);
 
         return $this->page();
     }
@@ -164,7 +164,7 @@ class Fine extends CallableClass
             return $this->response;
         }
 
-        $this->fineService->deleteFine($this->charge, $this->session, $memberId);
+        $this->fineService->deleteBill($this->charge, $this->session, $memberId);
 
         return $this->page();
     }
@@ -188,7 +188,7 @@ class Fine extends CallableClass
             return $this->page();
         }
 
-        $html = $this->view()->render('tontine.pages.meeting.charge.variable.member.edit', [
+        $html = $this->view()->render('tontine.pages.meeting.charge.libre.member.edit', [
             'id' => $memberId,
             'amount' => $this->localeService->getMoneyValue($bill->bill->amount),
         ]);
@@ -224,10 +224,10 @@ class Fine extends CallableClass
         }
         $amount = $amount === '' ? 0 : $this->localeService->convertMoneyToInt((float)$amount);
 
-        $this->fineService->deleteFine($this->charge, $this->session, $memberId);
+        $this->fineService->deleteBill($this->charge, $this->session, $memberId);
         if($amount > 0)
         {
-            $this->fineService->createFine($this->charge, $this->session, $memberId, $amount);
+            $this->fineService->createBill($this->charge, $this->session, $memberId, $amount);
         }
         // $this->notify->success(trans('session.deposit.created'), trans('common.titles.success'));
 

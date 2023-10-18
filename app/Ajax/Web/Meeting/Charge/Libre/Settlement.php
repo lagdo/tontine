@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Ajax\Web\Meeting\Charge\Settlement;
+namespace App\Ajax\Web\Meeting\Charge\Libre;
 
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Meeting\Cash\Disbursement;
 use App\Ajax\Web\Meeting\Credit\Loan;
-use App\Ajax\Web\Meeting\Charge\Fine as Charge;
+use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementService;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -19,7 +19,7 @@ use function trim;
  * @databag meeting
  * @before getCharge
  */
-class Fine extends CallableClass
+class Settlement extends CallableClass
 {
     /**
      * @di
@@ -47,7 +47,7 @@ class Fine extends CallableClass
     {
         $sessionId = $this->bag('meeting')->get('session.id');
         $chargeId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('charge.variable.id');
+            $this->target()->args()[0] : $this->bag('meeting')->get('fee.libre.id');
         $this->session = $this->settlementService->getSession($sessionId);
         $this->charge = $this->settlementService->getCharge($chargeId);
     }
@@ -59,17 +59,17 @@ class Fine extends CallableClass
      */
     public function home(int $chargeId)
     {
-        $this->bag('meeting')->set('charge.variable.id', $chargeId);
-        $this->bag('meeting')->set('settlement.variable.search', '');
-        $this->bag('meeting')->set('settlement.variable.filter', null);
+        $this->bag('meeting')->set('fee.libre.id', $chargeId);
+        $this->bag('meeting')->set('settlement.libre.search', '');
+        $this->bag('meeting')->set('settlement.libre.filter', null);
 
         $html = $this->view()->render('tontine.pages.meeting.settlement.home', [
             'charge' => $this->charge,
-            'type' => 'fine',
+            'type' => 'libre',
         ]);
-        $this->response->html('meeting-fines', $html);
-        $this->jq('#btn-fine-settlements-back')->click($this->cl(Charge::class)->rq()->home());
-        $this->jq('#btn-fine-settlements-filter')->click($this->rq()->toggleFilter());
+        $this->response->html('meeting-fees-libre', $html);
+        $this->jq('#btn-fee-libre-settlements-back')->click($this->cl(Charge::class)->rq()->home());
+        $this->jq('#btn-fee-libre-settlements-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
     }
@@ -81,8 +81,8 @@ class Fine extends CallableClass
      */
     public function page(int $pageNumber = 0)
     {
-        $search = trim($this->bag('meeting')->get('settlement.variable.search', ''));
-        $onlyUnpaid = $this->bag('meeting')->get('settlement.variable.filter', null);
+        $search = trim($this->bag('meeting')->get('settlement.libre.search', ''));
+        $onlyUnpaid = $this->bag('meeting')->get('settlement.libre.filter', null);
         $billCount = $this->billService->getBillCount($this->charge,
             $this->session, $search, $onlyUnpaid);
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber,
@@ -100,22 +100,25 @@ class Fine extends CallableClass
             'bills' => $bills,
             'pagination' => $pagination,
         ]);
-        $this->response->html('meeting-fine-bills', $html);
+        $this->response->html('meeting-fee-libre-bills', $html);
 
         $billId = jq()->parent()->attr('data-bill-id')->toInt();
-        $this->jq('.btn-add-settlement')->click($this->rq()->addSettlement($billId));
-        $this->jq('.btn-del-settlement')->click($this->rq()->delSettlement($billId));
-        $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($billId));
+        $this->jq('.btn-add-settlement', '#meeting-fee-libre-bills')
+            ->click($this->rq()->addSettlement($billId));
+        $this->jq('.btn-del-settlement', '#meeting-fee-libre-bills')
+            ->click($this->rq()->delSettlement($billId));
+        $this->jq('.btn-edit-notes', '#meeting-fee-libre-bills')
+            ->click($this->rq()->editNotes($billId));
 
         return $this->response;
     }
 
     public function toggleFilter()
     {
-        $onlyUnpaid = $this->bag('meeting')->get('settlement.variable.filter', null);
+        $onlyUnpaid = $this->bag('meeting')->get('settlement.libre.filter', null);
         // Switch between null, true and false
         $onlyUnpaid = $onlyUnpaid === null ? true : ($onlyUnpaid === true ? false : null);
-        $this->bag('meeting')->set('settlement.variable.filter', $onlyUnpaid);
+        $this->bag('meeting')->set('settlement.libre.filter', $onlyUnpaid);
 
         return $this->page();
     }

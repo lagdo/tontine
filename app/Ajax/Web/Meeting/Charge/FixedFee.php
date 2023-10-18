@@ -4,7 +4,7 @@ namespace App\Ajax\Web\Meeting\Charge;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Meeting\Charge\FeeService;
+use Siak\Tontine\Service\Meeting\Charge\FixedFeeService;
 use Siak\Tontine\Model\Session as SessionModel;
 
 use function Jaxon\jq;
@@ -13,7 +13,7 @@ use function Jaxon\jq;
  * @databag meeting
  * @before getSession
  */
-class Fee extends CallableClass
+class FixedFee extends CallableClass
 {
     /**
      * @di
@@ -22,9 +22,9 @@ class Fee extends CallableClass
     protected LocaleService $localeService;
 
     /**
-     * @var FeeService
+     * @var FixedFeeService
      */
-    protected FeeService $feeService;
+    protected FixedFeeService $feeService;
 
     /**
      * @var SessionModel|null
@@ -34,9 +34,9 @@ class Fee extends CallableClass
     /**
      * The constructor
      *
-     * @param FeeService $feeService
+     * @param FixedFeeService $feeService
      */
-    public function __construct(FeeService $feeService)
+    public function __construct(FixedFeeService $feeService)
     {
         $this->feeService = $feeService;
     }
@@ -64,32 +64,34 @@ class Fee extends CallableClass
     {
         $html = $this->view()->render('tontine.pages.meeting.charge.fixed.home')
             ->with('session', $this->session);
-        $this->response->html('meeting-fees', $html);
-        $this->jq('#btn-fees-refresh')->click($this->rq()->home());
+        $this->response->html('meeting-fees-fixed', $html);
+        $this->jq('#btn-fees-fixed-refresh')->click($this->rq()->home());
 
         return $this->page(1);
     }
 
     public function page(int $pageNumber)
     {
-        $feeCount = $this->feeService->getFeeCount();
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $feeCount, 'meeting', 'fee.page');
-        $fees = $this->feeService->getFees($pageNumber);
-        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $feeCount);
+        $chargeCount = $this->feeService->getFeeCount();
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $chargeCount,
+            'meeting', 'fee.fixed.page');
+        $charges = $this->feeService->getFees($pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $chargeCount);
         // Bill and settlement counts and amounts
         $bills = $this->feeService->getBills($this->session);
         $settlements = $this->feeService->getSettlements($this->session);
 
         $html = $this->view()->render('tontine.pages.meeting.charge.fixed.page')
             ->with('session', $this->session)
-            ->with('fees', $fees)
+            ->with('charges', $charges)
             ->with('bills', $bills)
             ->with('settlements', $settlements)
             ->with('pagination', $pagination);
-        $this->response->html('meeting-fees-page', $html);
+        $this->response->html('meeting-fees-fixed-page', $html);
 
-        $feeId = jq()->parent()->attr('data-fee-id')->toInt();
-        $this->jq('.btn-fee-settlements')->click($this->cl(Settlement\Fee::class)->rq()->home($feeId));
+        $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
+        $this->jq('.btn-fee-fixed-settlements')
+            ->click($this->cl(Fixed\Settlement::class)->rq()->home($chargeId));
 
         return $this->response;
     }

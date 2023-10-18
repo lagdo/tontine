@@ -7,11 +7,11 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($fines as $charge)
+@foreach ($charges as $charge)
 @if($session->pending)
                         @include('tontine.pages.meeting.charge.pending', compact('charge', 'bills', 'settlements'))
 @else
-                        @include('tontine.pages.meeting.charge.variable.item', compact('charge', 'bills', 'settlements'))
+                        @include('tontine.pages.meeting.charge.libre.item', compact('charge', 'bills', 'settlements'))
 @endif
 @endforeach
                       </tbody>
