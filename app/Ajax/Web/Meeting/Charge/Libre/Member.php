@@ -12,6 +12,7 @@ use Siak\Tontine\Model\Charge as ChargeModel;
 
 use function filter_var;
 use function Jaxon\jq;
+use function Jaxon\pm;
 use function str_replace;
 use function trans;
 use function trim;
@@ -107,10 +108,11 @@ class Member extends CallableClass
         $this->response->html('meeting-fee-libre-members', $html);
 
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
+        $paid = pm()->checked('check-fee-libre-paid');
         $amount = jq('input', jq()->parent()->parent())->val()->toInt();
-        $this->jq('.btn-add-bill')->click($this->rq()->addBill($memberId));
+        $this->jq('.btn-add-bill')->click($this->rq()->addBill($memberId, $paid));
         $this->jq('.btn-del-bill')->click($this->rq()->delBill($memberId));
-        $this->jq('.btn-save-bill')->click($this->rq()->saveBill($memberId, $amount));
+        $this->jq('.btn-save-bill')->click($this->rq()->addBill($memberId, $paid, $amount));
         $this->jq('.btn-edit-bill')->click($this->rq()->editBill($memberId));
         // $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($memberId));
 
@@ -136,18 +138,27 @@ class Member extends CallableClass
 
     /**
      * @param int $memberId
+     * @param bool $paid
+     * @param string $amount
      *
      * @return mixed
      */
-    public function addBill(int $memberId)
+    public function addBill(int $memberId, bool $paid, string $amount = '')
     {
         if($this->session->closed)
         {
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
+        $amount = str_replace(',', '.', trim($amount));
+        if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
+        {
+            $this->notify->error(trans('meeting.errors.amount.invalid', ['amount' => $amount]));
+            return $this->response;
+        }
+        $amount = $amount === '' ? 0 : (float)$amount;
 
-        $this->feeService->createBill($this->charge, $this->session, $memberId);
+        $this->feeService->createBill($this->charge, $this->session, $memberId, $paid, $amount);
 
         return $this->page();
     }
@@ -204,7 +215,6 @@ class Member extends CallableClass
     }
 
     /**
-     * @di $localeService
      * @param int $memberId
      * @param string $amount
      *
@@ -217,21 +227,22 @@ class Member extends CallableClass
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
+
         $amount = str_replace(',', '.', trim($amount));
         if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
         {
             $this->notify->error(trans('meeting.errors.amount.invalid', ['amount' => $amount]));
             return $this->response;
         }
-        $amount = $amount === '' ? 0 : $this->localeService->convertMoneyToInt((float)$amount);
+        $amount = $amount === '' ? 0 : (float)$amount;
 
-        $this->feeService->deleteBill($this->charge, $this->session, $memberId);
-        if($amount > 0)
+        if(!$amount)
         {
-            $this->feeService->createBill($this->charge, $this->session, $memberId, $amount);
+            $this->feeService->deleteBill($this->charge, $this->session, $memberId);
+            return $this->page();
         }
-        // $this->notify->success(trans('session.deposit.created'), trans('common.titles.success'));
 
+        $this->feeService->updateBill($this->charge, $this->session, $memberId, $amount);
         return $this->page();
     }
 }

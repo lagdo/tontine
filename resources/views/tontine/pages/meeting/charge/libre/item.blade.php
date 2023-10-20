@@ -23,7 +23,7 @@
   'dataIdValue' => $charge->id,
   'menus' => [[
     'class' => 'btn-fee-libre-add',
-    'text' => $charge->is_fee ? __('common.actions.ask') : __('common.actions.give'),
+    'text' => __('common.actions.add'),
   ],[
     'class' => 'btn-fee-libre-settlements',
     'text' => __('meeting.actions.settlements'),

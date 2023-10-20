@@ -9,6 +9,8 @@ use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\LibreBill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Model\Settlement;
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
@@ -17,15 +19,22 @@ use function strtolower;
 class LibreFeeService
 {
     /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
+    /**
      * @var TenantService
      */
     protected TenantService $tenantService;
 
     /**
+     * @param LocaleService $localeService
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService)
     {
+        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
     }
 
@@ -247,11 +256,13 @@ class LibreFeeService
      * @param Charge $charge
      * @param Session $session
      * @param int $memberId
-     * @param int $amount
+     * @param bool $paid
+     * @param float $amount
      *
      * @return void
      */
-    public function createBill(Charge $charge, Session $session, int $memberId, int $amount = 0): void
+    public function createBill(Charge $charge, Session $session,
+        int $memberId, bool $paid, float $amount = 0): void
     {
         $member = $this->tenantService->tontine()->members()->find($memberId);
         if(!$member)
@@ -259,7 +270,11 @@ class LibreFeeService
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }
 
-        DB::transaction(function() use($charge, $session, $member, $amount) {
+        if($amount !== 0)
+        {
+            $amount = $this->localeService->convertMoneyToInt($amount);
+        }
+        DB::transaction(function() use($charge, $session, $member, $paid, $amount) {
             $bill = Bill::create([
                 'charge' => $charge->name,
                 'amount' => $charge->has_amount ? $charge->amount : $amount,
@@ -272,6 +287,13 @@ class LibreFeeService
             $libreBill->session()->associate($session);
             $libreBill->bill()->associate($bill);
             $libreBill->save();
+            if($paid)
+            {
+                $settlement = new Settlement();
+                $settlement->bill()->associate($bill);
+                $settlement->session()->associate($session);
+                $settlement->save();
+            }
         });
     }
 
@@ -289,11 +311,31 @@ class LibreFeeService
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }
 
-        return LibreBill::with(['bill'])
+        return LibreBill::with(['bill.settlement'])
             ->where('charge_id', $charge->id)
             ->where('session_id', $session->id)
             ->where('member_id', $member->id)
             ->first();
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Session $session
+     * @param int $memberId
+     * @param float $amount
+     *
+     * @return void
+     */
+    public function updateBill(Charge $charge, Session $session, int $memberId, float $amount): void
+    {
+        if(!($libreBill = $this->getBill($charge, $session, $memberId)))
+        {
+            return; // throw new MessageException(trans('tontine.bill.errors.not_found'));
+        }
+
+        $libreBill->bill->update([
+            'amount'=> $this->localeService->convertMoneyToInt($amount),
+        ]);
     }
 
     /**
@@ -310,10 +352,18 @@ class LibreFeeService
             return; // throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
 
-        DB::transaction(function() use($libreBill) {
-            $billId = $libreBill->bill_id;
+        DB::transaction(function() use($libreBill, $session) {
+            $bill = $libreBill->bill;
             $libreBill->delete();
-            Bill::where('id', $billId)->delete();
+            if($bill !== null)
+            {
+                // Delete the settlement only if it is on the same session
+                if($bill->settlement !== null && $bill->settlement->session_id === $session->id)
+                {
+                    $bill->settlement->delete();
+                }
+                $bill->delete();
+            }
         });
     }
 }
