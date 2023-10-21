@@ -119,7 +119,7 @@ trait EventTrait
     {
         $today = now();
         // Create a tontine bill for each charge
-        foreach($tontine->charges()->once()->get() as $charge)
+        foreach($tontine->charges()->active()->once()->get() as $charge)
         {
             $this->createTontineBill($charge, $member, $today);
         }
@@ -135,15 +135,16 @@ trait EventTrait
     {
         $today = now();
         $members = $tontine->members()->with([
+            'tontine_bills',
             'round_bills' => function($query) use($round) {
                 $query->where('round_id', $round->id);
             },
         ])->get();
-        $charges = $tontine->charges()->round()->get();
+        $roundCharges = $tontine->charges()->active()->round()->get();
         // Create a round bill for each member
         foreach($members as $member)
         {
-            foreach($charges as $charge)
+            foreach($roundCharges as $charge)
             {
                 $count = $member->round_bills->filter(function($bill) use($charge) {
                     return $bill->charge_id = $charge->id;
@@ -151,6 +152,21 @@ trait EventTrait
                 if($count === 0)
                 {
                     $this->createRoundBill($charge, $member, $round, $today);
+                }
+            }
+        }
+        $tontineCharges = $tontine->charges()->active()->once()->get();
+        // Create a tontine bill for each member
+        foreach($members as $member)
+        {
+            foreach($tontineCharges as $charge)
+            {
+                $count = $member->tontine_bills->filter(function($bill) use($charge) {
+                    return $bill->charge_id = $charge->id;
+                })->count();
+                if($count === 0)
+                {
+                    $this->createTontineBill($charge, $member, $today);
                 }
             }
         }
@@ -173,10 +189,10 @@ trait EventTrait
                 $query->where('session_id', $session->id);
             },
         ])->get();
-        $charges = $tontine->charges()->session()->get();
+        $sessionCharges = $tontine->charges()->active()->session()->get();
 
         // Sync the session bills for each member and each session charge
-        foreach($charges as $charge)
+        foreach($sessionCharges as $charge)
         {
             foreach($members as $member)
             {
