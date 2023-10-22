@@ -4,6 +4,8 @@ namespace Siak\Tontine\Model;
 
 use Illuminate\Support\Facades\DB;
 
+use function trans;
+
 class Session extends Base
 {
     /**

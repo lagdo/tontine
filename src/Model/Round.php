@@ -2,6 +2,8 @@
 
 namespace Siak\Tontine\Model;
 
+use function trans;
+
 class Round extends Base
 {
     use Traits\HasProperty;
@@ -73,12 +75,12 @@ class Round extends Base
 
     public function getStartAttribute()
     {
-        return $this->start_at->toFormattedDateString();
+        return $this->start_at->translatedFormat(trans('tontine.date.format'));
     }
 
     public function getEndAttribute()
     {
-        return $this->end_at->toFormattedDateString();
+        return $this->end_at->translatedFormat(trans('tontine.date.format'));
     }
 
     public function getPendingAttribute()
