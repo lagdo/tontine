@@ -67,19 +67,14 @@ class Member extends Base
         return $this->hasMany(Subscription::class);
     }
 
-    public function payments()
-    {
-        return $this->hasMany(Payment::class);
-    }
-
     public function loans()
     {
         return $this->hasMany(Loan::class);
     }
 
-    public function fine_bills()
+    public function libre_bills()
     {
-        return $this->hasMany(FineBill::class);
+        return $this->hasMany(LibreBill::class);
     }
 
     public function session_bills()

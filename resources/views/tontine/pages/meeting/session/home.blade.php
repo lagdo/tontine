@@ -54,9 +54,9 @@
                     </div>
                     <div class="tab-pane fade" id="session-charges" role="tabpanel" aria-labelledby="session-tab-charges">
                       <div class="row">
-                        <div class="col-md-6 col-sm-12" id="meeting-fees">
+                        <div class="col-md-6 col-sm-12" id="meeting-fees-fixed">
                         </div>
-                        <div class="col-md-6 col-sm-12" id="meeting-fines">
+                        <div class="col-md-6 col-sm-12" id="meeting-fees-libre">
                         </div>
                       </div>
                     </div>

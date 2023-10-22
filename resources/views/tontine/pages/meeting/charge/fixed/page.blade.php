@@ -7,7 +7,7 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($fees as $charge)
+@foreach ($charges as $charge)
 @if($session->pending)
                         @include('tontine.pages.meeting.charge.pending', compact('charge', 'bills', 'settlements'))
 @else

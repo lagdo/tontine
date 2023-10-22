@@ -6,26 +6,35 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Bill;
-use Siak\Tontine\Model\FineBill;
+use Siak\Tontine\Model\LibreBill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Model\Settlement;
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
 use function strtolower;
 
-class FineService
+class LibreFeeService
 {
+    /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @var TenantService
      */
     protected TenantService $tenantService;
 
     /**
+     * @param LocaleService $localeService
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService)
     {
+        $this->localeService = $localeService;
         $this->tenantService = $tenantService;
     }
 
@@ -42,13 +51,13 @@ class FineService
     }
 
     /**
-     * Get a paginated list of fines.
+     * Get a paginated list of fees.
      *
      * @param int $page
      *
      * @return Collection
      */
-    public function getFines(int $page = 0): Collection
+    public function getFees(int $page = 0): Collection
     {
         return $this->tenantService->tontine()->charges()
             ->variable()->orderBy('id', 'desc')
@@ -57,11 +66,11 @@ class FineService
     }
 
     /**
-     * Get the number of fines.
+     * Get the number of fees.
      *
      * @return int
      */
-    public function getFineCount(): int
+    public function getFeeCount(): int
     {
         return $this->tenantService->tontine()->charges()->variable()->count();
     }
@@ -74,10 +83,10 @@ class FineService
     private function getCurrentSessionBills(Session $session): Collection
     {
         // Count the session bills
-        return DB::table('fine_bills')
+        return DB::table('libre_bills')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
-            ->join('bills', 'fine_bills.bill_id', '=', 'bills.id')
-            ->where('fine_bills.session_id', $session->id)
+            ->join('bills', 'libre_bills.bill_id', '=', 'bills.id')
+            ->where('libre_bills.session_id', $session->id)
             ->groupBy('charge_id')
             ->get();
     }
@@ -91,10 +100,10 @@ class FineService
     {
         // Count the session bills
         $sessionIds = $this->tenantService->getSessionIds($session, false);
-        return DB::table('fine_bills')
+        return DB::table('libre_bills')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
-            ->join('bills', 'fine_bills.bill_id', '=', 'bills.id')
-            ->whereIn('fine_bills.session_id', $sessionIds)
+            ->join('bills', 'libre_bills.bill_id', '=', 'bills.id')
+            ->whereIn('libre_bills.session_id', $sessionIds)
             ->groupBy('charge_id')
             ->get();
     }
@@ -107,10 +116,10 @@ class FineService
     private function getCurrentSessionSettlements(Session $session): Collection
     {
         // Count the session bills
-        $query = DB::table('settlements')->select('charge_id',
-            DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
+        $query = DB::table('settlements')
+            ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-            ->join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
+            ->join('libre_bills', 'libre_bills.bill_id', '=', 'bills.id')
             ->where('settlements.session_id', $session->id)
             ->groupBy('charge_id');
         return $query->get();
@@ -125,10 +134,10 @@ class FineService
     {
         // Count the session bills
         $sessionIds = $this->tenantService->getSessionIds($session, false);
-        $query = DB::table('settlements')->select('charge_id',
-            DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
+        $query = DB::table('settlements')
+            ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-            ->join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
+            ->join('libre_bills', 'libre_bills.bill_id', '=', 'bills.id')
             ->whereIn('settlements.session_id', $sessionIds)
             ->groupBy('charge_id');
         return $query->get();
@@ -180,12 +189,12 @@ class FineService
      * @param Charge $charge
      * @param Session $session
      * @param string $search
-     * @param bool $onlyFined|null
+     * @param bool $filter|null
      *
      * @return mixed
      */
     private function getMembersQuery(Charge $charge, Session $session,
-        string $search = '', ?bool $onlyFined)
+        string $search = '', ?bool $filter)
     {
         $filterFunction = function($query) use($charge, $session) {
             $query->where('charge_id', $charge->id)->where('session_id', $session->id);
@@ -195,11 +204,11 @@ class FineService
             ->when($search !== '', function($query) use($search) {
                 return $query->where(DB::raw('lower(name)'), 'like', '%' . strtolower($search) . '%');
             })
-            ->when($onlyFined === false, function($query) use($filterFunction) {
-                return $query->whereDoesntHave('fine_bills', $filterFunction);
+            ->when($filter === false, function($query) use($filterFunction) {
+                return $query->whereDoesntHave('libre_bills', $filterFunction);
             })
-            ->when($onlyFined === true, function($query) use($filterFunction) {
-                $query->whereHas('fine_bills', $filterFunction);
+            ->when($filter === true, function($query) use($filterFunction) {
+                $query->whereHas('libre_bills', $filterFunction);
             });
     }
 
@@ -207,25 +216,25 @@ class FineService
      * @param Charge $charge
      * @param Session $session
      * @param string $search
-     * @param bool $onlyFined|null
+     * @param bool $filter|null
      * @param int $page
      *
      * @return Collection
      */
     public function getMembers(Charge $charge, Session $session,
-        string $search = '', ?bool $onlyFined = null, int $page = 0): Collection
+        string $search = '', ?bool $filter = null, int $page = 0): Collection
     {
-        return $this->getMembersQuery($charge, $session, $search, $onlyFined)
+        return $this->getMembersQuery($charge, $session, $search, $filter)
             ->page($page, $this->tenantService->getLimit())
             ->with([
-                'fine_bills' => function($query) use($charge, $session) {
+                'libre_bills' => function($query) use($charge, $session) {
                     $query->where('charge_id', $charge->id)->where('session_id', $session->id);
                 },
             ])
             ->orderBy('name', 'asc')->get()
             ->each(function($member) {
-                $member->bill = $member->fine_bills->count() > 0 ?
-                    $member->fine_bills->first()->bill : null;
+                $member->bill = $member->libre_bills->count() > 0 ?
+                    $member->libre_bills->first()->bill : null;
             });
     }
 
@@ -233,25 +242,27 @@ class FineService
      * @param Charge $charge
      * @param Session $session
      * @param string $search
-     * @param bool $onlyFined|null
+     * @param bool $filter|null
      *
      * @return int
      */
     public function getMemberCount(Charge $charge, Session $session,
-        string $search = '', ?bool $onlyFined = null): int
+        string $search = '', ?bool $filter = null): int
     {
-        return $this->getMembersQuery($charge, $session, $search, $onlyFined)->count();
+        return $this->getMembersQuery($charge, $session, $search, $filter)->count();
     }
 
     /**
      * @param Charge $charge
      * @param Session $session
      * @param int $memberId
-     * @param int $amount
+     * @param bool $paid
+     * @param float $amount
      *
      * @return void
      */
-    public function createFine(Charge $charge, Session $session, int $memberId, int $amount = 0): void
+    public function createBill(Charge $charge, Session $session,
+        int $memberId, bool $paid, float $amount = 0): void
     {
         $member = $this->tenantService->tontine()->members()->find($memberId);
         if(!$member)
@@ -259,19 +270,30 @@ class FineService
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }
 
-        DB::transaction(function() use($charge, $session, $member, $amount) {
+        if($amount !== 0)
+        {
+            $amount = $this->localeService->convertMoneyToInt($amount);
+        }
+        DB::transaction(function() use($charge, $session, $member, $paid, $amount) {
             $bill = Bill::create([
                 'charge' => $charge->name,
                 'amount' => $charge->has_amount ? $charge->amount : $amount,
                 'lendable' => $charge->lendable,
                 'issued_at' => now(),
             ]);
-            $fine = new FineBill();
-            $fine->charge()->associate($charge);
-            $fine->member()->associate($member);
-            $fine->session()->associate($session);
-            $fine->bill()->associate($bill);
-            $fine->save();
+            $libreBill = new LibreBill();
+            $libreBill->charge()->associate($charge);
+            $libreBill->member()->associate($member);
+            $libreBill->session()->associate($session);
+            $libreBill->bill()->associate($bill);
+            $libreBill->save();
+            if($paid)
+            {
+                $settlement = new Settlement();
+                $settlement->bill()->associate($bill);
+                $settlement->session()->associate($session);
+                $settlement->save();
+            }
         });
     }
 
@@ -280,16 +302,16 @@ class FineService
      * @param Session $session
      * @param int $memberId
      *
-     * @return FineBill|null
+     * @return LibreBill|null
      */
-    public function getBill(Charge $charge, Session $session, int $memberId): ?FineBill
+    public function getBill(Charge $charge, Session $session, int $memberId): ?LibreBill
     {
         if(!($member = $this->tenantService->tontine()->members()->find($memberId)))
         {
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }
 
-        return FineBill::with(['bill'])
+        return LibreBill::with(['bill.settlement'])
             ->where('charge_id', $charge->id)
             ->where('session_id', $session->id)
             ->where('member_id', $member->id)
@@ -300,20 +322,48 @@ class FineService
      * @param Charge $charge
      * @param Session $session
      * @param int $memberId
+     * @param float $amount
      *
      * @return void
      */
-    public function deleteFine(Charge $charge, Session $session, int $memberId): void
+    public function updateBill(Charge $charge, Session $session, int $memberId, float $amount): void
     {
-        if(!($fine = $this->getBill($charge, $session, $memberId)))
+        if(!($libreBill = $this->getBill($charge, $session, $memberId)))
         {
             return; // throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
 
-        DB::transaction(function() use($fine) {
-            $billId = $fine->bill_id;
-            $fine->delete();
-            Bill::where('id', $billId)->delete();
+        $libreBill->bill->update([
+            'amount'=> $this->localeService->convertMoneyToInt($amount),
+        ]);
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Session $session
+     * @param int $memberId
+     *
+     * @return void
+     */
+    public function deleteBill(Charge $charge, Session $session, int $memberId): void
+    {
+        if(!($libreBill = $this->getBill($charge, $session, $memberId)))
+        {
+            return; // throw new MessageException(trans('tontine.bill.errors.not_found'));
+        }
+
+        DB::transaction(function() use($libreBill, $session) {
+            $bill = $libreBill->bill;
+            $libreBill->delete();
+            if($bill !== null)
+            {
+                // Delete the settlement only if it is on the same session
+                if($bill->settlement !== null && $bill->settlement->session_id === $session->id)
+                {
+                    $bill->settlement->delete();
+                }
+                $bill->delete();
+            }
         });
     }
 }

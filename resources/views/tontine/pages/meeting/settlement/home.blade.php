@@ -2,22 +2,22 @@
                     <div class="col">
                       <div class="section-title mt-0">{{ $charge->name }} - {{ __('meeting.titles.settlements') }}</div>
                     </div>
-@if ($type === 'fee')
+@if ($type === 'fixed')
                     <div class="col-auto">
                       <div class="input-group ml-2 mb-2">
                         {!! Form::text('search', '', ['class' => 'form-control', 'id' => 'txt-fee-settlements-search']) !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" id="btn-fee-settlements-search"><i class="fa fa-search"></i></button>
+                          <button type="button" class="btn btn-primary" id="btn-fee-fixed-settlements-search"><i class="fa fa-search"></i></button>
                         </div>
                       </div>
                     </div>
 @endif
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
-                        <button type="button" class="btn btn-primary" id="btn-{{ $type }}-settlements-back"><i class="fa fa-arrow-left"></i></button>
-                        <button type="button" class="btn btn-primary" id="btn-{{ $type }}-settlements-filter"><i class="fa fa-filter"></i></button>
+                        <button type="button" class="btn btn-primary" id="btn-fee-{{ $type }}-settlements-back"><i class="fa fa-arrow-left"></i></button>
+                        <button type="button" class="btn btn-primary" id="btn-fee-{{ $type }}-settlements-filter"><i class="fa fa-filter"></i></button>
                       </div>
                     </div>
                   </div>
-                  <div class="table-responsive" id="meeting-{{ $type }}-bills">
+                  <div class="table-responsive" id="meeting-fee-{{ $type }}-bills">
                   </div> <!-- End table -->

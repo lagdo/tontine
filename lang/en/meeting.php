@@ -99,7 +99,7 @@ return [
             'auctions' => "Auctions",
         ],
         'labels' => [
-            'amount' => "Amount to remit",
+            'amount' => "Remitted amount",
             'auction' => "Auction",
         ],
     ],

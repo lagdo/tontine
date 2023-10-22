@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Ajax\Web\Meeting\Charge\Settlement;
+namespace App\Ajax\Web\Meeting\Charge\Fixed;
 
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Meeting\Cash\Disbursement;
 use App\Ajax\Web\Meeting\Credit\Loan;
-use App\Ajax\Web\Meeting\Charge\Fee as Charge;
+use App\Ajax\Web\Meeting\Charge\FixedFee as Charge;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementService;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -19,7 +19,7 @@ use function trim;
  * @databag meeting
  * @before getCharge
  */
-class Fee extends CallableClass
+class Settlement extends CallableClass
 {
     /**
      * @di
@@ -47,7 +47,7 @@ class Fee extends CallableClass
     {
         $sessionId = $this->bag('meeting')->get('session.id');
         $chargeId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('charge.fixed.id');
+            $this->target()->args()[0] : $this->bag('meeting')->get('fee.fixed.id');
         $this->session = $this->settlementService->getSession($sessionId);
         $this->charge = $this->settlementService->getCharge($chargeId);
     }
@@ -59,20 +59,20 @@ class Fee extends CallableClass
      */
     public function home(int $chargeId)
     {
-        $this->bag('meeting')->set('charge.fixed.id', $chargeId);
+        $this->bag('meeting')->set('fee.fixed.id', $chargeId);
         $this->bag('meeting')->set('settlement.fixed.search', '');
         $this->bag('meeting')->set('settlement.fixed.filter', null);
 
         $html = $this->view()->render('tontine.pages.meeting.settlement.home', [
             'charge' => $this->charge,
-            'type' => 'fee',
+            'type' => 'fixed',
         ]);
-        $this->response->html('meeting-fees', $html);
-        $this->jq('#btn-fee-settlements-back')
+        $this->response->html('meeting-fees-fixed', $html);
+        $this->jq('#btn-fee-fixed-settlements-back')
             ->click($this->cl(Charge::class)->rq()->home());
-        $this->jq('#btn-fee-settlements-search')
+        $this->jq('#btn-fee-fixed-settlements-search')
             ->click($this->rq()->search(jq('#txt-fee-settlements-search')->val()));
-        $this->jq('#btn-fee-settlements-filter')->click($this->rq()->toggleFilter());
+        $this->jq('#btn-fee-fixed-settlements-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
     }
@@ -103,14 +103,17 @@ class Fee extends CallableClass
             'bills' => $bills,
             'pagination' => $pagination,
         ]);
-        $this->response->html('meeting-fee-bills', $html);
+        $this->response->html('meeting-fee-fixed-bills', $html);
 
         $this->jq('.btn-add-all-settlements')->click($this->rq()->addAllSettlements());
         $this->jq('.btn-del-all-settlements')->click($this->rq()->delAllSettlements());
         $billId = jq()->parent()->attr('data-bill-id')->toInt();
-        $this->jq('.btn-add-settlement')->click($this->rq()->addSettlement($billId));
-        $this->jq('.btn-del-settlement')->click($this->rq()->delSettlement($billId));
-        $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($billId));
+        $this->jq('.btn-add-settlement', '#meeting-fee-fixed-bills')
+            ->click($this->rq()->addSettlement($billId));
+        $this->jq('.btn-del-settlement', '#meeting-fee-fixed-bills')
+            ->click($this->rq()->delSettlement($billId));
+        $this->jq('.btn-edit-notes', '#meeting-fee-fixed-bills')
+            ->click($this->rq()->editNotes($billId));
 
         return $this->response;
     }

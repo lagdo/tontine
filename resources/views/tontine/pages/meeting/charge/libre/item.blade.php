@@ -19,13 +19,13 @@
                           </td>
                           <td class="table-item-menu">
 @include('tontine.parts.table.menu', [
-  'dataIdKey' => 'data-fine-id',
+  'dataIdKey' => 'data-charge-id',
   'dataIdValue' => $charge->id,
   'menus' => [[
-    'class' => 'btn-fine-add',
-    'text' => $charge->is_fee ? __('common.actions.ask') : __('common.actions.give'),
+    'class' => 'btn-fee-libre-add',
+    'text' => __('common.actions.add'),
   ],[
-    'class' => 'btn-fine-settlements',
+    'class' => 'btn-fee-libre-settlements',
     'text' => __('meeting.actions.settlements'),
   ]],
 ])

@@ -27,16 +27,16 @@
 @else
                           <td class="currency" id="member-{{ $member->id }}" data-member-id="{{ $member->id }}" style="width:200px">
 @if ($session->closed)
-                            @include('tontine.pages.meeting.charge.variable.member.closed', [
+                            @include('tontine.pages.meeting.charge.libre.member.closed', [
                               'amount' => !$member->bill ? '' : $locale->formatMoney($member->bill->amount, true),
                             ])
 @elseif (!$member->bill)
-                            @include('tontine.pages.meeting.charge.variable.member.edit', [
+                            @include('tontine.pages.meeting.charge.libre.member.edit', [
                               'id' => $member->id,
                               'amount' => '',
                             ])
 @else
-                            @include('tontine.pages.meeting.charge.variable.member.show', [
+                            @include('tontine.pages.meeting.charge.libre.member.show', [
                               'id' => $member->id,
                               'amount' => $locale->formatMoney($member->bill->amount, true),
                             ])

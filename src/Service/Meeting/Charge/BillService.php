@@ -45,8 +45,8 @@ class BillService
                     // Filter session bills only on current session
                     return $query->where('session_id', $session->id);
                 })
-                ->when($relation === 'fine_bill', function($query) use($session) {
-                    // Filter fine bills on current and previous sessions
+                ->when($relation === 'libre_bill', function($query) use($session) {
+                    // Filter libre bills on current and previous sessions
                     $sessionIds = $this->tenantService->getSessionIds($session);
                     return $query->whereIn('session_id', $sessionIds);
                 });
@@ -93,7 +93,7 @@ class BillService
     private function getBillRelation(Charge $charge): string
     {
         // The intermediate relation to reach the member model.
-        return $charge->is_variable ? 'fine_bill' :
+        return $charge->is_variable ? 'libre_bill' :
             ($charge->period_session ? 'session_bill' :
             ($charge->period_round ? 'round_bill' : 'tontine_bill'));
     }
@@ -112,7 +112,7 @@ class BillService
     {
         $billRelation = $this->getBillRelation($charge);
         $billRelations = !$charge->is_variable ? [$billRelation . '.member', 'settlement'] :
-            ['fine_bill.session', 'fine_bill.member', 'settlement'];
+            ['libre_bill.session', 'libre_bill.member', 'settlement'];
         $query = $this->getBillsQuery($charge, $session, $billRelation, $search, $onlyPaid);
 
         return $query->with($billRelations)
@@ -121,7 +121,7 @@ class BillService
             ->get()
             ->each(function($bill) use($billRelation, $charge) {
                 $bill->member = $bill->$billRelation->member;
-                $bill->session = $charge->is_variable ? $bill->fine_bill->session : null;
+                $bill->session = $charge->is_variable ? $bill->libre_bill->session : null;
             });
     }
 

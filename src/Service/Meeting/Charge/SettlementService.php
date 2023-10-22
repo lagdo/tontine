@@ -64,9 +64,9 @@ class SettlementService
         $query = Bill::select('bills.*');
         if($charge->is_variable)
         {
-            return $query->join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
-                ->where('fine_bills.charge_id', $charge->id)
-                ->where('fine_bills.session_id', $session->id);
+            return $query->join('libre_bills', 'libre_bills.bill_id', '=', 'bills.id')
+                ->where('libre_bills.charge_id', $charge->id)
+                ->where('libre_bills.session_id', $session->id);
         }
         if($charge->period_session)
         {
@@ -194,42 +194,16 @@ class SettlementService
      */
     public function getSettlement(Charge $charge, Session $session): object
     {
-        if($charge->is_variable)
-        {
-            return DB::table('settlements')
-                ->select(DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
-                ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-                ->join('fine_bills', 'fine_bills.bill_id', '=', 'bills.id')
-                ->where('settlements.session_id', $session->id)
-                ->where('fine_bills.charge_id', $charge->id)
-                ->first();
-        }
-        if($charge->period_session)
-        {
-            return DB::table('settlements')
-                ->select(DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
-                ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-                ->join('session_bills', 'session_bills.bill_id', '=', 'bills.id')
-                ->where('settlements.session_id', $session->id)
-                ->where('session_bills.charge_id', $charge->id)
-                ->first();
-        }
-        if($charge->period_round)
-        {
-            return DB::table('settlements')
-                ->select(DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
-                ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-                ->join('round_bills', 'round_bills.bill_id', '=', 'bills.id')
-                ->where('settlements.session_id', $session->id)
-                ->where('round_bills.charge_id', $charge->id)
-                ->first();
-        }
+        $billTable = $charge->is_variable ? 'libre_bills' :
+            ($charge->period_session ? 'session_bills' :
+            ($charge->period_round ? 'round_bills' : 'tontine_bills'));
+
         return DB::table('settlements')
             ->select(DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-            ->join('tontine_bills', 'tontine_bills.bill_id', '=', 'bills.id')
+            ->join($billTable, "$billTable.bill_id", '=', 'bills.id')
             ->where('settlements.session_id', $session->id)
-            ->where('tontine_bills.charge_id', $charge->id)
+            ->where("$billTable.charge_id", $charge->id)
             ->first();
     }
 }

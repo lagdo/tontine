@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Ajax\Web\Meeting\Charge\Member;
+namespace App\Ajax\Web\Meeting\Charge\Libre;
 
 use App\Ajax\CallableClass;
-use App\Ajax\Web\Meeting\Charge\Fine as Charge;
+use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Meeting\Charge\FineService;
+use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Charge as ChargeModel;
 
 use function filter_var;
 use function Jaxon\jq;
+use function Jaxon\pm;
 use function str_replace;
 use function trans;
 use function trim;
@@ -20,7 +21,7 @@ use function trim;
  * @databag meeting
  * @before getCharge
  */
-class Fine extends CallableClass
+class Member extends CallableClass
 {
     /**
      * @var LocaleService
@@ -35,9 +36,9 @@ class Fine extends CallableClass
 
     /**
      * @di
-     * @var FineService
+     * @var LibreFeeService
      */
-    protected FineService $fineService;
+    protected LibreFeeService $feeService;
 
     /**
      * @var SessionModel|null
@@ -66,16 +67,17 @@ class Fine extends CallableClass
     public function home(int $chargeId)
     {
         $this->bag('meeting')->set('charge.id', $chargeId);
-        $this->bag('meeting')->set('fine.search', '');
-        $this->bag('meeting')->set('fine.filter', null);
+        $this->bag('meeting')->set('fee.member.search', '');
+        $this->bag('meeting')->set('fee.member.filter', null);
 
-        $html = $this->view()->render('tontine.pages.meeting.charge.variable.member.home', [
+        $html = $this->view()->render('tontine.pages.meeting.charge.libre.member.home', [
             'charge' => $this->charge,
         ]);
-        $this->response->html('meeting-fines', $html);
-        $this->jq('#btn-fine-back')->click($this->cl(Charge::class)->rq()->home());
-        $this->jq('#btn-fine-search')->click($this->rq()->search(jq('#txt-fine-search')->val()));
-        $this->jq('#btn-fine-filter')->click($this->rq()->toggleFilter());
+        $this->response->html('meeting-fees-libre', $html);
+        $this->jq('#btn-fee-libre-back')->click($this->cl(Charge::class)->rq()->home());
+        $this->jq('#btn-fee-libre-filter')->click($this->rq()->toggleFilter());
+        $this->jq('#btn-fee-libre-search')
+            ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
 
         return $this->page(1);
     }
@@ -87,29 +89,30 @@ class Fine extends CallableClass
      */
     public function page(int $pageNumber = 0)
     {
-        $search = trim($this->bag('meeting')->get('fine.search', ''));
-        $onlyFined = $this->bag('meeting')->get('fine.filter', null);
-        $memberCount = $this->fineService->getMemberCount($this->charge,
-            $this->session, $search, $onlyFined);
+        $search = trim($this->bag('meeting')->get('fee.member.search', ''));
+        $filter = $this->bag('meeting')->get('fee.member.filter', null);
+        $memberCount = $this->feeService->getMemberCount($this->charge,
+            $this->session, $search, $filter);
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount,
             'meeting', 'member.page');
-        $members = $this->fineService->getMembers($this->charge, $this->session,
-            $search, $onlyFined, $pageNumber);
+        $members = $this->feeService->getMembers($this->charge, $this->session,
+            $search, $filter, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
-        $html = $this->view()->render('tontine.pages.meeting.charge.variable.member.page', [
+        $html = $this->view()->render('tontine.pages.meeting.charge.libre.member.page', [
             'session' => $this->session,
             'charge' => $this->charge,
             'members' => $members,
             'pagination' => $pagination,
         ]);
-        $this->response->html('meeting-charge-members', $html);
+        $this->response->html('meeting-fee-libre-members', $html);
 
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
+        $paid = pm()->checked('check-fee-libre-paid');
         $amount = jq('input', jq()->parent()->parent())->val()->toInt();
-        $this->jq('.btn-add-bill')->click($this->rq()->addBill($memberId));
+        $this->jq('.btn-add-bill')->click($this->rq()->addBill($memberId, $paid));
         $this->jq('.btn-del-bill')->click($this->rq()->delBill($memberId));
-        $this->jq('.btn-save-bill')->click($this->rq()->saveBill($memberId, $amount));
+        $this->jq('.btn-save-bill')->click($this->rq()->addBill($memberId, $paid, $amount));
         $this->jq('.btn-edit-bill')->click($this->rq()->editBill($memberId));
         // $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($memberId));
 
@@ -118,35 +121,44 @@ class Fine extends CallableClass
 
     public function toggleFilter()
     {
-        $onlyFined = $this->bag('meeting')->get('fine.filter', null);
+        $filter = $this->bag('meeting')->get('fee.member.filter', null);
         // Switch between null, true and false
-        $onlyFined = $onlyFined === null ? true : ($onlyFined === true ? false : null);
-        $this->bag('meeting')->set('fine.filter', $onlyFined);
+        $filter = $filter === null ? true : ($filter === true ? false : null);
+        $this->bag('meeting')->set('fee.member.filter', $filter);
 
         return $this->page();
     }
 
     public function search(string $search)
     {
-        $this->bag('meeting')->set('fine.search', trim($search));
+        $this->bag('meeting')->set('fee.member.search', trim($search));
 
         return $this->page();
     }
 
     /**
      * @param int $memberId
+     * @param bool $paid
+     * @param string $amount
      *
      * @return mixed
      */
-    public function addBill(int $memberId)
+    public function addBill(int $memberId, bool $paid, string $amount = '')
     {
         if($this->session->closed)
         {
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
+        $amount = str_replace(',', '.', trim($amount));
+        if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
+        {
+            $this->notify->error(trans('meeting.errors.amount.invalid', ['amount' => $amount]));
+            return $this->response;
+        }
+        $amount = $amount === '' ? 0 : (float)$amount;
 
-        $this->fineService->createFine($this->charge, $this->session, $memberId);
+        $this->feeService->createBill($this->charge, $this->session, $memberId, $paid, $amount);
 
         return $this->page();
     }
@@ -164,7 +176,7 @@ class Fine extends CallableClass
             return $this->response;
         }
 
-        $this->fineService->deleteFine($this->charge, $this->session, $memberId);
+        $this->feeService->deleteBill($this->charge, $this->session, $memberId);
 
         return $this->page();
     }
@@ -182,13 +194,13 @@ class Fine extends CallableClass
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
-        $bill = $this->fineService->getBill($this->charge, $this->session, $memberId);
+        $bill = $this->feeService->getBill($this->charge, $this->session, $memberId);
         if($bill === null || $bill->bill->settlement !== null)
         {
             return $this->page();
         }
 
-        $html = $this->view()->render('tontine.pages.meeting.charge.variable.member.edit', [
+        $html = $this->view()->render('tontine.pages.meeting.charge.libre.member.edit', [
             'id' => $memberId,
             'amount' => $this->localeService->getMoneyValue($bill->bill->amount),
         ]);
@@ -203,7 +215,6 @@ class Fine extends CallableClass
     }
 
     /**
-     * @di $localeService
      * @param int $memberId
      * @param string $amount
      *
@@ -216,21 +227,22 @@ class Fine extends CallableClass
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
+
         $amount = str_replace(',', '.', trim($amount));
         if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
         {
             $this->notify->error(trans('meeting.errors.amount.invalid', ['amount' => $amount]));
             return $this->response;
         }
-        $amount = $amount === '' ? 0 : $this->localeService->convertMoneyToInt((float)$amount);
+        $amount = $amount === '' ? 0 : (float)$amount;
 
-        $this->fineService->deleteFine($this->charge, $this->session, $memberId);
-        if($amount > 0)
+        if(!$amount)
         {
-            $this->fineService->createFine($this->charge, $this->session, $memberId, $amount);
+            $this->feeService->deleteBill($this->charge, $this->session, $memberId);
+            return $this->page();
         }
-        // $this->notify->success(trans('session.deposit.created'), trans('common.titles.success'));
 
+        $this->feeService->updateBill($this->charge, $this->session, $memberId, $amount);
         return $this->page();
     }
 }

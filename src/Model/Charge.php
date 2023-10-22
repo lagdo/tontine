@@ -96,15 +96,15 @@ class Charge extends Base
         return $this->hasMany(TontineBill::class);
     }
 
-    public function fine_bills()
+    public function libre_bills()
     {
-        return $this->hasMany(FineBill::class);
+        return $this->hasMany(LibreBill::class);
     }
 
     public function getBillsCountAttribute()
     {
         return $this->tontine_bills_count + $this->round_bills_count +
-            $this->session_bills_count + $this->fine_bills_count;
+            $this->session_bills_count + $this->libre_bills_count;
     }
 
     public function getIsFeeAttribute()

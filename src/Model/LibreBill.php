@@ -2,7 +2,7 @@
 
 namespace Siak\Tontine\Model;
 
-class FineBill extends Base
+class LibreBill extends Base
 {
     /**
      * Indicates if the model should be timestamped.

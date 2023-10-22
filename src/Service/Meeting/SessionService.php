@@ -99,11 +99,6 @@ class SessionService
      */
     public function openRound(Round $round)
     {
-        if($round->opened)
-        {
-            return;
-        }
-
         // Don't open a round if there are pools with no subscription.
         $this->checkPoolsSubscriptions();
 
