@@ -56,13 +56,13 @@ class CallableClass extends JaxonCallableClass
     {
         $perPage = 10;
         $pageCount = (int)floor($itemCount / $perPage) + ($itemCount % $perPage > 0 ? 1 : 0);
-        if($pageNumber > $pageCount)
-        {
-            $pageNumber = $pageCount;
-        }
         if($pageNumber < 1)
         {
             $pageNumber = $this->bag($bagName)->get($attrName, 1);
+        }
+        if($pageNumber > $pageCount)
+        {
+            $pageNumber = $pageCount;
         }
         $this->bag($bagName)->set($attrName, $pageNumber);
 
