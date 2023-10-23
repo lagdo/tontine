@@ -5,8 +5,8 @@
 @if ($pool->remit_planned)
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
-                        <button type="button" class="btn btn-primary" id="btn-subscription-planning">{{
-                          __('tontine.subscription.titles.planning') }}</i></button>
+                        <button type="button" class="btn btn-primary" id="btn-subscription-beneficiaries">{{
+                          __('tontine.subscription.titles.beneficiaries') }}</i></button>
                       </div>
                     </div>
 @endif

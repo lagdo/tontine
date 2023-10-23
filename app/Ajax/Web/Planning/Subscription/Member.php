@@ -11,6 +11,7 @@ use Siak\Tontine\Service\Planning\SubscriptionService;
 use function intval;
 use function Jaxon\jq;
 use function Jaxon\pm;
+use function trim;
 
 /**
  * @databag subscription
@@ -66,16 +67,14 @@ class Member extends CallableClass
 
     public function home(int $poolId)
     {
+        $search = trim($this->bag('subscription')->get('member.search', ''));
         $html = $this->view()->render('tontine.pages.planning.subscription.member.home')
-            ->with('pool', $this->pool);
+            ->with('pool', $this->pool)->with('search', $search);
         $this->response->html('pool-subscription-members', $html);
         $this->jq('#btn-subscription-members-filter')->click($this->rq()->filter());
         $this->jq('#btn-subscription-members-refresh')->click($this->rq()->home($poolId));
-        if($this->pool->remit_planned)
-        {
-            $this->jq('#btn-subscription-beneficiaries')
-                ->click($this->cl(Subscription::class)->rq()->beneficiaries($poolId));
-        }
+        $this->jq('#btn-subscription-members-search')
+            ->click($this->rq()->search(jq('#txt-subscription-members-search')->val()));
 
         $this->bag('subscription')->set('pool.id', $poolId);
         $this->bag('subscription')->set('member.filter', false);
@@ -85,11 +84,16 @@ class Member extends CallableClass
 
     public function page(int $pageNumber = 0)
     {
+        $search = trim($this->bag('subscription')->get('member.search', ''));
         $filter = $this->bag('subscription')->get('filter', false);
-        $memberCount = $this->subscriptionService->getMemberCount($this->pool, $filter);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount, 'subscription', 'member.page');
-        $members = $this->subscriptionService->getMembers($this->pool, $filter, $pageNumber);
-        $pagination = $this->rq()->page(pm()->page())->paginate($pageNumber, $perPage, $memberCount);
+        $memberCount = $this->subscriptionService->getMemberCount($this->pool,
+            $search, $filter);
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount,
+            'subscription', 'member.page');
+        $members = $this->subscriptionService->getMembers($this->pool, $search,
+            $filter, $pageNumber);
+        $pagination = $this->rq()->page(pm()->page())->paginate($pageNumber,
+            $perPage, $memberCount);
 
         $html = $this->view()->render('tontine.pages.planning.subscription.member.page')
             ->with('members', $members)
@@ -112,6 +116,13 @@ class Member extends CallableClass
 
         // Show the first page
         return $this->page(1);
+    }
+
+    public function search(string $search)
+    {
+        $this->bag('subscription')->set('member.search', trim($search));
+
+        return $this->page();
     }
 
     public function create(int $memberId)

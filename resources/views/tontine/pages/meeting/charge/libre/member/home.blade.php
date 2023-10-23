@@ -12,7 +12,7 @@
                   <div class="row align-items-center">
                     <div class="col-auto">
                       <div class="input-group ml-2 mb-2">
-                        {!! Form::text('search', '', ['class' => 'form-control', 'id' => 'txt-fee-member-search']) !!}
+                        {!! Form::text('search', $search, ['class' => 'form-control', 'id' => 'txt-fee-member-search']) !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" id="btn-fee-libre-search"><i class="fa fa-search"></i></button>
                         </div>

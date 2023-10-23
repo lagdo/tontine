@@ -66,12 +66,13 @@ class Member extends CallableClass
      */
     public function home(int $chargeId)
     {
+        $search = trim($this->bag('meeting')->get('fee.member.search', ''));
         $this->bag('meeting')->set('charge.id', $chargeId);
-        $this->bag('meeting')->set('fee.member.search', '');
         $this->bag('meeting')->set('fee.member.filter', null);
 
         $html = $this->view()->render('tontine.pages.meeting.charge.libre.member.home', [
             'charge' => $this->charge,
+            'search' => $search,
         ]);
         $this->response->html('meeting-fees-libre', $html);
         $this->jq('#btn-fee-libre-back')->click($this->cl(Charge::class)->rq()->home());

@@ -2,7 +2,13 @@
           <div class="section-body">
             <div class="row align-items-center">
               <div class="col">
-                <h2 class="section-title">{{ __('tontine.subscription.titles.remitments') }} - {{ $pool->title }}</h2>
+                <h2 class="section-title">{{ __('tontine.subscription.titles.beneficiaries') }} - {{ $pool->title }}</h2>
+              </div>
+              <div class="col-auto">
+                <div class="btn-group float-right" role="group" aria-label="">
+                  <button type="button" class="btn btn-primary" id="btn-subscription-planning">{{
+                    __('tontine.subscription.titles.planning') }}</i></button>
+                </div>
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right" role="group" aria-label="">

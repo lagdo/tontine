@@ -59,13 +59,14 @@ class Settlement extends CallableClass
      */
     public function home(int $chargeId)
     {
+        $search = trim($this->bag('meeting')->get('settlement.fixed.search', ''));
         $this->bag('meeting')->set('fee.fixed.id', $chargeId);
-        $this->bag('meeting')->set('settlement.fixed.search', '');
         $this->bag('meeting')->set('settlement.fixed.filter', null);
 
         $html = $this->view()->render('tontine.pages.meeting.settlement.home', [
             'charge' => $this->charge,
             'type' => 'fixed',
+            'search' => $search,
         ]);
         $this->response->html('meeting-fees-fixed', $html);
         $this->jq('#btn-fee-fixed-settlements-back')

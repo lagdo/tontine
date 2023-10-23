@@ -11,6 +11,7 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
 use Siak\Tontine\Service\TenantService;
 
+use function strtolower;
 use function trans;
 
 class SubscriptionService
@@ -46,35 +47,39 @@ class SubscriptionService
      * Get a paginated list of members.
      *
      * @param Pool $pool
+     * @param string $search
      * @param bool $filter
      *
      * @return mixed
      */
-    public function getQuery(Pool $pool, bool $filter)
+    public function getQuery(Pool $pool, string $search, bool $filter)
     {
-        $query = $this->tenantService->tontine()->members()->active();
-        if($filter)
-        {
-            // Return only members with subscription in this pool
-            $query = $query->whereHas('subscriptions', function(Builder $query) use($pool) {
-                $query->where('subscriptions.pool_id', $pool->id);
+        return $this->tenantService->tontine()->members()->active()
+            ->when($filter, function(Builder $query) use($pool) {
+                // Return only members with subscription in this pool
+                return $query->whereHas('subscriptions', function(Builder $query) use($pool) {
+                    $query->where('subscriptions.pool_id', $pool->id);
+                });
+            })
+            ->when($search !== '', function($query) use($search) {
+                $search = '%' . strtolower($search) . '%';
+                return $query->where(DB::raw('lower(name)'), 'like', $search);
             });
-        }
-        return $query;
     }
 
     /**
      * Get a paginated list of members.
      *
      * @param Pool $pool
+     * @param string $search
      * @param bool $filter
      * @param int $page
      *
      * @return Collection
      */
-    public function getMembers(Pool $pool, bool $filter, int $page = 0): Collection
+    public function getMembers(Pool $pool, string $search, bool $filter, int $page = 0): Collection
     {
-        return $this->getQuery($pool, $filter)
+        return $this->getQuery($pool, $search, $filter)
             ->page($page, $this->tenantService->getLimit())
             ->withCount([
                 'subscriptions' => function(Builder $query) use($pool) {
@@ -88,13 +93,14 @@ class SubscriptionService
      * Get the number of members.
      *
      * @param Pool $pool
+     * @param string $search
      * @param bool $filter
      *
      * @return int
      */
-    public function getMemberCount(Pool $pool, bool $filter): int
+    public function getMemberCount(Pool $pool, string $search, bool $filter): int
     {
-        return $this->getQuery($pool, $filter)->count();
+        return $this->getQuery($pool, $search, $filter)->count();
     }
 
     /**

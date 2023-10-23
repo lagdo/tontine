@@ -98,6 +98,7 @@ class Subscription extends CallableClass
             ->with('pool', $pool);
         $this->response->html('content-home', $html);
 
+        $this->jq('#btn-subscription-beneficiaries')->click($this->rq()->beneficiaries($poolId));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->planning($poolId));
         $this->jq('#btn-subscription-back')->click($this->rq()->home($poolId));
 
@@ -124,6 +125,7 @@ class Subscription extends CallableClass
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);
 
+        $this->jq('#btn-subscription-planning')->click($this->rq()->planning($poolId));
         $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt()));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->beneficiaries($poolId));
         $this->jq('#btn-subscription-back')->click($this->rq()->home($poolId));

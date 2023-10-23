@@ -39,22 +39,26 @@ class Member extends CallableClass
      */
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.member.home');
+        $search = trim($this->bag('member')->get('search', ''));
+        $html = $this->view()->render('tontine.pages.member.home', ['search' => $search]);
         $this->response->html('section-title', trans('tontine.menus.tontine'));
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-member-refresh')->click($this->rq()->home());
         $this->jq('#btn-member-add')->click($this->rq()->add());
         $this->jq('#btn-member-add-list')->click($this->rq()->addList());
+        $this->jq('#btn-member-search')
+            ->click($this->rq()->search(jq('#txt-member-search')->val()));
 
         return $this->page();
     }
 
     public function page(int $pageNumber = 0)
     {
-        $memberCount = $this->memberService->getMemberCount();
+        $search = trim($this->bag('member')->get('search', ''));
+        $memberCount = $this->memberService->getMemberCount($search);
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount, 'member', 'page');
-        $members = $this->memberService->getMembers($pageNumber);
+        $members = $this->memberService->getMembers($search, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
         $html = $this->view()->render('tontine.pages.member.page')
@@ -69,6 +73,13 @@ class Member extends CallableClass
             ->confirm(trans('tontine.member.questions.delete')));
 
         return $this->response;
+    }
+
+    public function search(string $search)
+    {
+        $this->bag('member')->set('search', trim($search));
+
+        return $this->page();
     }
 
     public function add()

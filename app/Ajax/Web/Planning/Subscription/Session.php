@@ -80,6 +80,8 @@ class Session extends CallableClass
         $this->jq('#btn-subscription-sessions-refresh')->click($this->rq()->home($poolId));
         if($this->pool->remit_planned)
         {
+            $this->jq('#btn-subscription-beneficiaries')
+                ->click($this->cl(Subscription::class)->rq()->beneficiaries($poolId));
             $this->jq('#btn-subscription-planning')
                 ->click($this->cl(Subscription::class)->rq()->planning($poolId));
         }

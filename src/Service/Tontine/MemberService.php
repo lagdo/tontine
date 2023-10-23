@@ -2,11 +2,14 @@
 
 namespace Siak\Tontine\Service\Tontine;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\EventTrait;
+
+use function strtolower;
 
 class MemberService
 {
@@ -28,13 +31,18 @@ class MemberService
     /**
      * Get a paginated list of members.
      *
+     * @param string $search
      * @param int $page
      *
      * @return Collection
      */
-    public function getMembers(int $page = 0): Collection
+    public function getMembers(string $search, int $page = 0): Collection
     {
         return $this->tenantService->tontine()->members()
+            ->when($search !== '', function(Builder $query) use($search) {
+                $search = '%' . strtolower($search) . '%';
+                return $query->where(DB::raw('lower(name)'), 'like', $search);
+            })
             ->page($page, $this->tenantService->getLimit())
             ->orderBy('name', 'asc')
             ->get();
@@ -43,11 +51,18 @@ class MemberService
     /**
      * Get the number of members.
      *
+     * @param string $search
+     *
      * @return int
      */
-    public function getMemberCount(): int
+    public function getMemberCount(string $search): int
     {
-        return $this->tenantService->tontine()->members()->count();
+        return $this->tenantService->tontine()->members()
+            ->when($search !== '', function(Builder $query) use($search) {
+                $search = '%' . strtolower($search) . '%';
+                return $query->where(DB::raw('lower(name)'), 'like', $search);
+            })
+            ->count();
     }
 
     /**
