@@ -22,6 +22,9 @@
   'menus' => [[
     'class' => 'btn-round-edit',
     'text' => __('common.actions.edit'),
+  ],[
+    'class' => 'btn-round-select',
+    'text' => __('tontine.actions.choose'),
   ]],
 ])
                           </td>
