@@ -105,12 +105,12 @@ class Round extends Base
 
     public function pools()
     {
-        return $this->hasMany(Pool::class)->orderBy('id', 'asc');
+        return $this->hasMany(Pool::class);
     }
 
     public function sessions()
     {
-        return $this->hasMany(Session::class)->orderBy('start_at', 'asc');
+        return $this->hasMany(Session::class);
     }
 
     public function bills()
