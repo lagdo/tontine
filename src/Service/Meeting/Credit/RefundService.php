@@ -207,7 +207,7 @@ class RefundService
         {
             throw new MessageException(trans('meeting.refund.errors.not_found'));
         }
-        if(($refund->online))
+        if((!$refund->editable))
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_delete'));
         }
@@ -320,7 +320,7 @@ class RefundService
         {
             throw new MessageException(trans('meeting.refund.errors.not_found'));
         }
-        if($refund->debt->refund !== null || $refund->online)
+        if($refund->debt->refund !== null || !$refund->editable)
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_delete'));
         }

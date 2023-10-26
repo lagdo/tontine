@@ -124,9 +124,9 @@ class SettlementService
         {
             throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
-        if(($bill->settlement->online))
+        if((!$bill->settlement->editable))
         {
-            throw new MessageException(trans('tontine.bill.errors.online'));
+            throw new MessageException(trans('tontine.errors.editable'));
         }
         $bill->settlement()->where('session_id', $session->id)->delete();
     }
@@ -172,7 +172,7 @@ class SettlementService
             ->whereHas('settlement')
             ->get()
             ->filter(function($bill) {
-                return !$bill->settlement->online;
+                return $bill->settlement->editable;
             });
         if($bills->count() === 0)
         {

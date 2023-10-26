@@ -73,6 +73,7 @@ return [
     ],
     'errors' => [
         'action' => "Action impossible.",
+        'editable' => "Cet élément ne peut être modifié ou supprimé.",
     ],
     'round' => [
         'titles' => [

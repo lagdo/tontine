@@ -73,6 +73,7 @@ return [
     ],
     'errors' => [
         'action' => "Cannot proceed.",
+        'editable' => "This item cannot be edited or deleted.",
     ],
     'round' => [
         'titles' => [

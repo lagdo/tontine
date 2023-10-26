@@ -45,6 +45,7 @@
                         @include('tontine.pages.meeting.deposit.libre.show', [
                           'id' => $receivable->id,
                           'amount' => $locale->formatMoney($receivable->deposit->amount, false),
+                          'editable' => $receivable->deposit->editable,
                         ])
 @endif
                       </td>

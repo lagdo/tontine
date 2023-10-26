@@ -108,7 +108,7 @@ class DepositService
      */
     public function getReceivable(Pool $pool, Session $session, int $receivableId): ?Receivable
     {
-        return $this->getQuery($pool, $session)->find($receivableId);
+        return $this->getQuery($pool, $session)->with(['deposit'])->find($receivableId);
     }
 
     /**
@@ -151,6 +151,10 @@ class DepositService
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
+        if((!$receivable->deposit->editable))
+        {
+            throw new MessageException(trans('tontine.errors.editable'));
+        }
 
         if($receivable->deposit !== null)
         {
@@ -182,9 +186,9 @@ class DepositService
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
-        if(($receivable->deposit->online))
+        if((!$receivable->deposit->editable))
         {
-            throw new MessageException(trans('tontine.subscription.errors.online'));
+            throw new MessageException(trans('tontine.errors.editable'));
         }
         $receivable->deposit()->delete();
     }
@@ -226,7 +230,8 @@ class DepositService
      */
     public function deleteAllDeposits(Pool $pool, Session $session): void
     {
-        $receivables = $this->getQuery($pool, $session)->whereHas('deposit')->get();
+        $receivables = $this->getQuery($pool, $session)
+            ->with(['deposit'])->whereHas('deposit')->get();
         if($receivables->count() === 0)
         {
             return;
@@ -235,7 +240,11 @@ class DepositService
         DB::transaction(function() use($session, $receivables) {
             foreach($receivables as $receivable)
             {
-                $receivable->deposit()->where('session_id', $session->id)->delete();
+                try
+                {
+                    $receivable->deposit()->where('session_id', $session->id)->delete();
+                }
+                catch(\Exception $e){}
             }
         });
     }

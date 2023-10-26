@@ -30,8 +30,8 @@ class PartialRefund extends Base
         return $this->belongsTo(Debt::class);
     }
 
-    public function getOnlineAttribute()
+    public function getEditableAttribute()
     {
-        return false;
+        return true;
     }
 }

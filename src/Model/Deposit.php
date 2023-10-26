@@ -30,8 +30,8 @@ class Deposit extends Base
         return $this->belongsTo(Receivable::class);
     }
 
-    public function getOnlineAttribute()
+    public function getEditableAttribute()
     {
-        return false;
+        return true;
     }
 }
