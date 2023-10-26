@@ -169,6 +169,7 @@ class SettlementService
     public function deleteAllSettlements(Charge $charge, Session $session): void
     {
         $bills = $this->getQuery($charge, $session)
+            ->with(['settlement'])
             ->whereHas('settlement')
             ->get()
             ->filter(function($bill) {
@@ -178,12 +179,10 @@ class SettlementService
         {
             return;
         }
-        DB::transaction(function() use($bills, $session) {
-            foreach($bills as $bill)
-            {
-                $bill->settlement()->where('session_id', $session->id)->delete();
-            }
-        });
+
+        Settlement::whereIn('bill_id', $bills->pluck('id'))
+            ->where('session_id', $session->id)
+            ->delete();
     }
 
     /**

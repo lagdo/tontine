@@ -151,13 +151,14 @@ class DepositService
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
-        if((!$receivable->deposit->editable))
-        {
-            throw new MessageException(trans('tontine.errors.editable'));
-        }
 
         if($receivable->deposit !== null)
         {
+            if((!$receivable->deposit->editable))
+            {
+                throw new MessageException(trans('tontine.errors.editable'));
+            }
+
             $receivable->deposit->amount = $amount;
             $receivable->deposit->save();
             return;
@@ -231,22 +232,20 @@ class DepositService
     public function deleteAllDeposits(Pool $pool, Session $session): void
     {
         $receivables = $this->getQuery($pool, $session)
-            ->with(['deposit'])->whereHas('deposit')->get();
+            ->with(['deposit'])
+            ->whereHas('deposit')
+            ->get()
+            ->filter(function($receivable) {
+                return $receivable->deposit->editable;
+            });
         if($receivables->count() === 0)
         {
             return;
         }
 
-        DB::transaction(function() use($session, $receivables) {
-            foreach($receivables as $receivable)
-            {
-                try
-                {
-                    $receivable->deposit()->where('session_id', $session->id)->delete();
-                }
-                catch(\Exception $e){}
-            }
-        });
+        Deposit::whereIn('receivable_id', $receivables->pluck('id'))
+            ->where('session_id', $session->id)
+            ->delete();
     }
 
     /**
