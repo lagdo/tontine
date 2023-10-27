@@ -148,6 +148,9 @@ return [
         'titles' => [
             'add' => "Add a partial refund",
         ],
+        'labels' => [
+            'partial' => "Partial",
+        ],
         'questions' => [
             'delete' => "Delete this partial refund?",
         ],

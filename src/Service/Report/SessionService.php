@@ -316,8 +316,8 @@ class SessionService
      */
     public function getRefund(Session $session): object
     {
-        $principal = "CASE WHEN debts.type='" . Debt::TYPE_PRINCIPAL . "' THEN amount ELSE 0 END";
-        $interest = "CASE WHEN debts.type='" . Debt::TYPE_INTEREST . "' THEN amount ELSE 0 END";
+        $principal = "CASE WHEN debts.type='" . Debt::TYPE_PRINCIPAL . "' THEN debts.amount ELSE 0 END";
+        $interest = "CASE WHEN debts.type='" . Debt::TYPE_INTEREST . "' THEN debts.amount ELSE 0 END";
         $refund = DB::table('refunds')
             ->join('debts', 'refunds.debt_id', '=', 'debts.id')
             ->select(DB::raw("sum($principal) as principal"), DB::raw("sum($interest) as interest"))
@@ -330,6 +330,21 @@ class SessionService
         if(!$refund->interest)
         {
             $refund->interest = 0;
+        }
+        $principal = "CASE WHEN debts.type='" . Debt::TYPE_PRINCIPAL . "' THEN partial_refunds.amount ELSE 0 END";
+        $interest = "CASE WHEN debts.type='" . Debt::TYPE_INTEREST . "' THEN partial_refunds.amount ELSE 0 END";
+        $partialRefund = DB::table('partial_refunds')
+            ->join('debts', 'partial_refunds.debt_id', '=', 'debts.id')
+            ->select(DB::raw("sum($principal) as principal"), DB::raw("sum($interest) as interest"))
+            ->where('partial_refunds.session_id', $session->id)
+            ->first();
+        if(($partialRefund->principal))
+        {
+            $refund->principal += $partialRefund->principal;
+        }
+        if(($partialRefund->interest))
+        {
+            $refund->interest += $partialRefund->interest;
         }
 
         return $refund;

@@ -148,6 +148,9 @@ return [
         'titles' => [
             'add' => "Ajouter un remboursement partiel",
         ],
+        'labels' => [
+            'partial' => "Partiel",
+        ],
         'questions' => [
             'delete' => "Supprimer ce remboursement partiel ?",
         ],

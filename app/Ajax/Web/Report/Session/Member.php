@@ -44,7 +44,7 @@ class Member extends CallableClass
         $this->deposits($session, $member);
         $this->remitments($session, $member);
         $this->loans($session, $member);
-        $this->debts($session, $member);
+        $this->refunds($session, $member);
         $this->sessionBills($session, $member);
         $this->totalBills($session, $member);
         $this->fundings($session, $member);
@@ -78,10 +78,10 @@ class Member extends CallableClass
         $this->response->html('report-loans', $html);
     }
 
-    private function debts(SessionModel $session, MemberModel $member)
+    private function refunds(SessionModel $session, MemberModel $member)
     {
-        $html = $this->view()->render('tontine.pages.report.session.member.debts', [
-            'debts' => $this->memberService->getDebts($session, $member),
+        $html = $this->view()->render('tontine.pages.report.session.member.refunds', [
+            'refunds' => $this->memberService->getRefunds($session, $member),
         ]);
         $this->response->html('report-refunds', $html);
     }

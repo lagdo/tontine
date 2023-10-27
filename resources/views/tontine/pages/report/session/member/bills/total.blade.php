@@ -14,7 +14,7 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach($charges as $charge)
+@foreach($charges->filter(function($charge) { return $charge->total_count > 0; }) as $charge)
                         <tr>
                           <td>{{ $charge->name }}<br/>{{ $charge->has_amount ?
                             $locale->formatMoney($charge->amount, true) : __('tontine.labels.fees.variable') }}</td>

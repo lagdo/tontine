@@ -8,6 +8,8 @@ use Siak\Tontine\Model\Auction;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\PartialRefund;
+use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\TenantService;
@@ -245,28 +247,49 @@ class MemberService
      *
      * @return Collection
      */
-    public function getDebts(Session $session, ?Member $member = null): Collection
+    public function getRefunds(Session $session, ?Member $member = null): Collection
     {
-        return Debt::with(['loan.session', 'loan.member'])
-            // Member debts
-            ->when($member !== null, function($query) use($member) {
-                return $query->whereHas('loan', function(Builder $query) use($member) {
-                    $query->where('member_id', $member->id);
-                });
+        $refunds = Refund::select('refunds.*')
+            ->with(['debt.loan.session', 'debt.loan.member'])
+            // Member refunds
+            ->when($member !== null, function(Builder $query) use($member) {
+                return $query->join('debts', 'refunds.debt_id', '=', 'debts.id')
+                    ->join('loans', 'debts.loan_id', '=', 'loans.id')
+                    ->where('loans.member_id', $member->id);
             })
-            // Debts refunded on this session.
-            ->whereHas('refund', function(Builder $query) use($session) {
-                $query->where('session_id', $session->id);
-            })
+            ->where('refunds.session_id', $session->id)
             ->get()
-            ->each(function($debt) {
-                $debt->session = $debt->loan->session;
-                $debt->member = $debt->loan->member;
+            ->each(function($refund) {
+                $refund->amount = $refund->debt->amount;
+                $refund->debt->session = $refund->debt->loan->session;
+                $refund->member = $refund->debt->loan->member;
+                $refund->is_partial = false;
             })
             // Sort by member name
             ->when($member === null, function($collection) {
                 return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
             });
+        $partialRefunds = PartialRefund::select('partial_refunds.*')
+            ->with(['debt.loan.session', 'debt.loan.member'])
+            // Member refunds
+            ->when($member !== null, function(Builder $query) use($member) {
+                return $query->join('debts', 'partial_refunds.debt_id', '=', 'debts.id')
+                    ->join('loans', 'debts.loan_id', '=', 'loans.id')
+                    ->where('loans.member_id', $member->id);
+            })
+            ->where('partial_refunds.session_id', $session->id)
+            ->get()
+            ->each(function($refund) {
+                $refund->debt->session = $refund->debt->loan->session;
+                $refund->member = $refund->debt->loan->member;
+                $refund->is_partial = true;
+            })
+            // Sort by member name
+            ->when($member === null, function($collection) {
+                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
+            });
+
+        return $refunds->concat($partialRefunds);
     }
 
     /**

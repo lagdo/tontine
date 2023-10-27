@@ -170,7 +170,7 @@ class ReportService
                 'total' => $this->sessionService->getLoan($session),
             ],
             'refunds' => [
-                'debts' => $this->memberService->getDebts($session),
+                'refunds' => $this->memberService->getRefunds($session),
                 'total' => $this->sessionService->getRefund($session),
             ],
             'fundings' => [

@@ -14,11 +14,12 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($debts as $debt)
+@foreach ($refunds as $refund)
                         <tr>
-                          <td>{{ $debt->member->name }}</td>
-                          <td>{{ $debt->session->title }} - {{ __('meeting.loan.labels.' . $debt->type_str) }}</td>
-                          <td class="currency">{{ $locale->formatMoney($debt->amount, true) }}</td>
+                          <td>{{ $refund->member->name }}</td>
+                          <td>{{ __('meeting.loan.labels.' . $refund->debt->type_str) }}@if ($refund->is_partial) ({{
+                            __('meeting.refund.labels.partial') }})@endif<br/>{{ $refund->debt->session->title }}</td>
+                          <td class="currency">{{ $locale->formatMoney($refund->amount, true) }}</td>
                         </tr>
 @endforeach
                         <tr>
