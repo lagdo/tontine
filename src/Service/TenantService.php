@@ -130,22 +130,14 @@ class TenantService
     public function getSessions(?Session $lastSession = null,
         bool $withCurrent = true, bool $orderAsc = true): Collection
     {
-        if($lastSession === null)
-        {
-            // Return all the sessions
-            return $this->round()->sessions
-                ->when(!$orderAsc, function($collection, $session) {
-                    return $collection->sortByDesc('start_at')->values();
-                });
-        }
+        $sessions = $this->round()->sessions()
+            ->orderBy('start_at', $orderAsc ? 'asc' : 'desc')
+            ->get();
 
-        return $this->round()->sessions
-            ->filter(function($session) use($lastSession, $withCurrent) {
+        return $lastSession === null ? $sessions :
+            $sessions->filter(function($session) use($lastSession, $withCurrent) {
                 return $withCurrent ? $session->start_at <= $lastSession->start_at :
                     $session->start_at < $lastSession->start_at;
-            })
-            ->when(!$orderAsc, function($collection, $session) {
-                return $collection->sortByDesc('start_at')->values();
             });
     }
 
@@ -183,7 +175,7 @@ class TenantService
      */
     public function getEnabledSessions(Pool $pool): Collection
     {
-        return $this->round->sessions->filter(function($session) use($pool) {
+        return $this->getSessions()->filter(function($session) use($pool) {
             return $session->enabled($pool);
         });
     }
