@@ -4,11 +4,11 @@ namespace App\Ajax\Web\Meeting\Charge\Libre;
 
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
+use Siak\Tontine\Model\Charge as ChargeModel;
+use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
 use Siak\Tontine\Service\Tontine\ChargeService;
-use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Model\Charge as ChargeModel;
 
 use function filter_var;
 use function Jaxon\jq;

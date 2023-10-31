@@ -171,7 +171,13 @@ class SessionService
         // Delete the session. Will fail if there's still some data attached.
         try
         {
-            $session->delete();
+            DB::transaction(function() use($session) {
+                // Also delete related data that may have been automatically created.
+                $session->receivables()->delete();
+                $session->session_bills()->delete();
+                $session->disabledPools()->detach();
+                $session->delete();
+            });
         }
         catch(Exception $e)
         {

@@ -231,7 +231,8 @@ class LibreFeeService
                     $query->where('charge_id', $charge->id)->where('session_id', $session->id);
                 },
             ])
-            ->orderBy('name', 'asc')->get()
+            ->orderBy('name', 'asc')
+            ->get()
             ->each(function($member) {
                 $member->bill = $member->libre_bills->count() > 0 ?
                     $member->libre_bills->first()->bill : null;
