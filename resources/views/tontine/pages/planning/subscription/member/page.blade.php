@@ -2,7 +2,14 @@
                 <table class="table table-bordered">
                    <thead>
                     <tr>
-                      <th>{!! __('common.labels.name') !!}</th>
+                      <th>
+                        <div class="input-group">
+                          {!! Form::text('search', $search, ['class' => 'form-control', 'id' => 'txt-subscription-members-search']) !!}
+                          <div class="input-group-append">
+                            <button type="button" class="btn btn-primary" id="btn-subscription-members-search"><i class="fa fa-search"></i></button>
+                          </div>
+                        </div>
+                      </th>
                       <th style="text-align: center">{{ $total }}</th>
                     </tr>
                   </thead>

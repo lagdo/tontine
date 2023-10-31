@@ -4,14 +4,6 @@
                 <h2 class="section-title">{{ __('tontine.menus.members') }}</h2>
               </div>
               <div class="col-auto">
-                <div class="input-group ml-2 mb-2">
-                  {!! Form::text('search', $search, ['class' => 'form-control', 'id' => 'txt-member-search']) !!}
-                  <div class="input-group-append">
-                    <button type="button" class="btn btn-primary" id="btn-member-search"><i class="fa fa-search"></i></button>
-                  </div>
-                </div>
-              </div>
-              <div class="col-auto">
                 <div class="btn-group float-right" role="group" aria-label="">
                   <button type="button" class="btn btn-primary" id="btn-member-refresh"><i class="fa fa-sync"></i></button>
                   <button type="button" class="btn btn-primary" id="btn-member-add"><i class="fa fa-plus"></i></button>

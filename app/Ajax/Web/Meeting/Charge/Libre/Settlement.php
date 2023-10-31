@@ -64,8 +64,8 @@ class Settlement extends CallableClass
         $this->bag('meeting')->set('settlement.libre.filter', null);
 
         $html = $this->view()->render('tontine.pages.meeting.settlement.home', [
-            'charge' => $this->charge,
             'type' => 'libre',
+            'charge' => $this->charge,
         ]);
         $this->response->html('meeting-fees-libre', $html);
         $this->jq('#btn-fee-libre-settlements-back')->click($this->cl(Charge::class)->rq()->home());
@@ -93,6 +93,7 @@ class Settlement extends CallableClass
         $settlement = $this->settlementService->getSettlement($this->charge, $this->session);
 
         $html = $this->view()->render('tontine.pages.meeting.settlement.page', [
+            'type' => 'libre',
             'session' => $this->session,
             'charge' => $this->charge,
             'billCount' => $billCount,
