@@ -2,7 +2,14 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>&nbsp;</th>
+                          <th>
+                            <div class="input-group">
+                              {!! Form::text('search', $search, ['class' => 'form-control', 'id' => 'txt-fee-member-search']) !!}
+                              <div class="input-group-append">
+                                <button type="button" class="btn btn-primary" id="btn-fee-libre-search"><i class="fa fa-search"></i></button>
+                              </div>
+                            </div>
+                          </th>
                           <th class="currency">&nbsp;</th>
                         </tr>
                       </thead>

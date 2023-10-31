@@ -12,6 +12,7 @@ use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Validation\Meeting\TargetValidator;
 
+use function Jaxon\jq;
 use function Jaxon\pm;
 use function trans;
 use function trim;
@@ -124,6 +125,8 @@ class Target extends CallableClass
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-fee-libre-target', $html);
+        $this->jq('#btn-fee-libre-search')
+            ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
 
         return $this->response;
     }
