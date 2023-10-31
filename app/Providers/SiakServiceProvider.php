@@ -16,6 +16,7 @@ use Siak\Tontine\Service\Meeting\Charge\BillService;
 use Siak\Tontine\Service\Meeting\Charge\FixedFeeService;
 use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementService;
+use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
 use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Service\Meeting\Credit\ProfitService;
@@ -43,6 +44,7 @@ use Siak\Tontine\Validation\Meeting\DebtValidator;
 use Siak\Tontine\Validation\Meeting\FundingValidator;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 use Siak\Tontine\Validation\Meeting\RemitmentValidator;
+use Siak\Tontine\Validation\Meeting\TargetValidator;
 use Siak\Tontine\Validation\Planning\PoolValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
@@ -88,6 +90,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(LibreFeeService::class, LibreFeeService::class);
         $this->app->singleton(BillService::class, BillService::class);
         $this->app->singleton(SettlementService::class, SettlementService::class);
+        $this->app->singleton(SettlementTargetService::class, SettlementTargetService::class);
 
         $this->app->singleton(FundingService::class, FundingService::class);
         $this->app->singleton(DebtCalculator::class, DebtCalculator::class);
@@ -127,5 +130,6 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(RemitmentValidator::class, RemitmentValidator::class);
         $this->app->singleton(SessionValidator::class, SessionValidator::class);
         $this->app->singleton(TontineValidator::class, TontineValidator::class);
+        $this->app->singleton(TargetValidator::class, TargetValidator::class);
     }
 }

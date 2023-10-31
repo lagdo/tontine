@@ -50,7 +50,7 @@
 @else
                             @include('tontine.pages.meeting.charge.libre.member.show', [
                               'id' => $member->id,
-                              'amount' => $locale->formatMoney($member->bill->amount, true),
+                              'amount' => $locale->formatMoney($member->bill->amount, false),
                             ])
 @endif
                           </td>
