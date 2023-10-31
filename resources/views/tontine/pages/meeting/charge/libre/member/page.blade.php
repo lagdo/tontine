@@ -25,7 +25,8 @@
                       <tbody>
 @foreach ($members as $member)
                         <tr>
-                          <td>{{ $member->name }}</td>
+                          <td>{{ $member->name }}@if ($member->remaining > 0)<br/>{{ __('meeting.target.labels.remaining',
+                            ['amount' => $locale->formatMoney($member->remaining, true)]) }}@endif</td>
 @if ($charge->has_amount)
                           <td class="currency" id="member-{{ $member->id }}" data-member-id="{{ $member->id }}" style="width:180px">
 @if ($session->closed)

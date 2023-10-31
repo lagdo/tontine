@@ -5,13 +5,10 @@ namespace Siak\Tontine\Service\Meeting\Charge;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\SettlementTarget;
 use Siak\Tontine\Service\TenantService;
-
-use function trans;
 
 class SettlementTargetService
 {
@@ -74,6 +71,33 @@ class SettlementTargetService
                 return $query->where(DB::raw('lower(members.name)'),
                     'like', '%' . strtolower($search) . '%');
             });
+    }
+
+    /**
+     * @param Charge $charge
+     * @param SettlementTarget $target
+     * @param Collection $members
+     *
+     * @return Collection
+     */
+    public function getMembersSettlements(Charge $charge, SettlementTarget $target,
+        Collection $members): Collection
+    {
+        $sessions = $this->tenantService->round()->sessions
+            ->filter(function($session) use($target) {
+                return $session->start_at >= $target->session->start_at &&
+                    $session->start_at <= $target->deadline->start_at;
+            });
+        return DB::table('settlements')
+            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->join('libre_bills', 'libre_bills.bill_id', '=', 'bills.id')
+            ->whereIn('libre_bills.member_id', $members->pluck('id'))
+            ->where('libre_bills.charge_id', $charge->id)
+            ->whereIn('settlements.session_id', $sessions->pluck('id'))
+            ->select('libre_bills.member_id', DB::raw('SUM(bills.amount) as amount'))
+            ->groupBy('libre_bills.member_id')
+            ->get()
+            ->pluck('amount', 'member_id');
     }
 
     /**
