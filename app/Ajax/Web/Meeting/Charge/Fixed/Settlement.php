@@ -59,20 +59,16 @@ class Settlement extends CallableClass
      */
     public function home(int $chargeId)
     {
-        $search = trim($this->bag('meeting')->get('settlement.fixed.search', ''));
         $this->bag('meeting')->set('fee.fixed.id', $chargeId);
         $this->bag('meeting')->set('settlement.fixed.filter', null);
 
         $html = $this->view()->render('tontine.pages.meeting.settlement.home', [
-            'charge' => $this->charge,
             'type' => 'fixed',
-            'search' => $search,
+            'charge' => $this->charge,
         ]);
         $this->response->html('meeting-fees-fixed', $html);
         $this->jq('#btn-fee-fixed-settlements-back')
             ->click($this->cl(Charge::class)->rq()->home());
-        $this->jq('#btn-fee-fixed-settlements-search')
-            ->click($this->rq()->search(jq('#txt-fee-settlements-search')->val()));
         $this->jq('#btn-fee-fixed-settlements-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
@@ -97,6 +93,8 @@ class Settlement extends CallableClass
         $settlement = $this->settlementService->getSettlement($this->charge, $this->session);
 
         $html = $this->view()->render('tontine.pages.meeting.settlement.page', [
+            'type' => 'fixed',
+            'search' => $search,
             'session' => $this->session,
             'charge' => $this->charge,
             'billCount' => $billCount,
@@ -115,6 +113,8 @@ class Settlement extends CallableClass
             ->click($this->rq()->delSettlement($billId));
         $this->jq('.btn-edit-notes', '#meeting-fee-fixed-bills')
             ->click($this->rq()->editNotes($billId));
+        $this->jq('#btn-fee-fixed-settlements-search')
+            ->click($this->rq()->search(jq('#txt-fee-settlements-search')->val()));
 
         return $this->response;
     }

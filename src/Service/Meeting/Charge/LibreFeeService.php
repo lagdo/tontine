@@ -29,13 +29,20 @@ class LibreFeeService
     protected TenantService $tenantService;
 
     /**
+     * @var SettlementTargetService
+     */
+    protected SettlementTargetService $targetService;
+
+    /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService)
+    public function __construct(LocaleService $localeService, TenantService $tenantService,
+        SettlementTargetService $targetService)
     {
         $this->localeService = $localeService;
         $this->tenantService = $tenantService;
+        $this->targetService = $targetService;
     }
 
     /**
@@ -224,18 +231,33 @@ class LibreFeeService
     public function getMembers(Charge $charge, Session $session,
         string $search = '', ?bool $filter = null, int $page = 0): Collection
     {
-        return $this->getMembersQuery($charge, $session, $search, $filter)
+        $members = $this->getMembersQuery($charge, $session, $search, $filter)
             ->page($page, $this->tenantService->getLimit())
             ->with([
                 'libre_bills' => function($query) use($charge, $session) {
                     $query->where('charge_id', $charge->id)->where('session_id', $session->id);
                 },
             ])
-            ->orderBy('name', 'asc')->get()
+            ->orderBy('name', 'asc')
+            ->get()
             ->each(function($member) {
+                $member->remaining = 0;
                 $member->bill = $member->libre_bills->count() > 0 ?
                     $member->libre_bills->first()->bill : null;
             });
+        // Check if there is a settlement target.
+        if(!($target = $this->targetService->getTarget($charge, $session)))
+        {
+            return $members;
+        }
+
+        $settlements = $this->targetService->getMembersSettlements($charge, $target, $members);
+
+        return $members->each(function($member) use($target, $settlements) {
+            $member->target = $target->amount;
+            $paid = $settlements[$member->id] ?? 0;
+            $member->remaining = $target->amount > $paid ? $target->amount - $paid : 0;
+        });
     }
 
     /**

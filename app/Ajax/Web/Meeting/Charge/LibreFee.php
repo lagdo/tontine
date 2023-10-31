@@ -94,6 +94,8 @@ class LibreFee extends CallableClass
             ->click($this->cl(Libre\Member::class)->rq()->home($chargeId));
         $this->jq('.btn-fee-libre-settlements')
             ->click($this->cl(Libre\Settlement::class)->rq()->home($chargeId));
+        $this->jq('.btn-fee-libre-target')
+            ->click($this->cl(Libre\Target::class)->rq()->home($chargeId));
 
         return $this->response;
     }

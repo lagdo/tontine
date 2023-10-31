@@ -101,6 +101,11 @@ class Charge extends Base
         return $this->hasMany(LibreBill::class);
     }
 
+    public function targets()
+    {
+        return $this->hasMany(SettlementTarget::class);
+    }
+
     public function getBillsCountAttribute()
     {
         return $this->tontine_bills_count + $this->round_bills_count +

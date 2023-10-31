@@ -5,6 +5,20 @@
   $currSettlementTotal = $settlements['total']['current'][$charge->id] ?? 0;
   $prevSettlementTotal = $settlements['total']['previous'][$charge->id] ?? 0;
   $currSettlementAmount = $settlements['amount']['current'][$charge->id] ?? 0;
+  $menus = [[
+    'class' => 'btn-fee-libre-add',
+    'text' => __('common.actions.add'),
+  ],[
+    'class' => 'btn-fee-libre-settlements',
+    'text' => __('meeting.actions.settlements'),
+  ]];
+  if($charge->is_fee)
+  {
+    $menus[] = [
+      'class' => 'btn-fee-libre-target',
+      'text' => __('meeting.target.actions.deadline'),
+    ];
+  }
 @endphp
                         <tr>
                           <td>
@@ -21,13 +35,7 @@
 @include('tontine.parts.table.menu', [
   'dataIdKey' => 'data-charge-id',
   'dataIdValue' => $charge->id,
-  'menus' => [[
-    'class' => 'btn-fee-libre-add',
-    'text' => __('common.actions.add'),
-  ],[
-    'class' => 'btn-fee-libre-settlements',
-    'text' => __('meeting.actions.settlements'),
-  ]],
+  'menus' => $menus,
 ])
                           </td>
                         </tr>

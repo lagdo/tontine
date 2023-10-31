@@ -6,7 +6,18 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>{!! __('common.labels.name') !!}</th>
+                          <th>
+@if ($type === 'fixed')
+                            <div class="input-group">
+                              {!! Form::text('search', $search, ['class' => 'form-control', 'id' => 'txt-fee-settlements-search']) !!}
+                              <div class="input-group-append">
+                                <button type="button" class="btn btn-primary" id="btn-fee-fixed-settlements-search"><i class="fa fa-search"></i></button>
+                              </div>
+                            </div>
+@else
+                            {!! __('common.labels.name') !!}
+@endif
+                          </th>
                           <th class="currency">{!! $settlementAmount > 0 ?
                             $locale->formatMoney($settlementAmount, true) : '&nbsp' !!}</th>
                           <th class="table-item-menu">

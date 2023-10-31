@@ -82,6 +82,27 @@ return [
             'variable' => "Variable fees",
         ],
     ],
+    'target' => [
+        'actions' => [
+            'deadline' => "Deadline",
+        ],
+        'titles' => [
+            'set' => "Définir un délai",
+            'edit' => "Changer le délai",
+            'summary' => "Amount: :amount. Deadline: :deadline",
+        ],
+        'labels' => [
+            'global' => "Check if the amount above is a total for all members.",
+            'deadline' => "Deadline",
+            'remaining' => "Remaining amount: :amount",
+        ],
+        'questions' => [
+            'remove' => "Remove this deadline?",
+        ],
+        'messages' => [
+            'removed' => "The deadline was successfully removed.",
+        ],
+    ],
     'category' => [
         'types' => [
             'expense' => "Expense",

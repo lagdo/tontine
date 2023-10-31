@@ -2,20 +2,33 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>{!! __('common.labels.name') !!}</th>
-@if ($charge->has_amount)
-                          <th class="table-item-menu">&nbsp;</th>
-@else
-                          <th class="currency">&nbsp;</th>
-@endif
+                          <th>
+                            <div class="input-group">
+                              {!! Form::text('search', $search, ['class' => 'form-control', 'id' => 'txt-fee-member-search']) !!}
+                              <div class="input-group-append">
+                                <button type="button" class="btn btn-primary" id="btn-fee-libre-search"><i class="fa fa-search"></i></button>
+                              </div>
+                            </div>
+                          </th>
+                          <th class="currency">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                  {!! Form::checkbox('', '1', $paid, ['id' => 'check-fee-libre-paid']) !!}
+                                </div>
+                              </div>
+                              {!! Form::text('', __('common.labels.paid'), ['class' => 'form-control', 'disabled' => 'disabled']) !!}
+                            </div>
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach ($members as $member)
                         <tr>
-                          <td>{{ $member->name }}</td>
+                          <td>{{ $member->name }}@if ($member->remaining > 0)<br/>{{ __('meeting.target.labels.remaining',
+                            ['amount' => $locale->formatMoney($member->remaining, true)]) }}@endif</td>
 @if ($charge->has_amount)
-                          <td class="table-item-menu" id="member-{{ $member->id }}" data-member-id="{{ $member->id }}">
+                          <td class="currency" id="member-{{ $member->id }}" data-member-id="{{ $member->id }}" style="width:180px">
 @if ($session->closed)
                             @if ($member->bill !== null)<i class="fa fa-toggle-on"></i>@else<i class="fa fa-toggle-off">@endif
 @elseif ($member->bill !== null)
@@ -38,7 +51,7 @@
 @else
                             @include('tontine.pages.meeting.charge.libre.member.show', [
                               'id' => $member->id,
-                              'amount' => $locale->formatMoney($member->bill->amount, true),
+                              'amount' => $locale->formatMoney($member->bill->amount, false),
                             ])
 @endif
                           </td>

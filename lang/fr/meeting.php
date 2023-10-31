@@ -82,6 +82,27 @@ return [
             'variable' => "Frais variables",
         ],
     ],
+    'target' => [
+        'actions' => [
+            'deadline' => "Date limite",
+        ],
+        'titles' => [
+            'set' => "Définir un délai",
+            'edit' => "Changer le délai",
+            'summary' => "Montant: :amount. Date limite: :deadline",
+        ],
+        'labels' => [
+            'global' => "Cocher si le montant ci-dessus est un total pour tous les membres.",
+            'deadline' => "Dernier délai",
+            'remaining' => "Montant restant : :amount",
+        ],
+        'questions' => [
+            'remove' => "Supprimer cette date limite ?",
+        ],
+        'messages' => [
+            'removed' => "La date limite a été supprimée.",
+        ],
+    ],
     'category' => [
         'types' => [
             'expense' => "Dépense",

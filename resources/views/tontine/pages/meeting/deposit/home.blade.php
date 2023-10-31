@@ -29,7 +29,7 @@
                         @include('tontine.pages.meeting.pool.' . $template, [
                           'pool' => $pool,
                           'amount' => $pool->deposit_fixed ?
-                            $locale->formatMoney($pool->amount, true) : __('tontine.labels.types.libre'),
+                            $locale->formatMoney($pool->amount, $session->closed ? true : false) : __('tontine.labels.types.libre'),
                           'paid' => $pool->recv_paid,
                           'count' => $pool->recv_count,
                           'total' => $pool->amount_recv,

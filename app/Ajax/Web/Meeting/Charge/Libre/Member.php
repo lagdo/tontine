@@ -4,11 +4,11 @@ namespace App\Ajax\Web\Meeting\Charge\Libre;
 
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
+use Siak\Tontine\Model\Charge as ChargeModel;
+use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
 use Siak\Tontine\Service\Tontine\ChargeService;
-use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Model\Charge as ChargeModel;
 
 use function filter_var;
 use function Jaxon\jq;
@@ -66,19 +66,15 @@ class Member extends CallableClass
      */
     public function home(int $chargeId)
     {
-        $search = trim($this->bag('meeting')->get('fee.member.search', ''));
         $this->bag('meeting')->set('charge.id', $chargeId);
         $this->bag('meeting')->set('fee.member.filter', null);
 
         $html = $this->view()->render('tontine.pages.meeting.charge.libre.member.home', [
             'charge' => $this->charge,
-            'search' => $search,
         ]);
         $this->response->html('meeting-fees-libre', $html);
         $this->jq('#btn-fee-libre-back')->click($this->cl(Charge::class)->rq()->home());
         $this->jq('#btn-fee-libre-filter')->click($this->rq()->toggleFilter());
-        $this->jq('#btn-fee-libre-search')
-            ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
 
         return $this->page(1);
     }
@@ -91,6 +87,7 @@ class Member extends CallableClass
     public function page(int $pageNumber = 0)
     {
         $search = trim($this->bag('meeting')->get('fee.member.search', ''));
+        $paid = (bool)$this->bag('meeting')->get('fee.member.paid', false);
         $filter = $this->bag('meeting')->get('fee.member.filter', null);
         $memberCount = $this->feeService->getMemberCount($this->charge,
             $this->session, $search, $filter);
@@ -101,6 +98,8 @@ class Member extends CallableClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
         $html = $this->view()->render('tontine.pages.meeting.charge.libre.member.page', [
+            'search' => $search,
+            'paid' => $paid,
             'session' => $this->session,
             'charge' => $this->charge,
             'members' => $members,
@@ -115,6 +114,8 @@ class Member extends CallableClass
         $this->jq('.btn-del-bill')->click($this->rq()->delBill($memberId));
         $this->jq('.btn-save-bill')->click($this->rq()->addBill($memberId, $paid, $amount));
         $this->jq('.btn-edit-bill')->click($this->rq()->editBill($memberId));
+        $this->jq('#btn-fee-libre-search')
+            ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
         // $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($memberId));
 
         return $this->response;
@@ -161,6 +162,9 @@ class Member extends CallableClass
 
         $this->feeService->createBill($this->charge, $this->session, $memberId, $paid, $amount);
 
+        // Save the value of the "$paid" parameter
+        $this->bag('meeting')->set('fee.member.paid', $paid);
+
         return $this->page();
     }
 
@@ -198,7 +202,7 @@ class Member extends CallableClass
         $bill = $this->feeService->getBill($this->charge, $this->session, $memberId);
         if($bill === null || $bill->bill->settlement !== null)
         {
-            return $this->page();
+            return $this->response;
         }
 
         $html = $this->view()->render('tontine.pages.meeting.charge.libre.member.edit', [
@@ -244,6 +248,7 @@ class Member extends CallableClass
         }
 
         $this->feeService->updateBill($this->charge, $this->session, $memberId, $amount);
+
         return $this->page();
     }
 }
