@@ -2,7 +2,7 @@
                   <div class="row align-items-center">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.remitments') }} - {{
-                        $pool->title }} ({{ $locale->formatMoney($depositAmount) }})</div>
+                        $pool->title }}@if (!$pool->remit_planned) ({{ $locale->formatMoney($depositAmount) }})@endif</div>
                     </div>
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
