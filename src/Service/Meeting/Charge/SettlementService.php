@@ -193,16 +193,35 @@ class SettlementService
      */
     public function getSettlement(Charge $charge, Session $session): object
     {
-        $billTable = $charge->is_variable ? 'libre_bills' :
-            ($charge->period_session ? 'session_bills' :
-            ($charge->period_round ? 'round_bills' : 'tontine_bills'));
-
-        return DB::table('settlements')
+        $query = DB::table('settlements')
             ->select(DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
-            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-            ->join($billTable, "$billTable.bill_id", '=', 'bills.id')
+            ->join('bills', 'settlements.bill_id', '=', 'bills.id');
+        if($charge->is_variable)
+        {
+            return $query->join('libre_bills', 'libre_bills.bill_id', '=', 'bills.id')
+                ->where('settlements.session_id', $session->id)
+                ->where('libre_bills.charge_id', $charge->id)
+                ->first();
+        }
+        if($charge->period_session)
+        {
+            // For session charges, count the bills in the current session that are settled.
+            return $query->join('session_bills', 'session_bills.bill_id', '=', 'bills.id')
+                ->where('session_bills.charge_id', $charge->id)
+                ->where('session_bills.session_id', $session->id)
+                ->first();
+        }
+        if($charge->period_round)
+        {
+            return $query->join('round_bills', 'round_bills.bill_id', '=', 'bills.id')
+                ->where('settlements.session_id', $session->id)
+                ->where('round_bills.charge_id', $charge->id)
+                ->first();
+        }
+        // if($charge->period_once)
+        return $query->join('tontine_bills', 'tontine_bills.bill_id', '=', 'bills.id')
             ->where('settlements.session_id', $session->id)
-            ->where("$billTable.charge_id", $charge->id)
+            ->where('tontine_bills.charge_id', $charge->id)
             ->first();
     }
 }

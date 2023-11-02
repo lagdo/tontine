@@ -133,12 +133,12 @@ class FixedFeeService
      */
     private function getCurrentSessionSettlements(Session $session): Collection
     {
-        // Count the session bills settlements.
+        // Count the session bills settlements (can be settled at another session).
         $sessionQuery = DB::table('settlements')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('session_bills', 'session_bills.bill_id', '=', 'bills.id')
-            ->where('settlements.session_id', $session->id)
+            ->where('session_bills.session_id', $session->id)
             ->groupBy('charge_id');
         // Count the round bills settlements.
         $roundQuery = DB::table('settlements')
@@ -164,29 +164,29 @@ class FixedFeeService
      */
     private function getPreviousSessionsSettlements(Session $session): Collection
     {
-        // The current and future sessions ids.
+        // The previous sessions ids.
         $sessionIds = $this->tenantService->sessions()
-            ->where('start_at', '>=', $session->start_at)->pluck('id');
-        // Count the session bills settlements.
+            ->where('start_at', '<', $session->start_at)->pluck('id');
+        // Count the session bills settlements (can be settled at another session).
         $sessionQuery = DB::table('settlements')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('session_bills', 'session_bills.bill_id', '=', 'bills.id')
-            ->whereNotIn('settlements.session_id', $sessionIds)
+            ->whereIn('session_bills.session_id', $sessionIds)
             ->groupBy('charge_id');
         // Count the round bills settlements.
         $roundQuery = DB::table('settlements')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('round_bills', 'round_bills.bill_id', '=', 'bills.id')
-            ->whereNotIn('settlements.session_id', $sessionIds)
+            ->whereIn('settlements.session_id', $sessionIds)
             ->groupBy('charge_id');
         // Count the tontine bills settlements.
         $tontineQuery = DB::table('settlements')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('tontine_bills', 'tontine_bills.bill_id', '=', 'bills.id')
-            ->whereNotIn('settlements.session_id', $sessionIds)
+            ->whereIn('settlements.session_id', $sessionIds)
             ->groupBy('charge_id');
         return $sessionQuery->union($roundQuery)->union($tontineQuery)->get();
     }
