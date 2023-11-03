@@ -46,12 +46,37 @@ class RoundService
      */
     public function getRefundAmounts(Collection $sessionIds): Collection
     {
-        return DB::table('refunds')
+        // The real amount refunded for a debt in a given session is
+        // the debt initial amount, minus the sum of partial amounts for that debt.
+        $debtPartialRefund = DB::table('partial_refunds')
+            ->select(DB::raw('sum(partial_refunds.amount)'))
+            ->whereColumn('partial_refunds.debt_id', 'debts.id')
+            ->toSql();
+        // PostgreSQL aggregate functions return null when they apply to empty resultsets,
+        // making some other operations (like addition with the aggregate value) also null.
+        // We then need to explicitely convert null values for aggregate functions to 0.
+        $debtPartialRefund = DB::connection()->getDriverName() === 'pgsql' ?
+            "coalesce(($debtPartialRefund),0)" : "($debtPartialRefund)";
+        $refunds = DB::table('refunds')
             ->join('debts', 'refunds.debt_id', '=', 'debts.id')
-            ->select(DB::raw('sum(debts.amount) as total_amount'), 'refunds.session_id')
+            ->select('refunds.session_id',
+                DB::raw("sum(debts.amount - $debtPartialRefund) as total_amount"))
             ->whereIn('refunds.session_id', $sessionIds)
             ->groupBy('refunds.session_id')
             ->pluck('total_amount', 'session_id');
+        DB::table('partial_refunds')
+            ->select('partial_refunds.session_id',
+                DB::raw('sum(partial_refunds.amount) as total_amount'))
+            ->whereIn('partial_refunds.session_id', $sessionIds)
+            ->groupBy('partial_refunds.session_id')
+            ->get()
+            // Merge into refunds
+            ->each(function($partialRefund) use($refunds) {
+                $refunds[$partialRefund->session_id] = $partialRefund->total_amount +
+                    ($refunds[$partialRefund->session_id] ?? 0);
+            });
+
+        return $refunds;
     }
 
     /**

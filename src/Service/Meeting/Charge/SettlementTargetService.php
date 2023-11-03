@@ -94,7 +94,7 @@ class SettlementTargetService
             ->whereIn('libre_bills.member_id', $members->pluck('id'))
             ->where('libre_bills.charge_id', $charge->id)
             ->whereIn('settlements.session_id', $sessions->pluck('id'))
-            ->select('libre_bills.member_id', DB::raw('SUM(bills.amount) as amount'))
+            ->select('libre_bills.member_id', DB::raw('sum(bills.amount) as amount'))
             ->groupBy('libre_bills.member_id')
             ->get()
             ->pluck('amount', 'member_id');
@@ -125,7 +125,7 @@ class SettlementTargetService
                     ->whereColumn('libre_bills.member_id', 'members.id')
                     ->where('libre_bills.charge_id', $charge->id)
                     ->whereIn('settlements.session_id', $sessions->pluck('id'))
-                    ->select(DB::raw('SUM(bills.amount)'))
+                    ->select(DB::raw('sum(bills.amount)'))
             ])
             ->page($page, $this->tenantService->getLimit())
             ->orderBy('members.name', 'asc')

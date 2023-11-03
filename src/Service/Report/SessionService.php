@@ -290,23 +290,17 @@ class SessionService
      */
     public function getLoan(Session $session): object
     {
-        $principal = "CASE WHEN debts.type='" . Debt::TYPE_PRINCIPAL . "' THEN amount ELSE 0 END";
-        $interest = "CASE WHEN debts.type='" . Debt::TYPE_INTEREST . "' THEN amount ELSE 0 END";
         $loan = DB::table('loans')
             ->join('debts', 'loans.id', '=', 'debts.loan_id')
-            ->select(DB::raw("sum($principal) as principal"), DB::raw("sum($interest) as interest"))
+            ->select('debts.type', DB::raw('sum(debts.amount) as total_amount'))
             ->where('loans.session_id', $session->id)
-            ->first();
-        if(!$loan->principal)
-        {
-            $loan->principal = 0;
-        }
-        if(!$loan->interest)
-        {
-            $loan->interest = 0;
-        }
+            ->groupBy('debts.type')
+            ->pluck('total_amount', 'type');
 
-        return $loan;
+        return (object)[
+            'principal' => $loan[Debt::TYPE_PRINCIPAL] ?? 0,
+            'interest' => $loan[Debt::TYPE_INTEREST] ?? 0,
+        ];
     }
 
     /**
@@ -316,38 +310,38 @@ class SessionService
      */
     public function getRefund(Session $session): object
     {
-        $principal = "CASE WHEN debts.type='" . Debt::TYPE_PRINCIPAL . "' THEN debts.amount ELSE 0 END";
-        $interest = "CASE WHEN debts.type='" . Debt::TYPE_INTEREST . "' THEN debts.amount ELSE 0 END";
+        // The real amount refunded for a debt in a given session is
+        // the debt initial amount, minus the sum of partial amounts for that debt.
+        $debtPartialRefunds = DB::table('partial_refunds')
+            ->select(DB::raw('sum(partial_refunds.amount)'))
+            ->whereColumn('partial_refunds.debt_id', 'debts.id')
+            ->toSql();
+        // In PostgreSQL, aggregate functions return null when they apply to an empty resultset,
+        // making all the other operations (like addition with the aggregate value) also null.
+        // We then need to explicitely convert null values for aggregate functions to 0.
+        $debtPartialRefunds = DB::connection()->getDriverName() === 'pgsql' ?
+            "coalesce(($debtPartialRefunds),0)" : "($debtPartialRefunds)";
         $refund = DB::table('refunds')
             ->join('debts', 'refunds.debt_id', '=', 'debts.id')
-            ->select(DB::raw("sum($principal) as principal"), DB::raw("sum($interest) as interest"))
+            ->select('debts.type',
+                DB::raw("sum(debts.amount - $debtPartialRefunds) as total_amount"))
             ->where('refunds.session_id', $session->id)
-            ->first();
-        if(!$refund->principal)
-        {
-            $refund->principal = 0;
-        }
-        if(!$refund->interest)
-        {
-            $refund->interest = 0;
-        }
-        $principal = "CASE WHEN debts.type='" . Debt::TYPE_PRINCIPAL . "' THEN partial_refunds.amount ELSE 0 END";
-        $interest = "CASE WHEN debts.type='" . Debt::TYPE_INTEREST . "' THEN partial_refunds.amount ELSE 0 END";
+            ->groupBy('debts.type')
+            ->pluck('total_amount', 'type');
         $partialRefund = DB::table('partial_refunds')
             ->join('debts', 'partial_refunds.debt_id', '=', 'debts.id')
-            ->select(DB::raw("sum($principal) as principal"), DB::raw("sum($interest) as interest"))
+            ->select('debts.type',
+                DB::raw('sum(partial_refunds.amount) as total_amount'))
             ->where('partial_refunds.session_id', $session->id)
-            ->first();
-        if(($partialRefund->principal))
-        {
-            $refund->principal += $partialRefund->principal;
-        }
-        if(($partialRefund->interest))
-        {
-            $refund->interest += $partialRefund->interest;
-        }
+            ->groupBy('debts.type')
+            ->pluck('total_amount', 'type');
 
-        return $refund;
+        return (object)[
+            'principal' => ($refund[Debt::TYPE_PRINCIPAL] ?? 0) +
+                ($partialRefund[Debt::TYPE_PRINCIPAL] ?? 0),
+            'interest' => ($refund[Debt::TYPE_INTEREST] ?? 0) +
+                ($partialRefund[Debt::TYPE_INTEREST] ?? 0),
+        ];
     }
 
     /**
