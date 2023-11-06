@@ -33,24 +33,28 @@ return new class extends Migration
             ->whereNotNull('remitment_id')->get();
         foreach($loans as $loan)
         {
-            DB::table('auctions')->insert([
-                'amount' => $loan->interest_debt->amount,
-                'paid' => $loan->interest_debt->refund !== null,
-                'remitment_id' => $loan->remitment_id,
-                'session_id' => $loan->interest_debt->refund !== null ?
-                    $loan->interest_debt->refund->session_id :
-                    $loan->remitment->payable->session_id,
-            ]);
+            if($loan->interest_debt !== null)
+            {
+                DB::table('auctions')->insert([
+                    'amount' => $loan->interest_debt->amount,
+                    'paid' => $loan->interest_debt->refund !== null,
+                    'remitment_id' => $loan->remitment_id,
+                    'session_id' => $loan->interest_debt->refund !== null ?
+                        $loan->interest_debt->refund->session_id :
+                        $loan->remitment->payable->session_id,
+                ]);
+            }
         }
 
         // Delete the lines
         $loanIds = $loans->pluck('id');
-        DB::table('refunds')->join('debts', 'refunds.debt_id', '=', 'debts.id')
-            ->whereIn('debts.loan_id', $loanIds)->delete();
-        DB::table('debts')->whereIn('loan_id', $loanIds)->delete();
+        $debtIds = DB::table('debts')->whereIn('loan_id', $loanIds)->pluck('id');
+        DB::table('refunds')->whereIn('debt_id', $debtIds)->delete();
+        DB::table('debts')->whereIn('id', $debtIds)->delete();
         DB::table('loans')->whereIn('id', $loanIds)->delete();
 
         Schema::table('loans', function (Blueprint $table) {
+            $table->dropForeign(['remitment_id']);
             $table->dropColumn('remitment_id');
         });
     }
