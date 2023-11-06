@@ -2,12 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\User;
-
+use Illuminate\Database\Seeder;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Tontine;
-use Siak\Tontine\Model\Pool;
 
 class TontineSeeder extends Seeder
 {
@@ -55,6 +53,7 @@ class TontineSeeder extends Seeder
                 'period' => Charge::PERIOD_SESSION,
                 'amount' => 1000,
             ]]);
+
             $round = $tontine->rounds()->create([
                 'title' => 'Année 2023',
                 'notes' => "Cotisations pour l'année 2023",
@@ -124,23 +123,6 @@ class TontineSeeder extends Seeder
                 'start_at' => '2023-12-05 16:00:00',
                 'end_at' => '2023-12-05 20:00:00',
             ]]);
-
-            // A few pools
-            Pool::unguard();
-            $round->pools()->createMany([[
-                'title' => "Liste de 5000",
-                'amount' => 5000,
-            ],[
-                'title' => "Liste de 10000",
-                'amount' => 10000,
-            ],[
-                'title' => "Liste de 15000",
-                'amount' => 15000,
-            ],[
-                'title' => "Liste de 20000",
-                'amount' => 20000,
-            ]]);
-            Pool::reguard();
         }
     }
 }
