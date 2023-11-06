@@ -18,6 +18,8 @@ use function is_array;
 
 class SessionService
 {
+    use Traits\Queries;
+
     /**
      * @var TenantService
      */
@@ -194,7 +196,6 @@ class SessionService
      */
     public function getSessionCharges(Session $session): Collection
     {
-        $charges = $this->tenantService->tontine()->charges()->active()->get();
         $settlementFilter = function(Builder $query) use($session) {
             return $query->select(DB::raw(1))
                 ->from('settlements')
@@ -203,6 +204,8 @@ class SessionService
         };
         $bills = $this->getBills($settlementFilter);
         $sessionIds = collect([$session->id]);
+
+        $charges = $this->tenantService->tontine()->charges()->active()->get();
         $disbursements = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
 
         return $charges->each(function($charge) use($bills, $disbursements) {
@@ -254,7 +257,6 @@ class SessionService
      */
     public function getTotalCharges(Session $session, ?Member $member = null): Collection
     {
-        $charges = $this->tenantService->tontine()->charges()->active()->get();
         $sessionIds = $this->tenantService->getSessionIds($session);
         $settlementFilter = function(Builder $query) use($sessionIds) {
             return $query->select(DB::raw(1))
@@ -263,6 +265,8 @@ class SessionService
                 ->whereColumn('settlements.bill_id', 'bills.id');
         };
         $bills = $this->getBills($settlementFilter, $member);
+
+        $charges = $this->tenantService->tontine()->charges()->active()->get();
         $disbursements = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
         if($member !== null)
         {
@@ -310,29 +314,15 @@ class SessionService
      */
     public function getRefund(Session $session): object
     {
-        // The real amount refunded for a debt in a given session is
-        // the debt initial amount, minus the sum of partial amounts for that debt.
-        $debtPartialRefunds = DB::table('partial_refunds')
-            ->select(DB::raw('sum(partial_refunds.amount)'))
-            ->whereColumn('partial_refunds.debt_id', 'debts.id')
-            ->toSql();
-        // In PostgreSQL, aggregate functions return null when they apply to an empty resultset,
-        // making all the other operations (like addition with the aggregate value) also null.
-        // We then need to explicitely convert null values for aggregate functions to 0.
-        $debtPartialRefunds = DB::connection()->getDriverName() === 'pgsql' ?
-            "coalesce(($debtPartialRefunds),0)" : "($debtPartialRefunds)";
-        $refund = DB::table('refunds')
-            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
-            ->select('debts.type',
-                DB::raw("sum(debts.amount - $debtPartialRefunds) as total_amount"))
+        $refund = $this->getRefundQuery()
+            ->addSelect('debts.type')
             ->where('refunds.session_id', $session->id)
             ->groupBy('debts.type')
             ->pluck('total_amount', 'type');
         $partialRefund = DB::table('partial_refunds')
             ->join('debts', 'partial_refunds.debt_id', '=', 'debts.id')
-            ->select('debts.type',
-                DB::raw('sum(partial_refunds.amount) as total_amount'))
             ->where('partial_refunds.session_id', $session->id)
+            ->select('debts.type', DB::raw('sum(partial_refunds.amount) as total_amount'))
             ->groupBy('debts.type')
             ->pluck('total_amount', 'type');
 
