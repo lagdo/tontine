@@ -125,12 +125,6 @@ class SubscriptionService
         {
             throw new MessageException(trans('tontine.subscription.errors.create'));
         }
-        // Enforce unique subscription per member in pool with libre deposit amount.
-        if(!$pool->deposit_fixed &&
-            $pool->subscriptions()->where('member_id', $memberId)->count() > 0)
-        {
-            throw new MessageException(trans('tontine.subscription.errors.create'));
-        }
 
         $member = $this->tenantService->tontine()->members()->find($memberId);
         $subscription = new Subscription();
