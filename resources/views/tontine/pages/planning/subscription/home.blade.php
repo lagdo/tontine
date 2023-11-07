@@ -2,7 +2,7 @@
           <div class="section-body">
             <div class="row align-items-center">
               <div class="col">
-                <h2 class="section-title">{{ __('tontine.pool.titles.subscriptions') }}</h2>
+                <h2 class="section-title">{{ __('tontine.pool.titles.subscriptions') }}@if (($pool)) - {{ $pool->title }}@endif</h2>
               </div>
               <div class="col-auto">
                 <div class="input-group">

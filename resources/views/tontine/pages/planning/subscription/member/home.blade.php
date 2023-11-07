@@ -1,6 +1,6 @@
                   <div class="row align-items-center">
                     <div class="col">
-                      <h2 class="section-title">{{ $pool->title }} - {{ __('tontine.pool.titles.members') }}</h2>
+                      <h2 class="section-title">{{ __('tontine.pool.titles.members') }}</h2>
                     </div>
 @if ($pool->remit_planned)
                     <div class="col-auto">
