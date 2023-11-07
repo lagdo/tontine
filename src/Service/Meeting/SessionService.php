@@ -100,7 +100,7 @@ class SessionService
     public function openRound(Round $round)
     {
         // Don't open a round if there are pools with no subscription.
-        $this->checkPoolsSubscriptions();
+        // $this->checkPoolsSubscriptions();
 
         DB::transaction(function() use($round) {
             $round->update(['status' => Round::STATUS_OPENED]);
