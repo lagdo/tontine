@@ -62,6 +62,9 @@ class ChargeService
         return $this->tenantService->tontine()->charges()
             ->withCount(['tontine_bills', 'round_bills', 'session_bills', 'libre_bills'])
             ->page($page, $this->tenantService->getLimit())
+            ->orderBy('type', 'asc')
+            ->orderBy('period', 'desc')
+            ->orderBy('name', 'asc')
             ->get();
     }
 
