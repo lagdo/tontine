@@ -222,12 +222,12 @@ class SessionService
         }
 
         // Don't disable session with existing receivables for the pool.
-        $receivableQuery = $pool->subscriptions()
+        $receivableCount = $pool->subscriptions()
             ->whereHas('receivables', function(Builder $query) use($session) {
                 $query->where('session_id', $session->id);
             })
             ->count();
-        if($receivableQuery > 0)
+        if($receivableCount > 0)
         {
             return;
         }

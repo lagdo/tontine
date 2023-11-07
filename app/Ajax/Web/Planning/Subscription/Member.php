@@ -79,7 +79,7 @@ class Member extends CallableClass
         }
 
         $this->bag('subscription')->set('pool.id', $poolId);
-        $this->bag('subscription')->set('member.filter', false);
+        $this->bag('subscription')->set('member.filter', null);
 
         return $this->page();
     }
@@ -87,7 +87,7 @@ class Member extends CallableClass
     public function page(int $pageNumber = 0)
     {
         $search = trim($this->bag('subscription')->get('member.search', ''));
-        $filter = $this->bag('subscription')->get('filter', false);
+        $filter = $this->bag('subscription')->get('member.filter', null);
         $memberCount = $this->subscriptionService->getMemberCount($this->pool,
             $search, $filter);
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount,
@@ -117,8 +117,10 @@ class Member extends CallableClass
     public function filter()
     {
         // Toggle the filter
-        $filter = $this->bag('subscription')->get('member.filter', false);
-        $this->bag('subscription')->set('member.filter', !$filter);
+        $filter = $this->bag('subscription')->get('member.filter', null);
+        // Switch between null, true and false
+        $filter = $filter === null ? true : ($filter === true ? false : null);
+        $this->bag('subscription')->set('member.filter', $filter);
 
         // Show the first page
         return $this->page(1);

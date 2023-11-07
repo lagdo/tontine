@@ -48,16 +48,22 @@ class SubscriptionService
      *
      * @param Pool $pool
      * @param string $search
-     * @param bool $filter
+     * @param bool $filter|null
      *
      * @return mixed
      */
-    public function getQuery(Pool $pool, string $search, bool $filter)
+    public function getQuery(Pool $pool, string $search, ?bool $filter)
     {
         return $this->tenantService->tontine()->members()->active()
-            ->when($filter, function(Builder $query) use($pool) {
+            ->when($filter === true, function(Builder $query) use($pool) {
                 // Return only members with subscription in this pool
                 return $query->whereHas('subscriptions', function(Builder $query) use($pool) {
+                    $query->where('subscriptions.pool_id', $pool->id);
+                });
+            })
+            ->when($filter === false, function(Builder $query) use($pool) {
+                // Return only members without subscription in this pool
+                return $query->whereDoesntHave('subscriptions', function(Builder $query) use($pool) {
                     $query->where('subscriptions.pool_id', $pool->id);
                 });
             })
@@ -72,12 +78,12 @@ class SubscriptionService
      *
      * @param Pool $pool
      * @param string $search
-     * @param bool $filter
+     * @param bool $filter|null
      * @param int $page
      *
      * @return Collection
      */
-    public function getMembers(Pool $pool, string $search, bool $filter, int $page = 0): Collection
+    public function getMembers(Pool $pool, string $search, ?bool $filter, int $page = 0): Collection
     {
         return $this->getQuery($pool, $search, $filter)
             ->page($page, $this->tenantService->getLimit())
@@ -86,7 +92,8 @@ class SubscriptionService
                     $query->where('pool_id', $pool->id);
                 },
             ])
-            ->orderBy('name', 'asc')->get();
+            ->orderBy('name', 'asc')
+            ->get();
     }
 
     /**
@@ -94,11 +101,11 @@ class SubscriptionService
      *
      * @param Pool $pool
      * @param string $search
-     * @param bool $filter
+     * @param bool $filter|null
      *
      * @return int
      */
-    public function getMemberCount(Pool $pool, string $search, bool $filter): int
+    public function getMemberCount(Pool $pool, string $search, ?bool $filter): int
     {
         return $this->getQuery($pool, $search, $filter)->count();
     }
