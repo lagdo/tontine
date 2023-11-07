@@ -204,7 +204,7 @@ class SessionService
      *
      * @return void
      */
-    public function toggleSession(Pool $pool, Session $session)
+    public function enableSession(Pool $pool, Session $session)
     {
         // When the remitments are planned, don't enable or disable a session
         // if receivables already exist on the pool.
@@ -213,14 +213,38 @@ class SessionService
         // {
         //     return;
         // }
-
-        if($session->disabled($pool))
+        if($session->enabled($pool))
         {
-            // Enable the session for the pool.
-            $pool->disabledSessions()->detach($session->id);
             return;
         }
 
+        // Enable the session for the pool.
+        $pool->disabledSessions()->detach($session->id);
+    }
+
+    /**
+     * Enable or disable a session for a pool.
+     *
+     * @param Pool $pool
+     * @param Session $session
+     *
+     * @return void
+     */
+    public function disableSession(Pool $pool, Session $session)
+    {
+        // When the remitments are planned, don't enable or disable a session
+        // if receivables already exist on the pool.
+        // if($pool->remit_planned &&
+        //     $pool->subscriptions()->whereHas('receivables')->count() > 0)
+        // {
+        //     return;
+        // }
+        if($session->disabled($pool))
+        {
+            return;
+        }
+
+        // Disable the session for the pool.
         DB::transaction(function() use($pool, $session) {
             // If a session was already opened, delete the receivables and payables.
             // Will fail if any of them is already paid.

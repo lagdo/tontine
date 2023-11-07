@@ -195,6 +195,7 @@ return [
                 "nécessaires sur les souscriptions des membres, dans la section planning.",
             'close' => "Fermer cette séance ?",
             'delete' => "Supprimer cette séance ?",
+            'disable' => "Désactiver cette séance?<br/>Si elle avait déjà été ouverte, ceci pourrait supprimer des données relatives.",
         ],
         'errors' => [
             'opened' => "Une séance a déjà été ouverte.",

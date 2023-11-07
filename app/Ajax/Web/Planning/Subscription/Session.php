@@ -10,6 +10,7 @@ use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Planning\SessionService;
 
 use function intval;
+use function trans;
 use function Jaxon\jq;
 
 /**
@@ -93,7 +94,8 @@ class Session extends CallableClass
     public function page(int $pageNumber = 0)
     {
         $sessionCount = $this->sessionService->getSessionCount();
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $sessionCount, 'subscription', 'session.page');
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $sessionCount,
+            'subscription', 'session.page');
         $sessions = $this->sessionService->getSessions($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
 
@@ -105,15 +107,27 @@ class Session extends CallableClass
         $this->response->html('pool-subscription-sessions-page', $html);
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
-        $this->jq('.pool-subscription-session-toggle')->click($this->rq()->toggleSession($sessionId));
+        $this->jq('.pool-subscription-session-enable')
+            ->click($this->rq()->enableSession($sessionId));
+        $this->jq('.pool-subscription-session-disable')
+            ->click($this->rq()->disableSession($sessionId)
+            ->confirm(trans('tontine.session.questions.disable')));
 
         return $this->response;
     }
 
-    public function toggleSession(int $sessionId)
+    public function enableSession(int $sessionId)
     {
         $session = $this->sessionService->getSession($sessionId);
-        $this->sessionService->toggleSession($this->pool, $session);
+        $this->sessionService->enableSession($this->pool, $session);
+
+        return $this->page();
+    }
+
+    public function disableSession(int $sessionId)
+    {
+        $session = $this->sessionService->getSession($sessionId);
+        $this->sessionService->disableSession($this->pool, $session);
 
         return $this->page();
     }

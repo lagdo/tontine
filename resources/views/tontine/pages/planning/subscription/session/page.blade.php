@@ -13,9 +13,11 @@
                       <td>{{ $session->title }}</td>
                       <td>{{ $session->date }}</td>
                       <td class="table-item-menu" data-session-id="{{ $session->id }}">
-                        <a href="javascript:void(0)" class="pool-subscription-session-toggle">
-                          @if($session->disabled($pool))<i class="fa fa-toggle-off"></i>@else<i class="fa fa-toggle-on"></i>@endif
-                        </a>
+@if($session->disabled($pool))
+                        <a href="javascript:void(0)" class="pool-subscription-session-enable"><i class="fa fa-toggle-off"></i></a>
+@else
+                        <a href="javascript:void(0)" class="pool-subscription-session-disable"><i class="fa fa-toggle-on"></i></a>
+@endif
                       </td>
                     </tr>
 @endforeach

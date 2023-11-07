@@ -195,6 +195,7 @@ return [
                 "required about members subscriptions, in the planning section.",
             'close' => "Close this session?",
             'delete' => "Delete this session?",
+            'disable' => "Disable this session?<br/>If the session was already opened, this may also delete related data.",
         ],
         'errors' => [
             'opened' => "A session has already been opened.",
