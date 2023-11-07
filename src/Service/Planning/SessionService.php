@@ -208,11 +208,11 @@ class SessionService
     {
         // When the remitments are planned, don't enable or disable a session
         // if receivables already exist on the pool.
-        if($pool->remit_planned &&
-            $pool->subscriptions()->whereHas('receivables')->count() > 0)
-        {
-            return;
-        }
+        // if($pool->remit_planned &&
+        //     $pool->subscriptions()->whereHas('receivables')->count() > 0)
+        // {
+        //     return;
+        // }
 
         if($session->disabled($pool))
         {
@@ -221,19 +221,15 @@ class SessionService
             return;
         }
 
-        // Don't disable session with existing receivables for the pool.
-        $receivableCount = $pool->subscriptions()
-            ->whereHas('receivables', function(Builder $query) use($session) {
-                $query->where('session_id', $session->id);
-            })
-            ->count();
-        if($receivableCount > 0)
-        {
-            return;
-        }
-
-        // Disable the session for the pool.
-        $pool->disabledSessions()->attach($session->id);
+        DB::transaction(function() use($pool, $session) {
+            // If a session was already opened, delete the receivables and payables.
+            // Will fail if any of them is already paid.
+            $subscriptionIds = $pool->subscriptions()->pluck('id');
+            $session->receivables()->whereIn('subscription_id', $subscriptionIds)->delete();
+            $session->payables()->whereIn('subscription_id', $subscriptionIds)->delete();
+            // Disable the session for the pool.
+            $pool->disabledSessions()->attach($session->id);
+        });
     }
 
     /**

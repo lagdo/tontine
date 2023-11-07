@@ -120,11 +120,11 @@ class SubscriptionService
     {
         // When the remitments are planned, don't create a subscription
         // if receivables already exist on the pool.
-        if($pool->remit_planned &&
-            $pool->subscriptions()->whereHas('receivables')->count() > 0)
-        {
-            throw new MessageException(trans('tontine.subscription.errors.create'));
-        }
+        // if($pool->remit_planned &&
+        //     $pool->subscriptions()->whereHas('receivables')->count() > 0)
+        // {
+        //     throw new MessageException(trans('tontine.subscription.errors.create'));
+        // }
 
         $member = $this->tenantService->tontine()->members()->find($memberId);
         $subscription = new Subscription();
@@ -150,23 +150,20 @@ class SubscriptionService
     {
         // When the remitments are planned, don't delete a subscription
         // if receivables already exist on the pool.
-        if($pool->remit_planned &&
-            $pool->subscriptions()->whereHas('receivables')->count() > 0)
-        {
-            throw new MessageException(trans('tontine.subscription.errors.delete'));
-        }
-        $subscription = $pool->subscriptions()->where('member_id', $memberId)
-            ->with(['payable', 'payable.remitment'])->first();
+        // if($pool->remit_planned &&
+        //     $pool->subscriptions()->whereHas('receivables')->count() > 0)
+        // {
+        //     throw new MessageException(trans('tontine.subscription.errors.delete'));
+        // }
+        $subscription = $pool->subscriptions()->where('member_id', $memberId)->first();
         if(!$subscription)
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
-        if($subscription->payable->remitment !== null)
-        {
-            throw new MessageException(trans('tontine.subscription.errors.delete'));
-        }
 
         DB::transaction(function() use($subscription) {
+            // Delete the receivables
+            $subscription->receivables()->delete();
             // Delete the payable
             $subscription->payable()->delete();
             // Delete the subscription
