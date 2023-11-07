@@ -384,13 +384,8 @@ class Pool extends CallableClass
     public function delete(int $poolId)
     {
         $pool = $this->poolService->getPool($poolId);
-        if($pool->subscriptions()->count() > 0)
-        {
-            $this->notify->error(trans('tontine.pool.errors.delete.subscriptions'), trans('common.titles.error'));
-            return $this->response;
-        }
-
         $this->poolService->deletePool($pool);
+        $this->notify->success(trans('tontine.pool.messages.deleted'), trans('common.titles.success'));
 
         return $this->page();
     }

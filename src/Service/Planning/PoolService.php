@@ -134,9 +134,14 @@ class PoolService
     {
         try
         {
-            DB::table('pool_session_disabled')->where('pool_id', $pool->id)->delete();
-            // Delete the pool
-            $pool->delete();
+            DB::transaction(function() use($pool) {
+                DB::table('pool_session_disabled')->where('pool_id', $pool->id)->delete();
+                $subscriptionIds = $pool->subscriptions()->pluck('id');
+                DB::table('receivables')->whereIn('subscription_id', $subscriptionIds)->delete();
+                DB::table('payables')->whereIn('subscription_id', $subscriptionIds)->delete();
+                $pool->subscriptions()->delete();
+                $pool->delete();
+            });
         }
         catch(Exception $e)
         {
