@@ -17,7 +17,8 @@
                       <h6>{{ $charge->name }}</h6>
                     </div>
                     <div class="col">
-                      <h6>{{ $locale->formatMoney($charge->amount, true) }}</h6>
+                      <h6>{{ $charge->ix_fixed ? $locale->formatMoney($charge->amount, true) :
+                        ('(' . __('tontine.labels.types.libre') . ')') }}</h6>
                     </div>
                   </div>
                   <div class="table-responsive">
