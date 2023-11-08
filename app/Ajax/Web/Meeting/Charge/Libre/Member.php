@@ -200,7 +200,7 @@ class Member extends CallableClass
             return $this->response;
         }
         $bill = $this->feeService->getBill($this->charge, $this->session, $memberId);
-        if($bill === null || $bill->bill->settlement !== null)
+        if($bill === null)
         {
             return $this->response;
         }
