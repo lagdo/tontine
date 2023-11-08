@@ -48,9 +48,7 @@ class Subscription extends CallableClass
                 $this->localeService->formatMoney($pool->amount) :
                 trans('tontine.labels.types.libre'));
         });
-        $pool = $pools->firstWhere('id', $poolId) ?? ($pools->count() > 0 ? $pools[0] : null);
         $html = $this->view()->render('tontine.pages.planning.subscription.home', [
-            'pool' => $pool,
             'pools' => $poolLabels,
             'poolId' => $poolId,
         ]);
@@ -60,6 +58,7 @@ class Subscription extends CallableClass
         $selectPoolId = pm()->select('select-pool')->toInt();
         $this->jq('#btn-pool-select')->click($this->rq()->pool($selectPoolId));
 
+        $pool = $pools->firstWhere('id', $poolId) ?? ($pools->count() > 0 ? $pools[0] : null);
         if(($pool))
         {
             return $this->show($pool);
@@ -70,6 +69,8 @@ class Subscription extends CallableClass
 
     private function show(PoolModel $pool)
     {
+        $this->response->html('subscriptions-pool-name',
+            trans('tontine.pool.titles.subscriptions') . ' - ' . $pool->title);
         $this->cl(Subscription\Member::class)->show($pool);
         $this->cl(Subscription\Session::class)->show($pool);
 
