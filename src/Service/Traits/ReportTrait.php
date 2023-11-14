@@ -4,7 +4,6 @@ namespace Siak\Tontine\Service\Traits;
 
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Pool;
-use Siak\Tontine\Model\Round;
 use stdClass;
 
 use function floor;
@@ -84,7 +83,11 @@ trait ReportTrait
             $query->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
                 ->where('subscriptions.pool_id', $pool->id);
         };
-        return $this->tenantService->getSessions()->load($with);
+        return $this->tenantService->getSessions()
+            ->filter(function($session) use($pool) {
+                return $session->enabled($pool);
+            })
+            ->load($with);
     }
 
     /**

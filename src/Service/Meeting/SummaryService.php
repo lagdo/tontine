@@ -73,7 +73,8 @@ class SummaryService
             $figures->deposit->amount += $depositAmount;
             $figures->cashier->recv += $depositAmount;
             $figures->deposit->count = $subscriptions->filter(function($subscription) use($session) {
-                return $subscription->receivables[$session->id]->deposit !== null;
+                return isset($subscription->receivables[$session->id]) ?
+                    $subscription->receivables[$session->id]->deposit !== null : false;
             })->count();
 
             $remitmentAmount = $this->balanceCalculator->getPoolRemitmentAmount($pool, $session);
