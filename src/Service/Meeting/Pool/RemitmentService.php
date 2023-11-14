@@ -271,7 +271,13 @@ class RemitmentService
      */
     public function getSubscriptions(Pool $pool, Session $session): Collection
     {
-        $subscriptions = $pool->subscriptions()->with(['payable', 'member'])->get();
+        $subscriptions = $pool->subscriptions()
+            ->join('members', 'subscriptions.member_id', '=', 'members.id')
+            ->orderBy('members.name', 'asc')
+            ->orderBy('subscriptions.id', 'asc')
+            ->with(['payable', 'member'])
+            ->select('subscriptions.*')
+            ->get();
         if($pool->remit_planned && !$pool->remit_auction)
         {
             // Only the beneficiaries planned for this session.
