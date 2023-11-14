@@ -36,8 +36,9 @@ trait HasProperty
      */
     public function saveProperties(array $content)
     {
-        $this->property ?
-            $this->property->update(['content' => $content]) :
+        $this->property ? $this->property->update(['content' => $content]) :
             $this->property()->create(['content' => $content]);
+        // Refresh the relation;
+        $this->load('property');
     }
 }
