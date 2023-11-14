@@ -11,6 +11,7 @@ use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Tontine\MemberService;
 
 use function collect;
 use function count;
@@ -21,24 +22,13 @@ class SessionService
     use Traits\Queries;
 
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
-     * @var BalanceCalculator
-     */
-    protected BalanceCalculator $balanceCalculator;
-
-    /**
-     * @param TenantService $tenantService
      * @param BalanceCalculator $balanceCalculator
+     * @param TenantService $tenantService
+     * @param MemberService $memberService
      */
-    public function __construct(TenantService $tenantService, BalanceCalculator $balanceCalculator)
-    {
-        $this->tenantService = $tenantService;
-        $this->balanceCalculator = $balanceCalculator;
-    }
+    public function __construct(private BalanceCalculator $balanceCalculator,
+        private TenantService $tenantService, private MemberService $memberService)
+    {}
 
     /**
      * @param Session $session
@@ -217,39 +207,6 @@ class SessionService
     }
 
     /**
-     * @return int
-     */
-    private function countActiveMembers(): int
-    {
-        // The number of active members is saved in the round, so its current
-        // value can be retrieved forever, even when the membership will change.
-        $tontine = $this->tenantService->tontine();
-        $round = $this->tenantService->round();
-        if($round->property === null)
-        {
-            // Create and save the property with the content
-            $memberIds = $tontine->members()->active()->pluck('id')->all();
-            $round->property()->create(['content' => ['members' => $memberIds]]);
-
-            return count($memberIds);
-        }
-
-        $content = $round->property->content;
-        if(isset($content['members']) && is_array($content['members']))
-        {
-            // Return the existing content value
-            return count($content['members']);
-        }
-
-        // Update the existing content with the members
-        $content['members'] = $tontine->members()->active()->pluck('id')->all();
-        $round->property->content = $content;
-        $round->property->save();
-
-        return count($content['members']);
-    }
-
-    /**
      * @param Session $session
      * @param Member $member|null
      *
@@ -272,7 +229,7 @@ class SessionService
         {
             // The disbursement part of each member id calculated by dividing each amount
             // by the number of members.
-            $memberCount = $this->countActiveMembers();
+            $memberCount = $this->memberService->countActiveMembers();
             foreach($disbursements as $disbursement)
             {
                 $disbursement->total_amount /= $memberCount;

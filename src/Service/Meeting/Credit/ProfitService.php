@@ -143,22 +143,12 @@ class ProfitService
      */
     public function saveProfit(Session $session, int $profitAmount)
     {
-        $profit = [
+        $round = $this->tenantService->round();
+        $properties = $round->properties;
+        $properties['profit'] = [
             'session' => $session->id,
             'amount' => $profitAmount,
         ];
-        $round = $this->tenantService->round();
-        if($round->property !== null)
-        {
-            $content = $round->property->content;
-            $content['profit'] = $profit;
-            // Update content with profit
-            $round->property->content = $content;
-            $round->property->save();
-
-            return;
-        }
-
-        $round->property()->create(['content' => ['profit' => $profit]]);
+        $round->saveProperties($properties);
     }
 }

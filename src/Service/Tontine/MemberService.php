@@ -78,6 +78,40 @@ class MemberService
     }
 
     /**
+     * Save active members ids for the round
+     *
+     * @return void
+     */
+    private function saveActiveMembers()
+    {
+        $tontine = $this->tenantService->tontine();
+        $round = $this->tenantService->round();
+        $properties = $round->properties;
+        $properties['members'] = $tontine->members()->active()->pluck('id')->all();
+        $round->saveProperties($properties);
+    }
+
+    /**
+     * Get the number of active members for the current round
+     *
+     * @return int
+     */
+    public function countActiveMembers(): int
+    {
+        // The number of active members is saved in the round, so its current
+        // value can be retrieved forever, even when the membership will change.
+        $round = $this->tenantService->round();
+        if(!isset($round->properties['numbers']))
+        {
+            // Create and save the property with the content
+            $this->saveActiveMembers();
+            $round->refresh();
+        }
+
+        return count($round->properties['numbers']);
+    }
+
+    /**
      * Add a new member.
      *
      * @param array $values
@@ -91,6 +125,7 @@ class MemberService
             $member = $tontine->members()->create($values);
             // Create members bills
             $this->memberCreated($tontine, $member);
+            $this->saveActiveMembers();
         });
 
         return true;
@@ -113,6 +148,7 @@ class MemberService
             {
                 $this->memberCreated($tontine, $member);
             }
+            $this->saveActiveMembers();
         });
 
         return true;
@@ -141,6 +177,7 @@ class MemberService
     public function toggleMember(Member $member)
     {
         $member->update(['active' => !$member->active]);
+        $this->saveActiveMembers();
     }
 
     /**
@@ -164,6 +201,7 @@ class MemberService
             $member->libre_bills()->delete();
             DB::table('bills')->whereIn('id', $billIds)->delete();
             $member->delete();
+            $this->saveActiveMembers();
         });
     }
 
