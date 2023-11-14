@@ -64,6 +64,10 @@ class TenantService
         $this->tontine = $tontine;
         // Set the currency for locales.
         $this->localeService->setCurrency($tontine->currency_code);
+        // Save as latest
+        $properties = $this->user->properties;
+        $properties['latest']['tontine'] = $tontine->id;
+        $this->user->saveProperties($properties);
     }
 
     /**
@@ -74,6 +78,10 @@ class TenantService
     public function setRound(Round $round): void
     {
         $this->round = $round;
+        // Save as latest
+        $properties = $this->user->properties;
+        $properties['latest']['round'] = $round->id;
+        $this->user->saveProperties($properties);
     }
 
     /**

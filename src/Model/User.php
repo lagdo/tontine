@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends \App\Models\User
 {
+    use Traits\HasProperty;
+
     /**
      * Get the values of the properties.
      *

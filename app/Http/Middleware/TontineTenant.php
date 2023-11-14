@@ -39,12 +39,17 @@ class TontineTenant
      */
     private function getLatestTontine(User $user): ?Tontine
     {
-        $tontine = null;
-        if(($tontineId = session('tontine.id', 0)) > 0)
+        $tontineId = session('tontine.id', 0);
+        if($tontineId > 0 && ($tontine = $user->tontines()->find($tontineId)) !== null)
         {
-            $tontine = $user->tontines()->find($tontineId);
+            return $tontine;
         }
-        return $tontine !== null ? $tontine : $user->tontines()->first();
+        $tontineId = $user->properties['latest']['tontine'] ?? 0;
+        if($tontineId > 0 && ($tontine = $user->tontines()->find($tontineId)) !== null)
+        {
+            return $tontine;
+        }
+        return $user->tontines()->first();
     }
 
     /**
@@ -56,12 +61,17 @@ class TontineTenant
      */
     private function getLatestRound(Tontine $tontine): ?Round
     {
-        $round = null;
-        if(($roundId = session('round.id', 0)) > 0)
+        $roundId = session('round.id', 0);
+        if($roundId > 0 && ($round = $tontine->rounds()->find($roundId)) !== null)
         {
-            $round = $tontine->rounds()->find($roundId);
+            return $round;
         }
-        return $round !== null ? $round : $tontine->rounds()->first();
+        $roundId = $tontine->user->properties['latest']['round'] ?? 0;
+        if($roundId > 0 && ($round = $tontine->rounds()->find($roundId)) !== null)
+        {
+            return $round;
+        }
+        return $tontine->rounds()->first();
     }
 
     /**

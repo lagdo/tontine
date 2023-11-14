@@ -26,4 +26,18 @@ trait HasProperty
             get: fn() => $this->property ? $this->property->content : [],
         );
     }
+
+    /**
+     * Save the values of the properties.
+     *
+     * @param array $content
+     *
+     * @return void
+     */
+    public function saveProperties(array $content)
+    {
+        $this->property ?
+            $this->property->update(['content' => $content]) :
+            $this->property()->create(['content' => $content]);
+    }
 }
