@@ -188,7 +188,7 @@ class Session extends CallableClass
             'session' => $this->session,
         ]);
         $this->response->html('content-home', $html);
-        $this->jq('a', '#session-tabs')->click(pm()->js('function(){' . jq()->tab('show') . '}'));
+        $this->jq('a', '#session-tabs')->click(jq()->tab('show'));
 
         $openQuestion = trans('tontine.session.questions.open') . '<br/>' .
             trans('tontine.session.questions.warning');
