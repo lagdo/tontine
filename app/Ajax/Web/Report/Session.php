@@ -31,7 +31,7 @@ class Session extends CallableClass
         // Don't show the page if there is no session or no member.
         $sessions = $this->tenantService->getSessions(orderAsc: false)
             ->filter(function($session) {
-                return $session->opened;
+                return $session->opened || $session->closed;
             })
             ->pluck('title', 'id');
         if($sessions->count() === 0)
@@ -55,9 +55,6 @@ class Session extends CallableClass
         $memberId = pm()->select('select-member')->toInt();
         $this->jq('#btn-session-select')->click($this->rq()->showSession($sessionId));
         $this->jq('#btn-member-select')->click($this->rq()->showMember($sessionId, $memberId));
-
-        // Route to session report export
-        $this->jq('#btn-session-export')->click(pm()->js('setSessionExportLink'));
 
         $session = $this->tenantService->getSession($sessions->keys()->first());
         $this->response->html('session-report-title', $session->title);

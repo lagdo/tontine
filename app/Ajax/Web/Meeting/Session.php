@@ -19,7 +19,6 @@ use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
 use function Jaxon\jq;
-use function Jaxon\pm;
 use function trans;
 
 /**
@@ -160,7 +159,7 @@ class Session extends CallableClass
         $options = [
             'height' => 300,
             'toolbar' => [
-                // [groupName, [list of button]]
+                // [groupName, [list of button]],
                 ['style', ['bold', 'italic', 'underline', 'clear']],
                 ['font', ['strikethrough', 'superscript', 'subscript']],
                 ['fontsize', ['fontsize']],
@@ -189,6 +188,8 @@ class Session extends CallableClass
         ]);
         $this->response->html('content-home', $html);
         $this->jq('a', '#session-tabs')->click(jq()->tab('show'));
+        $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
+        $this->jq('.btn-tontine-edit')->click($this->rq()->edit($tontineId));
 
         $openQuestion = trans('tontine.session.questions.open') . '<br/>' .
             trans('tontine.session.questions.warning');
