@@ -20,11 +20,6 @@ jaxon.dom.ready(function() {
     }
 });
 
-function setSessionExportLink()
-{
-    $('#btn-session-export').attr('href', tontine.session.baseUrl + $('#select-session').val());
-}
-
 function setLoanInterestLabel()
 {
     $('#loan-interest-type').change(() => {

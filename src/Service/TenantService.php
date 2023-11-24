@@ -119,6 +119,18 @@ class TenantService
     }
 
     /**
+     * Get a single round.
+     *
+     * @param int $roundId    The round id
+     *
+     * @return Round|null
+     */
+    public function getRound(int $roundId): ?Round
+    {
+        return $this->tontine->rounds()->find($roundId);
+    }
+
+    /**
      * @return mixed
      */
     public function sessions()

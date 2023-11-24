@@ -6,6 +6,9 @@ use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\ProfitService;
 use Siak\Tontine\Service\Report\SessionService;
+use Sqids\SqidsInterface;
+
+use function route;
 
 /**
  * @exclude
@@ -23,13 +26,21 @@ class Session extends CallableClass
     protected ProfitService $profitService;
 
     /**
+     * @var SqidsInterface
+     */
+    protected SqidsInterface $sqids;
+
+    /**
      * @param SessionService $sessionService
      * @param ProfitService $profitService
+     * @param SqidsInterface $sqids
      */
-    public function __construct(SessionService $sessionService, ProfitService $profitService)
+    public function __construct(SessionService $sessionService,
+        ProfitService $profitService, SqidsInterface $sqids)
     {
         $this->sessionService = $sessionService;
         $this->profitService = $profitService;
+        $this->sqids = $sqids;
     }
 
     /**
@@ -39,6 +50,10 @@ class Session extends CallableClass
      */
     public function show(SessionModel $session)
     {
+        // Route to session report export
+        $this->jq('#btn-session-export')->attr('href', route('report.session',
+            ['sessionId' => $this->sqids->encode([$session->id])]));
+
         $this->deposits($session);
         $this->remitments($session);
         $this->loans($session);

@@ -25,6 +25,7 @@
         "propaganistas/laravel-phone": "^5.0",
         "rinvex/countries": "^9.0",
         "spatie/laravel-validation-rules": "^3.2",
+        "sqids/sqids": "^0.4.1",
         "umpirsky/country-list": "^2.0",
         "umpirsky/currency-list": "^1.1"
     },

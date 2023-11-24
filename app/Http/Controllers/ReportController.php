@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\TenantService;
+use Sqids\SqidsInterface;
 
 use function base64_decode;
 use function view;
@@ -41,7 +42,7 @@ class ReportController extends Controller
      *
      * @return View|Response
      */
-    public function session(Request $request, int $sessionId)
+    public function sessionById(Request $request, int $sessionId)
     {
         $session = $this->tenantService->getSession($sessionId);
         $html = view('tontine.report.session', $this->reportService->getSessionReport($session));
@@ -65,13 +66,26 @@ class ReportController extends Controller
 
     /**
      * @param Request $request
+     * @param SqidsInterface $sqids
+     * @param string $sessionId
+     *
+     * @return View|Response
+     */
+    public function session(Request $request, SqidsInterface $sqids, string $sessionSqid)
+    {
+        [$sessionId] = $sqids->decode($sessionSqid);
+        return $this->sessionById($request, $sessionId);
+    }
+
+    /**
+     * @param Request $request
      * @param int $roundId
      *
      * @return View|Response
      */
-    public function round(Request $request, int $roundId)
+    public function roundById(Request $request, int $roundId)
     {
-        $round = $this->tenantService->tontine()->rounds()->find($roundId);
+        $round = $this->tenantService->getRound($roundId);
         $html = view('tontine.report.round', $this->reportService->getRoundReport($round));
         // Show the html page
         if($request->has('html'))
@@ -89,5 +103,18 @@ class ReportController extends Controller
             ->header('Expires', '0')
             ->header('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
             ->header('Pragma', 'public');
+    }
+
+    /**
+     * @param Request $request
+     * @param SqidsInterface $sqids
+     * @param string $roundSqid
+     *
+     * @return View|Response
+     */
+    public function round(Request $request, SqidsInterface $sqids, string $roundSqid)
+    {
+        [$roundId] = $sqids->decode($roundSqid);
+        return $this->roundById($request, $roundId);
     }
 }

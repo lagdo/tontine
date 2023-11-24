@@ -8,7 +8,6 @@
                   {{ Form::select('session_id', $sessions, 0, ['class' => 'form-control', 'id' => 'select-session']) }}
                   <div class="input-group-append">
                     <button type="button" class="btn btn-primary" id="btn-session-select"><i class="fa fa-arrow-right"></i></button>
-                    <a type="button" class="btn btn-primary" id="btn-session-export" target="_blank" href="javascript:void(0)"><i class="fa fa-file-pdf"></i></a>
                   </div>
                 </div>
               </div>
@@ -17,6 +16,7 @@
                   {{ Form::select('member_id', $members, 0, ['class' => 'form-control', 'id' => 'select-member']) }}
                   <div class="input-group-append">
                     <button type="button" class="btn btn-primary" id="btn-member-select"><i class="fa fa-arrow-right"></i></button>
+                    <a type="button" class="btn btn-primary" id="btn-session-export" target="_blank"><i class="fa fa-file-pdf"></i></a>
                   </div>
                 </div>
               </div>

@@ -50,6 +50,8 @@ use Siak\Tontine\Validation\Planning\SessionValidator;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
 use Siak\Tontine\Validation\Tontine\MemberValidator;
 use Siak\Tontine\Validation\Tontine\TontineValidator;
+use Sqids\Sqids;
+use Sqids\SqidsInterface;
 
 class SiakServiceProvider extends ServiceProvider
 {
@@ -83,6 +85,9 @@ class SiakServiceProvider extends ServiceProvider
             $currenciesDataDir = $vendorDir . '/umpirsky/currency-list/data';
 
             return new LocaleService($locale, $countriesDataDir, $currenciesDataDir);
+        });
+        $this->app->singleton(SqidsInterface::class, function() {
+            return new Sqids(minLength: 8);
         });
 
         $this->app->singleton(ChargeService::class, ChargeService::class);
