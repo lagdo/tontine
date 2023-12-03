@@ -122,6 +122,7 @@ return [
         'labels' => [
             'amount' => "Remitted amount",
             'auction' => "Auction",
+            'beneficiary' => "Beneficiary",
         ],
     ],
     'funding' => [

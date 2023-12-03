@@ -2,7 +2,7 @@
         <form class="form-horizontal" role="form" id="remitment-form">
           <div class="module-body">
             <div class="form-group row">
-              {!! Form::label('payable', __('meeting.labels.member'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+              {!! Form::label('payable', __('meeting.remitment.labels.beneficiary'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
               <div class="col-sm-8">
                 {!! Form::select('payable', $members, $payableId, ['class' => 'form-control']) !!}
               </div>
