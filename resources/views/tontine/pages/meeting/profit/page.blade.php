@@ -35,7 +35,7 @@
   $memberDistribution = $memberFundings->sum('distribution');
 @endphp
                         <tr>
-                          <td rowspan="{{ $memberFundings->count() + 1 }}">{{ $memberFundings[0]->member->name }}</td>
+                          <td style="border-bottom-color: transparent">{{ $memberFundings[0]->member->name }}</td>
                           <td><b>{{ $locale->formatMoney($memberFundings->sum('amount'), true) }}</b></td>
                           <td>&nbsp;</td>
                           <td>&nbsp;</td>
@@ -45,6 +45,9 @@
                         </tr>
 @foreach ($memberFundings as $funding)
                         <tr>
+@if ($loop->first)
+                          <td rowspan="{{ $memberFundings->count() }}">&nbsp;</td>
+@endif
                           <td>{{ $locale->formatMoney($funding->amount, true) }}</td>
                           <td>{{ $funding->session->title }}</td>
                           <td>{{ $funding->duration }}</td>
