@@ -53,6 +53,7 @@ return [
         'profit' => "Gain",
         'duration' => "Durée",
         'distribution' => "Distribution",
+        'parts' => ":sum parts",
     ],
     'messages' => [
         'agenda' => [
