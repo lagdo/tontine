@@ -49,16 +49,18 @@ class ProfitService
      *
      * @param Session $session
      * @param Collection $fundings
+     * @param int $profitAmount
      *
      * @return Collection
      */
-    private function setDistributions(Session $session, Collection $fundings): Collection
+    private function setDistributions(Session $session, Collection $fundings, int $profitAmount): Collection
     {
         // Set fundings durations and distributions
         foreach($fundings as $funding)
         {
             $funding->duration = $this->getFundingDuration($session, $funding);
             $funding->distribution = $funding->amount * $funding->duration;
+            $funding->profit = 0;
         }
         // Reduce the distributions
         $distributionGcd = (int)$fundings->reduce(function($gcd, $funding) {
@@ -74,23 +76,26 @@ class ProfitService
         }, $fundings->first()->distribution);
         if($distributionGcd > 0)
         {
+            $sum = (int)($fundings->sum('distribution') / $distributionGcd);
             foreach($fundings as $funding)
             {
                 $funding->distribution /= $distributionGcd;
+                $funding->profit = (int)($profitAmount * $funding->distribution / $sum);
             }
         }
 
-        return $fundings;
+        return $fundings->groupBy('member_id');
     }
 
     /**
      * Get the profit distribution for fundings.
      *
      * @param Session $session
+     * @param int $profitAmount
      *
      * @return Collection
      */
-    public function getDistributions(Session $session): Collection
+    public function getDistributions(Session $session, int $profitAmount): Collection
     {
         // Get the fundings to be rewarded
         $fundings = Funding::select('fundings.*')
@@ -106,7 +111,7 @@ class ProfitService
             return $fundings;
         }
 
-        return $this->setDistributions($session, $fundings);
+        return $this->setDistributions($session, $fundings, $profitAmount);
     }
 
     /**

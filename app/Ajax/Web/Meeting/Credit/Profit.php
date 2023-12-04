@@ -93,7 +93,7 @@ class Profit extends CallableClass
         $this->response->html('profit_amount_show',
             $this->localeService->formatMoney($profitAmount, true));
         $html = $this->view()->render('tontine.pages.meeting.profit.page', [
-            'fundings' => $this->profitService->getDistributions($this->session),
+            'fundings' => $this->profitService->getDistributions($this->session, $profitAmount),
             'profitAmount' => $profitAmount,
         ]);
         $this->response->html('meeting-profits-page', $html);
