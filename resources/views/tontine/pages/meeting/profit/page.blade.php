@@ -1,22 +1,12 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@php
-  $distributionSum = $fundings->reduce(function($sum, $memberFundings) {
-    return $sum + $memberFundings->sum('distribution');
-  }, 0);
-  $amountSum = $fundings->reduce(function($sum, $memberFundings) {
-    return $sum + $memberFundings->sum('amount');
-  }, 0);
-@endphp
                     <table class="table table-bordered">
                       <thead>
                         <tr>
                           <th>{!! __('meeting.labels.member') !!}</th>
-                          <th>{!! __('meeting.labels.funding') !!}@if ($amountSum > 0)<br/>({{
-                            $locale->formatMoney($amountSum, true) }})@endif</th>
+                          <th>{!! __('meeting.labels.funding') !!}</th>
                           <th>{!! __('meeting.labels.session') !!}</th>
                           <th>{!! __('meeting.labels.duration') !!}</th>
-                          <th>{!! __('meeting.labels.distribution') !!}@if ($distributionSum > 0)<br/>({{
-                            __('meeting.labels.parts', ['sum' => $distributionSum]) }})@endif</th>
+                          <th>{!! __('meeting.labels.distribution') !!}</th>
                           <th>{!! __('meeting.labels.profit') !!}</th>
                         </tr>
                       </thead>

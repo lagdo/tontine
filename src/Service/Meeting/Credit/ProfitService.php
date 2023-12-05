@@ -84,7 +84,7 @@ class ProfitService
             }
         }
 
-        return $fundings->groupBy('member_id');
+        return $fundings;
     }
 
     /**
@@ -105,7 +105,8 @@ class ProfitService
             ->where('sessions.start_at', '<=', $session->start_at)
             ->orderBy('members.name', 'asc')
             ->orderBy('sessions.start_at', 'asc')
-            ->with(['session', 'member'])->get();
+            ->with(['session', 'member'])
+            ->get();
         if($fundings->count() === 0)
         {
             return $fundings;
@@ -115,27 +116,53 @@ class ProfitService
     }
 
     /**
-     * Get the total profit amount.
+     * Get the amount corresponding to one part for a given distribution
      *
-     * @param Session $session
+     * @param Collection $fundings
      *
      * @return int
      */
-    public function getTotalProfit(Session $session): int
+    public function getPartUnitValue(Collection $fundings): int
+    {
+        // The part value makes sense only iwhen there is more than 2 fundings
+        // with distribution greater than 0.
+        $fundings = $fundings->filter(fn($funding) => $funding->distribution > 0);
+        if($fundings->count() < 2)
+        {
+            return 0;
+        }
+
+        $funding = $fundings->first();
+        return (int)($funding->amount * $funding->duration / $funding->distribution);
+    }
+
+    /**
+     * Get the total saving and profit amounts.
+     *
+     * @param Session $session
+     *
+     * @return array<int>
+     */
+    public function getAmounts(Session $session): array
     {
         // Get the ids of all the sessions until the current one.
         $sessionIds = $this->tenantService->round()->sessions()
             ->where('start_at', '<=', $session->start_at)
             ->pluck('id');
-        // Sum the interest refunds.
-        $refund = DB::table('refunds')
+        // Saving: the sum of fundings amounts.
+        $saving = DB::table('fundings')
+            ->select(DB::raw("sum(amount) as total"))
+            ->whereIn('session_id', $sessionIds)
+            ->first();
+        // Profit: the sum of interest refunds.
+        $profit = DB::table('refunds')
             ->join('debts', 'refunds.debt_id', '=', 'debts.id')
-            ->select(DB::raw("sum(debts.amount) as interest"))
+            ->select(DB::raw("sum(debts.amount) as total"))
             ->where('debts.type', Debt::TYPE_INTEREST)
             ->whereIn('refunds.session_id', $sessionIds)
             ->first();
 
-        return $refund->interest ?? 0;
+        return ['saving' => $saving->total ?? 0, 'profit' => $profit->total ?? 0];
     }
 
     /**

@@ -9,6 +9,7 @@ use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
 use function Jaxon\pm;
+use function trans;
 
 /**
  * @databag meeting
@@ -73,28 +74,35 @@ class Profit extends CallableClass
 
     private function home()
     {
-        $totalProfit = $this->profitService->getTotalProfit($this->session);
-        $html = $this->view()->render('tontine.pages.meeting.profit.home', [
-            'session' => $this->session,
-            'totalProfit' => $totalProfit,
-            'profitAmount' => $totalProfit,
-        ]);
+        $amounts = $this->profitService->getAmounts($this->session);
+        $html = $this->view()->render('tontine.pages.meeting.profit.home', $amounts)
+            ->with('session', $this->session);
         $this->response->html('meeting-profits', $html);
 
         $inputAmount = pm()->input('profit_amount_edit')->toInt();
         $this->jq('#btn-profits-refresh')->click($this->rq()->page($inputAmount));
         $this->jq('#btn-profits-save')->click($this->rq()->save($inputAmount));
 
-        return $this->page($totalProfit);
+        return $this->page($amounts['profit']);
     }
 
     public function page(int $profitAmount)
     {
-        $this->response->html('profit_amount_show',
-            $this->localeService->formatMoney($profitAmount, true));
-        $html = $this->view()->render('tontine.pages.meeting.profit.page', [
-            'fundings' => $this->profitService->getDistributions($this->session, $profitAmount),
+        $fundings = $this->profitService->getDistributions($this->session, $profitAmount);
+        $partUnitValue = $this->profitService->getPartUnitValue($fundings);
+        $distributionSum = $fundings->sum('distribution');
+        $html = $this->view()->render('tontine.pages.meeting.profit.details', [
             'profitAmount' => $profitAmount,
+            'partUnitValue' => $partUnitValue,
+            'distributionSum' => $distributionSum,
+            'distributionCount' => $fundings
+                ->filter(fn($funding) => $funding->distribution > 0)->count(),
+        ]);
+        $this->response->html('profit_distribution_details', $html);
+
+        $html = $this->view()->render('tontine.pages.meeting.profit.page', [
+            'fundings' => $fundings->groupBy('member_id'),
+            'distributionSum' => $distributionSum,
         ]);
         $this->response->html('meeting-profits-page', $html);
 

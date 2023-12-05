@@ -53,7 +53,6 @@ return [
         'profit' => "Gain",
         'duration' => "Durée",
         'distribution' => "Distribution",
-        'parts' => ":sum parts",
     ],
     'messages' => [
         'agenda' => [
@@ -196,6 +195,14 @@ return [
         ],
         'errors' => [
             'not_found' => "Impossible de trouver le décaissement.",
+        ],
+    ],
+    'profit' => [
+        'distribution' => [
+            'total' => "&Eacute;pargne: :saving. Gains: :profit.",
+            'amount' => "Distribution: :amount.",
+            'parts' => ":parts parts.",
+            'basis' => "Pour chaque séance, :unit = une part.",
         ],
     ],
 ];

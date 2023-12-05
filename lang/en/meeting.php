@@ -53,7 +53,6 @@ return [
         'profit' => "Profit",
         'duration' => "Duration",
         'distribution' => "Distribution",
-        'parts' => ":sum parts",
     ],
     'messages' => [
         'agenda' => [
@@ -196,6 +195,14 @@ return [
         ],
         'errors' => [
             'not_found' => "Cannot find the disbursement.",
+        ],
+    ],
+    'profit' => [
+        'distribution' => [
+            'total' => "Saving: :saving. Profit: :profit.",
+            'amount' => "Distribution: :amount.",
+            'parts' => ":parts parts.",
+            'basis' => "For each session, :unit = one part.",
         ],
     ],
 ];
