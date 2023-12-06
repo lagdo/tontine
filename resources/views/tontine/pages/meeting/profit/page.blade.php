@@ -21,8 +21,8 @@
                           <td><b>{{ $locale->formatMoney($funding->amount, true) }}</b></td>
                           <td>{{ $funding->session->title }}</td>
                           <td>{{ $funding->duration }}</td>
-                          <td><b>{{ $funding->distribution }} ({{ sprintf('%.2f',
-                            $distributionSum === 0 ? 0 : 100 * $funding->distribution / $distributionSum) }}%)</b></td>
+                          <td><b>{{ $funding->distribution }} ({{ sprintf('%.2f', $distributionSum === 0 ?
+                            0 : 100 * $funding->distribution / $distributionSum) }}%)</b></td>
                           <td><b>{{ $locale->formatMoney($funding->profit, true) }}</b></td>
                         </tr>
 @else
