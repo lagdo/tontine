@@ -142,6 +142,7 @@ class ReportService
         $tontine = $this->tenantService->tontine();
         [$country] = $this->localeService->getNameFromTontine($tontine);
         $profitSessionId = $session->round->properties['profit']['session'] ?? 0;
+        $profitAmount = $session->round->properties['profit']['amount'] ?? 0;
 
         return [
             'tontine' => $tontine,
@@ -184,8 +185,8 @@ class ReportService
             'profits' => [
                 'show' => $profitSessionId === $session->id,
                 'fundings' => $profitSessionId !== $session->id ? null :
-                    $this->profitService->getDistributions($session),
-                'profitAmount' => $session->round->properties['profit']['amount'] ?? 0,
+                    $this->profitService->getDistributions($session, $profitAmount),
+                'profitAmount' => $profitAmount,
             ],
         ];
     }

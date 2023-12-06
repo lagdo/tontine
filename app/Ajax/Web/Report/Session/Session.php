@@ -136,10 +136,11 @@ class Session extends CallableClass
     {
         // Show the profits only if they were saved on this session.
         $profitSessionId = $session->round->properties['profit']['session'] ?? 0;
+        $profitAmount = $session->round->properties['profit']['amount'] ?? 0;
         $html = $profitSessionId !== $session->id ? '' :
             $this->view()->render('tontine.pages.report.session.session.profits', [
-                'fundings' => $this->profitService->getDistributions($session),
-                'profitAmount' => $session->round->properties['profit']['amount'] ?? 0,
+                'fundings' => $this->profitService->getDistributions($session, $profitAmount),
+                'profitAmount' => $profitAmount,
             ]);
         $this->response->html('report-profits', $html);
     }
