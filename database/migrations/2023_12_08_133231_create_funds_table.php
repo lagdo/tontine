@@ -31,6 +31,10 @@ return new class extends Migration
             $table->unsignedBigInteger('fund_id')->nullable();
             $table->foreign('fund_id')->references('id')->on('funds');
         });
+
+        Schema::table('categories', function (Blueprint $table) {
+            $table->boolean('active')->default(true);
+        });
     }
 
     /**
@@ -48,6 +52,10 @@ return new class extends Migration
         Schema::table('fundings', function (Blueprint $table) {
             $table->dropForeign(['fund_id']);
             $table->dropColumn('fund_id');
+        });
+
+        Schema::table('categories', function (Blueprint $table) {
+            $table->dropColumn('active');
         });
 
         Schema::dropIfExists('funds');

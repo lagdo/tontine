@@ -5,7 +5,7 @@ namespace Siak\Tontine\Service\Meeting\Cash;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Model\Funding;
+use Siak\Tontine\Model\Saving;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
@@ -13,7 +13,7 @@ use Siak\Tontine\Service\TenantService;
 
 use function trans;
 
-class FundingService
+class SavingService
 {
     /**
      * @var LocaleService
@@ -71,52 +71,52 @@ class FundingService
     }
 
     /**
-     * Get the fundings.
+     * Get the savings.
      *
      * @param int $page
      *
      * @return Collection
      */
-    public function getFundings(int $page = 0): Collection
+    public function getSavings(int $page = 0): Collection
     {
-        return Funding::with(['member', 'session'])
+        return Saving::with(['member', 'session'])
             ->page($page, $this->tenantService->getLimit())->get();
     }
 
     /**
-     * Get the fundings for a given session.
+     * Get the savings for a given session.
      *
      * @param Session $session
      *
      * @return Collection
      */
-    public function getSessionFundings(Session $session): Collection
+    public function getSessionSavings(Session $session): Collection
     {
-        return $session->fundings()->with(['member'])->get();
+        return $session->savings()->with(['member'])->get();
     }
 
     /**
-     * Get a funding for a given session.
+     * Get a saving for a given session.
      *
      * @param Session $session
-     * @param int $fundingId
+     * @param int $savingId
      *
-     * @return Funding|null
+     * @return Saving|null
      */
-    public function getSessionFunding(Session $session, int $fundingId): ?Funding
+    public function getSessionSaving(Session $session, int $savingId): ?Saving
     {
-        return $session->fundings()->with(['member'])->find($fundingId);
+        return $session->savings()->with(['member'])->find($savingId);
     }
 
     /**
-     * Create a funding.
+     * Create a saving.
      *
      * @param Session $session The session
      * @param array $values
      *
      * @return void
      */
-    public function createFunding(Session $session, array $values): void
+    public function createSaving(Session $session, array $values): void
     {
         $member = $this->getMember($values['member']);
         if(!$member)
@@ -124,49 +124,49 @@ class FundingService
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }
 
-        $funding = new Funding();
-        $funding->amount = $values['amount'];
-        $funding->member()->associate($member);
-        $funding->session()->associate($session);
-        $funding->save();
+        $saving = new Saving();
+        $saving->amount = $values['amount'];
+        $saving->member()->associate($member);
+        $saving->session()->associate($session);
+        $saving->save();
     }
 
     /**
-     * Update a funding.
+     * Update a saving.
      *
      * @param Session $session The session
      * @param array $values
      *
      * @return void
      */
-    public function updateFunding(Session $session, int $fundingId, array $values): void
+    public function updateSaving(Session $session, int $savingId, array $values): void
     {
         $member = $this->getMember($values['member']);
         if(!$member)
         {
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }
-        $funding = $session->fundings()->find($fundingId);
-        if(!$funding)
+        $saving = $session->savings()->find($savingId);
+        if(!$saving)
         {
-            throw new MessageException(trans('meeting.funding.errors.not_found'));
+            throw new MessageException(trans('meeting.saving.errors.not_found'));
         }
 
-        $funding->amount = $values['amount'];
-        $funding->member()->associate($member);
-        $funding->save();
+        $saving->amount = $values['amount'];
+        $saving->member()->associate($member);
+        $saving->save();
     }
 
     /**
-     * Delete a funding.
+     * Delete a saving.
      *
      * @param Session $session The session
-     * @param int $fundingId
+     * @param int $savingId
      *
      * @return void
      */
-    public function deleteFunding(Session $session, int $fundingId): void
+    public function deleteSaving(Session $session, int $savingId): void
     {
-        $session->fundings()->where('id', $fundingId)->delete();
+        $session->savings()->where('id', $savingId)->delete();
     }
 }

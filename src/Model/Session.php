@@ -178,9 +178,9 @@ class Session extends Base
         return $this->hasMany(PartialRefund::class);
     }
 
-    public function fundings()
+    public function savings()
     {
-        return $this->hasMany(Funding::class);
+        return $this->hasMany(Saving::class);
     }
 
     public function disbursements()

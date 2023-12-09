@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row">
                     <div class="col d-flex justify-content-center flex-nowrap">
-                      <div class="section-title mt-0">{{ __('meeting.titles.fundings') }}</div>
+                      <div class="section-title mt-0">{!! __('meeting.titles.savings') !!}</div>
                     </div>
                   </div>
                   <div class="table-responsive">
@@ -14,11 +14,11 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($fundings as $funding)
+@foreach ($savings as $saving)
                         <tr>
                           <td>&nbsp;</td>
-                          <td>{{ $funding->member->name }}</td>
-                          <td class="currency">{{ $locale->formatMoney($funding->amount, true) }}</td>
+                          <td>{{ $saving->member->name }}</td>
+                          <td class="currency">{{ $locale->formatMoney($saving->amount, true) }}</td>
                         </tr>
 @endforeach
                         <tr>

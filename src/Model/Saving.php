@@ -2,7 +2,7 @@
 
 namespace Siak\Tontine\Model;
 
-class Funding extends Base
+class Saving extends Base
 {
     /**
      * This is a custom attribute used to calculate profit distribution

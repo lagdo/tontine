@@ -7,7 +7,7 @@ use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Validation\AbstractValidator;
 use Siak\Tontine\Validation\ValidationException;
 
-class FundingValidator extends AbstractValidator
+class SavingValidator extends AbstractValidator
 {
     /**
      * @var LocaleService

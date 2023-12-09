@@ -1,13 +1,13 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col-auto">
-                      <div class="section-title mt-0">{{ __('meeting.titles.fundings') }}</div>
+                      <div class="section-title mt-0">{!! __('meeting.titles.savings') !!}</div>
                     </div>
 @if($session->opened)
                     <div class="col">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
-                        <button type="button" class="btn btn-primary" id="btn-funding-add"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-primary" id="btn-fundings-refresh"><i class="fa fa-sync"></i></button>
+                        <button type="button" class="btn btn-primary" id="btn-saving-add"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-primary" id="btn-savings-refresh"><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
 @endif
@@ -22,20 +22,20 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($fundings as $funding)
+@foreach ($savings as $saving)
                         <tr>
-                          <td>{{ $funding->member->name }}</td>
-                          <td class="currency">{{ $locale->formatMoney($funding->amount, true) }}</td>
+                          <td>{{ $saving->member->name }}</td>
+                          <td class="currency">{{ $locale->formatMoney($saving->amount, true) }}</td>
                           <td class="table-item-menu">
 @if($session->opened)
 @include('tontine.parts.table.menu', [
-  'dataIdKey' => 'data-funding-id',
-  'dataIdValue' => $funding->id,
+  'dataIdKey' => 'data-saving-id',
+  'dataIdValue' => $saving->id,
   'menus' => [[
-    'class' => 'btn-funding-edit',
+    'class' => 'btn-saving-edit',
     'text' => __('common.actions.edit'),
   ],[
-    'class' => 'btn-funding-delete',
+    'class' => 'btn-saving-delete',
     'text' => __('common.actions.delete'),
   ]],
 ])

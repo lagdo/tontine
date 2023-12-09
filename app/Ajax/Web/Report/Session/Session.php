@@ -60,7 +60,7 @@ class Session extends CallableClass
         $this->refunds($session);
         $this->sessionBills($session);
         $this->totalBills($session);
-        $this->fundings($session);
+        $this->savings($session);
         $this->disbursements($session);
         $this->profits($session);
     }
@@ -116,12 +116,12 @@ class Session extends CallableClass
         $this->response->html('report-total-bills', $html);
     }
 
-    private function fundings(SessionModel $session)
+    private function savings(SessionModel $session)
     {
-        $html = $this->view()->render('tontine.pages.report.session.session.fundings', [
-            'funding' => $this->sessionService->getFunding($session),
+        $html = $this->view()->render('tontine.pages.report.session.session.savings', [
+            'saving' => $this->sessionService->getSaving($session),
         ]);
-        $this->response->html('report-fundings', $html);
+        $this->response->html('report-savings', $html);
     }
 
     private function disbursements(SessionModel $session)
@@ -139,7 +139,7 @@ class Session extends CallableClass
         $profitAmount = $session->round->properties['profit']['amount'] ?? 0;
         $html = $profitSessionId !== $session->id ? '' :
             $this->view()->render('tontine.pages.report.session.session.profits', [
-                'fundings' => $this->profitService->getDistributions($session, $profitAmount),
+                'savings' => $this->profitService->getDistributions($session, $profitAmount),
                 'profitAmount' => $profitAmount,
             ]);
         $this->response->html('report-profits', $html);

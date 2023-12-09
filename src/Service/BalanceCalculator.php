@@ -227,9 +227,9 @@ class BalanceCalculator
      *
      * @return int
      */
-    private function fundingAmount(Collection $sessionIds)
+    private function savingAmount(Collection $sessionIds)
     {
-        return DB::table('fundings')
+        return DB::table('savings')
             ->whereIn('session_id', $sessionIds)
             ->sum('amount');
     }
@@ -329,7 +329,7 @@ class BalanceCalculator
         // Get the ids of all the sessions until the current one.
         $sessionIds = $this->tenantService->getSessionIds($session);
 
-        return $this->auctionAmount($sessionIds) + $this->fundingAmount($sessionIds) +
+        return $this->auctionAmount($sessionIds) + $this->savingAmount($sessionIds) +
             $this->settlementAmount($sessionIds, true) + $this->refundAmount($sessionIds) +
             $this->partialRefundAmount($sessionIds) + $this->depositAmount($sessionIds, true) -
             $this->remitmentAmount($sessionIds, true) - $this->debtAmount($sessionIds) -
@@ -348,7 +348,7 @@ class BalanceCalculator
         // Get the ids of all the sessions until the current one.
         $sessionIds = $this->tenantService->getSessionIds($session);
 
-        return $this->auctionAmount($sessionIds) + $this->fundingAmount($sessionIds) +
+        return $this->auctionAmount($sessionIds) + $this->savingAmount($sessionIds) +
             $this->settlementAmount($sessionIds, false) + $this->refundAmount($sessionIds) +
             $this->partialRefundAmount($sessionIds) + $this->depositAmount($sessionIds, false) -
             $this->remitmentAmount($sessionIds, false) - $this->debtAmount($sessionIds) -

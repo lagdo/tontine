@@ -79,7 +79,7 @@ class Round extends CallableClass
             'settlements' => $this->roundService->getSettlementAmounts($sessionIds),
             'loans' => $this->roundService->getLoanAmounts($sessionIds),
             'refunds' => $this->roundService->getRefundAmounts($sessionIds),
-            'fundings' => $this->roundService->getFundingAmounts($sessionIds),
+            'savings' => $this->roundService->getSavingAmounts($sessionIds),
             'disbursements' => $this->roundService->getDisbursementAmounts($sessionIds),
         ]);
         $this->response->html('content-amounts', $html);

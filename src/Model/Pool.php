@@ -41,6 +41,15 @@ class Pool extends Base
     ];
 
     /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'properties' => '{}',
+    ];
+
+    /**
      * Create a new factory instance for the model.
      *
      * @return Factory

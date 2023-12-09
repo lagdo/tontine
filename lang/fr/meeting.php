@@ -12,7 +12,7 @@ return [
         'deposits' => "Versements",
         'remitments' => "Remises",
         'auctions' => "Enchères",
-        'fundings' => "Dépôts",
+        'savings' => "&Eacute;pargnes",
         'loans' => "Emprunts",
         'amounts' => "Montants",
         'settlements' => "Règlements",
@@ -49,7 +49,7 @@ return [
         'session' => "Séance",
         'payments' => "Paiements",
         'debt' => "Dette",
-        'funding' => "Dépôt",
+        'saving' => "&Eacute;pargne",
         'profit' => "Gain",
         'duration' => "Durée",
         'distribution' => "Distribution",
@@ -125,16 +125,16 @@ return [
             'beneficiary' => "Bénéficiaire",
         ],
     ],
-    'funding' => [
+    'saving' => [
         'titles' => [
-            'add' => "Ajouter un dépôt",
-            'edit' => "Modifier un dépôt",
+            'add' => "Ajouter une épargne",
+            'edit' => "Modifier une épargne",
         ],
         'questions' => [
-            'delete' => "Supprimer ce dépôt ?",
+            'delete' => "Supprimer cette épargne ?",
         ],
         'errors' => [
-            'not_found' => "Impossible de trouver le dépôt correspondant.",
+            'not_found' => "Impossible de trouver l'épargne correspondante.",
         ],
     ],
     'loan' => [

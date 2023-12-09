@@ -296,22 +296,22 @@ class SessionService
      *
      * @return object
      */
-    public function getFunding(Session $session): object
+    public function getSaving(Session $session): object
     {
-        $funding = DB::table('fundings')
+        $saving = DB::table('savings')
             ->select(DB::raw('sum(amount) as total_amount'), DB::raw('count(id) as total_count'))
             ->where('session_id', $session->id)
             ->first();
-        if(!$funding->total_amount)
+        if(!$saving->total_amount)
         {
-            $funding->total_amount = 0;
+            $saving->total_amount = 0;
         }
-        if(!$funding->total_count)
+        if(!$saving->total_count)
         {
-            $funding->total_count = 0;
+            $saving->total_count = 0;
         }
 
-        return $funding;
+        return $saving;
     }
 
     /**

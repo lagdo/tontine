@@ -92,9 +92,9 @@ class Member extends Base
         return $this->hasMany(TontineBill::class);
     }
 
-    public function fundings()
+    public function savings()
     {
-        return $this->hasMany(Funding::class);
+        return $this->hasMany(Saving::class);
     }
 
     /**

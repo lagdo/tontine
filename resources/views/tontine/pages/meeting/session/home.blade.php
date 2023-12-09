@@ -62,7 +62,7 @@
                     </div>
                     <div class="tab-pane fade" id="session-cash" role="tabpanel" aria-labelledby="session-tab-cash">
                       <div class="row">
-                        <div class="col-md-6 col-sm-12" id="meeting-fundings">
+                        <div class="col-md-6 col-sm-12" id="meeting-savings">
                         </div>
                         <div class="col-md-6 col-sm-12" id="meeting-disbursements">
                         </div>

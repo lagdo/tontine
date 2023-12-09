@@ -174,9 +174,9 @@ class ReportService
                 'refunds' => $this->memberService->getRefunds($session),
                 'total' => $this->sessionService->getRefund($session),
             ],
-            'fundings' => [
-                'fundings' => $this->memberService->getFundings($session),
-                'total' => $this->sessionService->getFunding($session),
+            'savings' => [
+                'savings' => $this->memberService->getSavings($session),
+                'total' => $this->sessionService->getSaving($session),
             ],
             'disbursements' => [
                 'disbursements' => $this->memberService->getDisbursements($session),
@@ -184,7 +184,7 @@ class ReportService
             ],
             'profits' => [
                 'show' => $profitSessionId === $session->id,
-                'fundings' => $profitSessionId !== $session->id ? null :
+                'savings' => $profitSessionId !== $session->id ? null :
                     $this->profitService->getDistributions($session, $profitAmount),
                 'profitAmount' => $profitAmount,
             ],
@@ -218,7 +218,7 @@ class ReportService
             'settlements' => $this->roundService->getSettlementAmounts($sessionIds),
             'loans' => $this->roundService->getLoanAmounts($sessionIds),
             'refunds' => $this->roundService->getRefundAmounts($sessionIds),
-            'fundings' => $this->roundService->getFundingAmounts($sessionIds),
+            'savings' => $this->roundService->getSavingAmounts($sessionIds),
             'disbursements' => $this->roundService->getDisbursementAmounts($sessionIds),
         ];
 

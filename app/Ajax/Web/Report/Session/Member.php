@@ -47,7 +47,7 @@ class Member extends CallableClass
         $this->refunds($session, $member);
         $this->sessionBills($session, $member);
         $this->totalBills($session, $member);
-        $this->fundings($session, $member);
+        $this->savings($session, $member);
         $this->disbursements($session, $member);
         // Empty the profits section.
         $this->response->html('report-profits', '');
@@ -102,12 +102,12 @@ class Member extends CallableClass
         $this->response->html('report-total-bills', $html);
     }
 
-    private function fundings(SessionModel $session, MemberModel $member)
+    private function savings(SessionModel $session, MemberModel $member)
     {
-        $html = $this->view()->render('tontine.pages.report.session.member.fundings', [
-            'fundings' => $this->memberService->getFundings($session, $member),
+        $html = $this->view()->render('tontine.pages.report.session.member.savings', [
+            'savings' => $this->memberService->getSavings($session, $member),
         ]);
-        $this->response->html('report-fundings', $html);
+        $this->response->html('report-savings', $html);
     }
 
     private function disbursements(SessionModel $session, MemberModel $member)

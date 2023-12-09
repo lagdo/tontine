@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col">
-                      <div class="section-title mt-0">{{ __('meeting.titles.fundings') }}</div>
+                      <div class="section-title mt-0">{{ __('meeting.titles.savings') }}</div>
                     </div>
                   </div>
                   <div class="table-responsive">
@@ -16,8 +16,8 @@
                       <tbody>
                         <tr>
                           <td>{{ __('common.labels.total') }}</td>
-                          <td>{{ $funding->total_count }}</td>
-                          <td class="currency">{{ $locale->formatMoney($funding->total_amount, true) }}</td>
+                          <td>{{ $saving->total_count }}</td>
+                          <td class="currency">{{ $locale->formatMoney($saving->total_amount, true) }}</td>
                         </tr>
                       </tbody>
                     </table>

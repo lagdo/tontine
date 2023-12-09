@@ -12,7 +12,7 @@ return [
         'deposits' => "Deposits",
         'remitments' => "Remitments",
         'auctions' => "Auctions",
-        'fundings' => "Fundings",
+        'savings' => "Savings",
         'loans' => "Loans",
         'amounts' => "Amounts",
         'settlements' => "Settlements",
@@ -49,7 +49,7 @@ return [
         'session' => "Session",
         'payments' => "Payments",
         'debt' => "Debt",
-        'funding' => "Funding",
+        'saving' => "Saving",
         'profit' => "Profit",
         'duration' => "Duration",
         'distribution' => "Distribution",
@@ -125,16 +125,16 @@ return [
             'beneficiary' => "Beneficiary",
         ],
     ],
-    'funding' => [
+    'saving' => [
         'titles' => [
-            'add' => "Add a funding",
-            'edit' => "Edit a funding",
+            'add' => "Add a saving",
+            'edit' => "Edit a saving",
         ],
         'questions' => [
-            'delete' => "Delete this funding?",
+            'delete' => "Delete this saving?",
         ],
         'errors' => [
-            'not_found' => "Cannot find the corresponding funding.",
+            'not_found' => "Cannot find the corresponding saving.",
         ],
     ],
     'loan' => [

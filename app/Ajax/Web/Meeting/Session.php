@@ -4,7 +4,7 @@ namespace App\Ajax\Web\Meeting;
 
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Meeting\Cash\Disbursement;
-use App\Ajax\Web\Meeting\Cash\Funding;
+use App\Ajax\Web\Meeting\Cash\Saving;
 use App\Ajax\Web\Meeting\Charge\FixedFee;
 use App\Ajax\Web\Meeting\Charge\LibreFee;
 use App\Ajax\Web\Meeting\Credit\Loan;
@@ -129,7 +129,7 @@ class Session extends CallableClass
      */
     private function cash()
     {
-        $this->cl(Funding::class)->show($this->session);
+        $this->cl(Saving::class)->show($this->session);
         $this->cl(Disbursement::class)->show($this->session);
     }
 

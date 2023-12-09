@@ -56,7 +56,7 @@
 
           <div class="pagebreak"></div>
 
-          @include('tontine.report.session.fundings', $fundings)
+          @include('tontine.report.session.savings', $savings)
 
           @include('tontine.report.session.disbursements', $disbursements)
 

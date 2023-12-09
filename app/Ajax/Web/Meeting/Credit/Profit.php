@@ -88,20 +88,20 @@ class Profit extends CallableClass
 
     public function page(int $profitAmount)
     {
-        $fundings = $this->profitService->getDistributions($this->session, $profitAmount);
-        $partUnitValue = $this->profitService->getPartUnitValue($fundings);
-        $distributionSum = $fundings->sum('distribution');
+        $savings = $this->profitService->getDistributions($this->session, $profitAmount);
+        $partUnitValue = $this->profitService->getPartUnitValue($savings);
+        $distributionSum = $savings->sum('distribution');
         $html = $this->view()->render('tontine.pages.meeting.profit.details', [
             'profitAmount' => $profitAmount,
             'partUnitValue' => $partUnitValue,
             'distributionSum' => $distributionSum,
-            'distributionCount' => $fundings
-                ->filter(fn($funding) => $funding->distribution > 0)->count(),
+            'distributionCount' => $savings
+                ->filter(fn($saving) => $saving->distribution > 0)->count(),
         ]);
         $this->response->html('profit_distribution_details', $html);
 
         $html = $this->view()->render('tontine.pages.meeting.profit.page', [
-            'fundings' => $fundings->groupBy('member_id'),
+            'savings' => $savings->groupBy('member_id'),
             'distributionSum' => $distributionSum,
         ]);
         $this->response->html('meeting-profits-page', $html);

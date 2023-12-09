@@ -298,9 +298,9 @@ class MemberService
      *
      * @return Collection
      */
-    public function getFundings(Session $session, ?Member $member = null): Collection
+    public function getSavings(Session $session, ?Member $member = null): Collection
     {
-        return $session->fundings()->with(['member'])
+        return $session->savings()->with(['member'])
             ->when($member !== null, function($query) use($member) {
                 return $query->where('member_id', $member->id);
             })

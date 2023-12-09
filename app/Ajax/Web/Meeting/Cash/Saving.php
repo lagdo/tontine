@@ -4,8 +4,8 @@ namespace App\Ajax\Web\Meeting\Cash;
 
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Meeting\Credit\Loan;
-use Siak\Tontine\Service\Meeting\Cash\FundingService;
-use Siak\Tontine\Validation\Meeting\FundingValidator;
+use Siak\Tontine\Service\Meeting\Cash\SavingService;
+use Siak\Tontine\Validation\Meeting\SavingValidator;
 use Siak\Tontine\Model\Session as SessionModel;
 
 use function Jaxon\jq;
@@ -16,17 +16,17 @@ use function trans;
  * @databag meeting
  * @before getSession
  */
-class Funding extends CallableClass
+class Saving extends CallableClass
 {
     /**
-     * @var FundingService
+     * @var SavingService
      */
-    protected FundingService $fundingService;
+    protected SavingService $savingService;
 
     /**
-     * @var FundingValidator
+     * @var SavingValidator
      */
-    protected FundingValidator $validator;
+    protected SavingValidator $validator;
 
     /**
      * @var SessionModel|null
@@ -36,11 +36,11 @@ class Funding extends CallableClass
     /**
      * The constructor
      *
-     * @param FundingService $fundingService
+     * @param SavingService $savingService
      */
-    public function __construct(FundingService $fundingService)
+    public function __construct(SavingService $savingService)
     {
-        $this->fundingService = $fundingService;
+        $this->savingService = $savingService;
     }
 
     /**
@@ -49,7 +49,7 @@ class Funding extends CallableClass
     protected function getSession()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->fundingService->getSession($sessionId);
+        $this->session = $this->savingService->getSession($sessionId);
     }
 
     /**
@@ -64,24 +64,24 @@ class Funding extends CallableClass
 
     public function home()
     {
-        $fundings = $this->fundingService->getSessionFundings($this->session);
+        $savings = $this->savingService->getSessionSavings($this->session);
 
-        $html = $this->view()->render('tontine.pages.meeting.funding.home')
+        $html = $this->view()->render('tontine.pages.meeting.saving.home')
             ->with('session', $this->session)
-            ->with('fundings', $fundings);
-        $this->response->html('meeting-fundings', $html);
+            ->with('savings', $savings);
+        $this->response->html('meeting-savings', $html);
 
-        $this->jq('#btn-fundings-refresh')->click($this->rq()->home());
-        $this->jq('#btn-funding-add')->click($this->rq()->addFunding());
-        $fundingId = jq()->parent()->attr('data-funding-id')->toInt();
-        $this->jq('.btn-funding-edit')->click($this->rq()->editFunding($fundingId));
-        $this->jq('.btn-funding-delete')->click($this->rq()->deleteFunding($fundingId)
-            ->confirm(trans('meeting.funding.questions.delete')));
+        $this->jq('#btn-savings-refresh')->click($this->rq()->home());
+        $this->jq('#btn-saving-add')->click($this->rq()->addSaving());
+        $savingId = jq()->parent()->attr('data-saving-id')->toInt();
+        $this->jq('.btn-saving-edit')->click($this->rq()->editSaving($savingId));
+        $this->jq('.btn-saving-delete')->click($this->rq()->deleteSaving($savingId)
+            ->confirm(trans('meeting.saving.questions.delete')));
 
         return $this->response;
     }
 
-    public function addFunding()
+    public function addSaving()
     {
         if($this->session->closed)
         {
@@ -89,9 +89,9 @@ class Funding extends CallableClass
             return $this->response;
         }
 
-        $members = $this->fundingService->getMembers();
-        $title = trans('meeting.funding.titles.add');
-        $content = $this->view()->render('tontine.pages.meeting.funding.add')
+        $members = $this->savingService->getMembers();
+        $title = trans('meeting.saving.titles.add');
+        $content = $this->view()->render('tontine.pages.meeting.saving.add')
             ->with('members', $members);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -100,7 +100,7 @@ class Funding extends CallableClass
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->createFunding(pm()->form('funding-form')),
+            'click' => $this->rq()->createSaving(pm()->form('saving-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
 
@@ -110,7 +110,7 @@ class Funding extends CallableClass
     /**
      * @di $validator
      */
-    public function createFunding(array $formValues)
+    public function createSaving(array $formValues)
     {
         if($this->session->closed)
         {
@@ -119,7 +119,7 @@ class Funding extends CallableClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        $this->fundingService->createFunding($this->session, $values);
+        $this->savingService->createSaving($this->session, $values);
 
         $this->dialog->hide();
 
@@ -130,7 +130,7 @@ class Funding extends CallableClass
         return $this->home();
     }
 
-    public function editFunding(int $fundingId)
+    public function editSaving(int $savingId)
     {
         if($this->session->closed)
         {
@@ -138,10 +138,10 @@ class Funding extends CallableClass
             return $this->response;
         }
 
-        $funding = $this->fundingService->getSessionFunding($this->session, $fundingId);
-        $title = trans('meeting.funding.titles.edit');
-        $content = $this->view()->render('tontine.pages.meeting.funding.edit')
-            ->with('funding', $funding);
+        $saving = $this->savingService->getSessionSaving($this->session, $savingId);
+        $title = trans('meeting.saving.titles.edit');
+        $content = $this->view()->render('tontine.pages.meeting.saving.edit')
+            ->with('saving', $saving);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -149,7 +149,7 @@ class Funding extends CallableClass
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->updateFunding($fundingId, pm()->form('funding-form')),
+            'click' => $this->rq()->updateSaving($savingId, pm()->form('saving-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
 
@@ -159,7 +159,7 @@ class Funding extends CallableClass
     /**
      * @di $validator
      */
-    public function updateFunding(int $fundingId, array $formValues)
+    public function updateSaving(int $savingId, array $formValues)
     {
         if($this->session->closed)
         {
@@ -168,7 +168,7 @@ class Funding extends CallableClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        $this->fundingService->updateFunding($this->session, $fundingId, $values);
+        $this->savingService->updateSaving($this->session, $savingId, $values);
 
         $this->dialog->hide();
 
@@ -179,7 +179,7 @@ class Funding extends CallableClass
         return $this->home();
     }
 
-    public function deleteFunding(int $fundingId)
+    public function deleteSaving(int $savingId)
     {
         if($this->session->closed)
         {
@@ -187,7 +187,7 @@ class Funding extends CallableClass
             return $this->response;
         }
 
-        $this->fundingService->deleteFunding($this->session, $fundingId);
+        $this->savingService->deleteSaving($this->session, $savingId);
 
         // Refresh the amounts available
         $this->cl(Loan::class)->refreshAmount($this->session);

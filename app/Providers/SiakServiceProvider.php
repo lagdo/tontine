@@ -11,7 +11,7 @@ use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
-use Siak\Tontine\Service\Meeting\Cash\FundingService;
+use Siak\Tontine\Service\Meeting\Cash\SavingService;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
 use Siak\Tontine\Service\Meeting\Charge\FixedFeeService;
 use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
@@ -41,9 +41,9 @@ use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
-use Siak\Tontine\Validation\Meeting\FundingValidator;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 use Siak\Tontine\Validation\Meeting\RemitmentValidator;
+use Siak\Tontine\Validation\Meeting\SavingValidator;
 use Siak\Tontine\Validation\Meeting\TargetValidator;
 use Siak\Tontine\Validation\Planning\PoolValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
@@ -97,7 +97,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(SettlementService::class, SettlementService::class);
         $this->app->singleton(SettlementTargetService::class, SettlementTargetService::class);
 
-        $this->app->singleton(FundingService::class, FundingService::class);
+        $this->app->singleton(SavingService::class, SavingService::class);
         $this->app->singleton(DebtCalculator::class, DebtCalculator::class);
         $this->app->singleton(LoanService::class, LoanService::class);
         $this->app->singleton(AuctionService::class, AuctionService::class);
@@ -127,7 +127,7 @@ class SiakServiceProvider extends ServiceProvider
 
         $this->app->singleton(ChargeValidator::class, ChargeValidator::class);
         $this->app->singleton(DebtValidator::class, DebtValidator::class);
-        $this->app->singleton(FundingValidator::class, FundingValidator::class);
+        $this->app->singleton(SavingValidator::class, SavingValidator::class);
         $this->app->singleton(DisbursementValidator::class, DisbursementValidator::class);
         $this->app->singleton(LoanValidator::class, LoanValidator::class);
         $this->app->singleton(MemberValidator::class, MemberValidator::class);
