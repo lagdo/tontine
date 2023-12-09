@@ -43,4 +43,9 @@ class Funding extends Base
     {
         return $this->belongsTo(Member::class);
     }
+
+    public function fund()
+    {
+        return $this->belongsTo(Fund::class);
+    }
 }

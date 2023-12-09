@@ -97,4 +97,9 @@ class Loan extends Base
     {
         return $this->hasOne(Debt::class)->where('type', Debt::TYPE_INTEREST);
     }
+
+    public function fund()
+    {
+        return $this->belongsTo(Fund::class);
+    }
 }
