@@ -69,7 +69,7 @@ class SavingService
      */
     public function getSavings(int $page = 0): Collection
     {
-        return Saving::with(['member', 'session'])
+        return Saving::with(['member', 'session', 'fund'])
             ->page($page, $this->tenantService->getLimit())->get();
     }
 
@@ -82,7 +82,7 @@ class SavingService
      */
     public function getSessionSavings(Session $session): Collection
     {
-        return $session->savings()->with(['member'])->get();
+        return $session->savings()->with(['member', 'fund'])->get();
     }
 
     /**
@@ -95,7 +95,7 @@ class SavingService
      */
     public function getSessionSaving(Session $session, int $savingId): ?Saving
     {
-        return $session->savings()->with(['member'])->find($savingId);
+        return $session->savings()->with(['member', 'fund'])->find($savingId);
     }
 
     /**

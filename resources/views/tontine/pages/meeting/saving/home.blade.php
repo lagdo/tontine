@@ -24,7 +24,7 @@
                       <tbody>
 @foreach ($savings as $saving)
                         <tr>
-                          <td>{{ $saving->member->name }}</td>
+                          <td>{{ $saving->member->name }}@if ($saving->fund) <br/>{{ $saving->fund->title }}@endif</td>
                           <td class="currency">{{ $locale->formatMoney($saving->amount, true) }}</td>
                           <td class="table-item-menu">
 @if($session->opened)

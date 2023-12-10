@@ -28,7 +28,7 @@
                       <tbody>
 @foreach ($loans as $loan)
                         <tr>
-                          <td>{{ $loan->member->name }}</td>
+                          <td>{{ $loan->member->name }}@if ($loan->fund) <br/>{{ $loan->fund->title }}@endif</td>
                           <td class="currency">
                             {{ $locale->formatMoney($loan->principal, true) }}<br/>
                             {{ __('meeting.loan.interest.i' . $loan->interest_type) }}: {{ $loan->fixed_interest ?

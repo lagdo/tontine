@@ -99,7 +99,8 @@ class LoanService
      */
     public function getLoans(Session $session, int $page = 0): Collection
     {
-        return $session->loans()->with(['member', 'principal_debt', 'interest_debt'])
+        return $session->loans()
+            ->with(['member', 'principal_debt', 'interest_debt', 'fund'])
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -149,7 +150,7 @@ class LoanService
      */
     public function getSessionLoans(Session $session): Collection
     {
-        return $session->loans()->with(['member'])->get();
+        return $session->loans()->with(['member', 'fund'])->get();
     }
 
     /**
@@ -162,7 +163,7 @@ class LoanService
      */
     public function getSessionLoan(Session $session, int $loanId): ?Loan
     {
-        return $session->loans()->with(['member'])->withCount('refunds')->find($loanId);
+        return $session->loans()->with(['member', 'fund'])->withCount('refunds')->find($loanId);
     }
 
     /**
