@@ -2,6 +2,8 @@
 
 namespace Siak\Tontine\Model;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class Fund extends Base
 {
     /**
@@ -25,5 +27,15 @@ class Fund extends Base
     public function tontine()
     {
         return $this->belongsTo(Tontine::class);
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('active', true);
     }
 }

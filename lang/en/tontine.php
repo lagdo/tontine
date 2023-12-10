@@ -11,7 +11,7 @@ return [
         'meeting' => "Meeting",
         'report' => "Report",
         'members' => "Members",
-        'charges' => "Fees",
+        'options' => "Options",
         'round' => "Round",
         'session' => "Session",
         'rounds' => "Rounds",
@@ -119,6 +119,7 @@ return [
     ],
     'charge' => [
         'titles' => [
+            'charges' => "Fees and fines",
             'add' => "Add fees",
             'edit' => "Edit a fee",
         ],
@@ -150,6 +151,33 @@ return [
         'groups' => [
             'fixed' => "Fixed",
             'variable' => "Variable",
+        ],
+    ],
+    'fund' => [
+        'titles' => [
+            'funds' => "Savings funds",
+            'add' => "Add a savings fund",
+            'edit' => "Edit a savings fund",
+        ],
+        'messages' => [
+            'created' => "The savings fund was successfully created.",
+            'updated' => "The savings fund was successfully updated.",
+            'deleted' => "The savings fund was successfully deleted.",
+        ],
+    ],
+    'category' => [
+        'titles' => [
+            'categories' => "Disbursement categories",
+            'add' => "Add a category",
+            'edit' => "Edit a category",
+        ],
+        'types' => [
+            'disbursement' => "Disbursement",
+        ],
+        'messages' => [
+            'created' => "The category was successfully created.",
+            'updated' => "The category was successfully updated.",
+            'deleted' => "The category was successfully deleted.",
         ],
     ],
     'bill' => [

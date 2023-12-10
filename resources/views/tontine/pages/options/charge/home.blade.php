@@ -1,7 +1,7 @@
           <div class="section-body">
             <div class="row align-items-center">
               <div class="col-auto">
-                <h2 class="section-title">{{ __('tontine.menus.charges') }}</h2>
+                <h2 class="section-title">{{ __('tontine.charge.titles.charges') }}</h2>
               </div>
               <div class="col">
                 <div class="btn-group float-right" role="group" aria-label="">

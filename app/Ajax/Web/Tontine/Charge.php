@@ -30,15 +30,15 @@ class Charge extends CallableClass
     protected LocaleService $localeService;
 
     /**
-     * @di
-     * @var ChargeService
-     */
-    protected ChargeService $chargeService;
-
-    /**
      * @var ChargeValidator
      */
     protected ChargeValidator $validator;
+
+    /**
+     * @param ChargeService $chargeService
+     */
+    public function __construct(protected ChargeService $chargeService)
+    {}
 
     /**
      * @databag charge
@@ -46,9 +46,9 @@ class Charge extends CallableClass
      */
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.charge.home');
-        $this->response->html('section-title', trans('tontine.menus.tontine'));
-        $this->response->html('content-home', $html);
+        $html = $this->view()->render('tontine.pages.options.charge.home');
+        $this->response->html('content-charges-home', $html);
+
         $this->jq('#btn-refresh')->click($this->rq()->home());
         $this->jq('#btn-create')->click($this->rq()->select());
 
@@ -118,7 +118,7 @@ class Charge extends CallableClass
 
         $types = $this->getChargeTypes();
         $periods = $this->getChargePeriods();
-        $html = $this->view()->render('tontine.pages.charge.page')
+        $html = $this->view()->render('tontine.pages.options.charge.page')
             ->with('charges', $charges)
             ->with('types', $types)
             ->with('periods', $periods)
@@ -137,7 +137,7 @@ class Charge extends CallableClass
     public function select()
     {
         $title = '';
-        $content = $this->view()->render('tontine.pages.charge.select')
+        $content = $this->view()->render('tontine.pages.options.charge.select')
             ->with('groups', $this->getChargeGroups());
         $group = pm()->input('charge-group')->toInt();
         $buttons = [[
@@ -166,7 +166,7 @@ class Charge extends CallableClass
         [, $currency] = $this->localeService->getNameFromTontine($tontine);
 
         $title = trans('tontine.charge.titles.add');
-        $content = $this->view()->render('tontine.pages.charge.add')
+        $content = $this->view()->render('tontine.pages.options.charge.add')
             ->with('fixed', $group === self::GROUP_FIXED)
             ->with('label', $this->getChargeGroups()[$group])
             ->with('currency', $currency)
@@ -229,7 +229,7 @@ class Charge extends CallableClass
 
         $title = trans('tontine.charge.titles.edit');
         $content = $this->view()
-            ->render('tontine.pages.charge.edit')
+            ->render('tontine.pages.options.charge.edit')
             ->with('charge', $charge)
             ->with('currency', $currency)
             ->with('types', $this->getChargeTypes())

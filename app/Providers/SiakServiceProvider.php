@@ -36,7 +36,9 @@ use Siak\Tontine\Service\Report\MemberService as MemberReportService;
 use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\Report\RoundService as RoundReportService;
 use Siak\Tontine\Service\Report\SessionService as SessionReportService;
+use Siak\Tontine\Service\Tontine\CategoryService;
 use Siak\Tontine\Service\Tontine\ChargeService;
+use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
@@ -90,7 +92,9 @@ class SiakServiceProvider extends ServiceProvider
             return new Sqids(minLength: 8);
         });
 
+        $this->app->singleton(FundService::class, FundService::class);
         $this->app->singleton(ChargeService::class, ChargeService::class);
+        $this->app->singleton(CategoryService::class, CategoryService::class);
         $this->app->singleton(FixedFeeService::class, FixedFeeService::class);
         $this->app->singleton(LibreFeeService::class, LibreFeeService::class);
         $this->app->singleton(BillService::class, BillService::class);

@@ -29,6 +29,7 @@ class Category extends Base
     protected $fillable = [
         'name',
         'item_type',
+        'active',
     ];
 
     /**
@@ -56,5 +57,15 @@ class Category extends Base
     public function scopeDisbursement(Builder $query): Builder
     {
         return $query->where('item_type', self::TYPE_DISBURSEMENT);
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('active', true);
     }
 }

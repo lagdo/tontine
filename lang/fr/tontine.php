@@ -11,7 +11,7 @@ return [
         'meeting' => "Réunion",
         'report' => "Rapport",
         'members' => "Membres",
-        'charges' => "Frais",
+        'options' => "Options",
         'round' => "Tour",
         'session' => "Séance",
         'rounds' => "Tours",
@@ -119,6 +119,7 @@ return [
     ],
     'charge' => [
         'titles' => [
+            'charges' => "Frais et amendes",
             'add' => "Ajouter des frais",
             'edit' => "Modifier un frais",
         ],
@@ -150,6 +151,33 @@ return [
         'groups' => [
             'fixed' => "Fixe",
             'variable' => "Variable",
+        ],
+    ],
+    'fund' => [
+        'titles' => [
+            'funds' => "Fonds d'épargne",
+            'add' => "Ajouter un fonds d'épargne",
+            'edit' => "Modifier un fonds d'épargne",
+        ],
+        'messages' => [
+            'created' => "Le fonds d'épargne a été ajouté.",
+            'updated' => "Le fonds d'épargne a été modifié.",
+            'deleted' => "Le fonds d'épargne a été supprimé.",
+        ],
+    ],
+    'category' => [
+        'titles' => [
+            'categories' => "Catégories de décaissement",
+            'add' => "Ajouter une catégorie",
+            'edit' => "Modifier une catégorie",
+        ],
+        'types' => [
+            'disbursement' => "Décaissement",
+        ],
+        'messages' => [
+            'created' => "La catégorie a été ajoutée.",
+            'updated' => "La catégorie a été modifiée.",
+            'deleted' => "La catégorie a été supprimée.",
         ],
     ],
     'bill' => [

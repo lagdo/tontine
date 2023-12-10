@@ -8,8 +8,8 @@ use App\Ajax\Web\Planning\Session as PlanningSession;
 use App\Ajax\Web\Planning\Subscription;
 use App\Ajax\Web\Report\Round as RoundReport;
 use App\Ajax\Web\Report\Session as SessionReport;
-use App\Ajax\Web\Tontine\Charge;
 use App\Ajax\Web\Tontine\Member;
+use App\Ajax\Web\Tontine\Options;
 use App\Ajax\Web\Tontine\Round as TontineRound;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
@@ -83,7 +83,7 @@ class CallableClass extends JaxonCallableClass
         $this->jq('a', '#sidebar-menu-tontine')->css('color', '#6777ef');
 
         $this->jq('#tontine-menu-members')->click($this->cl(Member::class)->rq()->home());
-        $this->jq('#tontine-menu-charges')->click($this->cl(Charge::class)->rq()->home());
+        $this->jq('#tontine-menu-options')->click($this->cl(Options::class)->rq()->home());
         $this->jq('#planning-menu-rounds')->click($this->cl(TontineRound::class)->rq()->home());
 
         // Reset the round sidebar menu
