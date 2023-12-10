@@ -32,6 +32,7 @@ class SavingValidator extends AbstractValidator
         $validator = Validator::make($this->values($values), [
             'member' => 'required|integer|min:1',
             'amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+            'fund_id' => 'required|integer|min:0',
         ]);
         if($validator->fails())
         {

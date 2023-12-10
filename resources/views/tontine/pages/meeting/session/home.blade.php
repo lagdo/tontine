@@ -62,21 +62,19 @@
                     </div>
                     <div class="tab-pane fade" id="session-cash" role="tabpanel" aria-labelledby="session-tab-cash">
                       <div class="row">
-                        <div class="col-md-6 col-sm-12" id="meeting-savings">
-                        </div>
                         <div class="col-md-6 col-sm-12" id="meeting-disbursements">
                         </div>
                       </div>
                     </div>
                     <div class="tab-pane fade" id="session-credits" role="tabpanel" aria-labelledby="session-tab-credits">
                       <div class="row">
-                        <div class="col-md-6 col-sm-12">
-                          <div id="meeting-loans">
-                          </div>
-                          <div id="meeting-partial-refunds">
-                          </div>
+                        <div class="col-md-6 col-sm-12" id="meeting-savings">
+                        </div>
+                        <div class="col-md-6 col-sm-12" id="meeting-loans">
                         </div>
                         <div class="col-md-6 col-sm-12" id="meeting-refunds">
+                        </div>
+                        <div class="col-md-6 col-sm-12" id="meeting-partial-refunds">
                         </div>
                       </div>
                     </div>

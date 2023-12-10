@@ -15,7 +15,7 @@ return new class extends Migration
      */
     private function copyData(string $source, string $target)
     {
-        $fields = 'amount,member_id,session_id,category_id,created_at,updated_at';
+        $fields = 'amount,member_id,session_id,fund_id,created_at,updated_at';
         DB::statement("INSERT INTO $target($fields) SELECT $fields FROM $source ORDER BY id ASC");
     }
 
@@ -35,8 +35,8 @@ return new class extends Migration
             $table->foreign('member_id')->references('id')->on('members');
             $table->unsignedBigInteger('session_id');
             $table->foreign('session_id')->references('id')->on('sessions');
-            $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->unsignedBigInteger('fund_id')->nullable();
+            $table->foreign('fund_id')->references('id')->on('categories');
         });
 
         $this->copyData('fundings', 'savings');
@@ -59,8 +59,8 @@ return new class extends Migration
             $table->foreign('member_id')->references('id')->on('members');
             $table->unsignedBigInteger('session_id');
             $table->foreign('session_id')->references('id')->on('sessions');
-            $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->unsignedBigInteger('fund_id')->nullable();
+            $table->foreign('fund_id')->references('id')->on('categories');
         });
 
         $this->copyData('savings', 'fundings');

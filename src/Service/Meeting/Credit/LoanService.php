@@ -13,38 +13,22 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Tontine\FundService;
 
 use function trans;
 
 class LoanService
 {
     /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
-     * @var BalanceCalculator
-     */
-    protected BalanceCalculator $balanceCalculator;
-
-    /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
+     * @param FundService $fundService
      * @param BalanceCalculator $balanceCalculator
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService,
-        BalanceCalculator $balanceCalculator)
-    {
-        $this->localeService = $localeService;
-        $this->tenantService = $tenantService;
-        $this->balanceCalculator = $balanceCalculator;
-    }
+    public function __construct(private LocaleService $localeService,
+        private TenantService $tenantService, private FundService $fundService,
+        private BalanceCalculator $balanceCalculator)
+    {}
 
     /**
      * Get a single session.
@@ -191,6 +175,8 @@ class LoanService
      */
     public function createLoan(Session $session, array $values): void
     {
+        $fund = $values['fund_id'] === 0 ? null :
+            $this->fundService->getFund($values['fund_id']);
         $member = $this->getMember($values['member']);
         if(!$member)
         {
@@ -202,6 +188,10 @@ class LoanService
         $loan->interest_rate = $values['interest_rate'];
         $loan->member()->associate($member);
         $loan->session()->associate($session);
+        if($fund !== null)
+        {
+            $loan->fund()->associate($fund);
+        }
         DB::transaction(function() use($loan, $values) {
             $loan->save();
 
@@ -230,8 +220,18 @@ class LoanService
      */
     public function updateLoan(Session $session, Loan $loan, array $values): void
     {
+        $fund = $values['fund_id'] === 0 ? null :
+            $this->fundService->getFund($values['fund_id']);
         $loan->interest_type = $values['interest_type'];
         $loan->interest_rate = $values['interest_rate'];
+        if($fund !== null)
+        {
+            $loan->fund()->associate($fund);
+        }
+        else
+        {
+            $loan->fund()->dissociate();
+        }
         DB::transaction(function() use($loan, $values) {
             $loan->save();
 

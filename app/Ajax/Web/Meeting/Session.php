@@ -119,6 +119,7 @@ class Session extends CallableClass
      */
     private function credits()
     {
+        $this->cl(Saving::class)->show($this->session);
         $this->cl(Loan::class)->show($this->session);
         $this->cl(PartialRefund::class)->show($this->session);
         $this->cl(Refund::class)->show($this->session);
@@ -129,7 +130,6 @@ class Session extends CallableClass
      */
     private function cash()
     {
-        $this->cl(Saving::class)->show($this->session);
         $this->cl(Disbursement::class)->show($this->session);
     }
 

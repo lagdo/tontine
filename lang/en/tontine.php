@@ -159,6 +159,9 @@ return [
             'add' => "Add a savings fund",
             'edit' => "Edit a savings fund",
         ],
+        'labels' => [
+            'fund' => "Savings fund",
+        ],
         'messages' => [
             'created' => "The savings fund was successfully created.",
             'updated' => "The savings fund was successfully updated.",

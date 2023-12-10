@@ -5,6 +5,7 @@ namespace App\Ajax\Web\Meeting\Credit;
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Meeting\Cash\Disbursement;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
+use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 use Siak\Tontine\Model\Session as SessionModel;
 
@@ -18,6 +19,11 @@ use function trans;
  */
 class Loan extends CallableClass
 {
+    /**
+     * @var FundService
+     */
+    protected FundService $fundService;
+
     /**
      * @var LoanService
      */
@@ -93,6 +99,9 @@ class Loan extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $fundService
+     */
     public function addLoan()
     {
         if($this->session->closed)
@@ -104,10 +113,12 @@ class Loan extends CallableClass
         $amountAvailable = $this->loanService->getAmountAvailableValue($this->session);
         $members = $this->loanService->getMembers();
         $title = trans('meeting.loan.titles.add');
-        $content = $this->view()->render('tontine.pages.meeting.loan.add')
-            ->with('members', $members)
-            ->with('amountAvailable', $amountAvailable)
-            ->with('interestTypes', $this->loanService->getInterestTypes());
+        $content = $this->view()->render('tontine.pages.meeting.loan.add', [
+            'members' => $members,
+            'amountAvailable' => $amountAvailable,
+            'interestTypes' => $this->loanService->getInterestTypes(),
+            'funds' => $this->fundService->getFundList(),
+        ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -147,6 +158,9 @@ class Loan extends CallableClass
         return $this->home();
     }
 
+    /**
+     * @di $fundService
+     */
     public function editLoan(int $loanId)
     {
         if($this->session->closed)
@@ -168,9 +182,11 @@ class Loan extends CallableClass
         }
 
         $title = trans('meeting.loan.titles.edit');
-        $content = $this->view()->render('tontine.pages.meeting.loan.edit')
-            ->with('loan', $loan)
-            ->with('interestTypes', $this->loanService->getInterestTypes());
+        $content = $this->view()->render('tontine.pages.meeting.loan.edit', [
+            'loan' => $loan,
+            'interestTypes' => $this->loanService->getInterestTypes(),
+            'funds' => $this->fundService->getFundList(),
+        ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

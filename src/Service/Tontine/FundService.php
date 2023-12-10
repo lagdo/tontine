@@ -17,6 +17,17 @@ class FundService
     }
 
     /**
+     * Get a list of funds for the dropdown select component.
+     *
+     * @return Collection
+     */
+    public function getFundList(): Collection
+    {
+        return $this->tenantService->tontine()->funds()->active()
+            ->pluck('title', 'id')->prepend('', 0);
+    }
+
+    /**
      * Get a paginated list of funds.
      *
      * @param int $page

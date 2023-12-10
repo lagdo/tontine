@@ -159,6 +159,9 @@ return [
             'add' => "Ajouter un fonds d'épargne",
             'edit' => "Modifier un fonds d'épargne",
         ],
+        'labels' => [
+            'fund' => "Fonds d'épargne",
+        ],
         'messages' => [
             'created' => "Le fonds d'épargne a été ajouté.",
             'updated' => "Le fonds d'épargne a été modifié.",

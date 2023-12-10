@@ -5,6 +5,7 @@ namespace App\Ajax\Web\Meeting\Cash;
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Meeting\Credit\Loan;
 use Siak\Tontine\Service\Meeting\Cash\SavingService;
+use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\SavingValidator;
 use Siak\Tontine\Model\Session as SessionModel;
 
@@ -18,6 +19,11 @@ use function trans;
  */
 class Saving extends CallableClass
 {
+    /**
+     * @var FundService
+     */
+    protected FundService $fundService;
+
     /**
      * @var SavingService
      */
@@ -81,6 +87,9 @@ class Saving extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $fundService
+     */
     public function addSaving()
     {
         if($this->session->closed)
@@ -91,8 +100,10 @@ class Saving extends CallableClass
 
         $members = $this->savingService->getMembers();
         $title = trans('meeting.saving.titles.add');
-        $content = $this->view()->render('tontine.pages.meeting.saving.add')
-            ->with('members', $members);
+        $content = $this->view()->render('tontine.pages.meeting.saving.add', [
+            'members' => $members,
+            'funds' => $this->fundService->getFundList(),
+        ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -130,6 +141,9 @@ class Saving extends CallableClass
         return $this->home();
     }
 
+    /**
+     * @di $fundService
+     */
     public function editSaving(int $savingId)
     {
         if($this->session->closed)
@@ -140,8 +154,10 @@ class Saving extends CallableClass
 
         $saving = $this->savingService->getSessionSaving($this->session, $savingId);
         $title = trans('meeting.saving.titles.edit');
-        $content = $this->view()->render('tontine.pages.meeting.saving.edit')
-            ->with('saving', $saving);
+        $content = $this->view()->render('tontine.pages.meeting.saving.edit', [
+            'saving' => $saving,
+            'funds' => $this->fundService->getFundList(),
+        ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

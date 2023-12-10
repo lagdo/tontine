@@ -10,30 +10,20 @@ use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Tontine\FundService;
 
 use function trans;
 
 class SavingService
 {
     /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
+     * @param FundService $fundService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService)
-    {
-        $this->localeService = $localeService;
-        $this->tenantService = $tenantService;
-    }
+    public function __construct(private LocaleService $localeService,
+        private TenantService $tenantService, private FundService $fundService)
+    {}
 
     /**
      * Get a single session.
@@ -118,6 +108,8 @@ class SavingService
      */
     public function createSaving(Session $session, array $values): void
     {
+        $fund = $values['fund_id'] === 0 ? null :
+            $this->fundService->getFund($values['fund_id']);
         $member = $this->getMember($values['member']);
         if(!$member)
         {
@@ -128,6 +120,10 @@ class SavingService
         $saving->amount = $values['amount'];
         $saving->member()->associate($member);
         $saving->session()->associate($session);
+        if($fund !== null)
+        {
+            $saving->fund()->associate($fund);
+        }
         $saving->save();
     }
 
@@ -141,6 +137,8 @@ class SavingService
      */
     public function updateSaving(Session $session, int $savingId, array $values): void
     {
+        $fund = $values['fund_id'] === 0 ? null :
+            $this->fundService->getFund($values['fund_id']);
         $member = $this->getMember($values['member']);
         if(!$member)
         {
@@ -154,6 +152,14 @@ class SavingService
 
         $saving->amount = $values['amount'];
         $saving->member()->associate($member);
+        if($fund !== null)
+        {
+            $saving->fund()->associate($fund);
+        }
+        else
+        {
+            $saving->fund()->dissociate();
+        }
         $saving->save();
     }
 

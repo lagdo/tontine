@@ -13,6 +13,12 @@
                 {!! Form::text('amount', '', ['class' => 'form-control']) !!}
               </div>
             </div>
+            <div class="form-group row">
+              {!! Form::label('fund_id', __('tontine.fund.labels.fund'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+              <div class="col-sm-8">
+                {!! Form::select('fund_id', $funds, '', ['class' => 'form-control']) !!}
+              </div>
             </div>
+          </div>
         </form>
       </div>
