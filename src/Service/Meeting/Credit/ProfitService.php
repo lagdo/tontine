@@ -92,21 +92,24 @@ class ProfitService
      *
      * @param Session $session
      * @param int $profitAmount
+     * @param int $fundId
      *
      * @return Collection
      */
-    public function getDistributions(Session $session, int $profitAmount): Collection
+    public function getDistributions(Session $session, int $profitAmount, int $fundId): Collection
     {
         // Get the savings to be rewarded
-        $savings = Saving::select('savings.*')
+        $query = Saving::select('savings.*')
             ->join('members', 'members.id', '=', 'savings.member_id')
             ->join('sessions', 'sessions.id', '=', 'savings.session_id')
             ->where('sessions.round_id', $this->tenantService->round()->id)
             ->where('sessions.start_at', '<=', $session->start_at)
             ->orderBy('members.name', 'asc')
             ->orderBy('sessions.start_at', 'asc')
-            ->with(['session', 'member'])
-            ->get();
+            ->with(['session', 'member']);
+        $savings = $fundId > 0 ?
+            $query->where('savings.fund_id', $fundId)->get() :
+            $query->whereNull('savings.fund_id')->get();
         if($savings->count() === 0)
         {
             return $savings;
@@ -137,50 +140,95 @@ class ProfitService
     }
 
     /**
+     * Get the sum of savings amounts.
+     *
+     * @param Collection $sessionId
+     * @param int $fundId
+     *
+     * @return int
+     */
+    private function getSavingAmount(Collection $sessionIds, int $fundId): int
+    {
+        // Saving: the sum of savings amounts.
+        $query = DB::table('savings')
+            ->select(DB::raw("sum(amount) as total"))
+            ->whereIn('session_id', $sessionIds);
+        $saving = $fundId > 0 ?
+            $query->where('savings.fund_id', $fundId)->first() :
+            $query->whereNull('savings.fund_id')->first();
+        return $saving->total ?? 0;
+    }
+
+    /**
+     * Get the sum of refunded interests.
+     *
+     * @param Collection $sessionId
+     * @param int $fundId
+     *
+     * @return int
+     */
+    private function getRefundAmount(Collection $sessionIds, int $fundId): int
+    {
+        $query = DB::table('refunds')
+            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
+            ->join('loans', 'debts.loan_id', '=', 'loans.id')
+            ->select(DB::raw("sum(debts.amount) as total"))
+            ->where('debts.type', Debt::TYPE_INTEREST)
+            ->whereIn('refunds.session_id', $sessionIds);
+        $profit = $fundId > 0 ?
+            $query->where('loans.fund_id', $fundId)->first() :
+            $query->whereNull('loans.fund_id')->first();
+        return $profit->total ?? 0;
+    }
+
+    /**
      * Get the total saving and profit amounts.
      *
      * @param Session $session
+     * @param int $fundId
      *
      * @return array<int>
      */
-    public function getAmounts(Session $session): array
+    public function getSavingAmounts(Session $session, int $fundId): array
     {
         // Get the ids of all the sessions until the current one.
         $sessionIds = $this->tenantService->round()->sessions()
             ->where('start_at', '<=', $session->start_at)
             ->pluck('id');
-        // Saving: the sum of savings amounts.
-        $saving = DB::table('savings')
-            ->select(DB::raw("sum(amount) as total"))
-            ->whereIn('session_id', $sessionIds)
-            ->first();
-        // Profit: the sum of interest refunds.
-        $profit = DB::table('refunds')
-            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
-            ->select(DB::raw("sum(debts.amount) as total"))
-            ->where('debts.type', Debt::TYPE_INTEREST)
-            ->whereIn('refunds.session_id', $sessionIds)
-            ->first();
-
-        return ['saving' => $saving->total ?? 0, 'profit' => $profit->total ?? 0];
+        return [
+            'saving' => $this->getSavingAmount($sessionIds, $fundId),
+            'refund' => $this->getRefundAmount($sessionIds, $fundId),
+        ];
     }
 
     /**
-     * Save the round profits on this session.
+     * Save the profit amount on this session.
      *
      * @param Session $session
      * @param int $profitAmount
+     * @param int $fundId
      *
      * @return void
      */
-    public function saveProfit(Session $session, int $profitAmount)
+    public function saveProfitAmount(Session $session, int $profitAmount, int $fundId)
     {
         $round = $this->tenantService->round();
         $properties = $round->properties;
-        $properties['profit'] = [
-            'session' => $session->id,
-            'amount' => $profitAmount,
-        ];
+        $properties['profit'][$session->id][$fundId] = $profitAmount;
         $round->saveProperties($properties);
+    }
+
+    /**
+     * Get the profit amount saved on this session.
+     *
+     * @param Session $session
+     * @param int $fundId
+     *
+     * @return int
+     */
+    public function getProfitAmount(Session $session, int $fundId): int
+    {
+        $round = $this->tenantService->round();
+        return $round->properties['profit'][$session->id][$fundId] ?? 0;
     }
 }

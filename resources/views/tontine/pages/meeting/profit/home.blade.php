@@ -5,7 +5,8 @@
                     </div>
                     <div class="col-auto">
                       <div class="input-group">
-                        {{ Form::text('profit_amount', $profit, ['class' => 'form-control', 'id' => 'profit_amount_edit']) }}
+                        {!! Form::select('fund_id', $funds, 0, ['class' => 'form-control', 'id' => 'profit_fund_id']) !!}
+                        {!! Form::text('profit_amount', $profit, ['class' => 'form-control', 'id' => 'profit_amount_edit']) !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" id="btn-profits-refresh"><i class="fa fa-sync"></i></button>
 @if($session->opened)
@@ -15,15 +16,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col">
-                      {!! __('meeting.profit.distribution.total', [
-                          'saving' => $locale->formatMoney($saving, true),
-                          'profit' => $locale->formatMoney($profit, true),
-                        ]) !!}
-                    </div>
-                    <div class="col-auto" id="profit_distribution_details">
-                    </div>
+                  <div class="row" id="profit_distribution_details">
                   </div>
                   <div class="table-responsive mt-2" id="meeting-profits-page">
                   </div> <!-- End table -->
