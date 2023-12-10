@@ -112,7 +112,10 @@ class DisbursementService
     public function getCategories(): Collection
     {
         // It is important to call get() before pluck() so the name field is translated.
-        return Category::disbursement()->get()->pluck('name', 'id');
+        $globalCategories = Category::disbursement()->get()->pluck('name', 'id');
+        $tontineCategories = $this->tenantService->tontine()
+            ->categories()->disbursement()->active()->pluck('name', 'id');
+        return $globalCategories->union($tontineCategories);
     }
 
     /**
