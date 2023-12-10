@@ -7,7 +7,6 @@ use App\Ajax\Web\Meeting\Cash\Disbursement;
 use App\Ajax\Web\Meeting\Credit\Loan;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;
-use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 use function Jaxon\jq;
@@ -21,16 +20,6 @@ use function trans;
 class Auction extends CallableClass
 {
     /**
-     * @var TontineService
-     */
-    protected TontineService $tontineService;
-
-    /**
-     * @var AuctionService
-     */
-    protected AuctionService $auctionService;
-
-    /**
      * @var DebtValidator
      */
     protected DebtValidator $validator;
@@ -43,14 +32,10 @@ class Auction extends CallableClass
     /**
      * The constructor
      *
-     * @param TontineService $tontineService
      * @param AuctionService $auctionService
      */
-    public function __construct(TontineService $tontineService, AuctionService $auctionService)
-    {
-        $this->tontineService = $tontineService;
-        $this->auctionService = $auctionService;
-    }
+    public function __construct(private AuctionService $auctionService)
+    {}
 
     /**
      * @return void
@@ -61,27 +46,14 @@ class Auction extends CallableClass
         $this->session = $this->auctionService->getSession($sessionId);
     }
 
-    /**
-     * @exclude
-     */
-    public function show(SessionModel $session)
-    {
-        if(!$this->tontineService->hasPoolWithAuction())
-        {
-            return $this->response;
-        }
-        $this->session = $session;
-
-        return $this->home();
-    }
-
     public function home()
     {
         $html = $this->view()->render('tontine.pages.meeting.auction.home')
             ->with('session', $this->session);
-        $this->response->html('meeting-auctions', $html);
+        $this->response->html('meeting-remitments', $html);
         $this->jq('#btn-auctions-refresh')->click($this->rq()->home());
         $this->jq('#btn-auctions-filter')->click($this->rq()->toggleFilter());
+        $this->jq('#btn-remitments-back')->click($this->cl(Remitment::class)->rq()->home());
 
         return $this->page();
     }

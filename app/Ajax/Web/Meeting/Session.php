@@ -11,7 +11,6 @@ use App\Ajax\Web\Meeting\Credit\Loan;
 use App\Ajax\Web\Meeting\Credit\Profit;
 use App\Ajax\Web\Meeting\Credit\PartialRefund;
 use App\Ajax\Web\Meeting\Credit\Refund;
-use App\Ajax\Web\Meeting\Pool\Auction;
 use App\Ajax\Web\Meeting\Pool\Deposit;
 use App\Ajax\Web\Meeting\Pool\Remitment;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -111,7 +110,6 @@ class Session extends CallableClass
     {
         $this->cl(Deposit::class)->show($this->session);
         $this->cl(Remitment::class)->show($this->session);
-        $this->cl(Auction::class)->show($this->session);
     }
 
     /**

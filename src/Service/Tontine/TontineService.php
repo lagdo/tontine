@@ -122,19 +122,6 @@ class TontineService
     }
 
     /**
-     * Check if the current tontine has at least financial pool.
-     *
-     * @return bool
-     */
-    public function hasPoolWithAuction(): bool
-    {
-        $round = $this->tenantService->round();
-        return $round && $round->pools->contains(function($pool) {
-            return $pool->remit_auction;
-        });
-    }
-
-    /**
      * Add a new tontine.
      *
      * @param array $values

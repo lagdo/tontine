@@ -152,4 +152,17 @@ class PoolService
     {
         return $this->tenantService->getPool($poolId);
     }
+
+    /**
+     * Check if the current tontine has at least one pool with auctions.
+     *
+     * @return bool
+     */
+    public function hasPoolWithAuction(): bool
+    {
+        $round = $this->tenantService->round();
+        return $round && $round->pools->contains(function($pool) {
+            return $pool->remit_auction;
+        });
+    }
 }

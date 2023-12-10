@@ -1,10 +1,17 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
-                    <div class="col-auto">
+                    <div class="col">
                       <div class="section-title mt-0">{!! __('meeting.titles.remitments') !!}</div>
                     </div>
+@if ($hasAuctions)
+                    <div class="col-auto">
+                      <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
+                        <button type="button" class="btn btn-primary" id="btn-remitment-auctions">{{ __('meeting.titles.auctions') }}</button>
+                      </div>
+                    </div>
+@endif
 @if($session->opened)
-                    <div class="col">
+                    <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
                         <button type="button" class="btn btn-primary" id="btn-remitments-refresh"><i class="fa fa-sync"></i></button>
                       </div>
@@ -23,8 +30,8 @@
                       <tbody>
 @foreach($pools as $pool)
 @php
-    $template = $session->disabled($pool) ? 'disabled' :
-      ($session->closed ? 'closed' : ($session->pending ? 'pending' : 'opened'));
+  $template = $session->disabled($pool) ? 'disabled' :
+    ($session->closed ? 'closed' : ($session->pending ? 'pending' : 'opened'));
 @endphp
                         @include('tontine.pages.meeting.pool.' . $template, [
                           'pool' => $pool,

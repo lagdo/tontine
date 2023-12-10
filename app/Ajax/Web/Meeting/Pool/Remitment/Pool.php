@@ -5,7 +5,6 @@ namespace App\Ajax\Web\Meeting\Pool\Remitment;
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Meeting\Cash\Disbursement;
 use App\Ajax\Web\Meeting\Credit\Loan;
-use App\Ajax\Web\Meeting\Pool\Auction;
 use App\Ajax\Web\Meeting\Pool\Remitment;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -206,11 +205,6 @@ class Pool extends CallableClass
             $values['payable'], $values['amount'], $values['auction']);
         $this->dialog->hide();
 
-        // Refresh the auction page
-        if($this->pool->remit_auction)
-        {
-            $this->cl(Auction::class)->show($this->session);
-        }
         // Refresh the refunds pages
         $this->cl(Loan::class)->refreshAmount($this->session);
         $this->cl(Disbursement::class)->refreshAmount($this->session);
@@ -231,11 +225,6 @@ class Pool extends CallableClass
 
         $this->remitmentService->deleteRemitment($this->pool, $this->session, $payableId);
 
-        // Refresh the auction page
-        if($this->pool->remit_auction)
-        {
-            $this->cl(Auction::class)->show($this->session);
-        }
         // Refresh the amounts available
         $this->cl(Loan::class)->refreshAmount($this->session);
         $this->cl(Disbursement::class)->refreshAmount($this->session);

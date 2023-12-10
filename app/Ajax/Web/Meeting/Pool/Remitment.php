@@ -55,11 +55,18 @@ class Remitment extends CallableClass
 
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.meeting.remitment.home')
-            ->with('session', $this->session)
-            ->with('pools', $this->poolService->getPoolsWithPayables($this->session));
+        $hasAuctions = $this->poolService->hasPoolWithAuction();
+        $html = $this->view()->render('tontine.pages.meeting.remitment.home', [
+            'session' => $this->session,
+            'pools' => $this->poolService->getPoolsWithPayables($this->session),
+            'hasAuctions' => $hasAuctions,
+        ]);
         $this->response->html('meeting-remitments', $html);
 
+        if($hasAuctions)
+        {
+            $this->jq('#btn-remitment-auctions')->click($this->cl(Auction::class)->rq()->home());
+        }
         $this->jq('#btn-remitments-refresh')->click($this->rq()->home());
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
         $this->jq('.btn-pool-remitments')
