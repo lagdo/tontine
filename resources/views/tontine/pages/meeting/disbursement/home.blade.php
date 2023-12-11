@@ -20,7 +20,9 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>{!! __('common.labels.name') !!}</th>
+                          <th>{!! __('meeting.labels.category') !!}</th>
+                          <th>{!! __('meeting.labels.member') !!}</th>
+                          <th>{!! __('meeting.labels.charge') !!}</th>
                           <th class="currency">{!! __('common.labels.amount') !!}</th>
                           <th class="table-item-menu">&nbsp;</th>
                         </tr>
@@ -28,10 +30,10 @@
                       <tbody>
 @foreach ($disbursements as $disbursement)
                         <tr>
-                          <td>
-                            {{ $disbursement->category->name }}@if (($disbursement->comment)) - {{
-                              $disbursement->comment }}@endif @if (($disbursement->member))<br/>{{
-                              $disbursement->member->name }}@endif</td>
+                          <td>{{ $disbursement->category->name }}@if (($disbursement->comment)) <br/>{{
+                            $disbursement->comment }}@endif</td>
+                          <td>@if (($disbursement->member)) {{ $disbursement->member->name }}@endif</td>
+                          <td>@if (($disbursement->charge)) {{ $disbursement->charge->name }}@endif</td>
                           <td class="currency">{{ $locale->formatMoney($disbursement->amount, true) }}</td>
                           <td class="table-item-menu">
 @if($session->opened)

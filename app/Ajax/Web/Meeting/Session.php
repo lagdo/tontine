@@ -4,7 +4,6 @@ namespace App\Ajax\Web\Meeting;
 
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Meeting\Cash\Disbursement;
-use App\Ajax\Web\Meeting\Cash\Saving;
 use App\Ajax\Web\Meeting\Charge\FixedFee;
 use App\Ajax\Web\Meeting\Charge\LibreFee;
 use App\Ajax\Web\Meeting\Credit\Loan;
@@ -12,6 +11,8 @@ use App\Ajax\Web\Meeting\Credit\PartialRefund;
 use App\Ajax\Web\Meeting\Credit\Refund;
 use App\Ajax\Web\Meeting\Pool\Deposit;
 use App\Ajax\Web\Meeting\Pool\Remitment;
+use App\Ajax\Web\Meeting\Saving\Closing;
+use App\Ajax\Web\Meeting\Saving\Saving;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\TontineService;
@@ -114,9 +115,17 @@ class Session extends CallableClass
     /**
      * @return void
      */
-    private function credits()
+    private function savings()
     {
         $this->cl(Saving::class)->show($this->session);
+        $this->cl(Closing::class)->show($this->session);
+    }
+
+    /**
+     * @return void
+     */
+    private function credits()
+    {
         $this->cl(Loan::class)->show($this->session);
         $this->cl(PartialRefund::class)->show($this->session);
         $this->cl(Refund::class)->show($this->session);
@@ -191,8 +200,9 @@ class Session extends CallableClass
         $this->reports();
         $this->pools();
         $this->charges();
-        $this->cash();
+        $this->savings();
         $this->credits();
+        $this->cash();
 
         return $this->response;
     }

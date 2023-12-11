@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service\Meeting\Credit;
+namespace Siak\Tontine\Service\Meeting\Saving;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -9,7 +9,6 @@ use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Saving;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Meeting\Cash\SavingService;
 use Siak\Tontine\Service\TenantService;
 
 use function array_keys;

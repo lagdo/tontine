@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service\Meeting\Cash;
+namespace Siak\Tontine\Service\Meeting\Saving;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;

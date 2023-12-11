@@ -4,7 +4,7 @@ namespace App\Ajax\Web\Report\Session;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Service\Meeting\Credit\ProfitService;
+use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Siak\Tontine\Service\Report\SessionService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Sqids\SqidsInterface;

@@ -13,7 +13,7 @@ return [
         'remitments' => "Remises",
         'auctions' => "Enchères",
         'savings' => "&Eacute;pargnes",
-        'loans' => "Emprunts",
+        'closings' => "Clotûres",
         'amounts' => "Montants",
         'settlements' => "Règlements",
         'fine' => "Appliquer",
@@ -29,6 +29,7 @@ return [
         'deposits' => "Versements",
         'remitments' => "Remises",
         'settlements' => "Règlements",
+        'savings' => "&Eacute;pargne",
         'loans' => "Emprunts",
         'amounts' => "Montants",
         'reports' => "Rapports",
@@ -38,7 +39,7 @@ return [
         'pools' => "Cotisations",
         'charges' => "Frais",
         'cash' => "Caisse",
-        'credits' => "Crédits",
+        'credits' => "Crédit",
         'profits' => "Gains",
     ],
     'labels' => [
@@ -202,6 +203,9 @@ return [
         ],
     ],
     'profit' => [
+        'labels' => [
+            'amount' => "Montant à partager",
+        ],
         'distribution' => [
             'total' => "&Eacute;pargne: :saving. Gains: :profit.",
             'amount' => "Distribution: :amount.",

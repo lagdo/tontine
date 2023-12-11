@@ -10,16 +10,6 @@
                         <button type="button" class="btn btn-primary" id="btn-savings-refresh"><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
-                    <div class="col-auto">
-                      <div class="input-group mb-2">
-                        {!! Form::select('fund_id', $funds, 0, ['class' => 'form-control',
-                          'style' => 'height:36px; padding:5px 15px;', 'id' => 'savings_fund_id']) !!}
-                        <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" id="btn-savings-closing">{!!
-                            __('meeting.saving.labels.closing') !!}</button>
-                        </div>
-                      </div>
-                    </div>
 @endif
                   </div>
                   <div class="table-responsive">
@@ -49,8 +39,6 @@
     'text' => __('common.actions.delete'),
   ]],
 ])
-@else
-                            <i class="fa fa-trash-alt"></i>
 @endif
                           </td>
                         </tr>

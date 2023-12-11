@@ -13,6 +13,7 @@ return [
         'remitments' => "Remitments",
         'auctions' => "Auctions",
         'savings' => "Savings",
+        'closings' => "Closings",
         'loans' => "Loans",
         'amounts' => "Amounts",
         'settlements' => "Settlements",
@@ -29,6 +30,7 @@ return [
         'deposits' => "Deposits",
         'remitments' => "Remitments",
         'settlements' => "Settlements",
+        'savings' => "Savings",
         'loans' => "Loans",
         'amounts' => "Amounts",
         'reports' => "Reports",
@@ -38,7 +40,7 @@ return [
         'pools' => "Pools",
         'charges' => "Fees",
         'cash' => "Cash",
-        'credits' => "Credits",
+        'credits' => "Credit",
         'profits' => "Profits",
     ],
     'labels' => [
@@ -202,6 +204,9 @@ return [
         ],
     ],
     'profit' => [
+        'labels' => [
+            'amount' => "Amount to share",
+        ],
         'distribution' => [
             'total' => "Saving: :saving. Profit: :profit.",
             'amount' => "Distribution: :amount.",
