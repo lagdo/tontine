@@ -129,6 +129,10 @@ return [
         'titles' => [
             'add' => "Ajouter une épargne",
             'edit' => "Modifier une épargne",
+            'closing' => "Clotûre: :fund",
+        ],
+        'labels' => [
+            'closing' => "Clotûre",
         ],
         'questions' => [
             'delete' => "Supprimer cette épargne ?",

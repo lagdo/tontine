@@ -129,6 +129,10 @@ return [
         'titles' => [
             'add' => "Add a saving",
             'edit' => "Edit a saving",
+            'closing' => "Closing: :fund",
+        ],
+        'labels' => [
+            'closing' => "Closing",
         ],
         'questions' => [
             'delete' => "Delete this saving?",

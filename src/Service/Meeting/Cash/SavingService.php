@@ -175,4 +175,72 @@ class SavingService
     {
         $session->savings()->where('id', $savingId)->delete();
     }
+
+    /**
+     * Save the given session as closing for the fund.
+     *
+     * @param Session $session
+     * @param int $fundId
+     * @param int $profitAmount
+     *
+     * @return void
+     */
+    public function saveFundClosing(Session $session, int $fundId, int $profitAmount)
+    {
+        $tontine = $this->tenantService->tontine();
+        $properties = $tontine->properties;
+        $properties['profit'][$fundId][$session->id] = $profitAmount;
+        $tontine->saveProperties($properties);
+    }
+
+    /**
+     * Check if the given session is closing the fund.
+     *
+     * @param Session $session
+     * @param int $fundId
+     *
+     * @return bool
+     */
+    public function hasFundClosing(Session $session, int $fundId): bool
+    {
+        $properties = $this->tenantService->tontine()->properties;
+        return isset($properties['profit'][$fundId][$session->id]);
+    }
+
+    /**
+     * Set the given session as closing the fund.
+     *
+     * @param Session $session
+     * @param int $fundId
+     *
+     * @return void
+     */
+    public function deleteFundClosing(Session $session, int $fundId)
+    {
+        $tontine = $this->tenantService->tontine();
+        $properties = $tontine->properties;
+        if(isset($properties['profit'][$fundId][$session->id]))
+        {
+            unset($properties['profit'][$fundId][$session->id]);
+            if(count($properties['profit'][$fundId]) == 0)
+            {
+                unset($properties['profit'][$fundId]);
+            }
+        }
+        $tontine->saveProperties($properties);
+    }
+
+    /**
+     * Get the profit amount saved on this session.
+     *
+     * @param Session $session
+     * @param int $fundId
+     *
+     * @return int
+     */
+    public function getProfitAmount(Session $session, int $fundId): int
+    {
+        $tontine = $this->tenantService->tontine();
+        return $tontine->properties['profit'][$fundId][$session->id] ?? 0;
+    }
 }
