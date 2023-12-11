@@ -64,6 +64,11 @@ class Tontine extends Base
         return $this->hasMany(Round::class)->orderBy('rounds.id', 'desc');
     }
 
+    public function sessions()
+    {
+        return $this->hasManyThrough(Session::class, Round::class);
+    }
+
     public function funds()
     {
         return $this->hasMany(Fund::class);

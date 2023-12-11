@@ -6,59 +6,98 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Siak\Tontine\Model\Debt;
+use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Saving;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Meeting\Cash\SavingService;
 use Siak\Tontine\Service\TenantService;
 
+use function array_keys;
+use function count;
 use function gmp_gcd;
+use function in_array;
 
 class ProfitService
 {
     /**
-     * @var TenantService
+     * @param TenantService $tenantService
+     * @param SavingService $savingService
      */
-    protected TenantService $tenantService;
+    public function __construct(protected TenantService $tenantService,
+        protected SavingService $savingService)
+    {}
 
     /**
-     * @param TenantService $tenantService
+     * Get the sessions to be used for profit calculation.
+     *
+     * @param Session $currentSession
+     * @param int $fundId
+     *
+     * @return Collection
      */
-    public function __construct(TenantService $tenantService)
+    private function getSessions(Session $currentSession, int $fundId): Collection
     {
-        $this->tenantService = $tenantService;
+        // All the previous sessions, including the current
+        $sessions = $this->tenantService->tontine()->sessions()
+            ->orderBy('sessions.start_at')
+            ->where('sessions.start_at', '<=', $currentSession->start_at)
+            ->get();
+
+        // The closing sessions ids
+        $properties = $this->tenantService->tontine()->properties;
+        $closingSessionIds = array_keys($properties['profit'][$fundId] ?? []);
+        if(count($closingSessionIds) === 0)
+        {
+            // No closing session yet
+            return $sessions;
+        }
+        // The previous closing sessions
+        $closingSessions = $sessions->filter(fn($session) =>
+            $session->id !== $currentSession->id && in_array($session->id, $closingSessionIds));
+        if($closingSessions->count() === 0)
+        {
+            // All the closing sessions are after the current session.
+            return $sessions;
+        }
+
+        // The most recent previous closing session
+        $prevClosingSession = $closingSessions->last();
+        // Return all the sessions after the most recent previous closing session
+        return $sessions->filter(function($session) use($prevClosingSession) {
+            return $session->start_at > $prevClosingSession->start_at;
+        });
     }
 
     /**
-     * @param Session $currentSession
+     * @param Collection $sessions
      * @param Saving $saving
      *
      * @return int
      */
-    private function getSavingDuration(Session $currentSession, Saving $saving): int
+    private function getSavingDuration(Collection $sessions, Saving $saving): int
     {
         // Count the number of sessions before the current one.
-        return $this->tenantService->round()->sessions
-            ->filter(function($session) use($currentSession, $saving) {
-                return $session->start_at > $saving->session->start_at &&
-                    $session->start_at <= $currentSession->start_at;
-            })
-            ->count();
+        return $sessions->filter(function($session) use($saving) {
+            return $session->start_at > $saving->session->start_at;
+        })->count();
     }
 
     /**
      * Get the profit distribution for savings.
      *
-     * @param Session $session
+     * @param Collection $sessions
      * @param Collection $savings
      * @param int $profitAmount
      *
      * @return Collection
      */
-    private function setDistributions(Session $session, Collection $savings, int $profitAmount): Collection
+    private function setDistributions(Collection $sessions, Collection $savings,
+        int $profitAmount): Collection
     {
         // Set savings durations and distributions
         foreach($savings as $saving)
         {
-            $saving->duration = $this->getSavingDuration($session, $saving);
+            $saving->duration = $this->getSavingDuration($sessions, $saving);
             $saving->distribution = $saving->amount * $saving->duration;
             $saving->profit = 0;
         }
@@ -91,19 +130,19 @@ class ProfitService
      * Get the profit distribution for savings.
      *
      * @param Session $session
-     * @param int $profitAmount
      * @param int $fundId
+     * @param int $profitAmount
      *
      * @return Collection
      */
-    public function getDistributions(Session $session, int $profitAmount, int $fundId): Collection
+    public function getDistributions(Session $session, int $fundId, int $profitAmount): Collection
     {
+        $sessions = $this->getSessions($session, $fundId);
         // Get the savings to be rewarded
         $query = Saving::select('savings.*')
             ->join('members', 'members.id', '=', 'savings.member_id')
             ->join('sessions', 'sessions.id', '=', 'savings.session_id')
-            ->where('sessions.round_id', $this->tenantService->round()->id)
-            ->where('sessions.start_at', '<=', $session->start_at)
+            ->whereIn('sessions.id', $sessions->pluck('id'))
             ->orderBy('members.name', 'asc')
             ->orderBy('sessions.start_at', 'asc')
             ->with(['session', 'member']);
@@ -115,7 +154,7 @@ class ProfitService
             return $savings;
         }
 
-        return $this->setDistributions($session, $savings, $profitAmount);
+        return $this->setDistributions($sessions, $savings, $profitAmount);
     }
 
     /**
@@ -140,6 +179,16 @@ class ProfitService
     }
 
     /**
+     * @param int $fundId
+     *
+     * @return Fund|null
+     */
+    public function getFund(int $fundId): ?Fund
+    {
+        return $this->tenantService->tontine()->funds()->find($fundId);
+    }
+
+    /**
      * Get the sum of savings amounts.
      *
      * @param Collection $sessionId
@@ -149,7 +198,6 @@ class ProfitService
      */
     private function getSavingAmount(Collection $sessionIds, int $fundId): int
     {
-        // Saving: the sum of savings amounts.
         $query = DB::table('savings')
             ->select(DB::raw("sum(amount) as total"))
             ->whereIn('session_id', $sessionIds);
@@ -175,10 +223,10 @@ class ProfitService
             ->select(DB::raw("sum(debts.amount) as total"))
             ->where('debts.type', Debt::TYPE_INTEREST)
             ->whereIn('refunds.session_id', $sessionIds);
-        $profit = $fundId > 0 ?
+        $refund = $fundId > 0 ?
             $query->where('loans.fund_id', $fundId)->first() :
             $query->whereNull('loans.fund_id')->first();
-        return $profit->total ?? 0;
+        return $refund->total ?? 0;
     }
 
     /**
@@ -192,30 +240,11 @@ class ProfitService
     public function getSavingAmounts(Session $session, int $fundId): array
     {
         // Get the ids of all the sessions until the current one.
-        $sessionIds = $this->tenantService->round()->sessions()
-            ->where('start_at', '<=', $session->start_at)
-            ->pluck('id');
+        $sessionIds = $this->getSessions($session, $fundId)->pluck('id');
         return [
             'saving' => $this->getSavingAmount($sessionIds, $fundId),
             'refund' => $this->getRefundAmount($sessionIds, $fundId),
         ];
-    }
-
-    /**
-     * Save the profit amount on this session.
-     *
-     * @param Session $session
-     * @param int $profitAmount
-     * @param int $fundId
-     *
-     * @return void
-     */
-    public function saveProfitAmount(Session $session, int $profitAmount, int $fundId)
-    {
-        $round = $this->tenantService->round();
-        $properties = $round->properties;
-        $properties['profit'][$session->id][$fundId] = $profitAmount;
-        $round->saveProperties($properties);
     }
 
     /**
@@ -228,7 +257,19 @@ class ProfitService
      */
     public function getProfitAmount(Session $session, int $fundId): int
     {
-        $round = $this->tenantService->round();
-        return $round->properties['profit'][$session->id][$fundId] ?? 0;
+        return $this->savingService->getProfitAmount($session, $fundId);
+    }
+
+    /**
+     * Check if the given session is closing the fund.
+     *
+     * @param Session $session
+     * @param int $fundId
+     *
+     * @return bool
+     */
+    public function hasFundClosing(Session $session, int $fundId): bool
+    {
+        return $this->savingService->hasFundClosing($session, $fundId);
     }
 }

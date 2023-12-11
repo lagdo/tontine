@@ -39,15 +39,15 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 col-sm-12" id="report-loans">
+                <div class="col-md-6 col-sm-12" id="report-disbursements">
                 </div>
-                <div class="col-md-6 col-sm-12" id="report-refunds">
+                <div class="col-md-6 col-sm-12" id="report-loans">
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 col-sm-12" id="report-savings">
+                <div class="col-md-6 col-sm-12" id="report-refunds">
                 </div>
-                <div class="col-md-6 col-sm-12" id="report-disbursements">
+                <div class="col-md-6 col-sm-12" id="report-savings">
                 </div>
               </div>
               <div class="row">

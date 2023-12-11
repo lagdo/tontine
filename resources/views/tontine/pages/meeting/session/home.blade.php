@@ -28,9 +28,6 @@
                       <a class="nav-link" id="session-tab-credits" data-target="#session-credits" href="javascript:void(0)">{{ __('meeting.actions.credits') }}</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                      <a class="nav-link" id="session-tab-profits" data-target="#session-profits" href="javascript:void(0)">{{ __('meeting.actions.profits') }}</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
                       <a class="nav-link" id="session-tab-reports" data-target="#session-reports" href="javascript:void(0)">{{ __('meeting.actions.reports') }}</a>
                     </li>
                   </nav>
@@ -75,12 +72,6 @@
                         <div class="col-md-6 col-sm-12" id="meeting-refunds">
                         </div>
                         <div class="col-md-6 col-sm-12" id="meeting-partial-refunds">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="tab-pane fade" id="session-profits" role="tabpanel" aria-labelledby="session-tab-profits">
-                      <div class="row">
-                        <div class="col-12" id="meeting-profits">
                         </div>
                       </div>
                     </div>

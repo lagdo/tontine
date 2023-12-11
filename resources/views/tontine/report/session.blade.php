@@ -50,15 +50,13 @@
 
           <div class="pagebreak"></div>
 
+          @include('tontine.report.session.disbursements', $disbursements)
+
           @include('tontine.report.session.loans', $loans)
 
           @include('tontine.report.session.refunds', $refunds)
 
-          <div class="pagebreak"></div>
-
           @include('tontine.report.session.savings', $savings)
-
-          @include('tontine.report.session.disbursements', $disbursements)
 
 @if ($profits['show'])
           <div class="pagebreak"></div>

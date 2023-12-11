@@ -6,42 +6,27 @@ use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\ProfitService;
 use Siak\Tontine\Service\Report\SessionService;
+use Siak\Tontine\Service\Tontine\FundService;
 use Sqids\SqidsInterface;
 
+use function Jaxon\pm;
 use function route;
 
 /**
  * @exclude
+ * @databag report
  */
 class Session extends CallableClass
 {
-    /**
-     * @var SessionService
-     */
-    protected SessionService $sessionService;
-
-    /**
-     * @var ProfitService
-     */
-    protected ProfitService $profitService;
-
-    /**
-     * @var SqidsInterface
-     */
-    protected SqidsInterface $sqids;
-
     /**
      * @param SessionService $sessionService
      * @param ProfitService $profitService
      * @param SqidsInterface $sqids
      */
-    public function __construct(SessionService $sessionService,
-        ProfitService $profitService, SqidsInterface $sqids)
-    {
-        $this->sessionService = $sessionService;
-        $this->profitService = $profitService;
-        $this->sqids = $sqids;
-    }
+    public function __construct(protected SessionService $sessionService,
+        protected ProfitService $profitService, protected FundService $fundService,
+        protected SqidsInterface $sqids)
+    {}
 
     /**
      * @param SessionModel $session
@@ -50,6 +35,7 @@ class Session extends CallableClass
      */
     public function show(SessionModel $session)
     {
+        $this->bag('report')->set('session.id', $session->id);
         // Route to session report export
         $this->jq('#btn-session-export')->attr('href', route('report.session',
             ['sessionId' => $this->sqids->encode([$session->id])]));
@@ -62,7 +48,6 @@ class Session extends CallableClass
         $this->totalBills($session);
         $this->savings($session);
         $this->disbursements($session);
-        $this->profits($session);
     }
 
     private function deposits(SessionModel $session)
@@ -120,6 +105,7 @@ class Session extends CallableClass
     {
         $html = $this->view()->render('tontine.pages.report.session.session.savings', [
             'saving' => $this->sessionService->getSaving($session),
+            'funds' => $this->fundService->getFundList(),
         ]);
         $this->response->html('report-savings', $html);
     }
@@ -130,18 +116,8 @@ class Session extends CallableClass
             'disbursement' => $this->sessionService->getDisbursement($session),
         ]);
         $this->response->html('report-disbursements', $html);
-    }
 
-    private function profits(SessionModel $session)
-    {
-        // Show the profits only if they were saved on this session.
-        $profitSessionId = $session->round->properties['profit']['session'] ?? 0;
-        $profitAmount = $session->round->properties['profit']['amount'] ?? 0;
-        $html = $profitSessionId !== $session->id ? '' :
-            $this->view()->render('tontine.pages.report.session.session.profits', [
-                'savings' => $this->profitService->getDistributions($session, $profitAmount),
-                'profitAmount' => $profitAmount,
-            ]);
-        $this->response->html('report-profits', $html);
+        $fundId = pm()->select('report_profits_fund_id')->toInt();
+        $this->jq('#btn-report-profits')->click($this->cl(Profit::class)->rq()->home($fundId));
     }
 }

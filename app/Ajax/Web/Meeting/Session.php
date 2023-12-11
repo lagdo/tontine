@@ -8,7 +8,6 @@ use App\Ajax\Web\Meeting\Cash\Saving;
 use App\Ajax\Web\Meeting\Charge\FixedFee;
 use App\Ajax\Web\Meeting\Charge\LibreFee;
 use App\Ajax\Web\Meeting\Credit\Loan;
-use App\Ajax\Web\Meeting\Credit\Profit;
 use App\Ajax\Web\Meeting\Credit\PartialRefund;
 use App\Ajax\Web\Meeting\Credit\Refund;
 use App\Ajax\Web\Meeting\Pool\Deposit;
@@ -134,14 +133,6 @@ class Session extends CallableClass
     /**
      * @return void
      */
-    private function profits()
-    {
-        $this->cl(Profit::class)->show($this->session);
-    }
-
-    /**
-     * @return void
-     */
     private function charges()
     {
         $this->cl(FixedFee::class)->show($this->session);
@@ -202,7 +193,6 @@ class Session extends CallableClass
         $this->charges();
         $this->cash();
         $this->credits();
-        $this->profits();
 
         return $this->response;
     }
