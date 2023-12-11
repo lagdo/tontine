@@ -2,16 +2,20 @@
 
 namespace Siak\Tontine\Service\Report;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Meeting\Cash\SavingService;
 use Siak\Tontine\Service\Meeting\Credit\ProfitService;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Report\RoundService;
+use Siak\Tontine\Service\Tontine\FundService;
 
 use function compact;
 use function strtolower;
@@ -19,46 +23,6 @@ use function trans;
 
 class ReportService
 {
-    /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
-     * @var SessionService
-     */
-    private SessionService $sessionService;
-
-    /**
-     * @var MemberService
-     */
-    private MemberService $memberService;
-
-    /**
-     * @var SubscriptionService
-     */
-    private SubscriptionService $subscriptionService;
-
-    /**
-     * @var SummaryService
-     */
-    private SummaryService $summaryService;
-
-    /**
-     * @var RoundService
-     */
-    protected RoundService $roundService;
-
-    /**
-     * @var ProfitService
-     */
-    protected ProfitService $profitService;
-
     /**
      * @var int
      */
@@ -75,24 +39,19 @@ class ReportService
      * @param SessionService $sessionService
      * @param MemberService $memberService
      * @param RoundService $roundService
-     * @param SubscriptionService $subscriptionService
+     * @param FundService $fundService
+     * @param SavingService $savingService
      * @param SummaryService $summaryService
      * @param ReportService $reportService
+     * @param SubscriptionService $subscriptionService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService,
-        SessionService $sessionService, MemberService $memberService,
-        RoundService $roundService, SubscriptionService $subscriptionService,
-        SummaryService $summaryService, ProfitService $profitService)
-    {
-        $this->localeService = $localeService;
-        $this->tenantService = $tenantService;
-        $this->sessionService = $sessionService;
-        $this->memberService = $memberService;
-        $this->subscriptionService = $subscriptionService;
-        $this->roundService = $roundService;
-        $this->summaryService = $summaryService;
-        $this->profitService = $profitService;
-    }
+    public function __construct(protected LocaleService $localeService,
+        protected TenantService $tenantService, protected SessionService $sessionService,
+        protected MemberService $memberService, protected RoundService $roundService,
+        protected FundService $fundService, protected SavingService $savingService,
+        protected SummaryService $summaryService, protected ProfitService $profitService,
+        protected SubscriptionService $subscriptionService)
+    {}
 
     /**
      * Get pools with receivables and payables.
@@ -134,6 +93,18 @@ class ReportService
 
     /**
      * @param Session $session
+     * @param Collection $funds
+     *
+     * @return array
+     */
+    private function getFundClosings(Session $session, Collection $funds): array
+    {
+        $closings = $this->savingService->getSessionClosings($session);
+        return Arr::only($closings, $funds->keys()->all());
+    }
+
+    /**
+     * @param Session $session
      *
      * @return array
      */
@@ -141,8 +112,13 @@ class ReportService
     {
         $tontine = $this->tenantService->tontine();
         [$country] = $this->localeService->getNameFromTontine($tontine);
-        $profitSessionId = $session->round->properties['profit']['session'] ?? 0;
-        $profitAmount = $session->round->properties['profit']['amount'] ?? 0;
+        $funds = $this->fundService->getFundList();
+        $closings = $this->getFundClosings($session, $funds);
+        $profits = Arr::map($closings, fn($amount, $fundId) => [
+            'fund' => $funds[$fundId],
+            'profitAmount' => $amount,
+            'savings' => $this->profitService->getDistributions($session, $fundId, $amount),
+        ]);
 
         return [
             'tontine' => $tontine,
@@ -176,18 +152,14 @@ class ReportService
             ],
             'savings' => [
                 'savings' => $this->memberService->getSavings($session),
+                'funds' => $funds,
                 'total' => $this->sessionService->getSaving($session),
             ],
             'disbursements' => [
                 'disbursements' => $this->memberService->getDisbursements($session),
                 'total' => $this->sessionService->getDisbursement($session),
             ],
-            'profits' => [
-                'show' => $profitSessionId === $session->id,
-                'savings' => $profitSessionId !== $session->id ? null :
-                    $this->profitService->getDistributions($session, $profitAmount),
-                'profitAmount' => $profitAmount,
-            ],
+            'profits' => $profits,
         ];
     }
 

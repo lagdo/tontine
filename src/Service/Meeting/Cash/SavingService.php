@@ -189,7 +189,7 @@ class SavingService
     {
         $tontine = $this->tenantService->tontine();
         $properties = $tontine->properties;
-        $properties['profit'][$fundId][$session->id] = $profitAmount;
+        $properties['closings'][$session->id][$fundId] = $profitAmount;
         $tontine->saveProperties($properties);
     }
 
@@ -204,7 +204,7 @@ class SavingService
     public function hasFundClosing(Session $session, int $fundId): bool
     {
         $properties = $this->tenantService->tontine()->properties;
-        return isset($properties['profit'][$fundId][$session->id]);
+        return isset($properties['closings'][$session->id][$fundId]);
     }
 
     /**
@@ -219,19 +219,19 @@ class SavingService
     {
         $tontine = $this->tenantService->tontine();
         $properties = $tontine->properties;
-        if(isset($properties['profit'][$fundId][$session->id]))
+        if(isset($properties['closings'][$session->id][$fundId]))
         {
-            unset($properties['profit'][$fundId][$session->id]);
-            if(count($properties['profit'][$fundId]) == 0)
+            unset($properties['closings'][$session->id][$fundId]);
+            if(count($properties['closings'][$session->id]) == 0)
             {
-                unset($properties['profit'][$fundId]);
+                unset($properties['closings'][$session->id]);
             }
         }
         $tontine->saveProperties($properties);
     }
 
     /**
-     * Get the profit amount saved on this session.
+     * Get the profit amount saved on a given session.
      *
      * @param Session $session
      * @param int $fundId
@@ -241,6 +241,19 @@ class SavingService
     public function getProfitAmount(Session $session, int $fundId): int
     {
         $tontine = $this->tenantService->tontine();
-        return $tontine->properties['profit'][$fundId][$session->id] ?? 0;
+        return $tontine->properties['closings'][$session->id][$fundId] ?? 0;
+    }
+
+    /**
+     * Get all the fund closings on a given session.
+     *
+     * @param Session $session
+     *
+     * @return array
+     */
+    public function getSessionClosings(Session $session): array
+    {
+        $tontine = $this->tenantService->tontine();
+        return $tontine->properties['closings'][$session->id] ?? [];
     }
 }

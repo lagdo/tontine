@@ -58,9 +58,9 @@
 
           @include('tontine.report.session.savings', $savings)
 
-@if ($profits['show'])
+@foreach ($profits as $profit)
           <div class="pagebreak"></div>
 
-          @include('tontine.report.session.profits', $profits)
-@endif
+          @include('tontine.report.session.profits', $profit)
+@endforeach
 @endsection
