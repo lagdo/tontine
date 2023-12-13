@@ -14,6 +14,7 @@ return [
         'auctions' => "Enchères",
         'savings' => "&Eacute;pargnes",
         'closings' => "Clotûres",
+        'loans' => "Emprunts",
         'amounts' => "Montants",
         'settlements' => "Règlements",
         'fine' => "Appliquer",
