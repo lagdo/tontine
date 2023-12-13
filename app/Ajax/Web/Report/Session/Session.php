@@ -14,7 +14,6 @@ use function route;
 
 /**
  * @exclude
- * @databag report
  */
 class Session extends CallableClass
 {

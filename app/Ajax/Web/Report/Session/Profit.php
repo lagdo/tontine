@@ -10,7 +10,6 @@ use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\FundService;
 
 use function Jaxon\pm;
-use function trans;
 
 /**
  * @databag report

@@ -9,6 +9,9 @@ use Siak\Tontine\Service\Tontine\TontineService;
 use function compact;
 use function Jaxon\pm;
 
+/**
+ * @databag report
+ */
 class Session extends CallableClass
 {
     /**

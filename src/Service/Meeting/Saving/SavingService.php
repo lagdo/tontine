@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service\Meeting\Saving;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
@@ -174,6 +175,20 @@ class SavingService
     public function deleteSaving(Session $session, int $savingId): void
     {
         $session->savings()->where('id', $savingId)->delete();
+    }
+
+    /**
+     * Get all closings for a given fund.
+     *
+     * @param int $fundId
+     *
+     * @return array
+     */
+    public function getFundClosings(int $fundId): array
+    {
+        $closings = $this->tenantService->tontine()->properties['closings'] ?? [];
+        $closings = Arr::where($closings, fn($closing) => isset($closing[$fundId]));
+        return Arr::map($closings, fn($closing) => $closing[$fundId]);
     }
 
     /**

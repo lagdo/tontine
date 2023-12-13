@@ -43,8 +43,7 @@ class ProfitService
             ->get();
 
         // The closing sessions ids
-        $properties = $this->tenantService->tontine()->properties;
-        $closingSessionIds = array_keys($properties['profit'][$fundId] ?? []);
+        $closingSessionIds = array_keys($this->savingService->getFundClosings($fundId));
         if(count($closingSessionIds) === 0)
         {
             // No closing session yet
