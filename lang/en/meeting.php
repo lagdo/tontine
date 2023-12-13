@@ -154,7 +154,7 @@ return [
             'principal' => "Principal",
             'interest' => "Interest",
             'percentage' => "Percentage",
-            'amount_available' => "Amount available: :amount",
+            'amount_available' => "available: :amount",
         ],
         'interest' => [
             'f' => "Fixed",
@@ -194,7 +194,7 @@ return [
             'edit' => "Edit a disbursement",
         ],
         'labels' => [
-            'amount_available' => "Amount available: :amount",
+            'amount_available' => "available: :amount",
         ],
         'questions' => [
             'delete' => "Delete this disbursement?",
