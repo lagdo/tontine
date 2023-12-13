@@ -67,6 +67,9 @@ return [
         'screen' => [
             'orientation' => "Si vous utilisez un appareil mobile, nous vous conseillons de le placer en mode paysage, pour un meilleur affichage.",
         ],
+        'learning' => [
+            'intro' => "Découvrez les fonctionnalités de Siak Tontine dans cette vidéo d'introduction <a href=\":url\" target=\"_blank\">:url</a> (en français).",
+        ],
     ],
     'questions' => [
         'delete' => "Supprimer cette association ? Ses members, tours et frais seront également supprimés.",
