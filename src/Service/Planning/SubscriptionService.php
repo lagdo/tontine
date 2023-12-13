@@ -155,12 +155,19 @@ class SubscriptionService
         // {
         //     throw new MessageException(trans('tontine.subscription.errors.delete'));
         // }
-        $subscription = $pool->subscriptions()->where('member_id', $memberId)->first();
-        if(!$subscription)
+        $subscriptions = $pool->subscriptions()
+            ->where('member_id', $memberId)
+            ->withCount('receivables')
+            ->get()
+            ->sortBy('receivables_count');
+        if($subscriptions->count() === 0)
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
 
+        // Since the subscriptions are sorted by receivables count, those with no receivable
+        // will be deleted in priority.
+        $subscription = $subscriptions->first();
         DB::transaction(function() use($subscription) {
             // Delete the receivables
             $subscription->receivables()->delete();

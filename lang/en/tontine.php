@@ -67,6 +67,9 @@ return [
         'screen' => [
             'orientation' => "If you are using a mobile device, we advise you to place it in landscape mode, for a better display.",
         ],
+        'learning' => [
+            'intro' => "Learn about Siak Tontine's features in this introductory video <a href=\":url\" target=\"_blank\">:url</a> (in french).",
+        ],
     ],
     'questions' => [
         'delete' => "Delete the association? The related members, rounds and charges will also be deleted.",

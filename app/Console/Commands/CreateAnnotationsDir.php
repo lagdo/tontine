@@ -27,11 +27,13 @@ class CreateAnnotationsDir extends Command
     /**
      * Execute the console command.
      *
-      * @return mixed
+      * @return int
      */
     public function handle()
     {
         $path = storage_path('annotations');
         file_exists($path) || mkdir($path, 0755, false);
+
+        return Command::SUCCESS;
     }
 }

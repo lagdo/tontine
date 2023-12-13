@@ -85,6 +85,11 @@
 @include('tontine.parts.header.topbar')
 
         </div>
+
+        <div>
+@include('tontine.parts.header.message')
+        </div>
+
         <div id="content-home">
 
 @yield('content')
