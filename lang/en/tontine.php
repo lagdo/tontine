@@ -234,6 +234,7 @@ return [
         'errors' => [
             'opened' => "A session has already been opened.",
             'delete' => "Cannot delete this session.",
+            'date_dup' => "There is another session with the same date.",
         ],
     ],
     'pool' => [

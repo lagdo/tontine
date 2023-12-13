@@ -14,6 +14,7 @@ return [
         'auctions' => "Enchères",
         'savings' => "&Eacute;pargnes",
         'closings' => "Clotûres",
+        'loans' => "Emprunts",
         'amounts' => "Montants",
         'settlements' => "Règlements",
         'fine' => "Appliquer",
@@ -153,7 +154,7 @@ return [
             'principal' => "Principal",
             'interest' => "Intérêt",
             'percentage' => "Pourcentage",
-            'amount_available' => "Montant disponible : :amount",
+            'amount_available' => "disponible : :amount",
         ],
         'interest' => [
             'f' => "Fixe",
@@ -193,7 +194,7 @@ return [
             'edit' => "Modifier un décaissement",
         ],
         'labels' => [
-            'amount_available' => "Montant disponible : :amount",
+            'amount_available' => "disponible : :amount",
         ],
         'questions' => [
             'delete' => "Supprimer ce décaissement ?",
