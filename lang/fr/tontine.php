@@ -234,6 +234,7 @@ return [
         'errors' => [
             'opened' => "Une séance a déjà été ouverte.",
             'delete' => "Impossible de supprimer cette séance.",
+            'date_dup' => "Il existe déjà une séance avec la même date.",
         ],
     ],
     'pool' => [

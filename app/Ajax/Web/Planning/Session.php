@@ -3,6 +3,7 @@
 namespace App\Ajax\Web\Planning;
 
 use App\Ajax\CallableClass;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Tontine\TontineService;
@@ -12,6 +13,7 @@ use function Jaxon\jq;
 use function Jaxon\pm;
 use function array_filter;
 use function array_map;
+use function array_unique;
 use function collect;
 use function count;
 use function explode;
@@ -176,9 +178,14 @@ class Session extends CallableClass
             ];
         }, explode("\n", trim($sessions, " \t\n\r;")));
         // Filter empty lines.
-        $sessions = array_filter($sessions, function($session) {
-            return count($session) > 0;
-        });
+        $sessions = array_filter($sessions, fn($session) => count($session) > 0);
+
+        // Check uniqueness of session dates
+        $sessionDates = array_unique(array_map(fn($session) => $session['date'], $sessions));
+        if(count($sessions) !== count($sessionDates))
+        {
+            throw new MessageException(trans('tontine.session.errors.date_dup'));
+        }
 
         return $this->validator->validateList($sessions);
     }
@@ -223,6 +230,7 @@ class Session extends CallableClass
      */
     public function update(int $sessionId, array $formValues)
     {
+        $formValues['id'] = $sessionId;
         $values = $this->validator->validateItem($formValues);
         $session = $this->sessionService->getSession($sessionId);
 

@@ -3,11 +3,34 @@
 namespace Siak\Tontine\Validation\Planning;
 
 use Illuminate\Support\Facades\Validator;
+use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\AbstractValidator;
 use Siak\Tontine\Validation\ValidationException;
 
 class SessionValidator extends AbstractValidator
 {
+    /**
+     * @param TenantService $tenantService
+     */
+    public function __construct(protected TenantService $tenantService)
+    {}
+
+    /**
+     * Check duplicates in session date
+     *
+     * @param string $startAt
+     * @param int $sessionId
+     *
+     * @return bool
+     */
+    private function sessionDateExists(string $startAt, int $sessionId): bool
+    {
+        return $this->tenantService->tontine()->sessions()
+            ->where('sessions.id', '!=', $sessionId)
+            ->whereDate('sessions.start_at', $startAt)
+            ->first() !== null;
+    }
+
     /**
      * @param array $values
      *
@@ -22,6 +45,12 @@ class SessionValidator extends AbstractValidator
             'end' => 'required|date_format:H:i',
             'host_id' => 'integer|min:0',
         ]);
+        $validator->after(function($validator) use($values) {
+            if($this->sessionDateExists($values['date'], $values['id'] ?? 0))
+            {
+                $validator->errors()->add('date', trans('tontine.session.errors.date_dup'));
+            }
+        });
         if($validator->fails())
         {
             throw new ValidationException($validator);
