@@ -136,6 +136,35 @@ class ProfitService
         return (int)($funding->amount * $funding->duration / $funding->distribution);
     }
 
+    private function getSavingAmount(Collection $sessionIds): int
+    {
+        $saving = DB::table('fundings')
+            ->select(DB::raw("sum(amount) as total"))
+            ->whereIn('session_id', $sessionIds)
+            ->first();
+        return $saving->total ?? 0;
+    }
+
+    private function getProfitAmount(Collection $sessionIds, int $sessionId): int
+    {
+        // Check if an amount is already saved.
+        $properties = $this->tenantService->round()->properties;
+        if(isset($properties['profit']['session']) &&
+            isset($properties['profit']['amount']) &&
+            $properties['profit']['session'] === $sessionId)
+        {
+            return $properties['profit']['amount'];
+        }
+
+        $profit = DB::table('refunds')
+            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
+            ->select(DB::raw("sum(debts.amount) as total"))
+            ->where('debts.type', Debt::TYPE_INTEREST)
+            ->whereIn('refunds.session_id', $sessionIds)
+            ->first();
+        return $profit->total ?? 0;
+    }
+
     /**
      * Get the total saving and profit amounts.
      *
@@ -149,20 +178,10 @@ class ProfitService
         $sessionIds = $this->tenantService->round()->sessions()
             ->where('start_at', '<=', $session->start_at)
             ->pluck('id');
-        // Saving: the sum of fundings amounts.
-        $saving = DB::table('fundings')
-            ->select(DB::raw("sum(amount) as total"))
-            ->whereIn('session_id', $sessionIds)
-            ->first();
-        // Profit: the sum of interest refunds.
-        $profit = DB::table('refunds')
-            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
-            ->select(DB::raw("sum(debts.amount) as total"))
-            ->where('debts.type', Debt::TYPE_INTEREST)
-            ->whereIn('refunds.session_id', $sessionIds)
-            ->first();
-
-        return ['saving' => $saving->total ?? 0, 'profit' => $profit->total ?? 0];
+        return [
+            'saving' => $this->getSavingAmount($sessionIds),
+            'profit' => $this->getProfitAmount($sessionIds, $session->id),
+        ];
     }
 
     /**
