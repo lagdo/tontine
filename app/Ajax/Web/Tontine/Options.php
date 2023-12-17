@@ -8,6 +8,9 @@ use function trans;
 
 class Options extends CallableClass
 {
+    /**
+     * @after hideMenuOnMobile
+     */
     public function home()
     {
         $this->response->html('section-title', trans('tontine.menus.tontine'));
