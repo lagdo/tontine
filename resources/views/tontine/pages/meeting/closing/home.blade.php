@@ -32,7 +32,7 @@
                       <tbody>
 @foreach ($closings as $fundId => $amount)
                         <tr>
-                          <td>{{ $funds[$fundId] }}</td>
+                          <td>{!! $funds[$fundId] !!}</td>
                           <td class="currency">{{ $locale->formatMoney($amount, true) }}</td>
                           <td class="table-item-menu">
 @if($session->opened)

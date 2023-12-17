@@ -6,6 +6,8 @@ use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Service\TenantService;
 
+use function trans;
+
 class FundService
 {
     /**
@@ -24,7 +26,8 @@ class FundService
     public function getFundList(): Collection
     {
         return $this->tenantService->tontine()->funds()->active()
-            ->pluck('title', 'id')->prepend('', 0);
+            ->pluck('title', 'id')
+            ->prepend(trans('tontine.fund.labels.default'), 0);
     }
 
     /**

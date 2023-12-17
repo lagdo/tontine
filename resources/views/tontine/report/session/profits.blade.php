@@ -5,7 +5,7 @@
 @endphp
                   <div class="row">
                     <div class="col d-flex justify-content-center flex-nowrap">
-                      <div class="section-title mt-0">{{ __('meeting.titles.profits') }} :: {{ $fund }} ({{
+                      <div class="section-title mt-0">{{ __('meeting.titles.profits') }} :: {!! $fund !!} ({{
                         $locale->formatMoney($profitAmount, true) }}, {{
                         __('meeting.profit.distribution.parts', ['parts' => $distributionSum]) }})</div>
                     </div>

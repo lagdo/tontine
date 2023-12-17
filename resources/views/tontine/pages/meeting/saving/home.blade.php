@@ -24,7 +24,8 @@
                       <tbody>
 @foreach ($savings as $saving)
                         <tr>
-                          <td>{{ $saving->member->name }}@if ($saving->fund) <br/>{{ $saving->fund->title }}@endif</td>
+                          <td>{{ $saving->member->name }}<br/>{!! $saving->fund ?
+                            $saving->fund->title : __('tontine.fund.labels.default') !!}</td>
                           <td class="currency">{{ $locale->formatMoney($saving->amount, true) }}</td>
                           <td class="table-item-menu">
 @if($session->opened)

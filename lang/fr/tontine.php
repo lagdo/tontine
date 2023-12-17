@@ -163,6 +163,7 @@ return [
             'edit' => "Modifier un fonds d'épargne",
         ],
         'labels' => [
+            'default' => "&Eacute;pargne",
             'fund' => "Fonds d'épargne",
         ],
         'messages' => [

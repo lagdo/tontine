@@ -163,6 +163,7 @@ return [
             'edit' => "Edit a savings fund",
         ],
         'labels' => [
+            'default' => "Saving",
             'fund' => "Savings fund",
         ],
         'messages' => [
