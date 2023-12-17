@@ -89,7 +89,7 @@ class SummaryService
 
         // Separate subscriptions that already have a beneficiary assigned from the others.
         [$beneficiaries, $subscriptions] = $subscriptions->partition(function($subscription) use($pool) {
-            $session = $subscription->payable->session;
+            $session = $subscription->payable ? $subscription->payable->session : null;
             return $session !== null && $session->enabled($pool);
         });
         $beneficiaries = $beneficiaries->pluck('member.name', 'id');
