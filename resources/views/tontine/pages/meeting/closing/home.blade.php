@@ -42,7 +42,10 @@
   'menus' => [[
     'class' => 'btn-closing-edit',
     'text' => __('common.actions.edit'),
-  ],[
+  ], [
+    'class' => 'btn-profits-show',
+    'text' => __('meeting.actions.profits'),
+  ], [
     'class' => 'btn-closing-delete',
     'text' => __('common.actions.delete'),
   ]],

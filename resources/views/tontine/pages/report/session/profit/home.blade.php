@@ -13,7 +13,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row" id="profit_distribution_details">
+                  <div class="row" id="report-profits-distribution">
                   </div>
-                  <div class="table-responsive mt-2" id="meeting-profits-page">
-                  </div> <!-- End table -->
+                  <div class="table-responsive mt-2" id="report-profits-page">
+                  </div>

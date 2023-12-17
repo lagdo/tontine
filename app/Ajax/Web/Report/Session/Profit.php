@@ -13,7 +13,6 @@ use function Jaxon\pm;
 
 /**
  * @databag report
- * @databag profit
  * @before getSession
  */
 class Profit extends CallableClass
@@ -43,6 +42,17 @@ class Profit extends CallableClass
     {
         $sessionId = $this->bag('report')->get('session.id');
         $this->session = $this->tenantService->getSession($sessionId);
+    }
+
+    /**
+     * @exclude
+     */
+    public function show(SessionModel $session, int $fundId)
+    {
+        $this->bag('report')->set('session.id', $session->id);
+        $this->session = $session;
+
+        return $this->home($fundId);
     }
 
     public function home(int $fundId)
@@ -79,13 +89,13 @@ class Profit extends CallableClass
                 ->filter(fn($saving) => $saving->distribution > 0)->count(),
             'amounts' => $this->profitService->getSavingAmounts($this->session, $fundId)
         ]);
-        $this->response->html('profit_distribution_details', $html);
+        $this->response->html('report-profits-distribution', $html);
 
         $html = $this->view()->render('tontine.pages.report.session.profit.page', [
             'savings' => $savings->groupBy('member_id'),
             'distributionSum' => $distributionSum,
         ]);
-        $this->response->html('meeting-profits-page', $html);
+        $this->response->html('report-profits-page', $html);
 
         return $this->response;
     }

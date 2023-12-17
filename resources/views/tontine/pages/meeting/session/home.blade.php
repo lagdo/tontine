@@ -63,6 +63,10 @@
                         <div class="col-md-6 col-sm-12" id="meeting-closings">
                         </div>
                       </div>
+                      <div class="row">
+                        <div class="col-12" id="report-profits">
+                        </div>
+                      </div>
                     </div>
                     <div class="tab-pane fade" id="session-credits" role="tabpanel" aria-labelledby="session-tab-credits">
                       <div class="row">

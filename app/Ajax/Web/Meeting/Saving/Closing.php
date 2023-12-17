@@ -3,6 +3,7 @@
 namespace App\Ajax\Web\Meeting\Saving;
 
 use App\Ajax\CallableClass;
+use App\Ajax\Web\Report\Session\Profit;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\ClosingValidator;
@@ -71,6 +72,7 @@ class Closing extends CallableClass
         $this->jq('#btn-closing-edit')->click($this->rq()->editClosing($fundId));
         $fundId = jq()->parent()->attr('data-fund-id')->toInt();
         $this->jq('.btn-closing-edit')->click($this->rq()->editClosing($fundId));
+        $this->jq('.btn-profits-show')->click($this->rq()->showProfits($fundId));
         $this->jq('.btn-closing-delete')->click($this->rq()->deleteClosing($fundId)
             ->confirm(trans('meeting.closing.questions.delete')));
 
@@ -143,5 +145,10 @@ class Closing extends CallableClass
         $this->notify->success(trans('meeting.messages.profit.saved'), trans('common.titles.success'));
 
         return $this->home();
+    }
+
+    public function showProfits(int $fundId)
+    {
+        return $this->cl(Profit::class)->show($this->session, $fundId);
     }
 }
