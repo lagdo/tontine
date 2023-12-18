@@ -31,9 +31,11 @@
     }
     .table:not(.table-sm):not(.table-md):not(.dataTable) th {
       padding: 0 15px;
+      font-size: 18px;
     }
     .table:not(.table-sm):not(.table-md):not(.dataTable) td {
       padding: 0 10px;
+      font-size: 16px;
     }
     .language .flag-icon {
       width: 20px;

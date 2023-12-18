@@ -329,6 +329,8 @@ return [
     ],
     'report' => [
         'titles' => [
+            'session' => "Rapport de séance",
+            'round' => "Rapport de tour",
             'bills' => [
                 'session' => "Montants des frais de la session",
                 'total' => "Montants totaux des frais",

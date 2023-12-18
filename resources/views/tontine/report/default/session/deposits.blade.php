@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-                  <div class="row">
-                    <div class="col d-flex justify-content-center flex-nowrap">
-                      <div class="section-title mt-0">{{ __('meeting.titles.remitments') }}</div>
+                  <div class="row mt-0">
+                    <div class="col d-flex justify-content-center">
+                      <h5>{{ __('meeting.titles.deposits') }}</h5>
                     </div>
                   </div>
 @foreach ($pools as $pool)
@@ -25,19 +25,19 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($payables as $payable)
-@if ($payable->pool->id === $pool->id)
+@foreach ($receivables as $receivable)
+@if ($receivable->pool->id === $pool->id)
                         <tr>
-                          <td>{{ $payable->member->name }}</td>
-                          <td class="currency">{{ $locale->formatMoney($payable->amount, true) }}</td>
-                          <td class="currency">{{ $payable->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
+                          <td>{{ $receivable->member->name }}</td>
+                          <td class="currency">{{ $locale->formatMoney($receivable->amount, true) }}</td>
+                          <td class="currency">{{ $receivable->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
                         </tr>
 @endif
 @endforeach
                         <tr>
                           <th>{{ __('common.labels.total') }}</th>
                           <th class="currency">{{ $locale->formatMoney($pool->paid_amount, true) }}</th>
-                          <th>&nbsp;</th>
+                          <th class="currency">{{ $pool->paid_count }}/{{ $pool->total_count }}</th>
                         </tr>
                       </tbody>
                     </table>

@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Ajax\CallableClass;
 use Jaxon\Laravel\Jaxon;
 
 class JaxonController extends Controller
 {
     public function jaxon(Jaxon $jaxon)
     {
-        $jaxon->callback()->init(function($callable) use($jaxon) {
+        $jaxon->callback()->init(function(CallableClass $callable) use($jaxon) {
             // Jaxon init
-            $callable->dialog = $jaxon->ajaxResponse()->dialog;
-            $callable->notify = $jaxon->ajaxResponse()->dialog;
+            $dialog = $jaxon->ajaxResponse()->dialog;
+            $callable->dialog = $dialog;
+            $callable->notify = $dialog;
         });
 
         // Process Ajax request

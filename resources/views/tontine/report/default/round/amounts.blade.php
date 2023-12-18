@@ -2,7 +2,11 @@
 @php
   $cash = 0;
 @endphp
-              <div class="section-title mt-0">{{ __('meeting.titles.amounts') }}</div>
+              <div class="row mt-0">
+                <div class="col d-flex justify-content-center">
+                  <h5>{{ __('figures.titles.amounts') }} ({{ $currency }})</h5>
+                </div>
+              </div>
               <div class="table-responsive">
                 <table class="table table-bordered">
                   <thead>

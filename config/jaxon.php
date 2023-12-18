@@ -22,7 +22,7 @@ return [
         ],
         'views' => [
             'pagination' => [
-                'directory' => resource_path('views/tontine/parts/table/pagination'),
+                'directory' => resource_path('views/tontine/app/default/parts/table/pagination'),
                 'extension' => '.blade.php',
                 'renderer' => 'blade',
                 // 'register' => true,

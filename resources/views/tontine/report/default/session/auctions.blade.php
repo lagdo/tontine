@@ -1,18 +1,20 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-                  <div class="row">
-                    <div class="col d-flex justify-content-center flex-nowrap">
-                      <div class="section-title mt-0">{{ __('meeting.titles.deposits') }}</div>
+                  <div class="row mt-0">
+                    <div class="col d-flex justify-content-center">
+                      <h5>{{ __('meeting.remitment.titles.auctions') }}</h5>
                     </div>
                   </div>
 @foreach ($pools as $pool)
-@if ($session->enabled($pool))
+@php
+  $total = 0;
+@endphp
+@if ($pool->remit_auction && $session->enabled($pool))
                   <div class="row">
                     <div class="col">
                       <h6>{{ $pool->title }}</h6>
                     </div>
                     <div class="col">
-                      <h6>{{ __('common.labels.amount') }}: {{ $pool->deposit_fixed ?
-                        $locale->formatMoney($pool->amount, true) : __('tontine.labels.types.libre') }}</h6>
+                      <h6>{{ __('common.labels.amount') }}: {{ $locale->formatMoney($pool->paid_amount, true) }}</h6>
                     </div>
                   </div>
                   <div class="table-responsive">
@@ -25,19 +27,22 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($receivables as $receivable)
-@if ($receivable->pool->id === $pool->id)
+@foreach ($auctions as $auction)
+@if ($auction->pool->id === $pool->id)
+@php
+  $total += $auction->amount;
+@endphp
                         <tr>
-                          <td>{{ $receivable->member->name }}</td>
-                          <td class="currency">{{ $locale->formatMoney($receivable->amount, true) }}</td>
-                          <td class="currency">{{ $receivable->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
+                          <td>{{ $auction->member->name }}</td>
+                          <td class="currency">{{ $locale->formatMoney($auction->amount, true) }}</td>
+                          <td class="currency">{{ $auction->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
                         </tr>
 @endif
 @endforeach
                         <tr>
                           <th>{{ __('common.labels.total') }}</th>
-                          <th class="currency">{{ $locale->formatMoney($pool->paid_amount, true) }}</th>
-                          <th class="currency">{{ $pool->paid_count }}/{{ $pool->total_count }}</th>
+                          <th class="currency">{{ $locale->formatMoney($total, true) }}</th>
+                          <th>&nbsp;</th>
                         </tr>
                       </tbody>
                     </table>

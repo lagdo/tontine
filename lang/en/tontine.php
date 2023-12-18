@@ -329,6 +329,8 @@ return [
     ],
     'report' => [
         'titles' => [
+            'session' => "Session report",
+            'round' => "Round report",
             'bills' => [
                 'session' => "Session bill amounts",
                 'total' => "Total bill amounts",

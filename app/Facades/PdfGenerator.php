@@ -3,15 +3,16 @@
 namespace App\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Siak\Tontine\Service\Report\PdfGeneratorInterface;
+use Siak\Tontine\Service\Report\Pdf\GeneratorInterface;
 
 /**
- * @method static string getPdf(string $html)
+ * @method static string getSessionReport(string $template)
+ * @method static string getRoundReport(string $template)
  */
 class PdfGenerator extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return PdfGeneratorInterface::class;
+        return GeneratorInterface::class;
     }
 }

@@ -3,11 +3,11 @@
   $distributionSum = $savings->sum('distribution');
   $savings = $savings->groupBy('member_id');
 @endphp
-                  <div class="row">
-                    <div class="col d-flex justify-content-center flex-nowrap">
-                      <div class="section-title mt-0">{{ __('meeting.titles.profits') }} :: {!! $fund !!} ({{
+                  <div class="row mt-0">
+                    <div class="col d-flex justify-content-center">
+                      <h5>{{ __('meeting.titles.profits') }} :: {!! $fund !!} ({{
                         $locale->formatMoney($profitAmount, true) }}, {{
-                        __('meeting.profit.distribution.parts', ['parts' => $distributionSum]) }})</div>
+                        __('meeting.profit.distribution.parts', ['parts' => $distributionSum]) }})</h5>
                     </div>
                   </div>
                   <div class="table-responsive">
