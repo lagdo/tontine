@@ -12,12 +12,12 @@
                   <thead>
                     <tr>
                       <th></th>
-                      <th>{{ __('meeting.titles.auctions') }}</th>
-                      <th>{{ __('meeting.titles.fees') }}</th>
-                      <th>{{ __('meeting.titles.loans') }}</th>
-                      <th>{{ __('meeting.titles.refunds') }}</th>
-                      <th>{!! __('meeting.titles.savings') !!}</th>
-                      <th>{{ __('meeting.titles.disbursements') }}</th>
+                      <th class="report-round-cash-amount">{{ __('meeting.titles.auctions') }}</th>
+                      <th class="report-round-cash-amount">{{ __('meeting.titles.fees') }}</th>
+                      <th class="report-round-cash-amount">{{ __('meeting.titles.loans') }}</th>
+                      <th class="report-round-cash-amount">{{ __('meeting.titles.refunds') }}</th>
+                      <th class="report-round-cash-amount">{!! __('meeting.titles.savings') !!}</th>
+                      <th class="report-round-cash-amount">{{ __('meeting.titles.disbursements') }}</th>
                       <th>{{ __('figures.titles.end') }}</th>
                     </tr>
                   </thead>
@@ -26,13 +26,13 @@
                     <tr>
                       <th>{{ $session->title }}</th>
 @if($session->pending)
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
+                      <td class="report-round-cash-amount"></td>
+                      <td class="report-round-cash-amount"></td>
+                      <td class="report-round-cash-amount"></td>
+                      <td class="report-round-cash-amount"></td>
+                      <td class="report-round-cash-amount"></td>
+                      <td class="report-round-cash-amount"></td>
+                      <td class="report-round-cash-amount"></td>
 @else
 @php
   $settlement = $settlements[$session->id] ?? 0;
@@ -44,13 +44,13 @@
   $balance = $auction + $settlement + $refund + $saving - $loan - $disbursement;
   $cash += $balance;
 @endphp
-                      <td class="currency"><b>{!! $locale->formatMoney($auction, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($settlement, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($loan, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($refund, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($saving, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($disbursement, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($balance, false) !!}<br/>{!!
+                      <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($auction, false) !!}</b></td>
+                      <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($settlement, false) !!}</b></td>
+                      <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($loan, false) !!}</b></td>
+                      <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($refund, false) !!}</b></td>
+                      <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($saving, false) !!}</b></td>
+                      <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($disbursement, false) !!}</b></td>
+                      <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($balance, false) !!}<br/>{!!
                         $locale->formatMoney($cash, false) !!}</b></td>
 @endif
                     </tr>

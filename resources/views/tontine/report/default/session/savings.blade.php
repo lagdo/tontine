@@ -8,23 +8,23 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>{{ __('meeting.labels.category') }}</th>
                           <th>{{ __('meeting.labels.member') }}</th>
-                          <th class="currency">{{ __('common.labels.amount') }}</th>
+                          <th style="width:30%;">{{ __('tontine.fund.labels.fund') }}</th>
+                          <th style="width:20%;text-align:right;">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach ($savings as $saving)
                         <tr>
-                          <td>&nbsp;</td>
                           <td>{{ $saving->member->name }}</td>
-                          <td class="currency">{{ $locale->formatMoney($saving->amount, true) }}</td>
+                          <td>{!! $saving->fund ? $saving->fund->title : __('tontine.fund.labels.default') !!}</td>
+                          <td style="text-align:right;">{{ $locale->formatMoney($saving->amount, true) }}</td>
                         </tr>
 @endforeach
                         <tr>
                           <th>{{ __('common.labels.total') }}</th>
-                          <th>{{ $total->total_count }}</th>
-                          <th class="currency">{{ $locale->formatMoney($total->total_amount, true) }}</th>
+                          <th style="width:30%;text-align:right;">{{ $total->total_count }}</th>
+                          <th style="width:20%;text-align:right;">{{ $locale->formatMoney($total->total_amount, true) }}</th>
                         </tr>
                       </tbody>
                     </table>

@@ -22,8 +22,8 @@
                       <thead>
                         <tr>
                           <th>{{ __('meeting.labels.member') }}</th>
-                          <th class="currency">{{ __('common.labels.amount') }}</th>
-                          <th class="currency">{{ __('common.labels.paid') }}</th>
+                          <th style="width:15%;text-align:right;">{{ __('common.labels.paid') }}</th>
+                          <th style="width:25%;text-align:right;">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -34,15 +34,14 @@
 @endphp
                         <tr>
                           <td>{{ $auction->member->name }}</td>
-                          <td class="currency">{{ $locale->formatMoney($auction->amount, true) }}</td>
-                          <td class="currency">{{ $auction->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
+                          <td style="text-align:right;">{{ $auction->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
+                          <td style="text-align:right;">{{ $locale->formatMoney($auction->amount, true) }}</td>
                         </tr>
 @endif
 @endforeach
                         <tr>
                           <th>{{ __('common.labels.total') }}</th>
-                          <th class="currency">{{ $locale->formatMoney($total, true) }}</th>
-                          <th>&nbsp;</th>
+                          <th style="text-align:right;" colspan="2">{{ $locale->formatMoney($total, true) }}</th>
                         </tr>
                       </tbody>
                     </table>

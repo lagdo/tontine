@@ -20,8 +20,8 @@
                       <thead>
                         <tr>
                           <th>{{ __('meeting.labels.member') }}</th>
-                          <th class="currency">{{ __('common.labels.amount') }}</th>
-                          <th class="currency">{{ __('common.labels.paid') }}</th>
+                          <th style="width:15%;text-align:right;">{{ __('common.labels.paid') }}</th>
+                          <th style="width:25%;text-align:right;">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -29,15 +29,15 @@
 @if ($receivable->pool->id === $pool->id)
                         <tr>
                           <td>{{ $receivable->member->name }}</td>
-                          <td class="currency">{{ $locale->formatMoney($receivable->amount, true) }}</td>
-                          <td class="currency">{{ $receivable->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
+                          <td style="text-align:right;">{{ $receivable->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
+                          <td style="text-align:right;">{{ $receivable->paid ? $locale->formatMoney($receivable->amount, true) : '-' }}</td>
                         </tr>
 @endif
 @endforeach
                         <tr>
                           <th>{{ __('common.labels.total') }}</th>
-                          <th class="currency">{{ $locale->formatMoney($pool->paid_amount, true) }}</th>
-                          <th class="currency">{{ $pool->paid_count }}/{{ $pool->total_count }}</th>
+                          <th style="text-align:right;">{{ $pool->paid_count }}/{{ $pool->total_count }}</th>
+                          <th style="text-align:right;">{{ $locale->formatMoney($pool->paid_amount, true) }}</th>
                         </tr>
                       </tbody>
                     </table>

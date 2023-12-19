@@ -25,12 +25,12 @@
 @endphp
                         <tr>
                           <td>{{ $dpool->title }}</td>
-                          <td class="currency">@if ($dpool->paid_count > 0){{ $dpool->paid_count }}@else &nbsp; @endif</td>
-                          <td class="currency">@if ($dpool->paid_count > 0){{
+                          <td style="width:10%;text-align:right;">@if ($dpool->paid_count > 0){{ $dpool->paid_count }}@else &nbsp; @endif</td>
+                          <td style="width:20%;text-align:right;">@if ($dpool->paid_count > 0){{
                             $locale->formatMoney($dpool->paid_amount, true) }}@else &nbsp; @endif</td>
-                          <td class="currency">@if ($rpool !== null && $rpool->paid_count > 0){{
+                          <td style="width:10%;text-align:right;">@if ($rpool !== null && $rpool->paid_count > 0){{
                             $rpool->paid_count }}@else &nbsp; @endif</td>
-                          <td class="currency">@if ($rpool !== null && $rpool->paid_count > 0){{
+                          <td style="width:20%;text-align:right;">@if ($rpool !== null && $rpool->paid_count > 0){{
                             $locale->formatMoney($rpool->paid_amount, true) }}@else &nbsp; @endif</td>
                         </tr>
 @endif

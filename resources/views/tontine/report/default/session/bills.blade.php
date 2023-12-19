@@ -26,22 +26,22 @@
                       <thead>
                         <tr>
                           <th>{{ __('meeting.labels.member') }}</th>
-                          <th class="currency">{{ __('common.labels.amount') }}</th>
-                          <th class="currency">{{ __('common.labels.paid') }}</th>
+                          <th style="width:15%;text-align:right;">{{ __('common.labels.paid') }}</th>
+                          <th style="width:25%;text-align:right;">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach ($chargeBills as $bill)
                         <tr>
                           <td>{{ $bill->member->name }}@if (($bill->session)) - {{ $bill->session->title }}@endif</td>
-                          <td class="currency">{{ $locale->formatMoney($bill->amount, true) }}</td>
-                          <td class="currency">{{ $bill->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
+                          <td style="text-align:right;">{{ $bill->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
+                          <td style="text-align:right;">{{ $bill->paid ? $locale->formatMoney($bill->amount, true) : '-' }}</td>
                         </tr>
 @endforeach
                         <tr>
                           <th>{{ __('common.labels.total') }}</th>
-                          <th class="currency">{{ $locale->formatMoney($charge->total_amount, true) }}</th>
-                          <th class="currency">{{ $charge->total_count }}</th>
+                          <th style="text-align:right;">{{ $charge->total_count }}</th>
+                          <th style="text-align:right;">{{ $locale->formatMoney($charge->total_amount, true) }}</th>
                         </tr>
                       </tbody>
                     </table>
@@ -67,12 +67,12 @@
 @foreach($charges['session'] as $charge)
                         <tr>
                           <td>{{ $charge->name }}</td>
-                          <td class="currency">@if ($charge->total_count > 0){{ $charge->total_count }}@else &nbsp; @endif</td>
-                          <td class="currency">@if ($charge->total_count > 0){{
+                          <td style="width:10%;text-align:right;">@if ($charge->total_count > 0){{ $charge->total_count }}@else &nbsp; @endif</td>
+                          <td style="width:20%;text-align:right;">@if ($charge->total_count > 0){{
                             $locale->formatMoney($charge->total_amount, true) }}@else &nbsp; @endif</td>
-                          <td class="currency">@if ($charge->disbursement !== null){{
+                          <td style="width:10%;text-align:right;">@if ($charge->disbursement !== null){{
                             $charge->disbursement->total_count }}@else &nbsp; @endif</td>
-                          <td class="currency">@if ($charge->disbursement !== null){{
+                          <td style="width:20%;text-align:right;">@if ($charge->disbursement !== null){{
                             $locale->formatMoney($charge->disbursement->total_amount, true) }}@else &nbsp; @endif</td>
                         </tr>
 @endforeach
@@ -98,12 +98,12 @@
 @foreach($charges['total'] as $charge)
                         <tr>
                           <td>{{ $charge->name }}</td>
-                          <td class="currency">@if ($charge->total_count > 0){{ $charge->total_count }}@else &nbsp; @endif</td>
-                          <td class="currency">@if ($charge->total_count > 0){{
+                          <td style="width:10%;text-align:right;">@if ($charge->total_count > 0){{ $charge->total_count }}@else &nbsp; @endif</td>
+                          <td style="width:20%;text-align:right;">@if ($charge->total_count > 0){{
                             $locale->formatMoney($charge->total_amount, true) }}@else &nbsp; @endif</td>
-                          <td class="currency">@if ($charge->disbursement !== null){{
+                          <td style="width:10%;text-align:right;">@if ($charge->disbursement !== null){{
                             $charge->disbursement->total_count }}@else &nbsp; @endif</td>
-                          <td class="currency">@if ($charge->disbursement !== null){{
+                          <td style="width:20%;text-align:right;">@if ($charge->disbursement !== null){{
                             $locale->formatMoney($charge->disbursement->total_amount, true) }}@else &nbsp; @endif</td>
                         </tr>
 @endforeach

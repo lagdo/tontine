@@ -20,8 +20,8 @@
                       <thead>
                         <tr>
                           <th>{{ __('meeting.labels.member') }}</th>
-                          <th class="currency">{{ __('common.labels.amount') }}</th>
-                          <th class="currency">{{ __('common.labels.paid') }}</th>
+                          <th style="width:15%;text-align:right;">{{ __('common.labels.paid') }}</th>
+                          <th style="width:25%;text-align:right;">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -29,15 +29,14 @@
 @if ($payable->pool->id === $pool->id)
                         <tr>
                           <td>{{ $payable->member->name }}</td>
-                          <td class="currency">{{ $locale->formatMoney($payable->amount, true) }}</td>
-                          <td class="currency">{{ $payable->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
+                          <td style="text-align:right;">{{ $payable->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
+                          <td style="text-align:right;">{{ $payable->paid ? $locale->formatMoney($payable->amount, true) : '-' }}</td>
                         </tr>
 @endif
 @endforeach
                         <tr>
                           <th>{{ __('common.labels.total') }}</th>
-                          <th class="currency">{{ $locale->formatMoney($pool->paid_amount, true) }}</th>
-                          <th>&nbsp;</th>
+                          <th style="text-align:right;" colspan="2">{{ $locale->formatMoney($pool->paid_amount, true) }}</th>
                         </tr>
                       </tbody>
                     </table>

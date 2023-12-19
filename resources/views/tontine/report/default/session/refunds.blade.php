@@ -9,8 +9,8 @@
                       <thead>
                         <tr>
                           <th>{{ __('meeting.labels.member') }}</th>
-                          <th>{{ __('meeting.labels.session') }}</th>
-                          <th class="currency">{{ __('common.labels.amount') }}</th>
+                          <th style="width:30%;">{{ __('meeting.labels.session') }}</th>
+                          <th style="width:20%;text-align:right;">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -19,14 +19,14 @@
                           <td>{{ $refund->member->name }}</td>
                           <td>{{ __('meeting.loan.labels.' . $refund->debt->type_str) }}@if ($refund->is_partial) ({{
                             __('meeting.refund.labels.partial') }})@endif<br/>{{ $refund->debt->session->title }}</td>
-                          <td class="currency">{{ $locale->formatMoney($refund->amount, true) }}</td>
+                          <td style="text-align:right;">{{ $locale->formatMoney($refund->amount, true) }}</td>
                         </tr>
 @endforeach
                         <tr>
                           <th>{{ __('common.labels.total') }}</th>
-                          <td class="currency">{{ $locale->formatMoney($total->principal, true)
+                          <td style="text-align:right;">{{ $locale->formatMoney($total->principal, true)
                             }} + {{ $locale->formatMoney($total->interest, true) }}</td>
-                          <th class="currency">{{ $locale->formatMoney($total->principal + $total->interest, true) }}</th>
+                          <th style="text-align:right;">{{ $locale->formatMoney($total->principal + $total->interest, true) }}</th>
                         </tr>
                       </tbody>
                     </table>

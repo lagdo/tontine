@@ -10,11 +10,9 @@
                     <tr>
                       <th></th>
                       <th>{{ __('figures.titles.start') }}</th>
-                      <th>{{ __('figures.deposit.titles.count') }}</th>
-                      <th>{{ __('figures.deposit.titles.amount') }}</th>
+                      <th colspan="2">{{ __('figures.deposit.titles.amount') }}</th>
                       <th>{{ __('figures.titles.recv') }}</th>
-                      <th>{{ __('figures.remitment.titles.count') }}</th>
-                      <th>{{ __('figures.remitment.titles.amount') }}</th>
+                      <th colspan="2">{{ __('figures.remitment.titles.amount') }}</th>
                       <th>{{ __('figures.titles.end') }}</th>
                     </tr>
                   </thead>
@@ -23,55 +21,55 @@
                     <tr>
                       <th>{{ $session->title }}</th>
 @if($session->disabled($pool) || ($session->pending && !$pool->remit_planned))
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
+                      <td class="report-round-pool-amount"></td>
+                      <td class="report-round-pool-count"></td>
+                      <td class="report-round-pool-amount"></td>
+                      <td class="report-round-pool-amount"></td>
+                      <td class="report-round-pool-count"></td>
+                      <td class="report-round-pool-amount"></td>
+                      <td class="report-round-pool-amount"></td>
 @elseif (!$pool->remit_planned)
-                      <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->start, false) !!}</b></td>
-                      <td class="currency"><b>{!! $figures->collected[$session->id]->deposit->count !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->deposit->amount, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->recv, false) !!}</b></td>
-                      <td class="currency"><b>{!! $figures->collected[$session->id]->remitment->count !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->remitment->amount, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->end, false) !!}</b></td>
+                      <td class="report-round-pool-amount"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->start, false) !!}</b></td>
+                      <td class="report-round-pool-count"><b>{!! $figures->collected[$session->id]->deposit->count !!}</b></td>
+                      <td class="report-round-pool-amount"><b>{!! $locale->formatMoney($figures->collected[$session->id]->deposit->amount, false) !!}</b></td>
+                      <td class="report-round-pool-amount"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->recv, false) !!}</b></td>
+                      <td class="report-round-pool-count"><b>{!! $figures->collected[$session->id]->remitment->count !!}</b></td>
+                      <td class="report-round-pool-amount"><b>{!! $locale->formatMoney($figures->collected[$session->id]->remitment->amount, false) !!}</b></td>
+                      <td class="report-round-pool-amount"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->end, false) !!}</b></td>
 @elseif($session->pending)
-                      <td class="currency"><b>-</b><br/>{{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, false) }}</td>
-                      <td class="currency"><b>-</b><br/>{{ $figures->expected[$session->id]->deposit->count }}</td>
-                      <td class="currency"><b>-</b><br/>{{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, false) }}</td>
-                      <td class="currency"><b>-</b><br/>{{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, false) }}</td>
-                      <td class="currency"><b>-</b><br/>{{ $figures->expected[$session->id]->remitment->count }}</td>
-                      <td class="currency"><b>-</b><br/>{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, false) }}</td>
-                      <td class="currency"><b>-</b><br/>{{ $locale->formatMoney($figures->expected[$session->id]->cashier->end, false) }}</td>
+                      <td class="report-round-pool-amount"><b>-</b><br/>{{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, false) }}</td>
+                      <td class="report-round-pool-count"><b>-</b><br/>{{ $figures->expected[$session->id]->deposit->count }}</td>
+                      <td class="report-round-pool-amount"><b>-</b><br/>{{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, false) }}</td>
+                      <td class="report-round-pool-amount"><b>-</b><br/>{{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, false) }}</td>
+                      <td class="report-round-pool-count"><b>-</b><br/>{{ $figures->expected[$session->id]->remitment->count }}</td>
+                      <td class="report-round-pool-amount"><b>-</b><br/>{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, false) }}</td>
+                      <td class="report-round-pool-amount"><b>-</b><br/>{{ $locale->formatMoney($figures->expected[$session->id]->cashier->end, false) }}</td>
 @else
-                      <td class="currency">
+                      <td class="report-round-pool-amount">
                         <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->start, false) !!}</b><br/>
                         {{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, false) }}
                       </td>
-                      <td class="currency">
+                      <td class="report-round-pool-count">
                         <b>{!! $figures->collected[$session->id]->deposit->count !!}</b><br/>
                         {{ $figures->expected[$session->id]->deposit->count }}
                       </td>
-                      <td class="currency">
+                      <td class="report-round-pool-amount">
                         <b>{!! $locale->formatMoney($figures->collected[$session->id]->deposit->amount, false) !!}</b><br/>
                         {{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, false) }}
                       </td>
-                      <td class="currency">
+                      <td class="report-round-pool-amount">
                         <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->recv, false) !!}</b><br/>
                         {{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, false) }}
                       </td>
-                      <td class="currency">
+                      <td class="report-round-pool-count">
                         <b>{!! $figures->collected[$session->id]->remitment->count !!}</b><br/>
                         {{ $figures->expected[$session->id]->remitment->count }}
                       </td>
-                      <td class="currency">
+                      <td class="report-round-pool-amount">
                         <b>{!! $locale->formatMoney($figures->collected[$session->id]->remitment->amount, false) !!}</b><br/>
                         {{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, false) }}
                       </td>
-                      <td class="currency">
+                      <td class="report-round-pool-amount">
                         <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->end, false) !!}</b><br/>
                         {{ $locale->formatMoney($figures->expected[$session->id]->cashier->end, false) }}
                       </td>
