@@ -9,6 +9,32 @@
       size: A4 landscape;
       /*margin: 0;*/
     }
+    .table:not(.table-sm):not(.table-md):not(.dataTable) th {
+      font-size: 16px;
+    }
+    .table:not(.table-sm):not(.table-md):not(.dataTable) td {
+      font-size: 16px;
+    }
+    th.report-round-pool-amount, td.report-round-pool-amount {
+      width: 12%;
+      text-align: right;
+    }
+    th.report-round-pool-count, td.report-round-pool-count {
+      width: 5%;
+      text-align: right;
+    }
+    th.report-round-cash-amount {
+      width: 10%;
+      text-align: right;
+      max-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    td.report-round-cash-amount {
+      width: 10%;
+      text-align: right;
+    }
   </style>
 @endsection
 

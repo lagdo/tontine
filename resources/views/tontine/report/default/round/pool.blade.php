@@ -19,7 +19,7 @@
                   <tbody>
 @foreach ($sessions as $session)
                     <tr>
-                      <th>{{ $session->title }}</th>
+                      <td>{{ $session->title }}</td>
 @if($session->disabled($pool) || ($session->pending && !$pool->remit_planned))
                       <td class="report-round-pool-amount"></td>
                       <td class="report-round-pool-count"></td>

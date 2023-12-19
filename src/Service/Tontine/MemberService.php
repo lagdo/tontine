@@ -101,14 +101,14 @@ class MemberService
         // The number of active members is saved in the round, so its current
         // value can be retrieved forever, even when the membership will change.
         $round = $this->tenantService->round();
-        if(!isset($round->properties['numbers']))
+        if(!isset($round->properties['members']))
         {
             // Create and save the property with the content
             $this->saveActiveMembers();
             $round->refresh();
         }
 
-        return count($round->properties['numbers']);
+        return count($round->properties['members']);
     }
 
     /**

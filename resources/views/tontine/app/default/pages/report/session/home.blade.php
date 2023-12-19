@@ -11,12 +11,13 @@
                   </div>
                 </div>
               </div>
+              <div class="col-auto" id="session-reports-export">
+              </div>
               <div class="col-auto">
                 <div class="input-group">
                   {{ Form::select('member_id', $members, 0, ['class' => 'form-control', 'id' => 'select-member']) }}
                   <div class="input-group-append">
                     <button type="button" class="btn btn-primary" id="btn-member-select"><i class="fa fa-arrow-right"></i></button>
-                    <a type="button" class="btn btn-primary" id="btn-session-export" target="_blank"><i class="fa fa-file-pdf"></i></a>
                   </div>
                 </div>
               </div>

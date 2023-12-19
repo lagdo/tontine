@@ -16,5 +16,12 @@ interface GeneratorInterface
      *
      * @return string
      */
+    public function getProfitsReport(string $template): string;
+
+    /**
+     * @param string $template
+     *
+     * @return string
+     */
     public function getRoundReport(string $template): string;
 }

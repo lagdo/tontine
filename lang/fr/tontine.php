@@ -330,6 +330,7 @@ return [
     'report' => [
         'titles' => [
             'session' => "Rapport de séance",
+            'profits' => "Répartition des gains",
             'round' => "Rapport de tour",
             'bills' => [
                 'session' => "Montants des frais de la session",

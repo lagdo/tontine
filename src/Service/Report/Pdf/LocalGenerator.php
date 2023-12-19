@@ -39,6 +39,23 @@ class LocalGenerator implements GeneratorInterface
      *
      * @return array
      */
+    protected function getProfitsReportConfig(array $config, string $template): array
+    {
+        return [
+            ...$config,
+            'marginTop' => 0.8,
+            'marginBottom' => 0.6,
+            'headerTemplate' => trim('' . view("tontine.report.$template.profits.tpl.header")),
+            'footerTemplate' => trim('' . view("tontine.report.$template.profits.tpl.footer")),
+        ];
+    }
+
+    /**
+     * @param array $config
+     * @param string $template
+     *
+     * @return array
+     */
     protected function getRoundReportConfig(array $config, string $template): array
     {
         return [
@@ -79,6 +96,17 @@ class LocalGenerator implements GeneratorInterface
     {
         return $this->getPdf('' . view("tontine.report.$template.session"),
             $this->getSessionReportConfig($this->config, $template));
+    }
+
+    /**
+     * @param string $template
+     *
+     * @return string
+     */
+    public function getProfitsReport(string $template): string
+    {
+        return $this->getPdf('' . view("tontine.report.$template.profits"),
+            $this->getProfitsReportConfig($this->config, $template));
     }
 
     /**

@@ -4,7 +4,8 @@
                 <h2 class="section-title">{{ $session->title }}</h2>
               </div>
               <div class="col">
-@include('tontine.app.default.pages.meeting.session.action', ['session' => $session])
+@include('tontine.app.default.pages.report.session.exports', ['sessionId' => $session->id, 'hasClosing' => true])
+@include('tontine.app.default.pages.meeting.session.action')
 @include('tontine.app.default.pages.meeting.session.open', ['session' => $session])
               </div>
             </div>

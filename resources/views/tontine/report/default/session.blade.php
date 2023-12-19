@@ -2,6 +2,21 @@
 
 @section('page-title', 'Siak Tontine')
 
+@section('css')
+  <style>
+    @page {
+      size: A4 portrait;
+      /*margin: 0;*/
+    }
+    .table:not(.table-sm):not(.table-md):not(.dataTable) th {
+      font-size: 16px;
+    }
+    .table:not(.table-sm):not(.table-md):not(.dataTable) td {
+      font-size: 18px;
+    }
+  </style>
+@endsection
+
 @section('content')
           <div class="row mt-4">
             <div class="col d-flex justify-content-center">
@@ -53,10 +68,4 @@
           @include('tontine.report.default.session.refunds', $refunds)
 
           @include('tontine.report.default.session.savings', $savings)
-
-@foreach ($profits as $profit)
-          <div class="pagebreak"></div>
-
-          @include('tontine.report.default.session.profits', $profit)
-@endforeach
 @endsection

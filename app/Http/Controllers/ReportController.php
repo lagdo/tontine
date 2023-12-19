@@ -69,6 +69,37 @@ class ReportController extends Controller
 
     /**
      * @param Request $request
+     * @param SqidsInterface $sqids
+     * @param string $sessionId
+     *
+     * @return View|Response
+     */
+    public function profits(Request $request, SqidsInterface $sqids, string $sessionSqid)
+    {
+        [$sessionId] = $sqids->decode($sessionSqid);
+        $template = config('tontine.templates.report', 'default');
+        $session = $this->tenantService->getSession($sessionId);
+        view()->share($this->reportService->getProfitsReport($session));
+        // Show the html page
+        if($request->has('html'))
+        {
+            return view("tontine.report.$template.profits");
+        }
+
+        // Print the pdf
+        $filename = $this->reportService->getProfitsReportFilename($session);
+        return response(base64_decode(PdfGenerator::getProfitsReport($template)), 200)
+            ->header('Content-Description', 'Profits Report')
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', "inline; filename=$filename")
+            ->header('Content-Transfer-Encoding', 'binary')
+            ->header('Expires', '0')
+            ->header('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+            ->header('Pragma', 'public');
+    }
+
+    /**
+     * @param Request $request
      * @param int $roundId
      *
      * @return View|Response

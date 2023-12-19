@@ -24,7 +24,7 @@
                   <tbody>
 @foreach ($sessions as $session)
                     <tr>
-                      <th>{{ $session->title }}</th>
+                      <td>{{ $session->title }}</td>
 @if($session->pending)
                       <td class="report-round-cash-amount"></td>
                       <td class="report-round-cash-amount"></td>

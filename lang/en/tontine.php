@@ -331,6 +331,7 @@ return [
         'titles' => [
             'session' => "Session report",
             'round' => "Round report",
+            'profits' => "Profits distribution",
             'bills' => [
                 'session' => "Session bill amounts",
                 'total' => "Total bill amounts",
