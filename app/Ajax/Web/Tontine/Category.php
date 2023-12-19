@@ -23,7 +23,7 @@ class Category extends CallableClass
 
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.options.category.home');
+        $html = $this->render('pages.options.category.home');
         $this->response->html('content-categories-home', $html);
 
         $this->jq('#btn-category-refresh')->click($this->rq()->home());
@@ -39,7 +39,7 @@ class Category extends CallableClass
         $categories = $this->categoryService->getCategories($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $categoryCount);
 
-        $html = $this->view()->render('tontine.pages.options.category.page')
+        $html = $this->render('pages.options.category.page')
             ->with('categories', $categories)
             ->with('pagination', $pagination);
         $this->response->html('category-page', $html);
@@ -57,7 +57,7 @@ class Category extends CallableClass
             CategoryModel::TYPE_DISBURSEMENT => trans('tontine.category.types.disbursement'),
         ];
         $title = trans('tontine.category.titles.add');
-        $content = $this->view()->render('tontine.pages.options.category.add', [
+        $content = $this->render('pages.options.category.add', [
             'types' => $types,
         ]);
         $buttons = [[
@@ -93,7 +93,7 @@ class Category extends CallableClass
         $types = [
             CategoryModel::TYPE_DISBURSEMENT => trans('tontine.category.types.disbursement'),
         ];
-        $content = $this->view()->render('tontine.pages.options.category.edit', [
+        $content = $this->render('pages.options.category.edit', [
             'types' => $types,
             'category' => $category,
         ]);

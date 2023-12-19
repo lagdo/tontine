@@ -64,7 +64,7 @@ class Profit extends CallableClass
         }
 
         $profitAmount = $this->profitService->getProfitAmount($this->session, $fundId);
-        $html = $this->view()->render('tontine.pages.report.session.profit.home', [
+        $html = $this->render('pages.report.session.profit.home', [
             'profit' => $profitAmount,
             'fund' => $funds[$fundId],
         ]);
@@ -81,7 +81,7 @@ class Profit extends CallableClass
         $savings = $this->profitService->getDistributions($this->session, $fundId, $profitAmount);
         $partUnitValue = $this->profitService->getPartUnitValue($savings);
         $distributionSum = $savings->sum('distribution');
-        $html = $this->view()->render('tontine.pages.report.session.profit.details', [
+        $html = $this->render('pages.report.session.profit.details', [
             'profitAmount' => $profitAmount,
             'partUnitValue' => $partUnitValue,
             'distributionSum' => $distributionSum,
@@ -91,7 +91,7 @@ class Profit extends CallableClass
         ]);
         $this->response->html('report-profits-distribution', $html);
 
-        $html = $this->view()->render('tontine.pages.report.session.profit.page', [
+        $html = $this->render('pages.report.session.profit.page', [
             'savings' => $savings->groupBy('member_id'),
             'distributionSum' => $distributionSum,
         ]);

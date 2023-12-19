@@ -22,7 +22,7 @@ class Fund extends CallableClass
 
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.options.fund.home');
+        $html = $this->render('pages.options.fund.home');
         $this->response->html('content-funds-home', $html);
 
         $this->jq('#btn-fund-refresh')->click($this->rq()->home());
@@ -38,7 +38,7 @@ class Fund extends CallableClass
         $funds = $this->fundService->getFunds($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $fundCount);
 
-        $html = $this->view()->render('tontine.pages.options.fund.page')
+        $html = $this->render('pages.options.fund.page')
             ->with('funds', $funds)
             ->with('pagination', $pagination);
         $this->response->html('fund-page', $html);
@@ -53,7 +53,7 @@ class Fund extends CallableClass
     public function add()
     {
         $title = trans('tontine.fund.titles.add');
-        $content = $this->view()->render('tontine.pages.options.fund.add');
+        $content = $this->render('pages.options.fund.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -84,7 +84,7 @@ class Fund extends CallableClass
         $fund = $this->fundService->getFund($fundId);
 
         $title = trans('tontine.fund.titles.edit');
-        $content = $this->view()->render('tontine.pages.options.fund.edit')->with('fund', $fund);
+        $content = $this->render('pages.options.fund.edit')->with('fund', $fund);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

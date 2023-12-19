@@ -55,7 +55,7 @@ class Member extends CallableClass
 
     private function deposits(SessionModel $session, MemberModel $member)
     {
-        $html = $this->view()->render('tontine.pages.report.session.member.deposits', [
+        $html = $this->render('pages.report.session.member.deposits', [
             'receivables' => $this->memberService->getReceivables($session, $member),
         ]);
         $this->response->html('report-deposits', $html);
@@ -63,7 +63,7 @@ class Member extends CallableClass
 
     private function remitments(SessionModel $session, MemberModel $member)
     {
-        $html = $this->view()->render('tontine.pages.report.session.member.remitments', [
+        $html = $this->render('pages.report.session.member.remitments', [
             'payables' => $this->memberService->getPayables($session, $member),
             'auctions' => $this->memberService->getAuctions($session, $member),
         ]);
@@ -72,7 +72,7 @@ class Member extends CallableClass
 
     private function loans(SessionModel $session, MemberModel $member)
     {
-        $html = $this->view()->render('tontine.pages.report.session.member.loans', [
+        $html = $this->render('pages.report.session.member.loans', [
             'loans' => $this->memberService->getLoans($session, $member),
         ]);
         $this->response->html('report-loans', $html);
@@ -80,7 +80,7 @@ class Member extends CallableClass
 
     private function refunds(SessionModel $session, MemberModel $member)
     {
-        $html = $this->view()->render('tontine.pages.report.session.member.refunds', [
+        $html = $this->render('pages.report.session.member.refunds', [
             'refunds' => $this->memberService->getRefunds($session, $member),
         ]);
         $this->response->html('report-refunds', $html);
@@ -88,7 +88,7 @@ class Member extends CallableClass
 
     private function sessionBills(SessionModel $session, MemberModel $member)
     {
-        $html = $this->view()->render('tontine.pages.report.session.member.bills.session', [
+        $html = $this->render('pages.report.session.member.bills.session', [
             'bills' => $this->memberService->getBills($session, $member),
         ]);
         $this->response->html('report-session-bills', $html);
@@ -96,7 +96,7 @@ class Member extends CallableClass
 
     private function totalBills(SessionModel $session, MemberModel $member)
     {
-        $html = $this->view()->render('tontine.pages.report.session.member.bills.total', [
+        $html = $this->render('pages.report.session.member.bills.total', [
             'charges' => $this->sessionService->getTotalCharges($session, $member),
         ]);
         $this->response->html('report-total-bills', $html);
@@ -104,7 +104,7 @@ class Member extends CallableClass
 
     private function savings(SessionModel $session, MemberModel $member)
     {
-        $html = $this->view()->render('tontine.pages.report.session.member.savings', [
+        $html = $this->render('pages.report.session.member.savings', [
             'savings' => $this->memberService->getSavings($session, $member),
         ]);
         $this->response->html('report-savings', $html);
@@ -112,7 +112,7 @@ class Member extends CallableClass
 
     private function disbursements(SessionModel $session, MemberModel $member)
     {
-        $html = $this->view()->render('tontine.pages.report.session.member.disbursements', [
+        $html = $this->render('pages.report.session.member.disbursements', [
             'disbursements' => $this->memberService->getDisbursements($session, $member),
         ]);
         $this->response->html('report-disbursements', $html);

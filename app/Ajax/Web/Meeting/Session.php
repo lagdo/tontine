@@ -67,7 +67,7 @@ class Session extends CallableClass
     public function home()
     {
         $this->response->html('section-title', trans('tontine.menus.meeting'));
-        $html = $this->view()->render('tontine.pages.meeting.session.list');
+        $html = $this->render('pages.meeting.session.list');
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-sessions-refresh')->click($this->rq()->page());
@@ -90,7 +90,7 @@ class Session extends CallableClass
             SessionModel::STATUS_OPENED => trans('tontine.session.status.opened'),
             SessionModel::STATUS_CLOSED => trans('tontine.session.status.closed'),
         ];
-        $html = $this->view()->render('tontine.pages.meeting.session.page')
+        $html = $this->render('pages.meeting.session.page')
             ->with('sessions', $sessions)
             ->with('statuses', $statuses)
             ->with('members', $this->tontineService->getMembers())
@@ -181,7 +181,7 @@ class Session extends CallableClass
      */
     public function show(int $sessionId)
     {
-        $html = $this->view()->render('tontine.pages.meeting.session.home', [
+        $html = $this->render('pages.meeting.session.home', [
             'session' => $this->session,
         ]);
         $this->response->html('content-home', $html);

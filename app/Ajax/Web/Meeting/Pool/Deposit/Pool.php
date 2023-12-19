@@ -84,7 +84,7 @@ class Pool extends CallableClass
     {
         $this->bag('meeting')->set('pool.id', $poolId);
 
-        $html = $this->view()->render('tontine.pages.meeting.deposit.pool.home', [
+        $html = $this->render('pages.meeting.deposit.pool.home', [
             'pool' => $this->pool,
         ]);
         $this->response->html('meeting-deposits', $html);
@@ -105,7 +105,7 @@ class Pool extends CallableClass
         $receivables = $this->depositService->getReceivables($this->pool, $this->session, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $receivableCount);
 
-        $html = $this->view()->render('tontine.pages.meeting.deposit.pool.page', [
+        $html = $this->render('pages.meeting.deposit.pool.page', [
             'pool' => $this->pool,
             'session' => $this->session,
             'receivableCount' => $receivableCount,
@@ -164,7 +164,7 @@ class Pool extends CallableClass
             return $this->page();
         }
 
-        $html = $this->view()->render('tontine.pages.meeting.deposit.libre.edit', [
+        $html = $this->render('pages.meeting.deposit.libre.edit', [
             'id' => $receivable->id,
             'amount' => !$receivable->deposit ? '' :
                 $this->localeService->getMoneyValue($receivable->deposit->amount),

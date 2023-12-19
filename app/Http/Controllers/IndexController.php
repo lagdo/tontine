@@ -33,7 +33,8 @@ class IndexController extends Controller
             'jxnTontine' => $jaxon->request(Tontine::class),
         ]);
 
-        return view('tontine.base.home', [
+        $template = config('tontine.templates.app', 'default');
+        return view("tontine.app.$template.base.home", [
             'jaxonCss' => $jaxon->css(),
             'jaxonJs' => $jaxon->js(),
             'jaxonScript' => $jaxon->script(),
@@ -52,8 +53,11 @@ class IndexController extends Controller
             'locales' => LaravelLocalization::getSupportedLocales(),
             'locale' => LaravelLocalization::getCurrentLocale(),
             'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
-         ]);
+        ]);
 
-        return view('tontine.base.profile', ['countries' => $localeService->getCountries()]);
+        $template = config('tontine.templates.app', 'default');
+        return view("tontine.app.$template.base.profile", [
+            'countries' => $localeService->getCountries(),
+        ]);
     }
 }

@@ -49,7 +49,7 @@ class Session extends CallableClass
         $members->prepend('', 0);
 
         $this->response->html('section-title', trans('tontine.menus.report'));
-        $html = $this->view()->render('tontine.pages.report.session.home',
+        $html = $this->render('pages.report.session.home',
             compact('sessions', 'members'));
         $this->response->html('content-home', $html);
 

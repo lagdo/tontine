@@ -60,7 +60,7 @@ class Closing extends CallableClass
 
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.meeting.closing.home', [
+        $html = $this->render('pages.meeting.closing.home', [
             'session' => $this->session,
             'closings' => $this->savingService->getSessionClosings($this->session),
             'funds' => $this->fundService->getFundList(),
@@ -93,7 +93,7 @@ class Closing extends CallableClass
         }
 
         $title = trans('meeting.saving.titles.closing', ['fund' => $funds[$fundId]]);
-        $content = $this->view()->render('tontine.pages.meeting.closing.edit', [
+        $content = $this->render('pages.meeting.closing.edit', [
             'hasClosing' => $this->savingService->hasFundClosing($this->session, $fundId),
             'profitAmount' => $this->savingService->getProfitAmount($this->session, $fundId),
         ]);

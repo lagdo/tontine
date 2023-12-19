@@ -25,7 +25,7 @@ class Round extends CallableClass
      */
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.round.home');
+        $html = $this->render('pages.round.home');
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-show-select')->click($this->cl(Select::class)->rq()->showRounds());
@@ -42,7 +42,7 @@ class Round extends CallableClass
         $rounds = $this->roundService->getRounds($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $roundCount);
 
-        $html = $this->view()->render('tontine.pages.round.page')
+        $html = $this->render('pages.round.page')
             ->with('rounds', $rounds)
             ->with('pagination', $pagination);
         $this->response->html('round-page', $html);
@@ -57,7 +57,7 @@ class Round extends CallableClass
     public function add()
     {
         $title = trans('tontine.round.titles.add');
-        $content = $this->view()->render('tontine.pages.round.add');
+        $content = $this->render('pages.round.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -88,7 +88,7 @@ class Round extends CallableClass
         $round = $this->roundService->getRound($roundId);
 
         $title = trans('tontine.round.titles.edit');
-        $content = $this->view()->render('tontine.pages.round.edit')->with('round', $round);
+        $content = $this->render('pages.round.edit')->with('round', $round);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

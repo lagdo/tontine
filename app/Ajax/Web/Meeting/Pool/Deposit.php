@@ -55,7 +55,7 @@ class Deposit extends CallableClass
 
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.meeting.deposit.home')
+        $html = $this->render('pages.meeting.deposit.home')
             ->with('session', $this->session)
             ->with('pools', $this->poolService->getPoolsWithReceivables($this->session));
         $this->response->html('meeting-deposits', $html);

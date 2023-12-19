@@ -14,7 +14,7 @@ class Options extends CallableClass
     public function home()
     {
         $this->response->html('section-title', trans('tontine.menus.tontine'));
-        $this->response->html('content-home', $this->view()->render('tontine.pages.tontine.options'));
+        $this->response->html('content-home', $this->render('pages.tontine.options'));
 
         $this->cl(Fund::class)->home();
         $this->cl(Category::class)->home();

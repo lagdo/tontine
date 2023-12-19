@@ -56,7 +56,7 @@ class Remitment extends CallableClass
     public function home()
     {
         $hasAuctions = $this->poolService->hasPoolWithAuction();
-        $html = $this->view()->render('tontine.pages.meeting.remitment.home', [
+        $html = $this->render('pages.meeting.remitment.home', [
             'session' => $this->session,
             'pools' => $this->poolService->getPoolsWithPayables($this->session),
             'hasAuctions' => $hasAuctions,

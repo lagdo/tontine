@@ -77,7 +77,7 @@ class Disbursement extends CallableClass
         $disbursements = $this->disbursementService->getSessionDisbursements($this->session);
         $amountAvailable = $this->disbursementService->getAmountAvailable($this->session);
 
-        $html = $this->view()->render('tontine.pages.meeting.disbursement.home')
+        $html = $this->render('pages.meeting.disbursement.home')
             ->with('session', $this->session)
             ->with('disbursements', $disbursements)
             ->with('amountAvailable', $amountAvailable);
@@ -102,7 +102,7 @@ class Disbursement extends CallableClass
         }
 
         $title = trans('meeting.disbursement.titles.add');
-        $content = $this->view()->render('tontine.pages.meeting.disbursement.add')
+        $content = $this->render('pages.meeting.disbursement.add')
             ->with('categories', $this->disbursementService->getCategories())
             ->with('members', $this->disbursementService->getMembers())
             ->with('charges', $this->disbursementService->getCharges());
@@ -152,7 +152,7 @@ class Disbursement extends CallableClass
 
         $disbursement = $this->disbursementService->getSessionDisbursement($this->session, $disbursementId);
         $title = trans('meeting.disbursement.titles.edit');
-        $content = $this->view()->render('tontine.pages.meeting.disbursement.edit')
+        $content = $this->render('pages.meeting.disbursement.edit')
             ->with('categories', $this->disbursementService->getCategories())
             ->with('members', $this->disbursementService->getMembers())
             ->with('charges', $this->disbursementService->getCharges())
