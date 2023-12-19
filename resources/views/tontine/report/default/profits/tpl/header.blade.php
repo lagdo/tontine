@@ -4,17 +4,17 @@
       header {
         width: 100%;
         margin-top: -5px;
-        margin-left: 56px;
-        margin-right: 56px;
+        margin-left: 50px;
+        margin-right: 50px;
         padding-bottom: 5px;
         border-bottom: solid lightgray 1px;
       }
       .first-line {
-        font-size: 20px;
+        font-size: 15px;
       }
       .second-line {
         margin-top: 5px;
-        font-size: 15px;
+        font-size: 11px;
       }
       .right-col {
         float: right;

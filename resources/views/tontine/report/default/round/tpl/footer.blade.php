@@ -3,9 +3,9 @@
     <style>
       footer {
         width: 100%;
-        font-size: 10px;
-        margin-left: 56px;
-        margin-right: 56px;
+        font-size: 8px;
+        margin-left: 50px;
+        margin-right: 50px;
         padding-top: 5px;
         border-top: solid lightgray 1px;
       }
