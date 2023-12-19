@@ -10,7 +10,7 @@
       /*margin: 0;*/
     }
     .table:not(.table-sm):not(.table-md):not(.dataTable) th {
-      font-size: 16px;
+      font-size: 14px;
     }
     .table:not(.table-sm):not(.table-md):not(.dataTable) td {
       font-size: 16px;
