@@ -6,10 +6,19 @@
                 <h2 class="section-title">{{ __('figures.titles.amounts') }} ({{ $locale->getCurrencyName() }})</h2>
               </div>
               <div class="col-auto">
-                <div class="btn-group float-right ml-2" role="group" aria-label="">
+                <div class="btn-group float-right ml-1" role="group" aria-label="">
                   <button type="button" class="btn btn-primary" id="btn-meeting-report-refresh"><i class="fa fa-sync"></i></button>
-                  <a type="button" class="btn btn-primary" target="_blank" href="{{
-                    route('report.round', ['roundId' => $sqids->encode([$round->id])]) }}"><i class="fa fa-file-pdf"></i></a>
+                </div>
+              </div>
+              <div class="col-auto">
+                <div class="btn-group float-right ml-1">
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-file-pdf"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" target="_blank" href="{{ route('report.round',
+                      ['roundId' => $sqids->encode([$round->id])]) }}">{{ __('meeting.actions.report') }}</a>
+                  </div>
                 </div>
               </div>
             </div>

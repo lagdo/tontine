@@ -1,9 +1,14 @@
 @inject('sqids', 'Sqids\SqidsInterface')
-                <div class="btn-group float-right ml-1" role="group">
-                  <a type="button" class="btn btn-primary" target="_blank" href="{{ route('report.session',
-                    ['sessionId' => $sqids->encode([$sessionId])]) }}"><i class="fa fa-file-pdf"> {{ __('meeting.actions.report') }}</i></a>
+              <div class="btn-group float-right ml-1">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fa fa-file-pdf"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                  <a class="dropdown-item" target="_blank" href="{{ route('report.session',
+                    ['sessionId' => $sqids->encode([$sessionId])]) }}">{{ __('meeting.actions.report') }}</a>
 @if ($hasClosing)
-                  <a type="button" class="btn btn-primary" target="_blank" href="{{ route('report.profits',
-                    ['sessionId' => $sqids->encode([$sessionId])]) }}"><i class="fa fa-file-pdf"> {{ __('meeting.actions.profits') }}</i></a>
+                  <a class="dropdown-item" target="_blank" href="{{ route('report.profits',
+                    ['sessionId' => $sqids->encode([$sessionId])]) }}">{{ __('meeting.actions.profits') }}</a>
 @endif
+                </div>
               </div>

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Facades\PdfGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
+use Siak\Tontine\Service\Report\Pdf\PrinterService;
 use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\TenantService;
 use Sqids\SqidsInterface;
@@ -20,9 +20,10 @@ class ReportController extends Controller
     /**
      * @param TenantService $tenantService
      * @param ReportService $reportService
+     * @param PrinterService $printerService
      */
     public function __construct(protected TenantService $tenantService,
-        protected ReportService $reportService)
+        protected ReportService $reportService, protected PrinterService $printerService)
     {}
 
     /**
@@ -44,7 +45,7 @@ class ReportController extends Controller
 
         // Print the pdf
         $filename = $this->reportService->getSessionReportFilename($session);
-        return response(base64_decode(PdfGenerator::getSessionReport($template)), 200)
+        return response(base64_decode($this->printerService->getSessionReport($template)), 200)
             ->header('Content-Description', 'Session Report')
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', "inline; filename=$filename")
@@ -88,7 +89,7 @@ class ReportController extends Controller
 
         // Print the pdf
         $filename = $this->reportService->getProfitsReportFilename($session);
-        return response(base64_decode(PdfGenerator::getProfitsReport($template)), 200)
+        return response(base64_decode($this->printerService->getProfitsReport($template)), 200)
             ->header('Content-Description', 'Profits Report')
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', "inline; filename=$filename")
@@ -117,7 +118,7 @@ class ReportController extends Controller
 
         // Print the pdf
         $filename = $this->reportService->getRoundReportFilename($round);
-        return response(base64_decode(PdfGenerator::getRoundReport($template)), 200)
+        return response(base64_decode($this->printerService->getRoundReport($template)), 200)
             ->header('Content-Description', 'Round Report')
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', "inline; filename=$filename")

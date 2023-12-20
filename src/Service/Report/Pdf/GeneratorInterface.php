@@ -5,23 +5,10 @@ namespace Siak\Tontine\Service\Report\Pdf;
 interface GeneratorInterface
 {
     /**
-     * @param string $template
+     * @param string $html
+     * @param array $config
      *
      * @return string
      */
-    public function getSessionReport(string $template): string;
-
-    /**
-     * @param string $template
-     *
-     * @return string
-     */
-    public function getProfitsReport(string $template): string;
-
-    /**
-     * @param string $template
-     *
-     * @return string
-     */
-    public function getRoundReport(string $template): string;
+    public function getPdf(string $html, array $config): string;
 }

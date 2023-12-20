@@ -4,8 +4,8 @@
       footer {
         width: 100%;
         font-size: 8px;
-        margin-left: 50px;
-        margin-right: 50px;
+        margin-left: 40px;
+        margin-right: 40px;
         padding-top: 5px;
         border-top: solid lightgray 1px;
       }

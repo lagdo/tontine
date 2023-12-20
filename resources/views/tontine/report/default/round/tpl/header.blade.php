@@ -4,13 +4,13 @@
       header {
         width: 100%;
         margin-top: -5px;
-        margin-left: 50px;
-        margin-right: 50px;
+        margin-left: 40px;
+        margin-right: 40px;
         padding-bottom: 5px;
         border-bottom: solid lightgray 1px;
       }
       .first-line {
-        font-size: 15px;
+        font-size: 13px;
       }
       .second-line {
         margin-top: 5px;
