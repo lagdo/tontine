@@ -1,11 +1,9 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-              <div class="row mt-0">
-                <div class="col d-flex justify-content-center">
-                  <h5>{{ __('meeting.actions.pools') }} - {{ $pool->title }} ({{ $currency }})</h5>
-                </div>
+              <div class="table-title">
+                {{ __('meeting.actions.pools') }} - {{ $pool->title }}
               </div>
-              <div class="table-responsive">
-                <table class="table table-bordered">
+              <div class="table">
+                <table>
                   <thead>
                     <tr>
                       <th></th>

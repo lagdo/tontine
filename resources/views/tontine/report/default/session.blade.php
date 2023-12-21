@@ -10,9 +10,11 @@
     }
     .table:not(.table-sm):not(.table-md):not(.dataTable) th {
       font-size: 15px;
+      vertical-align: top;
     }
     .table:not(.table-sm):not(.table-md):not(.dataTable) td {
       font-size: 16px;
+      vertical-align: top;
     }
   </style>
 @endsection

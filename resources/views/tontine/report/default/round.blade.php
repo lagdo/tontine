@@ -11,9 +11,11 @@
     }
     .table:not(.table-sm):not(.table-md):not(.dataTable) th {
       font-size: 15px;
+      vertical-align: top;
     }
     .table:not(.table-sm):not(.table-md):not(.dataTable) td {
       font-size: 16px;
+      vertical-align: top;
     }
     th.report-round-pool-amount, td.report-round-pool-amount {
       width: 12%;
