@@ -7,7 +7,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Pool;
-use Siak\Tontine\Service\Meeting\SessionService as MeetingSessionService;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
@@ -15,24 +14,10 @@ use function trans;
 class PoolService
 {
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
-     * @var MeetingSessionService
-     */
-    protected MeetingSessionService $sessionService;
-
-    /**
      * @param TenantService $tenantService
-     * @param MeetingSessionService $sessionService
      */
-    public function __construct(TenantService $tenantService, MeetingSessionService $sessionService)
-    {
-        $this->tenantService = $tenantService;
-        $this->sessionService = $sessionService;
-    }
+    public function __construct(protected TenantService $tenantService)
+    {}
 
     /**
      * Get a paginated list of pools in the selected round.

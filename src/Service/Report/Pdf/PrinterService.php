@@ -2,7 +2,6 @@
 
 namespace Siak\Tontine\Service\Report\Pdf;
 
-use function trim;
 use function view;
 
 class PrinterService
@@ -14,54 +13,20 @@ class PrinterService
     {}
 
     /**
+     * @param string $templatePath
      * @param array $config
-     * @param string $template
      *
-     * @return array
+     * @return string
      */
-    protected function getSessionReportConfig(array $config, string $template): array
+    private function getPdf(string $templatePath, array $config = []): string
     {
-        return [
+        $config = [
+            ...$this->config,
             ...$config,
-            'marginTop' => 0.8,
-            'marginBottom' => 0.6,
-            'headerTemplate' => trim('' . view("tontine.report.$template.session.tpl.header")),
-            'footerTemplate' => trim('' . view("tontine.report.$template.session.tpl.footer")),
+            'headerTemplate' => (string)view("$templatePath.tpl.header"),
+            'footerTemplate' => (string)view("$templatePath.tpl.footer"),
         ];
-    }
-
-    /**
-     * @param array $config
-     * @param string $template
-     *
-     * @return array
-     */
-    protected function getProfitsReportConfig(array $config, string $template): array
-    {
-        return [
-            ...$config,
-            'marginTop' => 0.8,
-            'marginBottom' => 0.6,
-            'headerTemplate' => trim('' . view("tontine.report.$template.profits.tpl.header")),
-            'footerTemplate' => trim('' . view("tontine.report.$template.profits.tpl.footer")),
-        ];
-    }
-
-    /**
-     * @param array $config
-     * @param string $template
-     *
-     * @return array
-     */
-    protected function getRoundReportConfig(array $config, string $template): array
-    {
-        return [
-            ...$config,
-            'marginTop' => 0.8,
-            'marginBottom' => 0.6,
-            'headerTemplate' => trim('' . view("tontine.report.$template.round.tpl.header")),
-            'footerTemplate' => trim('' . view("tontine.report.$template.round.tpl.footer")),
-        ];
+        return GeneratorFacade::getPdf((string)view($templatePath), $config);
     }
 
     /**
@@ -71,8 +36,7 @@ class PrinterService
      */
     public function getSessionReport(string $template): string
     {
-        return GeneratorFacade::getPdf('' . view("tontine.report.$template.session"),
-            $this->getSessionReportConfig($this->config, $template));
+        return $this->getPdf("tontine.report.$template.session");
     }
 
     /**
@@ -82,8 +46,7 @@ class PrinterService
      */
     public function getProfitsReport(string $template): string
     {
-        return GeneratorFacade::getPdf('' . view("tontine.report.$template.profits"),
-            $this->getProfitsReportConfig($this->config, $template));
+        return $this->getPdf("tontine.report.$template.profits");
     }
 
     /**
@@ -93,7 +56,6 @@ class PrinterService
      */
     public function getRoundReport(string $template): string
     {
-        return GeneratorFacade::getPdf('' . view("tontine.report.$template.round"),
-            $this->getRoundReportConfig($this->config, $template));
+        return $this->getPdf("tontine.report.$template.round");
     }
 }
