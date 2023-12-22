@@ -54,7 +54,7 @@ class Options extends CallableClass
             'click' => $this->rq()->saveOptions(pm()->form('options-form')),
         ]];
 
-        $this->dialog->show($title, $content, $buttons, ['width' => '800']);
+        $this->dialog->show($title, $content, $buttons);
 
         return $this->response;
     }
