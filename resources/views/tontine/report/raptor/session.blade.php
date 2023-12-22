@@ -1,11 +1,6 @@
 <html>
   <head>
     <style>
-      /* 
-      Import the desired font from Google fonts. 
-      */
-      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
-
       @page {
         size: A4;
         margin: 3cm 1.1cm 1.5cm 1.1cm;

@@ -11,8 +11,8 @@
                       <thead>
                         <tr>
                           <th>{{ __('common.labels.title') }}</th>
-                          <th colspan="2">{{ __('meeting.titles.deposits') }}</th>
-                          <th colspan="2">{{ __('meeting.titles.remitments') }}</th>
+                          <th style="text-align:right;" colspan="2">{{ __('meeting.titles.deposits') }}</th>
+                          <th style="text-align:right;" colspan="2">{{ __('meeting.titles.remitments') }}</th>
                         </tr>
                       </thead>
                       <tbody>
