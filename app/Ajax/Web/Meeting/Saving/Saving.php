@@ -61,7 +61,7 @@ class Saving extends CallableClass
 
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.meeting.saving.home', [
+        $html = $this->render('pages.meeting.saving.home', [
             'session' => $this->session,
             'savings' => $this->savingService->getSessionSavings($this->session),
             'funds' => $this->fundService->getFundList(),
@@ -90,7 +90,7 @@ class Saving extends CallableClass
 
         $members = $this->savingService->getMembers();
         $title = trans('meeting.saving.titles.add');
-        $content = $this->view()->render('tontine.pages.meeting.saving.add', [
+        $content = $this->render('pages.meeting.saving.add', [
             'members' => $members,
             'funds' => $this->fundService->getFundList(),
         ]);
@@ -141,7 +141,7 @@ class Saving extends CallableClass
 
         $saving = $this->savingService->getSessionSaving($this->session, $savingId);
         $title = trans('meeting.saving.titles.edit');
-        $content = $this->view()->render('tontine.pages.meeting.saving.edit', [
+        $content = $this->render('pages.meeting.saving.edit', [
             'saving' => $saving,
             'funds' => $this->fundService->getFundList(),
         ]);

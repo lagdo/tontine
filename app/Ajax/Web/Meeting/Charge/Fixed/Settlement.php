@@ -62,7 +62,7 @@ class Settlement extends CallableClass
         $this->bag('meeting')->set('fee.fixed.id', $chargeId);
         $this->bag('meeting')->set('settlement.fixed.filter', null);
 
-        $html = $this->view()->render('tontine.pages.meeting.settlement.home', [
+        $html = $this->render('pages.meeting.settlement.home', [
             'type' => 'fixed',
             'charge' => $this->charge,
         ]);
@@ -92,7 +92,7 @@ class Settlement extends CallableClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $billCount);
         $settlement = $this->settlementService->getSettlement($this->charge, $this->session);
 
-        $html = $this->view()->render('tontine.pages.meeting.settlement.page', [
+        $html = $this->render('pages.meeting.settlement.page', [
             'type' => 'fixed',
             'search' => $search,
             'session' => $this->session,

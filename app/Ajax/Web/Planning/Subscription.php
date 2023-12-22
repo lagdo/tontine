@@ -48,7 +48,7 @@ class Subscription extends CallableClass
                 $this->localeService->formatMoney($pool->amount) :
                 trans('tontine.labels.types.libre'));
         });
-        $html = $this->view()->render('tontine.pages.planning.subscription.home', [
+        $html = $this->render('pages.planning.subscription.home', [
             'pools' => $poolLabels,
             'poolId' => $poolId,
         ]);
@@ -97,7 +97,7 @@ class Subscription extends CallableClass
 
         $receivables = $this->summaryService->getReceivables($pool);
         $this->view()->shareValues($receivables);
-        $html = $this->view()->render('tontine.pages.planning.subscription.planning')
+        $html = $this->render('pages.planning.subscription.planning')
             ->with('pool', $pool);
         $this->response->html('content-home', $html);
 
@@ -123,7 +123,7 @@ class Subscription extends CallableClass
         $this->response->html('section-title', trans('tontine.menus.planning'));
         $payables = $this->summaryService->getPayables($pool);
         $this->view()->shareValues($payables);
-        $html = $this->view()->render('tontine.pages.planning.subscription.beneficiaries')
+        $html = $this->render('pages.planning.subscription.beneficiaries')
             ->with('pool', $pool)
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-home', $html);

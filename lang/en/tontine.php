@@ -329,6 +329,9 @@ return [
     ],
     'report' => [
         'titles' => [
+            'session' => "Session report",
+            'round' => "Round report",
+            'profits' => "Profits distribution",
             'bills' => [
                 'session' => "Session bill amounts",
                 'total' => "Total bill amounts",
@@ -337,6 +340,20 @@ return [
                 'cashed' => "Cashed",
                 'disbursed' => "Disbursed",
             ],
+        ],
+    ],
+    'options' => [
+        'titles' => [
+            'edit' => "Tontine options",
+        ],
+        'labels' => [
+            'default' => 'Default',
+            'report' => [
+                'template' => "Reports template",
+            ],
+        ],
+        'messages' => [
+            'saved' => "The tontine options was successfully saved.",
         ],
     ],
 ];

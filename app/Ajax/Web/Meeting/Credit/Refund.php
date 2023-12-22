@@ -64,7 +64,7 @@ class Refund extends CallableClass
 
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.meeting.refund.home')
+        $html = $this->render('pages.meeting.refund.home')
             ->with('session', $this->session);
         $this->response->html('meeting-refunds', $html);
         $this->jq('#btn-refunds-refresh')->click($this->rq()->home());
@@ -86,7 +86,7 @@ class Refund extends CallableClass
         $debts = $this->refundService->getDebts($this->session, $filtered, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $debtCount);
 
-        $html = $this->view()->render('tontine.pages.meeting.refund.page', [
+        $html = $this->render('pages.meeting.refund.page', [
             'session' => $this->session,
             'debts' => $debts,
             'pagination' => $pagination,

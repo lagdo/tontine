@@ -22,7 +22,7 @@ return [
         ],
         'views' => [
             'pagination' => [
-                'directory' => resource_path('views/tontine/parts/table/pagination'),
+                'directory' => resource_path('views/tontine/app/default/parts/table/pagination'),
                 'extension' => '.blade.php',
                 'renderer' => 'blade',
                 // 'register' => true,
@@ -60,7 +60,7 @@ return [
             'app' => [
                 'uri' => env('JAXON_JS_APP_URI', '/jaxon'),
                 'dir' => env('JAXON_JS_APP_DIR', public_path('/jaxon')),
-                'file' => env('JAXON_JS_APP_FILE', 'js-2.4.3'),
+                'file' => env('JAXON_JS_APP_FILE', 'js-2.5.4'),
                 'export' => env('JAXON_JS_APP_EXPORT', !env('APP_DEBUG')),
                 'minify' => env('JAXON_JS_APP_MINIFY', !env('APP_DEBUG')),
             ],

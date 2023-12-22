@@ -329,6 +329,9 @@ return [
     ],
     'report' => [
         'titles' => [
+            'session' => "Rapport de séance",
+            'profits' => "Répartition des gains",
+            'round' => "Rapport de tour",
             'bills' => [
                 'session' => "Montants des frais de la session",
                 'total' => "Montants totaux des frais",
@@ -337,6 +340,20 @@ return [
                 'cashed' => "Encaissé",
                 'disbursed' => "Décaissé",
             ],
+        ],
+    ],
+    'options' => [
+        'titles' => [
+            'edit' => "Options de la tontine",
+        ],
+        'labels' => [
+            'default' => 'Défaut',
+            'report' => [
+                'template' => "Template des rapports",
+            ],
+        ],
+        'messages' => [
+            'saved' => "Les options de la tontine ont été enregistrées.",
         ],
     ],
 ];

@@ -62,7 +62,7 @@ class LibreFee extends CallableClass
 
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.meeting.charge.libre.home')
+        $html = $this->render('pages.meeting.charge.libre.home')
             ->with('session', $this->session);
         $this->response->html('meeting-fees-libre', $html);
         $this->jq('#btn-fees-libre-refresh')->click($this->rq()->home());
@@ -81,7 +81,7 @@ class LibreFee extends CallableClass
         $bills = $this->feeService->getBills($this->session);
         $settlements = $this->feeService->getSettlements($this->session);
 
-        $html = $this->view()->render('tontine.pages.meeting.charge.libre.page')
+        $html = $this->render('pages.meeting.charge.libre.page')
             ->with('session', $this->session)
             ->with('charges', $charges)
             ->with('bills', $bills)

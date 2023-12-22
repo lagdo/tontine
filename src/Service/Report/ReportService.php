@@ -7,7 +7,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
@@ -108,17 +107,22 @@ class ReportService
      *
      * @return array
      */
+    public function getClosings(Session $session): array
+    {
+        $closings = $this->savingService->getSessionClosings($session);
+        $funds = $this->fundService->getFundList();
+        return Arr::only($closings, $funds->keys()->all());
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return array
+     */
     public function getSessionReport(Session $session): array
     {
         $tontine = $this->tenantService->tontine();
         [$country] = $this->localeService->getNameFromTontine($tontine);
-        $funds = $this->fundService->getFundList();
-        $closings = $this->getFundClosings($session, $funds);
-        $profits = Arr::map($closings, fn($amount, $fundId) => [
-            'fund' => $funds[$fundId],
-            'profitAmount' => $amount,
-            'savings' => $this->profitService->getDistributions($session, $fundId, $amount),
-        ]);
 
         return [
             'tontine' => $tontine,
@@ -152,15 +156,34 @@ class ReportService
             ],
             'savings' => [
                 'savings' => $this->memberService->getSavings($session),
-                'funds' => $funds,
+                'funds' => $this->fundService->getFundList(),
                 'total' => $this->sessionService->getSaving($session),
             ],
             'disbursements' => [
                 'disbursements' => $this->memberService->getDisbursements($session),
                 'total' => $this->sessionService->getDisbursement($session),
             ],
-            'profits' => $profits,
         ];
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return array
+     */
+    public function getProfitsReport(Session $session): array
+    {
+        $tontine = $this->tenantService->tontine();
+        [$country] = $this->localeService->getNameFromTontine($tontine);
+        $funds = $this->fundService->getFundList();
+        $closings = $this->getFundClosings($session, $funds);
+        $profits = Arr::map($closings, fn($amount, $fundId) => [
+            'fund' => $funds[$fundId],
+            'profitAmount' => $amount,
+            'savings' => $this->profitService->getDistributions($session, $fundId, $amount),
+        ]);
+
+        return compact('tontine', 'session', 'country', 'profits');
     }
 
     /**
@@ -205,6 +228,16 @@ class ReportService
     public function getSessionReportFilename(Session $session): string
     {
         return strtolower(trans('meeting.titles.report')) . '-' . Str::slug($session->title) . '.pdf';
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return string
+     */
+    public function getProfitsReportFilename(Session $session): string
+    {
+        return Str::slug(trans('meeting.titles.profits')) . '-' . Str::slug($session->title) . '.pdf';
     }
 
     /**

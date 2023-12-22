@@ -3,10 +3,13 @@
 namespace App\Ajax\Web\Report;
 
 use App\Ajax\CallableClass;
+use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
 use function compact;
+use function count;
 use function Jaxon\pm;
 
 /**
@@ -15,16 +18,13 @@ use function Jaxon\pm;
 class Session extends CallableClass
 {
     /**
-     * @di
-     * @var TontineService
+     * @param TenantService $tenantService
+     * @param TontineService $tontineService
+     * @param ReportService $reportService
      */
-    protected TontineService $tontineService;
-
-    /**
-     * @di
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
+    public function __construct(protected TenantService $tenantService,
+        protected TontineService $tontineService, protected ReportService $reportService)
+    {}
 
     /**
      * @after hideMenuOnMobile
@@ -33,10 +33,7 @@ class Session extends CallableClass
     {
         // Don't show the page if there is no session or no member.
         $sessions = $this->tenantService->getSessions(orderAsc: false)
-            ->filter(function($session) {
-                return $session->opened || $session->closed;
-            })
-            ->pluck('title', 'id');
+            ->filter(fn($session) => $session->opened || $session->closed);
         if($sessions->count() === 0)
         {
             return $this->response;
@@ -49,8 +46,8 @@ class Session extends CallableClass
         $members->prepend('', 0);
 
         $this->response->html('section-title', trans('tontine.menus.report'));
-        $html = $this->view()->render('tontine.pages.report.session.home',
-            compact('sessions', 'members'));
+        $html = $this->render('pages.report.session.home',
+            ['sessions' => $sessions->pluck('title', 'id'), 'members' => $members]);
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-members-refresh')->click($this->rq()->home());
@@ -59,11 +56,25 @@ class Session extends CallableClass
         $this->jq('#btn-session-select')->click($this->rq()->showSession($sessionId));
         $this->jq('#btn-member-select')->click($this->rq()->showMember($sessionId, $memberId));
 
-        $session = $this->tenantService->getSession($sessions->keys()->first());
+        return $this->_showSession($sessions->first());
+    }
+
+    private function showReportButtons(SessionModel $session)
+    {
+        $closings = $this->reportService->getClosings($session);
+        $html = $this->render('pages.report.session.exports',
+            ['sessionId' => $session->id, 'hasClosing' => count($closings) > 0]);
+        $this->response->html('session-reports-export', $html);
+
+        return $this->response;
+    }
+
+    private function _showSession(SessionModel $session)
+    {
         $this->response->html('session-report-title', $session->title);
         $this->cl(Session\Session::class)->show($session);
 
-        return $this->response;
+        return $this->showReportButtons($session);
     }
 
     public function showSession(int $sessionId)
@@ -73,10 +84,7 @@ class Session extends CallableClass
             return $this->response;
         }
 
-        $this->response->html('session-report-title', $session->title);
-        $this->cl(Session\Session::class)->show($session);
-
-        return $this->response;
+        return $this->_showSession($session);
     }
 
     public function showMember(int $sessionId, int $memberId)
@@ -93,6 +101,6 @@ class Session extends CallableClass
         $this->response->html('session-report-title', $session->title . ' - ' . $member->name);
         $this->cl(Session\Member::class)->show($session, $member);
 
-        return $this->response;
+        return $this->showReportButtons($session);
     }
 }

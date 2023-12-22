@@ -231,9 +231,10 @@ class SubscriptionService
     {
         $session = $this->tenantService->getSession($sessionId);
         $currSubscription = null;
+        $nextSubscription = null;
         if($currSubscriptionId > 0)
         {
-            $currSubscription = $pool->subscriptions()->find($currSubscriptionId);
+            $currSubscription = $pool->subscriptions()->with('payable')->find($currSubscriptionId);
             if(($currSubscription !== null && $currSubscription->payable !== null &&
                 $currSubscription->payable->remitment !== null) || $session->closed)
             {
@@ -242,8 +243,10 @@ class SubscriptionService
                 return false;
             }
         }
-        $nextSubscription = $nextSubscriptionId > 0 ?
-            $pool->subscriptions()->find($nextSubscriptionId) : null;
+        if($nextSubscriptionId > 0)
+        {
+            $nextSubscription = $pool->subscriptions()->with('payable')->find($nextSubscriptionId);
+        }
 
         DB::transaction(function() use($session, $currSubscription, $nextSubscription) {
             // If the beneficiary already has a session assigned, first remove it.

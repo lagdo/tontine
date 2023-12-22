@@ -69,7 +69,7 @@ class Member extends CallableClass
         $this->bag('meeting')->set('charge.id', $chargeId);
         $this->bag('meeting')->set('fee.member.filter', null);
 
-        $html = $this->view()->render('tontine.pages.meeting.charge.libre.member.home', [
+        $html = $this->render('pages.meeting.charge.libre.member.home', [
             'charge' => $this->charge,
         ]);
         $this->response->html('meeting-fees-libre', $html);
@@ -97,7 +97,7 @@ class Member extends CallableClass
             $search, $filter, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
-        $html = $this->view()->render('tontine.pages.meeting.charge.libre.member.page', [
+        $html = $this->render('pages.meeting.charge.libre.member.page', [
             'search' => $search,
             'paid' => $paid,
             'session' => $this->session,
@@ -205,7 +205,7 @@ class Member extends CallableClass
             return $this->response;
         }
 
-        $html = $this->view()->render('tontine.pages.meeting.charge.libre.member.edit', [
+        $html = $this->render('pages.meeting.charge.libre.member.edit', [
             'id' => $memberId,
             'amount' => $this->localeService->getMoneyValue($bill->bill->amount),
         ]);

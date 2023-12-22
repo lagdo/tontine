@@ -83,7 +83,7 @@ class Loan extends CallableClass
         $loans = $this->loanService->getSessionLoans($this->session);
         $amountAvailable = $this->loanService->getAmountAvailable($this->session);
 
-        $html = $this->view()->render('tontine.pages.meeting.loan.home')
+        $html = $this->render('pages.meeting.loan.home')
             ->with('session', $this->session)
             ->with('loans', $loans)
             ->with('amountAvailable', $amountAvailable);
@@ -113,7 +113,7 @@ class Loan extends CallableClass
         $amountAvailable = $this->loanService->getAmountAvailableValue($this->session);
         $members = $this->loanService->getMembers();
         $title = trans('meeting.loan.titles.add');
-        $content = $this->view()->render('tontine.pages.meeting.loan.add', [
+        $content = $this->render('pages.meeting.loan.add', [
             'members' => $members,
             'amountAvailable' => $amountAvailable,
             'interestTypes' => $this->loanService->getInterestTypes(),
@@ -182,7 +182,7 @@ class Loan extends CallableClass
         }
 
         $title = trans('meeting.loan.titles.edit');
-        $content = $this->view()->render('tontine.pages.meeting.loan.edit', [
+        $content = $this->render('pages.meeting.loan.edit', [
             'loan' => $loan,
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getFundList(),

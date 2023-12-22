@@ -82,7 +82,7 @@ class Target extends CallableClass
     {
         $this->bag('meeting')->set('charge.id', $chargeId);
 
-        $html = $this->view()->render('tontine.pages.meeting.charge.libre.target.home', [
+        $html = $this->render('pages.meeting.charge.libre.target.home', [
             'charge' => $this->charge,
             'target' => $this->target,
         ]);
@@ -116,7 +116,7 @@ class Target extends CallableClass
             $this->target, $search, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
-        $html = $this->view()->render('tontine.pages.meeting.charge.libre.target.page', [
+        $html = $this->render('pages.meeting.charge.libre.target.page', [
             'search' => $search,
             'session' => $this->session,
             'target' => $this->target,
@@ -158,7 +158,7 @@ class Target extends CallableClass
         }
 
         $title = trans('meeting.target.titles.set');
-        $content = $this->view()->render('tontine.pages.meeting.charge.libre.target.add', [
+        $content = $this->render('pages.meeting.charge.libre.target.add', [
             'sessions' => $this->targetService->getDeadlineSessions($this->session),
         ]);
         $buttons = [[
@@ -226,7 +226,7 @@ class Target extends CallableClass
         }
 
         $title = trans('meeting.target.titles.set');
-        $content = $this->view()->render('tontine.pages.meeting.charge.libre.target.edit', [
+        $content = $this->render('pages.meeting.charge.libre.target.edit', [
             'target' => $this->target,
             'sessions' => $this->targetService->getDeadlineSessions($this->session),
         ]);

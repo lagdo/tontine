@@ -13,11 +13,14 @@ use App\Ajax\Web\Meeting\Pool\Deposit;
 use App\Ajax\Web\Meeting\Pool\Remitment;
 use App\Ajax\Web\Meeting\Saving\Closing;
 use App\Ajax\Web\Meeting\Saving\Saving;
+use App\Ajax\Web\Tontine\Options;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
 use function Jaxon\jq;
+use function count;
 use function trans;
 
 /**
@@ -35,6 +38,11 @@ class Session extends CallableClass
      * @var SessionService
      */
     protected SessionService $sessionService;
+
+    /**
+     * @var ReportService
+     */
+    protected ReportService $reportService;
 
     /**
      * @var SessionModel|null
@@ -67,9 +75,10 @@ class Session extends CallableClass
     public function home()
     {
         $this->response->html('section-title', trans('tontine.menus.meeting'));
-        $html = $this->view()->render('tontine.pages.meeting.session.list');
+        $html = $this->render('pages.meeting.session.list');
         $this->response->html('content-home', $html);
 
+        $this->jq('#btn-tontine-options')->click($this->cl(Options::class)->rq()->editOptions());
         $this->jq('#btn-sessions-refresh')->click($this->rq()->page());
 
         return $this->page();
@@ -90,7 +99,7 @@ class Session extends CallableClass
             SessionModel::STATUS_OPENED => trans('tontine.session.status.opened'),
             SessionModel::STATUS_CLOSED => trans('tontine.session.status.closed'),
         ];
-        $html = $this->view()->render('tontine.pages.meeting.session.page')
+        $html = $this->render('pages.meeting.session.page')
             ->with('sessions', $sessions)
             ->with('statuses', $statuses)
             ->with('members', $this->tontineService->getMembers())
@@ -178,11 +187,14 @@ class Session extends CallableClass
      * @databag refund
      * @before getSessionFromArgs
      * @di $tontineService
+     * @di $reportService
      */
     public function show(int $sessionId)
     {
-        $html = $this->view()->render('tontine.pages.meeting.session.home', [
+        $closings = $this->reportService->getClosings($this->session);
+        $html = $this->render('pages.meeting.session.home', [
             'session' => $this->session,
+            'hasClosing' => count($closings) > 0,
         ]);
         $this->response->html('content-home', $html);
         $this->jq('a', '#session-tabs')->click(jq()->tab('show'));
@@ -192,6 +204,7 @@ class Session extends CallableClass
         $openQuestion = trans('tontine.session.questions.open') . '<br/>' .
             trans('tontine.session.questions.warning');
         $this->jq('#btn-session-back')->click($this->rq()->home());
+        $this->jq('#btn-tontine-options')->click($this->cl(Options::class)->rq()->editOptions());
         $this->jq('#btn-session-refresh')->click($this->rq()->show($sessionId));
         $this->jq('#btn-session-open')->click($this->rq()->open()->confirm($openQuestion));
         $this->jq('#btn-session-close')->click($this->rq()->close()

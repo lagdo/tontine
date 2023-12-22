@@ -75,7 +75,7 @@ class Session extends CallableClass
 
     public function home(int $poolId)
     {
-        $html = $this->view()->render('tontine.pages.planning.subscription.session.home')
+        $html = $this->render('pages.planning.subscription.session.home')
             ->with('pool', $this->pool);
         $this->response->html('pool-subscription-sessions', $html);
         $this->jq('#btn-subscription-sessions-refresh')->click($this->rq()->home($poolId));
@@ -99,7 +99,7 @@ class Session extends CallableClass
         $sessions = $this->sessionService->getSessions($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
 
-        $html = $this->view()->render('tontine.pages.planning.subscription.session.page')
+        $html = $this->render('pages.planning.subscription.session.page')
             ->with('pool', $this->pool)
             ->with('sessions', $sessions)
             ->with('total', $this->tenantService->countEnabledSessions($this->pool))

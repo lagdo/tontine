@@ -43,7 +43,7 @@ class Round extends CallableClass
      */
     public function home()
     {
-        $html = $this->view()->render('tontine.pages.report.round.home')
+        $html = $this->render('pages.report.round.home')
             ->with('round', $this->tenantService->round());
         $this->response->html('content-home', $html);
         $this->jq('#btn-meeting-report-refresh')->click($this->rq()->home());
@@ -59,7 +59,7 @@ class Round extends CallableClass
         $html = '';
         $this->subscriptionService->getPools(false)
             ->each(function($pool) use(&$html) {
-                $html .= $this->view()->render('tontine.pages.report.round.pool',
+                $html .= $this->render('pages.report.round.pool',
                     $this->summaryService->getFigures($pool));
             });
         $this->response->html('content-pools', $html);
@@ -73,7 +73,7 @@ class Round extends CallableClass
             return $session->status === SessionModel::STATUS_CLOSED ||
                 $session->status === SessionModel::STATUS_OPENED;
         })->pluck('id');
-        $html = $this->view()->render('tontine.pages.report.round.amounts', [
+        $html = $this->render('pages.report.round.amounts', [
             'sessions' => $sessions,
             'auctions' => $this->roundService->getAuctionAmounts($sessionIds),
             'settlements' => $this->roundService->getSettlementAmounts($sessionIds),

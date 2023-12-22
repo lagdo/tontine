@@ -13,25 +13,15 @@ use App\Ajax\Web\Tontine\Options;
 use App\Ajax\Web\Tontine\Round as TontineRound;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
-use Siak\Tontine\Model\User;
 use Jaxon\App\CallableClass as JaxonCallableClass;
 use Jaxon\App\Dialog\MessageInterface;
 use Jaxon\App\Dialog\ModalInterface;
+use Jaxon\App\View\Store;
 
 use function floor;
 
 class CallableClass extends JaxonCallableClass
 {
-    /**
-     * @var User|null
-     */
-    public ?User $user;
-
-    /**
-     * @var Tontine|null
-     */
-    public ?Tontine $tontine;
-
     /**
      * @var ModalInterface
      */
@@ -79,7 +69,7 @@ class CallableClass extends JaxonCallableClass
         $this->response->html('section-tontine-name', $tontine->name);
 
         // Set the tontine sidebar menu
-        $this->response->html('sidebar-menu-tontine', $this->view()->render('tontine.parts.sidebar.tontine'));
+        $this->response->html('sidebar-menu-tontine', $this->render('parts.sidebar.tontine'));
         $this->jq('a', '#sidebar-menu-tontine')->css('color', '#6777ef');
 
         $this->jq('#tontine-menu-members')->click($this->cl(Member::class)->rq()->home());
@@ -87,7 +77,7 @@ class CallableClass extends JaxonCallableClass
         $this->jq('#tontine-menu-rounds')->click($this->cl(TontineRound::class)->rq()->home());
 
         // Reset the round sidebar menu
-        $this->response->html('sidebar-menu-round', $this->view()->render('tontine.parts.sidebar.round'));
+        $this->response->html('sidebar-menu-round', $this->render('parts.sidebar.round'));
     }
 
     /**
@@ -100,7 +90,7 @@ class CallableClass extends JaxonCallableClass
         $this->response->html('section-tontine-name', $round->tontine->name . ' - ' . $round->title);
 
         // Set the round sidebar menu
-        $this->response->html('sidebar-menu-round', $this->view()->render('tontine.parts.sidebar.round'));
+        $this->response->html('sidebar-menu-round', $this->render('parts.sidebar.round'));
         $this->jq('a', '#sidebar-menu-round')->css('color', '#6777ef');
 
         $this->jq('#planning-menu-sessions')->click($this->cl(PlanningSession::class)->rq()->home());
@@ -119,5 +109,18 @@ class CallableClass extends JaxonCallableClass
         // The current template main menu doesn't hide automatically
         // after a click on mobile devices. We need to do that manually.
         $this->jq('body')->trigger('touchend');
+    }
+
+    /**
+     * Render a view
+     *
+     * @param string $view
+     * @param array $viewData
+     *
+     * @return null|Store
+     */
+    protected function render(string $view, array $viewData = []): ?Store
+    {
+        return $this->view()->render('tontine.app.default.' . $view, $viewData);
     }
 }

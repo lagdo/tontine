@@ -33,6 +33,7 @@ use Siak\Tontine\Service\Planning\SessionService as PlanningSessionService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Planning\SummaryService as PlanningSummaryService;
 use Siak\Tontine\Service\Report\MemberService as MemberReportService;
+use Siak\Tontine\Service\Report\Pdf\PrinterService;
 use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\Report\RoundService as RoundReportService;
 use Siak\Tontine\Service\Report\SessionService as SessionReportService;
@@ -52,6 +53,7 @@ use Siak\Tontine\Validation\Planning\PoolValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
 use Siak\Tontine\Validation\Tontine\MemberValidator;
+use Siak\Tontine\Validation\Tontine\OptionsValidator;
 use Siak\Tontine\Validation\Tontine\TontineValidator;
 use Sqids\Sqids;
 use Sqids\SqidsInterface;
@@ -119,6 +121,9 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(RoundReportService::class, RoundReportService::class);
         $this->app->singleton(SessionReportService::class, SessionReportService::class);
         $this->app->singleton(ReportService::class, ReportService::class);
+        $this->app->singleton(PrinterService::class, function() {
+            return new PrinterService(config('chrome.page'));
+        });
 
         $this->app->singleton(RoundService::class, RoundService::class);
         $this->app->singleton(PlanningSessionService::class, PlanningSessionService::class);
@@ -140,6 +145,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(PoolValidator::class, PoolValidator::class);
         $this->app->singleton(RemitmentValidator::class, RemitmentValidator::class);
         $this->app->singleton(SessionValidator::class, SessionValidator::class);
+        $this->app->singleton(OptionsValidator::class, OptionsValidator::class);
         $this->app->singleton(TontineValidator::class, TontineValidator::class);
         $this->app->singleton(TargetValidator::class, TargetValidator::class);
     }
