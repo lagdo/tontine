@@ -10,15 +10,15 @@
       }
       footer {
         width: 100%;
-        height: 0.6cm;
-        margin-left: 1cm;
-        margin-right: 1cm;
+        height: 6mm;
+        margin-left: 10mm;
+        margin-right: 10mm;
         padding-top: 10px;
         background-color: #BFC0C3;
         border-radius: 0 0 10px 10px;
       }
       .page-number {
-        font-size: 8px;
+        font-size: 10px;
         text-align: center;
       }
     </style>

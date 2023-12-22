@@ -11,11 +11,11 @@
       header {
         width: 190mm;
         padding: 0;
-        margin-left: 1cm;
-        margin-right: 1cm;
+        margin-left: 10mm;
+        margin-right: 10mm;
       }
       header .header {
-        height: 2cm;
+        height: 21mm;
         display: flex;
         justify-content: space-between;
         padding: 0 10px;
@@ -28,13 +28,13 @@
         text-align: right;
       }
       header .header h2 {
-        font-size: 13px;
+        font-size: 14px;
       }
       header .header p {
-        font-size: 11px;
+        font-size: 12px;
       }
       header div.box {
-        height: 190mm;
+        height: 260mm;
         border-left: solid 1px #e3e5e9;
         border-right: solid 1px #e3e5e9;
       }

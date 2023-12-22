@@ -11,11 +11,11 @@
       header {
         width: 277mm;
         padding: 0;
-        margin-left: 1cm;
-        margin-right: 1cm;
+        margin-left: 10mm;
+        margin-right: 10mm;
       }
       header .header {
-        height: 1.8cm;
+        height: 21mm;
         display: flex;
         justify-content: space-between;
         padding: 0 10px;
