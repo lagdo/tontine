@@ -3,7 +3,7 @@
     <style>
       @page {
         size: A4;
-        margin: 3cm 1.1cm 1.5cm 1.1cm;
+        margin: 3.4cm 1.3cm 1.5cm 1.3cm;
       }
 
       /* 

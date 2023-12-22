@@ -18,7 +18,7 @@
         border-radius: 0 0 10px 10px;
       }
       .page-number {
-        font-size: 10px;
+        font-size: 8px;
         text-align: center;
       }
     </style>

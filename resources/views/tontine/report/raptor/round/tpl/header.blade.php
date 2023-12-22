@@ -15,7 +15,7 @@
         margin-right: 1cm;
       }
       header .header {
-        height: 2.1cm;
+        height: 1.8cm;
         display: flex;
         justify-content: space-between;
         padding: 0 10px;
@@ -28,13 +28,13 @@
         text-align: right;
       }
       header .header h2 {
-        font-size: 16px;
-      }
-      header .header p {
         font-size: 14px;
       }
+      header .header p {
+        font-size: 12px;
+      }
       header div.box {
-        height: 173mm;
+        height: 123mm;
         border-left: solid 1px #e3e5e9;
         border-right: solid 1px #e3e5e9;
       }
