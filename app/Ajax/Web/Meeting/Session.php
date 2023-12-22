@@ -13,6 +13,7 @@ use App\Ajax\Web\Meeting\Pool\Deposit;
 use App\Ajax\Web\Meeting\Pool\Remitment;
 use App\Ajax\Web\Meeting\Saving\Closing;
 use App\Ajax\Web\Meeting\Saving\Saving;
+use App\Ajax\Web\Tontine\Options;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Report\ReportService;
@@ -77,6 +78,7 @@ class Session extends CallableClass
         $html = $this->render('pages.meeting.session.list');
         $this->response->html('content-home', $html);
 
+        $this->jq('#btn-tontine-options')->click($this->cl(Options::class)->rq()->editOptions());
         $this->jq('#btn-sessions-refresh')->click($this->rq()->page());
 
         return $this->page();
@@ -202,6 +204,7 @@ class Session extends CallableClass
         $openQuestion = trans('tontine.session.questions.open') . '<br/>' .
             trans('tontine.session.questions.warning');
         $this->jq('#btn-session-back')->click($this->rq()->home());
+        $this->jq('#btn-tontine-options')->click($this->cl(Options::class)->rq()->editOptions());
         $this->jq('#btn-session-refresh')->click($this->rq()->show($sessionId));
         $this->jq('#btn-session-open')->click($this->rq()->open()->confirm($openQuestion));
         $this->jq('#btn-session-close')->click($this->rq()->close()

@@ -10,6 +10,8 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\TenantService;
 
+use function config;
+
 class TontineService
 {
     /**
@@ -167,5 +169,41 @@ class TontineService
             $tontine->charges()->delete();
             $tontine->delete();
         });
+    }
+
+    /**
+     * Get the tontine options
+     *
+     * @return array
+     */
+    public function getTontineOptions(): array
+    {
+        return $this->tenantService->tontine()->properties;
+    }
+
+    /**
+     * Get the report template name
+     *
+     * @return string
+     */
+    public function getReportTemplate(): string
+    {
+        $options = $this->getTontineOptions();
+        return $options['reports']['template'] ?? config('tontine.templates.report', 'default');
+    }
+
+    /**
+     * Save the tontine options
+     *
+     * @param array $options
+     *
+     * @return void
+     */
+    public function saveTontineOptions(array $options)
+    {
+        $tontine = $this->tenantService->tontine();
+        $properties = $tontine->properties;
+        $properties['reports'] = $options['reports'];
+        $tontine->saveProperties($properties);
     }
 }

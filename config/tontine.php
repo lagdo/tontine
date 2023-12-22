@@ -2,6 +2,6 @@
 
 return [
     'templates' => [
-        // 'report' => 'raptor',
+        // 'report' => 'default',
     ],
 ];

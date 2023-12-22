@@ -53,6 +53,7 @@ use Siak\Tontine\Validation\Planning\PoolValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
 use Siak\Tontine\Validation\Tontine\MemberValidator;
+use Siak\Tontine\Validation\Tontine\OptionsValidator;
 use Siak\Tontine\Validation\Tontine\TontineValidator;
 use Sqids\Sqids;
 use Sqids\SqidsInterface;
@@ -144,6 +145,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(PoolValidator::class, PoolValidator::class);
         $this->app->singleton(RemitmentValidator::class, RemitmentValidator::class);
         $this->app->singleton(SessionValidator::class, SessionValidator::class);
+        $this->app->singleton(OptionsValidator::class, OptionsValidator::class);
         $this->app->singleton(TontineValidator::class, TontineValidator::class);
         $this->app->singleton(TargetValidator::class, TargetValidator::class);
     }

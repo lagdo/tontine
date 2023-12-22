@@ -8,10 +8,10 @@ use Illuminate\View\View;
 use Siak\Tontine\Service\Report\Pdf\PrinterService;
 use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Tontine\TontineService;
 use Sqids\SqidsInterface;
 
 use function base64_decode;
-use function config;
 use function response;
 use function view;
 
@@ -22,8 +22,9 @@ class ReportController extends Controller
      * @param ReportService $reportService
      * @param PrinterService $printerService
      */
-    public function __construct(protected TenantService $tenantService,
-        protected ReportService $reportService, protected PrinterService $printerService)
+    public function __construct(private TenantService $tenantService,
+        private ReportService $reportService, private TontineService $tontineService,
+        private PrinterService $printerService)
     {}
 
     /**
@@ -34,7 +35,7 @@ class ReportController extends Controller
      */
     public function sessionById(Request $request, int $sessionId)
     {
-        $template = config('tontine.templates.report', 'default');
+        $template = $this->tontineService->getReportTemplate();
         $session = $this->tenantService->getSession($sessionId);
         view()->share($this->reportService->getSessionReport($session));
         // Show the html page
@@ -78,7 +79,7 @@ class ReportController extends Controller
     public function profits(Request $request, SqidsInterface $sqids, string $sessionSqid)
     {
         [$sessionId] = $sqids->decode($sessionSqid);
-        $template = config('tontine.templates.report', 'default');
+        $template = $this->tontineService->getReportTemplate();
         $session = $this->tenantService->getSession($sessionId);
         view()->share($this->reportService->getProfitsReport($session));
         // Show the html page
@@ -107,7 +108,7 @@ class ReportController extends Controller
      */
     public function roundById(Request $request, int $roundId)
     {
-        $template = config('tontine.templates.report', 'default');
+        $template = $this->tontineService->getReportTemplate();
         $round = $this->tenantService->getRound($roundId);
         view()->share($this->reportService->getRoundReport($round));
         // Show the html page

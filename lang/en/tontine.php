@@ -342,4 +342,18 @@ return [
             ],
         ],
     ],
+    'options' => [
+        'titles' => [
+            'edit' => "Tontine options",
+        ],
+        'labels' => [
+            'default' => 'Default',
+            'report' => [
+                'template' => "Reports template",
+            ],
+        ],
+        'messages' => [
+            'saved' => "The tontine options was successfully saved.",
+        ],
+    ],
 ];
