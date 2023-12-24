@@ -78,7 +78,6 @@ class Session extends CallableClass
         $html = $this->render('pages.meeting.session.list');
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-tontine-options')->click($this->cl(Options::class)->rq()->editOptions());
         $this->jq('#btn-sessions-refresh')->click($this->rq()->page());
 
         return $this->page();

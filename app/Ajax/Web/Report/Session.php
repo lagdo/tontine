@@ -3,12 +3,12 @@
 namespace App\Ajax\Web\Report;
 
 use App\Ajax\CallableClass;
+use App\Ajax\Web\Tontine\Options;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
-use function compact;
 use function count;
 use function Jaxon\pm;
 
@@ -65,6 +65,7 @@ class Session extends CallableClass
         $html = $this->render('pages.report.session.exports',
             ['sessionId' => $session->id, 'hasClosing' => count($closings) > 0]);
         $this->response->html('session-reports-export', $html);
+        $this->jq('#btn-tontine-options')->click($this->cl(Options::class)->rq()->editOptions());
 
         return $this->response;
     }

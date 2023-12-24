@@ -3,6 +3,7 @@
 namespace App\Ajax\Web\Report;
 
 use App\Ajax\CallableClass;
+use App\Ajax\Web\Tontine\Options;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
@@ -47,6 +48,7 @@ class Round extends CallableClass
             ->with('round', $this->tenantService->round());
         $this->response->html('content-home', $html);
         $this->jq('#btn-meeting-report-refresh')->click($this->rq()->home());
+        $this->jq('#btn-tontine-options')->click($this->cl(Options::class)->rq()->editOptions());
 
         $this->pools();
         $this->amounts();
