@@ -224,6 +224,7 @@ class Session extends CallableClass
      * @databag refund
      * @before getSession
      * @di $tontineService
+     * @di $reportService
      */
     public function open()
     {
@@ -237,6 +238,7 @@ class Session extends CallableClass
      * @databag refund
      * @before getSession
      * @di $tontineService
+     * @di $reportService
      */
     public function close()
     {
