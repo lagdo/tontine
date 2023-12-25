@@ -2,8 +2,6 @@
 
 namespace Siak\Tontine\Model;
 
-use function trans;
-
 class Round extends Base
 {
     use Traits\HasProperty;
@@ -39,48 +37,18 @@ class Round extends Base
         'title',
         'status',
         'notes',
-        'start_at',
-        'end_at',
     ];
 
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'start_at',
-        'end_at',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'start_at' => 'datetime:Y-m-d',
-        'end_at' => 'datetime:Y-m-d',
-    ];
-
-    /**
-     * The model's default values for attributes.
-     *
-     * @var array
-     */
-    protected $attributes = [
-        'start_at' => '2000-01-01',
-        'end_at' => '2000-01-01',
-    ];
-
-    public function getStartAttribute()
+    public function getStartAtAttribute()
     {
-        return $this->start_at->translatedFormat(trans('tontine.date.format'));
+        $startSession = $this->sessions()->orderBy('start_at')->first();
+        return !$startSession ? null : $startSession->start_at;
     }
 
-    public function getEndAttribute()
+    public function getEndAtAttribute()
     {
-        return $this->end_at->translatedFormat(trans('tontine.date.format'));
+        $endSession = $this->sessions()->orderByDesc('start_at')->first();
+        return !$endSession ? null : $endSession->start_at;
     }
 
     public function getPendingAttribute()
