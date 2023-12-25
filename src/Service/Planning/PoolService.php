@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Service\Planning;
 
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
@@ -20,6 +21,36 @@ class PoolService
     {}
 
     /**
+     * @return Builder
+     */
+    private function getQuery(): Builder
+    {
+        // This closure returns pools that have been assigned start and end
+        // dates different from those of the round they are attached to.
+        // They need to be displayed for each round they have at least one session in.
+        $round = $this->tenantService->round();
+        $queryClosure = function(Builder $query) use($round) {
+            $query->orWhere(function(Builder $query) use($round) {
+                $tontine = $this->tenantService->tontine();
+                $query->whereIn('round_id', $tontine->rounds()->pluck('id'))
+                    ->whereHas('pool_round', function(Builder $query) use($round) {
+                        $query->whereHas('end_session', function(Builder $query) use($round) {
+                            $query->where('start_at', '>=', $round->start_at->format('Y-m-d'));
+                        })
+                        ->whereHas('start_session', function(Builder $query) use($round) {
+                            $query->where('start_at', '<=', $round->end_at->format('Y-m-d'));
+                        });
+                    });
+            });
+        };
+
+        return Pool::where(function(Builder $query) use($round) {
+            $query->where('round_id', $round->id)->whereDoesntHave('pool_round');
+        })
+        ->when($round->sessions()->count() > 2, $queryClosure);
+    }
+
+    /**
      * Get a paginated list of pools in the selected round.
      *
      * @param int $page
@@ -28,7 +59,7 @@ class PoolService
      */
     public function getPools(int $page = 0): Collection
     {
-        return $this->tenantService->round()->pools()
+        return $this->getQuery()
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -40,7 +71,7 @@ class PoolService
      */
     public function getPoolCount(): int
     {
-        return $this->tenantService->round()->pools()->count();
+        return $this->getQuery()->count();
     }
 
     /**
@@ -56,16 +87,6 @@ class PoolService
     }
 
     /**
-     * Get the first pool.
-     *
-     * @return Pool|null
-     */
-    public function getFirstPool(): ?Pool
-    {
-        return $this->tenantService->round()->pools()->first();
-    }
-
-    /**
      * Add a new pool.
      *
      * @param array $values
@@ -75,22 +96,6 @@ class PoolService
     public function createPool(array $values): bool
     {
         $this->tenantService->round()->pools()->create($values);
-
-        return true;
-    }
-
-    /**
-     * Add new pools.
-     *
-     * @param array $values
-     *
-     * @return bool
-     */
-    public function createPools(array $values): bool
-    {
-        DB::transaction(function() use($values) {
-            $this->tenantService->round()->pools()->createMany($values);
-        });
 
         return true;
     }

@@ -76,29 +76,51 @@ class PoolService
      *
      * @return Builder
      */
-    private function getPoolsQuery(Session $session, int $page = 0)
+    private function getPoolsQuery(Session $session)
     {
-        // Take only pools which have subscriptions with receivables for the session.
-        return $this->tenantService->round()->pools()
-            ->whereHas('subscriptions', function(Builder $query) use($session) {
-                $query->whereHas('receivables', function(Builder $query) use($session) {
-                    $query->where('session_id', $session->id);
-                });
-            })
-            ->page($page, $this->tenantService->getLimit());
+        $subscriptionClosure = function(Builder $query) use($session) {
+            $query->whereHas('receivables', function(Builder $query) use($session) {
+                $query->where('session_id', $session->id);
+            });
+        };
+        // This closure returns pools that have been assigned start and end
+        // dates different from those of the round they are attached to.
+        // They need to be displayed for each round they have at least one session in.
+        $poolClosure = function(Builder $query) use($session, $subscriptionClosure) {
+            $query->orWhere(function(Builder $query) use($session, $subscriptionClosure) {
+                $tontine = $this->tenantService->tontine();
+                $query->whereIn('round_id', $tontine->rounds()->pluck('id'))
+                    ->whereHas('subscriptions', $subscriptionClosure)
+                    ->whereHas('pool_round', function(Builder $query) use($session) {
+                        $query->whereHas('end_session', function(Builder $query) use($session) {
+                            $query->where('start_at', '>=', $session->start_at->format('Y-m-d'));
+                        })
+                        ->whereHas('start_session', function(Builder $query) use($session) {
+                            $query->where('start_at', '<=', $session->start_at->format('Y-m-d'));
+                        });
+                    });
+            });
+        };
+
+        $round = $this->tenantService->round();
+        return Pool::where(function(Builder $query) use($round, $subscriptionClosure) {
+            $query->where('round_id', $round->id)
+                ->whereDoesntHave('pool_round')
+                ->whereHas('subscriptions', $subscriptionClosure);
+        })
+        ->when($round->sessions()->count() > 2, $poolClosure);
     }
 
     /**
      * Get a paginated list of pools with receivables.
      *
      * @param Session $session
-     * @param int $page
      *
      * @return Collection
      */
-    public function getPoolsWithReceivables(Session $session, int $page = 0): Collection
+    public function getPoolsWithReceivables(Session $session): Collection
     {
-        return $this->getPoolsQuery($session, $page)
+        return $this->getPoolsQuery($session)
             ->withCount([
                 'subscriptions as recv_count',
                 'subscriptions as recv_paid' => function(Builder $query) use($session) {
@@ -118,13 +140,12 @@ class PoolService
      * Get a paginated list of pools with payables.
      *
      * @param Session $session
-     * @param int $page
      *
      * @return Collection
      */
-    public function getPoolsWithPayables(Session $session, int $page = 0): Collection
+    public function getPoolsWithPayables(Session $session): Collection
     {
-        return $this->getPoolsQuery($session, $page)
+        return $this->getPoolsQuery($session)
             ->withCount([
                 'subscriptions as pay_paid' => function(Builder $query) use($session) {
                     $query->whereHas('payable', function(Builder $query) use($session) {

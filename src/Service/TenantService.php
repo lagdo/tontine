@@ -220,12 +220,12 @@ class TenantService
      */
     public function getPool(int $poolId, bool $with = false): ?Pool
     {
-        $pools = $this->round->pools();
+        $query = $this->tontine->pools();
         if($with)
         {
-            $pools->with(['subscriptions.receivables.deposit']);
+            $query->with(['subscriptions.receivables.deposit']);
         }
-        return $pools->find($poolId);
+        return $query->find($poolId);
     }
 
     /**

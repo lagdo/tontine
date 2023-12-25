@@ -94,6 +94,11 @@ class Pool extends Base
         return $this->belongsTo(Round::class);
     }
 
+    public function pool_round()
+    {
+        return $this->hasOne(PoolRound::class);
+    }
+
     public function subscriptions()
     {
         return $this->hasMany(Subscription::class);
