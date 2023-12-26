@@ -99,7 +99,7 @@ class Pool extends CallableClass
 
         if(!$this->pool->remit_planned)
         {
-            $this->jq('#btn-new-remitment')->click($this->rq()->addRemitment(0));
+            $this->jq('#btn-add-remitment')->click($this->rq()->addRemitment(0));
         }
         $this->jq('#btn-remitments-back')->click($this->cl(Remitment::class)->rq()->home());
 
@@ -116,8 +116,8 @@ class Pool extends CallableClass
         $this->response->html('meeting-pool-remitments', $html);
 
         $payableId = jq()->parent()->attr('data-payable-id')->toInt();
-        $this->jq('.btn-new-remitment')->click($this->rq()->addRemitment($payableId));
-        $this->jq('.btn-add-remitment')->click($this->rq()->createRemitment($payableId));
+        $this->jq('.btn-add-remitment')->click($this->rq()->addRemitment($payableId));
+        $this->jq('.btn-save-remitment')->click($this->rq()->createRemitment($payableId));
         $this->jq('.btn-del-remitment')->click($this->rq()->deleteRemitment($payableId));
 
         return $this->response;
@@ -197,12 +197,11 @@ class Pool extends CallableClass
         // }
 
         // Add some data in the input values to help validation.
-        $formValues['remit_amount'] = $this->pool->remit_fixed ? 0 : 1;
         $formValues['remit_auction'] = $this->pool->remit_auction ? 1 : 0;
 
         $values = $this->validator->validateItem($formValues);
         $this->remitmentService->saveRemitment($this->pool, $this->session,
-            $values['payable'], $values['amount'], $values['auction']);
+            $values['payable'], $values['auction']);
         $this->dialog->hide();
 
         // Refresh the refunds pages

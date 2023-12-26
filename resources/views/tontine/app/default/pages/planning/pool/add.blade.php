@@ -9,12 +9,6 @@
             </div>
             <div class="form-group row">
               <div class="col-md-11">
-                {!! Form::checkbox('', '1', $options['remit']['fixed'], ['disabled' => 'disabled']) !!}
-                {!! Form::label('', __('tontine.pool.labels.remit.fixed'), ['class' => 'form-check-label']) !!}
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-md-11">
                 {!! Form::checkbox('', '1', $options['remit']['planned'], ['disabled' => 'disabled']) !!}
                 {!! Form::label('', __('tontine.pool.labels.remit.planned'), ['class' => 'form-check-label']) !!}
               </div>

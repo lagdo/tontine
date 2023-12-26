@@ -86,7 +86,7 @@ class Pool extends Base
 
     public function getRemitPayableAttribute()
     {
-        return $this->remit_fixed && $this->remit_planned && !$this->remit_auction;
+        return $this->remit_planned && !$this->remit_auction;
     }
 
     public function round()

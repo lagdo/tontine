@@ -7,14 +7,6 @@
                 {!! Form::select('payable', $members, $payableId, ['class' => 'form-control']) !!}
               </div>
             </div>
-@if (!$pool->remit_fixed)
-            <div class="form-group row">
-              {!! Form::label('amount', __('meeting.remitment.labels.amount'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
-              <div class="col-sm-5">
-                {!! Form::text('amount', '', ['class' => 'form-control']) !!}
-              </div>
-            </div>
-@endif
 @if ($pool->remit_auction)
             <div class="form-group row">
               {!! Form::label('auction', __('meeting.remitment.labels.auction'), ['class' => 'col-sm-3 col-form-label text-right']) !!}

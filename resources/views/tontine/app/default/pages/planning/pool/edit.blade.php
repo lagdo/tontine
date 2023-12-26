@@ -12,13 +12,6 @@
             <div class="form-group row">
               {!! Form::label('', '', ['class' => 'col-sm-2 col-form-label text-right']) !!}
               <div class="col-md-9">
-                {!! Form::checkbox('', '1', $pool->properties['remit']['fixed'], ['disabled' => 'disabled']) !!}
-                {!! Form::label('', __('tontine.pool.labels.remit.fixed'), ['class' => 'form-check-label']) !!}
-              </div>
-            </div>
-            <div class="form-group row">
-              {!! Form::label('', '', ['class' => 'col-sm-2 col-form-label text-right']) !!}
-              <div class="col-md-9">
                 {!! Form::checkbox('', '1', $pool->properties['remit']['planned'], ['disabled' => 'disabled']) !!}
                 {!! Form::label('', __('tontine.pool.labels.remit.planned'), ['class' => 'form-check-label']) !!}
               </div>

@@ -124,67 +124,6 @@ class Pool extends CallableClass
         $properties['deposit']['fixed'] = $fixed;
         $this->bag('pool')->set('add', $properties);
 
-        return $this->showRemitFixed();
-    }
-
-    public function showRemitFixed()
-    {
-        $this->dialog->hide();
-
-        $title = trans('tontine.pool.titles.remitments');
-        $properties = $this->bag('pool')->get('add', []);
-        $content = $this->render('pages.planning.pool.remit_fixed')
-            ->with('fixed', $properties['remit']['fixed'] ?? true);
-        $buttons = [[
-            'title' => trans('common.actions.cancel'),
-            'class' => 'btn btn-tertiary',
-            'click' => 'close',
-        ],[
-            'title' => trans('common.actions.prev'),
-            'class' => 'btn btn-primary',
-            'click' => $this->rq()->showDepositFixed(),
-        ],[
-            'title' => trans('common.actions.next'),
-            'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveRemitFixed(pm()->checked('pool_remit_fixed')),
-        ]];
-        $this->dialog->show($title, $content, $buttons);
-
-        return $this->response;
-    }
-
-    public function saveRemitFixed(bool $fixed)
-    {
-        $properties = $this->bag('pool')->get('add', []);
-        $properties['remit']['fixed'] = $fixed;
-
-        if(!$properties['deposit']['fixed'] && !$properties['remit']['fixed'])
-        {
-            $properties['remit']['planned'] = true;
-            $properties['remit']['auction'] = false;
-            $this->bag('pool')->set('add', $properties);
-
-            return $this->showRemitLendable();
-        }
-        if(!$properties['deposit']['fixed'] && $properties['remit']['fixed'])
-        {
-            $properties['remit']['planned'] = true;
-            $properties['remit']['auction'] = false;
-            $properties['remit']['lendable'] = false;
-            $this->bag('pool')->set('add', $properties);
-
-            return $this->add();
-        }
-        if($properties['deposit']['fixed'] && !$properties['remit']['fixed'])
-        {
-            $properties['remit']['planned'] = false;
-            $this->bag('pool')->set('add', $properties);
-
-            return $this->showRemitAuction();
-        }
-
-        $this->bag('pool')->set('add', $properties);
-
         return $this->showRemitPlanned();
     }
 
@@ -203,7 +142,7 @@ class Pool extends CallableClass
         ],[
             'title' => trans('common.actions.prev'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->showRemitFixed(),
+            'click' => $this->rq()->showDepositFixed(),
         ],[
             'title' => trans('common.actions.next'),
             'class' => 'btn btn-primary',
@@ -229,10 +168,6 @@ class Pool extends CallableClass
 
         $properties = $this->bag('pool')->get('add', []);
         $prevAction = $this->rq()->showRemitPlanned();
-        if($properties['deposit']['fixed'] && !$properties['remit']['fixed'])
-        {
-            $prevAction = $this->rq()->showRemitFixed();
-        }
 
         $title = trans('tontine.pool.titles.remitments');
         $content = $this->render('pages.planning.pool.remit_auction')
@@ -270,10 +205,6 @@ class Pool extends CallableClass
 
         $properties = $this->bag('pool')->get('add', []);
         $prevAction = $this->rq()->showRemitAuction();
-        if(!$properties['deposit']['fixed'] && !$properties['remit']['fixed'])
-        {
-            $prevAction = $this->rq()->showRemitFixed();
-        }
 
         $title = trans('tontine.pool.titles.remitments');
         $content = $this->render('pages.planning.pool.remit_lendable')

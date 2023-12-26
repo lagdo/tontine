@@ -185,13 +185,11 @@ class RemitmentService
      * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $payableId
-     * @param int $amount
      * @param int $auction
      *
      * @return void
      */
-    public function saveRemitment(Pool $pool, Session $session, int $payableId,
-        int $amount, int $auction): void
+    public function saveRemitment(Pool $pool, Session $session, int $payableId, int $auction): void
     {
         // Cannot use the getPayable() method here,
         // because there's no session attached to the payable.
@@ -209,12 +207,12 @@ class RemitmentService
             throw new MessageException(trans('tontine.remitment.errors.planning'));
         }
 
-        DB::transaction(function() use($pool, $session, $payable, $amount, $auction) {
+        DB::transaction(function() use($pool, $session, $payable, $auction) {
             // Associate the payable with the session.
             $payable->session()->associate($session);
             $payable->save();
             // Create the remitment.
-            $remitment = $payable->remitment()->create(['amount' => $amount]);
+            $remitment = $payable->remitment()->create([]);
 
             if($pool->remit_auction && $auction > 0)
             {

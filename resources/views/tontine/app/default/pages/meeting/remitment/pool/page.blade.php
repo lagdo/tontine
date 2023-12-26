@@ -23,10 +23,10 @@
                             @if ($payable->remitment)<i class="fa fa-toggle-on"></i>@else<i class="fa fa-toggle-off">@endif
 @elseif ($payable->remitment)
                             <a href="javascript:void(0)" class="btn-del-remitment"><i class="fa fa-toggle-on"></i></a>
-@elseif ($payable->id > 0 && $pool->remit_fixed)
-                            <a href="javascript:void(0)" class="btn-add-remitment"><i class="fa fa-toggle-off"></i></a>
+@elseif ($payable->id > 0)
+                            <a href="javascript:void(0)" class="btn-save-remitment"><i class="fa fa-toggle-off"></i></a>
 @else
-                            <a href="javascript:void(0)" class="btn-new-remitment"><i class="fa fa-toggle-off"></i></a>
+                            <a href="javascript:void(0)" class="btn-add-remitment"><i class="fa fa-toggle-off"></i></a>
 @endif
                           </td>
                         </tr>

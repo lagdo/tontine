@@ -4,7 +4,6 @@
                   <tr>
                     <th>{!! __('common.labels.title') !!}</th>
                     <th>{!! __('tontine.pool.titles.deposits') !!}:<br/>{!! __('common.labels.amount') !!}</th>
-                    <th>{!! __('tontine.pool.titles.remitments') !!}:<br/>{!! __('tontine.pool.labels.fixed') !!}</th>
                     <th>{!! __('tontine.pool.titles.remitments') !!}:<br/>{!! __('tontine.pool.labels.planned') !!}</th>
                     <th>{!! __('tontine.pool.titles.remitments') !!}:<br/>{!! __('tontine.pool.labels.auction') !!}</th>
                     <th>{!! __('tontine.pool.titles.remitments') !!}:<br/>{!! __('tontine.pool.labels.lendable') !!}</th>
@@ -17,7 +16,6 @@
                     <td>{{ $pool->title }}</td>
                     <td>{{ $pool->deposit_fixed ?
                       $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre') }}</td>
-                    <td>{{ __('common.labels.' . ($pool->remit_fixed ? 'yes' : 'no')) }}</td>
                     <td>{{ __('common.labels.' . ($pool->remit_planned ? 'yes' : 'no')) }}</td>
                     <td>{{ __('common.labels.' . ($pool->remit_auction ? 'yes' : 'no')) }}</td>
                     <td>{{ __('common.labels.' . ($pool->remit_lendable ? 'yes' : 'no')) }}</td>

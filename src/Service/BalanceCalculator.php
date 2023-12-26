@@ -98,16 +98,12 @@ class BalanceCalculator
     public function getPayableAmount(Payable $payable, Session $session): int
     {
         $pool = $payable->subscription->pool;
-        if($pool->remit_fixed)
+        if($pool->deposit_fixed)
         {
-            if($pool->deposit_fixed)
-            {
-                return $pool->amount * $this->tenantService->countEnabledSessions($pool);
-            }
-            // Sum the amounts for all deposits
-            return $this->getPoolDepositAmount($pool, $session);
+            return $pool->amount * $this->tenantService->countEnabledSessions($pool);
         }
-        return $payable->remitment ? $payable->remitment->amount : 0;
+        // Sum the amounts for all deposits
+        return $this->getPoolDepositAmount($pool, $session);
     }
 
     /**
@@ -127,14 +123,6 @@ class BalanceCalculator
      */
     public function getPoolRemitmentAmount(Pool $pool, Session $session): int
     {
-        if(!$pool->remit_fixed)
-        {
-            // Sum the amounts for all remitments
-            return $this->getRemitmentQuery(false)
-                ->where('payables.session_id', $session->id)
-                ->where('subscriptions.pool_id', $pool->id)
-                ->sum('remitments.amount');
-        }
         if(!$pool->deposit_fixed)
         {
             // Sum the amounts for all deposits
@@ -172,17 +160,16 @@ class BalanceCalculator
     private function remitmentAmount(Collection $sessionIds, bool $lendable)
     {
         return
-            // Remitment sum for pools with fixed deposits and fixed remitments.
+            // Remitment sum for pools with fixed deposits.
             // Each value is the pool amount multiply by the number od sessions.
             $this->getRemitmentQuery(true)
                 ->whereIn('payables.session_id', $sessionIds)
                 ->where('pools.properties->deposit->fixed', true)
-                ->where('pools.properties->remit->fixed', true)
                 ->when($lendable, function(Builder $query) {
                     $query->where('pools.properties->remit->lendable', true);
                 })
                 ->sum(DB::raw($this->getRemitmentAmountSqlValue()))
-            // Remitment sum for pools with libre deposits and fixed remitments.
+            // Remitment sum for pools with libre deposits.
             // Each value is the sum of deposits for the given pool.
             + $this->getDepositQuery(true)
                 ->whereIn('deposits.session_id', $sessionIds)
@@ -194,19 +181,10 @@ class BalanceCalculator
                         ->whereColumn('s.pool_id', 'pools.id');
                 })
                 ->where('pools.properties->deposit->fixed', false)
-                ->where('pools.properties->remit->fixed', true)
                 ->when($lendable, function(Builder $query) {
                     $query->where('pools.properties->remit->lendable', true);
                 })
-                ->sum('deposits.amount')
-            // Remitment sum for pools with libre remitments.
-            + $this->getRemitmentQuery(true)
-                ->whereIn('payables.session_id', $sessionIds)
-                ->where('pools.properties->remit->fixed', false)
-                ->when($lendable, function(Builder $query) {
-                    $query->where('pools.properties->remit->lendable', true);
-                })
-                ->sum('remitments.amount');
+                ->sum('deposits.amount');
     }
 
     /**
