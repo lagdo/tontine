@@ -58,6 +58,8 @@ use Siak\Tontine\Validation\Tontine\TontineValidator;
 use Sqids\Sqids;
 use Sqids\SqidsInterface;
 
+use function config;
+
 class SiakServiceProvider extends ServiceProvider
 {
     /**
@@ -121,9 +123,8 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(RoundReportService::class, RoundReportService::class);
         $this->app->singleton(SessionReportService::class, SessionReportService::class);
         $this->app->singleton(ReportService::class, ReportService::class);
-        $this->app->singleton(PrinterService::class, function() {
-            return new PrinterService(config('chrome.page'));
-        });
+        $this->app->singleton(PrinterService::class, PrinterService::class);
+        $this->app->when(PrinterService::class)->needs('$config')->give(config('chrome.page'));
 
         $this->app->singleton(RoundService::class, RoundService::class);
         $this->app->singleton(PlanningSessionService::class, PlanningSessionService::class);

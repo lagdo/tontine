@@ -8,7 +8,6 @@ use Illuminate\View\View;
 use Siak\Tontine\Service\Report\Pdf\PrinterService;
 use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Tontine\TontineService;
 use Sqids\SqidsInterface;
 
 use function base64_decode;
@@ -23,9 +22,27 @@ class ReportController extends Controller
      * @param PrinterService $printerService
      */
     public function __construct(private TenantService $tenantService,
-        private ReportService $reportService, private TontineService $tontineService,
-        private PrinterService $printerService)
+        private ReportService $reportService, private PrinterService $printerService)
     {}
+
+    /**
+     * @param string $content
+     * @param string $filename
+     * @param string $title
+     *
+     * @return View|Response
+     */
+    private function pdfContent(string $content, string $filename, string $title)
+    {
+        return response(base64_decode($content), 200)
+            ->header('Content-Description', $title)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', "inline; filename=$filename")
+            ->header('Content-Transfer-Encoding', 'binary')
+            ->header('Expires', '0')
+            ->header('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+            ->header('Pragma', 'public');
+    }
 
     /**
      * @param Request $request
@@ -35,25 +52,17 @@ class ReportController extends Controller
      */
     public function sessionById(Request $request, int $sessionId)
     {
-        $template = $this->tontineService->getReportTemplate();
         $session = $this->tenantService->getSession($sessionId);
         view()->share($this->reportService->getSessionReport($session));
         // Show the html page
         if($request->has('html'))
         {
-            return view("tontine.report.$template.session");
+            return view($this->printerService->getSessionReportPath());
         }
 
         // Print the pdf
-        $filename = $this->reportService->getSessionReportFilename($session);
-        return response(base64_decode($this->printerService->getSessionReport($template)), 200)
-            ->header('Content-Description', 'Session Report')
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', "inline; filename=$filename")
-            ->header('Content-Transfer-Encoding', 'binary')
-            ->header('Expires', '0')
-            ->header('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-            ->header('Pragma', 'public');
+        return $this->pdfContent($this->printerService->getSessionReport(),
+            $this->printerService->getSessionReportFilename($session), 'Session Report');
     }
 
     /**
@@ -66,6 +75,7 @@ class ReportController extends Controller
     public function session(Request $request, SqidsInterface $sqids, string $sessionSqid)
     {
         [$sessionId] = $sqids->decode($sessionSqid);
+
         return $this->sessionById($request, $sessionId);
     }
 
@@ -79,25 +89,17 @@ class ReportController extends Controller
     public function profits(Request $request, SqidsInterface $sqids, string $sessionSqid)
     {
         [$sessionId] = $sqids->decode($sessionSqid);
-        $template = $this->tontineService->getReportTemplate();
         $session = $this->tenantService->getSession($sessionId);
         view()->share($this->reportService->getProfitsReport($session));
         // Show the html page
         if($request->has('html'))
         {
-            return view("tontine.report.$template.profits");
+            return view($this->printerService->getProfitsReportPath());
         }
 
         // Print the pdf
-        $filename = $this->reportService->getProfitsReportFilename($session);
-        return response(base64_decode($this->printerService->getProfitsReport($template)), 200)
-            ->header('Content-Description', 'Profits Report')
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', "inline; filename=$filename")
-            ->header('Content-Transfer-Encoding', 'binary')
-            ->header('Expires', '0')
-            ->header('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-            ->header('Pragma', 'public');
+        return $this->pdfContent($this->printerService->getProfitsReport(),
+            $this->printerService->getProfitsReportFilename($session), 'Profits Report');
     }
 
     /**
@@ -108,25 +110,17 @@ class ReportController extends Controller
      */
     public function roundById(Request $request, int $roundId)
     {
-        $template = $this->tontineService->getReportTemplate();
         $round = $this->tenantService->getRound($roundId);
         view()->share($this->reportService->getRoundReport($round));
         // Show the html page
         if($request->has('html'))
         {
-            return view("tontine.report.$template.round");
+            return view($this->printerService->getRoundReportPath());
         }
 
         // Print the pdf
-        $filename = $this->reportService->getRoundReportFilename($round);
-        return response(base64_decode($this->printerService->getRoundReport($template)), 200)
-            ->header('Content-Description', 'Round Report')
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', "inline; filename=$filename")
-            ->header('Content-Transfer-Encoding', 'binary')
-            ->header('Expires', '0')
-            ->header('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-            ->header('Pragma', 'public');
+        return $this->pdfContent($this->printerService->getRoundReport(),
+            $this->printerService->getRoundReportFilename($round), 'Round Report');
     }
 
     /**
@@ -139,6 +133,7 @@ class ReportController extends Controller
     public function round(Request $request, SqidsInterface $sqids, string $roundSqid)
     {
         [$roundId] = $sqids->decode($roundSqid);
+
         return $this->roundById($request, $roundId);
     }
 }

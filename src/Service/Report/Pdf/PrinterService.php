@@ -2,24 +2,44 @@
 
 namespace Siak\Tontine\Service\Report\Pdf;
 
+use Illuminate\Support\Str;
+use Siak\Tontine\Model\Round;
+use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Tontine\TontineService;
+
+use function strtolower;
+use function trans;
 use function view;
 
 class PrinterService
 {
     /**
+     * @param TontineService $tontineService
      * @param array $config
      */
-    public function __construct(private array $config)
+    public function __construct(private TontineService $tontineService, private array $config)
     {}
 
     /**
-     * @param string $templatePath
+     * @param string $report
+     *
+     * @return string
+     */
+    private function getViewPath(string $report): string
+    {
+        $template = $this->tontineService->getReportTemplate();
+        return "tontine.report.$template.$report";
+    }
+
+    /**
+     * @param string $report
      * @param array $config
      *
      * @return string
      */
-    private function getPdf(string $templatePath, array $config = []): string
+    private function getPdf(string $report, array $config = []): string
     {
+        $templatePath = $this->getViewPath($report);
         $config = [
             ...$this->config,
             ...$config,
@@ -30,32 +50,80 @@ class PrinterService
     }
 
     /**
-     * @param string $template
-     *
      * @return string
      */
-    public function getSessionReport(string $template): string
+    public function getSessionReportPath(): string
     {
-        return $this->getPdf("tontine.report.$template.session");
+        return $this->getViewPath('session');
     }
 
     /**
-     * @param string $template
+     * @param Session $session
      *
      * @return string
      */
-    public function getProfitsReport(string $template): string
+    public function getSessionReportFilename(Session $session): string
     {
-        return $this->getPdf("tontine.report.$template.profits");
+        return strtolower(trans('meeting.titles.report')) . '-' . Str::slug($session->title) . '.pdf';
     }
 
     /**
-     * @param string $template
+     * @return string
+     */
+    public function getSessionReport(): string
+    {
+        return $this->getPdf('session');
+    }
+
+    /**
+     * @return string
+     */
+    public function getProfitsReportPath(): string
+    {
+        return $this->getViewPath('profits');
+    }
+
+    /**
+     * @param Session $session
      *
      * @return string
      */
-    public function getRoundReport(string $template): string
+    public function getProfitsReportFilename(Session $session): string
     {
-        return $this->getPdf("tontine.report.$template.round");
+        return Str::slug(trans('meeting.titles.profits')) . '-' . Str::slug($session->title) . '.pdf';
+    }
+
+    /**
+     * @return string
+     */
+    public function getProfitsReport(): string
+    {
+        return $this->getPdf('profits');
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoundReportPath(): string
+    {
+        return $this->getViewPath('round');
+    }
+
+    /**
+     * @param Round $round
+     *
+     * @return string
+     */
+    public function getRoundReportFilename(Round $round): string
+    {
+        return strtolower(trans('meeting.titles.report')) . '-' . Str::slug($round->title) . '.pdf';
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoundReport(): string
+    {
+        return $this->getPdf('round');
     }
 }

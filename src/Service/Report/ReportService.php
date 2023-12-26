@@ -4,7 +4,6 @@ namespace Siak\Tontine\Service\Report;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
@@ -17,8 +16,6 @@ use Siak\Tontine\Service\Report\RoundService;
 use Siak\Tontine\Service\Tontine\FundService;
 
 use function compact;
-use function strtolower;
-use function trans;
 
 class ReportService
 {
@@ -218,35 +215,5 @@ class ReportService
         ];
 
         return compact('tontine', 'round', 'country', 'currency', 'pools', 'amounts');
-    }
-
-    /**
-     * @param Session $session
-     *
-     * @return string
-     */
-    public function getSessionReportFilename(Session $session): string
-    {
-        return strtolower(trans('meeting.titles.report')) . '-' . Str::slug($session->title) . '.pdf';
-    }
-
-    /**
-     * @param Session $session
-     *
-     * @return string
-     */
-    public function getProfitsReportFilename(Session $session): string
-    {
-        return Str::slug(trans('meeting.titles.profits')) . '-' . Str::slug($session->title) . '.pdf';
-    }
-
-    /**
-     * @param Round $round
-     *
-     * @return string
-     */
-    public function getRoundReportFilename(Round $round): string
-    {
-        return strtolower(trans('meeting.titles.report')) . '-' . Str::slug($round->title) . '.pdf';
     }
 }
