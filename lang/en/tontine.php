@@ -279,6 +279,7 @@ return [
         ],
         'actions' => [
             'subscriptions' => "Subscriptions",
+            'round' => "Dates",
         ],
         'questions' => [
             'delete' => "Delete this tontine?<br/>Please, make sure it has no subscription.",
@@ -295,6 +296,28 @@ return [
             ],
             'subscription' => "The tontine still has subscriptions.",
             'no_subscription' => "There are tontines with no subscription.",
+        ],
+    ],
+    'pool_round' => [
+        'titles' => [
+            'dates' => "Dates of tontine: :pool",
+            'start_session' => "Start session: :session",
+            'end_session' => "End session: :session",
+        ],
+        'labels' => [
+            'default' => "(Same as the round)",
+        ],
+        'questions' => [
+            'delete' => "Delete the dates of this tontine?",
+        ],
+        'messages' => [
+            'saved' => "The dates of the tontine was successfully saved.",
+            'deleted' => "The dates of the tontine was successfully deleted.",
+        ],
+        'errors' => [
+            'start_session' => "The start session is incorrect.",
+            'end_session' => "The end session is incorrect.",
+            'session_dates' => "The start session must precede the end session.",
         ],
     ],
     'subscription' => [

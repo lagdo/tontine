@@ -279,9 +279,10 @@ return [
         ],
         'actions' => [
             'subscriptions' => "Souscriptions",
+            'round' => "Dates",
         ],
         'questions' => [
-            'delete' => "Supprimer cette tontine?<br/>Il ne faut pas qu'il ait de souscription.",
+            'delete' => "Supprimer cette tontine ?<br/>Il ne faut pas qu'il ait de souscription.",
         ],
         'messages' => [
             'created' => "La tontine a été ajoutée.",
@@ -295,6 +296,28 @@ return [
             ],
             'subscription' => "Cette tontines a encore des souscriptions.",
             'no_subscription' => "Il y a encore des fonds sans souscription.",
+        ],
+    ],
+    'pool_round' => [
+        'titles' => [
+            'dates' => "Dates de la tontine : :pool",
+            'start_session' => "Séance de début : :session",
+            'end_session' => "Séance de fin : :session",
+        ],
+        'labels' => [
+            'default' => "(Même que le tour)",
+        ],
+        'questions' => [
+            'delete' => "Supprimer les dates de cette tontine ?",
+        ],
+        'messages' => [
+            'saved' => "Les dates de la tontine ont été enregistrées.",
+            'deleted' => "Les dates de la tontine ont été supprimées.",
+        ],
+        'errors' => [
+            'start_session' => "La séance de début est incorrecte.",
+            'end_session' => "La séance de fin est incorrecte.",
+            'session_dates' => "La séance de début doit préceder la séance de fin.",
         ],
     ],
     'subscription' => [

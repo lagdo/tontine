@@ -27,6 +27,9 @@
     'class' => 'btn-pool-edit',
     'text' => __('common.actions.edit'),
   ],[
+    'class' => 'btn-pool-round',
+    'text' => __('tontine.pool.actions.round'),
+  ],[
     'class' => 'btn-pool-delete',
     'text' => __('common.actions.delete'),
   ]],

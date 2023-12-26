@@ -9,6 +9,9 @@ jaxon.dom.ready(function() {
         onComplete: function() {
             document.body.style.cursor = 'auto';
         },
+        onFailure: function() {
+            document.body.style.cursor = 'auto';
+        },
     };
 
     // Check if it is a mobile device

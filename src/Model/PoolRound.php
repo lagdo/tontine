@@ -11,6 +11,16 @@ class PoolRound extends Base
      */
     public $timestamps = false;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'start_session_id',
+        'end_session_id',
+    ];
+
     public function pool()
     {
         return $this->belongsTo(Pool::class);

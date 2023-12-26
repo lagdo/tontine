@@ -28,6 +28,7 @@ use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Meeting\SessionService as MeetingSessionService;
 use Siak\Tontine\Service\Meeting\SummaryService as MeetingSummaryService;
 use Siak\Tontine\Service\Planning\PoolService as TontinePoolService;
+use Siak\Tontine\Service\Planning\PoolRoundService;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Planning\SessionService as PlanningSessionService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
@@ -50,6 +51,7 @@ use Siak\Tontine\Validation\Meeting\RemitmentValidator;
 use Siak\Tontine\Validation\Meeting\SavingValidator;
 use Siak\Tontine\Validation\Meeting\TargetValidator;
 use Siak\Tontine\Validation\Planning\PoolValidator;
+use Siak\Tontine\Validation\Planning\PoolRoundValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
 use Siak\Tontine\Validation\Tontine\MemberValidator;
@@ -133,6 +135,7 @@ class SiakServiceProvider extends ServiceProvider
 
         $this->app->singleton(TenantService::class, TenantService::class);
         $this->app->singleton(TontinePoolService::class, TontinePoolService::class);
+        $this->app->singleton(PoolRoundService::class, PoolRoundService::class);
         $this->app->singleton(MemberService::class, MemberService::class);
         $this->app->singleton(TontineService::class, TontineService::class);
 
@@ -144,6 +147,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(LoanValidator::class, LoanValidator::class);
         $this->app->singleton(MemberValidator::class, MemberValidator::class);
         $this->app->singleton(PoolValidator::class, PoolValidator::class);
+        $this->app->singleton(PoolRoundValidator::class, PoolRoundValidator::class);
         $this->app->singleton(RemitmentValidator::class, RemitmentValidator::class);
         $this->app->singleton(SessionValidator::class, SessionValidator::class);
         $this->app->singleton(OptionsValidator::class, OptionsValidator::class);
