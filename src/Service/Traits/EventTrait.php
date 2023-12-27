@@ -18,6 +18,8 @@ use function now;
 
 trait EventTrait
 {
+    use PoolTrait;
+
     /**
      * @param Charge $charge
      * @param DateTime $today
@@ -207,7 +209,9 @@ trait EventTrait
         };
 
         // Sync the receivables for each subscription on each pool
-        foreach($session->round->pools as $pool)
+        $date = $session->start_at;
+        $pools = $this->getPoolsQuery($session->round, $date, $date)->get();
+        foreach($pools as $pool)
         {
             if($session->enabled($pool))
             {

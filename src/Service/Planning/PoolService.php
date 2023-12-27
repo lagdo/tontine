@@ -9,11 +9,14 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Traits\PoolTrait;
 
 use function trans;
 
 class PoolService
 {
+    use PoolTrait;
+
     /**
      * @param TenantService $tenantService
      */
@@ -25,29 +28,8 @@ class PoolService
      */
     private function getQuery(): Builder
     {
-        // This closure returns pools that have been assigned start and end
-        // dates different from those of the round they are attached to.
-        // They need to be displayed for each round they have at least one session in.
         $round = $this->tenantService->round();
-        $queryClosure = function(Builder $query) use($round) {
-            $query->orWhere(function(Builder $query) use($round) {
-                $tontine = $this->tenantService->tontine();
-                $query->whereIn('round_id', $tontine->rounds()->pluck('id'))
-                    ->whereHas('pool_round', function(Builder $query) use($round) {
-                        $query->whereHas('end_session', function(Builder $query) use($round) {
-                            $query->where('start_at', '>=', $round->start_at->format('Y-m-d'));
-                        })
-                        ->whereHas('start_session', function(Builder $query) use($round) {
-                            $query->where('start_at', '<=', $round->end_at->format('Y-m-d'));
-                        });
-                    });
-            });
-        };
-
-        return Pool::where(function(Builder $query) use($round) {
-            $query->where('round_id', $round->id)->whereDoesntHave('pool_round');
-        })
-        ->when($round->sessions()->count() > 2, $queryClosure);
+        return $this->getPoolsQuery($round, $round->start_at, $round->end_at);
     }
 
     /**
