@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Traits;
 
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Pool;
+use Siak\Tontine\Service\Planning\PoolService;
 use stdClass;
 
 use function floor;
@@ -11,6 +12,11 @@ use function gmp_gcd;
 
 trait ReportTrait
 {
+    /**
+     * @var PoolService
+     */
+    protected PoolService $poolService;
+
     /**
      * @param mixed $defaultValue
      *
@@ -76,18 +82,14 @@ trait ReportTrait
      *
      * @return Collection
      */
-    private function _getSessions(Pool $pool, array $with = []): Collection
+    private function getEnabledSessions(Pool $pool, array $with = []): Collection
     {
         $with['payables'] = function($query) use($pool) {
             // Keep only the subscriptions of the current pool.
             $query->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
                 ->where('subscriptions.pool_id', $pool->id);
         };
-        return $this->tenantService->getSessions()
-            ->filter(function($session) use($pool) {
-                return $session->enabled($pool);
-            })
-            ->load($with);
+        return $this->poolService->getEnabledSessions($pool)->load($with);
     }
 
     /**
@@ -99,9 +101,7 @@ trait ReportTrait
      */
     private function getExpectedFigures(Pool $pool, Collection $sessions, Collection $subscriptions): array
     {
-        $sessionCount = $sessions->filter(function($session) use($pool) {
-            return $session->enabled($pool);
-        })->count();
+        $sessionCount = $sessions->count();
         $subscriptionCount = $depositCount = $subscriptions->count();
         $depositAmount = $pool->amount * $depositCount;
         $remitmentAmount = $pool->amount * $sessionCount;
@@ -111,12 +111,6 @@ trait ReportTrait
         $expectedFigures = [];
         foreach($sessions as $session)
         {
-            if($session->disabled($pool))
-            {
-                $expectedFigures[$session->id] = $this->makeFigures('');
-                continue;
-            }
-
             $figures = $this->makeFigures(0);
             $figures->cashier->start = $cashier;
             $figures->cashier->recv = $cashier + $depositAmount;

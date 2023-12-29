@@ -12,6 +12,7 @@ use Siak\Tontine\Model\PartialRefund;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
@@ -19,44 +20,14 @@ use function trans;
 class RefundService
 {
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
-     * @var DebtCalculator
-     */
-    protected DebtCalculator $debtCalculator;
-
-    /**
+     * @param DebtCalculator $debtCalculator
      * @param TenantService $tenantService
      * @param LocaleService $localeService
-     * @param DebtCalculator $debtCalculator
      */
-    public function __construct(TenantService $tenantService,
-        LocaleService $localeService, DebtCalculator $debtCalculator)
-    {
-        $this->tenantService = $tenantService;
-        $this->localeService = $localeService;
-        $this->debtCalculator = $debtCalculator;
-    }
-
-    /**
-     * Get a single session.
-     *
-     * @param int $sessionId    The session id
-     *
-     * @return Session|null
-     */
-    public function getSession(int $sessionId): ?Session
-    {
-        return $this->tenantService->getSession($sessionId);
-    }
+    public function __construct(private DebtCalculator $debtCalculator,
+        private TenantService $tenantService, private LocaleService $localeService,
+        private SessionService $sessionService)
+    {}
 
     /**
      * @param int $sessionId
@@ -111,8 +82,7 @@ class RefundService
      */
     public function getDebtCount(Session $session, ?bool $onlyPaid): int
     {
-        $prevSessions = $this->tenantService->round()->sessions()
-            ->where('start_at', '<', $session->start_at)->pluck('id');
+        $prevSessions = $this->sessionService->getTontineSessionIds($session, false);
         return $this->getQuery($session->id, $prevSessions, $onlyPaid)->count();
     }
 
@@ -127,9 +97,7 @@ class RefundService
      */
     public function getDebts(Session $session, ?bool $onlyPaid, int $page = 0): Collection
     {
-        $prevSessions = $this->tenantService->round()->sessions()
-            ->where('start_at', '<', $session->start_at)->pluck('id');
-
+        $prevSessions = $this->sessionService->getTontineSessionIds($session, false);
         return $this->getQuery($session->id, $prevSessions, $onlyPaid)
             ->page($page, $this->tenantService->getLimit())
             ->with(['loan', 'loan.member', 'loan.session', 'refund', 'partial_refunds.session'])
@@ -155,6 +123,22 @@ class RefundService
     }
 
     /**
+     * @param int $debtId
+     *
+     * @return Debt|null
+     */
+    private function getDebt(int $debtId): ?Debt
+    {
+        return Debt::whereHas('loan', function(Builder $query) {
+                $query->whereHas('member', function(Builder $query) {
+                    $query->whereIn('tontine_id', $this->tenantService->tontine()->id);
+                });
+            })
+            ->with(['refund'])
+            ->find($debtId);
+    }
+
+    /**
      * Create a refund.
      *
      * @param Session $session The session
@@ -164,10 +148,7 @@ class RefundService
      */
     public function createRefund(Session $session, int $debtId): void
     {
-        $sessionIds = $this->tenantService->getSessionIds();
-        $debt = Debt::whereHas('loan', function(Builder $query) use($sessionIds) {
-            $query->whereIn('session_id', $sessionIds);
-        })->with(['partial_refunds'])->find($debtId);
+        $debt = $this->getDebt($debtId);
         if(!$debt || $debt->refund)
         {
             throw new MessageException(trans('tontine.loan.errors.not_found'));
@@ -283,10 +264,7 @@ class RefundService
      */
     public function createPartialRefund(Session $session, int $debtId, int $amount): void
     {
-        $sessionIds = $this->tenantService->getSessionIds();
-        $debt = Debt::whereHas('loan', function(Builder $query) use($sessionIds) {
-            $query->whereIn('session_id', $sessionIds);
-        })->find($debtId);
+        $debt = $this->getDebt($debtId);
         if(!$debt || $debt->refund)
         {
             throw new MessageException(trans('meeting.refund.errors.not_found'));

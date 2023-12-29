@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\TenantService;
 
 use function strtolower;
@@ -15,17 +16,12 @@ use function strtolower;
 class BillService
 {
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
      * @param TenantService $tenantService
+     * @param SessionService $sessionService
      */
-    public function __construct(TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-    }
+    public function __construct(protected TenantService $tenantService,
+        protected SessionService $sessionService)
+    {}
 
     /**
      * @param Charge $charge
@@ -47,7 +43,7 @@ class BillService
                 })
                 ->when($relation === 'libre_bill', function($query) use($session) {
                     // Filter libre bills on current and previous sessions
-                    $sessionIds = $this->tenantService->getSessionIds($session);
+                    $sessionIds = $this->sessionService->getRoundSessionIds($session);
                     return $query->whereIn('session_id', $sessionIds);
                 });
         };

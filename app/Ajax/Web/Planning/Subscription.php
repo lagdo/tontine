@@ -42,7 +42,7 @@ class Subscription extends CallableClass
      */
     public function home(int $poolId = 0)
     {
-        $pools = $this->poolService->getPools();
+        $pools = $this->poolService->getRoundPools();
         $poolLabels = $pools->keyBy('id')->map(function($pool) {
             return $pool->title . ' - ' . ($pool->deposit_fixed ?
                 $this->localeService->formatMoney($pool->amount) :

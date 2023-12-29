@@ -7,7 +7,6 @@ use App\Ajax\Web\Planning\Subscription;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Planning\SessionService;
 
 use function intval;
 use function trans;
@@ -20,21 +19,6 @@ use function Jaxon\jq;
 class Session extends CallableClass
 {
     /**
-     * @var PoolService
-     */
-    protected PoolService $poolService;
-
-    /**
-     * @var SessionService
-     */
-    public SessionService $sessionService;
-
-    /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
      * @var PoolModel|null
      */
     protected ?PoolModel $pool = null;
@@ -42,17 +26,12 @@ class Session extends CallableClass
     /**
      * The constructor
      *
-     * @param PoolService $poolService
      * @param TenantService $tenantService
-     * @param SessionService $sessionService
+     * @param PoolService $poolService
      */
-    public function __construct(PoolService $poolService, TenantService $tenantService,
-        SessionService $sessionService)
-    {
-        $this->poolService = $poolService;
-        $this->tenantService = $tenantService;
-        $this->sessionService = $sessionService;
-    }
+    public function __construct(protected TenantService $tenantService,
+        protected PoolService $poolService)
+    {}
 
     /**
      * @return void
@@ -93,16 +72,16 @@ class Session extends CallableClass
 
     public function page(int $pageNumber = 0)
     {
-        $sessionCount = $this->sessionService->getSessionCount();
+        $sessionCount = $this->poolService->getPoolSessionCount($this->pool);
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $sessionCount,
             'subscription', 'session.page');
-        $sessions = $this->sessionService->getSessions($pageNumber);
+        $sessions = $this->poolService->getPoolSessions($this->pool, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
 
         $html = $this->render('pages.planning.subscription.session.page')
             ->with('pool', $this->pool)
             ->with('sessions', $sessions)
-            ->with('total', $this->tenantService->countEnabledSessions($this->pool))
+            ->with('total', $this->poolService->getEnabledSessionCount($this->pool))
             ->with('pagination', $pagination);
         $this->response->html('pool-subscription-sessions-page', $html);
 
@@ -118,16 +97,14 @@ class Session extends CallableClass
 
     public function enableSession(int $sessionId)
     {
-        $session = $this->sessionService->getSession($sessionId);
-        $this->sessionService->enableSession($this->pool, $session);
+        $this->poolService->enableSession($this->pool, $sessionId);
 
         return $this->page();
     }
 
     public function disableSession(int $sessionId)
     {
-        $session = $this->sessionService->getSession($sessionId);
-        $this->sessionService->disableSession($this->pool, $session);
+        $this->poolService->disableSession($this->pool, $sessionId);
 
         return $this->page();
     }

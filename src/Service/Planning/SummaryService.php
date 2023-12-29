@@ -16,23 +16,14 @@ class SummaryService
     use ReportTrait;
 
     /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
+     * @param PoolService $poolService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService)
+    public function __construct(protected LocaleService $localeService,
+        protected TenantService $tenantService, PoolService $poolService)
     {
-        $this->localeService = $localeService;
-        $this->tenantService = $tenantService;
+        $this->poolService = $poolService;
     }
 
     /**
@@ -46,7 +37,7 @@ class SummaryService
      */
     public function getReceivables(Pool $pool): array
     {
-        $sessions = $this->tenantService->getSessions();
+        $sessions = $this->poolService->getEnabledSessions($pool);
         $subscriptions = $pool->subscriptions()->with(['member'])->get();
         $figures = new stdClass();
         $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
@@ -63,8 +54,10 @@ class SummaryService
      */
     public function getPayables(Pool $pool): array
     {
-        $sessions = $this->_getSessions($pool, ['payables.subscription']);
-        $subscriptions = $pool->subscriptions()->with(['payable', 'payable.session', 'member'])->get();
+        $sessions = $this->getEnabledSessions($pool, ['payables.subscription']);
+        $subscriptions = $pool->subscriptions()
+            ->with(['payable', 'payable.session', 'member'])
+            ->get();
 
         $figures = new stdClass();
         // Expected figures only for pools with fixed deposit amount

@@ -4,10 +4,12 @@ namespace App\Ajax\Web\Meeting\Credit;
 
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Meeting\Cash\Disbursement;
-use Siak\Tontine\Service\Meeting\Credit\LoanService;
-use Siak\Tontine\Service\Tontine\FundService;
-use Siak\Tontine\Validation\Meeting\LoanValidator;
 use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Meeting\Credit\LoanService;
+use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Tontine\FundService;
+use Siak\Tontine\Service\Tontine\MemberService;
+use Siak\Tontine\Validation\Meeting\LoanValidator;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
@@ -25,11 +27,6 @@ class Loan extends CallableClass
     protected FundService $fundService;
 
     /**
-     * @var LoanService
-     */
-    protected LoanService $loanService;
-
-    /**
      * @var LoanValidator
      */
     protected LoanValidator $validator;
@@ -42,12 +39,13 @@ class Loan extends CallableClass
     /**
      * The constructor
      *
+     * @param SessionService $sessionService
      * @param LoanService $loanService
+     * @param MemberService $memberService
      */
-    public function __construct(LoanService $loanService)
-    {
-        $this->loanService = $loanService;
-    }
+    public function __construct(protected SessionService $sessionService,
+        protected LoanService $loanService, protected MemberService $memberService)
+    {}
 
     /**
      * @return void
@@ -55,7 +53,7 @@ class Loan extends CallableClass
     protected function getSession()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->loanService->getSession($sessionId);
+        $this->session = $this->sessionService->getSession($sessionId);
     }
 
     /**
@@ -111,13 +109,12 @@ class Loan extends CallableClass
         }
 
         $amountAvailable = $this->loanService->getAmountAvailableValue($this->session);
-        $members = $this->loanService->getMembers();
         $title = trans('meeting.loan.titles.add');
         $content = $this->render('pages.meeting.loan.add', [
-            'members' => $members,
             'amountAvailable' => $amountAvailable,
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getFundList(),
+            'members' => $this->memberService->getMemberList(),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -146,7 +143,13 @@ class Loan extends CallableClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        $this->loanService->createLoan($this->session, $values);
+        if(!($member = $this->memberService->getMember($values['member'])))
+        {
+            $this->notify->warning(trans('tontine.member.errors.not_found'));
+            return $this->response;
+        }
+
+        $this->loanService->createLoan($member, $this->session, $values);
 
         $this->dialog->hide();
 
@@ -186,6 +189,7 @@ class Loan extends CallableClass
             'loan' => $loan,
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getFundList(),
+            'members' => $this->memberService->getMemberList(),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -226,7 +230,13 @@ class Loan extends CallableClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        $this->loanService->updateLoan($this->session, $loan, $values);
+        if(!($member = $this->memberService->getMember($values['member'])))
+        {
+            $this->notify->warning(trans('tontine.member.errors.not_found'));
+            return $this->response;
+        }
+
+        $this->loanService->updateLoan($member, $loan, $values);
 
         $this->dialog->hide();
         // Refresh the refunds pages

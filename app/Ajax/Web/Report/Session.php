@@ -5,8 +5,10 @@ namespace App\Ajax\Web\Report;
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Tontine\Options;
 use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
 use function count;
@@ -20,10 +22,12 @@ class Session extends CallableClass
     /**
      * @param TenantService $tenantService
      * @param TontineService $tontineService
+     * @param SessionService $sessionService
      * @param ReportService $reportService
      */
     public function __construct(protected TenantService $tenantService,
-        protected TontineService $tontineService, protected ReportService $reportService)
+        protected TontineService $tontineService, protected SessionService $sessionService,
+        protected MemberService $memberService, protected ReportService $reportService)
     {}
 
     /**
@@ -32,13 +36,13 @@ class Session extends CallableClass
     public function home()
     {
         // Don't show the page if there is no session or no member.
-        $sessions = $this->tenantService->getSessions(orderAsc: false)
+        $sessions = $this->sessionService->getRoundSessions(orderAsc: false)
             ->filter(fn($session) => $session->opened || $session->closed);
         if($sessions->count() === 0)
         {
             return $this->response;
         }
-        $members = $this->tontineService->getMembers();
+        $members = $this->memberService->getMemberList();
         if($members->count() === 0)
         {
             return $this->response;
@@ -80,7 +84,7 @@ class Session extends CallableClass
 
     public function showSession(int $sessionId)
     {
-        if(!($session = $this->tenantService->getSession($sessionId)))
+        if(!($session = $this->sessionService->getSession($sessionId)))
         {
             return $this->response;
         }
@@ -90,11 +94,11 @@ class Session extends CallableClass
 
     public function showMember(int $sessionId, int $memberId)
     {
-        if(!($session = $this->tenantService->getSession($sessionId)))
+        if(!($session = $this->sessionService->getSession($sessionId)))
         {
             return $this->response;
         }
-        if(!($member = $this->tontineService->getMember($memberId)))
+        if(!($member = $this->memberService->getMember($memberId)))
         {
             return $this->response;
         }

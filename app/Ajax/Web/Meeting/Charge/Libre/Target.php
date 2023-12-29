@@ -9,6 +9,7 @@ use Siak\Tontine\Model\Charge as ChargeModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\SettlementTarget as TargetModel;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Validation\Meeting\TargetValidator;
 
@@ -27,18 +28,6 @@ class Target extends CallableClass
      * @var LocaleService
      */
     protected LocaleService $localeService;
-
-    /**
-     * @di
-     * @var ChargeService
-     */
-    protected ChargeService $chargeService;
-
-    /**
-     * @di
-     * @var SettlementTargetService
-     */
-    protected SettlementTargetService $targetService;
 
     /**
      * @var TargetValidator
@@ -60,12 +49,21 @@ class Target extends CallableClass
      */
     protected ?TargetModel $target = null;
 
+    /**
+     * @param SettlementTargetService $targetService
+     * @param ChargeService $chargeService
+     * @param SessionService $sessionService
+     */
+    public function __construct(protected SettlementTargetService $targetService,
+        protected ChargeService $chargeService, protected SessionService $sessionService)
+    {}
+
     protected function getTarget()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
         $chargeId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('charge.id');
-        $this->session = $this->chargeService->getSession($sessionId);
+        $this->session = $this->sessionService->getSession($sessionId);
         $this->charge = $this->chargeService->getCharge($chargeId);
         if($this->session !== null && $this->charge !== null)
         {
@@ -200,7 +198,7 @@ class Target extends CallableClass
 
         $formValues['global'] = isset($formValues['global']);
         $values = $this->validator->validateItem($formValues);
-        $deadlineSession = $this->chargeService->getSession($values['deadline']);
+        $deadlineSession = $this->sessionService->getSession($values['deadline']);
 
         $this->targetService->createTarget($this->charge, $this->session,
             $deadlineSession, $values['amount'], $values['global']);
@@ -266,7 +264,7 @@ class Target extends CallableClass
 
         $formValues['global'] = isset($formValues['global']);
         $values = $this->validator->validateItem($formValues);
-        $deadlineSession = $this->chargeService->getSession($values['deadline']);
+        $deadlineSession = $this->sessionService->getSession($values['deadline']);
 
         $this->targetService->updateTarget($this->target, $this->session,
             $deadlineSession, $values['amount'], $values['global']);

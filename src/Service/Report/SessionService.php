@@ -8,14 +8,15 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
+use Siak\Tontine\Service\Meeting\SessionService as MeetingSessionService;
+use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\MemberService;
 
 use function collect;
-use function count;
-use function is_array;
 
 class SessionService
 {
@@ -25,9 +26,12 @@ class SessionService
      * @param BalanceCalculator $balanceCalculator
      * @param TenantService $tenantService
      * @param MemberService $memberService
+     * @param PoolService $poolService
+     * @param MeetingSessionService $sessionService
      */
     public function __construct(private BalanceCalculator $balanceCalculator,
-        private TenantService $tenantService, private MemberService $memberService)
+        private TenantService $tenantService, private MemberService $memberService,
+        private PoolService $poolService, private MeetingSessionService $sessionService)
     {}
 
     /**
@@ -37,7 +41,7 @@ class SessionService
      */
     public function getReceivables(Session $session): Collection
     {
-        return $session->round->pools()
+        return Pool::ofSession($session)
             ->withCount([
                 'subscriptions as total_count' => function($query) use($session) {
                     $query->whereHas('receivables', function($query) use($session) {
@@ -64,7 +68,7 @@ class SessionService
      */
     public function getPayables(Session $session): Collection
     {
-        return $session->round->pools()
+        return Pool::ofSession($session)
             ->withCount([
                 'subscriptions as total_count' => function($query) use($session) {
                     $query->whereHas('payable', function($query) use($session) {
@@ -79,7 +83,7 @@ class SessionService
             ])
             ->get()
             ->each(function($pool) use($session) {
-                $sessionCount = $this->tenantService->countEnabledSessions($pool);
+                $sessionCount = $this->poolService->getEnabledSessionCount($pool);
                 $pool->total_amount = $pool->amount * $pool->total_count * $sessionCount;
                 $pool->paid_amount = $this->balanceCalculator->getPoolRemitmentAmount($pool, $session);
             });
@@ -214,7 +218,7 @@ class SessionService
      */
     public function getTotalCharges(Session $session, ?Member $member = null): Collection
     {
-        $sessionIds = $this->tenantService->getSessionIds($session);
+        $sessionIds = $this->sessionService->getRoundSessionIds($session);
         $settlementFilter = function(Builder $query) use($sessionIds) {
             return $query->select(DB::raw(1))
                 ->from('settlements')

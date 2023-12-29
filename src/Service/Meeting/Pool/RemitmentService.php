@@ -13,71 +13,23 @@ use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Meeting\SummaryService;
+use Siak\Tontine\Service\Planning\PoolService;
 
 use function trans;
 
 class RemitmentService
 {
     /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
-     * @var SummaryService
-     */
-    protected SummaryService $summaryService;
-
-    /**
-     * @var BalanceCalculator
-     */
-    protected BalanceCalculator $balanceCalculator;
-
-    /**
+     * @param BalanceCalculator $balanceCalculator
      * @param LocaleService $localeService
      * @param TenantService $tenantService
+     * @param PoolService $poolService
      * @param SummaryService $summaryService
-     * @param BalanceCalculator $balanceCalculator
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService,
-        SummaryService $summaryService, BalanceCalculator $balanceCalculator)
-    {
-        $this->localeService = $localeService;
-        $this->tenantService = $tenantService;
-        $this->summaryService = $summaryService;
-        $this->balanceCalculator = $balanceCalculator;
-    }
-
-    /**
-     * Get a single session.
-     *
-     * @param int $sessionId    The session id
-     *
-     * @return Session|null
-     */
-    public function getSession(int $sessionId): ?Session
-    {
-        return $this->tenantService->getSession($sessionId);
-    }
-
-    /**
-     * Get a single pool.
-     *
-     * @param int $poolId    The pool id
-     *
-     * @return Pool|null
-     */
-    public function getPool(int $poolId): ?Pool
-    {
-        return $this->tenantService->round()->pools()
-            ->with(['subscriptions.payable.remitment'])
-            ->find($poolId);
-    }
+    public function __construct(private BalanceCalculator $balanceCalculator,
+        private LocaleService $localeService, private TenantService $tenantService,
+        private PoolService $poolService, private SummaryService $summaryService)
+    {}
 
     /**
      * @param Pool $pool
@@ -128,7 +80,7 @@ class RemitmentService
         $remitmentCount = $this->summaryService->getSessionRemitmentCount($pool, $session);
         $emptyPayable = (object)[
             'id' => 0,
-            'amount' => $pool->amount * $this->tenantService->countEnabledSessions($pool),
+            'amount' => $pool->amount * $this->poolService->getEnabledSessionCount($pool),
             'remitment' => null,
         ];
 

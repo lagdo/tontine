@@ -4,12 +4,11 @@ namespace Siak\Tontine\Service\Planning;
 
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Traits\SessionTrait;
 
 use function intval;
 use function now;
@@ -17,55 +16,13 @@ use function trans;
 
 class SessionService
 {
-    /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
+    use SessionTrait;
 
     /**
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-    }
-
-    /**
-     * Get a paginated list of sessions in the selected round.
-     *
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getSessions(int $page = 0): Collection
-    {
-        return $this->tenantService->round()->sessions()
-            ->orderBy('start_at', 'asc')
-            ->page($page, $this->tenantService->getLimit())
-            ->get();
-    }
-
-    /**
-     * Get the number of sessions in the selected round.
-     *
-     * @return int
-     */
-    public function getSessionCount(): int
-    {
-        return $this->tenantService->round()->sessions()->count();
-    }
-
-    /**
-     * Get a single session.
-     *
-     * @param int $sessionId    The session id
-     *
-     * @return Session|null
-     */
-    public function getSession(int $sessionId): ?Session
-    {
-        return $this->tenantService->round()->sessions()->find($sessionId);
-    }
+    public function __construct(protected TenantService $tenantService)
+    {}
 
     private function disableSessionOnPools(Session $session)
     {
@@ -182,77 +139,6 @@ class SessionService
         {
             throw new MessageException(trans('tontine.session.errors.delete'));
         }
-    }
-
-    /**
-     * Get a list of members for the dropdown select component.
-     *
-     * @return Collection
-     */
-    public function getMembers(): Collection
-    {
-        return $this->tenantService->tontine()->members()
-            ->orderBy('name', 'asc')->pluck('name', 'id')->prepend('', 0);
-    }
-
-    /**
-     * Enable or disable a session for a pool.
-     *
-     * @param Pool $pool
-     * @param Session $session
-     *
-     * @return void
-     */
-    public function enableSession(Pool $pool, Session $session)
-    {
-        // When the remitments are planned, don't enable or disable a session
-        // if receivables already exist on the pool.
-        // if($pool->remit_planned &&
-        //     $pool->subscriptions()->whereHas('receivables')->count() > 0)
-        // {
-        //     return;
-        // }
-        if($session->enabled($pool))
-        {
-            return;
-        }
-
-        // Enable the session for the pool.
-        $pool->disabledSessions()->detach($session->id);
-    }
-
-    /**
-     * Enable or disable a session for a pool.
-     *
-     * @param Pool $pool
-     * @param Session $session
-     *
-     * @return void
-     */
-    public function disableSession(Pool $pool, Session $session)
-    {
-        // When the remitments are planned, don't enable or disable a session
-        // if receivables already exist on the pool.
-        // if($pool->remit_planned &&
-        //     $pool->subscriptions()->whereHas('receivables')->count() > 0)
-        // {
-        //     return;
-        // }
-        if($session->disabled($pool))
-        {
-            return;
-        }
-
-        // Disable the session for the pool.
-        DB::transaction(function() use($pool, $session) {
-            // If a session was already opened, delete the receivables and payables.
-            // Will fail if any of them is already paid.
-            $subscriptionIds = $pool->subscriptions()->pluck('id');
-            $session->receivables()->whereIn('subscription_id', $subscriptionIds)->delete();
-            $session->payables()->whereIn('subscription_id', $subscriptionIds)->delete();
-            // Disable the session for the pool.
-            $pool->disabledSessions()->attach($session->id);
-        });
     }
 
     /**

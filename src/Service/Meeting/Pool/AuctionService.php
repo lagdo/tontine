@@ -8,41 +8,19 @@ use Illuminate\Support\Facades\Log;
 use Siak\Tontine\Model\Auction;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\TenantService;
 
 class AuctionService
 {
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
      * @param TenantService $tenantService
      * @param LocaleService $localeService
+     * @param SessionService $sessionService
      */
-    public function __construct(TenantService $tenantService, LocaleService $localeService)
-    {
-        $this->tenantService = $tenantService;
-        $this->localeService = $localeService;
-    }
-
-    /**
-     * Get a single session.
-     *
-     * @param int $sessionId    The session id
-     *
-     * @return Session|null
-     */
-    public function getSession(int $sessionId): ?Session
-    {
-        return $this->tenantService->getSession($sessionId);
-    }
+    public function __construct(private TenantService $tenantService,
+        private LocaleService $localeService, private SessionService $sessionService)
+    {}
 
     /**
      * @param int $sessionId
@@ -96,9 +74,7 @@ class AuctionService
      */
     public function getAuctionCount(Session $session, ?bool $onlyPaid = null): int
     {
-        $prevSessions = $this->tenantService->round()->sessions()
-            ->where('start_at', '<', $session->start_at)->pluck('id');
-
+        $prevSessions = $this->sessionService->getRoundSessionIds($session, false);
         return $this->getQuery($session->id, $prevSessions, $onlyPaid)->count();
     }
 
@@ -113,9 +89,7 @@ class AuctionService
      */
     public function getAuctions(Session $session, ?bool $onlyPaid, int $page = 0): Collection
     {
-        $prevSessions = $this->tenantService->round()->sessions()
-            ->where('start_at', '<', $session->start_at)->pluck('id');
-
+        $prevSessions = $this->sessionService->getRoundSessionIds($session, false);
         return $this->getQuery($session->id, $prevSessions, $onlyPaid)
             ->page($page, $this->tenantService->getLimit())
             ->with(['remitment.payable.session', 'remitment.payable.subscription.member'])
@@ -138,7 +112,8 @@ class AuctionService
     public function toggleAuctionPayment(Session $session, int $auctionId)
     {
         $prevSessions = $this->tenantService->round()->sessions()
-            ->where('start_at', '<', $session->start_at)->pluck('id');
+            ->whereDate('start_at', '<', $session->start_at->format('Y-m-d'))
+            ->pluck('id');
         $auction = $this->getQuery($session->id, $prevSessions)->find($auctionId);
         if(($auction))
         {

@@ -4,10 +4,11 @@ namespace App\Ajax\Web\Meeting\Saving;
 
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Report\Session\Profit;
+use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\ClosingValidator;
-use Siak\Tontine\Model\Session as SessionModel;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
@@ -32,11 +33,12 @@ class Closing extends CallableClass
     /**
      * The constructor
      *
+     * @param SessionService $sessionService
      * @param SavingService $savingService
      * @param FundService $fundService
      */
-    public function __construct(protected SavingService $savingService,
-        protected FundService $fundService)
+    public function __construct(protected SessionService $sessionService,
+        protected SavingService $savingService, protected FundService $fundService)
     {}
 
     /**
@@ -45,7 +47,7 @@ class Closing extends CallableClass
     protected function getSession()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->savingService->getSession($sessionId);
+        $this->session = $this->sessionService->getSession($sessionId);
     }
 
     /**

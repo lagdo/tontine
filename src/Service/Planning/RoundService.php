@@ -12,46 +12,12 @@ use function collect;
 class RoundService
 {
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
-     * @var PoolService
-     */
-    protected PoolService $poolService;
-
-    /**
      * @param TenantService $tenantService
      * @param PoolService $poolService
      */
-    public function __construct(TenantService $tenantService, PoolService $poolService)
-    {
-        $this->tenantService = $tenantService;
-        $this->poolService = $poolService;
-    }
-
-    /**
-     * Get the first tontine.
-     *
-     * @return Tontine|null
-     */
-    public function getFirstTontine(): ?Tontine
-    {
-        return $this->tenantService->user()->tontines()->first();
-    }
-
-    /**
-     * Get a single tontine.
-     *
-     * @param int $tontineId    The tontine id
-     *
-     * @return Tontine|null
-     */
-    public function getTontine(int $tontineId): ?Tontine
-    {
-        return $this->tenantService->user()->tontines()->find($tontineId);
-    }
+    public function __construct(protected TenantService $tenantService,
+        protected PoolService $poolService)
+    {}
 
     /**
      * Get a paginated list of rounds in the selected tontine.

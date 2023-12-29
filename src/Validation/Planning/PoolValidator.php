@@ -37,7 +37,6 @@ class PoolValidator extends AbstractValidator
             'properties.deposit' => 'required|array:fixed',
             'properties.deposit.fixed' => 'required|boolean',
             'properties.remit' => 'required|array:fixed,planned,auction,lendable',
-            'properties.remit.fixed' => 'required|boolean',
             'properties.remit.planned' => 'required|boolean',
             'properties.remit.auction' => 'required|boolean',
             'properties.remit.lendable' => 'required|boolean',

@@ -3,8 +3,9 @@
 namespace App\Ajax\Web\Meeting\Pool;
 
 use App\Ajax\CallableClass;
-use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Meeting\Pool\PoolService;
+use Siak\Tontine\Service\Meeting\SessionService;
 
 use function Jaxon\jq;
 
@@ -15,11 +16,6 @@ use function Jaxon\jq;
 class Deposit extends CallableClass
 {
     /**
-     * @var PoolService
-     */
-    protected PoolService $poolService;
-
-    /**
      * @var SessionModel|null
      */
     protected ?SessionModel $session;
@@ -27,12 +23,12 @@ class Deposit extends CallableClass
     /**
      * The constructor
      *
+     * @param SessionService $sessionService
      * @param PoolService $poolService
      */
-    public function __construct(PoolService $poolService)
-    {
-        $this->poolService = $poolService;
-    }
+    public function __construct(protected SessionService $sessionService,
+        protected PoolService $poolService)
+    {}
 
     /**
      * @return void
@@ -40,7 +36,7 @@ class Deposit extends CallableClass
     protected function getSession()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->poolService->getSession($sessionId);
+        $this->session = $this->sessionService->getSession($sessionId);
     }
 
     /**

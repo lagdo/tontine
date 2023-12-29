@@ -14,7 +14,6 @@ use Siak\Tontine\Service\TenantService;
 use function array_keys;
 use function count;
 use function gmp_gcd;
-use function in_array;
 
 class ProfitService
 {
@@ -34,36 +33,38 @@ class ProfitService
      *
      * @return Collection
      */
-    private function getSessions(Session $currentSession, int $fundId): Collection
+    public function getFundSessions(Session $currentSession, int $fundId): Collection
     {
-        // All the previous sessions, including the current
-        $sessions = $this->tenantService->tontine()->sessions()
-            ->orderBy('sessions.start_at')
-            ->where('sessions.start_at', '<=', $currentSession->start_at)
-            ->get();
-
+        $lastSessionDate = $currentSession->start_at->format('Y-m-d');
         // The closing sessions ids
         $closingSessionIds = array_keys($this->savingService->getFundClosings($fundId));
         if(count($closingSessionIds) === 0)
         {
             // No closing session yet
-            return $sessions;
+            return $this->tenantService->tontine()->sessions()
+                ->whereDate('sessions.start_at', '<=', $lastSessionDate)->get();
         }
         // The previous closing sessions
-        $closingSessions = $sessions->filter(fn($session) =>
-            $session->id !== $currentSession->id && in_array($session->id, $closingSessionIds));
+        $closingSessions = $this->tenantService->tontine()->sessions()
+            ->where('sessions.id', '!=', $currentSession->id)
+            ->whereIn('sessions.id', $closingSessionIds)
+            ->whereDate('sessions.start_at', '<', $lastSessionDate)
+            ->orderByDesc('sessions.start_at')
+            ->get();
         if($closingSessions->count() === 0)
         {
             // All the closing sessions are after the current session.
-            return $sessions;
+            return $this->tenantService->tontine()->sessions()
+                ->whereDate('sessions.start_at', '<=', $lastSessionDate)->get();
         }
 
         // The most recent previous closing session
-        $prevClosingSession = $closingSessions->last();
+        $firstSessionDate = $closingSessions->last()->start_at->format('Y-m-d');
         // Return all the sessions after the most recent previous closing session
-        return $sessions->filter(function($session) use($prevClosingSession) {
-            return $session->start_at > $prevClosingSession->start_at;
-        });
+        return $this->tenantService->tontine()->sessions()
+            ->whereDate('sessions.start_at', '<=', $lastSessionDate)
+            ->whereDate('sessions.start_at', '>', $firstSessionDate)
+            ->get();
     }
 
     /**
@@ -135,7 +136,7 @@ class ProfitService
      */
     public function getDistributions(Session $session, int $fundId, int $profitAmount): Collection
     {
-        $sessions = $this->getSessions($session, $fundId);
+        $sessions = $this->getFundSessions($session, $fundId);
         // Get the savings to be rewarded
         $query = Saving::select('savings.*')
             ->join('members', 'members.id', '=', 'savings.member_id')
@@ -238,7 +239,7 @@ class ProfitService
     public function getSavingAmounts(Session $session, int $fundId): array
     {
         // Get the ids of all the sessions until the current one.
-        $sessionIds = $this->getSessions($session, $fundId)->pluck('id');
+        $sessionIds = $this->getFundSessions($session, $fundId)->pluck('id');
         return [
             'saving' => $this->getSavingAmount($sessionIds, $fundId),
             'refund' => $this->getRefundAmount($sessionIds, $fundId),

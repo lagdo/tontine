@@ -19,44 +19,13 @@ use function trim;
 class DisbursementService
 {
     /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
-     * @var BalanceCalculator
-     */
-    protected BalanceCalculator $balanceCalculator;
-
-    /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param BalanceCalculator $balanceCalculator
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService,
-        BalanceCalculator $balanceCalculator)
-    {
-        $this->localeService = $localeService;
-        $this->tenantService = $tenantService;
-        $this->balanceCalculator = $balanceCalculator;
-    }
-
-    /**
-     * Get a single session.
-     *
-     * @param int $sessionId    The session id
-     *
-     * @return Session|null
-     */
-    public function getSession(int $sessionId): ?Session
-    {
-        return $this->tenantService->getSession($sessionId);
-    }
+    public function __construct(protected LocaleService $localeService,
+        protected TenantService $tenantService, protected BalanceCalculator $balanceCalculator)
+    {}
 
     /**
      * Get a list of members for the dropdown select component.
@@ -78,7 +47,7 @@ class DisbursementService
      */
     public function getMember(int $memberId): ?Member
     {
-        return $this->tenantService->tontine()->members()->find($memberId);
+        return $this->tenantService->tontine()->members()->active()->find($memberId);
     }
 
     /**

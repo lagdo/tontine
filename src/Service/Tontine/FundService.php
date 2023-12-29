@@ -14,9 +14,7 @@ class FundService
      * @param TenantService $tenantService
      */
     public function __construct(protected TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-    }
+    {}
 
     /**
      * Get a list of funds for the dropdown select component.

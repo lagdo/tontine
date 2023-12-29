@@ -9,14 +9,11 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Traits\PoolTrait;
 
 use function trans;
 
 class PoolService
 {
-    use PoolTrait;
-
     /**
      * @param TenantService $tenantService
      */
@@ -28,12 +25,11 @@ class PoolService
      */
     private function getQuery(): Builder
     {
-        $round = $this->tenantService->round();
-        return $this->getPoolsQuery($round, $round->start_at, $round->end_at);
+        return Pool::ofRound($this->tenantService->round());
     }
 
     /**
-     * Get a paginated list of pools in the selected round.
+     * Get a paginated list of pools.
      *
      * @param int $page
      *
@@ -47,7 +43,7 @@ class PoolService
     }
 
     /**
-     * Get the number of pools in the selected round.
+     * Get the number of pools.
      *
      * @return int
      */
@@ -65,7 +61,17 @@ class PoolService
      */
     public function getPool(int $poolId): ?Pool
     {
-        return $this->tenantService->getPool($poolId);
+        return $this->getQuery()->find($poolId);
+    }
+
+    /**
+     * Get the pools in the current round.
+     *
+     * @return Collection
+     */
+    public function getRoundPools(): Collection
+    {
+        return $this->tenantService->round()->pools()->get();
     }
 
     /**
@@ -132,5 +138,144 @@ class PoolService
         return Pool::factory()->count($count)->make([
             'round_id' => $this->tenantService->round(),
         ]);
+    }
+
+    /**
+     * Save the pool round.
+     *
+     * @param Pool $pool
+     * @param array $values
+     *
+     * @return void
+     */
+    public function saveRound(Pool $pool, array $values)
+    {
+        $pool->pool_round()->updateOrCreate([], $values);
+    }
+
+    /**
+     * Delete the pool round.
+     *
+     * @param Pool $pool
+     *
+     * @return void
+     */
+    public function deleteRound(Pool $pool)
+    {
+        $pool->pool_round()->delete();
+    }
+
+    /**
+     * Get a paginated list of sessions.
+     *
+     * @param Pool $pool
+     * @param int $page
+     *
+     * @return Collection
+     */
+    public function getPoolSessions(Pool $pool, int $page = 0): Collection
+    {
+        return $pool->sessions()
+            ->orderBy('start_at', 'asc')
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
+    }
+
+    /**
+     * Get the number of sessions.
+     *
+     * @param Pool $pool
+     *
+     * @return int
+     */
+    public function getPoolSessionCount(Pool $pool): int
+    {
+        return $pool->sessions()->count();
+    }
+
+    /**
+     * Enable or disable a session for a pool.
+     *
+     * @param Pool $pool
+     * @param int $sessionId    The session id
+     *
+     * @return void
+     */
+    public function enableSession(Pool $pool, int $sessionId)
+    {
+        // When the remitments are planned, don't enable or disable a session
+        // if receivables already exist on the pool.
+        // if($pool->remit_planned &&
+        //     $pool->subscriptions()->whereHas('receivables')->count() > 0)
+        // {
+        //     return;
+        // }
+        $session = $pool->sessions()->find($sessionId);
+        if(!$session || $session->enabled($pool))
+        {
+            return;
+        }
+
+        // Enable the session for the pool.
+        $pool->disabledSessions()->detach($session->id);
+    }
+
+    /**
+     * Enable or disable a session for a pool.
+     *
+     * @param Pool $pool
+     * @param int $sessionId    The session id
+     *
+     * @return void
+     */
+    public function disableSession(Pool $pool, int $sessionId)
+    {
+        // When the remitments are planned, don't enable or disable a session
+        // if receivables already exist on the pool.
+        // if($pool->remit_planned &&
+        //     $pool->subscriptions()->whereHas('receivables')->count() > 0)
+        // {
+        //     return;
+        // }
+        $session = $pool->sessions()->find($sessionId);
+        if(!$session || $session->disabled($pool))
+        {
+            return;
+        }
+
+        // Disable the session for the pool.
+        DB::transaction(function() use($pool, $session) {
+            // If a session was already opened, delete the receivables and payables.
+            // Will fail if any of them is already paid.
+            $subscriptionIds = $pool->subscriptions()->pluck('id');
+            $session->receivables()->whereIn('subscription_id', $subscriptionIds)->delete();
+            $session->payables()->whereIn('subscription_id', $subscriptionIds)->delete();
+            // Disable the session for the pool.
+            $pool->disabledSessions()->attach($session->id);
+        });
+    }
+
+    /**
+     * Get the sessions enabled for a pool.
+     *
+     * @param Pool $pool
+     *
+     * @return Collection
+     */
+    public function getEnabledSessions(Pool $pool): Collection
+    {
+        return $pool->enabledSessions()->get();
+    }
+
+    /**
+     * Get the number of sessions enabled for a pool.
+     *
+     * @param Pool $pool
+     *
+     * @return int
+     */
+    public function getEnabledSessionCount(Pool $pool): int
+    {
+        return $pool->enabledSessions()->count();
     }
 }

@@ -5,6 +5,7 @@ namespace App\Ajax\Web\Report;
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Tontine\Options;
 use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Report\RoundService;
@@ -15,29 +16,10 @@ use Siak\Tontine\Service\TenantService;
  */
 class Round extends CallableClass
 {
-    /**
-     * @di
-     * @var SummaryService
-     */
-    protected SummaryService $summaryService;
-
-    /**
-     * @di
-     * @var SubscriptionService
-     */
-    protected SubscriptionService $subscriptionService;
-
-    /**
-     * @di
-     * @var RoundService
-     */
-    protected RoundService $roundService;
-
-    /**
-     * @di
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
+    public function __construct(protected TenantService $tenantService,
+        protected SessionService $sessionService, protected SummaryService $summaryService,
+        protected SubscriptionService $subscriptionService, protected RoundService $roundService)
+    {}
 
     /**
      * @after hideMenuOnMobile
@@ -69,12 +51,10 @@ class Round extends CallableClass
 
     private function amounts()
     {
-        $sessions = $this->tenantService->getSessions();
+        $sessions = $this->sessionService->getRoundSessions();
         // Sessions with data
-        $sessionIds = $sessions->filter(function($session) {
-            return $session->status === SessionModel::STATUS_CLOSED ||
-                $session->status === SessionModel::STATUS_OPENED;
-        })->pluck('id');
+        $sessionIds = $sessions->filter(fn($session) => $session->opened || $session->closed)
+            ->pluck('id');
         $html = $this->render('pages.report.round.amounts', [
             'sessions' => $sessions,
             'auctions' => $this->roundService->getAuctionAmounts($sessionIds),

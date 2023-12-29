@@ -101,7 +101,6 @@ class Session extends CallableClass
         $html = $this->render('pages.meeting.session.page')
             ->with('sessions', $sessions)
             ->with('statuses', $statuses)
-            ->with('members', $this->tontineService->getMembers())
             ->with('pagination', $pagination);
         $this->response->html('content-page', $html);
 

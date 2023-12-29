@@ -6,10 +6,12 @@ use App\Ajax\CallableClass;
 use App\Ajax\Web\Meeting\Cash\Disbursement;
 use App\Ajax\Web\Meeting\Credit\Loan;
 use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
-use Siak\Tontine\Service\Meeting\Charge\BillService;
-use Siak\Tontine\Service\Meeting\Charge\SettlementService;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Charge as ChargeModel;
+use Siak\Tontine\Service\Meeting\Charge\BillService;
+use Siak\Tontine\Service\Meeting\Charge\SettlementService;
+use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Tontine\ChargeService;
 
 use function Jaxon\jq;
 use function trans;
@@ -22,18 +24,6 @@ use function trim;
 class Settlement extends CallableClass
 {
     /**
-     * @di
-     * @var BillService
-     */
-    protected BillService $billService;
-
-    /**
-     * @di
-     * @var SettlementService
-     */
-    protected SettlementService $settlementService;
-
-    /**
      * @var SessionModel|null
      */
     protected ?SessionModel $session;
@@ -43,13 +33,26 @@ class Settlement extends CallableClass
      */
     protected ?ChargeModel $charge;
 
+    /**
+     * The constructor
+     *
+     * @param SettlementService $settlementService
+     * @param SessionService $sessionService
+     * @param ChargeService $chargeService
+     * @param BillService $billService
+     */
+    public function __construct(protected SettlementService $settlementService,
+        protected SessionService $sessionService, protected ChargeService $chargeService,
+        protected BillService $billService)
+    {}
+
     protected function getCharge()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
         $chargeId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('fee.libre.id');
-        $this->session = $this->settlementService->getSession($sessionId);
-        $this->charge = $this->settlementService->getCharge($chargeId);
+        $this->session = $this->sessionService->getSession($sessionId);
+        $this->charge = $this->chargeService->getCharge($chargeId);
     }
 
     /**

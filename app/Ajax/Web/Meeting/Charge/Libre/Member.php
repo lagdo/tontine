@@ -8,6 +8,7 @@ use Siak\Tontine\Model\Charge as ChargeModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 
 use function filter_var;
@@ -29,21 +30,20 @@ class Member extends CallableClass
     protected LocaleService $localeService;
 
     /**
-     * @di
-     * @var ChargeService
-     */
-    protected ChargeService $chargeService;
-
-    /**
-     * @di
-     * @var LibreFeeService
-     */
-    protected LibreFeeService $feeService;
-
-    /**
      * @var SessionModel|null
      */
     protected ?SessionModel $session;
+
+    /**
+     * The constructor
+     *
+     * @param SessionService $sessionService
+     * @param ChargeService $chargeService
+     * @param LibreFeeService $feeService
+     */
+    public function __construct(protected SessionService $sessionService,
+        protected ChargeService $chargeService, protected LibreFeeService $feeService)
+    {}
 
     /**
      * @var ChargeModel|null
@@ -55,7 +55,7 @@ class Member extends CallableClass
         $sessionId = $this->bag('meeting')->get('session.id');
         $chargeId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('charge.id');
-        $this->session = $this->chargeService->getSession($sessionId);
+        $this->session = $this->sessionService->getSession($sessionId);
         $this->charge = $this->chargeService->getCharge($chargeId);
     }
 

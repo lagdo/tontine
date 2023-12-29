@@ -11,17 +11,10 @@ use function pow;
 class DebtCalculator
 {
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-    }
+    public function __construct(protected TenantService $tenantService)
+    {}
 
     /**
      * Get the amount due of a given debt.
@@ -66,12 +59,9 @@ class DebtCalculator
      */
     private function getSessionCount(Session $fromSession, Session $toSession): int
     {
-        // Count the sessions.
-        return $this->tenantService->round()->sessions
-            ->filter(function($session) use($fromSession, $toSession) {
-                return $session->start_at > $fromSession->start_at &&
-                    $session->start_at <= $toSession->start_at;
-            })
+        return $this->tenantService->tontine()->sessions()
+            ->whereDate('start_at', '>', $fromSession->start_at->format('Y-m-d'))
+            ->whereDate('start_at', '<=', $toSession->start_at->format('Y-m-d'))
             ->count();
     }
 

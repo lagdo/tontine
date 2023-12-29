@@ -16,41 +16,10 @@ use function trans;
 class DepositService
 {
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-    }
-
-    /**
-     * Get a single session.
-     *
-     * @param int $sessionId    The session id
-     *
-     * @return Session|null
-     */
-    public function getSession(int $sessionId): ?Session
-    {
-        return $this->tenantService->getSession($sessionId);
-    }
-
-    /**
-     * Get a single pool.
-     *
-     * @param int $poolId    The pool id
-     *
-     * @return Pool|null
-     */
-    public function getPool(int $poolId): ?Pool
-    {
-        return $this->tenantService->round()->pools()->find($poolId);
-    }
+    public function __construct(private TenantService $tenantService)
+    {}
 
     /**
      * @param Pool $pool
@@ -60,7 +29,8 @@ class DepositService
      */
     private function getQuery(Pool $pool, Session $session)
     {
-        return $session->receivables()->whereIn('subscription_id', $pool->subscriptions()->pluck('id'));
+        return $session->receivables()
+            ->whereIn('subscription_id', $pool->subscriptions()->pluck('id'));
     }
 
     /**

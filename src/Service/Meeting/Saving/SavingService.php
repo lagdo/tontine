@@ -4,7 +4,6 @@ namespace Siak\Tontine\Service\Meeting\Saving;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Saving;
 use Siak\Tontine\Model\Member;
@@ -25,41 +24,6 @@ class SavingService
     public function __construct(private LocaleService $localeService,
         private TenantService $tenantService, private FundService $fundService)
     {}
-
-    /**
-     * Get a single session.
-     *
-     * @param int $sessionId    The session id
-     *
-     * @return Session|null
-     */
-    public function getSession(int $sessionId): ?Session
-    {
-        return $this->tenantService->getSession($sessionId);
-    }
-
-    /**
-     * Get a list of members for the dropdown select component.
-     *
-     * @return Collection
-     */
-    public function getMembers(): Collection
-    {
-        return $this->tenantService->tontine()->members()
-            ->orderBy('name', 'asc')->pluck('name', 'id');
-    }
-
-    /**
-     * Find a member.
-     *
-     * @param int $memberId
-     *
-     * @return Member|null
-     */
-    public function getMember(int $memberId): ?Member
-    {
-        return $this->tenantService->tontine()->members()->find($memberId);
-    }
 
     /**
      * Get the savings.
@@ -102,28 +66,25 @@ class SavingService
     /**
      * Create a saving.
      *
+     * @param Member $member
      * @param Session $session The session
      * @param array $values
      *
      * @return void
      */
-    public function createSaving(Session $session, array $values): void
+    public function createSaving(Member $member, Session $session, array $values): void
     {
-        $fund = $values['fund_id'] === 0 ? null :
-            $this->fundService->getFund($values['fund_id']);
-        $member = $this->getMember($values['member']);
-        if(!$member)
-        {
-            throw new MessageException(trans('tontine.member.errors.not_found'));
-        }
-
         $saving = new Saving();
         $saving->amount = $values['amount'];
         $saving->member()->associate($member);
         $saving->session()->associate($session);
-        if($fund !== null)
+        if($values['fund_id'] !== 0)
         {
-            $saving->fund()->associate($fund);
+            $fund = $this->fundService->getFund($values['fund_id']);
+            if($fund !== null)
+            {
+                $saving->fund()->associate($fund);
+            }
         }
         $saving->save();
     }
@@ -131,20 +92,14 @@ class SavingService
     /**
      * Update a saving.
      *
+     * @param Member $member
      * @param Session $session The session
      * @param array $values
      *
      * @return void
      */
-    public function updateSaving(Session $session, int $savingId, array $values): void
+    public function updateSaving(Member $member, Session $session, int $savingId, array $values): void
     {
-        $fund = $values['fund_id'] === 0 ? null :
-            $this->fundService->getFund($values['fund_id']);
-        $member = $this->getMember($values['member']);
-        if(!$member)
-        {
-            throw new MessageException(trans('tontine.member.errors.not_found'));
-        }
         $saving = $session->savings()->find($savingId);
         if(!$saving)
         {
@@ -153,9 +108,13 @@ class SavingService
 
         $saving->amount = $values['amount'];
         $saving->member()->associate($member);
-        if($fund !== null)
+        if($values['fund_id'] !== 0)
         {
-            $saving->fund()->associate($fund);
+            $fund = $this->fundService->getFund($values['fund_id']);
+            if($fund !== null)
+            {
+                $saving->fund()->associate($fund);
+            }
         }
         else
         {

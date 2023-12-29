@@ -16,39 +16,10 @@ class ChargeService
     use EventTrait;
 
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-    }
-
-    /**
-     * Get the current tontine.
-     *
-     * @return Tontine|null
-     */
-    public function getTontine(): ?Tontine
-    {
-        return $this->tenantService->tontine();
-    }
-
-    /**
-     * Get a single session.
-     *
-     * @param int $sessionId    The session id
-     *
-     * @return Session|null
-     */
-    public function getSession(int $sessionId): ?Session
-    {
-        return $this->tenantService->getSession($sessionId);
-    }
+    public function __construct(protected TenantService $tenantService)
+    {}
 
     /**
      * Get a paginated list of charges.

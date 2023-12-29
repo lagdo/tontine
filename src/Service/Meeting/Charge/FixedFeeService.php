@@ -6,41 +6,19 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\TenantService;
 
 class FixedFeeService
 {
     /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
+     * @param SessionService $sessionService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService)
-    {
-        $this->localeService = $localeService;
-        $this->tenantService = $tenantService;
-    }
-
-    /**
-     * Get a single session.
-     *
-     * @param int $sessionId    The session id
-     *
-     * @return Session|null
-     */
-    public function getSession(int $sessionId): ?Session
-    {
-        return $this->tenantService->getSession($sessionId);
-    }
+    public function __construct(protected LocaleService $localeService,
+        protected TenantService $tenantService, protected SessionService $sessionService)
+    {}
 
     /**
      * Get a paginated list of fees.
@@ -104,7 +82,8 @@ class FixedFeeService
     {
         // Count the session bills.
         $sessionIds = $this->tenantService->round()->sessions()
-            ->where('start_at', '<', $session->start_at)->pluck('id');
+            ->whereDate('start_at', '<', $session->start_at->format('Y-m-d'))
+            ->pluck('id');
         $sessionQuery = DB::table('session_bills')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'session_bills.bill_id', '=', 'bills.id')
@@ -165,8 +144,7 @@ class FixedFeeService
     private function getPreviousSessionsSettlements(Session $session): Collection
     {
         // The previous sessions ids.
-        $sessionIds = $this->tenantService->sessions()
-            ->where('start_at', '<', $session->start_at)->pluck('id');
+        $sessionIds = $this->sessionService->getRoundSessionIds($session, false);
         // Count the session bills settlements (can be settled at another session).
         $sessionQuery = DB::table('settlements')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))

@@ -7,6 +7,7 @@ use App\Ajax\Web\Meeting\Cash\Disbursement;
 use App\Ajax\Web\Meeting\Credit\Loan;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 use function Jaxon\jq;
@@ -32,9 +33,11 @@ class Auction extends CallableClass
     /**
      * The constructor
      *
+     * @param SessionService $sessionService
      * @param AuctionService $auctionService
      */
-    public function __construct(private AuctionService $auctionService)
+    public function __construct(private SessionService $sessionService,
+        private AuctionService $auctionService)
     {}
 
     /**
@@ -43,7 +46,7 @@ class Auction extends CallableClass
     protected function getSession()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->auctionService->getSession($sessionId);
+        $this->session = $this->sessionService->getSession($sessionId);
     }
 
     public function home()

@@ -11,6 +11,7 @@ use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Validation\Meeting\RemitmentValidator;
 
 use function Jaxon\jq;
@@ -23,16 +24,6 @@ use function trans;
  */
 class Pool extends CallableClass
 {
-    /**
-     * @var RemitmentService
-     */
-    protected RemitmentService $remitmentService;
-
-    /**
-     * @var PoolService
-     */
-    protected PoolService $poolService;
-
     /**
      * @var BalanceCalculator
      */
@@ -56,14 +47,13 @@ class Pool extends CallableClass
     /**
      * The constructor
      *
+     * @param SessionService $sessionService
      * @param PoolService $poolService
      * @param RemitmentService $remitmentService
      */
-    public function __construct(PoolService $poolService, RemitmentService $remitmentService)
-    {
-        $this->poolService = $poolService;
-        $this->remitmentService = $remitmentService;
-    }
+    public function __construct(protected SessionService $sessionService,
+        protected PoolService $poolService, protected RemitmentService $remitmentService)
+    {}
 
     /**
      * @return void
@@ -71,11 +61,11 @@ class Pool extends CallableClass
     protected function getPool()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->remitmentService->getSession($sessionId);
+        $this->session = $this->sessionService->getSession($sessionId);
 
         $poolId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('pool.id');
-        $this->pool = $this->remitmentService->getPool($poolId);
+        $this->pool = $this->poolService->getPool($poolId);
 
         if(!$this->session || !$this->pool || $this->session->disabled($this->pool))
         {

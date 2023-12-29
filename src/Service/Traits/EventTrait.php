@@ -10,6 +10,7 @@ use Siak\Tontine\Model\RoundBill;
 use Siak\Tontine\Model\SessionBill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Tontine;
@@ -18,8 +19,6 @@ use function now;
 
 trait EventTrait
 {
-    use PoolTrait;
-
     /**
      * @param Charge $charge
      * @param DateTime $today
@@ -209,8 +208,7 @@ trait EventTrait
         };
 
         // Sync the receivables for each subscription on each pool
-        $date = $session->start_at;
-        $pools = $this->getPoolsQuery($session->round, $date, $date)->get();
+        $pools = Pool::ofSession($session)->get();
         foreach($pools as $pool)
         {
             if($session->enabled($pool))

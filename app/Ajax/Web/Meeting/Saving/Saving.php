@@ -5,10 +5,12 @@ namespace App\Ajax\Web\Meeting\Saving;
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Meeting\Cash\Disbursement;
 use App\Ajax\Web\Meeting\Credit\Loan;
-use Siak\Tontine\Service\Meeting\Saving\SavingService;
-use Siak\Tontine\Service\Tontine\FundService;
-use Siak\Tontine\Validation\Meeting\SavingValidator;
 use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Meeting\Saving\SavingService;
+use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Tontine\FundService;
+use Siak\Tontine\Service\Tontine\MemberService;
+use Siak\Tontine\Validation\Meeting\SavingValidator;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
@@ -33,11 +35,14 @@ class Saving extends CallableClass
     /**
      * The constructor
      *
+     * @param SessionService $sessionService
      * @param SavingService $savingService
      * @param FundService $fundService
+     * @param MemberService $memberService
      */
-    public function __construct(protected SavingService $savingService,
-        protected FundService $fundService)
+    public function __construct(protected SessionService $sessionService,
+        protected SavingService $savingService, protected FundService $fundService,
+        protected MemberService $memberService)
     {}
 
     /**
@@ -46,7 +51,7 @@ class Saving extends CallableClass
     protected function getSession()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->savingService->getSession($sessionId);
+        $this->session = $this->sessionService->getSession($sessionId);
     }
 
     /**
@@ -88,10 +93,9 @@ class Saving extends CallableClass
             return $this->response;
         }
 
-        $members = $this->savingService->getMembers();
         $title = trans('meeting.saving.titles.add');
         $content = $this->render('pages.meeting.saving.add', [
-            'members' => $members,
+            'members' => $this->memberService->getMemberList(),
             'funds' => $this->fundService->getFundList(),
         ]);
         $buttons = [[
@@ -120,7 +124,13 @@ class Saving extends CallableClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        $this->savingService->createSaving($this->session, $values);
+        if(!($member = $this->memberService->getMember($values['member'])))
+        {
+            $this->notify->warning(trans('tontine.member.errors.not_found'));
+            return $this->response;
+        }
+
+        $this->savingService->createSaving($member, $this->session, $values);
 
         $this->dialog->hide();
 
@@ -171,7 +181,13 @@ class Saving extends CallableClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        $this->savingService->updateSaving($this->session, $savingId, $values);
+        if(!($member = $this->memberService->getMember($values['member'])))
+        {
+            $this->notify->warning(trans('tontine.member.errors.not_found'));
+            return $this->response;
+        }
+
+        $this->savingService->updateSaving($member, $this->session, $savingId, $values);
 
         $this->dialog->hide();
 

@@ -12,21 +12,22 @@ use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Model\Pool;
+use Siak\Tontine\Service\Meeting\Saving\ProfitService;
+use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Planning\PoolService;
 
 class BalanceCalculator
 {
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
      * @param TenantService $tenantService
+     * @param PoolService $poolService
+     * @param ProfitService $profitService
+     * @param SessionService $sessionService
      */
-    public function __construct(TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-    }
+    public function __construct(protected TenantService $tenantService,
+        protected PoolService $poolService, protected ProfitService $profitService,
+        protected SessionService $sessionService)
+    {}
 
     /**
      * @param Receivable $receivable
@@ -69,7 +70,8 @@ class BalanceCalculator
             ->join('payables', 'remitments.payable_id', '=', 'payables.id')
             ->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
             ->when($withPoolTable, function(Builder $query) {
-                $query->join('pools', 'subscriptions.pool_id', '=', 'pools.id');
+                $query->join('pools', 'subscriptions.pool_id', '=', 'pools.id')
+                    ->join('v_pool_counters', 'v_pool_counters.id', '=', 'pools.id');
             });
     }
 
@@ -85,8 +87,8 @@ class BalanceCalculator
             ->where('receivables.session_id', $session->id)
             ->where('subscriptions.pool_id', $pool->id);
 
-        return $pool->deposit_fixed ?
-            $pool->amount * $query->count() : $query->sum('deposits.amount');
+        return !$pool->deposit_fixed ? $query->sum('deposits.amount') :
+            $pool->amount * $query->count();
     }
 
     /**
@@ -100,7 +102,7 @@ class BalanceCalculator
         $pool = $payable->subscription->pool;
         if($pool->deposit_fixed)
         {
-            return $pool->amount * $this->tenantService->countEnabledSessions($pool);
+            return $pool->amount * $this->poolService->getEnabledSessionCount($pool);
         }
         // Sum the amounts for all deposits
         return $this->getPoolDepositAmount($pool, $session);
@@ -111,8 +113,7 @@ class BalanceCalculator
      */
     private function getRemitmentAmountSqlValue(): string
     {
-        return 'pools.amount * (' . $this->tenantService->getSessions()->count() .
-            ' - (select count(*) from pool_session_disabled where pool_id = pools.id))';
+        return 'v_pool_counters.amount * (v_pool_counters.sessions - v_pool_counters.disabled_sessions)';
     }
 
     /**
@@ -136,12 +137,12 @@ class BalanceCalculator
     }
 
     /**
-     * @param Session $session    The session
+     * @param Collection $sessionIds
      * @param bool $lendable
      *
      * @return int
      */
-    private function depositAmount(Collection $sessionIds, bool $lendable)
+    private function getDepositsAmount(Collection $sessionIds, bool $lendable)
     {
         return $this->getDepositQuery(true)
             ->whereIn('deposits.session_id', $sessionIds)
@@ -152,12 +153,12 @@ class BalanceCalculator
     }
 
     /**
-     * @param Session $session    The session
+     * @param Collection $sessionIds
      * @param bool $lendable
      *
      * @return int
      */
-    private function remitmentAmount(Collection $sessionIds, bool $lendable)
+    private function getRemitmentsAmount(Collection $sessionIds, bool $lendable)
     {
         return
             // Remitment sum for pools with fixed deposits.
@@ -188,11 +189,11 @@ class BalanceCalculator
     }
 
     /**
-     * @param Session $session    The session
+     * @param Collection $sessionIds
      *
      * @return int
      */
-    private function auctionAmount(Collection $sessionIds)
+    private function getAuctionsAmount(Collection $sessionIds)
     {
         return DB::table('auctions')
             ->whereIn('session_id', $sessionIds)
@@ -201,24 +202,12 @@ class BalanceCalculator
     }
 
     /**
-     * @param Session $session    The session
-     *
-     * @return int
-     */
-    private function savingAmount(Collection $sessionIds)
-    {
-        return DB::table('savings')
-            ->whereIn('session_id', $sessionIds)
-            ->sum('amount');
-    }
-
-    /**
-     * @param Session $session    The session
+     * @param Collection $sessionIds
      * @param bool $lendable
      *
      * @return int
      */
-    private function settlementAmount(Collection $sessionIds, bool $lendable)
+    private function getSettlementsAmount(Collection $sessionIds, bool $lendable)
     {
         return DB::table('settlements')
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
@@ -230,57 +219,12 @@ class BalanceCalculator
     }
 
     /**
-     * @param Session $session    The session
-     *
-     * @return int
-     */
-    private function refundAmount(Collection $sessionIds)
-    {
-        return DB::table('refunds')
-            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
-            ->whereIn('refunds.session_id', $sessionIds)
-            ->sum('debts.amount');
-    }
-
-    /**
-     * @param Session $session    The session
-     *
-     * @return int
-     */
-    private function partialRefundAmount(Collection $sessionIds)
-    {
-        // Filter on debts that are not yet refunded.
-        return DB::table('partial_refunds')
-            ->join('debts', 'partial_refunds.debt_id', '=', 'debts.id')
-            ->whereIn('partial_refunds.session_id', $sessionIds)
-            ->whereNotExists(function (Builder $query) {
-                $query->select(DB::raw(1))->from('refunds')
-                    ->whereColumn('refunds.debt_id', 'debts.id');
-            })
-            ->sum('partial_refunds.amount');
-    }
-
-    /**
-     * @param Session $session    The session
-     *
-     * @return int
-     */
-    private function debtAmount(Collection $sessionIds)
-    {
-        return DB::table('debts')
-            ->where('type', Debt::TYPE_PRINCIPAL)
-            ->join('loans', 'debts.loan_id', '=', 'loans.id')
-            ->whereIn('loans.session_id', $sessionIds)
-            ->sum('amount');
-    }
-
-    /**
-     * @param Session $session    The session
+     * @param Collection $sessionIds
      * @param bool $lendable
      *
      * @return int
      */
-    private function disbursementAmount(Collection $sessionIds, bool $lendable)
+    private function getDisbursementsAmount(Collection $sessionIds, bool $lendable)
     {
         return DB::table('disbursements')
             ->whereIn('session_id', $sessionIds)
@@ -296,6 +240,99 @@ class BalanceCalculator
     }
 
     /**
+     * @param Collection $sessionIds
+     * @param int $fundId
+     *
+     * @return int
+     */
+    private function getSavingsAmount(Collection $sessionIds, int $fundId)
+    {
+        return DB::table('savings')
+            ->when($fundId === 0, fn(Builder $query) => $query->whereNull('savings.fund_id'))
+            ->when($fundId !== 0, fn(Builder $query) => $query->where('savings.fund_id', $fundId))
+            ->whereIn('savings.session_id', $sessionIds)
+            ->sum('savings.amount');
+    }
+
+    /**
+     * @param Collection $sessionIds
+     * @param int $fundId
+     *
+     * @return int
+     */
+    private function getRefundsAmount(Collection $sessionIds, int $fundId)
+    {
+        return DB::table('refunds')
+            ->join('debts', 'refunds.debt_id', '=', 'debts.id')
+            ->join('loans', 'debts.loan_id', '=', 'loans.id')
+            ->whereIn('refunds.session_id', $sessionIds)
+            ->when($fundId === 0, fn(Builder $query) => $query->whereNull('loans.fund_id'))
+            ->when($fundId !== 0, fn(Builder $query) => $query->where('loans.fund_id', $fundId))
+            ->sum('debts.amount');
+    }
+
+    /**
+     * @param Collection $sessionIds
+     * @param int $fundId
+     *
+     * @return int
+     */
+    private function getPartialRefundsAmount(Collection $sessionIds, int $fundId)
+    {
+        // Filter on debts that are not yet refunded.
+        return DB::table('partial_refunds')
+            ->join('debts', 'partial_refunds.debt_id', '=', 'debts.id')
+            ->join('loans', 'debts.loan_id', '=', 'loans.id')
+            ->whereIn('partial_refunds.session_id', $sessionIds)
+            ->whereNotExists(function (Builder $query) {
+                $query->select(DB::raw(1))->from('refunds')
+                    ->whereColumn('refunds.debt_id', 'debts.id');
+            })
+            ->when($fundId === 0, fn(Builder $query) => $query->whereNull('loans.fund_id'))
+            ->when($fundId !== 0, fn(Builder $query) => $query->where('loans.fund_id', $fundId))
+            ->sum('partial_refunds.amount');
+    }
+
+    /**
+     * @param Collection $sessionIds
+     * @param int $fundId
+     *
+     * @return int
+     */
+    private function getLoansAmount(Collection $sessionIds, int $fundId)
+    {
+        return DB::table('debts')
+            ->where('type', Debt::TYPE_PRINCIPAL)
+            ->join('loans', 'debts.loan_id', '=', 'loans.id')
+            ->whereIn('loans.session_id', $sessionIds)
+            ->when($fundId === 0, fn(Builder $query) => $query->whereNull('loans.fund_id'))
+            ->when($fundId !== 0, fn(Builder $query) => $query->where('loans.fund_id', $fundId))
+            ->sum('debts.amount');
+    }
+
+    /**
+     * @param Session $session    The session
+     *
+     * @return int
+     */
+    private function getFundsAmount(Session $session)
+    {
+        // Each fund can have a different set of sessions, so we need to loop on all funds.
+        return $this->tenantService->tontine()->funds()->active()->pluck('id')
+            ->prepend(0)
+            ->reduce(function($amount, $fundId) use($session) {
+                $sessionIds = $this->profitService->getFundSessions($session, $fundId)
+                    ->pluck('id');
+
+                return $amount
+                    + $this->getSavingsAmount($sessionIds, $fundId)
+                    + $this->getRefundsAmount($sessionIds, $fundId)
+                    + $this->getPartialRefundsAmount($sessionIds, $fundId)
+                    - $this->getLoansAmount($sessionIds, $fundId);
+            }, 0);
+    }
+
+    /**
      * Get the amount available for loan.
      *
      * @param Session $session    The session
@@ -305,13 +342,14 @@ class BalanceCalculator
     public function getBalanceForLoan(Session $session): int
     {
         // Get the ids of all the sessions until the current one.
-        $sessionIds = $this->tenantService->getSessionIds($session);
+        $sessionIds = $this->sessionService->getRoundSessionIds($session);
 
-        return $this->auctionAmount($sessionIds) + $this->savingAmount($sessionIds) +
-            $this->settlementAmount($sessionIds, true) + $this->refundAmount($sessionIds) +
-            $this->partialRefundAmount($sessionIds) + $this->depositAmount($sessionIds, true) -
-            $this->remitmentAmount($sessionIds, true) - $this->debtAmount($sessionIds) -
-            $this->disbursementAmount($sessionIds, true);
+        return $this->getAuctionsAmount($sessionIds)
+            + $this->getSettlementsAmount($sessionIds, true)
+            + $this->getDepositsAmount($sessionIds, true)
+            - $this->getRemitmentsAmount($sessionIds, true)
+            - $this->getDisbursementsAmount($sessionIds, true)
+            + $this->getFundsAmount($session);
     }
 
     /**
@@ -324,12 +362,49 @@ class BalanceCalculator
     public function getTotalBalance(Session $session): int
     {
         // Get the ids of all the sessions until the current one.
-        $sessionIds = $this->tenantService->getSessionIds($session);
+        $sessionIds = $this->sessionService->getRoundSessionIds($session);
 
-        return $this->auctionAmount($sessionIds) + $this->savingAmount($sessionIds) +
-            $this->settlementAmount($sessionIds, false) + $this->refundAmount($sessionIds) +
-            $this->partialRefundAmount($sessionIds) + $this->depositAmount($sessionIds, false) -
-            $this->remitmentAmount($sessionIds, false) - $this->debtAmount($sessionIds) -
-            $this->disbursementAmount($sessionIds, false);
+        return $this->getAuctionsAmount($sessionIds)
+            + $this->getSettlementsAmount($sessionIds, false)
+            + $this->getDepositsAmount($sessionIds, false)
+            - $this->getRemitmentsAmount($sessionIds, false)
+            - $this->getDisbursementsAmount($sessionIds, false)
+            + $this->getFundsAmount($session);
+    }
+
+    /**
+     * Get the detailed amounts.
+     *
+     * @param Session $session    The session
+     * @param bool $lendable
+     *
+     * @return array<int>
+     */
+    public function getBalances(Session $session, bool $lendable): array
+    {
+        $fundAmounts = $this->tenantService->tontine()->funds()->active()->pluck('id')
+            ->prepend(0)
+            ->reduce(function($amounts, $fundId) use($session) {
+                $sessionIds = $this->profitService->getFundSessions($session, $fundId)->pluck('id');
+
+                return [
+                    'savings' => $amounts['savings'] + $this->getSavingsAmount($sessionIds, $fundId),
+                    'loans' => $amounts['loans'] + $this->getLoansAmount($sessionIds, $fundId),
+                    'refunds' => $amounts['refunds'] + $this->getRefundsAmount($sessionIds, $fundId) +
+                        $this->getPartialRefundsAmount($sessionIds, $fundId),
+                ];
+            }, ['savings' => 0, 'loans' => 0, 'refunds' => 0]);
+
+        // Get the ids of all the sessions until the current one.
+        $sessionIds = $this->sessionService->getRoundSessionIds($session);
+        return [
+            'auctions' => $this->getAuctionsAmount($sessionIds),
+            'settlements' => $this->getSettlementsAmount($sessionIds, $lendable),
+            'deposits' => $this->getDepositsAmount($sessionIds, $lendable),
+            'remitments' => $this->getRemitmentsAmount($sessionIds, $lendable),
+            'disbursements' => $this->getDisbursementsAmount($sessionIds, $lendable),
+            'funds' => $this->getFundsAmount($session),
+            ...$fundAmounts,
+        ];
     }
 }

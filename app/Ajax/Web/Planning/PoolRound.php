@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Ajax\Web\Planning\Pool;
+namespace App\Ajax\Web\Planning;
 
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Planning\Pool;
 use Siak\Tontine\Model\Pool as PoolModel;
-use Siak\Tontine\Service\Planning\PoolRoundService;
+use Siak\Tontine\Service\Planning\SessionService;
+use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Validation\Planning\PoolRoundValidator;
 
 use function Jaxon\pm;
@@ -15,7 +16,7 @@ use function trans;
  * @databag pool.round
  * @before getPool
  */
-class Round extends CallableClass
+class PoolRound extends CallableClass
 {
     /**
      * @var PoolRoundValidator
@@ -30,9 +31,11 @@ class Round extends CallableClass
     /**
      * The constructor
      *
-     * @param PoolRoundService $poolRoundService
+     * @param SessionService $sessionService
+     * @param PoolService $poolService
      */
-    public function __construct(private PoolRoundService $poolRoundService)
+    public function __construct(private SessionService $sessionService,
+        private PoolService $poolService)
     {}
 
     /**
@@ -42,7 +45,7 @@ class Round extends CallableClass
     {
         $poolId = $this->target()->method() === 'home' ? $this->target()->args()[0] :
             (int)$this->bag('pool.round')->get('pool.id');
-        $this->pool = $this->poolRoundService->getPool($poolId);
+        $this->pool = $this->poolService->getPool($poolId);
     }
 
     private function showTitles()
@@ -60,10 +63,8 @@ class Round extends CallableClass
         }
 
         $defaultLabel = trans('tontine.pool_round.labels.default');
-        $startSession = $this->pool->pool_round ?
-            $this->pool->pool_round->start_session->date : $defaultLabel;
-        $endSession =  $this->pool->pool_round ?
-            $this->pool->pool_round->end_session->date : $defaultLabel;
+        $startSession = !$this->pool->pool_round ? $defaultLabel : $this->pool->start_date;
+        $endSession =  !$this->pool->pool_round ? $defaultLabel : $this->pool->end_date;
         $this->response->html('pool-round-start-session-title',
             trans('tontine.pool_round.titles.start_session', ['session' => $startSession]));
         $this->response->html('pool-round-end-session-title',
@@ -92,7 +93,7 @@ class Round extends CallableClass
     public function saveRound(array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
-        $this->poolRoundService->saveRound($this->pool, $values);
+        $this->poolService->saveRound($this->pool, $values);
 
         // Reload the pool
         $this->getPool();
@@ -104,7 +105,7 @@ class Round extends CallableClass
 
     public function deleteRound()
     {
-        $this->poolRoundService->deleteRound($this->pool);
+        $this->poolService->deleteRound($this->pool);
 
         // Reload the pool
         $this->getPool();
@@ -116,10 +117,10 @@ class Round extends CallableClass
 
     private function showSession($request, int $sessionId, int $pageNumber, string $field)
     {
-        $sessionCount = $this->poolRoundService->getSessionCount();
+        $sessionCount = $this->sessionService->getTontineSessionCount();
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $sessionCount,
             'pool.round', "session.$field.page");
-        $sessions = $this->poolRoundService->getSessions($pageNumber);
+        $sessions = $this->sessionService->getTontineSessions($pageNumber, false);
         $pagination = $request->paginate($pageNumber, $perPage, $sessionCount);
 
         $html = $this->render('pages.planning.pool.round.sessions', [

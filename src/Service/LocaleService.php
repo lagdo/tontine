@@ -19,31 +19,13 @@ class LocaleService
     private $currency;
 
     /**
-     * @var string
-     */
-    private $locale;
-
-    /**
-     * @var string
-     */
-    private $countriesDataDir;
-
-    /**
      * @var NumberFormatter
      */
     private $formatter = null;
 
-    /**
-     * @var string
-     */
-    private $currenciesDataDir;
-
-    public function __construct(string $locale, string $countriesDataDir, string $currenciesDataDir)
-    {
-        $this->locale = $locale;
-        $this->countriesDataDir = $countriesDataDir;
-        $this->currenciesDataDir = $currenciesDataDir;
-    }
+    public function __construct(private string $locale,
+        private string $countriesDataDir, private string $currenciesDataDir)
+    {}
 
     /**
      * Set the currency to be used for money

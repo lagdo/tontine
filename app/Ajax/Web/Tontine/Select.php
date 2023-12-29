@@ -3,6 +3,7 @@
 namespace App\Ajax\Web\Tontine;
 
 use App\Ajax\CallableClass;
+use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
@@ -16,16 +17,17 @@ use function trans;
 class Select extends CallableClass
 {
     /**
-     * @di
-     * @var TenantService
+     * @var RoundService
      */
-    protected TenantService $tenantService;
+    protected RoundService $roundService;
 
     /**
-     * @di
-     * @var TontineService
+     * @param TenantService $tenantService
+     * @param TontineService $tontineService
      */
-    protected TontineService $tontineService;
+    public function __construct(protected TenantService $tenantService,
+        protected TontineService $tontineService)
+    {}
 
     public function showTontines()
     {
@@ -93,13 +95,16 @@ class Select extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $roundService
+     */
     public function saveRound(int $roundId)
     {
         if(!($tontine = $this->tenantService->tontine()))
         {
             return $this->response;
         }
-        if(!($round = $this->tontineService->getRound($roundId)))
+        if(!($round = $this->roundService->getRound($roundId)))
         {
             return $this->response;
         }

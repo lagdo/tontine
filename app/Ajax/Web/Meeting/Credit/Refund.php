@@ -6,6 +6,7 @@ use App\Ajax\CallableClass;
 use App\Ajax\Web\Meeting\Cash\Disbursement;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 use function Jaxon\jq;
@@ -19,11 +20,6 @@ use function trans;
 class Refund extends CallableClass
 {
     /**
-     * @var RefundService
-     */
-    protected RefundService $refundService;
-
-    /**
      * @var DebtValidator
      */
     protected DebtValidator $validator;
@@ -36,12 +32,12 @@ class Refund extends CallableClass
     /**
      * The constructor
      *
+     * @param SessionService $sessionService
      * @param RefundService $refundService
      */
-    public function __construct(RefundService $refundService)
-    {
-        $this->refundService = $refundService;
-    }
+    public function __construct(protected SessionService $sessionService,
+        protected RefundService $refundService)
+    {}
 
     /**
      * @return void
@@ -49,7 +45,7 @@ class Refund extends CallableClass
     protected function getSession()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->refundService->getSession($sessionId);
+        $this->session = $this->sessionService->getSession($sessionId);
     }
 
     /**

@@ -2,11 +2,12 @@
 
 namespace App\Ajax\Web\Tontine;
 
+use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Charge as ChargeModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Tontine\ChargeService;
+use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
-use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
@@ -35,9 +36,11 @@ class Charge extends CallableClass
     protected ChargeValidator $validator;
 
     /**
+     * @param TenantService $tenantService
      * @param ChargeService $chargeService
      */
-    public function __construct(protected ChargeService $chargeService)
+    public function __construct(protected TenantService $tenantService,
+        protected ChargeService $chargeService)
     {}
 
     /**
@@ -162,7 +165,7 @@ class Charge extends CallableClass
     {
         $this->dialog->hide();
 
-        $tontine = $this->chargeService->getTontine();
+        $tontine = $this->tenantService->tontine();
         [, $currency] = $this->localeService->getNameFromTontine($tontine);
 
         $title = trans('tontine.charge.titles.add');
@@ -224,7 +227,7 @@ class Charge extends CallableClass
     {
         $charge = $this->chargeService->getCharge($chargeId);
 
-        $tontine = $this->chargeService->getTontine();
+        $tontine = $this->tenantService->tontine();
         [, $currency] = $this->localeService->getNameFromTontine($tontine);
 
         $title = trans('tontine.charge.titles.edit');

@@ -3,16 +3,16 @@
 namespace Siak\Tontine\Validation\Planning;
 
 use Illuminate\Support\Facades\Validator;
-use Siak\Tontine\Service\Planning\PoolRoundService;
+use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Validation\AbstractValidator;
 use Siak\Tontine\Validation\ValidationException;
 
 class PoolRoundValidator extends AbstractValidator
 {
     /**
-     * @param PoolRoundService $poolRoundService
+     * @param SessionService $sessionService
      */
-    public function __construct(private PoolRoundService $poolRoundService)
+    public function __construct(private SessionService $sessionService)
     {}
 
     /**
@@ -35,12 +35,13 @@ class PoolRoundValidator extends AbstractValidator
             {
                 return;
             }
-            $startSession = $this->poolRoundService->getSession((int)$values['start_session']);
+
+            $startSession = $this->sessionService->getTontineSession((int)$values['start_session']);
             if(!$startSession)
             {
                 $validator->errors()->add('start_session', trans('tontine.pool.errors.start_session'));
             }
-            $endSession = $this->poolRoundService->getSession((int)$values['end_session']);
+            $endSession = $this->sessionService->getTontineSession((int)$values['end_session']);
             if(!$endSession)
             {
                 $validator->errors()->add('end_session', trans('tontine.pool.errors.end_session'));

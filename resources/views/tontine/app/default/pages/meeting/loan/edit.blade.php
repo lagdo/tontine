@@ -5,8 +5,7 @@
             <div class="form-group row">
               {!! Form::label('member', __('meeting.labels.member'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
               <div class="col-sm-8">
-                {!! Form::hidden('member', $loan->member->id) !!}
-                {!! Form::text('', $loan->member->name, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+                {!! Form::select('member', $members, $loan->member->id, ['class' => 'form-control']) !!}
               </div>
             </div>
             <div class="form-group row">

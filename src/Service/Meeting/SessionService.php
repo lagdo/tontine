@@ -2,79 +2,27 @@
 
 namespace Siak\Tontine\Service\Meeting;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\EventTrait;
+use Siak\Tontine\Service\Traits\SessionTrait;
 
 use function trans;
 
 class SessionService
 {
     use EventTrait;
-
-    /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
+    use SessionTrait;
 
     /**
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-    }
-
-    /**
-     * @return Tontine|null
-     */
-    public function getTontine(): ?Tontine
-    {
-        return $this->tenantService->tontine();
-    }
-
-    /**
-     * Find a session.
-     *
-     * @param int $sessionId    The session id
-     *
-     * @return Session|null
-     */
-    public function getSession(int $sessionId): ?Session
-    {
-        return $this->tenantService->round()->sessions()->find($sessionId);
-    }
-
-    /**
-     * Get the number of sessions in the selected round.
-     *
-     * @return int
-     */
-    public function getSessionCount(): int
-    {
-        return $this->tenantService->round()->sessions()->count();
-    }
-
-    /**
-     * Get a paginated list of sessions in the selected round.
-     *
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getSessions(int $page = 0): Collection
-    {
-        return $this->tenantService->round()->sessions()
-            ->orderBy('start_at', 'asc')
-            ->page($page, $this->tenantService->getLimit())
-            ->get();
-    }
+    public function __construct(private TenantService $tenantService)
+    {}
 
     /**
      * Check if some pools still have no subscriptions.

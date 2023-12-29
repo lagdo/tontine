@@ -3,9 +3,10 @@
 namespace App\Ajax\Web\Meeting\Charge;
 
 use App\Ajax\CallableClass;
+use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
-use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Meeting\SessionService;
 
 use function Jaxon\jq;
 
@@ -16,17 +17,6 @@ use function Jaxon\jq;
 class LibreFee extends CallableClass
 {
     /**
-     * @di
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
-     * @var LibreFeeService
-     */
-    protected LibreFeeService $feeService;
-
-    /**
      * @var SessionModel|null
      */
     protected ?SessionModel $session;
@@ -34,12 +24,13 @@ class LibreFee extends CallableClass
     /**
      * The constructor
      *
+     * @param LocaleService $localeService
      * @param LibreFeeService $feeService
+     * @param SessionService $sessionService
      */
-    public function __construct(LibreFeeService $feeService)
-    {
-        $this->feeService = $feeService;
-    }
+    public function __construct(protected LocaleService $localeService,
+        protected LibreFeeService $feeService, protected SessionService $sessionService)
+    {}
 
     /**
      * @return void
@@ -47,7 +38,7 @@ class LibreFee extends CallableClass
     protected function getSession()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->feeService->getSession($sessionId);
+        $this->session = $this->sessionService->getSession($sessionId);
     }
 
     /**

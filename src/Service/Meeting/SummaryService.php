@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
-use Siak\Tontine\Service\Planning\SessionService as PlanningSessionService;
+use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\ReportTrait;
 use stdClass;
@@ -18,31 +18,14 @@ class SummaryService
     use ReportTrait;
 
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
-     * @var PlanningSessionService
-     */
-    public PlanningSessionService $sessionService;
-
-    /**
-     * @var BalanceCalculator
-     */
-    protected BalanceCalculator $balanceCalculator;
-
-    /**
-     * @param TenantService $tenantService
-     * @param PlanningSessionService $sessionService
      * @param BalanceCalculator $balanceCalculator
+     * @param TenantService $tenantService
+     * @param PoolService $poolService
      */
-    public function __construct(TenantService $tenantService,
-        PlanningSessionService $sessionService, BalanceCalculator $balanceCalculator)
+    public function __construct(protected BalanceCalculator $balanceCalculator,
+        protected TenantService $tenantService, PoolService $poolService)
     {
-        $this->tenantService = $tenantService;
-        $this->sessionService = $sessionService;
-        $this->balanceCalculator = $balanceCalculator;
+        $this->poolService = $poolService;
     }
 
     /**
@@ -108,7 +91,7 @@ class SummaryService
                 $subscription->setRelation('receivables',
                     $subscription->receivables->keyBy('session_id'));
             });
-        $sessions = $this->_getSessions($pool, ['payables.remitment']);
+        $sessions = $this->getEnabledSessions($pool, ['payables.remitment']);
         $figures = new stdClass();
         if($pool->remit_planned)
         {
@@ -127,8 +110,8 @@ class SummaryService
      */
     public function getRemitmentFigures(Pool $pool, int $sessionId = 0)
     {
-        $sessions = $this->_getSessions($pool, ['payables.subscription.member']);
-        $sessionCount = $this->tenantService->countEnabledSessions($pool);
+        $sessions = $this->getEnabledSessions($pool, ['payables.subscription.member']);
+        $sessionCount = $sessions->count();
         $subscriptionCount = $pool->subscriptions()->count();
         $remitmentAmount = $pool->amount * $sessionCount;
 
@@ -164,7 +147,7 @@ class SummaryService
             return 1;
         }
 
-        $sessions = $this->tenantService->getEnabledSessions($pool);
+        $sessions = $this->poolService->getEnabledSessions($pool);
         $position = $sessions->filter(function($_session) use($session) {
             return $_session->start_at->lt($session->start_at);
         })->count();

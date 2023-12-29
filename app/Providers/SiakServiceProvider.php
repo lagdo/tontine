@@ -28,7 +28,6 @@ use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Meeting\SessionService as MeetingSessionService;
 use Siak\Tontine\Service\Meeting\SummaryService as MeetingSummaryService;
 use Siak\Tontine\Service\Planning\PoolService as TontinePoolService;
-use Siak\Tontine\Service\Planning\PoolRoundService;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Planning\SessionService as PlanningSessionService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
@@ -126,7 +125,9 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(SessionReportService::class, SessionReportService::class);
         $this->app->singleton(ReportService::class, ReportService::class);
         $this->app->singleton(PrinterService::class, PrinterService::class);
-        $this->app->when(PrinterService::class)->needs('$config')->give(config('chrome.page'));
+        $this->app->when(PrinterService::class)
+            ->needs('$config')
+            ->give(config('chrome.page'));
 
         $this->app->singleton(RoundService::class, RoundService::class);
         $this->app->singleton(PlanningSessionService::class, PlanningSessionService::class);
@@ -135,7 +136,6 @@ class SiakServiceProvider extends ServiceProvider
 
         $this->app->singleton(TenantService::class, TenantService::class);
         $this->app->singleton(TontinePoolService::class, TontinePoolService::class);
-        $this->app->singleton(PoolRoundService::class, PoolRoundService::class);
         $this->app->singleton(MemberService::class, MemberService::class);
         $this->app->singleton(TontineService::class, TontineService::class);
 

@@ -11,6 +11,7 @@ use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
@@ -19,43 +20,15 @@ use function strtolower;
 class LibreFeeService
 {
     /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
-     * @var SettlementTargetService
-     */
-    protected SettlementTargetService $targetService;
-
-    /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
+     * @param SessionService $sessionService
+     * @param SettlementTargetService $targetService
      */
-    public function __construct(LocaleService $localeService, TenantService $tenantService,
-        SettlementTargetService $targetService)
-    {
-        $this->localeService = $localeService;
-        $this->tenantService = $tenantService;
-        $this->targetService = $targetService;
-    }
-
-    /**
-     * Get a single session.
-     *
-     * @param int $sessionId    The session id
-     *
-     * @return Session|null
-     */
-    public function getSession(int $sessionId): ?Session
-    {
-        return $this->tenantService->getSession($sessionId);
-    }
+    public function __construct(protected LocaleService $localeService,
+        protected TenantService $tenantService, protected SessionService $sessionService,
+        protected SettlementTargetService $targetService)
+    {}
 
     /**
      * Get a paginated list of fees.
@@ -106,7 +79,7 @@ class LibreFeeService
     private function getPreviousSessionsBills(Session $session): Collection
     {
         // Count the session bills
-        $sessionIds = $this->tenantService->getSessionIds($session, false);
+        $sessionIds = $this->sessionService->getRoundSessionIds($session, false);
         return DB::table('libre_bills')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'libre_bills.bill_id', '=', 'bills.id')
@@ -140,7 +113,7 @@ class LibreFeeService
     private function getPreviousSessionsSettlements(Session $session): Collection
     {
         // Count the session bills
-        $sessionIds = $this->tenantService->getSessionIds($session, false);
+        $sessionIds = $this->sessionService->getRoundSessionIds($session, false);
         $query = DB::table('settlements')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')

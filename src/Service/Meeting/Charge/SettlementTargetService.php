@@ -13,17 +13,10 @@ use Siak\Tontine\Service\TenantService;
 class SettlementTargetService
 {
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-    }
+    public function __construct(protected TenantService $tenantService)
+    {}
 
     /**
      * Get the sessions after the current.
@@ -34,10 +27,8 @@ class SettlementTargetService
      */
     public function getDeadlineSessions(Session $currentSession): Collection
     {
-        return $this->tenantService->getSessions()
-            ->filter(function($session) use($currentSession) {
-                return $session->start_at > $currentSession->start_at;
-            })
+        return $this->tenantService->tontine()->sessions()
+            ->whereDate('start_at', '>', $currentSession->start_at->format('Y-m-d'))
             ->pluck('title', 'id');
     }
 

@@ -16,17 +16,10 @@ class MemberService
     use EventTrait;
 
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-    }
+    public function __construct(protected TenantService $tenantService)
+    {}
 
     /**
      * Get a paginated list of members.
@@ -75,6 +68,17 @@ class MemberService
     public function getMember(int $id): ?Member
     {
         return $this->tenantService->tontine()->members()->find($id);
+    }
+
+    /**
+     * Get a list of members for dropdown.
+     *
+     * @return Collection
+     */
+    public function getMemberList(): Collection
+    {
+        return $this->tenantService->tontine()->members()->active()
+            ->orderBy('name', 'asc')->pluck('name', 'id');
     }
 
     /**

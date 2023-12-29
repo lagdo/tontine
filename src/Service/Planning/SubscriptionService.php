@@ -17,17 +17,12 @@ use function trans;
 class SubscriptionService
 {
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
      * @param TenantService $tenantService
+     * @param PoolService $poolService
      */
-    public function __construct(TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-    }
+    public function __construct(protected TenantService $tenantService,
+        protected PoolService $poolService)
+    {}
 
     /**
      * Get pools for the dropdown list.
@@ -229,7 +224,7 @@ class SubscriptionService
     public function saveBeneficiary(Pool $pool, int $sessionId,
         int $currSubscriptionId, int $nextSubscriptionId): bool
     {
-        $session = $this->tenantService->getSession($sessionId);
+        $session = $pool->sessions()->find($sessionId);
         $currSubscription = null;
         $nextSubscription = null;
         if($currSubscriptionId > 0)

@@ -12,9 +12,7 @@ class CategoryService
      * @param TenantService $tenantService
      */
     public function __construct(protected TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-    }
+    {}
 
     /**
      * Get a paginated list of categories.

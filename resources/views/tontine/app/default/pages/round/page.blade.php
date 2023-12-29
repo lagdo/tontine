@@ -12,8 +12,10 @@
 @foreach ($rounds as $round)
                         <tr>
                           <td>{{ $round->title }}</td>
-                          <td>{{ $round->start }}</td>
-                          <td>{{ $round->end }}</td>
+                          <td>{{ !$round->start_at ? '' :
+                            $round->start_at->translatedFormat(__('tontine.date.format')) }}</td>
+                          <td>{{ !$round->end_at ? '' :
+                            $round->end_at->translatedFormat(__('tontine.date.format')) }}</td>
                           <td>{{ $round->notes }}</td>
                           <td class="table-item-menu">
 @include('tontine.app.default.parts.table.menu', [

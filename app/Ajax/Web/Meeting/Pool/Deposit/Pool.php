@@ -4,11 +4,12 @@ namespace App\Ajax\Web\Meeting\Pool\Deposit;
 
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Meeting\Pool\Deposit;
+use Siak\Tontine\Model\Pool as PoolModel;
+use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
-use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Model\Pool as PoolModel;
+use Siak\Tontine\Service\Meeting\SessionService;
 
 use function Jaxon\jq;
 use function filter_var;
@@ -28,16 +29,6 @@ class Pool extends CallableClass
     protected LocaleService $localeService;
 
     /**
-     * @var DepositService
-     */
-    protected DepositService $depositService;
-
-    /**
-     * @var PoolService
-     */
-    protected PoolService $poolService;
-
-    /**
      * @var SessionModel|null
      */
     protected ?SessionModel $session;
@@ -50,23 +41,22 @@ class Pool extends CallableClass
     /**
      * The constructor
      *
+     * @param SessionService $sessionService
      * @param PoolService $poolService
      * @param DepositService $depositService
      */
-    public function __construct(PoolService $poolService, DepositService $depositService)
-    {
-        $this->poolService = $poolService;
-        $this->depositService = $depositService;
-    }
+    public function __construct(protected SessionService $sessionService,
+        protected PoolService $poolService, protected DepositService $depositService)
+    {}
 
     protected function getPool()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->depositService->getSession($sessionId);
+        $this->session = $this->sessionService->getSession($sessionId);
 
         $poolId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('pool.id');
-        $this->pool = $this->depositService->getPool($poolId);
+        $this->pool = $this->poolService->getPool($poolId);
 
         if(!$this->session || !$this->pool || $this->session->disabled($this->pool))
         {

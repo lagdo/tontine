@@ -28,30 +28,6 @@ class SettlementService
     }
 
     /**
-     * Get a single session.
-     *
-     * @param int $sessionId    The session id
-     *
-     * @return Session|null
-     */
-    public function getSession(int $sessionId): ?Session
-    {
-        return $this->tenantService->getSession($sessionId);
-    }
-
-    /**
-     * Get a single charge.
-     *
-     * @param int $chargeId    The charge id
-     *
-     * @return Charge|null
-     */
-    public function getCharge(int $chargeId): ?Charge
-    {
-        return $this->tenantService->tontine()->charges()->find($chargeId);
-    }
-
-    /**
      * @param Charge $charge
      * @param Session $session
      *

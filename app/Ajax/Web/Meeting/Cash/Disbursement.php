@@ -3,10 +3,12 @@
 namespace App\Ajax\Web\Meeting\Cash;
 
 use App\Ajax\CallableClass;
+use App\Ajax\Web\Meeting\Balance;
 use App\Ajax\Web\Meeting\Credit\Loan;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
 use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Meeting\SessionService;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
@@ -18,11 +20,6 @@ use function trans;
  */
 class Disbursement extends CallableClass
 {
-    /**
-     * @var DisbursementService
-     */
-    protected DisbursementService $disbursementService;
-
     /**
      * @var DisbursementValidator
      */
@@ -36,12 +33,12 @@ class Disbursement extends CallableClass
     /**
      * The constructor
      *
+     * @param SessionService $sessionService
      * @param DisbursementService $disbursementService
      */
-    public function __construct(DisbursementService $disbursementService)
-    {
-        $this->disbursementService = $disbursementService;
-    }
+    public function __construct(protected SessionService $sessionService,
+        protected DisbursementService $disbursementService)
+    {}
 
     /**
      * @return void
@@ -49,7 +46,7 @@ class Disbursement extends CallableClass
     protected function getSession()
     {
         $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->disbursementService->getSession($sessionId);
+        $this->session = $this->sessionService->getSession($sessionId);
     }
 
     /**
@@ -85,6 +82,8 @@ class Disbursement extends CallableClass
 
         $this->jq('#btn-disbursements-refresh')->click($this->rq()->home());
         $this->jq('#btn-disbursement-add')->click($this->rq()->addDisbursement());
+        $this->jq('#btn-balances-show')
+            ->click($this->cl(Balance::class)->rq()->show($this->session->id, false));
         $disbursementId = jq()->parent()->attr('data-disbursement-id')->toInt();
         $this->jq('.btn-disbursement-edit')->click($this->rq()->editDisbursement($disbursementId));
         $this->jq('.btn-disbursement-delete')->click($this->rq()->deleteDisbursement($disbursementId)

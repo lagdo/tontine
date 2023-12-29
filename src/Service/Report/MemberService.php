@@ -6,59 +6,22 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Auction;
 use Siak\Tontine\Model\Bill;
-use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Member;
-use Siak\Tontine\Model\PartialRefund;
-use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\TenantService;
 
 class MemberService
 {
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
-     * @var BalanceCalculator
-     */
-    protected BalanceCalculator $balanceCalculator;
-
-    /**
-     * @param TenantService $tenantService
      * @param BalanceCalculator $balanceCalculator
+     * @param TenantService $tenantService
+     * @param SessionService $sessionService
      */
-    public function __construct(TenantService $tenantService, BalanceCalculator $balanceCalculator)
-    {
-        $this->tenantService = $tenantService;
-        $this->balanceCalculator = $balanceCalculator;
-    }
-
-    /**
-     * Get a paginated list of members.
-     *
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getMembers(int $page = 0): Collection
-    {
-        return $this->tenantService->tontine()->members()->active()
-            ->page($page, $this->tenantService->getLimit())
-            ->orderBy('name', 'asc')->get();
-    }
-
-    /**
-     * Get the number of members.
-     *
-     * @return int
-     */
-    public function getMemberCount(): int
-    {
-        return $this->tenantService->tontine()->members()->active()->count();
-    }
+    public function __construct(private BalanceCalculator $balanceCalculator,
+        private TenantService $tenantService, private SessionService $sessionService)
+    {}
 
     /**
      * @param Session $session
@@ -197,7 +160,7 @@ class MemberService
                     })
                     // Libre bills, all up to this session.
                     ->orWhereHas('libre_bill', function(Builder $query) use($session, $member) {
-                        $sessionIds = $this->tenantService->getSessionIds($session);
+                        $sessionIds = $this->sessionService->getRoundSessionIds($session);
                         return $query->whereIn('session_id', $sessionIds)
                             ->when($member !== null, function($query) use($member) {
                                 return $query->where('member_id', $member->id);
@@ -249,7 +212,7 @@ class MemberService
      */
     public function getRefunds(Session $session, ?Member $member = null): Collection
     {
-        $refunds = Refund::select('refunds.*')
+        $refunds = $session->refunds()->select('refunds.*')
             ->with(['debt.loan.session', 'debt.loan.member'])
             // Member refunds
             ->when($member !== null, function(Builder $query) use($member) {
@@ -257,7 +220,6 @@ class MemberService
                     ->join('loans', 'debts.loan_id', '=', 'loans.id')
                     ->where('loans.member_id', $member->id);
             })
-            ->where('refunds.session_id', $session->id)
             ->get()
             ->each(function($refund) {
                 $refund->amount = $refund->debt->amount;
@@ -269,7 +231,7 @@ class MemberService
             ->when($member === null, function($collection) {
                 return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
             });
-        $partialRefunds = PartialRefund::select('partial_refunds.*')
+        $partialRefunds = $session->partial_refunds()->select('partial_refunds.*')
             ->with(['debt.loan.session', 'debt.loan.member'])
             // Member refunds
             ->when($member !== null, function(Builder $query) use($member) {
@@ -277,7 +239,6 @@ class MemberService
                     ->join('loans', 'debts.loan_id', '=', 'loans.id')
                     ->where('loans.member_id', $member->id);
             })
-            ->where('partial_refunds.session_id', $session->id)
             ->get()
             ->each(function($refund) {
                 $refund->debt->session = $refund->debt->loan->session;

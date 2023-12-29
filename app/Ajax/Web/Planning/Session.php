@@ -6,6 +6,7 @@ use App\Ajax\CallableClass;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SessionService;
+use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 
@@ -30,6 +31,12 @@ class Session extends CallableClass
      * @var TontineService
      */
     protected TontineService $tontineService;
+
+    /**
+     * @di
+     * @var MemberService
+     */
+    public MemberService $memberService;
 
     /**
      * @di
@@ -74,7 +81,6 @@ class Session extends CallableClass
         $html = $this->render('pages.planning.session.page')
             ->with('sessions', $sessions)
             ->with('statuses', $statuses)
-            ->with('members', $this->tontineService->getMembers())
             ->with('pagination', $pagination);
         $this->response->html('content-page', $html);
 
@@ -91,7 +97,7 @@ class Session extends CallableClass
     {
         $title = trans('tontine.session.titles.add');
         $content = $this->render('pages.planning.session.add')
-            ->with('members', $this->tontineService->getMembers()->prepend('', 0));
+            ->with('members', $this->memberService->getMemberList()->prepend('', 0));
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -210,7 +216,7 @@ class Session extends CallableClass
         $title = trans('tontine.session.titles.edit');
         $content = $this->render('pages.planning.session.edit')
             ->with('session', $session)
-            ->with('members', $this->tontineService->getMembers()->prepend('', 0));
+            ->with('members', $this->memberService->getMemberList()->prepend('', 0));
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
