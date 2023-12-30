@@ -71,6 +71,7 @@ class Subscription extends CallableClass
     {
         $this->response->html('subscriptions-pool-name',
             trans('tontine.pool.titles.subscriptions') . ' - ' . $pool->title);
+        $this->response->html('content-page', $this->render('pages.planning.subscription.pool'));
         $this->cl(Subscription\Member::class)->show($pool);
         $this->cl(Subscription\Session::class)->show($pool);
 
@@ -99,11 +100,11 @@ class Subscription extends CallableClass
         $this->view()->shareValues($receivables);
         $html = $this->render('pages.planning.subscription.planning')
             ->with('pool', $pool);
-        $this->response->html('content-home', $html);
+        $this->response->html('content-page', $html);
 
         $this->jq('#btn-subscription-beneficiaries')->click($this->rq()->beneficiaries($poolId));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->planning($poolId));
-        $this->jq('#btn-subscription-back')->click($this->rq()->home($poolId));
+        $this->jq('#btn-subscription-back')->click($this->rq()->pool($poolId));
 
         return $this->response;
     }
@@ -126,12 +127,12 @@ class Subscription extends CallableClass
         $html = $this->render('pages.planning.subscription.beneficiaries')
             ->with('pool', $pool)
             ->with('pools', $this->subscriptionService->getPools());
-        $this->response->html('content-home', $html);
+        $this->response->html('content-page', $html);
 
         $this->jq('#btn-subscription-planning')->click($this->rq()->planning($poolId));
         $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt()));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->beneficiaries($poolId));
-        $this->jq('#btn-subscription-back')->click($this->rq()->home($poolId));
+        $this->jq('#btn-subscription-back')->click($this->rq()->pool($poolId));
         $this->jq('.select-beneficiary')->change($this->rq()->saveBeneficiary($poolId,
             jq()->attr('data-session-id')->toInt(), jq()->val()->toInt(),
             jq()->attr('data-subscription-id')->toInt()));
