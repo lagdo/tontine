@@ -256,12 +256,11 @@ return [
             'lendable' => "Available for loan",
             'deposit' => [
                 'fixed' => "The amount of deposits is fixed",
+                'lendable' => "The remaining amounts can be loaned",
             ],
             'remit' => [
-                'fixed' => "The amount of remitments is fixed",
                 'planned' => "The number of remitments is defined in advance",
                 'auction' => "The amounts are remitted after auction",
-                'lendable' => "The remaining amounts can be loaned",
             ],
         ],
         'help' => [
@@ -269,17 +268,16 @@ return [
                 "We are going to ask you to specify its characteristics.",
             'deposit' => [
                 'fixed' => "Check the box below each member who subscribes to this tontine must pay a fixed amount at each session.",
+                'lendable' => "Check the box below if the amounts remaining in the pool after remitments can be loaned.",
             ],
             'remit' => [
-                'fixed' => "Check the box below if each beneficiary will receive the full amount corresponding to its deposits.",
                 'planned' => "Check the box below if the number of beneficiaries at each session is defined in advance.",
                 'auction' => "Check the box below if the choice of the tontine beneficiaries is subject to auction.",
-                'lendable' => "Check the box below if the amounts remaining in the pool after remitments can be loaned.",
             ],
         ],
         'actions' => [
             'subscriptions' => "Subscriptions",
-            'round' => "Dates",
+            'sessions' => "Sessions",
         ],
         'questions' => [
             'delete' => "Delete this tontine?<br/>Please, make sure it has no subscription.",
@@ -300,7 +298,7 @@ return [
     ],
     'pool_round' => [
         'titles' => [
-            'dates' => "Dates of tontine: :pool",
+            'sessions' => "Sessions of tontine: :pool",
             'start_session' => "Start session: :session",
             'end_session' => "End session: :session",
         ],
@@ -308,11 +306,11 @@ return [
             'default' => "(Same as the round)",
         ],
         'questions' => [
-            'delete' => "Delete the dates of this tontine?",
+            'delete' => "Delete the sessions of this tontine?",
         ],
         'messages' => [
-            'saved' => "The dates of the tontine was successfully saved.",
-            'deleted' => "The dates of the tontine was successfully deleted.",
+            'saved' => "The sessions of the tontine was successfully saved.",
+            'deleted' => "The sessions of the tontine was successfully deleted.",
         ],
         'errors' => [
             'start_session' => "The start session is incorrect.",

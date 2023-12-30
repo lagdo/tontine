@@ -64,14 +64,14 @@ class Pool extends CallableClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $poolCount);
 
         $html = $this->render('pages.planning.pool.page')
-            ->with('tontine', $this->tenantService->tontine())
+            ->with('round', $this->tenantService->round())
             ->with('pools', $pools)
             ->with('pagination', $pagination);
         $this->response->html('content-page', $html);
 
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
         $this->jq('.btn-pool-edit')->click($this->rq()->edit($poolId));
-        $this->jq('.btn-pool-round')->click($this->cl(PoolRound::class)->rq()->home($poolId));
+        $this->jq('.btn-pool-sessions')->click($this->cl(PoolRound::class)->rq()->home($poolId));
         $this->jq('.btn-pool-delete')->click($this->rq()->delete($poolId)
             ->confirm(trans('tontine.pool.questions.delete')));
 
@@ -125,6 +125,46 @@ class Pool extends CallableClass
         $properties['deposit']['fixed'] = $fixed;
         $this->bag('pool')->set('add', $properties);
 
+        if($fixed)
+        {
+            return $this->showDepositLendable();
+        }
+        // Pools with libre deposits are not lendable.
+        return $this->saveDepositLendable(false);
+    }
+
+    public function showDepositLendable()
+    {
+        $this->dialog->hide();
+
+        $properties = $this->bag('pool')->get('add', []);
+        $title = trans('tontine.pool.titles.deposits');
+        $content = $this->render('pages.planning.pool.deposit_lendable')
+            ->with('lendable', $properties['deposit']['lendable'] ?? false);
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.prev'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->showDepositFixed(),
+        ],[
+            'title' => trans('common.actions.next'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->saveDepositLendable(pm()->checked('pool_deposit_lendable')),
+        ]];
+        $this->dialog->show($title, $content, $buttons);
+
+        return $this->response;
+    }
+
+    public function saveDepositLendable(bool $lendable)
+    {
+        $properties = $this->bag('pool')->get('add', []);
+        $properties['deposit']['lendable'] = $lendable;
+        $this->bag('pool')->set('add', $properties);
+
         return $this->showRemitPlanned();
     }
 
@@ -134,6 +174,9 @@ class Pool extends CallableClass
 
         $title = trans('tontine.pool.titles.remitments');
         $properties = $this->bag('pool')->get('add', []);
+        $fixed = $properties['deposit']['fixed'] ?? true;
+        $prevAction = $fixed ? $this->rq()->showDepositLendable() : $this->rq()->showDepositFixed();
+
         $content = $this->render('pages.planning.pool.remit_planned')
             ->with('planned', $properties['remit']['planned'] ?? true);
         $buttons = [[
@@ -143,7 +186,7 @@ class Pool extends CallableClass
         ],[
             'title' => trans('common.actions.prev'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->showDepositFixed(),
+            'click' => $prevAction,
         ],[
             'title' => trans('common.actions.next'),
             'class' => 'btn btn-primary',
@@ -168,7 +211,6 @@ class Pool extends CallableClass
         $this->dialog->hide();
 
         $properties = $this->bag('pool')->get('add', []);
-        $prevAction = $this->rq()->showRemitPlanned();
 
         $title = trans('tontine.pool.titles.remitments');
         $content = $this->render('pages.planning.pool.remit_auction')
@@ -180,7 +222,7 @@ class Pool extends CallableClass
         ],[
             'title' => trans('common.actions.prev'),
             'class' => 'btn btn-primary',
-            'click' => $prevAction,
+            'click' => $this->rq()->showRemitPlanned(),
         ],[
             'title' => trans('common.actions.next'),
             'class' => 'btn btn-primary',
@@ -197,43 +239,6 @@ class Pool extends CallableClass
         $properties['remit']['auction'] = $auction;
         $this->bag('pool')->set('add', $properties);
 
-        return $this->showRemitLendable();
-    }
-
-    public function showRemitLendable()
-    {
-        $this->dialog->hide();
-
-        $properties = $this->bag('pool')->get('add', []);
-        $prevAction = $this->rq()->showRemitAuction();
-
-        $title = trans('tontine.pool.titles.remitments');
-        $content = $this->render('pages.planning.pool.remit_lendable')
-            ->with('lendable', $properties['remit']['lendable'] ?? false);
-        $buttons = [[
-            'title' => trans('common.actions.cancel'),
-            'class' => 'btn btn-tertiary',
-            'click' => 'close',
-        ],[
-            'title' => trans('common.actions.prev'),
-            'class' => 'btn btn-primary',
-            'click' => $prevAction,
-        ],[
-            'title' => trans('common.actions.next'),
-            'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveRemitLendable(pm()->checked('pool_remit_lendable')),
-        ]];
-        $this->dialog->show($title, $content, $buttons);
-
-        return $this->response;
-    }
-
-    public function saveRemitLendable(bool $lendable)
-    {
-        $properties = $this->bag('pool')->get('add', []);
-        $properties['remit']['lendable'] = $lendable;
-        $this->bag('pool')->set('add', $properties);
-
         return $this->add();
     }
 
@@ -242,8 +247,9 @@ class Pool extends CallableClass
         $this->dialog->hide();
 
         $title = trans('tontine.pool.titles.add');
-        $content = $this->render('pages.planning.pool.add')
-            ->with('options', $this->bag('pool')->get('add', []));
+        $content = $this->render('pages.planning.pool.add', [
+            'properties' => $this->bag('pool')->get('add', []),
+        ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

@@ -1,7 +1,7 @@
           <div class="section-body">
             <div class="row align-items-center">
               <div class="col">
-                <h2 class="section-title">{{ __('tontine.pool_round.titles.dates', ['pool' => $pool->title]) }}</h2>
+                <h2 class="section-title">{{ __('tontine.pool_round.titles.sessions', ['pool' => $pool->title]) }}</h2>
               </div>
               <div class="col-auto" id="pool-round-actions">
               </div>
