@@ -1,14 +1,15 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
-                    <div class="col-auto">
+                    <div class="col">
                       <div class="section-title mt-0">
                         {{ __('meeting.titles.loans') }}
                         (<span id="loan_amount_available">{{ __('meeting.loan.labels.amount_available',
                           ['amount' => $locale->formatMoney($amountAvailable, true)]) }}</span>)
+                        <button type="button" class="btn btn-primary" id="btn-loan-balances"><i class="fa fa-caret-right"></i></button>
                       </div>
                     </div>
 @if($session->opened)
-                    <div class="col">
+                    <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
                         <button type="button" class="btn btn-primary" id="btn-loan-add"><i class="fa fa-plus"></i></button>
                         <button type="button" class="btn btn-primary" id="btn-loans-refresh"><i class="fa fa-sync"></i></button>

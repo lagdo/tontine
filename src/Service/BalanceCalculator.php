@@ -403,7 +403,6 @@ class BalanceCalculator
             'deposits' => $this->getDepositsAmount($sessionIds, $lendable),
             'remitments' => $this->getRemitmentsAmount($sessionIds, $lendable),
             'disbursements' => $this->getDisbursementsAmount($sessionIds, $lendable),
-            'funds' => $this->getFundsAmount($session),
             ...$fundAmounts,
         ];
     }
