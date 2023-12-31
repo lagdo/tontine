@@ -6,6 +6,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Jaxon\Laravel\Jaxon;
 use Siak\Tontine\Exception\AuthenticationException;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Exception\WarningException;
 use Throwable;
 
 use function app;
@@ -69,6 +70,15 @@ class Handler extends ExceptionHandler
             $ajaxResponse = $jaxon->ajaxResponse();
             $ajaxResponse->clearCommands();
             $ajaxResponse->dialog->error($e->getMessage(), trans('common.titles.error'));
+
+            return $jaxon->httpResponse();
+        });
+
+        // Show the warning message in a dialog
+        $this->renderable(function (WarningException $e) {
+            $jaxon = app()->make(Jaxon::class);
+            $ajaxResponse = $jaxon->ajaxResponse();
+            $ajaxResponse->dialog->warning($e->getMessage(), trans('common.titles.warning'));
 
             return $jaxon->httpResponse();
         });
