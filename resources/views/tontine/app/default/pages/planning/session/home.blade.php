@@ -1,7 +1,8 @@
           <div class="section-body">
                       <div class="row align-items-center">
                         <div class="col">
-                          <h2 class="section-title">{{ __('tontine.titles.sessions') }}</h2>
+                          <h2 class="section-title">{{ __('tontine.titles.sessions')
+                            }}@if ($round !== null) :: {{ $round->title }}@endif</h2>
                         </div>
 @if ($round !== null)
                         <div class="col-auto">
