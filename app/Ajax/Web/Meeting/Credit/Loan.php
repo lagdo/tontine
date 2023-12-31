@@ -80,12 +80,11 @@ class Loan extends CallableClass
     public function home()
     {
         $loans = $this->loanService->getSessionLoans($this->session);
-        $amountAvailable = $this->loanService->getAmountAvailable($this->session);
 
-        $html = $this->render('pages.meeting.loan.home')
-            ->with('session', $this->session)
-            ->with('loans', $loans)
-            ->with('amountAvailable', $amountAvailable);
+        $html = $this->render('pages.meeting.loan.home', [
+            'session' => $this->session,
+            'loans' => $loans,
+        ]);
         $this->response->html('meeting-loans', $html);
 
         $this->jq('#btn-loans-refresh')->click($this->rq()->home());

@@ -18,5 +18,7 @@
       orientation: "{{ __('tontine.messages.screen.orientation') }}",
     },
   };
+  function showBalanceAmounts() { {!! $jxnBalance->showAmounts() !!}; }
+  function showBalanceAmountsWithDelay() { setTimeout(() => {!! $jxnBalance->showAmounts() !!}, 5); }
 </script>
 <script src="/jaxon/app.js"></script>

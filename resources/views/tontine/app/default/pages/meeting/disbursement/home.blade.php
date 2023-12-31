@@ -2,9 +2,7 @@
                   <div class="row align-items-center">
                     <div class="col">
                       <div class="section-title mt-0">
-                        {{ __('meeting.titles.disbursements') }}
-                        (<span id="total_amount_available">{{ __('meeting.disbursement.labels.amount_available',
-                          ['amount' => $locale->formatMoney($amountAvailable, true)]) }}</span>)
+                        {{ __('meeting.titles.disbursements') }} (<span id="total_amount_available">...</span>)
                         <button type="button" class="btn btn-primary" id="btn-disbursement-balances"><i class="fa fa-caret-right"></i></button>
                       </div>
                     </div>

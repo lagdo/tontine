@@ -131,7 +131,7 @@ class RefundService
     {
         return Debt::whereHas('loan', function(Builder $query) {
                 $query->whereHas('member', function(Builder $query) {
-                    $query->whereIn('tontine_id', $this->tenantService->tontine()->id);
+                    $query->where('tontine_id', $this->tenantService->tontine()->id);
                 });
             })
             ->with(['refund'])

@@ -5,8 +5,7 @@ namespace App\Ajax\Web\Meeting;
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\BalanceCalculator;
-use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
-use Siak\Tontine\Service\Meeting\Credit\LoanService;
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\SessionService;
 
 use function trans;
@@ -23,12 +22,12 @@ class Balance extends CallableClass
     protected ?SessionModel $session = null;
 
     /**
+     * @param LocaleService $localeService
      * @param SessionService $sessionService
      * @param BalanceCalculator $balanceCalculator
      */
-    public function __construct(private SessionService $sessionService,
-        private LoanService $loanService, private DisbursementService $disbursementService,
-        private BalanceCalculator $balanceCalculator)
+    public function __construct(private LocaleService $localeService,
+        private SessionService $sessionService, private BalanceCalculator $balanceCalculator)
     {}
 
     /**
@@ -40,15 +39,21 @@ class Balance extends CallableClass
         $this->session = $this->sessionService->getSession($sessionId);
     }
 
-    public function refreshAmounts()
+    public function showAmounts()
     {
-        $amount = $this->loanService->getFormattedAmountAvailable($this->session);
-        $html = trans('meeting.loan.labels.amount_available', ['amount' => $amount]);
+        $amount = $this->balanceCalculator->getBalanceForLoan($this->session);
+        $html = trans('meeting.loan.labels.amount_available', [
+            'amount' => $this->localeService->formatMoney($amount),
+        ]);
         $this->response->html('loan_amount_available', $html);
 
-        $amount = $this->disbursementService->getFormattedAmountAvailable($this->session);
-        $html = trans('meeting.disbursement.labels.amount_available', ['amount' => $amount]);
+        $amount = $this->balanceCalculator->getTotalBalance($this->session);
+        $html = trans('meeting.disbursement.labels.amount_available', [
+            'amount' => $this->localeService->formatMoney($amount),
+        ]);
         $this->response->html('total_amount_available', $html);
+
+        return $this->response;
     }
 
     public function show(bool $lendable)

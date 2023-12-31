@@ -72,12 +72,11 @@ class Disbursement extends CallableClass
     public function home()
     {
         $disbursements = $this->disbursementService->getSessionDisbursements($this->session);
-        $amountAvailable = $this->disbursementService->getAmountAvailable($this->session);
 
-        $html = $this->render('pages.meeting.disbursement.home')
-            ->with('session', $this->session)
-            ->with('disbursements', $disbursements)
-            ->with('amountAvailable', $amountAvailable);
+        $html = $this->render('pages.meeting.disbursement.home', [
+            'session' => $this->session,
+            'disbursements' => $disbursements,
+        ]);
         $this->response->html('meeting-disbursements', $html);
 
         $this->jq('#btn-disbursements-refresh')->click($this->rq()->home());
