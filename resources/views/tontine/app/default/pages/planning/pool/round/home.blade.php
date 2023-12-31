@@ -1,7 +1,7 @@
           <div class="section-body">
             <div class="row align-items-center">
               <div class="col">
-                <h2 class="section-title">{{ __('tontine.pool_round.titles.dates', ['pool' => $pool->title]) }}</h2>
+                <h2 class="section-title">{{ __('tontine.pool_round.titles.sessions', ['pool' => $pool->title]) }}</h2>
               </div>
               <div class="col-auto" id="pool-round-actions">
               </div>
@@ -17,6 +17,11 @@
                       <div class="col">
                         <h2 class="section-title" id="pool-round-start-session-title"></h2>
                       </div>
+                      <div class="col-auto">
+                        <div class="btn-group float-right" role="group" aria-label="">
+                          <button type="button" class="btn btn-primary" id="btn-show-start-session-page"><i class="fa fa-arrow-circle-down"></i></button>
+                        </div>
+                      </div>
                     </div>
 
                     <!-- Data tables -->
@@ -27,6 +32,11 @@
                     <div class="row align-items-center">
                       <div class="col">
                         <h2 class="section-title" id="pool-round-end-session-title"></h2>
+                      </div>
+                      <div class="col-auto">
+                        <div class="btn-group float-right" role="group" aria-label="">
+                          <button type="button" class="btn btn-primary" id="btn-show-end-session-page"><i class="fa fa-arrow-circle-down"></i></button>
+                        </div>
                       </div>
                     </div>
 

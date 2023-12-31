@@ -5,8 +5,10 @@ namespace App\Ajax\Web\Planning;
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Planning\Pool;
 use Siak\Tontine\Model\Pool as PoolModel;
+use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Planning\PoolService;
+use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\Planning\PoolRoundValidator;
 
 use function Jaxon\pm;
@@ -31,11 +33,12 @@ class PoolRound extends CallableClass
     /**
      * The constructor
      *
+     * @param TenantService $tenantService
      * @param SessionService $sessionService
      * @param PoolService $poolService
      */
-    public function __construct(private SessionService $sessionService,
-        private PoolService $poolService)
+    public function __construct(private TenantService $tenantService,
+        private SessionService $sessionService, private PoolService $poolService)
     {}
 
     /**
@@ -71,18 +74,39 @@ class PoolRound extends CallableClass
             trans('tontine.pool_round.titles.end_session', ['session' => $endSession]));
     }
 
+    private function getSessionPageNumber(SessionModel $session): int
+    {
+        $sessionCount = $this->sessionService->getTontineSessionCount($session, true, false);
+        return (int)($sessionCount / $this->tenantService->getLimit()) + 1;
+    }
+
     public function home(int $poolId)
     {
+        if(!$this->pool)
+        {
+            return $this->response;
+        }
+
         $html = $this->render('pages.planning.pool.round.home', [
             'pool' => $this->pool,
         ]);
         $this->response->html('content-home', $html);
         $this->showTitles();
+        $this->jq('#btn-show-start-session-page')->click($this->rq()->showStartSessionPage());
+        $this->jq('#btn-show-end-session-page')->click($this->rq()->showEndSessionPage());
 
         $this->bag('pool.round')->set('pool.id', $poolId);
 
-        $this->showStartSession();
-        $this->showEndSession();
+        $startPageNumber = 1;
+        $endPageNumber = 1;
+        if($this->pool->pool_round !== null)
+        {
+            // Go to the pages of the round start and end sessions.
+            $startPageNumber = $this->getSessionPageNumber($this->pool->pool_round->start_session);
+            $endPageNumber = $this->getSessionPageNumber($this->pool->pool_round->end_session);
+        }
+        $this->showStartSession($startPageNumber);
+        $this->showEndSession($endPageNumber);
 
         return $this->response;
     }
@@ -136,14 +160,40 @@ class PoolRound extends CallableClass
 
     public function showStartSession(int $pageNumber = 0)
     {
-        $sessionId =  $this->pool->pool_round ? $this->pool->pool_round->start_session_id : 0;
+        $sessionId = $this->pool->pool_round ? $this->pool->pool_round->start_session_id : 0;
         $request = $this->rq()->showStartSession();
         return $this->showSession($request, $sessionId, $pageNumber, 'start');
     }
 
     public function showEndSession(int $pageNumber = 0)
     {
-        $sessionId =  $this->pool->pool_round ? $this->pool->pool_round->end_session_id : 0;
+        $sessionId = $this->pool->pool_round ? $this->pool->pool_round->end_session_id : 0;
+        $request = $this->rq()->showEndSession();
+        return $this->showSession($request, $sessionId, $pageNumber, 'end');
+    }
+
+    public function showStartSessionPage()
+    {
+        if(!$this->pool->pool_round)
+        {
+            return $this->response;
+        }
+
+        $sessionId = $this->pool->pool_round->start_session_id;
+        $pageNumber = $this->getSessionPageNumber($this->pool->pool_round->start_session);
+        $request = $this->rq()->showStartSession();
+        return $this->showSession($request, $sessionId, $pageNumber, 'start');
+    }
+
+    public function showEndSessionPage()
+    {
+        if(!$this->pool->pool_round)
+        {
+            return $this->response;
+        }
+
+        $sessionId = $this->pool->pool_round->end_session_id;
+        $pageNumber = $this->getSessionPageNumber($this->pool->pool_round->end_session);
         $request = $this->rq()->showEndSession();
         return $this->showSession($request, $sessionId, $pageNumber, 'end');
     }

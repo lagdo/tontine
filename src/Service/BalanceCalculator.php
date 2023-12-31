@@ -147,7 +147,7 @@ class BalanceCalculator
         return $this->getDepositQuery(true)
             ->whereIn('deposits.session_id', $sessionIds)
             ->when($lendable, function(Builder $query) {
-                $query->where('pools.properties->remit->lendable', true);
+                $query->where('pools.properties->deposit->lendable', true);
             })
             ->sum(DB::raw('deposits.amount + pools.amount'));
     }
@@ -167,7 +167,7 @@ class BalanceCalculator
                 ->whereIn('payables.session_id', $sessionIds)
                 ->where('pools.properties->deposit->fixed', true)
                 ->when($lendable, function(Builder $query) {
-                    $query->where('pools.properties->remit->lendable', true);
+                    $query->where('pools.properties->deposit->lendable', true);
                 })
                 ->sum(DB::raw($this->getRemitmentAmountSqlValue()))
             // Remitment sum for pools with libre deposits.
@@ -183,7 +183,7 @@ class BalanceCalculator
                 })
                 ->where('pools.properties->deposit->fixed', false)
                 ->when($lendable, function(Builder $query) {
-                    $query->where('pools.properties->remit->lendable', true);
+                    $query->where('pools.properties->deposit->lendable', true);
                 })
                 ->sum('deposits.amount');
     }

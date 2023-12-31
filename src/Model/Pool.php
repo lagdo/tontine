@@ -158,22 +158,22 @@ class Pool extends Base
 
     public function getDepositFixedAttribute()
     {
-        return $this->properties['deposit']['fixed'] === true;
+        return ($this->properties['deposit']['fixed'] ?? true) === true;
+    }
+
+    public function getDepositLendableAttribute()
+    {
+        return ($this->properties['deposit']['lendable'] ?? false) === true;
     }
 
     public function getRemitPlannedAttribute()
     {
-        return $this->properties['remit']['planned'] === true;
+        return ($this->properties['remit']['planned'] ?? true) === true;
     }
 
     public function getRemitAuctionAttribute()
     {
-        return $this->properties['remit']['auction'] === true;
-    }
-
-    public function getRemitLendableAttribute()
-    {
-        return $this->properties['remit']['lendable'] === true;
+        return ($this->properties['remit']['auction'] ?? false) === true;
     }
 
     public function getRemitPayableAttribute()

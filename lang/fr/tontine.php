@@ -256,12 +256,11 @@ return [
             'lendable' => "Disponible pour prêt",
             'deposit' => [
                 'fixed' => "Le montant des dépôts est fixe",
+                'lendable' => "Les montants en caisse peuvent être prêtés",
             ],
             'remit' => [
-                'fixed' => "Le montant des remises est fixe",
                 'planned' => "Le nombre de remises est défini à l'avance",
                 'auction' => "Les remises se font après enchères",
-                'lendable' => "Les montants en caisse peuvent être prêtés",
             ],
         ],
         'help' => [
@@ -269,17 +268,16 @@ return [
                 "Nous allons vous demander de préciser ses caractéristiques.",
             'deposit' => [
                 'fixed' => "Cochez la case ci-dessous chaque membre qui souscrit à cette tontine doit verser un montant fixe à chaque séance.",
+                'lendable' => "Cochez la case ci-dessous si les montants des cotisations restant en caisse peuvent être prêtés.",
             ],
             'remit' => [
-                'fixed' => "Cochez la case ci-dessous si chaque bénéficiaire recevra la totalité du montant correspondant à ses dépôts.",
                 'planned' => "Cochez la case ci-dessous si le nombre de bénéficiaires à chaque séance est déterminé à l'avance.",
                 'auction' => "Cochez la case ci-dessous si le choix des bénéficiaires des cotisations est soumis aux enchères.",
-                'lendable' => "Cochez la case ci-dessous si les montants des cotisations restant en caisse peuvent être prêtés.",
             ],
         ],
         'actions' => [
             'subscriptions' => "Souscriptions",
-            'round' => "Dates",
+            'sessions' => "Séances",
         ],
         'questions' => [
             'delete' => "Supprimer cette tontine ?<br/>Il ne faut pas qu'il ait de souscription.",
@@ -300,7 +298,7 @@ return [
     ],
     'pool_round' => [
         'titles' => [
-            'dates' => "Dates de la tontine : :pool",
+            'sessions' => "Séances de la tontine : :pool",
             'start_session' => "Séance de début : :session",
             'end_session' => "Séance de fin : :session",
         ],
@@ -308,11 +306,11 @@ return [
             'default' => "(Même que le tour)",
         ],
         'questions' => [
-            'delete' => "Supprimer les dates de cette tontine ?",
+            'delete' => "Supprimer les séances de cette tontine ?",
         ],
         'messages' => [
-            'saved' => "Les dates de la tontine ont été enregistrées.",
-            'deleted' => "Les dates de la tontine ont été supprimées.",
+            'saved' => "Les séances de la tontine ont été enregistrées.",
+            'deleted' => "Les séances de la tontine ont été supprimées.",
         ],
         'errors' => [
             'start_session' => "La séance de début est incorrecte.",

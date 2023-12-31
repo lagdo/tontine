@@ -34,12 +34,12 @@ class PoolValidator extends AbstractValidator
             'amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
             'notes' => 'nullable|string',
             'properties' => 'required|array:deposit,remit',
-            'properties.deposit' => 'required|array:fixed',
+            'properties.deposit' => 'required|array:fixed,lendable',
             'properties.deposit.fixed' => 'required|boolean',
-            'properties.remit' => 'required|array:fixed,planned,auction,lendable',
+            'properties.deposit.lendable' => 'required|boolean',
+            'properties.remit' => 'required|array:planned,auction',
             'properties.remit.planned' => 'required|boolean',
             'properties.remit.auction' => 'required|boolean',
-            'properties.remit.lendable' => 'required|boolean',
         ]);
         if($validator->fails())
         {

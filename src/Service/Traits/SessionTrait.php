@@ -58,14 +58,6 @@ trait SessionTrait
     }
 
     /**
-     * @return int
-     */
-    public function getRoundSessionCount(): int
-    {
-        return $this->getSessionCount();
-    }
-
-    /**
      * Find a session.
      *
      * @param int $sessionId    The session id
@@ -92,72 +84,102 @@ trait SessionTrait
     }
 
     /**
+     * @param Builder $query
+     * @param Session|null $currSession
+     * @param bool $getAfter Get the sessions after or before the provided one
+     * @param bool $withCurr Keep the provided session in the list
+     *
+     * @return Builder
+     */
+    private function getSessionsQuery($query, ?Session $currSession, bool $getAfter, bool $withCurr)
+    {
+        $operator = $getAfter ? ($withCurr ? '>=' : '>') : ($withCurr ? '<=' : '<');
+        $currSessionDate = !$currSession ? '' : $currSession->start_at->format('Y-m-d');
+        return $query->when($currSession !== null, fn(Builder $query) =>
+            $query->whereDate('start_at', $operator, $currSessionDate));
+    }
+
+    /**
+     * @param Session|null $currSession
+     * @param bool $getAfter Get the sessions after or before the provided one
+     * @param bool $withCurr Keep the provided session in the list
+     *
+     * @return Builder
+     */
+    private function getRoundSessionsQuery(?Session $currSession, bool $getAfter, bool $withCurr)
+    {
+        $query = $this->tenantService->round()->sessions();
+        return $this->getSessionsQuery($query, $currSession, $getAfter, $withCurr);
+    }
+
+    /**
+     * @param Session|null $session
+     * @param bool $getAfter Get the sessions after or before the provided one
+     * @param bool $withCurr Keep the provided session in the list
+     * @param bool $orderAsc
+     *
+     * @return Collection
+     */
+    public function getRoundSessionIds(?Session $currSession = null,
+        bool $getAfter = true, bool $withCurr = true, bool $orderAsc = true): Collection
+    {
+        return $this->getRoundSessionsQuery($currSession, $getAfter, $withCurr)
+            ->orderBy('sessions.start_at', $orderAsc ? 'asc' : 'desc')
+            ->pluck('sessions.id');
+    }
+
+    /**
+     * @param Session|null $currSession
+     * @param bool $getAfter Get the sessions after or before the provided one
+     * @param bool $withCurr Keep the provided session in the list
+     *
      * @return int
      */
-    public function getTontineSessionCount(): int
+    public function getRoundSessionCount(?Session $currSession = null,
+        bool $getAfter = true, bool $withCurr = true): int
     {
-        return $this->tenantService->tontine()->sessions()->count();
+        return $this->getRoundSessionsQuery($currSession, $getAfter, $withCurr)->count();
     }
 
     /**
-     * @param Session|null $lastSession
-     * @param bool $withLast
+     * @param Session|null $currSession
+     * @param bool $getAfter Get the sessions after or before the provided one
+     * @param bool $withCurr Keep the provided session in the list
      *
      * @return Builder
      */
-    private function getRoundSessionsQuery(?Session $lastSession, bool $withLast)
+    private function getTontineSessionsQuery(?Session $currSession, bool $getAfter, bool $withCurr)
     {
-        $lastSessionDate = !$lastSession ? '' : $lastSession->start_at->format('Y-m-d');
-        return $this->tenantService->round()->sessions()
-            ->when($lastSession !== null && !$withLast,
-                fn(Builder $query) => $query->whereDate('start_at', '<', $lastSessionDate))
-            ->when($lastSession !== null && $withLast,
-                fn(Builder $query) => $query->whereDate('start_at', '<=', $lastSessionDate));
+        $query = $this->tenantService->tontine()->sessions();
+        return $this->getSessionsQuery($query, $currSession, $getAfter, $withCurr);
     }
 
     /**
      * @param Session|null $session
-     * @param bool $withLast
+     * @param bool $getAfter Get the sessions after or before the provided one
+     * @param bool $withCurr Keep the provided session in the list
      * @param bool $orderAsc
      *
      * @return Collection
      */
-    public function getRoundSessionIds(?Session $lastSession = null,
-        bool $withLast = true, bool $orderAsc = true): Collection
+    public function getTontineSessionIds(?Session $currSession = null,
+        bool $getAfter = true, bool $withCurr = true, bool $orderAsc = true): Collection
     {
-        return $this->getRoundSessionsQuery($lastSession, $withLast)
+        return $this->getTontineSessionsQuery($currSession, $getAfter, $withCurr)
             ->orderBy('sessions.start_at', $orderAsc ? 'asc' : 'desc')
             ->pluck('sessions.id');
     }
 
     /**
-     * @param Session|null $lastSession
-     * @param bool $withLast
+     * @param Session|null $currSession
+     * @param bool $getAfter Get the sessions after or before the provided one
+     * @param bool $withCurr Keep the provided session in the list
      *
-     * @return Builder
+     * @return int
      */
-    private function getTontineSessionsQuery(?Session $lastSession, bool $withLast)
+    public function getTontineSessionCount(?Session $currSession = null,
+        bool $getAfter = true, bool $withCurr = true): int
     {
-        $lastSessionDate = $lastSession->start_at->format('Y-m-d');
-        return $this->tenantService->tontine()->sessions()
-            ->when($lastSession !== null && !$withLast,
-                fn(Builder $query) => $query->whereDate('start_at', '<', $lastSessionDate))
-            ->when($lastSession !== null && $withLast,
-                fn(Builder $query) => $query->whereDate('start_at', '<=', $lastSessionDate));
-    }
-
-    /**
-     * @param Session|null $session
-     * @param bool $withLast
-     * @param bool $orderAsc
-     *
-     * @return Collection
-     */
-    public function getTontineSessionIds(?Session $lastSession = null,
-        bool $withLast = true, bool $orderAsc = true): Collection
-    {
-        return $this->getTontineSessionsQuery($lastSession, $withLast)
-            ->orderBy('sessions.start_at', $orderAsc ? 'asc' : 'desc')
-            ->pluck('sessions.id');
+        return $this->getTontineSessionsQuery($currSession, $getAfter, $withCurr)->count();
     }
 }
