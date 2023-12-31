@@ -11,8 +11,8 @@
                             <tr>
                               <td>{{ $round->title }}</td>
                               <td>
-                                {{ $round->start_at->translatedFormat(__('tontine.date.format')) }}<br/>
-                                {{ $round->end_at->translatedFormat(__('tontine.date.format')) }}
+                                {{ !$round->start_at ? '' : $round->start_at->translatedFormat(__('tontine.date.format')) }}<br/>
+                                {{ !$round->end_at ? '' : $round->end_at->translatedFormat(__('tontine.date.format')) }}
                               </td>
                               <td class="table-item-menu">
 @include('tontine.app.default.parts.table.menu', [
