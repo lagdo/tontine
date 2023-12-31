@@ -3,7 +3,6 @@
 namespace App\Ajax\Web\Meeting\Cash;
 
 use App\Ajax\CallableClass;
-use App\Ajax\Web\Meeting\Balance;
 use App\Ajax\Web\Meeting\Credit\Loan;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
@@ -82,8 +81,6 @@ class Disbursement extends CallableClass
 
         $this->jq('#btn-disbursements-refresh')->click($this->rq()->home());
         $this->jq('#btn-disbursement-add')->click($this->rq()->addDisbursement());
-        $this->jq('#btn-balances-show')
-            ->click($this->cl(Balance::class)->rq()->show($this->session->id, false));
         $disbursementId = jq()->parent()->attr('data-disbursement-id')->toInt();
         $this->jq('.btn-disbursement-edit')->click($this->rq()->editDisbursement($disbursementId));
         $this->jq('.btn-disbursement-delete')->click($this->rq()->deleteDisbursement($disbursementId)
