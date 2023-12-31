@@ -51,9 +51,10 @@ class Deposit extends CallableClass
 
     public function home()
     {
-        $html = $this->render('pages.meeting.deposit.home')
-            ->with('session', $this->session)
-            ->with('pools', $this->poolService->getPoolsWithReceivables($this->session));
+        $html = $this->render('pages.meeting.deposit.home', [
+            'session' => $this->session,
+            'pools' => $this->poolService->getPoolsWithReceivables($this->session),
+        ]);
         $this->response->html('meeting-deposits', $html);
 
         $this->jq('#btn-deposits-refresh')->click($this->rq()->home());

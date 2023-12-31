@@ -3,6 +3,7 @@
 namespace App\Ajax\Web\Tontine;
 
 use App\Ajax\CallableClass;
+use App\Ajax\Web\Planning\Session;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
@@ -109,13 +110,16 @@ class Select extends CallableClass
             return $this->response;
         }
 
+        $this->dialog->hide();
+
         // Save the tontine and round ids in the user session.
         session(['tontine.id' => $tontine->id, 'round.id' => $round->id]);
         $this->tenantService->setRound($round);
 
         $this->selectRound($round);
+        // Update the session list.
+        $this->cl(Session::class)->home();
 
-        $this->dialog->hide();
         $this->notify->info(trans('tontine.round.messages.selected',
             ['tontine' => $tontine->name, 'round' => $round->title]));
 

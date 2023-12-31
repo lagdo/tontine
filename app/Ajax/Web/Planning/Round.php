@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Ajax\Web\Tontine;
+namespace App\Ajax\Web\Planning;
 
-use Siak\Tontine\Service\Planning\RoundService;
 use App\Ajax\CallableClass;
+use App\Ajax\Web\Tontine\Select;
+use Siak\Tontine\Service\Planning\RoundService;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
@@ -25,14 +26,16 @@ class Round extends CallableClass
      */
     public function home()
     {
-        $html = $this->render('pages.round.home');
+        $html = $this->render('pages.planning.round.home');
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-show-select')->click($this->cl(Select::class)->rq()->showRounds());
         $this->jq('#btn-round-refresh')->click($this->rq()->home());
         $this->jq('#btn-round-create')->click($this->rq()->add());
 
-        return $this->page();
+        $this->page();
+
+        return $this->cl(Session::class)->home();
     }
 
     public function page(int $pageNumber = 0)
@@ -42,10 +45,10 @@ class Round extends CallableClass
         $rounds = $this->roundService->getRounds($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $roundCount);
 
-        $html = $this->render('pages.round.page')
+        $html = $this->render('pages.planning.round.page')
             ->with('rounds', $rounds)
             ->with('pagination', $pagination);
-        $this->response->html('round-page', $html);
+        $this->response->html('content-page-rounds', $html);
 
         $roundId = jq()->parent()->attr('data-round-id')->toInt();
         $this->jq('.btn-round-edit')->click($this->rq()->edit($roundId));
@@ -57,7 +60,7 @@ class Round extends CallableClass
     public function add()
     {
         $title = trans('tontine.round.titles.add');
-        $content = $this->render('pages.round.add');
+        $content = $this->render('pages.planning.round.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -88,7 +91,7 @@ class Round extends CallableClass
         $round = $this->roundService->getRound($roundId);
 
         $title = trans('tontine.round.titles.edit');
-        $content = $this->render('pages.round.edit')->with('round', $round);
+        $content = $this->render('pages.planning.round.edit')->with('round', $round);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

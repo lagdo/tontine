@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Meeting\Pool;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Meeting\SummaryService;

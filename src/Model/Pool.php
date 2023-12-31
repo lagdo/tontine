@@ -91,7 +91,7 @@ class Pool extends Base
     protected static function booted()
     {
         static::addGlobalScope('dates', function (Builder $query) {
-            $query->select('pools.*', 'v.end_at', 'v.start_at', 'v.tontine_id')
+            $query->addSelect(['pools.*', 'v.end_at', 'v.start_at', 'v.tontine_id'])
                 ->join(DB::raw('v_pools as v'), 'v.id', '=', 'pools.id');
         });
     }

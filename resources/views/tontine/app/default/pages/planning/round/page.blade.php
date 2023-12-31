@@ -2,28 +2,28 @@
                           <thead>
                             <tr>
                               <th>{!! __('common.labels.title') !!}</th>
-                              <th>{!! __('common.labels.date') !!}</th>
+                              <th>{!! __('common.labels.dates') !!}</th>
                               <th class="table-menu"></th>
                             </tr>
                           </thead>
                           <tbody>
-@foreach ($sessions as $session)
+@foreach ($rounds as $round)
                             <tr>
-                              <td>{{ $session->title }}</td>
-                              <td>{{ $session->date }}<br/>{{ $session->times }}</td>
+                              <td>{{ $round->title }}</td>
+                              <td>
+                                {{ $round->start_at->translatedFormat(__('tontine.date.format')) }}<br/>
+                                {{ $round->end_at->translatedFormat(__('tontine.date.format')) }}
+                              </td>
                               <td class="table-item-menu">
 @include('tontine.app.default.parts.table.menu', [
-  'dataIdKey' => 'data-session-id',
-  'dataIdValue' => $session->id,
+  'dataIdKey' => 'data-round-id',
+  'dataIdValue' => $round->id,
   'menus' => [[
-    'class' => 'btn-session-edit',
+    'class' => 'btn-round-edit',
     'text' => __('common.actions.edit'),
   ],[
-    'class' => 'btn-session-venue',
-    'text' => __('tontine.session.actions.venue'),
-  ],[
-    'class' => 'btn-session-delete',
-    'text' => __('common.actions.delete'),
+    'class' => 'btn-round-select',
+    'text' => __('tontine.actions.choose'),
   ]],
 ])
                               </td>

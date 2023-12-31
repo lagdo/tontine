@@ -6,6 +6,7 @@ use App\Ajax\CallableClass;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SessionService;
+use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Planning\SessionValidator;
@@ -27,36 +28,26 @@ use function trim;
 class Session extends CallableClass
 {
     /**
-     * @di
-     * @var TontineService
-     */
-    protected TontineService $tontineService;
-
-    /**
-     * @di
-     * @var MemberService
-     */
-    public MemberService $memberService;
-
-    /**
-     * @di
-     * @var SessionService
-     */
-    public SessionService $sessionService;
-
-    /**
      * @var SessionValidator
      */
     protected SessionValidator $validator;
 
-    /**
-     * @after hideMenuOnMobile
-     */
+    public function __construct(private TenantService $tenantService,
+        private TontineService $tontineService, private MemberService $memberService,
+        private SessionService $sessionService)
+    {}
+
     public function home()
     {
-        $html = $this->render('pages.planning.session.home');
+        $round = $this->tenantService->round();
+        $html = $this->render('pages.planning.session.home', ['round' => $round]);
         $this->response->html('section-title', trans('tontine.menus.planning'));
-        $this->response->html('content-home', $html);
+        $this->response->html('content-home-sessions', $html);
+
+        if(!$round)
+        {
+            return $this->response;
+        }
 
         $this->jq('#btn-sessions-refresh')->click($this->rq()->home());
         $this->jq('#btn-sessions-add')->click($this->rq()->add());
@@ -82,7 +73,7 @@ class Session extends CallableClass
             ->with('sessions', $sessions)
             ->with('statuses', $statuses)
             ->with('pagination', $pagination);
-        $this->response->html('content-page', $html);
+        $this->response->html('content-page-sessions', $html);
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.btn-session-edit')->click($this->rq()->edit($sessionId));
