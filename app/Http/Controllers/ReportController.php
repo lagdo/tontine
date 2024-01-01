@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
+use Siak\Tontine\Service\Planning\RoundService;
+use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Report\Pdf\PrinterService;
 use Siak\Tontine\Service\Report\ReportService;
-use Siak\Tontine\Service\TenantService;
 use Sqids\SqidsInterface;
 
 use function base64_decode;
@@ -17,12 +18,14 @@ use function view;
 class ReportController extends Controller
 {
     /**
-     * @param TenantService $tenantService
+     * @param SessionService $sessionService
+     * @param RoundService $roundService
      * @param ReportService $reportService
      * @param PrinterService $printerService
      */
-    public function __construct(private TenantService $tenantService,
-        private ReportService $reportService, private PrinterService $printerService)
+    public function __construct(private SessionService $sessionService,
+        private RoundService $roundService, private ReportService $reportService,
+        private PrinterService $printerService)
     {}
 
     /**
@@ -52,7 +55,7 @@ class ReportController extends Controller
      */
     public function sessionById(Request $request, int $sessionId)
     {
-        $session = $this->tenantService->getSession($sessionId);
+        $session = $this->sessionService->getSession($sessionId);
         view()->share($this->reportService->getSessionReport($session));
         // Show the html page
         if($request->has('html'))
@@ -89,7 +92,7 @@ class ReportController extends Controller
     public function profits(Request $request, SqidsInterface $sqids, string $sessionSqid)
     {
         [$sessionId] = $sqids->decode($sessionSqid);
-        $session = $this->tenantService->getSession($sessionId);
+        $session = $this->sessionService->getSession($sessionId);
         view()->share($this->reportService->getProfitsReport($session));
         // Show the html page
         if($request->has('html'))
@@ -110,7 +113,7 @@ class ReportController extends Controller
      */
     public function roundById(Request $request, int $roundId)
     {
-        $round = $this->tenantService->getRound($roundId);
+        $round = $this->roundService->getRound($roundId);
         view()->share($this->reportService->getRoundReport($round));
         // Show the html page
         if($request->has('html'))
