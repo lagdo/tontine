@@ -2,16 +2,12 @@
 
 namespace App\Ajax\Web\Meeting\Pool\Remitment;
 
-use App\Ajax\CallableClass;
-use App\Ajax\Web\Meeting\Cash\Disbursement;
-use App\Ajax\Web\Meeting\Credit\Loan;
+use App\Ajax\CallableSessionClass;
 use App\Ajax\Web\Meeting\Pool\Remitment;
 use Siak\Tontine\Model\Pool as PoolModel;
-use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
-use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Validation\Meeting\RemitmentValidator;
 
 use function Jaxon\jq;
@@ -19,10 +15,9 @@ use function Jaxon\pm;
 use function trans;
 
 /**
- * @databag meeting
  * @before getPool
  */
-class Pool extends CallableClass
+class Pool extends CallableSessionClass
 {
     /**
      * @var BalanceCalculator
@@ -35,11 +30,6 @@ class Pool extends CallableClass
     protected RemitmentValidator $validator;
 
     /**
-     * @var SessionModel|null
-     */
-    protected ?SessionModel $session;
-
-    /**
      * @var PoolModel|null
      */
     protected ?PoolModel $pool;
@@ -47,12 +37,11 @@ class Pool extends CallableClass
     /**
      * The constructor
      *
-     * @param SessionService $sessionService
      * @param PoolService $poolService
      * @param RemitmentService $remitmentService
      */
-    public function __construct(protected SessionService $sessionService,
-        protected PoolService $poolService, protected RemitmentService $remitmentService)
+    public function __construct(protected PoolService $poolService,
+        protected RemitmentService $remitmentService)
     {}
 
     /**
@@ -60,9 +49,6 @@ class Pool extends CallableClass
      */
     protected function getPool()
     {
-        $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->sessionService->getSession($sessionId);
-
         $poolId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('pool.id');
         $this->pool = $this->poolService->getPool($poolId);
@@ -113,6 +99,9 @@ class Pool extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @after showBalanceAmounts
+     */
     public function createRemitment(int $payableId)
     {
         if($this->session->closed)
@@ -127,10 +116,6 @@ class Pool extends CallableClass
         }
 
         $this->remitmentService->savePlannedRemitment($this->pool, $this->session, $payableId);
-
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->page();
     }
@@ -170,6 +155,7 @@ class Pool extends CallableClass
 
     /**
      * @di $validator
+     * @after showBalanceAmounts
      */
     public function saveRemitment(array $formValues)
     {
@@ -194,15 +180,12 @@ class Pool extends CallableClass
             $values['payable'], $values['auction']);
         $this->dialog->hide();
 
-        // Refresh the refunds pages
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
-
         return $this->page();
     }
 
     /**
      * @param int $payableId
+     * @after showBalanceAmounts
      */
     public function deleteRemitment(int $payableId)
     {
@@ -213,10 +196,6 @@ class Pool extends CallableClass
         }
 
         $this->remitmentService->deleteRemitment($this->pool, $this->session, $payableId);
-
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->page();
     }

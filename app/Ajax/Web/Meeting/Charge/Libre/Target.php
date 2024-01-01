@@ -2,11 +2,10 @@
 
 namespace App\Ajax\Web\Meeting\Charge\Libre;
 
-use App\Ajax\CallableClass;
+use App\Ajax\CallableSessionClass;
 use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Model\Charge as ChargeModel;
-use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\SettlementTarget as TargetModel;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
 use Siak\Tontine\Service\Meeting\SessionService;
@@ -19,10 +18,9 @@ use function trans;
 use function trim;
 
 /**
- * @databag meeting
  * @before getTarget
  */
-class Target extends CallableClass
+class Target extends CallableSessionClass
 {
     /**
      * @var LocaleService
@@ -35,11 +33,6 @@ class Target extends CallableClass
     protected TargetValidator $validator;
 
     /**
-     * @var SessionModel|null
-     */
-    protected ?SessionModel $session;
-
-    /**
      * @var ChargeModel|null
      */
     protected ?ChargeModel $charge;
@@ -50,20 +43,22 @@ class Target extends CallableClass
     protected ?TargetModel $target = null;
 
     /**
+     * The constructor
+     *
      * @param SettlementTargetService $targetService
      * @param ChargeService $chargeService
      * @param SessionService $sessionService
      */
     public function __construct(protected SettlementTargetService $targetService,
-        protected ChargeService $chargeService, protected SessionService $sessionService)
-    {}
+        protected ChargeService $chargeService, SessionService $sessionService)
+    {
+        $this->sessionService = $sessionService;
+    }
 
     protected function getTarget()
     {
-        $sessionId = $this->bag('meeting')->get('session.id');
         $chargeId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('charge.id');
-        $this->session = $this->sessionService->getSession($sessionId);
         $this->charge = $this->chargeService->getCharge($chargeId);
         if($this->session !== null && $this->charge !== null)
         {

@@ -1,45 +1,30 @@
 <?php
 
-namespace App\Ajax\Web\Meeting;
+namespace App\Ajax\Web\Meeting\Session;
 
-use App\Ajax\CallableClass;
-use Siak\Tontine\Model\Session as SessionModel;
+use App\Ajax\CallableSessionClass;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Meeting\SessionService;
 
 use function trans;
 
-/**
- * @databag meeting
- * @before getSession
- */
-class Balance extends CallableClass
+class Session extends CallableSessionClass
 {
     /**
-     * @var SessionModel|null
+     * @var LocaleService
      */
-    protected ?SessionModel $session = null;
+    protected LocaleService $localeService;
 
     /**
-     * @param LocaleService $localeService
-     * @param SessionService $sessionService
      * @param BalanceCalculator $balanceCalculator
      */
-    public function __construct(private LocaleService $localeService,
-        private SessionService $sessionService, private BalanceCalculator $balanceCalculator)
+    public function __construct(private BalanceCalculator $balanceCalculator)
     {}
 
     /**
-     * @return void
+     * @di $localeService
      */
-    protected function getSession()
-    {
-        $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->sessionService->getSession($sessionId);
-    }
-
-    public function showAmounts()
+    public function showBalanceAmounts()
     {
         $amount = $this->balanceCalculator->getBalanceForLoan($this->session);
         $html = trans('meeting.loan.labels.amount_available', [
@@ -56,13 +41,8 @@ class Balance extends CallableClass
         return $this->response;
     }
 
-    public function show(bool $lendable)
+    public function showBalanceDetails(bool $lendable)
     {
-        if(!$this->session)
-        {
-            return $this->response;
-        }
-
         $balances = $this->balanceCalculator->getBalances($this->session, $lendable);
         $title = trans('meeting.titles.amounts');
         $content = $this->render('pages.meeting.session.balances', [
@@ -75,6 +55,38 @@ class Balance extends CallableClass
             'click' => 'close',
         ]];
         $this->dialog->show($title, $content, $buttons);
+
+        return $this->response;
+    }
+
+    public function open()
+    {
+        $this->sessionService->openSession($this->session);
+        $this->cl(Home::class)->show($this->session);
+
+        return $this->response;
+    }
+
+    public function close()
+    {
+        $this->sessionService->closeSession($this->session);
+        $this->cl(Home::class)->show($this->session);
+
+        return $this->response;
+    }
+
+    public function saveAgenda(string $text)
+    {
+        $this->sessionService->saveAgenda($this->session, $text);
+        $this->notify->success(trans('meeting.messages.agenda.updated'), trans('common.titles.success'));
+
+        return $this->response;
+    }
+
+    public function saveReport(string $text)
+    {
+        $this->sessionService->saveReport($this->session, $text);
+        $this->notify->success(trans('meeting.messages.report.updated'), trans('common.titles.success'));
 
         return $this->response;
     }

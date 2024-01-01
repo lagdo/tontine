@@ -2,22 +2,18 @@
 
 namespace App\Ajax\Web\Meeting\Credit;
 
-use App\Ajax\CallableClass;
-use App\Ajax\Web\Meeting\Cash\Disbursement;
+use App\Ajax\CallableSessionClass;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
-use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 use function Jaxon\jq;
 use function trans;
 
 /**
- * @databag meeting
  * @databag refund
- * @before getSession
  */
-class Refund extends CallableClass
+class Refund extends CallableSessionClass
 {
     /**
      * @var DebtValidator
@@ -25,28 +21,12 @@ class Refund extends CallableClass
     protected DebtValidator $validator;
 
     /**
-     * @var SessionModel|null
-     */
-    protected ?SessionModel $session = null;
-
-    /**
      * The constructor
      *
-     * @param SessionService $sessionService
      * @param RefundService $refundService
      */
-    public function __construct(protected SessionService $sessionService,
-        protected RefundService $refundService)
+    public function __construct(protected RefundService $refundService)
     {}
-
-    /**
-     * @return void
-     */
-    protected function getSession()
-    {
-        $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->sessionService->getSession($sessionId);
-    }
 
     /**
      * @exclude
@@ -108,6 +88,7 @@ class Refund extends CallableClass
 
     /**
      * @di $validator
+     * @after showBalanceAmounts
      */
     public function createRefund(string $debtId)
     {
@@ -120,13 +101,12 @@ class Refund extends CallableClass
         $this->validator->validate($debtId);
         $this->refundService->createRefund($this->session, $debtId);
 
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
-
         return $this->page();
     }
 
+    /**
+     * @after showBalanceAmounts
+     */
     public function deleteRefund(int $debtId)
     {
         if($this->session->closed)
@@ -136,10 +116,6 @@ class Refund extends CallableClass
         }
 
         $this->refundService->deleteRefund($this->session, $debtId);
-
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->page();
     }

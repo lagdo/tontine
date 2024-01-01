@@ -2,15 +2,11 @@
 
 namespace App\Ajax\Web\Meeting\Charge\Fixed;
 
-use App\Ajax\CallableClass;
-use App\Ajax\Web\Meeting\Cash\Disbursement;
-use App\Ajax\Web\Meeting\Credit\Loan;
+use App\Ajax\CallableSessionClass;
 use App\Ajax\Web\Meeting\Charge\FixedFee as Charge;
-use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Model\Charge as ChargeModel;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementService;
-use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 
 use function Jaxon\jq;
@@ -18,16 +14,10 @@ use function trans;
 use function trim;
 
 /**
- * @databag meeting
  * @before getCharge
  */
-class Settlement extends CallableClass
+class Settlement extends CallableSessionClass
 {
-    /**
-     * @var SessionModel|null
-     */
-    protected ?SessionModel $session;
-
     /**
      * @var ChargeModel|null
      */
@@ -37,21 +27,17 @@ class Settlement extends CallableClass
      * The constructor
      *
      * @param SettlementService $settlementService
-     * @param SessionService $sessionService
      * @param ChargeService $chargeService
      * @param BillService $billService
      */
     public function __construct(protected SettlementService $settlementService,
-        protected SessionService $sessionService, protected ChargeService $chargeService,
-        protected BillService $billService)
+        protected ChargeService $chargeService, protected BillService $billService)
     {}
 
     protected function getCharge()
     {
-        $sessionId = $this->bag('meeting')->get('session.id');
         $chargeId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('fee.fixed.id');
-        $this->session = $this->sessionService->getSession($sessionId);
         $this->charge = $this->chargeService->getCharge($chargeId);
     }
 
@@ -143,6 +129,7 @@ class Settlement extends CallableClass
      * @param int $billId
      *
      * @return mixed
+     * @after showBalanceAmounts
      */
     public function addSettlement(int $billId)
     {
@@ -154,10 +141,6 @@ class Settlement extends CallableClass
 
         $this->settlementService->createSettlement($this->charge, $this->session, $billId);
 
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
-
         return $this->page();
     }
 
@@ -165,6 +148,7 @@ class Settlement extends CallableClass
      * @param int $billId
      *
      * @return mixed
+     * @after showBalanceAmounts
      */
     public function delSettlement(int $billId)
     {
@@ -176,15 +160,12 @@ class Settlement extends CallableClass
 
         $this->settlementService->deleteSettlement($this->charge, $this->session, $billId);
 
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
-
         return $this->page();
     }
 
     /**
      * @return mixed
+     * @after showBalanceAmounts
      */
     public function addAllSettlements()
     {
@@ -196,15 +177,12 @@ class Settlement extends CallableClass
 
         $this->settlementService->createAllSettlements($this->charge, $this->session);
 
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
-
         return $this->page();
     }
 
     /**
      * @return mixed
+     * @after showBalanceAmounts
      */
     public function delAllSettlements()
     {
@@ -215,10 +193,6 @@ class Settlement extends CallableClass
         }
 
         $this->settlementService->deleteAllSettlements($this->charge, $this->session);
-
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->page();
     }

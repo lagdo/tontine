@@ -2,11 +2,9 @@
 
 namespace App\Ajax\Web\Meeting\Credit;
 
-use App\Ajax\CallableClass;
-use App\Ajax\Web\Meeting\Cash\Disbursement;
+use App\Ajax\CallableSessionClass;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
-use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 use function Jaxon\jq;
@@ -14,11 +12,9 @@ use function Jaxon\pm;
 use function trans;
 
 /**
- * @databag meeting
- * @databag refund
- * @before getSession
+ * @databag partial.refund
  */
-class PartialRefund extends CallableClass
+class PartialRefund extends CallableSessionClass
 {
     /**
      * @var DebtValidator
@@ -26,28 +22,12 @@ class PartialRefund extends CallableClass
     protected DebtValidator $validator;
 
     /**
-     * @var SessionModel|null
-     */
-    protected ?SessionModel $session = null;
-
-    /**
      * The constructor
      *
-     * @param SessionService $sessionService
      * @param RefundService $refundService
      */
-    public function __construct(protected SessionService $sessionService,
-        protected RefundService $refundService)
+    public function __construct(protected RefundService $refundService)
     {}
-
-    /**
-     * @return void
-     */
-    protected function getSession()
-    {
-        $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->sessionService->getSession($sessionId);
-    }
 
     /**
      * @exclude
@@ -127,6 +107,7 @@ class PartialRefund extends CallableClass
 
     /**
      * @di $validator
+     * @after showBalanceAmounts
      */
     public function createRefund(array $formValues)
     {
@@ -145,13 +126,13 @@ class PartialRefund extends CallableClass
 
         // Refresh the refunds pages
         $this->cl(Refund::class)->show($this->session);
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->home();
     }
 
+    /**
+     * @after showBalanceAmounts
+     */
     public function deleteRefund(int $refundId)
     {
         if($this->session->closed)
@@ -164,9 +145,6 @@ class PartialRefund extends CallableClass
 
         // Refresh the refunds pages
         $this->cl(Refund::class)->show($this->session);
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->home();
     }

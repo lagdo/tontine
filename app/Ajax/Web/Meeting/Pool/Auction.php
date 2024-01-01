@@ -2,23 +2,17 @@
 
 namespace App\Ajax\Web\Meeting\Pool;
 
-use App\Ajax\CallableClass;
-use App\Ajax\Web\Meeting\Cash\Disbursement;
-use App\Ajax\Web\Meeting\Credit\Loan;
-use Siak\Tontine\Model\Session as SessionModel;
+use App\Ajax\CallableSessionClass;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;
-use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 use function Jaxon\jq;
 use function trans;
 
 /**
- * @databag meeting
  * @databag auction
- * @before getSession
  */
-class Auction extends CallableClass
+class Auction extends CallableSessionClass
 {
     /**
      * @var DebtValidator
@@ -26,28 +20,12 @@ class Auction extends CallableClass
     protected DebtValidator $validator;
 
     /**
-     * @var SessionModel|null
-     */
-    protected ?SessionModel $session = null;
-
-    /**
      * The constructor
      *
-     * @param SessionService $sessionService
      * @param AuctionService $auctionService
      */
-    public function __construct(private SessionService $sessionService,
-        private AuctionService $auctionService)
+    public function __construct(private AuctionService $auctionService)
     {}
-
-    /**
-     * @return void
-     */
-    protected function getSession()
-    {
-        $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->sessionService->getSession($sessionId);
-    }
 
     public function home()
     {
@@ -100,6 +78,7 @@ class Auction extends CallableClass
 
     /**
      * @di $validator
+     * @after showBalanceAmounts
      */
     public function togglePayment(string $auctionId)
     {
@@ -111,10 +90,6 @@ class Auction extends CallableClass
 
         $this->validator->validate($auctionId);
         $this->auctionService->toggleAuctionPayment($this->session, $auctionId);
-
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->page();
     }

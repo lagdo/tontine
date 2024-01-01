@@ -2,23 +2,17 @@
 
 namespace App\Ajax\Web\Meeting\Cash;
 
-use App\Ajax\CallableClass;
-use App\Ajax\Web\Meeting\Balance;
-use App\Ajax\Web\Meeting\Credit\Loan;
+use App\Ajax\CallableSessionClass;
+use App\Ajax\Web\Meeting\Session\Session;
+use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
-use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Service\Meeting\SessionService;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
 use function trans;
 
-/**
- * @databag meeting
- * @before getSession
- */
-class Disbursement extends CallableClass
+class Disbursement extends CallableSessionClass
 {
     /**
      * @var DisbursementValidator
@@ -26,38 +20,12 @@ class Disbursement extends CallableClass
     protected DisbursementValidator $validator;
 
     /**
-     * @var SessionModel|null
-     */
-    protected ?SessionModel $session = null;
-
-    /**
      * The constructor
      *
-     * @param SessionService $sessionService
      * @param DisbursementService $disbursementService
      */
-    public function __construct(protected SessionService $sessionService,
-        protected DisbursementService $disbursementService)
+    public function __construct(protected DisbursementService $disbursementService)
     {}
-
-    /**
-     * @return void
-     */
-    protected function getSession()
-    {
-        $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->sessionService->getSession($sessionId);
-    }
-
-    /**
-     * @exclude
-     */
-    public function refreshAmount(SessionModel $session)
-    {
-        $amount = $this->disbursementService->getFormattedAmountAvailable($session);
-        $html = trans('meeting.disbursement.labels.amount_available', ['amount' => $amount]);
-        $this->response->html('total_amount_available', $html);
-    }
 
     /**
      * @exclude
@@ -81,7 +49,8 @@ class Disbursement extends CallableClass
 
         $this->jq('#btn-disbursements-refresh')->click($this->rq()->home());
         $this->jq('#btn-disbursement-add')->click($this->rq()->addDisbursement());
-        $this->jq('#btn-disbursement-balances')->click($this->cl(Balance::class)->rq()->show(false));
+        $this->jq('#btn-disbursement-balances')
+            ->click($this->cl(Session::class)->rq()->showBalanceDetails(false));
         $disbursementId = jq()->parent()->attr('data-disbursement-id')->toInt();
         $this->jq('.btn-disbursement-edit')->click($this->rq()->editDisbursement($disbursementId));
         $this->jq('.btn-disbursement-delete')->click($this->rq()->deleteDisbursement($disbursementId)
@@ -119,6 +88,7 @@ class Disbursement extends CallableClass
 
     /**
      * @di $validator
+     * @after showBalanceAmounts
      */
     public function createDisbursement(array $formValues)
     {
@@ -132,9 +102,6 @@ class Disbursement extends CallableClass
         $this->disbursementService->createDisbursement($this->session, $values);
 
         $this->dialog->hide();
-
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
 
         return $this->home();
     }
@@ -170,6 +137,7 @@ class Disbursement extends CallableClass
 
     /**
      * @di $validator
+     * @after showBalanceAmounts
      */
     public function updateDisbursement(int $disbursementId, array $formValues)
     {
@@ -184,12 +152,12 @@ class Disbursement extends CallableClass
 
         $this->dialog->hide();
 
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-
         return $this->home();
     }
 
+    /**
+     * @after showBalanceAmounts
+     */
     public function deleteDisbursement(int $disbursementId)
     {
         if($this->session->closed)
@@ -199,9 +167,6 @@ class Disbursement extends CallableClass
         }
 
         $this->disbursementService->deleteDisbursement($this->session, $disbursementId);
-
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
 
         return $this->home();
     }

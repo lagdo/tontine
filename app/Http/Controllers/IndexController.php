@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Ajax\Web\Meeting\Balance;
+use App\Ajax\Web\Meeting\Session\Session;
 use App\Ajax\Web\Tontine\Tontine;
 use Illuminate\View\View;
 use Jaxon\Laravel\Jaxon;
@@ -31,7 +31,7 @@ class IndexController extends Controller
             'locales' => LaravelLocalization::getSupportedLocales(),
             'locale' => LaravelLocalization::getCurrentLocale(),
             'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
-            'jxnBalance' => $jaxon->request(Balance::class),
+            'jxnSession' => $jaxon->request(Session::class),
             'jxnTontine' => $jaxon->request(Tontine::class),
         ]);
 

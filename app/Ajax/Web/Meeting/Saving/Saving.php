@@ -2,12 +2,9 @@
 
 namespace App\Ajax\Web\Meeting\Saving;
 
-use App\Ajax\CallableClass;
-use App\Ajax\Web\Meeting\Cash\Disbursement;
-use App\Ajax\Web\Meeting\Credit\Loan;
+use App\Ajax\CallableSessionClass;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
-use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Meeting\SavingValidator;
@@ -16,11 +13,7 @@ use function Jaxon\jq;
 use function Jaxon\pm;
 use function trans;
 
-/**
- * @databag meeting
- * @before getSession
- */
-class Saving extends CallableClass
+class Saving extends CallableSessionClass
 {
     /**
      * @var SavingValidator
@@ -28,31 +21,15 @@ class Saving extends CallableClass
     protected SavingValidator $validator;
 
     /**
-     * @var SessionModel|null
-     */
-    protected ?SessionModel $session = null;
-
-    /**
      * The constructor
      *
-     * @param SessionService $sessionService
      * @param SavingService $savingService
      * @param FundService $fundService
      * @param MemberService $memberService
      */
-    public function __construct(protected SessionService $sessionService,
-        protected SavingService $savingService, protected FundService $fundService,
-        protected MemberService $memberService)
+    public function __construct(protected SavingService $savingService,
+        protected FundService $fundService, protected MemberService $memberService)
     {}
-
-    /**
-     * @return void
-     */
-    protected function getSession()
-    {
-        $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->sessionService->getSession($sessionId);
-    }
 
     /**
      * @exclude
@@ -114,6 +91,7 @@ class Saving extends CallableClass
 
     /**
      * @di $validator
+     * @after showBalanceAmounts
      */
     public function createSaving(array $formValues)
     {
@@ -133,10 +111,6 @@ class Saving extends CallableClass
         $this->savingService->createSaving($member, $this->session, $values);
 
         $this->dialog->hide();
-
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->home();
     }
@@ -171,6 +145,7 @@ class Saving extends CallableClass
 
     /**
      * @di $validator
+     * @after showBalanceAmounts
      */
     public function updateSaving(int $savingId, array $formValues)
     {
@@ -191,13 +166,12 @@ class Saving extends CallableClass
 
         $this->dialog->hide();
 
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
-
         return $this->home();
     }
 
+    /**
+     * @after showBalanceAmounts
+     */
     public function deleteSaving(int $savingId)
     {
         if($this->session->closed)
@@ -207,10 +181,6 @@ class Saving extends CallableClass
         }
 
         $this->savingService->deleteSaving($this->session, $savingId);
-
-        // Refresh the amounts available
-        $this->cl(Loan::class)->refreshAmount($this->session);
-        $this->cl(Disbursement::class)->refreshAmount($this->session);
 
         return $this->home();
     }

@@ -2,14 +2,12 @@
 
 namespace App\Ajax\Web\Meeting\Pool\Deposit;
 
-use App\Ajax\CallableClass;
+use App\Ajax\CallableSessionClass;
 use App\Ajax\Web\Meeting\Pool\Deposit;
 use Siak\Tontine\Model\Pool as PoolModel;
-use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
-use Siak\Tontine\Service\Meeting\SessionService;
 
 use function Jaxon\jq;
 use function filter_var;
@@ -18,20 +16,14 @@ use function trans;
 use function trim;
 
 /**
- * @databag meeting
  * @before getPool
  */
-class Pool extends CallableClass
+class Pool extends CallableSessionClass
 {
     /**
      * @var LocaleService
      */
     protected LocaleService $localeService;
-
-    /**
-     * @var SessionModel|null
-     */
-    protected ?SessionModel $session;
 
     /**
      * @var PoolModel|null
@@ -41,19 +33,15 @@ class Pool extends CallableClass
     /**
      * The constructor
      *
-     * @param SessionService $sessionService
      * @param PoolService $poolService
      * @param DepositService $depositService
      */
-    public function __construct(protected SessionService $sessionService,
-        protected PoolService $poolService, protected DepositService $depositService)
+    public function __construct(protected PoolService $poolService,
+        protected DepositService $depositService)
     {}
 
     protected function getPool()
     {
-        $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->sessionService->getSession($sessionId);
-
         $poolId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('pool.id');
         $this->pool = $this->poolService->getPool($poolId);

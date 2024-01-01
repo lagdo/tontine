@@ -2,13 +2,11 @@
 
 namespace App\Ajax\Web\Meeting\Charge\Libre;
 
-use App\Ajax\CallableClass;
+use App\Ajax\CallableSessionClass;
 use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
 use Siak\Tontine\Model\Charge as ChargeModel;
-use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
-use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 
 use function filter_var;
@@ -19,10 +17,9 @@ use function trans;
 use function trim;
 
 /**
- * @databag meeting
  * @before getCharge
  */
-class Member extends CallableClass
+class Member extends CallableSessionClass
 {
     /**
      * @var LocaleService
@@ -30,19 +27,13 @@ class Member extends CallableClass
     protected LocaleService $localeService;
 
     /**
-     * @var SessionModel|null
-     */
-    protected ?SessionModel $session;
-
-    /**
      * The constructor
      *
-     * @param SessionService $sessionService
      * @param ChargeService $chargeService
      * @param LibreFeeService $feeService
      */
-    public function __construct(protected SessionService $sessionService,
-        protected ChargeService $chargeService, protected LibreFeeService $feeService)
+    public function __construct(protected ChargeService $chargeService,
+        protected LibreFeeService $feeService)
     {}
 
     /**
@@ -52,10 +43,8 @@ class Member extends CallableClass
 
     protected function getCharge()
     {
-        $sessionId = $this->bag('meeting')->get('session.id');
         $chargeId = $this->target()->method() === 'home' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('charge.id');
-        $this->session = $this->sessionService->getSession($sessionId);
         $this->charge = $this->chargeService->getCharge($chargeId);
     }
 
