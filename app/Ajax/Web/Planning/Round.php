@@ -5,6 +5,7 @@ namespace App\Ajax\Web\Planning;
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Tontine\Select;
 use Siak\Tontine\Service\Planning\RoundService;
+use Siak\Tontine\Validation\Planning\RoundValidator;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
@@ -15,6 +16,11 @@ use function trans;
  */
 class Round extends CallableClass
 {
+    /**
+     * @var RoundValidator
+     */
+    protected RoundValidator $validator;
+
     /**
      * @param RoundService $roundService
      */
@@ -76,9 +82,13 @@ class Round extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function create(array $formValues)
     {
-        $this->roundService->createRound($formValues);
+        $values = $this->validator->validateItem($formValues);
+        $this->roundService->createRound($values);
         $this->page(); // Back to current page
 
         $this->dialog->hide();
@@ -107,9 +117,13 @@ class Round extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function update(int $roundId, array $formValues)
     {
-        $this->roundService->updateRound($roundId, $formValues);
+        $values = $this->validator->validateItem($formValues);
+        $this->roundService->updateRound($roundId, $values);
         $this->page(); // Back to current page
 
         $this->dialog->hide();

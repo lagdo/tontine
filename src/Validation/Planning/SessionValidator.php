@@ -79,6 +79,7 @@ class SessionValidator extends AbstractValidator
         {
             throw new ValidationException($validator);
         }
+
         return $validator->validated();
     }
 }

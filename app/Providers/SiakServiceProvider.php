@@ -51,6 +51,7 @@ use Siak\Tontine\Validation\Meeting\SavingValidator;
 use Siak\Tontine\Validation\Meeting\TargetValidator;
 use Siak\Tontine\Validation\Planning\PoolValidator;
 use Siak\Tontine\Validation\Planning\PoolRoundValidator;
+use Siak\Tontine\Validation\Planning\RoundValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
 use Siak\Tontine\Validation\Tontine\MemberValidator;
@@ -146,6 +147,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(DisbursementValidator::class, DisbursementValidator::class);
         $this->app->singleton(LoanValidator::class, LoanValidator::class);
         $this->app->singleton(MemberValidator::class, MemberValidator::class);
+        $this->app->singleton(RoundValidator::class, RoundValidator::class);
         $this->app->singleton(PoolValidator::class, PoolValidator::class);
         $this->app->singleton(PoolRoundValidator::class, PoolRoundValidator::class);
         $this->app->singleton(RemitmentValidator::class, RemitmentValidator::class);

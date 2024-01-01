@@ -12,17 +12,10 @@ use function trans;
 class PoolValidator extends AbstractValidator
 {
     /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
      * @param LocaleService $localeService
      */
-    public function __construct(LocaleService $localeService)
-    {
-        $this->localeService = $localeService;
-    }
+    public function __construct(private LocaleService $localeService)
+    {}
 
     /**
      * @param array $values
