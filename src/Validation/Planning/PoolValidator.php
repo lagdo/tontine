@@ -7,6 +7,8 @@ use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Validation\AbstractValidator;
 use Siak\Tontine\Validation\ValidationException;
 
+use function trans;
+
 class PoolValidator extends AbstractValidator
 {
     /**
@@ -30,7 +32,7 @@ class PoolValidator extends AbstractValidator
     public function validateItem(array $values): array
     {
         $validator = Validator::make($this->values($values), [
-            'title' => 'required|string|min:1',
+            'title' => 'required|string|min:5',
             'amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
             'notes' => 'nullable|string',
             'properties' => 'required|array:deposit,remit',
@@ -41,6 +43,16 @@ class PoolValidator extends AbstractValidator
             'properties.remit.planned' => 'required|boolean',
             'properties.remit.auction' => 'required|boolean',
         ]);
+        $validator->after(function($validator) use($values) {
+            // The amount must be greater than 0 when the deposit property is set to fixed.
+            if($values['properties']['deposit']['fixed'] && (float)$values['amount'] <= 0)
+            {
+                $validator->errors()->add('principal', trans('validation.gt.numeric', [
+                    'attribute' => 'amount',
+                    'value' => 0,
+                ]));
+            }
+        });
         if($validator->fails())
         {
             throw new ValidationException($validator);
