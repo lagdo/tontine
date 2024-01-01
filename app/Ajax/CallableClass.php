@@ -169,7 +169,7 @@ class CallableClass extends JaxonCallableClass
 
         $round = $this->tenantService->round();
         if(!$round || $round->sessions->filter(fn($session) =>
-            $session->opened || $session->closed)->count() === 0)
+            ($session->opened || $session->closed))->count() === 0)
         {
             throw new PlanningRoundException(trans('tontine.errors.checks.sessions'));
         }

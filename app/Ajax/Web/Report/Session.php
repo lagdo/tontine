@@ -39,7 +39,7 @@ class Session extends CallableClass
 
         // Don't show the page if there is no session or no member.
         $sessions = $this->sessionService->getRoundSessions(orderAsc: false)
-            ->filter(fn($session) => $session->opened || $session->closed);
+            ->filter(fn($session) => ($session->opened || $session->closed));
         $html = $this->render('pages.report.session.home', [
             'sessions' => $sessions->pluck('title', 'id'),
             'members' => $this->memberService->getMemberList()->prepend('', 0),
