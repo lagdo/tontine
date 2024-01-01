@@ -264,7 +264,7 @@ class PoolService
      */
     public function getEnabledSessions(Pool $pool): Collection
     {
-        return $pool->enabledSessions()->get();
+        return $pool->enabledSessions()->orderBy('start_at')->get();
     }
 
     /**
