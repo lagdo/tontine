@@ -16,11 +16,21 @@ use Jaxon\App\CallableClass as JaxonCallableClass;
 use Jaxon\App\Dialog\MessageInterface;
 use Jaxon\App\Dialog\ModalInterface;
 use Jaxon\App\View\Store;
+use Siak\Tontine\Exception\PlanningPoolException;
+use Siak\Tontine\Exception\PlanningRoundException;
+use Siak\Tontine\Exception\TontineMemberException;
+use Siak\Tontine\Service\TenantService;
 
 use function floor;
 
 class CallableClass extends JaxonCallableClass
 {
+    /**
+     * @di
+     * @var TenantService
+     */
+    protected TenantService $tenantService;
+
     /**
      * @var ModalInterface
      */
@@ -41,7 +51,8 @@ class CallableClass extends JaxonCallableClass
      *
      * @return array
      */
-    protected function pageNumber(int $pageNumber, int $itemCount, string $bagName, string $attrName = 'page'): array
+    protected function pageNumber(int $pageNumber, int $itemCount,
+        string $bagName, string $attrName = 'page'): array
     {
         $perPage = 10;
         $pageCount = (int)floor($itemCount / $perPage) + ($itemCount % $perPage > 0 ? 1 : 0);
@@ -55,7 +66,7 @@ class CallableClass extends JaxonCallableClass
         }
         $this->bag($bagName)->set($attrName, $pageNumber);
 
-        return [$pageNumber, 10];
+        return [$pageNumber, 10 /*$this->tenantService->getLimit()*/];
     }
 
     /**
@@ -120,5 +131,61 @@ class CallableClass extends JaxonCallableClass
     protected function render(string $view, array $viewData = []): ?Store
     {
         return $this->view()->render('tontine.app.default.' . $view, $viewData);
+    }
+
+    /**
+     * @param TenantService $tenantService
+     *
+     * @return $this
+     */
+    public function setTenantService(TenantService $tenantService)
+    {
+        $this->tenantService = $tenantService;
+        return $this;
+    }
+
+    /**
+     * @return void
+     */
+    protected function checkRoundSessions()
+    {
+        $round = $this->tenantService->round();
+        if(!$round || $round->sessions()->count() === 0)
+        {
+            throw new PlanningRoundException(trans('tontine.errors.checks.sessions'));
+        }
+    }
+
+    /**
+     * @return void
+     */
+    protected function checkOpenedSessions()
+    {
+        $tontine = $this->tenantService->tontine();
+        if(!$tontine || $tontine->members()->active()->count() === 0)
+        {
+            throw new TontineMemberException(trans('tontine.errors.checks.members'));
+        }
+
+        $round = $this->tenantService->round();
+        if(!$round || $round->sessions->filter(fn($session) =>
+            $session->opened || $session->closed)->count() === 0)
+        {
+            throw new PlanningRoundException(trans('tontine.errors.checks.sessions'));
+        }
+    }
+
+    /**
+     * @return void
+     */
+    protected function checkRoundPools()
+    {
+        $this->checkRoundSessions();
+
+        $round = $this->tenantService->round();
+        if(!$round || $round->pools()->count() === 0)
+        {
+            throw new PlanningPoolException(trans('tontine.errors.checks.pools'));
+        }
     }
 }

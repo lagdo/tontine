@@ -6,7 +6,6 @@ use App\Ajax\CallableClass;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SessionService;
-use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Planning\SessionValidator;
@@ -32,10 +31,17 @@ class Session extends CallableClass
      */
     protected SessionValidator $validator;
 
-    public function __construct(private TenantService $tenantService,
-        private TontineService $tontineService, private MemberService $memberService,
-        private SessionService $sessionService)
+    public function __construct(private TontineService $tontineService,
+        private MemberService $memberService, private SessionService $sessionService)
     {}
+
+    /**
+     * @exclude
+     */
+    public function show()
+    {
+        return $this->home();
+    }
 
     public function home()
     {
@@ -59,7 +65,8 @@ class Session extends CallableClass
     public function page(int $pageNumber = 0)
     {
         $sessionCount = $this->sessionService->getSessionCount();
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $sessionCount, 'planning', 'session.page');
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $sessionCount,
+            'planning', 'session.page');
         $sessions = $this->sessionService->getSessions($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
 

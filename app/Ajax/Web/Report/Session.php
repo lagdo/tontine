@@ -7,7 +7,6 @@ use App\Ajax\Web\Tontine\Options;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Report\ReportService;
-use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
@@ -20,38 +19,31 @@ use function Jaxon\pm;
 class Session extends CallableClass
 {
     /**
-     * @param TenantService $tenantService
      * @param TontineService $tontineService
      * @param SessionService $sessionService
+     * @param MemberService $memberService
      * @param ReportService $reportService
      */
-    public function __construct(protected TenantService $tenantService,
-        protected TontineService $tontineService, protected SessionService $sessionService,
-        protected MemberService $memberService, protected ReportService $reportService)
+    public function __construct(protected TontineService $tontineService,
+        protected SessionService $sessionService, protected MemberService $memberService,
+        protected ReportService $reportService)
     {}
 
     /**
+     * @before checkOpenedSessions
      * @after hideMenuOnMobile
      */
     public function home()
     {
+        $this->response->html('section-title', trans('tontine.menus.report'));
+
         // Don't show the page if there is no session or no member.
         $sessions = $this->sessionService->getRoundSessions(orderAsc: false)
             ->filter(fn($session) => $session->opened || $session->closed);
-        if($sessions->count() === 0)
-        {
-            return $this->response;
-        }
-        $members = $this->memberService->getMemberList();
-        if($members->count() === 0)
-        {
-            return $this->response;
-        }
-        $members->prepend('', 0);
-
-        $this->response->html('section-title', trans('tontine.menus.report'));
-        $html = $this->render('pages.report.session.home',
-            ['sessions' => $sessions->pluck('title', 'id'), 'members' => $members]);
+        $html = $this->render('pages.report.session.home', [
+            'sessions' => $sessions->pluck('title', 'id'),
+            'members' => $this->memberService->getMemberList()->prepend('', 0),
+        ]);
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-members-refresh')->click($this->rq()->home());

@@ -24,15 +24,12 @@ use function trim;
 class Member extends CallableClass
 {
     /**
-     * @di
-     * @var MemberService
-     */
-    protected MemberService $memberService;
-
-    /**
      * @var MemberValidator
      */
     protected MemberValidator $validator;
+
+    public function __construct(private MemberService $memberService)
+    {}
 
     /**
      * @after hideMenuOnMobile

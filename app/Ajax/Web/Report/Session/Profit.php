@@ -6,7 +6,7 @@ use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\FundService;
 
 use function Jaxon\pm;
@@ -25,14 +25,13 @@ class Profit extends CallableClass
     /**
      * The constructor
      *
-     * @param TenantService $tenantService
      * @param LocaleService $localeService
      * @param FundService $fundService
      * @param ProfitService $profitService
      */
-    public function __construct(protected TenantService $tenantService,
-        protected LocaleService $localeService, protected FundService $fundService,
-        protected ProfitService $profitService)
+    public function __construct(protected LocaleService $localeService,
+        protected FundService $fundService, protected ProfitService $profitService,
+        protected SessionService $sessionService)
     {}
 
     /**
@@ -41,7 +40,7 @@ class Profit extends CallableClass
     protected function getSession()
     {
         $sessionId = $this->bag('report')->get('session.id');
-        $this->session = $this->tenantService->getSession($sessionId);
+        $this->session = $this->sessionService->getSession($sessionId);
     }
 
     /**

@@ -6,7 +6,6 @@ use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Charge as ChargeModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Tontine\ChargeService;
-use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
 
 use function Jaxon\jq;
@@ -36,12 +35,18 @@ class Charge extends CallableClass
     protected ChargeValidator $validator;
 
     /**
-     * @param TenantService $tenantService
      * @param ChargeService $chargeService
      */
-    public function __construct(protected TenantService $tenantService,
-        protected ChargeService $chargeService)
+    public function __construct(protected ChargeService $chargeService)
     {}
+
+    /**
+     * @exclude
+     */
+    public function show()
+    {
+        return $this->home();
+    }
 
     /**
      * @databag charge

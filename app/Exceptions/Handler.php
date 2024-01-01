@@ -2,13 +2,21 @@
 
 namespace App\Exceptions;
 
+use App\Ajax\Web\Planning\Pool;
+use App\Ajax\Web\Planning\Round;
+use App\Ajax\Web\Tontine\Member;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Jaxon\Laravel\Jaxon;
+use Jaxon\Plugin\Request\CallableClass\CallableRegistry;
 use Siak\Tontine\Exception\AuthenticationException;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Exception\WarningException;
+use Siak\Tontine\Exception\PlanningPoolException;
+use Siak\Tontine\Exception\PlanningRoundException;
+use Siak\Tontine\Exception\TontineMemberException;
+use Siak\Tontine\Service\TenantService;
 use Throwable;
 
+use function Jaxon\jaxon;
 use function app;
 use function route;
 use function trans;
@@ -32,6 +40,9 @@ class Handler extends ExceptionHandler
     protected $dontReport = [
         AuthenticationException::class,
         MessageException::class,
+        PlanningPoolException::class,
+        PlanningRoundException::class,
+        TontineMemberException::class,
     ];
 
     /**
@@ -44,6 +55,23 @@ class Handler extends ExceptionHandler
         'password',
         'password_confirmation',
     ];
+
+    /**
+     * Get the instance of a callable class registered with Jaxon
+     *
+     * @param string $class
+     *
+     * @return mixed
+     */
+    private function getCallableObject(string $class)
+    {
+        // Todo: implement this feature in the Jaxon library.
+        $registry = jaxon()->di()->g(CallableRegistry::class);
+        $callable = $registry->getCallableObject($class)->getRegisteredObject();
+
+        $tenantService = app()->make(TenantService::class);
+        return $callable->setTenantService($tenantService);
+    }
 
     /**
      * Register the exception handling callbacks for the application.
@@ -59,7 +87,8 @@ class Handler extends ExceptionHandler
         // Redirect to the login page
         $this->renderable(function (AuthenticationException $e) {
             $jaxon = app()->make(Jaxon::class);
-            $jaxon->ajaxResponse()->redirect(route('login'));
+            $ajaxResponse = $jaxon->ajaxResponse();
+            $ajaxResponse->redirect(route('login'));
 
             return $jaxon->httpResponse();
         });
@@ -68,14 +97,37 @@ class Handler extends ExceptionHandler
         $this->renderable(function (MessageException $e) {
             $jaxon = app()->make(Jaxon::class);
             $ajaxResponse = $jaxon->ajaxResponse();
-            $ajaxResponse->clearCommands();
             $ajaxResponse->dialog->error($e->getMessage(), trans('common.titles.error'));
 
             return $jaxon->httpResponse();
         });
 
         // Show the warning message in a dialog
-        $this->renderable(function (WarningException $e) {
+        $this->renderable(function (PlanningRoundException $e) {
+            $this->getCallableObject(Round::class)->home();
+
+            $jaxon = app()->make(Jaxon::class);
+            $ajaxResponse = $jaxon->ajaxResponse();
+            $ajaxResponse->dialog->warning($e->getMessage(), trans('common.titles.warning'));
+
+            return $jaxon->httpResponse();
+        });
+
+        // Show the warning message in a dialog
+        $this->renderable(function (PlanningPoolException $e) {
+            $this->getCallableObject(Pool::class)->home();
+
+            $jaxon = app()->make(Jaxon::class);
+            $ajaxResponse = $jaxon->ajaxResponse();
+            $ajaxResponse->dialog->warning($e->getMessage(), trans('common.titles.warning'));
+
+            return $jaxon->httpResponse();
+        });
+
+        // Show the warning message in a dialog
+        $this->renderable(function (TontineMemberException $e) {
+            $this->getCallableObject(Member::class)->home();
+
             $jaxon = app()->make(Jaxon::class);
             $ajaxResponse = $jaxon->ajaxResponse();
             $ajaxResponse->dialog->warning($e->getMessage(), trans('common.titles.warning'));

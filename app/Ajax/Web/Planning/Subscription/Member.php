@@ -20,16 +20,6 @@ use function trim;
 class Member extends CallableClass
 {
     /**
-     * @var PoolService
-     */
-    protected PoolService $poolService;
-
-    /**
-     * @var SubscriptionService
-     */
-    protected SubscriptionService $subscriptionService;
-
-    /**
      * @var PoolModel|null
      */
     protected ?PoolModel $pool = null;
@@ -40,7 +30,8 @@ class Member extends CallableClass
      * @param PoolService $poolService
      * @param SubscriptionService $subscriptionService
      */
-    public function __construct(PoolService $poolService, SubscriptionService $subscriptionService)
+    public function __construct(private PoolService $poolService,
+        private SubscriptionService $subscriptionService)
     {
         $this->poolService = $poolService;
         $this->subscriptionService = $subscriptionService;

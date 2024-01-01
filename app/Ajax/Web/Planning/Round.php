@@ -22,6 +22,7 @@ class Round extends CallableClass
     {}
 
     /**
+     * @databag planning
      * @after hideMenuOnMobile
      */
     public function home()
@@ -35,7 +36,7 @@ class Round extends CallableClass
 
         $this->page();
 
-        return $this->cl(Session::class)->home();
+        return $this->cl(Session::class)->setTenantService($this->tenantService)->show();
     }
 
     public function page(int $pageNumber = 0)

@@ -77,6 +77,14 @@ return [
     'errors' => [
         'action' => "Action impossible.",
         'editable' => "Cet élément ne peut être modifié ou supprimé.",
+        'checks' => [
+            'members' => "Vous avez été redirigé vers la page des membres.<br/>" .
+                "Vous devez ajouter un ou plusieurs membres avant d'aller plus loin.",
+            'sessions' => "Vous avez été redirigé vers la page des séances.<br/>" .
+                "Vous devez ajouter une ou plusieurs séances avant d'aller plus loin.",
+            'pools' => "Vous avez été redirigé vers la page des tontines.<br/>" .
+                "Vous devez ajouter une ou plusieurs tontines avant d'aller plus loin.",
+        ],
     ],
     'round' => [
         'titles' => [

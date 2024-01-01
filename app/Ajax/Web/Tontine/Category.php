@@ -21,6 +21,14 @@ class Category extends CallableClass
     public function __construct(protected CategoryService $categoryService)
     {}
 
+    /**
+     * @exclude
+     */
+    public function show()
+    {
+        return $this->home();
+    }
+
     public function home()
     {
         $html = $this->render('pages.options.category.home');
@@ -35,7 +43,8 @@ class Category extends CallableClass
     public function page(int $pageNumber = 0)
     {
         $categoryCount = $this->categoryService->getCategoryCount();
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $categoryCount, 'tontine', 'category.page');
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $categoryCount,
+            'tontine', 'category.page');
         $categories = $this->categoryService->getCategories($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $categoryCount);
 

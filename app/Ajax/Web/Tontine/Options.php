@@ -20,6 +20,7 @@ class Options extends CallableClass
     {}
 
     /**
+     * @databag charge
      * @after hideMenuOnMobile
      */
     public function home()
@@ -27,9 +28,9 @@ class Options extends CallableClass
         $this->response->html('section-title', trans('tontine.menus.tontine'));
         $this->response->html('content-home', $this->render('pages.tontine.options'));
 
-        $this->cl(Fund::class)->home();
-        $this->cl(Category::class)->home();
-        $this->cl(Charge::class)->home();
+        $this->cl(Fund::class)->show();
+        $this->cl(Category::class)->show();
+        $this->cl(Charge::class)->show();
     }
 
     public function editOptions()

@@ -4,24 +4,23 @@ namespace App\Ajax\Web\Report;
 
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Tontine\Options;
-use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Report\RoundService;
-use Siak\Tontine\Service\TenantService;
 
 /**
  * @databag meeting
  */
 class Round extends CallableClass
 {
-    public function __construct(protected TenantService $tenantService,
-        protected SessionService $sessionService, protected SummaryService $summaryService,
-        protected SubscriptionService $subscriptionService, protected RoundService $roundService)
+    public function __construct(protected SessionService $sessionService,
+        protected SummaryService $summaryService, protected RoundService $roundService,
+        protected SubscriptionService $subscriptionService)
     {}
 
     /**
+     * @before checkRoundSessions
      * @after hideMenuOnMobile
      */
     public function home()

@@ -5,7 +5,6 @@ namespace App\Ajax\Web\Tontine;
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Planning\Session;
 use Siak\Tontine\Service\Planning\RoundService;
-use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
 use function Jaxon\pm;
@@ -23,11 +22,9 @@ class Select extends CallableClass
     protected RoundService $roundService;
 
     /**
-     * @param TenantService $tenantService
      * @param TontineService $tontineService
      */
-    public function __construct(protected TenantService $tenantService,
-        protected TontineService $tontineService)
+    public function __construct(protected TontineService $tontineService)
     {}
 
     public function showTontines()
@@ -118,7 +115,7 @@ class Select extends CallableClass
 
         $this->selectRound($round);
         // Update the session list.
-        $this->cl(Session::class)->home();
+        $this->cl(Session::class)->setTenantService($this->tenantService)->home();
 
         $this->notify->info(trans('tontine.round.messages.selected',
             ['tontine' => $tontine->name, 'round' => $round->title]));

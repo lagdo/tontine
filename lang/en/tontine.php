@@ -77,6 +77,14 @@ return [
     'errors' => [
         'action' => "Cannot proceed.",
         'editable' => "This item cannot be edited or deleted.",
+        'checks' => [
+            'members' => "You have beed redirected to the members page.<br/>" .
+                "You need to add one or more members before you can move forward.",
+            'sessions' => "You have beed redirected to the sessions page.<br/>" .
+                "You need to add one or more sessions before you can move forward.",
+            'pools' => "You have beed redirected to the pools page.<br/>" .
+                "You need to add one or more pools before you can move forward.",
+        ],
     ],
     'round' => [
         'titles' => [

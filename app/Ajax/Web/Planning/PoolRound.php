@@ -8,7 +8,6 @@ use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Planning\PoolService;
-use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\Planning\PoolRoundValidator;
 
 use function Jaxon\pm;
@@ -33,12 +32,11 @@ class PoolRound extends CallableClass
     /**
      * The constructor
      *
-     * @param TenantService $tenantService
      * @param SessionService $sessionService
      * @param PoolService $poolService
      */
-    public function __construct(private TenantService $tenantService,
-        private SessionService $sessionService, private PoolService $poolService)
+    public function __construct(private SessionService $sessionService,
+        private PoolService $poolService)
     {}
 
     /**

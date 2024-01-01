@@ -17,6 +17,7 @@ class Session extends CallableClass
     {}
 
     /**
+     * @before checkRoundSessions
      * @after hideMenuOnMobile
      */
     public function home()

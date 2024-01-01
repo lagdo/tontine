@@ -6,7 +6,6 @@ use App\Ajax\CallableClass;
 use App\Ajax\Web\Planning\Subscription;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\PoolService;
-use Siak\Tontine\Service\TenantService;
 
 use function intval;
 use function trans;
@@ -26,11 +25,9 @@ class Session extends CallableClass
     /**
      * The constructor
      *
-     * @param TenantService $tenantService
      * @param PoolService $poolService
      */
-    public function __construct(protected TenantService $tenantService,
-        protected PoolService $poolService)
+    public function __construct(protected PoolService $poolService)
     {}
 
     /**

@@ -2,8 +2,8 @@
 
 namespace App\Ajax\Web\Tontine;
 
-use Siak\Tontine\Service\Tontine\FundService;
 use App\Ajax\CallableClass;
+use Siak\Tontine\Service\Tontine\FundService;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
@@ -19,6 +19,14 @@ class Fund extends CallableClass
      */
     public function __construct(protected FundService $fundService)
     {}
+
+    /**
+     * @exclude
+     */
+    public function show()
+    {
+        return $this->home();
+    }
 
     public function home()
     {

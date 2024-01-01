@@ -6,7 +6,6 @@ use App\Ajax\CallableClass;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\Planning\PoolValidator;
 
 use function Jaxon\jq;
@@ -19,35 +18,28 @@ use function trans;
 class Pool extends CallableClass
 {
     /**
-     * @di
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
      * @var LocaleService
      */
     protected LocaleService $localeService;
-
-    /**
-     * @di
-     * @var PoolService
-     */
-    protected PoolService $poolService;
 
     /**
      * @var PoolValidator
      */
     protected PoolValidator $validator;
 
+    public function __construct(private PoolService $poolService)
+    {}
+
     /**
      * @databag subscription
+     * @before checkRoundSessions
      * @after hideMenuOnMobile
      */
     public function home()
     {
-        $html = $this->render('pages.planning.pool.home')
-            ->with('tontine', $this->tenantService->tontine());
+        $html = $this->render('pages.planning.pool.home', [
+            'tontine' => $this->tenantService->tontine(),
+        ]);
         $this->response->html('section-title', trans('tontine.menus.planning'));
         $this->response->html('content-home', $html);
         $this->jq('#btn-refresh')->click($this->rq()->home());

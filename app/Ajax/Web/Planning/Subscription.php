@@ -38,6 +38,8 @@ class Subscription extends CallableClass
     public SubscriptionService $subscriptionService;
 
     /**
+     * @databag subscription
+     * @before checkRoundPools
      * @after hideMenuOnMobile
      */
     public function home(int $poolId = 0)

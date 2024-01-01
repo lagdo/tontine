@@ -5,7 +5,6 @@ namespace App\Ajax\Web\Tontine;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Tontine\MemberService;
-use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Tontine\TontineValidator;
 use App\Ajax\Web\Locale;
@@ -23,11 +22,6 @@ class Tontine extends CallableClass
      * @var LocaleService
      */
     protected LocaleService $localeService;
-
-    /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
 
     /**
      * @di
@@ -51,7 +45,6 @@ class Tontine extends CallableClass
     protected TontineValidator $validator;
 
     /**
-     * @di $tenantService
      * @di $roundService
      * @databag tontine
      * @after hideMenuOnMobile
