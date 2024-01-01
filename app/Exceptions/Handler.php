@@ -102,7 +102,7 @@ class Handler extends ExceptionHandler
             return $jaxon->httpResponse();
         });
 
-        // Show the warning message in a dialog
+        // Show the warning message in a dialog, and show the sessions page.
         $this->renderable(function (PlanningRoundException $e) {
             $this->getCallableObject(Round::class)->home();
 
@@ -113,7 +113,7 @@ class Handler extends ExceptionHandler
             return $jaxon->httpResponse();
         });
 
-        // Show the warning message in a dialog
+        // Show the warning message in a dialog, and show the pools page.
         $this->renderable(function (PlanningPoolException $e) {
             $this->getCallableObject(Pool::class)->home();
 
@@ -124,7 +124,7 @@ class Handler extends ExceptionHandler
             return $jaxon->httpResponse();
         });
 
-        // Show the warning message in a dialog
+        // Show the warning message in a dialog, and show the members page.
         $this->renderable(function (TontineMemberException $e) {
             $this->getCallableObject(Member::class)->home();
 

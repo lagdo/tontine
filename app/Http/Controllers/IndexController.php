@@ -10,6 +10,7 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Service\LocaleService;
 
 use function auth;
+use function config;
 use function view;
 
 class IndexController extends Controller
