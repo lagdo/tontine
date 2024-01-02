@@ -39,15 +39,31 @@ class SavingService
     }
 
     /**
-     * Get the savings for a given session.
+     * Count the savings for a given session.
      *
      * @param Session $session
      *
+     * @return int
+     */
+    public function getSessionSavingCount(Session $session): int
+    {
+        return $session->savings()->count();
+    }
+
+    /**
+     * Get the savings for a given session.
+     *
+     * @param Session $session
+     * @param int $page
+     *
      * @return Collection
      */
-    public function getSessionSavings(Session $session): Collection
+    public function getSessionSavings(Session $session, int $page = 0): Collection
     {
-        return $session->savings()->with(['member', 'fund'])->get();
+        return $session->savings()
+            ->with(['member', 'fund'])
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
     }
 
     /**

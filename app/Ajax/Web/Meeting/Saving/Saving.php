@@ -13,6 +13,9 @@ use function Jaxon\jq;
 use function Jaxon\pm;
 use function trans;
 
+/**
+ * @databag meeting.saving
+ */
 class Saving extends CallableSessionClass
 {
     /**
@@ -45,19 +48,35 @@ class Saving extends CallableSessionClass
     {
         $html = $this->render('pages.meeting.saving.home', [
             'session' => $this->session,
-            'savings' => $this->savingService->getSessionSavings($this->session),
             'funds' => $this->fundService->getFundList(),
         ]);
         $this->response->html('meeting-savings', $html);
 
         $this->jq('#btn-savings-refresh')->click($this->rq()->home());
         $this->jq('#btn-saving-add')->click($this->rq()->addSaving());
+
+        return $this->page();
+    }
+
+    public function page(int $pageNumber = 0)
+    {
+        $savingCount = $this->savingService->getSessionSavingCount($this->session);
+        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $savingCount,
+            'meeting.saving', 'page');
+        $savings = $this->savingService->getSessionSavings($this->session, $pageNumber);
+        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $savingCount);
+
+        $html = $this->render('pages.meeting.saving.page', [
+            'session' => $this->session,
+            'savings' => $savings,
+            'pagination' => $pagination,
+        ]);
+        $this->response->html('meeting-savings-page', $html);
+
         $savingId = jq()->parent()->attr('data-saving-id')->toInt();
         $this->jq('.btn-saving-edit')->click($this->rq()->editSaving($savingId));
         $this->jq('.btn-saving-delete')->click($this->rq()->deleteSaving($savingId)
             ->confirm(trans('meeting.saving.questions.delete')));
-        $fundId = pm()->select('savings_fund_id')->toInt();
-        $this->jq('#btn-savings-closing')->click($this->rq()->showClosing($fundId));
 
         return $this->response;
     }
