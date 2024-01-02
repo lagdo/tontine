@@ -23,14 +23,16 @@ class AuctionService
     {}
 
     /**
-     * @param int $sessionId
-     * @param Collection $prevSessions
+     * @param Session $session The session
      * @param bool $onlyPaid
      *
      * @return Builder
      */
-    private function getQuery(int $sessionId, Collection $prevSessions, ?bool $onlyPaid = null): Builder
+    private function getQuery(Session $session, ?bool $onlyPaid = null): Builder
     {
+        $sessionId = $session->id;
+        $prevSessions = $this->sessionService->getRoundSessionIds($session, withCurr: false);
+
         return Auction::when($onlyPaid !== null, function(Builder $query) use($onlyPaid) {
                 return $query->where('paid', $onlyPaid);
             })
@@ -74,8 +76,7 @@ class AuctionService
      */
     public function getAuctionCount(Session $session, ?bool $onlyPaid = null): int
     {
-        $prevSessions = $this->sessionService->getRoundSessionIds($session, false);
-        return $this->getQuery($session->id, $prevSessions, $onlyPaid)->count();
+        return $this->getQuery($session, $onlyPaid)->count();
     }
 
     /**
@@ -89,8 +90,7 @@ class AuctionService
      */
     public function getAuctions(Session $session, ?bool $onlyPaid, int $page = 0): Collection
     {
-        $prevSessions = $this->sessionService->getRoundSessionIds($session, false);
-        return $this->getQuery($session->id, $prevSessions, $onlyPaid)
+        return $this->getQuery($session, $onlyPaid)
             ->page($page, $this->tenantService->getLimit())
             ->with(['remitment.payable.session', 'remitment.payable.subscription.member'])
             ->get()
@@ -111,10 +111,7 @@ class AuctionService
      */
     public function toggleAuctionPayment(Session $session, int $auctionId)
     {
-        $prevSessions = $this->tenantService->round()->sessions()
-            ->whereDate('start_at', '<', $session->start_at->format('Y-m-d'))
-            ->pluck('id');
-        $auction = $this->getQuery($session->id, $prevSessions)->find($auctionId);
+        $auction = $this->getQuery($session)->find($auctionId);
         if(($auction))
         {
             $auction->update(['paid' => !$auction->paid]);

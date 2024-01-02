@@ -321,8 +321,7 @@ class BalanceCalculator
         return $this->tenantService->tontine()->funds()->active()->pluck('id')
             ->prepend(0)
             ->reduce(function($amount, $fundId) use($session) {
-                $sessionIds = $this->profitService->getFundSessions($session, $fundId)
-                    ->pluck('id');
+                $sessionIds = $this->profitService->getFundSessionIds($session, $fundId);
 
                 return $amount
                     + $this->getSavingsAmount($sessionIds, $fundId)
@@ -385,7 +384,7 @@ class BalanceCalculator
         $fundAmounts = $this->tenantService->tontine()->funds()->active()->pluck('id')
             ->prepend(0)
             ->reduce(function($amounts, $fundId) use($session) {
-                $sessionIds = $this->profitService->getFundSessions($session, $fundId)->pluck('id');
+                $sessionIds = $this->profitService->getFundSessionIds($session, $fundId);
 
                 return [
                     'savings' => $amounts['savings'] + $this->getSavingsAmount($sessionIds, $fundId),

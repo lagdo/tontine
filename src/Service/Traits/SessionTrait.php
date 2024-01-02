@@ -121,10 +121,9 @@ trait SessionTrait
      * @return Collection
      */
     public function getRoundSessionIds(?Session $currSession = null,
-        bool $getAfter = true, bool $withCurr = true, bool $orderAsc = true): Collection
+        bool $getAfter = false, bool $withCurr = true): Collection
     {
         return $this->getRoundSessionsQuery($currSession, $getAfter, $withCurr)
-            ->orderBy('sessions.start_at', $orderAsc ? 'asc' : 'desc')
             ->pluck('sessions.id');
     }
 
@@ -136,7 +135,7 @@ trait SessionTrait
      * @return int
      */
     public function getRoundSessionCount(?Session $currSession = null,
-        bool $getAfter = true, bool $withCurr = true): int
+        bool $getAfter = false, bool $withCurr = true): int
     {
         return $this->getRoundSessionsQuery($currSession, $getAfter, $withCurr)->count();
     }
@@ -163,10 +162,9 @@ trait SessionTrait
      * @return Collection
      */
     public function getTontineSessionIds(?Session $currSession = null,
-        bool $getAfter = true, bool $withCurr = true, bool $orderAsc = true): Collection
+        bool $getAfter = false, bool $withCurr = true): Collection
     {
         return $this->getTontineSessionsQuery($currSession, $getAfter, $withCurr)
-            ->orderBy('sessions.start_at', $orderAsc ? 'asc' : 'desc')
             ->pluck('sessions.id');
     }
 
@@ -178,7 +176,7 @@ trait SessionTrait
      * @return int
      */
     public function getTontineSessionCount(?Session $currSession = null,
-        bool $getAfter = true, bool $withCurr = true): int
+        bool $getAfter = false, bool $withCurr = true): int
     {
         return $this->getTontineSessionsQuery($currSession, $getAfter, $withCurr)->count();
     }

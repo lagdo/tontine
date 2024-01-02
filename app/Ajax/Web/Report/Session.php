@@ -37,7 +37,6 @@ class Session extends CallableClass
     {
         $this->response->html('section-title', trans('tontine.menus.report'));
 
-        // Don't show the page if there is no session or no member.
         $sessions = $this->sessionService->getRoundSessions(orderAsc: false)
             ->filter(fn($session) => ($session->opened || $session->closed));
         $html = $this->render('pages.report.session.home', [

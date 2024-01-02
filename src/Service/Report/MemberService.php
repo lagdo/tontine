@@ -139,9 +139,10 @@ class MemberService
                                 return $query->where('member_id', $member->id);
                             })
                             ->when($member === null, function($query) {
-                                $memberIds = $this->tenantService->tontine()
-                                    ->members()->active()->pluck('id');
-                                return $query->whereIn('member_id', $memberIds);
+                                return $query->whereHas('member', function($query) {
+                                    $tontine = $this->tenantService->tontine();
+                                    return $query->where('tontine_id', $tontine->id);
+                                });
                             });
                     })
                     // Round bills.

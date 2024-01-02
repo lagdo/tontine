@@ -51,9 +51,10 @@ class Round extends CallableClass
     private function amounts()
     {
         $sessions = $this->sessionService->getRoundSessions();
+
         // Sessions with data
-        $sessionIds = $sessions->filter(fn($session) => $session->opened || $session->closed)
-            ->pluck('id');
+        $sessionIds = $sessions->filter(fn($session) =>
+            ($session->opened || $session->closed))->pluck('id');
         $html = $this->render('pages.report.round.amounts', [
             'sessions' => $sessions,
             'auctions' => $this->roundService->getAuctionAmounts($sessionIds),

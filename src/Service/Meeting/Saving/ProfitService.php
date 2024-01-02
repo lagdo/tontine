@@ -26,14 +26,12 @@ class ProfitService
     {}
 
     /**
-     * Get the sessions to be used for profit calculation.
-     *
      * @param Session $currentSession
      * @param int $fundId
      *
-     * @return Collection
+     * @return mixed
      */
-    public function getFundSessions(Session $currentSession, int $fundId): Collection
+    private function getFundSessionsQuery(Session $currentSession, int $fundId)
     {
         $lastSessionDate = $currentSession->start_at->format('Y-m-d');
         // The closing sessions ids
@@ -42,7 +40,7 @@ class ProfitService
         {
             // No closing session yet
             return $this->tenantService->tontine()->sessions()
-                ->whereDate('sessions.start_at', '<=', $lastSessionDate)->get();
+                ->whereDate('sessions.start_at', '<=', $lastSessionDate);
         }
         // The previous closing sessions
         $closingSessions = $this->tenantService->tontine()->sessions()
@@ -55,7 +53,7 @@ class ProfitService
         {
             // All the closing sessions are after the current session.
             return $this->tenantService->tontine()->sessions()
-                ->whereDate('sessions.start_at', '<=', $lastSessionDate)->get();
+                ->whereDate('sessions.start_at', '<=', $lastSessionDate);
         }
 
         // The most recent previous closing session
@@ -63,8 +61,33 @@ class ProfitService
         // Return all the sessions after the most recent previous closing session
         return $this->tenantService->tontine()->sessions()
             ->whereDate('sessions.start_at', '<=', $lastSessionDate)
-            ->whereDate('sessions.start_at', '>', $firstSessionDate)
-            ->get();
+            ->whereDate('sessions.start_at', '>', $firstSessionDate);
+    }
+
+    /**
+     * Get the sessions to be used for profit calculation.
+     *
+     * @param Session $currentSession
+     * @param int $fundId
+     *
+     * @return Collection
+     */
+    public function getFundSessions(Session $currentSession, int $fundId): Collection
+    {
+        return $this->getFundSessionsQuery($currentSession, $fundId)->get();
+    }
+
+    /**
+     * Get the id of sessions to be used for profit calculation.
+     *
+     * @param Session $currentSession
+     * @param int $fundId
+     *
+     * @return Collection
+     */
+    public function getFundSessionIds(Session $currentSession, int $fundId): Collection
+    {
+        return $this->getFundSessionsQuery($currentSession, $fundId)->pluck('id');
     }
 
     /**

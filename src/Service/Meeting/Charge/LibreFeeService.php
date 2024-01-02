@@ -79,7 +79,7 @@ class LibreFeeService
     private function getPreviousSessionsBills(Session $session): Collection
     {
         // Count the session bills
-        $sessionIds = $this->sessionService->getRoundSessionIds($session, false);
+        $sessionIds = $this->sessionService->getRoundSessionIds($session, withCurr: false);
         return DB::table('libre_bills')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'libre_bills.bill_id', '=', 'bills.id')
@@ -113,7 +113,7 @@ class LibreFeeService
     private function getPreviousSessionsSettlements(Session $session): Collection
     {
         // Count the session bills
-        $sessionIds = $this->sessionService->getRoundSessionIds($session, false);
+        $sessionIds = $this->sessionService->getRoundSessionIds($session, withCurr: false);
         $query = DB::table('settlements')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')

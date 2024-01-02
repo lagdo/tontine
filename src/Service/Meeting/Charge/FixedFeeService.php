@@ -144,7 +144,7 @@ class FixedFeeService
     private function getPreviousSessionsSettlements(Session $session): Collection
     {
         // The previous sessions ids.
-        $sessionIds = $this->sessionService->getRoundSessionIds($session, false);
+        $sessionIds = $this->sessionService->getRoundSessionIds($session, withCurr: false);
         // Count the session bills settlements (can be settled at another session).
         $sessionQuery = DB::table('settlements')
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))

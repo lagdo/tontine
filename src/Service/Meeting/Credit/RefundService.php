@@ -30,14 +30,16 @@ class RefundService
     {}
 
     /**
-     * @param int $sessionId
-     * @param Collection $prevSessions
+     * @param Session $session The session
      * @param bool $onlyPaid
      *
      * @return Builder
      */
-    private function getQuery(int $sessionId, Collection $prevSessions, ?bool $onlyPaid): Builder
+    private function getQuery(Session $session, ?bool $onlyPaid = null): Builder
     {
+        $sessionId = $session->id;
+        $prevSessions = $this->sessionService->getTontineSessionIds($session, withCurr: false);
+
         return Debt::when($onlyPaid === false, function(Builder $query) {
                 return $query->whereDoesntHave('refund');
             })
@@ -82,8 +84,7 @@ class RefundService
      */
     public function getDebtCount(Session $session, ?bool $onlyPaid): int
     {
-        $prevSessions = $this->sessionService->getTontineSessionIds($session, false);
-        return $this->getQuery($session->id, $prevSessions, $onlyPaid)->count();
+        return $this->getQuery($session, $onlyPaid)->count();
     }
 
     /**
@@ -97,8 +98,7 @@ class RefundService
      */
     public function getDebts(Session $session, ?bool $onlyPaid, int $page = 0): Collection
     {
-        $prevSessions = $this->sessionService->getTontineSessionIds($session, false);
-        return $this->getQuery($session->id, $prevSessions, $onlyPaid)
+        return $this->getQuery($session, $onlyPaid)
             ->page($page, $this->tenantService->getLimit())
             ->with(['loan', 'loan.member', 'loan.session', 'refund', 'partial_refunds.session'])
             ->get()
@@ -123,19 +123,14 @@ class RefundService
     }
 
     /**
+     * @param Session $session The session
      * @param int $debtId
      *
      * @return Debt|null
      */
-    private function getDebt(int $debtId): ?Debt
+    private function getDebt(Session $session, int $debtId): ?Debt
     {
-        return Debt::whereHas('loan', function(Builder $query) {
-                $query->whereHas('member', function(Builder $query) {
-                    $query->where('tontine_id', $this->tenantService->tontine()->id);
-                });
-            })
-            ->with(['refund'])
-            ->find($debtId);
+        return $this->getQuery($session)->find($debtId);
     }
 
     /**
@@ -148,7 +143,7 @@ class RefundService
      */
     public function createRefund(Session $session, int $debtId): void
     {
-        $debt = $this->getDebt($debtId);
+        $debt = $this->getDebt($session, $debtId);
         if(!$debt || $debt->refund)
         {
             throw new MessageException(trans('tontine.loan.errors.not_found'));
@@ -264,7 +259,7 @@ class RefundService
      */
     public function createPartialRefund(Session $session, int $debtId, int $amount): void
     {
-        $debt = $this->getDebt($debtId);
+        $debt = $this->getDebt($session, $debtId);
         if(!$debt || $debt->refund)
         {
             throw new MessageException(trans('meeting.refund.errors.not_found'));

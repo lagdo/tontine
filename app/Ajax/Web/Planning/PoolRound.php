@@ -142,7 +142,7 @@ class PoolRound extends CallableClass
         $sessionCount = $this->sessionService->getTontineSessionCount();
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $sessionCount,
             'pool.round', "session.$field.page");
-        $sessions = $this->sessionService->getTontineSessions($pageNumber, false);
+        $sessions = $this->sessionService->getTontineSessions($pageNumber, orderAsc: false);
         $pagination = $request->paginate($pageNumber, $perPage, $sessionCount);
 
         $html = $this->render('pages.planning.pool.round.sessions', [
