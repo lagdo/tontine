@@ -50,7 +50,7 @@ class Closing extends CallableSessionClass
         $this->response->html('meeting-closings', $html);
 
         $this->jq('#btn-closings-refresh')->click($this->rq()->home());
-        $fundId = pm()->select('closings_fund_id')->toInt();
+        $fundId = pm()->select('closings-fund-id')->toInt();
         $this->jq('#btn-closing-edit')->click($this->rq()->editClosing($fundId));
         $fundId = jq()->parent()->attr('data-fund-id')->toInt();
         $this->jq('.btn-closing-edit')->click($this->rq()->editClosing($fundId));
@@ -124,7 +124,7 @@ class Closing extends CallableSessionClass
         $this->savingService->deleteFundClosing($this->session, $fundId);
 
         $this->dialog->hide();
-        $this->notify->success(trans('meeting.messages.profit.saved'), trans('common.titles.success'));
+        $this->notify->success(trans('meeting.messages.profit.deleted'), trans('common.titles.success'));
 
         return $this->home();
     }

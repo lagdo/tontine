@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service\Meeting\Saving;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Exception\MessageException;
@@ -26,41 +27,47 @@ class SavingService
     {}
 
     /**
-     * Get the savings.
+     * @param Session $session
+     * @param int $fundId
      *
-     * @param int $page
-     *
-     * @return Collection
+     * @return mixed
      */
-    public function getSavings(int $page = 0): Collection
+    private function getSavingQuery(Session $session, int $fundId)
     {
-        return Saving::with(['member', 'session', 'fund'])
-            ->page($page, $this->tenantService->getLimit())->get();
+        return $session->savings()
+            ->when($fundId === 0, function(Builder $query) {
+                $query->whereNull('fund_id');
+            })
+            ->when($fundId > 0, function(Builder $query) use($fundId) {
+                $query->where('fund_id', $fundId);
+            });
     }
 
     /**
      * Count the savings for a given session.
      *
      * @param Session $session
+     * @param int $fundId
      *
      * @return int
      */
-    public function getSessionSavingCount(Session $session): int
+    public function getSavingCount(Session $session, int $fundId): int
     {
-        return $session->savings()->count();
+        return $this->getSavingQuery($session, $fundId)->count();
     }
 
     /**
      * Get the savings for a given session.
      *
      * @param Session $session
+     * @param int $fundId
      * @param int $page
      *
      * @return Collection
      */
-    public function getSessionSavings(Session $session, int $page = 0): Collection
+    public function getSavings(Session $session, int $fundId, int $page = 0): Collection
     {
-        return $session->savings()
+        return $this->getSavingQuery($session, $fundId)
             ->with(['member', 'fund'])
             ->page($page, $this->tenantService->getLimit())
             ->get();
@@ -74,7 +81,7 @@ class SavingService
      *
      * @return Saving|null
      */
-    public function getSessionSaving(Session $session, int $savingId): ?Saving
+    public function getSaving(Session $session, int $savingId): ?Saving
     {
         return $session->savings()->with(['member', 'fund'])->find($savingId);
     }

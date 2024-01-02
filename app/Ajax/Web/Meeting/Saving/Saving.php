@@ -48,22 +48,26 @@ class Saving extends CallableSessionClass
     {
         $html = $this->render('pages.meeting.saving.home', [
             'session' => $this->session,
-            'funds' => $this->fundService->getFundList(),
+            'fundId' => (int)$this->bag('meeting.saving')->get('fund.id', -1),
+            'funds' => $this->fundService->getFundList()->prepend('', -1),
         ]);
         $this->response->html('meeting-savings', $html);
 
         $this->jq('#btn-savings-refresh')->click($this->rq()->home());
-        $this->jq('#btn-saving-add')->click($this->rq()->addSaving());
+        $fundId = pm()->select('savings-fund-id')->toInt();
+        $this->jq('#btn-saving-add')->click($this->rq()->addSaving($fundId));
+        $this->jq('#btn-savings-fund')->click($this->rq()->filter($fundId));
 
         return $this->page();
     }
 
     public function page(int $pageNumber = 0)
     {
-        $savingCount = $this->savingService->getSessionSavingCount($this->session);
+        $fundId = (int)$this->bag('meeting.saving')->get('fund.id', -1);
+        $savingCount = $this->savingService->getSavingCount($this->session, $fundId);
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $savingCount,
             'meeting.saving', 'page');
-        $savings = $this->savingService->getSessionSavings($this->session, $pageNumber);
+        $savings = $this->savingService->getSavings($this->session, $fundId, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $savingCount);
 
         $html = $this->render('pages.meeting.saving.page', [
@@ -81,7 +85,14 @@ class Saving extends CallableSessionClass
         return $this->response;
     }
 
-    public function addSaving()
+    public function filter(int $fundId)
+    {
+        $this->bag('meeting.saving')->set('fund.id', $fundId);
+
+        return $this->page();
+    }
+
+    public function addSaving(int $fundId)
     {
         if($this->session->closed)
         {
@@ -92,6 +103,7 @@ class Saving extends CallableSessionClass
         $title = trans('meeting.saving.titles.add');
         $content = $this->render('pages.meeting.saving.add', [
             'members' => $this->memberService->getMemberList(),
+            'fundId' => $fundId,
             'funds' => $this->fundService->getFundList(),
         ]);
         $buttons = [[
@@ -142,7 +154,7 @@ class Saving extends CallableSessionClass
             return $this->response;
         }
 
-        $saving = $this->savingService->getSessionSaving($this->session, $savingId);
+        $saving = $this->savingService->getSaving($this->session, $savingId);
         $title = trans('meeting.saving.titles.edit');
         $content = $this->render('pages.meeting.saving.edit', [
             'saving' => $saving,

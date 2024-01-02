@@ -65,6 +65,7 @@ return [
         ],
         'profit' => [
             'saved' => "Enregistré !",
+            'deleted' => "Supprimé !",
         ],
     ],
     'warnings' => [
