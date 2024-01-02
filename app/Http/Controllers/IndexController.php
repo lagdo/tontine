@@ -24,9 +24,6 @@ class IndexController extends Controller
      */
     public function index(Jaxon $jaxon): View
     {
-        // Localized Jaxon request processing URI
-        $jaxon->setOption('core.request.uri', LaravelLocalization::localizeUrl('/ajax'));
-
         view()->share([
             'user' => auth()->user(),
             'locales' => LaravelLocalization::getSupportedLocales(),
@@ -34,6 +31,8 @@ class IndexController extends Controller
             'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
             'jxnSession' => $jaxon->request(Session::class),
             'jxnTontine' => $jaxon->request(Tontine::class),
+            // Localized Jaxon request processing URI
+            'jxnRequestUri' => LaravelLocalization::localizeUrl('/ajax'),
         ]);
 
         $template = config('tontine.templates.app', 'default');
