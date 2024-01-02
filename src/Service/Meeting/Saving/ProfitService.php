@@ -87,7 +87,7 @@ class ProfitService
      */
     public function getFundSessionIds(Session $currentSession, int $fundId): Collection
     {
-        return $this->getFundSessionsQuery($currentSession, $fundId)->pluck('id');
+        return $this->getFundSessionsQuery($currentSession, $fundId)->pluck('sessions.id');
     }
 
     /**
