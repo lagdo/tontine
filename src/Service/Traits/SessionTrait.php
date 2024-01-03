@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Service\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Session;
 
@@ -89,9 +90,9 @@ trait SessionTrait
      * @param bool $getAfter Get the sessions after or before the provided one
      * @param bool $withCurr Keep the provided session in the list
      *
-     * @return Builder
+     * @return Builder|Relation
      */
-    private function getSessionsQuery($query, ?Session $currSession, bool $getAfter, bool $withCurr)
+    private function getSessionsQuery($query, ?Session $currSession, bool $getAfter, bool $withCurr): Builder|Relation
     {
         $operator = $getAfter ? ($withCurr ? '>=' : '>') : ($withCurr ? '<=' : '<');
         $currSessionDate = !$currSession ? '' : $currSession->start_at->format('Y-m-d');
@@ -104,9 +105,9 @@ trait SessionTrait
      * @param bool $getAfter Get the sessions after or before the provided one
      * @param bool $withCurr Keep the provided session in the list
      *
-     * @return Builder
+     * @return Builder|Relation
      */
-    private function getRoundSessionsQuery(?Session $currSession, bool $getAfter, bool $withCurr)
+    private function getRoundSessionsQuery(?Session $currSession, bool $getAfter, bool $withCurr): Builder|Relation
     {
         $query = $this->tenantService->round()->sessions();
         return $this->getSessionsQuery($query, $currSession, $getAfter, $withCurr);
@@ -145,9 +146,9 @@ trait SessionTrait
      * @param bool $getAfter Get the sessions after or before the provided one
      * @param bool $withCurr Keep the provided session in the list
      *
-     * @return Builder
+     * @return Builder|Relation
      */
-    private function getTontineSessionsQuery(?Session $currSession, bool $getAfter, bool $withCurr)
+    private function getTontineSessionsQuery(?Session $currSession, bool $getAfter, bool $withCurr): Builder|Relation
     {
         $query = $this->tenantService->tontine()->sessions();
         return $this->getSessionsQuery($query, $currSession, $getAfter, $withCurr);

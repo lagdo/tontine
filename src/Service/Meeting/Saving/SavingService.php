@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Service\Meeting\Saving;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Exception\MessageException;
@@ -30,9 +31,9 @@ class SavingService
      * @param Session $session
      * @param int $fundId
      *
-     * @return mixed
+     * @return Builder|Relation
      */
-    private function getSavingQuery(Session $session, int $fundId)
+    private function getSavingQuery(Session $session, int $fundId): Builder|Relation
     {
         return $session->savings()
             ->when($fundId === 0, function(Builder $query) {

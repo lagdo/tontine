@@ -4,6 +4,14 @@ namespace Siak\Tontine\Model;
 
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * @property int $amount
+ * @property bool $paid
+ * @property-read Remitment $remitment
+ * @property-read Session $session
+ * @method static Builder paid()
+ * @method static Builder unpaid()
+ */
 class Auction extends Base
 {
     /**

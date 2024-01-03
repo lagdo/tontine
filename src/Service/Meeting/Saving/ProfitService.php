@@ -2,6 +2,8 @@
 
 namespace Siak\Tontine\Service\Meeting\Saving;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -29,9 +31,9 @@ class ProfitService
      * @param Session $currentSession
      * @param int $fundId
      *
-     * @return mixed
+     * @return Builder|Relation
      */
-    private function getFundSessionsQuery(Session $currentSession, int $fundId)
+    private function getFundSessionsQuery(Session $currentSession, int $fundId): Builder|Relation
     {
         $lastSessionDate = $currentSession->start_at->format('Y-m-d');
         // The closing sessions ids

@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Service\Meeting\Pool;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Siak\Tontine\Model\Auction;
@@ -26,9 +27,9 @@ class AuctionService
      * @param Session $session The session
      * @param bool $onlyPaid
      *
-     * @return Builder
+     * @return Builder|Relation
      */
-    private function getQuery(Session $session, ?bool $onlyPaid = null): Builder
+    private function getQuery(Session $session, ?bool $onlyPaid = null): Builder|Relation
     {
         $sessionId = $session->id;
         $prevSessions = $this->sessionService->getRoundSessionIds($session, withCurr: false);

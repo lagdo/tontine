@@ -5,6 +5,7 @@ namespace Siak\Tontine\Model;
 use Carbon\Carbon;
 use Database\Factories\PoolFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,30 @@ use Siak\Tontine\Model\Traits\HasCurrency;
 
 use function trans;
 
+/**
+ * @property string $title
+ * @property int $amount
+ * @property string $notes
+ * @property array $properties
+ * @property-read Carbon $start_at
+ * @property-read Carbon $end_at
+ * @property-read string $start_date
+ * @property-read string $end_date
+ * @property-read bool $deposit_fixed
+ * @property-read bool $deposit_lendable
+ * @property-read bool $remit_planned
+ * @property-read bool $remit_auction
+ * @property-read bool $remit_payable
+ * @property-read Collection $subscriptions
+ * @property-read Collection $sessions
+ * @property-read Collection $enabledSessions
+ * @property-read Collection $disabledSessions
+ * @property-read Round $round
+ * @property-read PoolRound $pool_round
+ * @property-read Tontine $tontine
+ * @method static Builder ofSession(Session $session)
+ * @method static Builder ofRound(Round $round)
+ */
 class Pool extends Base
 {
     use HasFactory;

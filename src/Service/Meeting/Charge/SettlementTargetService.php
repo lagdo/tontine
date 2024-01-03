@@ -2,6 +2,8 @@
 
 namespace Siak\Tontine\Service\Meeting\Charge;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -53,9 +55,9 @@ class SettlementTargetService
     /**
      * @param string $search
      *
-     * @return mixed
+     * @return Builder|Relation
      */
-    private function getMembersQuery(string $search = '')
+    private function getMembersQuery(string $search = ''): Builder|Relation
     {
         return $this->tenantService->tontine()->members()->active()
             ->when($search !== '', function($query) use($search) {

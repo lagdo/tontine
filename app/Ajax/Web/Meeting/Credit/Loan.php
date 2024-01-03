@@ -144,8 +144,8 @@ class Loan extends CallableSessionClass
             $this->notify->warning(trans('meeting.loan.errors.not_found'));
             return $this->response;
         }
-        // A refunded loan, or that was created from a remitment cannot be updated.
-        if($loan->refunds_count > 0 || $loan->remitment_id)
+        // A refunded loan cannot be updated.
+        if($loan->refunds_count > 0)
         {
             $this->notify->warning(trans('meeting.loan.errors.update'));
             return $this->response;
@@ -190,8 +190,8 @@ class Loan extends CallableSessionClass
             $this->notify->warning(trans('meeting.loan.errors.not_found'));
             return $this->response;
         }
-        // A refunded loan, or that was created from a remitment cannot be updated.
-        if($loan->refunds_count > 0 || $loan->remitment_id)
+        // A refunded loan cannot be updated.
+        if($loan->refunds_count > 0)
         {
             $this->notify->warning(trans('meeting.loan.errors.update'));
             return $this->response;

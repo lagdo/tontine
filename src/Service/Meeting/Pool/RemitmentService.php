@@ -2,6 +2,8 @@
 
 namespace Siak\Tontine\Service\Meeting\Pool;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
@@ -35,9 +37,9 @@ class RemitmentService
      * @param Pool $pool
      * @param Session $session
      *
-     * @return mixed
+     * @return Builder|Relation
      */
-    private function getQuery(Pool $pool, Session $session)
+    private function getQuery(Pool $pool, Session $session): Builder|Relation
     {
         return $session->payables()->whereIn('subscription_id', $pool->subscriptions()->pluck('id'));
     }

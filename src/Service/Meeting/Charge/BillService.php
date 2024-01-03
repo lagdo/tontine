@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Service\Meeting\Charge;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Bill;
@@ -33,7 +34,7 @@ class BillService
      * @return Builder
      */
     private function getBillsQuery(Charge $charge, Session $session,
-        string $relation, string $search, ?bool $onlyPaid)
+        string $relation, string $search, ?bool $onlyPaid): Builder|Relation
     {
         $relationFilter = function(Builder $query) use($charge, $session, $relation) {
             $query->where('charge_id', $charge->id)

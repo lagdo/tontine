@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Service\Meeting\Pool;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Siak\Tontine\Model\Pool;
@@ -41,9 +42,9 @@ class PoolService
     /**
      * @param Session $session
      *
-     * @return Builder
+     * @return Builder|Relation
      */
-    private function getQuery(Session $session)
+    private function getQuery(Session $session): Builder|Relation
     {
         return Pool::ofSession($session)
             ->whereHas('subscriptions', function(Builder $query) use($session) {

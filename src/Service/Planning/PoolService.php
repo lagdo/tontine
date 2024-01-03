@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Planning;
 
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
@@ -21,9 +22,9 @@ class PoolService
     {}
 
     /**
-     * @return Builder
+     * @return Builder|Relation
      */
-    private function getQuery(): Builder
+    private function getQuery(): Builder|Relation
     {
         return Pool::ofRound($this->tenantService->round());
     }

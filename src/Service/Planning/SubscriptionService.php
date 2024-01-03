@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Service\Planning;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
@@ -45,9 +46,9 @@ class SubscriptionService
      * @param string $search
      * @param bool $filter|null
      *
-     * @return mixed
+     * @return Builder|Relation
      */
-    public function getQuery(Pool $pool, string $search, ?bool $filter)
+    public function getQuery(Pool $pool, string $search, ?bool $filter): Builder|Relation
     {
         return $this->tenantService->tontine()->members()->active()
             ->when($filter === true, function(Builder $query) use($pool) {
@@ -212,6 +213,24 @@ class SubscriptionService
     }
 
     /**
+     * @param Session $session
+     * @param Subscription|null $subscription
+     *
+     * @return bool
+     */
+    private function canChangeBeneficiary(Session $session, ?Subscription $subscription): bool
+    {
+        // Can't change the beneficiary if the session is closed or pending,
+        if($session->closed || $session->pending)
+        {
+            return false;
+        }
+        // Or if the collected amount has already been remitted.
+        return $subscription === null || $subscription->payable === null ||
+            $subscription->payable->remitment === null;
+    }
+
+    /**
      * Set or unset the beneficiary of a given pool.
      *
      * @param Pool $pool
@@ -221,26 +240,27 @@ class SubscriptionService
      *
      * @return bool
      */
-    public function saveBeneficiary(Pool $pool, int $sessionId,
-        int $currSubscriptionId, int $nextSubscriptionId): bool
+    public function saveBeneficiary(Pool $pool, int $sessionId, int $currSubscriptionId,
+        int $nextSubscriptionId): bool
     {
         $session = $pool->sessions()->find($sessionId);
         $currSubscription = null;
         $nextSubscription = null;
         if($currSubscriptionId > 0)
         {
-            $currSubscription = $pool->subscriptions()->with('payable')->find($currSubscriptionId);
-            if(($currSubscription !== null && $currSubscription->payable !== null &&
-                $currSubscription->payable->remitment !== null) || $session->closed)
+            $currSubscription = $pool->subscriptions()
+                ->with('payable')
+                ->find($currSubscriptionId);
+            if(!$this->canChangeBeneficiary($session, $currSubscription))
             {
-                // Can't chage the beneficiary if the session is closed or if
-                // the collected amount has already been remitted.
                 return false;
             }
         }
         if($nextSubscriptionId > 0)
         {
-            $nextSubscription = $pool->subscriptions()->with('payable')->find($nextSubscriptionId);
+            $nextSubscription = $pool->subscriptions()
+                ->with('payable')
+                ->find($nextSubscriptionId);
         }
 
         DB::transaction(function() use($session, $currSubscription, $nextSubscription) {

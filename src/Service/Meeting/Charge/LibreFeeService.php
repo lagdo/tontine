@@ -2,6 +2,8 @@
 
 namespace Siak\Tontine\Service\Meeting\Charge;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
@@ -171,10 +173,10 @@ class LibreFeeService
      * @param string $search
      * @param bool $filter|null
      *
-     * @return mixed
+     * @return Builder|Relation
      */
     private function getMembersQuery(Charge $charge, Session $session,
-        string $search = '', ?bool $filter)
+        string $search = '', ?bool $filter): Builder|Relation
     {
         $filterFunction = function($query) use($charge, $session) {
             $query->where('charge_id', $charge->id)->where('session_id', $session->id);

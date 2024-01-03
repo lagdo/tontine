@@ -2,6 +2,8 @@
 
 namespace Siak\Tontine\Service\Meeting\Charge;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Bill;
@@ -31,9 +33,9 @@ class SettlementService
      * @param Charge $charge
      * @param Session $session
      *
-     * @return mixed
+     * @return Builder|Relation
      */
-    private function getQuery(Charge $charge, Session $session)
+    private function getQuery(Charge $charge, Session $session): Builder|Relation
     {
         // The select('bills.*') is important here, otherwise Eloquent overrides the
         // Bill model id fields with those of another model, then making the dataset incorrect.
