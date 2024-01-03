@@ -150,7 +150,7 @@ class CallableClass extends JaxonCallableClass
     protected function checkRoundSessions()
     {
         $round = $this->tenantService->round();
-        if(!$round || $round->sessions()->count() === 0)
+        if(!$round || $round->sessions->count() === 0)
         {
             throw new PlanningRoundException(trans('tontine.errors.checks.sessions'));
         }
@@ -161,6 +161,9 @@ class CallableClass extends JaxonCallableClass
      */
     protected function checkOpenedSessions()
     {
+        // First check for created sessions
+        $this->checkRoundSessions();
+
         $tontine = $this->tenantService->tontine();
         if(!$tontine || $tontine->members()->active()->count() === 0)
         {
@@ -183,7 +186,7 @@ class CallableClass extends JaxonCallableClass
         $this->checkRoundSessions();
 
         $round = $this->tenantService->round();
-        if(!$round || $round->pools()->count() === 0)
+        if(!$round || $round->pools->count() === 0)
         {
             throw new PlanningPoolException(trans('tontine.errors.checks.pools'));
         }
