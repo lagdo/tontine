@@ -9,7 +9,7 @@
                         {!! Form::select('fund_id', $funds, 0, ['class' => 'form-control',
                           'style' => 'height:36px; padding:5px 15px;', 'id' => 'closings-fund-id']) !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" id="btn-closing-edit"><i class="fa fa-circle-notch"></i></button>
+                          <button type="button" class="btn btn-primary" id="btn-closing-edit"><i class="fa fa-plus"></i></button>
                         </div>
                       </div>
                     </div>

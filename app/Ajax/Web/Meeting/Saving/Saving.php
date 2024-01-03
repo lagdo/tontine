@@ -158,6 +158,7 @@ class Saving extends CallableSessionClass
         $title = trans('meeting.saving.titles.edit');
         $content = $this->render('pages.meeting.saving.edit', [
             'saving' => $saving,
+            'members' => $this->memberService->getMemberList(),
             'funds' => $this->fundService->getFundList(),
         ]);
         $buttons = [[
