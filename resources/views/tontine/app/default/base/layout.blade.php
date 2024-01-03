@@ -39,6 +39,9 @@
       font-size: 16px;
       padding: 4px 24px;
     }
+    .main-content {
+      margin-bottom: 80px;
+    }
     .main-sidebar .sidebar-menu li a#tontine-menu-tontines {
       color: #6777ef;
     }
