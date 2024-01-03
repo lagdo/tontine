@@ -11,7 +11,7 @@ return [
     |
     */
 
-    'tooltip' => 'Give feedback',
+    'tooltip' => 'Donner un feedback',
 
     /*
     |--------------------------------------------------------------------------
@@ -22,7 +22,7 @@ return [
     |
     */
 
-    'title' => 'Help us improve our application',
+    'title' => 'Aidez-nous à améliorer notre application',
 
     /*
     |--------------------------------------------------------------------------
@@ -33,7 +33,7 @@ return [
     |
     */
 
-    'success' => 'Thank you for your feedback!',
+    'success' => 'Merci pour votre feedback!',
 
     /*
     |--------------------------------------------------------------------------
@@ -45,7 +45,7 @@ return [
     |
     */
 
-    'placeholder' => 'Type your feedback here...',
+    'placeholder' => 'Entrez votre feedback ici...',
 
     /*
     |--------------------------------------------------------------------------
@@ -56,7 +56,7 @@ return [
     |
     */
 
-    'button' => 'Send feedback',
+    'button' => 'Envoyer le feedback',
 
     /*
     |--------------------------------------------------------------------------
@@ -68,20 +68,20 @@ return [
     */
     'feedbacks' => [
         'like' => [
-            'title' => 'I like something',
-            'label' => 'What did you like ?',
+            'title' => "Ce que j'aime",
+            'label' => "Qu'est-ce que vous aimez ?",
         ],
         'dislike' => [
-            'title' => 'I don\'t like something',
-            'label' => 'What did you dislike ?',
+            'title' => "Ce que je n'aime pas",
+            'label' => "Qu'est-ce que vous n'aimez pas ?",
         ],
         'suggestion' => [
-            'title' => 'I have a suggestion',
-            'label' => 'What is your suggestion ?',
+            'title' => "J'ai une suggestion",
+            'label' => 'Quelle est votre suggestion ?',
         ],
         'bug' => [
-            'title' => 'I had an issue',
-            'label' => 'Please explain what happened',
+            'title' => "J'ai eu un problème",
+            'label' => "Expliquez ce qui s'est passé.",
         ],
     ],
 ];
