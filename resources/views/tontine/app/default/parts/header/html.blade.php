@@ -22,4 +22,23 @@
           min-width: 400px;
       }
     }
+
+    /* Make the Kustomer component appear on top of the page elements */
+    .kustomer-feedback-component {
+      z-index: 100;
+    }
+    .kustomer-feedback-component .kustomer-popup .kustomer-header h1 {
+      margin-top: 0 !important;
+      font-size: 15px !important;
+    }
+    .kustomer-popup .kustomer-container section.kustomer-form h2 {
+      text-transform: none !important;
+    }
+    /* Hide the feedback popup logo */
+    .kustomer-popup .kustomer-header .kustomer-logo {
+      display: none;
+    }
+    .kustomer-feedback-component .kustomer-popup .kustomer-container section.kustomer-form form textarea {
+      resize: vertical;
+    }
   </style>

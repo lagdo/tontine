@@ -100,6 +100,8 @@
 
     </div>
   </div>
+
+@include('tontine.app.default.parts.content.feedback')
 </body>
 
 @include('tontine.app.default.parts.footer.html')

@@ -37,7 +37,7 @@ return [
     |
     */
 
-    'logo' => '/vendor/kustomer/assets/logo.svg',
+    'logo' => '', // '/vendor/kustomer/assets/logo.svg',
 
     /*
     |--------------------------------------------------------------------------
@@ -83,9 +83,9 @@ return [
         'suggestion' => [
             'icon' => '/vendor/kustomer/assets/idea.svg',
         ],
-        // 'bug' => [
-        //     'icon' => '/vendor/kustomer/assets/bug.svg',
-        // ],
+        'bug' => [
+            'icon' => '/vendor/kustomer/assets/bug.svg',
+        ],
     ],
 
     /*

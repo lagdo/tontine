@@ -19,3 +19,4 @@
   <!-- Template JS File -->
   <script src="/tpl/assets/js/scripts.js"></script>
   <script src="/tpl/assets/js/custom.js"></script>
+  <script src="{{ asset('vendor/kustomer/js/kustomer.js') }}" defer></script>
