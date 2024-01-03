@@ -22,6 +22,7 @@
         "laravelcollective/html": "^6.4",
         "league/iso3166": "^4.2",
         "mcamara/laravel-localization": "^1.8",
+        "mydnic/laravel-kustomer": "^1.9",
         "propaganistas/laravel-phone": "^5.0",
         "rinvex/countries": "^9.0",
         "spatie/laravel-validation-rules": "^3.2",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9a5ee64f27315cde8cbae766f9d4ad4f",
+    "content-hash": "a3fa9886055a9a0088ff705c48703e3f",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -2907,6 +2907,65 @@
                 }
             ],
             "time": "2023-02-06T13:44:46+00:00"
+        },
+        {
+            "name": "mydnic/laravel-kustomer",
+            "version": "v1.9.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mydnic/laravel-feedback-component.git",
+                "reference": "6400314f1cfb80b4f09812e7e70cf1a9de5a3039"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mydnic/laravel-feedback-component/zipball/6400314f1cfb80b4f09812e7e70cf1a9de5a3039",
+                "reference": "6400314f1cfb80b4f09812e7e70cf1a9de5a3039",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^7.0|^8.0|^9.0|^10.0",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.3",
+                "orchestra/testbench": "^3.7.8",
+                "phpunit/phpunit": "^7.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mydnic\\Kustomer\\KustomerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mydnic\\Kustomer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Clément Rigo",
+                    "email": "rigoclement@mydnic.be"
+                }
+            ],
+            "description": "Open Source Feedback Interface for Laravel",
+            "homepage": "https://github.com/mydnic/laravel-feedback-component",
+            "keywords": [
+                "customer",
+                "feedback",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/mydnic/laravel-feedback-component/issues",
+                "source": "https://github.com/mydnic/laravel-feedback-component/tree/v1.9.1"
+            },
+            "time": "2023-10-02T10:54:12+00:00"
         },
         {
             "name": "nesbot/carbon",
