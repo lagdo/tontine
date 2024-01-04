@@ -16,6 +16,7 @@ use Jaxon\App\CallableClass as JaxonCallableClass;
 use Jaxon\App\Dialog\MessageInterface;
 use Jaxon\App\Dialog\ModalInterface;
 use Jaxon\App\View\Store;
+use Siak\Tontine\Exception\MeetingRoundException;
 use Siak\Tontine\Exception\PlanningPoolException;
 use Siak\Tontine\Exception\PlanningRoundException;
 use Siak\Tontine\Exception\TontineMemberException;
@@ -159,6 +160,20 @@ class CallableClass extends JaxonCallableClass
     /**
      * @return void
      */
+    protected function checkRoundPools()
+    {
+        $this->checkRoundSessions();
+
+        $round = $this->tenantService->round();
+        if(!$round || $round->pools->count() === 0)
+        {
+            throw new PlanningPoolException(trans('tontine.errors.checks.pools'));
+        }
+    }
+
+    /**
+     * @return void
+     */
     protected function checkOpenedSessions()
     {
         // First check for created sessions
@@ -174,21 +189,7 @@ class CallableClass extends JaxonCallableClass
         if(!$round || $round->sessions->filter(fn($session) =>
             ($session->opened || $session->closed))->count() === 0)
         {
-            throw new PlanningRoundException(trans('tontine.errors.checks.sessions'));
-        }
-    }
-
-    /**
-     * @return void
-     */
-    protected function checkRoundPools()
-    {
-        $this->checkRoundSessions();
-
-        $round = $this->tenantService->round();
-        if(!$round || $round->pools->count() === 0)
-        {
-            throw new PlanningPoolException(trans('tontine.errors.checks.pools'));
+            throw new MeetingRoundException(trans('tontine.errors.checks.opened_sessions'));
         }
     }
 }

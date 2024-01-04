@@ -84,6 +84,8 @@ return [
                 "You need to add one or more sessions before you can move forward.",
             'pools' => "You have beed redirected to the pools page.<br/>" .
                 "You need to add one or more pools before you can move forward.",
+            'opened_sessions' => "You have beed redirected to the sessions page.<br/>" .
+                "You need to have one or more sessions opened before you can move forward.",
         ],
     ],
     'round' => [

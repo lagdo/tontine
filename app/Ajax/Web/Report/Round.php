@@ -20,7 +20,7 @@ class Round extends CallableClass
     {}
 
     /**
-     * @before checkRoundSessions
+     * @before checkOpenedSessions
      * @after hideMenuOnMobile
      */
     public function home()

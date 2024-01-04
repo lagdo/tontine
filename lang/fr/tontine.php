@@ -84,6 +84,8 @@ return [
                 "Vous devez ajouter une ou plusieurs séances avant d'aller plus loin.",
             'pools' => "Vous avez été redirigé vers la page des tontines.<br/>" .
                 "Vous devez ajouter une ou plusieurs tontines avant d'aller plus loin.",
+            'opened_sessions' => "Vous avez été redirigé vers la page des séances.<br/>" .
+                "Vous devez avoir une ou plusieurs séances ouvertes avant d'aller plus loin.",
         ],
     ],
     'round' => [

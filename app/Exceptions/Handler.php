@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Ajax\Web\Meeting\Session;
 use App\Ajax\Web\Planning\Pool;
 use App\Ajax\Web\Planning\Round;
 use App\Ajax\Web\Tontine\Member;
@@ -10,6 +11,7 @@ use Jaxon\Laravel\Jaxon;
 use Jaxon\Plugin\Request\CallableClass\CallableRegistry;
 use Siak\Tontine\Exception\AuthenticationException;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Exception\MeetingRoundException;
 use Siak\Tontine\Exception\PlanningPoolException;
 use Siak\Tontine\Exception\PlanningRoundException;
 use Siak\Tontine\Exception\TontineMemberException;
@@ -127,6 +129,17 @@ class Handler extends ExceptionHandler
         // Show the warning message in a dialog, and show the members page.
         $this->renderable(function (TontineMemberException $e) {
             $this->getCallableObject(Member::class)->home();
+
+            $jaxon = app()->make(Jaxon::class);
+            $ajaxResponse = $jaxon->ajaxResponse();
+            $ajaxResponse->dialog->warning($e->getMessage(), trans('common.titles.warning'));
+
+            return $jaxon->httpResponse();
+        });
+
+        // Show the warning message in a dialog, and show the sessions page.
+        $this->renderable(function (MeetingRoundException $e) {
+            $this->getCallableObject(Session::class)->home();
 
             $jaxon = app()->make(Jaxon::class);
             $ajaxResponse = $jaxon->ajaxResponse();
