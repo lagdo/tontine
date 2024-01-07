@@ -7,11 +7,10 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Siak\Tontine\Model\Debt;
-use Siak\Tontine\Model\Payable;
+use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Planning\PoolService;
@@ -92,20 +91,19 @@ class BalanceCalculator
     }
 
     /**
-     * @param Payable $payable
+     * @param Pool $pool
      * @param Session $session
      *
      * @return int
      */
-    public function getPayableAmount(Payable $payable, Session $session): int
+    public function getPayableAmount(Pool $pool, Session $session): int
     {
-        $pool = $payable->subscription->pool;
-        if($pool->deposit_fixed)
+        if(!$pool->deposit_fixed)
         {
-            return $pool->amount * $this->poolService->getEnabledSessionCount($pool);
+            // Sum the amounts for all deposits
+            return $this->getPoolDepositAmount($pool, $session);
         }
-        // Sum the amounts for all deposits
-        return $this->getPoolDepositAmount($pool, $session);
+        return $pool->amount * $this->poolService->getEnabledSessionCount($pool);
     }
 
     /**

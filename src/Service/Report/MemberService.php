@@ -68,10 +68,11 @@ class MemberService
             ->with(['remitment', 'subscription.pool', 'subscription.member'])
             ->get()
             ->each(function($payable) use($session) {
-                $payable->pool = $payable->subscription->pool;
+                $pool = $payable->subscription->pool;
+                $payable->pool = $pool;
                 $payable->member = $payable->subscription->member;
                 $payable->paid = ($payable->remitment !== null);
-                $payable->amount = $this->balanceCalculator->getPayableAmount($payable, $session);
+                $payable->amount = $this->balanceCalculator->getPayableAmount($pool, $session);
             })
             // Sort by member name
             ->when($member === null, function($collection) {

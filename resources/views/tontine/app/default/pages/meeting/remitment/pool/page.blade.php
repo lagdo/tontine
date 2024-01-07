@@ -10,7 +10,7 @@
                       <tbody>
 @foreach ($payables as $payable)
                         <tr>
-                          <td>{{ $payable->subscription->member->name ?? __('tontine.remitment.labels.not-assigned') }}</td>
+                          <td>{{ $payable->member }}</td>
                           <td class="currency">
                             {{ $locale->formatMoney($payable->amount, true) }}
 @if ($payable->remitment && $payable->remitment->auction)

@@ -32,7 +32,9 @@ class DepositService
     private function getQuery(Pool $pool, Session $session): Builder|Relation
     {
         return $session->receivables()
-            ->whereIn('subscription_id', $pool->subscriptions()->pluck('id'));
+            ->select('receivables.*')
+            ->join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
+            ->where('subscriptions.pool_id', $pool->id);
     }
 
     /**
@@ -47,12 +49,13 @@ class DepositService
         // The jointure with the subscriptions and members tables is needed,
         // so the final records can be ordered by member name.
         return $this->getQuery($pool, $session)
-            ->select('receivables.*')
-            ->join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
+            ->addSelect(DB::raw('pools.amount, members.name as member'))
+            ->join('pools', 'pools.id', '=', 'subscriptions.pool_id')
             ->join('members', 'members.id', '=', 'subscriptions.member_id')
-            ->with(['subscription.member', 'deposit'])
+            ->with(['deposit'])
             ->page($page, $this->tenantService->getLimit())
             ->orderBy('members.name', 'asc')
+            ->orderBy('subscriptions.id', 'asc')
             ->get();
     }
 
@@ -80,7 +83,9 @@ class DepositService
      */
     public function getReceivable(Pool $pool, Session $session, int $receivableId): ?Receivable
     {
-        return $this->getQuery($pool, $session)->with(['deposit'])->find($receivableId);
+        return $this->getQuery($pool, $session)
+            ->with(['deposit'])
+            ->find($receivableId);
     }
 
     /**

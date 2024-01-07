@@ -41,7 +41,10 @@ class RemitmentService
      */
     private function getQuery(Pool $pool, Session $session): Builder|Relation
     {
-        return $session->payables()->whereIn('subscription_id', $pool->subscriptions()->pluck('id'));
+        return $session->payables()
+            ->select('payables.*')
+            ->join('subscriptions', 'subscriptions.id', '=', 'payables.subscription_id')
+            ->where('subscriptions.pool_id', $pool->id);
     }
 
     /**
@@ -66,12 +69,15 @@ class RemitmentService
      */
     public function getPayables(Pool $pool, Session $session, int $page = 0): Collection
     {
+        $amount = $this->balanceCalculator->getPayableAmount($pool, $session);
         $payables = $this->getQuery($pool, $session)
-            ->with(['subscription.member', 'remitment', 'remitment.auction'])
+            ->addSelect(DB::raw('members.name as member'))
+            ->join('members', 'members.id', '=', 'subscriptions.member_id')
+            ->with(['remitment', 'remitment.auction'])
             ->page($page, $this->tenantService->getLimit())
             ->get()
-            ->each(function($payable) use($session) {
-                $payable->amount = $this->balanceCalculator->getPayableAmount($payable, $session);
+            ->each(function($payable) use($amount) {
+                $payable->amount = $amount;
             });
         if(!$pool->remit_planned)
         {
@@ -82,7 +88,8 @@ class RemitmentService
         $remitmentCount = $this->summaryService->getSessionRemitmentCount($pool, $session);
         $emptyPayable = (object)[
             'id' => 0,
-            'amount' => $pool->amount * $this->poolService->getEnabledSessionCount($pool),
+            'member' =>trans('tontine.remitment.labels.not-assigned'),
+            'amount' => $amount,
             'remitment' => null,
         ];
 

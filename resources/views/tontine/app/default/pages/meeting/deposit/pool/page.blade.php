@@ -24,9 +24,9 @@
                   <tbody>
 @foreach ($receivables as $receivable)
                     <tr>
-                      <td>{{ $receivable->subscription->member->name }}</td>
+                      <td>{{ $receivable->member }}</td>
 @if ($pool->deposit_fixed)
-                      <td class="currency">{{ $locale->formatMoney($receivable->subscription->pool->amount, true) }}</td>
+                      <td class="currency">{{ $locale->formatMoney($receivable->amount, true) }}</td>
                       <td class="table-item-menu" id="receivable-{{ $receivable->id }}" data-receivable-id="{{ $receivable->id }}">
                         {!! paymentLink($receivable->deposit, 'deposit', !$session->opened) !!}
                       </td>
