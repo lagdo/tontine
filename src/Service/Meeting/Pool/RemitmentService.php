@@ -239,10 +239,10 @@ class RemitmentService
             ->get();
         if($pool->remit_planned && !$pool->remit_auction)
         {
-            // Only the beneficiaries planned for this session.
+            // Only the beneficiaries that are not yet planned.
             return $subscriptions
-                ->filter(function($subscription) use($session) {
-                    return $subscription->payable->session_id === $session->id;
+                ->filter(function($subscription) {
+                    return !$subscription->payable->session_id;
                 })
                 ->pluck('member.name', 'payable.id');
         }
