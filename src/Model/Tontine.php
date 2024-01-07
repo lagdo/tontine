@@ -66,7 +66,8 @@ class Tontine extends Base
 
     public function sessions()
     {
-        return $this->hasManyThrough(Session::class, Round::class);
+        return $this->hasManyThrough(Session::class, Round::class)
+            ->select('sessions.*');
     }
 
     public function funds()

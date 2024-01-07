@@ -104,7 +104,8 @@ class Loan extends Base
 
     public function refunds()
     {
-        return $this->hasManyThrough(Refund::class, Debt::class);
+        return $this->hasManyThrough(Refund::class, Debt::class)
+            ->select('refunds.*');
     }
 
     public function principal_debt()
