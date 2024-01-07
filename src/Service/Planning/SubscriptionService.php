@@ -220,8 +220,8 @@ class SubscriptionService
      */
     private function canChangeBeneficiary(Session $session, ?Subscription $subscription): bool
     {
-        // Can't change the beneficiary if the session is closed or pending,
-        if($session->closed || $session->pending)
+        // Can't change the beneficiary if the session is closed,
+        if($session->closed)
         {
             return false;
         }
