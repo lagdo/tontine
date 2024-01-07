@@ -5,16 +5,16 @@
 @if($session->opened)
                     <div class="col-auto">
                       <div class="input-group mb-2">
-                        {!! Form::select('fund_id', $funds, $fundId, ['class' => 'form-control',
+                        {!! Form::select('fund', $funds, $fundId, ['class' => 'form-control',
                           'style' => 'height:36px; padding:5px 15px;', 'id' => 'savings-fund-id']) !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" id="btn-savings-fund"><i class="fa fa-arrow-right"></i></button>
+                          <button type="button" class="btn btn-primary" id="btn-savings-fund"><i class="fa fa-arrow-down"></i></button>
+                          <button type="button" class="btn btn-primary" id="btn-savings-edit"><i class="fa fa-arrow-right"></i></button>
                         </div>
                       </div>
                     </div>
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
-                        <button type="button" class="btn btn-primary" id="btn-saving-add"><i class="fa fa-plus"></i></button>
                         <button type="button" class="btn btn-primary" id="btn-savings-refresh"><i class="fa fa-sync"></i></button>
                       </div>
                     </div>

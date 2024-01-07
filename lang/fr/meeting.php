@@ -57,6 +57,8 @@ return [
         'distribution' => "Distribution",
     ],
     'messages' => [
+        'saved' => "Enregistré !",
+        'deleted' => "Supprimé !",
         'agenda' => [
             'updated' => "Enregistré !",
         ],

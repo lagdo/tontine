@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Model\Saving;
+use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\Saving;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
@@ -22,9 +24,11 @@ class SavingService
      * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param FundService $fundService
+     * @param MemberService $memberService
      */
     public function __construct(private LocaleService $localeService,
-        private TenantService $tenantService, private FundService $fundService)
+        private TenantService $tenantService, private FundService $fundService,
+        private MemberService $memberService)
     {}
 
     /**
@@ -35,6 +39,9 @@ class SavingService
      */
     private function getSavingQuery(Session $session, int $fundId): Builder|Relation
     {
+        // $fundId < 0 => all the savings
+        // $fundId === 0 => savings of the default fund
+        // $fundId > 0 => savings of the corresponding fund
         return $session->savings()
             ->when($fundId === 0, function(Builder $query) {
                 $query->whereNull('fund_id');
@@ -69,8 +76,11 @@ class SavingService
     public function getSavings(Session $session, int $fundId, int $page = 0): Collection
     {
         return $this->getSavingQuery($session, $fundId)
-            ->with(['member', 'fund'])
+            ->select(DB::raw('savings.*, members.name as member'))
+            ->join('members', 'members.id', '=', 'savings.member_id')
+            ->with(['fund'])
             ->page($page, $this->tenantService->getLimit())
+            ->orderBy('members.name')
             ->get();
     }
 
@@ -84,61 +94,43 @@ class SavingService
      */
     public function getSaving(Session $session, int $savingId): ?Saving
     {
-        return $session->savings()->with(['member', 'fund'])->find($savingId);
+        return $session->savings()->with(['fund'])->find($savingId);
     }
 
     /**
-     * Create a saving.
+     * Find a member saving for a given session.
      *
+     * @param Session $session
+     * @param int $fundId
+     * @param int $memberId
+     *
+     * @return Saving|null
+     */
+    public function findSaving(Session $session, int $fundId, int $memberId): ?Saving
+    {
+        return $this->getSavingQuery($session, $fundId)
+            ->where('member_id', $memberId)
+            ->first();
+    }
+
+    /**
+     * @param Session $session
      * @param Member $member
-     * @param Session $session The session
-     * @param array $values
+     * @param Fund|null $fund
+     * @param Saving $saving
+     * @param int $amount
      *
      * @return void
      */
-    public function createSaving(Member $member, Session $session, array $values): void
+    private function persistSaving(Session $session, Member $member,
+        ?Fund $fund, Saving $saving, int $amount)
     {
-        $saving = new Saving();
-        $saving->amount = $values['amount'];
+        $saving->amount = $amount;
         $saving->member()->associate($member);
         $saving->session()->associate($session);
-        if($values['fund_id'] !== 0)
+        if($fund !== null)
         {
-            $fund = $this->fundService->getFund($values['fund_id']);
-            if($fund !== null)
-            {
-                $saving->fund()->associate($fund);
-            }
-        }
-        $saving->save();
-    }
-
-    /**
-     * Update a saving.
-     *
-     * @param Member $member
-     * @param Session $session The session
-     * @param array $values
-     *
-     * @return void
-     */
-    public function updateSaving(Member $member, Session $session, int $savingId, array $values): void
-    {
-        $saving = $session->savings()->find($savingId);
-        if(!$saving)
-        {
-            throw new MessageException(trans('meeting.saving.errors.not_found'));
-        }
-
-        $saving->amount = $values['amount'];
-        $saving->member()->associate($member);
-        if($values['fund_id'] !== 0)
-        {
-            $fund = $this->fundService->getFund($values['fund_id']);
-            if($fund !== null)
-            {
-                $saving->fund()->associate($fund);
-            }
+            $saving->fund()->associate($fund);
         }
         else
         {
@@ -148,16 +140,157 @@ class SavingService
     }
 
     /**
+     * Create a saving.
+     *
+     * @param Session $session The session
+     * @param array $values
+     *
+     * @return void
+     */
+    public function createSaving(Session $session, array $values): void
+    {
+        if(!($member = $this->memberService->getMember($values['member'])))
+        {
+            throw new MessageException(trans('tontine.member.errors.not_found'));
+        }
+        $fund = !$values['fund'] ? null : $this->fundService->getFund($values['fund']);
+
+        $saving = new Saving();
+        $this->persistSaving($session, $member, $fund, $saving, $values['amount']);
+    }
+
+    /**
+     * Update a saving.
+     *
+     * @param Session $session The session
+     * @param int $savingId
+     * @param array $values
+     *
+     * @return void
+     */
+    public function updateSaving(Session $session, int $savingId, array $values): void
+    {
+        if(!($member = $this->memberService->getMember($values['member'])))
+        {
+            throw new MessageException(trans('tontine.member.errors.not_found'));
+        }
+        $saving = $session->savings()->find($savingId);
+        if(!$saving)
+        {
+            throw new MessageException(trans('meeting.saving.errors.not_found'));
+        }
+        $fund = !$values['fund'] ? null : $this->fundService->getFund($values['fund']);
+
+        $this->persistSaving($session, $member, $fund, $saving, $values['amount']);
+    }
+
+    /**
+     * Create or update a saving.
+     *
+     * @param Session $session The session
+     * @param int $fundId
+     * @param int $memberId
+     * @param int $amount
+     *
+     * @return void
+     */
+    public function saveSaving(Session $session, int $fundId, int $memberId, int $amount): void
+    {
+        if(!($member = $this->memberService->getMember($memberId)))
+        {
+            throw new MessageException(trans('tontine.member.errors.not_found'));
+        }
+        $fund = !$fundId ? null : $this->fundService->getFund($fundId);
+        $saving = $this->findSaving($session, !$fund ? 0 : $fund->id, $member->id);
+        if(!$saving)
+        {
+            $saving = new Saving();
+        }
+
+        $this->persistSaving($session, $member, $fund, $saving, $amount);
+    }
+
+    /**
      * Delete a saving.
      *
      * @param Session $session The session
      * @param int $savingId
+     * @param int $memberId
      *
      * @return void
      */
-    public function deleteSaving(Session $session, int $savingId): void
+    public function deleteSaving(Session $session, int $savingId, int $memberId = 0): void
     {
-        $session->savings()->where('id', $savingId)->delete();
+        $savingId > 0 ?
+            $session->savings()->where('id', $savingId)->delete() :
+            $session->savings()->where('member_id', $memberId)->delete();
+    }
+
+    /**
+     * @param string $search
+     *
+     * @return Builder|Relation
+     */
+    private function getMembersQuery(string $search): Builder|Relation
+    {
+        return $this->tenantService->tontine()->members()->active()
+            ->when($search !== '', function(Builder $query) use($search) {
+                $search = '%' . strtolower($search) . '%';
+                return $query->where(DB::raw('lower(name)'), 'like', $search);
+            });
+    }
+
+    /**
+     * Get a paginated list of members.
+     *
+     * @param string $search
+     * @param Session $session
+     * @param int $fundId
+     * @param int $page
+     *
+     * @return Collection
+     */
+    public function getMembers(Session $session, int $fundId, string $search, int $page = 0): Collection
+    {
+        return $this->getMembersQuery($search)
+            ->page($page, $this->tenantService->getLimit())
+            ->with('savings', function(Relation $query) use($session, $fundId) {
+                $query->where('session_id', $session->id)
+                    ->where(function(Builder $query) use($fundId) {
+                        $fundId > 0 ?
+                            $query->where('fund_id', $fundId) :
+                            $query->whereNull('fund_id');
+                    });
+            })
+            ->orderBy('name', 'asc')
+            ->get()
+            ->each(function($member) {
+                $member->saving = $member->savings->first();
+            });
+    }
+
+    /**
+     * Get the number of members.
+     *
+     * @param string $search
+     *
+     * @return int
+     */
+    public function getMemberCount(string $search): int
+    {
+        return $this->getMembersQuery($search)->count();
+    }
+
+    /**
+     * Get a single member.
+     *
+     * @param int $id       The member id
+     *
+     * @return Member|null
+     */
+    public function getMember(int $id): ?Member
+    {
+        return $this->tenantService->tontine()->members()->active()->find($id);
     }
 
     /**

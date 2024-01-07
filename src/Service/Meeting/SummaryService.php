@@ -86,8 +86,10 @@ class SummaryService
      */
     public function getFigures(Pool $pool): array
     {
-        $subscriptions = $pool->subscriptions()->with(['member', 'receivables.deposit'])
-            ->get()->each(function($subscription) {
+        $subscriptions = $pool->subscriptions()
+            ->with(['member', 'receivables.deposit'])
+            ->get()
+            ->each(function($subscription) {
                 $subscription->setRelation('receivables',
                     $subscription->receivables->keyBy('session_id'));
             });

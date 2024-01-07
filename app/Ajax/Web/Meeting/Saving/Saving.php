@@ -55,7 +55,7 @@ class Saving extends CallableSessionClass
 
         $this->jq('#btn-savings-refresh')->click($this->rq()->home());
         $fundId = pm()->select('savings-fund-id')->toInt();
-        $this->jq('#btn-saving-add')->click($this->rq()->addSaving($fundId));
+        $this->jq('#btn-savings-edit')->click($this->cl(Member::class)->rq()->home($fundId));
         $this->jq('#btn-savings-fund')->click($this->rq()->filter($fundId));
 
         return $this->page();
@@ -90,60 +90,6 @@ class Saving extends CallableSessionClass
         $this->bag('meeting.saving')->set('fund.id', $fundId);
 
         return $this->page();
-    }
-
-    public function addSaving(int $fundId)
-    {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
-        $title = trans('meeting.saving.titles.add');
-        $content = $this->render('pages.meeting.saving.add', [
-            'members' => $this->memberService->getMemberList(),
-            'fundId' => $fundId,
-            'funds' => $this->fundService->getFundList(),
-        ]);
-        $buttons = [[
-            'title' => trans('common.actions.cancel'),
-            'class' => 'btn btn-tertiary',
-            'click' => 'close',
-        ],[
-            'title' => trans('common.actions.save'),
-            'class' => 'btn btn-primary',
-            'click' => $this->rq()->createSaving(pm()->form('saving-form')),
-        ]];
-        $this->dialog->show($title, $content, $buttons);
-
-        return $this->response;
-    }
-
-    /**
-     * @di $validator
-     * @after showBalanceAmounts
-     */
-    public function createSaving(array $formValues)
-    {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
-        $values = $this->validator->validateItem($formValues);
-        if(!($member = $this->memberService->getMember($values['member'])))
-        {
-            $this->notify->warning(trans('tontine.member.errors.not_found'));
-            return $this->response;
-        }
-
-        $this->savingService->createSaving($member, $this->session, $values);
-
-        $this->dialog->hide();
-
-        return $this->home();
     }
 
     public function editSaving(int $savingId)
@@ -188,13 +134,7 @@ class Saving extends CallableSessionClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        if(!($member = $this->memberService->getMember($values['member'])))
-        {
-            $this->notify->warning(trans('tontine.member.errors.not_found'));
-            return $this->response;
-        }
-
-        $this->savingService->updateSaving($member, $this->session, $savingId, $values);
+        $this->savingService->updateSaving($this->session, $savingId, $values);
 
         $this->dialog->hide();
 
