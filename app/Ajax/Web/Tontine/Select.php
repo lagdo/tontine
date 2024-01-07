@@ -47,6 +47,9 @@ class Select extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $roundService
+     */
     public function saveTontine(int $tontineId)
     {
         if(!($tontine = $this->tontineService->getTontine($tontineId)))
