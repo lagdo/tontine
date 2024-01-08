@@ -59,7 +59,8 @@ class Member extends CallableSessionClass
     public function home(int $fundId)
     {
         $fund = $fundId > 0 ? $this->fundService->getFund($fundId) : null;
-        $this->bag('meeting.saving')->set('fund.id', !$fund ? 0 : $fund->id);
+        $fundId = !$fund ? 0 : $fund->id;
+        $this->bag('meeting.saving')->set('fund.id', $fundId);
         // $this->bag('meeting.saving')->set('member.filter', null);
 
         $html = $this->render('pages.meeting.saving.member.home', [
@@ -87,10 +88,14 @@ class Member extends CallableSessionClass
             $search, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
+        $savingCount = $this->savingService->getSavingCount($this->session, $this->fundId);
+        $savingSum = $this->savingService->getSavingSum($this->session, $this->fundId);
         $html = $this->render('pages.meeting.saving.member.page', [
             'search' => $search,
             'session' => $this->session,
             'members' => $members,
+            'savingCount' => $savingCount,
+            'savingSum' => $savingSum,
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-saving-members', $html);

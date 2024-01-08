@@ -65,6 +65,19 @@ class SavingService
     }
 
     /**
+     * Get the savings sum for a given session.
+     *
+     * @param Session $session
+     * @param int $fundId
+     *
+     * @return int
+     */
+    public function getSavingSum(Session $session, int $fundId): int
+    {
+        return $this->getSavingQuery($session, $fundId)->sum('amount');
+    }
+
+    /**
      * Get the savings for a given session.
      *
      * @param Session $session

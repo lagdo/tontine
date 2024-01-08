@@ -65,6 +65,7 @@ class Saving extends CallableSessionClass
     {
         $fundId = (int)$this->bag('meeting.saving')->get('fund.id', -1);
         $savingCount = $this->savingService->getSavingCount($this->session, $fundId);
+        $savingSum = $this->savingService->getSavingSum($this->session, $fundId);
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $savingCount,
             'meeting.saving', 'page');
         $savings = $this->savingService->getSavings($this->session, $fundId, $pageNumber);
@@ -73,6 +74,8 @@ class Saving extends CallableSessionClass
         $html = $this->render('pages.meeting.saving.page', [
             'session' => $this->session,
             'savings' => $savings,
+            'savingCount' => $savingCount,
+            'savingSum' => $savingSum,
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-savings-page', $html);

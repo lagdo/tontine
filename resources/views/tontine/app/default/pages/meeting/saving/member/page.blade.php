@@ -10,7 +10,7 @@
                               </div>
                             </div>
                           </th>
-                          <th class="currency">&nbsp;</th>
+                          <th class="currency">{{ $savingCount }}<br/>{{ $locale->formatMoney($savingSum, true) }}</th>
                         </tr>
                       </thead>
                       <tbody>
