@@ -127,20 +127,21 @@ class SummaryService
             // Group the data (boolean true) by pool id and session id.
             ->groupBy('pool_id')
             ->map(fn($sessions) => $sessions->groupBy('session_id')->map(fn($session) => true));
-        $sessions = $round->sessions()->orderBy('start_at', 'asc')->get();
+        $allSessions = $round->sessions()->orderBy('start_at', 'asc')->get();
 
-        return $pools->map(function($pool) use($sessions, $deposits, $remitments, $disabledSessions) {
+        return $pools->map(function($pool) use($allSessions, $deposits, $remitments, $disabledSessions) {
+            $allSessions->each(fn($session) =>
+                $session->poolDisabled = $disabledSessions[$pool->id][$session->id] ?? false);
+            // Enabled sessions
+            $sessions = $allSessions->filter(fn($session) => !$session->poolDisabled);
+
             $figures = new stdClass();
             if($pool->remit_planned)
             {
                 $depositCount = $pool->subscriptions()->count();
                 $figures->expected = $this->getExpectedFigures($pool, $sessions, $depositCount);
             }
-            $sessions->each(fn($session) =>
-                $session->poolDisabled = $disabledSessions[$pool->id][$session->id] ?? false);
             $figures->collected = $this->getCollectedFigures($pool, $sessions, $deposits, $remitments);
-            // Filter disabled sessions
-            $sessions = $sessions->filter(fn($session) => !$session->poolDisabled);
             return compact('pool', 'figures', 'sessions');
         });
     }
