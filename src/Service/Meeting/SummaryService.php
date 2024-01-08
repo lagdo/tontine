@@ -35,17 +35,18 @@ class SummaryService
      * @param Collection $sessions
      * @param Collection $deposits
      * @param Collection $remitments
+     * @param Collection|null $disabledSessions
      *
      * @return array
      */
     private function getCollectedFigures(Pool $pool, Collection $sessions,
-        Collection $deposits, Collection $remitments): array
+        Collection $deposits, Collection $remitments, ?Collection $disabledSessions): array
     {
         $cashier = 0;
         $collectedFigures = [];
         foreach($sessions as $session)
         {
-            if($session->poolDisabled || $session->pending)
+            if(($disabledSessions && $disabledSessions->has($session->id)) || $session->pending)
             {
                 $collectedFigures[$session->id] = $this->makeFigures('&nbsp;');
                 continue;
@@ -126,21 +127,23 @@ class SummaryService
             ->get()
             // Group the data (boolean true) by pool id and session id.
             ->groupBy('pool_id')
-            ->map(fn($sessions) => $sessions->groupBy('session_id')->map(fn($session) => true));
-        $sessions = $round->sessions()->orderBy('start_at', 'asc')->get();
+            ->map(fn($sessions) => $sessions->groupBy('session_id')->map(fn() => true));
+        $allSessions = $round->sessions()->orderBy('start_at', 'asc')->get();
 
-        return $pools->map(function($pool) use($sessions, $deposits, $remitments, $disabledSessions) {
+        return $pools->map(function($pool) use($allSessions, $deposits, $remitments, $disabledSessions) {
+            $disabledSessions = $disabledSessions[$pool->id] ?? null;
+            // Enabled sessions
+            $sessions = !$disabledSessions ? $allSessions :
+                $allSessions->filter(fn($session) => !$disabledSessions->has($session->id));
+
             $figures = new stdClass();
             if($pool->remit_planned)
             {
                 $depositCount = $pool->subscriptions()->count();
                 $figures->expected = $this->getExpectedFigures($pool, $sessions, $depositCount);
             }
-            $sessions->each(fn($session) =>
-                $session->poolDisabled = $disabledSessions[$pool->id][$session->id] ?? false);
-            $figures->collected = $this->getCollectedFigures($pool, $sessions, $deposits, $remitments);
-            // Filter disabled sessions
-            $sessions = $sessions->filter(fn($session) => !$session->poolDisabled);
+            $figures->collected = $this->getCollectedFigures($pool, $sessions, $deposits,
+                $remitments, $disabledSessions);
             return compact('pool', 'figures', 'sessions');
         });
     }
