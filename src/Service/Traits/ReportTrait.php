@@ -95,14 +95,14 @@ trait ReportTrait
     /**
      * @param Pool $pool
      * @param Collection $sessions
-     * @param Collection $subscriptions
+     * @param int $depositCount
      *
      * @return array
      */
-    private function getExpectedFigures(Pool $pool, Collection $sessions, Collection $subscriptions): array
+    private function getExpectedFigures(Pool $pool, Collection $sessions, int $depositCount): array
     {
         $sessionCount = $sessions->count();
-        $subscriptionCount = $depositCount = $subscriptions->count();
+        $subscriptionCount = $depositCount;
         $depositAmount = $pool->amount * $depositCount;
         $remitmentAmount = $pool->amount * $sessionCount;
 

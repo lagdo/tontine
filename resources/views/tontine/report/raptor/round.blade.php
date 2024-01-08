@@ -100,7 +100,7 @@
       </div>
 
 @foreach ($pools as $pool)
-      @include('tontine.report.raptor.round.pool', $pool->figures)
+      @include('tontine.report.raptor.round.pool', $pool)
 
       <div class="pagebreak"></div>
 @endforeach

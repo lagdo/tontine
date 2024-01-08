@@ -40,7 +40,8 @@ class SummaryService
         $sessions = $this->poolService->getEnabledSessions($pool);
         $subscriptions = $pool->subscriptions()->with(['member'])->get();
         $figures = new stdClass();
-        $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
+        $depositCount = $subscriptions->count();
+        $figures->expected = $this->getExpectedFigures($pool, $sessions, $depositCount);
 
         return compact('pool', 'sessions', 'subscriptions', 'figures');
     }
@@ -63,7 +64,8 @@ class SummaryService
         // Expected figures only for pools with fixed deposit amount
         if($pool->remit_planned /*$pool->deposit_fixed*/)
         {
-            $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
+            $depositCount = $subscriptions->count();
+            $figures->expected = $this->getExpectedFigures($pool, $sessions, $depositCount);
         }
 
         // Set the subscriptions that will be pay at each session.

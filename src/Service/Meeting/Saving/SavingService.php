@@ -25,11 +25,9 @@ class SavingService
      * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param FundService $fundService
-     * @param MemberService $memberService
      */
     public function __construct(private LocaleService $localeService,
-        private TenantService $tenantService, private FundService $fundService,
-        private MemberService $memberService)
+        private TenantService $tenantService, private FundService $fundService)
     {}
 
     /**
@@ -163,7 +161,7 @@ class SavingService
      */
     public function createSaving(Session $session, array $values): void
     {
-        if(!($member = $this->memberService->getMember($values['member'])))
+        if(!($member = $this->getMember($values['member'])))
         {
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }
@@ -184,7 +182,7 @@ class SavingService
      */
     public function updateSaving(Session $session, int $savingId, array $values): void
     {
-        if(!($member = $this->memberService->getMember($values['member'])))
+        if(!($member = $this->getMember($values['member'])))
         {
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }
@@ -210,7 +208,7 @@ class SavingService
      */
     public function saveSaving(Session $session, int $fundId, int $memberId, int $amount): void
     {
-        if(!($member = $this->memberService->getMember($memberId)))
+        if(!($member = $this->getMember($memberId)))
         {
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }

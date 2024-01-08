@@ -42,7 +42,7 @@
 
 @section('content')
 @foreach ($pools as $pool)
-          @include('tontine.report.default.round.pool', $pool->figures)
+          @include('tontine.report.default.round.pool', $pool)
 
           <div class="pagebreak"></div>
 @endforeach

@@ -11,7 +11,6 @@ use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Siak\Tontine\Service\Meeting\SummaryService;
-use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Report\RoundService;
 use Siak\Tontine\Service\Tontine\FundService;
 
@@ -39,14 +38,12 @@ class ReportService
      * @param SavingService $savingService
      * @param SummaryService $summaryService
      * @param ReportService $reportService
-     * @param SubscriptionService $subscriptionService
      */
     public function __construct(protected LocaleService $localeService,
         protected TenantService $tenantService, protected SessionService $sessionService,
         protected MemberService $memberService, protected RoundService $roundService,
         protected FundService $fundService, protected SavingService $savingService,
-        protected SummaryService $summaryService, protected ProfitService $profitService,
-        protected SubscriptionService $subscriptionService)
+        protected SummaryService $summaryService, protected ProfitService $profitService)
     {}
 
     /**
@@ -193,11 +190,7 @@ class ReportService
         $tontine = $this->tenantService->tontine();
         [$country, $currency] = $this->localeService->getNameFromTontine($tontine);
 
-        $pools = $this->subscriptionService->getPools(false)
-            ->each(function($pool) {
-                $pool->figures = $this->summaryService->getFigures($pool);
-            });
-
+        $pools = $this->summaryService->getFigures($round);
         $sessions = $round->sessions()->orderBy('start_at', 'asc')->get();
         // Sessions with data
         $sessionIds = $sessions->filter(function($session) {

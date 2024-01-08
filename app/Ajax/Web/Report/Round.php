@@ -6,7 +6,6 @@ use App\Ajax\CallableClass;
 use App\Ajax\Web\Tontine\Options;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Meeting\SummaryService;
-use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Report\RoundService;
 
 /**
@@ -14,9 +13,13 @@ use Siak\Tontine\Service\Report\RoundService;
  */
 class Round extends CallableClass
 {
-    public function __construct(protected SessionService $sessionService,
-        protected SummaryService $summaryService, protected RoundService $roundService,
-        protected SubscriptionService $subscriptionService)
+    /**
+     * @param SessionService $sessionService
+     * @param RoundService $roundService
+     * @param SummaryService $summaryService
+     */
+    public function __construct(private SessionService $sessionService,
+        private RoundService $roundService, private SummaryService $summaryService)
     {}
 
     /**
@@ -39,12 +42,10 @@ class Round extends CallableClass
 
     private function pools()
     {
-        $html = '';
-        $this->subscriptionService->getPools(false)
-            ->each(function($pool) use(&$html) {
-                $html .= $this->render('pages.report.round.pool',
-                    $this->summaryService->getFigures($pool));
-            });
+        $round = $this->tenantService->round();
+        $figures = $this->summaryService->getFigures($round);
+        $html = $figures->reduce(fn($_html, $poolFigures) =>
+            $_html . $this->render('pages.report.round.pool', $poolFigures), '');
         $this->response->html('content-pools', $html);
     }
 
@@ -52,7 +53,6 @@ class Round extends CallableClass
     {
         $sessions = $this->sessionService->getRoundSessions();
 
-        // Sessions with data
         $sessionIds = $sessions->filter(fn($session) =>
             ($session->opened || $session->closed))->pluck('id');
         $html = $this->render('pages.report.round.amounts', [

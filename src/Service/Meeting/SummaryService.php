@@ -3,7 +3,9 @@
 namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Pool;
+use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\Planning\PoolService;
@@ -31,18 +33,19 @@ class SummaryService
     /**
      * @param Pool $pool
      * @param Collection $sessions
-     * @param Collection $subscriptions
+     * @param Collection $deposits
+     * @param Collection $remitments
      *
      * @return array
      */
     private function getCollectedFigures(Pool $pool, Collection $sessions,
-        Collection $subscriptions): array
+        Collection $deposits, Collection $remitments): array
     {
         $cashier = 0;
         $collectedFigures = [];
         foreach($sessions as $session)
         {
-            if($session->disabled($pool) || $session->pending)
+            if($session->poolDisabled || $session->pending)
             {
                 $collectedFigures[$session->id] = $this->makeFigures('&nbsp;');
                 continue;
@@ -52,21 +55,25 @@ class SummaryService
             $figures->cashier->start = $cashier;
             $figures->cashier->recv = $cashier;
 
-            $depositAmount = $this->balanceCalculator->getPoolDepositAmount($pool, $session);
+            $deposit = $deposits[$pool->id][$session->id][0] ?? null;
+            $depositCount = !$deposit ? 0 : $deposit->total;
+            $depositAmount = $pool->deposit_fixed ? $pool->amount * $depositCount :
+                (!$deposit ? 0 : $deposit->amount);
+
             $figures->deposit->amount += $depositAmount;
             $figures->cashier->recv += $depositAmount;
-            $figures->deposit->count = $subscriptions->filter(function($subscription) use($session) {
-                return isset($subscription->receivables[$session->id]) ?
-                    $subscription->receivables[$session->id]->deposit !== null : false;
-            })->count();
+            $figures->deposit->count = $depositCount;
 
-            $remitmentAmount = $this->balanceCalculator->getPoolRemitmentAmount($pool, $session);
+            $sessionCount = $pool->counter->sessions - $pool->counter->disabled_sessions;
+            $remitment = $remitments[$pool->id][$session->id][0] ?? null;
+            $remitmentCount = !$remitment ? 0 : $remitment->total;
+            $remitmentAmount = !$pool->deposit_fixed ? $depositAmount :
+                $pool->amount * $sessionCount * $remitmentCount;
+
             $figures->cashier->end = $figures->cashier->recv;
             $figures->remitment->amount += $remitmentAmount;
             $figures->cashier->end -= $remitmentAmount;
-            $figures->remitment->count += $session->payables->filter(function($payable) {
-                return $payable->remitment !== null;
-            })->count();
+            $figures->remitment->count += $remitmentCount;
 
             $cashier = $figures->cashier->end;
             $collectedFigures[$session->id] = $figures;
@@ -78,30 +85,64 @@ class SummaryService
     /**
      * Get the receivables of a given pool.
      *
-     * Will return extended data on subscriptions.
+     * @param Round $round
      *
-     * @param Pool $pool
-     *
-     * @return array
+     * @return Collection
      */
-    public function getFigures(Pool $pool): array
+    public function getFigures(Round $round): Collection
     {
-        $subscriptions = $pool->subscriptions()
-            ->with(['member', 'receivables.deposit'])
+        $pools = $round->pools()
+            ->with(['round.tontine', 'counter'])
+            ->whereHas('subscriptions')
+            ->get();
+        $poolIds = $pools->pluck('id');
+        $deposits = DB::table('deposits')
+            ->select('subscriptions.pool_id', 'receivables.session_id',
+                DB::raw('count(*) as total'), DB::raw('sum(deposits.amount) as amount'))
+            ->join('receivables', 'receivables.id', '=', 'deposits.receivable_id')
+            ->join('subscriptions', 'receivables.subscription_id', '=', 'subscriptions.id')
+            ->join('sessions', 'receivables.session_id', '=', 'sessions.id')
+            ->whereIn('subscriptions.pool_id', $poolIds)
+            ->where('sessions.round_id', $round->id)
+            ->groupBy(['subscriptions.pool_id', 'receivables.session_id'])
             ->get()
-            ->each(function($subscription) {
-                $subscription->setRelation('receivables',
-                    $subscription->receivables->keyBy('session_id'));
-            });
-        $sessions = $this->getEnabledSessions($pool, ['payables.remitment']);
-        $figures = new stdClass();
-        if($pool->remit_planned)
-        {
-            $figures->expected = $this->getExpectedFigures($pool, $sessions, $subscriptions);
-        }
-        $figures->collected = $this->getCollectedFigures($pool, $sessions, $subscriptions);
+            // Group the data by pool id and session id.
+            ->groupBy('pool_id')
+            ->map(fn($poolDeposits) => $poolDeposits->groupBy('session_id'));
+        $remitments = DB::table('remitments')
+            ->select('subscriptions.pool_id', 'payables.session_id', DB::raw('count(*) as total'))
+            ->join('payables', 'payables.id', '=', 'remitments.payable_id')
+            ->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
+            ->join('sessions', 'payables.session_id', '=', 'sessions.id')
+            ->whereIn('subscriptions.pool_id', $poolIds)
+            ->where('sessions.round_id', $round->id)
+            ->groupBy(['subscriptions.pool_id', 'payables.session_id'])
+            ->get()
+            // Group the data by pool id and session id.
+            ->groupBy('pool_id')
+            ->map(fn($poolRemitments) => $poolRemitments->groupBy('session_id'));
+        $disabledSessions = DB::table('pool_session_disabled')
+            ->whereIn('pool_id', $poolIds)
+            ->get()
+            // Group the data (boolean true) by pool id and session id.
+            ->groupBy('pool_id')
+            ->map(fn($sessions) => $sessions->groupBy('session_id')->map(fn($session) => true));
+        $sessions = $round->sessions()->orderBy('start_at', 'asc')->get();
 
-        return compact('pool', 'sessions', 'subscriptions', 'figures');
+        return $pools->map(function($pool) use($sessions, $deposits, $remitments, $disabledSessions) {
+            $figures = new stdClass();
+            if($pool->remit_planned)
+            {
+                $depositCount = $pool->subscriptions()->count();
+                $figures->expected = $this->getExpectedFigures($pool, $sessions, $depositCount);
+            }
+            $sessions->each(fn($session) =>
+                $session->poolDisabled = $disabledSessions[$pool->id][$session->id] ?? false);
+            $figures->collected = $this->getCollectedFigures($pool, $sessions, $deposits, $remitments);
+            // Filter disabled sessions
+            $sessions = $sessions->filter(fn($session) => !$session->poolDisabled);
+            return compact('pool', 'figures', 'sessions');
+        });
     }
 
     /**

@@ -216,6 +216,11 @@ class Pool extends Base
         return $this->hasOne(PoolRound::class);
     }
 
+    public function counter()
+    {
+        return $this->hasOne(PoolCounter::class, 'id');
+    }
+
     public function subscriptions()
     {
         return $this->hasMany(Subscription::class);
