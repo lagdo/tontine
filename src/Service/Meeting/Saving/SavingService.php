@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service\Meeting\Saving;
 
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
@@ -240,41 +241,67 @@ class SavingService
     }
 
     /**
+     * @param Session $session
+     * @param int $fundId
      * @param string $search
+     * @param bool|null $filter
+     *
+     * @return Closure
+     */
+    private function getMemberSavingsFilter(Session $session, int $fundId): Closure
+    {
+        return function(/*Builder|Relation*/ $query) use($session, $fundId) {
+            $query->where('session_id', $session->id)
+                ->where(function(Builder $query) use($fundId) {
+                    $fundId > 0 ?
+                        $query->where('fund_id', $fundId) :
+                        $query->whereNull('fund_id');
+                });
+        };
+    }
+
+    /**
+     * @param Session $session
+     * @param int $fundId
+     * @param string $search
+     * @param bool|null $filter
      *
      * @return Builder|Relation
      */
-    private function getMembersQuery(string $search): Builder|Relation
+    private function getMembersQuery(Session $session, int $fundId,
+        string $search, ?bool $filter): Builder|Relation
     {
+        $savingsFilter = $this->getMemberSavingsFilter($session, $fundId);
         return $this->tenantService->tontine()->members()->active()
             ->when($search !== '', function(Builder $query) use($search) {
                 $search = '%' . strtolower($search) . '%';
                 return $query->where(DB::raw('lower(name)'), 'like', $search);
+            })
+            ->when($filter === true, function(Builder $query) use($savingsFilter) {
+                $query->whereHas('savings', $savingsFilter);
+            })
+            ->when($filter === false, function(Builder $query) use($savingsFilter) {
+                $query->whereDoesntHave('savings', $savingsFilter);
             });
     }
 
     /**
      * Get a paginated list of members.
      *
-     * @param string $search
      * @param Session $session
      * @param int $fundId
+     * @param string $search
+     * @param bool|null $filter
      * @param int $page
      *
      * @return Collection
      */
-    public function getMembers(Session $session, int $fundId, string $search, int $page = 0): Collection
+    public function getMembers(Session $session, int $fundId, string $search,
+        ?bool $filter, int $page = 0): Collection
     {
-        return $this->getMembersQuery($search)
+        return $this->getMembersQuery($session, $fundId, $search, $filter)
             ->page($page, $this->tenantService->getLimit())
-            ->with('savings', function(Relation $query) use($session, $fundId) {
-                $query->where('session_id', $session->id)
-                    ->where(function(Builder $query) use($fundId) {
-                        $fundId > 0 ?
-                            $query->where('fund_id', $fundId) :
-                            $query->whereNull('fund_id');
-                    });
-            })
+            ->with('savings', $this->getMemberSavingsFilter($session, $fundId))
             ->orderBy('name', 'asc')
             ->get()
             ->each(function($member) {
@@ -285,13 +312,16 @@ class SavingService
     /**
      * Get the number of members.
      *
+     * @param Session $session
+     * @param int $fundId
      * @param string $search
+     * @param bool|null $filter
      *
      * @return int
      */
-    public function getMemberCount(string $search): int
+    public function getMemberCount(Session $session, int $fundId, string $search, ?bool $filter): int
     {
-        return $this->getMembersQuery($search)->count();
+        return $this->getMembersQuery($session, $fundId, $search, $filter)->count();
     }
 
     /**

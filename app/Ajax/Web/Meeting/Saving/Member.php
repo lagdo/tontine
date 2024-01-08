@@ -61,14 +61,14 @@ class Member extends CallableSessionClass
         $fund = $fundId > 0 ? $this->fundService->getFund($fundId) : null;
         $fundId = !$fund ? 0 : $fund->id;
         $this->bag('meeting.saving')->set('fund.id', $fundId);
-        // $this->bag('meeting.saving')->set('member.filter', null);
+        $this->bag('meeting.saving')->set('member.filter', null);
 
         $html = $this->render('pages.meeting.saving.member.home', [
             'fund' => $fund,
         ]);
         $this->response->html('meeting-savings', $html);
         $this->jq('#btn-saving-back')->click($this->cl(Saving::class)->rq()->home());
-        // $this->jq('#btn-saving-filter')->click($this->rq()->toggleFilter());
+        $this->jq('#btn-saving-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
     }
@@ -81,11 +81,13 @@ class Member extends CallableSessionClass
     public function page(int $pageNumber = 0)
     {
         $search = trim($this->bag('meeting.saving')->get('member.search', ''));
-        $memberCount = $this->savingService->getMemberCount($search);
+        $filter = $this->bag('meeting.saving')->get('member.filter', null);
+        $memberCount = $this->savingService->getMemberCount($this->session, $this->fundId,
+            $search, $filter);
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount,
             'meeting', 'member.page');
         $members = $this->savingService->getMembers($this->session, $this->fundId,
-            $search, $pageNumber);
+            $search, $filter, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
         $savingCount = $this->savingService->getSavingCount($this->session, $this->fundId);
@@ -113,6 +115,16 @@ class Member extends CallableSessionClass
     public function search(string $search)
     {
         $this->bag('meeting.saving')->set('member.search', trim($search));
+
+        return $this->page();
+    }
+
+    public function toggleFilter()
+    {
+        $filter = $this->bag('meeting.saving')->get('member.filter', null);
+        // Switch between null, true and false
+        $filter = $filter === null ? true : ($filter === true ? false : null);
+        $this->bag('meeting.saving')->set('member.filter', $filter);
 
         return $this->page();
     }
