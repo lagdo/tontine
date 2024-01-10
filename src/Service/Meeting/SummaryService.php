@@ -150,38 +150,6 @@ class SummaryService
 
     /**
      * @param Pool $pool
-     * @param int $sessionId
-     *
-     * @return array|stdClass
-     */
-    public function getRemitmentFigures(Pool $pool, int $sessionId = 0)
-    {
-        $sessions = $this->getEnabledSessions($pool, ['payables.subscription.member']);
-        $sessionCount = $sessions->count();
-        $subscriptionCount = $pool->subscriptions()->count();
-        $remitmentAmount = $pool->amount * $sessionCount;
-
-        $figures = [];
-        $position = 0;
-        foreach($sessions as $session)
-        {
-            $figures[$session->id] = new stdClass();
-            $figures[$session->id]->payables = $session->payables;
-            $figures[$session->id]->count = 0;
-            $figures[$session->id]->amount = '';
-            if($session->enabled($pool))
-            {
-                $figures[$session->id]->count =
-                    $this->getRemitmentCount($sessionCount, $subscriptionCount, $position++);
-                $figures[$session->id]->amount = $remitmentAmount;
-            }
-        }
-
-        return $sessionId > 0 ? $figures[$sessionId] : $figures;
-    }
-
-    /**
-     * @param Pool $pool
      * @param Session $session
      *
      * @return int

@@ -33,6 +33,11 @@ class CallableClass extends JaxonCallableClass
     protected TenantService $tenantService;
 
     /**
+     * @var string
+     */
+    protected static $templateDir = 'tontine.app.default.';
+
+    /**
      * @var ModalInterface
      */
     public $dialog;
@@ -131,7 +136,7 @@ class CallableClass extends JaxonCallableClass
      */
     protected function render(string $view, array $viewData = []): ?Store
     {
-        return $this->view()->render('tontine.app.default.' . $view, $viewData);
+        return $this->view()->render(static::$templateDir . $view, $viewData);
     }
 
     /**

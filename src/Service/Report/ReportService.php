@@ -19,16 +19,6 @@ use function compact;
 class ReportService
 {
     /**
-     * @var int
-     */
-    private $depositsAmount;
-
-    /**
-     * @var int
-     */
-    private $remitmentsAmount;
-
-    /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
      * @param SessionService $sessionService
@@ -45,44 +35,6 @@ class ReportService
         protected FundService $fundService, protected SavingService $savingService,
         protected SummaryService $summaryService, protected ProfitService $profitService)
     {}
-
-    /**
-     * Get pools with receivables and payables.
-     *
-     * @param Session $session
-     *
-     * @return Collection
-     */
-    public function getPools(Session $session): Collection
-    {
-        $this->depositsAmount = 0;
-        $this->remitmentsAmount = 0;
-        $pools = $this->tenantService->round()->pools;
-
-        return $pools->each(function($pool) use($session) {
-            $subscriptionCount = $pool->subscriptions()->count();
-            $subscriptionIds = $pool->subscriptions()->pluck('id');
-            // Receivables
-            $query = $session->receivables()->whereIn('subscription_id', $subscriptionIds);
-            // Expected
-            $pool->receivables_count = $query->count();
-            // Paid
-            $pool->deposits_count = $query->whereHas('deposit')->count();
-            // Amount
-            $pool->deposits_amount = $pool->deposits_count * $pool->amount;
-            $this->depositsAmount += $pool->deposits_amount;
-
-            // Payables
-            $query = $session->payables()->whereIn('subscription_id', $subscriptionIds);
-            // Expected
-            $pool->payables_count = $this->summaryService->getSessionRemitmentCount($pool, $session);
-            // Paid
-            $pool->remitments_count = $query->whereHas('remitment')->count();
-            // Amount
-            $pool->remitments_amount = $pool->remitments_count * $pool->amount * $subscriptionCount;
-            $this->remitmentsAmount += $pool->remitments_amount;
-        });
-    }
 
     /**
      * @param Session $session
