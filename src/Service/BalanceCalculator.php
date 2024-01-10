@@ -396,7 +396,7 @@ class BalanceCalculator
         $sessionIds = $this->sessionService->getRoundSessionIds($session);
         return [
             'auctions' => $this->getAuctionsAmount($sessionIds),
-            'settlements' => $this->getSettlementsAmount($sessionIds, $lendable),
+            'charges' => $this->getSettlementsAmount($sessionIds, $lendable),
             'deposits' => $this->getDepositsAmount($sessionIds, $lendable),
             'remitments' => $this->getRemitmentsAmount($sessionIds, $lendable),
             'disbursements' => $this->getDisbursementsAmount($sessionIds, $lendable),
