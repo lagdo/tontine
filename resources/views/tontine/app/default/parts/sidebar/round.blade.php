@@ -1,8 +1,4 @@
             <ul class="sidebar-menu">
-              <li class="menu-header">{{ __('tontine.menus.planning') }}</li>
-              <li><a class="nav-link" id="planning-menu-sessions" href="javascript:void(0)">
-                <i class="fa fa-calendar-day"></i> <span>{{ __('tontine.menus.sessions') }}</span>
-              </a></li>
               <li><a class="nav-link" id="planning-menu-pools" href="javascript:void(0)">
                 <i class="fa fa-coins"></i> <span>{{ __('tontine.menus.pools') }}</span>
               </a></li>
