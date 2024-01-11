@@ -43,8 +43,9 @@ class SettlementService
         if($charge->is_variable)
         {
             return $query->join('libre_bills', 'libre_bills.bill_id', '=', 'bills.id')
+                ->join('sessions', 'sessions.id', '=', 'libre_bills.session_id')
                 ->where('libre_bills.charge_id', $charge->id)
-                ->where('libre_bills.session_id', $session->id);
+                ->where('sessions.round_id', $session->round_id);
         }
         if($charge->period_session)
         {
@@ -55,7 +56,8 @@ class SettlementService
         if($charge->period_round)
         {
             return $query->join('round_bills', 'round_bills.bill_id', '=', 'bills.id')
-                ->where('round_bills.charge_id', $charge->id);
+                ->where('round_bills.charge_id', $charge->id)
+                ->where('round_bills.round_id', $session->round_id);
         }
         // if($charge->period_once)
         return $query->join('tontine_bills', 'tontine_bills.bill_id', '=', 'bills.id')

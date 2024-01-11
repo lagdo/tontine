@@ -1,4 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $settlementCount = $settlement->total ?? 0;
+  $settlementAmount = $settlement->amount ?? 0;
+@endphp
                     <table class="table table-bordered">
                       <thead>
                         <tr>
@@ -10,16 +14,8 @@
                               </div>
                             </div>
                           </th>
-                          <th class="currency">
-                            <div class="input-group">
-                              <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                  {!! Form::checkbox('', '1', $paid, ['id' => 'check-fee-libre-paid']) !!}
-                                </div>
-                              </div>
-                              {!! Form::text('', __('common.labels.paid'), ['class' => 'form-control', 'disabled' => 'disabled']) !!}
-                            </div>
-                          </th>
+                          <th class="currency">@if ($settlementCount > 0) {{ $settlementCount }}<br />{!!
+                            $locale->formatMoney($settlementAmount, true) !!}@else &nbsp;@endif</th>
                         </tr>
                       </thead>
                       <tbody>

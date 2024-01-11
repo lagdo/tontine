@@ -10,7 +10,7 @@
                               </div>
                             </div>
                           </th>
-                          <th class="currency">&nbsp;</th>
+                          <th class="currency">{{ __('common.labels.paid') }}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -20,9 +20,9 @@
   $remaining = $target->amount > $paid ? $target->amount - $paid : 0;
 @endphp
                         <tr>
-                          <td>{{ $member->name }}</td>
-                          <td class="currency">{{ $locale->formatMoney($paid, true) }}@if ($remaining > 0)<br/>{{
-                            __('meeting.target.labels.remaining', ['amount' => $locale->formatMoney($remaining, true)]) }}@endif</td>
+                          <td>{{ $member->name }}@if ($remaining > 0)<br/>{{ __('meeting.target.labels.remaining',
+                            ['amount' => $locale->formatMoney($remaining, true)]) }}@endif</td>
+                          <td class="currency">{{ $locale->formatMoney($paid, true) }}</td>
                         </tr>
 @endforeach
                       </tbody>

@@ -4,9 +4,11 @@ namespace App\Ajax\Web\Meeting\Charge\Libre;
 
 use App\Ajax\CallableSessionClass;
 use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Charge as ChargeModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
+use Siak\Tontine\Service\Meeting\Charge\SettlementService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 
 use function filter_var;
@@ -29,11 +31,12 @@ class Member extends CallableSessionClass
     /**
      * The constructor
      *
+     * @param SettlementService $settlementService
      * @param ChargeService $chargeService
      * @param LibreFeeService $feeService
      */
-    public function __construct(protected ChargeService $chargeService,
-        protected LibreFeeService $feeService)
+    public function __construct(protected SettlementService $settlementService,
+        protected ChargeService $chargeService, protected LibreFeeService $feeService)
     {}
 
     /**
@@ -60,6 +63,7 @@ class Member extends CallableSessionClass
 
         $html = $this->render('pages.meeting.charge.libre.member.home', [
             'charge' => $this->charge,
+            'paid' => $this->charge->is_fee,
         ]);
         $this->response->html('meeting-fees-libre', $html);
         $this->jq('#btn-fee-libre-back')->click($this->cl(Charge::class)->rq()->home());
@@ -76,7 +80,6 @@ class Member extends CallableSessionClass
     public function page(int $pageNumber = 0)
     {
         $search = trim($this->bag('meeting')->get('fee.member.search', ''));
-        $paid = (bool)$this->bag('meeting')->get('fee.member.paid', false);
         $filter = $this->bag('meeting')->get('fee.member.filter', null);
         $memberCount = $this->feeService->getMemberCount($this->charge,
             $this->session, $search, $filter);
@@ -85,13 +88,14 @@ class Member extends CallableSessionClass
         $members = $this->feeService->getMembers($this->charge, $this->session,
             $search, $filter, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
+        $settlement = $this->settlementService->getSettlement($this->charge, $this->session);
 
         $html = $this->render('pages.meeting.charge.libre.member.page', [
             'search' => $search,
-            'paid' => $paid,
             'session' => $this->session,
             'charge' => $this->charge,
             'members' => $members,
+            'settlement' => $settlement,
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-fee-libre-members', $html);
@@ -105,7 +109,6 @@ class Member extends CallableSessionClass
         $this->jq('.btn-edit-bill')->click($this->rq()->editBill($memberId));
         $this->jq('#btn-fee-libre-search')
             ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
-        // $this->jq('.btn-edit-notes')->click($this->rq()->editNotes($memberId));
 
         return $this->response;
     }
@@ -127,9 +130,20 @@ class Member extends CallableSessionClass
         return $this->page();
     }
 
+    private function convertAmount(string $amount): float
+    {
+        $amount = str_replace(',', '.', trim($amount));
+        if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
+        {
+            throw new MessageException(trans('meeting.errors.amount.invalid', [
+                'amount' => $amount,
+            ]));
+        }
+        return $amount === '' ? 0 : (float)$amount;
+    }
+
     /**
      * @param int $memberId
-     * @param bool $paid
      * @param string $amount
      *
      * @return mixed
@@ -141,18 +155,9 @@ class Member extends CallableSessionClass
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
-        $amount = str_replace(',', '.', trim($amount));
-        if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
-        {
-            $this->notify->error(trans('meeting.errors.amount.invalid', ['amount' => $amount]));
-            return $this->response;
-        }
-        $amount = $amount === '' ? 0 : (float)$amount;
 
-        $this->feeService->createBill($this->charge, $this->session, $memberId, $paid, $amount);
-
-        // Save the value of the "$paid" parameter
-        $this->bag('meeting')->set('fee.member.paid', $paid);
+        $this->feeService->createBill($this->charge, $this->session, $memberId,
+            $paid, $this->convertAmount($amount));
 
         return $this->page();
     }
@@ -222,14 +227,7 @@ class Member extends CallableSessionClass
             return $this->response;
         }
 
-        $amount = str_replace(',', '.', trim($amount));
-        if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
-        {
-            $this->notify->error(trans('meeting.errors.amount.invalid', ['amount' => $amount]));
-            return $this->response;
-        }
-        $amount = $amount === '' ? 0 : (float)$amount;
-
+        $amount = $this->convertAmount($amount);
         if(!$amount)
         {
             $this->feeService->deleteBill($this->charge, $this->session, $memberId);
@@ -237,7 +235,6 @@ class Member extends CallableSessionClass
         }
 
         $this->feeService->updateBill($this->charge, $this->session, $memberId, $amount);
-
         return $this->page();
     }
 }
