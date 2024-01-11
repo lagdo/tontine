@@ -13,6 +13,7 @@ use Sqids\SqidsInterface;
 
 use function base64_decode;
 use function response;
+use function trans;
 use function view;
 
 class ReportController extends Controller
@@ -65,7 +66,8 @@ class ReportController extends Controller
 
         // Print the pdf
         return $this->pdfContent($this->printerService->getSessionReport(),
-            $this->printerService->getSessionReportFilename($session), 'Session Report');
+            $this->printerService->getSessionReportFilename($session),
+            trans('tontine.report.titles.session'));
     }
 
     /**
@@ -89,20 +91,21 @@ class ReportController extends Controller
      *
      * @return View|Response
      */
-    public function profits(Request $request, SqidsInterface $sqids, string $sessionSqid)
+    public function savings(Request $request, SqidsInterface $sqids, string $sessionSqid)
     {
         [$sessionId] = $sqids->decode($sessionSqid);
         $session = $this->sessionService->getSession($sessionId);
-        view()->share($this->reportService->getProfitsReport($session));
+        view()->share($this->reportService->getSavingsReport($session));
         // Show the html page
         if($request->has('html'))
         {
-            return view($this->printerService->getProfitsReportPath());
+            return view($this->printerService->getSavingsReportPath());
         }
 
         // Print the pdf
-        return $this->pdfContent($this->printerService->getProfitsReport(),
-            $this->printerService->getProfitsReportFilename($session), 'Profits Report');
+        return $this->pdfContent($this->printerService->getSavingsReport(),
+            $this->printerService->getSavingsReportFilename($session),
+            trans('tontine.report.titles.savings'));
     }
 
     /**
@@ -123,7 +126,8 @@ class ReportController extends Controller
 
         // Print the pdf
         return $this->pdfContent($this->printerService->getRoundReport(),
-            $this->printerService->getRoundReportFilename($round), 'Round Report');
+            $this->printerService->getRoundReportFilename($round),
+            trans('tontine.report.titles.round'));
     }
 
     /**

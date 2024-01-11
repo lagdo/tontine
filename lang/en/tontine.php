@@ -359,9 +359,15 @@ return [
         ],
     ],
     'report' => [
+        'actions' => [
+            'session' => "Session report",
+            'round' => "Round report",
+            'savings' => "Savings report",
+        ],
         'titles' => [
             'session' => "Session report",
             'round' => "Round report",
+            'savings' => "Savings report",
             'profits' => "Profits distribution",
             'bills' => [
                 'session' => "Session bill amounts",

@@ -6,11 +6,9 @@ use App\Ajax\CallableClass;
 use App\Ajax\Web\Tontine\Options;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\SessionService;
-use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
-use function count;
 use function Jaxon\pm;
 
 /**
@@ -22,11 +20,9 @@ class Session extends CallableClass
      * @param TontineService $tontineService
      * @param SessionService $sessionService
      * @param MemberService $memberService
-     * @param ReportService $reportService
      */
     public function __construct(protected TontineService $tontineService,
-        protected SessionService $sessionService, protected MemberService $memberService,
-        protected ReportService $reportService)
+        protected SessionService $sessionService, protected MemberService $memberService)
     {}
 
     /**
@@ -56,9 +52,9 @@ class Session extends CallableClass
 
     private function showReportButtons(SessionModel $session)
     {
-        $closings = $this->reportService->getClosings($session);
-        $html = $this->render('pages.report.session.exports',
-            ['sessionId' => $session->id, 'hasClosing' => count($closings) > 0]);
+        $html = $this->render('pages.report.session.exports', [
+            'sessionId' => $session->id,
+        ]);
         $this->response->html('session-reports-export', $html);
         $this->jq('#btn-tontine-options')->click($this->cl(Options::class)->rq()->editOptions());
 

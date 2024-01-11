@@ -18,7 +18,7 @@
                   </button>
                   <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" target="_blank" href="{{ route('report.round',
-                      ['roundId' => $sqids->encode([$round->id])]) }}">{{ __('meeting.actions.report') }}</a>
+                      ['roundId' => $sqids->encode([$round->id])]) }}">{{ __('tontine.report.actions.round') }}</a>
                   </div>
                 </div>
               </div>

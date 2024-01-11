@@ -38,14 +38,14 @@ class ReportService
 
     /**
      * @param Session $session
-     * @param Collection $funds
+     * @param Collection $fundIds
      *
      * @return array
      */
-    private function getFundClosings(Session $session, Collection $funds): array
+    private function getFundClosings(Session $session, Collection $fundIds): array
     {
         $closings = $this->savingService->getSessionClosings($session);
-        return Arr::only($closings, $funds->keys()->all());
+        return Arr::only($closings, $fundIds->all());
     }
 
     /**
@@ -117,17 +117,21 @@ class ReportService
      *
      * @return array
      */
-    public function getProfitsReport(Session $session): array
+    public function getSavingsReport(Session $session): array
     {
         $tontine = $this->tenantService->tontine();
         [$country] = $this->localeService->getNameFromTontine($tontine);
         $funds = $this->fundService->getFundList();
-        $closings = $this->getFundClosings($session, $funds);
-        $profits = Arr::map($closings, fn($amount, $fundId) => [
-            'fund' => $funds[$fundId],
-            'profitAmount' => $amount,
-            'savings' => $this->profitService->getDistributions($session, $fundId, $amount),
-        ]);
+        $closings = $this->getFundClosings($session, $funds->keys());
+
+        $profits = $funds
+            ->map(fn($fund, $fundId) => [
+                'fund' => $fund,
+                'profitAmount' => $closings[$fundId] ?? 0,
+                'savings' => $this->profitService->getDistributions($session,
+                    $fundId, $closings[$fundId] ?? 0),
+            ])
+            ->filter(fn($profit) => $profit['savings']->count() > 0);
 
         return compact('tontine', 'session', 'country', 'profits');
     }

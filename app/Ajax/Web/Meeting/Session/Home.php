@@ -16,22 +16,12 @@ use App\Ajax\Web\Meeting\Saving\Closing;
 use App\Ajax\Web\Meeting\Saving\Saving;
 use App\Ajax\Web\Tontine\Options;
 use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Service\Report\ReportService;
 
 use function Jaxon\jq;
-use function count;
 use function trans;
 
 class Home extends CallableSessionClass
 {
-    /**
-     * The constructor
-     *
-     * @param ReportService $reportService
-     */
-    public function __construct(protected ReportService $reportService)
-    {}
-
     /**
      * @return void
      */
@@ -54,10 +44,8 @@ class Home extends CallableSessionClass
 
     public function home(int $sessionId)
     {
-        $closings = $this->reportService->getClosings($this->session);
         $html = $this->render('pages.meeting.session.home', [
             'session' => $this->session,
-            'hasClosing' => count($closings) > 0,
         ]);
         $this->response->html('content-home', $html);
         $this->jq('a', '#session-tabs')->click(jq()->tab('show'));
