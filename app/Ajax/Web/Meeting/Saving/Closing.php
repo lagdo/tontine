@@ -52,6 +52,7 @@ class Closing extends CallableSessionClass
         $this->jq('#btn-closings-refresh')->click($this->rq()->home());
         $fundId = pm()->select('closings-fund-id')->toInt();
         $this->jq('#btn-closing-edit')->click($this->rq()->editClosing($fundId));
+        $this->jq('#btn-profits-show')->click($this->rq()->showProfits($fundId));
         $fundId = jq()->parent()->attr('data-fund-id')->toInt();
         $this->jq('.btn-closing-edit')->click($this->rq()->editClosing($fundId));
         $this->jq('.btn-profits-show')->click($this->rq()->showProfits($fundId));

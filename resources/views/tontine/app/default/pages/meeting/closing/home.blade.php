@@ -10,6 +10,7 @@
                           'style' => 'height:36px; padding:5px 15px;', 'id' => 'closings-fund-id']) !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" id="btn-closing-edit"><i class="fa fa-plus"></i></button>
+                          <button type="button" class="btn btn-primary" id="btn-profits-show"><i class="fa fa-list"></i></button>
                         </div>
                       </div>
                     </div>

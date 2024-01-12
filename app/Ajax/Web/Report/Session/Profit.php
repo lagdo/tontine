@@ -70,23 +70,23 @@ class Profit extends CallableClass
         $this->response->html('report-profits', $html);
 
         $inputAmount = pm()->input('profit_amount')->toInt();
-        $this->jq('#btn-profits-refresh')->click($this->rq()->page($fundId, $inputAmount));
+        $this->jq('#btn-profits-refresh')->click($this->rq()->fund($fundId, $inputAmount));
 
-        return $this->page($fundId, $profitAmount);
+        return $this->fund($fundId, $profitAmount);
     }
 
-    public function page(int $fundId, int $profitAmount)
+    public function fund(int $fundId, int $profitAmount)
     {
         $savings = $this->profitService->getDistributions($this->session, $fundId, $profitAmount);
         $partUnitValue = $this->profitService->getPartUnitValue($savings);
         $distributionSum = $savings->sum('distribution');
+        $distributionCount = $savings->filter(fn($saving) => $saving->distribution > 0)->count();
         $html = $this->render('pages.report.session.profit.details', [
             'profitAmount' => $profitAmount,
             'partUnitValue' => $partUnitValue,
             'distributionSum' => $distributionSum,
-            'distributionCount' => $savings
-                ->filter(fn($saving) => $saving->distribution > 0)->count(),
-            'amounts' => $this->profitService->getSavingAmounts($this->session, $fundId)
+            'distributionCount' => $distributionCount,
+            'amounts' => $this->profitService->getSavingAmounts($this->session, $fundId),
         ]);
         $this->response->html('report-profits-distribution', $html);
 

@@ -211,7 +211,7 @@ return [
             'amount' => "Montant à partager",
         ],
         'distribution' => [
-            'total' => "&Eacute;pargne: :saving. Gains: :profit.",
+            'total' => "&Eacute;pargne: :saving. Intérêts: :refund.",
             'amount' => "Distribution: :amount.",
             'parts' => ":parts parts.",
             'basis' => "Pour chaque séance, :unit = une part.",

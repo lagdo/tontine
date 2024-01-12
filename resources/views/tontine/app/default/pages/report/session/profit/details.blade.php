@@ -2,7 +2,7 @@
                     <div class="col">
                       {!! __('meeting.profit.distribution.total', [
                           'saving' => $locale->formatMoney($amounts['saving'], true),
-                          'profit' => $locale->formatMoney($amounts['refund'], true),
+                          'refund' => $locale->formatMoney($amounts['refund'], true),
                         ]) !!}
                     </div>
                     <div class="col-auto">

@@ -211,7 +211,7 @@ return [
             'amount' => "Amount to share",
         ],
         'distribution' => [
-            'total' => "Saving: :saving. Profit: :profit.",
+            'total' => "Saving: :saving. Interests: :refund.",
             'amount' => "Distribution: :amount.",
             'parts' => ":parts parts.",
             'basis' => "For each session, :unit = one part.",
