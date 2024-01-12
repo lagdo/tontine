@@ -101,8 +101,12 @@ return [
             'selected' => "You have selected the association :tontine and round :round.",
         ],
         'questions' => [
-            'open' => "Open this round? Make sure you have set its data correctly.",
+            'open' => "Open this round? Make sure you have setup its planning correctly.",
             'close' => "Close this round?",
+            'delete' => "Delete this round?",
+        ],
+        'errors' => [
+            'delete' => "Cannot delete this round.",
         ],
     ],
     'member' => [

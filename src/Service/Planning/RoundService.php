@@ -2,21 +2,26 @@
 
 namespace Siak\Tontine\Service\Planning;
 
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Round;
-use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Validation\Planning\RoundValidator;
 
 use function collect;
+use function trans;
 
 class RoundService
 {
     /**
      * @param TenantService $tenantService
      * @param PoolService $poolService
+     * @param RoundValidator $validator
      */
     public function __construct(protected TenantService $tenantService,
-        protected PoolService $poolService)
+        protected PoolService $poolService, protected RoundValidator $validator)
     {}
 
     /**
@@ -69,6 +74,7 @@ class RoundService
      */
     public function createRound(array $values): bool
     {
+        $values = $this->validator->validateItem($values);
         $this->tenantService->tontine()->rounds()->create($values);
         return true;
     }
@@ -76,25 +82,42 @@ class RoundService
     /**
      * Update a round.
      *
-     * @param int $id
+     * @param int $roundId
      * @param array $values
      *
      * @return int
      */
-    public function updateRound(int $id, array $values): int
+    public function updateRound(int $roundId, array $values): int
     {
-        return $this->tenantService->tontine()->rounds()->where('id', $id)->update($values);
+        $values = $this->validator->validateItem($values);
+        return $this->tenantService->tontine()
+            ->rounds()
+            ->where('id', $roundId)
+            ->update($values);
     }
 
     /**
      * Delete a round.
      *
-     * @param int $id
+     * @param int $roundId
      *
      * @return void
      */
-    public function deleteRound(int $id)
+    public function deleteRound(int $roundId)
     {
-        $this->tenantService->tontine()->rounds()->where('id', $id)->delete();
+        // Delete the session. Will fail if there's still some data attached.
+        try
+        {
+            DB::transaction(function() use($roundId) {
+                // Delete the round and all the related sessions.
+                $tontine = $this->tenantService->tontine();
+                $tontine->sessions()->where('round_id', $roundId)->delete();
+                $tontine->rounds()->where('id', $roundId)->delete();
+            });
+        }
+        catch(Exception $e)
+        {
+            throw new MessageException(trans('tontine.round.errors.delete'));
+        }
     }
 }

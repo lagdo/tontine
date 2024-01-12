@@ -101,8 +101,12 @@ return [
             'selected' => "Vous avez sélectionné l'association :tontine et le tour :round.",
         ],
         'questions' => [
-            'open' => "Ouvrir ce tour ? Assurez-vous d'avoir saisi toutes ses données.",
+            'open' => "Ouvrir ce tour ? Assurez-vous d'avoir correctement rempli son planning.",
             'close' => "Fermer ce tour ?",
+            'delete' => "Supprimer ce tour ?",
+        ],
+        'errors' => [
+            'delete' => "Impossible de supprimer ce tour.",
         ],
     ],
     'member' => [
@@ -370,7 +374,7 @@ return [
             'savings' => "Rapport d'épargne",
             'profits' => "Répartition des gains",
             'bills' => [
-                'session' => "Montants des frais de la session",
+                'session' => "Montants des frais de la séance",
                 'total' => "Montants totaux des frais",
             ],
             'amounts' => [

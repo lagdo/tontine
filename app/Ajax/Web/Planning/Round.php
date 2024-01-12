@@ -5,7 +5,6 @@ namespace App\Ajax\Web\Planning;
 use App\Ajax\CallableClass;
 use App\Ajax\Web\Tontine\Select;
 use Siak\Tontine\Service\Planning\RoundService;
-use Siak\Tontine\Validation\Planning\RoundValidator;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
@@ -16,11 +15,6 @@ use function trans;
  */
 class Round extends CallableClass
 {
-    /**
-     * @var RoundValidator
-     */
-    protected RoundValidator $validator;
-
     /**
      * @param RoundService $roundService
      */
@@ -60,6 +54,8 @@ class Round extends CallableClass
         $roundId = jq()->parent()->attr('data-round-id')->toInt();
         $this->jq('.btn-round-edit')->click($this->rq()->edit($roundId));
         $this->jq('.btn-round-select')->click($this->cl(Select::class)->rq()->saveRound($roundId));
+        $this->jq('.btn-round-delete')->click($this->rq()->delete($roundId)
+            ->confirm(trans('tontine.round.questions.delete')));
 
         return $this->response;
     }
@@ -82,15 +78,11 @@ class Round extends CallableClass
         return $this->response;
     }
 
-    /**
-     * @di $validator
-     */
     public function create(array $formValues)
     {
-        $values = $this->validator->validateItem($formValues);
-        $this->roundService->createRound($values);
-        $this->page(); // Back to current page
+        $this->roundService->createRound($formValues);
 
+        $this->page(); // Back to current page
         $this->dialog->hide();
         $this->notify->success(trans('tontine.round.messages.created'), trans('common.titles.success'));
 
@@ -117,17 +109,23 @@ class Round extends CallableClass
         return $this->response;
     }
 
-    /**
-     * @di $validator
-     */
     public function update(int $roundId, array $formValues)
     {
-        $values = $this->validator->validateItem($formValues);
-        $this->roundService->updateRound($roundId, $values);
-        $this->page(); // Back to current page
+        $this->roundService->updateRound($roundId, $formValues);
 
+        $this->page(); // Back to current page
         $this->dialog->hide();
         $this->notify->success(trans('tontine.round.messages.updated'), trans('common.titles.success'));
+
+        return $this->response;
+    }
+
+    public function delete(int $roundId)
+    {
+        $this->roundService->deleteRound($roundId);
+
+        $this->page(); // Back to current page
+        $this->notify->success(trans('tontine.round.messages.deleted'), trans('common.titles.success'));
 
         return $this->response;
     }
