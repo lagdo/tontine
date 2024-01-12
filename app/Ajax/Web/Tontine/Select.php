@@ -17,14 +17,10 @@ use function trans;
 class Select extends CallableClass
 {
     /**
-     * @var RoundService
-     */
-    protected RoundService $roundService;
-
-    /**
      * @param TontineService $tontineService
      */
-    public function __construct(protected TontineService $tontineService)
+    public function __construct(protected TontineService $tontineService,
+        protected RoundService $roundService)
     {}
 
     public function showTontines()
@@ -47,9 +43,6 @@ class Select extends CallableClass
         return $this->response;
     }
 
-    /**
-     * @di $roundService
-     */
     public function saveTontine(int $tontineId)
     {
         if(!($tontine = $this->tontineService->getTontine($tontineId)))
@@ -62,15 +55,16 @@ class Select extends CallableClass
 
         $this->selectTontine($tontine);
 
-        if($tontine->rounds->count() === 0)
+        if(($round = $tontine->rounds->first()))
         {
-            $this->dialog->hide();
-            $this->notify->info(trans('tontine.messages.selected', ['tontine' => $tontine->name]));
-
-            return $this->response;
+            return $this->saveRound($round->id);
         }
 
-        return $this->saveRound($tontine->rounds->first()->id);
+        $this->dialog->hide();
+        $this->notify->info(trans('tontine.messages.selected',
+            ['tontine' => $tontine->name]));
+
+        return $this->response;
     }
 
     public function showRounds()
@@ -96,9 +90,6 @@ class Select extends CallableClass
         return $this->response;
     }
 
-    /**
-     * @di $roundService
-     */
     public function saveRound(int $roundId)
     {
         if(!($tontine = $this->tenantService->tontine()))

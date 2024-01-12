@@ -127,6 +127,14 @@ class Round extends CallableClass
         $this->page(); // Back to current page
         $this->notify->success(trans('tontine.round.messages.deleted'), trans('common.titles.success'));
 
+        $currentRound = $this->tenantService->round();
+        if($currentRound !== null && $currentRound->id === $roundId)
+        {
+            // If the currently selected round is deleted, then choose another.
+            $this->cl(Select::class)->setTenantService($this->tenantService)
+                ->saveTontine($this->tenantService->tontine()->id);
+        }
+
         return $this->response;
     }
 }
