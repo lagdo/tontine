@@ -31,8 +31,8 @@
 @endsection
 
 @section('content')
-@foreach ($profits as $profit)
-          @include('tontine.report.default.profits.fund', $profit)
+@foreach ($funds as $fund)
+          @include('tontine.report.default.profits.fund', $fund)
 @if (!$loop->last)
 
           <div class="pagebreak"></div>

@@ -1,12 +1,16 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $distributionSum = $savings->sum('distribution');
   $savings = $savings->groupBy('member_id');
 @endphp
-      <div class="section-title">
-        {!! $fund !!} :: {{ $locale->formatMoney($profitAmount, true) }}, {{
+      <div class="section section-title">
+        {!! $name !!} :: {{ $locale->formatMoney($profitAmount, true) }}, {{
           __('meeting.profit.distribution.parts', ['parts' => $distributionSum]) }}
       </div>
+@if ($distributionCount > 1)
+      <div class="section section-subtitle">
+        {!! __('meeting.profit.distribution.basis', ['unit' => $locale->formatMoney($partUnitValue, true)]) !!}
+      </div>
+@endif
       <div class="table">
         <table>
           <thead>

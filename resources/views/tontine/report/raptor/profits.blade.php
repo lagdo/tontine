@@ -36,13 +36,20 @@
         padding: 0;
       }
 
-      main .section-title {
+      main .section {
         text-align: center;
-        font-size: 18px;
         font-weight: bold;
         padding-bottom: 10px;
         color: var(--highlight-color);
         page-break-after: avoid;
+      }
+
+      main .section-title {
+        font-size: 18px;
+      }
+
+      main .section-subtitle {
+        font-size: 15px;
       }
 
       main table {
@@ -81,8 +88,8 @@
   </head>
   <body>
     <main>
-@foreach ($profits as $profit)
-      @include('tontine.report.raptor.profits.fund', $profit)
+@foreach ($funds as $fund)
+      @include('tontine.report.raptor.profits.fund', $fund)
 @if (!$loop->last)
 
       <div class="pagebreak"></div>

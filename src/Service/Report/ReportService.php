@@ -114,6 +114,26 @@ class ReportService
 
     /**
      * @param Session $session
+     * @param int $profitAmount
+     * @param string $fund
+     * @param int $fundId
+     *
+     * @return array
+     */
+    private function getFundSavings(Session $session, int $profitAmount,
+        string $name, int $fundId): array
+    {
+        $savings = $this->profitService->getDistributions($session, $fundId, $profitAmount);
+        $partUnitValue = $this->profitService->getPartUnitValue($savings);
+        $distributionSum = $savings->sum('distribution');
+        $distributionCount = $savings->filter(fn($saving) => $saving->distribution > 0)->count();
+
+        return compact('name', 'savings', 'profitAmount', 'partUnitValue',
+            'distributionSum', 'distributionCount');
+    }
+
+    /**
+     * @param Session $session
      *
      * @return array
      */
@@ -124,16 +144,12 @@ class ReportService
         $funds = $this->fundService->getFundList();
         $closings = $this->getFundClosings($session, $funds->keys());
 
-        $profits = $funds
-            ->map(fn($fund, $fundId) => [
-                'fund' => $fund,
-                'profitAmount' => $closings[$fundId] ?? 0,
-                'savings' => $this->profitService->getDistributions($session,
-                    $fundId, $closings[$fundId] ?? 0),
-            ])
-            ->filter(fn($profit) => $profit['savings']->count() > 0);
+        $funds = $funds
+            ->map(fn($name, $fundId) => $this->getFundSavings($session,
+                $closings[$fundId] ?? 0, $name, $fundId))
+            ->filter(fn($fund) => $fund['savings']->count() > 0);
 
-        return compact('tontine', 'session', 'country', 'profits');
+        return compact('tontine', 'session', 'country', 'funds');
     }
 
     /**
