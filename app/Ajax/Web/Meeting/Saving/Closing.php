@@ -40,6 +40,9 @@ class Closing extends CallableSessionClass
         return $this->home();
     }
 
+    /**
+     * @databag report
+     */
     public function home()
     {
         $html = $this->render('pages.meeting.closing.home', [
@@ -48,6 +51,10 @@ class Closing extends CallableSessionClass
             'funds' => $this->fundService->getFundList(),
         ]);
         $this->response->html('meeting-closings', $html);
+
+        // Sending an Ajax request to the Saving class needs to set
+        // the session id in the report databag.
+        $this->bag('report')->set('session.id', $this->session->id);
 
         $this->jq('#btn-closings-refresh')->click($this->rq()->home());
 
