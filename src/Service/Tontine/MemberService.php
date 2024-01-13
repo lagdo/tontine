@@ -9,6 +9,7 @@ use Siak\Tontine\Model\Member;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\EventTrait;
 
+use function count;
 use function strtolower;
 
 class MemberService
@@ -88,8 +89,11 @@ class MemberService
      */
     private function saveActiveMembers()
     {
-        $tontine = $this->tenantService->tontine();
-        $round = $this->tenantService->round();
+        if(!($tontine = $this->tenantService->tontine()) ||
+            !($round = $this->tenantService->round()))
+        {
+            return;
+        }
         $properties = $round->properties;
         $properties['members'] = $tontine->members()->active()->pluck('id')->all();
         $round->saveProperties($properties);
