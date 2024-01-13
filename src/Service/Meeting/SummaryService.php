@@ -32,6 +32,42 @@ class SummaryService
 
     /**
      * @param Pool $pool
+     * @param int $cashier
+     * @param stdClass|null $deposit
+     * @param stdClass|null $remitment
+     *
+     * @return stdClass
+     */
+    private function getSessionFigures(Pool $pool, int $cashier,
+        ?stdClass $deposit, ?stdClass $remitment): stdClass
+    {
+        $figures = $this->makeFigures(0);
+        $figures->cashier->start = $cashier;
+        $figures->cashier->recv = $cashier;
+
+        $depositCount = !$deposit ? 0 : $deposit->total;
+        $depositAmount = $pool->deposit_fixed ? $pool->amount * $depositCount :
+            (!$deposit ? 0 : $deposit->amount);
+
+        $figures->deposit->amount += $depositAmount;
+        $figures->cashier->recv += $depositAmount;
+        $figures->deposit->count = $depositCount;
+
+        $sessionCount = $pool->counter->sessions - $pool->counter->disabled_sessions;
+        $remitmentCount = !$remitment ? 0 : $remitment->total;
+        $remitmentAmount = !$pool->deposit_fixed ? $depositAmount :
+            $pool->amount * $sessionCount * $remitmentCount;
+
+        $figures->cashier->end = $figures->cashier->recv;
+        $figures->remitment->amount += $remitmentAmount;
+        $figures->cashier->end -= $remitmentAmount;
+        $figures->remitment->count += $remitmentCount;
+
+        return $figures;
+    }
+
+    /**
+     * @param Pool $pool
      * @param Collection $sessions
      * @param Collection $deposits
      * @param Collection $remitments
@@ -52,29 +88,9 @@ class SummaryService
                 continue;
             }
 
-            $figures = $this->makeFigures(0);
-            $figures->cashier->start = $cashier;
-            $figures->cashier->recv = $cashier;
-
             $deposit = $deposits[$pool->id][$session->id][0] ?? null;
-            $depositCount = !$deposit ? 0 : $deposit->total;
-            $depositAmount = $pool->deposit_fixed ? $pool->amount * $depositCount :
-                (!$deposit ? 0 : $deposit->amount);
-
-            $figures->deposit->amount += $depositAmount;
-            $figures->cashier->recv += $depositAmount;
-            $figures->deposit->count = $depositCount;
-
-            $sessionCount = $pool->counter->sessions - $pool->counter->disabled_sessions;
             $remitment = $remitments[$pool->id][$session->id][0] ?? null;
-            $remitmentCount = !$remitment ? 0 : $remitment->total;
-            $remitmentAmount = !$pool->deposit_fixed ? $depositAmount :
-                $pool->amount * $sessionCount * $remitmentCount;
-
-            $figures->cashier->end = $figures->cashier->recv;
-            $figures->remitment->amount += $remitmentAmount;
-            $figures->cashier->end -= $remitmentAmount;
-            $figures->remitment->count += $remitmentCount;
+            $figures = $this->getSessionFigures($pool, $cashier, $deposit, $remitment);
 
             $cashier = $figures->cashier->end;
             $collectedFigures[$session->id] = $figures;

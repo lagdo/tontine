@@ -107,6 +107,11 @@ class Session extends CallableClass
             'funds' => $this->fundService->getFundList(),
         ]);
         $this->response->html('report-savings', $html);
+        $this->response->html('report-fund-savings', '');
+
+        $fundId = pm()->select('report-savings-fund-id')->toInt();
+        $this->jq('#btn-report-fund-savings')
+            ->click($this->cl(Saving::class)->rq()->home($fundId));
     }
 
     private function disbursements(SessionModel $session)
@@ -115,8 +120,5 @@ class Session extends CallableClass
             'disbursement' => $this->sessionService->getDisbursement($session),
         ]);
         $this->response->html('report-disbursements', $html);
-
-        $fundId = pm()->select('report_profits_fund_id')->toInt();
-        $this->jq('#btn-report-profits')->click($this->cl(Profit::class)->rq()->home($fundId));
     }
 }

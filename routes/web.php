@@ -51,7 +51,7 @@ Route::middleware(['auth', TontineTenant::class, SetAppLocale::class])
         Route::get('/report/round/{roundId}', [ReportController::class, 'roundById']);
         Route::get('/report/session/pdf/{sessionId}', [ReportController::class, 'session'])
             ->name('report.session');
-        Route::get('/report/profits/pdf/{sessionId}', [ReportController::class, 'savings']);
+        Route::get('/report/savings/pdf/{sessionId}', [ReportController::class, 'savings']);
         Route::get('/report/savings/pdf/{sessionId}', [ReportController::class, 'savings'])
             ->name('report.savings');
         Route::get('/report/round/pdf/{roundId}', [ReportController::class, 'round'])

@@ -48,7 +48,7 @@
           <p>@if(($tontine->city)){{ $tontine->city }} - @endif{{ $country }}</p>
         </div>
         <div class="report">
-          <h2>{{ __('tontine.report.titles.profits') }}</h2>
+          <h2>{{ __('tontine.report.titles.savings') }}</h2>
           <p>{{ $session->title }}</p>
         </div>
       </div>

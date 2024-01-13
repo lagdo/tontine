@@ -16,15 +16,15 @@
       font-size: 16px;
       vertical-align: top;
     }
-    td.report-profits-amount {
+    td.report-savings-amount {
       width: 15%;
       text-align: right;
     }
-    td.report-profits-count {
+    td.report-savings-count {
       width: 7%;
       text-align: right;
     }
-    td.report-profits-session {
+    td.report-savings-session {
       width: 21%;
     }
   </style>
@@ -32,7 +32,7 @@
 
 @section('content')
 @foreach ($funds as $fund)
-          @include('tontine.report.default.profits.fund', $fund)
+          @include('tontine.report.default.savings.fund', $fund)
 @if (!$loop->last)
 
           <div class="pagebreak"></div>

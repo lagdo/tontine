@@ -49,8 +49,6 @@ class Member extends CallableClass
         $this->totalBills($session, $member);
         $this->savings($session, $member);
         $this->disbursements($session, $member);
-        // Empty the profits section.
-        $this->response->html('report-profits', '');
     }
 
     private function deposits(SessionModel $session, MemberModel $member)
@@ -108,6 +106,7 @@ class Member extends CallableClass
             'savings' => $this->memberService->getSavings($session, $member),
         ]);
         $this->response->html('report-savings', $html);
+        $this->response->html('report-fund-savings', '');
     }
 
     private function disbursements(SessionModel $session, MemberModel $member)

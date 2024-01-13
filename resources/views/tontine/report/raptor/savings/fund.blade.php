@@ -30,21 +30,21 @@ $memberDistribution = $memberSavings->sum('distribution');
 @endphp
             <tr>
               <td rowspan="{{ $memberSavings->count() + 1 }}">{{ $memberSavings[0]->member->name }}</td>
-              <td class="report-profits-session">&nbsp;</td>
-              <td class="report-profits-count">&nbsp;</td>
-              <td class="report-profits-amount"><b>{{ $locale->formatMoney($memberSavings->sum('amount'), true) }}</b></td>
-              <td class="report-profits-amount"><b>{{ $memberDistribution }} ({{ sprintf('%.2f', $distributionSum === 0 ?
+              <td class="report-savings-session">&nbsp;</td>
+              <td class="report-savings-count">&nbsp;</td>
+              <td class="report-savings-amount"><b>{{ $locale->formatMoney($memberSavings->sum('amount'), true) }}</b></td>
+              <td class="report-savings-amount"><b>{{ $memberDistribution }} ({{ sprintf('%.2f', $distributionSum === 0 ?
                 0 : 100 * $memberDistribution / $distributionSum) }}%)</b></td>
-              <td class="report-profits-amount"><b>{{ $locale->formatMoney($memberSavings->sum('profit'), true) }}</b></td>
+              <td class="report-savings-amount"><b>{{ $locale->formatMoney($memberSavings->sum('profit'), true) }}</b></td>
             </tr>
 @foreach ($memberSavings as $saving)
             <tr>
-              <td class="report-profits-session">{{ $saving->session->title }}</td>
-              <td class="report-profits-count">{{ $saving->duration }}</td>
-              <td class="report-profits-amount">{{ $locale->formatMoney($saving->amount, true) }}</td>
-              <td class="report-profits-amount">{{ $saving->distribution }} ({{ sprintf('%.2f', $distributionSum === 0 ?
+              <td class="report-savings-session">{{ $saving->session->title }}</td>
+              <td class="report-savings-count">{{ $saving->duration }}</td>
+              <td class="report-savings-amount">{{ $locale->formatMoney($saving->amount, true) }}</td>
+              <td class="report-savings-amount">{{ $saving->distribution }} ({{ sprintf('%.2f', $distributionSum === 0 ?
                 0 : 100 * $saving->distribution / $distributionSum) }}%)</td>
-              <td class="report-profits-amount">{{ $locale->formatMoney($saving->profit, true) }}</td>
+              <td class="report-savings-amount">{{ $locale->formatMoney($saving->profit, true) }}</td>
             </tr>
 @endforeach
 @endforeach

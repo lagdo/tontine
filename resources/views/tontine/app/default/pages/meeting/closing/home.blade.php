@@ -10,7 +10,7 @@
                           'style' => 'height:36px; padding:5px 15px;', 'id' => 'closings-fund-id']) !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" id="btn-closing-edit"><i class="fa fa-plus"></i></button>
-                          <button type="button" class="btn btn-primary" id="btn-profits-show"><i class="fa fa-list"></i></button>
+                          <button type="button" class="btn btn-primary" id="btn-fund-savings-show"><i class="fa fa-list"></i></button>
                         </div>
                       </div>
                     </div>
@@ -44,8 +44,8 @@
     'class' => 'btn-closing-edit',
     'text' => __('common.actions.edit'),
   ], [
-    'class' => 'btn-profits-show',
-    'text' => __('meeting.actions.profits'),
+    'class' => 'btn-fund-savings-show',
+    'text' => __('meeting.actions.savings'),
   ], [
     'class' => 'btn-closing-delete',
     'text' => __('common.actions.delete'),

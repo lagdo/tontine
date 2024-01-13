@@ -3,7 +3,7 @@
 namespace App\Ajax\Web\Meeting\Saving;
 
 use App\Ajax\CallableSessionClass;
-use App\Ajax\Web\Report\Session\Profit;
+use App\Ajax\Web\Report\Session\Saving;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -50,12 +50,14 @@ class Closing extends CallableSessionClass
         $this->response->html('meeting-closings', $html);
 
         $this->jq('#btn-closings-refresh')->click($this->rq()->home());
+
         $fundId = pm()->select('closings-fund-id')->toInt();
         $this->jq('#btn-closing-edit')->click($this->rq()->editClosing($fundId));
-        $this->jq('#btn-profits-show')->click($this->rq()->showProfits($fundId));
+        $this->jq('#btn-fund-savings-show')->click($this->cl(Saving::class)->rq()->home($fundId));
+
         $fundId = jq()->parent()->attr('data-fund-id')->toInt();
         $this->jq('.btn-closing-edit')->click($this->rq()->editClosing($fundId));
-        $this->jq('.btn-profits-show')->click($this->rq()->showProfits($fundId));
+        $this->jq('.btn-fund-savings-show')->click($this->cl(Saving::class)->rq()->home($fundId));
         $this->jq('.btn-closing-delete')->click($this->rq()->deleteClosing($fundId)
             ->confirm(trans('meeting.closing.questions.delete')));
 
@@ -128,10 +130,5 @@ class Closing extends CallableSessionClass
         $this->notify->success(trans('meeting.messages.profit.deleted'), trans('common.titles.success'));
 
         return $this->home();
-    }
-
-    public function showProfits(int $fundId)
-    {
-        return $this->cl(Profit::class)->show($this->session, $fundId);
     }
 }

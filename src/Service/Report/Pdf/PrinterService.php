@@ -80,7 +80,7 @@ class PrinterService
      */
     public function getSavingsReportPath(): string
     {
-        return $this->getViewPath('profits');
+        return $this->getViewPath('savings');
     }
 
     /**
@@ -90,7 +90,7 @@ class PrinterService
      */
     public function getSavingsReportFilename(Session $session): string
     {
-        return Str::slug(trans('meeting.titles.profits')) . '-' . Str::slug($session->title) . '.pdf';
+        return Str::slug(trans('meeting.titles.savings')) . '-' . Str::slug($session->title) . '.pdf';
     }
 
     /**
@@ -98,7 +98,7 @@ class PrinterService
      */
     public function getSavingsReport(): string
     {
-        return $this->getPdf('profits');
+        return $this->getPdf('savings');
     }
 
     /**

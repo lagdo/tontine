@@ -364,6 +364,7 @@ return [
     ],
     'report' => [
         'actions' => [
+            'show' => "Voir",
             'session' => "Rapport de séance",
             'round' => "Rapport de tour",
             'savings' => "Rapport d'épargne",
@@ -372,7 +373,6 @@ return [
             'session' => "Rapport de séance",
             'round' => "Rapport de tour",
             'savings' => "Rapport d'épargne",
-            'profits' => "Répartition des gains",
             'bills' => [
                 'session' => "Montants des frais de la séance",
                 'total' => "Montants totaux des frais",

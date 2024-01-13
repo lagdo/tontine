@@ -364,6 +364,7 @@ return [
     ],
     'report' => [
         'actions' => [
+            'show' => "Show",
             'session' => "Session report",
             'round' => "Round report",
             'savings' => "Savings report",
@@ -372,7 +373,6 @@ return [
             'session' => "Session report",
             'round' => "Round report",
             'savings' => "Savings report",
-            'profits' => "Profits distribution",
             'bills' => [
                 'session' => "Session bill amounts",
                 'total' => "Total bill amounts",

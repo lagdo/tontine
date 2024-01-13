@@ -25,7 +25,7 @@
     <header>
       <div class="first-line">
         <span>{{ $tontine->name }}</span>
-        <span class="right-col">{{ __('tontine.report.titles.profits') }}</span>
+        <span class="right-col">{{ __('tontine.report.titles.savings') }}</span>
       </div>
       <div class="second-line">
         <span>@if ($tontine->city){{ $tontine->city }} - @endif{{ $country }}</span>

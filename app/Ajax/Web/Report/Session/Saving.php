@@ -15,7 +15,7 @@ use function Jaxon\pm;
  * @databag report
  * @before getSession
  */
-class Profit extends CallableClass
+class Saving extends CallableClass
 {
     /**
      * @var SessionModel|null
@@ -63,14 +63,14 @@ class Profit extends CallableClass
         }
 
         $profitAmount = $this->profitService->getProfitAmount($this->session, $fundId);
-        $html = $this->render('pages.report.session.profit.home', [
+        $html = $this->render('pages.report.session.savings.home', [
             'profit' => $profitAmount,
             'fund' => $funds[$fundId],
         ]);
-        $this->response->html('report-profits', $html);
+        $this->response->html('report-fund-savings', $html);
 
-        $inputAmount = pm()->input('profit_amount')->toInt();
-        $this->jq('#btn-profits-refresh')->click($this->rq()->fund($fundId, $inputAmount));
+        $inputAmount = pm()->input('fund-profit-amount')->toInt();
+        $this->jq('#btn-fund-savings-refresh')->click($this->rq()->fund($fundId, $inputAmount));
 
         return $this->fund($fundId, $profitAmount);
     }
@@ -81,20 +81,20 @@ class Profit extends CallableClass
         $partUnitValue = $this->profitService->getPartUnitValue($savings);
         $distributionSum = $savings->sum('distribution');
         $distributionCount = $savings->filter(fn($saving) => $saving->distribution > 0)->count();
-        $html = $this->render('pages.report.session.profit.details', [
+        $html = $this->render('pages.report.session.savings.details', [
             'profitAmount' => $profitAmount,
             'partUnitValue' => $partUnitValue,
             'distributionSum' => $distributionSum,
             'distributionCount' => $distributionCount,
             'amounts' => $this->profitService->getSavingAmounts($this->session, $fundId),
         ]);
-        $this->response->html('report-profits-distribution', $html);
+        $this->response->html('report-fund-profits-distribution', $html);
 
-        $html = $this->render('pages.report.session.profit.page', [
+        $html = $this->render('pages.report.session.savings.page', [
             'savings' => $savings->groupBy('member_id'),
             'distributionSum' => $distributionSum,
         ]);
-        $this->response->html('report-profits-page', $html);
+        $this->response->html('report-fund-savings-page', $html);
 
         return $this->response;
     }
