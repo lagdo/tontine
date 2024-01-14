@@ -7,13 +7,15 @@ use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Tontine\MemberService;
 
 class PresenceService
 {
     /**
      * @param TenantService $tenantService
      */
-    public function __construct(private TenantService $tenantService)
+    public function __construct(private TenantService $tenantService,
+        private MemberService $memberService, private SessionService $sessionService)
     {}
 
     /**
@@ -55,5 +57,65 @@ class PresenceService
         !$session->absents()->find($member->id) ?
             $session->absents()->attach($member->id) :
             $session->absents()->detach($member->id);
+    }
+
+    /**
+     * Get the number of sessions in the selected round.
+     *
+     * @return int
+     */
+    public function getSessionCount(): int
+    {
+        return $this->sessionService->getSessionCount();
+    }
+
+    /**
+     * Get the number of sessions that have already been opened.
+     *
+     * @return int
+     */
+    public function getActiveSessionCount(): int
+    {
+        return $this->tenantService->round()->sessions()->active()->count();
+    }
+
+    /**
+     * Get a paginated list of sessions in the selected round.
+     *
+     * @param int $page
+     *
+     * @return Collection
+     */
+    public function getSessions(int $page = 0): Collection
+    {
+        return $this->sessionService->withCount(['absents'])->getSessions($page, true);
+    }
+
+    /**
+     * Get the number of members.
+     *
+     * @param string $search
+     *
+     * @return int
+     */
+    public function getMemberCount(string $search = ''): int
+    {
+        return $this->memberService->active()->getMemberCount($search);
+    }
+
+    /**
+     * Get a paginated list of members.
+     *
+     * @param string $search
+     * @param int $page
+     *
+     * @return Collection
+     */
+    public function getMembers(string $search, int $page = 0): Collection
+    {
+        $round = $this->tenantService->round();
+        return $this->memberService->active()
+            ->withCount(['absences' => fn($query) => $query->where('round_id', $round->id)])
+            ->getMembers($search, $page);
     }
 }

@@ -9,13 +9,16 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\EventTrait;
+use Siak\Tontine\Service\Traits\WithTrait;
 
 use function count;
 use function strtolower;
+use function tap;
 
 class MemberService
 {
     use EventTrait;
+    use WithTrait;
 
     /**
      * @var bool
@@ -64,7 +67,7 @@ class MemberService
      */
     public function getMembers(string $search, int $page = 0): Collection
     {
-        return $this->getQuery($search)
+        return tap($this->getQuery($search), fn($query) => $this->addWith($query))
             ->page($page, $this->tenantService->getLimit())
             ->orderBy('name', 'asc')
             ->get();

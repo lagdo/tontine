@@ -10,6 +10,7 @@
                               </div>
                             </div>
                           </th>
+                          <th class="table-item-menu"></th>
                           <th class="table-item-menu">{{ __('tontine.labels.present') }}</th>
                         </tr>
                       </thead>
@@ -17,6 +18,7 @@
 @foreach ($members as $member)
                         <tr>
                           <td>{{ $member->name }}</td>
+                          <td class="table-item-menu">{{ $sessionCount - ($member->absences_count ?? 0) }} /<br/>{{ $sessionCount }}</td>
                           <td class="table-item-menu" data-member-id="{{ $member->id }}">
 @if ($session->opened)
                             <a href="javascript:void(0)" class="btn-toggle-member-presence"><i class="fa fa-toggle-{{

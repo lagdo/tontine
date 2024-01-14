@@ -3,6 +3,7 @@
 namespace App\Ajax\Web\Meeting\Presence;
 
 use App\Ajax\CallableClass;
+use Siak\Tontine\Service\Meeting\PresenceService;
 use Siak\Tontine\Service\Meeting\SessionService;
 
 use function Jaxon\jq;
@@ -18,9 +19,11 @@ class Session extends CallableClass
     private $fromHome = false;
 
     /**
-     * @param SessionService $sessionService
+     * 
+     * @param PresenceService $presenceService
      */
-    public function __construct(private SessionService $sessionService)
+    public function __construct(private SessionService $sessionService,
+        private PresenceService $presenceService)
     {}
 
     public function home()
@@ -36,16 +39,18 @@ class Session extends CallableClass
 
     public function page(int $pageNumber = 0)
     {
-        $sessionCount = $this->sessionService->getSessionCount();
+        $sessionCount = $this->presenceService->getSessionCount();
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $sessionCount,
             'presence', 'session.page');
-        $sessions = $this->sessionService->getSessions($pageNumber);
+        $sessions = $this->presenceService->getSessions($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
 
-        $html = $this->render('pages.meeting.presence.session.page')
-            ->with('sessions', $sessions)
-            ->with('statuses', $this->sessionService->getSessionStatuses())
-            ->with('pagination', $pagination);
+        $html = $this->render('pages.meeting.presence.session.page', [
+            'sessions' => $sessions,
+            'pagination' => $pagination,
+            'statuses' => $this->sessionService->getSessionStatuses(),
+            'memberCount' => $this->presenceService->getMemberCount(),
+        ]);
         $this->response->html('content-page-sessions', $html);
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();

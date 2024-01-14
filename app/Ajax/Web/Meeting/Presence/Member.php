@@ -71,10 +71,10 @@ class Member extends CallableClass
     public function page(int $pageNumber = 0)
     {
         $search = trim($this->bag('presence')->get('member.search', ''));
-        $memberCount = $this->memberService->getMemberCount($search);
+        $memberCount = $this->presenceService->getMemberCount($search);
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount,
             'presence', 'member.page');
-        $members = $this->memberService->getMembers($search, $pageNumber);
+        $members = $this->presenceService->getMembers($search, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
         $absences = $this->presenceService->getSessionAbsences($this->session);
 
@@ -84,6 +84,7 @@ class Member extends CallableClass
             'members' => $members,
             'absences' => $absences,
             'pagination' => $pagination,
+            'sessionCount' => $this->presenceService->getActiveSessionCount(),
         ]);
         $this->response->html('content-page-members', $html);
 
@@ -122,6 +123,7 @@ class Member extends CallableClass
 
         $this->presenceService->togglePresence($this->session, $member);
 
+        $this->cl(Session::class)->page();
         return $this->page();
     }
 }

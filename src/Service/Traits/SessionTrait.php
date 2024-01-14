@@ -7,8 +7,17 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Session;
 
+use function tap;
+
 trait SessionTrait
 {
+    use WithTrait;
+
+    private function getRoundSessionQuery(): Relation
+    {
+        return $this->tenantService->round()->sessions();
+    }
+
     /**
      * Find a session.
      *
@@ -18,7 +27,7 @@ trait SessionTrait
      */
     public function getSession(int $sessionId): ?Session
     {
-        return $this->tenantService->round()->sessions()->find($sessionId);
+        return $this->getRoundSessionQuery()->find($sessionId);
     }
 
     /**
@@ -28,7 +37,7 @@ trait SessionTrait
      */
     public function getSessionCount(): int
     {
-        return $this->tenantService->round()->sessions()->count();
+        return $this->getRoundSessionQuery()->count();
     }
 
     /**
@@ -41,7 +50,7 @@ trait SessionTrait
      */
     public function getSessions(int $page = 0, bool $orderAsc = true): Collection
     {
-        return $this->tenantService->round()->sessions()
+        return tap($this->getRoundSessionQuery(), fn($query) => $this->addWith($query))
             ->orderBy('start_at', $orderAsc ? 'asc' : 'desc')
             ->page($page, $this->tenantService->getLimit())
             ->get();
@@ -85,7 +94,7 @@ trait SessionTrait
     }
 
     /**
-     * @param Builder $query
+     * @param Builder|Relation $query
      * @param Session|null $currSession
      * @param bool $getAfter Get the sessions after or before the provided one
      * @param bool $withCurr Keep the provided session in the list
@@ -109,8 +118,7 @@ trait SessionTrait
      */
     private function getRoundSessionsQuery(?Session $currSession, bool $getAfter, bool $withCurr): Builder|Relation
     {
-        $query = $this->tenantService->round()->sessions();
-        return $this->getSessionsQuery($query, $currSession, $getAfter, $withCurr);
+        return $this->getSessionsQuery($this->getRoundSessionQuery(), $currSession, $getAfter, $withCurr);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Model;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 use function trans;
 
@@ -206,5 +207,15 @@ class Session extends Base
     public function disabled(Pool $pool)
     {
         return $this->disabledPools->find($pool->id) !== null;
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('status', '!=', self::STATUS_PENDING);
     }
 }
