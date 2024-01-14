@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Service\Tontine;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Member;
@@ -17,10 +18,41 @@ class MemberService
     use EventTrait;
 
     /**
+     * @var bool
+     */
+    private bool $filterActive = false;
+
+    /**
      * @param TenantService $tenantService
      */
     public function __construct(protected TenantService $tenantService)
     {}
+
+    /**
+     * @param bool $filter
+     *
+     * @return self
+     */
+    public function active(bool $filter = true): self
+    {
+        $this->filterActive = $filter;
+        return $this;
+    }
+
+    /**
+     * @param string $search
+     *
+     * @return Builder|Relation
+     */
+    private function getQuery(string $search): Builder|Relation
+    {
+        return $this->tenantService->tontine()->members()
+            ->when($this->filterActive, fn(Builder $query) => $query->active())
+            ->when($search !== '', function(Builder $query) use($search) {
+                $search = '%' . strtolower($search) . '%';
+                return $query->where(DB::raw('lower(name)'), 'like', $search);
+            });
+    }
 
     /**
      * Get a paginated list of members.
@@ -32,11 +64,7 @@ class MemberService
      */
     public function getMembers(string $search, int $page = 0): Collection
     {
-        return $this->tenantService->tontine()->members()
-            ->when($search !== '', function(Builder $query) use($search) {
-                $search = '%' . strtolower($search) . '%';
-                return $query->where(DB::raw('lower(name)'), 'like', $search);
-            })
+        return $this->getQuery($search)
             ->page($page, $this->tenantService->getLimit())
             ->orderBy('name', 'asc')
             ->get();
@@ -51,12 +79,7 @@ class MemberService
      */
     public function getMemberCount(string $search): int
     {
-        return $this->tenantService->tontine()->members()
-            ->when($search !== '', function(Builder $query) use($search) {
-                $search = '%' . strtolower($search) . '%';
-                return $query->where(DB::raw('lower(name)'), 'like', $search);
-            })
-            ->count();
+        return $this->getQuery($search)->count();
     }
 
     /**

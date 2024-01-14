@@ -97,6 +97,11 @@ class Member extends Base
         return $this->hasMany(Saving::class);
     }
 
+    public function absences()
+    {
+        return $this->belongsToMany(Session::class, 'absences');
+    }
+
     /**
      * @param  Builder  $query
      *

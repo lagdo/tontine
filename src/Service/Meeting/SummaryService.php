@@ -88,8 +88,8 @@ class SummaryService
                 continue;
             }
 
-            $deposit = $deposits[$pool->id][$session->id][0] ?? null;
-            $remitment = $remitments[$pool->id][$session->id][0] ?? null;
+            $deposit = $deposits[$pool->id][$session->id] ?? null;
+            $remitment = $remitments[$pool->id][$session->id] ?? null;
             $figures = $this->getSessionFigures($pool, $cashier, $deposit, $remitment);
 
             $cashier = $figures->cashier->end;
@@ -125,7 +125,8 @@ class SummaryService
             ->get()
             // Group the data by pool id and session id.
             ->groupBy('pool_id')
-            ->map(fn($poolDeposits) => $poolDeposits->groupBy('session_id'));
+            ->map(fn($poolDeposits) => $poolDeposits->groupBy('session_id')
+                ->map(fn($array) => $array->first()));
         $remitments = DB::table('remitments')
             ->select('subscriptions.pool_id', 'payables.session_id', DB::raw('count(*) as total'))
             ->join('payables', 'payables.id', '=', 'remitments.payable_id')
@@ -137,7 +138,8 @@ class SummaryService
             ->get()
             // Group the data by pool id and session id.
             ->groupBy('pool_id')
-            ->map(fn($poolRemitments) => $poolRemitments->groupBy('session_id'));
+            ->map(fn($poolRemitments) => $poolRemitments->groupBy('session_id')
+                ->map(fn($array) => $array->first()));
         $disabledSessions = DB::table('pool_session_disabled')
             ->whereIn('pool_id', $poolIds)
             ->get()
