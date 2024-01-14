@@ -2,6 +2,7 @@
 
 namespace App\Ajax;
 
+use App\Ajax\Web\Meeting\Presence;
 use App\Ajax\Web\Meeting\Session as MeetingSession;
 use App\Ajax\Web\Planning\Pool;
 use App\Ajax\Web\Planning\Round as PlanningRound;
@@ -112,6 +113,7 @@ class CallableClass extends JaxonCallableClass
         $this->jq('#planning-menu-pools')->click($this->cl(Pool::class)->rq()->home());
         $this->jq('#planning-menu-subscriptions')->click($this->cl(Subscription::class)->rq()->home());
         $this->jq('#meeting-menu-sessions')->click($this->cl(MeetingSession::class)->rq()->home());
+        $this->jq('#meeting-menu-presences')->click($this->cl(Presence::class)->rq()->home());
         $this->jq('#report-menu-session')->click($this->cl(ReportSession::class)->rq()->home());
         $this->jq('#report-menu-round')->click($this->cl(ReportRound::class)->rq()->home());
     }

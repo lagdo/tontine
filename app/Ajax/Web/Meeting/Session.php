@@ -11,7 +11,7 @@ use function trans;
 class Session extends CallableClass
 {
     /**
-     * @param SessionService
+     * @param SessionService $sessionService
      */
     public function __construct(protected SessionService $sessionService)
     {}
