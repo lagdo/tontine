@@ -13,9 +13,26 @@ trait SessionTrait
 {
     use WithTrait;
 
+    /**
+     * @var bool
+     */
+    private bool $filterActive = false;
+
+    /**
+     * @param bool $filter
+     *
+     * @return self
+     */
+    public function active(bool $filter = true): self
+    {
+        $this->filterActive = $filter;
+        return $this;
+    }
+
     private function getRoundSessionQuery(): Relation
     {
-        return $this->tenantService->round()->sessions();
+        return $this->tenantService->round()->sessions()
+            ->when($this->filterActive, fn(Builder $query) => $query->active());
     }
 
     /**
@@ -27,7 +44,8 @@ trait SessionTrait
      */
     public function getSession(int $sessionId): ?Session
     {
-        return $this->getRoundSessionQuery()->find($sessionId);
+        return tap($this->getRoundSessionQuery(), fn($query) => $this->addWith($query))
+            ->find($sessionId);
     }
 
     /**
@@ -76,7 +94,9 @@ trait SessionTrait
      */
     public function getTontineSession(int $sessionId): ?Session
     {
-        return $this->tenantService->tontine()->sessions()->find($sessionId);
+        return $this->tenantService->tontine()->sessions()
+            ->when($this->filterActive, fn(Builder $query) => $query->active())
+            ->find($sessionId);
     }
 
     /**
@@ -88,6 +108,7 @@ trait SessionTrait
     public function getTontineSessions(int $page = 0, bool $orderAsc = true): Collection
     {
         return $this->tenantService->tontine()->sessions()
+            ->when($this->filterActive, fn(Builder $query) => $query->active())
             ->orderBy('start_at', $orderAsc ? 'asc' : 'desc')
             ->page($page, $this->tenantService->getLimit())
             ->get();

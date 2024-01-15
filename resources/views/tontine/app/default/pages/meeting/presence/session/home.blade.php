@@ -1,6 +1,12 @@
                       <div class="row align-items-center">
                         <div class="col">
-                          <h2 class="section-title">{{ __('tontine.titles.sessions') }}</h2>
+                          <h2 class="section-title">
+@if (!$member)
+                            {{ __('tontine.titles.sessions') }}
+@else
+                            {{ __('tontine.titles.presences', ['of' => $member->name]) }}
+@endif
+                          </h2>
                         </div>
                         <div class="col-auto">
                           <div class="btn-group float-right" role="group" aria-label="">

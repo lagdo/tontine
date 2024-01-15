@@ -25,13 +25,15 @@ return [
     'titles' => [
         'tontines' => "Associations",
         'tontine' => "Tontine",
+        'members' => "Members",
         'rounds' => "Rounds",
         'sessions' => "Sessions",
+        'session' => "Session",
         'add' => "Add an association",
         'edit' => "Edit an association",
         'choose' => "Select an association",
         'type' => "Select the tontine type",
-        'presences' => "Presences: :session",
+        'presences' => "Presences: :of",
     ],
     'descriptions' => [
         'types' => [

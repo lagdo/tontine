@@ -47,6 +47,17 @@ class PresenceService
     }
 
     /**
+     * @param Member $member
+     *
+     * @return Collection
+     */
+    public function getMemberAbsences(Member $member): Collection
+    {
+        $round = $this->tenantService->round();
+        return $member->absences()->where('round_id', $round->id)->pluck('title', 'id');
+    }
+
+    /**
      * @param Session $session
      * @param Member $member
      *
@@ -66,17 +77,7 @@ class PresenceService
      */
     public function getSessionCount(): int
     {
-        return $this->sessionService->getSessionCount();
-    }
-
-    /**
-     * Get the number of sessions that have already been opened.
-     *
-     * @return int
-     */
-    public function getActiveSessionCount(): int
-    {
-        return $this->tenantService->round()->sessions()->active()->count();
+        return $this->sessionService->active()->getSessionCount();
     }
 
     /**
@@ -88,7 +89,23 @@ class PresenceService
      */
     public function getSessions(int $page = 0): Collection
     {
-        return $this->sessionService->withCount(['absents'])->getSessions($page, true);
+        return $this->sessionService->active()
+            ->withCount(['absents'])
+            ->getSessions($page, true);
+    }
+
+    /**
+     * Find a session.
+     *
+     * @param int $sessionId
+     *
+     * @return Session|null
+     */
+    public function getSession(int $sessionId): ?Session
+    {
+        return $this->sessionService->active()
+            ->withCount(['absents'])
+            ->getSession($sessionId);
     }
 
     /**
@@ -117,5 +134,20 @@ class PresenceService
         return $this->memberService->active()
             ->withCount(['absences' => fn($query) => $query->where('round_id', $round->id)])
             ->getMembers($search, $page);
+    }
+
+    /**
+     * Find a member.
+     *
+     * @param int $memberId
+     *
+     * @return Member|null
+     */
+    public function getMember(int $memberId): ?Member
+    {
+        $round = $this->tenantService->round();
+        return $this->memberService->active()
+            ->withCount(['absences' => fn($query) => $query->where('round_id', $round->id)])
+            ->getMember($memberId);
     }
 }

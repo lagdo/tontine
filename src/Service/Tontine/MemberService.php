@@ -47,7 +47,7 @@ class MemberService
      *
      * @return Builder|Relation
      */
-    private function getQuery(string $search): Builder|Relation
+    private function getQuery(string $search = ''): Builder|Relation
     {
         return $this->tenantService->tontine()->members()
             ->when($this->filterActive, fn(Builder $query) => $query->active())
@@ -94,7 +94,8 @@ class MemberService
      */
     public function getMember(int $id): ?Member
     {
-        return $this->tenantService->tontine()->members()->find($id);
+        return tap($this->getQuery(), fn($query) => $this->addWith($query))
+            ->find($id);
     }
 
     /**

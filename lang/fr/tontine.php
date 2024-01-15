@@ -26,12 +26,14 @@ return [
         'tontines' => "Associations",
         'tontine' => "Tontine",
         'rounds' => "Tours",
+        'members' => "Membres",
         'sessions' => "Séances",
+        'session' => "Séance",
         'add' => "Ajouter une association",
         'edit' => "Modifier une association",
         'choose' => "Choisir une association",
         'type' => "Choisir un type de tontine",
-        'presences' => "Présences : :session",
+        'presences' => "Présences : :of",
     ],
     'descriptions' => [
         'types' => [
