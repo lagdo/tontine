@@ -17,6 +17,7 @@ return [
         'sessions' => "Sessions",
         'pools' => "Tontines",
         'subscriptions' => "Subscriptions",
+        'presences' => "Presences",
         'payments' => "Payments",
         'profile' => "Profile",
         'logout' => "Logout",
@@ -24,12 +25,15 @@ return [
     'titles' => [
         'tontines' => "Associations",
         'tontine' => "Tontine",
+        'members' => "Members",
         'rounds' => "Rounds",
         'sessions' => "Sessions",
+        'session' => "Session",
         'add' => "Add an association",
         'edit' => "Edit an association",
         'choose' => "Select an association",
         'type' => "Select the tontine type",
+        'presences' => "Presences: :of",
     ],
     'descriptions' => [
         'types' => [
@@ -51,6 +55,7 @@ return [
             'variable' => "Variable",
             'fixed' => "Fixed",
         ],
+        'present' => "Present",
     ],
     'actions' => [
         'rounds' => "Rounds",

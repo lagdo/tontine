@@ -17,6 +17,7 @@ return [
         'sessions' => "Séances",
         'pools' => "Tontines",
         'subscriptions' => "Souscriptions",
+        'presences' => "Présences",
         'payments' => "Paiements",
         'profile' => "Profil",
         'logout' => "Se déconnecter",
@@ -25,11 +26,14 @@ return [
         'tontines' => "Associations",
         'tontine' => "Tontine",
         'rounds' => "Tours",
+        'members' => "Membres",
         'sessions' => "Séances",
+        'session' => "Séance",
         'add' => "Ajouter une association",
         'edit' => "Modifier une association",
         'choose' => "Choisir une association",
         'type' => "Choisir un type de tontine",
+        'presences' => "Présences : :of",
     ],
     'descriptions' => [
         'types' => [
@@ -51,6 +55,7 @@ return [
             'variable' => "Variable",
             'fixed' => "Fixe",
         ],
+        'present' => "Présent",
     ],
     'actions' => [
         'rounds' => "Tours",
