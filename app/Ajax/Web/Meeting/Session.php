@@ -45,7 +45,7 @@ class Session extends CallableClass
         $this->response->html('content-page', $html);
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
-        $this->jq('.btn-session-show')->click($this->cl(Session\Home::class)->rq()->home($sessionId));
+        $this->jq('.btn-session-show')->click($this->rq(Session\Home::class)->home($sessionId));
 
         return $this->response;
     }

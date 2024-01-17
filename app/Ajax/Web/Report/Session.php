@@ -56,7 +56,7 @@ class Session extends CallableClass
             'sessionId' => $session->id,
         ]);
         $this->response->html('session-reports-export', $html);
-        $this->jq('#btn-tontine-options')->click($this->cl(Options::class)->rq()->editOptions());
+        $this->jq('#btn-tontine-options')->click($this->rq(Options::class)->editOptions());
 
         return $this->response;
     }

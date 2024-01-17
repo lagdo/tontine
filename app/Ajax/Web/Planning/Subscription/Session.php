@@ -58,7 +58,7 @@ class Session extends CallableClass
         if($this->pool->remit_planned)
         {
             $this->jq('#btn-subscription-planning')
-                ->click($this->cl(Subscription::class)->rq()->planning($poolId));
+                ->click($this->rq(Subscription::class)->planning($poolId));
         }
 
         $this->bag('subscription')->set('pool.id', $poolId);

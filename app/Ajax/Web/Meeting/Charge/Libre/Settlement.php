@@ -57,7 +57,7 @@ class Settlement extends CallableSessionClass
             'charge' => $this->charge,
         ]);
         $this->response->html('meeting-fees-libre', $html);
-        $this->jq('#btn-fee-libre-settlements-back')->click($this->cl(Charge::class)->rq()->home());
+        $this->jq('#btn-fee-libre-settlements-back')->click($this->rq(Charge::class)->home());
         $this->jq('#btn-fee-libre-settlements-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);

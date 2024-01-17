@@ -34,7 +34,7 @@ class Auction extends CallableSessionClass
         $this->response->html('meeting-remitments', $html);
         $this->jq('#btn-auctions-refresh')->click($this->rq()->home());
         $this->jq('#btn-auctions-filter')->click($this->rq()->toggleFilter());
-        $this->jq('#btn-remitments-back')->click($this->cl(Remitment::class)->rq()->home());
+        $this->jq('#btn-remitments-back')->click($this->rq(Remitment::class)->home());
 
         return $this->page();
     }

@@ -109,7 +109,7 @@ class Select extends CallableClass
 
         $this->selectRound($round);
         // Update the session list.
-        $this->cl(Session::class)->setTenantService($this->tenantService)->home();
+        $this->cl(Session::class)->home();
 
         $this->notify->info(trans('tontine.round.messages.selected',
             ['tontine' => $tontine->name, 'round' => $round->title]));

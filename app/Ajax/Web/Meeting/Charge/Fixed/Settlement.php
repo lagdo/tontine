@@ -57,7 +57,7 @@ class Settlement extends CallableSessionClass
         ]);
         $this->response->html('meeting-fees-fixed', $html);
         $this->jq('#btn-fee-fixed-settlements-back')
-            ->click($this->cl(Charge::class)->rq()->home());
+            ->click($this->rq(Charge::class)->home());
         $this->jq('#btn-fee-fixed-settlements-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);

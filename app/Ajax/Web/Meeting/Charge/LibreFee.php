@@ -62,11 +62,11 @@ class LibreFee extends CallableSessionClass
 
         $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
         $this->jq('.btn-fee-libre-add')
-            ->click($this->cl(Libre\Member::class)->rq()->home($chargeId));
+            ->click($this->rq(Libre\Member::class)->home($chargeId));
         $this->jq('.btn-fee-libre-settlements')
-            ->click($this->cl(Libre\Settlement::class)->rq()->home($chargeId));
+            ->click($this->rq(Libre\Settlement::class)->home($chargeId));
         $this->jq('.btn-fee-libre-target')
-            ->click($this->cl(Libre\Target::class)->rq()->home($chargeId));
+            ->click($this->rq(Libre\Target::class)->home($chargeId));
 
         return $this->response;
     }

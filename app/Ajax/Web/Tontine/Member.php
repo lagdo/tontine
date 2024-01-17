@@ -126,7 +126,7 @@ class Member extends CallableClass
             $buttons[] = [
                 'title' => '<i class="fa fa-fill"></i>',
                 'class' => 'btn btn-primary',
-                'click' => $this->cl(Faker::class)->rq()->members(),
+                'click' => $this->rq(Faker::class)->members(),
             ];
         }
         $buttons[] = [

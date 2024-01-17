@@ -66,7 +66,7 @@ class Member extends CallableClass
         if($this->pool->remit_planned)
         {
             $this->jq('#btn-subscription-beneficiaries')
-                ->click($this->cl(Subscription::class)->rq()->beneficiaries($poolId));
+                ->click($this->rq(Subscription::class)->beneficiaries($poolId));
         }
 
         $this->bag('subscription')->set('pool.id', $poolId);

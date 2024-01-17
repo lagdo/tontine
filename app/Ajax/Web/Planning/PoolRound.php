@@ -55,7 +55,7 @@ class PoolRound extends CallableClass
             'pool' => $this->pool,
         ]);
         $this->response->html('pool-round-actions', $html);
-        $this->jq('#btn-pool-round-back')->click($this->cl(Pool::class)->rq()->home());
+        $this->jq('#btn-pool-round-back')->click($this->rq(Pool::class)->home());
         $this->jq('#btn-pool-round-save')->click($this->rq()->saveRound(pm()->form('round-form')));
         if($this->pool->pool_round)
         {

@@ -39,7 +39,7 @@ class Deposit extends CallableSessionClass
         $this->jq('#btn-deposits-refresh')->click($this->rq()->home());
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
         $this->jq('.btn-pool-deposits')
-            ->click($this->cl(Deposit\Pool::class)->rq()->home($poolId));
+            ->click($this->rq(Deposit\Pool::class)->home($poolId));
 
         return $this->response;
     }

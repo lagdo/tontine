@@ -77,7 +77,7 @@ class Pool extends CallableSessionClass
         {
             $this->jq('#btn-add-remitment')->click($this->rq()->addRemitment(0));
         }
-        $this->jq('#btn-remitments-back')->click($this->cl(Remitment::class)->rq()->home());
+        $this->jq('#btn-remitments-back')->click($this->rq(Remitment::class)->home());
 
         return $this->page();
     }

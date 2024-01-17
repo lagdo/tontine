@@ -52,13 +52,13 @@ class Home extends CallableSessionClass
         $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
         $this->jq('.btn-tontine-edit')->click($this->rq()->edit($tontineId));
 
-        $this->jq('#btn-session-back')->click($this->cl(Menu::class)->rq()->home());
-        $this->jq('#btn-tontine-options')->click($this->cl(Options::class)->rq()->editOptions());
+        $this->jq('#btn-session-back')->click($this->rq(Menu::class)->home());
+        $this->jq('#btn-tontine-options')->click($this->rq(Options::class)->editOptions());
         $this->jq('#btn-session-refresh')->click($this->rq()->home($sessionId));
-        $this->jq('#btn-session-open')->click($this->cl(Session::class)->rq()->open()
+        $this->jq('#btn-session-open')->click($this->rq(Session::class)->open()
             ->confirm(trans('tontine.session.questions.open') . '<br/>' .
             trans('tontine.session.questions.warning')));
-        $this->jq('#btn-session-close')->click($this->cl(Session::class)->rq()->close()
+        $this->jq('#btn-session-close')->click($this->rq(Session::class)->close()
             ->confirm(trans('tontine.session.questions.close')));
 
         $this->reports();
@@ -140,7 +140,7 @@ class Home extends CallableSessionClass
         $this->jq('#session-report')->summernote($options);
         $agendaText = jq('#session-agenda')->summernote('code');
         $reportText = jq('#session-report')->summernote('code');
-        $this->jq('#btn-save-agenda')->click($this->cl(Session::class)->rq()->saveAgenda($agendaText));
-        $this->jq('#btn-save-report')->click($this->cl(Session::class)->rq()->saveReport($reportText));
+        $this->jq('#btn-save-agenda')->click($this->rq(Session::class)->saveAgenda($agendaText));
+        $this->jq('#btn-save-report')->click($this->rq(Session::class)->saveReport($reportText));
     }
 }

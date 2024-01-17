@@ -50,7 +50,7 @@ class Disbursement extends CallableSessionClass
         $this->jq('#btn-disbursements-refresh')->click($this->rq()->home());
         $this->jq('#btn-disbursement-add')->click($this->rq()->addDisbursement());
         $this->jq('#btn-disbursement-balances')
-            ->click($this->cl(Session::class)->rq()->showBalanceDetails(false));
+            ->click($this->rq(Session::class)->showBalanceDetails(false));
         $disbursementId = jq()->parent()->attr('data-disbursement-id')->toInt();
         $this->jq('.btn-disbursement-edit')->click($this->rq()->editDisbursement($disbursementId));
         $this->jq('.btn-disbursement-delete')->click($this->rq()->deleteDisbursement($disbursementId)

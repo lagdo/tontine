@@ -62,7 +62,7 @@ class FixedFee extends CallableSessionClass
 
         $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
         $this->jq('.btn-fee-fixed-settlements')
-            ->click($this->cl(Fixed\Settlement::class)->rq()->home($chargeId));
+            ->click($this->rq(Fixed\Settlement::class)->home($chargeId));
 
         return $this->response;
     }
