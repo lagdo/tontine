@@ -73,7 +73,7 @@ class CallableClass extends JaxonCallableClass
         }
         $this->bag($bagName)->set($attrName, $pageNumber);
 
-        return [$pageNumber, 10 /*$this->tenantService->getLimit()*/];
+        return [$pageNumber, $this->tenantService->getLimit()];
     }
 
     /**
