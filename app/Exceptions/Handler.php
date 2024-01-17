@@ -23,11 +23,6 @@ use function trans;
 class Handler extends ExceptionHandler
 {
     /**
-     * @var Jaxon
-     */
-    private Jaxon $jaxon;
-
-    /**
      * A list of exception types with their corresponding custom log levels.
      *
      * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
@@ -47,6 +42,7 @@ class Handler extends ExceptionHandler
         PlanningPoolException::class,
         PlanningRoundException::class,
         TontineMemberException::class,
+        MeetingRoundException::class,
     ];
 
     /**
@@ -67,66 +63,66 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->jaxon = app()->make(Jaxon::class);
+        $jaxon = app()->make(Jaxon::class);
 
         $this->reportable(function (Throwable $e) {
             //
         });
 
         // Redirect to the login page
-        $this->renderable(function (AuthenticationException $e) {
-            $ajaxResponse = $this->jaxon->ajaxResponse();
+        $this->renderable(function (AuthenticationException $e) use($jaxon) {
+            $ajaxResponse = $jaxon->ajaxResponse();
             $ajaxResponse->redirect(route('login'));
 
-            return $this->jaxon->httpResponse();
+            return $jaxon->httpResponse();
         });
 
         // Show the error message in a dialog
-        $this->renderable(function (MessageException $e) {
-            $ajaxResponse = $this->jaxon->ajaxResponse();
+        $this->renderable(function (MessageException $e) use($jaxon) {
+            $ajaxResponse = $jaxon->ajaxResponse();
             $ajaxResponse->dialog->error($e->getMessage(), trans('common.titles.error'));
 
-            return $this->jaxon->httpResponse();
+            return $jaxon->httpResponse();
         });
 
         // Show the warning message in a dialog, and show the sessions page.
-        $this->renderable(function (PlanningRoundException $e) {
-            $this->jaxon->cl(Round::class)->home();
+        $this->renderable(function (PlanningRoundException $e) use($jaxon) {
+            $jaxon->cl(Round::class)->home();
 
-            $ajaxResponse = $this->jaxon->ajaxResponse();
+            $ajaxResponse = $jaxon->ajaxResponse();
             $ajaxResponse->dialog->warning($e->getMessage(), trans('common.titles.warning'));
 
-            return $this->jaxon->httpResponse();
+            return $jaxon->httpResponse();
         });
 
         // Show the warning message in a dialog, and show the pools page.
-        $this->renderable(function (PlanningPoolException $e) {
-            $this->jaxon->cl(Pool::class)->home();
+        $this->renderable(function (PlanningPoolException $e) use($jaxon) {
+            $jaxon->cl(Pool::class)->home();
 
-            $ajaxResponse = $this->jaxon->ajaxResponse();
+            $ajaxResponse = $jaxon->ajaxResponse();
             $ajaxResponse->dialog->warning($e->getMessage(), trans('common.titles.warning'));
 
-            return $this->jaxon->httpResponse();
+            return $jaxon->httpResponse();
         });
 
         // Show the warning message in a dialog, and show the members page.
-        $this->renderable(function (TontineMemberException $e) {
-            $this->jaxon->cl(Member::class)->home();
+        $this->renderable(function (TontineMemberException $e) use($jaxon) {
+            $jaxon->cl(Member::class)->home();
 
-            $ajaxResponse = $this->jaxon->ajaxResponse();
+            $ajaxResponse = $jaxon->ajaxResponse();
             $ajaxResponse->dialog->warning($e->getMessage(), trans('common.titles.warning'));
 
-            return $this->jaxon->httpResponse();
+            return $jaxon->httpResponse();
         });
 
         // Show the warning message in a dialog, and show the sessions page.
-        $this->renderable(function (MeetingRoundException $e) {
-            $this->jaxon->cl(Session::class)->home();
+        $this->renderable(function (MeetingRoundException $e) use($jaxon) {
+            $jaxon->cl(Session::class)->home();
 
-            $ajaxResponse = $this->jaxon->ajaxResponse();
+            $ajaxResponse = $jaxon->ajaxResponse();
             $ajaxResponse->dialog->warning($e->getMessage(), trans('common.titles.warning'));
 
-            return $this->jaxon->httpResponse();
+            return $jaxon->httpResponse();
         });
     }
 }
