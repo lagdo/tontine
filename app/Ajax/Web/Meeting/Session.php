@@ -47,7 +47,23 @@ class Session extends CallableClass
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.btn-session-show')->click($this->cl(Session\Home::class)->rq()->home($sessionId));
+        $this->jq('.btn-session-resync')->click($this->rq()->resync($sessionId)
+            ->confirm(trans('tontine.session.questions.resync')));
 
         return $this->response;
+    }
+
+    public function resync(int $sessionId)
+    {
+        if(!($session = $this->sessionService->getSession($sessionId)) || !$session->opened)
+        {
+            $this->notify->error(trans('tontine.session.errors.not_opened'), trans('common.titles.error'));
+            return $this->page();
+        }
+
+        $this->sessionService->resyncSession($session);
+
+        $this->notify->success(trans('tontine.session.messages.resynced'), trans('common.titles.success'));
+        return $this->page();
     }
 }

@@ -45,15 +45,9 @@ class SessionService
      *
      * @return void
      */
-    public function openRound(Round $round)
+    private function openRound(Round $round)
     {
-        // Don't open a round if there are pools with no subscription.
-        // $this->checkPoolsSubscriptions();
-
-        DB::transaction(function() use($round) {
-            $round->update(['status' => Round::STATUS_OPENED]);
-            $this->roundOpened($this->tenantService->tontine(), $round);
-        });
+        $round->update(['status' => Round::STATUS_OPENED]);
     }
 
     /**
@@ -69,6 +63,29 @@ class SessionService
     }
 
     /**
+     * Sync a session with new members or new subscriptions.
+     *
+     * @param Session $session
+     *
+     * @return void
+     */
+    private function syncSession(Session $session)
+    {
+        DB::transaction(function() use($session) {
+            // Don't sync a round if there are pools with no subscription.
+            // $this->checkPoolsSubscriptions();
+
+            // Sync the round.
+            $session->round->update(['status' => Round::STATUS_OPENED]);
+            $this->roundSynced($this->tenantService->tontine(), $session->round);
+
+            // Sync the session
+            $session->update(['status' => Session::STATUS_OPENED]);
+            $this->sessionSynced($this->tenantService->tontine(), $session);
+        });
+    }
+
+    /**
      * Open a session.
      *
      * @param Session $session
@@ -77,19 +94,18 @@ class SessionService
      */
     public function openSession(Session $session)
     {
-        if($session->opened)
+        if($session->pending)
         {
+            // If the session is getting opened for the first time, then
+            // its also needs to get synced with charges and subscriptions.
+            $this->syncSession($session);
             return;
         }
-
-        // Make sure the round is also opened.
-        $this->openRound($session->round);
-
-        DB::transaction(function() use($session) {
+        if(!$session->opened)
+        {
             // Open the session
             $session->update(['status' => Session::STATUS_OPENED]);
-            $this->sessionOpened($this->tenantService->tontine(), $session);
-        });
+        }
     }
 
     /**
@@ -102,6 +118,21 @@ class SessionService
     public function closeSession(Session $session)
     {
         $session->update(['status' => Session::STATUS_CLOSED]);
+    }
+
+    /**
+     * Resync an already opened session.
+     *
+     * @param Session $session
+     *
+     * @return void
+     */
+    public function resyncSession(Session $session)
+    {
+        if($session->opened)
+        {
+            $this->syncSession($session);
+        }
     }
 
     /**
