@@ -38,10 +38,11 @@ class Session extends CallableClass
         $sessions = $this->sessionService->getSessions($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
 
-        $html = $this->render('pages.meeting.session.page')
-            ->with('sessions', $sessions)
-            ->with('statuses', $this->sessionService->getSessionStatuses())
-            ->with('pagination', $pagination);
+        $html = $this->render('pages.meeting.session.page', [
+            'sessions' => $sessions,
+            'statuses' => $this->sessionService->getSessionStatuses(),
+            'pagination' => $pagination
+        ]);
         $this->response->html('content-page', $html);
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();

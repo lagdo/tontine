@@ -4,7 +4,6 @@ namespace App\Ajax\Web\Planning;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
@@ -69,17 +68,11 @@ class Session extends CallableClass
             'planning', 'session.page');
         $sessions = $this->sessionService->getSessions($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
-
-        $statuses = [
-            SessionModel::STATUS_PENDING => trans('tontine.session.status.pending'),
-            SessionModel::STATUS_OPENED => trans('tontine.session.status.opened'),
-            SessionModel::STATUS_CLOSED => trans('tontine.session.status.closed'),
-        ];
-
-        $html = $this->render('pages.planning.session.page')
-            ->with('sessions', $sessions)
-            ->with('statuses', $statuses)
-            ->with('pagination', $pagination);
+        $html = $this->render('pages.planning.session.page', [
+            'sessions' => $sessions,
+            'statuses' => $this->sessionService->getSessionStatuses(),
+            'pagination' => $pagination
+        ]);
         $this->response->html('content-page-sessions', $html);
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();

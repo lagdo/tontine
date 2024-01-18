@@ -147,18 +147,4 @@ class SessionService
             ->whereIn('subscription_id', $pool->subscriptions()->pluck('id'))
             ->update(['notes' => $notes]);
     }
-
-    /**
-     * Get the session statuses
-     *
-     * @return array
-     */
-    public function getSessionStatuses(): array
-    {
-        return [
-            Session::STATUS_PENDING => trans('tontine.session.status.pending'),
-            Session::STATUS_OPENED => trans('tontine.session.status.opened'),
-            Session::STATUS_CLOSED => trans('tontine.session.status.closed'),
-        ];;
-    }
 }
