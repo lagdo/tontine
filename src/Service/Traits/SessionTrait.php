@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Session;
 
 use function tap;
+use function trans;
 
 trait SessionTrait
 {
@@ -209,5 +210,19 @@ trait SessionTrait
         bool $getAfter = false, bool $withCurr = true): int
     {
         return $this->getTontineSessionsQuery($currSession, $getAfter, $withCurr)->count();
+    }
+
+    /**
+     * Get the session statuses
+     *
+     * @return array
+     */
+    public function getSessionStatuses(): array
+    {
+        return [
+            Session::STATUS_PENDING => trans('tontine.session.status.pending'),
+            Session::STATUS_OPENED => trans('tontine.session.status.opened'),
+            Session::STATUS_CLOSED => trans('tontine.session.status.closed'),
+        ];;
     }
 }

@@ -23,7 +23,7 @@ class Session extends CallableClass
     public function home()
     {
         $this->response->html('section-title', trans('tontine.menus.meeting'));
-        $html = $this->render('pages.meeting.session.list');
+        $html = $this->render('pages.meeting.session.list.home');
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-sessions-refresh')->click($this->rq()->page());
@@ -38,15 +38,32 @@ class Session extends CallableClass
         $sessions = $this->sessionService->getSessions($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
 
-        $html = $this->render('pages.meeting.session.page')
-            ->with('sessions', $sessions)
-            ->with('statuses', $this->sessionService->getSessionStatuses())
-            ->with('pagination', $pagination);
+        $html = $this->render('pages.meeting.session.list.page', [
+            'sessions' => $sessions,
+            'statuses' => $this->sessionService->getSessionStatuses(),
+            'pagination' => $pagination
+        ]);
         $this->response->html('content-page', $html);
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.btn-session-show')->click($this->rq(Session\Home::class)->home($sessionId));
+        $this->jq('.btn-session-resync')->click($this->rq()->resync($sessionId)
+            ->confirm(trans('tontine.session.questions.resync')));
 
         return $this->response;
+    }
+
+    public function resync(int $sessionId)
+    {
+        if(!($session = $this->sessionService->getSession($sessionId)) || !$session->opened)
+        {
+            $this->notify->error(trans('tontine.session.errors.not_opened'), trans('common.titles.error'));
+            return $this->page();
+        }
+
+        $this->sessionService->resyncSession($session);
+
+        $this->notify->success(trans('tontine.session.messages.resynced'), trans('common.titles.success'));
+        return $this->page();
     }
 }

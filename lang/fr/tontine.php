@@ -242,6 +242,7 @@ return [
             'created' => "La séance a été ajoutée.",
             'updated' => "La séance a été modifiée.",
             'deleted' => "La séance a été supprimée.",
+            'resynced' => "La séance a été resynchronisée.",
         ],
         'questions' => [
             'open' => "Ouvrir cette séance ?",
@@ -249,10 +250,12 @@ return [
                 "nécessaires sur les souscriptions des membres, dans la section planning.",
             'close' => "Fermer cette séance ?",
             'delete' => "Supprimer cette séance ?",
-            'disable' => "Désactiver cette séance?<br/>Si elle avait déjà été ouverte, ceci pourrait supprimer des données relatives.",
+            'disable' => "Désactiver cette séance ?<br/>Si elle avait déjà été ouverte, ceci pourrait supprimer des données relatives.",
+            'resync' => "Resynchroniser cette séance ?<br/>Vous devez le faire si vous avez changé les membres, les frais, ou les souscriptions après son ouverture.",
         ],
         'errors' => [
             'opened' => "Une séance a déjà été ouverte.",
+            'not_opened' => "La séance n'est pas ouverte.",
             'delete' => "Impossible de supprimer cette séance.",
             'date_dup' => "Il existe déjà une séance avec la même date.",
         ],

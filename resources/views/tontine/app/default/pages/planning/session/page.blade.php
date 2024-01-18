@@ -9,7 +9,7 @@
                           <tbody>
 @foreach ($sessions as $session)
                             <tr>
-                              <td>{{ $session->title }}</td>
+                              <td>{{ $session->title }}<br/>{{ $statuses[$session->status] }}</td>
                               <td>{{ $session->date }}<br/>{{ $session->times }}</td>
                               <td class="table-item-menu">
 @include('tontine.app.default.parts.table.menu', [

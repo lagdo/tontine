@@ -132,7 +132,7 @@ trait EventTrait
      *
      * @return void
      */
-    protected function roundOpened(Tontine $tontine, Round $round)
+    protected function roundSynced(Tontine $tontine, Round $round)
     {
         $today = now();
         $members = $tontine->members()->with([
@@ -179,10 +179,10 @@ trait EventTrait
      *
      * @return void
      */
-    protected function sessionOpened(Tontine $tontine, Session $session)
+    protected function sessionSynced(Tontine $tontine, Session $session)
     {
         // Make sure the round is also opened.
-        $this->roundOpened($tontine, $session->round);
+        $this->roundSynced($tontine, $session->round);
 
         $today = now();
         $members = $tontine->members()->with([
@@ -208,6 +208,7 @@ trait EventTrait
         };
 
         // Sync the receivables for each subscription on each pool
+        /** @var array<Pool> */
         $pools = Pool::ofSession($session)->get();
         foreach($pools as $pool)
         {
