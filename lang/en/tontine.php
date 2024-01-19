@@ -11,7 +11,7 @@ return [
         'meeting' => "Meeting",
         'report' => "Report",
         'members' => "Members",
-        'options' => "Options",
+        'categories' => "Categories",
         'round' => "Round",
         'session' => "Session",
         'sessions' => "Sessions",
@@ -193,7 +193,7 @@ return [
     ],
     'category' => [
         'titles' => [
-            'categories' => "Disbursement categories",
+            'categories' => "Disbursements",
             'add' => "Add a category",
             'edit' => "Edit a category",
         ],

@@ -11,7 +11,7 @@ return [
         'meeting' => "Réunion",
         'report' => "Rapport",
         'members' => "Membres",
-        'options' => "Options",
+        'categories' => "Catégories",
         'round' => "Tour",
         'session' => "Séance",
         'sessions' => "Séances",
@@ -193,7 +193,7 @@ return [
     ],
     'category' => [
         'titles' => [
-            'categories' => "Catégories de décaissement",
+            'categories' => "Décaissements",
             'add' => "Ajouter une catégorie",
             'edit' => "Modifier une catégorie",
         ],

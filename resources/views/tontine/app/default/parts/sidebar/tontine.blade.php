@@ -4,7 +4,7 @@
                 <i class="fa fa-users"></i> <span>{{ __('tontine.menus.members') }}</span>
               </a></li>
               <li><a class="nav-link" id="tontine-menu-options" href="javascript:void(0)">
-                <i class="fa fa-cogs"></i> <span>{{ __('tontine.menus.options') }}</span>
+                <i class="fa fa-cogs"></i> <span>{{ __('tontine.menus.categories') }}</span>
               </a></li>
 
               <li class="menu-header">{{ __('tontine.menus.planning') }}</li>

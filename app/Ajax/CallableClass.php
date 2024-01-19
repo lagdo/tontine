@@ -90,7 +90,7 @@ class CallableClass extends JaxonCallableClass
         $this->jq('a', '#sidebar-menu-tontine')->css('color', '#6777ef');
 
         $this->jq('#tontine-menu-members')->click($this->rq(Member::class)->home());
-        $this->jq('#tontine-menu-options')->click($this->rq(Options::class)->home());
+        $this->jq('#tontine-menu-categories')->click($this->rq(Options::class)->home());
         $this->jq('#planning-menu-sessions')->click($this->rq(PlanningRound::class)->home());
 
         // Reset the round sidebar menu
