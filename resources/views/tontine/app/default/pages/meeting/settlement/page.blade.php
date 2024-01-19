@@ -23,9 +23,9 @@
                           <th class="table-item-menu">
 @if ($charge->is_variable)
                             {!! __('common.labels.paid') !!}
-@elseif ($billCount > 0 && $settlementCount < $billCount)
+@elseif ($settlementCount < $billCount)
                             <a href="javascript:void(0)" class="btn-add-all-settlements"><i class="fa fa-toggle-off"></i></a>
-@else
+@elseif ($billCount > 0)
                             <a href="javascript:void(0)" class="btn-del-all-settlements"><i class="fa fa-toggle-on"></i></a>
 @endif
                           </th>
