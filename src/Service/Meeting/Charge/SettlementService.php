@@ -17,52 +17,12 @@ use function trans;
 class SettlementService
 {
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
      * @param TenantService $tenantService
+     * @param BillService $billService
      */
-    public function __construct(TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-    }
-
-    /**
-     * @param Charge $charge
-     * @param Session $session
-     *
-     * @return Builder|Relation
-     */
-    private function getQuery(Charge $charge, Session $session): Builder|Relation
-    {
-        // The select('bills.*') is important here, otherwise Eloquent overrides the
-        // Bill model id fields with those of another model, then making the dataset incorrect.
-        $query = Bill::select('bills.*');
-        if($charge->is_variable)
-        {
-            return $query->join('libre_bills', 'libre_bills.bill_id', '=', 'bills.id')
-                ->join('sessions', 'sessions.id', '=', 'libre_bills.session_id')
-                ->where('libre_bills.charge_id', $charge->id)
-                ->where('sessions.round_id', $session->round_id);
-        }
-        if($charge->period_session)
-        {
-            return $query->join('session_bills', 'session_bills.bill_id', '=', 'bills.id')
-                ->where('session_bills.charge_id', $charge->id)
-                ->where('session_bills.session_id', $session->id);
-        }
-        if($charge->period_round)
-        {
-            return $query->join('round_bills', 'round_bills.bill_id', '=', 'bills.id')
-                ->where('round_bills.charge_id', $charge->id)
-                ->where('round_bills.round_id', $session->round_id);
-        }
-        // if($charge->period_once)
-        return $query->join('tontine_bills', 'tontine_bills.bill_id', '=', 'bills.id')
-            ->where('tontine_bills.charge_id', $charge->id);
-    }
+    public function __construct(private TenantService $tenantService,
+        private BillService $billService)
+    {}
 
     /**
      * Create a settlement
@@ -75,7 +35,7 @@ class SettlementService
      */
     public function createSettlement(Charge $charge, Session $session, int $billId): void
     {
-        $bill = $this->getQuery($charge, $session)->with('settlement')->find($billId);
+        $bill = $this->billService->getBill($charge, $session, $billId);
         // Return if the bill is not found or the bill is already settled.
         if(!$bill || ($bill->settlement))
         {
@@ -98,7 +58,7 @@ class SettlementService
      */
     public function deleteSettlement(Charge $charge, Session $session, int $billId): void
     {
-        $bill = $this->getQuery($charge, $session)->with('settlement')->find($billId);
+        $bill = $this->billService->getBill($charge, $session, $billId);
         // Return if the bill is not found or the bill is not settled.
         if(!$bill || !($bill->settlement))
         {
@@ -121,7 +81,7 @@ class SettlementService
      */
     public function createAllSettlements(Charge $charge, Session $session): void
     {
-        $bills = $this->getQuery($charge, $session)->whereDoesntHave('settlement')->get();
+        $bills = $this->billService->getBills($charge, $session, '', false);
         if($bills->count() === 0)
         {
             return;
@@ -148,10 +108,7 @@ class SettlementService
      */
     public function deleteAllSettlements(Charge $charge, Session $session): void
     {
-        $bills = $this->getQuery($charge, $session)
-            ->with(['settlement'])
-            ->whereHas('settlement')
-            ->get()
+        $bills = $this->billService->getBills($charge, $session, '', true)
             ->filter(function($bill) {
                 return $bill->settlement->editable;
             });
@@ -169,39 +126,10 @@ class SettlementService
      * @param Charge $charge
      * @param Session $session
      *
-     * @return object
+     * @return Bill
      */
-    public function getSettlement(Charge $charge, Session $session): object
+    public function getSettlementCount(Charge $charge, Session $session): Bill
     {
-        $query = DB::table('settlements')
-            ->select(DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
-            ->join('bills', 'settlements.bill_id', '=', 'bills.id');
-        if($charge->is_variable)
-        {
-            return $query->join('libre_bills', 'libre_bills.bill_id', '=', 'bills.id')
-                ->where('settlements.session_id', $session->id)
-                ->where('libre_bills.charge_id', $charge->id)
-                ->first();
-        }
-        if($charge->period_session)
-        {
-            // For session charges, count the bills in the current session that are settled.
-            return $query->join('session_bills', 'session_bills.bill_id', '=', 'bills.id')
-                ->where('session_bills.charge_id', $charge->id)
-                ->where('session_bills.session_id', $session->id)
-                ->first();
-        }
-        if($charge->period_round)
-        {
-            return $query->join('round_bills', 'round_bills.bill_id', '=', 'bills.id')
-                ->where('settlements.session_id', $session->id)
-                ->where('round_bills.charge_id', $charge->id)
-                ->first();
-        }
-        // if($charge->period_once)
-        return $query->join('tontine_bills', 'tontine_bills.bill_id', '=', 'bills.id')
-            ->where('settlements.session_id', $session->id)
-            ->where('tontine_bills.charge_id', $charge->id)
-            ->first();
+        return $this->billService->getSettlementCount($charge, $session);
     }
 }

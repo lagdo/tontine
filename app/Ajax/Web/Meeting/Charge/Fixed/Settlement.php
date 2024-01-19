@@ -79,7 +79,7 @@ class Settlement extends CallableSessionClass
         $bills = $this->billService->getBills($this->charge, $this->session,
             $search, $onlyUnpaid, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $billCount);
-        $settlement = $this->settlementService->getSettlement($this->charge, $this->session);
+        $settlement = $this->settlementService->getSettlementCount($this->charge, $this->session);
 
         $html = $this->render('pages.meeting.settlement.page', [
             'type' => 'fixed',
