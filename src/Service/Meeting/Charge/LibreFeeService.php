@@ -62,13 +62,10 @@ class LibreFeeService
      *
      * @return Collection
      */
-    private function getCurrentSessionBills(Session $session): Collection
+    private function getSessionBills(Session $session): Collection
     {
-        // Count the session bills
-        return DB::table('libre_bills')
+        return Bill::ofSession($session)->libre()
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
-            ->join('bills', 'libre_bills.bill_id', '=', 'bills.id')
-            ->where('libre_bills.session_id', $session->id)
             ->groupBy('charge_id')
             ->get();
     }
@@ -78,14 +75,13 @@ class LibreFeeService
      *
      * @return Collection
      */
-    private function getPreviousSessionsBills(Session $session): Collection
+    private function getSessionSettlements(Session $session): Collection
     {
-        // Count the session bills
-        $sessionIds = $this->sessionService->getRoundSessionIds($session, withCurr: false);
-        return DB::table('libre_bills')
+        return Bill::ofSession($session)->libre()
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
-            ->join('bills', 'libre_bills.bill_id', '=', 'bills.id')
-            ->whereIn('libre_bills.session_id', $sessionIds)
+            ->whereHas('settlement', function($query) use($session) {
+                $query->where('session_id', $session->id);
+            })
             ->groupBy('charge_id')
             ->get();
     }
@@ -95,16 +91,12 @@ class LibreFeeService
      *
      * @return Collection
      */
-    private function getCurrentSessionSettlements(Session $session): Collection
+    private function getRoundBills(Session $session): Collection
     {
-        // Count the session bills
-        $query = DB::table('settlements')
+        return Bill::ofRound($session)->libre()
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
-            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-            ->join('libre_bills', 'libre_bills.bill_id', '=', 'bills.id')
-            ->where('settlements.session_id', $session->id)
-            ->groupBy('charge_id');
-        return $query->get();
+            ->groupBy('charge_id')
+            ->get();
     }
 
     /**
@@ -112,17 +104,18 @@ class LibreFeeService
      *
      * @return Collection
      */
-    private function getPreviousSessionsSettlements(Session $session): Collection
+    private function getRoundSettlements(Session $session): Collection
     {
-        // Count the session bills
-        $sessionIds = $this->sessionService->getRoundSessionIds($session, withCurr: false);
-        $query = DB::table('settlements')
+        return Bill::ofRound($session)->libre()
             ->select('charge_id', DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
-            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-            ->join('libre_bills', 'libre_bills.bill_id', '=', 'bills.id')
-            ->whereIn('settlements.session_id', $sessionIds)
-            ->groupBy('charge_id');
-        return $query->get();
+            ->whereHas('settlement', function($query) use($session) {
+                $query->whereHas('session', function($query) use($session) {
+                    $query->where('id', '!=', $session->id)
+                        ->where('round_id', $session->round_id);
+                });
+            })
+            ->groupBy('charge_id')
+            ->get();
     }
 
     /**
@@ -134,12 +127,12 @@ class LibreFeeService
      */
     public function getBills(Session $session): array
     {
-        $currentBills = $this->getCurrentSessionBills($session);
-        $previousBills = $this->getPreviousSessionsBills($session);
+        $sessionBills = $this->getSessionBills($session);
+        $roundBills = $this->getRoundBills($session);
         return [
             'total' => [
-                'current' => $currentBills->pluck('total', 'charge_id'),
-                'previous' => $previousBills->pluck('total', 'charge_id'),
+                'session' => $sessionBills->pluck('total', 'charge_id'),
+                'round' => $roundBills->pluck('total', 'charge_id'),
             ],
         ];
     }
@@ -153,16 +146,16 @@ class LibreFeeService
      */
     public function getSettlements(Session $session): array
     {
-        $currentSettlements = $this->getCurrentSessionSettlements($session);
-        $previousSettlements = $this->getPreviousSessionsSettlements($session);
+        $sessionSettlements = $this->getSessionSettlements($session);
+        $roundSettlements = $this->getRoundSettlements($session);
         return [
             'total' => [
-                'current' => $currentSettlements->pluck('total', 'charge_id'),
-                'previous' => $previousSettlements->pluck('total', 'charge_id'),
+                'session' => $sessionSettlements->pluck('total', 'charge_id'),
+                'round' => $roundSettlements->pluck('total', 'charge_id'),
             ],
             'amount' => [
-                'current' => $currentSettlements->pluck('amount', 'charge_id'),
-                'previous' => $previousSettlements->pluck('amount', 'charge_id'),
+                'session' => $sessionSettlements->pluck('amount', 'charge_id'),
+                'round' => $roundSettlements->pluck('amount', 'charge_id'),
             ],
         ];
     }
@@ -301,7 +294,7 @@ class LibreFeeService
      *
      * @return LibreBill|null
      */
-    public function getBill(Charge $charge, Session $session, int $memberId): ?LibreBill
+    public function getMemberBill(Charge $charge, Session $session, int $memberId): ?LibreBill
     {
         if(!($member = $this->tenantService->tontine()->members()->find($memberId)))
         {
@@ -325,7 +318,7 @@ class LibreFeeService
      */
     public function updateBill(Charge $charge, Session $session, int $memberId, float $amount): void
     {
-        if(!($libreBill = $this->getBill($charge, $session, $memberId)))
+        if(!($libreBill = $this->getMemberBill($charge, $session, $memberId)))
         {
             return; // throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
@@ -344,7 +337,7 @@ class LibreFeeService
      */
     public function deleteBill(Charge $charge, Session $session, int $memberId): void
     {
-        if(!($libreBill = $this->getBill($charge, $session, $memberId)))
+        if(!($libreBill = $this->getMemberBill($charge, $session, $memberId)))
         {
             return; // throw new MessageException(trans('tontine.bill.errors.not_found'));
         }

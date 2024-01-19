@@ -88,7 +88,7 @@ class Member extends CallableSessionClass
         $members = $this->feeService->getMembers($this->charge, $this->session,
             $search, $filter, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
-        $settlement = $this->settlementService->getSettlement($this->charge, $this->session);
+        $settlement = $this->settlementService->getSettlementCount($this->charge, $this->session);
 
         $html = $this->render('pages.meeting.charge.libre.member.page', [
             'search' => $search,
@@ -193,7 +193,7 @@ class Member extends CallableSessionClass
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
-        $bill = $this->feeService->getBill($this->charge, $this->session, $memberId);
+        $bill = $this->feeService->getMemberBill($this->charge, $this->session, $memberId);
         if($bill === null)
         {
             return $this->response;
