@@ -32,7 +32,7 @@ class Round extends CallableClass
             ->with('round', $this->tenantService->round());
         $this->response->html('content-home', $html);
         $this->jq('#btn-meeting-report-refresh')->click($this->rq()->home());
-        $this->jq('#btn-tontine-options')->click($this->cl(Options::class)->rq()->editOptions());
+        $this->jq('#btn-tontine-options')->click($this->rq(Options::class)->editOptions());
 
         $this->pools();
         $this->amounts();

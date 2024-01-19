@@ -40,12 +40,12 @@ class Remitment extends CallableSessionClass
 
         if($hasAuctions)
         {
-            $this->jq('#btn-remitment-auctions')->click($this->cl(Auction::class)->rq()->home());
+            $this->jq('#btn-remitment-auctions')->click($this->rq(Auction::class)->home());
         }
         $this->jq('#btn-remitments-refresh')->click($this->rq()->home());
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
         $this->jq('.btn-pool-remitments')
-            ->click($this->cl(Remitment\Pool::class)->rq()->home($poolId));
+            ->click($this->rq(Remitment\Pool::class)->home($poolId));
 
         return $this->response;
     }

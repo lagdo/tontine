@@ -111,7 +111,7 @@ class Session extends CallableClass
 
         $fundId = pm()->select('report-savings-fund-id')->toInt();
         $this->jq('#btn-report-fund-savings')
-            ->click($this->cl(Saving::class)->rq()->home($fundId));
+            ->click($this->rq(Saving::class)->home($fundId));
     }
 
     private function disbursements(SessionModel $session)

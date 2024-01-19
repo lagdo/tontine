@@ -30,13 +30,13 @@ class Round extends CallableClass
         $html = $this->render('pages.planning.round.home');
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-show-select')->click($this->cl(Select::class)->rq()->showRounds());
+        $this->jq('#btn-show-select')->click($this->rq(Select::class)->showRounds());
         $this->jq('#btn-round-refresh')->click($this->rq()->home());
         $this->jq('#btn-round-create')->click($this->rq()->add());
 
         $this->page();
 
-        return $this->cl(Session::class)->setTenantService($this->tenantService)->show();
+        return $this->cl(Session::class)->show();
     }
 
     public function page(int $pageNumber = 0)
@@ -53,7 +53,7 @@ class Round extends CallableClass
 
         $roundId = jq()->parent()->attr('data-round-id')->toInt();
         $this->jq('.btn-round-edit')->click($this->rq()->edit($roundId));
-        $this->jq('.btn-round-select')->click($this->cl(Select::class)->rq()->saveRound($roundId));
+        $this->jq('.btn-round-select')->click($this->rq(Select::class)->saveRound($roundId));
         $this->jq('.btn-round-delete')->click($this->rq()->delete($roundId)
             ->confirm(trans('tontine.round.questions.delete')));
 
@@ -131,8 +131,7 @@ class Round extends CallableClass
         if($currentRound !== null && $currentRound->id === $roundId)
         {
             // If the currently selected round is deleted, then choose another.
-            $this->cl(Select::class)->setTenantService($this->tenantService)
-                ->saveTontine($this->tenantService->tontine()->id);
+            $this->cl(Select::class)->saveTontine($this->tenantService->tontine()->id);
         }
 
         return $this->response;

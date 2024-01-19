@@ -73,7 +73,7 @@ class CallableClass extends JaxonCallableClass
         }
         $this->bag($bagName)->set($attrName, $pageNumber);
 
-        return [$pageNumber, 10 /*$this->tenantService->getLimit()*/];
+        return [$pageNumber, $this->tenantService->getLimit()];
     }
 
     /**
@@ -89,9 +89,9 @@ class CallableClass extends JaxonCallableClass
         $this->response->html('sidebar-menu-tontine', $this->render('parts.sidebar.tontine'));
         $this->jq('a', '#sidebar-menu-tontine')->css('color', '#6777ef');
 
-        $this->jq('#tontine-menu-members')->click($this->cl(Member::class)->rq()->home());
-        $this->jq('#tontine-menu-options')->click($this->cl(Options::class)->rq()->home());
-        $this->jq('#planning-menu-sessions')->click($this->cl(PlanningRound::class)->rq()->home());
+        $this->jq('#tontine-menu-members')->click($this->rq(Member::class)->home());
+        $this->jq('#tontine-menu-options')->click($this->rq(Options::class)->home());
+        $this->jq('#planning-menu-sessions')->click($this->rq(PlanningRound::class)->home());
 
         // Reset the round sidebar menu
         $this->response->html('sidebar-menu-round', $this->render('parts.sidebar.round'));
@@ -110,12 +110,12 @@ class CallableClass extends JaxonCallableClass
         $this->response->html('sidebar-menu-round', $this->render('parts.sidebar.round'));
         $this->jq('a', '#sidebar-menu-round')->css('color', '#6777ef');
 
-        $this->jq('#planning-menu-pools')->click($this->cl(Pool::class)->rq()->home());
-        $this->jq('#planning-menu-subscriptions')->click($this->cl(Subscription::class)->rq()->home());
-        $this->jq('#meeting-menu-sessions')->click($this->cl(MeetingSession::class)->rq()->home());
-        $this->jq('#meeting-menu-presences')->click($this->cl(Presence::class)->rq()->home());
-        $this->jq('#report-menu-session')->click($this->cl(ReportSession::class)->rq()->home());
-        $this->jq('#report-menu-round')->click($this->cl(ReportRound::class)->rq()->home());
+        $this->jq('#planning-menu-pools')->click($this->rq(Pool::class)->home());
+        $this->jq('#planning-menu-subscriptions')->click($this->rq(Subscription::class)->home());
+        $this->jq('#meeting-menu-sessions')->click($this->rq(MeetingSession::class)->home());
+        $this->jq('#meeting-menu-presences')->click($this->rq(Presence::class)->home());
+        $this->jq('#report-menu-session')->click($this->rq(ReportSession::class)->home());
+        $this->jq('#report-menu-round')->click($this->rq(ReportRound::class)->home());
     }
 
     /**
@@ -139,17 +139,6 @@ class CallableClass extends JaxonCallableClass
     protected function render(string $view, array $viewData = []): ?Store
     {
         return $this->view()->render(static::$templateDir . $view, $viewData);
-    }
-
-    /**
-     * @param TenantService $tenantService
-     *
-     * @return $this
-     */
-    public function setTenantService(TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-        return $this;
     }
 
     /**

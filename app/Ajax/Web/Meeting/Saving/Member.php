@@ -67,7 +67,7 @@ class Member extends CallableSessionClass
             'fund' => $fund,
         ]);
         $this->response->html('meeting-savings', $html);
-        $this->jq('#btn-saving-back')->click($this->cl(Saving::class)->rq()->home());
+        $this->jq('#btn-saving-back')->click($this->rq(Saving::class)->home());
         $this->jq('#btn-saving-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);

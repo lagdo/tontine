@@ -101,7 +101,7 @@ class Session extends CallableClass
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.btn-toggle-session-presence')->click($this->rq()->togglePresence($sessionId));
         $this->jq('.btn-show-session-presences')
-            ->click($this->cl(Presence::class)->rq()->selectSession($sessionId));
+            ->click($this->rq(Presence::class)->selectSession($sessionId));
 
         if($this->fromHome && $sessions->count() > 0)
         {

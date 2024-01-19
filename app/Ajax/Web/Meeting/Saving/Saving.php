@@ -55,7 +55,7 @@ class Saving extends CallableSessionClass
 
         $this->jq('#btn-savings-refresh')->click($this->rq()->home());
         $fundId = pm()->select('savings-fund-id')->toInt();
-        $this->jq('#btn-savings-edit')->click($this->cl(Member::class)->rq()->home($fundId));
+        $this->jq('#btn-savings-edit')->click($this->rq(Member::class)->home($fundId));
         $this->jq('#btn-savings-fund')->click($this->rq()->filter($fundId));
 
         return $this->page();

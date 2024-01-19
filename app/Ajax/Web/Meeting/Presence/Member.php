@@ -109,7 +109,7 @@ class Member extends CallableClass
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $this->jq('.btn-toggle-member-presence')->click($this->rq()->togglePresence($memberId));
         $this->jq('.btn-show-member-presences')
-            ->click($this->cl(Presence::class)->rq()->selectMember($memberId));
+            ->click($this->rq(Presence::class)->selectMember($memberId));
 
         if($this->fromHome && $members->count() > 0)
         {

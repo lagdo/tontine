@@ -65,7 +65,7 @@ class Tontine extends CallableClass
 
         $this->jq('#btn-tontine-create')->click($this->rq()->add());
         $this->jq('#btn-tontine-refresh')->click($this->rq()->home());
-        $this->jq('#btn-show-select')->click($this->cl(Select::class)->rq()->showTontines());
+        $this->jq('#btn-show-select')->click($this->rq(Select::class)->showTontines());
 
         return $this->page();
     }
@@ -90,7 +90,7 @@ class Tontine extends CallableClass
 
         $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
         $this->jq('.btn-tontine-edit')->click($this->rq()->edit($tontineId));
-        $this->jq('.btn-tontine-choose')->click($this->cl(Select::class)->rq()->saveTontine($tontineId));
+        $this->jq('.btn-tontine-choose')->click($this->rq(Select::class)->saveTontine($tontineId));
         $this->jq('.btn-tontine-delete')->click($this->rq()->delete($tontineId)
             ->confirm(trans('tontine.questions.delete')));
 
@@ -118,7 +118,7 @@ class Tontine extends CallableClass
         $this->dialog->hide();
         $this->dialog->show($title, $content, $buttons);
         $this->jq('#select_country_dropdown')
-            ->change($this->cl(Locale::class)->rq()->selectCurrencies(jq()->val()));
+            ->change($this->rq(Locale::class)->selectCurrencies(jq()->val()));
 
         return $this->response;
     }
@@ -163,7 +163,7 @@ class Tontine extends CallableClass
 
         $this->dialog->show($title, $content, $buttons);
         $this->jq('#select_country_dropdown')
-            ->change($this->cl(Locale::class)->rq()->selectCurrencies(jq()->val()));
+            ->change($this->rq(Locale::class)->selectCurrencies(jq()->val()));
 
         return $this->response;
     }

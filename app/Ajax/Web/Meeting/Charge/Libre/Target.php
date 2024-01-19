@@ -84,7 +84,7 @@ class Target extends CallableSessionClass
         $this->jq('#btn-fee-target-edit')->click($this->rq()->edit());
         $this->jq('#btn-fee-target-remove')->click($this->rq()->remove()
             ->confirm(trans('meeting.target.questions.remove')));
-        $this->jq('#btn-fee-target-back')->click($this->cl(Charge::class)->rq()->home());
+        $this->jq('#btn-fee-target-back')->click($this->rq(Charge::class)->home());
 
         return $this->page();
     }

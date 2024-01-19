@@ -66,7 +66,7 @@ class Pool extends CallableSessionClass
             'pool' => $this->pool,
         ]);
         $this->response->html('meeting-deposits', $html);
-        $this->jq('#btn-deposits-back')->click($this->cl(Deposit::class)->rq()->home());
+        $this->jq('#btn-deposits-back')->click($this->rq(Deposit::class)->home());
 
         return $this->page(1);
     }

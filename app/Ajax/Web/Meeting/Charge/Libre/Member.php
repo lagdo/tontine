@@ -66,7 +66,7 @@ class Member extends CallableSessionClass
             'paid' => $this->charge->is_fee,
         ]);
         $this->response->html('meeting-fees-libre', $html);
-        $this->jq('#btn-fee-libre-back')->click($this->cl(Charge::class)->rq()->home());
+        $this->jq('#btn-fee-libre-back')->click($this->rq(Charge::class)->home());
         $this->jq('#btn-fee-libre-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
