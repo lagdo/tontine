@@ -103,18 +103,6 @@ class BillService
             ->whereHas('tontine_bill', function(Builder $query) use($charge, $memberFilter) {
                 $query->where('charge_id', $charge->id)
                     ->when($memberFilter !== null, $memberFilter);
-            })
-            ->where(function(Builder $query) use($session) {
-                // The bills that are not yet paid, or that are paid in this round.
-                $query->orWhere(function(Builder $query) {
-                    $query->whereDoesntHave('settlement');
-                })->orWhere(function(Builder $query) use($session) {
-                    $query->whereHas('settlement', function(Builder $query) use($session) {
-                        $query->whereHas('session', function(Builder $query) use($session) {
-                            $query->where('round_id', $session->round_id);
-                        });
-                    });
-                });
             });
     }
 
@@ -142,13 +130,21 @@ class BillService
             $charge->period_round => $this->getRoundBillsQuery($charge, $session, $memberFilter),
             default => $this->getTontineBillsQuery($charge, $session, $memberFilter),
         };
-        return $billsQuery
-            ->when($onlyPaid === false, function($query) {
-                return $query->whereDoesntHave('settlement');
-            })
-            ->when($onlyPaid === true, function($query) use($session) {
-                return $query->whereHas('settlement', function(Builder $query) use($session) {
-                    $query->where('session_id', $session->id);
+        return $billsQuery->where(function(Builder $query) use($session, $onlyPaid) {
+                // The bills that are not yet paid, or that are paid in this round.
+                $query->when($onlyPaid === false || $onlyPaid === null, function($query) {
+                    return $query->orWhere(function(Builder $query) {
+                        $query->whereDoesntHave('settlement');
+                    });
+                })
+                ->when($onlyPaid === true || $onlyPaid === null, function($query) use($session) {
+                    return $query->orWhere(function(Builder $query) use($session) {
+                        $query->whereHas('settlement', function(Builder $query) use($session) {
+                            $query->whereHas('session', function(Builder $query) use($session) {
+                                $query->where('round_id', $session->round_id);
+                            });
+                        });
+                    });
                 });
             });
     }
