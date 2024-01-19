@@ -86,7 +86,7 @@ class Settlement extends CallableSessionClass
             'search' => $search,
             'session' => $this->session,
             'charge' => $this->charge,
-            'billCount' => $billCount,
+            'billCount' => $this->billService->getBillCount($this->charge, $this->session),
             'settlement' => $settlement,
             'bills' => $bills,
             'pagination' => $pagination,

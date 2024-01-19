@@ -50,7 +50,8 @@ class BillService
                 $query->where('charge_id', $charge->id)
                     ->when($memberFilter !== null, $memberFilter)
                     ->whereHas('session', function($query) use($session) {
-                        return $query->where('round_id', $session->round_id);
+                        return $query->where('round_id', $session->round_id)
+                            ->whereDate('start_at', '<=', $session->start_at);
                     });
             });
     }
