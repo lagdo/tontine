@@ -211,7 +211,7 @@ class BillService
      */
     public function getSettlementCount(Charge $charge, Session $session): Bill
     {
-        return $this->getBillsQuery($charge, $session)
+        return $this->getBillsQuery($charge, $session, '', true)
             ->select(DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
             ->first();
     }
