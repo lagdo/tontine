@@ -3,7 +3,7 @@
               <li><a class="nav-link" id="tontine-menu-members" href="javascript:void(0)">
                 <i class="fa fa-users"></i> <span>{{ __('tontine.menus.members') }}</span>
               </a></li>
-              <li><a class="nav-link" id="tontine-menu-options" href="javascript:void(0)">
+              <li><a class="nav-link" id="tontine-menu-categories" href="javascript:void(0)">
                 <i class="fa fa-cogs"></i> <span>{{ __('tontine.menus.categories') }}</span>
               </a></li>
 
