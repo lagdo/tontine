@@ -141,7 +141,7 @@ class BillService
                     return $query->orWhere(function(Builder $query) use($session) {
                         $query->whereHas('settlement', function(Builder $query) use($session) {
                             $query->whereHas('session', function(Builder $query) use($session) {
-                                $query->where('round_id', $session->round_id);
+                                $query->where('id', $session->id);
                             });
                         });
                     });
