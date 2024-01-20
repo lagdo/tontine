@@ -18,8 +18,10 @@
                             {!! __('common.labels.name') !!}
 @endif
                           </th>
-                          <th class="currency">@if ($settlementCount > 0) {{ $settlementCount }}<br />{!!
-                            $locale->formatMoney($settlementAmount, true) !!}@else &nbsp;@endif</th>
+                          <th class="currency">
+                            @if ($billCount > 0) {{ $settlementCount }}/{{ $billCount }}@endif
+                            @if ($settlementCount > 0)<br />{!! $locale->formatMoney($settlementAmount, true) !!}@endif
+                          </th>
                           <th class="table-item-menu">
 @if ($charge->is_variable)
                             {!! __('common.labels.paid') !!}

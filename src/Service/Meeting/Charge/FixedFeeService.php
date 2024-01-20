@@ -32,7 +32,8 @@ class FixedFeeService
     {
         return $this->tenantService->tontine()->charges()
             ->fixed()->orderBy('id', 'desc')
-            ->page($page, $this->tenantService->getLimit())->get();
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
     }
 
     /**

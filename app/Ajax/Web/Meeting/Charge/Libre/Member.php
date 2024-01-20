@@ -7,6 +7,7 @@ use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Charge as ChargeModel;
 use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\Meeting\Charge\BillService;
 use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementService;
 use Siak\Tontine\Service\Tontine\ChargeService;
@@ -34,9 +35,11 @@ class Member extends CallableSessionClass
      * @param SettlementService $settlementService
      * @param ChargeService $chargeService
      * @param LibreFeeService $feeService
+     * @param BillService $billService
      */
     public function __construct(protected SettlementService $settlementService,
-        protected ChargeService $chargeService, protected LibreFeeService $feeService)
+        protected ChargeService $chargeService, protected LibreFeeService $feeService,
+        protected BillService $billService)
     {}
 
     /**
@@ -81,11 +84,11 @@ class Member extends CallableSessionClass
     {
         $search = trim($this->bag('meeting')->get('fee.member.search', ''));
         $filter = $this->bag('meeting')->get('fee.member.filter', null);
-        $memberCount = $this->feeService->getMemberCount($this->charge,
+        $memberCount = $this->billService->getMemberCount($this->charge,
             $this->session, $search, $filter);
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount,
             'meeting', 'member.page');
-        $members = $this->feeService->getMembers($this->charge, $this->session,
+        $members = $this->billService->getMembers($this->charge, $this->session,
             $search, $filter, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
         $settlement = $this->settlementService->getSettlementCount($this->charge, $this->session);
@@ -156,7 +159,7 @@ class Member extends CallableSessionClass
             return $this->response;
         }
 
-        $this->feeService->createBill($this->charge, $this->session, $memberId,
+        $this->billService->createBill($this->charge, $this->session, $memberId,
             $paid, $this->convertAmount($amount));
 
         return $this->page();
@@ -175,7 +178,7 @@ class Member extends CallableSessionClass
             return $this->response;
         }
 
-        $this->feeService->deleteBill($this->charge, $this->session, $memberId);
+        $this->billService->deleteBill($this->charge, $this->session, $memberId);
 
         return $this->page();
     }
@@ -193,7 +196,7 @@ class Member extends CallableSessionClass
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
-        $bill = $this->feeService->getMemberBill($this->charge, $this->session, $memberId);
+        $bill = $this->billService->getMemberBill($this->charge, $this->session, $memberId);
         if($bill === null)
         {
             return $this->response;
@@ -230,11 +233,11 @@ class Member extends CallableSessionClass
         $amount = $this->convertAmount($amount);
         if(!$amount)
         {
-            $this->feeService->deleteBill($this->charge, $this->session, $memberId);
+            $this->billService->deleteBill($this->charge, $this->session, $memberId);
             return $this->page();
         }
 
-        $this->feeService->updateBill($this->charge, $this->session, $memberId, $amount);
+        $this->billService->updateBill($this->charge, $this->session, $memberId, $amount);
         return $this->page();
     }
 }
