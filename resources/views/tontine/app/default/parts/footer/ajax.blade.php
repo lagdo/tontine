@@ -5,9 +5,6 @@
 {!! $jaxonCss !!}
 
 <script type='text/javascript'>
-  // Localized Jaxon request processing URI
-  jaxon.config.requestURI = '{!! $jxnRequestUri !!}';
-
   const tontine = {
     home: () => {!! $jxnTontine->home() !!},
     labels: {

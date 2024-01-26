@@ -11,6 +11,7 @@ use Siak\Tontine\Service\LocaleService;
 
 use function auth;
 use function config;
+use function session;
 use function view;
 
 class IndexController extends Controller
@@ -24,15 +25,18 @@ class IndexController extends Controller
      */
     public function index(Jaxon $jaxon): View
     {
+        $currentLocale = LaravelLocalization::getCurrentLocale();
+        // The Jaxon request processing path is not localized. So we need to save the current
+        // locale in the session, so we can have it when processing the Jaxon ajax requests.
+        session(['jaxonCurrentLocale' => $currentLocale]);
+
         view()->share([
             'user' => auth()->user(),
             'locales' => LaravelLocalization::getSupportedLocales(),
-            'locale' => LaravelLocalization::getCurrentLocale(),
+            'locale' => $currentLocale,
             'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
             'jxnSession' => $jaxon->request(Session::class),
             'jxnTontine' => $jaxon->request(Tontine::class),
-            // Localized Jaxon request processing URI
-            'jxnRequestUri' => LaravelLocalization::localizeUrl('/ajax'),
         ]);
 
         $template = config('tontine.templates.app', 'default');

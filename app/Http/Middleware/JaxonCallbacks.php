@@ -2,15 +2,16 @@
 
 namespace App\Http\Middleware;
 
+use App\Ajax\CallableClass;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Jaxon\Laravel\Jaxon;
 use Closure;
 
-use function Jaxon\jaxon;
-use function storage_path;
+use function app;
 
-class AnnotationCache
+class JaxonCallbacks
 {
     /**
      * Handle an incoming request.
@@ -22,7 +23,14 @@ class AnnotationCache
      */
     public function handle(Request $request, Closure $next)
     {
-        jaxon()->di()->val('jaxon_annotations_cache_dir', storage_path('annotations'));
+        /** @var Jaxon */
+        $jaxon = app()->make(Jaxon::class);
+        $jaxon->callback()->init(function(CallableClass $callable) use($jaxon) {
+            // Jaxon init
+            $dialog = $jaxon->ajaxResponse()->dialog;
+            $callable->dialog = $dialog;
+            $callable->notify = $dialog;
+        });
 
         return $next($request);
     }

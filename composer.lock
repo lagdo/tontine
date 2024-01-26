@@ -1517,16 +1517,16 @@
         },
         {
             "name": "jaxon-php/jaxon-core",
-            "version": "v4.5.1",
+            "version": "v4.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-core.git",
-                "reference": "2ebc4fbca5e15e0dc6b12ace89a0b851f6d2b7f9"
+                "reference": "1207228c5ce1b1ef4b3e94c1901defc3682f451f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/2ebc4fbca5e15e0dc6b12ace89a0b851f6d2b7f9",
-                "reference": "2ebc4fbca5e15e0dc6b12ace89a0b851f6d2b7f9",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/1207228c5ce1b1ef4b3e94c1901defc3682f451f",
+                "reference": "1207228c5ce1b1ef4b3e94c1901defc3682f451f",
                 "shasum": ""
             },
             "require": {
@@ -1536,11 +1536,11 @@
                 "nyholm/psr7-server": "^1.0",
                 "php": ">=7.1",
                 "pimple/pimple": "^3.0",
-                "psr/container": "^1.0",
-                "psr/http-message": "^1.0",
-                "psr/http-server-handler": "^1.0",
-                "psr/http-server-middleware": "^1.0",
-                "psr/log": "^1.0"
+                "psr/container": "^1.0|^2.0",
+                "psr/http-message": "^1.0|^2.0",
+                "psr/http-server-handler": "^1.0|^2.0",
+                "psr/http-server-middleware": "^1.0|^2.0",
+                "psr/log": "^1.0|^2.0|^3.0"
             },
             "require-dev": {
                 "jaxon-php/jaxon-annotations": "dev-test",
@@ -1594,7 +1594,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-core/issues",
                 "source": "https://github.com/jaxon-php/jaxon-core"
             },
-            "time": "2024-01-19T01:11:06+00:00"
+            "time": "2024-01-25T20:10:46+00:00"
         },
         {
             "name": "jaxon-php/jaxon-dialogs",
@@ -1652,20 +1652,20 @@
         },
         {
             "name": "jaxon-php/jaxon-laravel",
-            "version": "v4.0.1",
+            "version": "v4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-laravel.git",
-                "reference": "a6082cbc97482f2451a6f2059f56b4c8d455b1d2"
+                "reference": "e0744941a1d6ff63f2c1c8acc52d970bed91da98"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-laravel/zipball/a6082cbc97482f2451a6f2059f56b4c8d455b1d2",
-                "reference": "a6082cbc97482f2451a6f2059f56b4c8d455b1d2",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-laravel/zipball/e0744941a1d6ff63f2c1c8acc52d970bed91da98",
+                "reference": "e0744941a1d6ff63f2c1c8acc52d970bed91da98",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "6.*|7.*|8.*|9.*",
+                "illuminate/support": "6.*|7.*|8.*|9.*|10.*",
                 "jaxon-php/jaxon-core": "^4.0"
             },
             "provide": {
@@ -1703,9 +1703,9 @@
             ],
             "support": {
                 "issues": "https://github.com/jaxon-php/jaxon-laravel/issues",
-                "source": "https://github.com/jaxon-php/jaxon-laravel/tree/v4.0.1"
+                "source": "https://github.com/jaxon-php/jaxon-laravel/tree/v4.1.0"
             },
-            "time": "2022-08-18T02:25:02+00:00"
+            "time": "2024-01-26T04:35:16+00:00"
         },
         {
             "name": "jaxon-php/jaxon-utils",

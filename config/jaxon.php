@@ -1,11 +1,18 @@
 <?php
 
+use App\Http\Middleware\JaxonAnnotations;
+use App\Http\Middleware\JaxonCallbacks;
+use App\Http\Middleware\GetAppLocale;
+use App\Http\Middleware\TontineTenant;
+
 return [
     'app' => [
         'faker' => env('APP_FAKER', false),
-        /*'request' => [
+        'request' => [
             'route' => 'ajax',
-        ],*/
+            'middlewares' => ['web', GetAppLocale::class, TontineTenant::class,
+                JaxonAnnotations::class, JaxonCallbacks::class, 'jaxon.ajax'],
+        ],
         'directories' => [
             app_path('Ajax/Web') => [
                 'namespace' => '\\App\\Ajax\\Web',

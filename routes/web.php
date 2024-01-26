@@ -1,9 +1,8 @@
 <?php
 
 use App\Http\Controllers\IndexController;
-use App\Http\Controllers\JaxonController;
 use App\Http\Controllers\ReportController;
-use App\Http\Middleware\AnnotationCache;
+use App\Http\Middleware\JaxonAnnotations;
 use App\Http\Middleware\SetAppLocale;
 use App\Http\Middleware\TontineTenant;
 use Illuminate\Support\Facades\Route;
@@ -32,13 +31,7 @@ Route::middleware(['auth', TontineTenant::class, SetAppLocale::class])
         //----------------------------------
         Route::get('/', [IndexController::class, 'index'])
             ->name('tontine.home')
-            ->middleware([AnnotationCache::class]);
-
-        // Route to handle Jaxon ajax requests
-        //----------------------------------
-        Route::post('ajax', [JaxonController::class, 'jaxon'])
-            ->name('tontine.ajax')
-            ->middleware([AnnotationCache::class]);
+            ->middleware([JaxonAnnotations::class]);
 
         // User profile page
         //----------------------------------
