@@ -35,17 +35,32 @@ class TontineTenant
      */
     private function getLatestTontine(User $user): ?Tontine
     {
-        $tontineId = jaxon()->getResponse()->bag('tenant')->get('tontine.id', 0);
-        if($tontineId > 0 && ($tontine = $user->tontines()->find($tontineId)) !== null)
+        /** @var DataBagContext */
+        $tenantDatabag = jaxon()->getResponse()->bag('tenant');
+
+        // First try to get the tontine from the databag.
+        $tontineId = $tenantDatabag->get('tontine.id', 0);
+        if($tontineId > 0 &&
+            ($tontine = $user->tontines()->find($tontineId)) !== null)
         {
             return $tontine;
         }
+
         $tontineId = $user->properties['latest']['tontine'] ?? 0;
-        if($tontineId > 0 && ($tontine = $user->tontines()->find($tontineId)) !== null)
+        if($tontineId > 0)
         {
-            return $tontine;
+            $tontine = $user->tontines()->find($tontineId);
         }
-        return $user->tontines()->first();
+        if(!$tontine)
+        {
+            $tontine = $user->tontines()->first();
+        }
+        if(($tontine))
+        {
+            $tenantDatabag->set('tontine.id', $tontine->id);
+            $tenantDatabag->set('round.id', 0);
+        }
+        return $tontine;
     }
 
     /**
@@ -57,17 +72,32 @@ class TontineTenant
      */
     private function getLatestRound(Tontine $tontine): ?Round
     {
-        $roundId = jaxon()->getResponse()->bag('tenant')->get('round.id', 0);
-        if($roundId > 0 && ($round = $tontine->rounds()->find($roundId)) !== null)
+        /** @var DataBagContext */
+        $tenantDatabag = jaxon()->getResponse()->bag('tenant');
+
+        // First try to get the round from the databag.
+        $roundId = $tenantDatabag->get('round.id', 0);
+        if($roundId > 0 &&
+            ($round = $tontine->rounds()->find($roundId)) !== null)
         {
             return $round;
         }
+
         $roundId = $tontine->user->properties['latest']['round'] ?? 0;
-        if($roundId > 0 && ($round = $tontine->rounds()->find($roundId)) !== null)
+        if($roundId > 0)
         {
-            return $round;
+            $round = $tontine->rounds()->find($roundId);
         }
-        return $tontine->rounds()->first();
+        if(!$round)
+        {
+            $round = $tontine->rounds()->first();
+        }
+        if(($roundId))
+        {
+            $tenantDatabag->set('tontine.id', $tontine->id);
+            $tenantDatabag->set('round.id', $round->id);
+        }
+        return $round;
     }
 
     /**
@@ -84,25 +114,15 @@ class TontineTenant
         $user = auth()->user();
         $this->tenantService->setUser($user);
 
-        $tontineId = 0;
-        $roundId = 0;
         if(($tontine = $this->getLatestTontine($user)) !== null)
         {
-            $tontineId = $tontine->id;
             $this->tenantService->setTontine($tontine);
             if(($round = $this->getLatestRound($tontine)) !== null)
             {
-                $roundId = $round->id;
                 $this->tenantService->setRound($round);
             }
         }
-
         view()->share('tontine', $tontine);
-
-        /** @var DataBagContext */
-        $tenantDatabag = jaxon()->getResponse()->bag('tenant');
-        $tenantDatabag->set('tontine.id', $tontineId);
-        $tenantDatabag->set('round.id', $roundId);
 
         return $next($request);
     }
