@@ -20,10 +20,10 @@ use function view;
 class TontineTenant
 {
     /**
+     * @param Jaxon $jaxon
      * @param TenantService $tenantService
      */
-    public function __construct(private Jaxon $jaxon,
-        private TenantService $tenantService)
+    public function __construct(private Jaxon $jaxon, private TenantService $tenantService)
     {}
 
     /**
@@ -33,21 +33,22 @@ class TontineTenant
      *
      * @return Tontine|null
      */
-    private function getLatestTontine(User $user): ?Tontine
+    private function setLatestTontine(User $user): ?Tontine
     {
         /** @var DataBagContext */
         $tenantDatabag = jaxon()->getResponse()->bag('tenant');
 
-        // First try to get the tontine from the databag.
+        // First try to get the current tontine id from the databag.
         $tontineId = $tenantDatabag->get('tontine.id', 0);
         if($tontineId > 0 &&
             ($tontine = $user->tontines()->find($tontineId)) !== null)
         {
+            $this->tenantService->setTontine($tontine);
             return $tontine;
         }
 
-        $tontineId = $user->properties['latest']['tontine'] ?? 0;
-        if($tontineId > 0)
+        // Try to get the latest tontine the user worked on.
+        if(($tontineId = $user->properties['latest']['tontine'] ?? 0) > 0)
         {
             $tontine = $user->tontines()->find($tontineId);
         }
@@ -59,6 +60,7 @@ class TontineTenant
         {
             $tenantDatabag->set('tontine.id', $tontine->id);
             $tenantDatabag->set('round.id', 0);
+            $this->tenantService->setTontine($tontine);
         }
         return $tontine;
     }
@@ -70,21 +72,22 @@ class TontineTenant
      *
      * @return Round|null
      */
-    private function getLatestRound(Tontine $tontine): ?Round
+    private function setLatestRound(Tontine $tontine): ?Round
     {
         /** @var DataBagContext */
         $tenantDatabag = jaxon()->getResponse()->bag('tenant');
 
-        // First try to get the round from the databag.
+        // First try to get the current round id from the databag.
         $roundId = $tenantDatabag->get('round.id', 0);
         if($roundId > 0 &&
             ($round = $tontine->rounds()->find($roundId)) !== null)
         {
+            $this->tenantService->setRound($round);
             return $round;
         }
 
-        $roundId = $tontine->user->properties['latest']['round'] ?? 0;
-        if($roundId > 0)
+        // Try to get the latest round the user worked on.
+        if(($roundId = $tontine->user->properties['latest']['round'] ?? 0) > 0)
         {
             $round = $tontine->rounds()->find($roundId);
         }
@@ -92,8 +95,9 @@ class TontineTenant
         {
             $round = $tontine->rounds()->first();
         }
-        if(($roundId))
+        if(($round))
         {
+            $this->tenantService->setRound($round);
             $tenantDatabag->set('tontine.id', $tontine->id);
             $tenantDatabag->set('round.id', $round->id);
         }
@@ -114,13 +118,9 @@ class TontineTenant
         $user = auth()->user();
         $this->tenantService->setUser($user);
 
-        if(($tontine = $this->getLatestTontine($user)) !== null)
+        if(($tontine = $this->setLatestTontine($user)) !== null)
         {
-            $this->tenantService->setTontine($tontine);
-            if(($round = $this->getLatestRound($tontine)) !== null)
-            {
-                $this->tenantService->setRound($round);
-            }
+            $this->setLatestRound($tontine);
         }
         view()->share('tontine', $tontine);
 
