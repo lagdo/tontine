@@ -11,8 +11,6 @@ use App\Ajax\Web\Report\Round as ReportRound;
 use App\Ajax\Web\Report\Session as ReportSession;
 use App\Ajax\Web\Tontine\Member;
 use App\Ajax\Web\Tontine\Options;
-use Siak\Tontine\Model\Round;
-use Siak\Tontine\Model\Tontine;
 use Jaxon\App\CallableClass as JaxonCallableClass;
 use Jaxon\App\Dialog\MessageInterface;
 use Jaxon\App\Dialog\ModalInterface;
@@ -21,6 +19,8 @@ use Siak\Tontine\Exception\MeetingRoundException;
 use Siak\Tontine\Exception\PlanningPoolException;
 use Siak\Tontine\Exception\PlanningRoundException;
 use Siak\Tontine\Exception\TontineMemberException;
+use Siak\Tontine\Model\Round;
+use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\TenantService;
 
 use function floor;
@@ -35,11 +35,6 @@ class CallableClass extends JaxonCallableClass
      * @var TenantService
      */
     protected TenantService $tenantService;
-
-    /**
-     * @var string
-     */
-    protected static $templateDir = 'tontine.app.default.';
 
     /**
      * @var ModalInterface
@@ -141,7 +136,7 @@ class CallableClass extends JaxonCallableClass
      */
     protected function render(string $view, array $viewData = []): ?Store
     {
-        return $this->view()->render(static::$templateDir . $view, $viewData);
+        return $this->view()->render('tontine::' . $view, $viewData);
     }
 
     /**

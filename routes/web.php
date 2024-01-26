@@ -4,6 +4,7 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ReportController;
 use App\Http\Middleware\JaxonAnnotations;
 use App\Http\Middleware\SetAppLocale;
+use App\Http\Middleware\SetAppTemplate;
 use App\Http\Middleware\TontineTenant;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -23,7 +24,7 @@ use Laravel\Fortify\RoutePath;
 |
 */
 
-Route::middleware(['auth', TontineTenant::class, SetAppLocale::class])
+Route::middleware(['auth', TontineTenant::class, SetAppLocale::class, SetAppTemplate::class])
     ->prefix(LaravelLocalization::setLocale())
     ->group(function()
     {

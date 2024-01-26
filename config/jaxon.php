@@ -3,6 +3,7 @@
 use App\Http\Middleware\JaxonAnnotations;
 use App\Http\Middleware\JaxonCallbacks;
 use App\Http\Middleware\SetAppLocale;
+use App\Http\Middleware\SetAppTemplate;
 use App\Http\Middleware\TontineTenant;
 
 return [
@@ -10,8 +11,9 @@ return [
         'faker' => env('APP_FAKER', false),
         'request' => [
             'route' => 'ajax',
-            'middlewares' => ['web', SetAppLocale::class, TontineTenant::class,
-                JaxonAnnotations::class, JaxonCallbacks::class, 'jaxon.ajax'],
+            'middlewares' => ['web', TontineTenant::class, SetAppLocale::class,
+                SetAppTemplate::class, JaxonAnnotations::class, JaxonCallbacks::class,
+                'jaxon.ajax'],
         ],
         'directories' => [
             app_path('Ajax/Web') => [
@@ -28,12 +30,7 @@ return [
             ],
         ],
         'views' => [
-            'pagination' => [
-                'directory' => resource_path('views/tontine/app/default/parts/table/pagination'),
-                'extension' => '.blade.php',
-                'renderer' => 'blade',
-                // 'register' => true,
-            ],
+            // 'pagination' => [], // Is set by the SetAppTemplate middleware
         ],
         'packages' => [
         ],

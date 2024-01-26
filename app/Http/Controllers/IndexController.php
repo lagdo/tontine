@@ -10,8 +10,6 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Service\LocaleService;
 
 use function auth;
-use function config;
-use function session;
 use function view;
 
 class IndexController extends Controller
@@ -34,8 +32,7 @@ class IndexController extends Controller
             'jxnTontine' => $jaxon->request(Tontine::class),
         ]);
 
-        $template = config('tontine.templates.app', 'default');
-        return view("tontine.app.$template.base.home", [
+        return view("tontine::base.home", [
             'jaxonCss' => $jaxon->css(),
             'jaxonJs' => $jaxon->js(),
             'jaxonScript' => $jaxon->script(),
@@ -44,6 +41,8 @@ class IndexController extends Controller
 
     /**
      * Show the user profile page.
+     *
+     * @param LocaleService $localeService
      *
      * @return View
      */
@@ -56,8 +55,7 @@ class IndexController extends Controller
             'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
         ]);
 
-        $template = config('tontine.templates.app', 'default');
-        return view("tontine.app.$template.base.profile", [
+        return view("tontine::base.profile", [
             'countries' => $localeService->getCountries(),
         ]);
     }
