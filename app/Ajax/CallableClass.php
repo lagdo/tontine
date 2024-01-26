@@ -25,6 +25,9 @@ use Siak\Tontine\Service\TenantService;
 
 use function floor;
 
+/**
+ * @databag tenant
+ */
 class CallableClass extends JaxonCallableClass
 {
     /**

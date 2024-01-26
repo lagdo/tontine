@@ -50,7 +50,8 @@ class Select extends CallableClass
             return $this->response;
         }
 
-        session(['tontine.id' => $tontine->id, 'round.id' => 0]);
+        $this->bag('tenant')->set('tontine.id', $tontine->id);
+        $this->bag('tenant')->set('round.id', 0);
         $this->tenantService->setTontine($tontine);
 
         $this->selectTontine($tontine);
@@ -104,7 +105,8 @@ class Select extends CallableClass
         $this->dialog->hide();
 
         // Save the tontine and round ids in the user session.
-        session(['tontine.id' => $tontine->id, 'round.id' => $round->id]);
+        $this->bag('tenant')->set('tontine.id', $tontine->id);
+        $this->bag('tenant')->set('round.id', $round->id);
         $this->tenantService->setRound($round);
 
         $this->selectRound($round);

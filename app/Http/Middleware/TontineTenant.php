@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Jaxon\Laravel\Jaxon;
+use Jaxon\Plugin\Response\DataBag\DataBagContext;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Model\User;
@@ -12,23 +14,17 @@ use Siak\Tontine\Service\TenantService;
 use Closure;
 
 use function auth;
-use function session;
+use function Jaxon\jaxon;
 use function view;
 
 class TontineTenant
 {
     /**
-     * @var TenantService
-     */
-    protected TenantService $tenantService;
-
-    /**
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-    }
+    public function __construct(private Jaxon $jaxon,
+        private TenantService $tenantService)
+    {}
 
     /**
      * Get the latest user tontine, from the session or the database.
@@ -39,7 +35,7 @@ class TontineTenant
      */
     private function getLatestTontine(User $user): ?Tontine
     {
-        $tontineId = session('tontine.id', 0);
+        $tontineId = jaxon()->getResponse()->bag('tenant')->get('tontine.id', 0);
         if($tontineId > 0 && ($tontine = $user->tontines()->find($tontineId)) !== null)
         {
             return $tontine;
@@ -61,7 +57,7 @@ class TontineTenant
      */
     private function getLatestRound(Tontine $tontine): ?Round
     {
-        $roundId = session('round.id', 0);
+        $roundId = jaxon()->getResponse()->bag('tenant')->get('round.id', 0);
         if($roundId > 0 && ($round = $tontine->rounds()->find($roundId)) !== null)
         {
             return $round;
@@ -100,8 +96,13 @@ class TontineTenant
                 $this->tenantService->setRound($round);
             }
         }
+
         view()->share('tontine', $tontine);
-        session(['tontine.id' => $tontineId, 'round.id' => $roundId]);
+
+        /** @var DataBagContext */
+        $tenantDatabag = jaxon()->getResponse()->bag('tenant');
+        $tenantDatabag->set('tontine.id', $tontineId);
+        $tenantDatabag->set('round.id', $roundId);
 
         return $next($request);
     }
