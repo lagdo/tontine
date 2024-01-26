@@ -2,7 +2,7 @@
 
 use App\Http\Middleware\JaxonAnnotations;
 use App\Http\Middleware\JaxonCallbacks;
-use App\Http\Middleware\GetAppLocale;
+use App\Http\Middleware\SetAppLocale;
 use App\Http\Middleware\TontineTenant;
 
 return [
@@ -10,7 +10,7 @@ return [
         'faker' => env('APP_FAKER', false),
         'request' => [
             'route' => 'ajax',
-            'middlewares' => ['web', GetAppLocale::class, TontineTenant::class,
+            'middlewares' => ['web', SetAppLocale::class, TontineTenant::class,
                 JaxonAnnotations::class, JaxonCallbacks::class, 'jaxon.ajax'],
         ],
         'directories' => [

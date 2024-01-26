@@ -25,15 +25,10 @@ class IndexController extends Controller
      */
     public function index(Jaxon $jaxon): View
     {
-        $currentLocale = LaravelLocalization::getCurrentLocale();
-        // The Jaxon request processing path is not localized. So we need to save the current
-        // locale in the session, so we can have it when processing the Jaxon ajax requests.
-        session(['jaxonCurrentLocale' => $currentLocale]);
-
         view()->share([
             'user' => auth()->user(),
             'locales' => LaravelLocalization::getSupportedLocales(),
-            'locale' => $currentLocale,
+            'locale' => LaravelLocalization::getCurrentLocale(),
             'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
             'jxnSession' => $jaxon->request(Session::class),
             'jxnTontine' => $jaxon->request(Tontine::class),
