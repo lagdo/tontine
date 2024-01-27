@@ -2,15 +2,6 @@
 
 namespace App\Ajax;
 
-use App\Ajax\Web\Meeting\Presence;
-use App\Ajax\Web\Meeting\Session as MeetingSession;
-use App\Ajax\Web\Planning\Pool;
-use App\Ajax\Web\Planning\Round as PlanningRound;
-use App\Ajax\Web\Planning\Subscription;
-use App\Ajax\Web\Report\Round as ReportRound;
-use App\Ajax\Web\Report\Session as ReportSession;
-use App\Ajax\Web\Tontine\Member;
-use App\Ajax\Web\Tontine\Options;
 use Jaxon\App\CallableClass as JaxonCallableClass;
 use Jaxon\App\Dialog\MessageInterface;
 use Jaxon\App\Dialog\ModalInterface;
@@ -19,8 +10,6 @@ use Siak\Tontine\Exception\MeetingRoundException;
 use Siak\Tontine\Exception\PlanningPoolException;
 use Siak\Tontine\Exception\PlanningRoundException;
 use Siak\Tontine\Exception\TontineMemberException;
-use Siak\Tontine\Model\Round;
-use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\TenantService;
 
 use function floor;
@@ -72,48 +61,6 @@ class CallableClass extends JaxonCallableClass
         $this->bag($bagName)->set($attrName, $pageNumber);
 
         return [$pageNumber, $this->tenantService->getLimit()];
-    }
-
-    /**
-     * @param Tontine $tontine
-     *
-     * @return void
-     */
-    protected function selectTontine(Tontine $tontine)
-    {
-        $this->response->html('section-tontine-name', $tontine->name);
-
-        // Set the tontine sidebar menu
-        $this->response->html('sidebar-menu-tontine', $this->render('parts.sidebar.tontine'));
-        $this->jq('a', '#sidebar-menu-tontine')->css('color', '#6777ef');
-
-        $this->jq('#tontine-menu-members')->click($this->rq(Member::class)->home());
-        $this->jq('#tontine-menu-categories')->click($this->rq(Options::class)->home());
-        $this->jq('#planning-menu-sessions')->click($this->rq(PlanningRound::class)->home());
-
-        // Reset the round sidebar menu
-        $this->response->html('sidebar-menu-round', $this->render('parts.sidebar.round'));
-    }
-
-    /**
-     * @param Round $round
-     *
-     * @return void
-     */
-    protected function selectRound(Round $round)
-    {
-        $this->response->html('section-tontine-name', $round->tontine->name . ' - ' . $round->title);
-
-        // Set the round sidebar menu
-        $this->response->html('sidebar-menu-round', $this->render('parts.sidebar.round'));
-        $this->jq('a', '#sidebar-menu-round')->css('color', '#6777ef');
-
-        $this->jq('#planning-menu-pools')->click($this->rq(Pool::class)->home());
-        $this->jq('#planning-menu-subscriptions')->click($this->rq(Subscription::class)->home());
-        $this->jq('#meeting-menu-sessions')->click($this->rq(MeetingSession::class)->home());
-        $this->jq('#meeting-menu-presences')->click($this->rq(Presence::class)->home());
-        $this->jq('#report-menu-session')->click($this->rq(ReportSession::class)->home());
-        $this->jq('#report-menu-round')->click($this->rq(ReportRound::class)->home());
     }
 
     /**

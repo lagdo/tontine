@@ -2,20 +2,20 @@
 
 namespace App\Ajax\Web\Tontine;
 
+use App\Ajax\CallableSelectClass;
+use App\Ajax\Web\Locale;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Tontine\TontineValidator;
-use App\Ajax\Web\Locale;
-use App\Ajax\CallableClass;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
 use function collect;
 use function trans;
 
-class Tontine extends CallableClass
+class Tontine extends CallableSelectClass
 {
     /**
      * @di
