@@ -197,4 +197,53 @@ class GuestService
         }
         $invite->update(['status' => GuestInvite::STATUS_CANCELLED]);
     }
+
+    /**
+     * Delete an invite.
+     *
+     * @param GuestInvite $invite
+     *
+     * @return void
+     */
+    private function deleteInvite(GuestInvite $invite)
+    {
+        DB::transaction(function() use($invite) {
+            DB::table('guest_tontine')->where('invite_id', $invite->id)->delete();
+            $invite->delete();
+        });
+    }
+
+    /**
+     * Delete an invite.
+     *
+     * @param int $inviteId
+     *
+     * @return void
+     */
+    public function deleteHostInvite(int $inviteId)
+    {
+        if(!($invite = $this->getHostInvite($inviteId)))
+        {
+            throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
+        }
+
+        $this->deleteInvite($invite);
+    }
+
+    /**
+     * Delete an invite.
+     *
+     * @param int $inviteId
+     *
+     * @return void
+     */
+    public function deleteGuestInvite(int $inviteId)
+    {
+        if(!($invite = $this->getGuestInvite($inviteId)))
+        {
+            throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
+        }
+
+        $this->deleteInvite($invite);
+    }
 }

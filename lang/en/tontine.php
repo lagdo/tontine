@@ -118,12 +118,14 @@ return [
             'accept' => "Accept this invite?",
             'refuse' => "Refuse this invite?",
             'cancel' => "Cancel this invite?",
+            'delete' => "Delete this invite?",
         ],
         'messages' => [
             'sent' => "Invite sent. The user must connect to his account to be able to accept it.",
             'accepted' => "You have accepted the invite.",
             'refused' => "You have refused the invite.",
             'cancelled' => "You have cancelled the invite.",
+            'deleted' => "You have deleted the invite.",
         ],
         'errors' => [
             'user_not_found' => "Unable to find the user to invite. Check that he has already created his account.",

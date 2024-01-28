@@ -60,6 +60,8 @@ class User extends CallableClass
         $inviteId = jq()->parent()->attr('data-invite-id')->toInt();
         $this->jq('.btn-host-invite-cancel')->click($this->rq()->cancel($inviteId)
             ->confirm(trans('tontine.invite.questions.cancel')));
+        $this->jq('.btn-host-invite-delete')->click($this->rq()->hostDelete($inviteId)
+            ->confirm(trans('tontine.invite.questions.delete')));
 
         return $this->response;
     }
@@ -82,6 +84,8 @@ class User extends CallableClass
             ->confirm(trans('tontine.invite.questions.accept')));
         $this->jq('.btn-guest-invite-refuse')->click($this->rq()->refuse($inviteId)
             ->confirm(trans('tontine.invite.questions.refuse')));
+        $this->jq('.btn-guest-invite-delete')->click($this->rq()->guestDelete($inviteId)
+            ->confirm(trans('tontine.invite.questions.delete')));
 
         return $this->response;
     }
@@ -142,5 +146,21 @@ class User extends CallableClass
         $this->notify->success(trans('tontine.invite.messages.cancelled'), trans('common.titles.success'));
 
         return $this->hosts();
+    }
+
+    public function hostDelete(int $inviteId)
+    {
+        $this->guestService->deleteHostInvite($inviteId);
+        $this->notify->success(trans('tontine.invite.messages.deleted'), trans('common.titles.success'));
+
+        return $this->hosts();
+    }
+
+    public function guestDelete(int $inviteId)
+    {
+        $this->guestService->deleteGuestInvite($inviteId);
+        $this->notify->success(trans('tontine.invite.messages.deleted'), trans('common.titles.success'));
+
+        return $this->guests();
     }
 }
