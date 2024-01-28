@@ -13,6 +13,13 @@
     'class' => 'btn-host-invite-cancel',
     'text' => __('tontine.invite.actions.cancel'),
   ]];
+  if($invite->is_accepted)
+  {
+    $actions[] = [
+      'class' => 'btn-host-invite-access',
+      'text' => __('tontine.invite.actions.access'),
+    ];
+  }
 @endphp
                         <tr>
                           <td>{{ $invite->guest->name }}@if (($invite->active_label))<br/>{!! $invite->active_label !!}@endif</td>

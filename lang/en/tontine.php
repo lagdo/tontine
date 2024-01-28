@@ -101,6 +101,7 @@ return [
             'guests' => "Invites received",
             'add' => "Send an invite",
             'add_desc' => "The user must already have a valid account.",
+            'access' => "Access",
         ],
         'labels' => [
             'host' => "Host",
@@ -110,6 +111,7 @@ return [
             'accept' => "Accept",
             'refuse' => "Refuse",
             'cancel' => "Cancel",
+            'access' => "Access",
         ],
         'active' => [
             'expires' => "Expires on :date",

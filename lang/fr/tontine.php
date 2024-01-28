@@ -101,6 +101,7 @@ return [
             'guests' => "Invitations reçues",
             'add' => "Inviter un utilisateur",
             'add_desc' => "L'utilisateur doit déjà avoir créé un compte.",
+            'access' => "Accès",
         ],
         'labels' => [
             'host' => "Hôte",
@@ -110,6 +111,7 @@ return [
             'accept' => "Accepter",
             'refuse' => "Refuser",
             'cancel' => "Annuler",
+            'access' => "Accès",
         ],
         'active' => [
             'expires' => "Expire le :date",

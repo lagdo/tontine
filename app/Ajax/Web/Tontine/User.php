@@ -3,6 +3,7 @@
 namespace App\Ajax\Web\Tontine;
 
 use App\Ajax\CallableClass;
+use App\Ajax\Web\Tontine\User\Access;
 use Siak\Tontine\Service\Tontine\GuestService;
 use Siak\Tontine\Validation\Tontine\InviteValidator;
 
@@ -58,6 +59,7 @@ class User extends CallableClass
         $this->response->html('content-host-invites-page', $html);
 
         $inviteId = jq()->parent()->attr('data-invite-id')->toInt();
+        $this->jq('.btn-host-invite-access')->click($this->rq(Access::class)->home($inviteId));
         $this->jq('.btn-host-invite-cancel')->click($this->rq()->cancel($inviteId)
             ->confirm(trans('tontine.invite.questions.cancel')));
         $this->jq('.btn-host-invite-delete')->click($this->rq()->hostDelete($inviteId)
