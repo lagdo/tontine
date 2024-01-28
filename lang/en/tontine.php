@@ -3,6 +3,7 @@
 return [
     'date' => [
         'format' => 'D, M j, Y',
+        'format_medium' => 'M j, Y',
     ],
     'menus' => [
         'users' => "Users",
@@ -101,10 +102,20 @@ return [
             'add' => "Send an invite",
             'add_desc' => "The user must already have a valid account.",
         ],
+        'labels' => [
+            'host' => "Host",
+            'guest' => "Guest",
+        ],
         'actions' => [
             'accept' => "Accept",
             'refuse' => "Refuse",
             'cancel' => "Cancel",
+        ],
+        'active' => [
+            'expires' => "Expires on :date",
+            'expired' => "Has expired on :date",
+            'active' => "Active since :date",
+            'inactive' => "Inactive since :date",
         ],
         'status' => [
             'pending' => "Pending",

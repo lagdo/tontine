@@ -46,6 +46,15 @@ class GuestInvite extends Base
         'expires_at',
     ];
 
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = [
+        'expires_at',
+    ];
+
     public function host()
     {
         return $this->belongsTo(User::class, 'host_id');
@@ -65,6 +74,30 @@ class GuestInvite extends Base
             'expired' : (self::$statuses[$this->status] ?? 'unknown');
         return Attribute::make(
             get: fn() => trans("tontine.invite.status.$status"),
+        );
+    }
+
+    /**
+     * @return Attribute
+     */
+    protected function activeLabel(): Attribute
+    {
+        return Attribute::make(
+            get: function() {
+                if($this->status === self::STATUS_PENDING) {
+                    $label = $this->expires_at < now() ? 'expired' : 'expires';
+                    return trans("tontine.invite.active.$label", [
+                        'date' => $this->expires_at->translatedFormat(trans('tontine.date.format_medium')),
+                    ]);
+                }
+                if($this->status === self::STATUS_ACCEPTED) {
+                    $label = $this->active ? 'active' : 'inactive';
+                    return trans("tontine.invite.active.$label", [
+                        'date' => $this->updated_at->translatedFormat(trans('tontine.date.format_medium')),
+                    ]);
+                }
+                return null;
+            },
         );
     }
 

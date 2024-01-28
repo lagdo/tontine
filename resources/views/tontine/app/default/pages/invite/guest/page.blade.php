@@ -1,8 +1,8 @@
                     <table class="table table-bordered">
                       <thead>
                         <tr>
-                          <th>{!! __('common.labels.name') !!}</th>
-                          <th>{!! __('common.labels.active') !!}</th>
+                          <th>{!! __('tontine.invite.labels.host') !!}</th>
+                          <th>&nbsp;</th>
                           <th class="table-item-menu"></th>
                         </tr>
                       </thead>
@@ -18,7 +18,7 @@
   ]];
 @endphp
                         <tr>
-                          <td>{{ $invite->host->name }}</td>
+                          <td>{{ $invite->host->name }}@if (($invite->active_label))<br/>{!! $invite->active_label !!}@endif</td>
                           <td>{{ $invite->status_label }}</td>
                           <td class="table-item-menu">
 @include('tontine.app.default.parts.table.menu', [

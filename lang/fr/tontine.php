@@ -3,6 +3,7 @@
 return [
     'date' => [
         'format' => 'D j M Y',
+        'format_medium' => 'j M Y',
     ],
     'menus' => [
         'users' => "Utilisateurs",
@@ -101,10 +102,20 @@ return [
             'add' => "Inviter un utilisateur",
             'add_desc' => "L'utilisateur doit déjà avoir créé un compte.",
         ],
+        'labels' => [
+            'host' => "Hôte",
+            'guest' => "Invité",
+        ],
         'actions' => [
             'accept' => "Accepter",
             'refuse' => "Refuser",
             'cancel' => "Annuler",
+        ],
+        'active' => [
+            'expires' => "Expire le :date",
+            'expired' => "A expiré le :date",
+            'active' => "Actif depuis le :date",
+            'inactive' => "Inactif depuis le :date",
         ],
         'status' => [
             'pending' => "En attente",
