@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\Web\Tontine\User;
+namespace App\Ajax\Web\Tontine\Guest;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Service\Tontine\GuestService;
