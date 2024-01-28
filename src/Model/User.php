@@ -41,4 +41,14 @@ class User extends \App\Models\User
     {
         return $this->hasMany(Tontine::class)->orderBy('tontines.id', 'desc');
     }
+
+    public function host_invites()
+    {
+        return $this->hasMany(GuestInvite::class, 'host_id');
+    }
+
+    public function guest_invites()
+    {
+        return $this->hasMany(GuestInvite::class, 'guest_id');
+    }
 }

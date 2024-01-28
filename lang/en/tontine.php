@@ -5,6 +5,7 @@ return [
         'format' => 'D, M j, Y',
     ],
     'menus' => [
+        'users' => "Users",
         'tontines' => "Associations",
         'tontine' => "Tontine",
         'planning' => "Planning",
@@ -91,6 +92,29 @@ return [
                 "You need to add one or more pools before you can move forward.",
             'opened_sessions' => "You have beed redirected to the sessions page.<br/>" .
                 "You need to have one or more sessions opened before you can move forward.",
+        ],
+    ],
+    'invite' => [
+        'titles' => [
+            'hosts' => "Invites sent",
+            'guests' => "Invites received",
+            'add' => "Send an invite",
+            'add_desc' => "The user must already have a valid account.",
+        ],
+        'status' => [
+            'pending' => "Pending",
+            'expired' => "Expired",
+            'accepted' => "Accepted",
+            'refused' => "Refused",
+            'cancelled' => "Cancelled",
+            'unknown' => "(Unknown)",
+        ],
+        'messages' => [
+            'sent' => "Invite sent. The user must connect to his account to be able to accept it.",
+        ],
+        'errors' => [
+            'user_not_found' => "Unable to find the user to invite. Check that he has already created his account.",
+            'cannot_invite' => "Unable to send the invite. Maybe you have already invited this user?",
         ],
     ],
     'round' => [

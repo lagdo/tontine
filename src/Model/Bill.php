@@ -59,7 +59,6 @@ class Bill extends Base
         'deadline',
     ];
 
-
     /**
      * @return Attribute
      */

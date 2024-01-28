@@ -5,6 +5,7 @@ return [
         'format' => 'D j M Y',
     ],
     'menus' => [
+        'users' => "Utilisateurs",
         'tontines' => "Associations",
         'tontine' => "Tontine",
         'planning' => "Planning",
@@ -91,6 +92,29 @@ return [
                 "Vous devez ajouter une ou plusieurs tontines avant d'aller plus loin.",
             'opened_sessions' => "Vous avez été redirigé vers la page des séances.<br/>" .
                 "Vous devez avoir une ou plusieurs séances ouvertes avant d'aller plus loin.",
+        ],
+    ],
+    'invite' => [
+        'titles' => [
+            'hosts' => "Invitations envoyées",
+            'guests' => "Invitations reçues",
+            'add' => "Inviter un utilisateur",
+            'add_desc' => "L'utilisateur doit déjà avoir créé un compte.",
+        ],
+        'status' => [
+            'pending' => "En attente",
+            'expired' => "Expirée",
+            'accepted' => "Acceptée",
+            'refused' => "Refusée",
+            'cancelled' => "Annulée",
+            'unknown' => "(Inconnu)",
+        ],
+        'messages' => [
+            'sent' => "Invitation envoyée. L'utilisateur doit se connecter à son compte pour l'accepter.",
+        ],
+        'errors' => [
+            'user_not_found' => "L'utilisateur à inviter n'a pas été trouvé. Vérifiez qu'il a déjà créé son compte.",
+            'cannot_invite' => "Impossible d'envoyer l'invitation. Peut-être avez-vous déjà invité cet utilisateur ?",
         ],
     ],
     'round' => [

@@ -41,6 +41,7 @@ use Siak\Tontine\Service\Report\SessionService as SessionReportService;
 use Siak\Tontine\Service\Tontine\CategoryService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Service\Tontine\FundService;
+use Siak\Tontine\Service\Tontine\GuestService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Meeting\ClosingValidator;
@@ -55,6 +56,7 @@ use Siak\Tontine\Validation\Planning\PoolRoundValidator;
 use Siak\Tontine\Validation\Planning\RoundValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
+use Siak\Tontine\Validation\Tontine\InviteValidator;
 use Siak\Tontine\Validation\Tontine\MemberValidator;
 use Siak\Tontine\Validation\Tontine\OptionsValidator;
 use Siak\Tontine\Validation\Tontine\TontineValidator;
@@ -139,6 +141,7 @@ class SiakServiceProvider extends ServiceProvider
 
         $this->app->singleton(TenantService::class, TenantService::class);
         $this->app->singleton(TontinePoolService::class, TontinePoolService::class);
+        $this->app->singleton(GuestService::class, GuestService::class);
         $this->app->singleton(MemberService::class, MemberService::class);
         $this->app->singleton(TontineService::class, TontineService::class);
 
@@ -157,5 +160,6 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(OptionsValidator::class, OptionsValidator::class);
         $this->app->singleton(TontineValidator::class, TontineValidator::class);
         $this->app->singleton(TargetValidator::class, TargetValidator::class);
+        $this->app->singleton(InviteValidator::class, InviteValidator::class);
     }
 }

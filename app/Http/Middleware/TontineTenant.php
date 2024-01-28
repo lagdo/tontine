@@ -39,6 +39,7 @@ class TontineTenant
         $tenantDatabag = jaxon()->getResponse()->bag('tenant');
 
         // First try to get the current tontine id from the databag.
+        $tontine = null;
         $tontineId = $tenantDatabag->get('tontine.id', 0);
         if($tontineId > 0 &&
             ($tontine = $user->tontines()->find($tontineId)) !== null)
@@ -78,6 +79,7 @@ class TontineTenant
         $tenantDatabag = jaxon()->getResponse()->bag('tenant');
 
         // First try to get the current round id from the databag.
+        $round = null;
         $roundId = $tenantDatabag->get('round.id', 0);
         if($roundId > 0 &&
             ($round = $tontine->rounds()->find($roundId)) !== null)
