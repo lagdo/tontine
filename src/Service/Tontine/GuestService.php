@@ -92,4 +92,37 @@ class GuestService
     {
         return $this->tenantService->user()->guest_invites()->find($inviteId);
     }
+
+    /**
+     * Create an invite.
+     *
+     * @param string $guestEmail
+     *
+     * @return void
+     */
+    public function createInvite(string $guestEmail)
+    {
+        // The current user is the host.
+        $host = $this->tenantService->user();
+        $guest = User::where('email', $guestEmail)
+            ->with('guest_invites', fn($query) => $query->where('host_id', $host->id))
+            ->first();
+        if(!$guest)
+        {
+            throw new MessageException(trans('tontine.invite.errors.user_not_found'));
+        }
+        if($guest->id === $host->id || $guest->guest_invites->count() > 0)
+        {
+            throw new MessageException(trans('tontine.invite.errors.cannot_invite'));
+        }
+
+        $invite = new GuestInvite();
+        $invite->status = GuestInvite::STATUS_PENDING;
+        $invite->active = true;
+        // One week validity by default.
+        $invite->expires_at = now()->addWeek();
+        $invite->host()->associate($host);
+        $invite->guest()->associate($guest);
+        $invite->save();
+    }
 }

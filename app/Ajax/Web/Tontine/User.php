@@ -87,4 +87,39 @@ class User extends CallableClass
 
         return $this->response;
     }
+
+    public function add()
+    {
+        $title = trans('tontine.invite.titles.add');
+        $content = $this->render('pages.invite.host.add');
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.save'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->create(pm()->form('invite-form')),
+        ]];
+
+        $this->dialog->hide();
+        $this->dialog->show($title, $content, $buttons);
+
+        return $this->response;
+    }
+
+    /**
+     * @di $validator
+     */
+    public function create(array $formValues)
+    {
+        $values = $this->validator->validateItem($formValues);
+        $this->guestService->createInvite($values['email']);
+
+        $this->hosts();
+        $this->dialog->hide();
+        $this->notify->success(trans('tontine.invite.messages.sent'), trans('common.titles.success'));
+
+        return $this->response;
+    }
 }
