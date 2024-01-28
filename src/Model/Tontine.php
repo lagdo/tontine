@@ -84,4 +84,10 @@ class Tontine extends Base
     {
         return $this->hasMany(Category::class);
     }
+
+    public function invites()
+    {
+        return $this->belongsToMany(GuestInvite::class,
+            'guest_tontine', 'tontine_id', 'invite_id')->withPivot('access');
+    }
 }

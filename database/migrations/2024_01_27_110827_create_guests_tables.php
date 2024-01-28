@@ -32,6 +32,7 @@ return new class extends Migration
             $table->unsignedBigInteger('tontine_id');
             $table->foreign('invite_id')->references('id')->on('guest_invites');
             $table->foreign('tontine_id')->references('id')->on('tontines');
+            $table->unique(['invite_id', 'tontine_id']);
         });
     }
 
@@ -43,7 +44,6 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('guest_tontine');
-
         Schema::dropIfExists('guest_invites');
     }
 };

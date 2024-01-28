@@ -190,7 +190,7 @@ class Member extends CallableSessionClass
         $amount = $values['amount'];
         $this->savingService->saveSaving($this->session, $this->fundId, $memberId, $amount);
 
-        $this->notify->success(trans('meeting.messages.saved'));
+        $this->notify->success(trans('meeting.messages.saved'), trans('common.titles.success'));
         return $this->page();
     }
 }

@@ -65,6 +65,12 @@ class GuestInvite extends Base
         return $this->belongsTo(User::class, 'guest_id');
     }
 
+    public function tontines()
+    {
+        return $this->belongsToMany(Tontine::class,
+            'guest_tontine', 'invite_id', 'tontine_id')->withPivot('access');
+    }
+
     /**
      * @return Attribute
      */

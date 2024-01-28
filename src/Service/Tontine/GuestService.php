@@ -6,9 +6,12 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\GuestInvite;
+use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Model\User;
 use Siak\Tontine\Service\TenantService;
 
+use function json_encode;
+use function json_decode;
 use function now;
 
 class GuestService
@@ -245,5 +248,36 @@ class GuestService
         }
 
         $this->deleteInvite($invite);
+    }
+
+    /**
+     * Get the guest access on a given tontine
+     *
+     * @param GuestInvite $invite
+     * @param Tontine $tontine
+     *
+     * @return array
+     */
+    public function getGuestTontineAccess(GuestInvite $invite, Tontine $tontine): array
+    {
+        $inviteTontine = $invite->tontines()->find($tontine->id);
+        return !$inviteTontine ? [] : json_decode($inviteTontine->pivot->access, true);
+    }
+
+    /**
+     * Get the guest access on a given tontine
+     *
+     * @param GuestInvite $invite
+     * @param Tontine $tontine
+     * @param array $access
+     *
+     * @return void
+     */
+    public function saveGuestTontineAccess(GuestInvite $invite, Tontine $tontine, array $access)
+    {
+        DB::transaction(function() use($invite, $tontine, $access) {
+            $invite->tontines()->detach($tontine->id);
+            $invite->tontines()->attach($tontine->id, ['access' => json_encode($access)]);
+        });
     }
 }

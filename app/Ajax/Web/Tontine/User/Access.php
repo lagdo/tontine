@@ -8,8 +8,8 @@ use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\GuestInvite as InviteModel;
 use Siak\Tontine\Model\Tontine as TontineModel;
 use Siak\Tontine\Service\Tontine\GuestService;
-
 use Siak\Tontine\Service\Tontine\TontineService;
+
 use function Jaxon\pm;
 use function trans;
 
@@ -48,7 +48,8 @@ class Access extends CallableClass
         {
             return;
         }
-        $tontineId = $this->bag('invite')->get('tontine.id');
+        $tontineId = $this->target()->method() === 'tontine' ?
+            $this->target()->args()[0] : $this->bag('invite')->get('tontine.id');
         $this->tontine = $this->tontineService->getTontine($tontineId);
     }
 
@@ -66,15 +67,44 @@ class Access extends CallableClass
 
         $html = $this->render('pages.invite.access.home', [
             'guest' => $this->invite->guest,
+            'tontines' => $tontines->pluck('name', 'id'),
         ]);
         $this->response->html('content-host-invites-home', $html);
         $this->jq('#btn-host-invites-back')->click($this->rq(User::class)->home());
+        $tontineId = pm()->select('select-invite-tontine');
+        $this->jq('#btn-select-invite-tontine')->click($this->rq()->tontine($tontineId));
 
-        return $this->tontine();
+        return $this->access();
     }
 
-    public function tontine()
+    public function tontine(int $tontineId)
     {
+        $this->bag('invite')->set('tontine.id', $this->tontine->id);
+
+        return $this->access();
+    }
+
+    private function access()
+    {
+        $access = $this->guestService->getGuestTontineAccess($this->invite, $this->tontine);
+        $html = $this->render('pages.invite.access.tontine', [
+            'tontine' => $this->tontine,
+            'access' => $access,
+        ]);
+        $this->response->html('content-host-invite-access', $html);
+        $this->jq('#btn-save-guest-tontine-access')
+            ->click($this->rq()->saveAccess(pm()->form('guest-tontine-access-form')));
+
         return $this->response;
+    }
+
+    public function saveAccess(array $formValues)
+    {
+        $access = $formValues['access'] ?? [];
+        $this->guestService->saveGuestTontineAccess($this->invite, $this->tontine, $access);
+
+        $this->notify->success(trans('meeting.messages.saved'), trans('common.titles.success'));
+
+        return $this->access();
     }
 }
