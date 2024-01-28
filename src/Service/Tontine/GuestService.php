@@ -30,7 +30,7 @@ class GuestService
     {
         return $this->tenantService->user()->host_invites()
             ->page($page, $this->tenantService->getLimit())
-            // ->orderBy('name', 'asc')
+            ->orderByDesc('created_at')
             ->get();
     }
 
@@ -55,7 +55,7 @@ class GuestService
     {
         return $this->tenantService->user()->guest_invites()
             ->page($page, $this->tenantService->getLimit())
-            // ->orderBy('name', 'asc')
+            ->orderByDesc('created_at')
             ->get();
     }
 
