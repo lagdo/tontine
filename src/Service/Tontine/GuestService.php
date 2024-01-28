@@ -173,4 +173,28 @@ class GuestService
         }
         $invite->update(['status' => GuestInvite::STATUS_REFUSED]);
     }
+
+    /**
+     * Cancel an invite.
+     *
+     * @param int $inviteId
+     *
+     * @return void
+     */
+    public function cancelInvite(int $inviteId)
+    {
+        if(!($invite = $this->getHostInvite($inviteId)))
+        {
+            throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
+        }
+        if($invite->is_expired)
+        {
+            throw new MessageException(trans('tontine.invite.errors.invite_expired'));
+        }
+        if(!$invite->is_pending)
+        {
+            throw new MessageException(trans('tontine.invite.errors.not_allowed'));
+        }
+        $invite->update(['status' => GuestInvite::STATUS_CANCELLED]);
+    }
 }

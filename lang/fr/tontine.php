@@ -104,6 +104,7 @@ return [
         'actions' => [
             'accept' => "Accepter",
             'refuse' => "Refuser",
+            'cancel' => "Annuler",
         ],
         'status' => [
             'pending' => "En attente",
@@ -116,11 +117,13 @@ return [
         'questions' => [
             'accept' => "Accepter cette invitation ?",
             'refuse' => "Refuser cette invitation ?",
+            'cancel' => "Annuler cette invitation ?",
         ],
         'messages' => [
             'sent' => "Invitation envoyée. L'utilisateur doit se connecter à son compte pour l'accepter.",
             'accepted' => "Vous avez accepté l'invitation.",
             'refused' => "Vous avez refusé l'invitation.",
+            'cancelled' => "Vous avez annulé l'invitation.",
         ],
         'errors' => [
             'user_not_found' => "L'utilisateur à inviter n'a pas été trouvé. Vérifiez qu'il a déjà créé son compte.",

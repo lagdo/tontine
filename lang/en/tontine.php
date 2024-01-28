@@ -104,6 +104,7 @@ return [
         'actions' => [
             'accept' => "Accept",
             'refuse' => "Refuse",
+            'cancel' => "Cancel",
         ],
         'status' => [
             'pending' => "Pending",
@@ -116,11 +117,13 @@ return [
         'questions' => [
             'accept' => "Accept this invite?",
             'refuse' => "Refuse this invite?",
+            'cancel' => "Cancel this invite?",
         ],
         'messages' => [
             'sent' => "Invite sent. The user must connect to his account to be able to accept it.",
             'accepted' => "You have accepted the invite.",
             'refused' => "You have refused the invite.",
+            'cancelled' => "You have cancelled the invite.",
         ],
         'errors' => [
             'user_not_found' => "Unable to find the user to invite. Check that he has already created his account.",

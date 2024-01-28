@@ -8,6 +8,12 @@
                       </thead>
                       <tbody>
 @foreach ($invites as $invite)
+@php
+  $actions = !$invite->is_pending ? [] : [[
+    'class' => 'btn-host-invite-cancel',
+    'text' => __('tontine.invite.actions.cancel'),
+  ]];
+@endphp
                         <tr>
                           <td>{{ $invite->guest->name }}</td>
                           <td>{{ $invite->status_label }}</td>
@@ -15,10 +21,8 @@
 @include('tontine.app.default.parts.table.menu', [
   'dataIdKey' => 'data-invite-id',
   'dataIdValue' => $invite->id,
-  'menus' => [[
-    'class' => 'btn-host-invite-access',
-    'text' => __('tontine.invite.actions.access'),
-  ],[
+  'menus' => [
+    ...$actions, [
     'class' => 'btn-host-invite-delete',
     'text' => __('common.actions.delete'),
   ]],
