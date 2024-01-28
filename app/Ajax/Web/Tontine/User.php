@@ -80,10 +80,10 @@ class User extends CallableClass
         $this->response->html('content-guest-invites-page', $html);
 
         $inviteId = jq()->parent()->attr('data-invite-id')->toInt();
-        $this->jq('.btn-invite-edit')->click($this->rq()->edit($inviteId));
-        $this->jq('.btn-invite-toggle')->click($this->rq()->toggle($inviteId));
-        $this->jq('.btn-invite-delete')->click($this->rq()->delete($inviteId)
-            ->confirm(trans('tontine.invite.questions.delete')));
+        $this->jq('.btn-guest-invite-accept')->click($this->rq()->accept($inviteId)
+            ->confirm(trans('tontine.invite.questions.accept')));
+        $this->jq('.btn-guest-invite-refuse')->click($this->rq()->refuse($inviteId)
+            ->confirm(trans('tontine.invite.questions.refuse')));
 
         return $this->response;
     }
@@ -116,10 +116,25 @@ class User extends CallableClass
         $values = $this->validator->validateItem($formValues);
         $this->guestService->createInvite($values['email']);
 
-        $this->hosts();
         $this->dialog->hide();
         $this->notify->success(trans('tontine.invite.messages.sent'), trans('common.titles.success'));
 
-        return $this->response;
+        return $this->hosts();
+    }
+
+    public function accept(int $inviteId)
+    {
+        $this->guestService->acceptInvite($inviteId);
+        $this->notify->success(trans('tontine.invite.messages.accepted'), trans('common.titles.success'));
+
+        return $this->guests();
+    }
+
+    public function refuse(int $inviteId)
+    {
+        $this->guestService->refuseInvite($inviteId);
+        $this->notify->success(trans('tontine.invite.messages.refused'), trans('common.titles.success'));
+
+        return $this->guests();
     }
 }

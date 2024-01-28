@@ -101,6 +101,10 @@ return [
             'add' => "Send an invite",
             'add_desc' => "The user must already have a valid account.",
         ],
+        'actions' => [
+            'accept' => "Accept",
+            'refuse' => "Refuse",
+        ],
         'status' => [
             'pending' => "Pending",
             'expired' => "Expired",
@@ -109,12 +113,21 @@ return [
             'cancelled' => "Cancelled",
             'unknown' => "(Unknown)",
         ],
+        'questions' => [
+            'accept' => "Accept this invite?",
+            'refuse' => "Refuse this invite?",
+        ],
         'messages' => [
             'sent' => "Invite sent. The user must connect to his account to be able to accept it.",
+            'accepted' => "You have accepted the invite.",
+            'refused' => "You have refused the invite.",
         ],
         'errors' => [
             'user_not_found' => "Unable to find the user to invite. Check that he has already created his account.",
             'cannot_invite' => "Unable to send the invite. Maybe you have already invited this user?",
+            'not_allowed' => "This operation is not allowed.",
+            'invite_not_found' => "Unable to find the invite.",
+            'invite_expired' => "Sorry, this invite has expired.",
         ],
     ],
     'round' => [

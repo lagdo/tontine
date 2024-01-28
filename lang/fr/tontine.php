@@ -101,6 +101,10 @@ return [
             'add' => "Inviter un utilisateur",
             'add_desc' => "L'utilisateur doit déjà avoir créé un compte.",
         ],
+        'actions' => [
+            'accept' => "Accepter",
+            'refuse' => "Refuser",
+        ],
         'status' => [
             'pending' => "En attente",
             'expired' => "Expirée",
@@ -109,12 +113,21 @@ return [
             'cancelled' => "Annulée",
             'unknown' => "(Inconnu)",
         ],
+        'questions' => [
+            'accept' => "Accepter cette invitation ?",
+            'refuse' => "Refuser cette invitation ?",
+        ],
         'messages' => [
             'sent' => "Invitation envoyée. L'utilisateur doit se connecter à son compte pour l'accepter.",
+            'accepted' => "Vous avez accepté l'invitation.",
+            'refused' => "Vous avez refusé l'invitation.",
         ],
         'errors' => [
             'user_not_found' => "L'utilisateur à inviter n'a pas été trouvé. Vérifiez qu'il a déjà créé son compte.",
             'cannot_invite' => "Impossible d'envoyer l'invitation. Peut-être avez-vous déjà invité cet utilisateur ?",
+            'not_allowed' => "Cette action n'est pas autorisée.",
+            'invite_not_found' => "Impossible de trouver l'invitation.",
+            'invite_expired' => "Désolé, cette invitation a expiré.",
         ],
     ],
     'round' => [
