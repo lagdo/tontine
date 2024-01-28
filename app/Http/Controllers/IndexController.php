@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Ajax\Web\Meeting\Session\Session;
 use App\Ajax\Web\Tontine\Tontine;
-use App\Ajax\Web\Tontine\User;
+use App\Ajax\Web\Tontine\User\User;
 use Illuminate\View\View;
 use Jaxon\Laravel\Jaxon;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;

@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Ajax\Web\Tontine;
+namespace App\Ajax\Web\Tontine\User;
 
 use App\Ajax\CallableClass;
-use App\Ajax\Web\Tontine\User\Access;
 use Siak\Tontine\Service\Tontine\GuestService;
-use Siak\Tontine\Validation\Tontine\InviteValidator;
+use Siak\Tontine\Validation\Tontine\GuestInviteValidator;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
@@ -17,9 +16,9 @@ use function trans;
 class User extends CallableClass
 {
     /**
-     * @var InviteValidator
+     * @var GuestInviteValidator
      */
-    protected InviteValidator $validator;
+    protected GuestInviteValidator $validator;
 
     /**
      * @param GuestService $guestService

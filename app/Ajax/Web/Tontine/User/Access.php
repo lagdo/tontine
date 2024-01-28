@@ -3,7 +3,6 @@
 namespace App\Ajax\Web\Tontine\User;
 
 use App\Ajax\CallableClass;
-use App\Ajax\Web\Tontine\User;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\GuestInvite as InviteModel;
 use Siak\Tontine\Model\Tontine as TontineModel;
