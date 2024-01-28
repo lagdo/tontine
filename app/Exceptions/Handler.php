@@ -14,6 +14,7 @@ use Siak\Tontine\Exception\MeetingRoundException;
 use Siak\Tontine\Exception\PlanningPoolException;
 use Siak\Tontine\Exception\PlanningRoundException;
 use Siak\Tontine\Exception\TontineMemberException;
+use Siak\Tontine\Validation\ValidationException;
 use Throwable;
 
 use function app;
@@ -39,6 +40,7 @@ class Handler extends ExceptionHandler
     protected $dontReport = [
         AuthenticationException::class,
         MessageException::class,
+        ValidationException::class,
         PlanningPoolException::class,
         PlanningRoundException::class,
         TontineMemberException::class,
@@ -79,6 +81,14 @@ class Handler extends ExceptionHandler
 
         // Show the error message in a dialog
         $this->renderable(function (MessageException $e) use($jaxon) {
+            $ajaxResponse = $jaxon->ajaxResponse();
+            $ajaxResponse->dialog->error($e->getMessage(), trans('common.titles.error'));
+
+            return $jaxon->httpResponse();
+        });
+
+        // Show the error message in a dialog
+        $this->renderable(function (ValidationException $e) use($jaxon) {
             $ajaxResponse = $jaxon->ajaxResponse();
             $ajaxResponse->dialog->error($e->getMessage(), trans('common.titles.error'));
 
