@@ -66,20 +66,31 @@ class CallableClass extends JaxonCallableClass
     }
 
     /**
-     * @return void
+     * Check guest user access to a menu entry in a section
+     *
+     * @param string $section
+     * @param string $entry
+     * @param bool $return
+     *
+     * @return bool
      */
-    protected function checkGuestAccess(string $section, string $entry)
+    public function checkGuestAccess(string $section, string $entry, bool $return = false): bool
     {
         if(!$this->tenantService->userIsGuest())
         {
-            return;
+            return true;
         }
 
         $guestAccess = $this->tenantService->getGuestAccess();
         if(!($guestAccess[$section][$entry] ?? false))
         {
+            if($return)
+            {
+                return false;
+            }
             throw new MessageException(trans('tontine.invite.errors.access_denied'));
         }
+        return true;
     }
 
     /**
