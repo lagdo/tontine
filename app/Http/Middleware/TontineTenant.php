@@ -12,6 +12,7 @@ use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Model\User;
 use Siak\Tontine\Service\TenantService;
 use Closure;
+use Siak\Tontine\Service\Tontine\TontineService;
 
 use function auth;
 use function Jaxon\jaxon;
@@ -22,8 +23,10 @@ class TontineTenant
     /**
      * @param Jaxon $jaxon
      * @param TenantService $tenantService
+     * @param TontineService $tontineService
      */
-    public function __construct(private Jaxon $jaxon, private TenantService $tenantService)
+    public function __construct(private Jaxon $jaxon, private TenantService $tenantService,
+        private TontineService $tontineService)
     {}
 
     /**
@@ -42,7 +45,7 @@ class TontineTenant
         $tontine = null;
         $tontineId = $tenantDatabag->get('tontine.id', 0);
         if($tontineId > 0 &&
-            ($tontine = $user->tontines()->find($tontineId)) !== null)
+            ($tontine = $this->tontineService->getUserOrGuestTontine($tontineId)) !== null)
         {
             $this->tenantService->setTontine($tontine);
             return $tontine;
@@ -51,11 +54,12 @@ class TontineTenant
         // Try to get the latest tontine the user worked on.
         if(($tontineId = $user->properties['latest']['tontine'] ?? 0) > 0)
         {
-            $tontine = $user->tontines()->find($tontineId);
+            $tontine = $this->tontineService->getUserOrGuestTontine($tontineId);
         }
         if(!$tontine)
         {
-            $tontine = $user->tontines()->first();
+            $tontine = $this->tontineService->getTontines()->first() ??
+                $this->tontineService->getGuestTontines()->first();
         }
         if(($tontine))
         {

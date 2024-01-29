@@ -10,6 +10,7 @@ use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Model\User;
 use Siak\Tontine\Service\TenantService;
 
+use function count;
 use function json_encode;
 use function json_decode;
 use function now;
@@ -277,7 +278,10 @@ class GuestService
     {
         DB::transaction(function() use($invite, $tontine, $access) {
             $invite->tontines()->detach($tontine->id);
-            $invite->tontines()->attach($tontine->id, ['access' => json_encode($access)]);
+            if(count($access) > 0)
+            {
+                $invite->tontines()->attach($tontine->id, ['access' => json_encode($access)]);
+            }
         });
     }
 }

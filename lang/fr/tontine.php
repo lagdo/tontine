@@ -102,6 +102,7 @@ return [
             'add' => "Inviter un utilisateur",
             'add_desc' => "L'utilisateur doit déjà avoir créé un compte.",
             'access' => "Accès",
+            'associations' => "Invité :: Associations",
         ],
         'labels' => [
             'host' => "Hôte",

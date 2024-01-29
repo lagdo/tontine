@@ -102,6 +102,7 @@ return [
             'add' => "Send an invite",
             'add_desc' => "The user must already have a valid account.",
             'access' => "Access",
+            'associations' => "Guest :: Associations",
         ],
         'labels' => [
             'host' => "Host",

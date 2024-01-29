@@ -36,6 +36,7 @@ class Access extends CallableClass
 
     /**
      * @param GuestService $guestService
+     * @param TontineService $tontineService
      */
     public function __construct(private GuestService $guestService,
         private TontineService $tontineService)

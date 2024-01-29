@@ -17,11 +17,13 @@
             </div>
           </div>
 
-          <!-- Data tables -->
           <div class="card shadow mb-4">
             <div class="card-body">
               <div class="table-responsive" id="tontine-page">
                 @isset($tontines) @include('tontine.app.default.pages.tontine.page') @endisset
-              </div> <!-- End table -->
+              </div>
             </div>
+          </div>
+
+          <div id="guest-tontine-home">
           </div>

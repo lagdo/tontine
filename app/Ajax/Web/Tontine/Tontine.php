@@ -67,7 +67,13 @@ class Tontine extends CallableSelectClass
         $this->jq('#btn-tontine-refresh')->click($this->rq()->home());
         $this->jq('#btn-show-select')->click($this->rq(Select::class)->showTontines());
 
-        return $this->page();
+        $this->page();
+        if($this->tontineService->hasGuestTontines())
+        {
+            $this->cl(Guest\Tontine::class)->home();
+        }
+
+        return $this->response;
     }
 
     /**
@@ -81,11 +87,12 @@ class Tontine extends CallableSelectClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $tontineCount);
         [$countries, $currencies] = $this->localeService->getNamesFromTontines($tontines);
 
-        $html = $this->render('pages.tontine.page')
-            ->with('tontines', $tontines)
-            ->with('countries', $countries)
-            ->with('currencies', $currencies)
-            ->with('pagination', $pagination);
+        $html = $this->render('pages.tontine.page', [
+            'tontines' => $tontines,
+            'countries' => $countries,
+            'currencies' => $currencies,
+            'pagination' => $pagination,
+        ]);
         $this->response->html('tontine-page', $html);
 
         $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
