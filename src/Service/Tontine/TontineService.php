@@ -86,12 +86,7 @@ class TontineService
     public function getGuestTontines(int $page = 0): Collection
     {
         return $this->getGuestTontinesQuery()
-            ->with([
-                'invites' => function(Builder|Relation $query) {
-                    $query->where('guest_id', $this->tenantService->user()->id);
-                },
-                'invites.host'
-            ])
+            ->with(['user'])
             ->orderBy('tontines.id')
             ->page($page, $this->tenantService->getLimit())
             ->get()
