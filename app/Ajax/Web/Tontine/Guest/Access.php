@@ -77,7 +77,7 @@ class Access extends CallableClass
             'tontines' => $tontines->pluck('name', 'id'),
         ]);
         $this->response->html('content-host-invites-home', $html);
-        $this->jq('#btn-host-invites-back')->click($this->rq(User::class)->home());
+        $this->jq('#btn-host-invites-back')->click($this->rq(Invite::class)->home());
         $tontineId = pm()->select('select-invite-tontine');
         $this->jq('#btn-select-invite-tontine')->click($this->rq()->tontine($tontineId));
 

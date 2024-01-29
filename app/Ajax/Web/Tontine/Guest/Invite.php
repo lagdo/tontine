@@ -13,7 +13,7 @@ use function trans;
 /**
  * @databag invite
  */
-class User extends CallableClass
+class Invite extends CallableClass
 {
     /**
      * @var GuestInviteValidator
