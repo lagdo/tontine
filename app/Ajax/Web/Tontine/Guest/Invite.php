@@ -159,9 +159,14 @@ class Invite extends CallableClass
 
     public function guestDelete(int $inviteId)
     {
-        $this->guestService->deleteGuestInvite($inviteId);
-        $this->notify->success(trans('tontine.invite.messages.deleted'), trans('common.titles.success'));
+        if($this->guestService->deleteGuestInvite($inviteId))
+        {
+            // The active tontine invite is deleted. Reload the page.
+            $this->response->redirect('/');
+            return $this->response;
+        }
 
+        $this->notify->success(trans('tontine.invite.messages.deleted'), trans('common.titles.success'));
         return $this->guests();
     }
 }

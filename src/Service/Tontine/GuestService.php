@@ -237,16 +237,23 @@ class GuestService
      *
      * @param int $inviteId
      *
-     * @return void
+     * @return bool
      */
-    public function deleteGuestInvite(int $inviteId)
+    public function deleteGuestInvite(int $inviteId): bool
     {
         if(!($invite = $this->getGuestInvite($inviteId)))
         {
             throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
         }
 
+        $activeTontineInviteIsDeleted = DB::table('guest_tontine')
+            ->where('invite_id', $invite->id)
+            ->where('tontine_id', $this->tenantService->tontine()->id)
+            ->exists();
+
         $this->deleteInvite($invite);
+
+        return $activeTontineInviteIsDeleted;
     }
 
     /**
