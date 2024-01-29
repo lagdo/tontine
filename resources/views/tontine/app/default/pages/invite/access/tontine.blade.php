@@ -14,42 +14,61 @@
                 <div class="card shadow">
                   <div class="card-body">
                     <form class="form-horizontal" role="form" id="guest-tontine-access-form">
-                      <div class="module-body">
-                        <div class="form-group row">
-                          <div class="col-md-12">{{ __('tontine.menus.tontine') }}</div>
-                          <div class="col-md-11 offset-md-1">
-                            {!! Form::checkbox('access[tontine][members]', '1', $access['tontine']['members'] ?? false) !!}
-                            {!! Form::label('', __('tontine.menus.members'), ['class' => 'form-check-label']) !!}
-                          </div>
-                          <div class="col-md-11 offset-md-1">
-                            {!! Form::checkbox('access[tontine][categories]', '1', $access['tontine']['categories'] ?? false) !!}
-                            {!! Form::label('', __('tontine.menus.categories'), ['class' => 'form-check-label']) !!}
+                      <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                          <div class="module-body">
+                            <div class="form-group row">
+                              <div class="col-md-12">{{ __('tontine.menus.tontine') }}</div>
+                              <div class="col-md-11 offset-md-1">
+                                {!! Form::checkbox('access[tontine][members]', '1', $access['tontine']['members'] ?? false) !!}
+                                {!! Form::label('', __('tontine.menus.members'), ['class' => 'form-check-label']) !!}
+                              </div>
+                              <div class="col-md-11 offset-md-1">
+                                {!! Form::checkbox('access[tontine][categories]', '1', $access['tontine']['categories'] ?? false) !!}
+                                {!! Form::label('', __('tontine.menus.categories'), ['class' => 'form-check-label']) !!}
+                              </div>
+                            </div>
+                            <div class="form-group row">
+                              <div class="col-md-12">{{ __('tontine.menus.planning') }}</div>
+                              <div class="col-md-11 offset-md-1">
+                                {!! Form::checkbox('access[planning][sessions]', '1', $access['planning']['sessions'] ?? false) !!}
+                                {!! Form::label('', __('tontine.menus.sessions'), ['class' => 'form-check-label']) !!}
+                              </div>
+                              <div class="col-md-11 offset-md-1">
+                                {!! Form::checkbox('access[planning][pools]', '1', $access['planning']['pools'] ?? false) !!}
+                                {!! Form::label('', __('tontine.menus.pools'), ['class' => 'form-check-label']) !!}
+                              </div>
+                              <div class="col-md-11 offset-md-1">
+                                {!! Form::checkbox('access[planning][subscriptions]', '1', $access['planning']['subscriptions'] ?? false) !!}
+                                {!! Form::label('', __('tontine.menus.subscriptions'), ['class' => 'form-check-label']) !!}
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        <div class="form-group row">
-                          <div class="col-md-12">{{ __('tontine.menus.planning') }}</div>
-                          <div class="col-md-11 offset-md-1">
-                            {!! Form::checkbox('access[planning][sessions]', '1', $access['planning']['sessions'] ?? false) !!}
-                            {!! Form::label('', __('tontine.menus.sessions'), ['class' => 'form-check-label']) !!}
-                          </div>
-                          <div class="col-md-11 offset-md-1">
-                            {!! Form::checkbox('access[planning][pools]', '1', $access['planning']['pools'] ?? false) !!}
-                            {!! Form::label('', __('tontine.menus.pools'), ['class' => 'form-check-label']) !!}
-                          </div>
-                          <div class="col-md-11 offset-md-1">
-                            {!! Form::checkbox('access[planning][subscriptions]', '1', $access['planning']['subscriptions'] ?? false) !!}
-                            {!! Form::label('', __('tontine.menus.subscriptions'), ['class' => 'form-check-label']) !!}
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <div class="col-md-12">{!! __('tontine.menus.meeting') !!}</div>
-                          <div class="col-md-11 offset-md-1">
-                            {!! Form::checkbox('access[meeting][sessions]', '1', $access['meeting']['sessions'] ?? false) !!}
-                            {!! Form::label('', __('tontine.menus.sessions'), ['class' => 'form-check-label']) !!}
-                          </div>
-                          <div class="col-md-11 offset-md-1">
-                            {!! Form::checkbox('access[meeting][presences]', '1', $access['meeting']['presences'] ?? false) !!}
-                            {!! Form::label('', __('tontine.menus.presences'), ['class' => 'form-check-label']) !!}
+                        <div class="col-md-6 col-sm-12">
+                          <div class="module-body">
+                            <div class="form-group row">
+                              <div class="col-md-12">{!! __('tontine.menus.meeting') !!}</div>
+                              <div class="col-md-11 offset-md-1">
+                                {!! Form::checkbox('access[meeting][sessions]', '1', $access['meeting']['sessions'] ?? false) !!}
+                                {!! Form::label('', __('tontine.menus.sessions'), ['class' => 'form-check-label']) !!}
+                              </div>
+                              <div class="col-md-11 offset-md-1">
+                                {!! Form::checkbox('access[meeting][presences]', '1', $access['meeting']['presences'] ?? false) !!}
+                                {!! Form::label('', __('tontine.menus.presences'), ['class' => 'form-check-label']) !!}
+                              </div>
+                            </div>
+                            <div class="form-group row">
+                              <div class="col-md-12">{!! __('tontine.menus.report') !!}</div>
+                              <div class="col-md-11 offset-md-1">
+                                {!! Form::checkbox('access[report][session]', '1', $access['report']['session'] ?? false) !!}
+                                {!! Form::label('', __('tontine.menus.session'), ['class' => 'form-check-label']) !!}
+                              </div>
+                              <div class="col-md-11 offset-md-1">
+                                {!! Form::checkbox('access[report][round]', '1', $access['report']['round'] ?? false) !!}
+                                {!! Form::label('', __('tontine.menus.round'), ['class' => 'form-check-label']) !!}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
