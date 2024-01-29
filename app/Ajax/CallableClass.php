@@ -7,12 +7,14 @@ use Jaxon\App\Dialog\MessageInterface;
 use Jaxon\App\Dialog\ModalInterface;
 use Jaxon\App\View\Store;
 use Siak\Tontine\Exception\MeetingRoundException;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Exception\PlanningPoolException;
 use Siak\Tontine\Exception\PlanningRoundException;
 use Siak\Tontine\Exception\TontineMemberException;
 use Siak\Tontine\Service\TenantService;
 
 use function floor;
+use function trans;
 
 /**
  * @databag tenant
@@ -61,6 +63,23 @@ class CallableClass extends JaxonCallableClass
         $this->bag($bagName)->set($attrName, $pageNumber);
 
         return [$pageNumber, $this->tenantService->getLimit()];
+    }
+
+    /**
+     * @return void
+     */
+    protected function checkGuestAccess(string $section, string $entry)
+    {
+        if(!$this->tenantService->userIsGuest())
+        {
+            return;
+        }
+
+        $guestAccess = $this->tenantService->getGuestAccess();
+        if(!($guestAccess[$section][$entry] ?? false))
+        {
+            throw new MessageException(trans('tontine.invite.errors.access_denied'));
+        }
     }
 
     /**

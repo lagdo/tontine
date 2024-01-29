@@ -17,6 +17,7 @@ class Session extends CallableClass
     {}
 
     /**
+     * @before checkGuestAccess ["meeting", "sessions"]
      * @before checkRoundSessions
      * @after hideMenuOnMobile
      */

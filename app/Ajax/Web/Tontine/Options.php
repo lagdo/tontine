@@ -20,6 +20,7 @@ class Options extends CallableClass
     {}
 
     /**
+     * @before checkGuestAccess ["tontine", "categories"]
      * @databag charge
      * @after hideMenuOnMobile
      */

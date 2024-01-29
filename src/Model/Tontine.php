@@ -12,6 +12,13 @@ class Tontine extends Base
     use Traits\HasProperty;
 
     /**
+     * True if the tontine is accessed as guest.
+     *
+     * @var bool
+     */
+    public $isGuest = false;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array

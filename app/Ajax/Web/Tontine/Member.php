@@ -32,6 +32,7 @@ class Member extends CallableClass
     {}
 
     /**
+     * @before checkGuestAccess ["tontine", "members"]
      * @after hideMenuOnMobile
      */
     public function home()

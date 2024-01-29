@@ -147,6 +147,7 @@ return [
             'not_allowed' => "This operation is not allowed.",
             'invite_not_found' => "Unable to find the invite.",
             'invite_expired' => "Sorry, this invite has expired.",
+            'access_denied' => "As a guest, you don't have access to this section. Sorry.",
         ],
     ],
     'round' => [

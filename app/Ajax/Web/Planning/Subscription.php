@@ -39,6 +39,7 @@ class Subscription extends CallableClass
 
     /**
      * @databag subscription
+     * @before checkGuestAccess ["planning", "subscriptions"]
      * @before checkRoundPools
      * @after hideMenuOnMobile
      */

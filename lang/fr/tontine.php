@@ -147,6 +147,7 @@ return [
             'not_allowed' => "Cette action n'est pas autorisée.",
             'invite_not_found' => "Impossible de trouver l'invitation.",
             'invite_expired' => "Désolé, cette invitation a expiré.",
+            'access_denied' => "En tant qu'invité, vous n'avez pas accès à cette section. Désolé.",
         ],
     ],
     'round' => [

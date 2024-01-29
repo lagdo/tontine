@@ -23,6 +23,7 @@ class Round extends CallableClass
 
     /**
      * @databag planning
+     * @before checkGuestAccess ["planning", "sessions"]
      * @after hideMenuOnMobile
      */
     public function home()

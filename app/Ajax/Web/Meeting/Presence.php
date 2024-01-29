@@ -18,6 +18,7 @@ class Presence extends CallableClass
     protected PresenceService $presenceService;
 
     /**
+     * @before checkGuestAccess ["meeting", "presences"]
      * @before checkRoundSessions
      * @after hideMenuOnMobile
      */

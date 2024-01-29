@@ -10,6 +10,7 @@ use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\TenantService;
 
 use function config;
+use function tap;
 
 class TontineService
 {
@@ -93,7 +94,10 @@ class TontineService
             ])
             ->orderBy('tontines.id')
             ->page($page, $this->tenantService->getLimit())
-            ->get();
+            ->get()
+            ->each(function($tontine) {
+                $tontine->isGuest = true;
+            });
     }
 
     /**
@@ -115,7 +119,12 @@ class TontineService
      */
     public function getGuestTontine(int $tontineId): ?Tontine
     {
-        return $this->getGuestTontinesQuery()->find($tontineId);
+        return tap($this->getGuestTontinesQuery()->find($tontineId), function($tontine) {
+            if($tontine !== null)
+            {
+                $tontine->isGuest = true;
+            }
+        });
     }
 
     /**
