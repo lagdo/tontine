@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Ajax\Web\Tontine\User;
+namespace App\Ajax\Web\Tontine\Guest;
 
 use App\Ajax\CallableClass;
-use App\Ajax\Web\Tontine\User;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\GuestInvite as InviteModel;
 use Siak\Tontine\Model\Tontine as TontineModel;
 use Siak\Tontine\Service\Tontine\GuestService;
 use Siak\Tontine\Service\Tontine\TontineService;
+use Siak\Tontine\Validation\Tontine\GuestAccessValidator;
 
 use function Jaxon\pm;
 use function trans;
@@ -19,6 +19,11 @@ use function trans;
  */
 class Access extends CallableClass
 {
+    /**
+     * @var GuestAccessValidator
+     */
+    protected GuestAccessValidator $validator;
+
     /**
      * @var InviteModel
      */
@@ -31,6 +36,7 @@ class Access extends CallableClass
 
     /**
      * @param GuestService $guestService
+     * @param TontineService $tontineService
      */
     public function __construct(private GuestService $guestService,
         private TontineService $tontineService)
@@ -44,6 +50,7 @@ class Access extends CallableClass
         {
             throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
         }
+        // Do not find the tontine on the home page.
         if($this->target()->method() === 'home')
         {
             return;
@@ -62,7 +69,7 @@ class Access extends CallableClass
             return $this->response;
         }
         $this->tontine = $tontines->first();
-        $this->bag('invite')->set('invite.id', $this->invite->id);
+        $this->bag('invite')->set('invite.id', $inviteId);
         $this->bag('invite')->set('tontine.id', $this->tontine->id);
 
         $html = $this->render('pages.invite.access.home', [
@@ -70,7 +77,7 @@ class Access extends CallableClass
             'tontines' => $tontines->pluck('name', 'id'),
         ]);
         $this->response->html('content-host-invites-home', $html);
-        $this->jq('#btn-host-invites-back')->click($this->rq(User::class)->home());
+        $this->jq('#btn-host-invites-back')->click($this->rq(Invite::class)->home());
         $tontineId = pm()->select('select-invite-tontine');
         $this->jq('#btn-select-invite-tontine')->click($this->rq()->tontine($tontineId));
 
@@ -79,7 +86,7 @@ class Access extends CallableClass
 
     public function tontine(int $tontineId)
     {
-        $this->bag('invite')->set('tontine.id', $this->tontine->id);
+        $this->bag('invite')->set('tontine.id', $tontineId);
 
         return $this->access();
     }
@@ -98,9 +105,12 @@ class Access extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function saveAccess(array $formValues)
     {
-        $access = $formValues['access'] ?? [];
+        $access = $this->validator->validateItem($formValues['access'] ?? []);
         $this->guestService->saveGuestTontineAccess($this->invite, $this->tontine, $access);
 
         $this->notify->success(trans('meeting.messages.saved'), trans('common.titles.success'));

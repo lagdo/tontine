@@ -10,8 +10,7 @@ use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Model\User;
 use Siak\Tontine\Service\TenantService;
 
-use function json_encode;
-use function json_decode;
+use function count;
 use function now;
 
 class GuestService
@@ -238,16 +237,23 @@ class GuestService
      *
      * @param int $inviteId
      *
-     * @return void
+     * @return bool
      */
-    public function deleteGuestInvite(int $inviteId)
+    public function deleteGuestInvite(int $inviteId): bool
     {
         if(!($invite = $this->getGuestInvite($inviteId)))
         {
             throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
         }
 
+        $activeTontineInviteIsDeleted = DB::table('guest_tontine')
+            ->where('invite_id', $invite->id)
+            ->where('tontine_id', $this->tenantService->tontine()->id)
+            ->exists();
+
         $this->deleteInvite($invite);
+
+        return $activeTontineInviteIsDeleted;
     }
 
     /**
@@ -261,7 +267,7 @@ class GuestService
     public function getGuestTontineAccess(GuestInvite $invite, Tontine $tontine): array
     {
         $inviteTontine = $invite->tontines()->find($tontine->id);
-        return !$inviteTontine ? [] : json_decode($inviteTontine->pivot->access, true);
+        return !$inviteTontine ? [] : $inviteTontine->permission->access;
     }
 
     /**
@@ -277,7 +283,10 @@ class GuestService
     {
         DB::transaction(function() use($invite, $tontine, $access) {
             $invite->tontines()->detach($tontine->id);
-            $invite->tontines()->attach($tontine->id, ['access' => json_encode($access)]);
+            if(count($access) > 0)
+            {
+                $invite->tontines()->attach($tontine->id, ['access' => $access]);
+            }
         });
     }
 }

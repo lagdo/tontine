@@ -32,6 +32,7 @@ class Pool extends CallableClass
 
     /**
      * @databag subscription
+     * @before checkGuestAccess ["planning", "pools"]
      * @before checkRoundSessions
      * @after hideMenuOnMobile
      */

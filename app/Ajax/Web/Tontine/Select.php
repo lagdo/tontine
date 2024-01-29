@@ -45,7 +45,7 @@ class Select extends CallableSelectClass
 
     public function saveTontine(int $tontineId)
     {
-        if(!($tontine = $this->tontineService->getTontine($tontineId)))
+        if(!($tontine = $this->tontineService->getUserOrGuestTontine($tontineId)))
         {
             return $this->response;
         }

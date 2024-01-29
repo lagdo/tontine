@@ -12,6 +12,13 @@ class Tontine extends Base
     use Traits\HasProperty;
 
     /**
+     * True if the tontine is accessed as guest.
+     *
+     * @var bool
+     */
+    public $isGuest = false;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -88,6 +95,9 @@ class Tontine extends Base
     public function invites()
     {
         return $this->belongsToMany(GuestInvite::class,
-            'guest_tontine', 'tontine_id', 'invite_id')->withPivot('access');
+            'guest_tontine', 'tontine_id', 'invite_id')
+            ->as('permission')
+            ->withPivot('access')
+            ->using(GuestTontine::class);
     }
 }

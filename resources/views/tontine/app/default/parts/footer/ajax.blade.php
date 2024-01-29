@@ -7,7 +7,7 @@
 <script type='text/javascript'>
   const tontine = {
     home: () => {!! $jxnTontine->home() !!},
-    users: () => {!! $jxnUser->home() !!},
+    users: () => {!! $jxnInvite->home() !!},
     labels: {
       amount: "{{ __('common.labels.amount') }}",
       percentage: "{{ __('meeting.loan.labels.percentage') }}",

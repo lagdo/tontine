@@ -56,7 +56,8 @@ use Siak\Tontine\Validation\Planning\PoolRoundValidator;
 use Siak\Tontine\Validation\Planning\RoundValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
-use Siak\Tontine\Validation\Tontine\InviteValidator;
+use Siak\Tontine\Validation\Tontine\GuestAccessValidator;
+use Siak\Tontine\Validation\Tontine\GuestInviteValidator;
 use Siak\Tontine\Validation\Tontine\MemberValidator;
 use Siak\Tontine\Validation\Tontine\OptionsValidator;
 use Siak\Tontine\Validation\Tontine\TontineValidator;
@@ -160,6 +161,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(OptionsValidator::class, OptionsValidator::class);
         $this->app->singleton(TontineValidator::class, TontineValidator::class);
         $this->app->singleton(TargetValidator::class, TargetValidator::class);
-        $this->app->singleton(InviteValidator::class, InviteValidator::class);
+        $this->app->singleton(GuestAccessValidator::class, GuestAccessValidator::class);
+        $this->app->singleton(GuestInviteValidator::class, GuestInviteValidator::class);
     }
 }

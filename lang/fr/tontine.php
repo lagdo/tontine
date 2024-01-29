@@ -102,6 +102,7 @@ return [
             'add' => "Inviter un utilisateur",
             'add_desc' => "L'utilisateur doit déjà avoir créé un compte.",
             'access' => "Accès",
+            'associations' => "Invité :: Associations",
         ],
         'labels' => [
             'host' => "Hôte",
@@ -146,6 +147,7 @@ return [
             'not_allowed' => "Cette action n'est pas autorisée.",
             'invite_not_found' => "Impossible de trouver l'invitation.",
             'invite_expired' => "Désolé, cette invitation a expiré.",
+            'access_denied' => "En tant qu'invité, vous n'avez pas accès à cette section. Désolé.",
         ],
     ],
     'round' => [

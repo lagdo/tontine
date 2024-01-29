@@ -10,7 +10,7 @@
           <ul class="sidebar-menu">
             <li class="menu-header">{{ __('tontine.menus.tontines') }}</li>
             <li><a class="nav-link" id="tontine-menu-tontines" href="{{ $ajax ? 'javascript:void(0)' : route('tontine.home') }}">
-              <i class="fa fa-address-book"></i> <span>{{ __('tontine.menus.tontines') }}</span>
+              <i class="fa fa-user-shield"></i> <span>{{ __('tontine.menus.tontines') }}</span>
             </a></li>
             <li><a class="nav-link" id="tontine-menu-users" href="javascript:void(0)">
               <i class="fa fa-user-friends"></i> <span>{{ __('tontine.menus.users') }}</span>

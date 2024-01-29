@@ -127,4 +127,32 @@ class TenantService
     {
         return $this->limit;
     }
+
+    /**
+     * @return bool
+     */
+    public function userIsGuest(): bool
+    {
+        return $this->tontine !== null && $this->tontine->isGuest;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGuestAccess(): array
+    {
+        if(!$this->tontine || !$this->user)
+        {
+            return [];
+        }
+        $userInvite = $this->tontine->invites()
+            ->where('guest_id', $this->user->id)
+            ->first();
+        if(!$userInvite)
+        {
+            return [];
+        }
+
+        return $userInvite->permission->access;
+    }
 }

@@ -2,12 +2,15 @@
 
 namespace Siak\Tontine\Service\Tontine;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\TenantService;
 
 use function config;
+use function tap;
 
 class TontineService
 {
@@ -51,6 +54,84 @@ class TontineService
     public function getTontine(int $tontineId): ?Tontine
     {
         return $this->tenantService->user()->tontines()->find($tontineId);
+    }
+
+    /**
+     * @return Builder|Relation
+     */
+    public function getGuestTontinesQuery(): Builder|Relation
+    {
+        return Tontine::whereHas('invites', function(Builder $query) {
+            $query->where('guest_id', $this->tenantService->user()->id);
+        });
+    }
+
+    /**
+     * Check if the user has guest tontines
+     *
+     * @return bool
+     */
+    public function hasGuestTontines(): bool
+    {
+        return $this->getGuestTontinesQuery()->exists();
+    }
+
+    /**
+     * Get a paginated list of tontines in the selected round.
+     *
+     * @param int $page
+     *
+     * @return Collection
+     */
+    public function getGuestTontines(int $page = 0): Collection
+    {
+        return $this->getGuestTontinesQuery()
+            ->with(['user'])
+            ->orderBy('tontines.id')
+            ->page($page, $this->tenantService->getLimit())
+            ->get()
+            ->each(function($tontine) {
+                $tontine->isGuest = true;
+            });
+    }
+
+    /**
+     * Get the number of tontines in the selected round.
+     *
+     * @return int
+     */
+    public function getGuestTontineCount(): int
+    {
+        return $this->getGuestTontinesQuery()->count();
+    }
+
+    /**
+     * Get a single tontine.
+     *
+     * @param int $tontineId    The tontine id
+     *
+     * @return Tontine|null
+     */
+    public function getGuestTontine(int $tontineId): ?Tontine
+    {
+        return tap($this->getGuestTontinesQuery()->find($tontineId), function($tontine) {
+            if($tontine !== null)
+            {
+                $tontine->isGuest = true;
+            }
+        });
+    }
+
+    /**
+     * Get a single tontine.
+     *
+     * @param int $tontineId    The tontine id
+     *
+     * @return Tontine|null
+     */
+    public function getUserOrGuestTontine(int $tontineId): ?Tontine
+    {
+        return $this->getTontine($tontineId) ?? $this->getGuestTontine($tontineId);
     }
 
     /**

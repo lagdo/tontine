@@ -23,6 +23,7 @@ class Round extends CallableClass
     {}
 
     /**
+     * @before checkGuestAccess ["report", "round"]
      * @before checkOpenedSessions
      * @after hideMenuOnMobile
      */

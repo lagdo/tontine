@@ -26,6 +26,7 @@ class Session extends CallableClass
     {}
 
     /**
+     * @before checkGuestAccess ["report", "session"]
      * @before checkOpenedSessions
      * @after hideMenuOnMobile
      */
