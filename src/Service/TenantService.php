@@ -6,8 +6,6 @@ use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Model\User;
 
-use function json_decode;
-
 class TenantService
 {
     /**
@@ -143,15 +141,18 @@ class TenantService
      */
     public function getGuestAccess(): array
     {
-        if(!$this->tontine)
+        if(!$this->tontine || !$this->user)
         {
             return [];
         }
-        $userInvite = $this->tontine->invites()->where('guest_id', $this->user->id)->first();
+        $userInvite = $this->tontine->invites()
+            ->where('guest_id', $this->user->id)
+            ->first();
         if(!$userInvite)
         {
             return [];
         }
-        return json_decode($userInvite->pivot->access, true);
+
+        return $userInvite->permission->access;
     }
 }

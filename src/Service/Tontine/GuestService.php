@@ -11,8 +11,6 @@ use Siak\Tontine\Model\User;
 use Siak\Tontine\Service\TenantService;
 
 use function count;
-use function json_encode;
-use function json_decode;
 use function now;
 
 class GuestService
@@ -262,7 +260,7 @@ class GuestService
     public function getGuestTontineAccess(GuestInvite $invite, Tontine $tontine): array
     {
         $inviteTontine = $invite->tontines()->find($tontine->id);
-        return !$inviteTontine ? [] : json_decode($inviteTontine->pivot->access, true);
+        return !$inviteTontine ? [] : $inviteTontine->permission->access;
     }
 
     /**
@@ -280,7 +278,7 @@ class GuestService
             $invite->tontines()->detach($tontine->id);
             if(count($access) > 0)
             {
-                $invite->tontines()->attach($tontine->id, ['access' => json_encode($access)]);
+                $invite->tontines()->attach($tontine->id, ['access' => $access]);
             }
         });
     }
