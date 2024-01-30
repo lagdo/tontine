@@ -2,12 +2,12 @@
 
 namespace Siak\Tontine\Service\Tontine;
 
+use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Charge;
-use Siak\Tontine\Model\Session;
-use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\EventTrait;
 
@@ -31,7 +31,7 @@ class ChargeService
     public function getCharges(int $page = 0): Collection
     {
         return $this->tenantService->tontine()->charges()
-            ->withCount(['tontine_bills', 'round_bills', 'session_bills', 'libre_bills'])
+            // ->withCount(['tontine_bills', 'round_bills', 'session_bills', 'libre_bills'])
             ->page($page, $this->tenantService->getLimit())
             ->orderBy('type', 'asc')
             ->orderBy('period', 'desc')
@@ -59,7 +59,7 @@ class ChargeService
     public function getCharge(int $chargeId): ?Charge
     {
         return $this->tenantService->tontine()->charges()
-            ->withCount(['tontine_bills', 'round_bills', 'session_bills', 'libre_bills'])
+            // ->withCount(['tontine_bills', 'round_bills', 'session_bills', 'libre_bills'])
             ->find($chargeId);
     }
 
@@ -115,11 +115,23 @@ class ChargeService
      */
     public function deleteCharge(Charge $charge)
     {
-        if($charge->bills_count > 0)
+        // Delete the charge and the related bills crated by the app.
+        // Will fail if a settlement exists for any of those bills.
+        try
+        {
+            DB::transaction(function() use($charge) {
+                Bill::ofCharge($charge, false)->delete();
+                $charge->tontine_bills()->delete();
+                $charge->round_bills()->delete();
+                $charge->session_bills()->delete();
+                // $charge->libre_bills()->delete();
+                $charge->delete();
+            });
+        }
+        catch(Exception)
         {
             throw new MessageException(trans('tontine.charge.errors.cannot_delete'));
         }
-        $charge->delete();
     }
 
     /**

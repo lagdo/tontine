@@ -14,20 +14,6 @@
                   </thead>
                   <tbody>
 @foreach ($charges as $charge)
-@php
-  $menus = $charge->bills_count > 0 ?
-    [[
-      'class' => 'btn-charge-edit',
-      'text' => __('common.actions.edit'),
-    ]] :
-    [[
-      'class' => 'btn-charge-edit',
-      'text' => __('common.actions.edit'),
-    ],[
-      'class' => 'btn-charge-delete',
-      'text' => __('common.actions.delete'),
-    ]]
-@endphp
                     <tr>
                       <td>{{ $types[$charge->type] ?? '' }}</td>
                       <td>{{ $periods[$charge->period] ?? '' }}</td>
@@ -44,7 +30,13 @@
 @include('tontine.app.default.parts.table.menu', [
   'dataIdKey' => 'data-charge-id',
   'dataIdValue' => $charge->id,
-  'menus' => $menus,
+  'menus' => [[
+    'class' => 'btn-charge-edit',
+    'text' => __('common.actions.edit'),
+  ],[
+    'class' => 'btn-charge-delete',
+    'text' => __('common.actions.delete'),
+  ]],
 ])
                       </td>
                     </tr>

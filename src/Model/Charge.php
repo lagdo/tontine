@@ -106,12 +106,6 @@ class Charge extends Base
         return $this->hasMany(SettlementTarget::class);
     }
 
-    public function getBillsCountAttribute()
-    {
-        return $this->tontine_bills_count + $this->round_bills_count +
-            $this->session_bills_count + $this->libre_bills_count;
-    }
-
     public function getIsFeeAttribute()
     {
         return intval($this->type) === self::TYPE_FEE;

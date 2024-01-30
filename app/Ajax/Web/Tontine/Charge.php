@@ -235,12 +235,12 @@ class Charge extends CallableClass
         [, $currency] = $this->localeService->getNameFromTontine($tontine);
 
         $title = trans('tontine.charge.titles.edit');
-        $content = $this->view()
-            ->render('tontine.pages.options.charge.edit')
-            ->with('charge', $charge)
-            ->with('currency', $currency)
-            ->with('types', $this->getChargeTypes())
-            ->with('periods', $this->getChargePeriods());
+        $content = $this->render('pages.options.charge.edit', [
+            'charge' => $charge,
+            'currency' => $currency,
+            'types' => $this->getChargeTypes(),
+            'periods' => $this->getChargePeriods(),
+        ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

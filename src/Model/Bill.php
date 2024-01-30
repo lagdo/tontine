@@ -227,4 +227,32 @@ class Bill extends Base
                 });
             });
     }
+
+    /**
+     * @param Builder $query
+     * @param Charge $charge
+     * @param bool $withLibre
+     *
+     * @return Builder
+     */
+    public function scopeOfCharge(Builder $query, Charge $charge, bool $withLibre): Builder
+    {
+        return $query->addSelect(['bills.*'])
+            ->where(function($query) use($charge, $withLibre) {
+                $query->orWhereHas('tontine_bill', function($query) use($charge) {
+                        $query->where('charge_id', $charge->id);
+                    })
+                    ->orWhereHas('round_bill', function($query) use($charge) {
+                        $query->where('charge_id', $charge->id);
+                    })
+                    ->orWhereHas('session_bill', function($query) use($charge) {
+                        $query->where('charge_id', $charge->id);
+                    })
+                    ->when($withLibre, function($query) use($charge) {
+                        $query->orWhereHas('libre_bill', function($query) use($charge) {
+                            $query->where('charge_id', $charge->id);
+                        });
+                    });
+            });
+    }
 }
