@@ -115,16 +115,17 @@ class ChargeService
      */
     public function deleteCharge(Charge $charge)
     {
-        // Delete the charge and the related bills crated by the app.
+        // Delete the charge and the related bills.
         // Will fail if a settlement exists for any of those bills.
         try
         {
             DB::transaction(function() use($charge) {
-                Bill::ofCharge($charge, false)->delete();
+                $billIds = Bill::ofCharge($charge, true)->pluck('id');
                 $charge->tontine_bills()->delete();
                 $charge->round_bills()->delete();
                 $charge->session_bills()->delete();
-                // $charge->libre_bills()->delete();
+                $charge->libre_bills()->delete();
+                Bill::whereIn('id', $billIds)->delete();
                 $charge->delete();
             });
         }
