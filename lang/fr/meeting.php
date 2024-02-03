@@ -72,7 +72,10 @@ return [
     ],
     'warnings' => [
         'session' => [
-            'closed' => "Cette opération n'est pas permise lorsque la session est fermée.",
+            'closed' => "Cette opération n'est pas permise parceque la session est fermée.",
+        ],
+        'charge' => [
+            'disabled' => "Cette opération n'est pas permise parceque le frais est désactivé.",
         ],
     ],
     'errors' => [

@@ -7,7 +7,10 @@
   $sessionSettlementAmount = $settlements['amount']['session'][$charge->id] ?? 0;
 @endphp
                         <tr>
-                          <td>{{ $charge->name }}<br/>{{ $locale->formatMoney($charge->amount, true) }}</td>
+                          <td>
+                            <span @if (!$charge->is_active)style="text-decoration:line-through"@endif>{{ $charge->name }}</span>
+                            <br/>{{ $locale->formatMoney($charge->amount, true) }}
+                          </td>
                           <td class="currency">
                             {{ $sessionSettlementTotal }}/{{ $sessionBillTotal }} @if ($roundBillTotal > 0) - {{
                               $roundSettlementTotal }}/{{ $roundBillTotal }}@endif @if ($sessionSettlementAmount > 0)<br/>{{

@@ -106,7 +106,9 @@ class Handler extends ExceptionHandler
         // Show the error message in a dialog
         $this->renderable(function (MessageException $e) {
             $ajaxResponse = $this->jaxon->ajaxResponse();
-            $ajaxResponse->dialog->error($e->getMessage(), trans('common.titles.error'));
+            $e->isError ?
+                $ajaxResponse->dialog->error($e->getMessage(), trans('common.titles.error')) :
+                $ajaxResponse->dialog->warning($e->getMessage(), trans('common.titles.warning'));
 
             return $this->jaxon->httpResponse();
         });

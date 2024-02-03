@@ -52,12 +52,13 @@ class FixedFee extends CallableSessionClass
         $bills = $this->feeService->getBills($this->session);
         $settlements = $this->feeService->getSettlements($this->session);
 
-        $html = $this->render('pages.meeting.charge.fixed.page')
-            ->with('session', $this->session)
-            ->with('charges', $charges)
-            ->with('bills', $bills)
-            ->with('settlements', $settlements)
-            ->with('pagination', $pagination);
+        $html = $this->render('pages.meeting.charge.fixed.page', [
+            'session' => $this->session,
+            'charges' => $charges,
+            'bills' => $bills,
+            'settlements' => $settlements,
+            'pagination' => $pagination,
+        ]);
         $this->response->html('meeting-fees-fixed-page', $html);
 
         $chargeId = jq()->parent()->attr('data-charge-id')->toInt();

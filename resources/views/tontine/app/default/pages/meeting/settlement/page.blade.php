@@ -23,7 +23,7 @@
                             @if ($settlementCount > 0)<br />{!! $locale->formatMoney($settlementAmount, true) !!}@endif
                           </th>
                           <th class="table-item-menu">
-@if ($charge->is_variable)
+@if ($charge->is_variable || !$charge->is_active)
                             {!! __('common.labels.paid') !!}
 @elseif ($settlementCount < $billCount)
                             <a href="javascript:void(0)" class="btn-add-all-settlements"><i class="fa fa-toggle-off"></i></a>
@@ -40,7 +40,7 @@
                             $bill->session->title }} @endif</td>
                           <td class="currency">{{ $locale->formatMoney($bill->amount, true) }}</td>
                           <td class="table-item-menu" data-bill-id="{{ $bill->id }}">
-                            {!! paymentLink($bill->settlement, 'settlement', !$session->opened) !!}
+                            {!! paymentLink($bill->settlement, 'settlement', !$session->opened || !$charge->is_active) !!}
                           </td>
                         </tr>
 @endforeach

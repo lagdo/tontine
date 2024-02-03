@@ -72,7 +72,10 @@ return [
     ],
     'warnings' => [
         'session' => [
-            'closed' => "This operation is not allowed when the session is closed.",
+            'closed' => "This operation is not allowed because the session is closed.",
+        ],
+        'charge' => [
+            'disabled' => "This operation is not allowed because the fee is disabled.",
         ],
     ],
     'errors' => [

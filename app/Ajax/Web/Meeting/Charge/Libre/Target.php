@@ -2,14 +2,11 @@
 
 namespace App\Ajax\Web\Meeting\Charge\Libre;
 
-use App\Ajax\CallableSessionClass;
+use App\Ajax\CallableChargeClass;
 use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Model\Charge as ChargeModel;
 use Siak\Tontine\Model\SettlementTarget as TargetModel;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
-use Siak\Tontine\Service\Meeting\SessionService;
-use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Validation\Meeting\TargetValidator;
 
 use function Jaxon\jq;
@@ -20,7 +17,7 @@ use function trim;
 /**
  * @before getTarget
  */
-class Target extends CallableSessionClass
+class Target extends CallableChargeClass
 {
     /**
      * @var LocaleService
@@ -33,11 +30,6 @@ class Target extends CallableSessionClass
     protected TargetValidator $validator;
 
     /**
-     * @var ChargeModel|null
-     */
-    protected ?ChargeModel $charge;
-
-    /**
      * @var TargetModel|null
      */
     protected ?TargetModel $target = null;
@@ -46,20 +38,12 @@ class Target extends CallableSessionClass
      * The constructor
      *
      * @param SettlementTargetService $targetService
-     * @param ChargeService $chargeService
-     * @param SessionService $sessionService
      */
-    public function __construct(protected SettlementTargetService $targetService,
-        protected ChargeService $chargeService, SessionService $sessionService)
-    {
-        $this->sessionService = $sessionService;
-    }
+    public function __construct(protected SettlementTargetService $targetService)
+    {}
 
     protected function getTarget()
     {
-        $chargeId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('charge.id');
-        $this->charge = $this->chargeService->getCharge($chargeId);
         if($this->session !== null && $this->charge !== null)
         {
             $this->target = $this->targetService->getTarget($this->charge, $this->session);
@@ -132,19 +116,11 @@ class Target extends CallableSessionClass
     }
 
     /**
+     * @before checkChargeEdit
      * @return mixed
      */
     public function add()
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-        if($this->session === null || $this->charge === null)
-        {
-            return $this->response;
-        }
         if($this->target !== null)
         {
             return $this->response;
@@ -171,21 +147,13 @@ class Target extends CallableSessionClass
 
     /**
      * @di $validator
+     * @before checkChargeEdit
      * @param array $formValues
      *
      * @return mixed
      */
     public function create(array $formValues)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-        if($this->session === null || $this->charge === null)
-        {
-            return $this->response;
-        }
         if($this->target !== null)
         {
             return $this->response;
@@ -193,7 +161,7 @@ class Target extends CallableSessionClass
 
         $formValues['global'] = isset($formValues['global']);
         $values = $this->validator->validateItem($formValues);
-        $deadlineSession = $this->sessionService->getSession($values['deadline']);
+        $deadlineSession = $this->sessionService->getTontineSession($values['deadline']);
 
         $this->targetService->createTarget($this->charge, $this->session,
             $deadlineSession, $values['amount'], $values['global']);
@@ -204,15 +172,11 @@ class Target extends CallableSessionClass
     }
 
     /**
+     * @before checkChargeEdit
      * @return mixed
      */
     public function edit()
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         if($this->target === null)
         {
             return $this->response;
@@ -240,6 +204,7 @@ class Target extends CallableSessionClass
 
     /**
      * @di $validator
+     * @before checkChargeEdit
      * @param int $memberId
      * @param string $amount
      *
@@ -247,11 +212,6 @@ class Target extends CallableSessionClass
      */
     public function update(array $formValues)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         if($this->target === null)
         {
             return $this->response;
@@ -259,7 +219,7 @@ class Target extends CallableSessionClass
 
         $formValues['global'] = isset($formValues['global']);
         $values = $this->validator->validateItem($formValues);
-        $deadlineSession = $this->sessionService->getSession($values['deadline']);
+        $deadlineSession = $this->sessionService->getTontineSession($values['deadline']);
 
         $this->targetService->updateTarget($this->target, $this->session,
             $deadlineSession, $values['amount'], $values['global']);
@@ -270,14 +230,11 @@ class Target extends CallableSessionClass
     }
 
     /**
+     * @before checkChargeEdit
      * @return mixed
      */
     public function remove()
     {
-        if($this->session === null || $this->charge === null)
-        {
-            return $this->response;
-        }
         if($this->target === null)
         {
             return $this->response;

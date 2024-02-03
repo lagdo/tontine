@@ -199,7 +199,7 @@ class SessionService
         $bills = $this->getBills($settlementFilter);
         $sessionIds = collect([$session->id]);
 
-        $charges = $this->tenantService->tontine()->charges()->active()->get();
+        $charges = $this->tenantService->tontine()->charges()/*->active()*/->get();
         $disbursements = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
 
         return $charges->each(function($charge) use($bills, $disbursements) {
@@ -207,6 +207,9 @@ class SessionService
             $charge->total_count = $bill ? $bill->total_count : 0;
             $charge->total_amount = $bill ? $bill->total_amount : 0;
             $charge->disbursement = $disbursements[$charge->id] ?? null;
+        })->filter(function($charge) {
+            return $charge->total_count > 0 || ($charge->disbursement !== null &&
+                $charge->disbursement->total_count > 0);
         });
     }
 
@@ -227,7 +230,7 @@ class SessionService
         };
         $bills = $this->getBills($settlementFilter, $member);
 
-        $charges = $this->tenantService->tontine()->charges()->active()->get();
+        $charges = $this->tenantService->tontine()->charges()/*->active()*/->get();
         $disbursements = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
         if($member !== null)
         {
@@ -245,6 +248,9 @@ class SessionService
             $charge->total_count = $bill ? $bill->total_count : 0;
             $charge->total_amount = $bill ? $bill->total_amount : 0;
             $charge->disbursement = $disbursements[$charge->id] ?? null;
+        })->filter(function($charge) {
+            return $charge->total_count > 0 || ($charge->disbursement !== null &&
+                $charge->disbursement->total_count > 0);
         });
     }
 

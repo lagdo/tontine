@@ -146,6 +146,11 @@ class Charge extends Base
         return $this->is_fixed || $this->amount > 0;
     }
 
+    public function getIsActiveAttribute()
+    {
+        return $this->active == true;
+    }
+
     /**
      * @param  Builder  $query
      *
@@ -213,7 +218,7 @@ class Charge extends Base
      */
     public function scopeFixed(Builder $query): Builder
     {
-        return $query->where('period', '!=', self::PERIOD_NONE)->where('active', true);
+        return $query->where('period', '!=', self::PERIOD_NONE);
     }
 
     /**
@@ -223,6 +228,6 @@ class Charge extends Base
      */
     public function scopeVariable(Builder $query): Builder
     {
-        return $query->where('period', self::PERIOD_NONE)->where('active', true);
+        return $query->where('period', self::PERIOD_NONE);
     }
 }

@@ -2,45 +2,14 @@
 
 namespace App\Ajax\Web\Meeting\Charge\Fixed;
 
-use App\Ajax\CallableSessionClass;
+use App\Ajax\CallableChargeClass;
 use App\Ajax\Web\Meeting\Charge\FixedFee as Charge;
-use Siak\Tontine\Model\Charge as ChargeModel;
-use Siak\Tontine\Service\Meeting\Charge\BillService;
-use Siak\Tontine\Service\Meeting\Charge\SettlementService;
-use Siak\Tontine\Service\Tontine\ChargeService;
 
 use function Jaxon\jq;
-use function trans;
 use function trim;
 
-/**
- * @before getCharge
- */
-class Settlement extends CallableSessionClass
+class Settlement extends CallableChargeClass
 {
-    /**
-     * @var ChargeModel|null
-     */
-    protected ?ChargeModel $charge;
-
-    /**
-     * The constructor
-     *
-     * @param SettlementService $settlementService
-     * @param ChargeService $chargeService
-     * @param BillService $billService
-     */
-    public function __construct(protected SettlementService $settlementService,
-        protected ChargeService $chargeService, protected BillService $billService)
-    {}
-
-    protected function getCharge()
-    {
-        $chargeId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('fee.fixed.id');
-        $this->charge = $this->chargeService->getCharge($chargeId);
-    }
-
     /**
      * @param int $chargeId
      *
@@ -48,7 +17,7 @@ class Settlement extends CallableSessionClass
      */
     public function home(int $chargeId)
     {
-        $this->bag('meeting')->set('fee.fixed.id', $chargeId);
+        $this->bag('meeting')->set('charge.id', $chargeId);
         $this->bag('meeting')->set('settlement.fixed.filter', null);
 
         $html = $this->render('pages.meeting.settlement.home', [
@@ -126,72 +95,52 @@ class Settlement extends CallableSessionClass
     }
 
     /**
+     * @before checkChargeEdit
+     * @after showBalanceAmounts
      * @param int $billId
      *
      * @return mixed
-     * @after showBalanceAmounts
      */
     public function addSettlement(int $billId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $this->settlementService->createSettlement($this->charge, $this->session, $billId);
 
         return $this->page();
     }
 
     /**
+     * @before checkChargeEdit
+     * @after showBalanceAmounts
      * @param int $billId
      *
      * @return mixed
-     * @after showBalanceAmounts
      */
     public function delSettlement(int $billId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $this->settlementService->deleteSettlement($this->charge, $this->session, $billId);
 
         return $this->page();
     }
 
     /**
-     * @return mixed
+     * @before checkChargeEdit
      * @after showBalanceAmounts
+     * @return mixed
      */
     public function addAllSettlements()
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $this->settlementService->createAllSettlements($this->charge, $this->session);
 
         return $this->page();
     }
 
     /**
-     * @return mixed
+     * @before checkChargeEdit
      * @after showBalanceAmounts
+     * @return mixed
      */
     public function delAllSettlements()
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $this->settlementService->deleteAllSettlements($this->charge, $this->session);
 
         return $this->page();

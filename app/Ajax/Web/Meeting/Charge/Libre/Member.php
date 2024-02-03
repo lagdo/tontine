@@ -2,15 +2,11 @@
 
 namespace App\Ajax\Web\Meeting\Charge\Libre;
 
-use App\Ajax\CallableSessionClass;
+use App\Ajax\CallableChargeClass;
 use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Charge as ChargeModel;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Meeting\Charge\BillService;
-use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
-use Siak\Tontine\Service\Meeting\Charge\SettlementService;
-use Siak\Tontine\Service\Tontine\ChargeService;
 
 use function filter_var;
 use function Jaxon\jq;
@@ -19,10 +15,7 @@ use function str_replace;
 use function trans;
 use function trim;
 
-/**
- * @before getCharge
- */
-class Member extends CallableSessionClass
+class Member extends CallableChargeClass
 {
     /**
      * @var LocaleService
@@ -30,29 +23,9 @@ class Member extends CallableSessionClass
     protected LocaleService $localeService;
 
     /**
-     * The constructor
-     *
-     * @param SettlementService $settlementService
-     * @param ChargeService $chargeService
-     * @param LibreFeeService $feeService
-     * @param BillService $billService
-     */
-    public function __construct(protected SettlementService $settlementService,
-        protected ChargeService $chargeService, protected LibreFeeService $feeService,
-        protected BillService $billService)
-    {}
-
-    /**
      * @var ChargeModel|null
      */
     protected ?ChargeModel $charge;
-
-    protected function getCharge()
-    {
-        $chargeId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('charge.id');
-        $this->charge = $this->chargeService->getCharge($chargeId);
-    }
 
     /**
      * @param int $chargeId
@@ -146,6 +119,7 @@ class Member extends CallableSessionClass
     }
 
     /**
+     * @before checkChargeEdit
      * @param int $memberId
      * @param string $amount
      *
@@ -153,12 +127,6 @@ class Member extends CallableSessionClass
      */
     public function addBill(int $memberId, bool $paid, string $amount = '')
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $this->billService->createBill($this->charge, $this->session, $memberId,
             $paid, $this->convertAmount($amount));
 
@@ -166,18 +134,13 @@ class Member extends CallableSessionClass
     }
 
     /**
+     * @before checkChargeEdit
      * @param int $memberId
      *
      * @return mixed
      */
     public function delBill(int $memberId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $this->billService->deleteBill($this->charge, $this->session, $memberId);
 
         return $this->page();
@@ -185,17 +148,13 @@ class Member extends CallableSessionClass
 
     /**
      * @di $localeService
+     * @before checkChargeEdit
      * @param int $memberId
      *
      * @return mixed
      */
     public function editBill(int $memberId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         $bill = $this->billService->getMemberBill($this->charge, $this->session, $memberId);
         if($bill === null)
         {
@@ -217,6 +176,7 @@ class Member extends CallableSessionClass
     }
 
     /**
+     * @before checkChargeEdit
      * @param int $memberId
      * @param string $amount
      *
@@ -224,12 +184,6 @@ class Member extends CallableSessionClass
      */
     public function saveBill(int $memberId, string $amount)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $amount = $this->convertAmount($amount);
         if(!$amount)
         {

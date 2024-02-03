@@ -6,11 +6,13 @@
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
                         <button type="button" class="btn btn-primary" id="btn-fee-target-back"><i class="fa fa-arrow-left"></i></button>
+@if ($charge->is_active)
 @if (!$target)
                         <button type="button" class="btn btn-primary" id="btn-fee-target-add"><i class="fa fa-plus"></i></button>
 @else
                         <button type="button" class="btn btn-primary" id="btn-fee-target-edit"><i class="fa fa-edit"></i></button>
                         <button type="button" class="btn btn-primary" id="btn-fee-target-remove"><i class="fa fa-trash"></i></button>
+@endif
 @endif
                       </div>
                     </div>

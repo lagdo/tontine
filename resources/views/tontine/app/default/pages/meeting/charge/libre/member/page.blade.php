@@ -25,7 +25,7 @@
                             ['amount' => $locale->formatMoney($member->remaining, true)]) }}@endif</td>
 @if ($charge->has_amount)
                           <td class="currency" id="member-{{ $member->id }}" data-member-id="{{ $member->id }}" style="width:180px">
-@if ($session->closed)
+@if (!$session->opened || !$charge->is_active)
                             @if ($member->bill !== null)<i class="fa fa-toggle-on"></i>@else<i class="fa fa-toggle-off">@endif
 @elseif ($member->bill !== null)
                             <a href="javascript:void(0)" class="btn-del-bill"><i class="fa fa-toggle-on"></i></a>
@@ -35,7 +35,7 @@
                           </td>
 @else
                           <td class="currency" id="member-{{ $member->id }}" data-member-id="{{ $member->id }}" style="width:200px">
-@if ($session->closed)
+@if (!$session->opened || !$charge->is_active)
                             @include('tontine.app.default.pages.meeting.charge.libre.member.closed', [
                               'amount' => !$member->bill ? '' : $locale->formatMoney($member->bill->amount, true),
                             ])
