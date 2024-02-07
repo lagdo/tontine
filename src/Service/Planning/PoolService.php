@@ -249,8 +249,13 @@ class PoolService
             // If a session was already opened, delete the receivables and payables.
             // Will fail if any of them is already paid.
             $subscriptionIds = $pool->subscriptions()->pluck('id');
-            $session->receivables()->whereIn('subscription_id', $subscriptionIds)->delete();
-            $session->payables()->whereIn('subscription_id', $subscriptionIds)->delete();
+            $session->receivables()
+                ->whereIn('subscription_id', $subscriptionIds)
+                ->delete();
+            // The payables should not be deleted, but detached from the session instead.
+            $session->payables()
+                ->whereIn('subscription_id', $subscriptionIds)
+                ->update(['session_id' => null]);
             // Disable the session for the pool.
             $pool->disabledSessions()->attach($session->id);
         });
