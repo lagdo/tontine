@@ -5,8 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-
+use Mcamara\LaravelLocalization\LaravelLocalization;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
@@ -88,16 +87,14 @@ class SiakServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(LocaleService::class, function() {
-            $locale = LaravelLocalization::getCurrentLocale();
-            // Vendor dir
+        $this->app->singleton(LocaleService::class, function($app) {
             $vendorDir = __DIR__ . '/../../vendor';
             // Read country list from the umpirsky/country-list package data.
             $countriesDataDir = $vendorDir . '/umpirsky/country-list/data';
             // Read currency list from the umpirsky/currency-list package data.
             $currenciesDataDir = $vendorDir . '/umpirsky/currency-list/data';
-
-            return new LocaleService($locale, $countriesDataDir, $currenciesDataDir);
+            $localization = $app->make(LaravelLocalization::class);
+            return new LocaleService($localization, $countriesDataDir, $currenciesDataDir);
         });
         $this->app->singleton(SqidsInterface::class, function() {
             return new Sqids(minLength: 8);

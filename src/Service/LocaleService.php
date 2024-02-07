@@ -5,10 +5,12 @@ namespace Siak\Tontine\Service;
 use Akaunting\Money\Currency;
 use Akaunting\Money\Money;
 use Illuminate\Support\Collection;
+use Mcamara\LaravelLocalization\LaravelLocalization;
 use Rinvex\Country\CountryLoader;
 use Siak\Tontine\Model\Tontine;
 use NumberFormatter;
 
+use function route;
 use function strtoupper;
 
 class LocaleService
@@ -19,13 +21,20 @@ class LocaleService
     private $currency;
 
     /**
+     * @var string
+     */
+    private $locale;
+
+    /**
      * @var NumberFormatter
      */
     private $formatter = null;
 
-    public function __construct(private string $locale,
+    public function __construct(private LaravelLocalization $localization,
         private string $countriesDataDir, private string $currenciesDataDir)
-    {}
+    {
+        $this->locale = $localization->getCurrentLocale();
+    }
 
     /**
      * Set the currency to be used for money
@@ -192,5 +201,18 @@ class LocaleService
     public function getMoneyValue(int $amount): float
     {
         return (new Money($amount, $this->currency, false))->getValue();
+    }
+
+    /**
+     * Get the translated URL for a route
+     *
+     * @param string $name
+     * @param array $attributes
+     *
+     * @return string
+     */
+    public function route(string $name, array $attributes = []): string
+    {
+        return $this->localization->getLocalizedUrl($this->locale, route($name, $attributes));
     }
 }

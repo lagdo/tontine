@@ -17,7 +17,7 @@
                     <i class="fa fa-file-pdf"></i>
                   </button>
                   <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" target="_blank" href="{{ route('report.round',
+                    <a class="dropdown-item" target="_blank" href="{{ $locale->route('report.round',
                       ['roundId' => $sqids->encode([$round->id])]) }}">{{ __('tontine.report.actions.round') }}</a>
                   </div>
                 </div>
