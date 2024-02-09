@@ -85,6 +85,11 @@ return [
                     'js' => "https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.min.js",
                 ],
             ],
+            'noty' => [
+                'assets' => [
+                    'js' => "https://cdn.jsdelivr.net/gh/needim/noty@2.4/js/noty/packaged/jquery.noty.packaged.min.js",
+                ],
+            ],
             'toastr' => [
                 'assets' => [
                     'js' => false,
