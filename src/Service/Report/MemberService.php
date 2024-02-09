@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Auction;
 use Siak\Tontine\Model\Bill;
+use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
@@ -203,6 +204,54 @@ class MemberService
             // Sort by member name
             ->when($member === null, function($collection) {
                 return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
+            });
+    }
+
+    /**
+     * @param Session $session
+     * @param Member $member
+     *
+     * @return Collection
+     */
+    public function getDebts(Session $session, Member $member): Collection
+    {
+        $prevSessions = $this->tenantService->round()->sessions()
+            ->where('start_at', '<', $session->start_at)->pluck('id');
+        return Debt::with(['loan.session', 'refund'])
+            // Member debts
+            ->whereHas('loan', function(Builder $query) use($member) {
+                $query->where('member_id', $member->id);
+            })
+            ->where(function($query) use($session, $prevSessions) {
+                // Take all the debts in the current session
+                $query->where(function($query) use($session) {
+                    $query->whereHas('loan', function(Builder $query) use($session) {
+                        $query->where('session_id', $session->id);
+                    });
+                });
+                if($prevSessions->count() === 0)
+                {
+                    return;
+                }
+                // The debts in the previous sessions.
+                $query->orWhere(function($query) use($session, $prevSessions) {
+                    $query->whereHas('loan', function(Builder $query) use($prevSessions) {
+                        $query->whereIn('session_id', $prevSessions);
+                    })
+                    ->where(function($query) use($session) {
+                        // The debts that are not yet refunded.
+                        $query->orWhereDoesntHave('refund');
+                        // The debts that are refunded in the current session.
+                        $query->orWhereHas('refund', function(Builder $query) use($session) {
+                            $query->where('session_id', $session->id);
+                        });
+                    });
+                });
+            })
+            ->get()
+            ->each(function($debt) {
+                $debt->paid = $debt->refund !== null;
+                $debt->session = $debt->loan->session;
             });
     }
 

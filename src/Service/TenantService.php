@@ -55,8 +55,8 @@ class TenantService
         // Set the currency for locales.
         $this->localeService->setCurrency($tontine->currency_code);
         // Save as latest tontine id if it has changed.
-        $tontineId = $this->user->properties['latest']['tontine'] ?? 0;
-        if($tontineId === $tontine->id)
+        $tontineId = $this->user?->properties['latest']['tontine'] ?? 0;
+        if(!$this->user || $tontineId === $tontine->id)
         {
             return;
         }
