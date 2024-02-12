@@ -18,6 +18,7 @@ use function trans;
 
 /**
  * @databag tenant
+ * @callback jaxon.ajax.callback.tontine
  */
 class CallableClass extends JaxonCallableClass
 {

@@ -18,15 +18,6 @@ return [
         'directories' => [
             app_path('Ajax/Web') => [
                 'namespace' => '\\App\\Ajax\\Web',
-                'classes' => [
-                    '*' => [
-                        'functions' => [
-                            '*' => [
-                                'callback' => 'jaxon.ajax.callback.tontine',
-                            ],
-                        ],
-                    ],
-                ],
             ],
         ],
         'views' => [
