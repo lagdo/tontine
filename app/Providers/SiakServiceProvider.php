@@ -63,6 +63,7 @@ use Siak\Tontine\Validation\Tontine\TontineValidator;
 use Sqids\Sqids;
 use Sqids\SqidsInterface;
 
+use function base_path;
 use function config;
 
 class SiakServiceProvider extends ServiceProvider
@@ -88,7 +89,7 @@ class SiakServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(LocaleService::class, function($app) {
-            $vendorDir = __DIR__ . '/../../vendor';
+            $vendorDir = base_path('vendor');
             // Read country list from the umpirsky/country-list package data.
             $countriesDataDir = $vendorDir . '/umpirsky/country-list/data';
             // Read currency list from the umpirsky/currency-list package data.
