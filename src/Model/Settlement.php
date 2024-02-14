@@ -20,9 +20,4 @@ class Settlement extends Base
     {
         return $this->belongsTo(Session::class);
     }
-
-    public function getEditableAttribute()
-    {
-        return true;
-    }
 }

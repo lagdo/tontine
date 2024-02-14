@@ -11,6 +11,7 @@ use Siak\Tontine\Model\Deposit;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
@@ -19,8 +20,10 @@ class DepositService
 {
     /**
      * @param TenantService $tenantService
+     * @param PaymentServiceInterface $paymentService;
      */
-    public function __construct(private TenantService $tenantService)
+    public function __construct(private TenantService $tenantService,
+        private PaymentServiceInterface $paymentService)
     {}
 
     /**
@@ -131,7 +134,7 @@ class DepositService
 
         if($receivable->deposit !== null)
         {
-            if((!$receivable->deposit->editable))
+            if(!$this->paymentService->isEditable($receivable->deposit))
             {
                 throw new MessageException(trans('tontine.errors.editable'));
             }
@@ -164,7 +167,7 @@ class DepositService
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
-        if((!$receivable->deposit->editable))
+        if(!$this->paymentService->isEditable($receivable->deposit))
         {
             throw new MessageException(trans('tontine.errors.editable'));
         }
@@ -213,7 +216,7 @@ class DepositService
             ->whereHas('deposit')
             ->get()
             ->filter(function($receivable) {
-                return $receivable->deposit->editable;
+                return $this->paymentService->isEditable($receivable->deposit);
             });
         if($receivables->count() === 0)
         {

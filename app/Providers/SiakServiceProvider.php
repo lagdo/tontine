@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +19,7 @@ use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
 use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
+use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService as MeetingPoolService;
@@ -143,6 +145,15 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(GuestService::class, GuestService::class);
         $this->app->singleton(MemberService::class, MemberService::class);
         $this->app->singleton(TontineService::class, TontineService::class);
+        $this->app->singleton(PaymentServiceInterface::class, function() {
+            return new class implements PaymentServiceInterface {
+                // By default, all the payment items are editable.
+                public function isEditable(Model $item): bool
+                {
+                    return true;
+                }
+            };
+        });
 
         $this->app->singleton(ChargeValidator::class, ChargeValidator::class);
         $this->app->singleton(DebtValidator::class, DebtValidator::class);

@@ -13,6 +13,7 @@ use Siak\Tontine\Model\PartialRefund;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\TenantService;
 
@@ -24,10 +25,12 @@ class RefundService
      * @param DebtCalculator $debtCalculator
      * @param TenantService $tenantService
      * @param LocaleService $localeService
+     * @param SessionService $sessionService
+     * @param PaymentServiceInterface $paymentService;
      */
     public function __construct(private DebtCalculator $debtCalculator,
         private TenantService $tenantService, private LocaleService $localeService,
-        private SessionService $sessionService)
+        private SessionService $sessionService, private PaymentServiceInterface $paymentService)
     {}
 
     /**
@@ -184,7 +187,7 @@ class RefundService
         {
             throw new MessageException(trans('meeting.refund.errors.not_found'));
         }
-        if((!$refund->editable))
+        if(!$this->paymentService->isEditable($refund))
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_delete'));
         }
@@ -294,7 +297,7 @@ class RefundService
         {
             throw new MessageException(trans('meeting.refund.errors.not_found'));
         }
-        if($refund->debt->refund !== null || !$refund->editable)
+        if($refund->debt->refund !== null || !$this->paymentService->isEditable($refund))
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_delete'));
         }

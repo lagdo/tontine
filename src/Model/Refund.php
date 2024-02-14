@@ -20,9 +20,4 @@ class Refund extends Base
     {
         return $this->belongsTo(Debt::class);
     }
-
-    public function getEditableAttribute()
-    {
-        return true;
-    }
 }

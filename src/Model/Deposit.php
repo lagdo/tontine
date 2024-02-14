@@ -29,9 +29,4 @@ class Deposit extends Base
     {
         return $this->belongsTo(Receivable::class);
     }
-
-    public function getEditableAttribute()
-    {
-        return true;
-    }
 }

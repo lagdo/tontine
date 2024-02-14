@@ -8,6 +8,7 @@ use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Settlement;
+use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
@@ -17,9 +18,10 @@ class SettlementService
     /**
      * @param TenantService $tenantService
      * @param BillService $billService
+     * @param PaymentServiceInterface $paymentService;
      */
     public function __construct(private TenantService $tenantService,
-        private BillService $billService)
+        private BillService $billService, private PaymentServiceInterface $paymentService)
     {}
 
     /**
@@ -62,7 +64,7 @@ class SettlementService
         {
             throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
-        if((!$bill->settlement->editable))
+        if((!$this->paymentService->isEditable($bill->settlement)))
         {
             throw new MessageException(trans('tontine.errors.editable'));
         }
@@ -108,7 +110,7 @@ class SettlementService
     {
         $bills = $this->billService->getBills($charge, $session, '', true)
             ->filter(function($bill) {
-                return $bill->settlement->editable;
+                return $this->paymentService->isEditable($bill->settlement);
             });
         if($bills->count() === 0)
         {

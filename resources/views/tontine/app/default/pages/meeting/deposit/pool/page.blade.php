@@ -1,5 +1,6 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('balance', 'Siak\Tontine\Service\BalanceCalculator')
+@inject('paymentService', 'Siak\Tontine\Service\Meeting\PaymentServiceInterface')
 @php
   $depositAmount = $balance->getPoolDepositAmount($pool, $session);
 @endphp
@@ -45,7 +46,7 @@
                         @include('tontine.app.default.pages.meeting.deposit.libre.show', [
                           'id' => $receivable->id,
                           'amount' => $locale->formatMoney($receivable->deposit->amount, false),
-                          'editable' => $receivable->deposit->editable,
+                          'editable' => $paymentService->isEditable($receivable->deposit),
                         ])
 @endif
                       </td>
