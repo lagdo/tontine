@@ -25,6 +25,7 @@ class GuestAccessValidator extends AbstractValidator
             'planning.subscriptions' => 'sometimes|required|in:1',
             'meeting' => 'sometimes|required|array',
             'meeting.sessions' => 'sometimes|required|in:1',
+            'meeting.payments' => 'sometimes|required|in:1',
             'meeting.presences' => 'sometimes|required|in:1',
             'report' => 'sometimes|required|array',
             'report.session' => 'sometimes|required|in:1',
