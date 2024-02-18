@@ -10,6 +10,9 @@
               <li><a class="nav-link" id="meeting-menu-sessions" href="javascript:void(0)">
                 <i class="fa fa-calendar-day"></i> <span>{{ __('tontine.menus.sessions') }}</span>
               </a></li>
+              <li><a class="nav-link" id="meeting-menu-payments" href="javascript:void(0)">
+                <i class="fa fa-wallet"></i> <span>{{ __('tontine.menus.payments') }}</span>
+              </a></li>
               <li><a class="nav-link" id="meeting-menu-presences" href="javascript:void(0)">
                 <i class="fa fa-user-check"></i> <span>{{ __('tontine.menus.presences') }}</span>
               </a></li>

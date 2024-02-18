@@ -1,5 +1,6 @@
 <?php
 
+use App\Ajax\Web\Meeting\Payment;
 use App\Ajax\Web\Meeting\Presence;
 use App\Ajax\Web\Meeting\Session as MeetingSession;
 use App\Ajax\Web\Planning\Pool;
@@ -20,6 +21,7 @@ return [
         '#planning-menu-pools' => Pool::class,
         '#planning-menu-subscriptions' => Subscription::class,
         '#meeting-menu-sessions' => MeetingSession::class,
+        '#meeting-menu-payments' => Payment::class,
         '#meeting-menu-presences' => Presence::class,
         '#report-menu-session' => ReportSession::class,
         '#report-menu-round' => ReportRound::class,
