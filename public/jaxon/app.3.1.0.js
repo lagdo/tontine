@@ -33,3 +33,16 @@ function setLoanInterestLabel()
             tontine.labels.amount : tontine.labels.percentage);
     });
 }
+
+function showPaymentMembers()
+{
+    $('#payment-members-home').removeClass('payment-sm-hide');
+    $('#payment-payables-home').removeClass('payment-sm-hide');
+    $('#payment-payables-home').addClass('payment-sm-hide');
+}
+function showPaymentDetails()
+{
+    $('#payment-members-home').removeClass('payment-sm-hide');
+    $('#payment-payables-home').removeClass('payment-sm-hide');
+    $('#payment-members-home').addClass('payment-sm-hide');
+}

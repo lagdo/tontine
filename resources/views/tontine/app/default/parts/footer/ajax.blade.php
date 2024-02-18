@@ -22,4 +22,3 @@
   function showBalanceAmounts() { {!! $jxnSession->showBalanceAmounts() !!}; }
   function showBalanceAmountsWithDelay() { setTimeout(() => {!! $jxnSession->showBalanceAmounts() !!}, 5); }
 </script>
-<script src="/jaxon/app.3.0.0.js"></script>

@@ -8,15 +8,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="/tpl/assets/js/stisla.js"></script>
 
-  <!-- JS Libraies -->
-  <!-- <script src="/tpl/node_modules/simpleweather/jquery.simpleWeather.min.js"></script>
-  <script src="/tpl/node_modules/chart.js/dist/Chart.min.js"></script>
-  <script src="/tpl/node_modules/jqvmap/dist/jquery.vmap.min.js"></script>
-  <script src="/tpl/node_modules/jqvmap/dist/maps/jquery.vmap.world.js"></script>
-  <script src="/tpl/node_modules/summernote/dist/summernote-bs4.js"></script>
-  <script src="/tpl/node_modules/chocolat/dist/js/jquery.chocolat.min.js"></script> -->
-
   <!-- Template JS File -->
   <script src="/tpl/assets/js/scripts.js"></script>
   <script src="/tpl/assets/js/custom.js"></script>
   <script src="{{ asset('vendor/kustomer/js/kustomer.js') }}" defer></script>
+
+@include('tontine.app.default.parts.footer.custom')

@@ -13,8 +13,10 @@
 @endsection
 
 @section('script')
-<script type="text/javascript">
-</script>
+  <script type="text/javascript">
+  </script>
 
 @include('tontine.app.default.parts.footer.ajax', compact('jaxonJs', 'jaxonScript', 'jaxonCss'))
+
+  <script src="/jaxon/app.3.1.0.js"></script>
 @endsection
