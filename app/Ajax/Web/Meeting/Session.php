@@ -8,6 +8,9 @@ use Siak\Tontine\Service\Meeting\SessionService;
 use function Jaxon\jq;
 use function trans;
 
+/**
+ * @before checkGuestAccess ["meeting", "sessions"]
+ */
 class Session extends CallableClass
 {
     /**
@@ -17,7 +20,6 @@ class Session extends CallableClass
     {}
 
     /**
-     * @before checkGuestAccess ["meeting", "sessions"]
      * @before checkRoundSessions
      * @after hideMenuOnMobile
      */

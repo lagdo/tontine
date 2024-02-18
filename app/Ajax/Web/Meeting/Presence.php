@@ -10,6 +10,9 @@ use function trans;
 /**
  * @databag presence
  */
+/**
+ * @before checkGuestAccess ["meeting", "presences"]
+ */
 class Presence extends CallableClass
 {
     /**
@@ -18,7 +21,6 @@ class Presence extends CallableClass
     protected PresenceService $presenceService;
 
     /**
-     * @before checkGuestAccess ["meeting", "presences"]
      * @before checkRoundSessions
      * @after hideMenuOnMobile
      */

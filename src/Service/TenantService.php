@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service;
 
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Model\User;
@@ -131,7 +132,7 @@ class TenantService
     /**
      * @return bool
      */
-    public function userIsGuest(): bool
+    private function userIsGuest(): bool
     {
         return $this->tontine !== null && $this->tontine->isGuest;
     }
@@ -139,7 +140,7 @@ class TenantService
     /**
      * @return array
      */
-    public function getGuestAccess(): array
+    private function getGuestAccess(): array
     {
         if(!$this->tontine || !$this->user)
         {
@@ -154,5 +155,34 @@ class TenantService
         }
 
         return $userInvite->permission->access;
+    }
+
+    /**
+     * Check guest user access to a menu entry in a section
+     *
+     * @param string $section
+     * @param string $entry
+     * @param bool $return
+     *
+     * @return bool
+     * @throws MessageException
+     */
+    public function checkGuestAccess(string $section, string $entry, bool $return = false): bool
+    {
+        if(!$this->userIsGuest())
+        {
+            return true;
+        }
+
+        $guestAccess = $this->getGuestAccess();
+        if(!($guestAccess[$section][$entry] ?? false))
+        {
+            if($return)
+            {
+                return false;
+            }
+            throw new MessageException(trans('tontine.invite.errors.access_denied'));
+        }
+        return true;
     }
 }

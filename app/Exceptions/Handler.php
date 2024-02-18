@@ -15,6 +15,7 @@ use Siak\Tontine\Exception\MeetingRoundException;
 use Siak\Tontine\Exception\PlanningPoolException;
 use Siak\Tontine\Exception\PlanningRoundException;
 use Siak\Tontine\Exception\TontineMemberException;
+use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\ValidationException;
 use Throwable;
 
@@ -28,6 +29,11 @@ class Handler extends ExceptionHandler
      * @var Jaxon
      */
     private Jaxon $jaxon;
+
+    /**
+     * @var TenantService
+     */
+    private TenantService $tenantService;
 
     /**
      * A list of exception types with their corresponding custom log levels.
@@ -74,10 +80,9 @@ class Handler extends ExceptionHandler
      */
     private function checkGuestAccess(string $section, string $entry): bool
     {
-        $jxnTontine = $this->jaxon->cl(Tontine::class);
-        if(!($access = $jxnTontine->checkGuestAccess($section, $entry, true)))
+        if(!($access = $this->tenantService->checkGuestAccess($section, $entry, true)))
         {
-            $jxnTontine->home();
+            $this->jaxon->cl(Tontine::class)->home();
         }
         return $access;
     }
@@ -89,7 +94,9 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->jaxon = app()->make(Jaxon::class);
+        $di = app();
+        $this->jaxon = $di->make(Jaxon::class);
+        $this->tenantService = $di->make(TenantService::class);
 
         $this->reportable(function (Throwable $e) {
             //

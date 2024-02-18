@@ -78,24 +78,11 @@ class CallableClass extends JaxonCallableClass
      * @param bool $return
      *
      * @return bool
+     * @throws MessageException
      */
-    public function checkGuestAccess(string $section, string $entry, bool $return = false): bool
+    protected function checkGuestAccess(string $section, string $entry, bool $return = false): bool
     {
-        if(!$this->tenantService->userIsGuest())
-        {
-            return true;
-        }
-
-        $guestAccess = $this->tenantService->getGuestAccess();
-        if(!($guestAccess[$section][$entry] ?? false))
-        {
-            if($return)
-            {
-                return false;
-            }
-            throw new MessageException(trans('tontine.invite.errors.access_denied'));
-        }
-        return true;
+        return $this->tenantService->checkGuestAccess($section, $entry, $return);
     }
 
     /**
