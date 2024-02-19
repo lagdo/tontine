@@ -3,11 +3,11 @@
 namespace App\Ajax\Web\Meeting;
 
 use App\Ajax\CallableClass;
+use App\Events\OnPagePaymentHome;
+use App\Events\OnPagePaymentPayables;
 use Illuminate\Support\Collection;
-use Siak\Tontine\Model\Member as MemberModel;
-use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Meeting\PaymentService;
 use Siak\Tontine\Service\Planning\SessionService;
-use Siak\Tontine\Service\Report\MemberService as ReportService;
 use Siak\Tontine\Service\Tontine\MemberService;
 
 use function Jaxon\jq;
@@ -28,10 +28,10 @@ class Payment extends CallableClass
     /**
      * @param MemberService $memberService
      * @param SessionService $sessionService
-     * @param ReportService $reportService
+     * @param PaymentService $paymentService
      */
     public function __construct(private MemberService $memberService,
-        private SessionService $sessionService, private ReportService $reportService)
+        private SessionService $sessionService, private PaymentService $paymentService)
     {}
 
     protected function getOpenedSessions()
@@ -51,6 +51,7 @@ class Payment extends CallableClass
         $this->response->html('section-title', trans('tontine.menus.meeting'));
         $this->response->html('content-home', $html);
 
+        OnPagePaymentHome::dispatch();
         return $this->page($this->bag('payment')->get('page', 1));
     }
 
@@ -67,42 +68,19 @@ class Payment extends CallableClass
         $html = $this->render('pages.meeting.payment.page', compact('members', 'pagination'));
         $this->response->html('payment-members-page', $html);
 
-        // Don't show the page if there is no opened session or no member.
+        // Don't show the payable items if there is no opened session or no member.
         if($this->sessions->count() === 0 || $this->memberService->getMemberCount('') === 0)
         {
             return $this->response;
         }
         $sessionId = pm()->select('select-session')->toInt();
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
-        $this->jq('.btn-member-payments')->click($this->rq()->payments($memberId, $sessionId));
+        $this->jq('.btn-member-payables')->click($this->rq()->payables($memberId, $sessionId));
 
         return $this->response;
     }
 
-    /**
-     * @param MemberModel $member
-     * @param SessionModel $session
-     *
-     * @return array
-     */
-    private function getItems(MemberModel $member, SessionModel $session): array
-    {
-        $receivables = $this->reportService->getReceivables($session, $member);
-        $debts = $this->reportService->getDebts($session, $member);
-        $bills = $this->reportService->getBills($session, $member);
-
-        // Count items not paid
-        $unpaid = $receivables->reduce(fn($total, $receivable)
-            => $receivable->paid ? $total : $total + 1, 0);
-        $unpaid = $debts->reduce(fn($total, $debt)
-            => $debt->refund ? $total : $total + 1, $unpaid);
-        $unpaid = $bills->reduce(fn($total, $bill)
-            => $bill->settlement ? $total : $total + 1, $unpaid);
-
-        return [$unpaid, $receivables, $debts, $bills];
-    }
-
-    public function payments(int $memberId, int $sessionId)
+    public function payables(int $memberId, int $sessionId)
     {
         if(!($member = $this->memberService->getMember($memberId)))
         {
@@ -117,13 +95,15 @@ class Payment extends CallableClass
             return $this->response;
         }
 
-        [$unpaid, $receivables, $debts, $bills] = $this->getItems($member, $session);
-        $html = $this->render('pages.meeting.payment.items', compact('member', 'session',
-            'receivables', 'debts', 'bills', 'unpaid'));
-        $this->response->html('payment-payables-home', $html);
+        [$receivables, $bills, $debts] = $this->paymentService->getPayables($member, $session);
+
+        $html = $this->render('pages.meeting.payment.items',
+            compact('member', 'session', 'receivables', 'debts', 'bills'));
+        $this->response->html('member-payables-home', $html);
         $this->response->call('showPaymentDetails');
         $this->jq('#btn-payment-members-back')->click(pm()->js('showPaymentMembers'));
 
+        OnPagePaymentPayables::dispatch($member, $session, $receivables, $bills, $debts);
         return $this->response;
     }
 }

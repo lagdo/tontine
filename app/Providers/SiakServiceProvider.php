@@ -20,6 +20,7 @@ use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
+use Siak\Tontine\Service\Meeting\PaymentService;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService as MeetingPoolService;
@@ -145,6 +146,8 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(GuestService::class, GuestService::class);
         $this->app->singleton(MemberService::class, MemberService::class);
         $this->app->singleton(TontineService::class, TontineService::class);
+
+        $this->app->singleton(PaymentService::class, PaymentService::class);
         $this->app->singleton(PaymentServiceInterface::class, function() {
             return new class implements PaymentServiceInterface {
                 // By default, all the payment items are editable.

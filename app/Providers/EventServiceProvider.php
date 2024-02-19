@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\OnPagePaymentHome;
+use App\Events\OnPagePaymentPayables;
 use App\Listeners\FeedbackListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -32,7 +34,8 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Event::listen(function(OnPagePaymentHome $event) {});
+        Event::listen(function(OnPagePaymentPayables $event) {});
     }
 
     /**
