@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Model;
 
 use Database\Factories\TontineFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -45,6 +46,16 @@ class Tontine extends Base
     protected $attributes = [
         'type' => 'x',
     ];
+
+    /**
+     * @return Attribute
+     */
+    protected function locale(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->user->locale,
+        );
+    }
 
     /**
      * Create a new factory instance for the model.

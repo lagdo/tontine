@@ -21,14 +21,22 @@ class User extends \App\Models\User
     }
 
     /**
-     * Get the values of the properties.
-     *
      * @return Attribute
      */
     protected function countryCode(): Attribute
     {
         return Attribute::make(
             get: fn() => $this->profile ? $this->profile->country_code : '',
+        );
+    }
+
+    /**
+     * @return Attribute
+     */
+    protected function locale(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->properties['locale'] ?? 'fr',
         );
     }
 
