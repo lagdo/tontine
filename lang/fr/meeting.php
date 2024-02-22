@@ -4,7 +4,7 @@ return [
     'titles' => [
         'session' => "Séance",
         'agenda' => "Ordre du jour",
-        'report' => "Rapport",
+        'report' => "Rapport de séance",
         'pools' => "Fonds",
         'charges' => "Frais",
         'fees' => "Frais",
@@ -55,6 +55,7 @@ return [
         'profit' => "Gain",
         'duration' => "Durée",
         'distribution' => "Distribution",
+        'item' => "Item",
     ],
     'messages' => [
         'saved' => "Enregistré !",
@@ -218,6 +219,23 @@ return [
             'amount' => "Distribution: :amount.",
             'parts' => ":parts parts.",
             'basis' => "Pour chaque séance, :unit = une part.",
+        ],
+    ],
+    'entry' => [
+        'titles' => [
+            'session' => "Fiche de saisie de séance",
+            'report' => "Fiche de saisie de rapport",
+            'transactions' => "Fiche de saisie d'opérations",
+        ],
+        'actions' => [
+            'session' => "Saisie de séance",
+            'report' => "Saisie de rapport",
+            'transactions' => "Saisie d'opérations",
+        ],
+        'files' => [
+            'session' => "fiche-saisie-seance",
+            'report' => "fiche-saisie-rapport",
+            'transactions' => "fiche-saisie-operations",
         ],
     ],
 ];

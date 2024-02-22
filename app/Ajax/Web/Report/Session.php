@@ -37,6 +37,7 @@ class Session extends CallableClass
         $sessions = $this->sessionService->getRoundSessions(orderAsc: false)
             ->filter(fn($session) => ($session->opened || $session->closed));
         $html = $this->render('pages.report.session.home', [
+            'sessionId' => $sessions->count() > 0 ? $sessions->first()->id : 0,
             'sessions' => $sessions->pluck('title', 'id'),
             'members' => $this->memberService->getMemberList()->prepend('', 0),
         ]);

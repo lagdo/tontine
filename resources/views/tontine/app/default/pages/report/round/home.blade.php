@@ -12,6 +12,19 @@
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right ml-1">
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-file-alt"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" target="_blank" href="{{ $locale->route('entry.form',
+                      ['form' => 'report']) }}">{{ __('meeting.entry.actions.report') }}</a>
+                    <a class="dropdown-item" target="_blank" href="{{ $locale->route('entry.form',
+                      ['form' => 'transactions']) }}">{{ __('meeting.entry.actions.transactions') }}</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-auto">
+                <div class="btn-group float-right ml-1">
                   <button type="button" class="btn btn-primary" id="btn-tontine-options"><i class="fa fa-cog"></i></button>
                   <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-file-pdf"></i>

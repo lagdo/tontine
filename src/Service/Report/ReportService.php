@@ -114,6 +114,38 @@ class ReportService
 
     /**
      * @param Session $session
+     *
+     * @return array
+     */
+    public function getSessionEntry(Session $session): array
+    {
+        $tontine = $this->tenantService->tontine();
+        [$country] = $this->localeService->getNameFromTontine($tontine);
+
+        return [
+            'tontine' => $tontine,
+            'session' => $session,
+            'country' => $country,
+            'deposits' => [
+                'session' => $session,
+                'receivables' => $this->memberService->getReceivables($session),
+                'pools' => $this->sessionService->getReceivables($session),
+            ],
+            'remitments' => [
+                'session' => $session,
+                'payables' => $this->memberService->getPayables($session),
+                'pools' => $this->sessionService->getPayables($session),
+            ],
+            'bills' => [
+                'bills' => $this->memberService->getBills($session),
+                'charges' => $this->tenantService->tontine()->charges()
+                    ->active()->fixed()->get(),
+            ],
+        ];
+    }
+
+    /**
+     * @param Session $session
      * @param int $profitAmount
      * @param string $fund
      * @param int $fundId

@@ -3,8 +3,8 @@
 return [
     'titles' => [
         'session' => "Session",
-        'agenda' => "Agenda",
-        'report' => "Report",
+        'agenda' => "Meeting agenda",
+        'report' => "Meeting report",
         'pools' => "Pools",
         'charges' => "Fees",
         'fees' => "Fees",
@@ -55,6 +55,7 @@ return [
         'profit' => "Profit",
         'duration' => "Duration",
         'distribution' => "Distribution",
+        'item' => "Item",
     ],
     'messages' => [
         'saved' => "Saved!",
@@ -218,6 +219,23 @@ return [
             'amount' => "Distribution: :amount.",
             'parts' => ":parts parts.",
             'basis' => "For each session, :unit = one part.",
+        ],
+    ],
+    'entry' => [
+        'titles' => [
+            'session' => "Session entry form",
+            'report' => "Report entry form",
+            'transactions' => "Transactions entry form",
+        ],
+        'actions' => [
+            'session' => "Session entry",
+            'report' => "Report entry",
+            'transactions' => "Transactions entry",
+        ],
+        'files' => [
+            'session' => "session-entry-form",
+            'report' => "report-entry-form",
+            'transactions' => "transactions-entry-form",
         ],
     ],
 ];

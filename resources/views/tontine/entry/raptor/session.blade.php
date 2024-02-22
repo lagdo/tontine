@@ -72,63 +72,36 @@
         font-size: 14px;
         padding: 5px 3px;
         vertical-align: top;
-        border-bottom: 0.5mm solid var(--table-row-separator-color);
+      }
+
+      main table tr.row td, main table tr.row th {
+        border-bottom: 0.3mm solid var(--table-row-separator-color);
       }
 
       main table tr.total {
         font-size: 15px;
         font-weight: bold;
-        background-color: var(--highlight-color);
+        border-bottom: 0.3mm solid var(--table-row-separator-color);
+        page-break-before: avoid;
       }
 
       main table tr.total td {
         text-align: right;
         border-bottom: none;
       }
+
+      main table input {
+        accent-color: var(--table-row-separator-color);
+      }
     </style>
   </head>
   <body>
     <main>
-      <div class="section-title">
-        {{ __('meeting.titles.agenda') }}
-      </div>
-      <div class="report-text">
-        <p>{!! $session->agenda !!}</p>
-      </div>
+      @include('tontine.entry.raptor.session.deposits', $deposits)
 
-      <div class="section-title">
-        {{ __('meeting.titles.report') }}
-      </div>
-      <div class="report-text">
-        <p>{!! $session->report !!}</p>
-      </div>
+      @include('tontine.entry.raptor.session.remitments', $remitments)
 
-      <div class="pagebreak"></div>
-
-      @include('tontine.report.raptor.session.deposits', $deposits)
-
-      @include('tontine.report.raptor.session.remitments', $remitments)
-
-@if ($remitments['pools']->filter(function($pool) { return $pool->remit_auction; })->count() > 0)
-      @include('tontine.report.raptor.session.auctions', $remitments)
-@endif
-
-      @include('tontine.report.raptor.session.pools', ['session' => $session,
-        'pools' => ['deposit' => $deposits['pools'], 'remitment' => $remitments['pools']]])
-
-      <div class="pagebreak"></div>
-
-      @include('tontine.report.raptor.session.bills', $bills)
-
-      <div class="pagebreak"></div>
-
-      @include('tontine.report.raptor.session.disbursements', $disbursements)
-
-      @include('tontine.report.raptor.session.loans', $loans)
-
-      @include('tontine.report.raptor.session.refunds', $refunds)
-
-      @include('tontine.report.raptor.session.savings', $savings)
+      @include('tontine.entry.raptor.session.bills', $bills)
     </main>
   </body>
 </html>

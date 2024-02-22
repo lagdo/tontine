@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service\Report\Pdf;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
@@ -32,14 +33,13 @@ class PrinterService
     }
 
     /**
-     * @param string $report
+     * @param string $templatePath
      * @param array $config
      *
      * @return string
      */
-    private function getPdf(string $report, array $config = []): string
+    private function getPdf(string $templatePath, array $config = []): string
     {
-        $templatePath = $this->getViewPath($report);
         $config = [
             ...$this->config,
             ...$config,
@@ -72,7 +72,7 @@ class PrinterService
      */
     public function getSessionReport(): string
     {
-        return $this->getPdf('session');
+        return $this->getPdf($this->getViewPath('session'));
     }
 
     /**
@@ -98,7 +98,7 @@ class PrinterService
      */
     public function getSavingsReport(): string
     {
-        return $this->getPdf('savings');
+        return $this->getPdf($this->getViewPath('savings'));
     }
 
     /**
@@ -124,6 +124,36 @@ class PrinterService
      */
     public function getRoundReport(): string
     {
-        return $this->getPdf('round');
+        return $this->getPdf($this->getViewPath('round'));
+    }
+
+    /**
+     * @param string $form
+     *
+     * @return string
+     */
+    public function getFormViewPath(string $form): string
+    {
+        return "tontine.entry.raptor.$form";
+    }
+
+    /**
+     * @param string $form
+     *
+     * @return string
+     */
+    public function getEntryForm(string $form): string
+    {
+        return $this->getPdf($this->getFormViewPath($form));
+    }
+
+    /**
+     * @param string $form
+     *
+     * @return string
+     */
+    public function getFormFilename(string $form): string
+    {
+        return trans("meeting.entry.files.$form") . '.pdf';
     }
 }

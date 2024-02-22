@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\ReportController;
 use App\Http\Middleware\JaxonAnnotations;
 use App\Http\Middleware\SetAppLocale;
@@ -47,6 +48,13 @@ Route::middleware(['auth', TontineTenant::class, SetAppLocale::class, SetAppTemp
             ->name('report.savings');
         Route::get('/pdf/report/round/{roundId}', [ReportController::class, 'round'])
             ->name('report.round');
+
+        // Input forms page
+        //----------------------------------
+        Route::get('/pdf/entry/session/{sessionId}', [FormController::class, 'session'])
+            ->name('entry.session');
+        Route::get('/pdf/entry/{form}/{sessionId?}', [FormController::class, 'entry'])
+            ->name('entry.form')->where('form', 'report|transactions');
     });
 
 // Redefine Fortify routes with different HTTP verbs
