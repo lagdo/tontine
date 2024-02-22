@@ -13,6 +13,16 @@
                   </div>
                 </div>
               </div>
+              <div class="col-auto" id="session-reports-export">
+              </div>
+              <div class="col-auto">
+                <div class="input-group">
+                  {{ Form::select('member_id', $members, 0, ['class' => 'form-control', 'id' => 'select-member']) }}
+                  <div class="input-group-append">
+                    <button type="button" class="btn btn-primary" id="btn-member-select"><i class="fa fa-arrow-right"></i></button>
+                  </div>
+                </div>
+              </div>
 @if ($sessionId > 0)
               <div class="col-auto">
                 <div class="btn-group float-right ml-1">
@@ -30,16 +40,6 @@
                 </div>
               </div>
 @endif
-              <div class="col-auto" id="session-reports-export">
-              </div>
-              <div class="col-auto">
-                <div class="input-group">
-                  {{ Form::select('member_id', $members, 0, ['class' => 'form-control', 'id' => 'select-member']) }}
-                  <div class="input-group-append">
-                    <button type="button" class="btn btn-primary" id="btn-member-select"><i class="fa fa-arrow-right"></i></button>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 

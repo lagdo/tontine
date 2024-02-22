@@ -1,7 +1,6 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-                  <div class="section-title">
-                    {{ __('meeting.titles.remitments') }}
-                  </div>
+@if ($pools->count() > 0)
+                  <div class="section-title">{{ __('meeting.titles.remitments') }}</div>
 @foreach ($pools as $pool)
 @if ($session->enabled($pool))
 @php
@@ -47,3 +46,4 @@
 @endif
 @endif
 @endforeach
+@endif

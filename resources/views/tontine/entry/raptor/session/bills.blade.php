@@ -1,8 +1,6 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @if ($charges->count() > 0)
-                  <div class="section-title">
-                    {{ __('meeting.charge.titles.fees') }}
-                  </div>
+                  <div class="section-title">{{ __('meeting.charge.titles.fees') }}</div>
 @foreach($charges as $charge)
 @php
   $chargeBills = $bills->filter(function($bill) use($charge) {

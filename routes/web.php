@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\IndexController;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ReportController;
 use App\Http\Middleware\JaxonAnnotations;
 use App\Http\Middleware\SetAppLocale;

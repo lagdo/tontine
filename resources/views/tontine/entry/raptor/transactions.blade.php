@@ -51,7 +51,7 @@
       }
 
       main div.table {
-        margin-bottom: 25px;
+        margin-bottom: 20px;
       }
 
       main table thead th {
