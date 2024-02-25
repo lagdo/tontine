@@ -88,7 +88,8 @@
         <table>
           <thead>
             <tr>
-              <th><input type="checkbox" />{{ __('meeting.charge.titles.fees') }}</th>
+              <th><input type="checkbox" />{{ __('meeting.titles.fees') }}</th>
+              <th><input type="checkbox" />{{ __('meeting.titles.fines') }}</th>
               <th><input type="checkbox" />{{ __('meeting.titles.loans') }}</th>
               <th><input type="checkbox" />{{ __('meeting.titles.refunds') }}</th>
               <th><input type="checkbox" />{!! __('meeting.titles.savings') !!}</th>
