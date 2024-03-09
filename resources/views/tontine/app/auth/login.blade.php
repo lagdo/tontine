@@ -25,7 +25,12 @@
                         <a href="{{ route('password.request') }}" class="text-small">{{ __('Forgot Your Password?') }}</a>
                       </div>
                     </div>
-                    <input id="password" type="password" class="form-control @error('name')is-invalid @enderror" name="password" value="password" tabindex="2" required>
+                    <div class="input-group">
+                      <input id="password" type="password" class="form-control @error('name')is-invalid @enderror" name="password" value="password" tabindex="2" required>
+                      <div class="input-group-append">
+                        <span class="input-group-text toggle-password"><a href="javascript:void(0)"><i class="fa fa-eye"></i></a></span>
+                      </div>
+                    </div>
                     <div class="invalid-feedback">{{ $errors->first('password') }}</div>
                   </div>
 
@@ -49,4 +54,16 @@
                 </form>
               </div>
             </div>
+@endsection
+
+@section('js')
+  <script>
+    $(document).ready(function() {
+      $(".toggle-password").click(function() {
+        $('i', $(this)).toggleClass("fa-eye fa-eye-slash");
+        const input = $('#password');
+        input.attr("type", input.attr("type") === "password" ? "text" : "password");
+      });
+    });
+  </script>
 @endsection

@@ -55,6 +55,8 @@
   <script src="/tpl/assets/js/scripts.js"></script>
   <script src="/tpl/assets/js/custom.js"></script>
 
+  @yield('js')
+
   @include('tontine.app.auth.messages.error')
 
   <!-- Page Specific JS File -->
