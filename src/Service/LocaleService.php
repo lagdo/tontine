@@ -32,9 +32,7 @@ class LocaleService
 
     public function __construct(private LaravelLocalization $localization,
         private string $countriesDataDir, private string $currenciesDataDir)
-    {
-        $this->locale = $localization->getCurrentLocale();
-    }
+    {}
 
     /**
      * Set the currency to be used for money
@@ -63,7 +61,8 @@ class LocaleService
      */
     public function getCountries(): array
     {
-        return include($this->countriesDataDir . "/{$this->locale}/country.php");
+        $locale = $this->localization->getCurrentLocale();
+        return include($this->countriesDataDir . "/{$locale}/country.php");
     }
 
     /**
@@ -74,7 +73,8 @@ class LocaleService
     public function getCountryCurrencies(string $code): array
     {
         $country = CountryLoader::country($code, false);
-        $localizedCurrencies = include($this->currenciesDataDir . "/{$this->locale}/currency.php");
+        $locale = $this->localization->getCurrentLocale();
+        $localizedCurrencies = include($this->currenciesDataDir . "/{$locale}/currency.php");
 
         $currencies = [];
         foreach($country['currency'] as $currency)
@@ -95,8 +95,9 @@ class LocaleService
      */
     public function getNames(array $countries, array $currencies): array
     {
-        $localizedCountries = include($this->countriesDataDir . "/{$this->locale}/country.php");
-        $localizedCurrencies = include($this->currenciesDataDir . "/{$this->locale}/currency.php");
+        $locale = $this->localization->getCurrentLocale();
+        $localizedCountries = include($this->countriesDataDir . "/{$locale}/country.php");
+        $localizedCurrencies = include($this->currenciesDataDir . "/{$locale}/currency.php");
 
         $countryNames = [];
         foreach($countries as $code)
@@ -150,7 +151,19 @@ class LocaleService
     private function _locale(): string
     {
         $locales = ['en' => 'en_GB', 'fr' => 'fr_FR'];
-        return $locales[$this->locale] ?? 'en_GB';
+        return $locales[$this->localization->getCurrentLocale()] ?? 'en_GB';
+    }
+
+    /**
+     * @return NumberFormatter
+     */
+    private function makeDecimalFormatter(): NumberFormatter
+    {
+        $formatter = new NumberFormatter($this->_locale(), NumberFormatter::DECIMAL);
+        $precision = $this->currency->getPrecision();
+        $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $precision);
+        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $precision);
+        return $formatter;
     }
 
     /**
@@ -158,14 +171,7 @@ class LocaleService
      */
     private function decimalFormatter(): NumberFormatter
     {
-        if($this->formatter === null)
-        {
-            $this->formatter = new NumberFormatter($this->_locale(), NumberFormatter::DECIMAL);
-            $precision = $this->currency->getPrecision();
-            $this->formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $precision);
-            $this->formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $precision);
-        }
-        return $this->formatter;
+        return $this->formatter ??= $this->makeDecimalFormatter();
     }
 
     /**
@@ -213,6 +219,7 @@ class LocaleService
      */
     public function route(string $name, array $attributes = []): string
     {
-        return $this->localization->getLocalizedUrl($this->locale, route($name, $attributes));
+        $locale = $this->localization->getCurrentLocale();
+        return $this->localization->getLocalizedUrl($locale, route($name, $attributes));
     }
 }
