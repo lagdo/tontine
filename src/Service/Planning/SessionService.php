@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\SessionTrait;
@@ -38,16 +39,18 @@ class SessionService
     /**
      * Add a new session.
      *
+     * @param Round $round
      * @param array $values
      *
      * @return bool
      */
-    public function createSession(array $values): bool
+    public function createSession(Round $round, array $values): bool
     {
         $values['start_at'] = $values['date'] . ' ' . $values['start'] . ':00';
         $values['end_at'] = $values['date'] . ' ' . $values['end'] . ':00';
-        DB::transaction(function() use($values) {
-            $session = $this->tenantService->round()->sessions()->create($values);
+        DB::transaction(function() use($round, $values) {
+            /** @var Session */
+            $session = $round->sessions()->create($values);
             $this->disableSessionOnPools($session);
         });
 
@@ -57,19 +60,20 @@ class SessionService
     /**
      * Add a new session.
      *
+     * @param Round $round
      * @param array $values
      *
      * @return bool
      */
-    public function createSessions(array $values): bool
+    public function createSessions(Round $round, array $values): bool
     {
         foreach($values as &$value)
         {
             $value['start_at'] = $value['date'] . ' ' . $value['start'] . ':00';
             $value['end_at'] = $value['date'] . ' ' . $value['end'] . ':00';
         }
-        DB::transaction(function() use($values) {
-            $sessions = $this->tenantService->round()->sessions()->createMany($values);
+        DB::transaction(function() use($round, $values) {
+            $sessions = $round->sessions()->createMany($values);
             foreach($sessions as $session)
             {
                 $this->disableSessionOnPools($session);

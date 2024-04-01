@@ -91,6 +91,9 @@ class Select extends CallableSelectClass
         return $this->response;
     }
 
+    /**
+     * @databag planning
+     */
     public function saveRound(int $roundId)
     {
         if(!($tontine = $this->tenantService->tontine()))
@@ -111,7 +114,7 @@ class Select extends CallableSelectClass
 
         $this->selectRound($round);
         // Update the session list.
-        $this->cl(Session::class)->home();
+        $this->cl(Session::class)->show($round);
 
         $this->notify->info(trans('tontine.round.messages.selected',
             ['tontine' => $tontine->name, 'round' => $round->title]));

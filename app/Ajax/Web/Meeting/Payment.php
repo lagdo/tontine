@@ -7,7 +7,7 @@ use App\Events\OnPagePaymentHome;
 use App\Events\OnPagePaymentPayables;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Service\Meeting\PaymentService;
-use Siak\Tontine\Service\Planning\SessionService;
+use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\MemberService;
 
 use function Jaxon\jq;

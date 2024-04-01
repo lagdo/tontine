@@ -30,7 +30,10 @@ trait SessionTrait
         return $this;
     }
 
-    private function getRoundSessionQuery(): Relation
+    /**
+     * @return Relation
+     */
+    private function _getRoundSessionsQuery(): Relation
     {
         return $this->tenantService->round()->sessions()
             ->when($this->filterActive, fn(Builder $query) => $query->active());
@@ -45,7 +48,7 @@ trait SessionTrait
      */
     public function getSession(int $sessionId): ?Session
     {
-        return tap($this->getRoundSessionQuery(), fn($query) => $this->addWith($query))
+        return tap($this->_getRoundSessionsQuery(), fn($query) => $this->addWith($query))
             ->find($sessionId);
     }
 
@@ -56,7 +59,7 @@ trait SessionTrait
      */
     public function getSessionCount(): int
     {
-        return $this->getRoundSessionQuery()->count();
+        return $this->_getRoundSessionsQuery()->count();
     }
 
     /**
@@ -69,7 +72,7 @@ trait SessionTrait
      */
     public function getSessions(int $page = 0, bool $orderAsc = true): Collection
     {
-        return tap($this->getRoundSessionQuery(), fn($query) => $this->addWith($query))
+        return tap($this->_getRoundSessionsQuery(), fn($query) => $this->addWith($query))
             ->orderBy('start_at', $orderAsc ? 'asc' : 'desc')
             ->page($page, $this->tenantService->getLimit())
             ->get();
@@ -140,7 +143,7 @@ trait SessionTrait
      */
     private function getRoundSessionsQuery(?Session $currSession, bool $getAfter, bool $withCurr): Builder|Relation
     {
-        return $this->getSessionsQuery($this->getRoundSessionQuery(), $currSession, $getAfter, $withCurr);
+        return $this->getSessionsQuery($this->_getRoundSessionsQuery(), $currSession, $getAfter, $withCurr);
     }
 
     /**
