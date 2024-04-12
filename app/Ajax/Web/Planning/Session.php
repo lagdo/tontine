@@ -34,9 +34,9 @@ class Session extends CallableClass
     protected SessionValidator $validator;
 
     /**
-     * @var RoundModel
+     * @var RoundModel|null
      */
-    private RoundModel $round;
+    private ?RoundModel $round = null;
 
     public function __construct(private TontineService $tontineService,
         private MemberService $memberService, private RoundService $roundService,
@@ -46,10 +46,10 @@ class Session extends CallableClass
     /**
      * @exclude
      */
-    public function show(RoundModel $round)
+    public function show(?RoundModel $round)
     {
         $this->round = $round;
-        return $this->home($round->id);
+        return $this->home(!$round ? 0 : $round->id);
     }
 
     /**
