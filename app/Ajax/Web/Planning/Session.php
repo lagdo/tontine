@@ -72,6 +72,12 @@ class Session extends CallableClass
 
         if(!$this->round)
         {
+            // Show an empty sessions table
+            $html = $this->render('pages.planning.session.page', [
+                'sessions' => [],
+                'pagination' => '',
+            ]);
+            $this->response->html('content-page-sessions', $html);
             return $this->response;
         }
 
@@ -92,7 +98,7 @@ class Session extends CallableClass
         $html = $this->render('pages.planning.session.page', [
             'sessions' => $sessions,
             'statuses' => $this->sessionService->getSessionStatuses(),
-            'pagination' => $pagination
+            'pagination' => $pagination,
         ]);
         $this->response->html('content-page-sessions', $html);
 
