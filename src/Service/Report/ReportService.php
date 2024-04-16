@@ -2,8 +2,10 @@
 
 namespace Siak\Tontine\Service\Report;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
@@ -27,7 +29,7 @@ class ReportService
      * @param FundService $fundService
      * @param SavingService $savingService
      * @param SummaryService $summaryService
-     * @param ReportService $reportService
+     * @param ProfitService $profitService
      */
     public function __construct(protected LocaleService $localeService,
         protected TenantService $tenantService, protected SessionService $sessionService,
@@ -212,5 +214,36 @@ class ReportService
         ];
 
         return compact('tontine', 'round', 'country', 'currency', 'pools', 'amounts');
+    }
+
+    /**
+     * @param Round $round
+     *
+     * @return array
+     */
+    public function getCreditReport(Round $round): array
+    {
+        $tontine = $this->tenantService->tontine();
+        [$country, $currency] = $this->localeService->getNameFromTontine($tontine);
+
+        if(!($session = $round->sessions()->orderByDesc('start_at')->first()))
+        {
+            $funds = [];
+            return compact('tontine', 'round', 'country', 'currency', 'funds');
+        }
+
+        $funds = $this->tenantService->tontine()->funds()->active()
+            ->get()
+            ->each(function($fund) use($session) {
+                $sessions = $this->profitService->getFundSessions($session, $fund->id);
+                $fund->loans = Loan::select('loans.*')
+                    ->join('sessions', 'loans.session_id', '=', 'sessions.id')
+                    ->whereIn('session_id', $sessions->pluck('id'))
+                    ->with(['member', 'session', 'debts.refund', 'debts.refund.session',
+                        'debts.partial_refunds', 'debts.partial_refunds.session'])
+                    ->orderBy('sessions.start_at')
+                    ->get();
+            });
+        return compact('tontine', 'round', 'country', 'currency', 'funds');
     }
 }

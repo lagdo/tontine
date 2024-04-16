@@ -432,12 +432,15 @@ return [
             'show' => "Voir",
             'session' => "Rapport de séance",
             'round' => "Rapport de tour",
+            'credit' => "Rapport de crédit",
             'savings' => "Rapport d'épargne",
         ],
         'titles' => [
             'session' => "Rapport de séance",
             'round' => "Rapport de tour",
+            'credit' => "Rapport de crédit",
             'savings' => "Rapport d'épargne",
+            'fund' => "Fonds",
             'bills' => [
                 'session' => "Montants des frais de la séance",
                 'total' => "Montants totaux des frais",

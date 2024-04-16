@@ -48,6 +48,8 @@ Route::middleware(['auth', TontineTenant::class, SetAppLocale::class, SetAppTemp
             ->name('report.savings');
         Route::get('/pdf/report/round/{roundId}', [ReportController::class, 'round'])
             ->name('report.round');
+        Route::get('/pdf/report/credit/{roundId}', [ReportController::class, 'credit'])
+            ->name('report.credit');
 
         // Input forms page
         //----------------------------------

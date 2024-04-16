@@ -20,7 +20,7 @@
                           }} - {{ __('meeting.loan.labels.' . $refund->debt->type) }}
                       </td>
                       <td class="table-item-menu">
-@if (!$refund->debt->refund)
+@if ($session->opened && !$refund->debt->refund)
 @include('tontine.app.default.parts.table.menu', [
   'dataIdKey' => 'data-refund-id',
   'dataIdValue' => $refund->id,

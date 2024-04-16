@@ -432,12 +432,15 @@ return [
             'show' => "Show",
             'session' => "Session report",
             'round' => "Round report",
+            'credit' => "Credit report",
             'savings' => "Savings report",
         ],
         'titles' => [
             'session' => "Session report",
             'round' => "Round report",
+            'credit' => "Credit report",
             'savings' => "Savings report",
+            'fund' => "Fund",
             'bills' => [
                 'session' => "Session bill amounts",
                 'total' => "Total bill amounts",

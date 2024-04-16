@@ -143,4 +143,28 @@ class ReportController extends Controller
 
         return $this->roundById($request, $roundId);
     }
+
+    /**
+     * @param Request $request
+     * @param SqidsInterface $sqids
+     * @param string $roundSqid
+     *
+     * @return View|Response
+     */
+    public function credit(Request $request, SqidsInterface $sqids, string $roundSqid)
+    {
+        [$roundId] = $sqids->decode($roundSqid);
+        $round = $this->roundService->getRound($roundId);
+        view()->share($this->reportService->getCreditReport($round));
+        // Show the html page
+        if($request->has('html'))
+        {
+            return view($this->printerService->getCreditReportPath());
+        }
+
+        // Print the pdf
+        return $this->pdfContent($this->printerService->getCreditReport(),
+            $this->printerService->getCreditReportFilename($round),
+            trans('tontine.report.titles.credit'));
+    }
 }

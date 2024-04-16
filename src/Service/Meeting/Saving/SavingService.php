@@ -17,6 +17,7 @@ use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\FundService;
 
+use function count;
 use function trans;
 
 class SavingService

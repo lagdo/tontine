@@ -128,6 +128,32 @@ class PrinterService
     }
 
     /**
+     * @return string
+     */
+    public function getCreditReportPath(): string
+    {
+        return $this->getViewPath('credit');
+    }
+
+    /**
+     * @param Round $round
+     *
+     * @return string
+     */
+    public function getCreditReportFilename(Round $round): string
+    {
+        return strtolower(trans('meeting.titles.credit')) . '-' . Str::slug($round->title) . '.pdf';
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreditReport(): string
+    {
+        return $this->getPdf($this->getViewPath('credit'));
+    }
+
+    /**
      * @param string $form
      *
      * @return string
