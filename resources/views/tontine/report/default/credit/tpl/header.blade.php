@@ -29,7 +29,7 @@
       </div>
       <div class="second-line">
         <span>@if ($tontine->city){{ $tontine->city }} - @endif{{ $country }}</span>
-        <span class="right-col">{{ $round->title }}</span>
+        <span class="right-col">{{ $round->title }} - {{ $session->title }}</span>
       </div>
     </header>
   </body>

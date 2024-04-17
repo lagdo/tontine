@@ -1,4 +1,5 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@inject('debtCalculator', 'Siak\Tontine\Service\Meeting\Credit\DebtCalculator')
                   <div class="row mt-0">
                     <div class="col d-flex justify-content-center">
                       <h5>{{ __('tontine.report.titles.fund') }} - {!! $fund->title !!}</h5>
@@ -19,9 +20,12 @@
                           <td style="width:15%;text-align:right;">{{ $locale->formatMoney($loan->p_debt->amount, false) }}</td>
                         </tr>
 @if ($loan->i_debt !== null)
+@php
+  $debtAmount = $debtCalculator->getDebtAmount($session, $loan->i_debt);
+@endphp
                         <tr>
                           <td>{{ $loan->i_debt->type_label }}</td>
-                          <td style="text-align:right;">{{ $locale->formatMoney($loan->i_debt->amount, false) }}</td>
+                          <td style="text-align:right;">{{ $locale->formatMoney($debtAmount, false) }}</td>
                         </tr>
 @endif
 

@@ -10,5 +10,7 @@
                     ['sessionId' => $sqids->encode([$sessionId])]) }}">{{ __('tontine.report.actions.session') }}</a>
                   <a class="dropdown-item" target="_blank" href="{{ $locale->route('report.savings',
                     ['sessionId' => $sqids->encode([$sessionId])]) }}">{{ __('tontine.report.actions.savings') }}</a>
+                  <a class="dropdown-item" target="_blank" href="{{ $locale->route('report.credit',
+                    ['sessionId' => $sqids->encode([$sessionId])]) }}">{{ __('tontine.report.actions.credit') }}</a>
                 </div>
               </div>

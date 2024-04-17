@@ -49,7 +49,7 @@
         </div>
         <div class="report">
           <h2>{{ __('tontine.report.titles.credit') }}</h2>
-          <p>{{ $round->title }}</p>
+          <p>{{ $round->title }} - {{ $session->title }}</p>
         </div>
       </div>
       <div class="box"></div>

@@ -19,8 +19,6 @@
                   <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" target="_blank" href="{{ $locale->route('report.round',
                       ['roundId' => $sqids->encode([$round->id])]) }}">{{ __('tontine.report.actions.round') }}</a>
-                    <a class="dropdown-item" target="_blank" href="{{ $locale->route('report.credit',
-                      ['roundId' => $sqids->encode([$round->id])]) }}">{{ __('tontine.report.actions.credit') }}</a>
                   </div>
                 </div>
               </div>
