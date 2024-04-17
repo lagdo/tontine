@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row mt-0">
                     <div class="col d-flex justify-content-center">
-                      <h5>{{ __('tontine.report.titles.fund') }} - {{ $fund->title }}</h5>
+                      <h5>{{ __('tontine.report.titles.fund') }} - {!! $fund->title !!}</h5>
                     </div>
                   </div>
                   <div class="table-responsive">

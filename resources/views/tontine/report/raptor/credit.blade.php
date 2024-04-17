@@ -102,7 +102,7 @@
       </div>
 
 @foreach ($funds as $fund)
-      @include('tontine.report.raptor.credit.fund', $fund)
+      @include('tontine.report.raptor.credit.fund', ['fund' => $fund])
 @if (!$loop->last)
       <div class="pagebreak"></div>
 @endif

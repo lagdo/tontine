@@ -1,6 +1,6 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="table-title">
-                    {{ __('tontine.report.titles.fund') }} - {{ $fund->title }}
+                    {{ __('tontine.report.titles.fund') }} - {!! $fund->title !!}
                   </div>
                   <div class="table">
                     <table>

@@ -5,6 +5,7 @@ namespace Siak\Tontine\Service\Report;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
@@ -16,6 +17,7 @@ use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Report\RoundService;
 use Siak\Tontine\Service\Tontine\FundService;
 
+use function collect;
 use function compact;
 
 class ReportService
@@ -219,31 +221,44 @@ class ReportService
     /**
      * @param Round $round
      *
+     * @return Collection
+     */
+    private function getCreditReportFunds(Round $round): Collection
+    {
+        if(!($session = $round->sessions()->orderByDesc('start_at')->first()))
+        {
+            return collect();
+        }
+
+        return $this->fundService->getActiveFunds()
+            ->each(function($fund) use($session) {
+                $sessions = $this->profitService->getFundSessions($session, $fund->id);
+                $fund->loans = Loan::select('loans.*')
+                    ->join('sessions', 'loans.session_id', '=', 'sessions.id')
+                    ->whereIn('session_id', $sessions->pluck('id'))
+                    ->when($fund->id > 0, fn(Builder $query) =>
+                        $query->where('fund_id', $fund->id))
+                    ->when($fund->id === 0, fn(Builder $query) =>
+                        $query->whereNull('fund_id'))
+                    ->with(['member', 'session', 'debts.refund', 'debts.refund.session',
+                        'debts.partial_refunds', 'debts.partial_refunds.session'])
+                    ->orderBy('sessions.start_at')
+                    ->get();
+            })
+            ->filter(fn($fund) => $fund->loans->count() > 0);
+    }
+
+    /**
+     * @param Round $round
+     *
      * @return array
      */
     public function getCreditReport(Round $round): array
     {
         $tontine = $this->tenantService->tontine();
         [$country, $currency] = $this->localeService->getNameFromTontine($tontine);
+        $funds = $this->getCreditReportFunds($round);
 
-        if(!($session = $round->sessions()->orderByDesc('start_at')->first()))
-        {
-            $funds = [];
-            return compact('tontine', 'round', 'country', 'currency', 'funds');
-        }
-
-        $funds = $this->tenantService->tontine()->funds()->active()
-            ->get()
-            ->each(function($fund) use($session) {
-                $sessions = $this->profitService->getFundSessions($session, $fund->id);
-                $fund->loans = Loan::select('loans.*')
-                    ->join('sessions', 'loans.session_id', '=', 'sessions.id')
-                    ->whereIn('session_id', $sessions->pluck('id'))
-                    ->with(['member', 'session', 'debts.refund', 'debts.refund.session',
-                        'debts.partial_refunds', 'debts.partial_refunds.session'])
-                    ->orderBy('sessions.start_at')
-                    ->get();
-            });
         return compact('tontine', 'round', 'country', 'currency', 'funds');
     }
 }
