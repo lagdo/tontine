@@ -18,10 +18,10 @@
                   </div>
 
                   <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered responsive">
                       <thead>
                         <tr>
-                          <th>{{ __('figures.titles.sessions') }}</th>
+                          <th>{{ __('figures.titles.session') }}</th>
                           <th class="currency">{{ __('figures.titles.amount') }}</th>
                           <th class="currency">{{ __('figures.remitment.titles.count') }}</th>
                           <th class="currency">{{ __('figures.remitment.titles.amount') }}</th>

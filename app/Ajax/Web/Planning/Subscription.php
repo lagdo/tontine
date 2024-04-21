@@ -104,6 +104,7 @@ class Subscription extends CallableClass
         $html = $this->render('pages.planning.subscription.planning')
             ->with('pool', $pool);
         $this->response->html('content-page', $html);
+        $this->response->call('makeTableResponsive', 'content-page');
 
         $this->jq('#btn-subscription-beneficiaries')->click($this->rq()->beneficiaries($poolId));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->planning($poolId));
@@ -131,6 +132,7 @@ class Subscription extends CallableClass
             ->with('pool', $pool)
             ->with('pools', $this->subscriptionService->getPools());
         $this->response->html('content-page', $html);
+        $this->response->call('makeTableResponsive', 'content-page');
 
         $this->jq('#btn-subscription-planning')->click($this->rq()->planning($poolId));
         $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt()));

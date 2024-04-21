@@ -89,12 +89,12 @@ class Member extends CallableClass
             $perPage, $memberCount);
 
         $html = $this->render('pages.planning.subscription.member.page', [
-            'search' => $search,
             'members' => $members,
             'pagination' => $pagination,
             'total' => $this->subscriptionService->getSubscriptionCount($this->pool),
         ]);
         $this->response->html('pool-subscription-members-page', $html);
+        $this->response->call('makeTableResponsive', 'pool-subscription-members-page');
 
         $memberId = jq()->parent()->parent()->attr('data-member-id')->toInt();
         $this->jq('.btn-subscription-member-add')->click($this->rq()->create($memberId));

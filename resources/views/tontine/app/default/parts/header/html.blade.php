@@ -43,7 +43,7 @@
     padding: 0 15px 0 130px !important;
     position: relative;
   }
-  .table.responsive td:not(.table-item-menu)::before {
+  .table.responsive td::before {
     padding: 10px;
     content: attr(data-label);
     position: absolute;
@@ -58,20 +58,23 @@
     font-weight: bold;
     border-bottom: 1px solid #f6f6f6;
   }
-  .table.responsive td.table-item-menu {
-    padding-top: 10px !important;
-    padding-left: 10px !important;
-    width: 121px;
-    background-color: rgba(0, 0, 0, 0.04);
-  }
-  .table.responsive td.table-item-toggle {
+  .table.responsive td.table-item-menu,
+  .table.responsive td.table-item-toggle,
+  .table.responsive td.table-item-counter,
+  .table.responsive td.table-item-currency {
     width: auto;
+  }
+  .table.responsive td.currency {
+    text-align: left;
   }
   .table.responsive tr {
     margin-bottom: 1rem;
   }
   .table.responsive th + td {
     padding-left: 10px;
+  }
+  .table.responsive td select {
+    display: block;
   }
 }
 </style>

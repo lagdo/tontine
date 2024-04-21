@@ -101,6 +101,7 @@ class Session extends CallableClass
             'pagination' => $pagination,
         ]);
         $this->response->html('content-page-sessions', $html);
+        $this->response->call('makeTableResponsive', 'content-page-sessions');
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.btn-session-edit')->click($this->rq()->edit($sessionId));

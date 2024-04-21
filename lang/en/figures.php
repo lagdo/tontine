@@ -2,7 +2,7 @@
 
 return [
     'titles' => [
-        'sessions' => "Sessions",
+        'session' => "Session",
         'deposits' => "Deposits",
         'amounts' => "Cash amounts",
         'amount' => "Cash amount",

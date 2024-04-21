@@ -51,8 +51,10 @@ class Session extends CallableClass
 
     public function home(int $poolId)
     {
-        $html = $this->render('pages.planning.subscription.session.home')
-            ->with('pool', $this->pool);
+        $html = $this->render('pages.planning.subscription.session.home', [
+            'pool' => $this->pool,
+            'total' => $this->poolService->getEnabledSessionCount($this->pool),
+        ]);
         $this->response->html('pool-subscription-sessions', $html);
         $this->jq('#btn-subscription-sessions-refresh')->click($this->rq()->home($poolId));
         if($this->pool->remit_planned)
@@ -75,12 +77,13 @@ class Session extends CallableClass
         $sessions = $this->poolService->getPoolSessions($this->pool, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
 
-        $html = $this->render('pages.planning.subscription.session.page')
-            ->with('pool', $this->pool)
-            ->with('sessions', $sessions)
-            ->with('total', $this->poolService->getEnabledSessionCount($this->pool))
-            ->with('pagination', $pagination);
+        $html = $this->render('pages.planning.subscription.session.page', [
+            'pool' => $this->pool,
+            'sessions' => $sessions,
+            'pagination' => $pagination,
+        ]);
         $this->response->html('pool-subscription-sessions-page', $html);
+        $this->response->call('makeTableResponsive', 'pool-subscription-sessions-page');
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.pool-subscription-session-enable')
@@ -95,6 +98,8 @@ class Session extends CallableClass
     public function enableSession(int $sessionId)
     {
         $this->poolService->enableSession($this->pool, $sessionId);
+        $this->response->html('pool-subscription-sessions-total',
+            $this->poolService->getEnabledSessionCount($this->pool));
 
         return $this->page();
     }
@@ -102,6 +107,8 @@ class Session extends CallableClass
     public function disableSession(int $sessionId)
     {
         $this->poolService->disableSession($this->pool, $sessionId);
+        $this->response->html('pool-subscription-sessions-total',
+            $this->poolService->getEnabledSessionCount($this->pool));
 
         return $this->page();
     }

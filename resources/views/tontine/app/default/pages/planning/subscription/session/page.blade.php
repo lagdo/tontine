@@ -1,10 +1,10 @@
               <div class="table-responsive">
-                <table class="table table-bordered">
+                <table class="table table-bordered responsive">
                   <thead>
                     <tr>
                       <th>{!! __('common.labels.title') !!}</th>
                       <th>{!! __('common.labels.date') !!}</th>
-                      <th class="table-menu">{{ $total }}</th>
+                      <th class="table-menu">&nbsp;</th>
                     </tr>
                   </thead>
                   <tbody>

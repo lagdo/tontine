@@ -53,6 +53,7 @@ class Round extends CallableClass
             'pagination' => $pagination,
         ]);
         $this->response->html('content-page-rounds', $html);
+        $this->response->call('makeTableResponsive', 'content-page-rounds');
 
         $roundId = jq()->parent()->attr('data-round-id')->toInt();
         $this->jq('.btn-round-edit')->click($this->rq()->edit($roundId));
