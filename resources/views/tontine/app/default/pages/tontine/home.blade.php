@@ -20,10 +20,12 @@
           <div class="card shadow mb-4">
             <div class="card-body">
               <div class="table-responsive" id="tontine-page">
-                @isset($tontines) @include('tontine.app.default.pages.tontine.page') @endisset
+@isset($tontines)
+                @include('tontine.app.default.pages.tontine.page')
+@endisset
               </div>
             </div>
           </div>
 
-          <div id="guest-tontine-home">
+          <div class="table-responsive" id="guest-tontine-home">
           </div>

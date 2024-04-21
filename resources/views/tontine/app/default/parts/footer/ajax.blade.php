@@ -19,6 +19,20 @@
       orientation: "{{ __('tontine.messages.screen.orientation') }}",
     },
   };
-  function showBalanceAmounts() { {!! $jxnSession->showBalanceAmounts() !!}; }
-  function showBalanceAmountsWithDelay() { setTimeout(() => {!! $jxnSession->showBalanceAmounts() !!}, 5); }
+  function showBalanceAmounts() {
+    {!! $jxnSession->showBalanceAmounts() !!};
+  }
+  function showBalanceAmountsWithDelay() {
+    setTimeout(() => {!! $jxnSession->showBalanceAmounts() !!}, 5);
+  }
+  function makeTableResponsive(tableId)
+  {
+    const table = document.querySelector('#' + tableId);
+    if(!table) {
+      return;
+    }
+    const labels = Array.from(table.querySelectorAll('th')).map(th => th.innerText);
+    table.querySelectorAll('td')
+      .forEach((td, i) => td.setAttribute('data-label', labels[i % labels.length]));
+  }
 </script>

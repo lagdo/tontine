@@ -39,7 +39,8 @@
       width: 20px;
       height: 12px;
     }
-    .table td.table-item-menu {
+    .table td.table-item-menu,
+    .table td.table-item-toggle {
       width: 90px;
     }
     .table td.table-member-subscription {
