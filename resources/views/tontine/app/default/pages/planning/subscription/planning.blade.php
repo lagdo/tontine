@@ -34,7 +34,7 @@
                       <tbody>
 @foreach ($sessions as $session)
                         <tr>
-                          <th>{{ $session->title }}</th>
+                          <td><b>{{ $session->title }}</b></td>
 @if($session->disabled($pool))
                           <td></td>
                           <td></td>
