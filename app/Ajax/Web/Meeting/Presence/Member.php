@@ -67,12 +67,16 @@ class Member extends CallableClass
 
     private function _home()
     {
+        $search = trim($this->bag('presence')->get('member.search', ''));
         $html = $this->render('pages.meeting.presence.member.home', [
             'session' => $this->session, // Is null when showing presences by members.
+            'memberCount' => $this->presenceService->getMemberCount($search),
         ]);
         $this->response->html('content-home-members', $html);
 
         $this->jq('#btn-presence-members-refresh')->click($this->rq()->page());
+        $this->jq('#btn-presence-members-search')
+            ->click($this->rq()->search(jq('#txt-presence-members-search')->val()));
 
         return $this->page();
     }
@@ -100,12 +104,10 @@ class Member extends CallableClass
             'absences' => $absences,
             'pagination' => $pagination,
             'sessionCount' => $this->presenceService->getSessionCount(),
-            'memberCount' => $memberCount,
         ]);
         $this->response->html('content-page-members', $html);
+        $this->response->call('makeTableResponsive', 'content-page-members');
 
-        $this->jq('#btn-presence-members-search')
-            ->click($this->rq()->search(jq('#txt-presence-members-search')->val()));
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $this->jq('.btn-toggle-member-presence')->click($this->rq()->togglePresence($memberId));
         $this->jq('.btn-show-member-presences')

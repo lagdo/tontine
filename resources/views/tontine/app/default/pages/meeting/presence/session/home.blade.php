@@ -4,7 +4,8 @@
 @if (!$member)
                             {{ __('tontine.titles.sessions') }}
 @else
-                            {{ __('tontine.titles.presences', ['of' => $member->name]) }}
+                            {{ __('tontine.titles.presences', ['of' => $member->name]) }} ({{
+                                $sessionCount - ($member->absences_count ?? 0) }}/{{ $sessionCount }})
 @endif
                           </h2>
                         </div>

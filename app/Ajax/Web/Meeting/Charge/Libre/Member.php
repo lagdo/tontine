@@ -36,16 +36,33 @@ class Member extends CallableChargeClass
     {
         $this->bag('meeting')->set('charge.id', $chargeId);
         $this->bag('meeting')->set('fee.member.filter', null);
+        $this->bag('meeting')->set('fee.member.search', '');
 
         $html = $this->render('pages.meeting.charge.libre.member.home', [
             'charge' => $this->charge,
             'paid' => $this->charge->is_fee,
         ]);
         $this->response->html('meeting-fees-libre', $html);
+
         $this->jq('#btn-fee-libre-back')->click($this->rq(Charge::class)->home());
         $this->jq('#btn-fee-libre-filter')->click($this->rq()->toggleFilter());
+        $this->jq('#btn-fee-libre-search')
+            ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
 
         return $this->page(1);
+    }
+
+    private function showTotal()
+    {
+        $settlement = $this->settlementService->getSettlementCount($this->charge, $this->session);
+        $settlementCount = $settlement->total ?? 0;
+        $settlementAmount = $settlement->amount ?? 0;
+
+        $html = $this->render('pages.meeting.charge.libre.member.total', [
+            'settlementCount' => $settlementCount,
+            'settlementAmount' => $settlementAmount,
+        ]);
+        $this->response->html('member-libre-settlements-total', $html);
     }
 
     /**
@@ -64,17 +81,17 @@ class Member extends CallableChargeClass
         $members = $this->billService->getMembers($this->charge, $this->session,
             $search, $filter, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
-        $settlement = $this->settlementService->getSettlementCount($this->charge, $this->session);
+
+        $this->showTotal();
 
         $html = $this->render('pages.meeting.charge.libre.member.page', [
-            'search' => $search,
             'session' => $this->session,
             'charge' => $this->charge,
             'members' => $members,
-            'settlement' => $settlement,
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-fee-libre-members', $html);
+        $this->response->call('makeTableResponsive', 'meeting-fee-libre-members');
 
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $paid = pm()->checked('check-fee-libre-paid');
@@ -83,8 +100,6 @@ class Member extends CallableChargeClass
         $this->jq('.btn-del-bill')->click($this->rq()->delBill($memberId));
         $this->jq('.btn-save-bill')->click($this->rq()->addBill($memberId, $paid, $amount));
         $this->jq('.btn-edit-bill')->click($this->rq()->editBill($memberId));
-        $this->jq('#btn-fee-libre-search')
-            ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
 
         return $this->response;
     }

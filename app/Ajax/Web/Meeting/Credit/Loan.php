@@ -55,6 +55,7 @@ class Loan extends CallableSessionClass
             'loans' => $loans,
         ]);
         $this->response->html('meeting-loans', $html);
+        $this->response->call('makeTableResponsive', 'meeting-loans');
 
         $this->jq('#btn-loans-refresh')->click($this->rq()->home());
         $this->jq('#btn-loan-add')->click($this->rq()->addLoan());

@@ -1,6 +1,6 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('debtCalculator', 'Siak\Tontine\Service\Meeting\Credit\DebtCalculator')
-                <table class="table table-bordered">
+                <table class="table table-bordered responsive">
                   <thead>
                     <tr>
                       <th>{!! __('meeting.labels.member') !!}</th>

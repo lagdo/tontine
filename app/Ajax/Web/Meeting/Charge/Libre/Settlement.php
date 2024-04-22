@@ -32,6 +32,29 @@ class Settlement extends CallableChargeClass
         return $this->page(1);
     }
 
+    private function showTotal()
+    {
+        $settlement = $this->settlementService->getSettlementCount($this->charge, $this->session);
+        $settlementCount = $settlement->total ?? 0;
+        $settlementAmount = $settlement->amount ?? 0;
+
+        $billCount = $this->billService->getBillCount($this->charge, $this->session);
+        $html = $this->render('pages.meeting.settlement.total', [
+            'billCount' => $billCount,
+            'settlementCount' => $settlementCount,
+            'settlementAmount' => $settlementAmount,
+        ]);
+        $this->response->html('meeting-settlements-total', $html);
+
+        $html = $this->render('pages.meeting.settlement.action', [
+            'session' => $this->session,
+            'charge' => $this->charge,
+            'billCount' => $billCount,
+            'settlementCount' => $settlementCount,
+        ]);
+        $this->response->html('meeting-settlements-action', $html);
+    }
+
     /**
      * @param int $pageNumber
      *
@@ -48,18 +71,15 @@ class Settlement extends CallableChargeClass
         $bills = $this->billService->getBills($this->charge, $this->session,
             $search, $onlyUnpaid, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $billCount);
-        $settlement = $this->settlementService->getSettlementCount($this->charge, $this->session);
 
         $html = $this->render('pages.meeting.settlement.page', [
-            'type' => 'libre',
             'session' => $this->session,
             'charge' => $this->charge,
-            'billCount' => $this->billService->getBillCount($this->charge, $this->session),
-            'settlement' => $settlement,
             'bills' => $bills,
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-fee-libre-bills', $html);
+        $this->response->call('makeTableResponsive', 'meeting-fee-libre-bills');
 
         $billId = jq()->parent()->attr('data-bill-id')->toInt();
         $this->jq('.btn-add-settlement', '#meeting-fee-libre-bills')

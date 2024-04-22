@@ -5,6 +5,7 @@ namespace App\Ajax\Web\Meeting\Pool\Deposit;
 use App\Ajax\CallableSessionClass;
 use App\Ajax\Web\Meeting\Pool\Deposit;
 use Siak\Tontine\Model\Pool as PoolModel;
+use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
@@ -33,11 +34,12 @@ class Pool extends CallableSessionClass
     /**
      * The constructor
      *
+     * @param BalanceCalculator $balanceCalculator
      * @param PoolService $poolService
      * @param DepositService $depositService
      */
-    public function __construct(protected PoolService $poolService,
-        protected DepositService $depositService)
+    public function __construct(private BalanceCalculator $balanceCalculator,
+        protected PoolService $poolService, protected DepositService $depositService)
     {}
 
     protected function getPool()
@@ -53,6 +55,25 @@ class Pool extends CallableSessionClass
         }
     }
 
+    private function showTotal()
+    {
+        $depositCount = $this->depositService->countDeposits($this->pool, $this->session);
+        $html = $this->render('pages.meeting.deposit.pool.total', [
+            'depositCount' => $depositCount,
+            'depositAmount' => $this->balanceCalculator
+                ->getPoolDepositAmount($this->pool, $this->session),
+        ]);
+        $this->response->html('meeting-deposits-total', $html);
+
+        $html = $this->render('pages.meeting.deposit.pool.action', [
+            'session' => $this->session,
+            'depositCount' => $depositCount,
+            'receivableCount' => $this->depositService
+                ->getReceivableCount($this->pool, $this->session),
+        ]);
+        $this->response->html('meeting-deposits-action', $html);
+    }
+
     /**
      * @param int $poolId
      *
@@ -66,6 +87,7 @@ class Pool extends CallableSessionClass
             'pool' => $this->pool,
         ]);
         $this->response->html('meeting-deposits', $html);
+
         $this->jq('#btn-deposits-back')->click($this->rq(Deposit::class)->home());
 
         return $this->page(1);
@@ -83,15 +105,16 @@ class Pool extends CallableSessionClass
         $receivables = $this->depositService->getReceivables($this->pool, $this->session, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $receivableCount);
 
+        $this->showTotal();
+
         $html = $this->render('pages.meeting.deposit.pool.page', [
             'pool' => $this->pool,
             'session' => $this->session,
-            'receivableCount' => $receivableCount,
-            'depositCount' => $this->depositService->countDeposits($this->pool, $this->session),
             'receivables' => $receivables,
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-pool-deposits', $html);
+        $this->response->call('makeTableResponsive', 'meeting-pool-deposits');
 
         $this->jq('.btn-add-all-deposits')->click($this->rq()->addAllDeposits());
         $this->jq('.btn-del-all-deposits')->click($this->rq()->delAllDeposits());

@@ -19,17 +19,44 @@ class Settlement extends CallableChargeClass
     {
         $this->bag('meeting')->set('charge.id', $chargeId);
         $this->bag('meeting')->set('settlement.fixed.filter', null);
+        $this->bag('meeting')->set('settlement.fixed.search', '');
 
         $html = $this->render('pages.meeting.settlement.home', [
             'type' => 'fixed',
             'charge' => $this->charge,
         ]);
         $this->response->html('meeting-fees-fixed', $html);
+
         $this->jq('#btn-fee-fixed-settlements-back')
             ->click($this->rq(Charge::class)->home());
         $this->jq('#btn-fee-fixed-settlements-filter')->click($this->rq()->toggleFilter());
+        $this->jq('#btn-fee-fixed-settlements-search')
+            ->click($this->rq()->search(jq('#txt-fee-settlements-search')->val()));
 
         return $this->page(1);
+    }
+
+    private function showTotal()
+    {
+        $settlement = $this->settlementService->getSettlementCount($this->charge, $this->session);
+        $settlementCount = $settlement->total ?? 0;
+        $settlementAmount = $settlement->amount ?? 0;
+
+        $billCount = $this->billService->getBillCount($this->charge, $this->session);
+        $html = $this->render('pages.meeting.settlement.total', [
+            'billCount' => $billCount,
+            'settlementCount' => $settlementCount,
+            'settlementAmount' => $settlementAmount,
+        ]);
+        $this->response->html('meeting-settlements-total', $html);
+
+        $html = $this->render('pages.meeting.settlement.action', [
+            'session' => $this->session,
+            'charge' => $this->charge,
+            'billCount' => $billCount,
+            'settlementCount' => $settlementCount,
+        ]);
+        $this->response->html('meeting-settlements-action', $html);
     }
 
     /**
@@ -48,19 +75,17 @@ class Settlement extends CallableChargeClass
         $bills = $this->billService->getBills($this->charge, $this->session,
             $search, $onlyUnpaid, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $billCount);
-        $settlement = $this->settlementService->getSettlementCount($this->charge, $this->session);
+
+        $this->showTotal();
 
         $html = $this->render('pages.meeting.settlement.page', [
-            'type' => 'fixed',
-            'search' => $search,
             'session' => $this->session,
             'charge' => $this->charge,
-            'billCount' => $this->billService->getBillCount($this->charge, $this->session),
-            'settlement' => $settlement,
             'bills' => $bills,
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-fee-fixed-bills', $html);
+        $this->response->call('makeTableResponsive', 'meeting-fee-fixed-bills');
 
         $this->jq('.btn-add-all-settlements')->click($this->rq()->addAllSettlements());
         $this->jq('.btn-del-all-settlements')->click($this->rq()->delAllSettlements());
@@ -71,8 +96,6 @@ class Settlement extends CallableChargeClass
             ->click($this->rq()->delSettlement($billId));
         $this->jq('.btn-edit-notes', '#meeting-fee-fixed-bills')
             ->click($this->rq()->editNotes($billId));
-        $this->jq('#btn-fee-fixed-settlements-search')
-            ->click($this->rq()->search(jq('#txt-fee-settlements-search')->val()));
 
         return $this->response;
     }

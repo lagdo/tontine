@@ -1,15 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-                    <table class="table table-bordered">
+                    <table class="table table-bordered responsive">
                       <thead>
                         <tr>
-                          <th>
-                            <div class="input-group">
-                              {!! Form::text('search', $search, ['class' => 'form-control', 'id' => 'txt-fee-member-search']) !!}
-                              <div class="input-group-append">
-                                <button type="button" class="btn btn-primary" id="btn-fee-libre-search"><i class="fa fa-search"></i></button>
-                              </div>
-                            </div>
-                          </th>
+                          <th>{{ __('common.labels.name') }}</th>
                           <th class="currency">{{ __('common.labels.paid') }}</th>
                         </tr>
                       </thead>

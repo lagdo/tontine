@@ -47,6 +47,7 @@ class Session extends CallableClass
             'pagination' => $pagination
         ]);
         $this->response->html('content-page', $html);
+        $this->response->call('makeTableResponsive', 'content-page');
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.btn-session-show')->click($this->rq(Session\Home::class)->home($sessionId));

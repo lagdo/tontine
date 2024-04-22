@@ -63,6 +63,8 @@ class Member extends CallableClass
         $this->response->html('pool-subscription-members', $html);
         $this->jq('#btn-subscription-members-filter')->click($this->rq()->filter());
         $this->jq('#btn-subscription-members-refresh')->click($this->rq()->home($poolId));
+        $this->jq('#btn-subscription-members-search')
+            ->click($this->rq()->search(jq('#txt-subscription-members-search')->val()));
         if($this->pool->remit_planned)
         {
             $this->jq('#btn-subscription-beneficiaries')
@@ -71,6 +73,7 @@ class Member extends CallableClass
 
         $this->bag('subscription')->set('pool.id', $poolId);
         $this->bag('subscription')->set('member.filter', null);
+        $this->bag('subscription')->set('member.search', '');
 
         return $this->page();
     }
@@ -99,8 +102,6 @@ class Member extends CallableClass
         $memberId = jq()->parent()->parent()->attr('data-member-id')->toInt();
         $this->jq('.btn-subscription-member-add')->click($this->rq()->create($memberId));
         $this->jq('.btn-subscription-member-del')->click($this->rq()->delete($memberId));
-        $this->jq('#btn-subscription-members-search')
-            ->click($this->rq()->search(jq('#txt-subscription-members-search')->val()));
 
         return $this->response;
     }

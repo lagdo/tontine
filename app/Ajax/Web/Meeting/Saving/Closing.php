@@ -51,6 +51,7 @@ class Closing extends CallableSessionClass
             'funds' => $this->fundService->getFundList(),
         ]);
         $this->response->html('meeting-closings', $html);
+        $this->response->call('makeTableResponsive', 'meeting-closings');
 
         // Sending an Ajax request to the Saving class needs to set
         // the session id in the report databag.

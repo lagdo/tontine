@@ -90,6 +90,7 @@ class Pool extends CallableSessionClass
             'payables' => $this->remitmentService->getPayables($this->pool, $this->session),
         ]);
         $this->response->html('meeting-pool-remitments', $html);
+        $this->response->call('makeTableResponsive', 'meeting-pool-remitments');
 
         $payableId = jq()->parent()->attr('data-payable-id')->toInt();
         $this->jq('.btn-add-remitment')->click($this->rq()->addRemitment($payableId));

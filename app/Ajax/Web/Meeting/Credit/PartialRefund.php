@@ -69,6 +69,7 @@ class PartialRefund extends CallableSessionClass
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-partial-refunds-page', $html);
+        $this->response->call('makeTableResponsive', 'meeting-partial-refunds-page');
 
         $refundId = jq()->parent()->attr('data-refund-id')->toInt();
         $this->jq('.btn-del-partial-refund')->click($this->rq()->deleteRefund($refundId)

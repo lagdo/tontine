@@ -67,6 +67,7 @@ class Payment extends CallableClass
 
         $html = $this->render('pages.meeting.payment.page', compact('members', 'pagination'));
         $this->response->html('payment-members-page', $html);
+        $this->response->call('makeTableResponsive', 'payment-members-page');
 
         // Don't show the payable items if there is no opened session or no member.
         if($this->sessions->count() === 0 || $this->memberService->getMemberCount('') === 0)
@@ -99,9 +100,11 @@ class Payment extends CallableClass
 
         $html = $this->render('pages.meeting.payment.items',
             compact('member', 'session', 'receivables', 'debts', 'bills'));
-        $this->response->html('member-payables-home', $html);
-        $this->response->call('showPaymentDetails');
+        $this->response->html('payment-payables-home', $html);
+        $this->response->call('makeTableResponsive', 'payment-payables-home');
+
         $this->jq('#btn-payment-members-back')->click(pm()->js('showPaymentMembers'));
+        $this->response->call('showPaymentDetails');
 
         OnPagePaymentPayables::dispatch($member, $session, $receivables, $bills, $debts);
         return $this->response;

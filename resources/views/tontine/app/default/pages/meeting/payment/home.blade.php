@@ -27,6 +27,6 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-sm-12 payment-sm-hide" id="member-payables-home">
+            <div class="col-md-6 col-sm-12 payment-sm-hide" id="payment-payables-home">
             </div>
           </div>

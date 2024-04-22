@@ -1,24 +1,12 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('balance', 'Siak\Tontine\Service\BalanceCalculator')
 @inject('paymentService', 'Siak\Tontine\Service\Meeting\PaymentServiceInterface')
-@php
-  $depositAmount = $balance->getPoolDepositAmount($pool, $session);
-@endphp
-                <table class="table table-bordered">
+                <table class="table table-bordered responsive">
                   <thead>
                     <tr>
                       <th>{!! __('common.labels.name') !!}</th>
+                      <th class="currency">{!! __('common.labels.amount') !!}</th>
 @if ($pool->deposit_fixed)
-                      <th class="currency">{!! $depositAmount > 0 ? $locale->formatMoney($depositAmount, true) : '&nbsp;' !!}</th>
-                      <th class="table-item-menu">
-@if ($depositCount < $receivableCount)
-                        <a href="javascript:void(0)" class="btn-add-all-deposits"><i class="fa fa-toggle-off"></i></a>
-@else
-                        <a href="javascript:void(0)" class="btn-del-all-deposits"><i class="fa fa-toggle-on"></i></a>
-@endif
-                      </th>
-@else
-                      <th class="currency">{!! $depositAmount > 0 ? $locale->formatMoney($depositAmount, true) : '&nbsp;' !!}</th>
+                      <th class="table-item-menu">&nbsp;</th>
 @endif
                     </tr>
                   </thead>

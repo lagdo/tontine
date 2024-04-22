@@ -69,6 +69,7 @@ class Session extends CallableClass
     {
         $html = $this->render('pages.meeting.presence.session.home', [
             'member' => $this->member, // Is null when showing presences by sessions.
+            'sessionCount' => $this->presenceService->getSessionCount(),
         ]);
         $this->response->html('content-home-sessions', $html);
 
@@ -94,9 +95,9 @@ class Session extends CallableClass
             'pagination' => $pagination,
             'statuses' => $this->sessionService->getSessionStatuses(),
             'memberCount' => $this->presenceService->getMemberCount(),
-            'sessionCount' => $sessionCount,
         ]);
         $this->response->html('content-page-sessions', $html);
+        $this->response->call('makeTableResponsive', 'content-page-sessions');
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.btn-toggle-session-presence')->click($this->rq()->togglePresence($sessionId));

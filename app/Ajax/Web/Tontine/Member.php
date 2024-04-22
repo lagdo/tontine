@@ -37,6 +37,8 @@ class Member extends CallableClass
      */
     public function home()
     {
+        $this->bag('member')->set('search', '');
+
         $html = $this->render('pages.member.home');
         $this->response->html('section-title', trans('tontine.menus.tontine'));
         $this->response->html('content-home', $html);

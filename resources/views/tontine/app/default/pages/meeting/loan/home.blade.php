@@ -16,7 +16,7 @@
 @endif
                   </div>
                   <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered responsive">
                       <thead>
                         <tr>
                           <th>{!! __('meeting.labels.member') !!}</th>

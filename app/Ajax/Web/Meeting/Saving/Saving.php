@@ -61,24 +61,34 @@ class Saving extends CallableSessionClass
         return $this->page();
     }
 
+    private function showTotal(int $fundId, int $savingCount)
+    {
+        $savingTotal = $this->savingService->getSavingTotal($this->session, $fundId);
+        $html = $this->render('pages.meeting.saving.total', [
+            'savingCount' => $savingCount,
+            'savingTotal' => $savingTotal,
+        ]);
+        $this->response->html('meeting-savings-total', $html);
+    }
+
     public function page(int $pageNumber = 0)
     {
         $fundId = (int)$this->bag('meeting.saving')->get('fund.id', -1);
         $savingCount = $this->savingService->getSavingCount($this->session, $fundId);
-        $savingSum = $this->savingService->getSavingSum($this->session, $fundId);
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $savingCount,
             'meeting.saving', 'page');
         $savings = $this->savingService->getSavings($this->session, $fundId, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $savingCount);
 
+        $this->showTotal($fundId, $savingCount);
+
         $html = $this->render('pages.meeting.saving.page', [
             'session' => $this->session,
             'savings' => $savings,
-            'savingCount' => $savingCount,
-            'savingSum' => $savingSum,
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-savings-page', $html);
+        $this->response->call('makeTableResponsive', 'meeting-savings-page');
 
         $savingId = jq()->parent()->attr('data-saving-id')->toInt();
         $this->jq('.btn-saving-edit')->click($this->rq()->editSaving($savingId));

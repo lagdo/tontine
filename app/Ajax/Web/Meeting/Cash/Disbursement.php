@@ -46,6 +46,7 @@ class Disbursement extends CallableSessionClass
             'disbursements' => $disbursements,
         ]);
         $this->response->html('meeting-disbursements', $html);
+        $this->response->call('makeTableResponsive', 'meeting-disbursements');
 
         $this->jq('#btn-disbursements-refresh')->click($this->rq()->home());
         $this->jq('#btn-disbursement-add')->click($this->rq()->addDisbursement());
