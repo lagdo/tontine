@@ -18,6 +18,10 @@
 
 <link rel="stylesheet" href="/jaxon/app.3.1.0.css">
 <style>
+  .section .section-title,
+  .card .card-body .section-title {
+    margin: 10px 0 15px 0;
+  }
   .table {
     width: 100%;
   }

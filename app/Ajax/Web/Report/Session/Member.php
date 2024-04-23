@@ -57,6 +57,7 @@ class Member extends CallableClass
             'receivables' => $this->memberService->getReceivables($session, $member),
         ]);
         $this->response->html('report-deposits', $html);
+        $this->response->call('makeTableResponsive', 'report-deposits');
     }
 
     private function remitments(SessionModel $session, MemberModel $member)
@@ -66,6 +67,7 @@ class Member extends CallableClass
             'auctions' => $this->memberService->getAuctions($session, $member),
         ]);
         $this->response->html('report-remitments', $html);
+        $this->response->call('makeTableResponsive', 'report-remitments');
     }
 
     private function loans(SessionModel $session, MemberModel $member)
@@ -74,6 +76,7 @@ class Member extends CallableClass
             'loans' => $this->memberService->getLoans($session, $member),
         ]);
         $this->response->html('report-loans', $html);
+        $this->response->call('makeTableResponsive', 'report-loans');
     }
 
     private function refunds(SessionModel $session, MemberModel $member)
@@ -82,6 +85,7 @@ class Member extends CallableClass
             'refunds' => $this->memberService->getRefunds($session, $member),
         ]);
         $this->response->html('report-refunds', $html);
+        $this->response->call('makeTableResponsive', 'report-refunds');
     }
 
     private function sessionBills(SessionModel $session, MemberModel $member)
@@ -90,6 +94,7 @@ class Member extends CallableClass
             'bills' => $this->memberService->getBills($session, $member),
         ]);
         $this->response->html('report-session-bills', $html);
+        $this->response->call('makeTableResponsive', 'report-session-bills');
     }
 
     private function totalBills(SessionModel $session, MemberModel $member)
@@ -98,6 +103,7 @@ class Member extends CallableClass
             'charges' => $this->sessionService->getTotalCharges($session, $member),
         ]);
         $this->response->html('report-total-bills', $html);
+        $this->response->call('makeTableResponsive', 'report-total-bills');
     }
 
     private function savings(SessionModel $session, MemberModel $member)
@@ -106,6 +112,8 @@ class Member extends CallableClass
             'savings' => $this->memberService->getSavings($session, $member),
         ]);
         $this->response->html('report-savings', $html);
+        $this->response->call('makeTableResponsive', 'report-savings');
+
         $this->response->html('report-fund-savings', '');
     }
 
@@ -115,5 +123,6 @@ class Member extends CallableClass
             'disbursements' => $this->memberService->getDisbursements($session, $member),
         ]);
         $this->response->html('report-disbursements', $html);
+        $this->response->call('makeTableResponsive', 'report-disbursements');
     }
 }

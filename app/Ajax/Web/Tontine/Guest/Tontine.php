@@ -50,6 +50,7 @@ class Tontine extends CallableClass
             'pagination' => $pagination,
         ]);
         $this->response->html('guest-tontine-page', $html);
+        $this->response->call('makeTableResponsive', 'guest-tontine-page');
 
         $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
         $this->jq('.btn-guest-tontine-choose')->click($this->rq(Select::class)->saveTontine($tontineId));

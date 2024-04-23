@@ -95,6 +95,7 @@ class Saving extends CallableClass
             'distributionSum' => $distributionSum,
         ]);
         $this->response->html('report-fund-savings-page', $html);
+        $this->response->call('makeTableResponsive', 'report-fund-savings-page');
 
         return $this->response;
     }

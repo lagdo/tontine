@@ -48,6 +48,7 @@ class Round extends CallableClass
         $html = $figures->reduce(fn($_html, $poolFigures) =>
             $_html . $this->render('pages.report.round.pool', $poolFigures), '');
         $this->response->html('content-pools', $html);
+        $this->response->call('makeTableResponsive', 'content-pools');
     }
 
     private function amounts()
@@ -66,5 +67,6 @@ class Round extends CallableClass
             'disbursements' => $this->roundService->getDisbursementAmounts($sessionIds),
         ]);
         $this->response->html('content-amounts', $html);
+        $this->response->call('makeTableResponsive', 'content-amounts');
     }
 }
