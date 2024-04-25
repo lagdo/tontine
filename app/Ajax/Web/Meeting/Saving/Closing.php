@@ -11,6 +11,7 @@ use Siak\Tontine\Validation\Meeting\ClosingValidator;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
+use function Jaxon\rq;
 use function trans;
 
 class Closing extends CallableSessionClass
@@ -61,13 +62,27 @@ class Closing extends CallableSessionClass
 
         $fundId = pm()->select('closings-fund-id')->toInt();
         $this->jq('#btn-closing-edit')->click($this->rq()->editClosing($fundId));
-        $this->jq('#btn-fund-savings-show')->click($this->rq(Saving::class)->home($fundId));
+        $this->jq('#btn-fund-savings-show')->click($this->rq()->showSavings($fundId));
 
         $fundId = jq()->parent()->attr('data-fund-id')->toInt();
         $this->jq('.btn-closing-edit')->click($this->rq()->editClosing($fundId));
-        $this->jq('.btn-fund-savings-show')->click($this->rq(Saving::class)->home($fundId));
+        $this->jq('.btn-fund-savings-show')->click($this->rq()->showSavings($fundId));
         $this->jq('.btn-closing-delete')->click($this->rq()->deleteClosing($fundId)
             ->confirm(trans('meeting.closing.questions.delete')));
+
+        return $this->response;
+    }
+
+    /**
+     * @databag report
+     */
+    public function showSavings(int $fundId)
+    {
+        $this->cl(Saving::class)->show($this->session, $fundId);
+
+        $this->response->call('showSmScreen', 'report-fund-savings', 'session-savings');
+        $this->jq('#btn-presence-sessions-back')->click(rq('.')
+            ->showSmScreen('meeting-closings', 'session-savings'));
 
         return $this->response;
     }

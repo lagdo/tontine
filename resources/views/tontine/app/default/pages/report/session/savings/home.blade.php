@@ -3,6 +3,11 @@
                     <div class="col">
                       <div class="section-title mt-0">{!! $fund !!}</div>
                     </div>
+@if ($backButton)
+                    <div class="col-auto sm-screen-hidden">
+                      <button type="button" class="btn btn-primary" id="btn-presence-sessions-back"><i class="fa fa-arrow-left"></i></button>
+                    </div>
+@endif
                   </div>
                   <div class="row" id="report-fund-profits-distribution">
                   </div>

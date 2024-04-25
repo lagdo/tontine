@@ -9,6 +9,7 @@ use Siak\Tontine\Service\Meeting\PresenceService;
 use Siak\Tontine\Service\Tontine\MemberService;
 
 use function Jaxon\jq;
+use function Jaxon\rq;
 
 /**
  * @databag presence
@@ -16,11 +17,6 @@ use function Jaxon\jq;
  */
 class Member extends CallableClass
 {
-    /**
-     * @var bool
-     */
-    private $fromHome = false;
-
     /**
      * @var SessionModel|null
      */
@@ -53,12 +49,23 @@ class Member extends CallableClass
         $this->bag('presence')->set('session.id', $session->id);
         $this->bag('presence')->set('member.page', 1);
 
-        return $this->_home();
+        $this->_home();
+
+        $this->response->call('showSmScreen', 'content-home-members', 'presence-sm-screens');
+        $this->jq('#btn-presence-sessions-back')->click(rq('.')
+            ->showSmScreen('content-home-sessions', 'presence-sm-screens'));
+
+        // if($members->count() > 0)
+        // {
+        //     $member = $members->first();
+        //     $this->cl(Session::class)->show($member);
+        // }
+
+        return $this->response;
     }
 
     public function home()
     {
-        $this->fromHome = true;
         $this->bag('presence')->set('session.id', 0);
         $this->bag('presence')->set('member.page', 1);
 
@@ -112,12 +119,6 @@ class Member extends CallableClass
         $this->jq('.btn-toggle-member-presence')->click($this->rq()->togglePresence($memberId));
         $this->jq('.btn-show-member-presences')
             ->click($this->rq(Presence::class)->selectMember($memberId));
-
-        if($this->fromHome && $members->count() > 0)
-        {
-            $member = $members->first();
-            $this->cl(Session::class)->show($member);
-        }
 
         return $this->response;
     }

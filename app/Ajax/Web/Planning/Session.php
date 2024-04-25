@@ -13,6 +13,7 @@ use Siak\Tontine\Validation\Planning\SessionValidator;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
+use function Jaxon\rq;
 use function array_filter;
 use function array_map;
 use function array_unique;
@@ -49,7 +50,7 @@ class Session extends CallableClass
     public function show(?RoundModel $round)
     {
         $this->round = $round;
-        return $this->home(!$round ? 0 : $round->id);
+        return $this->home(!$round ? 0 : $round->id, false);
     }
 
     /**
@@ -62,13 +63,20 @@ class Session extends CallableClass
         $this->round = $this->roundService->getRound($roundId);
     }
 
-    public function home(int $roundId)
+    public function home(int $roundId, bool $showScreen = true)
     {
         $this->bag('planning')->set('round.id', $roundId);
 
         $html = $this->render('pages.planning.session.home', ['round' => $this->round]);
         $this->response->html('section-title', trans('tontine.menus.planning'));
         $this->response->html('content-home-sessions', $html);
+
+        if($showScreen)
+        {
+            $this->response->call('showSmScreen', 'content-home-sessions', 'round-sm-screens');
+            $this->jq('#btn-rounds-back')->click(rq('.')
+                ->showSmScreen('content-home-rounds', 'round-sm-screens'));
+        }
 
         if(!$this->round)
         {

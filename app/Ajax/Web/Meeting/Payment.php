@@ -12,6 +12,7 @@ use Siak\Tontine\Service\Tontine\MemberService;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
+use function Jaxon\rq;
 use function compact;
 use function trans;
 
@@ -103,8 +104,9 @@ class Payment extends CallableClass
         $this->response->html('payment-payables-home', $html);
         $this->response->call('makeTableResponsive', 'payment-payables-home');
 
-        $this->jq('#btn-payment-members-back')->click(pm()->js('showPaymentMembers'));
-        $this->response->call('showPaymentDetails');
+        $this->response->call('showSmScreen', 'payment-payables-home', 'payment-sm-screens');
+        $this->jq('#btn-payment-members-back')->click(rq('.')
+            ->showSmScreen('payment-members-home', 'payment-sm-screens'));
 
         OnPagePaymentPayables::dispatch($member, $session, $receivables, $bills, $debts);
         return $this->response;

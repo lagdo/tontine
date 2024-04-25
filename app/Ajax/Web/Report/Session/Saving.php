@@ -51,10 +51,10 @@ class Saving extends CallableClass
         $this->bag('report')->set('session.id', $session->id);
         $this->session = $session;
 
-        return $this->home($fundId);
+        return $this->home($fundId, true);
     }
 
-    public function home(int $fundId)
+    public function home(int $fundId, bool $backButton = false)
     {
         $funds = $this->fundService->getFundList();
         if(!isset($funds[$fundId]))
@@ -66,6 +66,7 @@ class Saving extends CallableClass
         $html = $this->render('pages.report.session.savings.home', [
             'profit' => $profitAmount,
             'fund' => $funds[$fundId],
+            'backButton' => $backButton,
         ]);
         $this->response->html('report-fund-savings', $html);
 

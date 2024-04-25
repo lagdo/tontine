@@ -9,6 +9,11 @@
 @endif
                           </h2>
                         </div>
+@if (($session))
+                        <div class="col-auto sm-screen-hidden">
+                          <button type="button" class="btn btn-primary" id="btn-presence-sessions-back"><i class="fa fa-arrow-left"></i></button>
+                        </div>
+@endif
                         <div class="col-auto">
                           <div class="btn-group float-right" role="group" aria-label="">
                             <button type="button" class="btn btn-primary" id="btn-presence-members-refresh"><i class="fa fa-sync"></i></button>

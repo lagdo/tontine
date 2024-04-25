@@ -37,17 +37,22 @@
       .forEach((td, i) => td.setAttribute('data-label', labels[i % labels.length]));
   }
 
+  function showSmScreen(targetId, wrapperId)
+  {
+    $('.sm-screen', $('#' + wrapperId)).removeClass('sm-screen-active');
+    $('#' + targetId).addClass('sm-screen-active');
+  }
+
   function setSmScreenHandler(btnWrapperId, screensWrapperId = 'content-home')
   {
     const btnWrapper = $('#' + btnWrapperId);
     $('button', btnWrapper).click(function() {
-      const target = $(this).attr('data-target');
-      if(!target) {
+      const targetId = $(this).attr('data-target');
+      if(!targetId) {
         return;
       }
       // Show the target screen.
-      $('.sm-screen', $('#' + screensWrapperId)).removeClass('sm-screen-active');
-      $('#' + target).addClass('sm-screen-active');
+      showSmScreen(targetId, screensWrapperId);
       // Activate the button the user has clicked on.
       $('button', btnWrapper).removeClass('btn-primary');
       $('button', btnWrapper).removeClass('btn-outline-primary');

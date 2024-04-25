@@ -99,9 +99,7 @@
                         </div>
                         <div class="col-md-6 col-sm-12 sm-screen" id="meeting-closings">
                         </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-12" id="report-fund-savings">
+                        <div class="col-12 sm-screen" id="report-fund-savings">
                         </div>
                       </div>
                     </div>

@@ -18,6 +18,7 @@
 
 <link rel="stylesheet" href="/jaxon/app.3.1.0.css">
 <style>
+  .sm-screen-hidden,
   .sm-screen-selector {
     display: none;
   }
@@ -32,6 +33,7 @@
     width: 90px;
   }
   @media only screen and (max-width: 700px) {
+    .sm-screen-hidden,
     .sm-screen-selector,
     .sm-screen.sm-screen-active {
       display: block;
