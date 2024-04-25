@@ -41,6 +41,8 @@ class Invite extends CallableClass
         $this->hosts();
         $this->guests();
 
+        $this->response->call('setSmScreenHandler', 'invites-sm-screens');
+
         return $this->response;
     }
 

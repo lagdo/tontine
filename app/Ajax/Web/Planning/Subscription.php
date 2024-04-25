@@ -78,6 +78,8 @@ class Subscription extends CallableClass
         $this->cl(Subscription\Member::class)->show($pool);
         $this->cl(Subscription\Session::class)->show($pool);
 
+        $this->response->call('setSmScreenHandler', 'pool-subscription-sm-screens');
+
         return $this->response;
     }
 
@@ -108,7 +110,7 @@ class Subscription extends CallableClass
 
         $this->jq('#btn-subscription-beneficiaries')->click($this->rq()->beneficiaries($poolId));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->planning($poolId));
-        $this->jq('#btn-subscription-back')->click($this->rq()->pool($poolId));
+        $this->jq('#btn-subscription-back')->click($this->rq()->home($poolId));
 
         return $this->response;
     }
@@ -137,7 +139,7 @@ class Subscription extends CallableClass
         $this->jq('#btn-subscription-planning')->click($this->rq()->planning($poolId));
         $this->jq('#btn-pool-select')->click($this->rq()->select(pm()->select('select-pool')->toInt()));
         $this->jq('#btn-subscription-refresh')->click($this->rq()->beneficiaries($poolId));
-        $this->jq('#btn-subscription-back')->click($this->rq()->pool($poolId));
+        $this->jq('#btn-subscription-back')->click($this->rq()->home($poolId));
         $this->jq('.select-beneficiary')->change($this->rq()->saveBeneficiary($poolId,
             jq()->attr('data-session-id')->toInt(), jq()->val()->toInt(),
             jq()->attr('data-subscription-id')->toInt()));

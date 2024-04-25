@@ -49,60 +49,60 @@
                         <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->end, false) !!}</b>
                       </td>
 @elseif($session->pending)
-                      <td class="currency"><div style="display:block;">
+                      <td class="currency"><div>
                         <b>-</b><br/>
                         {{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, false) }}
                       </div></td>
-                      <td class="currency"><div style="display:block;">
+                      <td class="currency"><div>
                         <b>-</b><br/>
                         {{ $figures->expected[$session->id]->deposit->count }}
                       </div></td>
-                      <td class="currency"><div style="display:block;">
+                      <td class="currency"><div>
                         <b>-</b><br/>
                         {{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, false) }}
                       </div></td>
-                      <td class="currency"><div style="display:block;">
+                      <td class="currency"><div>
                         <b>-</b><br/>
                         {{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, false) }}
                       </div></td>
-                      <td class="currency"><div style="display:block;">
+                      <td class="currency"><div>
                         <b>-</b><br/>
                         {{ $figures->expected[$session->id]->remitment->count }}
                       </div></td>
-                      <td class="currency"><div style="display:block;">
+                      <td class="currency"><div>
                         <b>-</b><br/>
                         {{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, false) }}
                       </div></td>
-                      <td class="currency"><div style="display:block;">
+                      <td class="currency"><div>
                         <b>-</b><br/>
                         {{ $locale->formatMoney($figures->expected[$session->id]->cashier->end, false) }}
                       </div></td>
 @else
-                      <td class="currency"><div style="display:block;">
+                      <td class="currency"><div>
                         <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->start, false) !!}</b><br/>
                         {{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, false) }}
                       </div></td>
-                      <td class="currency"><div style="display:block;">
+                      <td class="currency"><div>
                         <b>{!! $figures->collected[$session->id]->deposit->count !!}</b><br/>
                         {{ $figures->expected[$session->id]->deposit->count }}
                       </div></td>
-                      <td class="currency"><div style="display:block;">
+                      <td class="currency"><div>
                         <b>{!! $locale->formatMoney($figures->collected[$session->id]->deposit->amount, false) !!}</b><br/>
                         {{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, false) }}
                       </div></td>
-                      <td class="currency"><div style="display:block;">
+                      <td class="currency"><div>
                         <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->recv, false) !!}</b><br/>
                         {{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, false) }}
                       </div></td>
-                      <td class="currency"><div style="display:block;">
+                      <td class="currency"><div>
                         <b>{!! $figures->collected[$session->id]->remitment->count !!}</b><br/>
                         {{ $figures->expected[$session->id]->remitment->count }}
                       </div></td>
-                      <td class="currency"><div style="display:block;">
+                      <td class="currency"><div>
                         <b>{!! $locale->formatMoney($figures->collected[$session->id]->remitment->amount, false) !!}</b><br/>
                         {{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, false) }}
                       </div></td>
-                      <td class="currency"><div style="display:block;">
+                      <td class="currency"><div>
                         <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->end, false) !!}</b><br/>
                         {{ $locale->formatMoney($figures->expected[$session->id]->cashier->end, false) }}
                       </div></td>

@@ -80,6 +80,8 @@ class Home extends CallableSessionClass
     {
         $this->cl(Deposit::class)->show($this->session);
         $this->cl(Remitment::class)->show($this->session);
+
+        $this->response->call('setSmScreenHandler', 'session-pools-sm-screens', 'session-pools');
     }
 
     /**
@@ -89,6 +91,8 @@ class Home extends CallableSessionClass
     {
         $this->cl(Saving::class)->show($this->session);
         $this->cl(Closing::class)->show($this->session);
+
+        $this->response->call('setSmScreenHandler', 'session-savings-sm-screens', 'session-savings');
     }
 
     /**
@@ -99,6 +103,8 @@ class Home extends CallableSessionClass
         $this->cl(Loan::class)->show($this->session);
         $this->cl(PartialRefund::class)->show($this->session);
         $this->cl(Refund::class)->show($this->session);
+
+        $this->response->call('setSmScreenHandler', 'session-credits-sm-screens', 'session-credits');
     }
 
     /**
@@ -116,6 +122,8 @@ class Home extends CallableSessionClass
     {
         $this->cl(FixedFee::class)->show($this->session);
         $this->cl(LibreFee::class)->show($this->session);
+
+        $this->response->call('setSmScreenHandler', 'session-charges-sm-screens', 'session-charges');
     }
 
     /**

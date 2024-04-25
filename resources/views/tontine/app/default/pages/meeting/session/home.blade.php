@@ -42,26 +42,62 @@
                 <div class="col">
                   <div class="tab-content" id="session-tabs-content">
                     <div class="tab-pane fade show active" id="session-pools" role="tabpanel" aria-labelledby="session-tab-pools">
-                      <div class="row">
-                        <div class="col-md-6 col-sm-12" id="meeting-deposits">
+                      <div class="row sm-screen-selector mb-3" id="session-pools-sm-screens">
+                        <div class="col-12">
+                          <div class="btn-group btn-group-sm btn-block" role="group" aria-label="">
+                            <button data-target="meeting-deposits" type="button" class="btn btn-primary">
+                              {!! __('meeting.titles.deposits') !!}
+                            </button>
+                            <button data-target="meeting-remitments" type="button" class="btn btn-outline-primary">
+                              {!! __('meeting.titles.remitments') !!}
+                            </button>
+                          </div>
                         </div>
-                        <div class="col-md-6 col-sm-12" id="meeting-remitments">
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-deposits">
+                        </div>
+                        <div class="col-md-6 col-sm-12 sm-screen" id="meeting-remitments">
                         </div>
                       </div>
                     </div>
                     <div class="tab-pane fade" id="session-charges" role="tabpanel" aria-labelledby="session-tab-charges">
-                      <div class="row">
-                        <div class="col-md-6 col-sm-12" id="meeting-fees-fixed">
+                      <div class="row sm-screen-selector mb-3" id="session-charges-sm-screens">
+                        <div class="col-12">
+                          <div class="btn-group btn-group-sm btn-block" role="group" aria-label="">
+                            <button data-target="meeting-fees-fixed" type="button" class="btn btn-primary">
+                              {!! __('meeting.charge.titles.fixed') !!}
+                            </button>
+                            <button data-target="meeting-fees-libre" type="button" class="btn btn-outline-primary">
+                              {!! __('meeting.charge.titles.variable') !!}
+                            </button>
+                          </div>
                         </div>
-                        <div class="col-md-6 col-sm-12" id="meeting-fees-libre">
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-fees-fixed">
+                        </div>
+                        <div class="col-md-6 col-sm-12 sm-screen" id="meeting-fees-libre">
                         </div>
                       </div>
                     </div>
                     <div class="tab-pane fade" id="session-savings" role="tabpanel" aria-labelledby="session-tab-savings">
-                      <div class="row">
-                        <div class="col-md-6 col-sm-12" id="meeting-savings">
+                      <div class="row sm-screen-selector mb-3" id="session-savings-sm-screens">
+                        <div class="col-12">
+                          <div class="btn-group btn-group-sm btn-block" role="group" aria-label="">
+                            <button data-target="meeting-savings" type="button" class="btn btn-primary">
+                              {!! __('meeting.titles.savings') !!}
+                            </button>
+                            <button data-target="meeting-closings" type="button" class="btn btn-outline-primary">
+                              {!! __('meeting.titles.closings') !!}
+                            </button>
+                          </div>
                         </div>
-                        <div class="col-md-6 col-sm-12" id="meeting-closings">
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-savings">
+                        </div>
+                        <div class="col-md-6 col-sm-12 sm-screen" id="meeting-closings">
                         </div>
                       </div>
                       <div class="row">
@@ -70,14 +106,26 @@
                       </div>
                     </div>
                     <div class="tab-pane fade" id="session-credits" role="tabpanel" aria-labelledby="session-tab-credits">
+                      <div class="row sm-screen-selector mb-3" id="session-credits-sm-screens">
+                        <div class="col-12">
+                          <div class="btn-group btn-group-sm btn-block" role="group" aria-label="">
+                            <button data-target="meeting-loans-col" type="button" class="btn btn-primary">
+                              {!! __('meeting.titles.loans') !!}
+                            </button>
+                            <button data-target="meeting-refunds" type="button" class="btn btn-outline-primary">
+                              {!! __('meeting.titles.refunds') !!}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                       <div class="row">
-                        <div class="col-md-6 col-sm-12">
+                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-loans-col">
                           <div id="meeting-loans">
                           </div>
                           <div id="meeting-partial-refunds">
                           </div>
                         </div>
-                        <div class="col-md-6 col-sm-12" id="meeting-refunds">
+                        <div class="col-md-6 col-sm-12 sm-screen" id="meeting-refunds">
                         </div>
                       </div>
                     </div>

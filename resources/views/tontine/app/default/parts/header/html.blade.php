@@ -18,6 +18,9 @@
 
 <link rel="stylesheet" href="/jaxon/app.3.1.0.css">
 <style>
+  .sm-screen-selector {
+    display: none;
+  }
   .section .section-title,
   .card .card-body .section-title {
     margin: 10px 0 15px 0;
@@ -28,59 +31,66 @@
   .table td.table-item-toggle {
     width: 90px;
   }
-@media only screen and (max-width: 700px) {
-  .table.responsive,
-  .table.responsive tbody {
-    display: block;
+  @media only screen and (max-width: 700px) {
+    .sm-screen-selector,
+    .sm-screen.sm-screen-active {
+      display: block;
+    }
+    .sm-screen {
+      display: none;
+    }
+
+    .table.responsive,
+    .table.responsive tbody {
+      display: block;
+    }
+    .table.responsive tr {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid #f6f6f6;
+    }
+    .table.responsive thead {
+      display: none;
+    }
+    .table.responsive td {
+      display: flex;
+      align-items: center;
+      padding: 0 15px 0 130px !important;
+      position: relative;
+      height: auto !important;
+      min-height: 60px;
+    }
+    .table.responsive td::before {
+      padding: 10px;
+      content: attr(data-label);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 120px;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.04);
+      color: #666;
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      border-bottom: 1px solid #f6f6f6;
+    }
+    .table.responsive td.table-item-menu,
+    .table.responsive td.table-item-toggle,
+    .table.responsive td.table-item-counter,
+    .table.responsive td.table-item-currency {
+      width: auto;
+    }
+    .table.responsive td.currency {
+      text-align: left;
+    }
+    .table.responsive tr {
+      margin-bottom: 1rem;
+    }
+    .table.responsive th + td {
+      padding-left: 10px;
+    }
   }
-  .table.responsive tr {
-    display: flex;
-    flex-direction: column;
-    border-top: 1px solid #f6f6f6;
-  }
-  .table.responsive thead {
-    display: none;
-  }
-  .table.responsive td {
-    display: flex;
-    align-items: center;
-    padding: 0 15px 0 130px !important;
-    position: relative;
-  }
-  .table.responsive td::before {
-    padding: 10px;
-    content: attr(data-label);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 120px;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.04);
-    color: #666;
-    display: flex;
-    align-items: center;
-    font-weight: bold;
-    border-bottom: 1px solid #f6f6f6;
-  }
-  .table.responsive td.table-item-menu,
-  .table.responsive td.table-item-toggle,
-  .table.responsive td.table-item-counter,
-  .table.responsive td.table-item-currency {
-    width: auto;
-  }
-  .table.responsive td.currency {
-    text-align: left;
-  }
-  .table.responsive tr {
-    margin-bottom: 1rem;
-  }
-  .table.responsive th + td {
-    padding-left: 10px;
-  }
-  .table.responsive td select {
-    display: block;
-  }
-}
 </style>
 
 @include('tontine.app.default.parts.header.custom')
