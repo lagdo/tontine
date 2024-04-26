@@ -50,6 +50,7 @@ class Fund extends CallableClass
             ->with('funds', $funds)
             ->with('pagination', $pagination);
         $this->response->html('fund-page', $html);
+        $this->response->call('makeTableResponsive', 'fund-page');
 
         $fundId = jq()->parent()->attr('data-fund-id')->toInt();
         $this->jq('.btn-fund-edit')->click($this->rq()->edit($fundId));

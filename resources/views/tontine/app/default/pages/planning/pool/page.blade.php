@@ -1,5 +1,5 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-              <table class="table table-bordered">
+              <table class="table table-bordered responsive">
                 <thead>
                   <tr>
                     <th>{!! __('common.labels.title') !!}</th>
@@ -12,7 +12,8 @@
                 <tbody>
 @foreach ($pools as $pool)
                   <tr>
-                    <td>{{ $pool->title }}<br/><b>{{ $pool->round->title }}</b></td>
+                    <td>
+                      <b>{{ $pool->title }}<br/>{{ $pool->round->title }}</b></td>
                     <td>
                       {{ $pool->start_at->translatedFormat(__('tontine.date.format')) }}<br/>
                       {{ $pool->end_at->translatedFormat(__('tontine.date.format')) }}

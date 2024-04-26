@@ -58,17 +58,21 @@ class Target extends CallableChargeClass
     public function home(int $chargeId)
     {
         $this->bag('meeting')->set('charge.id', $chargeId);
+        $this->bag('meeting')->set('fee.member.search', '');
 
         $html = $this->render('pages.meeting.charge.libre.target.home', [
             'charge' => $this->charge,
             'target' => $this->target,
         ]);
         $this->response->html('meeting-fees-libre', $html);
+
         $this->jq('#btn-fee-target-add')->click($this->rq()->add());
         $this->jq('#btn-fee-target-edit')->click($this->rq()->edit());
         $this->jq('#btn-fee-target-remove')->click($this->rq()->remove()
             ->confirm(trans('meeting.target.questions.remove')));
         $this->jq('#btn-fee-target-back')->click($this->rq(Charge::class)->home());
+        $this->jq('#btn-fee-libre-search')
+            ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
 
         return $this->page();
     }
@@ -94,7 +98,6 @@ class Target extends CallableChargeClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
         $html = $this->render('pages.meeting.charge.libre.target.page', [
-            'search' => $search,
             'session' => $this->session,
             'target' => $this->target,
             'charge' => $this->charge,
@@ -102,8 +105,7 @@ class Target extends CallableChargeClass
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-fee-libre-target', $html);
-        $this->jq('#btn-fee-libre-search')
-            ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
+        $this->response->call('makeTableResponsive', 'meeting-fee-libre-target');
 
         return $this->response;
     }

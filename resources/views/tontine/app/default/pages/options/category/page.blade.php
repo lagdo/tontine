@@ -1,4 +1,4 @@
-                    <table class="table table-bordered">
+                    <table class="table table-bordered responsive">
                       <thead>
                         <tr>
                           <th>{!! __('common.labels.name') !!}</th>
@@ -10,7 +10,7 @@
 @foreach ($categories as $category)
                         <tr>
                           <td>{{ $category->name }}</td>
-                          <td class="table-item-menu" data-category-id="{{ $category->id }}">
+                          <td class="table-item-toggle" data-category-id="{{ $category->id }}">
                             <a href="javascript:void(0)" class="btn-category-toggle"><i class="fa fa-toggle-{{ $category->active ? 'on' : 'off' }}"></i></a>
                           </td>
                           <td class="table-item-menu">

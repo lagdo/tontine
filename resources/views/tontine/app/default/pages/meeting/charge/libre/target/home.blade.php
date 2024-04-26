@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-                  <div class="row align-items-center">
+                  <div class="row">
                     <div class="col">
-                      <div class="section-title mt-0">{{ $charge->name }} - {{ __('meeting.target.actions.deadline') }}</div>
+                      <div class="section-title mt-0">{{ $charge->name }}</div>
                     </div>
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
@@ -18,12 +18,24 @@
                     </div>
                   </div>
 @if (($target))
-                  <div class="row align-items-center">
+                  <div class="row">
                     <div class="col">
                       {{ __('meeting.target.titles.summary', [
-                          'amount' => $locale->formatMoney($target->amount, true),
                           'deadline' => $target->deadline->title,
                       ]) }}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <div class="input-group">
+                        {!! Form::text('search', '', ['class' => 'form-control', 'id' => 'txt-fee-member-search']) !!}
+                        <div class="input-group-append">
+                          <button type="button" class="btn btn-primary" id="btn-fee-libre-search"><i class="fa fa-search"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                      {{ __('common.labels.amount') }}<br/>{{ $locale->formatMoney($target->amount, true) }}
                     </div>
                   </div>
 @endif

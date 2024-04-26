@@ -37,6 +37,8 @@ class Member extends CallableClass
      */
     public function home()
     {
+        $this->bag('member')->set('search', '');
+
         $html = $this->render('pages.member.home');
         $this->response->html('section-title', trans('tontine.menus.tontine'));
         $this->response->html('content-home', $html);
@@ -44,6 +46,8 @@ class Member extends CallableClass
         $this->jq('#btn-member-refresh')->click($this->rq()->home());
         $this->jq('#btn-member-add')->click($this->rq()->add());
         $this->jq('#btn-member-add-list')->click($this->rq()->addList());
+        $this->jq('#btn-member-search')
+            ->click($this->rq()->search(jq('#txt-member-search')->val()));
 
         return $this->page();
     }
@@ -57,19 +61,17 @@ class Member extends CallableClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
         $html = $this->render('pages.member.page', [
-            'search' => $search,
             'members' => $members,
             'pagination' => $pagination,
         ]);
         $this->response->html('content-page', $html);
+        $this->response->call('makeTableResponsive', 'content-page');
 
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $this->jq('.btn-member-edit')->click($this->rq()->edit($memberId));
         $this->jq('.btn-member-toggle')->click($this->rq()->toggle($memberId));
         $this->jq('.btn-member-delete')->click($this->rq()->delete($memberId)
             ->confirm(trans('tontine.member.questions.delete')));
-        $this->jq('#btn-member-search')
-            ->click($this->rq()->search(jq('#txt-member-search')->val()));
 
         return $this->response;
     }

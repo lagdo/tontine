@@ -1,5 +1,5 @@
               <div class="section-body">
-                <div class="row align-items-center">
+                <div class="row">
                   <div class="col">
                     <h2 class="section-title">{{ __('tontine.category.titles.categories') }}</h2>
                   </div>

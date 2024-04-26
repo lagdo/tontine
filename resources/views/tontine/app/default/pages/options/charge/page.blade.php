@@ -1,6 +1,6 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
               <div class="table-responsive">
-                <table class="table table-bordered">
+                <table class="table table-bordered responsive">
                   <thead>
                     <tr>
                       <th>{!! __('common.labels.type') !!}</th>
@@ -20,10 +20,10 @@
                       <td>{{ $charge->name }}</td>
                       <td class="currency">{{ $charge->has_amount ?
                         $locale->formatMoney($charge->amount, true) : __('tontine.labels.fees.variable') }}</td>
-                      <td class="table-item-menu">
+                      <td class="table-item-toggle">
                         <i class="fa fa-toggle-{{ $charge->lendable ? 'on' : 'off' }}"></i>
                       </td>
-                      <td class="table-item-menu" data-charge-id="{{ $charge->id }}">
+                      <td class="table-item-toggle" data-charge-id="{{ $charge->id }}">
                         <a href="javascript:void(0)" class="btn-charge-toggle"><i class="fa fa-toggle-{{ $charge->active ? 'on' : 'off' }}"></i></a>
                       </td>
                       <td class="table-item-menu">

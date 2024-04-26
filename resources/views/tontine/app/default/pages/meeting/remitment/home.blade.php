@@ -19,7 +19,7 @@
 @endif
                   </div>
                   <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered responsive">
                       <thead>
                         <tr>
                           <th>{!! __('common.labels.title') !!}</th>

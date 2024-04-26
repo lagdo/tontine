@@ -1,5 +1,5 @@
-          <div class="row">
-            <div class="col-md-6 col-sm-12" id="payment-members-home">
+          <div class="row" id="payment-sm-screens">
+            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="payment-members-home">
               <div class="section-body">
                 <div class="row align-items-center">
                   <div class="col">
@@ -27,6 +27,6 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-sm-12 payment-sm-hide" id="member-payables-home">
+            <div class="col-md-6 col-sm-12 sm-screen" id="payment-payables-home">
             </div>
           </div>

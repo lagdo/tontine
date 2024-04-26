@@ -41,6 +41,8 @@ class Invite extends CallableClass
         $this->hosts();
         $this->guests();
 
+        $this->response->call('setSmScreenHandler', 'invites-sm-screens');
+
         return $this->response;
     }
 
@@ -56,6 +58,7 @@ class Invite extends CallableClass
             'pagination' => $pagination,
         ]);
         $this->response->html('content-host-invites-page', $html);
+        $this->response->call('makeTableResponsive', 'content-host-invites-page');
 
         $inviteId = jq()->parent()->attr('data-invite-id')->toInt();
         $this->jq('.btn-host-invite-access')->click($this->rq(Access::class)->home($inviteId));
@@ -79,6 +82,7 @@ class Invite extends CallableClass
             'pagination' => $pagination,
         ]);
         $this->response->html('content-guest-invites-page', $html);
+        $this->response->call('makeTableResponsive', 'content-guest-invites-page');
 
         $inviteId = jq()->parent()->attr('data-invite-id')->toInt();
         $this->jq('.btn-guest-invite-accept')->click($this->rq()->accept($inviteId)

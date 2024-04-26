@@ -152,6 +152,7 @@ class PoolRound extends CallableClass
             'pagination' => $pagination,
         ]);
         $this->response->html("pool-round-sessions-$field", $html);
+        $this->response->call('makeTableResponsive', "pool-round-sessions-$field");
 
         return $this->response;
     }

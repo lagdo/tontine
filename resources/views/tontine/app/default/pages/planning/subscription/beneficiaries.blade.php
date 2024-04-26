@@ -18,10 +18,10 @@
                   </div>
 
                   <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered responsive">
                       <thead>
                         <tr>
-                          <th>{{ __('figures.titles.sessions') }}</th>
+                          <th>{{ __('figures.titles.session') }}</th>
                           <th class="currency">{{ __('figures.titles.amount') }}</th>
                           <th class="currency">{{ __('figures.remitment.titles.count') }}</th>
                           <th class="currency">{{ __('figures.remitment.titles.amount') }}</th>
@@ -44,7 +44,7 @@
                           <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, true) }}</td>
                           <td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>
                           <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, true) }}</td>
-                          <td>
+                          <td style="flex-direction:column"><div style="width:97%;">
 @foreach ($session->beneficiaries as $subscription)
 @php
   $items = $subscriptions;
@@ -59,7 +59,7 @@
                                 'data-subscription-id' => $subscription,
                               ]) !!}
 @endforeach
-                          </td>
+                          </div></td>
                         </tr>
 @endif
 @endforeach

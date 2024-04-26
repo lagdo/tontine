@@ -1,4 +1,4 @@
-                    <table class="table table-bordered">
+                    <table class="table table-bordered responsive">
                       <thead>
                         <tr>
                           <th>{!! __('common.labels.title') !!}</th>
@@ -10,7 +10,7 @@
 @foreach ($funds as $fund)
                         <tr>
                           <td>{{ $fund->title }}</td>
-                          <td class="table-item-menu" data-fund-id="{{ $fund->id }}">
+                          <td class="table-item-toggle" data-fund-id="{{ $fund->id }}">
                             <a href="javascript:void(0)" class="btn-fund-toggle"><i class="fa fa-toggle-{{ $fund->active ? 'on' : 'off' }}"></i></a>
                           </td>
                           <td class="table-item-menu">

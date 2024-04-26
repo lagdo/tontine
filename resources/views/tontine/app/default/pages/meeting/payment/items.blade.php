@@ -3,7 +3,7 @@
                   <div class="col">
                     <h2 class="section-title">{{ $session->title }} - {{ $member->name }}</h2>
                   </div>
-                  <div class="col-auto payment-md-hide">
+                  <div class="col-auto sm-screen-hidden">
                     <button type="button" class="btn btn-primary" id="btn-payment-members-back"><i class="fa fa-arrow-left"></i></button>
                   </div>
                   <div class="col-auto" id="payment-request">

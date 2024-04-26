@@ -72,7 +72,7 @@ class SavingService
      *
      * @return int
      */
-    public function getSavingSum(Session $session, int $fundId): int
+    public function getSavingTotal(Session $session, int $fundId): int
     {
         return $this->getSavingQuery($session, $fundId)->sum('amount');
     }

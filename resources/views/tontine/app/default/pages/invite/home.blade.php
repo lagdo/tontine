@@ -1,5 +1,17 @@
+          <div class="row sm-screen-selector mb-3" id="invites-sm-screens">
+            <div class="col-12">
+              <div class="btn-group btn-group-sm btn-block" role="group" aria-label="">
+                <button data-target="content-host-invites-home" type="button" class="btn btn-primary">
+                  {{ __('tontine.invite.titles.hosts') }}
+                </button>
+                <button data-target="content-guest-invites-home" type="button" class="btn btn-outline-primary">
+                  {{ __('tontine.invite.titles.guests') }}
+                </button>
+              </div>
+            </div>
+          </div>
           <div class="row">
-            <div class="col-md-6 col-sm-12" id="content-host-invites-home">
+            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-host-invites-home">
               <div class="section-body">
                 <div class="row align-items-center">
                   <div class="col">
@@ -22,7 +34,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-sm-12" id="content-guest-invites-home">
+            <div class="col-md-6 col-sm-12 sm-screen" id="content-guest-invites-home">
               <div class="section-body">
                 <div class="row align-items-center">
                   <div class="col">

@@ -1,8 +1,8 @@
-                    <table class="table table-bordered">
+                    <table class="table table-bordered responsive">
                       <thead>
                         <tr>
                           <th>{!! __('tontine.invite.labels.host') !!}</th>
-                          <th>&nbsp;</th>
+                          <th>{!! __('common.labels.status') !!}</th>
                           <th class="table-item-menu"></th>
                         </tr>
                       </thead>

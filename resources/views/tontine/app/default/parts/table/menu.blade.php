@@ -6,10 +6,10 @@
                           <div {{ $dataIdKey }}="{{ $dataIdValue }}" class="dropdown-menu" aria-labelledby="{{
                             $dataIdKey }}-{{ $dataIdValue }}-menu">
 @foreach ($menus ?? [] as $menu)
-                            <button class="dropdown-item {{ $menu['class'] }}" type="button">{{ $menu['text'] }}</button>
+                            <button class="dropdown-item {{ $menu['class'] }}" type="button">{!! $menu['text'] !!}</button>
 @endforeach
 @foreach ($links ?? [] as $link)
-                            <a class="dropdown-item" href="{!! $link['url'] !!}" target="_blank">{{ $link['text'] }}</a>
+                            <a class="dropdown-item" href="{!! $link['url'] !!}" target="_blank">{!! $link['text'] !!}</a>
 @endforeach
                           </div>
                         </div>

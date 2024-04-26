@@ -131,6 +131,7 @@ class Charge extends CallableClass
             ->with('periods', $periods)
             ->with('pagination', $pagination);
         $this->response->html('content-page', $html);
+        $this->response->call('makeTableResponsive', 'content-page');
 
         $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
         $this->jq('.btn-charge-edit')->click($this->rq()->edit($chargeId));

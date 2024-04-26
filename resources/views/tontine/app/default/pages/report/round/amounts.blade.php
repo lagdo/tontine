@@ -4,10 +4,10 @@
 @endphp
               <div class="section-title mt-0">{!! __('meeting.titles.amounts') !!}</div>
               <div class="table-responsive">
-                <table class="table table-bordered">
+                <table class="table table-bordered responsive">
                   <thead>
                     <tr>
-                      <th></th>
+                      <th>{{ __('figures.titles.session') }}</th>
                       <th>{!! __('meeting.titles.auctions') !!}</th>
                       <th>{!! __('meeting.titles.fees') !!}</th>
                       <th>{!! __('meeting.titles.loans') !!}</th>
@@ -20,7 +20,7 @@
                   <tbody>
 @foreach ($sessions as $session)
                     <tr>
-                      <th>{{ $session->title }}</th>
+                      <td><b>{{ $session->title }}</b></td>
 @if($session->pending)
                       <td></td>
                       <td></td>

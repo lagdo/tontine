@@ -26,10 +26,9 @@
   }
 @endphp
                         <tr>
-                          <td>
-                            <span @if (!$charge->is_active)style="text-decoration:line-through"@endif>{{ $charge->name }}</span>
-                            <br/>{{ $charge->has_amount ? $locale->formatMoney($charge->amount, true) :
-                              __('tontine.labels.fees.variable') }}
+                          <td @if (!$charge->is_active) style="text-decoration:line-through" @endif>
+                            {{ $charge->name }}<br/>{{ $charge->has_amount ?
+                              $locale->formatMoney($charge->amount, true) : __('tontine.labels.fees.variable') }}
                           </td>
                           <td class="currency">
                             {{ $sessionSettlementTotal }}/{{ $sessionBillTotal }} @if ($roundBillTotal > 0) - {{

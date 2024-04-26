@@ -101,7 +101,7 @@ return [
         'titles' => [
             'set' => "Définir un délai",
             'edit' => "Changer le délai",
-            'summary' => "Montant: :amount. Date limite: :deadline",
+            'summary' => "Date limite: :deadline",
         ],
         'labels' => [
             'global' => "Cocher si le montant ci-dessus est un total pour tous les membres.",

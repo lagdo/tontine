@@ -55,6 +55,7 @@ class Session extends CallableClass
             'pools' => $this->sessionService->getReceivables($session),
         ]);
         $this->response->html('report-deposits', $html);
+        $this->response->call('makeTableResponsive', 'report-deposits');
     }
 
     private function remitments(SessionModel $session)
@@ -64,6 +65,7 @@ class Session extends CallableClass
             'auctions' => $this->sessionService->getAuctions($session),
         ]);
         $this->response->html('report-remitments', $html);
+        $this->response->call('makeTableResponsive', 'report-remitments');
     }
 
     private function loans(SessionModel $session)
@@ -72,6 +74,7 @@ class Session extends CallableClass
             'loan' => $this->sessionService->getLoan($session),
         ]);
         $this->response->html('report-loans', $html);
+        $this->response->call('makeTableResponsive', 'report-loans');
     }
 
     private function refunds(SessionModel $session)
@@ -80,6 +83,7 @@ class Session extends CallableClass
             'refund' => $this->sessionService->getRefund($session),
         ]);
         $this->response->html('report-refunds', $html);
+        $this->response->call('makeTableResponsive', 'report-refunds');
     }
 
     private function sessionBills(SessionModel $session)
@@ -89,6 +93,7 @@ class Session extends CallableClass
             'charges' => $this->sessionService->getSessionCharges($session),
         ]);
         $this->response->html('report-session-bills', $html);
+        $this->response->call('makeTableResponsive', 'report-session-bills');
     }
 
     private function totalBills(SessionModel $session)
@@ -98,6 +103,7 @@ class Session extends CallableClass
             'charges' => $this->sessionService->getTotalCharges($session),
         ]);
         $this->response->html('report-total-bills', $html);
+        $this->response->call('makeTableResponsive', 'report-total-bills');
     }
 
     private function savings(SessionModel $session)
@@ -107,6 +113,8 @@ class Session extends CallableClass
             'funds' => $this->fundService->getFundList(),
         ]);
         $this->response->html('report-savings', $html);
+        $this->response->call('makeTableResponsive', 'report-savings');
+
         $this->response->html('report-fund-savings', '');
 
         $fundId = pm()->select('report-savings-fund-id')->toInt();
@@ -120,5 +128,6 @@ class Session extends CallableClass
             'disbursement' => $this->sessionService->getDisbursement($session),
         ]);
         $this->response->html('report-disbursements', $html);
+        $this->response->call('makeTableResponsive', 'report-disbursements');
     }
 }

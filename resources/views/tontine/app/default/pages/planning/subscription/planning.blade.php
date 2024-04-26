@@ -18,10 +18,10 @@
                   </div>
 
                   <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered responsive">
                       <thead>
                         <tr>
-                          <th></th>
+                          <th>{{ __('figures.titles.session') }}</th>
                           <th>{{ __('figures.titles.start') }}</th>
                           <th>{{ __('figures.deposit.titles.count') }}</th>
                           <th>{{ __('figures.deposit.titles.amount') }}</th>
@@ -34,9 +34,7 @@
                       <tbody>
 @foreach ($sessions as $session)
                         <tr>
-                          <th>
-                            {{ $session->title }}
-                          </th>
+                          <td><b>{{ $session->title }}</b></td>
 @if($session->disabled($pool))
                           <td></td>
                           <td></td>

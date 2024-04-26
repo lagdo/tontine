@@ -14,10 +14,10 @@
               <!-- Data tables -->
               <div class="card shadow mb-4">
                 <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-6 col-sm-12" id="content-home-{{ !$exchange ? 'sessions' : 'members' }}">
+                  <div class="row" id="presence-sm-screens">
+                    <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-home-{{ !$exchange ? 'sessions' : 'members' }}">
                     </div>
-                    <div class="col-md-6 col-sm-12" id="content-home-{{ !$exchange ? 'members' : 'sessions' }}">
+                    <div class="col-md-6 col-sm-12 sm-screen" id="content-home-{{ !$exchange ? 'members' : 'sessions' }}">
                     </div>
                   </div>
                 </div>
