@@ -380,6 +380,8 @@ return [
             'sessions' => "Sessions of tontine: :pool",
             'start_session' => "Start session: :session",
             'end_session' => "End session: :session",
+            'start' => "Start session",
+            'end' => "End session",
         ],
         'labels' => [
             'default' => "(Same as the round)",

@@ -380,6 +380,8 @@ return [
             'sessions' => "Séances de la tontine : :pool",
             'start_session' => "Séance de début : :session",
             'end_session' => "Séance de fin : :session",
+            'start' => "Séance de début",
+            'end' => "Séance de fin",
         ],
         'labels' => [
             'default' => "(Même que le tour)",

@@ -93,6 +93,9 @@ class PoolRound extends CallableClass
         $this->jq('#btn-show-start-session-page')->click($this->rq()->showStartSessionPage());
         $this->jq('#btn-show-end-session-page')->click($this->rq()->showEndSessionPage());
 
+        $this->response->call('setSmScreenHandler',
+            'pool-round-sessions-sm-screens-btn', 'pool-round-sessions-sm-screens');
+
         $this->bag('pool.round')->set('pool.id', $poolId);
 
         $startPageNumber = 1;

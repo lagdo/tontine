@@ -96,6 +96,9 @@ th.currency, td.currency {
   .sm-screen {
     display: none;
   }
+  .sm-screen-selector .btn-primary:hover {
+    background-color: #6777ef !important;
+  }
 
   .table.responsive,
   .table.responsive tbody {
