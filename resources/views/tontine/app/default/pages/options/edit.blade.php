@@ -3,7 +3,7 @@
           <div class="module-body">
             <div class="form-group row">
               {!! Form::label('reports[template]', __('tontine.options.labels.report.template'),
-                ['class' => 'col-sm-3 col-form-label text-right']) !!}
+                ['class' => 'col-sm-3 col-form-label']) !!}
               <div class="col-sm-8">
                 {!! Form::select('reports[template]', $templates, $template, ['class' => 'form-control']) !!}
               </div>

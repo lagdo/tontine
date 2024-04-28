@@ -66,6 +66,9 @@ th.currency, td.currency {
 #text-session-notes, #text-session-venue {
   height: 120px;
 }
+form .form-group .col-form-label {
+  text-align: right !important;
+}
 
 /* Display on small screens */
 .sm-screen-hidden,
@@ -87,7 +90,10 @@ th.currency, td.currency {
     padding-left: 10px;
     padding-right: 10px;
   }
-
+  form .form-group .col-form-label {
+    text-align: left !important;
+  }
+  
   .sm-screen-hidden,
   .sm-screen-selector,
   .sm-screen.sm-screen-active {

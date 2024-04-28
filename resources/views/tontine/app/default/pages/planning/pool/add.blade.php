@@ -26,14 +26,14 @@
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('title', __('common.labels.title'), ['class' => 'col-sm-2 col-form-label text-right']) !!}
+              {!! Form::label('title', __('common.labels.title'), ['class' => 'col-sm-2 col-form-label']) !!}
               <div class="col-md-9">
                 {!! Form::text('title', '', ['class' => 'form-control']) !!}
               </div>
             </div>
 @if ($properties['deposit']['fixed'])
             <div class="form-group row">
-              {!! Form::label('amount', __('common.labels.amount'), ['class' => 'col-sm-2 col-form-label text-right']) !!}
+              {!! Form::label('amount', __('common.labels.amount'), ['class' => 'col-sm-2 col-form-label']) !!}
               <div class="col-md-6">
                 {!! Form::text('amount', '', ['class' => 'form-control']) !!}
               </div>
@@ -42,7 +42,7 @@
             {!! Form::hidden('amount', '0') !!}
 @endif
             <div class="form-group row">
-              {!! Form::label('notes', __('common.labels.notes'), ['class' => 'col-sm-2 col-form-label text-right']) !!}
+              {!! Form::label('notes', __('common.labels.notes'), ['class' => 'col-sm-2 col-form-label']) !!}
               <div class="col-md-9">
                 {!! Form::textarea('notes', '', ['class' => 'form-control']) !!}
               </div>

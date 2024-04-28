@@ -3,7 +3,7 @@
         <form class="form-horizontal" role="form" id="target-form">
           <div class="module-body">
             <div class="form-group row">
-              {!! Form::label('amount', __('common.labels.amount'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+              {!! Form::label('amount', __('common.labels.amount'), ['class' => 'col-sm-3 col-form-label']) !!}
               <div class="col-sm-7">
                 {!! Form::text('amount', $locale->getMoneyValue($target->amount), ['class' => 'form-control']) !!}
               </div>
@@ -15,7 +15,7 @@
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('deadline', __('meeting.target.labels.deadline'), ['class' => 'col-sm-3 col-form-label text-right']) !!}
+              {!! Form::label('deadline', __('meeting.target.labels.deadline'), ['class' => 'col-sm-3 col-form-label']) !!}
               <div class="col-sm-9">
                 {!! Form::select('deadline', $sessions, $target->deadline_id, ['class' => 'form-control']) !!}
               </div>
