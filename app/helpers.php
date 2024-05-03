@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use Siak\Tontine\Model\Debt;
-use Siak\Tontine\Model\Session;
+use Siak\Tontine\Model\PartialRefund;
 
 function localizedRoute(string $route, array $options = [])
 {
@@ -31,7 +30,7 @@ function currentLocalizedIcon()
     return localizedIcon(LaravelLocalization::getCurrentLocale());
 }
 
-function paymentLink(?Model $payment, string $name, bool $disableLink)
+function paymentLink(?Model $payment, string $name, bool $sessionIsClosed)
 {
     $icon = '<i class="fa fa-toggle-off"></i>';
     $linkClass = "btn-add-$name";
@@ -41,6 +40,6 @@ function paymentLink(?Model $payment, string $name, bool $disableLink)
         $linkClass = "btn-del-$name";
     }
 
-    return $disableLink ? $icon :
+    return $sessionIsClosed ? $icon :
         '<a href="javascript:void(0)" class="' . $linkClass . '">' . $icon . '</a>';
 }

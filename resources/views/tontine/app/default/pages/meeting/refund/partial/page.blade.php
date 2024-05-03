@@ -19,19 +19,8 @@
                         {{ $locale->formatMoney($debtCalculator->getDebtAmount($session, $refund->debt), true)
                           }} - {{ __('meeting.loan.labels.' . $refund->debt->type) }}
                       </td>
-                      <td class="table-item-menu">
-@if ($session->opened && !$refund->debt->refund)
-@include('tontine.app.default.parts.table.menu', [
-  'dataIdKey' => 'data-refund-id',
-  'dataIdValue' => $refund->id,
-  'menus' => [[
-    'class' => 'btn-del-partial-refund',
-    'text' => __('common.actions.delete'),
-  ]],
-])
-@else
-                        <i class="fa fa-toggle-on"></i>
-@endif
+                      <td class="table-item-menu" data-refund-id="{{ $refund->id }}">
+                        {!! paymentLink($refund, 'partial-refund', !$session->opened) !!}
                       </td>
                     </tr>
 @endforeach
