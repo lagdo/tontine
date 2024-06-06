@@ -15,17 +15,15 @@
                     </div>
                   </div>
                   <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered responsive">
                       <thead>
                         <tr>
-                          <th>&nbsp;</th>
-                          <th>&nbsp;</th>
+                          <th>{{ __('common.labels.total') }}</th>
                           <th class="currency">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td>{{ __('common.labels.total') }}</td>
                           <td>{{ $saving->total_count }}</td>
                           <td class="currency">{{ $locale->formatMoney($saving->total_amount, true) }}</td>
                         </tr>

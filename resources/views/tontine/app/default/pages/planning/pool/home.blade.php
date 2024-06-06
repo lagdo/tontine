@@ -14,6 +14,8 @@
 
           <!-- Data tables -->
           <div class="card shadow mb-4">
-            <div class="card-body" id="content-page">
+            <div class="card-body">
+              <div class="table-responsive" id="content-page">
+              </div>
             </div>
           </div>

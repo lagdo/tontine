@@ -62,15 +62,30 @@ class Member extends CallableSessionClass
         $fundId = !$fund ? 0 : $fund->id;
         $this->bag('meeting.saving')->set('fund.id', $fundId);
         $this->bag('meeting.saving')->set('member.filter', null);
+        $this->bag('meeting.saving')->set('member.search', '');
 
         $html = $this->render('pages.meeting.saving.member.home', [
             'fund' => $fund,
         ]);
         $this->response->html('meeting-savings', $html);
+
         $this->jq('#btn-saving-back')->click($this->rq(Saving::class)->home());
         $this->jq('#btn-saving-filter')->click($this->rq()->toggleFilter());
+        $this->jq('#btn-saving-search')
+            ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
 
         return $this->page(1);
+    }
+
+    private function showTotal()
+    {
+        $savingCount = $this->savingService->getSavingCount($this->session, $this->fundId);
+        $savingTotal = $this->savingService->getSavingTotal($this->session, $this->fundId);
+        $html = $this->render('pages.meeting.saving.total', [
+            'savingCount' => $savingCount,
+            'savingTotal' => $savingTotal,
+        ]);
+        $this->response->html('meeting-saving-members-total', $html);
     }
 
     /**
@@ -90,24 +105,20 @@ class Member extends CallableSessionClass
             $search, $filter, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
-        $savingCount = $this->savingService->getSavingCount($this->session, $this->fundId);
-        $savingSum = $this->savingService->getSavingSum($this->session, $this->fundId);
+        $this->showTotal();
+
         $html = $this->render('pages.meeting.saving.member.page', [
-            'search' => $search,
             'session' => $this->session,
             'members' => $members,
-            'savingCount' => $savingCount,
-            'savingSum' => $savingSum,
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-saving-members', $html);
+        $this->response->call('makeTableResponsive', 'meeting-saving-members');
 
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $amount = jq('input', jq()->parent()->parent())->val()->toInt();
         $this->jq('.btn-save-saving')->click($this->rq()->saveSaving($memberId, $amount));
         $this->jq('.btn-edit-saving')->click($this->rq()->editSaving($memberId));
-        $this->jq('#btn-saving-search')
-            ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
 
         return $this->response;
     }

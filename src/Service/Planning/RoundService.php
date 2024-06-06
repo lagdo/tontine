@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Round;
+use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\Planning\RoundValidator;
 
@@ -119,5 +120,47 @@ class RoundService
         {
             throw new MessageException(trans('tontine.round.errors.delete'));
         }
+    }
+
+    /**
+     * Find a session.
+     *
+     * @param Round $round
+     * @param int $sessionId    The session id
+     *
+     * @return Session|null
+     */
+    public function getSession(Round $round, int $sessionId): ?Session
+    {
+        return $round->sessions()->find($sessionId);
+    }
+
+    /**
+     * Get the number of sessions in the selected round.
+     *
+     * @param Round $round
+     *
+     * @return int
+     */
+    public function getSessionCount(Round $round): int
+    {
+        return $round->sessions()->count();
+    }
+
+    /**
+     * Get a paginated list of sessions in the selected round.
+     *
+     * @param Round $round
+     * @param int $page
+     * @param bool $orderAsc
+     *
+     * @return Collection
+     */
+    public function getSessions(Round $round, int $page = 0, bool $orderAsc = true): Collection
+    {
+        return $round->sessions()
+            ->orderBy('start_at', $orderAsc ? 'asc' : 'desc')
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
     }
 }

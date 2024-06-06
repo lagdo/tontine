@@ -1,9 +1,21 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-                  <div class="row align-items-center">
+                  <div class="row">
                     <div class="col">
                       <div class="section-title mt-0">{!! __('meeting.titles.closings') !!}</div>
                     </div>
 @if($session->opened)
+                    <div class="col-auto">
+                      <div class="btn-group float-right mb-2" role="group" aria-label="">
+                        <button type="button" class="btn btn-primary" id="btn-closings-refresh"><i class="fa fa-sync"></i></button>
+                      </div>
+                    </div>
+@endif
+                  </div>
+@if($session->opened)
+                  <div class="row">
+                    <div class="col">
+                      &nbsp;
+                    </div>
                     <div class="col-auto">
                       <div class="input-group mb-2">
                         {!! Form::select('fund_id', $funds, 0, ['class' => 'form-control',
@@ -14,15 +26,10 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-auto">
-                      <div class="btn-group float-right mb-2" role="group" aria-label="">
-                        <button type="button" class="btn btn-primary" id="btn-closings-refresh"><i class="fa fa-sync"></i></button>
-                      </div>
-                    </div>
-@endif
                   </div>
+@endif
                   <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered responsive">
                       <thead>
                         <tr>
                           <th>{!! __('tontine.fund.labels.fund') !!}</th>

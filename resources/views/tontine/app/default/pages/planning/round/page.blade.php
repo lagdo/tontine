@@ -1,4 +1,4 @@
-                        <table class="table table-bordered">
+                        <table class="table table-bordered responsive">
                           <thead>
                             <tr>
                               <th>{!! __('common.labels.title') !!}</th>
@@ -21,6 +21,9 @@
   'menus' => [[
     'class' => 'btn-round-edit',
     'text' => __('common.actions.edit'),
+  ],[
+    'class' => 'btn-round-sessions',
+    'text' => __('tontine.pool.actions.sessions'),
   ],[
     'class' => 'btn-round-select',
     'text' => __('tontine.actions.choose'),

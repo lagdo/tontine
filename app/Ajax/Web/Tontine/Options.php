@@ -27,11 +27,13 @@ class Options extends CallableClass
     public function home()
     {
         $this->response->html('section-title', trans('tontine.menus.tontine'));
-        $this->response->html('content-home', $this->render('pages.tontine.options'));
+        $this->response->html('content-home', $this->render('pages.options.home'));
 
         $this->cl(Fund::class)->show();
         $this->cl(Category::class)->show();
         $this->cl(Charge::class)->show();
+
+        $this->response->call('setSmScreenHandler', 'options-sm-screens');
     }
 
     public function editOptions()
@@ -39,7 +41,7 @@ class Options extends CallableClass
         $options = $this->tontineService->getTontineOptions();
         $template = $options['reports']['template'] ?? 'default';
         $title = trans('tontine.options.titles.edit');
-        $content = $this->render('pages.tontine.options.edit', [
+        $content = $this->render('pages.options.edit', [
             'template' => $template,
             'templates' => [
                 'default' => trans('tontine.options.labels.default'),

@@ -1,4 +1,4 @@
-                    <table class="table table-bordered">
+                    <table class="table table-bordered responsive">
                       <thead>
                         <tr>
                           <th>{!! __('common.labels.title') !!}</th>
@@ -16,4 +16,4 @@
 @endforeach
                       </tbody>
                     </table>
-                    {!! $pagination !!}
+                    <nav>{!! $pagination !!}</nav>

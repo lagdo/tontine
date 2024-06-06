@@ -2,7 +2,6 @@
 
 namespace Siak\Tontine\Service\Report\Pdf;
 
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
@@ -104,6 +103,32 @@ class PrinterService
     /**
      * @return string
      */
+    public function getCreditReportPath(): string
+    {
+        return $this->getViewPath('credit');
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return string
+     */
+    public function getCreditReportFilename(Session $session): string
+    {
+        return Str::slug(trans('meeting.titles.credit')) . '-' . Str::slug($session->title) . '.pdf';
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreditReport(): string
+    {
+        return $this->getPdf($this->getViewPath('credit'));
+    }
+
+    /**
+     * @return string
+     */
     public function getRoundReportPath(): string
     {
         return $this->getViewPath('round');
@@ -116,7 +141,7 @@ class PrinterService
      */
     public function getRoundReportFilename(Round $round): string
     {
-        return strtolower(trans('meeting.titles.report')) . '-' . Str::slug($round->title) . '.pdf';
+        return Str::slug(trans('meeting.titles.report')) . '-' . Str::slug($round->title) . '.pdf';
     }
 
     /**

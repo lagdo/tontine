@@ -52,6 +52,7 @@ class Category extends CallableClass
             ->with('categories', $categories)
             ->with('pagination', $pagination);
         $this->response->html('category-page', $html);
+        $this->response->call('makeTableResponsive', 'category-page');
 
         $categoryId = jq()->parent()->attr('data-category-id')->toInt();
         $this->jq('.btn-category-edit')->click($this->rq()->edit($categoryId));

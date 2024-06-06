@@ -60,6 +60,7 @@ class LibreFee extends CallableSessionClass
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-fees-libre-page', $html);
+        $this->response->call('makeTableResponsive', 'meeting-fees-libre-page');
 
         $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
         $this->jq('.btn-fee-libre-add')

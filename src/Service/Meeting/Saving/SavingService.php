@@ -17,6 +17,7 @@ use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\FundService;
 
+use function count;
 use function trans;
 
 class SavingService
@@ -71,7 +72,7 @@ class SavingService
      *
      * @return int
      */
-    public function getSavingSum(Session $session, int $fundId): int
+    public function getSavingTotal(Session $session, int $fundId): int
     {
         return $this->getSavingQuery($session, $fundId)->sum('amount');
     }

@@ -1,17 +1,16 @@
-                        <table class="table table-bordered">
+                        <table class="table table-bordered responsive">
                           <thead>
                             <tr>
                               <th>{!! !$member ? __('common.labels.title') : __('tontine.titles.session') !!}</th>
+                              <th class="table-item-toggle"></th>
                               <th class="table-item-menu"></th>
-                              <th class="table-item-menu">@if (($member)){{
-                                $sessionCount - ($member->absences_count ?? 0) }} /<br/>{{ $sessionCount }}@endif</th>
                             </tr>
                           </thead>
                           <tbody>
 @foreach ($sessions as $session)
                             <tr>
                               <td>{{ $session->title }}<br/>{{ $statuses[$session->status] }}</td>
-                              <td class="table-item-menu">{{ $memberCount - ($session->absents_count ?? 0) }} /<br/>{{ $memberCount }}</td>
+                              <td class="table-item-toggle">{{ $memberCount - ($session->absents_count ?? 0) }}/{{ $memberCount }}</td>
                               <td class="table-item-menu" data-session-id="{{ $session->id }}">
 @if (!$member)
                                 <button type="button" class="btn btn-primary btn-show-session-presences"><i class="fa fa-arrow-circle-right"></i></button>

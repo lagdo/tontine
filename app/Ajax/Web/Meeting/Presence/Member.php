@@ -9,6 +9,7 @@ use Siak\Tontine\Service\Meeting\PresenceService;
 use Siak\Tontine\Service\Tontine\MemberService;
 
 use function Jaxon\jq;
+use function Jaxon\rq;
 
 /**
  * @databag presence
@@ -16,11 +17,6 @@ use function Jaxon\jq;
  */
 class Member extends CallableClass
 {
-    /**
-     * @var bool
-     */
-    private $fromHome = false;
-
     /**
      * @var SessionModel|null
      */
@@ -53,12 +49,23 @@ class Member extends CallableClass
         $this->bag('presence')->set('session.id', $session->id);
         $this->bag('presence')->set('member.page', 1);
 
-        return $this->_home();
+        $this->_home();
+
+        $this->response->call('showSmScreen', 'content-home-members', 'presence-sm-screens');
+        $this->jq('#btn-presence-sessions-back')->click(rq('.')
+            ->showSmScreen('content-home-sessions', 'presence-sm-screens'));
+
+        // if($members->count() > 0)
+        // {
+        //     $member = $members->first();
+        //     $this->cl(Session::class)->show($member);
+        // }
+
+        return $this->response;
     }
 
     public function home()
     {
-        $this->fromHome = true;
         $this->bag('presence')->set('session.id', 0);
         $this->bag('presence')->set('member.page', 1);
 
@@ -67,12 +74,16 @@ class Member extends CallableClass
 
     private function _home()
     {
+        $search = trim($this->bag('presence')->get('member.search', ''));
         $html = $this->render('pages.meeting.presence.member.home', [
             'session' => $this->session, // Is null when showing presences by members.
+            'memberCount' => $this->presenceService->getMemberCount($search),
         ]);
         $this->response->html('content-home-members', $html);
 
         $this->jq('#btn-presence-members-refresh')->click($this->rq()->page());
+        $this->jq('#btn-presence-members-search')
+            ->click($this->rq()->search(jq('#txt-presence-members-search')->val()));
 
         return $this->page();
     }
@@ -100,22 +111,14 @@ class Member extends CallableClass
             'absences' => $absences,
             'pagination' => $pagination,
             'sessionCount' => $this->presenceService->getSessionCount(),
-            'memberCount' => $memberCount,
         ]);
         $this->response->html('content-page-members', $html);
+        $this->response->call('makeTableResponsive', 'content-page-members');
 
-        $this->jq('#btn-presence-members-search')
-            ->click($this->rq()->search(jq('#txt-presence-members-search')->val()));
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $this->jq('.btn-toggle-member-presence')->click($this->rq()->togglePresence($memberId));
         $this->jq('.btn-show-member-presences')
             ->click($this->rq(Presence::class)->selectMember($memberId));
-
-        if($this->fromHome && $members->count() > 0)
-        {
-            $member = $members->first();
-            $this->cl(Session::class)->show($member);
-        }
 
         return $this->response;
     }

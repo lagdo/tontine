@@ -2,8 +2,10 @@
 
 namespace Siak\Tontine\Service\Report;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
@@ -14,6 +16,7 @@ use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Report\RoundService;
 use Siak\Tontine\Service\Tontine\FundService;
 
+use function collect;
 use function compact;
 
 class ReportService
@@ -27,7 +30,7 @@ class ReportService
      * @param FundService $fundService
      * @param SavingService $savingService
      * @param SummaryService $summaryService
-     * @param ReportService $reportService
+     * @param ProfitService $profitService
      */
     public function __construct(protected LocaleService $localeService,
         protected TenantService $tenantService, protected SessionService $sessionService,
@@ -182,6 +185,36 @@ class ReportService
             ->filter(fn($fund) => $fund['savings']->count() > 0);
 
         return compact('tontine', 'session', 'country', 'funds');
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return array
+     */
+    public function getCreditReport(Session $session): array
+    {
+        $round = $session->round;
+        $tontine = $this->tenantService->tontine();
+        [$country, $currency] = $this->localeService->getNameFromTontine($tontine);
+
+        $funds = $this->fundService->getActiveFunds()
+            ->each(function($fund) use($session) {
+                $sessions = $this->profitService->getFundSessions($session, $fund->id);
+                $fund->loans = Loan::select('loans.*')
+                    ->join('sessions', 'loans.session_id', '=', 'sessions.id')
+                    ->whereIn('session_id', $sessions->pluck('id'))
+                    ->where(fn(Builder $query) => $fund->id > 0 ?
+                        $query->where('fund_id', $fund->id) :
+                        $query->whereNull('fund_id'))
+                    ->with(['member', 'session', 'debts.refund', 'debts.refund.session',
+                        'debts.partial_refunds', 'debts.partial_refunds.session'])
+                    ->orderBy('sessions.start_at')
+                    ->get();
+            })
+            ->filter(fn($fund) => $fund->loans->count() > 0);
+
+        return compact('tontine', 'round', 'session', 'country', 'currency', 'funds');
     }
 
     /**

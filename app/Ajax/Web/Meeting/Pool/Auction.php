@@ -58,6 +58,7 @@ class Auction extends CallableSessionClass
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-auctions-page', $html);
+        $this->response->call('makeTableResponsive', 'meeting-auctions-page');
 
         $auctionId = jq()->parent()->attr('data-auction-id')->toInt();
         $this->jq('.btn-toggle-payment', '#meeting-auctions-page')

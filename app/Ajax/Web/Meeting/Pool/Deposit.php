@@ -35,6 +35,7 @@ class Deposit extends CallableSessionClass
             'pools' => $this->poolService->getPoolsWithReceivables($this->session),
         ]);
         $this->response->html('meeting-deposits', $html);
+        $this->response->call('makeTableResponsive', 'meeting-deposits');
 
         $this->jq('#btn-deposits-refresh')->click($this->rq()->home());
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();

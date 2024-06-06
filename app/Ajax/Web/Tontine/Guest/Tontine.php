@@ -10,6 +10,9 @@ use Siak\Tontine\Service\Tontine\TontineService;
 
 use function Jaxon\jq;
 
+/**
+ * @databag tontine
+ */
 class Tontine extends CallableClass
 {
     /**
@@ -21,9 +24,6 @@ class Tontine extends CallableClass
         private GuestService $guestService, private TontineService $tontineService)
     {}
 
-    /**
-     * @databag tontine
-     */
     public function home()
     {
         $this->response->html('guest-tontine-home', $this->render('pages.tontine.guest.home'));
@@ -32,9 +32,6 @@ class Tontine extends CallableClass
         return $this->page();
     }
 
-    /**
-     * @databag tontine
-     */
     public function page(int $pageNumber = 0)
     {
         $tontineCount = $this->tontineService->getGuestTontineCount();
@@ -50,6 +47,7 @@ class Tontine extends CallableClass
             'pagination' => $pagination,
         ]);
         $this->response->html('guest-tontine-page', $html);
+        $this->response->call('makeTableResponsive', 'guest-tontine-page');
 
         $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
         $this->jq('.btn-guest-tontine-choose')->click($this->rq(Select::class)->saveTontine($tontineId));

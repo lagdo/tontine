@@ -4,6 +4,8 @@ namespace App\Ajax\Web\Planning;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Round as RoundModel;
+use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
@@ -11,6 +13,7 @@ use Siak\Tontine\Validation\Planning\SessionValidator;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
+use function Jaxon\rq;
 use function array_filter;
 use function array_map;
 use function array_unique;
@@ -22,6 +25,7 @@ use function trim;
 
 /**
  * @databag planning
+ * @before getRound
  */
 class Session extends CallableClass
 {
@@ -30,27 +34,58 @@ class Session extends CallableClass
      */
     protected SessionValidator $validator;
 
+    /**
+     * @var RoundModel|null
+     */
+    private ?RoundModel $round = null;
+
     public function __construct(private TontineService $tontineService,
-        private MemberService $memberService, private SessionService $sessionService)
+        private MemberService $memberService, private RoundService $roundService,
+        private SessionService $sessionService)
     {}
 
     /**
      * @exclude
      */
-    public function show()
+    public function show(?RoundModel $round)
     {
-        return $this->home();
+        $this->round = $round;
+        return $this->home(!$round ? 0 : $round->id, false);
     }
 
-    public function home()
+    /**
+     * @return void
+     */
+    protected function getRound()
     {
-        $round = $this->tenantService->round();
-        $html = $this->render('pages.planning.session.home', ['round' => $round]);
+        $roundId = $this->target()->method() === 'home' ?
+            $this->target()->args()[0] : $this->bag('planning')->get('round.id');
+        $this->round = $this->roundService->getRound($roundId);
+    }
+
+    public function home(int $roundId, bool $showScreen = true)
+    {
+        $this->bag('planning')->set('round.id', $roundId);
+
+        $html = $this->render('pages.planning.session.home', ['round' => $this->round]);
         $this->response->html('section-title', trans('tontine.menus.planning'));
         $this->response->html('content-home-sessions', $html);
 
-        if(!$round)
+        if($showScreen)
         {
+            $this->response->call('showSmScreen', 'content-home-sessions', 'round-sm-screens');
+            $this->jq('#btn-rounds-back')->click(rq('.')
+                ->showSmScreen('content-home-rounds', 'round-sm-screens'));
+        }
+
+        if(!$this->round)
+        {
+            // Show an empty sessions table
+            $html = $this->render('pages.planning.session.page', [
+                'sessions' => [],
+                'pagination' => '',
+            ]);
+            $this->response->html('content-page-sessions', $html);
             return $this->response;
         }
 
@@ -63,17 +98,18 @@ class Session extends CallableClass
 
     public function page(int $pageNumber = 0)
     {
-        $sessionCount = $this->sessionService->getSessionCount();
+        $sessionCount = $this->roundService->getSessionCount($this->round);
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $sessionCount,
             'planning', 'session.page');
-        $sessions = $this->sessionService->getSessions($pageNumber);
+        $sessions = $this->roundService->getSessions($this->round, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
         $html = $this->render('pages.planning.session.page', [
             'sessions' => $sessions,
             'statuses' => $this->sessionService->getSessionStatuses(),
-            'pagination' => $pagination
+            'pagination' => $pagination,
         ]);
         $this->response->html('content-page-sessions', $html);
+        $this->response->call('makeTableResponsive', 'content-page-sessions');
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.btn-session-edit')->click($this->rq()->edit($sessionId));
@@ -109,7 +145,7 @@ class Session extends CallableClass
     public function create(array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
-        $this->sessionService->createSession($values);
+        $this->sessionService->createSession($this->round, $values);
         $this->dialog->hide();
         $this->notify->success(trans('tontine.session.messages.created'), trans('common.titles.success'));
 
@@ -194,16 +230,16 @@ class Session extends CallableClass
     {
         $values = $this->parseSessionList($formValues['sessions'] ?? '');
 
-        $this->sessionService->createSessions($values);
+        $this->sessionService->createSessions($this->round, $values);
         $this->dialog->hide();
         $this->notify->success(trans('tontine.session.messages.created'), trans('common.titles.success'));
 
-        return $this->home();
+        return $this->page();
     }
 
     public function edit(int $sessionId)
     {
-        $session = $this->sessionService->getSession($sessionId);
+        $session = $this->roundService->getSession($this->round, $sessionId);
         $title = trans('tontine.session.titles.edit');
         $content = $this->render('pages.planning.session.edit')
             ->with('session', $session)
@@ -229,7 +265,7 @@ class Session extends CallableClass
     {
         $formValues['id'] = $sessionId;
         $values = $this->validator->validateItem($formValues);
-        $session = $this->sessionService->getSession($sessionId);
+        $session = $this->roundService->getSession($this->round, $sessionId);
 
         $this->sessionService->updateSession($session, $values);
         $this->dialog->hide();
@@ -240,7 +276,7 @@ class Session extends CallableClass
 
     public function editVenue(int $sessionId)
     {
-        $session = $this->sessionService->getSession($sessionId);
+        $session = $this->roundService->getSession($this->round, $sessionId);
 
         $venue = $session->venue ?? ($session->host ? $session->host->address : '');
         $title = trans('tontine.session.titles.venue');
@@ -266,7 +302,7 @@ class Session extends CallableClass
     public function saveVenue(int $sessionId, array $formValues)
     {
         $values = $this->validator->validateVenue($formValues);
-        $session = $this->sessionService->getSession($sessionId);
+        $session = $this->roundService->getSession($this->round, $sessionId);
 
         $this->sessionService->saveSessionVenue($session, $values);
         $this->dialog->hide();
@@ -277,7 +313,7 @@ class Session extends CallableClass
 
     public function delete(int $sessionId)
     {
-        $session = $this->sessionService->getSession($sessionId);
+        $session = $this->roundService->getSession($this->round, $sessionId);
         $this->sessionService->deleteSession($session);
         $this->notify->success(trans('tontine.session.messages.deleted'), trans('common.titles.success'));
 

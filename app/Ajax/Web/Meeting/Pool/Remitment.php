@@ -37,6 +37,7 @@ class Remitment extends CallableSessionClass
             'hasAuctions' => $hasAuctions,
         ]);
         $this->response->html('meeting-remitments', $html);
+        $this->response->call('makeTableResponsive', 'meeting-remitments');
 
         if($hasAuctions)
         {

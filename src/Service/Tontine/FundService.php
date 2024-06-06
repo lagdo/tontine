@@ -17,15 +17,29 @@ class FundService
     {}
 
     /**
+     * Get all active funds, included the default one.
+     *
+     * @return Collection
+     */
+    public function getActiveFunds(): Collection
+    {
+        $defaultFund = new Fund();
+        $defaultFund->id = 0;
+        $defaultFund->title = trans('tontine.fund.labels.default');
+        $defaultFund->active = true;
+        return $this->tenantService->tontine()->funds()->active()
+            ->get()
+            ->prepend($defaultFund);
+    }
+
+    /**
      * Get a list of funds for the dropdown select component.
      *
      * @return Collection
      */
     public function getFundList(): Collection
     {
-        return $this->tenantService->tontine()->funds()->active()
-            ->pluck('title', 'id')
-            ->prepend(trans('tontine.fund.labels.default'), 0);
+        return $this->getActiveFunds()->pluck('title', 'id');
     }
 
     /**

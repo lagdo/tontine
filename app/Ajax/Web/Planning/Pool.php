@@ -61,6 +61,7 @@ class Pool extends CallableClass
             ->with('pools', $pools)
             ->with('pagination', $pagination);
         $this->response->html('content-page', $html);
+        $this->response->call('makeTableResponsive', 'content-page');
 
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
         $this->jq('.btn-pool-edit')->click($this->rq()->edit($poolId));

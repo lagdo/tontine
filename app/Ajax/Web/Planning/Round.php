@@ -37,7 +37,8 @@ class Round extends CallableClass
 
         $this->page();
 
-        return $this->cl(Session::class)->show();
+        $session = $this->cl(Session::class);
+        return $session->show($this->tenantService->round());
     }
 
     public function page(int $pageNumber = 0)
@@ -47,13 +48,16 @@ class Round extends CallableClass
         $rounds = $this->roundService->getRounds($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $roundCount);
 
-        $html = $this->render('pages.planning.round.page')
-            ->with('rounds', $rounds)
-            ->with('pagination', $pagination);
+        $html = $this->render('pages.planning.round.page', [
+            'rounds' => $rounds,
+            'pagination' => $pagination,
+        ]);
         $this->response->html('content-page-rounds', $html);
+        $this->response->call('makeTableResponsive', 'content-page-rounds');
 
         $roundId = jq()->parent()->attr('data-round-id')->toInt();
         $this->jq('.btn-round-edit')->click($this->rq()->edit($roundId));
+        $this->jq('.btn-round-sessions')->click($this->rq(Session::class)->home($roundId));
         $this->jq('.btn-round-select')->click($this->rq(Select::class)->saveRound($roundId));
         $this->jq('.btn-round-delete')->click($this->rq()->delete($roundId)
             ->confirm(trans('tontine.round.questions.delete')));

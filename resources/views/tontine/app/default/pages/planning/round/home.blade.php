@@ -9,8 +9,8 @@
               <!-- Data tables -->
               <div class="card shadow mb-4">
                 <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-6 col-sm-12" id="content-home-rounds">
+                  <div class="row" id="round-sm-screens">
+                    <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-home-rounds">
                       <div class="row align-items-center">
                         <div class="col">
                           <h2 class="section-title">{{ __('tontine.titles.rounds') }}</h2>
@@ -33,7 +33,7 @@
                       <div class="table-responsive" id="content-page-rounds">
                       </div>
                     </div>
-                    <div class="col-md-6 col-sm-12" id="content-home-sessions">
+                    <div class="col-md-6 col-sm-12 sm-screen" id="content-home-sessions">
                     </div>
                   </div>
                 </div>

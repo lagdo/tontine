@@ -110,6 +110,30 @@ class ReportController extends Controller
 
     /**
      * @param Request $request
+     * @param SqidsInterface $sqids
+     * @param string $sessionSqid
+     *
+     * @return View|Response
+     */
+    public function credit(Request $request, SqidsInterface $sqids, string $sessionSqid)
+    {
+        [$sessionId] = $sqids->decode($sessionSqid);
+        $session = $this->sessionService->getSession($sessionId);
+        view()->share($this->reportService->getCreditReport($session));
+        // Show the html page
+        if($request->has('html'))
+        {
+            return view($this->printerService->getCreditReportPath());
+        }
+
+        // Print the pdf
+        return $this->pdfContent($this->printerService->getCreditReport(),
+            $this->printerService->getCreditReportFilename($session),
+            trans('tontine.report.titles.credit'));
+    }
+
+    /**
+     * @param Request $request
      * @param int $roundId
      *
      * @return View|Response

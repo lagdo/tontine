@@ -9,6 +9,7 @@ use Siak\Tontine\Service\Meeting\PresenceService;
 use Siak\Tontine\Service\Meeting\SessionService;
 
 use function Jaxon\jq;
+use function Jaxon\rq;
 
 /**
  * @databag presence
@@ -16,11 +17,6 @@ use function Jaxon\jq;
  */
 class Session extends CallableClass
 {
-    /**
-     * @var bool
-     */
-    private $fromHome = false;
-
     /**
      * @var MemberModel|null
      */
@@ -53,12 +49,23 @@ class Session extends CallableClass
         $this->bag('presence')->set('member.id', $this->member->id);
         $this->bag('presence')->set('session.page', 1);
 
-        return $this->_home();
+        $this->_home();
+
+        $this->response->call('showSmScreen', 'content-home-sessions', 'presence-sm-screens');
+        $this->jq('#btn-presence-members-back')->click(rq('.')
+            ->showSmScreen('content-home-members', 'presence-sm-screens'));
+
+        // if($sessions->count() > 0)
+        // {
+        //     $session = $sessions->first();
+        //     $this->cl(Member::class)->show($session);
+        // }
+
+        return $this->response;
     }
 
     public function home()
     {
-        $this->fromHome = true;
         $this->bag('presence')->set('member.id', 0);
         $this->bag('presence')->set('session.page', 1);
 
@@ -69,6 +76,7 @@ class Session extends CallableClass
     {
         $html = $this->render('pages.meeting.presence.session.home', [
             'member' => $this->member, // Is null when showing presences by sessions.
+            'sessionCount' => $this->presenceService->getSessionCount(),
         ]);
         $this->response->html('content-home-sessions', $html);
 
@@ -94,20 +102,14 @@ class Session extends CallableClass
             'pagination' => $pagination,
             'statuses' => $this->sessionService->getSessionStatuses(),
             'memberCount' => $this->presenceService->getMemberCount(),
-            'sessionCount' => $sessionCount,
         ]);
         $this->response->html('content-page-sessions', $html);
+        $this->response->call('makeTableResponsive', 'content-page-sessions');
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.btn-toggle-session-presence')->click($this->rq()->togglePresence($sessionId));
         $this->jq('.btn-show-session-presences')
             ->click($this->rq(Presence::class)->selectSession($sessionId));
-
-        if($this->fromHome && $sessions->count() > 0)
-        {
-            $session = $sessions->first();
-            $this->cl(Member::class)->show($session);
-        }
 
         return $this->response;
     }

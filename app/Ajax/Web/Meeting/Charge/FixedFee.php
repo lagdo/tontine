@@ -60,6 +60,7 @@ class FixedFee extends CallableSessionClass
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-fees-fixed-page', $html);
+        $this->response->call('makeTableResponsive', 'meeting-fees-fixed-page');
 
         $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
         $this->jq('.btn-fee-fixed-settlements')

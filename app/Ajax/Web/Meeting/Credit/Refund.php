@@ -68,6 +68,7 @@ class Refund extends CallableSessionClass
             'pagination' => $pagination,
         ]);
         $this->response->html('meeting-debts-page', $html);
+        $this->response->call('makeTableResponsive', 'meeting-debts-page');
 
         $debtId = jq()->parent()->attr('data-debt-id')->toInt();
         $this->jq('.btn-add-refund', '#meeting-debts-page')->click($this->rq()->createRefund($debtId));

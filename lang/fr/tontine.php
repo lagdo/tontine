@@ -380,6 +380,8 @@ return [
             'sessions' => "Séances de la tontine : :pool",
             'start_session' => "Séance de début : :session",
             'end_session' => "Séance de fin : :session",
+            'start' => "Séance de début",
+            'end' => "Séance de fin",
         ],
         'labels' => [
             'default' => "(Même que le tour)",
@@ -432,12 +434,15 @@ return [
             'show' => "Voir",
             'session' => "Rapport de séance",
             'round' => "Rapport de tour",
+            'credit' => "Rapport de crédit",
             'savings' => "Rapport d'épargne",
         ],
         'titles' => [
             'session' => "Rapport de séance",
             'round' => "Rapport de tour",
+            'credit' => "Rapport de crédit",
             'savings' => "Rapport d'épargne",
+            'fund' => "Fonds",
             'bills' => [
                 'session' => "Montants des frais de la séance",
                 'total' => "Montants totaux des frais",

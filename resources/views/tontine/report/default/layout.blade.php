@@ -39,14 +39,15 @@
       width: 20px;
       height: 12px;
     }
-    .table td.table-item-menu {
+    .table td.table-item-menu,
+    .table td.table-item-toggle {
       width: 90px;
     }
-    .table td.table-member-subscription {
+    .table td.table-item-counter {
       width: 120px;
       padding: 0 10px !important;
     }
-    td.table-member-subscription span.input-group-text {
+    td.table-item-counter span.input-group-text {
       height: 32px;
     }
     th.currency, td.currency {

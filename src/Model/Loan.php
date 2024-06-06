@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Model;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -110,11 +111,62 @@ class Loan extends Base
 
     public function principal_debt()
     {
+        // Read from the database
         return $this->hasOne(Debt::class)->where('type', Debt::TYPE_PRINCIPAL);
     }
 
     public function interest_debt()
     {
+        // Read from the database
         return $this->hasOne(Debt::class)->where('type', Debt::TYPE_INTEREST);
+    }
+
+    /**
+     * @return Attribute
+     */
+    protected function pDebt(): Attribute
+    {
+        // Read from the "debts" collection
+        return Attribute::make(
+            get: fn() => $this->debts->first(fn($debt) => $debt->type === Debt::TYPE_PRINCIPAL),
+        );
+    }
+
+    /**
+     * @return Attribute
+     */
+    protected function iDebt(): Attribute
+    {
+        // Read from the "debts" collection
+        return Attribute::make(
+            get: fn() => $this->debts->first(fn($debt) => $debt->type === Debt::TYPE_INTEREST),
+        );
+    }
+
+    /**
+     * @return Attribute
+     */
+    protected function allRefunds(): Attribute
+    {
+        return Attribute::make(
+            get: function() {
+                $debt = $this->p_debt;
+                $refunds = $debt->partial_refunds;
+                if($debt->refund != null)
+                {
+                    $refunds->push($debt->refund);
+                }
+                $debt = $this->i_debt;
+                if($debt != null)
+                {
+                    $refunds = $refunds->concat($debt->partial_refunds);
+                    if($debt->refund != null)
+                    {
+                        $refunds->push($debt->refund);
+                    }
+                }
+                return $refunds;
+            },
+        );
     }
 }

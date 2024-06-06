@@ -4,7 +4,7 @@
 @endphp
               <div class="row mt-0">
                 <div class="col d-flex justify-content-center">
-                  <h5>{{ __('figures.titles.amounts') }} ({{ $currency }})</h5>
+                  <h5>{{ __('figures.titles.amounts') }}</h5>
                 </div>
               </div>
               <div class="table-responsive">
