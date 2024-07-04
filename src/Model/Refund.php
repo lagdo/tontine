@@ -3,6 +3,9 @@
 namespace Siak\Tontine\Model;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
+
+use function app;
 
 class Refund extends Base
 {
@@ -29,7 +32,8 @@ class Refund extends Base
     protected function amount(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->debt->due_amount,
+            get: fn() => app()->make(DebtCalculator::class)
+                ->getDebtDueAmount($this->session, $this->debt),
         );
     }
 }
