@@ -7,7 +7,6 @@ use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Tontine\TontineService;
 
-use function strtolower;
 use function trans;
 use function view;
 
@@ -63,7 +62,7 @@ class PrinterService
      */
     public function getSessionReportFilename(Session $session): string
     {
-        return strtolower(trans('meeting.titles.report')) . '-' . Str::slug($session->title) . '.pdf';
+        return Str::slug(trans('meeting.report.labels.session')) . '-' . Str::slug($session->title) . '.pdf';
     }
 
     /**
@@ -89,7 +88,7 @@ class PrinterService
      */
     public function getSavingsReportFilename(Session $session): string
     {
-        return Str::slug(trans('meeting.titles.savings')) . '-' . Str::slug($session->title) . '.pdf';
+        return Str::slug(trans('meeting.report.labels.savings')) . '-' . Str::slug($session->title) . '.pdf';
     }
 
     /**
@@ -115,7 +114,7 @@ class PrinterService
      */
     public function getCreditReportFilename(Session $session): string
     {
-        return Str::slug(trans('meeting.titles.credit')) . '-' . Str::slug($session->title) . '.pdf';
+        return Str::slug(trans('meeting.report.labels.credit')) . '-' . Str::slug($session->title) . '.pdf';
     }
 
     /**
@@ -141,7 +140,7 @@ class PrinterService
      */
     public function getRoundReportFilename(Round $round): string
     {
-        return Str::slug(trans('meeting.titles.report')) . '-' . Str::slug($round->title) . '.pdf';
+        return Str::slug(trans('meeting.report.labels.round')) . '-' . Str::slug($round->title) . '.pdf';
     }
 
     /**

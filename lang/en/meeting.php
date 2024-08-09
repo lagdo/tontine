@@ -247,6 +247,10 @@ return [
             'i' => "Interest:",
             'due' => "Due:",
             'paid' => "Paid:",
+            'session' => "Session report",
+            'credit' => "Credit report",
+            'savings' => "Savings report",
+            'round' => "Round report",
         ],
     ],
 ];

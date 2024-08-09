@@ -247,6 +247,10 @@ return [
             'i' => "Intérêt :",
             'due' => "Dû :",
             'paid' => "Payé :",
+            'session' => "Rapport de séance",
+            'credit' => "Rapport de crédit",
+            'savings' => "Rapport d'épargne",
+            'round' => "Rapport de tour",
         ],
     ],
 ];
