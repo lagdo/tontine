@@ -5,8 +5,6 @@ namespace Siak\Tontine\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Builder;
 
-use function trans;
-
 class Debt extends Base
 {
     /**
@@ -58,16 +56,6 @@ class Debt extends Base
     {
         return Attribute::make(
             get: fn() => $this->amount - $this->partial_refunds->sum('amount'),
-        );
-    }
-
-    /**
-     * @return Attribute
-     */
-    protected function typeLabel(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => trans('meeting.loan.labels.' . $this->type_str),
         );
     }
 

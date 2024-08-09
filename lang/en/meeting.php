@@ -241,4 +241,12 @@ return [
             'transactions' => "transactions-entry-form",
         ],
     ],
+    'report' => [
+        'labels' => [
+            'p' => "Principal:",
+            'i' => "Interest:",
+            'due' => "Due:",
+            'paid' => "Paid:",
+        ],
+    ],
 ];

@@ -10,13 +10,13 @@ use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Report\RoundService;
 use Siak\Tontine\Service\Tontine\FundService;
 
-use function collect;
 use function compact;
 
 class ReportService
@@ -36,7 +36,8 @@ class ReportService
         protected TenantService $tenantService, protected SessionService $sessionService,
         protected MemberService $memberService, protected RoundService $roundService,
         protected FundService $fundService, protected SavingService $savingService,
-        protected SummaryService $summaryService, protected ProfitService $profitService)
+        protected SummaryService $summaryService, protected ProfitService $profitService,
+        protected DebtCalculator $debtCalculator)
     {}
 
     /**
@@ -188,6 +189,20 @@ class ReportService
     }
 
     /**
+     * @param Loan $loan
+     * @param Session $session
+     *
+     * @return void
+     */
+    private function setDebtAmount(Loan $loan, Session $session)
+    {
+        if(($debt = $loan->i_debt) !== null)
+        {
+            $loan->iDebtAmount = $this->debtCalculator->getDebtAmount($session, $debt);
+        }
+    }
+
+    /**
      * @param Session $session
      *
      * @return array
@@ -210,7 +225,9 @@ class ReportService
                     ->with(['member', 'session', 'debts.refund', 'debts.refund.session',
                         'debts.partial_refunds', 'debts.partial_refunds.session'])
                     ->orderBy('sessions.start_at')
-                    ->get();
+                    ->get()
+                    ->each(fn(Loan $loan) => $this->setDebtAmount($loan, $session))
+                    ->groupBy('member.id');
             })
             ->filter(fn($fund) => $fund->loans->count() > 0);
 

@@ -241,4 +241,12 @@ return [
             'transactions' => "fiche-saisie-operations",
         ],
     ],
+    'report' => [
+        'labels' => [
+            'p' => "Principal :",
+            'i' => "Intérêt :",
+            'due' => "Dû :",
+            'paid' => "Payé :",
+        ],
+    ],
 ];
