@@ -12,6 +12,7 @@
 @foreach($debts as $debt)
 @php
   $debtAmount = $debtCalculator->getDebtAmount($session, $debt);
+  $debtDueAmount = $debtCalculator->getDebtDueAmount($session, $debt);
 @endphp
                     <tr>
                       <td>
@@ -19,11 +20,11 @@
                         {{ $debt->loan->session->title }}@if ($debt->refund) - {{ $debt->refund->session->title }}@endif
                       </td>
                       <td class="currency">
-@if ($debt->partial_refunds->count() === 0)
+@if ($debtAmount === $debtDueAmount)
                         {{ $locale->formatMoney($debtAmount, true) }}<br/>
                         {{ __('meeting.loan.labels.' . $debt->type) }}
 @else
-                        {{ $locale->formatMoney($debtAmount - $debt->partial_refunds->sum('amount'), true) }}<br/>
+                        {{ $locale->formatMoney($debtDueAmount, true) }}<br/>
                         {{ __('meeting.loan.labels.' . $debt->type) }}: {{ $locale->formatMoney($debtAmount, true) }}
 @endif
                       </td>

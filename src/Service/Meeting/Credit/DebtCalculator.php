@@ -96,7 +96,7 @@ class DebtCalculator
 
         $interestAmount = 0;
         $fromSession = $debt->loan->session;
-        // Take refunds before the current session and filter by session date.
+        // Take refunds before the current session and sort by session date.
         $partialRefunds = $principalDebt->partial_refunds
             ->filter(function($refund) use($session) {
                 return $refund->session->start_at < $session->start_at;
@@ -133,7 +133,7 @@ class DebtCalculator
 
         $interestAmount = 0;
         $fromSession = $debt->loan->session;
-        // Take refunds before the current session and filter by session date.
+        // Take refunds before the current session and sort by session date.
         $partialRefunds = $principalDebt->partial_refunds
             ->filter(function($refund) use($session) {
                 return $refund->session->start_at < $session->start_at;
@@ -184,6 +184,16 @@ class DebtCalculator
      */
     public function getDebtDueAmount(Session $session, Debt $debt): int
     {
-        return $this->getDebtAmount($session, $debt) - $debt->partial_refunds->sum('amount');
+        if($debt->refund !== null && $debt->refund->session->start_at <= $session->start_at)
+        {
+            return 0; // The debt was refunded before or during the current session.
+        }
+
+        $partialRefundAmount = $debt->partial_refunds
+            ->filter(function($refund) use($session) {
+                return $refund->session->start_at <= $session->start_at;
+            })
+            ->sum('amount');
+        return $this->getDebtAmount($session, $debt) - $partialRefundAmount;
     }
 }
