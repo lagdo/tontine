@@ -269,7 +269,7 @@ class RefundService
             throw new MessageException(trans('meeting.refund.errors.not_found'));
         }
         // A partial refund must not totally refund a debt
-        if($amount >= $debt->due_amount)
+        if($amount >= $this->debtCalculator->getDebtDueAmount($session, $debt))
         {
             throw new MessageException(trans('meeting.refund.errors.pr_amount'));
         }
