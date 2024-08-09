@@ -184,14 +184,14 @@ class DebtCalculator
      */
     public function getDebtDueAmount(Session $session, Debt $debt): int
     {
-        if($debt->refund !== null && $debt->refund->session->start_at <= $session->start_at)
+        if($debt->refund !== null && $debt->refund->session->start_at < $session->start_at)
         {
             return 0; // The debt was refunded before or during the current session.
         }
 
         $partialRefundAmount = $debt->partial_refunds
             ->filter(function($refund) use($session) {
-                return $refund->session->start_at <= $session->start_at;
+                return $refund->session->start_at < $session->start_at;
             })
             ->sum('amount');
         return $this->getDebtAmount($session, $debt) - $partialRefundAmount;

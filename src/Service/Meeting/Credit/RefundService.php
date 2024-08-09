@@ -104,7 +104,7 @@ class RefundService
     {
         return $this->getQuery($session, $onlyPaid)
             ->page($page, $this->tenantService->getLimit())
-            ->with(['loan', 'loan.member', 'loan.session', 'refund', 'partial_refunds.session'])
+            ->with(['loan', 'loan.member', 'loan.session', 'refund.session', 'partial_refunds.session'])
             ->get()
             ->sortBy('loan.member.name', SORT_LOCALE_STRING)
             ->values();
