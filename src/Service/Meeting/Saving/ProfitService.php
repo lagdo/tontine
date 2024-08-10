@@ -36,13 +36,14 @@ class ProfitService
     private function getFundSessionsQuery(Session $currentSession, int $fundId): Builder|Relation
     {
         $lastSessionDate = $currentSession->start_at->format('Y-m-d');
+        $sessionsQuery = $this->tenantService->tontine()->sessions()
+            ->whereDate('sessions.start_at', '<=', $lastSessionDate);
         // The closing sessions ids
         $closingSessionIds = array_keys($this->savingService->getFundClosings($fundId));
         if(count($closingSessionIds) === 0)
         {
             // No closing session yet
-            return $this->tenantService->tontine()->sessions()
-                ->whereDate('sessions.start_at', '<=', $lastSessionDate);
+            return $sessionsQuery;
         }
         // The previous closing sessions
         $closingSessions = $this->tenantService->tontine()->sessions()
@@ -54,16 +55,13 @@ class ProfitService
         if($closingSessions->count() === 0)
         {
             // All the closing sessions are after the current session.
-            return $this->tenantService->tontine()->sessions()
-                ->whereDate('sessions.start_at', '<=', $lastSessionDate);
+            return $sessionsQuery;
         }
 
         // The most recent previous closing session
         $firstSessionDate = $closingSessions->last()->start_at->format('Y-m-d');
         // Return all the sessions after the most recent previous closing session
-        return $this->tenantService->tontine()->sessions()
-            ->whereDate('sessions.start_at', '<=', $lastSessionDate)
-            ->whereDate('sessions.start_at', '>', $firstSessionDate);
+        return $sessionsQuery->whereDate('sessions.start_at', '>', $firstSessionDate);
     }
 
     /**

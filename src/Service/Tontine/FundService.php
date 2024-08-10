@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service\Tontine;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Service\TenantService;
@@ -17,19 +18,29 @@ class FundService
     {}
 
     /**
+     * Get the default fund.
+     *
+     * @return Fund
+     */
+    public function getDefaultFund(): Fund
+    {
+        $defaultFund = new Fund();
+        $defaultFund->id = 0;
+        $defaultFund->title = trans('tontine.fund.labels.default');
+        $defaultFund->active = true;
+        return $defaultFund;
+    }
+
+    /**
      * Get all active funds, included the default one.
      *
      * @return Collection
      */
     public function getActiveFunds(): Collection
     {
-        $defaultFund = new Fund();
-        $defaultFund->id = 0;
-        $defaultFund->title = trans('tontine.fund.labels.default');
-        $defaultFund->active = true;
         return $this->tenantService->tontine()->funds()->active()
             ->get()
-            ->prepend($defaultFund);
+            ->prepend($this->getDefaultFund());
     }
 
     /**
@@ -70,12 +81,15 @@ class FundService
      * Get a single fund.
      *
      * @param int $fundId    The fund id
+     * @param bool $onlyActive
      *
      * @return Fund|null
      */
-    public function getFund(int $fundId): ?Fund
+    public function getFund(int $fundId, bool $onlyActive = false): ?Fund
     {
-        return $this->tenantService->tontine()->funds()->find($fundId);
+        return $this->tenantService->tontine()->funds()
+            ->when($onlyActive, fn(Builder $query) => $query->active())
+            ->find($fundId);
     }
 
     /**

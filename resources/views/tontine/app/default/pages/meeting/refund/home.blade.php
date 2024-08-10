@@ -1,12 +1,17 @@
                   <div class="row align-items-center">
-                    <div class="col-auto">
+                    <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.refunds') }}</div>
                     </div>
 @if($session->opened)
-                    <div class="col">
-                      <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
-                        <button type="button" class="btn btn-primary" id="btn-refunds-refresh"><i class="fa fa-sync"></i></button>
-                        <button type="button" class="btn btn-primary" id="btn-refunds-filter"><i class="fa fa-filter"></i></button>
+                    <div class="col-auto">
+                      <div class="input-group mb-2">
+                        {!! Form::select('fund_id', $funds, 0, ['class' => 'form-control',
+                          'style' => 'height:36px; padding:5px 15px;', 'id' => 'refunds-fund-id']) !!}
+                        <div class="input-group-append">
+                          <button type="button" class="btn btn-primary" id="btn-refunds-select-fund"><i class="fa fa-arrow-right"></i></button>
+                          <button type="button" class="btn btn-primary" id="btn-refunds-filter"><i class="fa fa-filter"></i></button>
+                          <button type="button" class="btn btn-primary" id="btn-refunds-refresh"><i class="fa fa-sync"></i></button>
+                        </div>
                       </div>
                     </div>
 @endif

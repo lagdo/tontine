@@ -3,11 +3,14 @@
 namespace App\Ajax\Web\Meeting\Credit;
 
 use App\Ajax\CallableSessionClass;
+use Siak\Tontine\Model\Fund as FundModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
+use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 use function Jaxon\jq;
+use function Jaxon\pm;
 use function trans;
 
 /**
@@ -21,11 +24,18 @@ class Refund extends CallableSessionClass
     protected DebtValidator $validator;
 
     /**
+     * @var FundModel|null
+     */
+    private $fund = null;
+
+    /**
      * The constructor
      *
+     * @param FundService $fundService
      * @param RefundService $refundService
      */
-    public function __construct(protected RefundService $refundService)
+    public function __construct(protected FundService $fundService,
+        protected RefundService $refundService)
     {}
 
     /**
@@ -40,16 +50,50 @@ class Refund extends CallableSessionClass
 
     public function home()
     {
-        $html = $this->render('pages.meeting.refund.home')
-            ->with('session', $this->session);
+        $html = $this->render('pages.meeting.refund.home', [
+            'session' => $this->session,
+            'funds' => $this->fundService->getFundList(),
+        ]);
         $this->response->html('meeting-refunds', $html);
+
         $this->jq('#btn-refunds-refresh')->click($this->rq()->home());
         $this->jq('#btn-refunds-filter')->click($this->rq()->toggleFilter());
+        $fundId = pm()->select('refunds-fund-id')->toInt();
+        $this->jq('#btn-refunds-select-fund')->click($this->rq()->fund($fundId));
 
-        return $this->page();
+        return $this->fund(0);
+    }
+
+    protected function getFund()
+    {
+        $fundId = $this->bag('refund')->get('fund.id', 0);
+        if($fundId !== 0 && ($this->fund = $this->fundService->getFund($fundId, true)) === null)
+        {
+            $fundId = 0;
+            $this->bag('refund')->set('fund.id', $fundId);
+        }
+        if($fundId === 0)
+        {
+            $this->fund = $this->fundService->getDefaultFund();
+        }
     }
 
     /**
+     * @param int $fundId
+     *
+     * @return mixed
+     */
+    public function fund(int $fundId)
+    {
+        $this->bag('refund')->set('fund.id', $fundId);
+        $this->getFund();
+
+        return $this->page(0);
+    }
+
+    /**
+     * @before getFund
+     *
      * @param int $pageNumber
      *
      * @return mixed
@@ -57,9 +101,10 @@ class Refund extends CallableSessionClass
     public function page(int $pageNumber = 0)
     {
         $filtered = $this->bag('refund')->get('filter', null);
-        $debtCount = $this->refundService->getDebtCount($this->session, $filtered);
+
+        $debtCount = $this->refundService->getDebtCount($this->session, $this->fund, $filtered);
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $debtCount, 'refund', 'principal.page');
-        $debts = $this->refundService->getDebts($this->session, $filtered, $pageNumber);
+        $debts = $this->refundService->getDebts($this->session, $this->fund, $filtered, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $debtCount);
 
         $html = $this->render('pages.meeting.refund.page', [
@@ -77,6 +122,9 @@ class Refund extends CallableSessionClass
         return $this->response;
     }
 
+    /**
+     * @before getFund
+     */
     public function toggleFilter()
     {
         $filtered = $this->bag('refund')->get('filter', null);
@@ -88,6 +136,7 @@ class Refund extends CallableSessionClass
     }
 
     /**
+     * @before getFund
      * @di $validator
      * @after showBalanceAmounts
      */
@@ -106,6 +155,7 @@ class Refund extends CallableSessionClass
     }
 
     /**
+     * @before getFund
      * @after showBalanceAmounts
      */
     public function deleteRefund(int $debtId)
