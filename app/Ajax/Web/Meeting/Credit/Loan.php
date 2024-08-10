@@ -17,11 +17,6 @@ use function trans;
 class Loan extends CallableSessionClass
 {
     /**
-     * @var FundService
-     */
-    protected FundService $fundService;
-
-    /**
      * @var LoanValidator
      */
     protected LoanValidator $validator;
@@ -30,10 +25,11 @@ class Loan extends CallableSessionClass
      * The constructor
      *
      * @param LoanService $loanService
+     * @param FundService $fundService
      * @param MemberService $memberService
      */
     public function __construct(protected LoanService $loanService,
-        protected MemberService $memberService)
+        protected FundService $fundService, protected MemberService $memberService)
     {}
 
     /**
@@ -53,6 +49,7 @@ class Loan extends CallableSessionClass
         $html = $this->render('pages.meeting.loan.home', [
             'session' => $this->session,
             'loans' => $loans,
+            'defaultFund' => $this->fundService->getDefaultFund(),
         ]);
         $this->response->html('meeting-loans', $html);
         $this->response->call('makeTableResponsive', 'meeting-loans');
@@ -69,9 +66,6 @@ class Loan extends CallableSessionClass
         return $this->response;
     }
 
-    /**
-     * @di $fundService
-     */
     public function addLoan()
     {
         if($this->session->closed)
@@ -129,9 +123,6 @@ class Loan extends CallableSessionClass
         return $this->home();
     }
 
-    /**
-     * @di $fundService
-     */
     public function editLoan(int $loanId)
     {
         if($this->session->closed)

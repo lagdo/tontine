@@ -61,12 +61,12 @@ class Closing extends CallableSessionClass
         $this->jq('#btn-closings-refresh')->click($this->rq()->home());
 
         $fundId = pm()->select('closings-fund-id')->toInt();
-        $this->jq('#btn-closing-edit')->click($this->rq()->editClosing($fundId));
-        $this->jq('#btn-fund-savings-show')->click($this->rq()->showSavings($fundId));
+        $this->jq('#btn-fund-edit-closing')->click($this->rq()->editClosing($fundId));
+        $this->jq('#btn-fund-show-savings')->click($this->rq()->showSavings($fundId));
 
         $fundId = jq()->parent()->attr('data-fund-id')->toInt();
-        $this->jq('.btn-closing-edit')->click($this->rq()->editClosing($fundId));
-        $this->jq('.btn-fund-savings-show')->click($this->rq()->showSavings($fundId));
+        $this->jq('.btn-fund-edit-closing')->click($this->rq()->editClosing($fundId));
+        $this->jq('.btn-fund-show-savings')->click($this->rq()->showSavings($fundId));
         $this->jq('.btn-closing-delete')->click($this->rq()->deleteClosing($fundId)
             ->confirm(trans('meeting.closing.questions.delete')));
 

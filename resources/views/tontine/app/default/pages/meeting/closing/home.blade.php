@@ -21,8 +21,8 @@
                         {!! Form::select('fund_id', $funds, 0, ['class' => 'form-control',
                           'style' => 'height:36px; padding:5px 15px;', 'id' => 'closings-fund-id']) !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" id="btn-closing-edit"><i class="fa fa-plus"></i></button>
-                          <button type="button" class="btn btn-primary" id="btn-fund-savings-show"><i class="fa fa-list"></i></button>
+                          <button type="button" class="btn btn-primary" id="btn-fund-edit-closing"><i class="fa fa-circle-notch"></i></button>
+                          <button type="button" class="btn btn-primary" id="btn-fund-show-savings"><i class="fa fa-percentage"></i></button>
                         </div>
                       </div>
                     </div>
@@ -48,10 +48,10 @@
   'dataIdKey' => 'data-fund-id',
   'dataIdValue' => $fundId,
   'menus' => [[
-    'class' => 'btn-closing-edit',
+    'class' => 'btn-fund-edit-closing',
     'text' => __('common.actions.edit'),
   ], [
-    'class' => 'btn-fund-savings-show',
+    'class' => 'btn-fund-show-savings',
     'text' => __('meeting.actions.savings'),
   ], [
     'class' => 'btn-closing-delete',
