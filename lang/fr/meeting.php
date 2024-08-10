@@ -165,6 +165,7 @@ return [
             'interest' => "Intérêt",
             'percentage' => "Pourcentage",
             'amount_available' => "disponible : :amount",
+            'fund' => "Origine",
         ],
         'interest' => [
             'f' => "Fixe",
