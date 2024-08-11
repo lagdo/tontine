@@ -216,7 +216,7 @@ class Charge extends CallableClass
                 $formValues['amount'] = 0;
             }
         }
-        $values = $this->validator->validateitem($formValues);
+        $values = $this->validator->validateItem($formValues);
 
         $this->chargeService->createCharge($values);
         $this->notify->success(trans('tontine.charge.messages.created'), trans('common.titles.success'));

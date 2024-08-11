@@ -4,6 +4,7 @@ namespace App\Ajax\Web\Tontine;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Service\Tontine\FundService;
+use Siak\Tontine\Validation\Tontine\FundValidator;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
@@ -14,6 +15,11 @@ use function trans;
  */
 class Fund extends CallableClass
 {
+    /**
+     * @var FundValidator
+     */
+    protected FundValidator $validator;
+
     /**
      * @param FundService $fundService
      */
@@ -77,9 +83,14 @@ class Fund extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function create(array $formValues)
     {
-        $this->fundService->createFund($formValues);
+        $values = $this->validator->validateItem($formValues);
+
+        $this->fundService->createFund($values);
         $this->page(); // Back to current page
 
         $this->dialog->hide();
@@ -108,10 +119,15 @@ class Fund extends CallableClass
         return $this->response;
     }
 
+    /**
+     * @di $validator
+     */
     public function update(int $fundId, array $formValues)
     {
+        $values = $this->validator->validateItem($formValues);
+
         $fund = $this->fundService->getFund($fundId);
-        $this->fundService->updateFund($fund, $formValues);
+        $this->fundService->updateFund($fund, $values);
         $this->page(); // Back to current page
 
         $this->dialog->hide();
