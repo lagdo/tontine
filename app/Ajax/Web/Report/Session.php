@@ -87,6 +87,10 @@ class Session extends CallableClass
         {
             return $this->response;
         }
+        if($memberId <= 0)
+        {
+            return $this->_showSession($session);
+        }
         if(!($member = $this->memberService->getMember($memberId)))
         {
             return $this->response;

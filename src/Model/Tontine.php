@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Model;
 
 use Database\Factories\TontineFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -45,6 +46,15 @@ class Tontine extends Base
      */
     protected $attributes = [
         'type' => 'x',
+    ];
+
+    /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = [
+        'default_fund',
     ];
 
     /**
@@ -91,6 +101,16 @@ class Tontine extends Base
     public function funds()
     {
         return $this->hasMany(Fund::class);
+    }
+
+    /**
+     * Get the default savings fund.
+     */
+    public function default_fund()
+    {
+        return $this->hasOne(Fund::class)
+            ->withoutGlobalScope('user')
+            ->ofMany(['id' => 'max'], fn(Builder $query) => $query->where('title', ''));
     }
 
     public function charges()

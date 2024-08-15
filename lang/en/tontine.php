@@ -247,6 +247,9 @@ return [
             'updated' => "The savings fund was successfully updated.",
             'deleted' => "The savings fund was successfully deleted.",
         ],
+        'errors' => [
+            'not_found' => "Cannot find the corresponding fund.",
+        ],
     ],
     'category' => [
         'titles' => [

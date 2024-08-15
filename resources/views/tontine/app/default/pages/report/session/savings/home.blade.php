@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row align-items-center">
                     <div class="col">
-                      <div class="section-title mt-0">{!! $fund !!}</div>
+                      <div class="section-title mt-0">{!! $fund->title !!}</div>
                     </div>
 @if ($backButton)
                     <div class="col-auto sm-screen-hidden">

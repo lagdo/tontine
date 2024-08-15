@@ -3,10 +3,13 @@
 namespace Siak\Tontine\Service\Tontine;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
 
+use function count;
 use function trans;
 
 class FundService
@@ -24,10 +27,8 @@ class FundService
      */
     public function getDefaultFund(): Fund
     {
-        $defaultFund = new Fund();
-        $defaultFund->id = 0;
+        $defaultFund = $this->tenantService->tontine()->default_fund;
         $defaultFund->title = trans('tontine.fund.labels.default');
-        $defaultFund->active = true;
         return $defaultFund;
     }
 
@@ -82,11 +83,16 @@ class FundService
      *
      * @param int $fundId    The fund id
      * @param bool $onlyActive
+     * @param bool $withDefault
      *
      * @return Fund|null
      */
-    public function getFund(int $fundId, bool $onlyActive = false): ?Fund
+    public function getFund(int $fundId, bool $onlyActive = false, bool $withDefault = false): ?Fund
     {
+        if($withDefault && $fundId === $this->tenantService->tontine()->default_fund->id)
+        {
+            return $this->getDefaultFund();
+        }
         return $this->tenantService->tontine()->funds()
             ->when($onlyActive, fn(Builder $query) => $query->active())
             ->find($fundId);
@@ -140,5 +146,69 @@ class FundService
     public function deleteFund(Fund $fund)
     {
         $fund->delete();
+    }
+
+    /**
+     * @param Session $currentSession
+     * @param Fund $fund
+     *
+     * @return Builder|Relation
+     */
+    private function getFundSessionsQuery(Session $currentSession, Fund $fund): Builder|Relation
+    {
+        $lastSessionDate = $currentSession->start_at->format('Y-m-d');
+        $sessionsQuery = $this->tenantService->tontine()->sessions()
+            ->whereDate('sessions.start_at', '<=', $lastSessionDate);
+        // The closing sessions ids
+        $closingSessionIds = [];
+        if(count($closingSessionIds) === 0)
+        {
+            // No closing session yet
+            return $sessionsQuery;
+        }
+
+        // The previous closing sessions
+        $closingSessions = $this->tenantService->tontine()->sessions()
+            ->where('sessions.id', '!=', $currentSession->id)
+            ->whereIn('sessions.id', $closingSessionIds)
+            ->whereDate('sessions.start_at', '<', $lastSessionDate)
+            ->orderByDesc('sessions.start_at')
+            ->get();
+        if($closingSessions->count() === 0)
+        {
+            // All the closing sessions are after the current session.
+            return $sessionsQuery;
+        }
+
+        // The most recent previous closing session
+        $firstSessionDate = $closingSessions->last()->start_at->format('Y-m-d');
+        // Return all the sessions after the most recent previous closing session
+        return $sessionsQuery->whereDate('sessions.start_at', '>', $firstSessionDate);
+    }
+
+    /**
+     * Get the sessions to be used for profit calculation.
+     *
+     * @param Session $currentSession
+     * @param Fund $fund
+     *
+     * @return Collection
+     */
+    public function getFundSessions(Session $currentSession, Fund $fund): Collection
+    {
+        return $this->getFundSessionsQuery($currentSession, $fund)->get();
+    }
+
+    /**
+     * Get the id of sessions to be used for profit calculation.
+     *
+     * @param Session $currentSession
+     * @param Fund $fund
+     *
+     * @return Collection
+     */
+    public function getFundSessionIds(Session $currentSession, Fund $fund): Collection
+    {
+        return $this->getFundSessionsQuery($currentSession, $fund)->pluck('id');
     }
 }

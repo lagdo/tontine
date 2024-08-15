@@ -247,6 +247,9 @@ return [
             'updated' => "Le fonds d'épargne a été modifié.",
             'deleted' => "Le fonds d'épargne a été supprimé.",
         ],
+        'errors' => [
+            'not_found' => "Impossible de trouver le fonds correspondant.",
+        ],
     ],
     'category' => [
         'titles' => [

@@ -78,7 +78,13 @@ class Closing extends CallableSessionClass
      */
     public function showSavings(int $fundId)
     {
-        $this->cl(Saving::class)->show($this->session, $fundId);
+        $fund = $this->fundService->getFund($fundId, true, true);
+        if(!$fund)
+        {
+            return $this->response;
+        }
+
+        $this->cl(Saving::class)->show($this->session, $fund);
 
         $this->response->call('showSmScreen', 'report-fund-savings', 'session-savings');
         $this->jq('#btn-presence-sessions-back')->click(rq('.')
@@ -94,16 +100,17 @@ class Closing extends CallableSessionClass
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
-        $funds = $this->fundService->getFundList();
-        if(!isset($funds[$fundId]))
+        $fund = $this->fundService->getFund($fundId, true, true);
+        if(!$fund)
         {
             return $this->response;
         }
 
-        $title = trans('meeting.saving.titles.closing', ['fund' => $funds[$fundId]]);
+        $closing = $this->closingService->getSavingsClosing($this->session, $fund);
+        $title = trans('meeting.saving.titles.closing', ['fund' => $fund]);
         $content = $this->render('pages.meeting.closing.edit', [
-            'hasClosing' => $this->savingService->hasFundClosing($this->session, $fundId),
-            'profitAmount' => $this->savingService->getProfitAmount($this->session, $fundId),
+            'hasClosing' => $closing !== null,
+            'profitAmount' => $closing?->profit ?? 0,
         ]);
         $buttons = [[
             'title' => trans('common.actions.close'),
@@ -124,14 +131,14 @@ class Closing extends CallableSessionClass
      */
     public function saveClosing(int $fundId, array $formValues)
     {
-        $funds = $this->fundService->getFundList();
-        if(!isset($funds[$fundId]))
+        $fund = $this->fundService->getFund($fundId, true, true);
+        if(!$fund)
         {
             return $this->response;
         }
 
         $values = $this->validator->validateItem($formValues);
-        $this->savingService->saveFundClosing($this->session, $fundId, $values['amount']);
+        $this->closingService->saveFundClosing($this->session, $fund, $values['amount']);
 
         $this->dialog->hide();
         $this->notify->success(trans('meeting.messages.profit.saved'), trans('common.titles.success'));
@@ -141,13 +148,13 @@ class Closing extends CallableSessionClass
 
     public function deleteClosing(int $fundId)
     {
-        $funds = $this->fundService->getFundList();
-        if(!isset($funds[$fundId]))
+        $fund = $this->fundService->getFund($fundId, true, true);
+        if(!$fund)
         {
             return $this->response;
         }
 
-        $this->savingService->deleteFundClosing($this->session, $fundId);
+        $this->closingService->deleteFundClosing($this->session, $fund);
 
         $this->dialog->hide();
         $this->notify->success(trans('meeting.messages.profit.deleted'), trans('common.titles.success'));

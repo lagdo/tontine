@@ -26,10 +26,10 @@ class LoanValidator extends AbstractValidator
     {
         $validator = Validator::make($this->values($values), [
             'member' => 'required|integer|min:1',
+            'fund' => 'required|integer|min:1',
             'principal' => 'required|regex:/^\d+(\.\d{1,2})?$/',
             'interest_type' => 'required|in:f,s,c',
             'interest' => 'required|regex:/^\d+(\.\d{1,2})?$/',
-            'fund_id' => 'required|integer|min:0',
         ]);
         $validator->after(function($validator) use($values) {
             if((float)$values['principal'] <= 0)

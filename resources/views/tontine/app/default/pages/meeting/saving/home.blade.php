@@ -18,7 +18,7 @@
                         {!! Form::select('fund', $funds, $fundId, ['class' => 'form-control',
                           'style' => 'height:36px; padding:5px 15px;', 'id' => 'savings-fund-id']) !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" id="btn-savings-fund"><i class="fa fa-filter"></i></button>
+                          <button type="button" class="btn btn-primary" id="btn-savings-fund"><i class="fa fa-arrow-right"></i></button>
 @if($session->opened)
                           <button type="button" class="btn btn-primary" id="btn-savings-edit"><i class="fa fa-edit"></i></button>
 @endif

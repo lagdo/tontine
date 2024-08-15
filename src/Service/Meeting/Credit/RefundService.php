@@ -15,9 +15,9 @@ use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
-use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Tontine\FundService;
 
 use function trans;
 
@@ -28,12 +28,12 @@ class RefundService
      * @param TenantService $tenantService
      * @param LocaleService $localeService
      * @param SessionService $sessionService
-     * @param ProfitService $profitService
+     * @param FundService $fundService
      * @param PaymentServiceInterface $paymentService;
      */
     public function __construct(private DebtCalculator $debtCalculator,
         private TenantService $tenantService, private LocaleService $localeService,
-        private SessionService $sessionService, private ProfitService $profitService,
+        private SessionService $sessionService, private FundService $fundService,
         private PaymentServiceInterface $paymentService)
     {}
 
@@ -46,15 +46,11 @@ class RefundService
      */
     private function getQuery(Session $session, Fund $fund, ?bool $onlyPaid = null): Builder|Relation
     {
-        $prevSessions = $this->profitService->getFundSessionIds($session, $fund->id)
+        $prevSessions = $this->fundService->getFundSessionIds($session, $fund)
             ->filter(fn(int $sessionId) => $sessionId !== $session->id);
 
         return Debt::whereHas('loan', function(Builder $query) use($fund) {
-                $query
-                    ->when($fund->id === 0,
-                        fn(Builder $query) => $query->whereNull('fund_id'))
-                    ->when($fund->id !== 0,
-                        fn(Builder $query) => $query->where('fund_id', $fund->id));
+                $query->where('fund_id', $fund->id);
             })
             ->when($onlyPaid === false, function(Builder $query) {
                 return $query->whereDoesntHave('refund');
@@ -243,6 +239,7 @@ class RefundService
         return $session->partial_refunds()
             ->page($page, $this->tenantService->getLimit())
             ->with(['debt.refund', 'debt.loan.member', 'debt.loan.session'])
+            ->orderBy('id')
             ->get()
             ->sortBy('debt.loan.member.name', SORT_LOCALE_STRING)
             ->values();
@@ -255,9 +252,10 @@ class RefundService
      */
     public function getActiveFundIds(): Collection
     {
-        return $this->tenantService->tontine()->funds()->active()
+        $tontine = $this->tenantService->tontine();
+        return $tontine->funds()->active()
             ->pluck('id')
-            ->prepend(0);
+            ->prepend($tontine->default_fund->id);
     }
 
     /**
@@ -271,13 +269,9 @@ class RefundService
     {
         return Debt::whereDoesntHave('refund')
             ->whereHas('loan', function(Builder $query) {
-                $query
+                $query->whereIn('fund_id', $this->getActiveFundIds())
                     ->whereHas('member', function(Builder $query) {
                         $query->where('tontine_id', $this->tenantService->tontine()->id);
-                    })
-                    ->where(function(Builder $query) {
-                        $query->whereNull('fund_id')
-                            ->OrWhereIn('fund_id', $this->getActiveFundIds());
                     });
             })
             ->get()

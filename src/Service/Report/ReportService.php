@@ -2,9 +2,9 @@
 
 namespace Siak\Tontine\Service\Report;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
@@ -50,18 +50,6 @@ class ReportService
     {
         $closings = $this->savingService->getSessionClosings($session);
         return Arr::only($closings, $fundIds->all());
-    }
-
-    /**
-     * @param Session $session
-     *
-     * @return array
-     */
-    public function getClosings(Session $session): array
-    {
-        $closings = $this->savingService->getSessionClosings($session);
-        $funds = $this->fundService->getFundList();
-        return Arr::only($closings, $funds->keys()->all());
     }
 
     /**
@@ -150,16 +138,15 @@ class ReportService
 
     /**
      * @param Session $session
+     * @param Fund $fund
+     * @param string $name
      * @param int $profitAmount
-     * @param string $fund
-     * @param int $fundId
      *
      * @return array
      */
-    private function getFundSavings(Session $session, int $profitAmount,
-        string $name, int $fundId): array
+    private function getFundSavings(Session $session, Fund $fund, string $name, int $profitAmount): array
     {
-        $savings = $this->profitService->getDistributions($session, $fundId, $profitAmount);
+        $savings = $this->profitService->getDistributions($session, $fund, $profitAmount);
         $partUnitValue = $this->profitService->getPartUnitValue($savings);
         $distributionSum = $savings->sum('distribution');
         $distributionCount = $savings->filter(fn($saving) => $saving->distribution > 0)->count();
@@ -177,12 +164,12 @@ class ReportService
     {
         $tontine = $this->tenantService->tontine();
         [$country] = $this->localeService->getNameFromTontine($tontine);
-        $funds = $this->fundService->getFundList();
-        $closings = $this->getFundClosings($session, $funds->keys());
+        $funds = $this->fundService->getActiveFunds();
+        $closings = $this->getFundClosings($session, $funds->pluck('id'));
 
         $funds = $funds
-            ->map(fn($name, $fundId) => $this->getFundSavings($session,
-                $closings[$fundId] ?? 0, $name, $fundId))
+            ->map(fn($name, $fund) => $this->getFundSavings($session, $fund,
+                $name, $closings[$fundId] ?? 0))
             ->filter(fn($fund) => $fund['savings']->count() > 0);
 
         return compact('tontine', 'session', 'country', 'funds');
@@ -215,15 +202,16 @@ class ReportService
 
         $funds = $this->fundService->getActiveFunds()
             ->each(function($fund) use($session) {
-                $sessions = $this->profitService->getFundSessions($session, $fund->id);
+                $sessionIds = $this->fundService->getFundSessionIds($session, $fund);
                 $fund->loans = Loan::select('loans.*')
                     ->join('sessions', 'loans.session_id', '=', 'sessions.id')
-                    ->whereIn('session_id', $sessions->pluck('id'))
-                    ->where(fn(Builder $query) => $fund->id > 0 ?
-                        $query->where('fund_id', $fund->id) :
-                        $query->whereNull('fund_id'))
+                    ->where(fn($query) => $query->where('fund_id', $fund->id))
+                    ->whereIn('loans.session_id', $sessionIds)
                     ->with(['member', 'session', 'debts.refund', 'debts.refund.session',
-                        'debts.partial_refunds', 'debts.partial_refunds.session'])
+                        'debts.partial_refunds' => function($query) use($sessionIds) {
+                            $query->whereIn('partial_refunds.session_id', $sessionIds);
+                        },
+                        'debts.partial_refunds.session'])
                     ->orderBy('sessions.start_at')
                     ->get()
                     ->each(fn(Loan $loan) => $this->setDebtAmount($loan, $session))

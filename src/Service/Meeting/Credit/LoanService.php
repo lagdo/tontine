@@ -5,6 +5,7 @@ namespace Siak\Tontine\Service\Meeting\Credit;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
+use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
@@ -122,26 +123,21 @@ class LoanService
     /**
      * Create a loan.
      *
-     * @param Member $member
      * @param Session $session The session
+     * @param Member $member
+     * @param Fund $fund
      * @param array $values
      *
      * @return void
      */
-    public function createLoan(Member $member, Session $session, array $values): void
+    public function createLoan(Session $session, Member $member, Fund $fund, array $values): void
     {
-        $fund = $values['fund_id'] === 0 ? null :
-            $this->fundService->getFund($values['fund_id']);
-
         $loan = new Loan();
         $loan->interest_type = $values['interest_type'];
         $loan->interest_rate = $values['interest_rate'];
-        $loan->member()->associate($member);
         $loan->session()->associate($session);
-        if($fund !== null)
-        {
-            $loan->fund()->associate($fund);
-        }
+        $loan->member()->associate($member);
+        $loan->fund()->associate($fund);
         DB::transaction(function() use($loan, $values) {
             $loan->save();
 
@@ -163,26 +159,18 @@ class LoanService
      * Update a loan.
      *
      * @param Member $member
+     * @param Fund $fund
      * @param Loan $loan
      * @param array $values
      *
      * @return void
      */
-    public function updateLoan(Member $member, Loan $loan, array $values): void
+    public function updateLoan(Member $member, Fund $fund, Loan $loan, array $values): void
     {
-        $fund = $values['fund_id'] === 0 ? null :
-            $this->fundService->getFund($values['fund_id']);
         $loan->interest_type = $values['interest_type'];
         $loan->interest_rate = $values['interest_rate'];
         $loan->member()->associate($member);
-        if($fund !== null)
-        {
-            $loan->fund()->associate($fund);
-        }
-        else
-        {
-            $loan->fund()->dissociate();
-        }
+        $loan->fund()->associate($fund);
         DB::transaction(function() use($loan, $values) {
             $loan->save();
 

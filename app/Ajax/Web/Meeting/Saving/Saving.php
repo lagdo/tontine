@@ -3,6 +3,7 @@
 namespace App\Ajax\Web\Meeting\Saving;
 
 use App\Ajax\CallableSessionClass;
+use Siak\Tontine\Model\Fund as FundModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -22,6 +23,11 @@ class Saving extends CallableSessionClass
      * @var SavingValidator
      */
     protected SavingValidator $validator;
+
+    /**
+     * @var FundModel|null
+     */
+    protected ?FundModel $fund = null;
 
     /**
      * The constructor
@@ -46,24 +52,43 @@ class Saving extends CallableSessionClass
 
     public function home()
     {
+        $fundId = (int)$this->bag('meeting.saving')->get('fund.id', 0);
         $html = $this->render('pages.meeting.saving.home', [
             'session' => $this->session,
-            'fundId' => (int)$this->bag('meeting.saving')->get('fund.id', -1),
-            'funds' => $this->fundService->getFundList()->prepend('', -1),
+            'fundId' => $fundId,
+            'funds' => $this->fundService->getFundList()->prepend('', 0),
         ]);
         $this->response->html('meeting-savings', $html);
 
         $this->jq('#btn-savings-refresh')->click($this->rq()->home());
-        $fundId = pm()->select('savings-fund-id')->toInt();
-        $this->jq('#btn-savings-edit')->click($this->rq(Member::class)->home($fundId));
-        $this->jq('#btn-savings-fund')->click($this->rq()->filter($fundId));
+        $selectFundId = pm()->select('savings-fund-id')->toInt();
+        $this->jq('#btn-savings-edit')->click($this->rq(Member::class)
+            ->home($selectFundId)->ifgt($selectFundId, 0));
+        $this->jq('#btn-savings-fund')->click($this->rq()->fund($selectFundId));
+
+        return $this->fund($fundId);
+    }
+
+    protected function getFund()
+    {
+        $fundId = $this->bag('meeting.saving')->get('fund.id', 0);
+        if($fundId > 0 && ($this->fund = $this->fundService->getFund($fundId, true, true)) === null)
+        {
+            $this->bag('meeting.saving')->set('fund.id', 0);
+        }
+    }
+
+    public function fund(int $fundId)
+    {
+        $this->bag('meeting.saving')->set('fund.id', $fundId);
+        $this->getFund();
 
         return $this->page();
     }
 
-    private function showTotal(int $fundId, int $savingCount)
+    private function showTotal(int $savingCount)
     {
-        $savingTotal = $this->savingService->getSavingTotal($this->session, $fundId);
+        $savingTotal = $this->savingService->getSavingTotal($this->session, $this->fund);
         $html = $this->render('pages.meeting.saving.total', [
             'savingCount' => $savingCount,
             'savingTotal' => $savingTotal,
@@ -71,16 +96,18 @@ class Saving extends CallableSessionClass
         $this->response->html('meeting-savings-total', $html);
     }
 
+    /**
+     * @before getFund
+     */
     public function page(int $pageNumber = 0)
     {
-        $fundId = (int)$this->bag('meeting.saving')->get('fund.id', -1);
-        $savingCount = $this->savingService->getSavingCount($this->session, $fundId);
+        $savingCount = $this->savingService->getSavingCount($this->session, $this->fund);
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $savingCount,
             'meeting.saving', 'page');
-        $savings = $this->savingService->getSavings($this->session, $fundId, $pageNumber);
+        $savings = $this->savingService->getSavings($this->session, $this->fund, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $savingCount);
 
-        $this->showTotal($fundId, $savingCount);
+        $this->showTotal($savingCount);
 
         $html = $this->render('pages.meeting.saving.page', [
             'session' => $this->session,
@@ -96,13 +123,6 @@ class Saving extends CallableSessionClass
             ->confirm(trans('meeting.saving.questions.delete')));
 
         return $this->response;
-    }
-
-    public function filter(int $fundId)
-    {
-        $this->bag('meeting.saving')->set('fund.id', $fundId);
-
-        return $this->page();
     }
 
     public function editSaving(int $savingId)
@@ -137,6 +157,7 @@ class Saving extends CallableSessionClass
     /**
      * @di $validator
      * @after showBalanceAmounts
+     * @before getFund
      */
     public function updateSaving(int $savingId, array $formValues)
     {
@@ -145,17 +166,35 @@ class Saving extends CallableSessionClass
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
+        if(!($saving = $this->savingService->getSaving($this->session, $savingId)))
+        {
+            $this->notify->warning(trans('meeting.saving.errors.not_found'));
+            return $this->response;
+        }
 
         $values = $this->validator->validateItem($formValues);
-        $this->savingService->updateSaving($this->session, $savingId, $values);
+        if(!($member = $this->savingService->getMember($values['member'])))
+        {
+            $this->notify->warning(trans('tontine.member.errors.not_found'));
+            return $this->response;
+        }
+        if(!($fund = $this->fundService->getFund($values['fund'])))
+        {
+            $this->notify->warning(trans('tontine.member.errors.not_found'));
+            return $this->response;
+        }
+
+        $amount = $values['amount'];
+        $this->savingService->updateSaving($this->session, $fund, $member, $saving, $amount);
 
         $this->dialog->hide();
 
-        return $this->home();
+        return $this->page();
     }
 
     /**
      * @after showBalanceAmounts
+     * @before getFund
      */
     public function deleteSaving(int $savingId)
     {
@@ -167,6 +206,6 @@ class Saving extends CallableSessionClass
 
         $this->savingService->deleteSaving($this->session, $savingId);
 
-        return $this->home();
+        return $this->page();
     }
 }

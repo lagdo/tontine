@@ -74,10 +74,9 @@ class Loan extends CallableSessionClass
             return $this->response;
         }
 
-        $amountAvailable = $this->loanService->getAmountAvailableValue($this->session);
         $title = trans('meeting.loan.titles.add');
         $content = $this->render('pages.meeting.loan.add', [
-            'amountAvailable' => $amountAvailable,
+            'amountAvailable' => $this->loanService->getAmountAvailableValue($this->session),
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getFundList(),
             'members' => $this->memberService->getMemberList(),
@@ -115,8 +114,13 @@ class Loan extends CallableSessionClass
             $this->notify->warning(trans('tontine.member.errors.not_found'));
             return $this->response;
         }
+        if(!($fund = $this->fundService->getFund($values['fund'], true, true)))
+        {
+            $this->notify->warning(trans('tontine.fund.errors.not_found'));
+            return $this->response;
+        }
 
-        $this->loanService->createLoan($member, $this->session, $values);
+        $this->loanService->createLoan($this->session, $member, $fund, $values);
 
         $this->dialog->hide();
 
@@ -195,8 +199,13 @@ class Loan extends CallableSessionClass
             $this->notify->warning(trans('tontine.member.errors.not_found'));
             return $this->response;
         }
+        if(!($fund = $this->fundService->getFund($values['fund'], true, true)))
+        {
+            $this->notify->warning(trans('tontine.fund.errors.not_found'));
+            return $this->response;
+        }
 
-        $this->loanService->updateLoan($member, $loan, $values);
+        $this->loanService->updateLoan($member, $fund, $loan, $values);
 
         $this->dialog->hide();
 

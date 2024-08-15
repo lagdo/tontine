@@ -90,9 +90,7 @@ class TontineService
             ->orderBy('tontines.id')
             ->page($page, $this->tenantService->getLimit())
             ->get()
-            ->each(function($tontine) {
-                $tontine->isGuest = true;
-            });
+            ->each(fn($tontine) => $tontine->isGuest = true);
     }
 
     /**
@@ -143,7 +141,11 @@ class TontineService
      */
     public function createTontine(array $values): bool
     {
-        $this->tenantService->user()->tontines()->create($values);
+        DB::transaction(function() use($values) {
+            $tontine = $this->tenantService->user()->tontines()->create($values);
+            // Also create the default savings fund for the new tontine.
+            $tontine->funds()->create(['title' => '', 'active' => true]);
+        });
         return true;
     }
 
@@ -175,6 +177,7 @@ class TontineService
             return;
         }
         DB::transaction(function() use($tontine) {
+            $tontine->funds()->withoutGlobalScope('user')->delete();
             $tontine->members()->delete();
             $tontine->rounds()->delete();
             $tontine->charges()->delete();

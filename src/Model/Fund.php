@@ -24,9 +24,27 @@ class Fund extends Base
         'active',
     ];
 
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        // Scope for user defined funds. Always applied by default.
+        static::addGlobalScope('user', function (Builder $builder) {
+            $builder->where('title', '<>', '');
+        });
+    }
+
     public function tontine()
     {
         return $this->belongsTo(Tontine::class);
+    }
+
+    public function savings()
+    {
+        return $this->hasMany(Saving::class);
     }
 
     /**

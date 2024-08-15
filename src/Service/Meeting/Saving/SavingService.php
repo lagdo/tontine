@@ -5,10 +5,8 @@ namespace Siak\Tontine\Service\Meeting\Saving;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Saving;
@@ -16,9 +14,6 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\FundService;
-
-use function count;
-use function trans;
 
 class SavingService
 {
@@ -33,62 +28,54 @@ class SavingService
 
     /**
      * @param Session $session
-     * @param int $fundId
+     * @param Fund|null $fund
      *
      * @return Builder|Relation
      */
-    private function getSavingQuery(Session $session, int $fundId): Builder|Relation
+    private function getSavingQuery(Session $session, ?Fund $fund): Builder|Relation
     {
-        // $fundId < 0 => all the savings
-        // $fundId === 0 => savings of the default fund
-        // $fundId > 0 => savings of the corresponding fund
         return $session->savings()
-            ->when($fundId === 0, function(Builder $query) {
-                $query->whereNull('fund_id');
-            })
-            ->when($fundId > 0, function(Builder $query) use($fundId) {
-                $query->where('fund_id', $fundId);
-            });
+            ->when($fund !== null, fn(Builder $query) => $query->where('fund_id', $fund->id));
     }
 
     /**
      * Count the savings for a given session.
      *
      * @param Session $session
-     * @param int $fundId
+     * @param Fund|null $fund
      *
      * @return int
      */
-    public function getSavingCount(Session $session, int $fundId): int
+    public function getSavingCount(Session $session, ?Fund $fund): int
     {
-        return $this->getSavingQuery($session, $fundId)->count();
+        return $this->getSavingQuery($session, $fund)->count();
     }
 
     /**
      * Get the savings sum for a given session.
      *
      * @param Session $session
-     * @param int $fundId
+     * @param Fund|null $fund
      *
      * @return int
      */
-    public function getSavingTotal(Session $session, int $fundId): int
+    public function getSavingTotal(Session $session, ?Fund $fund): int
     {
-        return $this->getSavingQuery($session, $fundId)->sum('amount');
+        return $this->getSavingQuery($session, $fund)->sum('amount');
     }
 
     /**
      * Get the savings for a given session.
      *
      * @param Session $session
-     * @param int $fundId
+     * @param Fund|null $fund
      * @param int $page
      *
      * @return Collection
      */
-    public function getSavings(Session $session, int $fundId, int $page = 0): Collection
+    public function getSavings(Session $session, ?Fund $fund, int $page = 0): Collection
     {
-        return $this->getSavingQuery($session, $fundId)
+        return $this->getSavingQuery($session, $fund)
             ->select(DB::raw('savings.*, members.name as member'))
             ->join('members', 'members.id', '=', 'savings.member_id')
             ->with(['fund'])
@@ -114,41 +101,34 @@ class SavingService
      * Find a member saving for a given session.
      *
      * @param Session $session
-     * @param int $fundId
-     * @param int $memberId
+     * @param Fund $fund
+     * @param Member $member
      *
      * @return Saving|null
      */
-    public function findSaving(Session $session, int $fundId, int $memberId): ?Saving
+    public function findSaving(Session $session, Fund $fund, Member $member): ?Saving
     {
-        return $this->getSavingQuery($session, $fundId)
-            ->where('member_id', $memberId)
+        return $this->getSavingQuery($session, $fund)
+            ->where('member_id', $member->id)
             ->first();
     }
 
     /**
      * @param Session $session
+     * @param Fund $fund
      * @param Member $member
-     * @param Fund|null $fund
      * @param Saving $saving
      * @param int $amount
      *
      * @return void
      */
-    private function persistSaving(Session $session, Member $member,
-        ?Fund $fund, Saving $saving, int $amount)
+    private function persistSaving(Session $session, Fund $fund, Member $member,
+        Saving $saving, int $amount)
     {
         $saving->amount = $amount;
-        $saving->member()->associate($member);
         $saving->session()->associate($session);
-        if($fund !== null)
-        {
-            $saving->fund()->associate($fund);
-        }
-        else
-        {
-            $saving->fund()->dissociate();
-        }
+        $saving->fund()->associate($fund);
+        $saving->member()->associate($member);
         $saving->save();
     }
 
@@ -156,71 +136,54 @@ class SavingService
      * Create a saving.
      *
      * @param Session $session The session
-     * @param array $values
+     * @param Fund $fund
+     * @param Member $member
+     * @param int $amount
      *
      * @return void
      */
-    public function createSaving(Session $session, array $values): void
+    public function createSaving(Session $session, Fund $fund, Member $member, int $amount): void
     {
-        if(!($member = $this->getMember($values['member'])))
-        {
-            throw new MessageException(trans('tontine.member.errors.not_found'));
-        }
-        $fund = !$values['fund'] ? null : $this->fundService->getFund($values['fund']);
-
         $saving = new Saving();
-        $this->persistSaving($session, $member, $fund, $saving, $values['amount']);
+        $this->persistSaving($session, $fund, $member, $saving, $amount);
     }
 
     /**
      * Update a saving.
      *
      * @param Session $session The session
-     * @param int $savingId
-     * @param array $values
+     * @param Fund $fund
+     * @param Member $member
+     * @param Saving $saving
+     * @param int $amount
      *
      * @return void
      */
-    public function updateSaving(Session $session, int $savingId, array $values): void
+    public function updateSaving(Session $session, Fund $fund, Member $member,
+        Saving $saving, int $amount): void
     {
-        if(!($member = $this->getMember($values['member'])))
-        {
-            throw new MessageException(trans('tontine.member.errors.not_found'));
-        }
-        $saving = $session->savings()->find($savingId);
-        if(!$saving)
-        {
-            throw new MessageException(trans('meeting.saving.errors.not_found'));
-        }
-        $fund = !$values['fund'] ? null : $this->fundService->getFund($values['fund']);
-
-        $this->persistSaving($session, $member, $fund, $saving, $values['amount']);
+        $this->persistSaving($session, $fund, $member, $saving, $amount);
     }
 
     /**
      * Create or update a saving.
      *
      * @param Session $session The session
-     * @param int $fundId
-     * @param int $memberId
+     * @param Fund $fund
+     * @param Member $member
      * @param int $amount
      *
      * @return void
      */
-    public function saveSaving(Session $session, int $fundId, int $memberId, int $amount): void
+    public function saveSaving(Session $session, Fund $fund, Member $member, int $amount): void
     {
-        if(!($member = $this->getMember($memberId)))
-        {
-            throw new MessageException(trans('tontine.member.errors.not_found'));
-        }
-        $fund = !$fundId ? null : $this->fundService->getFund($fundId);
-        $saving = $this->findSaving($session, !$fund ? 0 : $fund->id, $member->id);
+        $saving = $this->findSaving($session, $fund, $member);
         if(!$saving)
         {
             $saving = new Saving();
         }
 
-        $this->persistSaving($session, $member, $fund, $saving, $amount);
+        $this->persistSaving($session, $fund, $member, $saving, $amount);
     }
 
     /**
@@ -228,49 +191,38 @@ class SavingService
      *
      * @param Session $session The session
      * @param int $savingId
-     * @param int $memberId
      *
      * @return void
      */
-    public function deleteSaving(Session $session, int $savingId, int $memberId = 0): void
+    public function deleteSaving(Session $session, int $savingId): void
     {
-        $savingId > 0 ?
-            $session->savings()->where('id', $savingId)->delete() :
-            $session->savings()->where('member_id', $memberId)->delete();
+        $session->savings()->where('id', $savingId)->delete();
     }
 
     /**
      * @param Session $session
-     * @param int $fundId
-     * @param string $search
-     * @param bool|null $filter
+     * @param Fund $fund
      *
      * @return Closure
      */
-    private function getMemberSavingsFilter(Session $session, int $fundId): Closure
+    private function getMemberSavingsFilter(Session $session, Fund $fund): Closure
     {
-        return function(/*Builder|Relation*/ $query) use($session, $fundId) {
-            $query->where('session_id', $session->id)
-                ->where(function(Builder $query) use($fundId) {
-                    $fundId > 0 ?
-                        $query->where('fund_id', $fundId) :
-                        $query->whereNull('fund_id');
-                });
-        };
+        return fn(/*Builder|Relation*/ $query) =>
+            $query->where('session_id', $session->id)->where('fund_id', $fund->id);
     }
 
     /**
      * @param Session $session
-     * @param int $fundId
+     * @param Fund $fund
      * @param string $search
      * @param bool|null $filter
      *
      * @return Builder|Relation
      */
-    private function getMembersQuery(Session $session, int $fundId,
+    private function getMembersQuery(Session $session, Fund $fund,
         string $search, ?bool $filter): Builder|Relation
     {
-        $savingsFilter = $this->getMemberSavingsFilter($session, $fundId);
+        $savingsFilter = $this->getMemberSavingsFilter($session, $fund);
         return $this->tenantService->tontine()->members()->active()
             ->when($search !== '', function(Builder $query) use($search) {
                 $search = '%' . strtolower($search) . '%';
@@ -288,19 +240,19 @@ class SavingService
      * Get a paginated list of members.
      *
      * @param Session $session
-     * @param int $fundId
+     * @param Fund $fund
      * @param string $search
      * @param bool|null $filter
      * @param int $page
      *
      * @return Collection
      */
-    public function getMembers(Session $session, int $fundId, string $search,
+    public function getMembers(Session $session, Fund $fund, string $search,
         ?bool $filter, int $page = 0): Collection
     {
-        return $this->getMembersQuery($session, $fundId, $search, $filter)
+        return $this->getMembersQuery($session, $fund, $search, $filter)
             ->page($page, $this->tenantService->getLimit())
-            ->with('savings', $this->getMemberSavingsFilter($session, $fundId))
+            ->with('savings', $this->getMemberSavingsFilter($session, $fund))
             ->orderBy('name', 'asc')
             ->get()
             ->each(function($member) {
@@ -312,15 +264,32 @@ class SavingService
      * Get the number of members.
      *
      * @param Session $session
-     * @param int $fundId
+     * @param Fund $fund
      * @param string $search
      * @param bool|null $filter
      *
      * @return int
      */
-    public function getMemberCount(Session $session, int $fundId, string $search, ?bool $filter): int
+    public function getMemberCount(Session $session, Fund $fund, string $search, ?bool $filter): int
     {
-        return $this->getMembersQuery($session, $fundId, $search, $filter)->count();
+        return $this->getMembersQuery($session, $fund, $search, $filter)->count();
+    }
+
+    /**
+     * Delete a saving.
+     *
+     * @param Session $session The session
+     * @param Fund $fund
+     * @param Member $member
+     *
+     * @return void
+     */
+    public function deleteMemberSaving(Session $session, Fund $fund, Member $member): void
+    {
+        $session->savings()
+            ->where('fund_id', $fund->id)
+            ->where('member_id', $member->id)
+            ->delete();
     }
 
     /**
@@ -333,100 +302,5 @@ class SavingService
     public function getMember(int $id): ?Member
     {
         return $this->tenantService->tontine()->members()->active()->find($id);
-    }
-
-    /**
-     * Get all closings for a given fund.
-     *
-     * @param int $fundId
-     *
-     * @return array
-     */
-    public function getFundClosings(int $fundId): array
-    {
-        $closings = $this->tenantService->tontine()->properties['closings'] ?? [];
-        $closings = Arr::where($closings, fn($closing) => isset($closing[$fundId]));
-        return Arr::map($closings, fn($closing) => $closing[$fundId]);
-    }
-
-    /**
-     * Save the given session as closing for the fund.
-     *
-     * @param Session $session
-     * @param int $fundId
-     * @param int $profitAmount
-     *
-     * @return void
-     */
-    public function saveFundClosing(Session $session, int $fundId, int $profitAmount)
-    {
-        $tontine = $this->tenantService->tontine();
-        $properties = $tontine->properties;
-        $properties['closings'][$session->id][$fundId] = $profitAmount;
-        $tontine->saveProperties($properties);
-    }
-
-    /**
-     * Check if the given session is closing the fund.
-     *
-     * @param Session $session
-     * @param int $fundId
-     *
-     * @return bool
-     */
-    public function hasFundClosing(Session $session, int $fundId): bool
-    {
-        $properties = $this->tenantService->tontine()->properties;
-        return isset($properties['closings'][$session->id][$fundId]);
-    }
-
-    /**
-     * Set the given session as closing the fund.
-     *
-     * @param Session $session
-     * @param int $fundId
-     *
-     * @return void
-     */
-    public function deleteFundClosing(Session $session, int $fundId)
-    {
-        $tontine = $this->tenantService->tontine();
-        $properties = $tontine->properties;
-        if(isset($properties['closings'][$session->id][$fundId]))
-        {
-            unset($properties['closings'][$session->id][$fundId]);
-            if(count($properties['closings'][$session->id]) == 0)
-            {
-                unset($properties['closings'][$session->id]);
-            }
-        }
-        $tontine->saveProperties($properties);
-    }
-
-    /**
-     * Get the profit amount saved on a given session.
-     *
-     * @param Session $session
-     * @param int $fundId
-     *
-     * @return int
-     */
-    public function getProfitAmount(Session $session, int $fundId): int
-    {
-        $tontine = $this->tenantService->tontine();
-        return $tontine->properties['closings'][$session->id][$fundId] ?? 0;
-    }
-
-    /**
-     * Get all the fund closings on a given session.
-     *
-     * @param Session $session
-     *
-     * @return array
-     */
-    public function getSessionClosings(Session $session): array
-    {
-        $tontine = $this->tenantService->tontine();
-        return $tontine->properties['closings'][$session->id] ?? [];
     }
 }

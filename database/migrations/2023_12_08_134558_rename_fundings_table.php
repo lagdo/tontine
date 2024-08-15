@@ -36,7 +36,7 @@ return new class extends Migration
             $table->unsignedBigInteger('session_id');
             $table->foreign('session_id')->references('id')->on('sessions');
             $table->unsignedBigInteger('fund_id')->nullable();
-            $table->foreign('fund_id')->references('id')->on('categories');
+            $table->foreign('fund_id')->references('id')->on('funds');
         });
 
         $this->copyData('fundings', 'savings');
@@ -60,7 +60,7 @@ return new class extends Migration
             $table->unsignedBigInteger('session_id');
             $table->foreign('session_id')->references('id')->on('sessions');
             $table->unsignedBigInteger('fund_id')->nullable();
-            $table->foreign('fund_id')->references('id')->on('categories');
+            $table->foreign('fund_id')->references('id')->on('funds');
         });
 
         $this->copyData('savings', 'fundings');
