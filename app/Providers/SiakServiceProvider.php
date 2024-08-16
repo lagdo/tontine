@@ -26,6 +26,7 @@ use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService as MeetingPoolService;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
 use Siak\Tontine\Service\Meeting\PresenceService;
+use Siak\Tontine\Service\Meeting\Saving\ClosingService;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Meeting\SessionService as MeetingSessionService;
@@ -114,6 +115,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(SettlementService::class, SettlementService::class);
         $this->app->singleton(SettlementTargetService::class, SettlementTargetService::class);
 
+        $this->app->singleton(ClosingService::class, ClosingService::class);
         $this->app->singleton(SavingService::class, SavingService::class);
         $this->app->singleton(DebtCalculator::class, DebtCalculator::class);
         $this->app->singleton(LoanService::class, LoanService::class);

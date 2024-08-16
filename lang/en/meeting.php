@@ -141,7 +141,6 @@ return [
         'titles' => [
             'add' => "Add a saving",
             'edit' => "Edit a saving",
-            'closing' => "Closing: :fund",
         ],
         'labels' => [
             'closing' => "Closing",
@@ -151,6 +150,25 @@ return [
         ],
         'errors' => [
             'not_found' => "Cannot find the corresponding saving.",
+        ],
+    ],
+    'closing' => [
+        'titles' => [
+            'edit' => "Closing: :fund",
+        ],
+        'labels' => [
+            'amount' => "Amount to share",
+        ],
+        'questions' => [
+            'delete' => "Delete this closing?",
+        ],
+    ],
+    'profit' => [
+        'distribution' => [
+            'total' => "Saving: :saving. Interests: :refund.",
+            'amount' => "Distribution: :amount.",
+            'parts' => ":parts parts.",
+            'basis' => "For each session, :unit = one part.",
         ],
     ],
     'loan' => [
@@ -212,17 +230,6 @@ return [
         ],
         'errors' => [
             'not_found' => "Cannot find the disbursement.",
-        ],
-    ],
-    'profit' => [
-        'labels' => [
-            'amount' => "Amount to share",
-        ],
-        'distribution' => [
-            'total' => "Saving: :saving. Interests: :refund.",
-            'amount' => "Distribution: :amount.",
-            'parts' => ":parts parts.",
-            'basis' => "For each session, :unit = one part.",
         ],
     ],
     'entry' => [

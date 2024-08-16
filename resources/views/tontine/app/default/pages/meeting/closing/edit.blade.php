@@ -3,7 +3,7 @@
         <form class="form-horizontal" role="form" id="closing-form">
           <div class="module-body">
             <div class="form-group row">
-              {!! Form::label('amount', __('meeting.profit.labels.amount'), ['class' => 'col-sm-5 col-form-label']) !!}
+              {!! Form::label('amount', __('meeting.closing.labels.amount'), ['class' => 'col-sm-5 col-form-label']) !!}
               <div class="col-sm-6">
                 {!! Form::text('amount', $hasClosing ? $locale->convertMoneyToInt($profitAmount) : '', ['class' => 'form-control']) !!}
               </div>

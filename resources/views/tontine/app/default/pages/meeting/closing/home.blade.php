@@ -38,15 +38,15 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($closings as $fundId => $amount)
+@foreach ($closings as $closing)
                         <tr>
-                          <td>{!! $funds[$fundId] !!}</td>
-                          <td class="currency">{{ $locale->formatMoney($amount, true) }}</td>
+                          <td>{!! $funds[$closing->fund_id] !!}</td>
+                          <td class="currency">{{ $locale->formatMoney($closing->profit, true) }}</td>
                           <td class="table-item-menu">
 @if($session->opened)
 @include('tontine.app.default.parts.table.menu', [
   'dataIdKey' => 'data-fund-id',
-  'dataIdValue' => $fundId,
+  'dataIdValue' => $closing->fund_id,
   'menus' => [[
     'class' => 'btn-fund-edit-closing',
     'text' => __('common.actions.edit'),

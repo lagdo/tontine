@@ -141,7 +141,6 @@ return [
         'titles' => [
             'add' => "Ajouter une épargne",
             'edit' => "Modifier une épargne",
-            'closing' => "Clotûre: :fund",
         ],
         'labels' => [
             'closing' => "Clotûre",
@@ -151,6 +150,25 @@ return [
         ],
         'errors' => [
             'not_found' => "Impossible de trouver l'épargne correspondante.",
+        ],
+    ],
+    'closing' => [
+        'titles' => [
+            'edit' => "Clotûre: :fund",
+        ],
+        'labels' => [
+            'amount' => "Montant à distribuer",
+        ],
+        'questions' => [
+            'delete' => "Supprimer cette clotûre?",
+        ],
+    ],
+    'profit' => [
+        'distribution' => [
+            'total' => "&Eacute;pargne: :saving. Intérêts: :refund.",
+            'amount' => "Distribution: :amount.",
+            'parts' => ":parts parts.",
+            'basis' => "Pour chaque séance, :unit = une part.",
         ],
     ],
     'loan' => [
@@ -212,17 +230,6 @@ return [
         ],
         'errors' => [
             'not_found' => "Impossible de trouver le décaissement.",
-        ],
-    ],
-    'profit' => [
-        'labels' => [
-            'amount' => "Montant à partager",
-        ],
-        'distribution' => [
-            'total' => "&Eacute;pargne: :saving. Intérêts: :refund.",
-            'amount' => "Distribution: :amount.",
-            'parts' => ":parts parts.",
-            'basis' => "Pour chaque séance, :unit = une part.",
         ],
     ],
     'entry' => [

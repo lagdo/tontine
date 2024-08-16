@@ -47,6 +47,11 @@ class Fund extends Base
         return $this->hasMany(Saving::class);
     }
 
+    public function closings()
+    {
+        return $this->hasMany(Closing::class);
+    }
+
     /**
      * @param  Builder  $query
      *

@@ -5,7 +5,7 @@ namespace App\Ajax\Web\Meeting\Saving;
 use App\Ajax\CallableSessionClass;
 use App\Ajax\Web\Report\Session\Saving;
 use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Service\Meeting\Saving\SavingService;
+use Siak\Tontine\Service\Meeting\Saving\ClosingService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\ClosingValidator;
 
@@ -24,10 +24,10 @@ class Closing extends CallableSessionClass
     /**
      * The constructor
      *
-     * @param SavingService $savingService
+     * @param ClosingService $closingService
      * @param FundService $fundService
      */
-    public function __construct(protected SavingService $savingService,
+    public function __construct(protected ClosingService $closingService,
         protected FundService $fundService)
     {}
 
@@ -48,7 +48,7 @@ class Closing extends CallableSessionClass
     {
         $html = $this->render('pages.meeting.closing.home', [
             'session' => $this->session,
-            'closings' => $this->savingService->getSessionClosings($this->session),
+            'closings' => $this->closingService->getSavingsClosings($this->session),
             'funds' => $this->fundService->getFundList(),
         ]);
         $this->response->html('meeting-closings', $html);
@@ -60,14 +60,13 @@ class Closing extends CallableSessionClass
 
         $this->jq('#btn-closings-refresh')->click($this->rq()->home());
 
-        $fundId = pm()->select('closings-fund-id')->toInt();
-        $this->jq('#btn-fund-edit-closing')->click($this->rq()->editClosing($fundId));
-        $this->jq('#btn-fund-show-savings')->click($this->rq()->showSavings($fundId));
+        $selectFundId = pm()->select('closings-fund-id')->toInt();
+        $this->jq('#btn-fund-edit-closing')->click($this->rq()->editClosing($selectFundId));
+        $this->jq('#btn-fund-show-savings')->click($this->rq()->showSavings($selectFundId));
 
-        $fundId = jq()->parent()->attr('data-fund-id')->toInt();
-        $this->jq('.btn-fund-edit-closing')->click($this->rq()->editClosing($fundId));
-        $this->jq('.btn-fund-show-savings')->click($this->rq()->showSavings($fundId));
-        $this->jq('.btn-closing-delete')->click($this->rq()->deleteClosing($fundId)
+        $selectFundId = jq()->parent()->attr('data-fund-id')->toInt();
+        $this->jq('.btn-fund-edit-closing')->click($this->rq()->editClosing($selectFundId));
+        $this->jq('.btn-closing-delete')->click($this->rq()->deleteClosing($selectFundId)
             ->confirm(trans('meeting.closing.questions.delete')));
 
         return $this->response;
@@ -107,7 +106,7 @@ class Closing extends CallableSessionClass
         }
 
         $closing = $this->closingService->getSavingsClosing($this->session, $fund);
-        $title = trans('meeting.saving.titles.closing', ['fund' => $fund]);
+        $title = trans('meeting.closing.titles.edit', ['fund' => $fund->title]);
         $content = $this->render('pages.meeting.closing.edit', [
             'hasClosing' => $closing !== null,
             'profitAmount' => $closing?->profit ?? 0,
@@ -138,7 +137,7 @@ class Closing extends CallableSessionClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        $this->closingService->saveFundClosing($this->session, $fund, $values['amount']);
+        $this->closingService->saveSavingsClosing($this->session, $fund, $values['amount']);
 
         $this->dialog->hide();
         $this->notify->success(trans('meeting.messages.profit.saved'), trans('common.titles.success'));
@@ -154,7 +153,7 @@ class Closing extends CallableSessionClass
             return $this->response;
         }
 
-        $this->closingService->deleteFundClosing($this->session, $fund);
+        $this->closingService->deleteSavingsClosing($this->session, $fund);
 
         $this->dialog->hide();
         $this->notify->success(trans('meeting.messages.profit.deleted'), trans('common.titles.success'));

@@ -184,6 +184,11 @@ class Session extends Base
         return $this->hasMany(Saving::class);
     }
 
+    public function closings()
+    {
+        return $this->hasMany(Closing::class);
+    }
+
     public function disbursements()
     {
         return $this->hasMany(Disbursement::class);
