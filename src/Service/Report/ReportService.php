@@ -2,7 +2,6 @@
 
 namespace Siak\Tontine\Service\Report;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Loan;
@@ -11,7 +10,7 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
-use Siak\Tontine\Service\Meeting\Saving\SavingService;
+use Siak\Tontine\Service\Meeting\Saving\ClosingService;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Report\RoundService;
@@ -28,29 +27,17 @@ class ReportService
      * @param MemberService $memberService
      * @param RoundService $roundService
      * @param FundService $fundService
-     * @param SavingService $savingService
+     * @param ClosingService $closingService
      * @param SummaryService $summaryService
      * @param ProfitService $profitService
      */
     public function __construct(protected LocaleService $localeService,
         protected TenantService $tenantService, protected SessionService $sessionService,
         protected MemberService $memberService, protected RoundService $roundService,
-        protected FundService $fundService, protected SavingService $savingService,
+        protected FundService $fundService, protected ClosingService $closingService,
         protected SummaryService $summaryService, protected ProfitService $profitService,
         protected DebtCalculator $debtCalculator)
     {}
-
-    /**
-     * @param Session $session
-     * @param Collection $fundIds
-     *
-     * @return array
-     */
-    private function getFundClosings(Session $session, Collection $fundIds): array
-    {
-        $closings = $this->savingService->getSessionClosings($session);
-        return Arr::only($closings, $fundIds->all());
-    }
 
     /**
      * @param Session $session
@@ -138,14 +125,26 @@ class ReportService
 
     /**
      * @param Session $session
+     *
+     * @return Collection
+     */
+    private function getSessionProfitAmounts(Session $session): Collection
+    {
+        $closings = $this->closingService->getSavingsClosings($session);
+
+        return $closings->keyBy('fund_id')->map(fn($closing) => $closing->profit);
+    }
+
+    /**
+     * @param Session $session
      * @param Fund $fund
-     * @param string $name
      * @param int $profitAmount
      *
      * @return array
      */
-    private function getFundSavings(Session $session, Fund $fund, string $name, int $profitAmount): array
+    private function getFundSavingsReport(Session $session, Fund $fund, int $profitAmount): array
     {
+        $name = $fund->title;
         $savings = $this->profitService->getDistributions($session, $fund, $profitAmount);
         $partUnitValue = $this->profitService->getPartUnitValue($savings);
         $distributionSum = $savings->sum('distribution');
@@ -165,12 +164,13 @@ class ReportService
         $tontine = $this->tenantService->tontine();
         [$country] = $this->localeService->getNameFromTontine($tontine);
         $funds = $this->fundService->getActiveFunds();
-        $closings = $this->getFundClosings($session, $funds->pluck('id'));
+        $profits = $this->getSessionProfitAmounts($session);
 
         $funds = $funds
-            ->map(fn($name, $fund) => $this->getFundSavings($session, $fund,
-                $name, $closings[$fundId] ?? 0))
-            ->filter(fn($fund) => $fund['savings']->count() > 0);
+            ->map(function($fund) use($session, $profits) {
+                return $this->getFundSavingsReport($session, $fund, $profits[$fund->id] ?? 0);
+            })
+            ->filter(fn($report) => $report['savings']->count() > 0);
 
         return compact('tontine', 'session', 'country', 'funds');
     }
@@ -209,7 +209,7 @@ class ReportService
                     ->whereIn('loans.session_id', $sessionIds)
                     ->with(['member', 'session', 'debts.refund', 'debts.refund.session',
                         'debts.partial_refunds' => function($query) use($sessionIds) {
-                            $query->whereIn('partial_refunds.session_id', $sessionIds);
+                            $query->whereIn('session_id', $sessionIds);
                         },
                         'debts.partial_refunds.session'])
                     ->orderBy('sessions.start_at')

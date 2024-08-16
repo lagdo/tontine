@@ -9,7 +9,6 @@ use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
 
-use function count;
 use function trans;
 
 class FundService
@@ -156,23 +155,19 @@ class FundService
      */
     private function getFundSessionsQuery(Session $currentSession, Fund $fund): Builder|Relation
     {
+        // Will return all the tontine sessions,
+        // or all those after the last closing, if there's any.
         $lastSessionDate = $currentSession->start_at->format('Y-m-d');
         $sessionsQuery = $this->tenantService->tontine()->sessions()
-            ->whereDate('sessions.start_at', '<=', $lastSessionDate);
-        // The closing sessions ids
-        $closingSessionIds = [];
-        if(count($closingSessionIds) === 0)
-        {
-            // No closing session yet
-            return $sessionsQuery;
-        }
+            ->whereDate('start_at', '<=', $lastSessionDate);
 
-        // The previous closing sessions
+        // The closing sessions before te current session.
         $closingSessions = $this->tenantService->tontine()->sessions()
-            ->where('sessions.id', '!=', $currentSession->id)
-            ->whereIn('sessions.id', $closingSessionIds)
-            ->whereDate('sessions.start_at', '<', $lastSessionDate)
-            ->orderByDesc('sessions.start_at')
+            ->whereDate('start_at', '<', $lastSessionDate)
+            ->whereHas('closings', function(Builder|Relation $query) use($fund) {
+                $query->where('fund_id', $fund->id);
+            })
+            ->orderByDesc('start_at')
             ->get();
         if($closingSessions->count() === 0)
         {
@@ -183,7 +178,7 @@ class FundService
         // The most recent previous closing session
         $firstSessionDate = $closingSessions->last()->start_at->format('Y-m-d');
         // Return all the sessions after the most recent previous closing session
-        return $sessionsQuery->whereDate('sessions.start_at', '>', $firstSessionDate);
+        return $sessionsQuery->whereDate('start_at', '>', $firstSessionDate);
     }
 
     /**

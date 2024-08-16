@@ -5,6 +5,7 @@ namespace App\Ajax\Web\Report\Session;
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Fund as FundModel;
 use Siak\Tontine\Model\Session as SessionModel;
+use Siak\Tontine\Service\Meeting\Saving\ClosingService;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\SessionService;
@@ -37,9 +38,9 @@ class Saving extends CallableClass
      * @param SessionService $sessionService
      * @param ProfitService $profitService
      */
-    public function __construct(protected LocaleService $localeService,
-        protected FundService $fundService, protected SessionService $sessionService,
-        protected ProfitService $profitService)
+    public function __construct(private LocaleService $localeService,
+        private FundService $fundService, private SessionService $sessionService,
+        private ProfitService $profitService, private ClosingService $closingService)
     {}
 
     /**
@@ -80,7 +81,7 @@ class Saving extends CallableClass
 
     public function home(int $fundId, bool $backButton = false)
     {
-        $profitAmount = $this->profitService->getProfitAmount($this->session, $this->fund);
+        $profitAmount = $this->closingService->getProfitAmount($this->session, $this->fund);
         $html = $this->render('pages.report.session.savings.home', [
             'profit' => $profitAmount,
             'fund' => $this->fund,

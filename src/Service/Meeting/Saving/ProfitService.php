@@ -19,11 +19,9 @@ class ProfitService
      * @param BalanceCalculator $balanceCalculator
      * @param TenantService $tenantService
      * @param FundService $fundService
-     * @param SavingService $savingService
      */
     public function __construct(private BalanceCalculator $balanceCalculator,
-        private TenantService $tenantService, private FundService $fundService,
-        private SavingService $savingService)
+        private TenantService $tenantService, private FundService $fundService)
     {}
 
     /**
@@ -152,18 +150,5 @@ class ProfitService
             'refund' => $this->balanceCalculator->getRefundsAmount($sessionIds, $fund) +
                 $this->balanceCalculator->getPartialRefundsAmount($sessionIds, $fund),
         ];
-    }
-
-    /**
-     * Get the profit amount saved on this session.
-     *
-     * @param Session $session
-     * @param int $fundId
-     *
-     * @return int
-     */
-    public function getProfitAmount(Session $session, int $fundId): int
-    {
-        return $this->savingService->getProfitAmount($session, $fundId);
     }
 }
