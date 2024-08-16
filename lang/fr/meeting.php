@@ -154,10 +154,15 @@ return [
     ],
     'closing' => [
         'titles' => [
-            'edit' => "Clotûre: :fund",
+            'round' => "Clotûre tour",
+            'interest' => "Clotûre intérêts",
+            'r' => "Tour",
+            'i' => "Intérêt",
         ],
         'labels' => [
+            'fund' => "Fonds",
             'amount' => "Montant à distribuer",
+            'interest' => "Le calcul des intérêts s'arrête à cette séance.",
         ],
         'questions' => [
             'delete' => "Supprimer cette clotûre?",

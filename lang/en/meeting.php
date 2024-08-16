@@ -154,10 +154,15 @@ return [
     ],
     'closing' => [
         'titles' => [
-            'edit' => "Closing: :fund",
+            'round' => "Round closing",
+            'interest' => "Interest closing",
+            'r' => "Round",
+            'i' => "Interest",
         ],
         'labels' => [
+            'fund' => "Fund",
             'amount' => "Amount to share",
+            'interest' => "The calculation of interest stops at this session.",
         ],
         'questions' => [
             'delete' => "Delete this closing?",

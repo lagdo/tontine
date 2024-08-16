@@ -21,7 +21,8 @@
                         {!! Form::select('fund_id', $funds, 0, ['class' => 'form-control',
                           'style' => 'height:36px; padding:5px 15px;', 'id' => 'closings-fund-id']) !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" id="btn-fund-edit-closing"><i class="fa fa-circle-notch"></i></button>
+                          <button type="button" class="btn btn-primary" id="btn-fund-edit-round-closing"><i class="fa fa-circle-notch"></i></button>
+                          <button type="button" class="btn btn-primary" id="btn-fund-edit-interest-closing"><i class="far fa-stop-circle"></i></button>
                           <button type="button" class="btn btn-primary" id="btn-fund-show-savings"><i class="fa fa-percentage"></i></button>
                         </div>
                       </div>
@@ -32,8 +33,8 @@
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
-                          <th>{!! __('tontine.fund.labels.fund') !!}</th>
-                          <th class="currency">{!! __('common.labels.amount') !!}</th>
+                          <th>{!! __('meeting.closing.labels.fund') !!}</th>
+                          <th class="currency"></th>
                           <th class="table-item-menu">&nbsp;</th>
                         </tr>
                       </thead>
@@ -41,20 +42,23 @@
 @foreach ($closings as $closing)
                         <tr>
                           <td>{!! $funds[$closing->fund_id] !!}</td>
-                          <td class="currency">{{ $locale->formatMoney($closing->profit, true) }}</td>
+                          <td class="currency">
+                            {!! $closing->title !!}@if( $closing->is_round ) <br/>{{
+                              $locale->formatMoney($closing->profit, true) }}@endif
+                          </td>
                           <td class="table-item-menu">
 @if($session->opened)
+@php
+  $label = $closing->label;
+@endphp
 @include('tontine.app.default.parts.table.menu', [
   'dataIdKey' => 'data-fund-id',
   'dataIdValue' => $closing->fund_id,
   'menus' => [[
-    'class' => 'btn-fund-edit-closing',
+    'class' => 'btn-fund-edit-' . $label . '-closing',
     'text' => __('common.actions.edit'),
   ], [
-    'class' => 'btn-fund-show-savings',
-    'text' => __('meeting.actions.savings'),
-  ], [
-    'class' => 'btn-closing-delete',
+    'class' => 'btn-fund-delete-' . $label . '-closing',
     'text' => __('common.actions.delete'),
   ]],
 ])

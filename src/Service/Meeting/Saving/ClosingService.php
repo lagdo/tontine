@@ -10,7 +10,7 @@ use Siak\Tontine\Model\Session;
 class ClosingService
 {
     /**
-     * Save the given session as closing for the savings on the given fund.
+     * Save the given session as closing for the round on the given fund.
      *
      * @param Session $session
      * @param Fund $fund
@@ -18,10 +18,10 @@ class ClosingService
      *
      * @return bool
      */
-    public function saveSavingsClosing(Session $session, Fund $fund, int $profitAmount): bool
+    public function saveRoundClosing(Session $session, Fund $fund, int $profitAmount): bool
     {
         $closing = Closing::firstOrNew([
-            'type' => Closing::TYPE_SAVINGS,
+            'type' => Closing::TYPE_ROUND,
             'session_id' => $session->id,
             'fund_id' => $fund->id,
         ], []);
@@ -31,44 +31,102 @@ class ClosingService
     }
 
     /**
-     * Delete a savings closing.
+     * Save the given session as closing for the round on the given fund.
+     *
+     * @param Session $session
+     * @param Fund $fund
+     *
+     * @return bool
+     */
+    public function saveInterestClosing(Session $session, Fund $fund): bool
+    {
+        $closing = Closing::firstOrCreate([
+            'type' => Closing::TYPE_INTEREST,
+            'session_id' => $session->id,
+            'fund_id' => $fund->id,
+        ], []);
+        return $closing->id > 0;
+    }
+
+    /**
+     * Delete a round closing.
      *
      * @param Session $session
      * @param Fund $fund
      *
      * @return void
      */
-    public function deleteSavingsClosing(Session $session, Fund $fund)
+    public function deleteRoundClosing(Session $session, Fund $fund)
     {
-        Closing::savings()
+        Closing::round()
             ->where('session_id', $session->id)
             ->where('fund_id', $fund->id)
             ->delete();
     }
 
     /**
-     * Get the savings closings for a given session.
+     * Set an interest closing.
+     *
+     * @param Session $session
+     * @param Fund $fund
+     *
+     * @return void
+     */
+    public function deleteInterestClosing(Session $session, Fund $fund)
+    {
+        Closing::interest()
+            ->where('session_id', $session->id)
+            ->where('fund_id', $fund->id)
+            ->delete();
+    }
+
+    /**
+     * Get the round closings for a given session.
      *
      * @param Session $session
      *
      * @return Collection
      */
-    public function getSavingsClosings(Session $session): Collection
+    public function getClosings(Session $session): Collection
     {
-        return Closing::savings()->where('session_id', $session->id)->get();
+        return Closing::where('session_id', $session->id)->get();
     }
 
     /**
-     * Check if the given session is closing the savings for the given fund.
+     * Get the round closings for a given session.
+     *
+     * @param Session $session
+     *
+     * @return Collection
+     */
+    public function getRoundClosings(Session $session): Collection
+    {
+        return Closing::round()->where('session_id', $session->id)->get();
+    }
+
+    /**
+     * Get the interest closings for a given session.
+     *
+     * @param Session $session
+     *
+     * @return Collection
+     */
+    public function getInterestClosings(Session $session): Collection
+    {
+        return Closing::round()->where('session_id', $session->id)->get();
+    }
+
+    /**
+     * Check if the given session is closing the round for the given fund.
      *
      * @param Session $session
      * @param Fund $fund
      *
      * @return Closing|null
      */
-    public function getSavingsClosing(Session $session, Fund $fund): ?Closing
+    public function getRoundClosing(Session $session, Fund $fund): ?Closing
     {
-        return Closing::savings()
+        return Closing::round()
             ->where('session_id', $session->id)
             ->where('fund_id', $fund->id)
             ->first();
@@ -84,8 +142,23 @@ class ClosingService
      */
     public function getProfitAmount(Session $session, Fund $fund): int
     {
-        $closing = $this->getSavingsClosing($session, $fund);
-
+        $closing = $this->getRoundClosing($session, $fund);
         return $closing?->profit ?? 0;
+    }
+
+    /**
+     * Check if the given session is closing the round for the given fund.
+     *
+     * @param Session $session
+     * @param Fund $fund
+     *
+     * @return Closing|null
+     */
+    public function getInterestClosing(Session $session, Fund $fund): ?Closing
+    {
+        return Closing::interest()
+            ->where('session_id', $session->id)
+            ->where('fund_id', $fund->id)
+            ->first();
     }
 }

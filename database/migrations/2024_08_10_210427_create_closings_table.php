@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('closings', function (Blueprint $table) {
             $table->id();
             $table->json('options');
-            $table->char('type', 1); // enum('type', ['s', 'i']);
+            $table->char('type', 1); // enum('type', ['r', 'i']);
             $table->unsignedBigInteger('session_id');
             $table->foreign('session_id')->references('id')->on('sessions');
             $table->unsignedBigInteger('fund_id');

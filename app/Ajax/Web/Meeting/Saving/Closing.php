@@ -48,7 +48,7 @@ class Closing extends CallableSessionClass
     {
         $html = $this->render('pages.meeting.closing.home', [
             'session' => $this->session,
-            'closings' => $this->closingService->getSavingsClosings($this->session),
+            'closings' => $this->closingService->getClosings($this->session),
             'funds' => $this->fundService->getFundList(),
         ]);
         $this->response->html('meeting-closings', $html);
@@ -61,13 +61,23 @@ class Closing extends CallableSessionClass
         $this->jq('#btn-closings-refresh')->click($this->rq()->home());
 
         $selectFundId = pm()->select('closings-fund-id')->toInt();
-        $this->jq('#btn-fund-edit-closing')->click($this->rq()->editClosing($selectFundId));
+        $this->jq('#btn-fund-edit-round-closing')
+            ->click($this->rq()->editRoundClosing($selectFundId));
+        $this->jq('#btn-fund-edit-interest-closing')
+            ->click($this->rq()->editInterestClosing($selectFundId));
         $this->jq('#btn-fund-show-savings')->click($this->rq()->showSavings($selectFundId));
 
         $selectFundId = jq()->parent()->attr('data-fund-id')->toInt();
-        $this->jq('.btn-fund-edit-closing')->click($this->rq()->editClosing($selectFundId));
-        $this->jq('.btn-closing-delete')->click($this->rq()->deleteClosing($selectFundId)
-            ->confirm(trans('meeting.closing.questions.delete')));
+        $this->jq('.btn-fund-edit-round-closing')
+            ->click($this->rq()->editRoundClosing($selectFundId));
+        $this->jq('.btn-fund-edit-interest-closing')
+            ->click($this->rq()->editInterestClosing($selectFundId));
+        $this->jq('.btn-fund-delete-round-closing')
+            ->click($this->rq()->deleteRoundClosing($selectFundId)
+                ->confirm(trans('meeting.closing.questions.delete')));
+        $this->jq('.btn-fund-delete-interest-closing')
+            ->click($this->rq()->deleteInterestClosing($selectFundId)
+                ->confirm(trans('meeting.closing.questions.delete')));
 
         return $this->response;
     }
@@ -92,7 +102,7 @@ class Closing extends CallableSessionClass
         return $this->response;
     }
 
-    public function editClosing(int $fundId)
+    public function editRoundClosing(int $fundId)
     {
         if($this->session->closed)
         {
@@ -105,11 +115,10 @@ class Closing extends CallableSessionClass
             return $this->response;
         }
 
-        $closing = $this->closingService->getSavingsClosing($this->session, $fund);
-        $title = trans('meeting.closing.titles.edit', ['fund' => $fund->title]);
-        $content = $this->render('pages.meeting.closing.edit', [
-            'hasClosing' => $closing !== null,
-            'profitAmount' => $closing?->profit ?? 0,
+        $title = trans('meeting.closing.titles.round');
+        $content = $this->render('pages.meeting.closing.round', [
+            'fund' => $fund,
+            'closing' => $this->closingService->getRoundClosing($this->session, $fund),
         ]);
         $buttons = [[
             'title' => trans('common.actions.close'),
@@ -118,7 +127,7 @@ class Closing extends CallableSessionClass
         ], [
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveClosing($fundId, pm()->form('closing-form')),
+            'click' => $this->rq()->saveRoundClosing($fundId, pm()->form('closing-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
 
@@ -128,7 +137,7 @@ class Closing extends CallableSessionClass
     /**
      * @di $validator
      */
-    public function saveClosing(int $fundId, array $formValues)
+    public function saveRoundClosing(int $fundId, array $formValues)
     {
         $fund = $this->fundService->getFund($fundId, true, true);
         if(!$fund)
@@ -137,7 +146,7 @@ class Closing extends CallableSessionClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        $this->closingService->saveSavingsClosing($this->session, $fund, $values['amount']);
+        $this->closingService->saveRoundClosing($this->session, $fund, $values['amount']);
 
         $this->dialog->hide();
         $this->notify->success(trans('meeting.messages.profit.saved'), trans('common.titles.success'));
@@ -145,7 +154,7 @@ class Closing extends CallableSessionClass
         return $this->home();
     }
 
-    public function deleteClosing(int $fundId)
+    public function deleteRoundClosing(int $fundId)
     {
         $fund = $this->fundService->getFund($fundId, true, true);
         if(!$fund)
@@ -153,7 +162,74 @@ class Closing extends CallableSessionClass
             return $this->response;
         }
 
-        $this->closingService->deleteSavingsClosing($this->session, $fund);
+        $this->closingService->deleteRoundClosing($this->session, $fund);
+
+        $this->dialog->hide();
+        $this->notify->success(trans('meeting.messages.profit.deleted'), trans('common.titles.success'));
+
+        return $this->home();
+    }
+
+    public function editInterestClosing(int $fundId)
+    {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+        $fund = $this->fundService->getFund($fundId, true, true);
+        if(!$fund)
+        {
+            return $this->response;
+        }
+
+        $title = trans('meeting.closing.titles.interest');
+        $content = $this->render('pages.meeting.closing.interest', [
+            'fund' => $fund,
+            'closing' => $this->closingService->getInterestClosing($this->session, $fund),
+        ]);
+        $buttons = [[
+            'title' => trans('common.actions.close'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ], [
+            'title' => trans('common.actions.save'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->saveInterestClosing($fundId),
+        ]];
+        $this->dialog->show($title, $content, $buttons);
+
+        return $this->response;
+    }
+
+    /**
+     * @di $validator
+     */
+    public function saveInterestClosing(int $fundId)
+    {
+        $fund = $this->fundService->getFund($fundId, true, true);
+        if(!$fund)
+        {
+            return $this->response;
+        }
+
+        $this->closingService->saveInterestClosing($this->session, $fund);
+
+        $this->dialog->hide();
+        $this->notify->success(trans('meeting.messages.profit.saved'), trans('common.titles.success'));
+
+        return $this->home();
+    }
+
+    public function deleteInterestClosing(int $fundId)
+    {
+        $fund = $this->fundService->getFund($fundId, true, true);
+        if(!$fund)
+        {
+            return $this->response;
+        }
+
+        $this->closingService->deleteInterestClosing($this->session, $fund);
 
         $this->dialog->hide();
         $this->notify->success(trans('meeting.messages.profit.deleted'), trans('common.titles.success'));

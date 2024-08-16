@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 use function json_encode;
+use function trans;
 
 class Closing extends Base
 {
     /**
      * @var string
      */
-    const TYPE_SAVINGS = 's';
+    const TYPE_ROUND = 'r';
 
     /**
      * @var string
@@ -74,6 +75,36 @@ class Closing extends Base
         );
     }
 
+    /**
+     * @return Attribute
+     */
+    protected function title(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => trans('meeting.closing.titles.' . $this->type),
+        );
+    }
+
+    /**
+     * @return Attribute
+     */
+    protected function label(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->type === Closing::TYPE_INTEREST ? 'interest' : 'round',
+        );
+    }
+
+    /**
+     * @return Attribute
+     */
+    protected function isRound(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->type === Closing::TYPE_ROUND,
+        );
+    }
+
     public function session()
     {
         return $this->belongsTo(Session::class);
@@ -89,9 +120,9 @@ class Closing extends Base
      *
      * @return Builder
      */
-    public function scopeSavings(Builder $query): Builder
+    public function scopeRound(Builder $query): Builder
     {
-        return $query->where('type', self::TYPE_SAVINGS);
+        return $query->where('type', self::TYPE_ROUND);
     }
 
     /**
