@@ -149,9 +149,14 @@ class Refund extends CallableSessionClass
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
+        $debt = $this->refundService->getDebt($debtId);
+        if(!$debt)
+        {
+            $this->notify->warning(trans('meeting.loan.errors.not_found'));
+            return $this->response;
+        }
 
-        $this->validator->validate($debtId);
-        $this->refundService->createRefund($this->session, $debtId);
+        $this->refundService->createRefund($debt, $this->session);
 
         return $this->page();
     }
@@ -167,8 +172,14 @@ class Refund extends CallableSessionClass
             $this->notify->warning(trans('meeting.warnings.session.closed'));
             return $this->response;
         }
+        $debt = $this->refundService->getDebt($debtId);
+        if(!$debt)
+        {
+            $this->notify->warning(trans('meeting.loan.errors.not_found'));
+            return $this->response;
+        }
 
-        $this->refundService->deleteRefund($this->session, $debtId);
+        $this->refundService->deleteRefund($debt, $this->session);
 
         return $this->page();
     }

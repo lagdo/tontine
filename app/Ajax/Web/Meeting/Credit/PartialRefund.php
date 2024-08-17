@@ -119,9 +119,14 @@ class PartialRefund extends CallableSessionClass
         }
 
         $values = $this->validator->validateItem($formValues);
-        $debtId = $values['debt'];
-        $amount = $values['amount'];
-        $this->refundService->createPartialRefund($this->session, $debtId, $amount);
+        $debt = $this->refundService->getDebt($values['debt']);
+        if(!$debt)
+        {
+            $this->notify->warning(trans('meeting.loan.errors.not_found'));
+            return $this->response;
+        }
+
+        $this->refundService->createPartialRefund($debt, $this->session, $values['amount']);
 
         $this->dialog->hide();
 

@@ -21,40 +21,6 @@ class DebtCalculator
     {}
 
     /**
-     * Get the amount due of a given debt.
-     *
-     * @param Debt $debt
-     * @param Session $session
-     *
-     * @return bool
-     */
-    public function debtIsEditable(Debt $debt, Session $session): bool
-    {
-        if(!$session->opened ||
-            ($debt->is_principal && $debt->loan->session->id === $session->id))
-        {
-            // Cannot refund the principal debt in the same session.
-            return false;
-        }
-        // Refunded
-        if($debt->refund !== null)
-        {
-            // Editable only if refunded in the current session
-            return $debt->refund->session_id === $session->id;
-        }
-        // Not yet refunded.
-        if($debt->is_interest && !$debt->loan->fixed_interest)
-        {
-            // Cannot refund the interest debt before the principal.
-            return $debt->loan->principal_debt->refund !== null;
-        }
-
-        // Cannot be refunded before the last partial refund.
-        $lastRefund = $debt->partial_refunds->sortByDesc('session.start_at')->first();
-        return !$lastRefund || $lastRefund->session->start_at < $session->start_at;
-    }
-
-    /**
      * Count the sessions.
      *
      * @param Session $fromSession The session to start from

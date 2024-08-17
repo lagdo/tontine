@@ -13,7 +13,6 @@
 @php
   $totalAmount = $debtCalculator->getDebtTotalAmount($debt, $session);
   $dueAmount = $debtCalculator->getDebtDueAmount($debt, $session, true);
-  $isEditable = $debtCalculator->debtIsEditable($debt, $session);
 @endphp
                     <tr>
                       <td>
@@ -25,7 +24,7 @@
                         {{ $locale->formatMoney($totalAmount, true) }}
                       </td>
                       <td class="table-item-menu" data-debt-id="{{ $debt->id }}">
-                        {!! paymentLink($debt->refund, 'refund', $totalAmount === 0 || !$isEditable) !!}
+                        {!! paymentLink($debt->refund, 'refund', !$debt->isEditable) !!}
                       </td>
                     </tr>
 @endforeach

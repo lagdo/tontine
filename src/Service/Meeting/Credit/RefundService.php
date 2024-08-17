@@ -118,6 +118,10 @@ class RefundService
             ->with(['loan', 'loan.member', 'loan.session', 'refund', 'refund.session',
                 'partial_refunds', 'partial_refunds.session'])
             ->get()
+            ->each(function(Debt $debt) use($session) {
+                $debt->isEditable = $debt->refund !== null ?
+                    $this->canDeleteRefund($debt, $session) : $this->canCreateRefund($debt, $session);
+            })
             ->sortBy('loan.member.name', SORT_LOCALE_STRING)
             ->values();
     }
@@ -143,7 +147,7 @@ class RefundService
      *
      * @return Debt|null
      */
-    private function getDebt(int $debtId): ?Debt
+    public function getDebt(int $debtId): ?Debt
     {
         return Debt::whereDoesntHave('refund')
             ->whereHas('loan', function(Builder $query) {
@@ -155,21 +159,42 @@ class RefundService
     }
 
     /**
+     * @param Debt $debt
+     * @param Session $session
+     *
+     * @return bool
+     */
+    private function canCreateRefund(Debt $debt, Session $session): bool
+    {
+        // Already refunded
+        // Cannot refund the principal debt in the same session.
+        if(!$session->opened || $debt->refund !== null ||
+            $debt->is_principal && $debt->loan->session->id === $session->id)
+        {
+            return false;
+        }
+        // Cannot refund the interest debt before the principal.
+        if($debt->is_interest && !$debt->loan->fixed_interest)
+        {
+            return $debt->loan->principal_debt->refund !== null;
+        }
+
+        // Cannot be refunded before the last partial refund.
+        $lastRefund = $debt->partial_refunds->sortByDesc('session.start_at')->first();
+        return !$lastRefund || $lastRefund->session->start_at < $session->start_at;
+    }
+
+    /**
      * Create a refund.
      *
+     * @param Debt $debt
      * @param Session $session The session
-     * @param int $debtId
      *
      * @return void
      */
-    public function createRefund(Session $session, int $debtId): void
+    public function createRefund(Debt $debt, Session $session): void
     {
-        $debt = $this->getDebt($debtId);
-        if(!$debt || $debt->refund)
-        {
-            throw new MessageException(trans('tontine.loan.errors.not_found'));
-        }
-        if(!$this->debtCalculator->debtIsEditable($debt, $session))
+        if(!$this->canCreateRefund($debt, $session))
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_refund'));
         }
@@ -189,30 +214,41 @@ class RefundService
     }
 
     /**
+     * @param Debt $debt
+     * @param Session $session
+     *
+     * @return bool
+     */
+    private function canDeleteRefund(Debt $debt, Session $session): bool
+    {
+        // A refund can only be deleted in the same session it was created.
+        if(!$session->opened || !$debt->refund || $debt->refund->session_id !== $session->id)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Delete a refund.
      *
+     * @param Debt $debt
      * @param Session $session The session
-     * @param int $debtId
      *
      * @return void
      */
-    public function deleteRefund(Session $session, int $debtId): void
+    public function deleteRefund(Debt $debt, Session $session): void
     {
-        $refund = Refund::with('debt')->where('session_id', $session->id)
-            ->where('debt_id', $debtId)->first();
-        if(!$refund)
-        {
-            throw new MessageException(trans('meeting.refund.errors.not_found'));
-        }
-        if(!$this->paymentService->isEditable($refund))
-        {
-            throw new MessageException(trans('meeting.refund.errors.cannot_delete'));
-        }
-        if(!$this->debtCalculator->debtIsEditable($refund->debt, $session))
+        if(!$this->canDeleteRefund($debt, $session))
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_refund'));
         }
-        $refund->delete();
+        if(!$this->paymentService->isEditable($debt->refund))
+        {
+            throw new MessageException(trans('meeting.refund.errors.cannot_delete'));
+        }
+        $debt->refund->delete();
     }
 
     /**
@@ -263,6 +299,24 @@ class RefundService
     }
 
     /**
+     * @param Debt $debt
+     * @param Session $session
+     *
+     * @return bool
+     */
+    private function canCreatePartialRefund(Debt $debt, Session $session): bool
+    {
+        // Cannot refund the principal debt in the same session.
+        if(!$session->opened || $debt->refund !== null ||
+            ($debt->is_principal && $debt->loan->session->id === $session->id))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Get debt list for dropdown.
      *
      * @param Session $session The session
@@ -273,17 +327,23 @@ class RefundService
     {
         return $this->fundService->getActiveFunds()
             ->reduce(function(Collection $debts, Fund $fund) use($session) {
-                return $debts->concat($this->getDebts($session, $fund, false));
+                $fundDebts = $this->getDebtsQuery($session, $fund, false)
+                    ->with(['loan', 'loan.member', 'loan.session', 'refund', 'refund.session'])
+                    ->get()
+                    ->sortBy('loan.member.name', SORT_LOCALE_STRING)
+                    ->values();
+                return $debts->concat($fundDebts);
             }, collect())
             ->filter(function($debt) use($session) {
-                return $this->debtCalculator->debtIsEditable($debt, $session);
+                return $this->canCreatePartialRefund($debt, $session);
             })
             ->keyBy('id')
             ->map(function($debt) use($session) {
-                $fundTitle = $this->fundService->getFundTitle($debt->loan->fund);
+                $loan = $debt->loan;
+                $fundTitle = $this->fundService->getFundTitle($loan->fund);
                 $unpaidAmount = $this->debtCalculator->getDebtUnpaidAmount($debt, $session);
 
-                return $debt->loan->member->name . " - $fundTitle - " . $debt->loan->session->title .
+                return $loan->member->name . " - $fundTitle - " . $loan->session->title .
                     ' - ' . trans('meeting.loan.labels.' . $debt->type) .
                     ' - ' . $this->localeService->formatMoney($unpaidAmount, true);
             });
@@ -292,18 +352,17 @@ class RefundService
     /**
      * Create a refund.
      *
+     * @param Debt $debt
      * @param Session $session The session
-     * @param int $debtId
      * @param int $amount
      *
      * @return void
      */
-    public function createPartialRefund(Session $session, int $debtId, int $amount): void
+    public function createPartialRefund(Debt $debt, Session $session, int $amount): void
     {
-        $debt = $this->getDebt($debtId);
-        if(!$debt || $debt->refund)
+        if(!$this->canCreatePartialRefund($debt, $session))
         {
-            throw new MessageException(trans('meeting.refund.errors.not_found'));
+            throw new MessageException(trans('meeting.refund.errors.cannot_delete'));
         }
         // A partial refund must not totally refund a debt
         if($amount >= $this->debtCalculator->getDebtDueAmount($debt, $session, true))
@@ -316,6 +375,23 @@ class RefundService
         $refund->debt()->associate($debt);
         $refund->session()->associate($session);
         $refund->save();
+    }
+
+    /**
+     * @param PartialRefund $refund
+     * @param Session $session
+     *
+     * @return bool
+     */
+    private function canDeletePartialRefund(PartialRefund $refund, Session $session): bool
+    {
+        // A partial refund cannot be deleted if the debt is already refunded.
+        if(!$session->opened || $refund->debt->refund !== null)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     /**
