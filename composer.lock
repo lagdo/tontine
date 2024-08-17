@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "942e11d15f099a9b7964a820c6f19548",
+    "content-hash": "47688cc3e1badf358746f851be94e8af",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -1517,16 +1517,16 @@
         },
         {
             "name": "jaxon-php/jaxon-core",
-            "version": "v4.8.0",
+            "version": "v4.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-core.git",
-                "reference": "c908aa21c03cbe99448d634362972fd53ab7a6e0"
+                "reference": "cf1d80a0315dd49ed1b6a9cf141466d8a701899c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/c908aa21c03cbe99448d634362972fd53ab7a6e0",
-                "reference": "c908aa21c03cbe99448d634362972fd53ab7a6e0",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/cf1d80a0315dd49ed1b6a9cf141466d8a701899c",
+                "reference": "cf1d80a0315dd49ed1b6a9cf141466d8a701899c",
                 "shasum": ""
             },
             "require": {
@@ -1546,7 +1546,6 @@
                 "jaxon-php/jaxon-annotations": "dev-test",
                 "jaxon-php/jaxon-dialogs": "dev-test",
                 "jaxon-php/jaxon-upload": "dev-test",
-                "lagdo/twitter-feed": "dev-test",
                 "php-coveralls/php-coveralls": "^2.5",
                 "phpunit/phpcov": "^8.2",
                 "phpunit/phpunit": "^9.5"
@@ -1594,7 +1593,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-core/issues",
                 "source": "https://github.com/jaxon-php/jaxon-core"
             },
-            "time": "2024-06-06T12:41:06+00:00"
+            "time": "2024-06-20T23:06:53+00:00"
         },
         {
             "name": "jaxon-php/jaxon-dialogs",
@@ -1709,16 +1708,16 @@
         },
         {
             "name": "jaxon-php/jaxon-utils",
-            "version": "v1.1.3",
+            "version": "v1.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-utils.git",
-                "reference": "be65579e58874d8b5f6acf01981359675c46aca5"
+                "reference": "a023d6e2733d1ffde4c8822c8471615dd56a64b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-utils/zipball/be65579e58874d8b5f6acf01981359675c46aca5",
-                "reference": "be65579e58874d8b5f6acf01981359675c46aca5",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-utils/zipball/a023d6e2733d1ffde4c8822c8471615dd56a64b9",
+                "reference": "a023d6e2733d1ffde4c8822c8471615dd56a64b9",
                 "shasum": ""
             },
             "require": {
@@ -1759,7 +1758,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-utils/issues",
                 "source": "https://github.com/jaxon-php/jaxon-utils"
             },
-            "time": "2023-04-03T07:28:03+00:00"
+            "time": "2023-08-04T14:07:16+00:00"
         },
         {
             "name": "laravel/fortify",
@@ -11040,5 +11039,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }
