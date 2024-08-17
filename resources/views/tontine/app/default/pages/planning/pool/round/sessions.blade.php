@@ -13,7 +13,7 @@
                               <td>{{ $session->title }}</td>
                               <td>{{ $session->date }}</td>
                               <td class="table-item-menu">
-                                {!! Form::radio($field . '_session', $session->id, $session->id === $sessionId) !!}
+                                {!! $htmlBuilder->radio($field . '_session', $session->id === $sessionId, $session->id) !!}
                               </td>
                             </tr>
 @endforeach

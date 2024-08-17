@@ -21,7 +21,7 @@
                     <div class="col">&nbsp;</div>
                     <div class="col-auto">
                       <div class="input-group">
-                        {!! Form::text('search', '', ['class' => 'form-control', 'id' => 'txt-subscription-members-search']) !!}
+                        {!! $htmlBuilder->text('search', '')->class('form-control')->id('txt-subscription-members-search') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" id="btn-subscription-members-search"><i class="fa fa-search"></i></button>
                         </div>

@@ -8,8 +8,7 @@
                   <div class="col-auto" id="payment-settings">
                   </div>
                   <div class="col-auto">
-                    @if ($sessions->count() > 0){{ Form::select('session_id', $sessions, 0,
-                      ['class' => 'form-control', 'id' => 'select-session']) }}@endif
+                    @if ($sessions->count() > 0){{ $htmlBuilder->select('session_id', $sessions, 0)->class('form-control')->id('select-session') }}@endif
                   </div>
                 </div>
               </div>

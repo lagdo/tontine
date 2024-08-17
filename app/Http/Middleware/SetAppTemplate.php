@@ -2,13 +2,14 @@
 
 namespace App\Http\Middleware;
 
+use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Closure;
 use Illuminate\Support\Facades\View;
 
 use function config;
+use function html;
 use function Jaxon\jaxon;
 use function resource_path;
 
@@ -33,6 +34,8 @@ class SetAppTemplate
         $jaxonView = jaxon()->view();
         $jaxonView->addNamespace('tontine', $templatePath, '.blade.php', 'blade');
         $jaxonView->addNamespace('pagination', $paginationPath, '.blade.php', 'blade');
+
+        View::share('htmlBuilder', html());
 
         return $next($request);
     }

@@ -2,33 +2,33 @@
         <form class="form-horizontal" role="form" id="disbursement-form">
           <div class="module-body">
             <div class="form-group row">
-              {!! Form::label('amount', __('common.labels.amount'), ['class' => 'col-sm-3 col-form-label']) !!}
+              {!! $htmlBuilder->label(__('common.labels.amount'), 'amount')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-5">
-                {!! Form::text('amount', '', ['class' => 'form-control']) !!}
+                {!! $htmlBuilder->text('amount', '')->class('form-control') !!}
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('category', __('meeting.labels.category'), ['class' => 'col-sm-3 col-form-label']) !!}
+              {!! $htmlBuilder->label(__('meeting.labels.category'), 'category')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-8">
-                {!! Form::select('category', $categories, 0, ['class' => 'form-control']) !!}
+                {!! $htmlBuilder->select('category', $categories, 0)->class('form-control') !!}
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('charge', __('meeting.labels.charge'), ['class' => 'col-sm-3 col-form-label']) !!}
+              {!! $htmlBuilder->label(__('meeting.labels.charge'), 'charge')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-8">
-                {!! Form::select('charge', $charges, 0, ['class' => 'form-control']) !!}
+                {!! $htmlBuilder->select('charge', $charges, 0)->class('form-control') !!}
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('member', __('meeting.labels.member'), ['class' => 'col-sm-3 col-form-label']) !!}
+              {!! $htmlBuilder->label(__('meeting.labels.member'), 'member')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-8">
-                {!! Form::select('member', $members, 0, ['class' => 'form-control']) !!}
+                {!! $htmlBuilder->select('member', $members, 0)->class('form-control') !!}
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('comment', __('common.labels.comment'), ['class' => 'col-sm-3 col-form-label']) !!}
+              {!! $htmlBuilder->label(__('common.labels.comment'), 'comment')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-8">
-                {!! Form::text('comment', '', ['class' => 'form-control']) !!}
+                {!! $htmlBuilder->text('comment', '')->class('form-control') !!}
               </div>
             </div>
           </div>

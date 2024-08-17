@@ -3,45 +3,46 @@
               <div class="module-body">
                 <div class="form-group row">
 @if ($fixed)
-                  {!! Form::label('period', __('common.labels.period'), ['class' => 'col-sm-4 col-form-label']) !!}
+                  {!! $htmlBuilder->label(__('common.labels.period'), 'period')->class('col-sm-4 col-form-label') !!}
                   <div class="col-md-5">
-                    {!! Form::select('period', $periods, '', ['class' => 'form-control']) !!}
+                    {!! $htmlBuilder->select('period', $periods, '')->class('form-control') !!}
                   </div>
 @else
-                  {!! Form::label('type', __('common.labels.type'), ['class' => 'col-sm-4 col-form-label']) !!}
+                  {!! $htmlBuilder->label(__('common.labels.type'), 'type')->class('col-sm-4 col-form-label') !!}
                   <div class="col-md-5">
-                    {!! Form::select('type', $types, '', ['class' => 'form-control']) !!}
+                    {!! $htmlBuilder->select('type', $types, '')->class('form-control') !!}
                   </div>
 @endif
                 </div>
                 <div class="form-group row">
-                  {!! Form::label('name', __('common.labels.name'), ['class' => 'col-sm-4 col-form-label']) !!}
+                  {!! $htmlBuilder->label(__('common.labels.name'), 'name')->class('col-sm-4 col-form-label') !!}
                   <div class="col-md-7">
-                    {!! Form::text('name', '', ['class' => 'form-control']) !!}
+                    {!! $htmlBuilder->text('name', '')->class('form-control') !!}
                   </div>
                 </div>
                 <div class="form-group row">
-                  {!! Form::label('amount', __('common.labels.amount') . " ($currency)", ['class' => 'col-sm-4 col-form-label']) !!}
+                  {!! $htmlBuilder->label(__('common.labels.amount') . " ($currency)", 'amount')
+                    ->class('col-sm-4 col-form-label') !!}
                   <div class="col-md-6">
 @if ($fixed)
-                    {!! Form::text('amount', '', ['class' => 'form-control']) !!}
-                    {!! Form::hidden('fixed', '1') !!}
+                    {!! $htmlBuilder->text('amount', '')->class('form-control') !!}
+                    {!! $htmlBuilder->hidden('fixed', '1') !!}
 @else
                     <div class="input-group">
                       <div class="input-group-prepend">
                         <div class="input-group-text">
-                          {!! Form::checkbox('fixed', '1', false) !!}
+                          {!! $htmlBuilder->checkbox('fixed', false, '1') !!}
                         </div>
                       </div>
-                      {!! Form::text('amount', '', ['class' => 'form-control']) !!}
+                      {!! $htmlBuilder->text('amount', '')->class('form-control') !!}
                     </div>
 @endif
                   </div>
                 </div>
                 <div class="form-group row">
-                  {!! Form::label('lendable', __('tontine.charge.labels.lendable'), ['class' => 'col-sm-4 col-form-label']) !!}
+                  {!! $htmlBuilder->label(__('tontine.charge.labels.lendable'), 'lendable')->class('col-sm-4 col-form-label') !!}
                   <div class="col-md-3 pt-2">
-                    {!! Form::checkbox('lendable', '1', false) !!}
+                    {!! $htmlBuilder->checkbox('lendable', false, '1') !!}
                   </div>
                 </div>
               </div>

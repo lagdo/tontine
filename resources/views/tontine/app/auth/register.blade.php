@@ -31,10 +31,9 @@
                   </div>
 
                   <div class="form-group">
-                    {!! Form::label('country', __('common.labels.country')) !!}
-                    {!! Form::select('country', $localeService->getCountries(), old('country', ''), [
-                      'class' => $errors->has('country') ? 'form-control is-invalid' : 'form-control'
-                    ]) !!}
+                    {!! $htmlBuilder->label(__('common.labels.country'), 'country') !!}
+                    {!! $htmlBuilder->select('country', $localeService->getCountries(), old('country', ''))
+                      ->class($errors->has('country') ? 'form-control is-invalid' : 'form-control') !!}
                     <div class="invalid-feedback">{{ $errors->first('country') }}</div>
                   </div>
 

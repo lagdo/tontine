@@ -6,7 +6,7 @@
               </div>
               <div class="col-auto">
                 <div class="input-group">
-                  {{ Form::select('pool_id', $pools, $poolId, ['class' => 'form-control', 'id' => 'select-pool']) }}
+                  {{ $htmlBuilder->select('pool_id', $pools, $poolId)->class('form-control')->id('select-pool') }}
                   <div class="input-group-append">
                     <button type="button" class="btn btn-primary" id="btn-pool-select"><i class="fa fa-arrow-right"></i></button>
                   </div>

@@ -5,8 +5,7 @@
 @if($session->opened)
                     <div class="col-auto">
                       <div class="input-group mb-2">
-                        {!! Form::select('fund_id', $funds, 0, ['class' => 'form-control',
-                          'style' => 'height:36px; padding:5px 15px;', 'id' => 'refunds-fund-id']) !!}
+                        {!! $htmlBuilder->select('fund_id', $funds, 0)->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;')->id('refunds-fund-id') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" id="btn-refunds-select-fund"><i class="fa fa-arrow-right"></i></button>
                           <button type="button" class="btn btn-primary" id="btn-refunds-filter"><i class="fa fa-filter"></i></button>

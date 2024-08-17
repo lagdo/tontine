@@ -17,7 +17,7 @@
                     <div class="col">{{ __('tontine.titles.tontine') }}</div>
                     <div class="col-auto">
                       <div class="input-group">
-                        {{ Form::select('tontine_id', $tontines, 0, ['class' => 'form-control', 'id' => 'select-invite-tontine']) }}
+                        {{ $htmlBuilder->select('tontine_id', $tontines, 0)->class('form-control')->id('select-invite-tontine') }}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" id="btn-select-invite-tontine"><i class="fa fa-arrow-right"></i></button>
                         </div>

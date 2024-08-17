@@ -7,7 +7,7 @@
               </div>
               <div class="col-auto">
                 <div class="input-group">
-                  {{ Form::select('session_id', $sessions, 0, ['class' => 'form-control', 'id' => 'select-session']) }}
+                  {{ $htmlBuilder->select('session_id', $sessions, 0)->class('form-control')->id('select-session') }}
                   <div class="input-group-append">
                     <button type="button" class="btn btn-primary" id="btn-session-select"><i class="fa fa-arrow-right"></i></button>
                   </div>
@@ -17,7 +17,7 @@
               </div>
               <div class="col-auto">
                 <div class="input-group">
-                  {{ Form::select('member_id', $members, 0, ['class' => 'form-control', 'id' => 'select-member']) }}
+                  {{ $htmlBuilder->select('member_id', $members, 0)->class('form-control')->id('select-member') }}
                   <div class="input-group-append">
                     <button type="button" class="btn btn-primary" id="btn-member-select"><i class="fa fa-arrow-right"></i></button>
                   </div>

@@ -33,7 +33,7 @@
                         <tr class="row">
                           <td>{{ $bill->member->name }}</td>
                           <td style="text-align:right;">&nbsp;</td>
-                          <td style="text-align:right;">{!! Form::checkbox('', '1', $bill->paid) !!}</td>
+                          <td style="text-align:right;">{!! $htmlBuilder->checkbox('', $bill->paid, '1') !!}</td>
                         </tr>
 @endforeach
                         <tr class="total">

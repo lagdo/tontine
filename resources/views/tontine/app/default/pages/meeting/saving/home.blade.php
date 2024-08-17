@@ -15,8 +15,7 @@
                     </div>
                     <div class="col-auto">
                       <div class="input-group mb-2">
-                        {!! Form::select('fund', $funds, $fundId, ['class' => 'form-control',
-                          'style' => 'height:36px; padding:5px 15px;', 'id' => 'savings-fund-id']) !!}
+                        {!! $htmlBuilder->select('fund', $funds, $fundId)->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;')->id('savings-fund-id') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" id="btn-savings-fund"><i class="fa fa-arrow-right"></i></button>
 @if($session->opened)

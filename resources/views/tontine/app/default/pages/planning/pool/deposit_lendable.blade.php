@@ -7,8 +7,8 @@
             <div class="form-group row">
               <div class="col-11">
                 <div class="form-check">
-                  {!! Form::checkbox('lendable', '1', $lendable, ['id' => 'pool_deposit_lendable']) !!}
-                  {!! Form::label('lendable', __('tontine.pool.labels.deposit.lendable'), ['class' => 'form-check-label']) !!}
+                  {!! $htmlBuilder->checkbox('lendable', $lendable, '1')->id('pool_deposit_lendable') !!}
+                  {!! $htmlBuilder->label(__('tontine.pool.labels.deposit.lendable'), 'lendable')->class('form-check-label') !!}
                 </div>
               </div>
             </div>

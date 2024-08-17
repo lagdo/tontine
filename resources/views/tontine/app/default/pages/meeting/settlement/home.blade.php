@@ -15,7 +15,7 @@
                     <div class="col">
 @if ($type === 'fixed')
                       <div class="input-group">
-                        {!! Form::text('search', '', ['class' => 'form-control', 'id' => 'txt-fee-settlements-search']) !!}
+                        {!! $htmlBuilder->text('search', '')->class('form-control')->id('txt-fee-settlements-search') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" id="btn-fee-fixed-settlements-search"><i class="fa fa-search"></i></button>
                         </div>

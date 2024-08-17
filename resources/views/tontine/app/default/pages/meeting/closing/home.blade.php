@@ -18,8 +18,7 @@
                     </div>
                     <div class="col-auto">
                       <div class="input-group mb-2">
-                        {!! Form::select('fund_id', $funds, 0, ['class' => 'form-control',
-                          'style' => 'height:36px; padding:5px 15px;', 'id' => 'closings-fund-id']) !!}
+                        {!! $htmlBuilder->select('fund_id', $funds, 0)->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;')->id('closings-fund-id') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" id="btn-fund-edit-round-closing"><i class="fa fa-circle-notch"></i></button>
                           <button type="button" class="btn btn-primary" id="btn-fund-edit-interest-closing"><i class="far fa-stop-circle"></i></button>

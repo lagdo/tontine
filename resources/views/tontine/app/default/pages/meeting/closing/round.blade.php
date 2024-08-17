@@ -8,10 +8,10 @@
               </div>
             </div>
             <div class="form-group row">
-              {!! Form::label('amount', __('meeting.closing.labels.amount'), ['class' => 'col-sm-5 col-form-label']) !!}
+              {!! $htmlBuilder->label(__('meeting.closing.labels.amount'), 'amount')->class('col-sm-5 col-form-label') !!}
               <div class="col-sm-6">
-                {!! Form::text('amount', $closing !== null ?
-                  $locale->convertMoneyToInt($closing->profit) : '', ['class' => 'form-control']) !!}
+                {!! $htmlBuilder->text('amount', $closing !== null ?
+                  $locale->convertMoneyToInt($closing->profit) : '')->class('form-control') !!}
               </div>
             </div>
           </div>

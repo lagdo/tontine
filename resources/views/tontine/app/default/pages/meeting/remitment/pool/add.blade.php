@@ -2,16 +2,16 @@
         <form class="form-horizontal" role="form" id="remitment-form">
           <div class="module-body">
             <div class="form-group row">
-              {!! Form::label('payable', __('meeting.remitment.labels.beneficiary'), ['class' => 'col-sm-3 col-form-label']) !!}
+              {!! $htmlBuilder->label(__('meeting.remitment.labels.beneficiary'), 'payable')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-8">
-                {!! Form::select('payable', $members, $payableId, ['class' => 'form-control']) !!}
+                {!! $htmlBuilder->select('payable', $members, $payableId)->class('form-control') !!}
               </div>
             </div>
 @if ($pool->remit_auction)
             <div class="form-group row">
-              {!! Form::label('auction', __('meeting.remitment.labels.auction'), ['class' => 'col-sm-3 col-form-label']) !!}
+              {!! $htmlBuilder->label(__('meeting.remitment.labels.auction'), 'auction')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-5">
-                {!! Form::text('auction', '', ['class' => 'form-control']) !!}
+                {!! $htmlBuilder->text('auction', '')->class('form-control') !!}
               </div>
             </div>
 @endif

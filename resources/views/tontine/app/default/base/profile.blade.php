@@ -19,10 +19,8 @@
                   </div>
                   <div class="card-body">
                     <div class="form-group">
-                      {!! Form::label('name', __('common.labels.name')) !!}
-                      {!! Form::text('name', old('name', $user->name), [
-                        'class' => $errors->profile->has('name') ? 'form-control is-invalid' : 'form-control',
-                      ]) !!}
+                      {!! $htmlBuilder->label(__('common.labels.name'), 'name') !!}
+                      {!! $htmlBuilder->text('name', old('name', $user->name))->class($errors->profile->has('name') ? 'form-control is-invalid' : 'form-control') !!}
 @if($errors->profile->has('name'))
                       <div class="invalid-feedback">
                         {{ $errors->profile->first('name') }}
@@ -30,10 +28,8 @@
 @endif
                     </div>
                     <div class="form-group">
-                      {!! Form::label('city', __('common.labels.city')) !!}
-                      {!! Form::text('city', old('city', $user->city), [
-                        'class' => $errors->profile->has('city') ? 'form-control is-invalid' : 'form-control',
-                      ]) !!}
+                      {!! $htmlBuilder->label(__('common.labels.city'), 'city') !!}
+                      {!! $htmlBuilder->text('city', old('city', $user->city))->class($errors->profile->has('city') ? 'form-control is-invalid' : 'form-control') !!}
 @if($errors->profile->has('city'))
                       <div class="invalid-feedback">
                         {{ $errors->profile->first('city') }}
@@ -41,10 +37,9 @@
 @endif
                     </div>
                     <div class="form-group">
-                      {!! Form::label('country', __('common.labels.country')) !!}
-                      {!! Form::select('country', $countries, old('country', $user->country_code), [
-                        'class' => $errors->profile->has('country') ? 'form-control is-invalid' : 'form-control'
-                      ]) !!}
+                      {!! $htmlBuilder->label(__('common.labels.country'), 'country') !!}
+                      {!! $htmlBuilder->select('country', $countries, old('country', $user->country_code))
+                        ->class($errors->profile->has('country') ? 'form-control is-invalid' : 'form-control') !!}
 @if($errors->profile->has('country'))
                       <div class="invalid-feedback">
                         {{ $errors->profile->first('country') }}
@@ -67,10 +62,9 @@
                   </div>
                   <div class="card-body">
                     <div class="form-group">
-                      {!! Form::label('current_password', __('user.password.labels.current')) !!}
-                      {!! Form::password('current_password', [
-                        'class' => $errors->password->has('current_password') ? 'form-control is-invalid' : 'form-control',
-                      ]) !!}
+                      {!! $htmlBuilder->label(__('user.password.labels.current'), 'current_password') !!}
+                      {!! $htmlBuilder->password('current_password')
+                        ->class($errors->password->has('current_password') ? 'form-control is-invalid' : 'form-control') !!}
 @if($errors->password->has('current_password'))
                       <div class="invalid-feedback">
                         {{ $errors->password->first('current_password') }}
@@ -78,10 +72,9 @@
 @endif
                     </div>
                     <div class="form-group">
-                      {!! Form::label('password', __('user.password.labels.new')) !!}
-                      {!! Form::password('password', [
-                        'class' => $errors->password->has('password') ? 'form-control is-invalid' : 'form-control',
-                      ]) !!}
+                      {!! $htmlBuilder->label(__('user.password.labels.new'), 'password') !!}
+                      {!! $htmlBuilder->password('password')
+                        ->class($errors->password->has('password') ? 'form-control is-invalid' : 'form-control') !!}
 @if($errors->password->has('password'))
                       <div class="invalid-feedback">
                         {{ $errors->password->first('password') }}
@@ -89,10 +82,9 @@
 @endif
                     </div>
                     <div class="form-group">
-                      {!! Form::label('password_confirmation', __('user.password.labels.confirm')) !!}
-                      {!! Form::password('password_confirmation', [
-                        'class' => $errors->password->has('password_confirmation') ? 'form-control is-invalid' : 'form-control',
-                      ]) !!}
+                      {!! $htmlBuilder->label(__('user.password.labels.confirm'), 'password_confirmation') !!}
+                      {!! $htmlBuilder->password('password_confirmation')
+                        ->class($errors->password->has('password_confirmation') ? 'form-control is-invalid' : 'form-control') !!}
 @if($errors->password->has('password_confirmation'))
                       <div class="invalid-feedback">
                         {{ $errors->password->first('password_confirmation') }}
