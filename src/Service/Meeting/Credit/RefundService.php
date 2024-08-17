@@ -19,6 +19,7 @@ use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\FundService;
 
+use function collect;
 use function trans;
 
 class RefundService
@@ -40,11 +41,11 @@ class RefundService
     /**
      * @param Session $session The session
      * @param Fund $fund
-     * @param bool $onlyPaid
+     * @param bool|null $onlyPaid
      *
      * @return Builder|Relation
      */
-    private function getQuery(Session $session, Fund $fund, ?bool $onlyPaid = null): Builder|Relation
+    private function getDebtsQuery(Session $session, Fund $fund, ?bool $onlyPaid): Builder|Relation
     {
         $prevSessions = $this->fundService->getFundSessionIds($session, $fund)
             ->filter(fn(int $sessionId) => $sessionId !== $session->id);
@@ -91,13 +92,13 @@ class RefundService
      *
      * @param Session $session The session
      * @param Fund $fund
-     * @param bool $onlyPaid
+     * @param bool|null $onlyPaid
      *
      * @return int
      */
     public function getDebtCount(Session $session, Fund $fund, ?bool $onlyPaid): int
     {
-        return $this->getQuery($session, $fund, $onlyPaid)->count();
+        return $this->getDebtsQuery($session, $fund, $onlyPaid)->count();
     }
 
     /**
@@ -105,14 +106,14 @@ class RefundService
      *
      * @param Session $session The session
      * @param Fund $fund
-     * @param bool $onlyPaid
+     * @param bool|null $onlyPaid
      * @param int $page
      *
      * @return Collection
      */
     public function getDebts(Session $session, Fund $fund, ?bool $onlyPaid, int $page = 0): Collection
     {
-        return $this->getQuery($session, $fund, $onlyPaid)
+        return $this->getDebtsQuery($session, $fund, $onlyPaid)
             ->page($page, $this->tenantService->getLimit())
             ->with(['loan', 'loan.member', 'loan.session', 'refund', 'refund.session',
                 'partial_refunds', 'partial_refunds.session'])
@@ -168,7 +169,7 @@ class RefundService
         {
             throw new MessageException(trans('tontine.loan.errors.not_found'));
         }
-        if(!$this->debtCalculator->debtIsEditable($session, $debt))
+        if(!$this->debtCalculator->debtIsEditable($debt, $session))
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_refund'));
         }
@@ -176,12 +177,12 @@ class RefundService
         $refund = new Refund();
         $refund->debt()->associate($debt);
         $refund->session()->associate($session);
-        DB::transaction(function() use($session, $debt, $refund) {
+        DB::transaction(function() use($debt, $session, $refund) {
             $refund->save();
             // For simple or compound interest, also save the final amount.
             if($debt->is_interest && !$debt->loan->fixed_interest)
             {
-                $debt->amount = $this->debtCalculator->getDebtAmount($session, $debt);
+                $debt->amount = $this->debtCalculator->getDebtDueAmount($debt, $session, true);
                 $debt->save();
             }
         });
@@ -207,7 +208,7 @@ class RefundService
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_delete'));
         }
-        if(!$this->debtCalculator->debtIsEditable($session, $refund->debt))
+        if(!$this->debtCalculator->debtIsEditable($refund->debt, $session))
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_refund'));
         }
@@ -241,6 +242,9 @@ class RefundService
             ->with(['debt.refund', 'debt.loan.member', 'debt.loan.session'])
             ->orderBy('id')
             ->get()
+            ->each(function(PartialRefund $refund) use($session) {
+                $refund->debtAmount = $this->debtCalculator->getDebtDueAmount($refund->debt, $session, false);
+            })
             ->sortBy('debt.loan.member.name', SORT_LOCALE_STRING)
             ->values();
     }
@@ -267,23 +271,21 @@ class RefundService
      */
     public function getUnpaidDebtList(Session $session): Collection
     {
-        return Debt::whereDoesntHave('refund')
-            ->whereHas('loan', function(Builder $query) {
-                $query->whereIn('fund_id', $this->getActiveFundIds())
-                    ->whereHas('member', function(Builder $query) {
-                        $query->where('tontine_id', $this->tenantService->tontine()->id);
-                    });
-            })
-            ->get()
+        return $this->fundService->getActiveFunds()
+            ->reduce(function(Collection $debts, Fund $fund) use($session) {
+                return $debts->concat($this->getDebts($session, $fund, false));
+            }, collect())
             ->filter(function($debt) use($session) {
-                return $this->debtCalculator->debtIsEditable($session, $debt);
+                return $this->debtCalculator->debtIsEditable($debt, $session);
             })
             ->keyBy('id')
             ->map(function($debt) use($session) {
-                $amountDue = $this->debtCalculator->getDebtDueAmount($session, $debt);
-                return $debt->loan->member->name . ' - ' . $debt->loan->session->title .
+                $fundTitle = $this->fundService->getFundTitle($debt->loan->fund);
+                $unpaidAmount = $this->debtCalculator->getDebtUnpaidAmount($debt, $session);
+
+                return $debt->loan->member->name . " - $fundTitle - " . $debt->loan->session->title .
                     ' - ' . trans('meeting.loan.labels.' . $debt->type) .
-                    ' - ' . $this->localeService->formatMoney($amountDue, true);
+                    ' - ' . $this->localeService->formatMoney($unpaidAmount, true);
             });
     }
 
@@ -304,7 +306,7 @@ class RefundService
             throw new MessageException(trans('meeting.refund.errors.not_found'));
         }
         // A partial refund must not totally refund a debt
-        if($amount >= $this->debtCalculator->getDebtDueAmount($session, $debt))
+        if($amount >= $this->debtCalculator->getDebtDueAmount($debt, $session, true))
         {
             throw new MessageException(trans('meeting.refund.errors.pr_amount'));
         }

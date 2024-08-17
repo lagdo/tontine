@@ -33,7 +33,7 @@ class Refund extends Base
     {
         return Attribute::make(
             get: fn() => app()->make(DebtCalculator::class)
-                ->getDebtDueAmount($this->session, $this->debt),
+                ->getDebtTotalAmount($this->debt, $this->session),
         );
     }
 }

@@ -98,6 +98,17 @@ class FundService
     }
 
     /**
+     * @param Fund $fund
+     *
+     * @return string
+     */
+    public function getFundTitle(Fund $fund): string
+    {
+        return $fund->id === $this->tenantService->tontine()->default_fund->id ?
+            $this->getDefaultFund()->title : $fund->title;
+    }
+
+    /**
      * Add new fund.
      *
      * @param array $values
@@ -165,7 +176,7 @@ class FundService
         $closingSessions = $this->tenantService->tontine()->sessions()
             ->whereDate('start_at', '<', $lastSessionDate)
             ->whereHas('closings', function(Builder|Relation $query) use($fund) {
-                $query->where('fund_id', $fund->id);
+                $query->round()->where('fund_id', $fund->id);
             })
             ->orderByDesc('start_at')
             ->get();

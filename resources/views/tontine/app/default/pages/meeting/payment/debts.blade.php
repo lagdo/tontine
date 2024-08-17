@@ -17,7 +17,7 @@
                       <tbody>
 @foreach($debts as $debt)
 @php
-  $debtAmount = $debtCalculator->getDebtAmount($session, $debt);
+  $debtAmount = $debtCalculator->getDebtDueAmount($debt, $session, true);
 @endphp
                         <tr>
                           <td>{{ __('meeting.loan.labels.' . $debt->type_str) }}<br/>{{ $debt->session->title }}</td>

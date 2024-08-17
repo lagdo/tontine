@@ -130,7 +130,7 @@ class ReportService
      */
     private function getSessionProfitAmounts(Session $session): Collection
     {
-        $closings = $this->closingService->getSavingsClosings($session);
+        $closings = $this->closingService->getRoundClosings($session);
 
         return $closings->keyBy('fund_id')->map(fn($closing) => $closing->profit);
     }
@@ -185,7 +185,7 @@ class ReportService
     {
         if(($debt = $loan->i_debt) !== null)
         {
-            $loan->iDebtAmount = $this->debtCalculator->getDebtAmount($session, $debt);
+            $loan->iDebtAmount = $this->debtCalculator->getDebtTotalAmount($debt, $session);
         }
     }
 

@@ -81,7 +81,7 @@ class ClosingService
     }
 
     /**
-     * Get the round closings for a given session.
+     * Get the closings for a given session.
      *
      * @param Session $session
      *

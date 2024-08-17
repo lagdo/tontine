@@ -12,12 +12,12 @@
 @foreach($refunds as $refund)
                     <tr>
                       <td>
-                        {{ $refund->debt->loan->member->name }}<br/>{{ $refund->debt->loan->session->title }}
+                        {{ $refund->debt->loan->member->name }}<br/> {{
+                          __('meeting.loan.labels.' . $refund->debt->type) }}: {{ $refund->debt->loan->session->title }}
                       </td>
                       <td class="currency">
                         {{ $locale->formatMoney($refund->amount, true) }}<br/>
-                        {{ $locale->formatMoney($debtCalculator->getDebtAmount($session, $refund->debt), true)
-                          }} - {{ __('meeting.loan.labels.' . $refund->debt->type) }}
+                        {{ $locale->formatMoney($debtCalculator->getDebtDueAmount($refund->debt, $session, false), true) }}
                       </td>
                       <td class="table-item-menu" data-refund-id="{{ $refund->id }}">
                         {!! paymentLink($refund, 'partial-refund', !$session->opened) !!}

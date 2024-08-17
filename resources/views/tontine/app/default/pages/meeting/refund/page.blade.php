@@ -11,25 +11,21 @@
                   <tbody>
 @foreach($debts as $debt)
 @php
-  $debtAmount = $debtCalculator->getDebtAmount($session, $debt);
-  $debtDueAmount = $debtCalculator->getDebtDueAmount($session, $debt);
+  $totalAmount = $debtCalculator->getDebtTotalAmount($debt, $session);
+  $dueAmount = $debtCalculator->getDebtDueAmount($debt, $session, true);
+  $isEditable = $debtCalculator->debtIsEditable($debt, $session);
 @endphp
                     <tr>
                       <td>
-                        {{ $debt->loan->member->name }}<br/>
-                        {{ $debt->loan->session->title }}@if ($debt->refund) - {{ $debt->refund->session->title }}@endif
+                        {{ $debt->loan->member->name }}<br/> {{
+                          __('meeting.loan.labels.' . $debt->type) }}: {{ $debt->loan->session->title }}
                       </td>
                       <td class="currency">
-@if ($debtAmount === $debtDueAmount)
-                        {{ $locale->formatMoney($debtAmount, true) }}<br/>
-                        {{ __('meeting.loan.labels.' . $debt->type) }}
-@else
-                        {{ $locale->formatMoney($debtDueAmount, true) }}<br/>
-                        {{ __('meeting.loan.labels.' . $debt->type) }}: {{ $locale->formatMoney($debtAmount, true) }}
-@endif
+                        {{ __('meeting.report.labels.due') }} {{ $locale->formatMoney($dueAmount, true) }}<br/>
+                        {{ $locale->formatMoney($totalAmount, true) }}
                       </td>
                       <td class="table-item-menu" data-debt-id="{{ $debt->id }}">
-                        {!! paymentLink($debt->refund, 'refund', $debtAmount === 0 || !$debtCalculator->debtIsEditable($session, $debt)) !!}
+                        {!! paymentLink($debt->refund, 'refund', $totalAmount === 0 || !$isEditable) !!}
                       </td>
                     </tr>
 @endforeach

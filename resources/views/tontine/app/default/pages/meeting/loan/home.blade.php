@@ -1,4 +1,5 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@inject('fundService', 'Siak\Tontine\Service\Tontine\FundService')
                   <div class="row align-items-center">
                     <div class="col">
                       <div class="section-title mt-0">
@@ -26,11 +27,8 @@
                       </thead>
                       <tbody>
 @foreach ($loans as $loan)
-@php
-  $fund = $loan->fund ?? $defaultFund;
-@endphp
                         <tr>
-                          <td>{{ $loan->member->name }}<br/>{!! $fund->title !!}</td>
+                          <td>{{ $loan->member->name }}<br/>{!! $fundService->getFundTitle($loan->fund) !!}</td>
                           <td class="currency">
                             {{ $locale->formatMoney($loan->principal, true) }}<br/>
                             {{ __('meeting.loan.interest.i' . $loan->interest_type) }}: {{ $loan->fixed_interest ?
