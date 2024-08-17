@@ -115,6 +115,25 @@ class DebtCalculator
     }
 
     /**
+     * @param Debt $debt
+     * @param Session $current
+     *
+     * @return Session
+     */
+    private function getLastSessionForInterest(Debt $debt, Session $current): Session
+    {
+        // We use a join instead of a subquery so we can order the results by session date.
+        $closing = $debt->loan->fund->closings()->interest()
+            ->select('closings.*')
+            ->join('sessions', 'sessions.id', '=', 'closings.session_id')
+            ->where('sessions.start_at', '>=', $debt->loan->session->start_at)
+            ->where('sessions.start_at', '<', $current->start_at)
+            ->orderBy('sessions.start_at', 'desc')
+            ->first();
+        return $closing !== null ? $closing->session : $current;
+    }
+
+    /**
      * Get the simple interest amount.
      *
      * @param Debt $debt
@@ -131,7 +150,7 @@ class DebtCalculator
         $interestAmount = 0;
 
         $startSession = $debt->loan->session;
-        $endSession = $session;
+        $endSession = $this->getLastSessionForInterest($debt, $session);
 
         // Take refunds before the end session and sort by session date.
         $partialRefunds = $this->getPartialRefunds($principalDebt, $endSession, false)
@@ -168,7 +187,7 @@ class DebtCalculator
         $interestAmount = 0;
 
         $startSession = $debt->loan->session;
-        $endSession = $session;
+        $endSession = $this->getLastSessionForInterest($debt, $session);
 
         // Take refunds before the current session and sort by session date.
         $partialRefunds = $this->getPartialRefunds($principalDebt, $endSession, false)
