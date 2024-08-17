@@ -51,7 +51,7 @@ class Session extends CallableClass
 
     private function deposits(SessionModel $session)
     {
-        $html = $this->render('pages.report.session.session.deposits', [
+        $html = $this->renderView('pages.report.session.session.deposits', [
             'pools' => $this->sessionService->getReceivables($session),
         ]);
         $this->response->html('report-deposits', $html);
@@ -60,7 +60,7 @@ class Session extends CallableClass
 
     private function remitments(SessionModel $session)
     {
-        $html = $this->render('pages.report.session.session.remitments', [
+        $html = $this->renderView('pages.report.session.session.remitments', [
             'pools' => $this->sessionService->getPayables($session),
             'auctions' => $this->sessionService->getAuctions($session),
         ]);
@@ -70,7 +70,7 @@ class Session extends CallableClass
 
     private function loans(SessionModel $session)
     {
-        $html = $this->render('pages.report.session.session.loans', [
+        $html = $this->renderView('pages.report.session.session.loans', [
             'loan' => $this->sessionService->getLoan($session),
         ]);
         $this->response->html('report-loans', $html);
@@ -79,7 +79,7 @@ class Session extends CallableClass
 
     private function refunds(SessionModel $session)
     {
-        $html = $this->render('pages.report.session.session.refunds', [
+        $html = $this->renderView('pages.report.session.session.refunds', [
             'refund' => $this->sessionService->getRefund($session),
         ]);
         $this->response->html('report-refunds', $html);
@@ -88,7 +88,7 @@ class Session extends CallableClass
 
     private function sessionBills(SessionModel $session)
     {
-        $html = $this->render('pages.report.session.session.bills', [
+        $html = $this->renderView('pages.report.session.session.bills', [
             'title' => trans('tontine.report.titles.bills.session'),
             'charges' => $this->sessionService->getSessionCharges($session),
         ]);
@@ -98,7 +98,7 @@ class Session extends CallableClass
 
     private function totalBills(SessionModel $session)
     {
-        $html = $this->render('pages.report.session.session.bills', [
+        $html = $this->renderView('pages.report.session.session.bills', [
             'title' => trans('tontine.report.titles.bills.total'),
             'charges' => $this->sessionService->getTotalCharges($session),
         ]);
@@ -108,7 +108,7 @@ class Session extends CallableClass
 
     private function savings(SessionModel $session)
     {
-        $html = $this->render('pages.report.session.session.savings', [
+        $html = $this->renderView('pages.report.session.session.savings', [
             'saving' => $this->sessionService->getSaving($session),
             'funds' => $this->fundService->getFundList(),
         ]);
@@ -124,7 +124,7 @@ class Session extends CallableClass
 
     private function disbursements(SessionModel $session)
     {
-        $html = $this->render('pages.report.session.session.disbursements', [
+        $html = $this->renderView('pages.report.session.session.disbursements', [
             'disbursement' => $this->sessionService->getDisbursement($session),
         ]);
         $this->response->html('report-disbursements', $html);

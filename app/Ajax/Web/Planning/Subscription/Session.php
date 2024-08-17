@@ -51,7 +51,7 @@ class Session extends CallableClass
 
     public function home(int $poolId)
     {
-        $html = $this->render('pages.planning.subscription.session.home', [
+        $html = $this->renderView('pages.planning.subscription.session.home', [
             'pool' => $this->pool,
             'total' => $this->poolService->getEnabledSessionCount($this->pool),
         ]);
@@ -77,7 +77,7 @@ class Session extends CallableClass
         $sessions = $this->poolService->getPoolSessions($this->pool, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
 
-        $html = $this->render('pages.planning.subscription.session.page', [
+        $html = $this->renderView('pages.planning.subscription.session.page', [
             'pool' => $this->pool,
             'sessions' => $sessions,
             'pagination' => $pagination,

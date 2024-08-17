@@ -58,14 +58,14 @@ class Pool extends CallableSessionClass
     private function showTotal()
     {
         $depositCount = $this->depositService->countDeposits($this->pool, $this->session);
-        $html = $this->render('pages.meeting.deposit.pool.total', [
+        $html = $this->renderView('pages.meeting.deposit.pool.total', [
             'depositCount' => $depositCount,
             'depositAmount' => $this->balanceCalculator
                 ->getPoolDepositAmount($this->pool, $this->session),
         ]);
         $this->response->html('meeting-deposits-total', $html);
 
-        $html = $this->render('pages.meeting.deposit.pool.action', [
+        $html = $this->renderView('pages.meeting.deposit.pool.action', [
             'session' => $this->session,
             'depositCount' => $depositCount,
             'receivableCount' => $this->depositService
@@ -83,7 +83,7 @@ class Pool extends CallableSessionClass
     {
         $this->bag('meeting')->set('pool.id', $poolId);
 
-        $html = $this->render('pages.meeting.deposit.pool.home', [
+        $html = $this->renderView('pages.meeting.deposit.pool.home', [
             'pool' => $this->pool,
         ]);
         $this->response->html('meeting-deposits', $html);
@@ -107,7 +107,7 @@ class Pool extends CallableSessionClass
 
         $this->showTotal();
 
-        $html = $this->render('pages.meeting.deposit.pool.page', [
+        $html = $this->renderView('pages.meeting.deposit.pool.page', [
             'pool' => $this->pool,
             'session' => $this->session,
             'receivables' => $receivables,
@@ -165,7 +165,7 @@ class Pool extends CallableSessionClass
             return $this->page();
         }
 
-        $html = $this->render('pages.meeting.deposit.libre.edit', [
+        $html = $this->renderView('pages.meeting.deposit.libre.edit', [
             'id' => $receivable->id,
             'amount' => !$receivable->deposit ? '' :
                 $this->localeService->getMoneyValue($receivable->deposit->amount),

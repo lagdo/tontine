@@ -82,7 +82,7 @@ class Saving extends CallableClass
     public function home(int $fundId, bool $backButton = false)
     {
         $profitAmount = $this->closingService->getProfitAmount($this->session, $this->fund);
-        $html = $this->render('pages.report.session.savings.home', [
+        $html = $this->renderView('pages.report.session.savings.home', [
             'profit' => $profitAmount,
             'fund' => $this->fund,
             'backButton' => $backButton,
@@ -101,7 +101,7 @@ class Saving extends CallableClass
         $partUnitValue = $this->profitService->getPartUnitValue($savings);
         $distributionSum = $savings->sum('distribution');
         $distributionCount = $savings->filter(fn($saving) => $saving->distribution > 0)->count();
-        $html = $this->render('pages.report.session.savings.details', [
+        $html = $this->renderView('pages.report.session.savings.details', [
             'profitAmount' => $profitAmount,
             'partUnitValue' => $partUnitValue,
             'distributionSum' => $distributionSum,
@@ -110,7 +110,7 @@ class Saving extends CallableClass
         ]);
         $this->response->html('report-fund-profits-distribution', $html);
 
-        $html = $this->render('pages.report.session.savings.page', [
+        $html = $this->renderView('pages.report.session.savings.page', [
             'savings' => $savings->groupBy('member_id'),
             'distributionSum' => $distributionSum,
         ]);

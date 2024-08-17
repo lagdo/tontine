@@ -103,7 +103,7 @@ class CallableClass extends JaxonCallableClass
      *
      * @return null|Store
      */
-    protected function render(string $view, array $viewData = []): ?Store
+    protected function renderView(string $view, array $viewData = []): ?Store
     {
         return $this->view()->render('tontine::' . $view, $viewData);
     }

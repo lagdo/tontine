@@ -48,7 +48,7 @@ class Payment extends CallableClass
      */
     public function home()
     {
-        $html = $this->render('pages.meeting.payment.home', ['sessions' => $this->sessions]);
+        $html = $this->renderView('pages.meeting.payment.home', ['sessions' => $this->sessions]);
         $this->response->html('section-title', trans('tontine.menus.meeting'));
         $this->response->html('content-home', $html);
 
@@ -66,7 +66,7 @@ class Payment extends CallableClass
         $members = $this->memberService->getMembers('', $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
-        $html = $this->render('pages.meeting.payment.page', compact('members', 'pagination'));
+        $html = $this->renderView('pages.meeting.payment.page', compact('members', 'pagination'));
         $this->response->html('payment-members-page', $html);
         $this->response->call('makeTableResponsive', 'payment-members-page');
 
@@ -99,7 +99,7 @@ class Payment extends CallableClass
 
         [$receivables, $bills, $debts] = $this->paymentService->getPayables($member, $session);
 
-        $html = $this->render('pages.meeting.payment.items',
+        $html = $this->renderView('pages.meeting.payment.items',
             compact('member', 'session', 'receivables', 'debts', 'bills'));
         $this->response->html('payment-payables-home', $html);
         $this->response->call('makeTableResponsive', 'payment-payables-home');

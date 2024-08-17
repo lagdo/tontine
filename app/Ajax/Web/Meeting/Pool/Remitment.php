@@ -31,7 +31,7 @@ class Remitment extends CallableSessionClass
     public function home()
     {
         $hasAuctions = $this->poolService->hasPoolWithAuction();
-        $html = $this->render('pages.meeting.remitment.home', [
+        $html = $this->renderView('pages.meeting.remitment.home', [
             'session' => $this->session,
             'pools' => $this->poolService->getPoolsWithPayables($this->session),
             'hasAuctions' => $hasAuctions,

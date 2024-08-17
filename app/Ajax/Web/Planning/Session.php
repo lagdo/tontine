@@ -67,7 +67,7 @@ class Session extends CallableClass
     {
         $this->bag('planning')->set('round.id', $roundId);
 
-        $html = $this->render('pages.planning.session.home', ['round' => $this->round]);
+        $html = $this->renderView('pages.planning.session.home', ['round' => $this->round]);
         $this->response->html('section-title', trans('tontine.menus.planning'));
         $this->response->html('content-home-sessions', $html);
 
@@ -81,7 +81,7 @@ class Session extends CallableClass
         if(!$this->round)
         {
             // Show an empty sessions table
-            $html = $this->render('pages.planning.session.page', [
+            $html = $this->renderView('pages.planning.session.page', [
                 'sessions' => [],
                 'pagination' => '',
             ]);
@@ -103,7 +103,7 @@ class Session extends CallableClass
             'planning', 'session.page');
         $sessions = $this->roundService->getSessions($this->round, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $sessionCount);
-        $html = $this->render('pages.planning.session.page', [
+        $html = $this->renderView('pages.planning.session.page', [
             'sessions' => $sessions,
             'statuses' => $this->sessionService->getSessionStatuses(),
             'pagination' => $pagination,
@@ -123,7 +123,7 @@ class Session extends CallableClass
     public function add()
     {
         $title = trans('tontine.session.titles.add');
-        $content = $this->render('pages.planning.session.add')
+        $content = $this->renderView('pages.planning.session.add')
             ->with('members', $this->memberService->getMemberList()->prepend('', 0));
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -155,7 +155,7 @@ class Session extends CallableClass
     public function addList()
     {
         $title = trans('tontine.session.titles.add-list');
-        $content = $this->render('pages.planning.session.list');
+        $content = $this->renderView('pages.planning.session.list');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -241,7 +241,7 @@ class Session extends CallableClass
     {
         $session = $this->roundService->getSession($this->round, $sessionId);
         $title = trans('tontine.session.titles.edit');
-        $content = $this->render('pages.planning.session.edit')
+        $content = $this->renderView('pages.planning.session.edit')
             ->with('session', $session)
             ->with('members', $this->memberService->getMemberList()->prepend('', 0));
         $buttons = [[
@@ -280,7 +280,7 @@ class Session extends CallableClass
 
         $venue = $session->venue ?? ($session->host ? $session->host->address : '');
         $title = trans('tontine.session.titles.venue');
-        $content = $this->render('pages.planning.session.venue')
+        $content = $this->renderView('pages.planning.session.venue')
             ->with('session', $session)->with('venue', $venue);
         $buttons = [[
             'title' => trans('common.actions.cancel'),

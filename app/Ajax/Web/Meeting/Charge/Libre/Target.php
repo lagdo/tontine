@@ -60,7 +60,7 @@ class Target extends CallableChargeClass
         $this->bag('meeting')->set('charge.id', $chargeId);
         $this->bag('meeting')->set('fee.member.search', '');
 
-        $html = $this->render('pages.meeting.charge.libre.target.home', [
+        $html = $this->renderView('pages.meeting.charge.libre.target.home', [
             'charge' => $this->charge,
             'target' => $this->target,
         ]);
@@ -97,7 +97,7 @@ class Target extends CallableChargeClass
             $this->target, $search, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
-        $html = $this->render('pages.meeting.charge.libre.target.page', [
+        $html = $this->renderView('pages.meeting.charge.libre.target.page', [
             'session' => $this->session,
             'target' => $this->target,
             'charge' => $this->charge,
@@ -129,7 +129,7 @@ class Target extends CallableChargeClass
         }
 
         $title = trans('meeting.target.titles.set');
-        $content = $this->render('pages.meeting.charge.libre.target.add', [
+        $content = $this->renderView('pages.meeting.charge.libre.target.add', [
             'sessions' => $this->targetService->getDeadlineSessions($this->session),
         ]);
         $buttons = [[
@@ -185,7 +185,7 @@ class Target extends CallableChargeClass
         }
 
         $title = trans('meeting.target.titles.set');
-        $content = $this->render('pages.meeting.charge.libre.target.edit', [
+        $content = $this->renderView('pages.meeting.charge.libre.target.edit', [
             'target' => $this->target,
             'sessions' => $this->targetService->getDeadlineSessions($this->session),
         ]);

@@ -67,7 +67,7 @@ class Pool extends CallableSessionClass
     {
         $this->bag('meeting')->set('pool.id', $poolId);
 
-        $html = $this->render('pages.meeting.remitment.pool.home', [
+        $html = $this->renderView('pages.meeting.remitment.pool.home', [
             'pool' => $this->pool,
             'depositAmount' => $this->balanceCalculator->getPoolDepositAmount($this->pool, $this->session),
         ]);
@@ -84,7 +84,7 @@ class Pool extends CallableSessionClass
 
     public function page()
     {
-        $html = $this->render('pages.meeting.remitment.pool.page', [
+        $html = $this->renderView('pages.meeting.remitment.pool.page', [
             'pool' => $this->pool,
             'session' => $this->session,
             'payables' => $this->remitmentService->getPayables($this->pool, $this->session),
@@ -136,7 +136,7 @@ class Pool extends CallableSessionClass
 
         $members = $this->remitmentService->getSubscriptions($this->pool, $this->session);
         $title = trans('meeting.remitment.titles.add');
-        $content = $this->render('pages.meeting.remitment.pool.add')
+        $content = $this->renderView('pages.meeting.remitment.pool.add')
             ->with('pool', $this->pool)
             ->with('payableId', $payableId)
             ->with('members', $members);

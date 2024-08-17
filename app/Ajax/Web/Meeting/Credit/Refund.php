@@ -50,7 +50,7 @@ class Refund extends CallableSessionClass
 
     public function home()
     {
-        $html = $this->render('pages.meeting.refund.home', [
+        $html = $this->renderView('pages.meeting.refund.home', [
             'session' => $this->session,
             'funds' => $this->fundService->getFundList(),
         ]);
@@ -109,7 +109,7 @@ class Refund extends CallableSessionClass
         $debts = $this->refundService->getDebts($this->session, $this->fund, $filtered, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $debtCount);
 
-        $html = $this->render('pages.meeting.refund.page', [
+        $html = $this->renderView('pages.meeting.refund.page', [
             'session' => $this->session,
             'debts' => $debts,
             'pagination' => $pagination,

@@ -15,7 +15,7 @@ class Locale extends CallableClass
 
     public function selectCurrencies(string $countryCode)
     {
-        $html= $this->render('pages.tontine.currency', [
+        $html= $this->renderView('pages.tontine.currency', [
             'currencies' => $this->localeService->getCountryCurrencies($countryCode)
         ]);
         $this->response->html('select_currency_container', $html);

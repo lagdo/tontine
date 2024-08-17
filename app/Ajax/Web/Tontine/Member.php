@@ -39,7 +39,7 @@ class Member extends CallableClass
     {
         $this->bag('member')->set('search', '');
 
-        $html = $this->render('pages.member.home');
+        $html = $this->renderView('pages.member.home');
         $this->response->html('section-title', trans('tontine.menus.tontine'));
         $this->response->html('content-home', $html);
 
@@ -60,7 +60,7 @@ class Member extends CallableClass
         $members = $this->memberService->getMembers($search, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
 
-        $html = $this->render('pages.member.page', [
+        $html = $this->renderView('pages.member.page', [
             'members' => $members,
             'pagination' => $pagination,
         ]);
@@ -86,7 +86,7 @@ class Member extends CallableClass
     public function add()
     {
         $title = trans('tontine.member.titles.add');
-        $content = $this->render('pages.member.add');
+        $content = $this->renderView('pages.member.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -117,7 +117,7 @@ class Member extends CallableClass
     public function addList()
     {
         $title = trans('tontine.member.titles.add');
-        $content = $this->render('pages.member.list');
+        $content = $this->renderView('pages.member.list');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -199,7 +199,7 @@ class Member extends CallableClass
         $member = $this->memberService->getMember($memberId);
 
         $title = trans('tontine.member.titles.edit');
-        $content = $this->render('pages.member.edit')
+        $content = $this->renderView('pages.member.edit')
             ->with('member', $member);
         $buttons = [[
             'title' => trans('common.actions.cancel'),

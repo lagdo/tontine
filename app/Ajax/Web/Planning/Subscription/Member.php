@@ -58,7 +58,7 @@ class Member extends CallableClass
 
     public function home(int $poolId)
     {
-        $html = $this->render('pages.planning.subscription.member.home')
+        $html = $this->renderView('pages.planning.subscription.member.home')
             ->with('pool', $this->pool);
         $this->response->html('pool-subscription-members', $html);
         $this->jq('#btn-subscription-members-filter')->click($this->rq()->filter());
@@ -91,7 +91,7 @@ class Member extends CallableClass
         $pagination = $this->rq()->page(pm()->page())->paginate($pageNumber,
             $perPage, $memberCount);
 
-        $html = $this->render('pages.planning.subscription.member.page', [
+        $html = $this->renderView('pages.planning.subscription.member.page', [
             'members' => $members,
             'pagination' => $pagination,
             'total' => $this->subscriptionService->getSubscriptionCount($this->pool),

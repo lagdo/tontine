@@ -33,7 +33,7 @@ class LibreFee extends CallableSessionClass
 
     public function home()
     {
-        $html = $this->render('pages.meeting.charge.libre.home')
+        $html = $this->renderView('pages.meeting.charge.libre.home')
             ->with('session', $this->session);
         $this->response->html('meeting-fees-libre', $html);
         $this->jq('#btn-fees-libre-refresh')->click($this->rq()->home());
@@ -52,7 +52,7 @@ class LibreFee extends CallableSessionClass
         $bills = $this->feeService->getBills($this->session);
         $settlements = $this->feeService->getSettlements($this->session);
 
-        $html = $this->render('pages.meeting.charge.libre.page', [
+        $html = $this->renderView('pages.meeting.charge.libre.page', [
             'session' => $this->session,
             'charges' => $charges,
             'bills' => $bills,

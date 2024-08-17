@@ -26,7 +26,7 @@ class Tontine extends CallableClass
 
     public function home()
     {
-        $this->response->html('guest-tontine-home', $this->render('pages.tontine.guest.home'));
+        $this->response->html('guest-tontine-home', $this->renderView('pages.tontine.guest.home'));
         $this->jq('#btn-guest-tontine-refresh')->click($this->rq()->home());
 
         return $this->page();
@@ -40,7 +40,7 @@ class Tontine extends CallableClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $tontineCount);
         [$countries, $currencies] = $this->localeService->getNamesFromTontines($tontines);
 
-        $html = $this->render('pages.tontine.guest.page', [
+        $html = $this->renderView('pages.tontine.guest.page', [
             'tontines' => $tontines,
             'countries' => $countries,
             'currencies' => $currencies,

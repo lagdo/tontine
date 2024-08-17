@@ -36,7 +36,7 @@ class Session extends CallableClass
 
         $sessions = $this->sessionService->getRoundSessions(orderAsc: false)
             ->filter(fn($session) => ($session->opened || $session->closed));
-        $html = $this->render('pages.report.session.home', [
+        $html = $this->renderView('pages.report.session.home', [
             'sessionId' => $sessions->count() > 0 ? $sessions->first()->id : 0,
             'sessions' => $sessions->pluck('title', 'id'),
             'members' => $this->memberService->getMemberList()->prepend('', 0),
@@ -54,7 +54,7 @@ class Session extends CallableClass
 
     private function showReportButtons(SessionModel $session)
     {
-        $html = $this->render('pages.report.session.exports', [
+        $html = $this->renderView('pages.report.session.exports', [
             'sessionId' => $session->id,
         ]);
         $this->response->html('session-reports-export', $html);

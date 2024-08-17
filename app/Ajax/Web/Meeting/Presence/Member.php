@@ -75,7 +75,7 @@ class Member extends CallableClass
     private function _home()
     {
         $search = trim($this->bag('presence')->get('member.search', ''));
-        $html = $this->render('pages.meeting.presence.member.home', [
+        $html = $this->renderView('pages.meeting.presence.member.home', [
             'session' => $this->session, // Is null when showing presences by members.
             'memberCount' => $this->presenceService->getMemberCount($search),
         ]);
@@ -104,7 +104,7 @@ class Member extends CallableClass
         $absences = !$this->session ? null :
             $this->presenceService->getSessionAbsences($this->session);
 
-        $html = $this->render('pages.meeting.presence.member.page', [
+        $html = $this->renderView('pages.meeting.presence.member.page', [
             'session' => $this->session, // Is null when showing presences by members.
             'search' => $search,
             'members' => $members,

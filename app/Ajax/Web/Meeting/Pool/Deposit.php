@@ -30,7 +30,7 @@ class Deposit extends CallableSessionClass
 
     public function home()
     {
-        $html = $this->render('pages.meeting.deposit.home', [
+        $html = $this->renderView('pages.meeting.deposit.home', [
             'session' => $this->session,
             'pools' => $this->poolService->getPoolsWithReceivables($this->session),
         ]);

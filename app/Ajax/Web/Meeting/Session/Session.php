@@ -45,7 +45,7 @@ class Session extends CallableSessionClass
     {
         $balances = $this->balanceCalculator->getBalances($this->session, $lendable);
         $title = trans('meeting.titles.amounts');
-        $content = $this->render('pages.meeting.session.balances', [
+        $content = $this->renderView('pages.meeting.session.balances', [
             'session' => $this->session,
             'balances' => $balances,
         ]);

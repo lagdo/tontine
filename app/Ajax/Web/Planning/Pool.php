@@ -38,7 +38,7 @@ class Pool extends CallableClass
      */
     public function home()
     {
-        $html = $this->render('pages.planning.pool.home', [
+        $html = $this->renderView('pages.planning.pool.home', [
             'tontine' => $this->tenantService->tontine(),
         ]);
         $this->response->html('section-title', trans('tontine.menus.planning'));
@@ -56,7 +56,7 @@ class Pool extends CallableClass
         $pools = $this->poolService->getPools($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $poolCount);
 
-        $html = $this->render('pages.planning.pool.page')
+        $html = $this->renderView('pages.planning.pool.page')
             ->with('round', $this->tenantService->round())
             ->with('pools', $pools)
             ->with('pagination', $pagination);
@@ -75,7 +75,7 @@ class Pool extends CallableClass
     public function showIntro()
     {
         $title = trans('tontine.pool.titles.add');
-        $content = $this->render('pages.planning.pool.add_intro');
+        $content = $this->renderView('pages.planning.pool.add_intro');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -97,7 +97,7 @@ class Pool extends CallableClass
 
         $title = trans('tontine.pool.titles.deposits');
         $properties = $this->bag('pool')->get('add', []);
-        $content = $this->render('pages.planning.pool.deposit_fixed')
+        $content = $this->renderView('pages.planning.pool.deposit_fixed')
             ->with('fixed', $properties['deposit']['fixed'] ?? true);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -133,7 +133,7 @@ class Pool extends CallableClass
 
         $properties = $this->bag('pool')->get('add', []);
         $title = trans('tontine.pool.titles.deposits');
-        $content = $this->render('pages.planning.pool.deposit_lendable')
+        $content = $this->renderView('pages.planning.pool.deposit_lendable')
             ->with('lendable', $properties['deposit']['lendable'] ?? false);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -171,7 +171,7 @@ class Pool extends CallableClass
         $fixed = $properties['deposit']['fixed'] ?? true;
         $prevAction = $fixed ? $this->rq()->showDepositLendable() : $this->rq()->showDepositFixed();
 
-        $content = $this->render('pages.planning.pool.remit_planned')
+        $content = $this->renderView('pages.planning.pool.remit_planned')
             ->with('planned', $properties['remit']['planned'] ?? true);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -207,7 +207,7 @@ class Pool extends CallableClass
         $properties = $this->bag('pool')->get('add', []);
 
         $title = trans('tontine.pool.titles.remitments');
-        $content = $this->render('pages.planning.pool.remit_auction')
+        $content = $this->renderView('pages.planning.pool.remit_auction')
             ->with('auction', $properties['remit']['auction'] ?? false);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -241,7 +241,7 @@ class Pool extends CallableClass
         $this->dialog->hide();
 
         $title = trans('tontine.pool.titles.add');
-        $content = $this->render('pages.planning.pool.add', [
+        $content = $this->renderView('pages.planning.pool.add', [
             'properties' => $this->bag('pool')->get('add', []),
         ]);
         $buttons = [[
@@ -278,7 +278,7 @@ class Pool extends CallableClass
     {
         $pool = $this->poolService->getPool($poolId);
         $title = trans('tontine.pool.titles.edit');
-        $content = $this->render('pages.planning.pool.edit')
+        $content = $this->renderView('pages.planning.pool.edit')
             ->with('pool', $pool)
             ->with('locales', LaravelLocalization::getSupportedLocales());
         $buttons = [[

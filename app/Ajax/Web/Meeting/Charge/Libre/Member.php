@@ -38,7 +38,7 @@ class Member extends CallableChargeClass
         $this->bag('meeting')->set('fee.member.filter', null);
         $this->bag('meeting')->set('fee.member.search', '');
 
-        $html = $this->render('pages.meeting.charge.libre.member.home', [
+        $html = $this->renderView('pages.meeting.charge.libre.member.home', [
             'charge' => $this->charge,
             'paid' => $this->charge->is_fee,
         ]);
@@ -58,7 +58,7 @@ class Member extends CallableChargeClass
         $settlementCount = $settlement->total ?? 0;
         $settlementAmount = $settlement->amount ?? 0;
 
-        $html = $this->render('pages.meeting.charge.libre.member.total', [
+        $html = $this->renderView('pages.meeting.charge.libre.member.total', [
             'settlementCount' => $settlementCount,
             'settlementAmount' => $settlementAmount,
         ]);
@@ -84,7 +84,7 @@ class Member extends CallableChargeClass
 
         $this->showTotal();
 
-        $html = $this->render('pages.meeting.charge.libre.member.page', [
+        $html = $this->renderView('pages.meeting.charge.libre.member.page', [
             'session' => $this->session,
             'charge' => $this->charge,
             'members' => $members,
@@ -176,7 +176,7 @@ class Member extends CallableChargeClass
             return $this->response;
         }
 
-        $html = $this->render('pages.meeting.charge.libre.member.edit', [
+        $html = $this->renderView('pages.meeting.charge.libre.member.edit', [
             'id' => $memberId,
             'amount' => $this->localeService->getMoneyValue($bill->bill->amount),
         ]);

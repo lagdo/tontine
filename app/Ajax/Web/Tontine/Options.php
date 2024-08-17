@@ -27,7 +27,7 @@ class Options extends CallableClass
     public function home()
     {
         $this->response->html('section-title', trans('tontine.menus.tontine'));
-        $this->response->html('content-home', $this->render('pages.options.home'));
+        $this->response->html('content-home', $this->renderView('pages.options.home'));
 
         $this->cl(Fund::class)->show();
         $this->cl(Category::class)->show();
@@ -41,7 +41,7 @@ class Options extends CallableClass
         $options = $this->tontineService->getTontineOptions();
         $template = $options['reports']['template'] ?? 'default';
         $title = trans('tontine.options.titles.edit');
-        $content = $this->render('pages.options.edit', [
+        $content = $this->renderView('pages.options.edit', [
             'template' => $template,
             'templates' => [
                 'default' => trans('tontine.options.labels.default'),

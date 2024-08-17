@@ -32,7 +32,7 @@ class Invite extends CallableClass
     public function home()
     {
         $this->response->html('section-title', trans('tontine.menus.tontines'));
-        $this->response->html('content-home', $this->render('pages.invite.home'));
+        $this->response->html('content-home', $this->renderView('pages.invite.home'));
 
         $this->jq('#btn-host-invite-create')->click($this->rq()->add());
         $this->jq('#btn-host-invites-refresh')->click($this->rq()->hosts());
@@ -53,7 +53,7 @@ class Invite extends CallableClass
         $invites = $this->guestService->getHostInvites($pageNumber);
         $pagination = $this->rq()->hosts()->paginate($pageNumber, $perPage, $inviteCount);
 
-        $html = $this->render('pages.invite.host.page', [
+        $html = $this->renderView('pages.invite.host.page', [
             'invites' => $invites,
             'pagination' => $pagination,
         ]);
@@ -77,7 +77,7 @@ class Invite extends CallableClass
         $invites = $this->guestService->getGuestInvites($pageNumber);
         $pagination = $this->rq()->guests()->paginate($pageNumber, $perPage, $inviteCount);
 
-        $html = $this->render('pages.invite.guest.page', [
+        $html = $this->renderView('pages.invite.guest.page', [
             'invites' => $invites,
             'pagination' => $pagination,
         ]);
@@ -98,7 +98,7 @@ class Invite extends CallableClass
     public function add()
     {
         $title = trans('tontine.invite.titles.add');
-        $content = $this->render('pages.invite.host.add');
+        $content = $this->renderView('pages.invite.host.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

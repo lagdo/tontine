@@ -29,7 +29,7 @@ class Round extends CallableClass
      */
     public function home()
     {
-        $html = $this->render('pages.report.round.home')
+        $html = $this->renderView('pages.report.round.home')
             ->with('round', $this->tenantService->round());
         $this->response->html('content-home', $html);
         $this->jq('#btn-meeting-report-refresh')->click($this->rq()->home());
@@ -46,7 +46,7 @@ class Round extends CallableClass
         $round = $this->tenantService->round();
         $figures = $this->summaryService->getFigures($round);
         $html = $figures->reduce(fn($_html, $poolFigures) =>
-            $_html . $this->render('pages.report.round.pool', $poolFigures), '');
+            $_html . $this->renderView('pages.report.round.pool', $poolFigures), '');
         $this->response->html('content-pools', $html);
         $this->response->call('makeTableResponsive', 'content-pools');
     }
@@ -57,7 +57,7 @@ class Round extends CallableClass
 
         $sessionIds = $sessions->filter(fn($session) =>
             ($session->opened || $session->closed))->pluck('id');
-        $html = $this->render('pages.report.round.amounts', [
+        $html = $this->renderView('pages.report.round.amounts', [
             'sessions' => $sessions,
             'auctions' => $this->roundService->getAuctionAmounts($sessionIds),
             'settlements' => $this->roundService->getSettlementAmounts($sessionIds),

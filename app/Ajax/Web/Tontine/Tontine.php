@@ -52,7 +52,7 @@ class Tontine extends CallableSelectClass
     public function home()
     {
         $this->response->html('section-title', trans('tontine.menus.tontines'));
-        $this->response->html('content-home', $this->render('pages.tontine.home'));
+        $this->response->html('content-home', $this->renderView('pages.tontine.home'));
 
         if(($tontine = $this->tenantService->tontine()))
         {
@@ -87,7 +87,7 @@ class Tontine extends CallableSelectClass
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $tontineCount);
         [$countries, $currencies] = $this->localeService->getNamesFromTontines($tontines);
 
-        $html = $this->render('pages.tontine.page', [
+        $html = $this->renderView('pages.tontine.page', [
             'tontines' => $tontines,
             'countries' => $countries,
             'currencies' => $currencies,
@@ -111,7 +111,7 @@ class Tontine extends CallableSelectClass
     public function add()
     {
         $title = trans('tontine.titles.add');
-        $content = $this->render('pages.tontine.add')
+        $content = $this->renderView('pages.tontine.add')
             ->with('countries', $this->localeService->getCountries());
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -155,7 +155,7 @@ class Tontine extends CallableSelectClass
 
         $title = trans('tontine.titles.edit');
         [, $currencies] = $this->localeService->getNamesFromTontines(collect([$tontine]));
-        $content = $this->render('pages.tontine.edit')
+        $content = $this->renderView('pages.tontine.edit')
             ->with('tontine', $tontine)
             ->with('countries', $this->localeService->getCountries())
             ->with('currencies', $currencies);

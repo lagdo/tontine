@@ -21,7 +21,7 @@ class Settlement extends CallableChargeClass
         $this->bag('meeting')->set('settlement.fixed.filter', null);
         $this->bag('meeting')->set('settlement.fixed.search', '');
 
-        $html = $this->render('pages.meeting.settlement.home', [
+        $html = $this->renderView('pages.meeting.settlement.home', [
             'type' => 'fixed',
             'charge' => $this->charge,
         ]);
@@ -43,14 +43,14 @@ class Settlement extends CallableChargeClass
         $settlementAmount = $settlement->amount ?? 0;
 
         $billCount = $this->billService->getBillCount($this->charge, $this->session);
-        $html = $this->render('pages.meeting.settlement.total', [
+        $html = $this->renderView('pages.meeting.settlement.total', [
             'billCount' => $billCount,
             'settlementCount' => $settlementCount,
             'settlementAmount' => $settlementAmount,
         ]);
         $this->response->html('meeting-settlements-total', $html);
 
-        $html = $this->render('pages.meeting.settlement.action', [
+        $html = $this->renderView('pages.meeting.settlement.action', [
             'session' => $this->session,
             'charge' => $this->charge,
             'billCount' => $billCount,
@@ -78,7 +78,7 @@ class Settlement extends CallableChargeClass
 
         $this->showTotal();
 
-        $html = $this->render('pages.meeting.settlement.page', [
+        $html = $this->renderView('pages.meeting.settlement.page', [
             'session' => $this->session,
             'charge' => $this->charge,
             'bills' => $bills,

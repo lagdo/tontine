@@ -72,7 +72,7 @@ class Access extends CallableClass
         $this->bag('invite')->set('invite.id', $inviteId);
         $this->bag('invite')->set('tontine.id', $this->tontine->id);
 
-        $html = $this->render('pages.invite.access.home', [
+        $html = $this->renderView('pages.invite.access.home', [
             'guest' => $this->invite->guest,
             'tontines' => $tontines->pluck('name', 'id'),
         ]);
@@ -94,7 +94,7 @@ class Access extends CallableClass
     private function access()
     {
         $access = $this->guestService->getGuestTontineAccess($this->invite, $this->tontine);
-        $html = $this->render('pages.invite.access.tontine', [
+        $html = $this->renderView('pages.invite.access.tontine', [
             'tontine' => $this->tontine,
             'access' => $access,
         ]);

@@ -64,7 +64,7 @@ class Member extends CallableSessionClass
         $this->bag('meeting.saving')->set('member.filter', null);
         $this->bag('meeting.saving')->set('member.search', '');
 
-        $html = $this->render('pages.meeting.saving.member.home', [
+        $html = $this->renderView('pages.meeting.saving.member.home', [
             'fund' => $this->fund,
         ]);
         $this->response->html('meeting-savings', $html);
@@ -81,7 +81,7 @@ class Member extends CallableSessionClass
     {
         $savingCount = $this->savingService->getSavingCount($this->session, $this->fund);
         $savingTotal = $this->savingService->getSavingTotal($this->session, $this->fund);
-        $html = $this->render('pages.meeting.saving.total', [
+        $html = $this->renderView('pages.meeting.saving.total', [
             'savingCount' => $savingCount,
             'savingTotal' => $savingTotal,
         ]);
@@ -107,7 +107,7 @@ class Member extends CallableSessionClass
 
         $this->showTotal();
 
-        $html = $this->render('pages.meeting.saving.member.page', [
+        $html = $this->renderView('pages.meeting.saving.member.page', [
             'session' => $this->session,
             'members' => $members,
             'pagination' => $pagination,
@@ -162,7 +162,7 @@ class Member extends CallableSessionClass
         $saving = $this->savingService->findSaving($this->session, $this->fund, $member);
         $amount = !$saving ? '' : $this->localeService->getMoneyValue($saving->amount);
 
-        $html = $this->render('pages.meeting.saving.member.edit', [
+        $html = $this->renderView('pages.meeting.saving.member.edit', [
             'memberId' => $memberId,
             'amount' => $amount,
         ]);

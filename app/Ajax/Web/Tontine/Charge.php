@@ -53,7 +53,7 @@ class Charge extends CallableClass
      */
     public function home()
     {
-        $html = $this->render('pages.options.charge.home');
+        $html = $this->renderView('pages.options.charge.home');
         $this->response->html('content-charges-home', $html);
 
         $this->jq('#btn-refresh')->click($this->rq()->home());
@@ -125,7 +125,7 @@ class Charge extends CallableClass
 
         $types = $this->getChargeTypes();
         $periods = $this->getChargePeriods();
-        $html = $this->render('pages.options.charge.page')
+        $html = $this->renderView('pages.options.charge.page')
             ->with('charges', $charges)
             ->with('types', $types)
             ->with('periods', $periods)
@@ -145,7 +145,7 @@ class Charge extends CallableClass
     public function select()
     {
         $title = '';
-        $content = $this->render('pages.options.charge.select')
+        $content = $this->renderView('pages.options.charge.select')
             ->with('groups', $this->getChargeGroups());
         $group = pm()->input('charge-group')->toInt();
         $buttons = [[
@@ -174,7 +174,7 @@ class Charge extends CallableClass
         [, $currency] = $this->localeService->getNameFromTontine($tontine);
 
         $title = trans('tontine.charge.titles.add');
-        $content = $this->render('pages.options.charge.add')
+        $content = $this->renderView('pages.options.charge.add')
             ->with('fixed', $group === self::GROUP_FIXED)
             ->with('label', $this->getChargeGroups()[$group])
             ->with('currency', $currency)
@@ -236,7 +236,7 @@ class Charge extends CallableClass
         [, $currency] = $this->localeService->getNameFromTontine($tontine);
 
         $title = trans('tontine.charge.titles.edit');
-        $content = $this->render('pages.options.charge.edit', [
+        $content = $this->renderView('pages.options.charge.edit', [
             'charge' => $charge,
             'currency' => $currency,
             'types' => $this->getChargeTypes(),

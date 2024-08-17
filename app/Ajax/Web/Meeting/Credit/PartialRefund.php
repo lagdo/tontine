@@ -41,7 +41,7 @@ class PartialRefund extends CallableSessionClass
 
     public function home()
     {
-        $html = $this->render('pages.meeting.refund.partial.home')
+        $html = $this->renderView('pages.meeting.refund.partial.home')
             ->with('session', $this->session);
         $this->response->html('meeting-partial-refunds', $html);
         $this->jq('#btn-partial-refunds-refresh')->click($this->rq()->home());
@@ -63,7 +63,7 @@ class PartialRefund extends CallableSessionClass
         $refunds = $this->refundService->getPartialRefunds($this->session, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $refundCount);
 
-        $html = $this->render('pages.meeting.refund.partial.page', [
+        $html = $this->renderView('pages.meeting.refund.partial.page', [
             'session' => $this->session,
             'refunds' => $refunds,
             'pagination' => $pagination,
@@ -90,7 +90,7 @@ class PartialRefund extends CallableSessionClass
         }
 
         $title = trans('meeting.refund.titles.add');
-        $content = $this->render('pages.meeting.refund.partial.add')
+        $content = $this->renderView('pages.meeting.refund.partial.add')
             ->with('debts', $this->refundService->getUnpaidDebtList($this->session));
         $buttons = [[
             'title' => trans('common.actions.cancel'),

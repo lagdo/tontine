@@ -41,7 +41,7 @@ class Disbursement extends CallableSessionClass
     {
         $disbursements = $this->disbursementService->getSessionDisbursements($this->session);
 
-        $html = $this->render('pages.meeting.disbursement.home', [
+        $html = $this->renderView('pages.meeting.disbursement.home', [
             'session' => $this->session,
             'disbursements' => $disbursements,
         ]);
@@ -69,7 +69,7 @@ class Disbursement extends CallableSessionClass
         }
 
         $title = trans('meeting.disbursement.titles.add');
-        $content = $this->render('pages.meeting.disbursement.add')
+        $content = $this->renderView('pages.meeting.disbursement.add')
             ->with('categories', $this->disbursementService->getCategories())
             ->with('members', $this->disbursementService->getMembers())
             ->with('charges', $this->disbursementService->getCharges());
@@ -117,7 +117,7 @@ class Disbursement extends CallableSessionClass
 
         $disbursement = $this->disbursementService->getSessionDisbursement($this->session, $disbursementId);
         $title = trans('meeting.disbursement.titles.edit');
-        $content = $this->render('pages.meeting.disbursement.edit')
+        $content = $this->renderView('pages.meeting.disbursement.edit')
             ->with('categories', $this->disbursementService->getCategories())
             ->with('members', $this->disbursementService->getMembers())
             ->with('charges', $this->disbursementService->getCharges())

@@ -46,7 +46,7 @@ class Loan extends CallableSessionClass
     {
         $loans = $this->loanService->getSessionLoans($this->session);
 
-        $html = $this->render('pages.meeting.loan.home', [
+        $html = $this->renderView('pages.meeting.loan.home', [
             'session' => $this->session,
             'loans' => $loans,
             'defaultFund' => $this->fundService->getDefaultFund(),
@@ -75,7 +75,7 @@ class Loan extends CallableSessionClass
         }
 
         $title = trans('meeting.loan.titles.add');
-        $content = $this->render('pages.meeting.loan.add', [
+        $content = $this->renderView('pages.meeting.loan.add', [
             'amountAvailable' => $this->loanService->getAmountAvailableValue($this->session),
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getFundList(),
@@ -148,7 +148,7 @@ class Loan extends CallableSessionClass
         }
 
         $title = trans('meeting.loan.titles.edit');
-        $content = $this->render('pages.meeting.loan.edit', [
+        $content = $this->renderView('pages.meeting.loan.edit', [
             'loan' => $loan,
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getFundList(),

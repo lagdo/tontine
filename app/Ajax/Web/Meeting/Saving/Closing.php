@@ -46,7 +46,7 @@ class Closing extends CallableSessionClass
      */
     public function home()
     {
-        $html = $this->render('pages.meeting.closing.home', [
+        $html = $this->renderView('pages.meeting.closing.home', [
             'session' => $this->session,
             'closings' => $this->closingService->getClosings($this->session),
             'funds' => $this->fundService->getFundList(),
@@ -116,7 +116,7 @@ class Closing extends CallableSessionClass
         }
 
         $title = trans('meeting.closing.titles.round');
-        $content = $this->render('pages.meeting.closing.round', [
+        $content = $this->renderView('pages.meeting.closing.round', [
             'fund' => $fund,
             'closing' => $this->closingService->getRoundClosing($this->session, $fund),
         ]);
@@ -184,7 +184,7 @@ class Closing extends CallableSessionClass
         }
 
         $title = trans('meeting.closing.titles.interest');
-        $content = $this->render('pages.meeting.closing.interest', [
+        $content = $this->renderView('pages.meeting.closing.interest', [
             'fund' => $fund,
             'closing' => $this->closingService->getInterestClosing($this->session, $fund),
         ]);

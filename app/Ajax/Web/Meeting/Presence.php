@@ -29,7 +29,7 @@ class Presence extends CallableClass
         $exchange = $this->bag('presence')->get('exchange', false);
 
         $this->response->html('section-title', trans('tontine.menus.presences'));
-        $html = $this->render('pages.meeting.presence.home', ['exchange' => $exchange]);
+        $html = $this->renderView('pages.meeting.presence.home', ['exchange' => $exchange]);
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-presence-exchange')->click($this->rq()->exchange());

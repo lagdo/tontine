@@ -29,7 +29,7 @@ class Auction extends CallableSessionClass
 
     public function home()
     {
-        $html = $this->render('pages.meeting.auction.home')
+        $html = $this->renderView('pages.meeting.auction.home')
             ->with('session', $this->session);
         $this->response->html('meeting-remitments', $html);
         $this->jq('#btn-auctions-refresh')->click($this->rq()->home());
@@ -52,7 +52,7 @@ class Auction extends CallableSessionClass
         $auctions = $this->auctionService->getAuctions($this->session, $filtered, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $auctionCount);
 
-        $html = $this->render('pages.meeting.auction.page', [
+        $html = $this->renderView('pages.meeting.auction.page', [
             'session' => $this->session,
             'auctions' => $auctions,
             'pagination' => $pagination,

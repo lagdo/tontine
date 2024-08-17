@@ -53,7 +53,7 @@ class Saving extends CallableSessionClass
     public function home()
     {
         $fundId = (int)$this->bag('meeting.saving')->get('fund.id', 0);
-        $html = $this->render('pages.meeting.saving.home', [
+        $html = $this->renderView('pages.meeting.saving.home', [
             'session' => $this->session,
             'fundId' => $fundId,
             'funds' => $this->fundService->getFundList()->prepend('', 0),
@@ -89,7 +89,7 @@ class Saving extends CallableSessionClass
     private function showTotal(int $savingCount)
     {
         $savingTotal = $this->savingService->getSavingTotal($this->session, $this->fund);
-        $html = $this->render('pages.meeting.saving.total', [
+        $html = $this->renderView('pages.meeting.saving.total', [
             'savingCount' => $savingCount,
             'savingTotal' => $savingTotal,
         ]);
@@ -109,7 +109,7 @@ class Saving extends CallableSessionClass
 
         $this->showTotal($savingCount);
 
-        $html = $this->render('pages.meeting.saving.page', [
+        $html = $this->renderView('pages.meeting.saving.page', [
             'session' => $this->session,
             'savings' => $savings,
             'pagination' => $pagination,
@@ -135,7 +135,7 @@ class Saving extends CallableSessionClass
 
         $saving = $this->savingService->getSaving($this->session, $savingId);
         $title = trans('meeting.saving.titles.edit');
-        $content = $this->render('pages.meeting.saving.edit', [
+        $content = $this->renderView('pages.meeting.saving.edit', [
             'saving' => $saving,
             'members' => $this->memberService->getMemberList(),
             'funds' => $this->fundService->getFundList(),

@@ -44,7 +44,7 @@ class Home extends CallableSessionClass
 
     public function home(int $sessionId)
     {
-        $html = $this->render('pages.meeting.session.home', [
+        $html = $this->renderView('pages.meeting.session.home', [
             'session' => $this->session,
         ]);
         $this->response->html('content-home', $html);

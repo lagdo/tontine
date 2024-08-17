@@ -51,7 +51,7 @@ class PoolRound extends CallableClass
 
     private function showTitles()
     {
-        $html = $this->render('pages.planning.pool.round.actions', [
+        $html = $this->renderView('pages.planning.pool.round.actions', [
             'pool' => $this->pool,
         ]);
         $this->response->html('pool-round-actions', $html);
@@ -85,7 +85,7 @@ class PoolRound extends CallableClass
             return $this->response;
         }
 
-        $html = $this->render('pages.planning.pool.round.home', [
+        $html = $this->renderView('pages.planning.pool.round.home', [
             'pool' => $this->pool,
         ]);
         $this->response->html('content-home', $html);
@@ -148,7 +148,7 @@ class PoolRound extends CallableClass
         $sessions = $this->sessionService->getTontineSessions($pageNumber, orderAsc: false);
         $pagination = $request->paginate($pageNumber, $perPage, $sessionCount);
 
-        $html = $this->render('pages.planning.pool.round.sessions', [
+        $html = $this->renderView('pages.planning.pool.round.sessions', [
             'field' => $field,
             'sessions' => $sessions,
             'sessionId' => $sessionId,
