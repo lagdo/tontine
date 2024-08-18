@@ -20,7 +20,7 @@
                         {{ $locale->formatMoney($debtCalculator->getDebtDueAmount($refund->debt, $session, false), true) }}
                       </td>
                       <td class="table-item-menu" data-refund-id="{{ $refund->id }}">
-                        {!! paymentLink($refund, 'partial-refund', !$session->opened) !!}
+                        {!! paymentLink($refund, 'partial-refund', $refund->debt->refund !== null || !$session->opened) !!}
                       </td>
                     </tr>
 @endforeach

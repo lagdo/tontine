@@ -48,7 +48,6 @@
     'class' => 'btn-session-reports',
     'text' => __('meeting.actions.reports'),
   ]],
-  'links' => [],
 ])
                       </td>
                     </tr>

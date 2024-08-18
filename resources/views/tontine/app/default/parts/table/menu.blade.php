@@ -1,5 +1,5 @@
                         <div class="dropdown float-right">
-                          <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="{{ $dataIdKey }}-{{
+                          <button class="btn btn-primary {{ $btnSize ?? 'btn-sm' }} dropdown-toggle" type="button" id="{{ $dataIdKey }}-{{
                             $dataIdValue }}-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-bars"></i>
                           </button>

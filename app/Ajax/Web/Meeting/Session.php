@@ -49,7 +49,7 @@ class Session extends CallableClass
         $this->response->html('content-page', $html);
         $this->response->call('makeTableResponsive', 'content-page');
 
-        $rqHome = $this->rq(Session\Home::class);
+        $rqSession = $this->rq(Session\Home::class);
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
         $this->jq('.btn-session-resync')->click($this->rq()->resync($sessionId)
             ->confirm(trans('tontine.session.questions.resync')));
@@ -59,12 +59,12 @@ class Session extends CallableClass
         $this->jq('.btn-session-close')->click($this->rq()->close($sessionId)
             ->confirm(trans('tontine.session.questions.close')));
 
-        $this->jq('.btn-session-pools')->click($rqHome->pools($sessionId));
-        $this->jq('.btn-session-savings')->click($rqHome->savings($sessionId));
-        $this->jq('.btn-session-credits')->click($rqHome->credits($sessionId));
-        $this->jq('.btn-session-cash')->click($rqHome->cash($sessionId));
-        $this->jq('.btn-session-charges')->click($rqHome->charges($sessionId));
-        $this->jq('.btn-session-reports')->click($rqHome->reports($sessionId));
+        $this->jq('.btn-session-pools')->click($rqSession->pools($sessionId));
+        $this->jq('.btn-session-savings')->click($rqSession->savings($sessionId));
+        $this->jq('.btn-session-credits')->click($rqSession->credits($sessionId));
+        $this->jq('.btn-session-cash')->click($rqSession->cash($sessionId));
+        $this->jq('.btn-session-charges')->click($rqSession->charges($sessionId));
+        $this->jq('.btn-session-reports')->click($rqSession->reports($sessionId));
 
         return $this->response;
     }

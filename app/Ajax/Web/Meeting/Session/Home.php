@@ -15,10 +15,8 @@ use App\Ajax\Web\Meeting\Pool\Remitment;
 use App\Ajax\Web\Meeting\Saving\Closing;
 use App\Ajax\Web\Meeting\Saving\Saving;
 use App\Ajax\Web\Tontine\Options;
-use Siak\Tontine\Model\Session as SessionModel;
 
 use function Jaxon\jq;
-use function trans;
 
 class Home extends CallableSessionClass
 {
@@ -35,21 +33,29 @@ class Home extends CallableSessionClass
     /**
      * @return void
      */
-    private function setup()
+    private function showPage(string $name)
     {
-        $this->jq('#btn-session-back')->click($this->rq(Menu::class)->home());
-        $this->jq('#btn-tontine-options')->click($this->rq(Options::class)->editOptions());
-    }
-
-    public function pools(int $sessionId)
-    {
-        $html = $this->renderView('pages.meeting.session.home.pools', [
+        $this->view()->share('currentSessionPage', $name);
+        $html = $this->renderView("pages.meeting.session.home.$name", [
             'session' => $this->session,
         ]);
         $this->response->html('content-home', $html);
 
-        $this->setup();
-        $this->jq('#btn-session-refresh')->click($this->rq()->pools($this->session->id));
+        $this->jq('#btn-session-back')->click($this->rq(Menu::class)->home());
+        $this->jq('#btn-tontine-options')->click($this->rq(Options::class)->editOptions());
+        $this->jq('#btn-session-refresh')->click($this->rq()->$name($this->session->id));
+
+        $this->jq('.btn-session-pools')->click($this->rq()->pools($this->session->id));
+        $this->jq('.btn-session-savings')->click($this->rq()->savings($this->session->id));
+        $this->jq('.btn-session-credits')->click($this->rq()->credits($this->session->id));
+        $this->jq('.btn-session-cash')->click($this->rq()->cash($this->session->id));
+        $this->jq('.btn-session-charges')->click($this->rq()->charges($this->session->id));
+        $this->jq('.btn-session-reports')->click($this->rq()->reports($this->session->id));
+    }
+
+    public function pools(int $sessionId)
+    {
+        $this->showPage('pools');
 
         $this->cl(Deposit::class)->show($this->session);
         $this->cl(Remitment::class)->show($this->session);
@@ -61,13 +67,7 @@ class Home extends CallableSessionClass
 
     public function savings(int $sessionId)
     {
-        $html = $this->renderView('pages.meeting.session.home.savings', [
-            'session' => $this->session,
-        ]);
-        $this->response->html('content-home', $html);
-
-        $this->setup();
-        $this->jq('#btn-session-refresh')->click($this->rq()->savings($this->session->id));
+        $this->showPage('savings');
 
         $this->cl(Saving::class)->show($this->session);
         $this->cl(Closing::class)->show($this->session);
@@ -79,13 +79,7 @@ class Home extends CallableSessionClass
 
     public function credits(int $sessionId)
     {
-        $html = $this->renderView('pages.meeting.session.home.credits', [
-            'session' => $this->session,
-        ]);
-        $this->response->html('content-home', $html);
-
-        $this->setup();
-        $this->jq('#btn-session-refresh')->click($this->rq()->credits($this->session->id));
+        $this->showPage('credits');
 
         $this->cl(Loan::class)->show($this->session);
         $this->cl(PartialRefund::class)->show($this->session);
@@ -98,13 +92,7 @@ class Home extends CallableSessionClass
 
     public function cash(int $sessionId)
     {
-        $html = $this->renderView('pages.meeting.session.home.cash', [
-            'session' => $this->session,
-        ]);
-        $this->response->html('content-home', $html);
-
-        $this->setup();
-        $this->jq('#btn-session-refresh')->click($this->rq()->cash($this->session->id));
+        $this->showPage('cash');
 
         $this->cl(Disbursement::class)->show($this->session);
 
@@ -113,13 +101,7 @@ class Home extends CallableSessionClass
 
     public function charges(int $sessionId)
     {
-        $html = $this->renderView('pages.meeting.session.home.charges', [
-            'session' => $this->session,
-        ]);
-        $this->response->html('content-home', $html);
-
-        $this->setup();
-        $this->jq('#btn-session-refresh')->click($this->rq()->charges($this->session->id));
+        $this->showPage('charges');
 
         $this->cl(FixedFee::class)->show($this->session);
         $this->cl(LibreFee::class)->show($this->session);
@@ -131,13 +113,7 @@ class Home extends CallableSessionClass
 
     public function reports(int $sessionId)
     {
-        $html = $this->renderView('pages.meeting.session.home.reports', [
-            'session' => $this->session,
-        ]);
-        $this->response->html('content-home', $html);
-
-        $this->setup();
-        $this->jq('#btn-session-refresh')->click($this->rq()->reports($this->session->id));
+        $this->showPage('reports');
 
         // Summernote options
         $options = [
