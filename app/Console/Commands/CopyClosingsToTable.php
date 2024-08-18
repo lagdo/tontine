@@ -39,7 +39,7 @@ class CopyClosingsToTable extends Command
                     foreach($funds as $fundId => $profitAmount)
                     {
                         Closing::updateOrCreate([
-                            'type' => Closing::TYPE_SAVINGS,
+                            'type' => Closing::TYPE_ROUND,
                             'session_id' => $sessionId,
                             'fund_id' => $fundId ?: $tontine->default_fund->id,
                         ], [
