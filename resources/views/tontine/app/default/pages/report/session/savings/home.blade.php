@@ -1,5 +1,5 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-                  <div class="row align-items-center">
+                  <div class="row">
                     <div class="col">
                       <div class="section-title mt-0">{!! $fund->title !!}</div>
                     </div>
@@ -11,7 +11,7 @@
                   </div>
                   <div class="row" id="report-fund-profits-distribution">
                   </div>
-                  <div class="row align-items-center">
+                  <div class="row">
                     <div class="col">&nbsp;</div>
                     <div class="col-auto">
                       <div class="input-group">

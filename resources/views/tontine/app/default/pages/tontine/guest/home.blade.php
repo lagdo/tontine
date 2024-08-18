@@ -1,10 +1,10 @@
             <div class="section-body">
-              <div class="row align-items-center">
+              <div class="row">
                 <div class="col">
                   <h2 class="section-title">{{ __('tontine.invite.titles.associations') }}</h2>
                 </div>
                 <div class="col-auto">
-                  <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
+                  <div class="btn-group float-right ml-2 mb-2" role="group"row>
                     <button type="button" class="btn btn-primary" id="btn-guest-tontine-refresh"><i class="fa fa-sync"></i></button>
                   </div>
                 </div>

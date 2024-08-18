@@ -368,6 +368,7 @@ return [
             'created' => "The tontine was successfully created.",
             'updated' => "The tontine was successfully updated.",
             'deleted' => "The tontine was successfully deleted.",
+            'selected' => "Now showing the subscriptions of the tontine :tontine.",
         ],
         'errors' => [
             'number' => [

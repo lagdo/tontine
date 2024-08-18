@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\Web\Meeting;
+namespace App\Ajax\Web\Meeting\Presence;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Service\Meeting\PresenceService;
@@ -13,7 +13,7 @@ use function trans;
 /**
  * @before checkGuestAccess ["meeting", "presences"]
  */
-class Presence extends CallableClass
+class Home extends CallableClass
 {
     /**
      * @var PresenceService
@@ -32,13 +32,10 @@ class Presence extends CallableClass
         $html = $this->renderView('pages.meeting.presence.home', ['exchange' => $exchange]);
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-presence-exchange')->click($this->rq()->exchange());
-
         $this->bag('presence')->set('session.id', 0);
         $this->bag('presence')->set('member.id', 0);
 
-        $className = !$exchange ? Presence\Session::class : Presence\Member::class;
-        return $this->cl($className)->home();
+        return $this->cl(!$exchange ? Session::class : Member::class)->home();
     }
 
     public function exchange()
@@ -60,7 +57,7 @@ class Presence extends CallableClass
             return $this->response;
         }
 
-        return $this->cl(Presence\Member::class)->show($session);
+        return $this->cl(Member::class)->show($session);
     }
 
     /**
@@ -74,6 +71,6 @@ class Presence extends CallableClass
             return $this->response;
         }
 
-        return $this->cl(Presence\Session::class)->show($member);
+        return $this->cl(Session::class)->show($member);
     }
 }

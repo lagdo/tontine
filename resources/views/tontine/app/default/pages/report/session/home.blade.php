@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('sqids', 'Sqids\SqidsInterface')
           <div class="section-body">
-            <div class="row align-items-center">
+            <div class="row">
               <div class="col">
                 <h2 class="section-title" id="session-report-title"></h2>
               </div>

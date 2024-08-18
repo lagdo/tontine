@@ -5,7 +5,7 @@
                     </div>
 @if($session->opened)
                     <div class="col-auto">
-                      <div class="btn-group float-right mb-2" role="group" aria-label="">
+                      <div class="btn-group float-right mb-2" role="group"row>
                         <button type="button" class="btn btn-primary" id="btn-closings-refresh"><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
@@ -18,7 +18,8 @@
                     </div>
                     <div class="col-auto">
                       <div class="input-group mb-2">
-                        {!! $htmlBuilder->select('fund_id', $funds, 0)->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;')->id('closings-fund-id') !!}
+                        {!! $htmlBuilder->select('fund_id', $funds, 0)->id('closings-fund-id')
+                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" id="btn-fund-edit-round-closing"><i class="fa fa-circle-notch"></i></button>
                           <button type="button" class="btn btn-primary" id="btn-fund-edit-interest-closing"><i class="far fa-stop-circle"></i></button>

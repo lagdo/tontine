@@ -3,8 +3,8 @@
 namespace App\Ajax\Web\Planning\Subscription;
 
 use App\Ajax\CallableClass;
-use App\Ajax\Web\Planning\Subscription;
 use Siak\Tontine\Model\Pool as PoolModel;
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 
@@ -27,11 +27,12 @@ class Member extends CallableClass
     /**
      * The constructor
      *
+     * @param LocaleService $localeService
      * @param PoolService $poolService
      * @param SubscriptionService $subscriptionService
      */
-    public function __construct(private PoolService $poolService,
-        private SubscriptionService $subscriptionService)
+    public function __construct(private LocaleService $localeService,
+        private PoolService $poolService, private SubscriptionService $subscriptionService)
     {
         $this->poolService = $poolService;
         $this->subscriptionService = $subscriptionService;
@@ -42,8 +43,7 @@ class Member extends CallableClass
      */
     protected function getPool()
     {
-        $poolId = $this->target()->method() === 'home' ? $this->target()->args()[0] :
-            intval($this->bag('subscription')->get('pool.id'));
+        $poolId = intval($this->bag('subscription')->get('pool.id'));
         $this->pool = $this->poolService->getPool($poolId);
     }
 
@@ -53,25 +53,31 @@ class Member extends CallableClass
     public function show(PoolModel $pool)
     {
         $this->pool = $pool;
-        return $this->home($pool->id);
+        return $this->home();
     }
 
-    public function home(int $poolId)
+    public function home()
     {
-        $html = $this->renderView('pages.planning.subscription.member.home')
-            ->with('pool', $this->pool);
+        $poolLabels = $this->poolService
+            ->getRoundPools()
+            ->keyBy('id')->map(function($pool) {
+                return $pool->title . ' - ' . ($pool->deposit_fixed ?
+                    $this->localeService->formatMoney($pool->amount) :
+                    trans('tontine.labels.types.libre'));
+            });
+        $html = $this->renderView('pages.planning.subscription.member.home', [
+            'pool' => $this->pool,
+            'pools' => $poolLabels,
+        ]);
         $this->response->html('pool-subscription-members', $html);
         $this->jq('#btn-subscription-members-filter')->click($this->rq()->filter());
-        $this->jq('#btn-subscription-members-refresh')->click($this->rq()->home($poolId));
+        $this->jq('#btn-subscription-members-refresh')->click($this->rq()->home());
         $this->jq('#btn-subscription-members-search')
             ->click($this->rq()->search(jq('#txt-subscription-members-search')->val()));
-        if($this->pool->remit_planned)
-        {
-            $this->jq('#btn-subscription-beneficiaries')
-                ->click($this->rq(Subscription::class)->beneficiaries($poolId));
-        }
 
-        $this->bag('subscription')->set('pool.id', $poolId);
+        $poolId = pm()->select('select-pool')->toInt();
+        $this->jq('#btn-pool-select')->click($this->rq(Home::class)->pool($poolId));
+
         $this->bag('subscription')->set('member.filter', null);
         $this->bag('subscription')->set('member.search', '');
 

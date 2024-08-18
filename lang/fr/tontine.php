@@ -368,6 +368,7 @@ return [
             'created' => "La tontine a été ajoutée.",
             'updated' => "La tontine a été modifiée.",
             'deleted' => "La tontine a été supprimée.",
+            'selected' => "Vous affichez les souscriptions de la tontine :tontine.",
         ],
         'errors' => [
             'number' => [

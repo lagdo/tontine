@@ -1,22 +1,32 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-                  <div class="row align-items-center">
-                    <div class="col">
-                      <h2 class="section-title">{{ __('tontine.subscription.titles.planning') }}</h2>
-                    </div>
-                    <div class="col-auto">
-                      <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
-                        <button type="button" class="btn btn-primary" id="btn-subscription-beneficiaries">{{
-                          __('tontine.subscription.titles.beneficiaries') }}</i></button>
-                      </div>
-                    </div>
-                    <div class="col-auto">
-                      <div class="btn-group float-right ml-2 mb-2" role="group" aria-label="">
-                        <button type="button" class="btn btn-primary" id="btn-subscription-back"><i class="fa fa-arrow-left"></i></button>
-                        <button type="button" class="btn btn-primary" id="btn-subscription-refresh"><i class="fa fa-sync"></i></button>
-                      </div>
+            <div class="col-md-12">
+              <div class="section-body">
+                <div class="row">
+                  <div class="col">
+                    <h2 class="section-title">
+                      {{ __('tontine.subscription.titles.planning') }}:
+                      {{ $pool->title . ' - ' . ($pool->deposit_fixed ?
+                        $localeService->formatMoney($pool->amount) : __('tontine.labels.types.libre')) }}
+                    </h2>
+                  </div>
+                  <div class="col-auto">
+                    <div class="btn-group float-right ml-2 mb-2" role="group"row>
+                      <button type="button" class="btn btn-primary" id="btn-subscription-beneficiaries">{{
+                        __('tontine.subscription.titles.beneficiaries') }}</i></button>
                     </div>
                   </div>
+                  <div class="col-auto">
+                    <div class="btn-group float-right ml-2 mb-2" role="group"row>
+                      <button type="button" class="btn btn-primary" id="btn-subscription-back"><i class="fa fa-arrow-left"></i></button>
+                      <button type="button" class="btn btn-primary" id="btn-subscription-refresh"><i class="fa fa-sync"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
+              <!-- Data tables -->
+              <div class="card shadow mb-4">
+                <div class="card-body">
                   <div class="table-responsive">
                     <table class="table table-bordered responsive">
                       <thead>
@@ -56,4 +66,7 @@
 @endforeach
                       </tbody>
                     </table>
-                  </div>
+                  </div> <!-- End table -->
+                </div>
+              </div>
+            </div>

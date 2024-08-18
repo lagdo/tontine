@@ -1,6 +1,6 @@
           <div class="row sm-screen-selector mb-3" id="options-sm-screens">
             <div class="col-12">
-              <div class="btn-group btn-group-sm btn-block" role="group" aria-label="">
+              <div class="btn-group btn-group-sm btn-block" role="group"row>
                 <button data-target="content-funds-home" type="button" class="btn btn-primary">
                   {{ __('tontine.fund.titles.funds') }}
                 </button>

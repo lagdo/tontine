@@ -4,7 +4,7 @@
             <div class="card-body" id="content-page">
               <div class="row sm-screen-selector mb-3" id="session-charges-sm-screens">
                 <div class="col-12">
-                  <div class="btn-group btn-group-sm btn-block" role="group" aria-label="">
+                  <div class="btn-group btn-group-sm btn-block" role="group"row>
                     <button data-target="meeting-fees-fixed" type="button" class="btn btn-primary">
                       {!! __('meeting.charge.titles.fixed') !!}
                     </button>

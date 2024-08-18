@@ -6,6 +6,7 @@ return [
         'fr' => "French",
     ],
     'titles' => [
+        'info' => "Information",
         'error' => "Error",
         'success' => "Success",
         'warning' => "Warning",

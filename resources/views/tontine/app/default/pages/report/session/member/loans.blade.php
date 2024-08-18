@@ -1,5 +1,5 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-                  <div class="row align-items-center">
+                  <div class="row">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.loans') }}</div>
                     </div>

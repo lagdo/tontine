@@ -4,7 +4,7 @@
             <div class="card-body" id="content-page">
               <div class="row sm-screen-selector mb-3" id="session-savings-sm-screens">
                 <div class="col-12">
-                  <div class="btn-group btn-group-sm btn-block" role="group" aria-label="">
+                  <div class="btn-group btn-group-sm btn-block" role="group"row>
                     <button data-target="meeting-savings" type="button" class="btn btn-primary">
                       {!! __('meeting.titles.savings') !!}
                     </button>

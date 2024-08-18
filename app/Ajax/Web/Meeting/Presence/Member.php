@@ -3,7 +3,6 @@
 namespace App\Ajax\Web\Meeting\Presence;
 
 use App\Ajax\CallableClass;
-use App\Ajax\Web\Meeting\Presence;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\PresenceService;
 use Siak\Tontine\Service\Tontine\MemberService;
@@ -81,6 +80,11 @@ class Member extends CallableClass
         ]);
         $this->response->html('content-home-members', $html);
 
+        if(!$this->session)
+        {
+            $this->jq('#btn-presence-exchange')->click($this->rq(Home::class)->exchange());
+        }
+
         $this->jq('#btn-presence-members-refresh')->click($this->rq()->page());
         $this->jq('#btn-presence-members-search')
             ->click($this->rq()->search(jq('#txt-presence-members-search')->val()));
@@ -118,7 +122,7 @@ class Member extends CallableClass
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $this->jq('.btn-toggle-member-presence')->click($this->rq()->togglePresence($memberId));
         $this->jq('.btn-show-member-presences')
-            ->click($this->rq(Presence::class)->selectMember($memberId));
+            ->click($this->rq(Home::class)->selectMember($memberId));
 
         return $this->response;
     }

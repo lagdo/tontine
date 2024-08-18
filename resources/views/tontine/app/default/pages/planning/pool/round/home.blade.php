@@ -1,5 +1,5 @@
           <div class="section-body">
-            <div class="row align-items-center">
+            <div class="row">
               <div class="col">
                 <h2 class="section-title">{{ __('tontine.pool_round.titles.sessions', ['pool' => $pool->title]) }}</h2>
               </div>
@@ -9,7 +9,7 @@
           </div>
           <div class="row sm-screen-selector mb-3" id="pool-round-sessions-sm-screens-btn">
             <div class="col-12">
-              <div class="btn-group btn-group-sm btn-block" role="group" aria-label="">
+              <div class="btn-group btn-group-sm btn-block" role="group"row>
                 <button data-target="pool-round-sessions-start-screen" type="button" class="btn btn-primary">
                   {!! __('tontine.pool_round.titles.start') !!}
                 </button>
@@ -25,12 +25,12 @@
               <form id="round-form">
                 <div class="row" id="pool-round-sessions-sm-screens">
                   <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="pool-round-sessions-start-screen">
-                    <div class="row align-items-center">
+                    <div class="row">
                       <div class="col">
                         <h2 class="section-title" id="pool-round-start-session-title"></h2>
                       </div>
                       <div class="col-auto">
-                        <div class="btn-group float-right" role="group" aria-label="">
+                        <div class="btn-group float-right" role="group"row>
                           <button type="button" class="btn btn-primary" id="btn-show-start-session-page"><i class="fa fa-arrow-circle-down"></i></button>
                         </div>
                       </div>
@@ -41,12 +41,12 @@
                     </div> <!-- End table -->
                   </div>
                   <div class="col-md-6 col-sm-12 sm-screen" id="pool-round-sessions-end-screen">
-                    <div class="row align-items-center">
+                    <div class="row">
                       <div class="col">
                         <h2 class="section-title" id="pool-round-end-session-title"></h2>
                       </div>
                       <div class="col-auto">
-                        <div class="btn-group float-right" role="group" aria-label="">
+                        <div class="btn-group float-right" role="group"row>
                           <button type="button" class="btn btn-primary" id="btn-show-end-session-page"><i class="fa fa-arrow-circle-down"></i></button>
                         </div>
                       </div>

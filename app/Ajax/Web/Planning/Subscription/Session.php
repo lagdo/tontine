@@ -3,7 +3,6 @@
 namespace App\Ajax\Web\Planning\Subscription;
 
 use App\Ajax\CallableClass;
-use App\Ajax\Web\Planning\Subscription;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\PoolService;
 
@@ -35,8 +34,7 @@ class Session extends CallableClass
      */
     protected function getPool()
     {
-        $poolId = $this->target()->method() === 'home' ? $this->target()->args()[0] :
-            intval($this->bag('subscription')->get('pool.id'));
+        $poolId = intval($this->bag('subscription')->get('pool.id'));
         $this->pool = $this->poolService->getPool($poolId);
     }
 
@@ -46,24 +44,25 @@ class Session extends CallableClass
     public function show(PoolModel $pool)
     {
         $this->pool = $pool;
-        return $this->home($pool->id);
+        return $this->home();
     }
 
-    public function home(int $poolId)
+    public function home()
     {
         $html = $this->renderView('pages.planning.subscription.session.home', [
             'pool' => $this->pool,
             'total' => $this->poolService->getEnabledSessionCount($this->pool),
         ]);
         $this->response->html('pool-subscription-sessions', $html);
-        $this->jq('#btn-subscription-sessions-refresh')->click($this->rq()->home($poolId));
+        $this->jq('#btn-subscription-sessions-refresh')->click($this->rq()->home());
         if($this->pool->remit_planned)
         {
+            $this->jq('#btn-subscription-beneficiaries')
+                ->click($this->rq(Home::class)->beneficiaries());
             $this->jq('#btn-subscription-planning')
-                ->click($this->rq(Subscription::class)->planning($poolId));
+                ->click($this->rq(Home::class)->planning());
         }
 
-        $this->bag('subscription')->set('pool.id', $poolId);
         $this->bag('subscription')->set('session.filter', false);
 
         return $this->page();

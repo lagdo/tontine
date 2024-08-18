@@ -1,5 +1,5 @@
           <div class="section-body">
-            <div class="row align-items-center">
+            <div class="row">
               <div class="col-auto">
                 <h2 class="section-title">{{ $session->title }}</h2>
               </div>
