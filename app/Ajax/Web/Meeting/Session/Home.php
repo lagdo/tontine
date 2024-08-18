@@ -33,104 +33,114 @@ class Home extends CallableSessionClass
     }
 
     /**
-     * @exclude
+     * @return void
      */
-    public function show(SessionModel $session)
+    private function setup()
     {
-        $this->session = $session;
+        $this->jq('#btn-session-back')->click($this->rq(Menu::class)->home());
+        $this->jq('#btn-tontine-options')->click($this->rq(Options::class)->editOptions());
 
-        return $this->home($session->id);
+        $this->response->call('showBalanceAmountsWithDelay');
     }
 
-    public function home(int $sessionId)
+    public function pools(int $sessionId)
     {
-        $html = $this->renderView('pages.meeting.session.home', [
+        $html = $this->renderView('pages.meeting.session.home.pools', [
             'session' => $this->session,
         ]);
         $this->response->html('content-home', $html);
-        $this->jq('a', '#session-tabs')->click(jq()->tab('show'));
-        $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
-        $this->jq('.btn-tontine-edit')->click($this->rq()->edit($tontineId));
 
-        $this->jq('#btn-session-back')->click($this->rq(Menu::class)->home());
-        $this->jq('#btn-tontine-options')->click($this->rq(Options::class)->editOptions());
-        $this->jq('#btn-session-refresh')->click($this->rq()->home($sessionId));
-        $this->jq('#btn-session-open')->click($this->rq(Session::class)->open()
-            ->confirm(trans('tontine.session.questions.open') . '<br/>' .
-            trans('tontine.session.questions.warning')));
-        $this->jq('#btn-session-close')->click($this->rq(Session::class)->close()
-            ->confirm(trans('tontine.session.questions.close')));
+        $this->setup();
+        $this->jq('#btn-session-refresh')->click($this->rq()->pools($this->session->id));
 
-        $this->reports();
-        $this->pools();
-        $this->charges();
-        $this->savings();
-        $this->credits();
-        $this->cash();
+        $this->cl(Deposit::class)->show($this->session);
+        $this->cl(Remitment::class)->show($this->session);
 
-        $this->response->call('showBalanceAmountsWithDelay');
+        $this->response->call('setSmScreenHandler', 'session-pools-sm-screens');
 
         return $this->response;
     }
 
-    /**
-     * @return void
-     */
-    private function pools()
+    public function savings(int $sessionId)
     {
-        $this->cl(Deposit::class)->show($this->session);
-        $this->cl(Remitment::class)->show($this->session);
+        $html = $this->renderView('pages.meeting.session.home.savings', [
+            'session' => $this->session,
+        ]);
+        $this->response->html('content-home', $html);
 
-        $this->response->call('setSmScreenHandler', 'session-pools-sm-screens', 'session-pools');
-    }
+        $this->setup();
+        $this->jq('#btn-session-refresh')->click($this->rq()->savings($this->session->id));
 
-    /**
-     * @return void
-     */
-    private function savings()
-    {
         $this->cl(Saving::class)->show($this->session);
         $this->cl(Closing::class)->show($this->session);
 
-        $this->response->call('setSmScreenHandler', 'session-savings-sm-screens', 'session-savings');
+        $this->response->call('setSmScreenHandler', 'session-savings-sm-screens');
+
+        return $this->response;
     }
 
-    /**
-     * @return void
-     */
-    private function credits()
+    public function credits(int $sessionId)
     {
+        $html = $this->renderView('pages.meeting.session.home.credits', [
+            'session' => $this->session,
+        ]);
+        $this->response->html('content-home', $html);
+
+        $this->setup();
+        $this->jq('#btn-session-refresh')->click($this->rq()->credits($this->session->id));
+
         $this->cl(Loan::class)->show($this->session);
         $this->cl(PartialRefund::class)->show($this->session);
         $this->cl(Refund::class)->show($this->session);
 
-        $this->response->call('setSmScreenHandler', 'session-credits-sm-screens', 'session-credits');
+        $this->response->call('setSmScreenHandler', 'session-credits-sm-screens');
+
+        return $this->response;
     }
 
-    /**
-     * @return void
-     */
-    private function cash()
+    public function cash(int $sessionId)
     {
+        $html = $this->renderView('pages.meeting.session.home.cash', [
+            'session' => $this->session,
+        ]);
+        $this->response->html('content-home', $html);
+
+        $this->setup();
+        $this->jq('#btn-session-refresh')->click($this->rq()->cash($this->session->id));
+
         $this->cl(Disbursement::class)->show($this->session);
+
+        return $this->response;
     }
 
-    /**
-     * @return void
-     */
-    private function charges()
+    public function charges(int $sessionId)
     {
+        $html = $this->renderView('pages.meeting.session.home.charges', [
+            'session' => $this->session,
+        ]);
+        $this->response->html('content-home', $html);
+
+        $this->setup();
+        $this->jq('#btn-session-refresh')->click($this->rq()->charges($this->session->id));
+
         $this->cl(FixedFee::class)->show($this->session);
         $this->cl(LibreFee::class)->show($this->session);
 
-        $this->response->call('setSmScreenHandler', 'session-charges-sm-screens', 'session-charges');
+        $this->response->call('setSmScreenHandler', 'session-charges-sm-screens');
+
+        return $this->response;
     }
 
-    /**
-     * @return void
-     */
-    private function reports()
+    public function reports(int $sessionId)
     {
+        $html = $this->renderView('pages.meeting.session.home.reports', [
+            'session' => $this->session,
+        ]);
+        $this->response->html('content-home', $html);
+
+        $this->setup();
+        $this->jq('#btn-session-refresh')->click($this->rq()->reports($this->session->id));
+
         // Summernote options
         $options = [
             'height' => 300,
@@ -150,5 +160,7 @@ class Home extends CallableSessionClass
         $reportText = jq('#session-report')->summernote('code');
         $this->jq('#btn-save-agenda')->click($this->rq(Session::class)->saveAgenda($agendaText));
         $this->jq('#btn-save-report')->click($this->rq(Session::class)->saveReport($reportText));
+
+        return $this->response;
     }
 }

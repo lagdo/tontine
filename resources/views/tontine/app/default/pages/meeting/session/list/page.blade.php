@@ -15,11 +15,41 @@
                       <td>{{ $session->title }}<br/>{{ $statuses[$session->status] }}</td>
                       <td>{{ $session->date }}<br/>{{ $session->times }}</td>
                       <td>{{ $session->host ? $session->host->name : '' }}</td>
-                      <td class="table-item-menu" data-session-id="{{ $session->id }}">
-                        @if ($session->opened)<button type="button" class="btn btn-primary btn-session-resync"><i class="fa fa-redo"></i></button>@endif
+                      <td class="table-item-menu">
+                        <div class="btn-group float-right" data-session-id="{{ $session->id }}" role="group" aria-label="">
+@if ($session->opened)
+                          <button type="button" class="btn btn-primary btn-session-resync"><i class="fa fa-redo"></i></button>
+                          <button type="button" class="btn btn-primary btn-session-close"><i class="fa fa-lock-open"></i></button>
+@elseif($session->pending || $session->closed)
+                          <button type="button" class="btn btn-primary btn-session-open"><i class="fa fa-lock"></i></button>
+@endif
+                        </div>
                       </td>
-                      <td class="table-item-menu" data-session-id="{{ $session->id }}">
-                        <button type="button" class="btn btn-primary btn-session-show"><i class="fa fa-arrow-circle-right"></i></button>
+                      <td class="table-item-menu">
+@include('tontine.app.default.parts.table.menu', [
+  'dataIdKey' => 'data-session-id',
+  'dataIdValue' => $session->id,
+  'menus' => [[
+    'class' => 'btn-session-pools',
+    'text' => __('meeting.actions.pools'),
+  ],[
+    'class' => 'btn-session-charges',
+    'text' => __('meeting.actions.charges'),
+  ],[
+    'class' => 'btn-session-savings',
+    'text' => __('meeting.actions.savings'),
+  ],[
+    'class' => 'btn-session-credits',
+    'text' => __('meeting.actions.credits'),
+  ],[
+    'class' => 'btn-session-cash',
+    'text' => __('meeting.actions.cash'),
+  ],[
+    'class' => 'btn-session-reports',
+    'text' => __('meeting.actions.reports'),
+  ]],
+  'links' => [],
+])
                       </td>
                     </tr>
 @endforeach

@@ -49,12 +49,50 @@ class Session extends CallableClass
         $this->response->html('content-page', $html);
         $this->response->call('makeTableResponsive', 'content-page');
 
+        $rqHome = $this->rq(Session\Home::class);
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
-        $this->jq('.btn-session-show')->click($this->rq(Session\Home::class)->home($sessionId));
         $this->jq('.btn-session-resync')->click($this->rq()->resync($sessionId)
             ->confirm(trans('tontine.session.questions.resync')));
+        $this->jq('.btn-session-open')->click($this->rq()->open($sessionId)
+            ->confirm(trans('tontine.session.questions.open') . '<br/>' .
+            trans('tontine.session.questions.warning')));
+        $this->jq('.btn-session-close')->click($this->rq()->close($sessionId)
+            ->confirm(trans('tontine.session.questions.close')));
+
+        $this->jq('.btn-session-pools')->click($rqHome->pools($sessionId));
+        $this->jq('.btn-session-savings')->click($rqHome->savings($sessionId));
+        $this->jq('.btn-session-credits')->click($rqHome->credits($sessionId));
+        $this->jq('.btn-session-cash')->click($rqHome->cash($sessionId));
+        $this->jq('.btn-session-charges')->click($rqHome->charges($sessionId));
+        $this->jq('.btn-session-reports')->click($rqHome->reports($sessionId));
 
         return $this->response;
+    }
+
+    public function open(int $sessionId)
+    {
+        if(!($session = $this->sessionService->getSession($sessionId)) || $session->opened)
+        {
+            $this->notify->error(trans('tontine.session.errors.opened'), trans('common.titles.error'));
+            return $this->page();
+        }
+
+        $this->sessionService->openSession($session);
+
+        return $this->page();
+    }
+
+    public function close(int $sessionId)
+    {
+        if(!($session = $this->sessionService->getSession($sessionId)) || !$session->opened)
+        {
+            $this->notify->error(trans('tontine.session.errors.not_opened'), trans('common.titles.error'));
+            return $this->page();
+        }
+
+        $this->sessionService->closeSession($session);
+
+        return $this->page();
     }
 
     public function resync(int $sessionId)

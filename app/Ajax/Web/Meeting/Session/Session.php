@@ -59,22 +59,6 @@ class Session extends CallableSessionClass
         return $this->response;
     }
 
-    public function open()
-    {
-        $this->sessionService->openSession($this->session);
-        $this->cl(Home::class)->show($this->session);
-
-        return $this->response;
-    }
-
-    public function close()
-    {
-        $this->sessionService->closeSession($this->session);
-        $this->cl(Home::class)->show($this->session);
-
-        return $this->response;
-    }
-
     public function saveAgenda(string $text)
     {
         $this->sessionService->saveAgenda($this->session, $text);
