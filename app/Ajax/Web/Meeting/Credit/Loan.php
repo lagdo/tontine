@@ -54,6 +54,8 @@ class Loan extends CallableSessionClass
         $this->response->html('meeting-loans', $html);
         $this->response->call('makeTableResponsive', 'meeting-loans');
 
+        $this->response->call('showBalanceAmountsWithDelay');
+
         $this->jq('#btn-loans-refresh')->click($this->rq()->home());
         $this->jq('#btn-loan-add')->click($this->rq()->addLoan());
         $this->jq('#btn-loan-balances')

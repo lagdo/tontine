@@ -13,14 +13,14 @@
                 <thead>
                   <tr>
                     <th></th>
-                    <th>{!! $locale->formatMoney($total) !!}</th>
+                    <th class="currency">{!! $locale->formatMoney($total) !!}</th>
                   </tr>
                 </thead>
                 <tbody>
 @foreach ($balances as $name => $amount)
                   <tr>
-                    <td>{!! __("meeting.titles.$name") !!}</td>
-                    <td>{!! $locale->formatMoney($amount) !!}</td>
+                    <td><i class="fa fa-{!! in_array($name, $in) ? 'plus' : 'minus' !!}"></i> {!! __("meeting.titles.$name") !!}</td>
+                    <td class="currency">{!! $locale->formatMoney($amount) !!}</td>
                   </tr>
 @endforeach
                 </tbody>

@@ -39,8 +39,6 @@ class Home extends CallableSessionClass
     {
         $this->jq('#btn-session-back')->click($this->rq(Menu::class)->home());
         $this->jq('#btn-tontine-options')->click($this->rq(Options::class)->editOptions());
-
-        $this->response->call('showBalanceAmountsWithDelay');
     }
 
     public function pools(int $sessionId)
