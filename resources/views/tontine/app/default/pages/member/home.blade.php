@@ -4,7 +4,7 @@
                 <h2 class="section-title">{{ __('tontine.menus.members') }}</h2>
               </div>
               <div class="col-auto">
-                <div class="btn-group float-right" role="group"row>
+                <div class="btn-group float-right" role="group">
                   <button type="button" class="btn btn-primary" id="btn-member-refresh"><i class="fa fa-sync"></i></button>
                   <button type="button" class="btn btn-primary" id="btn-member-add"><i class="fa fa-plus"></i></button>
                   <button type="button" class="btn btn-primary" id="btn-member-add-list"><i class="fa fa-list"></i></button>

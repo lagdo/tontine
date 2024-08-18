@@ -4,7 +4,7 @@
                       <div class="section-title mt-0">{{ $charge->name }}</div>
                     </div>
                     <div class="col-auto">
-                      <div class="btn-group float-right ml-2 mb-2" role="group"row>
+                      <div class="btn-group float-right ml-2 mb-2" role="group">
                         <button type="button" class="btn btn-primary" id="btn-fee-target-back"><i class="fa fa-arrow-left"></i></button>
 @if ($charge->is_active)
 @if (!$target)

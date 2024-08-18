@@ -2,14 +2,22 @@
 @inject('fundService', 'Siak\Tontine\Service\Tontine\FundService')
                   <div class="row">
                     <div class="col">
-                      <div class="section-title mt-0">
-                        {{ __('meeting.titles.loans') }} (<span id="loan_amount_available">...</span>)
-                        <button type="button" class="btn btn-primary" id="btn-loan-balances"><i class="fa fa-caret-right"></i></button>
+                      <div class="section-title mt-0">{{ __('meeting.titles.loans') }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                          {!! $htmlBuilder->span('...')->id('loan_amount_available')
+                            ->class('input-group-text')->attribute('style', 'height:36px; padding:5px 15px;') !!}
+                        </div>
+                        <div class="input-group-append">
+                          <button type="button" class="btn btn-primary" id="btn-loan-balances"><i class="fa fa-caret-right"></i></button>
+                        </div>
                       </div>
                     </div>
 @if($session->opened)
                     <div class="col-auto">
-                      <div class="btn-group float-right ml-2 mb-2" role="group"row>
+                      <div class="btn-group float-right ml-2 mb-2" role="group">
                         <button type="button" class="btn btn-primary" id="btn-loan-add"><i class="fa fa-plus"></i></button>
                         <button type="button" class="btn btn-primary" id="btn-loans-refresh"><i class="fa fa-sync"></i></button>
                       </div>

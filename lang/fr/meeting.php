@@ -187,7 +187,7 @@ return [
             'principal' => "Principal",
             'interest' => "Intérêt",
             'percentage' => "Pourcentage",
-            'amount_available' => "disponible : :amount",
+            'amount_available' => "Disponible : :amount",
             'fund' => "Origine",
         ],
         'interest' => [
@@ -228,7 +228,7 @@ return [
             'edit' => "Modifier un décaissement",
         ],
         'labels' => [
-            'amount_available' => "disponible : :amount",
+            'amount_available' => "Disponible : :amount",
         ],
         'questions' => [
             'delete' => "Supprimer ce décaissement ?",

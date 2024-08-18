@@ -4,7 +4,7 @@
                 <h2 class="section-title">{{ __('tontine.menus.sessions') }}</h2>
               </div>
               <div class="col-auto">
-                <div class="btn-group float-right ml-2" role="group"row>
+                <div class="btn-group float-right ml-2" role="group">
                   <button type="button" class="btn btn-primary" id="btn-sessions-refresh"><i class="fa fa-sync"></i></button>
                 </div>
               </div>

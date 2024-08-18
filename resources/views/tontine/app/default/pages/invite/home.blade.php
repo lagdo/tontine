@@ -1,6 +1,6 @@
           <div class="row sm-screen-selector mb-3" id="invites-sm-screens">
             <div class="col-12">
-              <div class="btn-group btn-group-sm btn-block" role="group"row>
+              <div class="btn-group btn-group-sm btn-block" role="group">
                 <button data-target="content-host-invites-home" type="button" class="btn btn-primary">
                   {{ __('tontine.invite.titles.hosts') }}
                 </button>
@@ -18,7 +18,7 @@
                     <h2 class="section-title">{{ __('tontine.invite.titles.hosts') }}</h2>
                   </div>
                   <div class="col-auto">
-                    <div class="btn-group float-right ml-2 mb-2" role="group"row>
+                    <div class="btn-group float-right ml-2 mb-2" role="group">
                       <button type="button" class="btn btn-primary" id="btn-host-invites-refresh"><i class="fa fa-sync"></i></button>
                       <button type="button" class="btn btn-primary" id="btn-host-invite-create"><i class="fa fa-plus"></i></button>
                     </div>
@@ -41,7 +41,7 @@
                     <h2 class="section-title">{{ __('tontine.invite.titles.guests') }}</h2>
                   </div>
                   <div class="col-auto">
-                    <div class="btn-group float-right ml-2 mb-2" role="group"row>
+                    <div class="btn-group float-right ml-2 mb-2" role="group">
                       <button type="button" class="btn btn-primary" id="btn-guest-invites-refresh"><i class="fa fa-sync"></i></button>
                     </div>
                   </div>

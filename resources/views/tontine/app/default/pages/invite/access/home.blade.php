@@ -4,7 +4,7 @@
                     <h2 class="section-title">{{ __('tontine.invite.titles.access') }} :: {!! $guest->name !!}</h2>
                   </div>
                   <div class="col-auto">
-                    <div class="btn-group float-right ml-2" role="group"row>
+                    <div class="btn-group float-right ml-2" role="group">
                       <button type="button" class="btn btn-primary" id="btn-host-invites-back"><i class="fa fa-arrow-left"></i></button>
                     </div>
                   </div>

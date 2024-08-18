@@ -16,7 +16,7 @@
                       <td>{{ $session->date }}<br/>{{ $session->times }}</td>
                       <td>{{ $session->host ? $session->host->name : '' }}</td>
                       <td class="table-item-menu">
-                        <div class="btn-group float-right" data-session-id="{{ $session->id }}" role="group"row>
+                        <div class="btn-group btn-group-sm float-right" data-session-id="{{ $session->id }}" role="group">
 @if ($session->opened)
                           <button type="button" class="btn btn-primary btn-session-resync"><i class="fa fa-redo"></i></button>
                           <button type="button" class="btn btn-primary btn-session-close"><i class="fa fa-lock-open"></i></button>

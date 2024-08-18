@@ -5,7 +5,7 @@
                     </div>
 @if($session->opened)
                     <div class="col-auto">
-                      <div class="btn-group float-right mb-2" role="group"row>
+                      <div class="btn-group float-right mb-2" role="group">
                         <button type="button" class="btn btn-primary" id="btn-closings-refresh"><i class="fa fa-sync"></i></button>
                       </div>
                     </div>

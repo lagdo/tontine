@@ -9,7 +9,7 @@
           </div>
           <div class="row sm-screen-selector mb-3" id="pool-round-sessions-sm-screens-btn">
             <div class="col-12">
-              <div class="btn-group btn-group-sm btn-block" role="group"row>
+              <div class="btn-group btn-group-sm btn-block" role="group">
                 <button data-target="pool-round-sessions-start-screen" type="button" class="btn btn-primary">
                   {!! __('tontine.pool_round.titles.start') !!}
                 </button>
@@ -30,7 +30,7 @@
                         <h2 class="section-title" id="pool-round-start-session-title"></h2>
                       </div>
                       <div class="col-auto">
-                        <div class="btn-group float-right" role="group"row>
+                        <div class="btn-group float-right" role="group">
                           <button type="button" class="btn btn-primary" id="btn-show-start-session-page"><i class="fa fa-arrow-circle-down"></i></button>
                         </div>
                       </div>
@@ -46,7 +46,7 @@
                         <h2 class="section-title" id="pool-round-end-session-title"></h2>
                       </div>
                       <div class="col-auto">
-                        <div class="btn-group float-right" role="group"row>
+                        <div class="btn-group float-right" role="group">
                           <button type="button" class="btn btn-primary" id="btn-show-end-session-page"><i class="fa fa-arrow-circle-down"></i></button>
                         </div>
                       </div>

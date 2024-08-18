@@ -24,7 +24,7 @@
                     </div>
                   </div>
                   <div class="col-auto">
-                    <div class="btn-group float-right ml-2" role="group"row>
+                    <div class="btn-group float-right ml-2" role="group">
                       <button type="button" class="btn btn-primary" id="btn-subscription-members-filter"><i class="fa fa-filter"></i></button>
                       <button type="button" class="btn btn-primary" id="btn-subscription-members-refresh"><i class="fa fa-sync"></i></button>
                     </div>

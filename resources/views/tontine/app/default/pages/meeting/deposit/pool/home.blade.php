@@ -6,7 +6,7 @@
                       </div>
                     </div>
                     <div class="col-auto">
-                      <div class="btn-group float-right ml-2 mb-2" role="group"row>
+                      <div class="btn-group float-right ml-2 mb-2" role="group">
                         <button type="button" class="btn btn-primary" id="btn-deposits-back"><i class="fa fa-arrow-left"></i></button>
                       </div>
                     </div>

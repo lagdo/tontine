@@ -10,13 +10,13 @@
                     </h2>
                   </div>
                   <div class="col-auto">
-                    <div class="btn-group float-right ml-2 mb-2" role="group"row>
+                    <div class="btn-group float-right ml-2 mb-2" role="group">
                       <button type="button" class="btn btn-primary" id="btn-subscription-beneficiaries">{{
                         __('tontine.subscription.titles.beneficiaries') }}</i></button>
                     </div>
                   </div>
                   <div class="col-auto">
-                    <div class="btn-group float-right ml-2 mb-2" role="group"row>
+                    <div class="btn-group float-right ml-2 mb-2" role="group">
                       <button type="button" class="btn btn-primary" id="btn-subscription-back"><i class="fa fa-arrow-left"></i></button>
                       <button type="button" class="btn btn-primary" id="btn-subscription-refresh"><i class="fa fa-sync"></i></button>
                     </div>

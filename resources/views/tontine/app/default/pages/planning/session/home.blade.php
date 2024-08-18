@@ -8,7 +8,7 @@
                   </div>
 @if ($round !== null)
                   <div class="col-auto">
-                    <div class="btn-group float-right" role="group"row>
+                    <div class="btn-group float-right" role="group">
                       <button type="button" class="btn btn-primary" id="btn-sessions-refresh"><i class="fa fa-sync"></i></button>
                       <button type="button" class="btn btn-primary" id="btn-sessions-add"><i class="fa fa-plus"></i></button>
                       <button type="button" class="btn btn-primary" id="btn-sessions-add-list"><i class="fa fa-list"></i></button>

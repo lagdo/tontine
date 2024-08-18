@@ -6,7 +6,7 @@
                   </div>
 @if ($pool->remit_planned)
                   <div class="col-auto">
-                    <div class="btn-group float-right ml-2 mb-2" role="group"row>
+                    <div class="btn-group float-right ml-2 mb-2" role="group">
                       <button type="button" class="btn btn-primary" id="btn-subscription-beneficiaries">{{
                         __('tontine.subscription.titles.beneficiaries') }}</i></button>
                       <button type="button" class="btn btn-primary" id="btn-subscription-planning">{{
@@ -15,7 +15,7 @@
                   </div>
 @endif
                   <div class="col-auto">
-                    <div class="btn-group float-right ml-2 mb-2" role="group"row>
+                    <div class="btn-group float-right ml-2 mb-2" role="group">
                       <button type="button" class="btn btn-primary" id="btn-subscription-sessions-refresh"><i class="fa fa-sync"></i></button>
                     </div>
                   </div>
