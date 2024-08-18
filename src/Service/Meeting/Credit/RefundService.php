@@ -149,8 +149,7 @@ class RefundService
      */
     public function getDebt(int $debtId): ?Debt
     {
-        return Debt::whereDoesntHave('refund')
-            ->whereHas('loan', function(Builder $query) {
+        return Debt::whereHas('loan', function(Builder $query) {
                 $query->whereHas('member', function(Builder $query) {
                     $query->where('tontine_id', $this->tenantService->tontine()->id);
                 });

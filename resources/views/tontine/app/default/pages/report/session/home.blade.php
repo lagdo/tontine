@@ -7,7 +7,8 @@
               </div>
               <div class="col-auto">
                 <div class="input-group">
-                  {{ $htmlBuilder->select('session_id', $sessions, 0)->class('form-control')->id('select-session') }}
+                  {{ $htmlBuilder->select('session_id', $sessions, 0)->id('select-session')
+                    ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') }}
                   <div class="input-group-append">
                     <button type="button" class="btn btn-primary" id="btn-session-select"><i class="fa fa-arrow-right"></i></button>
                   </div>
@@ -17,7 +18,8 @@
               </div>
               <div class="col-auto">
                 <div class="input-group">
-                  {{ $htmlBuilder->select('member_id', $members, 0)->class('form-control')->id('select-member') }}
+                  {{ $htmlBuilder->select('member_id', $members, 0)->id('select-member')
+                    ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') }}
                   <div class="input-group-append">
                     <button type="button" class="btn btn-primary" id="btn-member-select"><i class="fa fa-arrow-right"></i></button>
                   </div>
