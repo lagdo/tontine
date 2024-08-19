@@ -29,7 +29,6 @@
     'class' => 'btn-member-delete',
     'text' => __('common.actions.delete'),
   ]],
-  'links' => [],
 ])
                       </td>
                     </tr>

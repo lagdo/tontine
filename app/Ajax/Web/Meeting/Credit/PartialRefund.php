@@ -71,16 +71,16 @@ class PartialRefund extends CallableSessionClass
         $this->response->html('meeting-partial-refunds-page', $html);
         $this->response->call('makeTableResponsive', 'meeting-partial-refunds-page');
 
-        $refundId = jq()->parent()->attr('data-refund-id')->toInt();
+        $refundId = jq()->parent()->attr('data-partial-refund-id')->toInt();
+        $this->jq('.btn-partial-refund-edit')->click($this->rq()->editRefund($refundId));
+        $this->jq('.btn-partial-refund-delete')->click($this->rq()->deleteRefund($refundId)
+            ->confirm(trans('meeting.refund.questions.delete')));
         $this->jq('.btn-del-partial-refund')->click($this->rq()->deleteRefund($refundId)
             ->confirm(trans('meeting.refund.questions.delete')));
 
         return $this->response;
     }
 
-    /**
-     * @di $validator
-     */
     public function addRefund()
     {
         if($this->session->closed)
@@ -90,8 +90,9 @@ class PartialRefund extends CallableSessionClass
         }
 
         $title = trans('meeting.refund.titles.add');
-        $content = $this->renderView('pages.meeting.refund.partial.add')
-            ->with('debts', $this->refundService->getUnpaidDebtList($this->session));
+        $content = $this->renderView('pages.meeting.refund.partial.add', [
+            'debts' => $this->refundService->getUnpaidDebtList($this->session),
+        ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -133,7 +134,60 @@ class PartialRefund extends CallableSessionClass
         // Refresh the refunds pages
         $this->cl(Refund::class)->show($this->session);
 
-        return $this->home();
+        return $this->page();
+    }
+
+    public function editRefund(int $refundId)
+    {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
+        $refund = $this->refundService->getPartialRefund($this->session, $refundId);
+        $title = trans('meeting.refund.titles.edit');
+        $content = $this->renderView('pages.meeting.refund.partial.edit', [
+            'refund' => $refund,
+            'debtLabel' => $this->refundService->getDebtLabel($refund->debt, $this->session),
+        ]);
+        $buttons = [[
+            'title' => trans('common.actions.cancel'),
+            'class' => 'btn btn-tertiary',
+            'click' => 'close',
+        ],[
+            'title' => trans('common.actions.save'),
+            'class' => 'btn btn-primary',
+            'click' => $this->rq()->updateRefund($refundId, pm()->form('refund-form')),
+        ]];
+        $this->dialog->show($title, $content, $buttons);
+
+        return $this->response;
+    }
+
+    /**
+     * @di $validator
+     * @after showBalanceAmounts
+     */
+    public function updateRefund(int $refundId, array $formValues)
+    {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
+        $formValues['debt'] = $refundId;
+        $values = $this->validator->validateItem($formValues);
+
+        $this->refundService->updatePartialRefund($this->session, $refundId, $values['amount']);
+
+        $this->dialog->hide();
+
+        // Refresh the refunds pages
+        $this->cl(Refund::class)->show($this->session);
+
+        return $this->page();
     }
 
     /**
@@ -152,6 +206,6 @@ class PartialRefund extends CallableSessionClass
         // Refresh the refunds pages
         $this->cl(Refund::class)->show($this->session);
 
-        return $this->home();
+        return $this->page();
     }
 }

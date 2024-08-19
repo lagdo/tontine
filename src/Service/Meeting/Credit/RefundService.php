@@ -316,6 +316,23 @@ class RefundService
     }
 
     /**
+     * @param Debt $debt
+     * @param Session $session
+     *
+     * @return string
+     */
+    public function getDebtLabel(Debt $debt, Session $session): string
+    {
+        $loan = $debt->loan;
+        $fundTitle = $this->fundService->getFundTitle($loan->fund);
+        $unpaidAmount = $this->debtCalculator->getDebtUnpaidAmount($debt, $session);
+
+        return $loan->member->name . " - $fundTitle - " . $loan->session->title .
+            ' - ' . trans('meeting.loan.labels.' . $debt->type) .
+            ' - ' . $this->localeService->formatMoney($unpaidAmount, true);
+    }
+
+    /**
      * Get debt list for dropdown.
      *
      * @param Session $session The session
@@ -333,19 +350,9 @@ class RefundService
                     ->values();
                 return $debts->concat($fundDebts);
             }, collect())
-            ->filter(function($debt) use($session) {
-                return $this->canCreatePartialRefund($debt, $session);
-            })
+            ->filter(fn($debt) => $this->canCreatePartialRefund($debt, $session))
             ->keyBy('id')
-            ->map(function($debt) use($session) {
-                $loan = $debt->loan;
-                $fundTitle = $this->fundService->getFundTitle($loan->fund);
-                $unpaidAmount = $this->debtCalculator->getDebtUnpaidAmount($debt, $session);
-
-                return $loan->member->name . " - $fundTitle - " . $loan->session->title .
-                    ' - ' . trans('meeting.loan.labels.' . $debt->type) .
-                    ' - ' . $this->localeService->formatMoney($unpaidAmount, true);
-            });
+            ->map(fn($debt) => $this->getDebtLabel($debt, $session));
     }
 
     /**
@@ -394,14 +401,14 @@ class RefundService
     }
 
     /**
-     * Delete a refund.
+     * Find a refund.
      *
      * @param Session $session The session
      * @param int $refundId
      *
-     * @return void
+     * @return PartialRefund
      */
-    public function deletePartialRefund(Session $session, int $refundId): void
+    public function getPartialRefund(Session $session, int $refundId): PartialRefund
     {
         $refund = PartialRefund::where('session_id', $session->id)
             ->with(['debt.refund'])->find($refundId);
@@ -413,6 +420,33 @@ class RefundService
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_delete'));
         }
-        $refund->delete();
+        return $refund;
+    }
+
+    /**
+     * Update a refund.
+     *
+     * @param Session $session The session
+     * @param int $refundId
+     * @param int $amount
+     *
+     * @return void
+     */
+    public function updatePartialRefund(Session $session, int $refundId, int $amount): void
+    {
+        $this->getPartialRefund($session, $refundId)->update(['amount' => $amount]);
+    }
+
+    /**
+     * Delete a refund.
+     *
+     * @param Session $session The session
+     * @param int $refundId
+     *
+     * @return void
+     */
+    public function deletePartialRefund(Session $session, int $refundId): void
+    {
+        $this->getPartialRefund($session, $refundId)->delete();
     }
 }
