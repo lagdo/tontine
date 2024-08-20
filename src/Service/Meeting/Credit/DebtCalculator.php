@@ -224,9 +224,9 @@ class DebtCalculator
      * @param Debt $debt
      * @param Session $current
      *
-     * @return Collection
+     * @return PartialRefund|null
      */
-    private function getNextPartialRefunds(Debt $debt, Session $current): Collection
+    private function getLastPartialRefund(Debt $debt, Session $current): ?PartialRefund
     {
         // We use a join instead of a subquery so we can order the results by session date.
         return $debt->partial_refunds()
@@ -234,7 +234,7 @@ class DebtCalculator
             ->join('sessions', 'sessions.id', '=', 'partial_refunds.session_id')
             ->where('sessions.start_at', '>', $current->start_at)
             ->orderBy('sessions.start_at', 'desc')
-            ->get();
+            ->first();
     }
 
     /**
@@ -259,21 +259,11 @@ class DebtCalculator
         }
 
         // For debts with simple or compound interest, the payable amount calculation
-        // must take into account any partial refund after the current session.
-        $currentDebtAmount = $this->getDebtAmount($debt, $session);
-        $nextPartialRefunds = $this->getNextPartialRefunds($debt, $session);
-        if($nextPartialRefunds->count() === 0)
-        {
-            return $currentDebtAmount - $partialRefundAmount;
-        }
-
-        $lastSession = $nextPartialRefunds[0]->session;
-        $addedDebt = $this->getDebtAmount($debt, $lastSession) - $currentDebtAmount;
-        $addedRefund = $nextPartialRefunds->sum('amount');
-
-        return $addedRefund < $addedDebt ?
-            $currentDebtAmount - $partialRefundAmount :
-            $currentDebtAmount - $partialRefundAmount - $addedRefund + $addedDebt;
+        // must take into account the partial refunds after the current session.
+        $lastPartialRefund = $this->getLastPartialRefund($debt, $session);
+        return $lastPartialRefund === null ?
+            $this->getDebtDueAmount($debt, $session, false) :
+            $this->getDebtDueAmount($debt, $lastPartialRefund->session, true);
     }
 
     /**
