@@ -209,17 +209,21 @@ return [
     'refund' => [
         'titles' => [
             'add' => "Ajouter un remboursement partiel",
+            'edit' => "Modifier un remboursement partiel",
         ],
         'labels' => [
             'partial' => "Partiel",
+            'loan' => "Emprunt",
         ],
         'questions' => [
             'delete' => "Supprimer ce remboursement partiel ?",
         ],
         'errors' => [
             'not_found' => "Impossible de trouver le remboursement partiel.",
-            'cannot_delete' => "Impossible de supprimer ce remboursement partiel.",
             'pr_amount' => "Le montant du remboursement partiel doit être inférieur au montant dû.",
+            'cannot_create' => "Impossible de créer un remboursement partiel.",
+            'cannot_update' => "Impossible de modifier ce remboursement partiel.",
+            'cannot_delete' => "Impossible de supprimer ce remboursement partiel.",
         ],
     ],
     'disbursement' => [

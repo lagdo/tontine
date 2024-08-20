@@ -209,17 +209,21 @@ return [
     'refund' => [
         'titles' => [
             'add' => "Add a partial refund",
+            'edit' => "Edit a partial refund",
         ],
         'labels' => [
             'partial' => "Partial",
+            'loan' => "Loan",
         ],
         'questions' => [
             'delete' => "Delete this partial refund?",
         ],
         'errors' => [
             'not_found' => "Cannot find the partial refund.",
-            'cannot_delete' => "Cannot delete this partial refund.",
             'pr_amount' => "The partial refund amount must be lower than the amount due.",
+            'cannot_create' => "Cannot create a partial refund.",
+            'cannot_update' => "Cannot update this partial refund.",
+            'cannot_delete' => "Cannot delete this partial refund.",
         ],
     ],
     'disbursement' => [

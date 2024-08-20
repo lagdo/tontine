@@ -59,7 +59,7 @@ class Refund extends CallableSessionClass
         $this->jq('#btn-refunds-refresh')->click($this->rq()->home());
         $this->jq('#btn-refunds-filter')->click($this->rq()->toggleFilter());
         $fundId = pm()->select('refunds-fund-id')->toInt();
-        $this->jq('#btn-refunds-select-fund')->click($this->rq()->fund($fundId));
+        $this->jq('#btn-refunds-fund')->click($this->rq()->fund($fundId));
 
         return $this->fund(0);
     }

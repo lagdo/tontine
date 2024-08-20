@@ -4,7 +4,7 @@
                 <table class="table table-bordered responsive">
                   <thead>
                     <tr>
-                      <th>{!! __('meeting.labels.member') !!}</th>
+                      <th>{!! __('meeting.refund.labels.loan') !!}</th>
                       <th class="currency">{!! __('common.labels.amount') !!}</th>
                       <th class="table-item-menu">&nbsp;</th>
                     </tr>

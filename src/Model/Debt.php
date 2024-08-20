@@ -93,4 +93,12 @@ class Debt extends Base
     {
         return $this->hasMany(PartialRefund::class);
     }
+
+    /**
+     * Will be used to get the unique partial refund for a given session
+     */
+    public function partial_refund()
+    {
+        return $this->hasOne(PartialRefund::class)->latestOfMany();
+    }
 }
