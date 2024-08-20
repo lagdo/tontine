@@ -185,7 +185,7 @@ class ReportService
     {
         if(($debt = $loan->i_debt) !== null)
         {
-            $loan->iDebtAmount = $this->debtCalculator->getDebtTotalAmount($debt, $session);
+            $loan->iDebtAmount = $this->debtCalculator->getDebtAmount($debt, $session);
         }
     }
 

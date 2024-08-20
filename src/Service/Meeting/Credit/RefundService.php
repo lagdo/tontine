@@ -325,7 +325,7 @@ class RefundService
     {
         $loan = $debt->loan;
         $fundTitle = $this->fundService->getFundTitle($loan->fund);
-        $unpaidAmount = $this->debtCalculator->getDebtUnpaidAmount($debt, $session);
+        $unpaidAmount = $this->debtCalculator->getDebtPayableAmount($debt, $session);
 
         return $loan->member->name . " - $fundTitle - " . $loan->session->title .
             ' - ' . trans('meeting.loan.labels.' . $debt->type) .
@@ -371,7 +371,7 @@ class RefundService
             throw new MessageException(trans('meeting.refund.errors.cannot_delete'));
         }
         // A partial refund must not totally refund a debt
-        if($amount >= $this->debtCalculator->getDebtDueAmount($debt, $session, true))
+        if($amount >= $this->debtCalculator->getDebtPayableAmount($debt, $session))
         {
             throw new MessageException(trans('meeting.refund.errors.pr_amount'));
         }
@@ -434,7 +434,14 @@ class RefundService
      */
     public function updatePartialRefund(Session $session, int $refundId, int $amount): void
     {
-        $this->getPartialRefund($session, $refundId)->update(['amount' => $amount]);
+        $refund = $this->getPartialRefund($session, $refundId);
+        // A partial refund must not totally refund a debt
+        if($amount >= $this->debtCalculator->getDebtPayableAmount($refund->debt, $session))
+        {
+            throw new MessageException(trans('meeting.refund.errors.pr_amount'));
+        }
+
+        $refund->update(['amount' => $amount]);
     }
 
     /**
