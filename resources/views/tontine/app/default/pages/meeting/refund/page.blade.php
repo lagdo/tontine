@@ -11,8 +11,8 @@
                   <tbody>
 @foreach($debts as $debt)
 @php
-  $totalAmount = $debtCalculator->getDebtTotalAmount($debt, $session);
-  $dueAmount = $debtCalculator->getDebtDueAmount($debt, $session, true);
+  $debtAmount = $debtCalculator->getDebtAmount($debt, $session);
+  $debtDueAmount = $debtCalculator->getDebtDueAmount($debt, $session, true);
 @endphp
                     <tr>
                       <td>
@@ -20,8 +20,8 @@
                           __('meeting.loan.labels.' . $debt->type) }}: {{ $debt->loan->session->title }}
                       </td>
                       <td class="currency">
-                        {{ __('meeting.report.labels.due') }} {{ $locale->formatMoney($dueAmount, true) }}<br/>
-                        {{ $locale->formatMoney($totalAmount, true) }}
+                        {{ __('meeting.report.labels.due') }} {{ $locale->formatMoney($debtDueAmount, true) }}<br/>
+                        {{ $locale->formatMoney($debtAmount, true) }}
                       </td>
                       <td class="table-item-menu" data-debt-id="{{ $debt->id }}">
                         {!! paymentLink($debt->refund, 'refund', !$debt->isEditable) !!}
