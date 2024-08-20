@@ -252,11 +252,9 @@ class DebtCalculator
         {
             return 0;
         }
-
-        $partialRefundAmount = $debt->partial_refunds()->sum('amount');
         if($debt->is_principal || $debt->loan->fixed_interest)
         {
-            return $debt->amount - $partialRefundAmount;
+            return $debt->amount - $debt->partial_refunds()->sum('amount');
         }
 
         // For debts with simple or compound interest, the payable amount calculation
