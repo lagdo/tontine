@@ -10,6 +10,7 @@ use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
 
+use function min;
 use function pow;
 
 class DebtCalculator
@@ -262,8 +263,9 @@ class DebtCalculator
         // must take into account the partial refunds after the current session.
         $lastPartialRefund = $this->getLastPartialRefund($debt, $session);
         return $lastPartialRefund === null ?
-            $this->getDebtDueAmount($debt, $session, false) :
-            $this->getDebtDueAmount($debt, $lastPartialRefund->session, true);
+            $this->getDebtDueAmount($debt, $session, true) :
+            min($this->getDebtDueAmount($debt, $session, true),
+                $this->getDebtDueAmount($debt, $lastPartialRefund->session, true));
     }
 
     /**
