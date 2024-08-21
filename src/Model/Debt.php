@@ -99,6 +99,8 @@ class Debt extends Base
      */
     public function partial_refund()
     {
-        return $this->hasOne(PartialRefund::class)->latestOfMany();
+        // We use latest() instead of latestOfMany() because it is simpler to
+        // add clauses with extra parameters to the subquery.
+        return $this->hasOne(PartialRefund::class)->latest('id');
     }
 }

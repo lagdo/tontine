@@ -107,6 +107,20 @@ class PartialRefundService
     }
 
     /**
+     * @param Session $session The session
+     * @param Fund $fund
+     *
+     * @return Builder|Relation
+     */
+    private function getUnpaidDebtsQuery(Session $session, Fund $fund): Builder|Relation
+    {
+        return $this->getDebtsQuery($session, $fund, false)
+        ->with([
+            'partial_refunds' => fn($query) => $query->where('session_id', $session->id),
+        ]);
+    }
+
+    /**
      * Get the unpaid debts.
      *
      * @param Fund $fund
@@ -116,10 +130,7 @@ class PartialRefundService
      */
     public function getUnpaidDebts(Fund $fund, Session $session): Collection
     {
-        return $this->getDebtsQuery($session, $fund, false)
-            ->with([
-                'partial_refund' => fn($query) => $query->where('session_id', $session->id),
-            ])
+        return $this->getUnpaidDebtsQuery($session, $fund)
             ->get()
             ->filter(fn(Debt $debt) => $this->canCreatePartialRefund($debt, $session));
     }
@@ -134,11 +145,7 @@ class PartialRefundService
      */
     public function getUnpaidDebt(Fund $fund, Session $session, int $debtId): ?Debt
     {
-        return $this->getDebtsQuery($session, $fund, false)
-            ->with([
-                'partial_refund' => fn($query) => $query->where('session_id', $session->id),
-            ])
-            ->find($debtId);
+        return $this->getUnpaidDebtsQuery($session, $fund)->find($debtId);
     }
 
     /**
