@@ -107,21 +107,54 @@ class PartialRefundService
     }
 
     /**
-     * Get the unpaid debt list for dropdown.
+     * Get the unpaid debts.
      *
-     * @param Session $session The session
      * @param Fund $fund
+     * @param Session $session The session
      *
      * @return Collection
      */
-    public function getUnpaidDebts(Session $session, Fund $fund): Collection
+    public function getUnpaidDebts(Fund $fund, Session $session): Collection
     {
         return $this->getDebtsQuery($session, $fund, false)
             ->with([
-                'partial_refund' => fn(Relation $query) => $query->where('session_id', $session->id),
+                'partial_refund' => fn($query) => $query->where('session_id', $session->id),
             ])
             ->get()
             ->filter(fn(Debt $debt) => $this->canCreatePartialRefund($debt, $session));
+    }
+
+    /**
+     * Get an unpaid debt.
+     *
+     * @param Fund $fund
+     * @param Session $session The session
+     *
+     * @return Debt|null
+     */
+    public function getUnpaidDebt(Fund $fund, Session $session, int $debtId): ?Debt
+    {
+        return $this->getDebtsQuery($session, $fund, false)
+            ->with([
+                'partial_refund' => fn($query) => $query->where('session_id', $session->id),
+            ])
+            ->find($debtId);
+    }
+
+    /**
+     * Create or update a refund.
+     *
+     * @param Debt $debt
+     * @param Session $session The session
+     * @param int $amount
+     *
+     * @return void
+     */
+    public function savePartialRefund(Debt $debt, Session $session, int $amount): void
+    {
+        $debt->partial_refund === null ?
+            $this->createPartialRefund($debt, $session, $amount) :
+            $this->updatePartialRefund($debt->partial_refund, $session, $amount);
     }
 
     /**
@@ -207,7 +240,9 @@ class PartialRefundService
             throw new MessageException(trans('meeting.refund.errors.cannot_update'));
         }
         // A partial refund must not totally refund a debt
-        if($amount >= $this->debtCalculator->getDebtPayableAmount($refund->debt, $session))
+        $maxAmount = $refund->amount +
+            $this->debtCalculator->getDebtPayableAmount($refund->debt, $session);
+        if($amount >= $maxAmount)
         {
             throw new MessageException(trans('meeting.refund.errors.pr_amount'));
         }

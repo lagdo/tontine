@@ -11,11 +11,12 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row">
+                  <div class="row mb-2">
                     <div class="col">
 @if ($type === 'fixed')
                       <div class="input-group">
-                        {!! $htmlBuilder->text('search', '')->class('form-control')->id('txt-fee-settlements-search') !!}
+                        {!! $htmlBuilder->text('search', '')->id('txt-fee-settlements-search')
+                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" id="btn-fee-fixed-settlements-search"><i class="fa fa-search"></i></button>
                         </div>

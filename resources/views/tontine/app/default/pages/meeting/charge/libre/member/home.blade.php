@@ -12,10 +12,11 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row">
+                  <div class="row mb-1">
                     <div class="col">
                       <div class="input-group">
-                        {!! $htmlBuilder->text('search', '')->class('form-control')->id('txt-fee-member-search') !!}
+                        {!! $htmlBuilder->text('search', '')->id('txt-fee-member-search')
+                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" id="btn-fee-libre-search"><i class="fa fa-search"></i></button>
                         </div>
@@ -24,11 +25,12 @@
                     <div class="col-auto">
                       <div class="input-group input-group-sm float-right mb-1 mr-0 pr-0">
                         <div class="input-group-prepend">
-                          <div class="input-group-text">
+                          <div class="input-group-text" style="height:36px;">
                             {!! $htmlBuilder->checkbox('', $paid, '1')->id('check-fee-libre-paid') !!}
                           </div>
                         </div>
-                        {!! $htmlBuilder->label(__('common.labels.paid'), '')->class('form-control') !!}
+                        {!! $htmlBuilder->label(__('common.labels.paid'), '')->class('form-control')
+                          ->attribute('style', 'height:36px; padding:5px 15px;') !!}
                       </div>
                     </div>
                   </div>

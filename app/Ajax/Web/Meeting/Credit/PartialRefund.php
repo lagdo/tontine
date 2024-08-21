@@ -6,6 +6,7 @@ use App\Ajax\CallableSessionClass;
 use Siak\Tontine\Model\Fund as FundModel; 
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
@@ -18,6 +19,11 @@ use function trans;
  */
 class PartialRefund extends CallableSessionClass
 {
+    /**
+     * @var LocaleService
+     */
+    protected LocaleService $localeService;
+
     /**
      * @var DebtValidator
      */
@@ -57,7 +63,7 @@ class PartialRefund extends CallableSessionClass
         $this->response->html('meeting-partial-refunds', $html);
 
         $this->jq('#btn-partial-refunds-refresh')->click($this->rq()->home());
-        $this->jq('#btn-partial-refunds-add')->click($this->rq()->addRefund());
+        $this->jq('#btn-partial-refunds-edit')->click($this->rq()->editRefunds());
         $fundId = pm()->select('partial-refunds-fund-id')->toInt();
         $this->jq('#btn-partial-refunds-fund')->click($this->rq()->fund($fundId));
 
@@ -129,7 +135,7 @@ class PartialRefund extends CallableSessionClass
     /**
      * @before getFund
      */
-    public function addRefund()
+    public function editRefunds()
     {
         if($this->session->closed)
         {
@@ -137,20 +143,51 @@ class PartialRefund extends CallableSessionClass
             return $this->response;
         }
 
-        $title = trans('meeting.refund.titles.add');
-        $content = $this->renderView('pages.meeting.refund.partial.add', [
-            'debts' => $this->refundService->getUnpaidDebtList($this->session, $this->fund),
+        $html = $this->renderView('pages.meeting.refund.partial.edit-list', [
+            'session' => $this->session,
+            'debts' => $this->refundService->getUnpaidDebts($this->fund, $this->session),
         ]);
-        $buttons = [[
-            'title' => trans('common.actions.cancel'),
-            'class' => 'btn btn-tertiary',
-            'click' => 'close',
-        ],[
-            'title' => trans('common.actions.save'),
-            'class' => 'btn btn-primary',
-            'click' => $this->rq()->createRefund(pm()->form('refund-form')),
-        ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->response->html('meeting-partial-refunds', $html);
+
+        $this->jq('#btn-partial-refunds-back')->click($this->rq()->home());
+        $this->jq('#btn-partial-refunds-refresh')->click($this->rq()->editRefunds());
+        $debtId = jq()->parent()->attr('data-debt-id')->toInt();
+        $this->jq('.btn-partial-refund-edit-amount')->click($this->rq()->editAmount($debtId));
+        $amount = jq('input', jq()->parent()->parent())->val()->toInt();
+        $this->jq('.btn-partial-refund-save-amount')->click($this->rq()->saveAmount($debtId, $amount));
+
+        return $this->response;
+    }
+
+    /**
+     * @before getFund
+     * @di $localeService
+     */
+    public function editAmount(int $debtId)
+    {
+        if($this->session->closed)
+        {
+            $this->notify->warning(trans('meeting.warnings.session.closed'));
+            return $this->response;
+        }
+
+        $debt = $this->refundService->getUnpaidDebt($this->fund, $this->session, $debtId);
+        if(!$debt)
+        {
+            $this->notify->warning(trans('meeting.loan.errors.not_found'));
+            return $this->response;
+        }
+
+        $html = $this->renderView('pages.meeting.refund.partial.amount.edit', [
+            'debt' => $debt,
+            'amount' => $this->localeService->getMoneyValue($debt->partial_refund->amount),
+        ]);
+        $parentDiv = "partial-refund-amount-{$debt->id}";
+        $this->response->html($parentDiv, $html);
+        $debtId = jq()->parent()->attr('data-debt-id')->toInt();
+        $amount = jq('input', jq()->parent()->parent())->val()->toInt();
+        $this->jq('.btn-partial-refund-save-amount', "#$parentDiv")
+            ->click($this->rq()->saveAmount($debtId, $amount));
 
         return $this->response;
     }
@@ -160,7 +197,7 @@ class PartialRefund extends CallableSessionClass
      * @di $validator
      * @after showBalanceAmounts
      */
-    public function createRefund(array $formValues)
+    public function saveAmount(int $debtId, int $amount)
     {
         if($this->session->closed)
         {
@@ -168,22 +205,22 @@ class PartialRefund extends CallableSessionClass
             return $this->response;
         }
 
-        $values = $this->validator->validateItem($formValues);
-        $debt = $this->refundService->getDebt($values['debt']);
+        $values = $this->validator->validateItem(['debt' => $debtId, 'amount' => $amount]);
+        $debt = $this->refundService->getUnpaidDebt($this->fund, $this->session, $debtId);
         if(!$debt)
         {
             $this->notify->warning(trans('meeting.loan.errors.not_found'));
             return $this->response;
         }
 
-        $this->refundService->createPartialRefund($debt, $this->session, $values['amount']);
+        $this->refundService->savePartialRefund($debt, $this->session, $values['amount']);
 
         $this->dialog->hide();
 
         // Refresh the refunds page
         $this->cl(Refund::class)->show($this->session);
 
-        return $this->page();
+        return $this->editRefunds();
     }
 
     public function editRefund(int $refundId)

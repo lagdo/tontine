@@ -22,7 +22,7 @@
 @endif
                           </td>
 @else
-                          <td class="currency" id="member-{{ $member->id }}" data-member-id="{{ $member->id }}">
+                          <td class="currency" id="member-{{ $member->id }}" data-member-id="{{ $member->id }}" style="width:200px">
 @if (!$session->opened || !$charge->is_active)
                             @include('tontine.app.default.pages.meeting.charge.libre.member.closed', [
                               'amount' => !$member->bill ? '' : $locale->formatMoney($member->bill->amount, true),
