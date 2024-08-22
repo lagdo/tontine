@@ -105,11 +105,6 @@ class Pool extends OpenedSessionCallable
      */
     public function createRemitment(int $payableId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         if(!$this->pool->remit_planned || $this->pool->remit_auction)
         {
             // Only when remitments are planned and without auctions.
@@ -123,11 +118,6 @@ class Pool extends OpenedSessionCallable
 
     public function addRemitment(int $payableId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         // if($this->pool->remit_planned && !$this->pool->remit_auction)
         // {
         //     // Only when remitments are not planned or with auctions.
@@ -160,12 +150,6 @@ class Pool extends OpenedSessionCallable
      */
     public function saveRemitment(array $formValues)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            $this->dialog->hide();
-            return $this->response;
-        }
         // if($this->pool->remit_planned && !$this->pool->remit_auction)
         // {
         //     // Only when remitments are not planned or with auctions.
@@ -190,12 +174,6 @@ class Pool extends OpenedSessionCallable
      */
     public function deleteRemitment(int $payableId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $this->remitmentService->deleteRemitment($this->pool, $this->session, $payableId);
 
         return $this->page();

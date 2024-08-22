@@ -144,11 +144,6 @@ class Refund extends OpenedSessionCallable
      */
     public function createRefund(string $debtId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         $debt = $this->refundService->getDebt($debtId);
         if(!$debt)
         {
@@ -167,11 +162,6 @@ class Refund extends OpenedSessionCallable
      */
     public function deleteRefund(int $debtId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         $debt = $this->refundService->getDebt($debtId);
         if(!$debt)
         {

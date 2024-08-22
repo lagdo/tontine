@@ -64,12 +64,6 @@ class Disbursement extends OpenedSessionCallable
 
     public function addDisbursement()
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $title = trans('meeting.disbursement.titles.add');
         $content = $this->renderView('pages.meeting.disbursement.add')
             ->with('categories', $this->disbursementService->getCategories())
@@ -95,12 +89,6 @@ class Disbursement extends OpenedSessionCallable
      */
     public function createDisbursement(array $formValues)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $values = $this->validator->validateItem($formValues);
         $this->disbursementService->createDisbursement($this->session, $values);
 
@@ -111,12 +99,6 @@ class Disbursement extends OpenedSessionCallable
 
     public function editDisbursement(int $disbursementId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $disbursement = $this->disbursementService->getSessionDisbursement($this->session, $disbursementId);
         $title = trans('meeting.disbursement.titles.edit');
         $content = $this->renderView('pages.meeting.disbursement.edit')
@@ -144,12 +126,6 @@ class Disbursement extends OpenedSessionCallable
      */
     public function updateDisbursement(int $disbursementId, array $formValues)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $values = $this->validator->validateItem($formValues);
         $this->disbursementService->updateDisbursement($this->session, $disbursementId, $values);
 
@@ -163,12 +139,6 @@ class Disbursement extends OpenedSessionCallable
      */
     public function deleteDisbursement(int $disbursementId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $this->disbursementService->deleteDisbursement($this->session, $disbursementId);
 
         return $this->home();

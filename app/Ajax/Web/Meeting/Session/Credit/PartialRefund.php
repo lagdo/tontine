@@ -137,12 +137,6 @@ class PartialRefund extends OpenedSessionCallable
      */
     public function editRefunds()
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $html = $this->renderView('pages.meeting.refund.partial.edit-list', [
             'session' => $this->session,
             'debts' => $this->refundService->getUnpaidDebts($this->fund, $this->session),
@@ -165,12 +159,6 @@ class PartialRefund extends OpenedSessionCallable
      */
     public function editAmount(int $debtId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $debt = $this->refundService->getUnpaidDebt($this->fund, $this->session, $debtId);
         if(!$debt)
         {
@@ -199,12 +187,6 @@ class PartialRefund extends OpenedSessionCallable
      */
     public function saveAmount(int $debtId, int $amount)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $values = $this->validator->validateItem(['debt' => $debtId, 'amount' => $amount]);
         $debt = $this->refundService->getUnpaidDebt($this->fund, $this->session, $debtId);
         if(!$debt)
@@ -225,12 +207,6 @@ class PartialRefund extends OpenedSessionCallable
 
     public function editRefund(int $refundId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $refund = $this->refundService->getPartialRefund($this->session, $refundId);
         $title = trans('meeting.refund.titles.edit');
         $content = $this->renderView('pages.meeting.refund.partial.edit', [
@@ -258,12 +234,6 @@ class PartialRefund extends OpenedSessionCallable
      */
     public function updateRefund(int $refundId, array $formValues)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $formValues['debt'] = $refundId;
         $values = $this->validator->validateItem($formValues);
         $refund = $this->refundService->getPartialRefund($this->session, $refundId);
@@ -284,12 +254,6 @@ class PartialRefund extends OpenedSessionCallable
      */
     public function deleteRefund(int $refundId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $refund = $this->refundService->getPartialRefund($this->session, $refundId);
         $this->refundService->deletePartialRefund($refund, $this->session);
 

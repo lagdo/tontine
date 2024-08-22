@@ -148,11 +148,6 @@ class Member extends OpenedSessionCallable
      */
     public function editSaving(int $memberId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         if(!($member = $this->savingService->getMember($memberId)))
         {
             $this->notify->warning(trans('tontine.member.errors.not_found'));
@@ -187,11 +182,6 @@ class Member extends OpenedSessionCallable
      */
     public function saveSaving(int $memberId, string $amount)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         if(!($member = $this->savingService->getMember($memberId)))
         {
             $this->notify->warning(trans('tontine.member.errors.not_found'));

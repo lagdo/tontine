@@ -135,12 +135,6 @@ class Pool extends OpenedSessionCallable
      */
     public function addDeposit(int $receivableId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $this->depositService->createDeposit($this->pool, $this->session, $receivableId);
 
         return $this->page();
@@ -154,11 +148,6 @@ class Pool extends OpenedSessionCallable
      */
     public function editAmount(int $receivableId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         $receivable = $this->depositService->getReceivable($this->pool, $this->session, $receivableId);
         if(!$receivable || !$receivable->deposit)
         {
@@ -189,11 +178,6 @@ class Pool extends OpenedSessionCallable
      */
     public function saveAmount(int $receivableId, string $amount)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         $amount = str_replace(',', '.', trim($amount));
         if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
         {
@@ -216,12 +200,6 @@ class Pool extends OpenedSessionCallable
      */
     public function delDeposit(int $receivableId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $this->depositService->deleteDeposit($this->pool, $this->session, $receivableId);
 
         return $this->page();
@@ -232,11 +210,6 @@ class Pool extends OpenedSessionCallable
      */
     public function addAllDeposits()
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         if(!$this->pool->deposit_fixed)
         {
             return $this->response;
@@ -252,11 +225,6 @@ class Pool extends OpenedSessionCallable
      */
     public function delAllDeposits()
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         if(!$this->pool->deposit_fixed)
         {
             return $this->response;

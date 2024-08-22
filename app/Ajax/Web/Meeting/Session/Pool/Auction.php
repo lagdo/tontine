@@ -83,12 +83,6 @@ class Auction extends OpenedSessionCallable
      */
     public function togglePayment(string $auctionId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $this->validator->validate($auctionId);
         $this->auctionService->toggleAuctionPayment($this->session, $auctionId);
 

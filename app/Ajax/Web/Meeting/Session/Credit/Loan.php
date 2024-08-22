@@ -70,12 +70,6 @@ class Loan extends OpenedSessionCallable
 
     public function addLoan()
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $title = trans('meeting.loan.titles.add');
         $content = $this->renderView('pages.meeting.loan.add', [
             'amountAvailable' => $this->loanService->getAmountAvailableValue($this->session),
@@ -104,12 +98,6 @@ class Loan extends OpenedSessionCallable
      */
     public function createLoan(array $formValues)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $values = $this->validator->validateItem($formValues);
         if(!($member = $this->memberService->getMember($values['member'])))
         {
@@ -131,11 +119,6 @@ class Loan extends OpenedSessionCallable
 
     public function editLoan(int $loanId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         $loan = $this->loanService->getSessionLoan($this->session, $loanId);
         if(!$loan)
         {
@@ -177,11 +160,6 @@ class Loan extends OpenedSessionCallable
      */
     public function updateLoan(int $loanId, array $formValues)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         $loan = $this->loanService->getSessionLoan($this->session, $loanId);
         if(!$loan)
         {
@@ -219,12 +197,6 @@ class Loan extends OpenedSessionCallable
      */
     public function deleteLoan(int $loanId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $this->loanService->deleteLoan($this->session, $loanId);
 
         return $this->home();

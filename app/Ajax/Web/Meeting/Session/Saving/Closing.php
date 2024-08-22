@@ -104,11 +104,6 @@ class Closing extends OpenedSessionCallable
 
     public function editRoundClosing(int $fundId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         $fund = $this->fundService->getFund($fundId, true, true);
         if(!$fund)
         {
@@ -172,11 +167,6 @@ class Closing extends OpenedSessionCallable
 
     public function editInterestClosing(int $fundId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         $fund = $this->fundService->getFund($fundId, true, true);
         if(!$fund)
         {

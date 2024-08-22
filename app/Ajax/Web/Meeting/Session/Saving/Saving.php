@@ -127,12 +127,6 @@ class Saving extends OpenedSessionCallable
 
     public function editSaving(int $savingId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $saving = $this->savingService->getSaving($this->session, $savingId);
         $title = trans('meeting.saving.titles.edit');
         $content = $this->renderView('pages.meeting.saving.edit', [
@@ -161,11 +155,6 @@ class Saving extends OpenedSessionCallable
      */
     public function updateSaving(int $savingId, array $formValues)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
         if(!($saving = $this->savingService->getSaving($this->session, $savingId)))
         {
             $this->notify->warning(trans('meeting.saving.errors.not_found'));
@@ -198,12 +187,6 @@ class Saving extends OpenedSessionCallable
      */
     public function deleteSaving(int $savingId)
     {
-        if($this->session->closed)
-        {
-            $this->notify->warning(trans('meeting.warnings.session.closed'));
-            return $this->response;
-        }
-
         $this->savingService->deleteSaving($this->session, $savingId);
 
         return $this->page();
