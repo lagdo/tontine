@@ -18,7 +18,8 @@ class Menu extends OpenedSessionCallable
      */
     protected function getSessionId(): int
     {
-        return (int)$this->target()->args()[0];
+        $sessionId = (int)($this->target()->args()[0] ?? 0);
+        return $sessionId > 0 ? $sessionId : parent::getSessionId();
     }
 
     /**
@@ -36,17 +37,17 @@ class Menu extends OpenedSessionCallable
 
         $this->jq('#btn-session-back')->click($this->rq(Session::class)->home());
         $this->jq('#btn-tontine-options')->click($this->rq(Options::class)->editOptions());
-        $this->jq('#btn-session-refresh')->click($this->rq()->$name($this->session->id));
+        $this->jq('#btn-session-refresh')->click($this->rq()->$name());
 
-        $this->jq('.btn-session-pools')->click($this->rq()->pools($this->session->id));
-        $this->jq('.btn-session-savings')->click($this->rq()->savings($this->session->id));
-        $this->jq('.btn-session-credits')->click($this->rq()->credits($this->session->id));
-        $this->jq('.btn-session-cash')->click($this->rq()->cash($this->session->id));
-        $this->jq('.btn-session-charges')->click($this->rq()->charges($this->session->id));
-        $this->jq('.btn-session-reports')->click($this->rq()->reports($this->session->id));
+        $this->jq('.btn-session-pools')->click($this->rq()->pools());
+        $this->jq('.btn-session-savings')->click($this->rq()->savings());
+        $this->jq('.btn-session-credits')->click($this->rq()->credits());
+        $this->jq('.btn-session-cash')->click($this->rq()->cash());
+        $this->jq('.btn-session-charges')->click($this->rq()->charges());
+        $this->jq('.btn-session-reports')->click($this->rq()->reports());
     }
 
-    public function pools(int $sessionId)
+    public function pools(int $sessionId = 0)
     {
         $this->showPage('pools');
 
@@ -58,7 +59,7 @@ class Menu extends OpenedSessionCallable
         return $this->response;
     }
 
-    public function savings(int $sessionId)
+    public function savings(int $sessionId = 0)
     {
         $this->showPage('savings');
 
@@ -70,7 +71,7 @@ class Menu extends OpenedSessionCallable
         return $this->response;
     }
 
-    public function credits(int $sessionId)
+    public function credits(int $sessionId = 0)
     {
         $this->showPage('credits');
 
@@ -83,7 +84,7 @@ class Menu extends OpenedSessionCallable
         return $this->response;
     }
 
-    public function cash(int $sessionId)
+    public function cash(int $sessionId = 0)
     {
         $this->showPage('cash');
 
@@ -92,7 +93,7 @@ class Menu extends OpenedSessionCallable
         return $this->response;
     }
 
-    public function charges(int $sessionId)
+    public function charges(int $sessionId = 0)
     {
         $this->showPage('charges');
 
@@ -104,7 +105,7 @@ class Menu extends OpenedSessionCallable
         return $this->response;
     }
 
-    public function reports(int $sessionId)
+    public function reports(int $sessionId = 0)
     {
         $this->showPage('reports');
 

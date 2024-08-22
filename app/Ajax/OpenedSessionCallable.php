@@ -15,7 +15,7 @@ class OpenedSessionCallable extends SessionCallable
     protected function getSession()
     {
         parent::getSession();
-        if(!$this->session->opened)
+        if($this->target()->method() !== 'reports' && !$this->session->opened)
         {
             throw new MessageException(trans('meeting.errors.session.not_opened'));
         }

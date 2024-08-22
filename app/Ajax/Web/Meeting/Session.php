@@ -62,13 +62,13 @@ class Session extends CallableClass
 
         $this->jq('.btn-session-summary')->click($this->rq(Summary::class)->home($sessionId));
 
-        $rqSession = $this->rq(Session\Menu::class);
-        $this->jq('.btn-session-pools')->click($rqSession->pools($sessionId));
-        $this->jq('.btn-session-savings')->click($rqSession->savings($sessionId));
-        $this->jq('.btn-session-credits')->click($rqSession->credits($sessionId));
-        $this->jq('.btn-session-cash')->click($rqSession->cash($sessionId));
-        $this->jq('.btn-session-charges')->click($rqSession->charges($sessionId));
-        $this->jq('.btn-session-reports')->click($rqSession->reports($sessionId));
+        $rqMenu = $this->rq(Session\Menu::class);
+        $this->jq('.btn-session-pools')->click($rqMenu->pools($sessionId));
+        $this->jq('.btn-session-savings')->click($rqMenu->savings($sessionId));
+        $this->jq('.btn-session-credits')->click($rqMenu->credits($sessionId));
+        $this->jq('.btn-session-cash')->click($rqMenu->cash($sessionId));
+        $this->jq('.btn-session-charges')->click($rqMenu->charges($sessionId));
+        $this->jq('.btn-session-reports')->click($rqMenu->reports($sessionId));
 
         return $this->response;
     }
