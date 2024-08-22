@@ -10,13 +10,11 @@
                       </div>
                     </div>
 @endif
-@if($session->opened)
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
                         <button type="button" class="btn btn-primary" id="btn-remitments-refresh"><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
-@endif
                   </div>
                   <div class="table-responsive">
                     <table class="table table-bordered responsive">

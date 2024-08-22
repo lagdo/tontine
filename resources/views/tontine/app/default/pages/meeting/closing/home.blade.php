@@ -3,15 +3,12 @@
                     <div class="col">
                       <div class="section-title mt-0">{!! __('meeting.titles.closings') !!}</div>
                     </div>
-@if($session->opened)
                     <div class="col-auto">
                       <div class="btn-group float-right mb-2" role="group">
                         <button type="button" class="btn btn-primary" id="btn-closings-refresh"><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
-@endif
                   </div>
-@if($session->opened)
                   <div class="row">
                     <div class="col">
                       &nbsp;
@@ -28,7 +25,6 @@
                       </div>
                     </div>
                   </div>
-@endif
                   <div class="table-responsive">
                     <table class="table table-bordered responsive">
                       <thead>
@@ -47,7 +43,6 @@
                               $locale->formatMoney($closing->profit, true) }}@endif
                           </td>
                           <td class="table-item-menu">
-@if($session->opened)
 @php
   $label = $closing->label;
 @endphp
@@ -62,7 +57,6 @@
     'text' => __('common.actions.delete'),
   ]],
 ])
-@endif
                           </td>
                         </tr>
 @endforeach

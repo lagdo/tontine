@@ -14,7 +14,6 @@
                             $saving->fund->title : __('tontine.fund.labels.default') !!}</td>
                           <td class="currency">{{ $locale->formatMoney($saving->amount, true) }}</td>
                           <td class="table-item-menu">
-@if($session->opened)
 @include('tontine.app.default.parts.table.menu', [
   'dataIdKey' => 'data-saving-id',
   'dataIdValue' => $saving->id,
@@ -26,7 +25,6 @@
     'text' => __('common.actions.delete'),
   ]],
 ])
-@endif
                           </td>
                         </tr>
 @endforeach

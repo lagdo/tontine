@@ -10,9 +10,7 @@
                     </div>
                   </div>
                   <div class="row mb-2">
-                    <div class="col" id="meeting-saving-members-total">
-                    </div>
-                    <div class="col-auto">
+                    <div class="col">
                       <div class="input-group">
                         {!! $htmlBuilder->text('search', '')->id('txt-fee-member-search')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
@@ -20,6 +18,8 @@
                           <button type="button" class="btn btn-primary" id="btn-saving-search"><i class="fa fa-search"></i></button>
                         </div>
                       </div>
+                    </div>
+                    <div class="col-auto" id="meeting-saving-members-total">
                     </div>
                   </div>
                   <div class="table-responsive" id="meeting-saving-members">

@@ -14,14 +14,12 @@
                         </div>
                       </div>
                     </div>
-@if($session->opened)
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
                         <button type="button" class="btn btn-primary" id="btn-disbursement-add"><i class="fa fa-plus"></i></button>
                         <button type="button" class="btn btn-primary" id="btn-disbursements-refresh"><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
-@endif
                   </div>
                   <div class="table-responsive">
                     <table class="table table-bordered responsive">
@@ -43,7 +41,6 @@
                           <td>@if (($disbursement->charge)) {{ $disbursement->charge->name }}@endif</td>
                           <td class="currency">{{ $locale->formatMoney($disbursement->amount, true) }}</td>
                           <td class="table-item-menu">
-@if($session->opened)
 @include('tontine.app.default.parts.table.menu', [
   'dataIdKey' => 'data-disbursement-id',
   'dataIdValue' => $disbursement->id,
@@ -55,9 +52,6 @@
     'text' => __('common.actions.delete'),
   ]],
 ])
-@else
-                            <i class="fa fa-trash-alt"></i>
-@endif
                           </td>
                         </tr>
 @endforeach

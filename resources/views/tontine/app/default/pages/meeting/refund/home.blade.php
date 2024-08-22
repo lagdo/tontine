@@ -2,7 +2,6 @@
                       <div class="col">
                         <div class="section-title mt-0">{{ __('meeting.titles.refunds') }}</div>
                       </div>
-@if($session->opened)
                       <div class="col-auto">
 @if($funds->count() > 1)
                         <div class="input-group mb-2">
@@ -21,7 +20,6 @@
                         </div>
 @endif
                       </div>
-@endif
                     </div>
                     <div class="table-responsive" id="meeting-debts-page">
                     </div> <!-- End table -->
