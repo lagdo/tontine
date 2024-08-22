@@ -76,15 +76,19 @@ return [
     ],
     'warnings' => [
         'session' => [
-            'closed' => "Cette opération n'est pas permise parceque la session est fermée.",
+            'closed' => "Cette opération n'est pas permise parce que la séance est fermée.",
         ],
         'charge' => [
-            'disabled' => "Cette opération n'est pas permise parceque le frais est désactivé.",
+            'disabled' => "Cette opération n'est pas permise parce que le frais est désactivé.",
         ],
     ],
     'errors' => [
         'amount' => [
             'invalid' => ":amount n'est pas un montant valide.",
+        ],
+        'session' => [
+            'not_found' => "Impossible de trouver la séance.",
+            'not_opened' => "Cette opération n'est pas permise parce que la séance n'est pas ouverte.",
         ],
     ],
     'charge' => [

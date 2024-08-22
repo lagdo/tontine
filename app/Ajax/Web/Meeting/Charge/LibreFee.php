@@ -2,14 +2,14 @@
 
 namespace App\Ajax\Web\Meeting\Charge;
 
-use App\Ajax\SessionCallable;
+use App\Ajax\OpenedSessionCallable;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
 
 use function Jaxon\jq;
 
-class LibreFee extends SessionCallable
+class LibreFee extends OpenedSessionCallable
 {
     /**
      * The constructor

@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Pool;
 
-use App\Ajax\SessionCallable;
+use App\Ajax\OpenedSessionCallable;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
@@ -12,7 +12,7 @@ use function trans;
 /**
  * @databag auction
  */
-class Auction extends SessionCallable
+class Auction extends OpenedSessionCallable
 {
     /**
      * @var DebtValidator

@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Pool\Deposit;
 
-use App\Ajax\SessionCallable;
+use App\Ajax\OpenedSessionCallable;
 use App\Ajax\Web\Meeting\Pool\Deposit;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\BalanceCalculator;
@@ -19,7 +19,7 @@ use function trim;
 /**
  * @before getPool
  */
-class Pool extends SessionCallable
+class Pool extends OpenedSessionCallable
 {
     /**
      * @var LocaleService

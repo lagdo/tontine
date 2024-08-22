@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Credit;
 
-use App\Ajax\SessionCallable;
+use App\Ajax\OpenedSessionCallable;
 use App\Ajax\Web\Meeting\Session\Session;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
@@ -14,7 +14,7 @@ use function Jaxon\jq;
 use function Jaxon\pm;
 use function trans;
 
-class Loan extends SessionCallable
+class Loan extends OpenedSessionCallable
 {
     /**
      * @var LoanValidator

@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Saving;
 
-use App\Ajax\SessionCallable;
+use App\Ajax\OpenedSessionCallable;
 use Siak\Tontine\Model\Fund as FundModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
@@ -17,7 +17,7 @@ use function trans;
 /**
  * @databag meeting.saving
  */
-class Saving extends SessionCallable
+class Saving extends OpenedSessionCallable
 {
     /**
      * @var SavingValidator

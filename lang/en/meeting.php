@@ -86,6 +86,10 @@ return [
         'amount' => [
             'invalid' => ":amount is not a valid amount.",
         ],
+        'session' => [
+            'not_found' => "Unable to find the session.",
+            'not_opened' => "This operation is not allowed because the session is not opened.",
+        ],
     ],
     'charge' => [
         'titles' => [

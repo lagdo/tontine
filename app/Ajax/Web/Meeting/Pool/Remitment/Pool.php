@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Pool\Remitment;
 
-use App\Ajax\SessionCallable;
+use App\Ajax\OpenedSessionCallable;
 use App\Ajax\Web\Meeting\Pool\Remitment;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\BalanceCalculator;
@@ -17,7 +17,7 @@ use function trans;
 /**
  * @before getPool
  */
-class Pool extends SessionCallable
+class Pool extends OpenedSessionCallable
 {
     /**
      * @var BalanceCalculator

@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Saving;
 
-use App\Ajax\SessionCallable;
+use App\Ajax\OpenedSessionCallable;
 use Siak\Tontine\Model\Fund as FundModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
@@ -18,7 +18,7 @@ use function trim;
  * @databag meeting.saving
  * @before getFund
  */
-class Member extends SessionCallable
+class Member extends OpenedSessionCallable
 {
     /**
      * @var LocaleService
