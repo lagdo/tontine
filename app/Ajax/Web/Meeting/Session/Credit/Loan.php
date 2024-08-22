@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Ajax\Web\Meeting\Credit;
+namespace App\Ajax\Web\Meeting\Session\Credit;
 
 use App\Ajax\OpenedSessionCallable;
-use App\Ajax\Web\Meeting\Session\Session;
+use App\Ajax\Web\Meeting\Session\Misc;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -59,7 +59,7 @@ class Loan extends OpenedSessionCallable
         $this->jq('#btn-loans-refresh')->click($this->rq()->home());
         $this->jq('#btn-loan-add')->click($this->rq()->addLoan());
         $this->jq('#btn-loan-balances')
-            ->click($this->rq(Session::class)->showBalanceDetails(true));
+            ->click($this->rq(Misc::class)->showBalanceDetails(true));
         $loanId = jq()->parent()->attr('data-loan-id')->toInt();
         $this->jq('.btn-loan-edit')->click($this->rq()->editLoan($loanId));
         $this->jq('.btn-loan-delete')->click($this->rq()->deleteLoan($loanId)

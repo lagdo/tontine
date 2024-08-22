@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Ajax\Web\Meeting\Pool\Remitment;
+namespace App\Ajax\Web\Meeting\Session\Pool\Remitment;
 
 use App\Ajax\OpenedSessionCallable;
-use App\Ajax\Web\Meeting\Pool\Remitment;
+use App\Ajax\Web\Meeting\Session\Pool\Remitment;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
@@ -53,7 +53,7 @@ class Pool extends OpenedSessionCallable
             $this->target()->args()[0] : $this->bag('meeting')->get('pool.id');
         $this->pool = $this->poolService->getPool($poolId);
 
-        if(!$this->session || !$this->pool || $this->session->disabled($this->pool))
+        if(!$this->pool || $this->session->disabled($this->pool))
         {
             $this->notify->error(trans('tontine.session.errors.disabled'), trans('common.titles.error'));
             $this->pool = null;

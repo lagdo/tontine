@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Ajax\Web\Meeting\Charge\Libre;
+namespace App\Ajax\Web\Meeting\Session\Charge\Libre;
 
 use App\Ajax\ChargeCallable;
-use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
+use App\Ajax\Web\Meeting\Session\Charge\LibreFee as Charge;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Model\SettlementTarget as TargetModel;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;

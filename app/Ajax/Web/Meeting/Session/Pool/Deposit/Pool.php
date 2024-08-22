@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Ajax\Web\Meeting\Pool\Deposit;
+namespace App\Ajax\Web\Meeting\Session\Pool\Deposit;
 
 use App\Ajax\OpenedSessionCallable;
-use App\Ajax\Web\Meeting\Pool\Deposit;
+use App\Ajax\Web\Meeting\Session\Pool\Deposit;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;

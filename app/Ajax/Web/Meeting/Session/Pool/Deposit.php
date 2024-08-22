@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\Web\Meeting\Pool;
+namespace App\Ajax\Web\Meeting\Session\Pool;
 
 use App\Ajax\OpenedSessionCallable;
 use Siak\Tontine\Model\Session as SessionModel;

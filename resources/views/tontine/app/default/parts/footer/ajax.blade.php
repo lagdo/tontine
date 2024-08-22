@@ -17,9 +17,9 @@
         },
     };
     function showBalanceAmounts() {
-        {!! $jxnSession->showBalanceAmounts() !!};
+        {!! $jxnSessionMisc->showBalanceAmounts() !!};
     }
     function showBalanceAmountsWithDelay() {
-        setTimeout(() => {!! $jxnSession->showBalanceAmounts() !!}, 5);
+        setTimeout(() => {!! $jxnSessionMisc->showBalanceAmounts() !!}, 5);
     }
 </script>

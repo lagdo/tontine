@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\Web\Meeting\Saving;
+namespace App\Ajax\Web\Meeting\Session\Saving;
 
 use App\Ajax\OpenedSessionCallable;
 use Siak\Tontine\Model\Fund as FundModel;

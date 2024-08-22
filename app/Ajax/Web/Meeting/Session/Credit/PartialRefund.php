@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\Web\Meeting\Credit;
+namespace App\Ajax\Web\Meeting\Session\Credit;
 
 use App\Ajax\OpenedSessionCallable;
 use Siak\Tontine\Model\Fund as FundModel; 

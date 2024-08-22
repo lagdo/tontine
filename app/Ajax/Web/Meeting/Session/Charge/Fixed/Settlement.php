@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Ajax\Web\Meeting\Charge\Libre;
+namespace App\Ajax\Web\Meeting\Session\Charge\Fixed;
 
 use App\Ajax\ChargeCallable;
-use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
+use App\Ajax\Web\Meeting\Session\Charge\FixedFee as Charge;
 
 use function Jaxon\jq;
 use function trim;
@@ -18,16 +18,20 @@ class Settlement extends ChargeCallable
     public function home(int $chargeId)
     {
         $this->bag('meeting')->set('charge.id', $chargeId);
-        $this->bag('meeting')->set('settlement.libre.search', '');
-        $this->bag('meeting')->set('settlement.libre.filter', null);
+        $this->bag('meeting')->set('settlement.fixed.filter', null);
+        $this->bag('meeting')->set('settlement.fixed.search', '');
 
         $html = $this->renderView('pages.meeting.settlement.home', [
-            'type' => 'libre',
+            'type' => 'fixed',
             'charge' => $this->charge,
         ]);
-        $this->response->html('meeting-fees-libre', $html);
-        $this->jq('#btn-fee-libre-settlements-back')->click($this->rq(Charge::class)->home());
-        $this->jq('#btn-fee-libre-settlements-filter')->click($this->rq()->toggleFilter());
+        $this->response->html('meeting-fees-fixed', $html);
+
+        $this->jq('#btn-fee-fixed-settlements-back')
+            ->click($this->rq(Charge::class)->home());
+        $this->jq('#btn-fee-fixed-settlements-filter')->click($this->rq()->toggleFilter());
+        $this->jq('#btn-fee-fixed-settlements-search')
+            ->click($this->rq()->search(jq('#txt-fee-settlements-search')->val()));
 
         return $this->page(1);
     }
@@ -62,8 +66,8 @@ class Settlement extends ChargeCallable
      */
     public function page(int $pageNumber = 0)
     {
-        $search = trim($this->bag('meeting')->get('settlement.libre.search', ''));
-        $onlyUnpaid = $this->bag('meeting')->get('settlement.libre.filter', null);
+        $search = trim($this->bag('meeting')->get('settlement.fixed.search', ''));
+        $onlyUnpaid = $this->bag('meeting')->get('settlement.fixed.filter', null);
         $billCount = $this->billService->getBillCount($this->charge,
             $this->session, $search, $onlyUnpaid);
         [$pageNumber, $perPage] = $this->pageNumber($pageNumber,
@@ -72,21 +76,25 @@ class Settlement extends ChargeCallable
             $search, $onlyUnpaid, $pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $billCount);
 
+        $this->showTotal();
+
         $html = $this->renderView('pages.meeting.settlement.page', [
             'session' => $this->session,
             'charge' => $this->charge,
             'bills' => $bills,
             'pagination' => $pagination,
         ]);
-        $this->response->html('meeting-fee-libre-bills', $html);
-        $this->response->call('makeTableResponsive', 'meeting-fee-libre-bills');
+        $this->response->html('meeting-fee-fixed-bills', $html);
+        $this->response->call('makeTableResponsive', 'meeting-fee-fixed-bills');
 
+        $this->jq('.btn-add-all-settlements')->click($this->rq()->addAllSettlements());
+        $this->jq('.btn-del-all-settlements')->click($this->rq()->delAllSettlements());
         $billId = jq()->parent()->attr('data-bill-id')->toInt();
-        $this->jq('.btn-add-settlement', '#meeting-fee-libre-bills')
+        $this->jq('.btn-add-settlement', '#meeting-fee-fixed-bills')
             ->click($this->rq()->addSettlement($billId));
-        $this->jq('.btn-del-settlement', '#meeting-fee-libre-bills')
+        $this->jq('.btn-del-settlement', '#meeting-fee-fixed-bills')
             ->click($this->rq()->delSettlement($billId));
-        $this->jq('.btn-edit-notes', '#meeting-fee-libre-bills')
+        $this->jq('.btn-edit-notes', '#meeting-fee-fixed-bills')
             ->click($this->rq()->editNotes($billId));
 
         return $this->response;
@@ -94,10 +102,17 @@ class Settlement extends ChargeCallable
 
     public function toggleFilter()
     {
-        $onlyUnpaid = $this->bag('meeting')->get('settlement.libre.filter', null);
+        $onlyUnpaid = $this->bag('meeting')->get('settlement.fixed.filter', null);
         // Switch between null, true and false
         $onlyUnpaid = $onlyUnpaid === null ? true : ($onlyUnpaid === true ? false : null);
-        $this->bag('meeting')->set('settlement.libre.filter', $onlyUnpaid);
+        $this->bag('meeting')->set('settlement.fixed.filter', $onlyUnpaid);
+
+        return $this->page();
+    }
+
+    public function search(string $search)
+    {
+        $this->bag('meeting')->set('settlement.fixed.search', trim($search));
 
         return $this->page();
     }
@@ -126,6 +141,30 @@ class Settlement extends ChargeCallable
     public function delSettlement(int $billId)
     {
         $this->settlementService->deleteSettlement($this->charge, $this->session, $billId);
+
+        return $this->page();
+    }
+
+    /**
+     * @before checkChargeEdit
+     * @after showBalanceAmounts
+     * @return mixed
+     */
+    public function addAllSettlements()
+    {
+        $this->settlementService->createAllSettlements($this->charge, $this->session);
+
+        return $this->page();
+    }
+
+    /**
+     * @before checkChargeEdit
+     * @after showBalanceAmounts
+     * @return mixed
+     */
+    public function delAllSettlements()
+    {
+        $this->settlementService->deleteAllSettlements($this->charge, $this->session);
 
         return $this->page();
     }

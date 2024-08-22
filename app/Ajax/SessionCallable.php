@@ -26,12 +26,19 @@ class SessionCallable extends CallableClass
     protected SessionService $sessionService;
 
     /**
+     * @return int
+     */
+    protected function getSessionId(): int
+    {
+        return (int)$this->bag('meeting')->get('session.id');
+    }
+
+    /**
      * @return void
      */
     protected function getSession()
     {
-        $sessionId = $this->bag('meeting')->get('session.id');
-        $this->session = $this->sessionService->getSession($sessionId);
+        $this->session = $this->sessionService->getSession($this->getSessionId());
         if($this->session === null)
         {
             throw new MessageException(trans('meeting.errors.session.not_found'));

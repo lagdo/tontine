@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Ajax\Web\Meeting\Cash;
+namespace App\Ajax\Web\Meeting\Session\Cash;
 
 use App\Ajax\OpenedSessionCallable;
-use App\Ajax\Web\Meeting\Session\Session;
+use App\Ajax\Web\Meeting\Session\Misc;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
@@ -53,7 +53,7 @@ class Disbursement extends OpenedSessionCallable
         $this->jq('#btn-disbursements-refresh')->click($this->rq()->home());
         $this->jq('#btn-disbursement-add')->click($this->rq()->addDisbursement());
         $this->jq('#btn-disbursement-balances')
-            ->click($this->rq(Session::class)->showBalanceDetails(false));
+            ->click($this->rq(Misc::class)->showBalanceDetails(false));
         $disbursementId = jq()->parent()->attr('data-disbursement-id')->toInt();
         $this->jq('.btn-disbursement-edit')->click($this->rq()->editDisbursement($disbursementId));
         $this->jq('.btn-disbursement-delete')->click($this->rq()->deleteDisbursement($disbursementId)

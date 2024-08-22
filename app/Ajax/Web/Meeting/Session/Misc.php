@@ -8,7 +8,7 @@ use Siak\Tontine\Service\LocaleService;
 
 use function trans;
 
-class Session extends SessionCallable
+class Misc extends SessionCallable
 {
     /**
      * @var LocaleService

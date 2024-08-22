@@ -2,32 +2,23 @@
 
 namespace App\Ajax\Web\Meeting\Session;
 
-use App\Ajax\SessionCallable;
-use App\Ajax\Web\Meeting\Session as Menu;
-use App\Ajax\Web\Meeting\Cash\Disbursement;
-use App\Ajax\Web\Meeting\Charge\FixedFee;
-use App\Ajax\Web\Meeting\Charge\LibreFee;
-use App\Ajax\Web\Meeting\Credit\Loan;
-use App\Ajax\Web\Meeting\Credit\PartialRefund;
-use App\Ajax\Web\Meeting\Credit\Refund;
-use App\Ajax\Web\Meeting\Pool\Deposit;
-use App\Ajax\Web\Meeting\Pool\Remitment;
-use App\Ajax\Web\Meeting\Saving\Closing;
-use App\Ajax\Web\Meeting\Saving\Saving;
+use App\Ajax\OpenedSessionCallable;
+use App\Ajax\Web\Meeting\Session;
 use App\Ajax\Web\Tontine\Options;
 
 use function Jaxon\jq;
 
-class Home extends SessionCallable
+/**
+ * @databag meeting
+ */
+class Menu extends OpenedSessionCallable
 {
     /**
-     * @return void
+     * @return int
      */
-    protected function getSession()
+    protected function getSessionId(): int
     {
-        $sessionId = $this->target()->args()[0];
-        $this->session = $this->sessionService->getSession($sessionId);
-        $this->bag('meeting')->set('session.id', $sessionId);
+        return (int)$this->target()->args()[0];
     }
 
     /**
@@ -35,13 +26,15 @@ class Home extends SessionCallable
      */
     private function showPage(string $name)
     {
+        $this->bag('meeting')->set('session.id', $this->session->id);
+
         $this->view()->share('currentSessionPage', $name);
         $html = $this->renderView("pages.meeting.session.home.$name", [
             'session' => $this->session,
         ]);
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-session-back')->click($this->rq(Menu::class)->home());
+        $this->jq('#btn-session-back')->click($this->rq(Session::class)->home());
         $this->jq('#btn-tontine-options')->click($this->rq(Options::class)->editOptions());
         $this->jq('#btn-session-refresh')->click($this->rq()->$name($this->session->id));
 
@@ -57,8 +50,8 @@ class Home extends SessionCallable
     {
         $this->showPage('pools');
 
-        $this->cl(Deposit::class)->show($this->session);
-        $this->cl(Remitment::class)->show($this->session);
+        $this->cl(Pool\Deposit::class)->show($this->session);
+        $this->cl(Pool\Remitment::class)->show($this->session);
 
         $this->response->call('setSmScreenHandler', 'session-pools-sm-screens');
 
@@ -69,8 +62,8 @@ class Home extends SessionCallable
     {
         $this->showPage('savings');
 
-        $this->cl(Saving::class)->show($this->session);
-        $this->cl(Closing::class)->show($this->session);
+        $this->cl(Saving\Saving::class)->show($this->session);
+        $this->cl(Saving\Closing::class)->show($this->session);
 
         $this->response->call('setSmScreenHandler', 'session-savings-sm-screens');
 
@@ -81,9 +74,9 @@ class Home extends SessionCallable
     {
         $this->showPage('credits');
 
-        $this->cl(Loan::class)->show($this->session);
-        $this->cl(PartialRefund::class)->show($this->session);
-        $this->cl(Refund::class)->show($this->session);
+        $this->cl(Credit\Loan::class)->show($this->session);
+        $this->cl(Credit\PartialRefund::class)->show($this->session);
+        $this->cl(Credit\Refund::class)->show($this->session);
 
         $this->response->call('setSmScreenHandler', 'session-credits-sm-screens');
 
@@ -94,7 +87,7 @@ class Home extends SessionCallable
     {
         $this->showPage('cash');
 
-        $this->cl(Disbursement::class)->show($this->session);
+        $this->cl(Cash\Disbursement::class)->show($this->session);
 
         return $this->response;
     }
@@ -103,8 +96,8 @@ class Home extends SessionCallable
     {
         $this->showPage('charges');
 
-        $this->cl(FixedFee::class)->show($this->session);
-        $this->cl(LibreFee::class)->show($this->session);
+        $this->cl(Charge\FixedFee::class)->show($this->session);
+        $this->cl(Charge\LibreFee::class)->show($this->session);
 
         $this->response->call('setSmScreenHandler', 'session-charges-sm-screens');
 
@@ -132,8 +125,8 @@ class Home extends SessionCallable
         $this->jq('#session-report')->summernote($options);
         $agendaText = jq('#session-agenda')->summernote('code');
         $reportText = jq('#session-report')->summernote('code');
-        $this->jq('#btn-save-agenda')->click($this->rq(Session::class)->saveAgenda($agendaText));
-        $this->jq('#btn-save-report')->click($this->rq(Session::class)->saveReport($reportText));
+        $this->jq('#btn-save-agenda')->click($this->rq(Misc::class)->saveAgenda($agendaText));
+        $this->jq('#btn-save-report')->click($this->rq(Misc::class)->saveReport($reportText));
 
         return $this->response;
     }
