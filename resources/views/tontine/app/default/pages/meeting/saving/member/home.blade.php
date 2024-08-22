@@ -9,12 +9,13 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row">
+                  <div class="row mb-2">
                     <div class="col" id="meeting-saving-members-total">
                     </div>
                     <div class="col-auto">
                       <div class="input-group">
-                        {!! $htmlBuilder->text('search', '')->class('form-control')->id('txt-fee-member-search') !!}
+                        {!! $htmlBuilder->text('search', '')->id('txt-fee-member-search')
+                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" id="btn-saving-search"><i class="fa fa-search"></i></button>
                         </div>

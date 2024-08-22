@@ -10,7 +10,7 @@
 @foreach ($members as $member)
                         <tr>
                           <td>{{ $member->name }}</td>
-                          <td class="currency" id="saving-member-{{ $member->id }}" data-member-id="{{ $member->id }}">
+                          <td class="currency" id="saving-member-{{ $member->id }}" data-member-id="{{ $member->id }}" style="width:200px;">
 @if ($session->closed)
                             @include('tontine.app.default.pages.meeting.saving.member.closed', [
                               'amount' => !$member->saving ? '' : $locale->formatMoney($member->saving->amount, true),
