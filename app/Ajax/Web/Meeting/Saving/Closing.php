@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Saving;
 
-use App\Ajax\CallableSessionClass;
+use App\Ajax\SessionCallable;
 use App\Ajax\Web\Report\Session\Saving;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Saving\ClosingService;
@@ -14,7 +14,7 @@ use function Jaxon\pm;
 use function Jaxon\rq;
 use function trans;
 
-class Closing extends CallableSessionClass
+class Closing extends SessionCallable
 {
     /**
      * @var ClosingValidator

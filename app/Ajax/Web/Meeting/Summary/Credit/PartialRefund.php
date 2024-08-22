@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Credit;
 
-use App\Ajax\CallableSessionClass;
+use App\Ajax\SessionCallable;
 use Siak\Tontine\Model\Fund as FundModel; 
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
@@ -14,7 +14,7 @@ use function Jaxon\pm;
 /**
  * @databag partial.refund
  */
-class PartialRefund extends CallableSessionClass
+class PartialRefund extends SessionCallable
 {
     /**
      * @var LocaleService

@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Credit;
 
-use App\Ajax\CallableSessionClass;
+use App\Ajax\SessionCallable;
 use Siak\Tontine\Model\Fund as FundModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
@@ -16,7 +16,7 @@ use function trans;
 /**
  * @databag refund
  */
-class Refund extends CallableSessionClass
+class Refund extends SessionCallable
 {
     /**
      * @var DebtValidator

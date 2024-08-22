@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Pool;
 
-use App\Ajax\CallableSessionClass;
+use App\Ajax\SessionCallable;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 
@@ -11,7 +11,7 @@ use function Jaxon\jq;
 /**
  * @exclude
  */
-class Remitment extends CallableSessionClass
+class Remitment extends SessionCallable
 {
     /**
      * The constructor

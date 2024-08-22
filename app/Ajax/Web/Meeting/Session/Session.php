@@ -2,13 +2,13 @@
 
 namespace App\Ajax\Web\Meeting\Session;
 
-use App\Ajax\CallableSessionClass;
+use App\Ajax\SessionCallable;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 
 use function trans;
 
-class Session extends CallableSessionClass
+class Session extends SessionCallable
 {
     /**
      * @var LocaleService

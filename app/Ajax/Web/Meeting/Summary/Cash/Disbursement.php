@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Cash;
 
-use App\Ajax\CallableSessionClass;
+use App\Ajax\SessionCallable;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
@@ -10,7 +10,7 @@ use Siak\Tontine\Validation\Meeting\DisbursementValidator;
 /**
  * @exclude
  */
-class Disbursement extends CallableSessionClass
+class Disbursement extends SessionCallable
 {
     /**
      * @var DisbursementValidator

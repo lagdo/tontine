@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Credit;
 
-use App\Ajax\CallableSessionClass;
+use App\Ajax\SessionCallable;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -11,7 +11,7 @@ use Siak\Tontine\Service\Tontine\MemberService;
 /**
  * @exclude
  */
-class Loan extends CallableSessionClass
+class Loan extends SessionCallable
 {
     /**
      * The constructor

@@ -11,7 +11,7 @@ use Siak\Tontine\Service\Tontine\ChargeService;
 /**
  * @before getCharge
  */
-class CallableChargeClass extends CallableSessionClass
+class ChargeCallable extends SessionCallable
 {
     /**
      * @var ChargeModel|null

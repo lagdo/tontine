@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Charge\Libre;
 
-use App\Ajax\CallableChargeClass;
+use App\Ajax\ChargeCallable;
 use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Model\SettlementTarget as TargetModel;
@@ -17,7 +17,7 @@ use function trim;
 /**
  * @before getTarget
  */
-class Target extends CallableChargeClass
+class Target extends ChargeCallable
 {
     /**
      * @var LocaleService

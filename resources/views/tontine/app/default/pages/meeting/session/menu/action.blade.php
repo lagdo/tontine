@@ -1,3 +1,4 @@
+@if ($session->opened)
                 <div class="btn-group float-right ml-1" role="group">
 @php
   $menus = [[
@@ -27,6 +28,7 @@
   'menus' => array_filter($menus, fn($item) => $item['class'] !== "btn-session-$currentSessionPage"),
 ])
                 </div>
+@endif
                 <div class="btn-group float-right ml-1" role="group">
                   <button type="button" class="btn btn-primary" id="btn-session-back"><i class="fa fa-arrow-left"></i></button>
                   <button type="button" class="btn btn-primary" id="btn-session-refresh"><i class="fa fa-sync"></i></button>

@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Session;
 
-use App\Ajax\CallableSessionClass;
+use App\Ajax\SessionCallable;
 use App\Ajax\Web\Meeting\Session as Menu;
 use App\Ajax\Web\Meeting\Cash\Disbursement;
 use App\Ajax\Web\Meeting\Charge\FixedFee;
@@ -18,7 +18,7 @@ use App\Ajax\Web\Tontine\Options;
 
 use function Jaxon\jq;
 
-class Home extends CallableSessionClass
+class Home extends SessionCallable
 {
     /**
      * @return void

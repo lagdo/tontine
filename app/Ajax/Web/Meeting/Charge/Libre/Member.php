@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Charge\Libre;
 
-use App\Ajax\CallableChargeClass;
+use App\Ajax\ChargeCallable;
 use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Charge as ChargeModel;
@@ -15,7 +15,7 @@ use function str_replace;
 use function trans;
 use function trim;
 
-class Member extends CallableChargeClass
+class Member extends ChargeCallable
 {
     /**
      * @var LocaleService

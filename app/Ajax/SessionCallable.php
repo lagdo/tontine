@@ -9,7 +9,7 @@ use Siak\Tontine\Service\Meeting\SessionService;
  * @databag meeting
  * @before getSession
  */
-class CallableSessionClass extends CallableClass
+class SessionCallable extends CallableClass
 {
     /**
      * @var SessionModel|null

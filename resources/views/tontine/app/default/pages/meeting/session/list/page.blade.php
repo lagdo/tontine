@@ -26,13 +26,8 @@
                         </div>
                       </td>
                       <td class="table-item-menu">
-@include('tontine.app.default.parts.table.menu', [
-  'dataIdKey' => 'data-session-id',
-  'dataIdValue' => $session->id,
-  'menus' => [[
-    'class' => 'btn-session-summary',
-    'text' => __('meeting.actions.summary'),
-  ],[
+@php
+  $openedSessionItems = !$session->opened ? [] : [[
     'class' => 'btn-session-pools',
     'text' => __('meeting.actions.pools'),
   ],[
@@ -47,7 +42,17 @@
   ],[
     'class' => 'btn-session-cash',
     'text' => __('meeting.actions.cash'),
-  ],[
+  ]];
+@endphp
+@include('tontine.app.default.parts.table.menu', [
+  'dataIdKey' => 'data-session-id',
+  'dataIdValue' => $session->id,
+  'menus' => [[
+    'class' => 'btn-session-summary',
+    'text' => __('meeting.actions.summary'),
+  ],
+  ...$openedSessionItems,
+  [
     'class' => 'btn-session-reports',
     'text' => __('meeting.actions.reports'),
   ]],

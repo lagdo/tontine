@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Tontine;
 
-use App\Ajax\CallableSelectClass;
+use App\Ajax\SelectCallable;
 use App\Ajax\Web\Locale;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Planning\RoundService;
@@ -15,7 +15,7 @@ use function Jaxon\pm;
 use function collect;
 use function trans;
 
-class Tontine extends CallableSelectClass
+class Tontine extends SelectCallable
 {
     /**
      * @di

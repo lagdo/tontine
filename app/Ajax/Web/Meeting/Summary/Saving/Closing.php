@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Saving;
 
-use App\Ajax\CallableSessionClass;
+use App\Ajax\SessionCallable;
 use App\Ajax\Web\Report\Session\Saving;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Saving\ClosingService;
@@ -10,7 +10,7 @@ use Siak\Tontine\Service\Tontine\FundService;
 
 use function Jaxon\pm;
 
-class Closing extends CallableSessionClass
+class Closing extends SessionCallable
 {
     /**
      * The constructor

@@ -2,13 +2,13 @@
 
 namespace App\Ajax\Web\Meeting\Charge\Libre;
 
-use App\Ajax\CallableChargeClass;
+use App\Ajax\ChargeCallable;
 use App\Ajax\Web\Meeting\Charge\LibreFee as Charge;
 
 use function Jaxon\jq;
 use function trim;
 
-class Settlement extends CallableChargeClass
+class Settlement extends ChargeCallable
 {
     /**
      * @param int $chargeId

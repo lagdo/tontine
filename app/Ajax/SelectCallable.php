@@ -7,7 +7,7 @@ use Siak\Tontine\Model\Tontine;
 
 use function config;
 
-class CallableSelectClass extends CallableClass
+class SelectCallable extends CallableClass
 {
     /**
      * @var string

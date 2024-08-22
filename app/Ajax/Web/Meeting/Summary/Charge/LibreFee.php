@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Charge;
 
-use App\Ajax\CallableSessionClass;
+use App\Ajax\SessionCallable;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
@@ -10,7 +10,7 @@ use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
 /**
  * @exclude
  */
-class LibreFee extends CallableSessionClass
+class LibreFee extends SessionCallable
 {
     /**
      * The constructor
