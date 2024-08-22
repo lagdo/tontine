@@ -30,6 +30,9 @@
   'dataIdKey' => 'data-session-id',
   'dataIdValue' => $session->id,
   'menus' => [[
+    'class' => 'btn-session-summary',
+    'text' => __('meeting.actions.summary'),
+  ],[
     'class' => 'btn-session-pools',
     'text' => __('meeting.actions.pools'),
   ],[
