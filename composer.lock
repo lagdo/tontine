@@ -1517,16 +1517,16 @@
         },
         {
             "name": "jaxon-php/jaxon-core",
-            "version": "v4.8.2",
+            "version": "v4.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-core.git",
-                "reference": "cf1d80a0315dd49ed1b6a9cf141466d8a701899c"
+                "reference": "6232419f896bebab0d2477a1c33371442e116a66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/cf1d80a0315dd49ed1b6a9cf141466d8a701899c",
-                "reference": "cf1d80a0315dd49ed1b6a9cf141466d8a701899c",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/6232419f896bebab0d2477a1c33371442e116a66",
+                "reference": "6232419f896bebab0d2477a1c33371442e116a66",
                 "shasum": ""
             },
             "require": {
@@ -1593,7 +1593,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-core/issues",
                 "source": "https://github.com/jaxon-php/jaxon-core"
             },
-            "time": "2024-06-20T23:06:53+00:00"
+            "time": "2024-08-22T11:08:49+00:00"
         },
         {
             "name": "jaxon-php/jaxon-dialogs",
@@ -11045,5 +11045,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
