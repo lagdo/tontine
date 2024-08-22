@@ -6,7 +6,7 @@
                     <h2 class="section-title">
                       {{ __('tontine.subscription.titles.planning') }}:
                       {{ $pool->title . ' - ' . ($pool->deposit_fixed ?
-                        $localeService->formatMoney($pool->amount) : __('tontine.labels.types.libre')) }}
+                        $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre')) }}
                     </h2>
                   </div>
                   <div class="col-auto">
