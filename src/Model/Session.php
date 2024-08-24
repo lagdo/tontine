@@ -223,4 +223,14 @@ class Session extends Base
     {
         return $query->where('status', '!=', self::STATUS_PENDING);
     }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeOpened(Builder $query): Builder
+    {
+        return $query->where('status', '!=', self::STATUS_OPENED);
+    }
 }

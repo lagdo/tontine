@@ -18,7 +18,6 @@
                       <td class="table-item-menu">
                         <div class="btn-group btn-group-sm float-right" data-session-id="{{ $session->id }}" role="group">
 @if ($session->opened)
-                          <button type="button" class="btn btn-primary btn-session-resync"><i class="fa fa-redo"></i></button>
                           <button type="button" class="btn btn-primary btn-session-close"><i class="fa fa-lock-open"></i></button>
 @elseif($session->pending || $session->closed)
                           <button type="button" class="btn btn-primary btn-session-open"><i class="fa fa-lock"></i></button>

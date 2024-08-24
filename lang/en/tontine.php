@@ -305,7 +305,7 @@ return [
             'created' => "The session was successfully created.",
             'updated' => "The session was successfully updated.",
             'deleted' => "The session was successfully deleted.",
-            'resynced' => "The session was successfully resynced.",
+            'resynced' => "The sessions were successfully resynced.",
         ],
         'questions' => [
             'open' => "Open this session?",
@@ -314,7 +314,7 @@ return [
             'close' => "Close this session?",
             'delete' => "Delete this session?",
             'disable' => "Disable this session?<br/>If the session was already opened, this may also delete related data.",
-            'resync' => "Resync this session?<br/>You need to do this if you have changed the members, the fees, or the subscriptions after it was opened.",
+            'resync' => "Resync the sessions in this round?<br/>You need to do this if you have changed the members, the fees, or the subscriptions after it was opened.",
         ],
         'errors' => [
             'opened' => "A session has already been opened.",

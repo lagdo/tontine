@@ -121,18 +121,15 @@ class SessionService
     }
 
     /**
-     * Resync an already opened session.
-     *
-     * @param Session $session
+     * Resync all the already opened sessions.
      *
      * @return void
      */
-    public function resyncSession(Session $session)
+    public function resyncSessions()
     {
-        if($session->opened)
-        {
-            $this->syncSession($session);
-        }
+        $this->tenantService->round()->sessions()->opened()
+            ->get()
+            ->each(fn($session) => $this->syncSession($session));
     }
 
     /**

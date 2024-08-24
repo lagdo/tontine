@@ -305,7 +305,7 @@ return [
             'created' => "La séance a été ajoutée.",
             'updated' => "La séance a été modifiée.",
             'deleted' => "La séance a été supprimée.",
-            'resynced' => "La séance a été resynchronisée.",
+            'resynced' => "Les séances ont été resynchronisées.",
         ],
         'questions' => [
             'open' => "Ouvrir cette séance ?",
@@ -314,7 +314,7 @@ return [
             'close' => "Fermer cette séance ?",
             'delete' => "Supprimer cette séance ?",
             'disable' => "Désactiver cette séance ?<br/>Si elle avait déjà été ouverte, ceci pourrait supprimer des données relatives.",
-            'resync' => "Resynchroniser cette séance ?<br/>Vous devez le faire si vous avez changé les membres, les frais, ou les souscriptions après son ouverture.",
+            'resync' => "Resynchroniser les séances de ce tour ?<br/>Vous devez le faire si vous avez changé les membres, les frais, ou les souscriptions après son ouverture.",
         ],
         'errors' => [
             'opened' => "Une séance a déjà été ouverte.",
