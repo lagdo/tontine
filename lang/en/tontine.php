@@ -6,9 +6,9 @@ return [
         'format_medium' => 'M j, Y',
     ],
     'menus' => [
-        'users' => "Users",
         'tontines' => "Associations",
         'tontine' => "Tontine",
+        'admins' => "Administrators",
         'planning' => "Planning",
         'meeting' => "Meeting",
         'report' => "Report",

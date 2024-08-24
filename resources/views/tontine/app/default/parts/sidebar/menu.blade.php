@@ -13,7 +13,7 @@
               <i class="fa fa-fw fa-user-shield"></i> <span>{{ __('tontine.menus.tontines') }}</span>
             </a></li>
             <li><a class="nav-link" id="tontine-menu-users" href="javascript:void(0)">
-              <i class="fa fa-fw fa-user-friends"></i> <span>{{ __('tontine.menus.users') }}</span>
+              <i class="fa fa-fw fa-users-cog"></i> <span>{{ __('tontine.menus.admins') }}</span>
             </a></li>
           </ul>
           <div id="sidebar-menu-tontine">
