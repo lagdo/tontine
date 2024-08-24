@@ -48,15 +48,18 @@ class Category extends CallableClass
         $categories = $this->categoryService->getCategories($pageNumber);
         $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $categoryCount);
 
-        $html = $this->renderView('pages.options.category.page')
-            ->with('categories', $categories)
-            ->with('pagination', $pagination);
+        $html = $this->renderView('pages.options.category.page', [
+            'categories' => $categories,
+            'pagination' => $pagination,
+        ]);
         $this->response->html('category-page', $html);
         $this->response->call('makeTableResponsive', 'category-page');
 
         $categoryId = jq()->parent()->attr('data-category-id')->toInt();
         $this->jq('.btn-category-edit')->click($this->rq()->edit($categoryId));
         $this->jq('.btn-category-toggle')->click($this->rq()->toggle($categoryId));
+        $this->jq('.btn-category-delete')->click($this->rq()->delete($categoryId)
+            ->confirm(trans('tontine.category.questions.delete')));
 
         return $this->response;
     }
@@ -137,6 +140,14 @@ class Category extends CallableClass
     {
         $category = $this->categoryService->getCategory($categoryId);
         $this->categoryService->toggleCategory($category);
+
+        return $this->page();
+    }
+
+    public function delete(int $categoryId)
+    {
+        $category = $this->categoryService->getCategory($categoryId);
+        $this->categoryService->deleteCategory($category);
 
         return $this->page();
     }

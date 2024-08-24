@@ -260,6 +260,9 @@ return [
         'types' => [
             'disbursement' => "Disbursement",
         ],
+        'questions' => [
+            'delete' => "Delete this category?",
+        ],
         'messages' => [
             'created' => "The category was successfully created.",
             'updated' => "The category was successfully updated.",

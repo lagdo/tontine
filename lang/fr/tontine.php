@@ -260,6 +260,9 @@ return [
         'types' => [
             'disbursement' => "Décaissement",
         ],
+        'questions' => [
+            'delete' => "Supprimer cette catégorie ?",
+        ],
         'messages' => [
             'created' => "La catégorie a été ajoutée.",
             'updated' => "La catégorie a été modifiée.",
