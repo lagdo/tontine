@@ -7,6 +7,8 @@ use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\AbstractValidator;
 use Siak\Tontine\Validation\ValidationException;
 
+use function substr;
+
 class SessionValidator extends AbstractValidator
 {
     /**
@@ -38,6 +40,8 @@ class SessionValidator extends AbstractValidator
      */
     public function validateItem(array $values): array
     {
+        $values['start'] = substr($values['start'], 0, 5);
+        $values['end'] = substr($values['end'], 0, 5);
         $validator = Validator::make($this->values($values), [
             'title' => 'required|string|min:1',
             'date' => 'required|date_format:Y-m-d',
