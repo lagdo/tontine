@@ -32,16 +32,16 @@
                     </td>
                     <td class="table-item-menu">
 @php
-  $sessionAction = $pool->round_id !== $round->id ? [] : [[
-    'class' => 'btn-pool-sessions',
-    'text' => __('tontine.pool.actions.sessions'),
+  $periodAction = $pool->round_id !== $round->id ? [] : [[
+    'class' => 'btn-pool-period',
+    'text' => __('tontine.pool.actions.period'),
   ]];
 @endphp
 @include('tontine.app.default.parts.table.menu', [
   'dataIdKey' => 'data-pool-id',
   'dataIdValue' => $pool->id,
   'menus' => [
-    ...$sessionAction,
+    ...$periodAction,
     [
       'class' => 'btn-pool-edit',
       'text' => __('common.actions.edit'),

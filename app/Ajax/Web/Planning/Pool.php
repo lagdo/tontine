@@ -64,7 +64,7 @@ class Pool extends CallableClass
 
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
         $this->jq('.btn-pool-edit')->click($this->rq()->edit($poolId));
-        $this->jq('.btn-pool-sessions')->click($this->rq(PoolRound::class)->home($poolId));
+        $this->jq('.btn-pool-period')->click($this->rq(PoolRound::class)->home($poolId));
         $this->jq('.btn-pool-delete')->click($this->rq()->delete($poolId)
             ->confirm(trans('tontine.pool.questions.delete')));
 

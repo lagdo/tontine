@@ -363,6 +363,7 @@ return [
         'actions' => [
             'subscriptions' => "Souscriptions",
             'sessions' => "Séances",
+            'period' => "Début - Fin",
         ],
         'questions' => [
             'delete' => "Supprimer cette tontine ?<br/>Il ne faut pas qu'il ait de souscription.",
