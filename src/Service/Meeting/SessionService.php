@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Meeting;
 
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
@@ -127,9 +128,59 @@ class SessionService
      */
     public function resyncSessions()
     {
-        $this->tenantService->round()->sessions()->opened()
-            ->get()
-            ->each(fn($session) => $this->syncSession($session));
+        DB::transaction(function() {
+            // Don't sync a round if there are pools with no subscription.
+            // $this->checkPoolsSubscriptions();
+
+            // Sync the round.
+            $round = $this->tenantService->round();
+            $round->update(['status' => Round::STATUS_OPENED]);
+            $this->roundSynced($this->tenantService->tontine(), $round);
+
+            // Sync the sessions.
+            $round->sessions()->opened()->get()
+                ->each(function($session) {
+                    $this->sessionSynced($this->tenantService->tontine(), $session);
+                });
+
+            // Update the bills amounts.
+            /*
+            *** Strange Database error. ***
+ERROR:  bind message supplies 6 parameters, but prepared statement "pdo_stmt_00000053" requires 12
+(SQL: update "bills" set "amount" = (select "amount" from "charges"
+inner join "v_bills" on "v_bills"."charge_id" = "charges"."id" where "v_bills"."bill_type" != 0
+and "v_bills"."session_id" in (51, 53, 52, 50, 49) and "bills"."id" = "v_bills"."bill_id")
+where "ctid" in (select "bills"."ctid" from "bills" inner join "v_bills" on "v_bills"."bill_id" = "bills"."id"
+inner join "charges" on "v_bills"."charge_id" = "charges"."id" where "v_bills"."bill_type" != ?
+and "v_bills"."session_id" in (?, ?, ?, ?, ?)))
+             */
+            // $amountQuery = DB::table('charges')
+            //     ->join('v_bills', 'v_bills.charge_id', '=', 'charges.id')
+            //     ->where('v_bills.bill_type', '!=', Bill::TYPE_LIBRE)
+            //     ->whereIn('v_bills.session_id', $round->sessions()->opened()->pluck('id'))
+            //     ->whereColumn('bills.id', 'v_bills.bill_id')
+            //     ->select('amount');
+            // DB::table('bills')
+            //     ->join('v_bills', 'v_bills.bill_id', '=', 'bills.id')
+            //     ->join('charges', 'v_bills.charge_id', '=', 'charges.id')
+            //     ->where('v_bills.bill_type', '!=', Bill::TYPE_LIBRE)
+            //     ->whereIn('v_bills.session_id', $round->sessions()->opened()->pluck('id'))
+            //     ->update([
+            //         'amount' => DB::raw('(' . $amountQuery->toSql() . ')'),
+            //     ]);
+
+            // TODO: Fix the SQL update query.
+            // Temporary fix: issue an update query for each bill amount to be changed.
+            DB::table('bills')
+                ->select('bills.id', 'charges.amount')
+                ->join('v_bills', 'v_bills.bill_id', '=', 'bills.id')
+                ->join('charges', 'v_bills.charge_id', '=', 'charges.id')
+                ->where('v_bills.bill_type', '!=', Bill::TYPE_LIBRE)
+                ->whereIn('v_bills.session_id', $round->sessions()->opened()->pluck('id'))
+                ->get()
+                ->each(fn($row) => DB::table('bills')->where('id', $row->id)
+                    ->update(['amount' => $row->amount]));
+        });
     }
 
     /**

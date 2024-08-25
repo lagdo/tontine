@@ -231,6 +231,6 @@ class Session extends Base
      */
     public function scopeOpened(Builder $query): Builder
     {
-        return $query->where('status', '!=', self::STATUS_OPENED);
+        return $query->where('status', '=', self::STATUS_OPENED);
     }
 }
