@@ -15,8 +15,8 @@
                     <td>
                       <b>{{ $pool->title }}<br/>{{ $pool->round->title }}</b></td>
                     <td>
-                      {{ $pool->start_at->translatedFormat(__('tontine.date.format')) }}<br/>
-                      {{ $pool->end_at->translatedFormat(__('tontine.date.format')) }}
+                      {{ $pool->start_at?->translatedFormat(__('tontine.date.format')) ?? '' }}<br/>
+                      {{ $pool->end_at?->translatedFormat(__('tontine.date.format')) ?? '' }}
                     </td>
                     <td>
                       {!! __('common.labels.amount') !!}: {{ $pool->deposit_fixed ?
