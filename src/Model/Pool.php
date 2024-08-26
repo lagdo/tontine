@@ -124,22 +124,22 @@ class Pool extends Base
     /**
      * @param Builder $query
      * @param Round $round
-     * @param Carbon $startDate
-     * @param Carbon $endDate
+     * @param Carbon|null $startDate
+     * @param Carbon|null $endDate
      *
      * @return Builder
      */
     private function filterOnRoundOrDates(Builder $query, Round $round,
-        Carbon $startDate, Carbon $endDate): Builder
+        ?Carbon $startDate, ?Carbon $endDate): Builder
     {
-        return $query->where(function(Builder $query) use($round, $startDate, $endDate) {
-                $query->orWhere('pools.round_id', $round->id)
-                    ->orWhere(function(Builder $query) use($round, $startDate, $endDate) {
-                        $query->where('v.tontine_id', $round->tontine_id)
-                            ->whereDate('v.end_at', '>=', $startDate->format('Y-m-d'))
-                            ->whereDate('v.start_at', '<=', $endDate->format('Y-m-d'));
-                    });
-            });
+        return $query->where(fn(Builder $query) => $query
+            ->where('pools.round_id', $round->id)
+            ->when($startDate !== null && $endDate !== null,
+                fn(Builder $query) => $query
+                    ->orWhere(fn(Builder $query) => $query
+                        ->where('v.tontine_id', $round->tontine_id)
+                        ->whereDate('v.end_at', '>=', $startDate->format('Y-m-d'))
+                        ->whereDate('v.start_at', '<=', $endDate->format('Y-m-d')))));
     }
 
     /**
