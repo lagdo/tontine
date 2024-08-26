@@ -181,6 +181,8 @@ class TontineService
             $tontine->members()->delete();
             $tontine->rounds()->delete();
             $tontine->charges()->delete();
+            $tontine->categories()->delete();
+            $tontine->invites()->detach();
             $tontine->delete();
         });
     }

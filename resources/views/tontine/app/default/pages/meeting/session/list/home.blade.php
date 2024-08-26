@@ -5,6 +5,7 @@
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right ml-2" role="group">
+                  <button type="button" class="btn btn-primary" id="btn-session-resync"><i class="fa fa-redo"></i></button>
                   <button type="button" class="btn btn-primary" id="btn-sessions-refresh"><i class="fa fa-sync"></i></button>
                 </div>
               </div>

@@ -6,9 +6,9 @@ return [
         'format_medium' => 'M j, Y',
     ],
     'menus' => [
-        'users' => "Users",
         'tontines' => "Associations",
         'tontine' => "Tontine",
+        'admins' => "Administrators",
         'planning' => "Planning",
         'meeting' => "Meeting",
         'report' => "Report",
@@ -260,6 +260,9 @@ return [
         'types' => [
             'disbursement' => "Disbursement",
         ],
+        'questions' => [
+            'delete' => "Delete this category?",
+        ],
         'messages' => [
             'created' => "The category was successfully created.",
             'updated' => "The category was successfully updated.",
@@ -302,7 +305,7 @@ return [
             'created' => "The session was successfully created.",
             'updated' => "The session was successfully updated.",
             'deleted' => "The session was successfully deleted.",
-            'resynced' => "The session was successfully resynced.",
+            'resynced' => "The sessions were successfully resynced.",
         ],
         'questions' => [
             'open' => "Open this session?",
@@ -311,7 +314,7 @@ return [
             'close' => "Close this session?",
             'delete' => "Delete this session?",
             'disable' => "Disable this session?<br/>If the session was already opened, this may also delete related data.",
-            'resync' => "Resync this session?<br/>You need to do this if you have changed the members, the fees, or the subscriptions after it was opened.",
+            'resync' => "Resync the sessions in this round?<br/>You need to do this if you have changed the members, the fees, or the subscriptions after it was opened.",
         ],
         'errors' => [
             'opened' => "A session has already been opened.",
@@ -360,6 +363,7 @@ return [
         'actions' => [
             'subscriptions' => "Subscriptions",
             'sessions' => "Sessions",
+            'period' => "Start - End",
         ],
         'questions' => [
             'delete' => "Delete this tontine?<br/>Please, make sure it has no subscription.",

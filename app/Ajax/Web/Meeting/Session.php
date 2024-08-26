@@ -32,7 +32,17 @@ class Session extends CallableClass
         $this->response->html('content-home', $html);
 
         $this->jq('#btn-sessions-refresh')->click($this->rq()->page());
+        $this->jq('#btn-session-resync')->click($this->rq()->resync()
+            ->confirm(trans('tontine.session.questions.resync')));
 
+        return $this->page();
+    }
+
+    public function resync()
+    {
+        $this->sessionService->resyncSessions();
+
+        $this->notify->success(trans('tontine.session.messages.resynced'), trans('common.titles.success'));
         return $this->page();
     }
 
@@ -52,8 +62,6 @@ class Session extends CallableClass
         $this->response->call('makeTableResponsive', 'content-page');
 
         $sessionId = jq()->parent()->attr('data-session-id')->toInt();
-        $this->jq('.btn-session-resync')->click($this->rq()->resync($sessionId)
-            ->confirm(trans('tontine.session.questions.resync')));
         $this->jq('.btn-session-open')->click($this->rq()->open($sessionId)
             ->confirm(trans('tontine.session.questions.open') . '<br/>' .
             trans('tontine.session.questions.warning')));
@@ -96,20 +104,6 @@ class Session extends CallableClass
 
         $this->sessionService->closeSession($session);
 
-        return $this->page();
-    }
-
-    public function resync(int $sessionId)
-    {
-        if(!($session = $this->sessionService->getSession($sessionId)) || !$session->opened)
-        {
-            $this->notify->error(trans('tontine.session.errors.not_opened'), trans('common.titles.error'));
-            return $this->page();
-        }
-
-        $this->sessionService->resyncSession($session);
-
-        $this->notify->success(trans('tontine.session.messages.resynced'), trans('common.titles.success'));
         return $this->page();
     }
 }
