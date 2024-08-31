@@ -1517,16 +1517,16 @@
         },
         {
             "name": "jaxon-php/jaxon-core",
-            "version": "v4.8.5",
+            "version": "v4.8.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-core.git",
-                "reference": "25f4d1db97e8c9a94c4e338c36c73af517d64eec"
+                "reference": "eee64b2a461053fca42a32be5fe52916482d2c3a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/25f4d1db97e8c9a94c4e338c36c73af517d64eec",
-                "reference": "25f4d1db97e8c9a94c4e338c36c73af517d64eec",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/eee64b2a461053fca42a32be5fe52916482d2c3a",
+                "reference": "eee64b2a461053fca42a32be5fe52916482d2c3a",
                 "shasum": ""
             },
             "require": {
@@ -1534,7 +1534,7 @@
                 "jaxon-php/jaxon-utils": "^1.1.2",
                 "nyholm/psr7": "^1.8",
                 "nyholm/psr7-server": "^1.1",
-                "php": ">=8.0",
+                "php": ">=7.1",
                 "pimple/pimple": "^3.0",
                 "psr/container": "^1.0|^2.0",
                 "psr/http-message": "^1.0|^2.0",
@@ -1543,9 +1543,9 @@
                 "psr/log": "^1.0|^2.0|^3.0"
             },
             "require-dev": {
-                "jaxon-php/jaxon-dialogs": "dev-main",
-                "jaxon-php/jaxon-upload": "dev-main",
-                "lagdo/twitter-feed": "dev-test",
+                "jaxon-php/jaxon-annotations": "dev-test",
+                "jaxon-php/jaxon-dialogs": "dev-test",
+                "jaxon-php/jaxon-upload": "dev-test",
                 "php-coveralls/php-coveralls": "^2.5",
                 "phpunit/phpcov": "^8.2",
                 "phpunit/phpunit": "^9.5"
@@ -1593,7 +1593,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-core/issues",
                 "source": "https://github.com/jaxon-php/jaxon-core"
             },
-            "time": "2024-08-04T00:20:34+00:00"
+            "time": "2024-08-31T09:21:43+00:00"
         },
         {
             "name": "jaxon-php/jaxon-dialogs",
