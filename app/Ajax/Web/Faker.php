@@ -52,10 +52,10 @@ class Faker extends CallableClass
         $charges = $this->chargeService->getFakeCharges($count);
         for($i = 0; $i < $count; $i++)
         {
-            $this->jq("#charge_type_$i")->val($charges[$i]->type);
-            $this->jq("#charge_period_$i")->val($charges[$i]->period);
-            $this->jq("#charge_name_$i")->val($charges[$i]->name);
-            $this->jq("#charge_amount_$i")->val($charges[$i]->amount);
+            $this->response->jq("#charge_type_$i")->val($charges[$i]->type);
+            $this->response->jq("#charge_period_$i")->val($charges[$i]->period);
+            $this->response->jq("#charge_name_$i")->val($charges[$i]->name);
+            $this->response->jq("#charge_amount_$i")->val($charges[$i]->amount);
         }
 
         return $this->response;
@@ -71,9 +71,9 @@ class Faker extends CallableClass
         $pools = $this->poolService->getFakePools($count);
         for($i = 0; $i < $count; $i++)
         {
-            $this->jq("#pool_title_$i")->val($pools[$i]->title);
-            $this->jq("#pool_amount_$i")->val($pools[$i]->amount);
-            $this->jq("#pool_notes_$i")->val($pools[$i]->notes);
+            $this->response->jq("#pool_title_$i")->val($pools[$i]->title);
+            $this->response->jq("#pool_amount_$i")->val($pools[$i]->amount);
+            $this->response->jq("#pool_notes_$i")->val($pools[$i]->notes);
         }
 
         return $this->response;

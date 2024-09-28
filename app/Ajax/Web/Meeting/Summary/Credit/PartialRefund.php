@@ -50,7 +50,7 @@ class PartialRefund extends SessionCallable
         $this->response->html('meeting-partial-refunds', $html);
 
         $fundId = pm()->select('partial-refunds-fund-id')->toInt();
-        $this->jq('#btn-partial-refunds-fund')->click($this->rq()->fund($fundId));
+        $this->response->jq('#btn-partial-refunds-fund')->click($this->rq()->fund($fundId));
 
         return $this->fund(0);
     }
@@ -102,10 +102,9 @@ class PartialRefund extends SessionCallable
         $html = $this->renderView('pages.meeting.summary.refund.partial.page', [
             'session' => $this->session,
             'refunds' => $refunds,
-            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-partial-refunds-page', $html);
-        $this->response->call('makeTableResponsive', 'meeting-partial-refunds-page');
+        $this->response->js()->makeTableResponsive('meeting-partial-refunds-page');
 
         return $this->response;
     }

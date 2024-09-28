@@ -35,11 +35,11 @@ class Deposit extends OpenedSessionCallable
             'pools' => $this->poolService->getPoolsWithReceivables($this->session),
         ]);
         $this->response->html('meeting-deposits', $html);
-        $this->response->call('makeTableResponsive', 'meeting-deposits');
+        $this->response->js()->makeTableResponsive('meeting-deposits');
 
-        $this->jq('#btn-deposits-refresh')->click($this->rq()->home());
+        $this->response->jq('#btn-deposits-refresh')->click($this->rq()->home());
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
-        $this->jq('.btn-pool-deposits')
+        $this->response->jq('.btn-pool-deposits')
             ->click($this->rq(Deposit\Pool::class)->home($poolId));
 
         return $this->response;

@@ -1,17 +1,27 @@
-                        <table class="table table-bordered responsive">
-                          <thead>
-                            <tr>
-                              <th>{!! __('common.labels.title') !!}</th>
-                              <th>{!! __('common.labels.date') !!}</th>
-                              <th class="table-menu"></th>
-                            </tr>
-                          </thead>
-                          <tbody>
+@php
+$sessionId = Jaxon\jq()->parent()->attr('data-session-id')->toInt();
+$rqSession = Jaxon\rq(App\Ajax\Web\Planning\Session::class);
+@endphp
+                    <div class="table-responsive" id="content-page-sessions" @jxnTarget()>
+                      <div @jxnOn(['.btn-session-edit', 'click', ''], $rqSession->edit($sessionId))></div>
+                      <div @jxnOn(['.btn-session-venue', 'click', ''], $rqSession->editVenue($sessionId))></div>
+                      <div @jxnOn(['.btn-session-delete', 'click', ''], $rqSession->delete($sessionId)
+                        ->confirm(__('tontine.session.questions.delete')))></div>
+
+                      <table class="table table-bordered responsive">
+                        <thead>
+                          <tr>
+                            <th>{!! __('common.labels.title') !!}</th>
+                            <th>{!! __('common.labels.date') !!}</th>
+                            <th class="table-menu"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
 @foreach ($sessions as $session)
-                            <tr>
-                              <td>{{ $session->title }}<br/>{{ $statuses[$session->status] }}</td>
-                              <td>{{ $session->date }}<br/>{{ $session->times }}</td>
-                              <td class="table-item-menu">
+                          <tr>
+                            <td>{{ $session->title }}<br/>{{ $statuses[$session->status] }}</td>
+                            <td>{{ $session->date }}<br/>{{ $session->times }}</td>
+                            <td class="table-item-menu">
 @include('tontine.app.default.parts.table.menu', [
   'dataIdKey' => 'data-session-id',
   'dataIdValue' => $session->id,
@@ -26,9 +36,9 @@
     'text' => __('common.actions.delete'),
   ]],
 ])
-                              </td>
-                            </tr>
+                            </td>
+                          </tr>
 @endforeach
-                          </tbody>
-                        </table>
-{!! $pagination !!}
+                        </tbody>
+                      </table>
+                    </div> <!-- End table -->

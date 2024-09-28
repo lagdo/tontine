@@ -36,9 +36,9 @@ class Loan extends SessionCallable
             'defaultFund' => $this->fundService->getDefaultFund(),
         ]);
         $this->response->html('meeting-loans', $html);
-        $this->response->call('makeTableResponsive', 'meeting-loans');
+        $this->response->js()->makeTableResponsive('meeting-loans');
 
-        $this->response->call('showBalanceAmountsWithDelay');
+        $this->response->js()->showBalanceAmountsWithDelay();
 
         return $this->response;
     }

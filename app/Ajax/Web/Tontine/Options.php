@@ -29,11 +29,13 @@ class Options extends CallableClass
         $this->response->html('section-title', trans('tontine.menus.tontine'));
         $this->response->html('content-home', $this->renderView('pages.options.home'));
 
-        $this->cl(Fund::class)->show();
-        $this->cl(Category::class)->show();
-        $this->cl(Charge::class)->show();
+        $this->response->js()->setSmScreenHandler('options-sm-screens');
 
-        $this->response->call('setSmScreenHandler', 'options-sm-screens');
+        $this->cl(FundPage::class)->page();
+        $this->cl(CategoryPage::class)->page();
+        $this->cl(ChargePage::class)->page();
+
+        return $this->response;
     }
 
     public function editOptions()

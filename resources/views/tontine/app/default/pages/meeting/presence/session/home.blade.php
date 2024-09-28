@@ -1,3 +1,9 @@
+@php
+  $rqPresence = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Home::class);
+  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Session::class);
+  $rqSessionPage = Jaxon\rq(App\Ajax\Web\Meeting\Presence\SessionPage::class);
+  $jsBackHandler = Jaxon\jw()->showSmScreen('content-home-members', 'presence-sm-screens');
+@endphp
               <div class="section-body">
                 <div class="row">
                   <div class="col">
@@ -12,16 +18,16 @@
                   </div>
 @if (!$member)
                   <div class="col-auto">
-                    <button type="button" class="btn btn-primary" id="btn-presence-exchange"><i class="fa fa-exchange-alt"></i></button>
+                    <button type="button" class="btn btn-primary" @jxnClick($rqPresence->exchange())><i class="fa fa-exchange-alt"></i></button>
                   </div>
 @else
                   <div class="col-auto sm-screen-hidden">
-                    <button type="button" class="btn btn-primary" id="btn-presence-members-back"><i class="fa fa-arrow-left"></i></button>
+                    <button type="button" class="btn btn-primary" @jxnClick($jsBackHandler)><i class="fa fa-arrow-left"></i></button>
                   </div>
 @endif
                   <div class="col-auto">
                     <div class="btn-group float-right" role="group">
-                      <button type="button" class="btn btn-primary" id="btn-presence-sessions-refresh"><i class="fa fa-sync"></i></button>
+                      <button type="button" class="btn btn-primary" @jxnClick($rqSession->render())><i class="fa fa-sync"></i></button>
                     </div>
                   </div>
                 </div>
@@ -30,7 +36,9 @@
               <!-- Data tables -->
               <div class="card shadow mb-4">
                 <div class="card-body">
-                  <div class="table-responsive" id="content-page-sessions">
-                  </div> <!-- End table -->
+                  <div @jxnShow($rqSessionPage)>
+                  </div>
+                  <nav @jxnPagination($rqSessionPage)>
+                  </nav>
                 </div>
               </div>

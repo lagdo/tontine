@@ -65,7 +65,8 @@ class Access extends CallableClass
         $tontines = $this->tenantService->user()->tontines;
         if($tontines->count() === 0)
         {
-            $this->notify->warning(trans('tontine.invite.errors.tontines'), trans('common.titles.warning'));
+            $this->notify->title(trans('common.titles.warning'))
+                ->warning(trans('tontine.invite.errors.tontines'));
             return $this->response;
         }
         $this->tontine = $tontines->first();
@@ -77,9 +78,9 @@ class Access extends CallableClass
             'tontines' => $tontines->pluck('name', 'id'),
         ]);
         $this->response->html('content-host-invites-home', $html);
-        $this->jq('#btn-host-invites-back')->click($this->rq(Invite::class)->home());
+        $this->response->jq('#btn-host-invites-back')->click($this->rq(Invite::class)->home());
         $tontineId = pm()->select('select-invite-tontine');
-        $this->jq('#btn-select-invite-tontine')->click($this->rq()->tontine($tontineId));
+        $this->response->jq('#btn-select-invite-tontine')->click($this->rq()->tontine($tontineId));
 
         return $this->access();
     }
@@ -99,7 +100,7 @@ class Access extends CallableClass
             'access' => $access,
         ]);
         $this->response->html('content-host-invite-access', $html);
-        $this->jq('#btn-save-guest-tontine-access')
+        $this->response->jq('#btn-save-guest-tontine-access')
             ->click($this->rq()->saveAccess(pm()->form('guest-tontine-access-form')));
 
         return $this->response;
@@ -113,7 +114,7 @@ class Access extends CallableClass
         $access = $this->validator->validateItem($formValues['access'] ?? []);
         $this->guestService->saveGuestTontineAccess($this->invite, $this->tontine, $access);
 
-        $this->notify->success(trans('meeting.messages.saved'), trans('common.titles.success'));
+        $this->notify->title(trans('common.titles.success'))->success(trans('meeting.messages.saved'));
 
         return $this->access();
     }

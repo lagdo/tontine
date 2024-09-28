@@ -26,7 +26,7 @@ class Home extends CallableClass
     {
         if(!($session = $this->sessionService->getSession($sessionId)))
         {
-            $this->notify->error(trans('tontine.session.errors.not_opened'), trans('common.titles.error'));
+            $this->notify->title(trans('common.titles.error'))->error(trans('tontine.session.errors.not_opened'));
             return $this->response;
         }
 
@@ -36,10 +36,10 @@ class Home extends CallableClass
             'session' => $session,
         ]);
         $this->response->html('content-home', $html);
-        $this->jq('a', '#session-tabs')->click(jq()->tab('show'));
+        $this->response->jq('a', '#session-tabs')->click(jq()->tab('show'));
 
-        $this->jq('#btn-session-back')->click($this->rq(Menu::class)->home());
-        $this->jq('#btn-session-refresh')->click($this->rq()->summary($session->id));
+        $this->response->jq('#btn-session-back')->click($this->rq(Menu::class)->home());
+        $this->response->jq('#btn-session-refresh')->click($this->rq()->summary($session->id));
 
         $this->pools($session);
         $this->savings($session);
@@ -55,7 +55,7 @@ class Home extends CallableClass
         $this->cl(Pool\Deposit::class)->show($session);
         $this->cl(Pool\Remitment::class)->show($session);
 
-        $this->response->call('setSmScreenHandler', 'session-pools-sm-screens');
+        $this->response->js()->setSmScreenHandler('session-pools-sm-screens');
 
         return $this->response;
     }
@@ -65,7 +65,7 @@ class Home extends CallableClass
         $this->cl(Saving\Saving::class)->show($session);
         $this->cl(Saving\Closing::class)->show($session);
 
-        $this->response->call('setSmScreenHandler', 'session-savings-sm-screens');
+        $this->response->js()->setSmScreenHandler('session-savings-sm-screens');
 
         return $this->response;
     }
@@ -76,7 +76,7 @@ class Home extends CallableClass
         $this->cl(Credit\PartialRefund::class)->show($session);
         $this->cl(Credit\Refund::class)->show($session);
 
-        $this->response->call('setSmScreenHandler', 'session-credits-sm-screens');
+        $this->response->js()->setSmScreenHandler('session-credits-sm-screens');
 
         return $this->response;
     }
@@ -93,7 +93,7 @@ class Home extends CallableClass
         $this->cl(Charge\FixedFee::class)->show($session);
         $this->cl(Charge\LibreFee::class)->show($session);
 
-        $this->response->call('setSmScreenHandler', 'session-charges-sm-screens');
+        $this->response->js()->setSmScreenHandler('session-charges-sm-screens');
 
         return $this->response;
     }

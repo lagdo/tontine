@@ -1,1 +1,1 @@
-<li class="page-item"><a class="page-link" href="javascript:;" onclick="{!! $call !!}">{!! $text !!}</a></li>
+<li class="page-item enabled" data-page="{!! $page !!}"><a class="page-link" role="link">{!! $text !!}</a></li>

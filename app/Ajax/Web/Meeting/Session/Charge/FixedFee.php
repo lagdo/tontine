@@ -36,7 +36,7 @@ class FixedFee extends OpenedSessionCallable
         $html = $this->renderView('pages.meeting.charge.fixed.home')
             ->with('session', $this->session);
         $this->response->html('meeting-fees-fixed', $html);
-        $this->jq('#btn-fees-fixed-refresh')->click($this->rq()->home());
+        $this->response->jq('#btn-fees-fixed-refresh')->click($this->rq()->home());
 
         return $this->page(1);
     }
@@ -57,13 +57,12 @@ class FixedFee extends OpenedSessionCallable
             'charges' => $charges,
             'bills' => $bills,
             'settlements' => $settlements,
-            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-fees-fixed-page', $html);
-        $this->response->call('makeTableResponsive', 'meeting-fees-fixed-page');
+        $this->response->js()->makeTableResponsive('meeting-fees-fixed-page');
 
         $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
-        $this->jq('.btn-fee-fixed-settlements')
+        $this->response->jq('.btn-fee-fixed-settlements')
             ->click($this->rq(Fixed\Settlement::class)->home($chargeId));
 
         return $this->response;

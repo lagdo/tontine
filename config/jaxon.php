@@ -8,12 +8,19 @@ use App\Http\Middleware\TontineTenant;
 
 return [
     'app' => [
+        'metadata' => 'annotations',
         'faker' => env('APP_FAKER', false),
         'request' => [
             'route' => 'ajax',
-            'middlewares' => ['web', TontineTenant::class, SetAppLocale::class,
-                SetAppTemplate::class, JaxonAnnotations::class, JaxonCallbacks::class,
-                'jaxon.ajax'],
+            'middlewares' => [
+                'web',
+                TontineTenant::class,
+                SetAppLocale::class,
+                SetAppTemplate::class,
+                JaxonAnnotations::class,
+                JaxonCallbacks::class,
+                'jaxon.ajax',
+            ],
         ],
         'directories' => [
             app_path('Ajax/Web') => [
@@ -36,9 +43,6 @@ return [
             ],
             'prefix' => [
                 'class' => '',
-            ],
-            'annotations' => [
-                'enabled' => true,
             ],
             'debug' => [
                 'on' => false,
@@ -69,7 +73,7 @@ return [
             'default' => [
                 'modal' => 'bootbox',
                 'message' => 'toastr',
-                'question' => 'noty',
+                'question' => 'bootbox',
             ],
             'bootbox' => [
                 'assets' => [

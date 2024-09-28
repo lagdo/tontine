@@ -19,7 +19,7 @@
                       </td>
                       <td class="table-item-menu" data-auction-id="{{ $auction->id }}">
 @if ($session->opened)
-                        <a href="javascript:void(0)" class="btn-toggle-payment"><i class="fa fa-toggle-{{ $auction->paid ? 'on' : 'off' }}"></i></a>
+                        <a role="link" class="btn-toggle-payment"><i class="fa fa-toggle-{{ $auction->paid ? 'on' : 'off' }}"></i></a>
 @else
                         <i class="fa fa-toggle-{{ $auction->paid ? 'on' : 'off' }}"></i>
 @endif
@@ -28,4 +28,4 @@
 @endforeach
                   </tbody>
                 </table>
-                <nav>{!! $pagination !!}</nav>
+                <nav></nav>

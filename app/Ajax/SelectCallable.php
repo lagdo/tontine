@@ -25,11 +25,11 @@ class SelectCallable extends CallableClass
 
         // Set the tontine sidebar menu
         $this->response->html('sidebar-menu-tontine', $this->renderView('parts.sidebar.tontine'));
-        $this->jq('a', '#sidebar-menu-tontine')->css('color', self::$activeMenuColor);
+        $this->response->jq('a', '#sidebar-menu-tontine')->css('color', self::$activeMenuColor);
 
         foreach(config('menu.tontine') as $menuId => $menuClass)
         {
-            $this->jq($menuId)->click($this->rq($menuClass)->home());
+            $this->response->jq($menuId)->click($this->rq($menuClass)->home());
         }
 
         // Reset the round sidebar menu
@@ -47,11 +47,11 @@ class SelectCallable extends CallableClass
 
         // Set the round sidebar menu
         $this->response->html('sidebar-menu-round', $this->renderView('parts.sidebar.round'));
-        $this->jq('a', '#sidebar-menu-round')->css('color', self::$activeMenuColor);
+        $this->response->jq('a', '#sidebar-menu-round')->css('color', self::$activeMenuColor);
 
         foreach(config('menu.round') as $menuId => $menuClass)
         {
-            $this->jq($menuId)->click($this->rq($menuClass)->home());
+            $this->response->jq($menuId)->click($this->rq($menuClass)->home());
         }
     }
 }

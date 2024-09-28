@@ -28,7 +28,7 @@
                     <div class="input-group">
                       <input id="password" type="password" class="form-control @error('name')is-invalid @enderror" name="password" value="password" tabindex="2" required>
                       <div class="input-group-append">
-                        <span class="input-group-text toggle-password"><a href="javascript:void(0)"><i class="fa fa-eye"></i></a></span>
+                        <span class="input-group-text toggle-password"><a role="link"><i class="fa fa-eye"></i></a></span>
                       </div>
                     </div>
                     <div class="invalid-feedback">{{ $errors->first('password') }}</div>

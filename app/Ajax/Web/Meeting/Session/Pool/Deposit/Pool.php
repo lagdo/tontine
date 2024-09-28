@@ -50,7 +50,7 @@ class Pool extends OpenedSessionCallable
 
         if(!$this->session || !$this->pool || $this->session->disabled($this->pool))
         {
-            $this->notify->error(trans('tontine.session.errors.disabled'), trans('common.titles.error'));
+            $this->notify->title(trans('common.titles.error'))->error(trans('tontine.session.errors.disabled'));
             $this->pool = null;
         }
     }
@@ -88,7 +88,7 @@ class Pool extends OpenedSessionCallable
         ]);
         $this->response->html('meeting-deposits', $html);
 
-        $this->jq('#btn-deposits-back')->click($this->rq(Deposit::class)->home());
+        $this->response->jq('#btn-deposits-back')->click($this->rq(Deposit::class)->home());
 
         return $this->page(1);
     }
@@ -111,19 +111,18 @@ class Pool extends OpenedSessionCallable
             'pool' => $this->pool,
             'session' => $this->session,
             'receivables' => $receivables,
-            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-pool-deposits', $html);
-        $this->response->call('makeTableResponsive', 'meeting-pool-deposits');
+        $this->response->js()->makeTableResponsive('meeting-pool-deposits');
 
-        $this->jq('.btn-add-all-deposits')->click($this->rq()->addAllDeposits());
-        $this->jq('.btn-del-all-deposits')->click($this->rq()->delAllDeposits());
+        $this->response->jq('.btn-add-all-deposits')->click($this->rq()->addAllDeposits());
+        $this->response->jq('.btn-del-all-deposits')->click($this->rq()->delAllDeposits());
         $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
         $amount = jq('input', jq()->parent()->parent())->val()->toInt();
-        $this->jq('.btn-add-deposit')->click($this->rq()->addDeposit($receivableId));
-        $this->jq('.btn-del-deposit')->click($this->rq()->delDeposit($receivableId));
-        $this->jq('.btn-save-deposit')->click($this->rq()->saveAmount($receivableId, $amount));
-        $this->jq('.btn-edit-deposit')->click($this->rq()->editAmount($receivableId));
+        $this->response->jq('.btn-add-deposit')->click($this->rq()->addDeposit($receivableId));
+        $this->response->jq('.btn-del-deposit')->click($this->rq()->delDeposit($receivableId));
+        $this->response->jq('.btn-save-deposit')->click($this->rq()->saveAmount($receivableId, $amount));
+        $this->response->jq('.btn-edit-deposit')->click($this->rq()->editAmount($receivableId));
 
         return $this->response;
     }
@@ -164,7 +163,7 @@ class Pool extends OpenedSessionCallable
 
         $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
         $amount = jq('input', jq()->parent()->parent())->val();
-        $this->jq('.btn-save-deposit', "#$fieldId")->click($this->rq()->saveAmount($receivableId, $amount));
+        $this->response->jq('.btn-save-deposit', "#$fieldId")->click($this->rq()->saveAmount($receivableId, $amount));
 
         return $this->response;
     }
@@ -181,7 +180,7 @@ class Pool extends OpenedSessionCallable
         $amount = str_replace(',', '.', trim($amount));
         if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
         {
-            $this->notify->error(trans('meeting.errors.amount.invalid', ['amount' => $amount]));
+            $this->notify->title(trans('common.titles.error'))->error(trans('meeting.errors.amount.invalid', ['amount' => $amount]));
             return $this->response;
         }
         $amount = $amount === '' ? 0 : $this->localeService->convertMoneyToInt((float)$amount);

@@ -30,4 +30,4 @@
 @endforeach
                       </tbody>
                     </table>
-{!! $pagination !!}
+

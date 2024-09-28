@@ -29,7 +29,7 @@ class FixedFee extends SessionCallable
         $html = $this->renderView('pages.meeting.summary.charge.fixed.home')
             ->with('session', $this->session);
         $this->response->html('meeting-fees-fixed', $html);
-        $this->jq('#btn-fees-fixed-refresh')->click($this->rq()->home());
+        $this->response->jq('#btn-fees-fixed-refresh')->click($this->rq()->home());
 
         $charges = $this->feeService->getFees();
         // Bill and settlement counts and amounts
@@ -44,7 +44,7 @@ class FixedFee extends SessionCallable
             'pagination' => '',
         ]);
         $this->response->html('meeting-fees-fixed-page', $html);
-        $this->response->call('makeTableResponsive', 'meeting-fees-fixed-page');
+        $this->response->js()->makeTableResponsive('meeting-fees-fixed-page');
 
         return $this->response;
     }

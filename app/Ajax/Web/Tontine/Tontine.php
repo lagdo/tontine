@@ -15,6 +15,9 @@ use function Jaxon\pm;
 use function collect;
 use function trans;
 
+/**
+ * @databag tontine
+ */
 class Tontine extends SelectCallable
 {
     /**
@@ -53,7 +56,6 @@ class Tontine extends SelectCallable
     {
         $this->response->html('section-title', trans('tontine.menus.tontines'));
         $this->response->html('content-home', $this->renderView('pages.tontine.home'));
-
         if(($tontine = $this->tenantService->tontine()))
         {
             $this->selectTontine($tontine);
@@ -63,46 +65,7 @@ class Tontine extends SelectCallable
             $this->selectRound($round);
         }
 
-        $this->jq('#btn-tontine-create')->click($this->rq()->add());
-        $this->jq('#btn-tontine-refresh')->click($this->rq()->home());
-        $this->jq('#btn-show-select')->click($this->rq(Select::class)->showTontines());
-
-        $this->page();
-        if($this->tontineService->hasGuestTontines())
-        {
-            $this->cl(Guest\Tontine::class)->home();
-        }
-
-        return $this->response;
-    }
-
-    /**
-     * @databag tontine
-     */
-    public function page(int $pageNumber = 0)
-    {
-        $tontineCount = $this->tontineService->getTontineCount();
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $tontineCount, 'tontine', 'page');
-        $tontines = $this->tontineService->getTontines($pageNumber);
-        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $tontineCount);
-        [$countries, $currencies] = $this->localeService->getNamesFromTontines($tontines);
-
-        $html = $this->renderView('pages.tontine.page', [
-            'tontines' => $tontines,
-            'countries' => $countries,
-            'currencies' => $currencies,
-            'pagination' => $pagination,
-        ]);
-        $this->response->html('tontine-page', $html);
-        $this->response->call('makeTableResponsive', 'tontine-page');
-
-        $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
-        $this->jq('.btn-tontine-edit')->click($this->rq()->edit($tontineId));
-        $this->jq('.btn-tontine-choose')->click($this->rq(Select::class)->saveTontine($tontineId));
-        $this->jq('.btn-tontine-delete')->click($this->rq()->delete($tontineId)
-            ->confirm(trans('tontine.questions.delete')));
-
-        return $this->response;
+        return $this->cl(TontinePage::class)->page();
     }
 
     /**
@@ -111,8 +74,9 @@ class Tontine extends SelectCallable
     public function add()
     {
         $title = trans('tontine.titles.add');
-        $content = $this->renderView('pages.tontine.add')
-            ->with('countries', $this->localeService->getCountries());
+        $content = $this->renderView('pages.tontine.add', [
+            'countries' => $this->localeService->getCountries(),
+        ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -125,8 +89,8 @@ class Tontine extends SelectCallable
 
         $this->dialog->hide();
         $this->dialog->show($title, $content, $buttons);
-        $this->jq('#select_country_dropdown')
-            ->change($this->rq(Locale::class)->selectCurrencies(jq()->val()));
+        $this->response->jq('#select_country_dropdown')
+            ->on('change', $this->rq(Locale::class)->selectCurrency(jq()->val()));
 
         return $this->response;
     }
@@ -138,10 +102,11 @@ class Tontine extends SelectCallable
     {
         $values = $this->validator->validateItem($formValues);
         $this->tontineService->createTontine($values);
-        $this->page(); // Back to current page
+        $this->cl(TontinePage::class)->page(); // Back to current page
 
         $this->dialog->hide();
-        $this->notify->success(trans('tontine.messages.created'), trans('common.titles.success'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.messages.created'));
 
         return $this->response;
     }
@@ -155,10 +120,11 @@ class Tontine extends SelectCallable
 
         $title = trans('tontine.titles.edit');
         [, $currencies] = $this->localeService->getNamesFromTontines(collect([$tontine]));
-        $content = $this->renderView('pages.tontine.edit')
-            ->with('tontine', $tontine)
-            ->with('countries', $this->localeService->getCountries())
-            ->with('currencies', $currencies);
+        $content = $this->renderView('pages.tontine.edit', [
+            'tontine' => $tontine,
+            'countries' => $this->localeService->getCountries(),
+            'currencies' => $currencies
+        ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -170,8 +136,8 @@ class Tontine extends SelectCallable
         ]];
 
         $this->dialog->show($title, $content, $buttons);
-        $this->jq('#select_country_dropdown')
-            ->change($this->rq(Locale::class)->selectCurrencies(jq()->val()));
+        $this->response->jq('#select_country_dropdown')
+            ->on('change', $this->rq(Locale::class)->selectCurrency(jq()->val()));
 
         return $this->response;
     }
@@ -183,10 +149,11 @@ class Tontine extends SelectCallable
     {
         $values = $this->validator->validateItem($formValues);
         $this->tontineService->updateTontine($tontineId, $values);
-        $this->page(); // Back to current page
+        $this->cl(TontinePage::class)->page(); // Back to current page
 
         $this->dialog->hide();
-        $this->notify->success(trans('tontine.messages.updated'), trans('common.titles.success'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.messages.updated'));
 
         return $this->response;
     }
@@ -194,7 +161,8 @@ class Tontine extends SelectCallable
     public function delete(int $tontineId)
     {
         $this->tontineService->deleteTontine($tontineId);
-        $this->page(); // Back to current page
-        $this->notify->success(trans('tontine.messages.deleted'), trans('common.titles.success'));
+        $this->cl(TontinePage::class)->page(); // Back to current page
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.messages.deleted'));
     }
 }

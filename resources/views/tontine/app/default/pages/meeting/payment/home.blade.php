@@ -1,3 +1,7 @@
+@php
+  // $rqPayment = Jaxon\rq(App\Ajax\Web\Meeting\Payment::class);
+  $rqPaymentPage = Jaxon\rq(App\Ajax\Web\Meeting\PaymentPage::class);
+@endphp
           <div class="row" id="payment-sm-screens">
             <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="payment-members-home">
               <div class="section-body">
@@ -8,7 +12,9 @@
                   <div class="col-auto" id="payment-settings">
                   </div>
                   <div class="col-auto">
-                    @if ($sessions->count() > 0){{ $htmlBuilder->select('session_id', $sessions, 0)->class('form-control')->id('select-session') }}@endif
+@if ($sessions->count() > 0)
+                    {{ $htmlBuilder->select('session_id', $sessions, 0)->class('form-control')->id('select-session') }}
+@endif
                   </div>
                 </div>
               </div>
@@ -21,8 +27,10 @@
                       <div class="section-title mt-0">{{ __('tontine.menus.members') }}</div>
                     </div>
                   </div>
-                  <div class="table-responsive" id="payment-members-page">
-                  </div> <!-- End table -->
+                  <div @jxnShow($rqPaymentPage)>
+                  </div>
+                  <nav @jxnPagination($rqPaymentPage)>
+                  </nav>
                 </div>
               </div>
             </div>

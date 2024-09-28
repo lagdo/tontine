@@ -1,6 +1,4 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-              <div class="section-title mt-0">{{ __('meeting.actions.pools') }} - {{ $pool->title }}</div>
-              <div class="table-responsive">
                 <table class="table table-bordered responsive">
                   <thead>
                     <tr>
@@ -111,4 +109,3 @@
 @endforeach
                   </tbody>
                 </table>
-              </div>

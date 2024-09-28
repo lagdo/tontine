@@ -1,6 +1,12 @@
+@php
+  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Session::class);
+  $rqMember = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Member::class);
+  $rqAtLeft = !$exchange ? $rqSession : $rqMember;
+  $rqAtRight = $exchange ? $rqSession : $rqMember;
+@endphp
           <div class="row" id="presence-sm-screens">
-            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-home-{{ !$exchange ? 'sessions' : 'members' }}">
+            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnShow($rqAtLeft)>
             </div>
-            <div class="col-md-6 col-sm-12 sm-screen" id="content-home-{{ !$exchange ? 'members' : 'sessions' }}">
+            <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqAtRight)>
             </div>
           </div>

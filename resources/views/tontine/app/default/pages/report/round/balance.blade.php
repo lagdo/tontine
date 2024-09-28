@@ -2,8 +2,6 @@
 @php
   $cash = 0;
 @endphp
-              <div class="section-title mt-0">{!! __('meeting.titles.amounts') !!}</div>
-              <div class="table-responsive">
                 <table class="table table-bordered responsive">
                   <thead>
                     <tr>
@@ -53,4 +51,3 @@
 @endforeach
                   </tbody>
                 </table>
-              </div>

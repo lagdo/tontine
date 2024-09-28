@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Ajax\Web\PaginationComponent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Mcamara\LaravelLocalization\LaravelLocalization;
@@ -85,6 +87,11 @@ class SiakServiceProvider extends ServiceProvider
         // DB::listen(function($query) {
         //     Log::info($query->sql, $query->bindings, $query->time);
         // });
+
+        Blade::directive('jxnPagination', function($expression) {
+            $class = PaginationComponent::class;
+            return "<?php echo \Jaxon\attr()->show(\Jaxon\\rq('$class'), {$expression}->_class()); ?>";
+        });
     }
 
     /**

@@ -62,7 +62,7 @@ class Misc extends SessionCallable
     public function saveAgenda(string $text)
     {
         $this->sessionService->saveAgenda($this->session, $text);
-        $this->notify->success(trans('meeting.messages.agenda.updated'), trans('common.titles.success'));
+        $this->notify->title(trans('common.titles.success'))->success(trans('meeting.messages.agenda.updated'));
 
         return $this->response;
     }
@@ -70,7 +70,7 @@ class Misc extends SessionCallable
     public function saveReport(string $text)
     {
         $this->sessionService->saveReport($this->session, $text);
-        $this->notify->success(trans('meeting.messages.report.updated'), trans('common.titles.success'));
+        $this->notify->title(trans('common.titles.success'))->success(trans('meeting.messages.report.updated'));
 
         return $this->response;
     }

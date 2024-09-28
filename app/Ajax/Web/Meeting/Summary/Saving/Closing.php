@@ -35,14 +35,14 @@ class Closing extends SessionCallable
             'funds' => $this->fundService->getFundList(),
         ]);
         $this->response->html('meeting-closings', $html);
-        $this->response->call('makeTableResponsive', 'meeting-closings');
+        $this->response->js()->makeTableResponsive('meeting-closings');
 
         // Sending an Ajax request to the Saving class needs to set
         // the session id in the report databag.
         $this->bag('report')->set('session.id', $this->session->id);
 
         $selectFundId = pm()->select('closings-fund-id')->toInt();
-        $this->jq('#btn-fund-show-savings')->click($this->rq()->showSavings($selectFundId));
+        $this->response->jq('#btn-fund-show-savings')->click($this->rq()->showSavings($selectFundId));
 
         return $this->response;
     }
@@ -60,7 +60,7 @@ class Closing extends SessionCallable
 
         $this->cl(Saving::class)->show($this->session, $fund);
 
-        $this->response->call('showSmScreen', 'report-fund-savings', 'session-savings');
+        $this->response->js()->showSmScreen('report-fund-savings', 'session-savings');
 
         return $this->response;
     }

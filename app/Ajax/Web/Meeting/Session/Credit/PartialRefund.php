@@ -62,10 +62,10 @@ class PartialRefund extends OpenedSessionCallable
         ]);
         $this->response->html('meeting-partial-refunds', $html);
 
-        $this->jq('#btn-partial-refunds-refresh')->click($this->rq()->home());
-        $this->jq('#btn-partial-refunds-edit')->click($this->rq()->editRefunds());
+        $this->response->jq('#btn-partial-refunds-refresh')->click($this->rq()->home());
+        $this->response->jq('#btn-partial-refunds-edit')->click($this->rq()->editRefunds());
         $fundId = pm()->select('partial-refunds-fund-id')->toInt();
-        $this->jq('#btn-partial-refunds-fund')->click($this->rq()->fund($fundId));
+        $this->response->jq('#btn-partial-refunds-fund')->click($this->rq()->fund($fundId));
 
         return $this->fund(0);
     }
@@ -117,16 +117,15 @@ class PartialRefund extends OpenedSessionCallable
         $html = $this->renderView('pages.meeting.refund.partial.page', [
             'session' => $this->session,
             'refunds' => $refunds,
-            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-partial-refunds-page', $html);
-        $this->response->call('makeTableResponsive', 'meeting-partial-refunds-page');
+        $this->response->js()->makeTableResponsive('meeting-partial-refunds-page');
 
         $refundId = jq()->parent()->attr('data-partial-refund-id')->toInt();
-        $this->jq('.btn-partial-refund-edit')->click($this->rq()->editRefund($refundId));
-        $this->jq('.btn-partial-refund-delete')->click($this->rq()->deleteRefund($refundId)
+        $this->response->jq('.btn-partial-refund-edit')->click($this->rq()->editRefund($refundId));
+        $this->response->jq('.btn-partial-refund-delete')->click($this->rq()->deleteRefund($refundId)
             ->confirm(trans('meeting.refund.questions.delete')));
-        $this->jq('.btn-del-partial-refund')->click($this->rq()->deleteRefund($refundId)
+        $this->response->jq('.btn-del-partial-refund')->click($this->rq()->deleteRefund($refundId)
             ->confirm(trans('meeting.refund.questions.delete')));
 
         return $this->response;
@@ -143,12 +142,12 @@ class PartialRefund extends OpenedSessionCallable
         ]);
         $this->response->html('meeting-partial-refunds', $html);
 
-        $this->jq('#btn-partial-refunds-back')->click($this->rq()->home());
-        $this->jq('#btn-partial-refunds-refresh')->click($this->rq()->editRefunds());
+        $this->response->jq('#btn-partial-refunds-back')->click($this->rq()->home());
+        $this->response->jq('#btn-partial-refunds-refresh')->click($this->rq()->editRefunds());
         $debtId = jq()->parent()->attr('data-debt-id')->toInt();
-        $this->jq('.btn-partial-refund-edit-amount')->click($this->rq()->editAmount($debtId));
+        $this->response->jq('.btn-partial-refund-edit-amount')->click($this->rq()->editAmount($debtId));
         $amount = jq('input', jq()->parent()->parent())->val()->toInt();
-        $this->jq('.btn-partial-refund-save-amount')->click($this->rq()->saveAmount($debtId, $amount));
+        $this->response->jq('.btn-partial-refund-save-amount')->click($this->rq()->saveAmount($debtId, $amount));
 
         return $this->response;
     }
@@ -174,7 +173,7 @@ class PartialRefund extends OpenedSessionCallable
         $this->response->html($parentDiv, $html);
         $debtId = jq()->parent()->attr('data-debt-id')->toInt();
         $amount = jq('input', jq()->parent()->parent())->val()->toInt();
-        $this->jq('.btn-partial-refund-save-amount', "#$parentDiv")
+        $this->response->jq('.btn-partial-refund-save-amount', "#$parentDiv")
             ->click($this->rq()->saveAmount($debtId, $amount));
 
         return $this->response;

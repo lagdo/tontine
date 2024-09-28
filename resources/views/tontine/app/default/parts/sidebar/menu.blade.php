@@ -12,7 +12,7 @@
             <li><a class="nav-link" id="tontine-menu-tontines" href="{{ $ajax ? 'javascript:void(0)' : route('tontine.home') }}">
               <i class="fa fa-fw fa-user-shield"></i> <span>{{ __('tontine.menus.tontines') }}</span>
             </a></li>
-            <li><a class="nav-link" id="tontine-menu-users" href="javascript:void(0)">
+            <li><a class="nav-link" id="tontine-menu-users" role="link">
               <i class="fa fa-fw fa-users-cog"></i> <span>{{ __('tontine.menus.admins') }}</span>
             </a></li>
           </ul>

@@ -52,17 +52,17 @@ class Loan extends OpenedSessionCallable
             'defaultFund' => $this->fundService->getDefaultFund(),
         ]);
         $this->response->html('meeting-loans', $html);
-        $this->response->call('makeTableResponsive', 'meeting-loans');
+        $this->response->js()->makeTableResponsive('meeting-loans');
 
-        $this->response->call('showBalanceAmountsWithDelay');
+        $this->response->js()->showBalanceAmountsWithDelay();
 
-        $this->jq('#btn-loans-refresh')->click($this->rq()->home());
-        $this->jq('#btn-loan-add')->click($this->rq()->addLoan());
-        $this->jq('#btn-loan-balances')
+        $this->response->jq('#btn-loans-refresh')->click($this->rq()->home());
+        $this->response->jq('#btn-loan-add')->click($this->rq()->addLoan());
+        $this->response->jq('#btn-loan-balances')
             ->click($this->rq(Misc::class)->showBalanceDetails(true));
         $loanId = jq()->parent()->attr('data-loan-id')->toInt();
-        $this->jq('.btn-loan-edit')->click($this->rq()->editLoan($loanId));
-        $this->jq('.btn-loan-delete')->click($this->rq()->deleteLoan($loanId)
+        $this->response->jq('.btn-loan-edit')->click($this->rq()->editLoan($loanId));
+        $this->response->jq('.btn-loan-delete')->click($this->rq()->deleteLoan($loanId)
             ->confirm(trans('meeting.loan.questions.delete')));
 
         return $this->response;
@@ -87,7 +87,7 @@ class Loan extends OpenedSessionCallable
             'click' => $this->rq()->createLoan(pm()->form('loan-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
-        $this->response->script('setLoanInterestLabel()');
+        $this->response->js()->setLoanInterestLabel();
 
         return $this->response;
     }
@@ -149,7 +149,7 @@ class Loan extends OpenedSessionCallable
             'click' => $this->rq()->updateLoan($loanId, pm()->form('loan-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
-        $this->response->script('setLoanInterestLabel()');
+        $this->response->js()->setLoanInterestLabel();
 
         return $this->response;
     }

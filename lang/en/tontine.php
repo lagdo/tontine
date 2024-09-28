@@ -375,6 +375,7 @@ return [
             'selected' => "Now showing the subscriptions of the tontine :tontine.",
         ],
         'errors' => [
+            'not_found' => "Unable to find this tontine.",
             'number' => [
                 'invalid' => "Please provide a valid number.",
                 'max' => "You can add a maximum of :max entries.",

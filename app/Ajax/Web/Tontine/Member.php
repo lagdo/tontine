@@ -2,12 +2,11 @@
 
 namespace App\Ajax\Web\Tontine;
 
+use App\Ajax\CallableClass;
+use App\Ajax\Web\Faker;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Tontine\MemberValidator;
-use App\Ajax\Web\Faker;
-use App\Ajax\CallableClass;
 
-use function Jaxon\jq;
 use function Jaxon\pm;
 use function array_filter;
 use function array_map;
@@ -39,48 +38,18 @@ class Member extends CallableClass
     {
         $this->bag('member')->set('search', '');
 
-        $html = $this->renderView('pages.member.home');
         $this->response->html('section-title', trans('tontine.menus.tontine'));
+        $html = $this->renderView('pages.member.home');
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-member-refresh')->click($this->rq()->home());
-        $this->jq('#btn-member-add')->click($this->rq()->add());
-        $this->jq('#btn-member-add-list')->click($this->rq()->addList());
-        $this->jq('#btn-member-search')
-            ->click($this->rq()->search(jq('#txt-member-search')->val()));
-
-        return $this->page();
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        $search = trim($this->bag('member')->get('search', ''));
-        $memberCount = $this->memberService->getMemberCount($search);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount, 'member', 'page');
-        $members = $this->memberService->getMembers($search, $pageNumber);
-        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
-
-        $html = $this->renderView('pages.member.page', [
-            'members' => $members,
-            'pagination' => $pagination,
-        ]);
-        $this->response->html('content-page', $html);
-        $this->response->call('makeTableResponsive', 'content-page');
-
-        $memberId = jq()->parent()->attr('data-member-id')->toInt();
-        $this->jq('.btn-member-edit')->click($this->rq()->edit($memberId));
-        $this->jq('.btn-member-toggle')->click($this->rq()->toggle($memberId));
-        $this->jq('.btn-member-delete')->click($this->rq()->delete($memberId)
-            ->confirm(trans('tontine.member.questions.delete')));
-
-        return $this->response;
+        return $this->cl(MemberPage::class)->page();
     }
 
     public function search(string $search)
     {
         $this->bag('member')->set('search', trim($search));
 
-        return $this->page();
+        return $this->cl(MemberPage::class)->page();
     }
 
     public function add()
@@ -109,9 +78,10 @@ class Member extends CallableClass
         $values = $this->validator->validateItem($formValues);
         $this->memberService->createMember($values);
         $this->dialog->hide();
-        $this->notify->success(trans('tontine.member.messages.created'), trans('common.titles.success'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.member.messages.created'));
 
-        return $this->page();
+        return $this->cl(MemberPage::class)->page();
     }
 
     public function addList()
@@ -189,9 +159,10 @@ class Member extends CallableClass
 
         $this->memberService->createMembers($values);
         $this->dialog->hide();
-        $this->notify->success(trans('tontine.member.messages.created'), trans('common.titles.success'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.member.messages.created'));
 
-        return $this->page();
+        return $this->cl(MemberPage::class)->page();
     }
 
     public function edit(int $memberId)
@@ -225,9 +196,10 @@ class Member extends CallableClass
 
         $this->memberService->updateMember($member, $values);
         $this->dialog->hide();
-        $this->notify->success(trans('tontine.member.messages.updated'), trans('common.titles.success'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.member.messages.updated'));
 
-        return $this->page();
+        return $this->cl(MemberPage::class)->page();
     }
 
     public function toggle(int $memberId)
@@ -235,7 +207,7 @@ class Member extends CallableClass
         $member = $this->memberService->getMember($memberId);
         $this->memberService->toggleMember($member);
 
-        return $this->page();
+        return $this->cl(MemberPage::class)->page();
     }
 
     public function delete(int $memberId)
@@ -243,6 +215,6 @@ class Member extends CallableClass
         $member = $this->memberService->getMember($memberId);
         $this->memberService->deleteMember($member);
 
-        return $this->page();
+        return $this->cl(MemberPage::class)->page();
     }
 }

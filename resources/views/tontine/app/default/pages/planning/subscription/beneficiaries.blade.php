@@ -1,4 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $rqSubscription = Jaxon\rq(App\Ajax\Web\Planning\Subscription::class);
+@endphp
             <div class="col-md-12">
               <div class="section-body">
                 <div class="row">
@@ -11,14 +14,14 @@
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">
-                      <button type="button" class="btn btn-primary" id="btn-subscription-planning">{{
+                      <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->planning())>{{
                         __('tontine.subscription.titles.planning') }}</i></button>
                     </div>
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">
-                      <button type="button" class="btn btn-primary" id="btn-subscription-back"><i class="fa fa-arrow-left"></i></button>
-                      <button type="button" class="btn btn-primary" id="btn-subscription-refresh"><i class="fa fa-sync"></i></button>
+                      <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->home())><i class="fa fa-arrow-left"></i></button>
+                      <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->beneficiaries())><i class="fa fa-sync"></i></button>
                     </div>
                   </div>
                 </div>
@@ -27,7 +30,13 @@
               <!-- Data tables -->
               <div class="card shadow mb-4">
                 <div class="card-body">
-                  <div class="table-responsive">
+                  <div class="table-responsive" @jxnTarget()>
+                    <div @jxnOn(['.select-beneficiary', 'change', ''], $rqSubscription->saveBeneficiary(
+                        Jaxon\jq()->attr('data-session-id')->toInt(),
+                        Jaxon\jq()->val()->toInt(),
+                        Jaxon\jq()->attr('data-subscription-id')->toInt()
+                      ))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

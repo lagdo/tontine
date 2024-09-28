@@ -35,16 +35,16 @@ class Menu extends OpenedSessionCallable
         ]);
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-session-back')->click($this->rq(Session::class)->home());
-        $this->jq('#btn-tontine-options')->click($this->rq(Options::class)->editOptions());
-        $this->jq('#btn-session-refresh')->click($this->rq()->$name());
+        $this->response->jq('#btn-session-back')->click($this->rq(Session::class)->home());
+        $this->response->jq('#btn-tontine-options')->click($this->rq(Options::class)->editOptions());
+        $this->response->jq('#btn-session-refresh')->click($this->rq()->$name());
 
-        $this->jq('.btn-session-pools')->click($this->rq()->pools());
-        $this->jq('.btn-session-savings')->click($this->rq()->savings());
-        $this->jq('.btn-session-credits')->click($this->rq()->credits());
-        $this->jq('.btn-session-cash')->click($this->rq()->cash());
-        $this->jq('.btn-session-charges')->click($this->rq()->charges());
-        $this->jq('.btn-session-reports')->click($this->rq()->reports());
+        $this->response->jq('.btn-session-pools')->click($this->rq()->pools());
+        $this->response->jq('.btn-session-savings')->click($this->rq()->savings());
+        $this->response->jq('.btn-session-credits')->click($this->rq()->credits());
+        $this->response->jq('.btn-session-cash')->click($this->rq()->cash());
+        $this->response->jq('.btn-session-charges')->click($this->rq()->charges());
+        $this->response->jq('.btn-session-reports')->click($this->rq()->reports());
     }
 
     public function pools(int $sessionId = 0)
@@ -54,7 +54,7 @@ class Menu extends OpenedSessionCallable
         $this->cl(Pool\Deposit::class)->show($this->session);
         $this->cl(Pool\Remitment::class)->show($this->session);
 
-        $this->response->call('setSmScreenHandler', 'session-pools-sm-screens');
+        $this->response->js()->setSmScreenHandler('session-pools-sm-screens');
 
         return $this->response;
     }
@@ -66,7 +66,7 @@ class Menu extends OpenedSessionCallable
         $this->cl(Saving\Saving::class)->show($this->session);
         $this->cl(Saving\Closing::class)->show($this->session);
 
-        $this->response->call('setSmScreenHandler', 'session-savings-sm-screens');
+        $this->response->js()->setSmScreenHandler('session-savings-sm-screens');
 
         return $this->response;
     }
@@ -79,7 +79,7 @@ class Menu extends OpenedSessionCallable
         $this->cl(Credit\PartialRefund::class)->show($this->session);
         $this->cl(Credit\Refund::class)->show($this->session);
 
-        $this->response->call('setSmScreenHandler', 'session-credits-sm-screens');
+        $this->response->js()->setSmScreenHandler('session-credits-sm-screens');
 
         return $this->response;
     }
@@ -100,7 +100,7 @@ class Menu extends OpenedSessionCallable
         $this->cl(Charge\FixedFee::class)->show($this->session);
         $this->cl(Charge\LibreFee::class)->show($this->session);
 
-        $this->response->call('setSmScreenHandler', 'session-charges-sm-screens');
+        $this->response->js()->setSmScreenHandler('session-charges-sm-screens');
 
         return $this->response;
     }
@@ -122,12 +122,12 @@ class Menu extends OpenedSessionCallable
                 // ['height', ['height']],
             ],
         ];
-        $this->jq('#session-agenda')->summernote($options);
-        $this->jq('#session-report')->summernote($options);
+        $this->response->jq('#session-agenda')->summernote($options);
+        $this->response->jq('#session-report')->summernote($options);
         $agendaText = jq('#session-agenda')->summernote('code');
         $reportText = jq('#session-report')->summernote('code');
-        $this->jq('#btn-save-agenda')->click($this->rq(Misc::class)->saveAgenda($agendaText));
-        $this->jq('#btn-save-report')->click($this->rq(Misc::class)->saveReport($reportText));
+        $this->response->jq('#btn-save-agenda')->click($this->rq(Misc::class)->saveAgenda($agendaText));
+        $this->response->jq('#btn-save-report')->click($this->rq(Misc::class)->saveReport($reportText));
 
         return $this->response;
     }

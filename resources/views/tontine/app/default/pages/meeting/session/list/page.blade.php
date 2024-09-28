@@ -1,4 +1,23 @@
-              <div class="table-responsive">
+@php
+  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session::class);
+  $rqSessionMenu = Jaxon\rq(App\Ajax\Web\Meeting\Session\Menu::class);
+  $rqSummary = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Home::class);
+  $sessionId = Jaxon\jq()->parent()->attr('data-session-id')->toInt();
+@endphp
+              <div class="table-responsive" id="content-page" @jxnTarget()>
+                <div @jxnOn(['.btn-session-open', 'click', ''], $rqSession->open($sessionId)
+                  ->confirm(__('tontine.session.questions.open') . '<br/>' .
+                    __('tontine.session.questions.warning')))></div>
+                <div @jxnOn(['.btn-session-close', 'click', ''], $rqSession->close($sessionId)
+                  ->confirm(__('tontine.session.questions.close')))></div>
+                <div @jxnOn(['.btn-session-summary', 'click', ''], $rqSummary->home($sessionId))></div>
+                <div @jxnOn(['.btn-session-pools', 'click', ''], $rqSessionMenu->pools($sessionId))></div>
+                <div @jxnOn(['.btn-session-savings', 'click', ''], $rqSessionMenu->savings($sessionId))></div>
+                <div @jxnOn(['.btn-session-credits', 'click', ''], $rqSessionMenu->credits($sessionId))></div>
+                <div @jxnOn(['.btn-session-cash', 'click', ''], $rqSessionMenu->cash($sessionId))></div>
+                <div @jxnOn(['.btn-session-charges', 'click', ''], $rqSessionMenu->charges($sessionId))></div>
+                <div @jxnOn(['.btn-session-reports', 'click', ''], $rqSessionMenu->reports($sessionId))></div>
+
                 <table class="table table-bordered responsive">
                   <thead>
                     <tr>
@@ -61,5 +80,4 @@
 @endforeach
                   </tbody>
                 </table>
-                <nav>{!! $pagination !!}</nav>
               </div>

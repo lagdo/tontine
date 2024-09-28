@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Jaxon\Laravel\Jaxon;
+use Jaxon\Laravel\App\Jaxon;
 use Jaxon\Plugin\Response\DataBag\DataBagContext;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;

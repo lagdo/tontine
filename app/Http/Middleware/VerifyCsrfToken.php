@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\App;
-use Jaxon\Laravel\Jaxon;
+use Jaxon\Laravel\App\Jaxon;
 use Siak\Tontine\Exception\AuthenticationException;
 
 class VerifyCsrfToken extends Middleware

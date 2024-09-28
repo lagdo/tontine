@@ -55,7 +55,7 @@ class Pool extends OpenedSessionCallable
 
         if(!$this->pool || $this->session->disabled($this->pool))
         {
-            $this->notify->error(trans('tontine.session.errors.disabled'), trans('common.titles.error'));
+            $this->notify->title(trans('common.titles.error'))->error(trans('tontine.session.errors.disabled'));
             $this->pool = null;
         }
     }
@@ -75,9 +75,9 @@ class Pool extends OpenedSessionCallable
 
         if(!$this->pool->remit_planned)
         {
-            $this->jq('#btn-add-remitment')->click($this->rq()->addRemitment(0));
+            $this->response->jq('#btn-add-remitment')->click($this->rq()->addRemitment(0));
         }
-        $this->jq('#btn-remitments-back')->click($this->rq(Remitment::class)->home());
+        $this->response->jq('#btn-remitments-back')->click($this->rq(Remitment::class)->home());
 
         return $this->page();
     }
@@ -90,12 +90,12 @@ class Pool extends OpenedSessionCallable
             'payables' => $this->remitmentService->getPayables($this->pool, $this->session),
         ]);
         $this->response->html('meeting-pool-remitments', $html);
-        $this->response->call('makeTableResponsive', 'meeting-pool-remitments');
+        $this->response->js()->makeTableResponsive('meeting-pool-remitments');
 
         $payableId = jq()->parent()->attr('data-payable-id')->toInt();
-        $this->jq('.btn-add-remitment')->click($this->rq()->addRemitment($payableId));
-        $this->jq('.btn-save-remitment')->click($this->rq()->createRemitment($payableId));
-        $this->jq('.btn-del-remitment')->click($this->rq()->deleteRemitment($payableId));
+        $this->response->jq('.btn-add-remitment')->click($this->rq()->addRemitment($payableId));
+        $this->response->jq('.btn-save-remitment')->click($this->rq()->createRemitment($payableId));
+        $this->response->jq('.btn-del-remitment')->click($this->rq()->deleteRemitment($payableId));
 
         return $this->response;
     }

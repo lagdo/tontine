@@ -2,18 +2,17 @@
 
 namespace App\Ajax\Web\Tontine;
 
-use App\Ajax\CallableClass;
+use App\Ajax\Component;
 use Siak\Tontine\Model\Category as CategoryModel;
 use Siak\Tontine\Service\Tontine\CategoryService;
 
-use function Jaxon\jq;
 use function Jaxon\pm;
 use function trans;
 
 /**
  * @databag tontine
  */
-class Category extends CallableClass
+class Category extends Component
 {
     /**
      * @param CategoryService $categoryService
@@ -21,47 +20,9 @@ class Category extends CallableClass
     public function __construct(protected CategoryService $categoryService)
     {}
 
-    /**
-     * @exclude
-     */
-    public function show()
+    public function html(): string
     {
-        return $this->home();
-    }
-
-    public function home()
-    {
-        $html = $this->renderView('pages.options.category.home');
-        $this->response->html('content-categories-home', $html);
-
-        $this->jq('#btn-category-refresh')->click($this->rq()->home());
-        $this->jq('#btn-category-create')->click($this->rq()->add());
-
-        return $this->page();
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        $categoryCount = $this->categoryService->getCategoryCount();
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $categoryCount,
-            'tontine', 'category.page');
-        $categories = $this->categoryService->getCategories($pageNumber);
-        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $categoryCount);
-
-        $html = $this->renderView('pages.options.category.page', [
-            'categories' => $categories,
-            'pagination' => $pagination,
-        ]);
-        $this->response->html('category-page', $html);
-        $this->response->call('makeTableResponsive', 'category-page');
-
-        $categoryId = jq()->parent()->attr('data-category-id')->toInt();
-        $this->jq('.btn-category-edit')->click($this->rq()->edit($categoryId));
-        $this->jq('.btn-category-toggle')->click($this->rq()->toggle($categoryId));
-        $this->jq('.btn-category-delete')->click($this->rq()->delete($categoryId)
-            ->confirm(trans('tontine.category.questions.delete')));
-
-        return $this->response;
+        return (string)$this->renderView('pages.options.category.home');
     }
 
     public function add()
@@ -90,10 +51,11 @@ class Category extends CallableClass
     public function create(array $formValues)
     {
         $this->categoryService->createCategory($formValues);
-        $this->page(); // Back to current page
+        $this->cl(CategoryPage::class)->page(); // Back to current page
 
         $this->dialog->hide();
-        $this->notify->success(trans('tontine.category.messages.created'), trans('common.titles.success'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.category.messages.created'));
 
         return $this->response;
     }
@@ -128,10 +90,11 @@ class Category extends CallableClass
     {
         $category = $this->categoryService->getCategory($categoryId);
         $this->categoryService->updateCategory($category, $formValues);
-        $this->page(); // Back to current page
+        $this->cl(CategoryPage::class)->page(); // Back to current page
 
         $this->dialog->hide();
-        $this->notify->success(trans('tontine.category.messages.updated'), trans('common.titles.success'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.category.messages.updated'));
 
         return $this->response;
     }
@@ -141,7 +104,7 @@ class Category extends CallableClass
         $category = $this->categoryService->getCategory($categoryId);
         $this->categoryService->toggleCategory($category);
 
-        return $this->page();
+        return $this->cl(CategoryPage::class)->page();
     }
 
     public function delete(int $categoryId)
@@ -149,6 +112,6 @@ class Category extends CallableClass
         $category = $this->categoryService->getCategory($categoryId);
         $this->categoryService->deleteCategory($category);
 
-        return $this->page();
+        return $this->cl(CategoryPage::class)->page();
     }
 }

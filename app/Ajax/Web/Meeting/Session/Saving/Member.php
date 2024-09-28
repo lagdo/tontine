@@ -69,9 +69,9 @@ class Member extends OpenedSessionCallable
         ]);
         $this->response->html('meeting-savings', $html);
 
-        $this->jq('#btn-saving-back')->click($this->rq(Saving::class)->home());
-        $this->jq('#btn-saving-filter')->click($this->rq()->toggleFilter());
-        $this->jq('#btn-saving-search')
+        $this->response->jq('#btn-saving-back')->click($this->rq(Saving::class)->home());
+        $this->response->jq('#btn-saving-filter')->click($this->rq()->toggleFilter());
+        $this->response->jq('#btn-saving-search')
             ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
 
         return $this->page(1);
@@ -110,15 +110,14 @@ class Member extends OpenedSessionCallable
         $html = $this->renderView('pages.meeting.saving.member.page', [
             'session' => $this->session,
             'members' => $members,
-            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-saving-members', $html);
-        $this->response->call('makeTableResponsive', 'meeting-saving-members');
+        $this->response->js()->makeTableResponsive('meeting-saving-members');
 
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $amount = jq('input', jq()->parent()->parent())->val()->toInt();
-        $this->jq('.btn-save-saving')->click($this->rq()->saveSaving($memberId, $amount));
-        $this->jq('.btn-edit-saving')->click($this->rq()->editSaving($memberId));
+        $this->response->jq('.btn-save-saving')->click($this->rq()->saveSaving($memberId, $amount));
+        $this->response->jq('.btn-edit-saving')->click($this->rq()->editSaving($memberId));
 
         return $this->response;
     }
@@ -166,7 +165,7 @@ class Member extends OpenedSessionCallable
 
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $amount = jq('input', jq()->parent()->parent())->val();
-        $this->jq('.btn-save-saving', "#$fieldId")->click($this->rq()->saveSaving($memberId, $amount));
+        $this->response->jq('.btn-save-saving', "#$fieldId")->click($this->rq()->saveSaving($memberId, $amount));
 
         return $this->response;
     }
@@ -202,7 +201,7 @@ class Member extends OpenedSessionCallable
         $amount = $values['amount'];
         $this->savingService->saveSaving($this->session, $this->fund, $member, $amount);
 
-        $this->notify->success(trans('meeting.messages.saved'), trans('common.titles.success'));
+        $this->notify->title(trans('common.titles.success'))->success(trans('meeting.messages.saved'));
         return $this->page();
     }
 }

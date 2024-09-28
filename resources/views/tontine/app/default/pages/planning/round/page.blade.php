@@ -1,20 +1,33 @@
-                        <table class="table table-bordered responsive">
-                          <thead>
-                            <tr>
-                              <th>{!! __('common.labels.title') !!}</th>
-                              <th>{!! __('common.labels.dates') !!}</th>
-                              <th class="table-menu"></th>
-                            </tr>
-                          </thead>
-                          <tbody>
+@php
+$roundId = Jaxon\jq()->parent()->attr('data-round-id')->toInt();
+$rqSelect = Jaxon\rq(App\Ajax\Web\Tontine\Select::class);
+$rqSession = Jaxon\rq(App\Ajax\Web\Planning\Session::class);
+$rqRound = Jaxon\rq(App\Ajax\Web\Planning\Round::class);
+@endphp
+                  <div class="table-responsive" @jxnTarget()>
+                    <div @jxnOn(['.btn-round-edit', 'click', ''], $rqRound->edit($roundId))></div>
+                    <div @jxnOn(['.btn-round-sessions', 'click', ''], $rqSession->home($roundId))></div>
+                    <div @jxnOn(['.btn-round-select', 'click', ''], $rqSelect->saveRound($roundId))></div>
+                    <div @jxnOn(['.btn-round-delete', 'click', ''], $rqRound->delete($roundId)
+                      ->confirm(__('tontine.round.questions.delete')))></div>
+
+                    <table class="table table-bordered responsive">
+                      <thead>
+                        <tr>
+                          <th>{!! __('common.labels.title') !!}</th>
+                          <th>{!! __('common.labels.dates') !!}</th>
+                          <th class="table-menu"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
 @foreach ($rounds as $round)
-                            <tr>
-                              <td>{{ $round->title }}</td>
-                              <td>
-                                {{ !$round->start_at ? '' : $round->start_at->translatedFormat(__('tontine.date.format')) }}<br/>
-                                {{ !$round->end_at ? '' : $round->end_at->translatedFormat(__('tontine.date.format')) }}
-                              </td>
-                              <td class="table-item-menu">
+                        <tr>
+                          <td>{{ $round->title }}</td>
+                          <td>
+                            {{ !$round->start_at ? '' : $round->start_at->translatedFormat(__('tontine.date.format')) }}<br/>
+                            {{ !$round->end_at ? '' : $round->end_at->translatedFormat(__('tontine.date.format')) }}
+                          </td>
+                          <td class="table-item-menu">
 @include('tontine.app.default.parts.table.menu', [
   'dataIdKey' => 'data-round-id',
   'dataIdValue' => $round->id,
@@ -32,9 +45,9 @@
     'text' => __('common.actions.delete'),
   ]],
 ])
-                              </td>
-                            </tr>
+                          </td>
+                        </tr>
 @endforeach
-                          </tbody>
-                        </table>
-{!! $pagination !!}
+                      </tbody>
+                    </table>
+                  </div> <!-- End table -->

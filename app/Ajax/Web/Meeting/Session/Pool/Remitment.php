@@ -37,15 +37,15 @@ class Remitment extends OpenedSessionCallable
             'hasAuctions' => $hasAuctions,
         ]);
         $this->response->html('meeting-remitments', $html);
-        $this->response->call('makeTableResponsive', 'meeting-remitments');
+        $this->response->js()->makeTableResponsive('meeting-remitments');
 
         if($hasAuctions)
         {
-            $this->jq('#btn-remitment-auctions')->click($this->rq(Auction::class)->home());
+            $this->response->jq('#btn-remitment-auctions')->click($this->rq(Auction::class)->home());
         }
-        $this->jq('#btn-remitments-refresh')->click($this->rq()->home());
+        $this->response->jq('#btn-remitments-refresh')->click($this->rq()->home());
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
-        $this->jq('.btn-pool-remitments')
+        $this->response->jq('.btn-pool-remitments')
             ->click($this->rq(Remitment\Pool::class)->home($poolId));
 
         return $this->response;

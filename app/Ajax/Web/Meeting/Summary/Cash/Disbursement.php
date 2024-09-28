@@ -34,9 +34,9 @@ class Disbursement extends SessionCallable
             'disbursements' => $disbursements,
         ]);
         $this->response->html('meeting-disbursements', $html);
-        $this->response->call('makeTableResponsive', 'meeting-disbursements');
+        $this->response->js()->makeTableResponsive('meeting-disbursements');
 
-        $this->response->call('showBalanceAmountsWithDelay');
+        $this->response->js()->showBalanceAmountsWithDelay();
 
         return $this->response;
     }

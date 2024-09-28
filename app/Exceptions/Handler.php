@@ -8,7 +8,8 @@ use App\Ajax\Web\Planning\Round;
 use App\Ajax\Web\Tontine\Member;
 use App\Ajax\Web\Tontine\Tontine;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Jaxon\Laravel\Jaxon;
+use Illuminate\Http\Response;
+use Jaxon\Laravel\App\Jaxon;
 use Siak\Tontine\Exception\AuthenticationException;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Exception\MeetingRoundException;
@@ -20,6 +21,7 @@ use Siak\Tontine\Validation\ValidationException;
 use Throwable;
 
 use function app;
+use function Jaxon\cl;
 use function route;
 use function trans;
 
@@ -63,21 +65,39 @@ class Handler extends ExceptionHandler
     /**
      * Check guest user access before redirection
      *
-     * @param Jaxon $jaxon
      * @param string $section
      * @param string $entry
      *
      * @return bool
      */
-    private function checkGuestAccess(Jaxon $jaxon, string $section, string $entry): bool
+    private function checkGuestAccess(string $section, string $entry): bool
     {
         /** @var TenantService */
         $tenantService = app()->make(TenantService::class);
         if(!($access = $tenantService->checkGuestAccess($section, $entry, true)))
         {
-            $jaxon->cl(Tontine::class)->home();
+            cl(Tontine::class)->home();
         }
         return $access;
+    }
+
+    /**
+     * @param string $message
+     * @param bool $isError
+     *
+     * @return Response
+     */
+    private function showMessage(string $message, bool $isError): Response
+    {
+        /** @var Jaxon */
+        $jaxon = app()->make(Jaxon::class);
+        $ajaxResponse = $jaxon->ajaxResponse();
+        $messageType = $isError ? 'error' : 'warning';
+        $ajaxResponse->dialog
+            ->title(trans("common.titles.$messageType"))
+            ->$messageType($message);
+
+        return $jaxon->httpResponse();
     }
 
     /**
@@ -103,80 +123,52 @@ class Handler extends ExceptionHandler
 
         // Show the error message in a dialog
         $this->renderable(function (MessageException $e) {
-            /** @var Jaxon */
-            $jaxon = app()->make(Jaxon::class);
-            $ajaxResponse = $jaxon->ajaxResponse();
-            $e->isError ?
-                $ajaxResponse->dialog->error($e->getMessage(), trans('common.titles.error')) :
-                $ajaxResponse->dialog->warning($e->getMessage(), trans('common.titles.warning'));
-
-            return $jaxon->httpResponse();
+            return $this->showMessage($e->getMessage(), $e->isError);
         });
 
         // Show the error message in a dialog
         $this->renderable(function (ValidationException $e) {
-            /** @var Jaxon */
-            $jaxon = app()->make(Jaxon::class);
-            $ajaxResponse = $jaxon->ajaxResponse();
-            $ajaxResponse->dialog->error($e->getMessage(), trans('common.titles.error'));
-
-            return $jaxon->httpResponse();
+            return $this->showMessage($e->getMessage(), true);
         });
 
         // Show the warning message in a dialog, and show the sessions page.
         $this->renderable(function (PlanningRoundException $e) {
-            /** @var Jaxon */
-            $jaxon = app()->make(Jaxon::class);
-            if($this->checkGuestAccess($jaxon, 'planning', 'sessions'))
+            if($this->checkGuestAccess('planning', 'sessions'))
             {
-                $jaxon->cl(Round::class)->home();
+                cl(Round::class)->home();
             }
 
-            $ajaxResponse = $jaxon->ajaxResponse();
-            $ajaxResponse->dialog->warning($e->getMessage(), trans('common.titles.warning'));
-            return $jaxon->httpResponse();
+            return $this->showMessage($e->getMessage(), false);
         });
 
         // Show the warning message in a dialog, and show the pools page.
         $this->renderable(function (PlanningPoolException $e) {
-            /** @var Jaxon */
-            $jaxon = app()->make(Jaxon::class);
-            if($this->checkGuestAccess($jaxon, 'planning', 'pools'))
+            if($this->checkGuestAccess('planning', 'pools'))
             {
-                $jaxon->cl(Pool::class)->home();
+                cl(Pool::class)->home();
             }
 
-            $ajaxResponse = $jaxon->ajaxResponse();
-            $ajaxResponse->dialog->warning($e->getMessage(), trans('common.titles.warning'));
-            return $jaxon->httpResponse();
+            return $this->showMessage($e->getMessage(), false);
         });
 
         // Show the warning message in a dialog, and show the members page.
         $this->renderable(function (TontineMemberException $e) {
-            /** @var Jaxon */
-            $jaxon = app()->make(Jaxon::class);
-            if($this->checkGuestAccess($jaxon, 'tontine', 'members'))
+            if($this->checkGuestAccess('tontine', 'members'))
             {
-                $jaxon->cl(Member::class)->home();
+                cl(Member::class)->home();
             }
 
-            $ajaxResponse = $jaxon->ajaxResponse();
-            $ajaxResponse->dialog->warning($e->getMessage(), trans('common.titles.warning'));
-            return $jaxon->httpResponse();
+            return $this->showMessage($e->getMessage(), false);
         });
 
         // Show the warning message in a dialog, and show the sessions page.
         $this->renderable(function (MeetingRoundException $e) {
-            /** @var Jaxon */
-            $jaxon = app()->make(Jaxon::class);
-            if($this->checkGuestAccess($jaxon, 'meeting', 'sessions'))
+            if($this->checkGuestAccess('meeting', 'sessions'))
             {
-                $jaxon->cl(Session::class)->home();
+                cl(Session::class)->home();
             }
 
-            $ajaxResponse = $jaxon->ajaxResponse();
-            $ajaxResponse->dialog->warning($e->getMessage(), trans('common.titles.warning'));
-            return $jaxon->httpResponse();
+            return $this->showMessage($e->getMessage(), false);
         });
     }
 }

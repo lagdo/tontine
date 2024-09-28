@@ -32,9 +32,9 @@ class Auction extends OpenedSessionCallable
         $html = $this->renderView('pages.meeting.auction.home')
             ->with('session', $this->session);
         $this->response->html('meeting-remitments', $html);
-        $this->jq('#btn-auctions-refresh')->click($this->rq()->home());
-        $this->jq('#btn-auctions-filter')->click($this->rq()->toggleFilter());
-        $this->jq('#btn-remitments-back')->click($this->rq(Remitment::class)->home());
+        $this->response->jq('#btn-auctions-refresh')->click($this->rq()->home());
+        $this->response->jq('#btn-auctions-filter')->click($this->rq()->toggleFilter());
+        $this->response->jq('#btn-remitments-back')->click($this->rq(Remitment::class)->home());
 
         return $this->page();
     }
@@ -55,13 +55,12 @@ class Auction extends OpenedSessionCallable
         $html = $this->renderView('pages.meeting.auction.page', [
             'session' => $this->session,
             'auctions' => $auctions,
-            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-auctions-page', $html);
-        $this->response->call('makeTableResponsive', 'meeting-auctions-page');
+        $this->response->js()->makeTableResponsive('meeting-auctions-page');
 
         $auctionId = jq()->parent()->attr('data-auction-id')->toInt();
-        $this->jq('.btn-toggle-payment', '#meeting-auctions-page')
+        $this->response->jq('.btn-toggle-payment', '#meeting-auctions-page')
             ->click($this->rq()->togglePayment($auctionId));
 
         return $this->response;

@@ -46,17 +46,17 @@ class Disbursement extends OpenedSessionCallable
             'disbursements' => $disbursements,
         ]);
         $this->response->html('meeting-disbursements', $html);
-        $this->response->call('makeTableResponsive', 'meeting-disbursements');
+        $this->response->js()->makeTableResponsive('meeting-disbursements');
 
-        $this->response->call('showBalanceAmountsWithDelay');
+        $this->response->js()->showBalanceAmountsWithDelay();
 
-        $this->jq('#btn-disbursements-refresh')->click($this->rq()->home());
-        $this->jq('#btn-disbursement-add')->click($this->rq()->addDisbursement());
-        $this->jq('#btn-disbursement-balances')
+        $this->response->jq('#btn-disbursements-refresh')->click($this->rq()->home());
+        $this->response->jq('#btn-disbursement-add')->click($this->rq()->addDisbursement());
+        $this->response->jq('#btn-disbursement-balances')
             ->click($this->rq(Misc::class)->showBalanceDetails(false));
         $disbursementId = jq()->parent()->attr('data-disbursement-id')->toInt();
-        $this->jq('.btn-disbursement-edit')->click($this->rq()->editDisbursement($disbursementId));
-        $this->jq('.btn-disbursement-delete')->click($this->rq()->deleteDisbursement($disbursementId)
+        $this->response->jq('.btn-disbursement-edit')->click($this->rq()->editDisbursement($disbursementId));
+        $this->response->jq('.btn-disbursement-delete')->click($this->rq()->deleteDisbursement($disbursementId)
             ->confirm(trans('meeting.disbursement.questions.delete')));
 
         return $this->response;

@@ -6,7 +6,6 @@ use App\Ajax\CallableClass;
 use App\Ajax\Web\Tontine\Select;
 use Siak\Tontine\Service\Planning\RoundService;
 
-use function Jaxon\jq;
 use function Jaxon\pm;
 use function trans;
 
@@ -31,38 +30,8 @@ class Round extends CallableClass
         $html = $this->renderView('pages.planning.round.home');
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-show-select')->click($this->rq(Select::class)->showRounds());
-        $this->jq('#btn-round-refresh')->click($this->rq()->home());
-        $this->jq('#btn-round-create')->click($this->rq()->add());
-
-        $this->page();
-
-        $session = $this->cl(Session::class);
-        return $session->show($this->tenantService->round());
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        $roundCount = $this->roundService->getRoundCount();
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $roundCount, 'tontine', 'round.page');
-        $rounds = $this->roundService->getRounds($pageNumber);
-        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $roundCount);
-
-        $html = $this->renderView('pages.planning.round.page', [
-            'rounds' => $rounds,
-            'pagination' => $pagination,
-        ]);
-        $this->response->html('content-page-rounds', $html);
-        $this->response->call('makeTableResponsive', 'content-page-rounds');
-
-        $roundId = jq()->parent()->attr('data-round-id')->toInt();
-        $this->jq('.btn-round-edit')->click($this->rq()->edit($roundId));
-        $this->jq('.btn-round-sessions')->click($this->rq(Session::class)->home($roundId));
-        $this->jq('.btn-round-select')->click($this->rq(Select::class)->saveRound($roundId));
-        $this->jq('.btn-round-delete')->click($this->rq()->delete($roundId)
-            ->confirm(trans('tontine.round.questions.delete')));
-
-        return $this->response;
+        $this->cl(RoundPage::class)->page();
+        return $this->cl(Session::class)->show($this->tenantService->round());
     }
 
     public function add()
@@ -87,9 +56,10 @@ class Round extends CallableClass
     {
         $this->roundService->createRound($formValues);
 
-        $this->page(); // Back to current page
+        $this->cl(RoundPage::class)->page(); // Back to current page
         $this->dialog->hide();
-        $this->notify->success(trans('tontine.round.messages.created'), trans('common.titles.success'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.round.messages.created'));
 
         return $this->response;
     }
@@ -118,9 +88,10 @@ class Round extends CallableClass
     {
         $this->roundService->updateRound($roundId, $formValues);
 
-        $this->page(); // Back to current page
+        $this->cl(RoundPage::class)->page(); // Back to current page
         $this->dialog->hide();
-        $this->notify->success(trans('tontine.round.messages.updated'), trans('common.titles.success'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.round.messages.updated'));
 
         return $this->response;
     }
@@ -129,8 +100,9 @@ class Round extends CallableClass
     {
         $this->roundService->deleteRound($roundId);
 
-        $this->page(); // Back to current page
-        $this->notify->success(trans('tontine.round.messages.deleted'), trans('common.titles.success'));
+        $this->cl(RoundPage::class)->page(); // Back to current page
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.round.messages.deleted'));
 
         $currentRound = $this->tenantService->round();
         if($currentRound !== null && $currentRound->id === $roundId)

@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Illuminate\Support\Facades\App;
-use Jaxon\Laravel\Jaxon;
+use Jaxon\Laravel\App\Jaxon;
 
 class Authenticate extends Middleware
 {

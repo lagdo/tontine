@@ -60,11 +60,11 @@ class Saving extends OpenedSessionCallable
         ]);
         $this->response->html('meeting-savings', $html);
 
-        $this->jq('#btn-savings-refresh')->click($this->rq()->home());
+        $this->response->jq('#btn-savings-refresh')->click($this->rq()->home());
         $selectFundId = pm()->select('savings-fund-id')->toInt();
-        $this->jq('#btn-savings-edit')->click($this->rq(Member::class)
+        $this->response->jq('#btn-savings-edit')->click($this->rq(Member::class)
             ->home($selectFundId)->ifgt($selectFundId, 0));
-        $this->jq('#btn-savings-fund')->click($this->rq()->fund($selectFundId));
+        $this->response->jq('#btn-savings-fund')->click($this->rq()->fund($selectFundId));
 
         return $this->fund($fundId);
     }
@@ -112,14 +112,13 @@ class Saving extends OpenedSessionCallable
         $html = $this->renderView('pages.meeting.saving.page', [
             'session' => $this->session,
             'savings' => $savings,
-            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-savings-page', $html);
-        $this->response->call('makeTableResponsive', 'meeting-savings-page');
+        $this->response->js()->makeTableResponsive('meeting-savings-page');
 
         $savingId = jq()->parent()->attr('data-saving-id')->toInt();
-        $this->jq('.btn-saving-edit')->click($this->rq()->editSaving($savingId));
-        $this->jq('.btn-saving-delete')->click($this->rq()->deleteSaving($savingId)
+        $this->response->jq('.btn-saving-edit')->click($this->rq()->editSaving($savingId));
+        $this->response->jq('.btn-saving-delete')->click($this->rq()->deleteSaving($savingId)
             ->confirm(trans('meeting.saving.questions.delete')));
 
         return $this->response;

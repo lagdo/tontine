@@ -55,11 +55,11 @@ class PoolRound extends CallableClass
             'pool' => $this->pool,
         ]);
         $this->response->html('pool-round-actions', $html);
-        $this->jq('#btn-pool-round-back')->click($this->rq(Pool::class)->home());
-        $this->jq('#btn-pool-round-save')->click($this->rq()->saveRound(pm()->form('round-form')));
+        $this->response->jq('#btn-pool-round-back')->click($this->rq(Pool::class)->home());
+        $this->response->jq('#btn-pool-round-save')->click($this->rq()->saveRound(pm()->form('round-form')));
         if($this->pool->pool_round)
         {
-            $this->jq('#btn-pool-round-delete')->click($this->rq()->deleteRound()
+            $this->response->jq('#btn-pool-round-delete')->click($this->rq()->deleteRound()
                 ->confirm(trans('tontine.pool_round.questions.delete')));
         }
 
@@ -90,11 +90,11 @@ class PoolRound extends CallableClass
         ]);
         $this->response->html('content-home', $html);
         $this->showTitles();
-        $this->jq('#btn-show-start-session-page')->click($this->rq()->showStartSessionPage());
-        $this->jq('#btn-show-end-session-page')->click($this->rq()->showEndSessionPage());
+        $this->response->jq('#btn-show-start-session-page')->click($this->rq()->showStartSessionPage());
+        $this->response->jq('#btn-show-end-session-page')->click($this->rq()->showEndSessionPage());
 
-        $this->response->call('setSmScreenHandler',
-            'pool-round-sessions-sm-screens-btn', 'pool-round-sessions-sm-screens');
+        $this->response->js()->setSmScreenHandler('pool-round-sessions-sm-screens-btn',
+            'pool-round-sessions-sm-screens');
 
         $this->bag('pool.round')->set('pool.id', $poolId);
 
@@ -152,10 +152,9 @@ class PoolRound extends CallableClass
             'field' => $field,
             'sessions' => $sessions,
             'sessionId' => $sessionId,
-            'pagination' => $pagination,
         ]);
         $this->response->html("pool-round-sessions-$field", $html);
-        $this->response->call('makeTableResponsive', "pool-round-sessions-$field");
+        $this->response->js()->makeTableResponsive("pool-round-sessions-$field");
 
         return $this->response;
     }

@@ -1,3 +1,13 @@
+@php
+  $rqPayable = Jaxon\rq(App\Ajax\Web\Meeting\Payable::class);
+  $sessionId = Jaxon\pm()->select('select-session')->toInt();
+  $memberId = Jaxon\jq()->parent()->attr('data-member-id')->toInt();
+@endphp
+                  <div class="table-responsive" id="payment-members-page" @jxnTarget()>
+@if ($sessions->count() > 0)
+                    <div @jxnOn(['.btn-member-payables', 'click', ''], $rqPayable->show($memberId, $sessionId))></div>
+@endif
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -16,4 +26,4 @@
 @endforeach
                       </tbody>
                     </table>
-{!! $pagination !!}
+                  </div> <!-- End table -->

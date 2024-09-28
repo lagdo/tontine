@@ -36,7 +36,7 @@ class LibreFee extends OpenedSessionCallable
         $html = $this->renderView('pages.meeting.charge.libre.home')
             ->with('session', $this->session);
         $this->response->html('meeting-fees-libre', $html);
-        $this->jq('#btn-fees-libre-refresh')->click($this->rq()->home());
+        $this->response->jq('#btn-fees-libre-refresh')->click($this->rq()->home());
 
         return $this->page(1);
     }
@@ -57,17 +57,16 @@ class LibreFee extends OpenedSessionCallable
             'charges' => $charges,
             'bills' => $bills,
             'settlements' => $settlements,
-            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-fees-libre-page', $html);
-        $this->response->call('makeTableResponsive', 'meeting-fees-libre-page');
+        $this->response->js()->makeTableResponsive('meeting-fees-libre-page');
 
         $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
-        $this->jq('.btn-fee-libre-add')
+        $this->response->jq('.btn-fee-libre-add')
             ->click($this->rq(Libre\Member::class)->home($chargeId));
-        $this->jq('.btn-fee-libre-settlements')
+        $this->response->jq('.btn-fee-libre-settlements')
             ->click($this->rq(Libre\Settlement::class)->home($chargeId));
-        $this->jq('.btn-fee-libre-target')
+        $this->response->jq('.btn-fee-libre-target')
             ->click($this->rq(Libre\Target::class)->home($chargeId));
 
         return $this->response;

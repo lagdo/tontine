@@ -1,13 +1,18 @@
-{!! $jaxonJs !!}
+@jxnJs
 
-{!! $jaxonScript !!}
+@jxnScript
 
-{!! $jaxonCss !!}
+@jxnCss
 
+@php
+    $rqTontine = Jaxon\rq(App\Ajax\Web\Tontine\Tontine::class);
+    $rqInvite = Jaxon\rq(App\Ajax\Web\Tontine\Guest\Invite::class);
+    $rqSessionMisc = Jaxon\rq(App\Ajax\Web\Meeting\Session\Misc::class);
+@endphp
 <script type='text/javascript'>
     const tontine = {
-        home: () => {!! $jxnTontine->home() !!},
-        users: () => {!! $jxnInvite->home() !!},
+        home: () => {!! $rqTontine->home() !!},
+        users: () => {!! $rqInvite->home() !!},
         labels: {
             amount: "{{ __('common.labels.amount') }}",
             percentage: "{{ __('meeting.loan.labels.percentage') }}",
@@ -17,9 +22,9 @@
         },
     };
     function showBalanceAmounts() {
-        {!! $jxnSessionMisc->showBalanceAmounts() !!};
+        {!! $rqSessionMisc->showBalanceAmounts() !!};
     }
     function showBalanceAmountsWithDelay() {
-        setTimeout(() => {!! $jxnSessionMisc->showBalanceAmounts() !!}, 5);
+        setTimeout(() => {!! $rqSessionMisc->showBalanceAmounts() !!}, 5);
     }
 </script>

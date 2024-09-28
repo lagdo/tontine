@@ -13,6 +13,7 @@ use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\ReportTrait;
 use stdClass;
 
+use function collect;
 use function compact;
 
 class SummaryService
@@ -103,15 +104,22 @@ class SummaryService
      * Get the receivables of a given pool.
      *
      * @param Round $round
+     * @param int $poolId
      *
      * @return Collection
      */
-    public function getFigures(Round $round): Collection
+    public function getFigures(Round $round, int $poolId = 0): Collection
     {
         $pools = $round->pools()
             ->with(['round.tontine', 'counter'])
             ->whereHas('subscriptions')
+            ->when($poolId > 0, fn($query) => $query->where('pools.id', $poolId))
             ->get();
+        if($pools->count() === 0)
+        {
+            return collect();
+        }
+
         $poolIds = $pools->pluck('id');
         $deposits = DB::table('deposits')
             ->select('subscriptions.pool_id', 'receivables.session_id',
@@ -162,6 +170,7 @@ class SummaryService
             }
             $figures->collected = $this->getCollectedFigures($pool, $sessions, $deposits,
                 $remitments, $disabledSessions);
+
             return compact('pool', 'figures', 'sessions');
         });
     }

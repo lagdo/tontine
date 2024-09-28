@@ -26,8 +26,8 @@ class Settlement extends ChargeCallable
             'charge' => $this->charge,
         ]);
         $this->response->html('meeting-fees-libre', $html);
-        $this->jq('#btn-fee-libre-settlements-back')->click($this->rq(Charge::class)->home());
-        $this->jq('#btn-fee-libre-settlements-filter')->click($this->rq()->toggleFilter());
+        $this->response->jq('#btn-fee-libre-settlements-back')->click($this->rq(Charge::class)->home());
+        $this->response->jq('#btn-fee-libre-settlements-filter')->click($this->rq()->toggleFilter());
 
         return $this->page(1);
     }
@@ -76,17 +76,16 @@ class Settlement extends ChargeCallable
             'session' => $this->session,
             'charge' => $this->charge,
             'bills' => $bills,
-            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-fee-libre-bills', $html);
-        $this->response->call('makeTableResponsive', 'meeting-fee-libre-bills');
+        $this->response->js()->makeTableResponsive('meeting-fee-libre-bills');
 
         $billId = jq()->parent()->attr('data-bill-id')->toInt();
-        $this->jq('.btn-add-settlement', '#meeting-fee-libre-bills')
+        $this->response->jq('.btn-add-settlement', '#meeting-fee-libre-bills')
             ->click($this->rq()->addSettlement($billId));
-        $this->jq('.btn-del-settlement', '#meeting-fee-libre-bills')
+        $this->response->jq('.btn-del-settlement', '#meeting-fee-libre-bills')
             ->click($this->rq()->delSettlement($billId));
-        $this->jq('.btn-edit-notes', '#meeting-fee-libre-bills')
+        $this->response->jq('.btn-edit-notes', '#meeting-fee-libre-bills')
             ->click($this->rq()->editNotes($billId));
 
         return $this->response;

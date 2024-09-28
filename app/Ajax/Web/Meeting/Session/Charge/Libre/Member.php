@@ -44,9 +44,9 @@ class Member extends ChargeCallable
         ]);
         $this->response->html('meeting-fees-libre', $html);
 
-        $this->jq('#btn-fee-libre-back')->click($this->rq(Charge::class)->home());
-        $this->jq('#btn-fee-libre-filter')->click($this->rq()->toggleFilter());
-        $this->jq('#btn-fee-libre-search')
+        $this->response->jq('#btn-fee-libre-back')->click($this->rq(Charge::class)->home());
+        $this->response->jq('#btn-fee-libre-filter')->click($this->rq()->toggleFilter());
+        $this->response->jq('#btn-fee-libre-search')
             ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
 
         return $this->page(1);
@@ -88,18 +88,17 @@ class Member extends ChargeCallable
             'session' => $this->session,
             'charge' => $this->charge,
             'members' => $members,
-            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-fee-libre-members', $html);
-        $this->response->call('makeTableResponsive', 'meeting-fee-libre-members');
+        $this->response->js()->makeTableResponsive('meeting-fee-libre-members');
 
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $paid = pm()->checked('check-fee-libre-paid');
         $amount = jq('input', jq()->parent()->parent())->val()->toInt();
-        $this->jq('.btn-add-bill')->click($this->rq()->addBill($memberId, $paid));
-        $this->jq('.btn-del-bill')->click($this->rq()->delBill($memberId));
-        $this->jq('.btn-save-bill')->click($this->rq()->addBill($memberId, $paid, $amount));
-        $this->jq('.btn-edit-bill')->click($this->rq()->editBill($memberId));
+        $this->response->jq('.btn-add-bill')->click($this->rq()->addBill($memberId, $paid));
+        $this->response->jq('.btn-del-bill')->click($this->rq()->delBill($memberId));
+        $this->response->jq('.btn-save-bill')->click($this->rq()->addBill($memberId, $paid, $amount));
+        $this->response->jq('.btn-edit-bill')->click($this->rq()->editBill($memberId));
 
         return $this->response;
     }
@@ -185,7 +184,7 @@ class Member extends ChargeCallable
 
         $memberId = jq()->parent()->attr('data-member-id')->toInt();
         $amount = jq('input', jq()->parent()->parent())->val();
-        $this->jq('.btn-save-bill', "#$fieldId")->click($this->rq()->saveBill($memberId, $amount));
+        $this->response->jq('.btn-save-bill', "#$fieldId")->click($this->rq()->saveBill($memberId, $amount));
 
         return $this->response;
     }

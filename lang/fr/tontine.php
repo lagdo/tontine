@@ -375,11 +375,12 @@ return [
             'selected' => "Vous affichez les souscriptions de la tontine :tontine.",
         ],
         'errors' => [
+            'not_found' => "Impossible de trouver cette tontine.",
             'number' => [
                 'invalid' => "Vous devez entrer un nombre valide.",
                 'max' => "Vous pouvez ajouter au plus :max entrées.",
             ],
-            'subscription' => "Cette tontines a encore des souscriptions.",
+            'subscription' => "Cette tontine a encore des souscriptions.",
             'no_subscription' => "Il y a encore des fonds sans souscription.",
         ],
     ],

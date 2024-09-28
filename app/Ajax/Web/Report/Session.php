@@ -3,13 +3,10 @@
 namespace App\Ajax\Web\Report;
 
 use App\Ajax\CallableClass;
-use App\Ajax\Web\Tontine\Options;
+use Siak\Tontine\Model\Member as MemberModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\MemberService;
-use Siak\Tontine\Service\Tontine\TontineService;
-
-use function Jaxon\pm;
 
 /**
  * @databag report
@@ -17,12 +14,11 @@ use function Jaxon\pm;
 class Session extends CallableClass
 {
     /**
-     * @param TontineService $tontineService
-     * @param SessionService $sessionService
      * @param MemberService $memberService
+     * @param SessionService $sessionService
      */
-    public function __construct(protected TontineService $tontineService,
-        protected SessionService $sessionService, protected MemberService $memberService)
+    public function __construct(protected MemberService $memberService,
+        protected SessionService $sessionService)
     {}
 
     /**
@@ -36,44 +32,52 @@ class Session extends CallableClass
 
         $sessions = $this->sessionService->getRoundSessions(orderAsc: false)
             ->filter(fn($session) => ($session->opened || $session->closed));
+
         $html = $this->renderView('pages.report.session.home', [
-            'sessionId' => $sessions->count() > 0 ? $sessions->first()->id : 0,
             'sessions' => $sessions->pluck('title', 'id'),
             'members' => $this->memberService->getMemberList()->prepend('', 0),
         ]);
         $this->response->html('content-home', $html);
 
-        $this->jq('#btn-members-refresh')->click($this->rq()->home());
-        $sessionId = pm()->select('select-session')->toInt();
-        $memberId = pm()->select('select-member')->toInt();
-        $this->jq('#btn-session-select')->click($this->rq()->showSession($sessionId));
-        $this->jq('#btn-member-select')->click($this->rq()->showMember($sessionId, $memberId));
-
-        return $this->_showSession($sessions->first());
+        return $sessions->count() === 0 ? $this->response:
+            $this->_showSession($sessions->first());
     }
 
-    private function showReportButtons(SessionModel $session)
+    private function _showSession(SessionModel $session, MemberModel $member = null)
     {
-        $html = $this->renderView('pages.report.session.exports', [
-            'sessionId' => $session->id,
-        ]);
-        $this->response->html('session-reports-export', $html);
-        $this->jq('#btn-tontine-options')->click($this->rq(Options::class)->editOptions());
+        $this->bag('report')->set('session.id', $session->id);
+
+        $title = $session->title;
+        if($member !== null)
+        {
+            $title .= ' - ' . $member->name;
+        }
+        $this->response->html('session-report-title', $title);
+
+        // Initialize the page components.
+        $this->cl(Session\Bill\Session::class)->init($session, $member);
+        $this->cl(Session\Bill\Total::class)->init($session, $member);
+        $this->cl(Session\Deposit::class)->init($session, $member);
+        $this->cl(Session\Disbursement::class)->init($session, $member);
+        $this->cl(Session\Loan::class)->init($session, $member);
+        $this->cl(Session\Refund::class)->init($session, $member);
+        $this->cl(Session\Remitment::class)->init($session, $member);
+        $this->cl(Session\Saving::class)->init($session, $member);
+        $this->cl(Session\Saving\Fund::class)->clear();
+
+        $this->response->html('content-page', $this->renderView('pages.report.session.session'));
+
+        // Render the page buttons.
+        $this->cl(Session\Action\Export::class)->setSessionId($session->id)->render();
+        $this->cl(Session\Action\Menu::class)->setSessionId($session->id)->render();
 
         return $this->response;
     }
 
-    private function _showSession(SessionModel $session)
-    {
-        $this->response->html('session-report-title', $session->title);
-        $this->cl(Session\Session::class)->show($session);
-
-        return $this->showReportButtons($session);
-    }
-
     public function showSession(int $sessionId)
     {
-        if(!($session = $this->sessionService->getSession($sessionId)))
+        if($sessionId <= 0 ||
+            !($session = $this->sessionService->getSession($sessionId)))
         {
             return $this->response;
         }
@@ -83,22 +87,13 @@ class Session extends CallableClass
 
     public function showMember(int $sessionId, int $memberId)
     {
-        if(!($session = $this->sessionService->getSession($sessionId)))
-        {
-            return $this->response;
-        }
-        if($memberId <= 0)
-        {
-            return $this->_showSession($session);
-        }
-        if(!($member = $this->memberService->getMember($memberId)))
+        if($sessionId <= 0 || $memberId <= 0 ||
+            !($session = $this->sessionService->getSession($sessionId)) ||
+            !($member = $this->memberService->getMember($memberId)))
         {
             return $this->response;
         }
 
-        $this->response->html('session-report-title', $session->title . ' - ' . $member->name);
-        $this->cl(Session\Member::class)->show($session, $member);
-
-        return $this->showReportButtons($session);
+        return $this->_showSession($session, $member);
     }
 }

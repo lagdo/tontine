@@ -2,25 +2,17 @@
 
 namespace App\Ajax\Web\Meeting\Presence;
 
-use App\Ajax\CallableClass;
-use Siak\Tontine\Model\Session as SessionModel;
+use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\PresenceService;
 use Siak\Tontine\Service\Tontine\MemberService;
 
-use function Jaxon\jq;
-use function Jaxon\rq;
+use function trim;
 
 /**
  * @databag presence
- * @before getSession
  */
-class Member extends CallableClass
+class Member extends Component
 {
-    /**
-     * @var SessionModel|null
-     */
-    protected ?SessionModel $session = null;
-
     /**
      * @param MemberService $memberService
      * @param PresenceService $presenceService
@@ -29,134 +21,53 @@ class Member extends CallableClass
         private PresenceService $presenceService)
     {}
 
-    protected function getSession()
-    {
-        if($this->target()->method() === 'home' ||
-            ($sessionId = $this->bag('presence')->get('session.id')) === 0)
-        {
-            return;
-        }
-        $this->session = $this->presenceService->getSession($sessionId);
-    }
-
     /**
-     * @exclude
+     * @inheritDoc
      */
-    public function show(SessionModel $session)
+    public function html(): string
     {
-        $this->session = $session;
-        $this->bag('presence')->set('session.id', $session->id);
-        $this->bag('presence')->set('member.page', 1);
+        $exchange = $this->bag('presence')->get('exchange', false);
+        $session = $this->cl(Home::class)->getSession(); // Is null when showing presences by members.
+        if(!$exchange && !$session)
+        {
+            return '';
+        }
 
-        $this->_home();
-
-        $this->response->call('showSmScreen', 'content-home-members', 'presence-sm-screens');
-        $this->jq('#btn-presence-sessions-back')->click(rq('.')
-            ->showSmScreen('content-home-sessions', 'presence-sm-screens'));
-
-        // if($members->count() > 0)
-        // {
-        //     $member = $members->first();
-        //     $this->cl(Session::class)->show($member);
-        // }
-
-        return $this->response;
-    }
-
-    public function home()
-    {
-        $this->bag('presence')->set('session.id', 0);
-        $this->bag('presence')->set('member.page', 1);
-
-        return $this->_home();
-    }
-
-    private function _home()
-    {
         $search = trim($this->bag('presence')->get('member.search', ''));
-        $html = $this->renderView('pages.meeting.presence.member.home', [
-            'session' => $this->session, // Is null when showing presences by members.
+        return (string)$this->renderView('pages.meeting.presence.member.home', [
+            'session' => $session,
             'memberCount' => $this->presenceService->getMemberCount($search),
         ]);
-        $this->response->html('content-home-members', $html);
-
-        if(!$this->session)
-        {
-            $this->jq('#btn-presence-exchange')->click($this->rq(Home::class)->exchange());
-        }
-
-        $this->jq('#btn-presence-members-refresh')->click($this->rq()->page());
-        $this->jq('#btn-presence-members-search')
-            ->click($this->rq()->search(jq('#txt-presence-members-search')->val()));
-
-        return $this->page();
     }
 
     /**
-     * @param int $pageNumber
-     *
-     * @return mixed
+     * @inheritDoc
      */
-    public function page(int $pageNumber = 0)
+    protected function after()
     {
-        $search = trim($this->bag('presence')->get('member.search', ''));
-        $memberCount = $this->presenceService->getMemberCount($search);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount,
-            'presence', 'member.page');
-        $members = $this->presenceService->getMembers($search, $pageNumber);
-        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
-        $absences = !$this->session ? null :
-            $this->presenceService->getSessionAbsences($this->session);
-
-        $html = $this->renderView('pages.meeting.presence.member.page', [
-            'session' => $this->session, // Is null when showing presences by members.
-            'search' => $search,
-            'members' => $members,
-            'absences' => $absences,
-            'pagination' => $pagination,
-            'sessionCount' => $this->presenceService->getSessionCount(),
-        ]);
-        $this->response->html('content-page-members', $html);
-        $this->response->call('makeTableResponsive', 'content-page-members');
-
-        $memberId = jq()->parent()->attr('data-member-id')->toInt();
-        $this->jq('.btn-toggle-member-presence')->click($this->rq()->togglePresence($memberId));
-        $this->jq('.btn-show-member-presences')
-            ->click($this->rq(Home::class)->selectMember($memberId));
-
-        return $this->response;
+        $this->cl(MemberPage::class)->page();
+        $this->response->jw()->showSmScreen('content-home-members', 'presence-sm-screens');
     }
 
     public function search(string $search)
     {
         $this->bag('presence')->set('member.search', trim($search));
 
-        return $this->page();
+        return $this->cl(MemberPage::class)->page();
     }
-
-    // public function toggleFilter()
-    // {
-    //     $filter = $this->bag('presence')->get('member.filter', null);
-    //     // Switch between null, true and false
-    //     $filter = $filter === null ? true : ($filter === true ? false : null);
-    //     $this->bag('presence')->set('member.filter', $filter);
-
-    //     return $this->page();
-    // }
 
     public function togglePresence(int $memberId)
     {
         $member = $this->memberService->getMember($memberId);
-        if(!$member)
+        $session = $this->cl(Home::class)->getSession();
+        if(!$member || !$session)
         {
             return $this->response;
         }
 
-        $this->presenceService->togglePresence($this->session, $member);
-        // Refresh the session counters
-        $this->session = $this->presenceService->getSession($this->session->id);
+        $this->presenceService->togglePresence($session, $member);
 
-        $this->cl(Session::class)->page();
-        return $this->page();
+        $this->cl(SessionPage::class)->page();
+        return $this->render();
     }
 }

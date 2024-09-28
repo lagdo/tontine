@@ -1,3 +1,8 @@
+@php
+  $rqFund = Jaxon\rq(App\Ajax\Web\Tontine\Fund::class);
+  $rqCategory = Jaxon\rq(App\Ajax\Web\Tontine\Category::class);
+  $rqCharge = Jaxon\rq(App\Ajax\Web\Tontine\Charge::class);
+@endphp
           <div class="row sm-screen-selector mb-3" id="options-sm-screens">
             <div class="col-12">
               <div class="btn-group btn-group-sm btn-block" role="group">
@@ -14,12 +19,15 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-funds-home">
+            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnShow($rqFund)>
+              @jxnHtml($rqFund)
             </div>
-            <div class="col-md-6 col-sm-12 sm-screen" id="content-categories-home">
+            <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqCategory)>
+              @jxnHtml($rqCategory)
             </div>
           </div>
           <div class="row">
-            <div class="col-12 sm-screen" id="content-charges-home">
+            <div class="col-12 sm-screen" @jxnShow($rqCharge)>
+              @jxnHtml($rqCharge)
             </div>
           </div>

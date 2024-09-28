@@ -13,7 +13,10 @@ class Locale extends CallableClass
      */
     protected LocaleService $localeService;
 
-    public function selectCurrencies(string $countryCode)
+    /**
+     * @callback jaxon.ajax.callback.selectCurrency
+     */
+    public function selectCurrency(string $countryCode)
     {
         $html= $this->renderView('pages.tontine.currency', [
             'currencies' => $this->localeService->getCountryCurrencies($countryCode)

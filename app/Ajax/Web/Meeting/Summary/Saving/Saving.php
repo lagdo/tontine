@@ -48,7 +48,7 @@ class Saving extends SessionCallable
         $this->response->html('meeting-savings', $html);
 
         $selectFundId = pm()->select('savings-fund-id')->toInt();
-        $this->jq('#btn-savings-fund')->click($this->rq()->fund($selectFundId));
+        $this->response->jq('#btn-savings-fund')->click($this->rq()->fund($selectFundId));
 
         return $this->fund($fundId);
     }
@@ -96,10 +96,9 @@ class Saving extends SessionCallable
         $html = $this->renderView('pages.meeting.summary.saving.page', [
             'session' => $this->session,
             'savings' => $savings,
-            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-savings-page', $html);
-        $this->response->call('makeTableResponsive', 'meeting-savings-page');
+        $this->response->js()->makeTableResponsive('meeting-savings-page');
 
         return $this->response;
     }

@@ -29,7 +29,7 @@ class LibreFee extends SessionCallable
         $html = $this->renderView('pages.meeting.summary.charge.libre.home')
             ->with('session', $this->session);
         $this->response->html('meeting-fees-libre', $html);
-        $this->jq('#btn-fees-libre-refresh')->click($this->rq()->home());
+        $this->response->jq('#btn-fees-libre-refresh')->click($this->rq()->home());
 
         $charges = $this->feeService->getFees();
         // Bill and settlement counts and amounts
@@ -44,7 +44,7 @@ class LibreFee extends SessionCallable
             'pagination' => '',
         ]);
         $this->response->html('meeting-fees-libre-page', $html);
-        $this->response->call('makeTableResponsive', 'meeting-fees-libre-page');
+        $this->response->js()->makeTableResponsive('meeting-fees-libre-page');
 
         return $this->response;
     }

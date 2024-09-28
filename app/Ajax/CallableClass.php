@@ -3,8 +3,6 @@
 namespace App\Ajax;
 
 use Jaxon\App\CallableClass as JaxonCallableClass;
-use Jaxon\App\Dialog\MessageInterface;
-use Jaxon\App\Dialog\ModalInterface;
 use Jaxon\App\View\Store;
 use Siak\Tontine\Exception\MeetingRoundException;
 use Siak\Tontine\Exception\MessageException;
@@ -22,21 +20,13 @@ use function trans;
  */
 class CallableClass extends JaxonCallableClass
 {
+    use DialogTrait;
+
     /**
      * @di
      * @var TenantService
      */
     protected TenantService $tenantService;
-
-    /**
-     * @var ModalInterface
-     */
-    public $dialog;
-
-    /**
-     * @var MessageInterface
-     */
-    public $notify;
 
     /**
      * Get the page number to show
@@ -92,7 +82,7 @@ class CallableClass extends JaxonCallableClass
     {
         // The current template main menu doesn't hide automatically
         // after a click on mobile devices. We need to do that manually.
-        $this->jq('body')->trigger('touchend');
+        $this->response->jq('body')->trigger('touchend');
     }
 
     /**
@@ -105,7 +95,7 @@ class CallableClass extends JaxonCallableClass
      */
     protected function renderView(string $view, array $viewData = []): ?Store
     {
-        return $this->view()->render('tontine::' . $view, $viewData);
+        return $this->view()->render("tontine::$view", $viewData);
     }
 
     /**

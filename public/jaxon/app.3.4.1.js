@@ -15,6 +15,12 @@ jaxon.dom.ready(function() {
             document.body.style.cursor = 'auto';
         },
     };
+    jaxon.ajax.callback.selectCurrency = {
+        onRequest: function() {
+            // Empty the currency list while fetching the new currencies.
+            $('#select_currency_container select').html('');
+        },
+    };
 });
 
 function setLoanInterestLabel()

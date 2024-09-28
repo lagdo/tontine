@@ -3,22 +3,47 @@
 namespace App\Ajax\Web\Meeting\Presence;
 
 use App\Ajax\CallableClass;
+use Siak\Tontine\Model\Member as MemberModel;
+use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\PresenceService;
 
 use function trans;
 
 /**
  * @databag presence
- */
-/**
  * @before checkGuestAccess ["meeting", "presences"]
  */
 class Home extends CallableClass
 {
     /**
-     * @var PresenceService
+     * @param PresenceService $presenceService
      */
-    protected PresenceService $presenceService;
+    public function __construct(private PresenceService $presenceService)
+    {}
+
+    /**
+     * @exclude
+     */
+    public function getSession(): ?SessionModel
+    {
+        if(($sessionId = $this->bag('presence')->get('session.id', 0)) === 0)
+        {
+            return null;
+        }
+        return $this->presenceService->getSession($sessionId);
+    }
+
+    /**
+     * @exclude
+     */
+    public function getMember(): ?MemberModel
+    {
+        if(($memberId = $this->bag('presence')->get('member.id', 0)) === 0)
+        {
+            return null;
+        }
+        return $this->presenceService->getMember($memberId);
+    }
 
     /**
      * @before checkRoundSessions
@@ -26,16 +51,20 @@ class Home extends CallableClass
      */
     public function home()
     {
+        $this->bag('presence')->set('session.id', 0);
+        $this->bag('presence')->set('member.id', 0);
         $exchange = $this->bag('presence')->get('exchange', false);
 
         $this->response->html('section-title', trans('tontine.menus.presences'));
-        $html = $this->renderView('pages.meeting.presence.home', ['exchange' => $exchange]);
+        $html = $this->renderView('pages.meeting.presence.home', [
+            'exchange' => $exchange,
+        ]);
         $this->response->html('content-home', $html);
 
-        $this->bag('presence')->set('session.id', 0);
-        $this->bag('presence')->set('member.id', 0);
+        $clAtLeft = !$exchange ? $this->cl(Session::class) : $this->cl(Member::class);
+        $clAtLeft->render();
 
-        return $this->cl(!$exchange ? Session::class : Member::class)->home();
+        return $this->response;
     }
 
     public function exchange()
@@ -46,31 +75,21 @@ class Home extends CallableClass
         return $this->home();
     }
 
-    /**
-     * @di $presenceService
-     */
     public function selectSession(int $sessionId)
     {
-        if(!($session = $this->presenceService->getSession($sessionId)))
-        {
-            // Todo: show en error message
-            return $this->response;
-        }
+        $this->bag('presence')->set('session.id', $sessionId);
+        $this->bag('presence')->set('member.id', 0);
+        $this->bag('presence')->set('member.page', 1);
 
-        return $this->cl(Member::class)->show($session);
+        return $this->cl(Member::class)->render();
     }
 
-    /**
-     * @di $presenceService
-     */
     public function selectMember(int $memberId)
     {
-        if(!($member = $this->presenceService->getMember($memberId)))
-        {
-            // Todo: show en error message
-            return $this->response;
-        }
+        $this->bag('presence')->set('member.id', $memberId);
+        $this->bag('presence')->set('session.id', 0);
+        $this->bag('presence')->set('session.page', 1);
 
-        return $this->cl(Session::class)->show($member);
+        return $this->cl(Session::class)->render();
     }
 }

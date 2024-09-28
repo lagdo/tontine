@@ -32,10 +32,10 @@ class Remitment extends SessionCallable
             'hasAuctions' => $hasAuctions,
         ]);
         $this->response->html('meeting-remitments', $html);
-        $this->response->call('makeTableResponsive', 'meeting-remitments');
+        $this->response->js()->makeTableResponsive('meeting-remitments');
 
         $poolId = jq()->parent()->attr('data-pool-id')->toInt();
-        $this->jq('.btn-pool-remitments')->click($this->rq()->remitments($poolId));
+        $this->response->jq('.btn-pool-remitments')->click($this->rq()->remitments($poolId));
 
         return $this->response;
     }

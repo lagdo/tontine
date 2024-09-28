@@ -56,10 +56,10 @@ class Refund extends OpenedSessionCallable
         ]);
         $this->response->html('meeting-refunds', $html);
 
-        $this->jq('#btn-refunds-refresh')->click($this->rq()->home());
-        $this->jq('#btn-refunds-filter')->click($this->rq()->toggleFilter());
+        $this->response->jq('#btn-refunds-refresh')->click($this->rq()->home());
+        $this->response->jq('#btn-refunds-filter')->click($this->rq()->toggleFilter());
         $fundId = pm()->select('refunds-fund-id')->toInt();
-        $this->jq('#btn-refunds-fund')->click($this->rq()->fund($fundId));
+        $this->response->jq('#btn-refunds-fund')->click($this->rq()->fund($fundId));
 
         return $this->fund(0);
     }
@@ -112,14 +112,13 @@ class Refund extends OpenedSessionCallable
         $html = $this->renderView('pages.meeting.refund.page', [
             'session' => $this->session,
             'debts' => $debts,
-            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-debts-page', $html);
-        $this->response->call('makeTableResponsive', 'meeting-debts-page');
+        $this->response->js()->makeTableResponsive('meeting-debts-page');
 
         $debtId = jq()->parent()->attr('data-debt-id')->toInt();
-        $this->jq('.btn-add-refund', '#meeting-debts-page')->click($this->rq()->createRefund($debtId));
-        $this->jq('.btn-del-refund', '#meeting-debts-page')->click($this->rq()->deleteRefund($debtId));
+        $this->response->jq('.btn-add-refund', '#meeting-debts-page')->click($this->rq()->createRefund($debtId));
+        $this->response->jq('.btn-del-refund', '#meeting-debts-page')->click($this->rq()->deleteRefund($debtId));
 
         return $this->response;
     }

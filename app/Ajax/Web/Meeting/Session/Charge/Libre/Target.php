@@ -66,12 +66,12 @@ class Target extends ChargeCallable
         ]);
         $this->response->html('meeting-fees-libre', $html);
 
-        $this->jq('#btn-fee-target-add')->click($this->rq()->add());
-        $this->jq('#btn-fee-target-edit')->click($this->rq()->edit());
-        $this->jq('#btn-fee-target-remove')->click($this->rq()->remove()
+        $this->response->jq('#btn-fee-target-add')->click($this->rq()->add());
+        $this->response->jq('#btn-fee-target-edit')->click($this->rq()->edit());
+        $this->response->jq('#btn-fee-target-remove')->click($this->rq()->remove()
             ->confirm(trans('meeting.target.questions.remove')));
-        $this->jq('#btn-fee-target-back')->click($this->rq(Charge::class)->home());
-        $this->jq('#btn-fee-libre-search')
+        $this->response->jq('#btn-fee-target-back')->click($this->rq(Charge::class)->home());
+        $this->response->jq('#btn-fee-libre-search')
             ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
 
         return $this->page();
@@ -102,10 +102,9 @@ class Target extends ChargeCallable
             'target' => $this->target,
             'charge' => $this->charge,
             'members' => $members,
-            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-fee-libre-target', $html);
-        $this->response->call('makeTableResponsive', 'meeting-fee-libre-target');
+        $this->response->js()->makeTableResponsive('meeting-fee-libre-target');
 
         return $this->response;
     }
@@ -243,7 +242,7 @@ class Target extends ChargeCallable
         }
 
         $this->targetService->deleteTarget($this->target);
-        $this->notify->success(trans('meeting.target.messages.removed'), trans('common.titles.success'));
+        $this->notify->title(trans('common.titles.success'))->success(trans('meeting.target.messages.removed'));
 
         $this->target = $this->targetService->getTarget($this->charge, $this->session);
         return $this->home($this->charge->id);

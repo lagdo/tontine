@@ -27,10 +27,10 @@ class Settlement extends ChargeCallable
         ]);
         $this->response->html('meeting-fees-fixed', $html);
 
-        $this->jq('#btn-fee-fixed-settlements-back')
+        $this->response->jq('#btn-fee-fixed-settlements-back')
             ->click($this->rq(Charge::class)->home());
-        $this->jq('#btn-fee-fixed-settlements-filter')->click($this->rq()->toggleFilter());
-        $this->jq('#btn-fee-fixed-settlements-search')
+        $this->response->jq('#btn-fee-fixed-settlements-filter')->click($this->rq()->toggleFilter());
+        $this->response->jq('#btn-fee-fixed-settlements-search')
             ->click($this->rq()->search(jq('#txt-fee-settlements-search')->val()));
 
         return $this->page(1);
@@ -82,19 +82,18 @@ class Settlement extends ChargeCallable
             'session' => $this->session,
             'charge' => $this->charge,
             'bills' => $bills,
-            'pagination' => $pagination,
         ]);
         $this->response->html('meeting-fee-fixed-bills', $html);
-        $this->response->call('makeTableResponsive', 'meeting-fee-fixed-bills');
+        $this->response->js()->makeTableResponsive('meeting-fee-fixed-bills');
 
-        $this->jq('.btn-add-all-settlements')->click($this->rq()->addAllSettlements());
-        $this->jq('.btn-del-all-settlements')->click($this->rq()->delAllSettlements());
+        $this->response->jq('.btn-add-all-settlements')->click($this->rq()->addAllSettlements());
+        $this->response->jq('.btn-del-all-settlements')->click($this->rq()->delAllSettlements());
         $billId = jq()->parent()->attr('data-bill-id')->toInt();
-        $this->jq('.btn-add-settlement', '#meeting-fee-fixed-bills')
+        $this->response->jq('.btn-add-settlement', '#meeting-fee-fixed-bills')
             ->click($this->rq()->addSettlement($billId));
-        $this->jq('.btn-del-settlement', '#meeting-fee-fixed-bills')
+        $this->response->jq('.btn-del-settlement', '#meeting-fee-fixed-bills')
             ->click($this->rq()->delSettlement($billId));
-        $this->jq('.btn-edit-notes', '#meeting-fee-fixed-bills')
+        $this->response->jq('.btn-edit-notes', '#meeting-fee-fixed-bills')
             ->click($this->rq()->editNotes($billId));
 
         return $this->response;
