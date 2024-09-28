@@ -36,7 +36,7 @@ class MemberPage extends PageComponent
     {
         $search = trim($this->bag('subscription')->get('member.search', ''));
         $filter = $this->bag('subscription')->get('member.filter', null);
-        $pool = $this->cl(Member::class)->getPool();
+        $pool = $this->cl(Home::class)->getPool();
 
         return (string)$this->renderView('pages.planning.subscription.member.page', [
             'members' => $this->subscriptionService
@@ -49,7 +49,7 @@ class MemberPage extends PageComponent
     {
         $search = trim($this->bag('subscription')->get('member.search', ''));
         $filter = $this->bag('subscription')->get('member.filter', null);
-        $pool = $this->cl(Member::class)->getPool();
+        $pool = $this->cl(Home::class)->getPool();
 
         return $this->subscriptionService->getMemberCount($pool, $search, $filter);
     }

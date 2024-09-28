@@ -18,7 +18,6 @@ return [
         'session' => "Session",
         'sessions' => "Sessions",
         'pools' => "Tontines",
-        'subscriptions' => "Subscriptions",
         'presences' => "Presences",
         'payments' => "Payments",
         'profile' => "Profile",

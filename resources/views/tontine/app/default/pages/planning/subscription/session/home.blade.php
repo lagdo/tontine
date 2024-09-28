@@ -1,5 +1,5 @@
 @php
-  $rqSubscription = Jaxon\rq(App\Ajax\Web\Planning\Subscription::class);
+  $rqSubscription = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Home::class);
   $rqSession = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Session::class);
   $rqSessionCounter = Jaxon\rq(App\Ajax\Web\Planning\Subscription\SessionCounter::class);
   $rqSessionPage = Jaxon\rq(App\Ajax\Web\Planning\Subscription\SessionPage::class);
@@ -7,25 +7,29 @@
               <div class="section-body">
                 <div class="row">
                   <div class="col">
-                    <h2 class="section-title">{{ __('tontine.pool.titles.sessions')
+                    <h2 class="section-title">{{ $pool->title }} :: {{ __('tontine.pool.titles.sessions')
                       }} (<span @jxnShow($rqSessionCounter)>@jxnHtml($rqSessionCounter)</span>)</h2>
                   </div>
-@if ($pool->remit_planned)
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">
+                      <button type="button" class="btn btn-primary" @jxnClick($rqSession->render())><i class="fa fa-sync"></i></button>
+                    </div>
+                  </div>
+                </div>
+@if ($pool->remit_planned)
+                <div class="row mb-2">
+                  <div class="col">
+                  </div>
+                  <div class="col-auto">
+                    <div class="btn-group float-right ml-2" role="group">
                       <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->beneficiaries())>{{
                         __('tontine.subscription.titles.beneficiaries') }}</i></button>
                       <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->planning())>{{
                         __('tontine.subscription.titles.planning') }}</i></button>
                     </div>
                   </div>
-@endif
-                  <div class="col-auto">
-                    <div class="btn-group float-right ml-2 mb-2" role="group">
-                      <button type="button" class="btn btn-primary" @jxnClick($rqSession->refresh())><i class="fa fa-sync"></i></button>
-                    </div>
-                  </div>
                 </div>
+@endif
               </div>
 
               <!-- Data tables -->

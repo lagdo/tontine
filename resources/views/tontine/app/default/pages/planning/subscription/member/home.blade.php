@@ -1,5 +1,5 @@
 @php
-  $rqSubscription = Jaxon\rq(App\Ajax\Web\Planning\Subscription::class);
+  $rqPool = Jaxon\rq(App\Ajax\Web\Planning\Pool::class);
   $rqMember = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Member::class);
   $rqMemberCounter = Jaxon\rq(App\Ajax\Web\Planning\Subscription\MemberCounter::class);
   $rqMemberPage = Jaxon\rq(App\Ajax\Web\Planning\Subscription\MemberPage::class);
@@ -7,16 +7,18 @@
               <div class="section-body">
                 <div class="row">
                   <div class="col">
-                    <h2 class="section-title">{{ __('tontine.pool.titles.subscriptions')
+                    <h2 class="section-title">{{ $pool->title }} :: {{ __('tontine.pool.titles.subscriptions')
                       }} (<span @jxnShow($rqMemberCounter)>@jxnHtml($rqMemberCounter)</span>)</h2>
                   </div>
                   <div class="col-auto">
-                    <div class="input-group">
-                      {{ $htmlBuilder->select('pool_id', $pools, $pool->id)->id('select-pool')
-                        ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') }}
-                      <div class="input-group-append">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->pool(Jaxon\pm()->select('select-pool')->toInt()))><i class="fa fa-arrow-right"></i></button>
-                      </div>
+                    <div class="btn-group float-right ml-2" role="group">
+                      <button type="button" class="btn btn-primary" @jxnClick($rqPool->home())><i class="fa fa-arrow-left"></i></button>
+                    </div>
+                  </div>
+                  <div class="col-auto">
+                    <div class="btn-group float-right ml-2" role="group">
+                      <button type="button" class="btn btn-primary" @jxnClick($rqMember->filter())><i class="fa fa-filter"></i></button>
+                      <button type="button" class="btn btn-primary" @jxnClick($rqMember->render())><i class="fa fa-sync"></i></button>
                     </div>
                   </div>
                 </div>
@@ -28,12 +30,6 @@
                       <div class="input-group-append">
                         <button type="button" class="btn btn-primary" @jxnClick($rqMember->search(Jaxon\jq('#txt-subscription-members-search')->val()))><i class="fa fa-search"></i></button>
                       </div>
-                    </div>
-                  </div>
-                  <div class="col-auto">
-                    <div class="btn-group float-right ml-2" role="group">
-                      <button type="button" class="btn btn-primary" @jxnClick($rqMember->filter())><i class="fa fa-filter"></i></button>
-                      <button type="button" class="btn btn-primary" @jxnClick($rqMember->refresh())><i class="fa fa-sync"></i></button>
                     </div>
                   </div>
                 </div>

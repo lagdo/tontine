@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\Web\Planning;
+namespace App\Ajax\Web\Planning\Subscription;
 
 use App\Ajax\CallableClass;
 use Siak\Tontine\Model\Pool as PoolModel;
@@ -14,9 +14,9 @@ use function trans;
 
 /**
  * @databag subscription
- * @before getPool
+ * @before setPool
  */
-class Subscription extends CallableClass
+class Home extends CallableClass
 {
     /**
      * @di
@@ -48,40 +48,27 @@ class Subscription extends CallableClass
     /**
      * @return void
      */
-    protected function getPool()
+    protected function setPool()
     {
-        if($this->target()->method() === 'home')
-        {
-            return;
-        }
-
         $poolId = $this->target()->method() === 'pool' ? $this->target()->args()[0] :
             intval($this->bag('subscription')->get('pool.id'));
         $this->pool = $this->poolService->getPool($poolId);
     }
 
     /**
-     * @before checkGuestAccess ["planning", "subscriptions"]
-     * @before checkRoundPools
-     * @after hideMenuOnMobile
+     * @exclude
+     *
+     * @return PoolModel|null
      */
-    public function home()
+    public function getPool(): ?PoolModel
     {
-        $html = $this->renderView('pages.planning.subscription.home');
-        $this->response->html('section-title', trans('tontine.menus.planning'));
-        $this->response->html('content-home', $html);
-
-        $poolId = intval($this->bag('subscription')->get('pool.id', 0));
-        $pools = $this->poolService->getRoundPools();
-        $this->pool = $pools->firstWhere('id', $poolId) ?? $pools[0] ?? null;
-        if($this->pool === null)
+        if(!$this->pool)
         {
-            return $this->response;
+            $poolId = intval($this->bag('subscription')->get('pool.id'));
+            $this->pool = $this->poolService->getPool($poolId);
         }
 
-        $this->response->js()->setSmScreenHandler('pool-subscription-sm-screens');
-
-        return $this->pool();
+        return $this->pool;
     }
 
     public function pool(int $poolId = 0)
@@ -92,17 +79,17 @@ class Subscription extends CallableClass
         }
 
         $this->bag('subscription')->set('pool.id', $this->pool->id);
+        $this->bag('subscription')->set('member.filter', null);
+        $this->bag('subscription')->set('member.search', '');
+        $this->bag('subscription')->set('session.filter', false);
 
-        $this->cl(Subscription\Member::class)->show($this->pool);
-        $this->cl(Subscription\Session::class)->show($this->pool);
+        $html = $this->renderView('pages.planning.subscription.home');
+        $this->response->html('content-home', $html);
 
-        if($poolId > 0)
-        {
-            $message = trans('tontine.pool.messages.selected', [
-                'tontine' => $this->pool->title,
-            ]);
-            $this->notify->title(trans('common.titles.info'))->info($message);
-        }
+        $this->cl(MemberPage::class)->page();
+        $this->cl(SessionPage::class)->page();
+
+        $this->response->js()->setSmScreenHandler('pool-subscription-sm-screens');
 
         return $this->response;
     }

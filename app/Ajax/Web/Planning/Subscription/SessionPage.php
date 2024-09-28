@@ -27,7 +27,7 @@ class SessionPage extends PageComponent
 
     public function html(): string
     {
-        $pool = $this->cl(Session::class)->getPool();
+        $pool = $this->cl(Home::class)->getPool();
 
         return (string)$this->renderView('pages.planning.subscription.session.page', [
             'pool' => $pool,
@@ -37,7 +37,7 @@ class SessionPage extends PageComponent
 
     protected function count(): int
     {
-        $pool = $this->cl(Session::class)->getPool();
+        $pool = $this->cl(Home::class)->getPool();
 
         return $this->poolService->getPoolSessionCount($pool);
     }

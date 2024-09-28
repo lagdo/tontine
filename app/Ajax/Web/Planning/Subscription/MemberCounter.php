@@ -15,7 +15,7 @@ class MemberCounter extends Component
 
     public function html(): string
     {
-        $pool = $this->cl(Member::class)->getPool();
+        $pool = $this->cl(Home::class)->getPool();
 
         return (string)$this->subscriptionService->getSubscriptionCount($pool);
     }

@@ -54,7 +54,7 @@ return [
         ],
         'js' => [
             'lib' => [
-                // 'uri' => '',
+                'uri' => '/jaxon/v5.0.1.1/',
             ],
             'app' => [
                 'uri' => env('JAXON_JS_APP_URI', '/jaxon'),

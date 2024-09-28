@@ -1,6 +1,6 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $rqSubscription = Jaxon\rq(App\Ajax\Web\Planning\Subscription::class);
+  $rqSubscription = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Home::class);
 @endphp
             <div class="col-md-12">
               <div class="section-body">
@@ -20,7 +20,7 @@
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">
-                      <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->home())><i class="fa fa-arrow-left"></i></button>
+                      <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->pool($pool->id))><i class="fa fa-arrow-left"></i></button>
                       <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->planning())><i class="fa fa-sync"></i></button>
                     </div>
                   </div>

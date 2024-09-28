@@ -18,7 +18,9 @@
 
           <div class="row" id="content-page">
             <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnShow($rqMember)>
+              @jxnHtml($rqMember)
             </div>
             <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqSession)>
+              @jxnHtml($rqSession)
             </div>
           </div>
