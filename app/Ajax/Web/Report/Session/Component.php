@@ -31,9 +31,11 @@ abstract class Component extends BaseComponent
     /**
      * @exclude
      */
-    public function init(SessionModel $session, MemberModel $member = null)
+    public function init(SessionModel $session, MemberModel $member = null): self
     {
         $this->session = $session;
         $this->member = $member;
+
+        return $this;
     }
 }

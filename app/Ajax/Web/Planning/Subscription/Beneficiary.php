@@ -4,7 +4,6 @@ namespace App\Ajax\Web\Planning\Subscription;
 
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
-use App\Ajax\Web\SectionTitle;
 use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\PoolService;
@@ -16,9 +15,9 @@ use function trans;
 
 /**
  * @databag subscription
- * @before setPool
+ * @before getPool
  */
-class Home extends Component
+class Beneficiary extends Component
 {
     /**
      * @var string
@@ -49,7 +48,7 @@ class Home extends Component
     /**
      * @return void
      */
-    protected function setPool()
+    protected function getPool()
     {
         $poolId = $this->target()->method() === 'pool' ? $this->target()->args()[0] :
             intval($this->bag('subscription')->get('pool.id'));
@@ -57,24 +56,12 @@ class Home extends Component
     }
 
     /**
-     * @exclude
-     *
-     * @return PoolModel|null
+     * @di $summaryService
+     * @di $subscriptionService
      */
-    public function getPool(): ?PoolModel
+    public function home(): ComponentResponse
     {
-        if(!$this->pool)
-        {
-            $poolId = intval($this->bag('subscription')->get('pool.id'));
-            $this->pool = $this->poolService->getPool($poolId);
-        }
-
-        return $this->pool;
-    }
-
-    public function pool(int $poolId = 0): ComponentResponse
-    {
-        if($this->pool === null)
+        if(!$this->pool || !$this->pool->remit_planned)
         {
             return $this->response;
         }
@@ -87,12 +74,7 @@ class Home extends Component
      */
     public function before()
     {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.planning'));
-
-        $this->bag('subscription')->set('pool.id', $this->pool->id);
-        $this->bag('subscription')->set('member.filter', null);
-        $this->bag('subscription')->set('member.search', '');
-        $this->bag('subscription')->set('session.filter', false);
+        $this->view()->shareValues($this->summaryService->getPayables($this->pool));
     }
 
     /**
@@ -100,7 +82,10 @@ class Home extends Component
      */
     public function html(): string
     {
-        return (string)$this->renderView('pages.planning.subscription.home');
+        return (string)$this->renderView('pages.planning.subscription.beneficiaries', [
+            'pool' => $this->pool,
+            'pools' => $this->subscriptionService->getPools(),
+        ]);
     }
 
     /**
@@ -108,9 +93,27 @@ class Home extends Component
      */
     public function after()
     {
-        $this->cl(MemberPage::class)->page();
-        $this->cl(SessionPage::class)->page();
+        $this->response->js()->makeTableResponsive('content-page');
+    }
 
-        $this->response->js()->setSmScreenHandler('pool-subscription-sm-screens');
+    /**
+     * @di $summaryService
+     * @di $subscriptionService
+     */
+    public function save(int $sessionId, int $nextSubscriptionId, int $currSubscriptionId)
+    {
+        if(!$this->pool || !$this->pool->remit_planned || $this->pool->remit_auction)
+        {
+            return $this->response;
+        }
+
+        if(!$this->subscriptionService->saveBeneficiary($this->pool, $sessionId,
+            $currSubscriptionId, $nextSubscriptionId))
+        {
+            $message = trans('tontine.beneficiary.errors.cant_change');
+            $this->notify->title(trans('common.titles.error'))->error($message);
+        }
+
+        return $this->render();
     }
 }

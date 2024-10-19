@@ -2,7 +2,10 @@
 
 namespace App\Ajax\Web\Meeting;
 
-use App\Ajax\CallableClass;
+use App\Ajax\Component;
+use App\Ajax\Web\SectionContent;
+use App\Ajax\Web\SectionTitle;
+use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Service\Meeting\SessionService;
 
 use function trans;
@@ -11,8 +14,13 @@ use function trans;
  * @databag session
  * @before checkGuestAccess ["meeting", "sessions"]
  */
-class Session extends CallableClass
+class Session extends Component
 {
+    /**
+     * @var string
+     */
+    protected $overrides = SectionContent::class;
+
     /**
      * @param SessionService $sessionService
      */
@@ -23,13 +31,33 @@ class Session extends CallableClass
      * @before checkRoundSessions
      * @after hideMenuOnMobile
      */
-    public function home()
+    public function home(): ComponentResponse
     {
-        $this->response->html('section-title', trans('tontine.menus.meeting'));
-        $html = $this->renderView('pages.meeting.session.list.home');
-        $this->response->html('content-home', $html);
+        return $this->render();
+    }
 
-        return $this->cl(SessionPage::class)->page();
+    /**
+     * @inheritDoc
+     */
+    public function before()
+    {
+        $this->cl(SectionTitle::class)->show(trans('tontine.menus.meeting'));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
+    {
+        return (string)$this->renderView('pages.meeting.session.list.home');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function after()
+    {
+        $this->cl(SessionPage::class)->page();
     }
 
     public function resync()

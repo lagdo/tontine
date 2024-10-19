@@ -1,6 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $rqSubscription = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Home::class);
+  $rqBeneficiary = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Beneficiary::class);
+  $rqPlanning = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Planning::class);
 @endphp
             <div class="col-md-12">
               <div class="section-body">
@@ -14,14 +16,14 @@
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">
-                      <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->planning())>{{
+                      <button type="button" class="btn btn-primary" @jxnClick($rqPlanning->home())>{{
                         __('tontine.subscription.titles.planning') }}</i></button>
                     </div>
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">
                       <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->pool($pool->id))><i class="fa fa-arrow-left"></i></button>
-                      <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->beneficiaries())><i class="fa fa-sync"></i></button>
+                      <button type="button" class="btn btn-primary" @jxnClick($rqBeneficiary->home())><i class="fa fa-sync"></i></button>
                     </div>
                   </div>
                 </div>
@@ -31,7 +33,7 @@
               <div class="card shadow mb-4">
                 <div class="card-body">
                   <div class="table-responsive" @jxnTarget()>
-                    <div @jxnOn(['.select-beneficiary', 'change', ''], $rqSubscription->saveBeneficiary(
+                    <div @jxnOn(['.select-beneficiary', 'change', ''], $rqBeneficiary->save(
                         Jaxon\jq()->attr('data-session-id')->toInt(),
                         Jaxon\jq()->val()->toInt(),
                         Jaxon\jq()->attr('data-subscription-id')->toInt()

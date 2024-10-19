@@ -50,7 +50,7 @@
 @foreach ($figures as $poolFigures)
 @php
   $pool = $poolFigures['pool'];
-  $clPool->setFigures($poolFigures);
+  Jaxon\cl(App\Ajax\Web\Report\Round\Pool::class)->setFigures($poolFigures);
 @endphp
               <div class="row">
                 <div class="col">

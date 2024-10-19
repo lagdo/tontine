@@ -1,5 +1,7 @@
 @php
   $rqSubscription = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Home::class);
+  $rqBeneficiary = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Beneficiary::class);
+  $rqPlanning = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Planning::class);
   $rqSession = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Session::class);
   $rqSessionCounter = Jaxon\rq(App\Ajax\Web\Planning\Subscription\SessionCounter::class);
   $rqSessionPage = Jaxon\rq(App\Ajax\Web\Planning\Subscription\SessionPage::class);
@@ -22,9 +24,9 @@
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2" role="group">
-                      <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->beneficiaries())>{{
+                      <button type="button" class="btn btn-primary" @jxnClick($rqBeneficiary->home())>{{
                         __('tontine.subscription.titles.beneficiaries') }}</i></button>
-                      <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->planning())>{{
+                      <button type="button" class="btn btn-primary" @jxnClick($rqPlanning->home())>{{
                         __('tontine.subscription.titles.planning') }}</i></button>
                     </div>
                   </div>

@@ -2,13 +2,15 @@
   $sessionId = Jaxon\pm()->select('select-session')->toInt();
   $memberId = Jaxon\pm()->select('select-member')->toInt();
   $rqSession = Jaxon\rq(App\Ajax\Web\Report\Session::class);
+  $rqSessionContent = Jaxon\rq(App\Ajax\Web\Report\SessionContent::class);
+  $rqReportTitle = Jaxon\rq(App\Ajax\Web\Report\Session\ReportTitle::class);
   $rqActionExport = Jaxon\rq(App\Ajax\Web\Report\Session\Action\Export::class);
   $rqActionMenu = Jaxon\rq(App\Ajax\Web\Report\Session\Action\Menu::class);
 @endphp
           <div class="section-body">
             <div class="row">
               <div class="col">
-                <h2 class="section-title" id="session-report-title"></h2>
+                <h2 class="section-title" @jxnShow($rqReportTitle)></h2>
               </div>
               <div class="col-auto">
                 <div class="input-group">
@@ -37,6 +39,6 @@
 
           <!-- Data tables -->
           <div class="card shadow mb-4">
-            <div class="card-body" id="content-page">
+            <div class="card-body" @jxnShow($rqSessionContent)>
             </div>
           </div>

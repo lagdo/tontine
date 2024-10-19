@@ -2,15 +2,23 @@
 
 namespace App\Ajax\Web\Tontine;
 
-use App\Ajax\CallableClass;
+use App\Ajax\Component;
+use App\Ajax\Web\SectionContent;
+use App\Ajax\Web\SectionTitle;
+use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Tontine\OptionsValidator;
 
 use function Jaxon\pm;
 use function trans;
 
-class Options extends CallableClass
+class Options extends Component
 {
+    /**
+     * @var string
+     */
+    protected $overrides = SectionContent::class;
+
     /**
      * @var OptionsValidator
      */
@@ -24,18 +32,37 @@ class Options extends CallableClass
      * @databag charge
      * @after hideMenuOnMobile
      */
-    public function home()
+    public function home(): ComponentResponse
     {
-        $this->response->html('section-title', trans('tontine.menus.tontine'));
-        $this->response->html('content-home', $this->renderView('pages.options.home'));
+        return $this->render();
+    }
 
+    /**
+     * @inheritDoc
+     */
+    public function before()
+    {
+        $this->cl(SectionTitle::class)->show(trans('tontine.menus.tontine'));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
+    {
+        return (string)$this->renderView('pages.options.home');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function after()
+    {
         $this->response->js()->setSmScreenHandler('options-sm-screens');
 
         $this->cl(FundPage::class)->page();
         $this->cl(CategoryPage::class)->page();
         $this->cl(ChargePage::class)->page();
-
-        return $this->response;
     }
 
     public function editOptions()

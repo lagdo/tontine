@@ -2,14 +2,21 @@
 
 namespace App\Ajax\Web\Report;
 
-use App\Ajax\CallableClass;
+use App\Ajax\Component;
+use App\Ajax\Web\SectionContent;
+use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Service\Meeting\SummaryService;
 
 /**
  * @databag meeting
  */
-class Round extends CallableClass
+class Round extends Component
 {
+    /**
+     * @var string
+     */
+    protected $overrides = SectionContent::class;
+
     /**
      * @param SummaryService $summaryService
      */
@@ -21,19 +28,30 @@ class Round extends CallableClass
      * @before checkOpenedSessions
      * @after hideMenuOnMobile
      */
-    public function home()
+    public function home(): ComponentResponse
+    {
+        return $this->render();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
     {
         $round = $this->tenantService->round();
-        $html = $this->renderView('pages.report.round.home', [
+
+        return (string)$this->renderView('pages.report.round.home', [
             'round' => $round,
             'figures' => $this->summaryService->getFigures($round),
-            'clPool' => $this->cl(Round\Pool::class),
         ]);
-        $this->response->html('content-home', $html);
+    }
 
+    /**
+     * @inheritDoc
+     */
+    public function after()
+    {
         $this->response->js()->makeTableResponsive('content-pools');
         $this->response->js()->makeTableResponsive('content-amounts');
-
-        return $this->response;
     }
 }

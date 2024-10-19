@@ -2,8 +2,10 @@
 
 namespace App\Ajax\Web\Planning;
 
-use App\Ajax\CallableClass;
+use App\Ajax\Component;
+use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\Tontine\Select;
+use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Service\Planning\RoundService;
 
 use function Jaxon\pm;
@@ -12,8 +14,13 @@ use function trans;
 /**
  * @databag tontine
  */
-class Round extends CallableClass
+class Round extends Component
 {
+    /**
+     * @var string
+     */
+    protected $overrides = SectionContent::class;
+
     /**
      * @param RoundService $roundService
      */
@@ -25,13 +32,26 @@ class Round extends CallableClass
      * @before checkGuestAccess ["planning", "sessions"]
      * @after hideMenuOnMobile
      */
-    public function home()
+    public function home(): ComponentResponse
     {
-        $html = $this->renderView('pages.planning.round.home');
-        $this->response->html('content-home', $html);
+        return $this->render();
+    }
 
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
+    {
+        return (string)$this->renderView('pages.planning.round.home');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function after()
+    {
         $this->cl(RoundPage::class)->page();
-        return $this->cl(Session::class)->show($this->tenantService->round());
+        $this->cl(Session::class)->show($this->tenantService->round());
     }
 
     public function add()

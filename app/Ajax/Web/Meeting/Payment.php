@@ -2,9 +2,12 @@
 
 namespace App\Ajax\Web\Meeting;
 
-use App\Ajax\CallableClass;
+use App\Ajax\Component;
+use App\Ajax\Web\SectionContent;
+use App\Ajax\Web\SectionTitle;
 use App\Events\OnPagePaymentHome;
 use Illuminate\Support\Collection;
+use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Service\Meeting\SessionService;
 
 use function trans;
@@ -12,9 +15,16 @@ use function trans;
 /**
  * @databag payment
  * @before checkGuestAccess ["meeting", "payments"]
+ * @before getOpenedSessions
+ * @after hideMenuOnMobile
  */
-class Payment extends CallableClass
+class Payment extends Component
 {
+    /**
+     * @var string
+     */
+    protected $overrides = SectionContent::class;
+
     /**
      * @var Collection
      */
@@ -37,16 +47,35 @@ class Payment extends CallableClass
      * @before getOpenedSessions
      * @after hideMenuOnMobile
      */
-    public function home()
+    public function home(): ComponentResponse
     {
-        $this->response->html('section-title', trans('tontine.menus.meeting'));
-        $html = $this->renderView('pages.meeting.payment.home', [
+        return $this->render();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function before()
+    {
+        $this->cl(SectionTitle::class)->show(trans('tontine.menus.meeting'));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
+    {
+        return (string)$this->renderView('pages.meeting.payment.home', [
             'sessions' => $this->sessions,
         ]);
-        $this->response->html('content-home', $html);
+    }
 
+    /**
+     * @inheritDoc
+     */
+    public function after()
+    {
         OnPagePaymentHome::dispatch();
-
-        return $this->cl(PaymentPage::class)->page();
+        $this->cl(PaymentPage::class)->page();
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Ajax\Web\Planning;
 
 use App\Ajax\CallableClass;
+use App\Ajax\Web\SectionTitle;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Round as RoundModel;
 use Siak\Tontine\Service\Planning\RoundService;
@@ -68,7 +69,7 @@ class Session extends CallableClass
     {
         $this->bag('planning')->set('round.id', $roundId);
 
-        $this->response->html('section-title', trans('tontine.menus.planning'));
+        $this->cl(SectionTitle::class)->show(trans('tontine.menus.planning'));
         $html = $this->renderView('pages.planning.session.home', [
             'round' => $this->round,
         ]);

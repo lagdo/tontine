@@ -12,7 +12,7 @@ use function trans;
  * @databag meeting
  * @before getSession
  */
-class SessionCallable extends CallableClass
+abstract class OpenedSessionComponent extends Component
 {
     /**
      * @var SessionModel|null
@@ -42,6 +42,10 @@ class SessionCallable extends CallableClass
         if($this->session === null)
         {
             throw new MessageException(trans('meeting.errors.session.not_found'));
+        }
+        if($this->target()->method() !== 'reports' && !$this->session->opened)
+        {
+            throw new MessageException(trans('meeting.errors.session.not_opened'));
         }
     }
 

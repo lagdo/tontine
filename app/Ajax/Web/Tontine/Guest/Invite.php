@@ -2,7 +2,10 @@
 
 namespace App\Ajax\Web\Tontine\Guest;
 
-use App\Ajax\CallableClass;
+use App\Ajax\Component;
+use App\Ajax\Web\SectionContent;
+use App\Ajax\Web\SectionTitle;
+use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Service\Tontine\GuestService;
 use Siak\Tontine\Validation\Tontine\GuestInviteValidator;
 
@@ -12,8 +15,13 @@ use function trans;
 /**
  * @databag invite
  */
-class Invite extends CallableClass
+class Invite extends Component
 {
+    /**
+     * @var string
+     */
+    protected $overrides = SectionContent::class;
+
     /**
      * @var GuestInviteValidator
      */
@@ -28,17 +36,36 @@ class Invite extends CallableClass
     /**
      * @after hideMenuOnMobile
      */
-    public function home()
+    public function home(): ComponentResponse
     {
-        $this->response->html('section-title', trans('tontine.menus.tontines'));
-        $this->response->html('content-home', $this->renderView('pages.invite.home'));
+        return $this->render();
+    }
 
+    /**
+     * @inheritDoc
+     */
+    public function before()
+    {
+        $this->cl(SectionTitle::class)->show(trans('tontine.menus.tontines'));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
+    {
+        return (string)$this->renderView('pages.invite.home');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function after()
+    {
         $this->response->js()->setSmScreenHandler('invites-sm-screens');
 
         $this->cl(Invite\HostPage::class)->page();
         $this->cl(Invite\GuestPage::class)->page();
-
-        return $this->response;
     }
 
     public function add()
@@ -70,7 +97,8 @@ class Invite extends CallableClass
         $this->guestService->createInvite($values['email']);
 
         $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))->success(trans('tontine.invite.messages.sent'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.invite.messages.sent'));
 
         return $this->cl(Invite\HostPage::class)->page();
     }
@@ -78,7 +106,8 @@ class Invite extends CallableClass
     public function accept(int $inviteId)
     {
         $this->guestService->acceptInvite($inviteId);
-        $this->notify->title(trans('common.titles.success'))->success(trans('tontine.invite.messages.accepted'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.invite.messages.accepted'));
 
         return $this->cl(Invite\GuestPage::class)->page();
     }
@@ -86,7 +115,8 @@ class Invite extends CallableClass
     public function refuse(int $inviteId)
     {
         $this->guestService->refuseInvite($inviteId);
-        $this->notify->title(trans('common.titles.success'))->success(trans('tontine.invite.messages.refused'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.invite.messages.refused'));
 
         return $this->cl(Invite\GuestPage::class)->page();
     }
@@ -94,7 +124,8 @@ class Invite extends CallableClass
     public function cancel(int $inviteId)
     {
         $this->guestService->cancelInvite($inviteId);
-        $this->notify->title(trans('common.titles.success'))->success(trans('tontine.invite.messages.cancelled'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.invite.messages.cancelled'));
 
         return $this->cl(Invite\HostPage::class)->page();
     }
@@ -102,7 +133,8 @@ class Invite extends CallableClass
     public function hostDelete(int $inviteId)
     {
         $this->guestService->deleteHostInvite($inviteId);
-        $this->notify->title(trans('common.titles.success'))->success(trans('tontine.invite.messages.deleted'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.invite.messages.deleted'));
 
         return $this->cl(Invite\HostPage::class)->page();
     }
@@ -116,7 +148,9 @@ class Invite extends CallableClass
             return $this->response;
         }
 
-        $this->notify->title(trans('common.titles.success'))->success(trans('tontine.invite.messages.deleted'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('tontine.invite.messages.deleted'));
+
         return $this->cl(Invite\GuestPage::class)->page();
     }
 }

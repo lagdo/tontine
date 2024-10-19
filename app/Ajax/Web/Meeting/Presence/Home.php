@@ -2,7 +2,10 @@
 
 namespace App\Ajax\Web\Meeting\Presence;
 
-use App\Ajax\CallableClass;
+use App\Ajax\Component;
+use App\Ajax\Web\SectionContent;
+use App\Ajax\Web\SectionTitle;
+use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Model\Member as MemberModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\PresenceService;
@@ -13,8 +16,13 @@ use function trans;
  * @databag presence
  * @before checkGuestAccess ["meeting", "presences"]
  */
-class Home extends CallableClass
+class Home extends Component
 {
+    /**
+     * @var string
+     */
+    protected $overrides = SectionContent::class;
+
     /**
      * @param PresenceService $presenceService
      */
@@ -46,25 +54,42 @@ class Home extends CallableClass
     }
 
     /**
+     * @inheritDoc
+     */
+    public function before()
+    {
+        $this->cl(SectionTitle::class)->show(trans('tontine.menus.presences'));
+        $this->bag('presence')->set('session.id', 0);
+        $this->bag('presence')->set('member.id', 0);
+    }
+
+    /**
      * @before checkRoundSessions
      * @after hideMenuOnMobile
      */
-    public function home()
+    public function home(): ComponentResponse
     {
-        $this->bag('presence')->set('session.id', 0);
-        $this->bag('presence')->set('member.id', 0);
-        $exchange = $this->bag('presence')->get('exchange', false);
+        return $this->render();
+    }
 
-        $this->response->html('section-title', trans('tontine.menus.presences'));
-        $html = $this->renderView('pages.meeting.presence.home', [
-            'exchange' => $exchange,
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
+    {
+        return (string)$this->renderView('pages.meeting.presence.home', [
+            'exchange' => $this->bag('presence')->get('exchange', false),
         ]);
-        $this->response->html('content-home', $html);
+    }
 
+    /**
+     * @inheritDoc
+     */
+    public function after()
+    {
+        $exchange = $this->bag('presence')->get('exchange', false);
         $clAtLeft = !$exchange ? $this->cl(Session::class) : $this->cl(Member::class);
         $clAtLeft->render();
-
-        return $this->response;
     }
 
     public function exchange()

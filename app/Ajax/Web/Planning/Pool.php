@@ -2,7 +2,10 @@
 
 namespace App\Ajax\Web\Planning;
 
-use App\Ajax\CallableClass;
+use App\Ajax\Component;
+use App\Ajax\Web\SectionContent;
+use App\Ajax\Web\SectionTitle;
+use Jaxon\Response\ComponentResponse;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\LocaleService;
@@ -14,8 +17,13 @@ use function trans;
 /**
  * @databag pool
  */
-class Pool extends CallableClass
+class Pool extends Component
 {
+    /**
+     * @var string
+     */
+    protected $overrides = SectionContent::class;
+
     /**
      * @var LocaleService
      */
@@ -34,15 +42,35 @@ class Pool extends CallableClass
      * @before checkGuestAccess ["planning", "pools"]
      * @after hideMenuOnMobile
      */
-    public function home()
+    public function home(): ComponentResponse
     {
-        $this->response->html('section-title', trans('tontine.menus.planning'));
-        $html = $this->renderView('pages.planning.pool.home', [
+        return $this->render();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function before()
+    {
+        $this->cl(SectionTitle::class)->show(trans('tontine.menus.planning'));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
+    {
+        return (string)$this->renderView('pages.planning.pool.home', [
             'tontine' => $this->tenantService->tontine(),
         ]);
-        $this->response->html('content-home', $html);
+    }
 
-        return $this->cl(PoolPage::class)->page();
+    /**
+     * @inheritDoc
+     */
+    public function after()
+    {
+        $this->cl(PoolPage::class)->page();
     }
 
     public function showIntro()

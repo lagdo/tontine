@@ -2,8 +2,11 @@
 
 namespace App\Ajax\Web\Tontine;
 
-use App\Ajax\SelectCallable;
+use App\Ajax\SelectComponent;
 use App\Ajax\Web\Locale;
+use App\Ajax\Web\SectionContent;
+use App\Ajax\Web\SectionTitle;
+use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Tontine\MemberService;
@@ -18,8 +21,13 @@ use function trans;
 /**
  * @databag tontine
  */
-class Tontine extends SelectCallable
+class Tontine extends SelectComponent
 {
+    /**
+     * @var string
+     */
+    protected $overrides = SectionContent::class;
+
     /**
      * @di
      * @var LocaleService
@@ -52,10 +60,32 @@ class Tontine extends SelectCallable
      * @databag tontine
      * @after hideMenuOnMobile
      */
-    public function home()
+    public function home(): ComponentResponse
     {
-        $this->response->html('section-title', trans('tontine.menus.tontines'));
-        $this->response->html('content-home', $this->renderView('pages.tontine.home'));
+        return $this->render();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function before()
+    {
+        $this->cl(SectionTitle::class)->show(trans('tontine.menus.tontines'));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
+    {
+        return (string)$this->renderView('pages.tontine.home');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function after()
+    {
         if(($tontine = $this->tenantService->tontine()))
         {
             $this->selectTontine($tontine);
@@ -65,7 +95,7 @@ class Tontine extends SelectCallable
             $this->selectRound($round);
         }
 
-        return $this->cl(TontinePage::class)->page();
+        $this->cl(TontinePage::class)->page();
     }
 
     /**
@@ -102,11 +132,11 @@ class Tontine extends SelectCallable
     {
         $values = $this->validator->validateItem($formValues);
         $this->tontineService->createTontine($values);
-        $this->cl(TontinePage::class)->page(); // Back to current page
 
         $this->dialog->hide();
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('tontine.messages.created'));
+        $this->cl(TontinePage::class)->page(); // Back to current page
 
         return $this->response;
     }
@@ -149,11 +179,11 @@ class Tontine extends SelectCallable
     {
         $values = $this->validator->validateItem($formValues);
         $this->tontineService->updateTontine($tontineId, $values);
-        $this->cl(TontinePage::class)->page(); // Back to current page
 
         $this->dialog->hide();
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('tontine.messages.updated'));
+        $this->cl(TontinePage::class)->page(); // Back to current page
 
         return $this->response;
     }
@@ -161,8 +191,9 @@ class Tontine extends SelectCallable
     public function delete(int $tontineId)
     {
         $this->tontineService->deleteTontine($tontineId);
-        $this->cl(TontinePage::class)->page(); // Back to current page
+
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('tontine.messages.deleted'));
+        $this->cl(TontinePage::class)->page(); // Back to current page
     }
 }

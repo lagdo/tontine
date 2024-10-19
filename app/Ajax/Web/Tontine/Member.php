@@ -2,8 +2,11 @@
 
 namespace App\Ajax\Web\Tontine;
 
-use App\Ajax\CallableClass;
+use App\Ajax\Component;
 use App\Ajax\Web\Faker;
+use App\Ajax\Web\SectionContent;
+use App\Ajax\Web\SectionTitle;
+use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Tontine\MemberValidator;
 
@@ -20,8 +23,13 @@ use function trim;
 /**
  * @databag member
  */
-class Member extends CallableClass
+class Member extends Component
 {
+    /**
+     * @var string
+     */
+    protected $overrides = SectionContent::class;
+
     /**
      * @var MemberValidator
      */
@@ -34,15 +42,34 @@ class Member extends CallableClass
      * @before checkGuestAccess ["tontine", "members"]
      * @after hideMenuOnMobile
      */
-    public function home()
+    public function home(): ComponentResponse
     {
+        return $this->render();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function before()
+    {
+        $this->cl(SectionTitle::class)->show(trans('tontine.menus.tontine'));
         $this->bag('member')->set('search', '');
+    }
 
-        $this->response->html('section-title', trans('tontine.menus.tontine'));
-        $html = $this->renderView('pages.member.home');
-        $this->response->html('content-home', $html);
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
+    {
+        return (string)$this->renderView('pages.member.home');
+    }
 
-        return $this->cl(MemberPage::class)->page();
+    /**
+     * @inheritDoc
+     */
+    public function after()
+    {
+        $this->cl(MemberPage::class)->page();
     }
 
     public function search(string $search)

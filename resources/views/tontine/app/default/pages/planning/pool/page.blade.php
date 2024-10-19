@@ -2,9 +2,11 @@
 @php
 $poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
 $rqPool = Jaxon\rq(App\Ajax\Web\Planning\Pool::class);
+$rqPoolRound = Jaxon\rq(App\Ajax\Web\Planning\PoolRound::class);
 $rqSubscription = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Home::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
+                  <div @jxnOn(['.btn-pool-period', 'click', ''], $rqPoolRound->home($poolId))></div>
                   <div @jxnOn(['.btn-pool-edit', 'click', ''], $rqPool->edit($poolId))></div>
                   <div @jxnOn(['.btn-pool-subscriptions', 'click', ''], $rqSubscription->pool($poolId))></div>
                   <div @jxnOn(['.btn-pool-delete', 'click', ''], $rqPool->delete($poolId)

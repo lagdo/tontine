@@ -1,3 +1,4 @@
+                      <!-- Data tables -->
                       <div class="table-responsive">
                         <table class="table table-bordered responsive">
                           <thead>
@@ -20,4 +21,4 @@
                           </tbody>
                         </table>
 
-                      </div>
+                      </div> <!-- End table -->
