@@ -2,6 +2,8 @@
 
 namespace App\Ajax\Web\Report\Session;
 
+use App\Ajax\Cache;
+use App\Ajax\Component;
 use Siak\Tontine\Service\Report\MemberService;
 use Siak\Tontine\Service\Report\SessionService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -22,15 +24,18 @@ class Saving extends Component
      */
     public function html(): string
     {
-        if(!$this->member)
+        $session = Cache::get('report.session');
+        $member = Cache::get('report.member');
+
+        if(!$member)
         {
             return $this->renderView('pages.report.session.session.savings', [
-                'saving' => $this->sessionService->getSaving($this->session),
+                'saving' => $this->sessionService->getSaving($session),
                 'funds' => $this->fundService->getFundList(),
             ]);
         }
         return $this->renderView('pages.report.session.member.savings', [
-            'savings' => $this->memberService->getSavings($this->session, $this->member),
+            'savings' => $this->memberService->getSavings($session, $member),
         ]);
     }
 

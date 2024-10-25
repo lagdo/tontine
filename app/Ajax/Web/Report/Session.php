@@ -2,6 +2,7 @@
 
 namespace App\Ajax\Web\Report;
 
+use App\Ajax\Cache;
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\SectionTitle;
@@ -69,7 +70,11 @@ class Session extends Component
             ->filter(fn($session) => ($session->opened || $session->closed));
         if($sessions->count() > 0)
         {
-            $this->cl(SessionContent::class)->show($sessions->first());
+            $session = $sessions->first();
+            $this->bag('report')->set('session.id', $session->id);
+            Cache::set('report.session', $session);
+            Cache::set('report.member', null);
+            $this->cl(SessionContent::class)->render();
         }
     }
 
@@ -80,7 +85,11 @@ class Session extends Component
             return $this->response;
         }
 
-        return $this->cl(SessionContent::class)->show($session);
+        $this->bag('report')->set('session.id', $session->id);
+        Cache::set('report.session', $session);
+        Cache::set('report.member', null);
+
+        return $this->cl(SessionContent::class)->render();
     }
 
     public function showMember(int $sessionId, int $memberId)
@@ -92,6 +101,10 @@ class Session extends Component
             return $this->response;
         }
 
-        return $this->cl(SessionContent::class)->show($session, $member);
+        $this->bag('report')->set('session.id', $session->id);
+        Cache::set('report.session', $session);
+        Cache::set('report.member', $member);
+
+        return $this->cl(SessionContent::class)->render();
     }
 }

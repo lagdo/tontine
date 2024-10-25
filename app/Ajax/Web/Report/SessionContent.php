@@ -3,8 +3,6 @@
 namespace App\Ajax\Web\Report;
 
 use App\Ajax\Component;
-use Siak\Tontine\Model\Member as MemberModel;
-use Siak\Tontine\Model\Session as SessionModel;
 
 /**
  * @exclude
@@ -15,32 +13,35 @@ class SessionContent extends Component
     /**
      * @inheritDoc
      */
+    public function before(): void
+    {
+        // Render the page title.
+        $this->cl(Session\ReportTitle::class)->render();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         return (string)$this->renderView('pages.report.session.session');
     }
 
-    public function show(SessionModel $session, MemberModel $member = null)
+    public function after(): void
     {
-        $this->bag('report')->set('session.id', $session->id);
-
-        $this->cl(Session\ReportTitle::class)->init($session, $member)->render();
-
         // Initialize the page components.
-        $this->cl(Session\Bill\Session::class)->init($session, $member);
-        $this->cl(Session\Bill\Total::class)->init($session, $member);
-        $this->cl(Session\Deposit::class)->init($session, $member);
-        $this->cl(Session\Disbursement::class)->init($session, $member);
-        $this->cl(Session\Loan::class)->init($session, $member);
-        $this->cl(Session\Refund::class)->init($session, $member);
-        $this->cl(Session\Remitment::class)->init($session, $member);
-        $this->cl(Session\Saving::class)->init($session, $member);
+        $this->cl(Session\Bill\Session::class)->render();
+        $this->cl(Session\Bill\Total::class)->render();
+        $this->cl(Session\Deposit::class)->render();
+        $this->cl(Session\Disbursement::class)->render();
+        $this->cl(Session\Loan::class)->render();
+        $this->cl(Session\Refund::class)->render();
+        $this->cl(Session\Remitment::class)->render();
+        $this->cl(Session\Saving::class)->render();
         $this->cl(Session\Saving\Fund::class)->clear();
 
-        $this->render();
-
         // Render the page buttons.
-        $this->cl(Session\Action\Export::class)->setSessionId($session->id)->render();
-        $this->cl(Session\Action\Menu::class)->setSessionId($session->id)->render();
+        $this->cl(Session\Action\Export::class)->render();
+        $this->cl(Session\Action\Menu::class)->render();
     }
 }

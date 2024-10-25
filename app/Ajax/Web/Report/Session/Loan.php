@@ -2,21 +2,37 @@
 
 namespace App\Ajax\Web\Report\Session;
 
+use App\Ajax\Cache;
+use App\Ajax\Component;
+use Siak\Tontine\Service\Report\MemberService;
+use Siak\Tontine\Service\Report\SessionService;
+
 class Loan extends Component
 {
+    /**
+     * @param MemberService $memberService
+     * @param SessionService $sessionService
+     */
+    public function __construct(protected MemberService $memberService,
+        protected SessionService $sessionService)
+    {}
+
     /**
      * @inheritDoc
      */
     public function html(): string
     {
-        if(!$this->member)
+        $session = Cache::get('report.session');
+        $member = Cache::get('report.member');
+
+        if(!$member)
         {
             return $this->renderView('pages.report.session.session.loans', [
-                'loan' => $this->sessionService->getLoan($this->session),
+                'loan' => $this->sessionService->getLoan($session),
             ]);
         }
         return $this->renderView('pages.report.session.member.loans', [
-            'loans' => $this->memberService->getLoans($this->session, $this->member),
+            'loans' => $this->memberService->getLoans($session, $member),
         ]);
     }
 

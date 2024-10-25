@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Ajax\Cache;
 use App\Ajax\Web\PaginationComponent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
@@ -101,6 +102,10 @@ class SiakServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton(Cache::class, function() {
+            return new Cache();
+        });
+
         $this->app->singleton(LocaleService::class, function($app) {
             $vendorDir = base_path('vendor');
             // Read country list from the umpirsky/country-list package data.

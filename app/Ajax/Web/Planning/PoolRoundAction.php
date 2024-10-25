@@ -2,6 +2,7 @@
 
 namespace App\Ajax\Web\Planning;
 
+use App\Ajax\Cache;
 use App\Ajax\Component;
 use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Model\Pool as PoolModel;
@@ -12,23 +13,18 @@ use Siak\Tontine\Model\Pool as PoolModel;
 class PoolRoundAction extends Component
 {
     /**
-     * @var PoolModel|null
-     */
-    protected ?PoolModel $pool = null;
-
-    /**
      * @inheritDoc
      */
     public function html(): string
     {
         return (string)$this->renderView('pages.planning.pool.round.actions', [
-            'pool' => $this->pool,
+            'pool' => Cache::get('planning.pool'),
         ]);
     }
 
     public function pool(PoolModel $pool): ComponentResponse
     {
-        $this->pool = $pool;
+        Cache::set('planning.pool', $pool);
 
         return $this->render();
     }

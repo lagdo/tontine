@@ -11,34 +11,26 @@
 @endphp
               <div class="row">
                 <div class="col-md-6 col-sm-12" id="report-deposits" @jxnShow($rqDeposit)>
-                  @jxnHtml($rqDeposit)
                 </div>
                 <div class="col-md-6 col-sm-12" id="report-remitments" @jxnShow($rqRemitment)>
-                  @jxnHtml($rqRemitment)
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-6 col-sm-12" id="report-session-bills" @jxnShow($rqBillSession)>
-                  @jxnHtml($rqBillSession)
                 </div>
                 <div class="col-md-6 col-sm-12" id="report-total-bills" @jxnShow($rqBillTotal)>
-                  @jxnHtml($rqBillTotal)
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-6 col-sm-12" id="report-disbursements" @jxnShow($rqDisbursement)>
-                  @jxnHtml($rqDisbursement)
                 </div>
                 <div class="col-md-6 col-sm-12" id="report-loans" @jxnShow($rqLoan)>
-                  @jxnHtml($rqLoan)
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-6 col-sm-12" id="report-refunds" @jxnShow($rqRefund)>
-                  @jxnHtml($rqRefund)
                 </div>
                 <div class="col-md-6 col-sm-12" id="report-savings" @jxnShow($rqSaving)>
-                  @jxnHtml($rqSaving)
                 </div>
               </div>
               <div class="row">

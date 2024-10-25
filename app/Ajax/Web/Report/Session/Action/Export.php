@@ -2,35 +2,20 @@
 
 namespace App\Ajax\Web\Report\Session\Action;
 
+use App\Ajax\Cache;
 use App\Ajax\Component;
 
 class Export extends Component
 {
     /**
-     * @var int
-     */
-    private int $sessionId;
-
-    /**
-     * @exclude
-     *
-     * @param int $sessionId
-     *
-     * @return self
-     */
-    public function setSessionId(int $sessionId): self
-    {
-        $this->sessionId = $sessionId;
-        return $this;
-    }
-
-    /**
      * @inheritDoc
      */
     public function html(): string
     {
+        $session = Cache::get('report.session');
+
         return $this->renderView('pages.report.session.action.exports', [
-            'sessionId' => $this->sessionId,
+            'sessionId' => $session->id,
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Ajax\Web\Planning;
 
+use App\Ajax\Cache;
 use App\Ajax\PageComponent;
 use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Model\Pool as PoolModel;
@@ -23,11 +24,6 @@ class PoolRoundEndSession extends PageComponent
     protected array $bagOptions = ['pool.round', 'session.end.page'];
 
     /**
-     * @var PoolModel|null
-     */
-    protected ?PoolModel $pool = null;
-
-    /**
      * The constructor
      *
      * @param SessionService $sessionService
@@ -43,15 +39,17 @@ class PoolRoundEndSession extends PageComponent
     protected function getPool()
     {
         $poolId = (int)$this->bag('pool.round')->get('pool.id');
-        $this->pool = $this->poolService->getPool($poolId);
+        Cache::set('planning.pool', $this->poolService->getPool($poolId));
     }
 
     public function html(): string
     {
+        $pool = Cache::get('planning.pool');
+
         return (string)$this->renderView('pages.planning.pool.round.sessions', [
             'field' => 'end',
             'sessions' => $this->sessionService->getTontineSessions($this->page, orderAsc: false),
-            'sessionId' => $this->pool->pool_round ? $this->pool->pool_round->end_session_id : 0,
+            'sessionId' => $pool->pool_round ? $pool->pool_round->end_session_id : 0,
         ]);
     }
 
@@ -84,19 +82,20 @@ class PoolRoundEndSession extends PageComponent
      */
     public function pool(PoolModel $pool, int $pageNumber): ComponentResponse
     {
-        $this->pool = $pool;
+        Cache::set('planning.pool', $pool);
 
         return $this->page($pageNumber);
     }
 
     public function showSessionPage(): ComponentResponse
     {
-        if(!$this->pool->pool_round)
+        $pool = Cache::get('planning.pool');
+        if(!$pool || !$pool->pool_round)
         {
             return $this->response;
         }
 
-        $pageNumber = $this->getSessionPageNumber($this->pool->pool_round->start_session);
+        $pageNumber = $this->getSessionPageNumber($pool->pool_round->start_session);
 
         return $this->page($pageNumber);
     }
