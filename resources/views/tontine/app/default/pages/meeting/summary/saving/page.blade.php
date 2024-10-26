@@ -1,4 +1,5 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+                  <div class="table-responsive" id="meeting-savings-page">
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -18,4 +19,4 @@
 @endforeach
                       </tbody>
                     </table>
-                    <nav></nav>
+                  </div> <!-- End table -->

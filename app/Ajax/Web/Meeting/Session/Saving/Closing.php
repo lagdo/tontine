@@ -2,19 +2,19 @@
 
 namespace App\Ajax\Web\Meeting\Session\Saving;
 
-use App\Ajax\OpenedSessionCallable;
-use App\Ajax\Web\Report\Session\Saving;
-use Siak\Tontine\Model\Session as SessionModel;
+use App\Ajax\Cache;
+use App\Ajax\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Saving\ClosingService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\ClosingValidator;
 
-use function Jaxon\jq;
-use function Jaxon\jw;
 use function Jaxon\pm;
 use function trans;
 
-class Closing extends OpenedSessionCallable
+/**
+ * @databag report
+ */
+class Closing extends MeetingComponent
 {
     /**
      * @var ClosingValidator
@@ -24,82 +24,37 @@ class Closing extends OpenedSessionCallable
     /**
      * The constructor
      *
-     * @param ClosingService $closingService
      * @param FundService $fundService
+     * @param ClosingService $closingService
      */
-    public function __construct(protected ClosingService $closingService,
-        protected FundService $fundService)
+    public function __construct(protected FundService $fundService,
+        protected ClosingService $closingService)
     {}
 
     /**
-     * @exclude
+     * @inheritDoc
      */
-    public function show(SessionModel $session)
+    public function html(): string
     {
-        $this->session = $session;
+        $session = Cache::get('meeting.session');
 
-        return $this->home();
+        return (string)$this->renderView('pages.meeting.closing.home', [
+            'session' => $session,
+            'funds' => $this->fundService->getFundList(),
+            'closings' => $this->closingService->getClosings($session),
+        ]);
     }
 
     /**
-     * @databag report
+     * @inheritDoc
      */
-    public function home()
+    protected function after()
     {
-        $html = $this->renderView('pages.meeting.closing.home', [
-            'session' => $this->session,
-            'closings' => $this->closingService->getClosings($this->session),
-            'funds' => $this->fundService->getFundList(),
-        ]);
-        $this->response->html('meeting-closings', $html);
         $this->response->js()->makeTableResponsive('meeting-closings');
-
         // Sending an Ajax request to the Saving class needs to set
         // the session id in the report databag.
-        $this->bag('report')->set('session.id', $this->session->id);
-
-        $this->response->jq('#btn-closings-refresh')->click($this->rq()->home());
-
-        $selectFundId = pm()->select('closings-fund-id')->toInt();
-        $this->response->jq('#btn-fund-edit-round-closing')
-            ->click($this->rq()->editRoundClosing($selectFundId));
-        $this->response->jq('#btn-fund-edit-interest-closing')
-            ->click($this->rq()->editInterestClosing($selectFundId));
-        $this->response->jq('#btn-fund-show-savings')->click($this->rq()->showSavings($selectFundId));
-
-        $selectFundId = jq()->parent()->attr('data-fund-id')->toInt();
-        $this->response->jq('.btn-fund-edit-round-closing')
-            ->click($this->rq()->editRoundClosing($selectFundId));
-        $this->response->jq('.btn-fund-edit-interest-closing')
-            ->click($this->rq()->editInterestClosing($selectFundId));
-        $this->response->jq('.btn-fund-delete-round-closing')
-            ->click($this->rq()->deleteRoundClosing($selectFundId)
-                ->confirm(trans('meeting.closing.questions.delete')));
-        $this->response->jq('.btn-fund-delete-interest-closing')
-            ->click($this->rq()->deleteInterestClosing($selectFundId)
-                ->confirm(trans('meeting.closing.questions.delete')));
-
-        return $this->response;
-    }
-
-    /**
-     * @databag report
-     */
-    public function showSavings(int $fundId)
-    {
-        $fund = $this->fundService->getFund($fundId, true, true);
-        if(!$fund)
-        {
-            return $this->response;
-        }
-
-        $this->cl(Saving::class)->show($this->session, $fund);
-
-        $this->response->js()->showSmScreen('report-fund-savings', 'session-savings');
-        $this->response->jq('#btn-presence-sessions-back')
-            ->click(jw()->showSmScreen('meeting-closings', 'session-savings'));
-
-        return $this->response;
+        $session = Cache::get('meeting.session');
+        $this->bag('report')->set('session.id', $session->id);
     }
 
     public function editRoundClosing(int $fundId)
@@ -110,10 +65,11 @@ class Closing extends OpenedSessionCallable
             return $this->response;
         }
 
+        $session = Cache::get('meeting.session');
         $title = trans('meeting.closing.titles.round');
         $content = $this->renderView('pages.meeting.closing.round', [
             'fund' => $fund,
-            'closing' => $this->closingService->getRoundClosing($this->session, $fund),
+            'closing' => $this->closingService->getRoundClosing($session, $fund),
         ]);
         $buttons = [[
             'title' => trans('common.actions.close'),
@@ -140,13 +96,15 @@ class Closing extends OpenedSessionCallable
             return $this->response;
         }
 
+        $session = Cache::get('meeting.session');
         $values = $this->validator->validateItem($formValues);
-        $this->closingService->saveRoundClosing($this->session, $fund, $values['amount']);
+        $this->closingService->saveRoundClosing($session, $fund, $values['amount']);
 
         $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))->success(trans('meeting.messages.profit.saved'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('meeting.messages.profit.saved'));
 
-        return $this->home();
+        return $this->render();
     }
 
     public function deleteRoundClosing(int $fundId)
@@ -157,12 +115,14 @@ class Closing extends OpenedSessionCallable
             return $this->response;
         }
 
-        $this->closingService->deleteRoundClosing($this->session, $fund);
+        $session = Cache::get('meeting.session');
+        $this->closingService->deleteRoundClosing($session, $fund);
 
         $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))->success(trans('meeting.messages.profit.deleted'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('meeting.messages.profit.deleted'));
 
-        return $this->home();
+        return $this->render();
     }
 
     public function editInterestClosing(int $fundId)
@@ -173,10 +133,11 @@ class Closing extends OpenedSessionCallable
             return $this->response;
         }
 
+        $session = Cache::get('meeting.session');
         $title = trans('meeting.closing.titles.interest');
         $content = $this->renderView('pages.meeting.closing.interest', [
             'fund' => $fund,
-            'closing' => $this->closingService->getInterestClosing($this->session, $fund),
+            'closing' => $this->closingService->getInterestClosing($session, $fund),
         ]);
         $buttons = [[
             'title' => trans('common.actions.close'),
@@ -203,12 +164,14 @@ class Closing extends OpenedSessionCallable
             return $this->response;
         }
 
-        $this->closingService->saveInterestClosing($this->session, $fund);
+        $session = Cache::get('meeting.session');
+        $this->closingService->saveInterestClosing($session, $fund);
 
         $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))->success(trans('meeting.messages.profit.saved'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('meeting.messages.profit.saved'));
 
-        return $this->home();
+        return $this->render();
     }
 
     public function deleteInterestClosing(int $fundId)
@@ -219,11 +182,13 @@ class Closing extends OpenedSessionCallable
             return $this->response;
         }
 
-        $this->closingService->deleteInterestClosing($this->session, $fund);
+        $session = Cache::get('meeting.session');
+        $this->closingService->deleteInterestClosing($session, $fund);
 
         $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))->success(trans('meeting.messages.profit.deleted'));
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('meeting.messages.profit.deleted'));
 
-        return $this->home();
+        return $this->render();
     }
 }

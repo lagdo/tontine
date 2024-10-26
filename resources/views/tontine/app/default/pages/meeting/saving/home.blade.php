@@ -1,10 +1,16 @@
+@php
+  $selectFundId = Jaxon\pm()->select('savings-fund-id')->toInt();
+  $rqSaving = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Saving::class);
+  $rqSavingPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\SavingPage::class);
+  $rqMember = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Member::class);
+@endphp
                   <div class="row">
                     <div class="col">
                       <div class="section-title mt-0">{!! __('meeting.titles.savings') !!}</div>
                     </div>
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
-                        <button type="button" class="btn btn-primary" id="btn-savings-refresh"><i class="fa fa-sync"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqSaving->render())><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
                   </div>
@@ -16,11 +22,13 @@
                         {!! $htmlBuilder->select('fund', $funds, $fundId)->id('savings-fund-id')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" id="btn-savings-fund"><i class="fa fa-arrow-right"></i></button>
-                          <button type="button" class="btn btn-primary" id="btn-savings-edit"><i class="fa fa-edit"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqSaving->fund($selectFundId))><i class="fa fa-arrow-right"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqMember->home($selectFundId)->ifgt($selectFundId, 0))><i class="fa fa-edit"></i></button>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="table-responsive" id="meeting-savings-page">
-                  </div> <!-- End table -->
+                  <div @jxnShow($rqSavingPage)>
+                  </div>
+                  <nav @jxnPagination($rqSavingPage)>
+                  </nav>

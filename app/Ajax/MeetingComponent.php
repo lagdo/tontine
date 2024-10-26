@@ -2,8 +2,8 @@
 
 namespace App\Ajax;
 
+use App\Ajax\Cache;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\SessionService;
 
 use function trans;
@@ -12,13 +12,8 @@ use function trans;
  * @databag meeting
  * @before getSession
  */
-abstract class OpenedSessionComponent extends Component
+abstract class MeetingComponent extends Component
 {
-    /**
-     * @var SessionModel|null
-     */
-    protected ?SessionModel $session = null;
-
     /**
      * @di
      * @var SessionService
@@ -38,15 +33,16 @@ abstract class OpenedSessionComponent extends Component
      */
     protected function getSession()
     {
-        $this->session = $this->sessionService->getSession($this->getSessionId());
-        if($this->session === null)
+        $session = $this->sessionService->getSession($this->getSessionId());
+        if($session === null)
         {
             throw new MessageException(trans('meeting.errors.session.not_found'));
         }
-        if($this->target()->method() !== 'reports' && !$this->session->opened)
+        if($this->target()->method() !== 'reports' && !$session->opened)
         {
             throw new MessageException(trans('meeting.errors.session.not_opened'));
         }
+        Cache::set('meeting.session', $session);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Session;
 
+use App\Ajax\Cache;
 use App\Ajax\SessionCallable;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
@@ -26,13 +27,14 @@ class Misc extends SessionCallable
      */
     public function showBalanceAmounts()
     {
-        $amount = $this->balanceCalculator->getBalanceForLoan($this->session);
+        $session = Cache::get('meeting.session');
+        $amount = $this->balanceCalculator->getBalanceForLoan($session);
         $html = trans('meeting.loan.labels.amount_available', [
             'amount' => $this->localeService->formatMoney($amount),
         ]);
         $this->response->html('loan_amount_available', $html);
 
-        $amount = $this->balanceCalculator->getTotalBalance($this->session);
+        $amount = $this->balanceCalculator->getTotalBalance($session);
         $html = trans('meeting.disbursement.labels.amount_available', [
             'amount' => $this->localeService->formatMoney($amount),
         ]);
@@ -43,10 +45,11 @@ class Misc extends SessionCallable
 
     public function showBalanceDetails(bool $lendable)
     {
-        $balances = $this->balanceCalculator->getBalances($this->session, $lendable);
+        $session = Cache::get('meeting.session');
+        $balances = $this->balanceCalculator->getBalances($session, $lendable);
         $title = trans('meeting.titles.amounts');
         $content = $this->renderView('pages.meeting.session.balances', [
-            'session' => $this->session,
+            'session' => $session,
             'balances' => $balances,
         ]);
         $buttons = [[
@@ -61,16 +64,20 @@ class Misc extends SessionCallable
 
     public function saveAgenda(string $text)
     {
-        $this->sessionService->saveAgenda($this->session, $text);
-        $this->notify->title(trans('common.titles.success'))->success(trans('meeting.messages.agenda.updated'));
+        $session = Cache::get('meeting.session');
+        $this->sessionService->saveAgenda($session, $text);
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('meeting.messages.agenda.updated'));
 
         return $this->response;
     }
 
     public function saveReport(string $text)
     {
-        $this->sessionService->saveReport($this->session, $text);
-        $this->notify->title(trans('common.titles.success'))->success(trans('meeting.messages.report.updated'));
+        $session = Cache::get('meeting.session');
+        $this->sessionService->saveReport($session, $text);
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('meeting.messages.report.updated'));
 
         return $this->response;
     }

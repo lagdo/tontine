@@ -1,4 +1,16 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $memberId = Jaxon\jq()->parent()->attr('data-member-id')->toInt();
+  $paid = Jaxon\pm()->checked('check-fee-libre-paid');
+  $amount = Jaxon\jq('input', jq()->parent()->parent())->val()->toInt();
+  $rqMember = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\Libre\Member::class);
+@endphp
+                  <div class="table-responsive" id="meeting-fee-libre-members" @jxnTarget()>
+                    <div @jxnOn(['.btn-add-bill', 'click', ''], $rqMember->addBill($memberId, $paid))></div>
+                    <div @jxnOn(['.btn-del-bill', 'click', ''], $rqMember->delBill($memberId))></div>
+                    <div @jxnOn(['.btn-save-bill', 'click', ''], $rqMember->addBill($memberId, $paid, $amount))></div>
+                    <div @jxnOn(['.btn-edit-bill', 'click', ''], $rqMember->editBill($memberId))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -44,4 +56,4 @@
 @endforeach
                       </tbody>
                     </table>
-                    <nav></nav>
+                  </div> <!-- End table -->

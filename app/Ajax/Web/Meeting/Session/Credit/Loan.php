@@ -2,19 +2,17 @@
 
 namespace App\Ajax\Web\Meeting\Session\Credit;
 
-use App\Ajax\OpenedSessionCallable;
-use App\Ajax\Web\Meeting\Session\Misc;
-use Siak\Tontine\Model\Session as SessionModel;
+use App\Ajax\Cache;
+use App\Ajax\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 
-use function Jaxon\jq;
 use function Jaxon\pm;
 use function trans;
 
-class Loan extends OpenedSessionCallable
+class Loan extends MeetingComponent
 {
     /**
      * @var LoanValidator
@@ -32,47 +30,33 @@ class Loan extends OpenedSessionCallable
         protected FundService $fundService, protected MemberService $memberService)
     {}
 
-    /**
-     * @exclude
-     */
-    public function show(SessionModel $session)
+    public function html(): string
     {
-        $this->session = $session;
+        $session = Cache::get('meeting.session');
+        $loans = $this->loanService->getSessionLoans($session);
 
-        return $this->home();
-    }
-
-    public function home()
-    {
-        $loans = $this->loanService->getSessionLoans($this->session);
-
-        $html = $this->renderView('pages.meeting.loan.home', [
-            'session' => $this->session,
+        return (string)$this->renderView('pages.meeting.loan.home', [
+            'session' => $session,
             'loans' => $loans,
             'defaultFund' => $this->fundService->getDefaultFund(),
         ]);
-        $this->response->html('meeting-loans', $html);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function after()
+    {
         $this->response->js()->makeTableResponsive('meeting-loans');
-
         $this->response->js()->showBalanceAmountsWithDelay();
-
-        $this->response->jq('#btn-loans-refresh')->click($this->rq()->home());
-        $this->response->jq('#btn-loan-add')->click($this->rq()->addLoan());
-        $this->response->jq('#btn-loan-balances')
-            ->click($this->rq(Misc::class)->showBalanceDetails(true));
-        $loanId = jq()->parent()->attr('data-loan-id')->toInt();
-        $this->response->jq('.btn-loan-edit')->click($this->rq()->editLoan($loanId));
-        $this->response->jq('.btn-loan-delete')->click($this->rq()->deleteLoan($loanId)
-            ->confirm(trans('meeting.loan.questions.delete')));
-
-        return $this->response;
     }
 
     public function addLoan()
     {
+        $session = Cache::get('meeting.session');
         $title = trans('meeting.loan.titles.add');
         $content = $this->renderView('pages.meeting.loan.add', [
-            'amountAvailable' => $this->loanService->getAmountAvailableValue($this->session),
+            'amountAvailable' => $this->loanService->getAmountAvailableValue($session),
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getFundList(),
             'members' => $this->memberService->getMemberList(),
@@ -94,7 +78,6 @@ class Loan extends OpenedSessionCallable
 
     /**
      * @di $validator
-     * @after showBalanceAmounts
      */
     public function createLoan(array $formValues)
     {
@@ -110,16 +93,18 @@ class Loan extends OpenedSessionCallable
             return $this->response;
         }
 
-        $this->loanService->createLoan($this->session, $member, $fund, $values);
+        $session = Cache::get('meeting.session');
+        $this->loanService->createLoan($session, $member, $fund, $values);
 
         $this->dialog->hide();
 
-        return $this->home();
+        return $this->render();
     }
 
     public function editLoan(int $loanId)
     {
-        $loan = $this->loanService->getSessionLoan($this->session, $loanId);
+        $session = Cache::get('meeting.session');
+        $loan = $this->loanService->getSessionLoan($session, $loanId);
         if(!$loan)
         {
             $this->notify->warning(trans('meeting.loan.errors.not_found'));
@@ -156,11 +141,11 @@ class Loan extends OpenedSessionCallable
 
     /**
      * @di $validator
-     * @after showBalanceAmounts
      */
     public function updateLoan(int $loanId, array $formValues)
     {
-        $loan = $this->loanService->getSessionLoan($this->session, $loanId);
+        $session = Cache::get('meeting.session');
+        $loan = $this->loanService->getSessionLoan($session, $loanId);
         if(!$loan)
         {
             $this->notify->warning(trans('meeting.loan.errors.not_found'));
@@ -189,16 +174,14 @@ class Loan extends OpenedSessionCallable
 
         $this->dialog->hide();
 
-        return $this->home();
+        return $this->render();
     }
 
-    /**
-     * @after showBalanceAmounts
-     */
     public function deleteLoan(int $loanId)
     {
-        $this->loanService->deleteLoan($this->session, $loanId);
+        $session = Cache::get('meeting.session');
+        $this->loanService->deleteLoan($session, $loanId);
 
-        return $this->home();
+        return $this->render();
     }
 }

@@ -1,4 +1,13 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $memberId = Jaxon\jq()->parent()->attr('data-member-id')->toInt();
+  $amount = Jaxon\jq('input', Jaxon\jq()->parent()->parent())->val()->toInt();
+  $rqMember = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Member::class);
+@endphp
+                  <div class="table-responsive" id="meeting-saving-members" @jxnTarget()>
+                    <div @jxnOn(['.btn-save-saving', 'click', ''], $rqMember->saveSaving($memberId, $amount))></div>
+                    <div @jxnOn(['.btn-edit-saving', 'click', ''], $rqMember->editSaving($memberId))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -31,4 +40,4 @@
 @endforeach
                       </tbody>
                     </table>
-                    <nav></nav>
+                  </div> <!-- End table -->

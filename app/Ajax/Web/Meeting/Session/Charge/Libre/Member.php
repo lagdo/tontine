@@ -2,20 +2,18 @@
 
 namespace App\Ajax\Web\Meeting\Session\Charge\Libre;
 
-use App\Ajax\ChargeCallable;
-use App\Ajax\Web\Meeting\Session\Charge\LibreFee as Charge;
+use App\Ajax\Cache;
+use App\Ajax\Web\Meeting\Session\Charge\ChargeComponent;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Model\Charge as ChargeModel;
 use Siak\Tontine\Service\LocaleService;
 
 use function filter_var;
-use function Jaxon\jq;
-use function Jaxon\pm;
+use function Jaxon\jaxon;
 use function str_replace;
 use function trans;
 use function trim;
 
-class Member extends ChargeCallable
+class Member extends ChargeComponent
 {
     /**
      * @var LocaleService
@@ -23,84 +21,51 @@ class Member extends ChargeCallable
     protected LocaleService $localeService;
 
     /**
-     * @var ChargeModel|null
+     * @inheritDoc
      */
-    protected ?ChargeModel $charge;
+    public function html(): string
+    {
+        $charge = Cache::get('meeting.session.charge');
+
+        return (string)$this->renderView('pages.meeting.charge.libre.member.home', [
+            'charge' => $charge,
+            'paid' => $charge->is_fee,
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function after()
+    {
+        $this->cl(MemberPage::class)->page();
+    }
 
     /**
      * @param int $chargeId
      *
      * @return mixed
      */
-    public function home(int $chargeId)
+    public function charge(int $chargeId)
     {
         $this->bag('meeting')->set('charge.id', $chargeId);
         $this->bag('meeting')->set('fee.member.filter', null);
         $this->bag('meeting')->set('fee.member.search', '');
+        $this->bag('meeting')->set('fee.member.page', 1);
 
-        $html = $this->renderView('pages.meeting.charge.libre.member.home', [
-            'charge' => $this->charge,
-            'paid' => $this->charge->is_fee,
-        ]);
-        $this->response->html('meeting-fees-libre', $html);
-
-        $this->response->jq('#btn-fee-libre-back')->click($this->rq(Charge::class)->home());
-        $this->response->jq('#btn-fee-libre-filter')->click($this->rq()->toggleFilter());
-        $this->response->jq('#btn-fee-libre-search')
-            ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
-
-        return $this->page(1);
+        return $this->render();
     }
 
     private function showTotal()
     {
-        $settlement = $this->settlementService->getSettlementCount($this->charge, $this->session);
-        $settlementCount = $settlement->total ?? 0;
-        $settlementAmount = $settlement->amount ?? 0;
+        $session = Cache::get('meeting.session');
+        $charge = Cache::get('meeting.session.charge');
+        $settlement = $this->settlementService->getSettlementCount($charge, $session);
 
-        $html = $this->renderView('pages.meeting.charge.libre.member.total', [
-            'settlementCount' => $settlementCount,
-            'settlementAmount' => $settlementAmount,
-        ]);
-        $this->response->html('member-libre-settlements-total', $html);
-    }
+        Cache::set('meeting.session.settlement.count', $settlement->total ?? 0);
+        Cache::set('meeting.session.settlement.amount', $settlement->amount ?? 0);
 
-    /**
-     * @param int $pageNumber
-     *
-     * @return mixed
-     */
-    public function page(int $pageNumber = 0)
-    {
-        $search = trim($this->bag('meeting')->get('fee.member.search', ''));
-        $filter = $this->bag('meeting')->get('fee.member.filter', null);
-        $memberCount = $this->billService->getMemberCount($this->charge,
-            $this->session, $search, $filter);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount,
-            'meeting', 'member.page');
-        $members = $this->billService->getMembers($this->charge, $this->session,
-            $search, $filter, $pageNumber);
-        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
-
-        $this->showTotal();
-
-        $html = $this->renderView('pages.meeting.charge.libre.member.page', [
-            'session' => $this->session,
-            'charge' => $this->charge,
-            'members' => $members,
-        ]);
-        $this->response->html('meeting-fee-libre-members', $html);
-        $this->response->js()->makeTableResponsive('meeting-fee-libre-members');
-
-        $memberId = jq()->parent()->attr('data-member-id')->toInt();
-        $paid = pm()->checked('check-fee-libre-paid');
-        $amount = jq('input', jq()->parent()->parent())->val()->toInt();
-        $this->response->jq('.btn-add-bill')->click($this->rq()->addBill($memberId, $paid));
-        $this->response->jq('.btn-del-bill')->click($this->rq()->delBill($memberId));
-        $this->response->jq('.btn-save-bill')->click($this->rq()->addBill($memberId, $paid, $amount));
-        $this->response->jq('.btn-edit-bill')->click($this->rq()->editBill($memberId));
-
-        return $this->response;
+        $this->cl(MemberTotal::class)->render();
     }
 
     public function toggleFilter()
@@ -110,14 +75,14 @@ class Member extends ChargeCallable
         $filter = $filter === null ? true : ($filter === true ? false : null);
         $this->bag('meeting')->set('fee.member.filter', $filter);
 
-        return $this->page();
+        return $this->cl(MemberPage::class)->page();
     }
 
     public function search(string $search)
     {
         $this->bag('meeting')->set('fee.member.search', trim($search));
 
-        return $this->page();
+        return $this->cl(MemberPage::class)->page();
     }
 
     private function convertAmount(string $amount): float
@@ -141,10 +106,14 @@ class Member extends ChargeCallable
      */
     public function addBill(int $memberId, bool $paid, string $amount = '')
     {
-        $this->billService->createBill($this->charge, $this->session, $memberId,
-            $paid, $this->convertAmount($amount));
+        $session = Cache::get('meeting.session');
+        $charge = Cache::get('meeting.session.charge');
+        $this->billService
+            ->createBill($charge, $session, $memberId, $paid, $this->convertAmount($amount));
 
-        return $this->page();
+        $this->showTotal();
+
+        return $this->cl(MemberPage::class)->page();
     }
 
     /**
@@ -155,9 +124,13 @@ class Member extends ChargeCallable
      */
     public function delBill(int $memberId)
     {
-        $this->billService->deleteBill($this->charge, $this->session, $memberId);
+        $session = Cache::get('meeting.session');
+        $charge = Cache::get('meeting.session.charge');
+        $this->billService->deleteBill($charge, $session, $memberId);
 
-        return $this->page();
+        $this->showTotal();
+
+        return $this->cl(MemberPage::class)->page();
     }
 
     /**
@@ -169,22 +142,19 @@ class Member extends ChargeCallable
      */
     public function editBill(int $memberId)
     {
-        $bill = $this->billService->getMemberBill($this->charge, $this->session, $memberId);
+        $session = Cache::get('meeting.session');
+        $charge = Cache::get('meeting.session.charge');
+        $bill = $this->billService->getMemberBill($charge, $session, $memberId);
         if($bill === null)
         {
             return $this->response;
         }
 
         $html = $this->renderView('pages.meeting.charge.libre.member.edit', [
-            'id' => $memberId,
+            'memberId' => $memberId,
             'amount' => $this->localeService->getMoneyValue($bill->bill->amount),
         ]);
-        $fieldId = 'member-' . $memberId;
-        $this->response->html($fieldId, $html);
-
-        $memberId = jq()->parent()->attr('data-member-id')->toInt();
-        $amount = jq('input', jq()->parent()->parent())->val();
-        $this->response->jq('.btn-save-bill', "#$fieldId")->click($this->rq()->saveBill($memberId, $amount));
+        jaxon()->getResponse()->html("member-$memberId", $html);
 
         return $this->response;
     }
@@ -198,14 +168,22 @@ class Member extends ChargeCallable
      */
     public function saveBill(int $memberId, string $amount)
     {
+        $session = Cache::get('meeting.session');
+        $charge = Cache::get('meeting.session.charge');
         $amount = $this->convertAmount($amount);
         if(!$amount)
         {
-            $this->billService->deleteBill($this->charge, $this->session, $memberId);
-            return $this->page();
+            $this->billService->deleteBill($charge, $session, $memberId);
+
+            $this->showTotal();
+
+            return $this->cl(MemberPage::class)->page();
         }
 
-        $this->billService->updateBill($this->charge, $this->session, $memberId, $amount);
-        return $this->page();
+        $this->billService->updateBill($charge, $session, $memberId, $amount);
+
+        $this->showTotal();
+
+        return $this->cl(MemberPage::class)->page();
     }
 }

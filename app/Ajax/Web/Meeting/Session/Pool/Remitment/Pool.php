@@ -2,23 +2,24 @@
 
 namespace App\Ajax\Web\Meeting\Session\Pool\Remitment;
 
-use App\Ajax\OpenedSessionCallable;
-use App\Ajax\Web\Meeting\Session\Pool\Remitment;
-use Siak\Tontine\Model\Pool as PoolModel;
+use App\Ajax\Cache;
+use App\Ajax\MeetingComponent;
+use App\Ajax\Web\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
 use Siak\Tontine\Validation\Meeting\RemitmentValidator;
 
-use function Jaxon\jq;
 use function Jaxon\pm;
 use function trans;
 
 /**
  * @before getPool
  */
-class Pool extends OpenedSessionCallable
+class Pool extends MeetingComponent
 {
+    use PoolTrait;
+
     /**
      * @var BalanceCalculator
      */
@@ -28,11 +29,6 @@ class Pool extends OpenedSessionCallable
      * @var RemitmentValidator
      */
     protected RemitmentValidator $validator;
-
-    /**
-     * @var PoolModel|null
-     */
-    protected ?PoolModel $pool;
 
     /**
      * The constructor
@@ -45,19 +41,25 @@ class Pool extends OpenedSessionCallable
     {}
 
     /**
-     * @return void
+     * @inheritDoc
      */
-    protected function getPool()
+    public function html(): string
     {
-        $poolId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('pool.id');
-        $this->pool = $this->poolService->getPool($poolId);
+        $pool = Cache::get('meeting.pool');
+        $session = Cache::get('meeting.session');
 
-        if(!$this->pool || $this->session->disabled($this->pool))
-        {
-            $this->notify->title(trans('common.titles.error'))->error(trans('tontine.session.errors.disabled'));
-            $this->pool = null;
-        }
+        return (string)$this->renderView('pages.meeting.remitment.pool.home', [
+            'pool' => $pool,
+            'depositAmount' => $this->balanceCalculator->getPoolDepositAmount($pool, $session),
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function after()
+    {
+        $this->cl(PoolPage::class)->render();
     }
 
     /**
@@ -67,69 +69,41 @@ class Pool extends OpenedSessionCallable
     {
         $this->bag('meeting')->set('pool.id', $poolId);
 
-        $html = $this->renderView('pages.meeting.remitment.pool.home', [
-            'pool' => $this->pool,
-            'depositAmount' => $this->balanceCalculator->getPoolDepositAmount($this->pool, $this->session),
-        ]);
-        $this->response->html('meeting-remitments', $html);
-
-        if(!$this->pool->remit_planned)
-        {
-            $this->response->jq('#btn-add-remitment')->click($this->rq()->addRemitment(0));
-        }
-        $this->response->jq('#btn-remitments-back')->click($this->rq(Remitment::class)->home());
-
-        return $this->page();
+        return $this->render();
     }
 
-    public function page()
-    {
-        $html = $this->renderView('pages.meeting.remitment.pool.page', [
-            'pool' => $this->pool,
-            'session' => $this->session,
-            'payables' => $this->remitmentService->getPayables($this->pool, $this->session),
-        ]);
-        $this->response->html('meeting-pool-remitments', $html);
-        $this->response->js()->makeTableResponsive('meeting-pool-remitments');
-
-        $payableId = jq()->parent()->attr('data-payable-id')->toInt();
-        $this->response->jq('.btn-add-remitment')->click($this->rq()->addRemitment($payableId));
-        $this->response->jq('.btn-save-remitment')->click($this->rq()->createRemitment($payableId));
-        $this->response->jq('.btn-del-remitment')->click($this->rq()->deleteRemitment($payableId));
-
-        return $this->response;
-    }
-
-    /**
-     * @after showBalanceAmounts
-     */
     public function createRemitment(int $payableId)
     {
-        if(!$this->pool->remit_planned || $this->pool->remit_auction)
+        $pool = Cache::get('meeting.pool');
+        if(!$pool->remit_planned || $pool->remit_auction)
         {
             // Only when remitments are planned and without auctions.
             return $this->response;
         }
 
-        $this->remitmentService->savePlannedRemitment($this->pool, $this->session, $payableId);
+        $session = Cache::get('meeting.session');
+        $this->remitmentService->savePlannedRemitment($pool, $session, $payableId);
 
-        return $this->page();
+        return $this->cl(PoolPage::class)->render();
     }
 
     public function addRemitment(int $payableId)
     {
-        // if($this->pool->remit_planned && !$this->pool->remit_auction)
+        // if($pool->remit_planned && !$pool->remit_auction)
         // {
         //     // Only when remitments are not planned or with auctions.
         //     return $this->response;
         // }
 
-        $members = $this->remitmentService->getSubscriptions($this->pool, $this->session);
+        $pool = Cache::get('meeting.pool');
+        $session = Cache::get('meeting.session');
+
         $title = trans('meeting.remitment.titles.add');
-        $content = $this->renderView('pages.meeting.remitment.pool.add')
-            ->with('pool', $this->pool)
-            ->with('payableId', $payableId)
-            ->with('members', $members);
+        $content = $this->renderView('pages.meeting.remitment.pool.add', [
+            'pool' => $pool,
+            'payableId' => $payableId,
+            'members' => $this->remitmentService->getSubscriptions($pool, $session),
+        ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -146,11 +120,11 @@ class Pool extends OpenedSessionCallable
 
     /**
      * @di $validator
-     * @after showBalanceAmounts
      */
     public function saveRemitment(array $formValues)
     {
-        // if($this->pool->remit_planned && !$this->pool->remit_auction)
+        $pool = Cache::get('meeting.pool');
+        // if($pool->remit_planned && !$pool->remit_auction)
         // {
         //     // Only when remitments are not planned or with auctions.
         //     $this->dialog->hide();
@@ -158,24 +132,26 @@ class Pool extends OpenedSessionCallable
         // }
 
         // Add some data in the input values to help validation.
-        $formValues['remit_auction'] = $this->pool->remit_auction ? 1 : 0;
+        $formValues['remit_auction'] = $pool->remit_auction ? 1 : 0;
 
+        $session = Cache::get('meeting.session');
         $values = $this->validator->validateItem($formValues);
-        $this->remitmentService->saveRemitment($this->pool, $this->session,
+        $this->remitmentService->saveRemitment($pool, $session,
             $values['payable'], $values['auction']);
         $this->dialog->hide();
 
-        return $this->page();
+        return $this->cl(PoolPage::class)->render();
     }
 
     /**
      * @param int $payableId
-     * @after showBalanceAmounts
      */
     public function deleteRemitment(int $payableId)
     {
-        $this->remitmentService->deleteRemitment($this->pool, $this->session, $payableId);
+        $pool = Cache::get('meeting.pool');
+        $session = Cache::get('meeting.session');
+        $this->remitmentService->deleteRemitment($pool, $session, $payableId);
 
-        return $this->page();
+        return $this->cl(PoolPage::class)->render();
     }
 }

@@ -1,3 +1,18 @@
+@php
+  $rqSessionMenu = Jaxon\rq(App\Ajax\Web\Meeting\Session::class);
+  $rqSessionHome = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Home::class);
+
+  $rqDeposit = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Pool\Deposit::class);
+  $rqRemitment = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Pool\Remitment::class);
+  $rqSaving = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Saving\Saving::class);
+  $rqClosing = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Saving\Closing::class);
+  $rqLoan = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Credit\Loan::class);
+  $rqPartialRefund = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Credit\PartialRefund::class);
+  $rqRefund = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Credit\Refund::class);
+  $rqDisbursement = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Cash\Disbursement::class);
+  $rqFixedFee = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Charge\FixedFee::class);
+  $rqLibreFee = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Charge\LibreFee::class);
+@endphp
           <div class="section-body">
             <div class="row align-items-center">
               <div class="col-auto">
@@ -5,8 +20,8 @@
               </div>
               <div class="col">
                 <div class="btn-group float-right ml-1" role="group">
-                  <button type="button" class="btn btn-primary" id="btn-session-back"><i class="fa fa-arrow-left"></i></button>
-                  <button type="button" class="btn btn-primary" id="btn-session-refresh"><i class="fa fa-sync"></i></button>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqSessionMenu->home())><i class="fa fa-arrow-left"></i></button>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqSessionHome->summary($session->id))><i class="fa fa-sync"></i></button>
                 </div>
               </div>
             </div>
@@ -16,7 +31,8 @@
             <div class="card-body" id="content-page">
               <div class="row mb-2">
                 <div class="col">
-                  <ul class="nav nav-pills nav-fill" id="session-tabs">
+                  <ul class="nav nav-pills nav-fill" id="session-tabs" @jxnTarget()>
+                    <div @jxnOn(['a', 'click', ''], Jaxon\jq()->tab('show'))></div>
                     <li class="nav-item" role="presentation">
                       <a class="nav-link active" id="session-tab-pools" data-target="#session-pools" role="link">{!! __('meeting.actions.pools') !!}</a>
                     </li>
@@ -53,9 +69,9 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-deposits">
+                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnShow($rqDeposit) id="meeting-deposits">
                         </div>
-                        <div class="col-md-6 col-sm-12 sm-screen" id="meeting-remitments">
+                        <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqRemitment) id="meeting-remitments">
                         </div>
                       </div>
                     </div>
@@ -74,9 +90,9 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-fees-fixed">
+                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnShow($rqFixedFee) id="meeting-fees-fixed">
                         </div>
-                        <div class="col-md-6 col-sm-12 sm-screen" id="meeting-fees-libre">
+                        <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqLibreFee) id="meeting-fees-libre">
                         </div>
                       </div>
                     </div>
@@ -95,9 +111,9 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-savings">
+                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnShow($rqSaving) id="meeting-savings">
                         </div>
-                        <div class="col-md-6 col-sm-12 sm-screen" id="meeting-closings">
+                        <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqClosing) id="meeting-closings">
                         </div>
                         <div class="col-12 sm-screen" id="report-fund-savings">
                         </div>
@@ -119,19 +135,19 @@
                       </div>
                       <div class="row">
                         <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-loans-col">
-                          <div id="meeting-loans">
+                          <div @jxnShow($rqLoan) id="meeting-loans">
                           </div>
-                          <div id="meeting-partial-refunds">
+                          <div @jxnShow($rqPartialRefund) id="meeting-partial-refunds">
                           </div>
                         </div>
-                        <div class="col-md-6 col-sm-12 sm-screen" id="meeting-refunds">
+                        <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqRefund) id="meeting-refunds">
                         </div>
                       </div>
                     </div>
 
                     <div class="tab-pane fade" id="session-cash" role="tabpanel" aria-labelledby="session-tab-cash">
                       <div class="row">
-                        <div class="col-md-12" id="meeting-disbursements">
+                        <div class="col-md-12" @jxnShow($rqDisbursement) id="meeting-disbursements">
                         </div>
                       </div>
                     </div>

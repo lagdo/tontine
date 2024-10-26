@@ -1,5 +1,10 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('fundService', 'Siak\Tontine\Service\Tontine\FundService')
+@php
+  $loanId = Jaxon\jq()->parent()->attr('data-loan-id')->toInt();
+  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Misc::class);
+  $rqLoan = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\Loan::class);
+@endphp
                   <div class="row">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.loans') }}</div>
@@ -11,18 +16,22 @@
                             ->class('input-group-text')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         </div>
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" id="btn-loan-balances"><i class="fa fa-caret-right"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqSession->showBalanceDetails(true))><i class="fa fa-caret-right"></i></button>
                         </div>
                       </div>
                     </div>
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
-                        <button type="button" class="btn btn-primary" id="btn-loan-add"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-primary" id="btn-loans-refresh"><i class="fa fa-sync"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqLoan->add())><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqLoan->render())><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
                   </div>
-                  <div class="table-responsive">
+                  <div class="table-responsive" @jxnTarget()>
+                    <div @jxnOn(['.btn-loan-edit', 'click', ''], $rqLoan->editLoan($loanId))></div>
+                    <div @jxnOn(['.btn-loan-delete', 'click', ''], $rqLoan->deleteLoan($loanId)
+                      ->confirm(__('meeting.loan.questions.delete')))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

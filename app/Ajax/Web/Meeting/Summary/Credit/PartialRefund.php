@@ -2,29 +2,21 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Credit;
 
-use App\Ajax\SessionCallable;
-use Siak\Tontine\Model\Fund as FundModel; 
-use Siak\Tontine\Model\Session as SessionModel;
+use App\Ajax\Cache;
+use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Tontine\FundService;
 
-use function Jaxon\pm;
-
 /**
- * @databag partial.refund
+ * @databag refund.partial
  */
-class PartialRefund extends SessionCallable
+class PartialRefund extends Component
 {
     /**
      * @var LocaleService
      */
     protected LocaleService $localeService;
-
-    /**
-     * @var FundModel|null
-     */
-    private $fund = null;
 
     /**
      * The constructor
@@ -39,36 +31,39 @@ class PartialRefund extends SessionCallable
     /**
      * @exclude
      */
-    public function show(SessionModel $session)
+    public function html(): string
     {
-        $this->session = $session;
-
-        $html = $this->renderView('pages.meeting.summary.refund.partial.home', [
-            'session' => $this->session,
+        return (string)$this->renderView('pages.meeting.summary.refund.partial.home', [
+            'session' => Cache::get('summary.session'),
             'funds' => $this->fundService->getFundList(),
         ]);
-        $this->response->html('meeting-partial-refunds', $html);
+    }
 
-        $fundId = pm()->select('partial-refunds-fund-id')->toInt();
-        $this->response->jq('#btn-partial-refunds-fund')->click($this->rq()->fund($fundId));
-
-        return $this->fund(0);
+    /**
+     * @inheritDoc
+     */
+    protected function after()
+    {
+        $this->fund(0);
+        $this->cl(PartialRefundPage::class)->page();
     }
 
     protected function getFund()
     {
         // Try to get the selected savings fund.
         // If not found, then revert to the tontine default fund.
-        $fundId = $this->bag('partial.refund')->get('fund.id', 0);
-        if($fundId !== 0 && ($this->fund = $this->fundService->getFund($fundId, true)) === null)
+        $fundId = $this->bag('refund.partial')->get('fund.id', 0);
+        if($fundId !== 0 && ($fund = $this->fundService->getFund($fundId, true)) === null)
         {
             $fundId = 0;
         }
         if($fundId === 0)
         {
-            $this->fund = $this->fundService->getDefaultFund();
-            $this->bag('partial.refund')->set('fund.id', $this->fund->id);
+            $fund = $this->fundService->getDefaultFund();
+            $this->bag('refund.partial')->set('fund.id', $fund->id);
         }
+
+        Cache::set('summary.refund.partial.fund', $fund);
     }
 
     /**
@@ -78,34 +73,9 @@ class PartialRefund extends SessionCallable
      */
     public function fund(int $fundId)
     {
-        $this->bag('partial.refund')->set('fund.id', $fundId);
+        $this->bag('refund.partial')->set('fund.id', $fundId);
         $this->getFund();
 
-        return $this->page(0);
-    }
-
-    /**
-     * @before getFund
-     *
-     * @param int $pageNumber
-     *
-     * @return mixed
-     */
-    public function page(int $pageNumber = 0)
-    {
-        $refundCount = $this->refundService->getPartialRefundCount($this->session, $this->fund);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $refundCount,
-            'partial.refund', 'principal.page');
-        $refunds = $this->refundService->getPartialRefunds($this->session, $this->fund, $pageNumber);
-        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $refundCount);
-
-        $html = $this->renderView('pages.meeting.summary.refund.partial.page', [
-            'session' => $this->session,
-            'refunds' => $refunds,
-        ]);
-        $this->response->html('meeting-partial-refunds-page', $html);
-        $this->response->js()->makeTableResponsive('meeting-partial-refunds-page');
-
-        return $this->response;
+        $this->cl(PartialRefundPage::class)->page();
     }
 }

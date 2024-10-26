@@ -2,13 +2,11 @@
 
 namespace App\Ajax\Web\Meeting\Session\Pool;
 
-use App\Ajax\OpenedSessionCallable;
-use Siak\Tontine\Model\Session as SessionModel;
+use App\Ajax\Cache;
+use App\Ajax\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 
-use function Jaxon\jq;
-
-class Deposit extends OpenedSessionCallable
+class Deposit extends MeetingComponent
 {
     /**
      * The constructor
@@ -19,29 +17,23 @@ class Deposit extends OpenedSessionCallable
     {}
 
     /**
-     * @exclude
+     * @inheritDoc
      */
-    public function show(SessionModel $session)
+    public function html(): string
     {
-        $this->session = $session;
+        $session = Cache::get('meeting.session');
 
-        return $this->home();
+        return (string)$this->renderView('pages.meeting.deposit.home', [
+            'session' => $session,
+            'pools' => $this->poolService->getPoolsWithReceivables($session),
+        ]);
     }
 
-    public function home()
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        $html = $this->renderView('pages.meeting.deposit.home', [
-            'session' => $this->session,
-            'pools' => $this->poolService->getPoolsWithReceivables($this->session),
-        ]);
-        $this->response->html('meeting-deposits', $html);
         $this->response->js()->makeTableResponsive('meeting-deposits');
-
-        $this->response->jq('#btn-deposits-refresh')->click($this->rq()->home());
-        $poolId = jq()->parent()->attr('data-pool-id')->toInt();
-        $this->response->jq('.btn-pool-deposits')
-            ->click($this->rq(Deposit\Pool::class)->home($poolId));
-
-        return $this->response;
     }
 }

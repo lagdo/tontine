@@ -1,4 +1,13 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $billId = Jaxon\jq()->parent()->attr('data-bill-id')->toInt();
+  $rqSettlement = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\Libre\Settlement::class);
+@endphp
+                  <div class="table-responsive" id="meeting-fee-libre-bills" @jxnTarget()>
+                    <div @jxnOn(['.btn-add-settlement', 'click', ''], $rqSettlement->addSettlement($billId))></div>
+                    <div @jxnOn(['.btn-del-settlement', 'click', ''], $rqSettlement->delSettlement($billId))></div>
+                    <div @jxnOn(['.btn-edit-notes', 'click', ''], $rqSettlement->editNotes($billId))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -20,4 +29,4 @@
 @endforeach
                       </tbody>
                     </table>
-                    <nav></nav>
+                  </div> <!-- End table -->

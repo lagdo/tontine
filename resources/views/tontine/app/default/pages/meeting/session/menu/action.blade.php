@@ -1,5 +1,15 @@
-@if ($session->opened)
-                <div class="btn-group float-right ml-1" role="group">
+@php
+  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session::class);
+  $rqSessionMenu = Jaxon\rq(App\Ajax\Web\Meeting\Session\Menu::class);
+@endphp
+                <div class="btn-group float-right ml-1" role="group"  @jxnTarget()>
+                  <div @jxnOn(['.btn-session-pools', 'click', ''], $rqSessionMenu->pools())></div>
+                  <div @jxnOn(['.btn-session-charges', 'click', ''], $rqSessionMenu->charges())></div>
+                  <div @jxnOn(['.btn-session-savings', 'click', ''], $rqSessionMenu->savings())></div>
+                  <div @jxnOn(['.btn-session-credits', 'click', ''], $rqSessionMenu->credits())></div>
+                  <div @jxnOn(['.btn-session-cash', 'click', ''], $rqSessionMenu->cash())></div>
+                  <div @jxnOn(['.btn-session-reports', 'click', ''], $rqSessionMenu->reports())></div>
+
 @php
   $menus = [[
     'class' => 'btn-session-pools',
@@ -25,11 +35,10 @@
   'btnSize' => '',
   'dataIdKey' => 'data-session-id',
   'dataIdValue' => 0,
-  'menus' => array_filter($menus, fn($item) => $item['class'] !== "btn-session-$currentSessionPage"),
+  'menus' => array_filter($menus, fn($item) => $item['class'] !== "btn-session-$section"),
 ])
                 </div>
-@endif
                 <div class="btn-group float-right ml-1" role="group">
-                  <button type="button" class="btn btn-primary" id="btn-session-back"><i class="fa fa-arrow-left"></i></button>
-                  <button type="button" class="btn btn-primary" id="btn-session-refresh"><i class="fa fa-sync"></i></button>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqSession->home())><i class="fa fa-arrow-left"></i></button>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqSessionMenu->$section())><i class="fa fa-sync"></i></button>
                 </div>

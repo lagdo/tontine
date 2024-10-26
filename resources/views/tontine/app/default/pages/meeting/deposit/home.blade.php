@@ -1,15 +1,22 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
+  $rqDeposit = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Deposit::class);
+  $rqPoolDeposit = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Deposit\Pool::class);
+@endphp
                   <div class="row">
                     <div class="col-auto">
                       <div class="section-title mt-0">{!! __('meeting.titles.deposits') !!}</div>
                     </div>
                     <div class="col">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
-                        <button type="button" class="btn btn-primary" id="btn-deposits-refresh"><i class="fa fa-sync"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqDeposit->render())><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
                   </div>
-                  <div class="table-responsive">
+                  <div class="table-responsive" id="meeting-deposits" @jxnTarget()>
+                    <div @jxnOn(['.btn-pool-deposits', 'click', ''], $rqPoolDeposit->pool($poolId))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

@@ -2,13 +2,11 @@
 
 namespace App\Ajax\Web\Meeting\Session\Pool;
 
-use App\Ajax\OpenedSessionCallable;
-use Siak\Tontine\Model\Session as SessionModel;
+use App\Ajax\Cache;
+use App\Ajax\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 
-use function Jaxon\jq;
-
-class Remitment extends OpenedSessionCallable
+class Remitment extends MeetingComponent
 {
     /**
      * The constructor
@@ -19,35 +17,24 @@ class Remitment extends OpenedSessionCallable
     {}
 
     /**
-     * @exclude
+     * @inheritDoc
      */
-    public function show(SessionModel $session)
+    public function html(): string
     {
-        $this->session = $session;
+        $session = Cache::get('meeting.session');
 
-        return $this->home();
+        return (string)$this->renderView('pages.meeting.remitment.home', [
+            'session' => $session,
+            'pools' => $this->poolService->getPoolsWithPayables($session),
+            'hasAuctions' => $this->poolService->hasPoolWithAuction(),
+        ]);
     }
 
-    public function home()
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        $hasAuctions = $this->poolService->hasPoolWithAuction();
-        $html = $this->renderView('pages.meeting.remitment.home', [
-            'session' => $this->session,
-            'pools' => $this->poolService->getPoolsWithPayables($this->session),
-            'hasAuctions' => $hasAuctions,
-        ]);
-        $this->response->html('meeting-remitments', $html);
         $this->response->js()->makeTableResponsive('meeting-remitments');
-
-        if($hasAuctions)
-        {
-            $this->response->jq('#btn-remitment-auctions')->click($this->rq(Auction::class)->home());
-        }
-        $this->response->jq('#btn-remitments-refresh')->click($this->rq()->home());
-        $poolId = jq()->parent()->attr('data-pool-id')->toInt();
-        $this->response->jq('.btn-pool-remitments')
-            ->click($this->rq(Remitment\Pool::class)->home($poolId));
-
-        return $this->response;
     }
 }

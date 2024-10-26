@@ -2,15 +2,15 @@
 
 namespace App\Ajax\Web\Meeting\Session\Pool\Deposit;
 
-use App\Ajax\OpenedSessionCallable;
-use App\Ajax\Web\Meeting\Session\Pool\Deposit;
-use Siak\Tontine\Model\Pool as PoolModel;
+use App\Ajax\Cache;
+use App\Ajax\MeetingComponent;
+use App\Ajax\Web\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 
-use function Jaxon\jq;
+use function Jaxon\jaxon;
 use function filter_var;
 use function str_replace;
 use function trans;
@@ -19,17 +19,14 @@ use function trim;
 /**
  * @before getPool
  */
-class Pool extends OpenedSessionCallable
+class Pool extends MeetingComponent
 {
+    use PoolTrait;
+
     /**
      * @var LocaleService
      */
     protected LocaleService $localeService;
-
-    /**
-     * @var PoolModel|null
-     */
-    protected ?PoolModel $pool;
 
     /**
      * The constructor
@@ -42,36 +39,22 @@ class Pool extends OpenedSessionCallable
         protected PoolService $poolService, protected DepositService $depositService)
     {}
 
-    protected function getPool()
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
     {
-        $poolId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('pool.id');
-        $this->pool = $this->poolService->getPool($poolId);
-
-        if(!$this->session || !$this->pool || $this->session->disabled($this->pool))
-        {
-            $this->notify->title(trans('common.titles.error'))->error(trans('tontine.session.errors.disabled'));
-            $this->pool = null;
-        }
+        return (string)$this->renderView('pages.meeting.deposit.pool.home', [
+            'pool' => Cache::get('meeting.pool'),
+        ]);
     }
 
-    private function showTotal()
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        $depositCount = $this->depositService->countDeposits($this->pool, $this->session);
-        $html = $this->renderView('pages.meeting.deposit.pool.total', [
-            'depositCount' => $depositCount,
-            'depositAmount' => $this->balanceCalculator
-                ->getPoolDepositAmount($this->pool, $this->session),
-        ]);
-        $this->response->html('meeting-deposits-total', $html);
-
-        $html = $this->renderView('pages.meeting.deposit.pool.action', [
-            'session' => $this->session,
-            'depositCount' => $depositCount,
-            'receivableCount' => $this->depositService
-                ->getReceivableCount($this->pool, $this->session),
-        ]);
-        $this->response->html('meeting-deposits-action', $html);
+        $this->cl(PoolPage::class)->page();;
     }
 
     /**
@@ -82,49 +65,9 @@ class Pool extends OpenedSessionCallable
     public function home(int $poolId)
     {
         $this->bag('meeting')->set('pool.id', $poolId);
+        $this->bag('meeting')->set('deposit.page', 1);
 
-        $html = $this->renderView('pages.meeting.deposit.pool.home', [
-            'pool' => $this->pool,
-        ]);
-        $this->response->html('meeting-deposits', $html);
-
-        $this->response->jq('#btn-deposits-back')->click($this->rq(Deposit::class)->home());
-
-        return $this->page(1);
-    }
-
-    /**
-     * @param int $pageNumber
-     *
-     * @return mixed
-     */
-    public function page(int $pageNumber = 0)
-    {
-        $receivableCount = $this->depositService->getReceivableCount($this->pool, $this->session);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $receivableCount, 'meeting', 'deposit.page');
-        $receivables = $this->depositService->getReceivables($this->pool, $this->session, $pageNumber);
-        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $receivableCount);
-
-        $this->showTotal();
-
-        $html = $this->renderView('pages.meeting.deposit.pool.page', [
-            'pool' => $this->pool,
-            'session' => $this->session,
-            'receivables' => $receivables,
-        ]);
-        $this->response->html('meeting-pool-deposits', $html);
-        $this->response->js()->makeTableResponsive('meeting-pool-deposits');
-
-        $this->response->jq('.btn-add-all-deposits')->click($this->rq()->addAllDeposits());
-        $this->response->jq('.btn-del-all-deposits')->click($this->rq()->delAllDeposits());
-        $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
-        $amount = jq('input', jq()->parent()->parent())->val()->toInt();
-        $this->response->jq('.btn-add-deposit')->click($this->rq()->addDeposit($receivableId));
-        $this->response->jq('.btn-del-deposit')->click($this->rq()->delDeposit($receivableId));
-        $this->response->jq('.btn-save-deposit')->click($this->rq()->saveAmount($receivableId, $amount));
-        $this->response->jq('.btn-edit-deposit')->click($this->rq()->editAmount($receivableId));
-
-        return $this->response;
+        return $this->render();
     }
 
     /**
@@ -134,9 +77,11 @@ class Pool extends OpenedSessionCallable
      */
     public function addDeposit(int $receivableId)
     {
-        $this->depositService->createDeposit($this->pool, $this->session, $receivableId);
+        $pool = Cache::get('meeting.pool');
+        $session = Cache::get('meeting.session');
+        $this->depositService->createDeposit($pool, $session, $receivableId);
 
-        return $this->page();
+        return $this->cl(PoolPage::class)->page();
     }
 
     /**
@@ -147,23 +92,20 @@ class Pool extends OpenedSessionCallable
      */
     public function editAmount(int $receivableId)
     {
-        $receivable = $this->depositService->getReceivable($this->pool, $this->session, $receivableId);
+        $pool = Cache::get('meeting.pool');
+        $session = Cache::get('meeting.session');
+        $receivable = $this->depositService->getReceivable($pool, $session, $receivableId);
         if(!$receivable || !$receivable->deposit)
         {
-            return $this->page();
+            return $this->cl(PoolPage::class)->page();
         }
 
         $html = $this->renderView('pages.meeting.deposit.libre.edit', [
-            'id' => $receivable->id,
+            'receivableId' => $receivable->id,
             'amount' => !$receivable->deposit ? '' :
                 $this->localeService->getMoneyValue($receivable->deposit->amount),
         ]);
-        $fieldId = 'receivable-' . $receivable->id;
-        $this->response->html($fieldId, $html);
-
-        $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
-        $amount = jq('input', jq()->parent()->parent())->val();
-        $this->response->jq('.btn-save-deposit', "#$fieldId")->click($this->rq()->saveAmount($receivableId, $amount));
+        jaxon()->getResponse()->html("receivable-{$receivable->id}", $html);
 
         return $this->response;
     }
@@ -180,16 +122,19 @@ class Pool extends OpenedSessionCallable
         $amount = str_replace(',', '.', trim($amount));
         if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
         {
-            $this->notify->title(trans('common.titles.error'))->error(trans('meeting.errors.amount.invalid', ['amount' => $amount]));
+            $this->notify->title(trans('common.titles.error'))
+                ->error(trans('meeting.errors.amount.invalid', ['amount' => $amount]));
             return $this->response;
         }
         $amount = $amount === '' ? 0 : $this->localeService->convertMoneyToInt((float)$amount);
 
+        $pool = Cache::get('meeting.pool');
+        $session = Cache::get('meeting.session');
         $amount > 0 ?
-            $this->depositService->saveDepositAmount($this->pool, $this->session, $receivableId, $amount):
-            $this->depositService->deleteDeposit($this->pool, $this->session, $receivableId);
+            $this->depositService->saveDepositAmount($pool, $session, $receivableId, $amount):
+            $this->depositService->deleteDeposit($pool, $session, $receivableId);
 
-        return $this->page();
+        return $this->cl(PoolPage::class)->page();
     }
 
     /**
@@ -199,9 +144,11 @@ class Pool extends OpenedSessionCallable
      */
     public function delDeposit(int $receivableId)
     {
-        $this->depositService->deleteDeposit($this->pool, $this->session, $receivableId);
+        $pool = Cache::get('meeting.pool');
+        $session = Cache::get('meeting.session');
+        $this->depositService->deleteDeposit($pool, $session, $receivableId);
 
-        return $this->page();
+        return $this->cl(PoolPage::class)->page();
     }
 
     /**
@@ -209,14 +156,16 @@ class Pool extends OpenedSessionCallable
      */
     public function addAllDeposits()
     {
-        if(!$this->pool->deposit_fixed)
+        $pool = Cache::get('meeting.pool');
+        if(!$pool->deposit_fixed)
         {
             return $this->response;
         }
 
-        $this->depositService->createAllDeposits($this->pool, $this->session);
+        $session = Cache::get('meeting.session');
+        $this->depositService->createAllDeposits($pool, $session);
 
-        return $this->page();
+        return $this->cl(PoolPage::class)->page();
     }
 
     /**
@@ -224,13 +173,15 @@ class Pool extends OpenedSessionCallable
      */
     public function delAllDeposits()
     {
-        if(!$this->pool->deposit_fixed)
+        $pool = Cache::get('meeting.pool');
+        if(!$pool->deposit_fixed)
         {
             return $this->response;
         }
 
-        $this->depositService->deleteAllDeposits($this->pool, $this->session);
+        $session = Cache::get('meeting.session');
+        $this->depositService->deleteAllDeposits($pool, $session);
 
-        return $this->page();
+        return $this->cl(PoolPage::class)->page();
     }
 }

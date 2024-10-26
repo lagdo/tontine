@@ -2,10 +2,10 @@
 
 namespace App\Ajax\Web\Meeting\Summary;
 
+use App\Ajax\Cache;
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
 use Jaxon\Response\ComponentResponse;
-use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\SessionService;
 
 use function trans;
@@ -22,11 +22,6 @@ class Home extends Component
     protected $overrides = SectionContent::class;
 
     /**
-     * @var SessionModel
-     */
-    public SessionModel $session;
-
-    /**
      * @param SessionService $sessionService
      */
     public function __construct(protected SessionService $sessionService)
@@ -34,25 +29,22 @@ class Home extends Component
 
     public function home(int $sessionId): ComponentResponse
     {
-        if(!($this->session = $this->sessionService->getSession($sessionId)))
+        $this->bag('meeting')->set('session.id', $sessionId);
+        // Sending an Ajax request to the Saving class needs to set
+        // the session id in the report databag.
+        $this->bag('report')->set('session.id', $sessionId);
+
+        $session = $this->sessionService->getSession($sessionId);
+        if(!$session)
         {
             $this->notify->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.not_opened'));
             return $this->response;
         }
 
-        return $this->render();
-    }
+        Cache::set('summary.session', $session);
 
-    /**
-     * @inheritDoc
-     */
-    public function before()
-    {
-        $this->bag('meeting')->set('session.id', $this->session->id);
-        // Sending an Ajax request to the Saving class needs to set
-        // the session id in the report databag.
-        $this->bag('report')->set('session.id', $this->session->id);
+        return $this->render();
     }
 
     /**
@@ -61,7 +53,7 @@ class Home extends Component
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.summary.home', [
-            'session' => $this->session,
+            'session' => Cache::get('summary.session'),
         ]);
     }
 

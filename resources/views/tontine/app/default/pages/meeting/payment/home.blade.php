@@ -1,6 +1,7 @@
 @php
   // $rqPayment = Jaxon\rq(App\Ajax\Web\Meeting\Payment::class);
   $rqPaymentPage = Jaxon\rq(App\Ajax\Web\Meeting\PaymentPage::class);
+  $rqPayable = Jaxon\rq(App\Ajax\Web\Meeting\Payable::class);
 @endphp
           <div class="row" id="payment-sm-screens">
             <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="payment-members-home">
@@ -34,6 +35,6 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-sm-12 sm-screen" id="payment-payables-home">
+            <div class="col-md-6 col-sm-12 sm-screen" id="payment-payables-home" @jxnShow($rqPayable)>
             </div>
           </div>

@@ -1,11 +1,17 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $closingFundId = Jaxon\pm()->select('closings-fund-id')->toInt();
+  $selectFundId = Jaxon\jq()->parent()->attr('data-fund-id')->toInt();
+  $rqClosing = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Closing::class);
+  $rqSaving = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Saving::class);
+@endphp
                   <div class="row">
                     <div class="col">
                       <div class="section-title mt-0">{!! __('meeting.titles.closings') !!}</div>
                     </div>
                     <div class="col-auto">
                       <div class="btn-group float-right mb-2" role="group">
-                        <button type="button" class="btn btn-primary" id="btn-closings-refresh"><i class="fa fa-sync"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqClosing->render())><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
                   </div>
@@ -18,14 +24,21 @@
                         {!! $htmlBuilder->select('fund_id', $funds, 0)->id('closings-fund-id')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" id="btn-fund-edit-round-closing"><i class="fa fa-circle-notch"></i></button>
-                          <button type="button" class="btn btn-primary" id="btn-fund-edit-interest-closing"><i class="far fa-stop-circle"></i></button>
-                          <button type="button" class="btn btn-primary" id="btn-fund-show-savings"><i class="fa fa-percentage"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqClosing->editRoundClosing($closingFundId))><i class="fa fa-circle-notch"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqClosing->editInterestClosing($closingFundId))><i class="far fa-stop-circle"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqSaving->fund($closingFundId))><i class="fa fa-percentage"></i></button>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="table-responsive">
+                  <div class="table-responsive" @jxnTarget()>
+                    <div @jxnOn(['.btn-fund-edit-round-closing', 'click', ''], $rqClosing->editRoundClosing($selectFundId))></div>
+                    <div @jxnOn(['.btn-fund-edit-interest-closing', 'click', ''], $rqClosing->editInterestClosing($selectFundId))></div>
+                    <div @jxnOn(['.btn-fund-delete-round-closing', 'click', ''], $rqClosing->deleteRoundClosing($selectFundId)
+                      ->confirm(trans('meeting.closing.questions.delete')))></div>
+                    <div @jxnOn(['.btn-fund-delete-interest-closing', 'click', ''], $rqClosing->deleteInterestClosing($selectFundId)
+                      ->confirm(trans('meeting.closing.questions.delete')))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

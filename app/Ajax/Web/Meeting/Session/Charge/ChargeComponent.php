@@ -1,23 +1,21 @@
 <?php
 
-namespace App\Ajax;
+namespace App\Ajax\Web\Meeting\Session\Charge;
 
+use App\Ajax\Cache;
+use App\Ajax\MeetingComponent;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Model\Charge as ChargeModel;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 
+use function trans;
+
 /**
  * @before getCharge
  */
-class ChargeCallable extends SessionCallable
+abstract class ChargeComponent extends MeetingComponent
 {
-    /**
-     * @var ChargeModel|null
-     */
-    protected ?ChargeModel $charge;
-
     /**
      * @di
      * @var ChargeService
@@ -40,23 +38,25 @@ class ChargeCallable extends SessionCallable
      * @return void
      */
 
-     protected function getCharge()
-     {
-         $chargeId = $this->target()->method() === 'home' ?
-             $this->target()->args()[0] : $this->bag('meeting')->get('charge.id');
-         $this->charge = $this->chargeService->getCharge($chargeId);
-     }
+    protected function getCharge()
+    {
+        $chargeId = $this->target()->method() === 'charge' ?
+            $this->target()->args()[0] : $this->bag('meeting')->get('charge.id');
+        Cache::set('meeting.session.charge', $this->chargeService->getCharge($chargeId));
+    }
   
     /**
      * @return void
      */
     protected function checkChargeEdit()
     {
-        if(!$this->session || $this->session->closed)
+        $session = Cache::get('meeting.session');
+        if(!$session || $session->closed)
         {
             throw new MessageException(trans('meeting.warnings.session.closed'), false);
         }
-        if(!$this->charge || !$this->charge->active)
+        $charge = Cache::get('meeting.session.charge');
+        if(!$charge || !$charge->active)
         {
             throw new MessageException(trans('meeting.warnings.charge.disabled'), false);
         }

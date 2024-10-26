@@ -2,44 +2,44 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Credit;
 
-use App\Ajax\SessionCallable;
-use Siak\Tontine\Model\Session as SessionModel;
+use App\Ajax\Cache;
+use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Service\Tontine\FundService;
-use Siak\Tontine\Service\Tontine\MemberService;
 
 /**
  * @exclude
  */
-class Loan extends SessionCallable
+class Loan extends Component
 {
     /**
      * The constructor
      *
      * @param LoanService $loanService
      * @param FundService $fundService
-     * @param MemberService $memberService
      */
     public function __construct(protected LoanService $loanService,
-        protected FundService $fundService, protected MemberService $memberService)
+        protected FundService $fundService)
     {}
 
-    public function show(SessionModel $session)
+    public function html(): string
     {
-        $this->session = $session;
+        $session = Cache::get('summary.session');
+        $loans = $this->loanService->getSessionLoans($session);
 
-        $loans = $this->loanService->getSessionLoans($this->session);
-
-        $html = $this->renderView('pages.meeting.summary.loan.home', [
-            'session' => $this->session,
+        return (string)$this->renderView('pages.meeting.summary.loan.home', [
+            'session' => $session,
             'loans' => $loans,
             'defaultFund' => $this->fundService->getDefaultFund(),
         ]);
-        $this->response->html('meeting-loans', $html);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function after()
+    {
         $this->response->js()->makeTableResponsive('meeting-loans');
-
         $this->response->js()->showBalanceAmountsWithDelay();
-
-        return $this->response;
     }
 }

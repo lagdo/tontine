@@ -2,93 +2,57 @@
 
 namespace App\Ajax\Web\Meeting\Session\Charge\Libre;
 
-use App\Ajax\ChargeCallable;
-use App\Ajax\Web\Meeting\Session\Charge\LibreFee as Charge;
+use App\Ajax\Cache;
+use App\Ajax\Web\Meeting\Session\Charge\ChargeComponent;
+use App\Ajax\Web\Meeting\Session\Charge\Settlement\Total;
 
-use function Jaxon\jq;
-use function trim;
-
-class Settlement extends ChargeCallable
+class Settlement extends ChargeComponent
 {
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
+    {
+        return (string)$this->renderView('pages.meeting.charge.libre.settlement.home', [
+            'charge' => Cache::get('meeting.session.charge'),
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function after()
+    {
+        $this->cl(SettlementPage::class)->page();
+    }
+
     /**
      * @param int $chargeId
      *
      * @return mixed
      */
-    public function home(int $chargeId)
+    public function charge(int $chargeId)
     {
         $this->bag('meeting')->set('charge.id', $chargeId);
         $this->bag('meeting')->set('settlement.libre.search', '');
         $this->bag('meeting')->set('settlement.libre.filter', null);
+        $this->bag('meeting')->set('settlement.libre.page', 1);
 
-        $html = $this->renderView('pages.meeting.settlement.home', [
-            'type' => 'libre',
-            'charge' => $this->charge,
-        ]);
-        $this->response->html('meeting-fees-libre', $html);
-        $this->response->jq('#btn-fee-libre-settlements-back')->click($this->rq(Charge::class)->home());
-        $this->response->jq('#btn-fee-libre-settlements-filter')->click($this->rq()->toggleFilter());
-
-        return $this->page(1);
+        return $this->render();
     }
 
     private function showTotal()
     {
-        $settlement = $this->settlementService->getSettlementCount($this->charge, $this->session);
-        $settlementCount = $settlement->total ?? 0;
-        $settlementAmount = $settlement->amount ?? 0;
+        $session = Cache::get('meeting.session');
+        $charge = Cache::get('meeting.session.charge');
+        $settlement = $this->settlementService->getSettlementCount($charge, $session);
 
-        $billCount = $this->billService->getBillCount($this->charge, $this->session);
-        $html = $this->renderView('pages.meeting.settlement.total', [
-            'billCount' => $billCount,
-            'settlementCount' => $settlementCount,
-            'settlementAmount' => $settlementAmount,
-        ]);
-        $this->response->html('meeting-settlements-total', $html);
+        Cache::set('meeting.session.settlement.count', $settlement->total ?? 0);
+        Cache::set('meeting.session.settlement.amount', $settlement->amount ?? 0);
+        Cache::set('meeting.session.bill.count',
+            $this->billService->getBillCount($charge, $session));
 
-        $html = $this->renderView('pages.meeting.settlement.action', [
-            'session' => $this->session,
-            'charge' => $this->charge,
-            'billCount' => $billCount,
-            'settlementCount' => $settlementCount,
-        ]);
-        $this->response->html('meeting-settlements-action', $html);
-    }
-
-    /**
-     * @param int $pageNumber
-     *
-     * @return mixed
-     */
-    public function page(int $pageNumber = 0)
-    {
-        $search = trim($this->bag('meeting')->get('settlement.libre.search', ''));
-        $onlyUnpaid = $this->bag('meeting')->get('settlement.libre.filter', null);
-        $billCount = $this->billService->getBillCount($this->charge,
-            $this->session, $search, $onlyUnpaid);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber,
-            $billCount, 'meeting', 'settlement.page');
-        $bills = $this->billService->getBills($this->charge, $this->session,
-            $search, $onlyUnpaid, $pageNumber);
-        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $billCount);
-
-        $html = $this->renderView('pages.meeting.settlement.page', [
-            'session' => $this->session,
-            'charge' => $this->charge,
-            'bills' => $bills,
-        ]);
-        $this->response->html('meeting-fee-libre-bills', $html);
-        $this->response->js()->makeTableResponsive('meeting-fee-libre-bills');
-
-        $billId = jq()->parent()->attr('data-bill-id')->toInt();
-        $this->response->jq('.btn-add-settlement', '#meeting-fee-libre-bills')
-            ->click($this->rq()->addSettlement($billId));
-        $this->response->jq('.btn-del-settlement', '#meeting-fee-libre-bills')
-            ->click($this->rq()->delSettlement($billId));
-        $this->response->jq('.btn-edit-notes', '#meeting-fee-libre-bills')
-            ->click($this->rq()->editNotes($billId));
-
-        return $this->response;
+        $this->cl(Total::class)->item('libre')->render();
     }
 
     public function toggleFilter()
@@ -98,34 +62,40 @@ class Settlement extends ChargeCallable
         $onlyUnpaid = $onlyUnpaid === null ? true : ($onlyUnpaid === true ? false : null);
         $this->bag('meeting')->set('settlement.libre.filter', $onlyUnpaid);
 
-        return $this->page();
+        return $this->cl(SettlementPage::class)->page();
     }
 
     /**
      * @before checkChargeEdit
-     * @after showBalanceAmounts
      * @param int $billId
      *
      * @return mixed
      */
     public function addSettlement(int $billId)
     {
-        $this->settlementService->createSettlement($this->charge, $this->session, $billId);
+        $session = Cache::get('meeting.session');
+        $charge = Cache::get('meeting.session.charge');
+        $this->settlementService->createSettlement($charge, $session, $billId);
 
-        return $this->page();
+        $this->showTotal();
+
+        return $this->cl(SettlementPage::class)->page();
     }
 
     /**
      * @before checkChargeEdit
-     * @after showBalanceAmounts
      * @param int $billId
      *
      * @return mixed
      */
     public function delSettlement(int $billId)
     {
-        $this->settlementService->deleteSettlement($this->charge, $this->session, $billId);
+        $session = Cache::get('meeting.session');
+        $charge = Cache::get('meeting.session.charge');
+        $this->settlementService->deleteSettlement($charge, $session, $billId);
 
-        return $this->page();
+        $this->showTotal();
+
+        return $this->cl(SettlementPage::class)->page();
     }
 }

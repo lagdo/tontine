@@ -1,4 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $selectFundId = Jaxon\pm()->select('closings-fund-id')->toInt();
+  $rqSaving = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Saving\Saving::class);
+@endphp
                   <div class="row">
                     <div class="col">
                       <div class="section-title mt-0">{!! __('meeting.titles.closings') !!}</div>
@@ -14,7 +18,7 @@
                         {!! $htmlBuilder->select('fund_id', $funds, 0)->id('closings-fund-id')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" id="btn-fund-show-savings"><i class="fa fa-percentage"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqSaving->fund($selectFundId))><i class="fa fa-percentage"></i></button>
                         </div>
                       </div>
                     </div>

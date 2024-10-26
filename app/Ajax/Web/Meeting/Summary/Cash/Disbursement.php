@@ -2,15 +2,15 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Cash;
 
-use App\Ajax\SessionCallable;
-use Siak\Tontine\Model\Session as SessionModel;
+use App\Ajax\Cache;
+use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
 
 /**
  * @exclude
  */
-class Disbursement extends SessionCallable
+class Disbursement extends Component
 {
     /**
      * @var DisbursementValidator
@@ -25,19 +25,22 @@ class Disbursement extends SessionCallable
     public function __construct(protected DisbursementService $disbursementService)
     {}
 
-    public function show(SessionModel $session)
+    public function html(): string
     {
-        $disbursements = $this->disbursementService->getSessionDisbursements($session);
+        $session = Cache::get('summary.session');
 
-        $html = $this->renderView('pages.meeting.summary.disbursement.home', [
+        return (string)$this->renderView('pages.meeting.summary.disbursement.home', [
             'session' => $session,
-            'disbursements' => $disbursements,
+            'disbursements' => $this->disbursementService->getSessionDisbursements($session),
         ]);
-        $this->response->html('meeting-disbursements', $html);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function after()
+    {
         $this->response->js()->makeTableResponsive('meeting-disbursements');
-
         $this->response->js()->showBalanceAmountsWithDelay();
-
-        return $this->response;
     }
 }

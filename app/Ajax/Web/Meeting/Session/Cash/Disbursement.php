@@ -2,17 +2,15 @@
 
 namespace App\Ajax\Web\Meeting\Session\Cash;
 
-use App\Ajax\OpenedSessionCallable;
-use App\Ajax\Web\Meeting\Session\Misc;
-use Siak\Tontine\Model\Session as SessionModel;
+use App\Ajax\Cache;
+use App\Ajax\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
 
-use function Jaxon\jq;
 use function Jaxon\pm;
 use function trans;
 
-class Disbursement extends OpenedSessionCallable
+class Disbursement extends MeetingComponent
 {
     /**
      * @var DisbursementValidator
@@ -27,48 +25,33 @@ class Disbursement extends OpenedSessionCallable
     public function __construct(protected DisbursementService $disbursementService)
     {}
 
-    /**
-     * @exclude
-     */
-    public function show(SessionModel $session)
+    public function html(): string
     {
-        $this->session = $session;
+        $session = Cache::get('meeting.session');
 
-        return $this->home();
+        return (string)$this->renderView('pages.meeting.disbursement.home', [
+            'session' => $session,
+            'disbursements' => $this->disbursementService->getSessionDisbursements($session),
+        ]);
     }
 
-    public function home()
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        $disbursements = $this->disbursementService->getSessionDisbursements($this->session);
-
-        $html = $this->renderView('pages.meeting.disbursement.home', [
-            'session' => $this->session,
-            'disbursements' => $disbursements,
-        ]);
-        $this->response->html('meeting-disbursements', $html);
         $this->response->js()->makeTableResponsive('meeting-disbursements');
-
         $this->response->js()->showBalanceAmountsWithDelay();
-
-        $this->response->jq('#btn-disbursements-refresh')->click($this->rq()->home());
-        $this->response->jq('#btn-disbursement-add')->click($this->rq()->addDisbursement());
-        $this->response->jq('#btn-disbursement-balances')
-            ->click($this->rq(Misc::class)->showBalanceDetails(false));
-        $disbursementId = jq()->parent()->attr('data-disbursement-id')->toInt();
-        $this->response->jq('.btn-disbursement-edit')->click($this->rq()->editDisbursement($disbursementId));
-        $this->response->jq('.btn-disbursement-delete')->click($this->rq()->deleteDisbursement($disbursementId)
-            ->confirm(trans('meeting.disbursement.questions.delete')));
-
-        return $this->response;
     }
 
     public function addDisbursement()
     {
         $title = trans('meeting.disbursement.titles.add');
-        $content = $this->renderView('pages.meeting.disbursement.add')
-            ->with('categories', $this->disbursementService->getCategories())
-            ->with('members', $this->disbursementService->getMembers())
-            ->with('charges', $this->disbursementService->getCharges());
+        $content = $this->renderView('pages.meeting.disbursement.add', [
+            'categories' => $this->disbursementService->getCategories(),
+            'members' => $this->disbursementService->getMembers(),
+            'charges' => $this->disbursementService->getCharges(),
+        ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -85,27 +68,29 @@ class Disbursement extends OpenedSessionCallable
 
     /**
      * @di $validator
-     * @after showBalanceAmounts
      */
     public function createDisbursement(array $formValues)
     {
+        $session = Cache::get('meeting.session');
         $values = $this->validator->validateItem($formValues);
-        $this->disbursementService->createDisbursement($this->session, $values);
+        $this->disbursementService->createDisbursement($session, $values);
 
         $this->dialog->hide();
 
-        return $this->home();
+        return $this->render();
     }
 
     public function editDisbursement(int $disbursementId)
     {
-        $disbursement = $this->disbursementService->getSessionDisbursement($this->session, $disbursementId);
+        $session = Cache::get('meeting.session');
         $title = trans('meeting.disbursement.titles.edit');
-        $content = $this->renderView('pages.meeting.disbursement.edit')
-            ->with('categories', $this->disbursementService->getCategories())
-            ->with('members', $this->disbursementService->getMembers())
-            ->with('charges', $this->disbursementService->getCharges())
-            ->with('disbursement', $disbursement);
+        $content = $this->renderView('pages.meeting.disbursement.edit', [
+            'disbursement' => $this->disbursementService
+                ->getSessionDisbursement($session, $disbursementId),
+            'categories' => $this->disbursementService->getCategories(),
+            'members' => $this->disbursementService->getMembers(),
+            'charges' => $this->disbursementService->getCharges(),
+        ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -122,25 +107,23 @@ class Disbursement extends OpenedSessionCallable
 
     /**
      * @di $validator
-     * @after showBalanceAmounts
      */
     public function updateDisbursement(int $disbursementId, array $formValues)
     {
+        $session = Cache::get('meeting.session');
         $values = $this->validator->validateItem($formValues);
-        $this->disbursementService->updateDisbursement($this->session, $disbursementId, $values);
+        $this->disbursementService->updateDisbursement($session, $disbursementId, $values);
 
         $this->dialog->hide();
 
-        return $this->home();
+        return $this->render();
     }
 
-    /**
-     * @after showBalanceAmounts
-     */
     public function deleteDisbursement(int $disbursementId)
     {
-        $this->disbursementService->deleteDisbursement($this->session, $disbursementId);
+        $session = Cache::get('meeting.session');
+        $this->disbursementService->deleteDisbursement($session, $disbursementId);
 
-        return $this->home();
+        return $this->render();
     }
 }

@@ -2,16 +2,14 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Pool;
 
-use App\Ajax\SessionCallable;
-use Siak\Tontine\Model\Session as SessionModel;
+use App\Ajax\Cache;
+use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
-
-use function Jaxon\jq;
 
 /**
  * @exclude
  */
-class Deposit extends SessionCallable
+class Deposit extends Component
 {
     /**
      * The constructor
@@ -21,20 +19,21 @@ class Deposit extends SessionCallable
     public function __construct(protected PoolService $poolService)
     {}
 
-    public function show(SessionModel $session)
+    public function html(): string
     {
-        $this->session = $session;
+        $session = Cache::get('summary.session');
 
-        $html = $this->renderView('pages.meeting.summary.deposit.home', [
-            'session' => $this->session,
-            'pools' => $this->poolService->getPoolsWithReceivables($this->session),
+        return (string)$this->renderView('pages.meeting.summary.deposit.home', [
+            'session' => $session,
+            'pools' => $this->poolService->getPoolsWithReceivables($session),
         ]);
-        $this->response->html('meeting-deposits', $html);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function after()
+    {
         $this->response->js()->makeTableResponsive('meeting-deposits');
-
-        $poolId = jq()->parent()->attr('data-pool-id')->toInt();
-        $this->response->jq('.btn-pool-deposits')->click($this->rq()->deposits($poolId));
-
-        return $this->response;
     }
 }

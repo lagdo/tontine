@@ -2,24 +2,16 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Credit;
 
-use App\Ajax\SessionCallable;
-use Siak\Tontine\Model\Fund as FundModel;
-use Siak\Tontine\Model\Session as SessionModel;
+use App\Ajax\Cache;
+use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Service\Tontine\FundService;
-
-use function Jaxon\pm;
 
 /**
  * @databag refund
  */
-class Refund extends SessionCallable
+class Refund extends Component
 {
-    /**
-     * @var FundModel|null
-     */
-    private $fund = null;
-
     /**
      * The constructor
      *
@@ -33,21 +25,21 @@ class Refund extends SessionCallable
     /**
      * @exclude
      */
-    public function show(SessionModel $session)
+    public function html(): string
     {
-        $this->session = $session;
-
-        $html = $this->renderView('pages.meeting.summary.refund.home', [
-            'session' => $this->session,
+        return (string)$this->renderView('pages.meeting.summary.refund.home', [
+            'session' => Cache::get('summary.session'),
             'funds' => $this->fundService->getFundList(),
         ]);
-        $this->response->html('meeting-refunds', $html);
+    }
 
-        $this->response->jq('#btn-refunds-filter')->click($this->rq()->toggleFilter());
-        $fundId = pm()->select('refunds-fund-id')->toInt();
-        $this->response->jq('#btn-refunds-fund')->click($this->rq()->fund($fundId));
-
-        return $this->fund(0);
+    /**
+     * @inheritDoc
+     */
+    protected function after()
+    {
+        $this->getFund();
+        $this->cl(RefundPage::class)->page();
     }
 
     protected function getFund()
@@ -55,15 +47,17 @@ class Refund extends SessionCallable
         // Try to get the selected savings fund.
         // If not found, then revert to the tontine default fund.
         $fundId = $this->bag('refund')->get('fund.id', 0);
-        if($fundId !== 0 && ($this->fund = $this->fundService->getFund($fundId, true)) === null)
+        if($fundId !== 0 && ($fund = $this->fundService->getFund($fundId, true)) === null)
         {
             $fundId = 0;
         }
         if($fundId === 0)
         {
-            $this->fund = $this->fundService->getDefaultFund();
-            $this->bag('refund')->set('fund.id', $this->fund->id);
+            $fund = $this->fundService->getDefaultFund();
+            $this->bag('refund')->set('fund.id', $fund->id);
         }
+
+        Cache::set('summary.refund.fund', $fund);
     }
 
     /**
@@ -76,33 +70,7 @@ class Refund extends SessionCallable
         $this->bag('refund')->set('fund.id', $fundId);
         $this->getFund();
 
-        return $this->page(0);
-    }
-
-    /**
-     * @before getFund
-     *
-     * @param int $pageNumber
-     *
-     * @return mixed
-     */
-    public function page(int $pageNumber = 0)
-    {
-        $filtered = $this->bag('refund')->get('filter', null);
-
-        $debtCount = $this->refundService->getDebtCount($this->session, $this->fund, $filtered);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $debtCount, 'refund', 'principal.page');
-        $debts = $this->refundService->getDebts($this->session, $this->fund, $filtered, $pageNumber);
-        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $debtCount);
-
-        $html = $this->renderView('pages.meeting.summary.refund.page', [
-            'session' => $this->session,
-            'debts' => $debts,
-        ]);
-        $this->response->html('meeting-debts-page', $html);
-        $this->response->js()->makeTableResponsive('meeting-debts-page');
-
-        return $this->response;
+        $this->cl(RefundPage::class)->page();
     }
 
     /**
@@ -115,6 +83,6 @@ class Refund extends SessionCallable
         $filtered = $filtered === null ? true : ($filtered === true ? false : null);
         $this->bag('refund')->set('filter', $filtered);
 
-        return $this->page(1);
+        $this->cl(RefundPage::class)->page();
     }
 }

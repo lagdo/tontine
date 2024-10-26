@@ -1,4 +1,10 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
+  $rqRemitment = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Remitment::class);
+  $rqAuction = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Auction::class);
+  $rqPoolRemitment = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Remitment\Pool::class);
+@endphp
                   <div class="row">
                     <div class="col">
                       <div class="section-title mt-0">{!! __('meeting.titles.remitments') !!}</div>
@@ -6,17 +12,19 @@
 @if ($hasAuctions)
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
-                        <button type="button" class="btn btn-primary" id="btn-remitment-auctions">{{ __('meeting.titles.auctions') }}</button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqAuction->render())>{{ __('meeting.titles.auctions') }}</button>
                       </div>
                     </div>
 @endif
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
-                        <button type="button" class="btn btn-primary" id="btn-remitments-refresh"><i class="fa fa-sync"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqRemitment->render())><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
                   </div>
-                  <div class="table-responsive">
+                  <div class="table-responsive" id="meeting-remitments" @jxnTarget()>
+                    <div @jxnOn(['.btn-pool-remitments', 'click', ''], $rqPoolRemitment->pool($poolId))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

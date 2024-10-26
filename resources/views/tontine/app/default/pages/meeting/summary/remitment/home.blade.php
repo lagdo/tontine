@@ -1,4 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
+  // $this->response->jq('.btn-pool-remitments')->click($this->rq()->remitments($poolId));
+@endphp
                   <div class="row">
                     <div class="col">
                       <div class="section-title mt-0">{!! __('meeting.titles.remitments') !!}</div>

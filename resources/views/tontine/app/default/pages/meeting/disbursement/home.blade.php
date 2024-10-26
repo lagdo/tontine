@@ -1,4 +1,9 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $disbursementId = Jaxon\jq()->parent()->attr('data-disbursement-id')->toInt();
+  $rqDisbursement = Jaxon\rq(App\Ajax\Web\Meeting\Session\Cash\Disbursement::class);
+  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Misc::class);
+@endphp
                   <div class="row">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.disbursements') }}</div>
@@ -10,18 +15,22 @@
                             ->class('input-group-text')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         </div>
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" id="btn-disbursement-balances"><i class="fa fa-caret-right"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqSession->showBalanceDetails(false))><i class="fa fa-caret-right"></i></button>
                         </div>
                       </div>
                     </div>
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
-                        <button type="button" class="btn btn-primary" id="btn-disbursement-add"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-primary" id="btn-disbursements-refresh"><i class="fa fa-sync"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqDisbursement->addDisbursement())><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqDisbursement->home())><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
                   </div>
-                  <div class="table-responsive">
+                  <div class="table-responsive" @jxnTarget()>
+                    <div @jxnOn(['.btn-disbursement-edit', 'click', ''], $rqDisbursement->editDisbursement($disbursementId))></div>
+                    <div @jxnOn(['.btn-disbursement-delete', 'click', ''], $rqDisbursement->deleteDisbursement($disbursementId)
+                      ->confirm(__('meeting.disbursement.questions.delete')))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

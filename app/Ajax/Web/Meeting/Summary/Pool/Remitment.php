@@ -2,16 +2,14 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Pool;
 
-use App\Ajax\SessionCallable;
-use Siak\Tontine\Model\Session as SessionModel;
+use App\Ajax\Cache;
+use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
-
-use function Jaxon\jq;
 
 /**
  * @exclude
  */
-class Remitment extends SessionCallable
+class Remitment extends Component
 {
     /**
      * The constructor
@@ -21,22 +19,22 @@ class Remitment extends SessionCallable
     public function __construct(protected PoolService $poolService)
     {}
 
-    public function show(SessionModel $session)
+    public function html(): string
     {
-        $this->session = $session;
+        $session = Cache::get('summary.session');
 
-        $hasAuctions = $this->poolService->hasPoolWithAuction();
-        $html = $this->renderView('pages.meeting.summary.remitment.home', [
-            'session' => $this->session,
-            'pools' => $this->poolService->getPoolsWithPayables($this->session),
-            'hasAuctions' => $hasAuctions,
+        return (string)$this->renderView('pages.meeting.summary.remitment.home', [
+            'session' => $session,
+            'pools' => $this->poolService->getPoolsWithPayables($session),
+            'hasAuctions' => $this->poolService->hasPoolWithAuction(),
         ]);
-        $this->response->html('meeting-remitments', $html);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function after()
+    {
         $this->response->js()->makeTableResponsive('meeting-remitments');
-
-        $poolId = jq()->parent()->attr('data-pool-id')->toInt();
-        $this->response->jq('.btn-pool-remitments')->click($this->rq()->remitments($poolId));
-
-        return $this->response;
     }
 }

@@ -2,14 +2,12 @@
 
 namespace App\Ajax\Web\Meeting\Session\Charge\Libre;
 
-use App\Ajax\ChargeCallable;
-use App\Ajax\Web\Meeting\Session\Charge\LibreFee as Charge;
+use App\Ajax\Cache;
+use App\Ajax\Web\Meeting\Session\Charge\ChargeComponent;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Model\SettlementTarget as TargetModel;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
 use Siak\Tontine\Validation\Meeting\TargetValidator;
 
-use function Jaxon\jq;
 use function Jaxon\pm;
 use function trans;
 use function trim;
@@ -17,7 +15,7 @@ use function trim;
 /**
  * @before getTarget
  */
-class Target extends ChargeCallable
+class Target extends ChargeComponent
 {
     /**
      * @var LocaleService
@@ -30,11 +28,6 @@ class Target extends ChargeCallable
     protected TargetValidator $validator;
 
     /**
-     * @var TargetModel|null
-     */
-    protected ?TargetModel $target = null;
-
-    /**
      * The constructor
      *
      * @param SettlementTargetService $targetService
@@ -44,10 +37,30 @@ class Target extends ChargeCallable
 
     protected function getTarget()
     {
-        if($this->session !== null && $this->charge !== null)
-        {
-            $this->target = $this->targetService->getTarget($this->charge, $this->session);
-        }
+        $session = Cache::get('meeting.session');
+        $charge = Cache::get('meeting.session.charge');
+        $target = $session !== null && $charge !== null ?
+            $this->targetService->getTarget($charge, $session) : null;
+        Cache::set('meeting.session.charge.target', $target);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
+    {
+        return (string)$this->renderView('pages.meeting.charge.libre.target.home', [
+            'charge' => Cache::get('meeting.session.charge'),
+            'target' => Cache::get('meeting.session.charge.target'),
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function after()
+    {
+        $this->cl(TargetPage::class)->page();
     }
 
     /**
@@ -55,65 +68,20 @@ class Target extends ChargeCallable
      *
      * @return mixed
      */
-    public function home(int $chargeId)
+    public function charge(int $chargeId)
     {
         $this->bag('meeting')->set('charge.id', $chargeId);
         $this->bag('meeting')->set('fee.member.search', '');
+        $this->bag('meeting')->set('fee.target.page', 1);
 
-        $html = $this->renderView('pages.meeting.charge.libre.target.home', [
-            'charge' => $this->charge,
-            'target' => $this->target,
-        ]);
-        $this->response->html('meeting-fees-libre', $html);
-
-        $this->response->jq('#btn-fee-target-add')->click($this->rq()->add());
-        $this->response->jq('#btn-fee-target-edit')->click($this->rq()->edit());
-        $this->response->jq('#btn-fee-target-remove')->click($this->rq()->remove()
-            ->confirm(trans('meeting.target.questions.remove')));
-        $this->response->jq('#btn-fee-target-back')->click($this->rq(Charge::class)->home());
-        $this->response->jq('#btn-fee-libre-search')
-            ->click($this->rq()->search(jq('#txt-fee-member-search')->val()));
-
-        return $this->page();
-    }
-
-    /**
-     * @param int $pageNumber
-     *
-     * @return mixed
-     */
-    public function page(int $pageNumber = 0)
-    {
-        if($this->target === null)
-        {
-            return $this->response;
-        }
-
-        $search = trim($this->bag('meeting')->get('fee.member.search', ''));
-        $memberCount = $this->targetService->getMemberCount($search);
-        [$pageNumber, $perPage] = $this->pageNumber($pageNumber, $memberCount,
-            'meeting', 'target.page');
-        $members = $this->targetService->getMembersWithSettlements($this->charge,
-            $this->target, $search, $pageNumber);
-        $pagination = $this->rq()->page()->paginate($pageNumber, $perPage, $memberCount);
-
-        $html = $this->renderView('pages.meeting.charge.libre.target.page', [
-            'session' => $this->session,
-            'target' => $this->target,
-            'charge' => $this->charge,
-            'members' => $members,
-        ]);
-        $this->response->html('meeting-fee-libre-target', $html);
-        $this->response->js()->makeTableResponsive('meeting-fee-libre-target');
-
-        return $this->response;
+        return $this->render();
     }
 
     public function search(string $search)
     {
         $this->bag('meeting')->set('fee.member.search', trim($search));
 
-        return $this->page();
+        return $this->cl(TargetPage::class)->page();
     }
 
     /**
@@ -122,14 +90,16 @@ class Target extends ChargeCallable
      */
     public function add()
     {
-        if($this->target !== null)
+        $target = Cache::get('meeting.session.charge.target');
+        if($target !== null)
         {
             return $this->response;
         }
 
+        $session = Cache::get('meeting.session');
         $title = trans('meeting.target.titles.set');
         $content = $this->renderView('pages.meeting.charge.libre.target.add', [
-            'sessions' => $this->targetService->getDeadlineSessions($this->session),
+            'sessions' => $this->targetService->getDeadlineSessions($session),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -155,21 +125,25 @@ class Target extends ChargeCallable
      */
     public function create(array $formValues)
     {
-        if($this->target !== null)
+        $target = Cache::get('meeting.session.charge.target');
+        if($target !== null)
         {
             return $this->response;
         }
 
+        $session = Cache::get('meeting.session');
+        $charge = Cache::get('meeting.session.charge');
         $formValues['global'] = isset($formValues['global']);
         $values = $this->validator->validateItem($formValues);
         $deadlineSession = $this->sessionService->getTontineSession($values['deadline']);
 
-        $this->targetService->createTarget($this->charge, $this->session,
+        $this->targetService->createTarget($charge, $session,
             $deadlineSession, $values['amount'], $values['global']);
         $this->dialog->hide();
 
-        $this->target = $this->targetService->getTarget($this->charge, $this->session);
-        return $this->home($this->charge->id);
+        Cache::set('meeting.session.charge.target',
+            $this->targetService->getTarget($charge, $session));
+        return $this->charge($charge->id);
     }
 
     /**
@@ -178,15 +152,17 @@ class Target extends ChargeCallable
      */
     public function edit()
     {
-        if($this->target === null)
+        $target = Cache::get('meeting.session.charge.target');
+        if($target === null)
         {
             return $this->response;
         }
 
+        $session = Cache::get('meeting.session');
         $title = trans('meeting.target.titles.set');
         $content = $this->renderView('pages.meeting.charge.libre.target.edit', [
-            'target' => $this->target,
-            'sessions' => $this->targetService->getDeadlineSessions($this->session),
+            'target' => $target,
+            'sessions' => $this->targetService->getDeadlineSessions($session),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -213,21 +189,25 @@ class Target extends ChargeCallable
      */
     public function update(array $formValues)
     {
-        if($this->target === null)
+        $target = Cache::get('meeting.session.charge.target');
+        if($target === null)
         {
             return $this->response;
         }
 
+        $session = Cache::get('meeting.session');
+        $charge = Cache::get('meeting.session.charge');
         $formValues['global'] = isset($formValues['global']);
         $values = $this->validator->validateItem($formValues);
         $deadlineSession = $this->sessionService->getTontineSession($values['deadline']);
 
-        $this->targetService->updateTarget($this->target, $this->session,
+        $this->targetService->updateTarget($target, $session,
             $deadlineSession, $values['amount'], $values['global']);
         $this->dialog->hide();
 
-        $this->target = $this->targetService->getTarget($this->charge, $this->session);
-        return $this->home($this->charge->id);
+        Cache::set('meeting.session.charge.target',
+            $this->targetService->getTarget($charge, $session));
+        return $this->charge($charge->id);
     }
 
     /**
@@ -236,15 +216,20 @@ class Target extends ChargeCallable
      */
     public function remove()
     {
-        if($this->target === null)
+        $target = Cache::get('meeting.session.charge.target');
+        if($target === null)
         {
             return $this->response;
         }
 
-        $this->targetService->deleteTarget($this->target);
-        $this->notify->title(trans('common.titles.success'))->success(trans('meeting.target.messages.removed'));
+        $session = Cache::get('meeting.session');
+        $charge = Cache::get('meeting.session.charge');
+        $this->targetService->deleteTarget($target);
+        $this->notify->title(trans('common.titles.success'))
+            ->success(trans('meeting.target.messages.removed'));
 
-        $this->target = $this->targetService->getTarget($this->charge, $this->session);
-        return $this->home($this->charge->id);
+        Cache::set('meeting.session.charge.target',
+            $this->targetService->getTarget($charge, $session));
+        return $this->charge($charge->id);
     }
 }

@@ -1,4 +1,13 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $payableId = Jaxon\jq()->parent()->attr('data-payable-id')->toInt();
+  $rqPool = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Remitment\Pool::class);
+@endphp
+                  <div class="table-responsive" id="meeting-pool-remitments" @jxnTarget()>
+                    <div @jxnOn(['.btn-add-remitment', 'click', ''], $rqPool->addRemitment($payableId))></div>
+                    <div @jxnOn(['.btn-save-remitment', 'click', ''], $rqPool->createRemitment($payableId))></div>
+                    <div @jxnOn(['.btn-del-remitment', 'click', ''], $rqPool->deleteRemitment($payableId))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -33,3 +42,4 @@
 @endforeach
                       </tbody>
                     </table>
+                  </div> <!-- End table -->
