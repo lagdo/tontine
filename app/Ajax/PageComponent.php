@@ -2,6 +2,7 @@
 
 namespace App\Ajax;
 
+use App\Ajax\Web\Pagination;
 use Jaxon\Plugin\Response\Pagination\Paginator;
 
 abstract class PageComponent extends Component
@@ -67,7 +68,7 @@ abstract class PageComponent extends Component
      */
     protected function renderPage(int $pageNumber): Paginator
     {
-        return $this->cl(Web\PaginationComponent::class)
+        return $this->cl(Pagination::class)
             // Use the js class name as component item identifier.
             ->item($this->rq()->_class())
             ->pageNumber($this->getPageNumber($pageNumber))

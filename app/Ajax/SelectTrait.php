@@ -10,7 +10,7 @@ use Siak\Tontine\Model\Tontine;
 
 use function config;
 
-abstract class SelectComponent extends Component
+trait SelectTrait
 {
     /**
      * @var string

@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Ajax\Cache;
-use App\Ajax\Web\PaginationComponent;
+use App\Ajax\Web\Pagination;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
@@ -90,7 +90,7 @@ class SiakServiceProvider extends ServiceProvider
         // });
 
         Blade::directive('jxnPagination', function($expression) {
-            $class = PaginationComponent::class;
+            $class = Pagination::class;
             return "<?php echo \Jaxon\attr()->show(\Jaxon\\rq('$class'), {$expression}->_class()); ?>";
         });
     }

@@ -2,7 +2,8 @@
 
 namespace App\Ajax\Web\Tontine;
 
-use App\Ajax\SelectComponent;
+use App\Ajax\Component;
+use App\Ajax\SelectTrait;
 use App\Ajax\Web\Locale;
 use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\SectionTitle;
@@ -21,8 +22,10 @@ use function trans;
 /**
  * @databag tontine
  */
-class Tontine extends SelectComponent
+class Tontine extends Component
 {
+    use SelectTrait;
+
     /**
      * @var string
      */

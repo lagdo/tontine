@@ -3,13 +3,19 @@
 namespace App\Ajax\Web\Meeting\Session;
 
 use App\Ajax\Cache;
-use App\Ajax\SessionCallable;
+use App\Ajax\CallableClass;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\Meeting\SessionService;
 
 use function trans;
 
-class Misc extends SessionCallable
+/**
+ * @databag meeting
+ * @before getSession
+ */
+class Misc extends CallableClass
 {
     /**
      * @var LocaleService
@@ -17,10 +23,33 @@ class Misc extends SessionCallable
     protected LocaleService $localeService;
 
     /**
+     * @param SessionService $sessionService
      * @param BalanceCalculator $balanceCalculator
      */
-    public function __construct(private BalanceCalculator $balanceCalculator)
+    public function __construct(private SessionService $sessionService,
+        private BalanceCalculator $balanceCalculator)
     {}
+
+    /**
+     * @return int
+     */
+    protected function getSessionId(): int
+    {
+        return (int)$this->bag('meeting')->get('session.id');
+    }
+
+    /**
+     * @return void
+     */
+    protected function getSession()
+    {
+        $session = $this->sessionService->getSession($this->getSessionId());
+        if($session === null)
+        {
+            throw new MessageException(trans('meeting.errors.session.not_found'));
+        }
+        Cache::set('meeting.session', $session);
+    }
 
     /**
      * @di $localeService

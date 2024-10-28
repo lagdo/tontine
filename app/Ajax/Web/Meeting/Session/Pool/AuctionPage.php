@@ -3,7 +3,7 @@
 namespace App\Ajax\Web\Meeting\Session\Pool;
 
 use App\Ajax\Cache;
-use App\Ajax\MeetingPageComponent;
+use App\Ajax\Web\Meeting\MeetingPageComponent;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;
 
 /**

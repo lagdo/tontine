@@ -3,7 +3,7 @@
 namespace App\Ajax\Web\Meeting\Session\Pool\Deposit;
 
 use App\Ajax\Cache;
-use App\Ajax\MeetingPageComponent;
+use App\Ajax\Web\Meeting\MeetingPageComponent;
 use App\Ajax\Web\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;

@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Ajax;
+namespace App\Ajax\Web\Meeting;
 
 use App\Ajax\Cache;
+use App\Ajax\Component;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\SessionService;
 

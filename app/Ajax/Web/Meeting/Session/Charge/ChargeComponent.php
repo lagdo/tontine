@@ -3,7 +3,7 @@
 namespace App\Ajax\Web\Meeting\Session\Charge;
 
 use App\Ajax\Cache;
-use App\Ajax\MeetingComponent;
+use App\Ajax\Web\Meeting\MeetingComponent;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementService;

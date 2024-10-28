@@ -2,7 +2,8 @@
 
 namespace App\Ajax\Web\Tontine;
 
-use App\Ajax\SelectCallable;
+use App\Ajax\CallableClass;
+use App\Ajax\SelectTrait;
 use App\Ajax\Web\Planning\Session;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Tontine\TontineService;
@@ -14,8 +15,10 @@ use function trans;
 /**
  * @databag tontine
  */
-class Select extends SelectCallable
+class Select extends CallableClass
 {
+    use SelectTrait;
+
     /**
      * @param TontineService $tontineService
      */

@@ -3,7 +3,7 @@
 namespace App\Ajax\Web\Meeting\Session\Credit;
 
 use App\Ajax\Cache;
-use App\Ajax\MeetingComponent;
+use App\Ajax\Web\Meeting\MeetingComponent;
 use Siak\Tontine\Model\Fund as FundModel;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Service\Tontine\FundService;

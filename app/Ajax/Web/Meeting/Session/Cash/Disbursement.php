@@ -3,7 +3,7 @@
 namespace App\Ajax\Web\Meeting\Session\Cash;
 
 use App\Ajax\Cache;
-use App\Ajax\MeetingComponent;
+use App\Ajax\Web\Meeting\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
 

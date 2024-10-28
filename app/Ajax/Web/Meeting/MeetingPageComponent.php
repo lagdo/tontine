@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Ajax;
+namespace App\Ajax\Web\Meeting;
 
 use App\Ajax\Cache;
+use App\Ajax\Component;
+use App\Ajax\Web\Pagination;
 use Jaxon\Plugin\Response\Pagination\Paginator;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\SessionService;
@@ -82,7 +84,7 @@ abstract class MeetingPageComponent extends Component
      */
     protected function renderPage(int $pageNumber): Paginator
     {
-        return $this->cl(Web\PaginationComponent::class)
+        return $this->cl(Pagination::class)
             // Use the js class name as component item identifier.
             ->item($this->rq()->_class())
             ->pageNumber($this->getPageNumber($pageNumber))

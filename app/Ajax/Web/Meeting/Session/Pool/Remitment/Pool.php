@@ -3,7 +3,7 @@
 namespace App\Ajax\Web\Meeting\Session\Pool\Remitment;
 
 use App\Ajax\Cache;
-use App\Ajax\MeetingComponent;
+use App\Ajax\Web\Meeting\MeetingComponent;
 use App\Ajax\Web\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
