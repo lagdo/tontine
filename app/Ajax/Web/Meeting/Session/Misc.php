@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session;
 
-use App\Ajax\Cache;
 use App\Ajax\CallableClass;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\BalanceCalculator;
@@ -48,7 +47,7 @@ class Misc extends CallableClass
         {
             throw new MessageException(trans('meeting.errors.session.not_found'));
         }
-        Cache::set('meeting.session', $session);
+        $this->cache->set('meeting.session', $session);
     }
 
     /**
@@ -56,7 +55,7 @@ class Misc extends CallableClass
      */
     public function showBalanceAmounts()
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $amount = $this->balanceCalculator->getBalanceForLoan($session);
         $html = trans('meeting.loan.labels.amount_available', [
             'amount' => $this->localeService->formatMoney($amount),
@@ -74,7 +73,7 @@ class Misc extends CallableClass
 
     public function showBalanceDetails(bool $lendable)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $balances = $this->balanceCalculator->getBalances($session, $lendable);
         $title = trans('meeting.titles.amounts');
         $content = $this->renderView('pages.meeting.session.balances', [
@@ -93,7 +92,7 @@ class Misc extends CallableClass
 
     public function saveAgenda(string $text)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $this->sessionService->saveAgenda($session, $text);
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.agenda.updated'));
@@ -103,7 +102,7 @@ class Misc extends CallableClass
 
     public function saveReport(string $text)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $this->sessionService->saveReport($session, $text);
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.report.updated'));

@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Saving;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\Saving\ClosingService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -27,7 +26,7 @@ class Closing extends Component
      */
     public function html(): string
     {
-        $session = Cache::get('summary.session');
+        $session = $this->cache->get('summary.session');
 
         return (string)$this->renderView('pages.meeting.summary.closing.home', [
             'session' => $session,

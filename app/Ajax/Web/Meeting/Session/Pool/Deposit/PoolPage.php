@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Pool\Deposit;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingPageComponent;
 use App\Ajax\Web\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
@@ -37,8 +36,8 @@ class PoolPage extends MeetingPageComponent
      */
     public function html(): string
     {
-        $pool = Cache::get('meeting.pool');
-        $session = Cache::get('meeting.session');
+        $pool = $this->cache->get('meeting.pool');
+        $session = $this->cache->get('meeting.session');
 
         return (string)$this->renderView('pages.meeting.deposit.pool.page', [
             'pool' => $pool,
@@ -49,17 +48,17 @@ class PoolPage extends MeetingPageComponent
 
     protected function count(): int
     {
-        $pool = Cache::get('meeting.pool');
-        $session = Cache::get('meeting.session');
+        $pool = $this->cache->get('meeting.pool');
+        $session = $this->cache->get('meeting.session');
 
         return $this->depositService->getReceivableCount($pool, $session);
     }
 
     private function showTotal()
     {
-        $session = Cache::get('meeting.session');
-        $pool = Cache::get('meeting.pool');
-        Cache::set('meeting.pool.deposit.count',
+        $session = $this->cache->get('meeting.session');
+        $pool = $this->cache->get('meeting.pool');
+        $this->cache->set('meeting.pool.deposit.count',
             $this->depositService->countDeposits($pool, $session));
 
         $this->cl(Total::class)->render();

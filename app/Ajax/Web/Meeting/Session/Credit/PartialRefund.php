@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Credit;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -46,13 +45,13 @@ class PartialRefund extends MeetingComponent
             $fund = $this->fundService->getDefaultFund();
             $this->bag('partial.refund')->set('fund.id', $fund->id);
         }
-        Cache::set('meeting.refund.partial.fund', $fund);
+        $this->cache->set('meeting.refund.partial.fund', $fund);
     }
 
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.refund.partial.home', [
-            'session' => Cache::get('meeting.session'),
+            'session' => $this->cache->get('meeting.session'),
             'funds' => $this->fundService->getFundList(),
         ]);
     }
@@ -81,7 +80,7 @@ class PartialRefund extends MeetingComponent
 
     public function editRefund(int $refundId)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $refund = $this->refundService->getPartialRefund($session, $refundId);
         $title = trans('meeting.refund.titles.edit');
         $content = $this->renderView('pages.meeting.refund.partial.edit', [
@@ -108,7 +107,7 @@ class PartialRefund extends MeetingComponent
      */
     public function updateRefund(int $refundId, array $formValues)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $formValues['debt'] = $refundId;
         $values = $this->validator->validateItem($formValues);
         $refund = $this->refundService->getPartialRefund($session, $refundId);
@@ -128,7 +127,7 @@ class PartialRefund extends MeetingComponent
      */
     public function deleteRefund(int $refundId)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $refund = $this->refundService->getPartialRefund($session, $refundId);
         $this->refundService->deletePartialRefund($refund, $session);
 

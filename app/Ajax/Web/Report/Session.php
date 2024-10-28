@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Report;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\SectionTitle;
@@ -72,8 +71,8 @@ class Session extends Component
         {
             $session = $sessions->first();
             $this->bag('report')->set('session.id', $session->id);
-            Cache::set('report.session', $session);
-            Cache::set('report.member', null);
+            $this->cache->set('report.session', $session);
+            $this->cache->set('report.member', null);
             $this->cl(SessionContent::class)->render();
         }
     }
@@ -86,8 +85,8 @@ class Session extends Component
         }
 
         $this->bag('report')->set('session.id', $session->id);
-        Cache::set('report.session', $session);
-        Cache::set('report.member', null);
+        $this->cache->set('report.session', $session);
+        $this->cache->set('report.member', null);
 
         return $this->cl(SessionContent::class)->render();
     }
@@ -102,8 +101,8 @@ class Session extends Component
         }
 
         $this->bag('report')->set('session.id', $session->id);
-        Cache::set('report.session', $session);
-        Cache::set('report.member', $member);
+        $this->cache->set('report.session', $session);
+        $this->cache->set('report.member', $member);
 
         return $this->cl(SessionContent::class)->render();
     }

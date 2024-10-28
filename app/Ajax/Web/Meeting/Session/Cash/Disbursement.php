@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Cash;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
@@ -27,7 +26,7 @@ class Disbursement extends MeetingComponent
 
     public function html(): string
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
 
         return (string)$this->renderView('pages.meeting.disbursement.home', [
             'session' => $session,
@@ -71,7 +70,7 @@ class Disbursement extends MeetingComponent
      */
     public function createDisbursement(array $formValues)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $values = $this->validator->validateItem($formValues);
         $this->disbursementService->createDisbursement($session, $values);
 
@@ -82,7 +81,7 @@ class Disbursement extends MeetingComponent
 
     public function editDisbursement(int $disbursementId)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $title = trans('meeting.disbursement.titles.edit');
         $content = $this->renderView('pages.meeting.disbursement.edit', [
             'disbursement' => $this->disbursementService
@@ -110,7 +109,7 @@ class Disbursement extends MeetingComponent
      */
     public function updateDisbursement(int $disbursementId, array $formValues)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $values = $this->validator->validateItem($formValues);
         $this->disbursementService->updateDisbursement($session, $disbursementId, $values);
 
@@ -121,7 +120,7 @@ class Disbursement extends MeetingComponent
 
     public function deleteDisbursement(int $disbursementId)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $this->disbursementService->deleteDisbursement($session, $disbursementId);
 
         return $this->render();

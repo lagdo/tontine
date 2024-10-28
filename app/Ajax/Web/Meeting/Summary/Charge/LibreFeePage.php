@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Charge;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
 
@@ -23,7 +22,7 @@ class LibreFeePage extends Component
     {
         $charges = $this->feeService->getFees();
         // Bill and settlement counts and amounts
-        $session = Cache::get('summary.session');
+        $session = $this->cache->get('summary.session');
         $bills = $this->feeService->getBills($session);
         $settlements = $this->feeService->getSettlements($session);
 

@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Saving;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -39,7 +38,7 @@ class Saving extends MeetingComponent
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.saving.home', [
-            'session' => Cache::get('meeting.session'),
+            'session' => $this->cache->get('meeting.session'),
             'fundId' => (int)$this->bag('meeting.saving')->get('fund.id', 0),
             'funds' => $this->fundService->getFundList()->prepend('', 0),
         ]);
@@ -61,7 +60,7 @@ class Saving extends MeetingComponent
         {
             $this->bag('meeting.saving')->set('fund.id', 0);
         }
-        Cache::set('meeting.saving.fund', $fund);
+        $this->cache->set('meeting.saving.fund', $fund);
     }
 
     public function fund(int $fundId)
@@ -75,7 +74,7 @@ class Saving extends MeetingComponent
 
     public function editSaving(int $savingId)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $saving = $this->savingService->getSaving($session, $savingId);
         $title = trans('meeting.saving.titles.edit');
         $content = $this->renderView('pages.meeting.saving.edit', [
@@ -103,7 +102,7 @@ class Saving extends MeetingComponent
      */
     public function updateSaving(int $savingId, array $formValues)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         if(!($saving = $this->savingService->getSaving($session, $savingId)))
         {
             $this->notify->warning(trans('meeting.saving.errors.not_found'));
@@ -136,7 +135,7 @@ class Saving extends MeetingComponent
      */
     public function deleteSaving(int $savingId)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $this->savingService->deleteSaving($session, $savingId);
 
         $this->cl(SavingTotal::class)->render();

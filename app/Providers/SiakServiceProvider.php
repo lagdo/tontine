@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Pagination;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
@@ -10,6 +9,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Mcamara\LaravelLocalization\LaravelLocalization;
+use Siak\Tontine\Cache\Cache;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;

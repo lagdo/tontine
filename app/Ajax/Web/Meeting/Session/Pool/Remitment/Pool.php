@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Pool\Remitment;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingComponent;
 use App\Ajax\Web\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\BalanceCalculator;
@@ -45,8 +44,8 @@ class Pool extends MeetingComponent
      */
     public function html(): string
     {
-        $pool = Cache::get('meeting.pool');
-        $session = Cache::get('meeting.session');
+        $pool = $this->cache->get('meeting.pool');
+        $session = $this->cache->get('meeting.session');
 
         return (string)$this->renderView('pages.meeting.remitment.pool.home', [
             'pool' => $pool,
@@ -74,14 +73,14 @@ class Pool extends MeetingComponent
 
     public function createRemitment(int $payableId)
     {
-        $pool = Cache::get('meeting.pool');
+        $pool = $this->cache->get('meeting.pool');
         if(!$pool->remit_planned || $pool->remit_auction)
         {
             // Only when remitments are planned and without auctions.
             return $this->response;
         }
 
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $this->remitmentService->savePlannedRemitment($pool, $session, $payableId);
 
         return $this->cl(PoolPage::class)->render();
@@ -95,8 +94,8 @@ class Pool extends MeetingComponent
         //     return $this->response;
         // }
 
-        $pool = Cache::get('meeting.pool');
-        $session = Cache::get('meeting.session');
+        $pool = $this->cache->get('meeting.pool');
+        $session = $this->cache->get('meeting.session');
 
         $title = trans('meeting.remitment.titles.add');
         $content = $this->renderView('pages.meeting.remitment.pool.add', [
@@ -123,7 +122,7 @@ class Pool extends MeetingComponent
      */
     public function saveRemitment(array $formValues)
     {
-        $pool = Cache::get('meeting.pool');
+        $pool = $this->cache->get('meeting.pool');
         // if($pool->remit_planned && !$pool->remit_auction)
         // {
         //     // Only when remitments are not planned or with auctions.
@@ -134,7 +133,7 @@ class Pool extends MeetingComponent
         // Add some data in the input values to help validation.
         $formValues['remit_auction'] = $pool->remit_auction ? 1 : 0;
 
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $values = $this->validator->validateItem($formValues);
         $this->remitmentService->saveRemitment($pool, $session,
             $values['payable'], $values['auction']);
@@ -148,8 +147,8 @@ class Pool extends MeetingComponent
      */
     public function deleteRemitment(int $payableId)
     {
-        $pool = Cache::get('meeting.pool');
-        $session = Cache::get('meeting.session');
+        $pool = $this->cache->get('meeting.pool');
+        $session = $this->cache->get('meeting.session');
         $this->remitmentService->deleteRemitment($pool, $session, $payableId);
 
         return $this->cl(PoolPage::class)->render();

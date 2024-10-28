@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Charge\Libre;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\Session\Charge\ChargeComponent;
 use App\Ajax\Web\Meeting\Session\Charge\Settlement\Total;
 
@@ -14,7 +13,7 @@ class Settlement extends ChargeComponent
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.charge.libre.settlement.home', [
-            'charge' => Cache::get('meeting.session.charge'),
+            'charge' => $this->cache->get('meeting.session.charge'),
         ]);
     }
 
@@ -43,13 +42,13 @@ class Settlement extends ChargeComponent
 
     private function showTotal()
     {
-        $session = Cache::get('meeting.session');
-        $charge = Cache::get('meeting.session.charge');
+        $session = $this->cache->get('meeting.session');
+        $charge = $this->cache->get('meeting.session.charge');
         $settlement = $this->settlementService->getSettlementCount($charge, $session);
 
-        Cache::set('meeting.session.settlement.count', $settlement->total ?? 0);
-        Cache::set('meeting.session.settlement.amount', $settlement->amount ?? 0);
-        Cache::set('meeting.session.bill.count',
+        $this->cache->set('meeting.session.settlement.count', $settlement->total ?? 0);
+        $this->cache->set('meeting.session.settlement.amount', $settlement->amount ?? 0);
+        $this->cache->set('meeting.session.bill.count',
             $this->billService->getBillCount($charge, $session));
 
         $this->cl(Total::class)->item('libre')->render();
@@ -73,8 +72,8 @@ class Settlement extends ChargeComponent
      */
     public function addSettlement(int $billId)
     {
-        $session = Cache::get('meeting.session');
-        $charge = Cache::get('meeting.session.charge');
+        $session = $this->cache->get('meeting.session');
+        $charge = $this->cache->get('meeting.session.charge');
         $this->settlementService->createSettlement($charge, $session, $billId);
 
         $this->showTotal();
@@ -90,8 +89,8 @@ class Settlement extends ChargeComponent
      */
     public function delSettlement(int $billId)
     {
-        $session = Cache::get('meeting.session');
-        $charge = Cache::get('meeting.session.charge');
+        $session = $this->cache->get('meeting.session');
+        $charge = $this->cache->get('meeting.session.charge');
         $this->settlementService->deleteSettlement($charge, $session, $billId);
 
         $this->showTotal();

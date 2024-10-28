@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Saving;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingPageComponent;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -34,7 +33,7 @@ class MemberPage extends MeetingPageComponent
     {
         $fundId = $this->bag('refund')->get('fund.id', 0);
         $fund = $this->fundService->getFund($fundId, true, true);
-        Cache::set('meeting.saving.fund', $fund);
+        $this->cache->set('meeting.saving.fund', $fund);
     }
 
     /**
@@ -44,8 +43,8 @@ class MemberPage extends MeetingPageComponent
     {
         $search = trim($this->bag('meeting.saving')->get('member.search', ''));
         $filter = $this->bag('meeting.saving')->get('member.filter', null);
-        $session = Cache::get('meeting.session');
-        $fund = Cache::get('meeting.saving.fund');
+        $session = $this->cache->get('meeting.session');
+        $fund = $this->cache->get('meeting.saving.fund');
 
         return (string)$this->renderView('pages.meeting.saving.member.page', [
             'session' => $session,
@@ -58,8 +57,8 @@ class MemberPage extends MeetingPageComponent
     {
         $search = trim($this->bag('meeting.saving')->get('member.search', ''));
         $filter = $this->bag('meeting.saving')->get('member.filter', null);
-        $session = Cache::get('meeting.session');
-        $fund = Cache::get('meeting.saving.fund');
+        $session = $this->cache->get('meeting.session');
+        $fund = $this->cache->get('meeting.saving.fund');
 
         return $this->savingService->getMemberCount($session, $fund, $search, $filter);
     }

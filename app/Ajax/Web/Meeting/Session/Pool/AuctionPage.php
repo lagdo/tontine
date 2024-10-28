@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Pool;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingPageComponent;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;
 
@@ -31,7 +30,7 @@ class AuctionPage extends MeetingPageComponent
      */
     public function html(): string
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $filtered = $this->bag('auction')->get('filter', null);
 
         return (string)$this->renderView('pages.meeting.auction.page', [
@@ -42,7 +41,7 @@ class AuctionPage extends MeetingPageComponent
 
     protected function count(): int
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $filtered = $this->bag('auction')->get('filter', null);
 
         return $this->auctionService->getAuctionCount($session, $filtered);

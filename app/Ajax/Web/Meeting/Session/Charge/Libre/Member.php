@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Charge\Libre;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\Session\Charge\ChargeComponent;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\LocaleService;
@@ -25,7 +24,7 @@ class Member extends ChargeComponent
      */
     public function html(): string
     {
-        $charge = Cache::get('meeting.session.charge');
+        $charge = $this->cache->get('meeting.session.charge');
 
         return (string)$this->renderView('pages.meeting.charge.libre.member.home', [
             'charge' => $charge,
@@ -58,12 +57,12 @@ class Member extends ChargeComponent
 
     private function showTotal()
     {
-        $session = Cache::get('meeting.session');
-        $charge = Cache::get('meeting.session.charge');
+        $session = $this->cache->get('meeting.session');
+        $charge = $this->cache->get('meeting.session.charge');
         $settlement = $this->settlementService->getSettlementCount($charge, $session);
 
-        Cache::set('meeting.session.settlement.count', $settlement->total ?? 0);
-        Cache::set('meeting.session.settlement.amount', $settlement->amount ?? 0);
+        $this->cache->set('meeting.session.settlement.count', $settlement->total ?? 0);
+        $this->cache->set('meeting.session.settlement.amount', $settlement->amount ?? 0);
 
         $this->cl(MemberTotal::class)->render();
     }
@@ -106,8 +105,8 @@ class Member extends ChargeComponent
      */
     public function addBill(int $memberId, bool $paid, string $amount = '')
     {
-        $session = Cache::get('meeting.session');
-        $charge = Cache::get('meeting.session.charge');
+        $session = $this->cache->get('meeting.session');
+        $charge = $this->cache->get('meeting.session.charge');
         $this->billService
             ->createBill($charge, $session, $memberId, $paid, $this->convertAmount($amount));
 
@@ -124,8 +123,8 @@ class Member extends ChargeComponent
      */
     public function delBill(int $memberId)
     {
-        $session = Cache::get('meeting.session');
-        $charge = Cache::get('meeting.session.charge');
+        $session = $this->cache->get('meeting.session');
+        $charge = $this->cache->get('meeting.session.charge');
         $this->billService->deleteBill($charge, $session, $memberId);
 
         $this->showTotal();
@@ -142,8 +141,8 @@ class Member extends ChargeComponent
      */
     public function editBill(int $memberId)
     {
-        $session = Cache::get('meeting.session');
-        $charge = Cache::get('meeting.session.charge');
+        $session = $this->cache->get('meeting.session');
+        $charge = $this->cache->get('meeting.session.charge');
         $bill = $this->billService->getMemberBill($charge, $session, $memberId);
         if($bill === null)
         {
@@ -168,8 +167,8 @@ class Member extends ChargeComponent
      */
     public function saveBill(int $memberId, string $amount)
     {
-        $session = Cache::get('meeting.session');
-        $charge = Cache::get('meeting.session.charge');
+        $session = $this->cache->get('meeting.session');
+        $charge = $this->cache->get('meeting.session.charge');
         $amount = $this->convertAmount($amount);
         if(!$amount)
         {

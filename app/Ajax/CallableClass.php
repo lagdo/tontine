@@ -20,7 +20,7 @@ use function trans;
  */
 class CallableClass extends JaxonCallableClass
 {
-    use DialogTrait;
+    use CallableTrait;
 
     /**
      * @di

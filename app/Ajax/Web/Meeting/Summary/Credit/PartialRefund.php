@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Credit;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Service\LocaleService;
@@ -34,7 +33,7 @@ class PartialRefund extends Component
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.summary.refund.partial.home', [
-            'session' => Cache::get('summary.session'),
+            'session' => $this->cache->get('summary.session'),
             'funds' => $this->fundService->getFundList(),
         ]);
     }
@@ -63,7 +62,7 @@ class PartialRefund extends Component
             $this->bag('refund.partial')->set('fund.id', $fund->id);
         }
 
-        Cache::set('summary.refund.partial.fund', $fund);
+        $this->cache->set('summary.refund.partial.fund', $fund);
     }
 
     /**

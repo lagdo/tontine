@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Credit;
 
-use App\Ajax\Cache;
 use App\Ajax\PageComponent;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -34,8 +33,8 @@ class RefundPage extends PageComponent
      */
     public function html(): string
     {
-        $session = Cache::get('summary.session');
-        $fund = Cache::get('summary.refund.fund');
+        $session = $this->cache->get('summary.session');
+        $fund = $this->cache->get('summary.refund.fund');
         $filtered = $this->bag('refund')->get('filter', null);
 
         return (string)$this->renderView('pages.meeting.summary.refund.page', [
@@ -46,8 +45,8 @@ class RefundPage extends PageComponent
 
     protected function count(): int
     {
-        $session = Cache::get('summary.session');
-        $fund = Cache::get('summary.refund.fund');
+        $session = $this->cache->get('summary.session');
+        $fund = $this->cache->get('summary.refund.fund');
         $filtered = $this->bag('refund')->get('filter', null);
 
         return $this->refundService->getDebtCount($session, $fund, $filtered);

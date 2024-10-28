@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Charge\Libre;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use Siak\Tontine\Service\BalanceCalculator;
 
@@ -25,8 +24,8 @@ class MemberTotal extends Component
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.charge.libre.member.total', [
-            'settlementCount' => Cache::get('meeting.session.settlement.count'),
-            'settlementAmount' => Cache::get('meeting.session.settlement.amount'),
+            'settlementCount' => $this->cache->get('meeting.session.settlement.count'),
+            'settlementAmount' => $this->cache->get('meeting.session.settlement.amount'),
         ]);
     }
 }

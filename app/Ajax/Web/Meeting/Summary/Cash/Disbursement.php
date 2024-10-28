@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Cash;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
@@ -27,7 +26,7 @@ class Disbursement extends Component
 
     public function html(): string
     {
-        $session = Cache::get('summary.session');
+        $session = $this->cache->get('summary.session');
 
         return (string)$this->renderView('pages.meeting.summary.disbursement.home', [
             'session' => $session,

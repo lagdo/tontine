@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Saving;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use Siak\Tontine\Service\Tontine\FundService;
 
@@ -26,7 +25,7 @@ class Saving extends Component
     {
         $fundId = $this->bag('meeting.saving')->get('fund.id', 0);
         $fund = $fundId > 0 ? $this->fundService->getFund($fundId, true, true) : null;
-        Cache::set('meeting.saving.fund', $fund);
+        $this->cache->set('meeting.saving.fund', $fund);
     }
 
     /**
@@ -35,7 +34,7 @@ class Saving extends Component
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.summary.saving.home', [
-            'session' => Cache::get('summary.session'),
+            'session' => $this->cache->get('summary.session'),
             'fundId' => (int)$this->bag('meeting.saving')->get('fund.id', 0),
             'funds' => $this->fundService->getFundList()->prepend('', 0),
         ]);

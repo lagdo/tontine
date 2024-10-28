@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Pool;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 
@@ -21,7 +20,7 @@ class Remitment extends MeetingComponent
      */
     public function html(): string
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
 
         return (string)$this->renderView('pages.meeting.remitment.home', [
             'session' => $session,

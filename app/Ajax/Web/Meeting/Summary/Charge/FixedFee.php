@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Charge;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\Charge\FixedFeeService;
 
@@ -22,7 +21,7 @@ class FixedFee extends Component
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.summary.charge.fixed.home', [
-            'session' => Cache::get('summary.session'),
+            'session' => $this->cache->get('summary.session'),
         ]);
     }
 

@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Saving;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingPageComponent;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -34,7 +33,7 @@ class SavingPage extends MeetingPageComponent
     {
         $fundId = $this->bag('meeting.saving')->get('fund.id', 0);
         $fund = $this->fundService->getFund($fundId, true, true);
-        Cache::set('meeting.saving.fund', $fund);
+        $this->cache->set('meeting.saving.fund', $fund);
     }
 
     /**
@@ -42,8 +41,8 @@ class SavingPage extends MeetingPageComponent
      */
     public function html(): string
     {
-        $session = Cache::get('meeting.session');
-        $fund = Cache::get('meeting.saving.fund');
+        $session = $this->cache->get('meeting.session');
+        $fund = $this->cache->get('meeting.saving.fund');
 
         return (string)$this->renderView('pages.meeting.saving.page', [
             'session' => $session,
@@ -53,8 +52,8 @@ class SavingPage extends MeetingPageComponent
 
     protected function count(): int
     {
-        $session = Cache::get('meeting.session');
-        $fund = Cache::get('meeting.saving.fund');
+        $session = $this->cache->get('meeting.session');
+        $fund = $this->cache->get('meeting.saving.fund');
 
         return $this->savingService->getSavingCount($session, $fund);
     }

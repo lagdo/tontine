@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Charge\Libre;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\Session\Charge\ChargePageComponent;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
 
@@ -30,11 +29,11 @@ class TargetPage extends ChargePageComponent
 
     protected function getTarget()
     {
-        $session = Cache::get('meeting.session');
-        $charge = Cache::get('meeting.session.charge');
+        $session = $this->cache->get('meeting.session');
+        $charge = $this->cache->get('meeting.session.charge');
         $target = $session !== null && $charge !== null ?
             $this->targetService->getTarget($charge, $session) : null;
-        Cache::set('meeting.session.charge.target', $target);
+        $this->cache->set('meeting.session.charge.target', $target);
     }
 
     /**
@@ -43,9 +42,9 @@ class TargetPage extends ChargePageComponent
     public function html(): string
     {
         $search = trim($this->bag('meeting')->get('fee.member.search', ''));
-        $session = Cache::get('meeting.session');
-        $charge = Cache::get('meeting.session.charge');
-        $target = Cache::get('meeting.session.charge.target');
+        $session = $this->cache->get('meeting.session');
+        $charge = $this->cache->get('meeting.session.charge');
+        $target = $this->cache->get('meeting.session.charge.target');
 
         return (string)$this->renderView('pages.meeting.charge.libre.target.page', [
             'session' => $session,

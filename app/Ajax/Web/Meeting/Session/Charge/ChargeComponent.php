@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Charge;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingComponent;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
@@ -42,7 +41,7 @@ abstract class ChargeComponent extends MeetingComponent
     {
         $chargeId = $this->target()->method() === 'charge' ?
             $this->target()->args()[0] : $this->bag('meeting')->get('charge.id');
-        Cache::set('meeting.session.charge', $this->chargeService->getCharge($chargeId));
+        $this->cache->set('meeting.session.charge', $this->chargeService->getCharge($chargeId));
     }
   
     /**
@@ -50,12 +49,12 @@ abstract class ChargeComponent extends MeetingComponent
      */
     protected function checkChargeEdit()
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         if(!$session || $session->closed)
         {
             throw new MessageException(trans('meeting.warnings.session.closed'), false);
         }
-        $charge = Cache::get('meeting.session.charge');
+        $charge = $this->cache->get('meeting.session.charge');
         if(!$charge || !$charge->active)
         {
             throw new MessageException(trans('meeting.warnings.charge.disabled'), false);

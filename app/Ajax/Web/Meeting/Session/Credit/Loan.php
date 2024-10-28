@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Credit;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -32,7 +31,7 @@ class Loan extends MeetingComponent
 
     public function html(): string
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $loans = $this->loanService->getSessionLoans($session);
 
         return (string)$this->renderView('pages.meeting.loan.home', [
@@ -53,7 +52,7 @@ class Loan extends MeetingComponent
 
     public function addLoan()
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $title = trans('meeting.loan.titles.add');
         $content = $this->renderView('pages.meeting.loan.add', [
             'amountAvailable' => $this->loanService->getAmountAvailableValue($session),
@@ -93,7 +92,7 @@ class Loan extends MeetingComponent
             return $this->response;
         }
 
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $this->loanService->createLoan($session, $member, $fund, $values);
 
         $this->dialog->hide();
@@ -103,7 +102,7 @@ class Loan extends MeetingComponent
 
     public function editLoan(int $loanId)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $loan = $this->loanService->getSessionLoan($session, $loanId);
         if(!$loan)
         {
@@ -144,7 +143,7 @@ class Loan extends MeetingComponent
      */
     public function updateLoan(int $loanId, array $formValues)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $loan = $this->loanService->getSessionLoan($session, $loanId);
         if(!$loan)
         {
@@ -179,7 +178,7 @@ class Loan extends MeetingComponent
 
     public function deleteLoan(int $loanId)
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $this->loanService->deleteLoan($session, $loanId);
 
         return $this->render();

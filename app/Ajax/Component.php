@@ -19,7 +19,7 @@ use function trans;
  */
 abstract class Component extends JaxonComponent
 {
-    use DialogTrait;
+    use CallableTrait;
 
     /**
      * @di

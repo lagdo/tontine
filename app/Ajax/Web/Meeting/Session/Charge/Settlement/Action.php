@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Charge\Settlement;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 
@@ -25,10 +24,10 @@ class Action extends Component
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.charge.settlement.action', [
-            'session' => Cache::get('meeting.session'),
-            'charge' => Cache::get('meeting.session.charge'),
-            'billCount' => Cache::get('meeting.session.bill.count'),
-            'settlementCount' => Cache::get('meeting.session.settlement.count'),
+            'session' => $this->cache->get('meeting.session'),
+            'charge' => $this->cache->get('meeting.session.charge'),
+            'billCount' => $this->cache->get('meeting.session.bill.count'),
+            'settlementCount' => $this->cache->get('meeting.session.settlement.count'),
         ]);
     }
 }

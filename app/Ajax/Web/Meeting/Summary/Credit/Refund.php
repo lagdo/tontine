@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Credit;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -28,7 +27,7 @@ class Refund extends Component
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.summary.refund.home', [
-            'session' => Cache::get('summary.session'),
+            'session' => $this->cache->get('summary.session'),
             'funds' => $this->fundService->getFundList(),
         ]);
     }
@@ -57,7 +56,7 @@ class Refund extends Component
             $this->bag('refund')->set('fund.id', $fund->id);
         }
 
-        Cache::set('summary.refund.fund', $fund);
+        $this->cache->set('summary.refund.fund', $fund);
     }
 
     /**

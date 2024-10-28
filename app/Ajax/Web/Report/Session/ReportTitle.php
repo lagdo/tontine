@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Report\Session;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 
 /**
@@ -15,8 +14,8 @@ class ReportTitle extends Component
      */
     public function html(): string
     {
-        $session = Cache::get('report.session');
-        $member = Cache::get('report.member');
+        $session = $this->cache->get('report.session');
+        $member = $this->cache->get('report.member');
 
         return $member === null ? $session->title :
             $session->title . ' - ' . $member->name;

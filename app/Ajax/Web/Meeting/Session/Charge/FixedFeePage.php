@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Charge;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingPageComponent;
 use Siak\Tontine\Service\Meeting\Charge\FixedFeeService;
 
@@ -28,7 +27,7 @@ class FixedFeePage extends MeetingPageComponent
      */
     public function html(): string
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
 
         return (string)$this->renderView('pages.meeting.charge.fixed.page', [
             'session' => $session,

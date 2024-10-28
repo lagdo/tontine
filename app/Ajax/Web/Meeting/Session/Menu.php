@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingComponent;
 
 /**
@@ -30,7 +29,7 @@ class Menu extends MeetingComponent
     public function html(): string
     {
         return (string)$this->renderView("pages.meeting.session.home.{$this->section}", [
-            'session' => Cache::get('meeting.session'),
+            'session' => $this->cache->get('meeting.session'),
         ]);
     }
 

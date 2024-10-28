@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Credit;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingComponent;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
@@ -57,13 +56,13 @@ class PartialRefundEdit extends MeetingComponent
             $fund = $this->fundService->getDefaultFund();
             $this->bag('partial.refund')->set('fund.id', $fund->id);
         }
-        Cache::set('meeting.refund.partial.fund', $fund);
+        $this->cache->set('meeting.refund.partial.fund', $fund);
     }
 
     public function html(): string
     {
-        $session = Cache::get('meeting.session');
-        $fund = Cache::get('meeting.refund.partial.fund');
+        $session = $this->cache->get('meeting.session');
+        $fund = $this->cache->get('meeting.refund.partial.fund');
 
         return (string)$this->renderView('pages.meeting.refund.partial.edit-list', [
             'session' => $session,
@@ -76,8 +75,8 @@ class PartialRefundEdit extends MeetingComponent
      */
     public function editAmount(int $debtId)
     {
-        $session = Cache::get('meeting.session');
-        $fund = Cache::get('meeting.refund.partial.fund');
+        $session = $this->cache->get('meeting.session');
+        $fund = $this->cache->get('meeting.refund.partial.fund');
         $debt = $this->refundService->getUnpaidDebt($fund, $session, $debtId);
         if(!$debt)
         {
@@ -99,8 +98,8 @@ class PartialRefundEdit extends MeetingComponent
      */
     public function saveAmount(int $debtId, int $amount)
     {
-        $session = Cache::get('meeting.session');
-        $fund = Cache::get('meeting.refund.partial.fund');
+        $session = $this->cache->get('meeting.session');
+        $fund = $this->cache->get('meeting.refund.partial.fund');
         $values = $this->validator->validateItem(['debt' => $debtId, 'amount' => $amount]);
         $debt = $this->refundService->getUnpaidDebt($fund, $session, $debtId);
         if(!$debt)

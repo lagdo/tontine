@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Report\Session;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use Siak\Tontine\Service\Report\MemberService;
 use Siak\Tontine\Service\Report\SessionService;
@@ -22,8 +21,8 @@ class Refund extends Component
      */
     public function html(): string
     {
-        $session = Cache::get('report.session');
-        $member = Cache::get('report.member');
+        $session = $this->cache->get('report.session');
+        $member = $this->cache->get('report.member');
 
         if(!$member)
         {

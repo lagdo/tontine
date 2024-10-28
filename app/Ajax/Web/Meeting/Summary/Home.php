@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Summary;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
 use Jaxon\Response\ComponentResponse;
@@ -42,7 +41,7 @@ class Home extends Component
             return $this->response;
         }
 
-        Cache::set('summary.session', $session);
+        $this->cache->set('summary.session', $session);
 
         return $this->render();
     }
@@ -53,7 +52,7 @@ class Home extends Component
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.summary.home', [
-            'session' => Cache::get('summary.session'),
+            'session' => $this->cache->get('summary.session'),
         ]);
     }
 

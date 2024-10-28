@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Saving;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingComponent;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
@@ -46,7 +45,7 @@ class Member extends MeetingComponent
             $this->target()->args()[0] :
             $this->bag('meeting.saving')->get('fund.id', 0));
         $fund = $this->fundService->getFund($fundId, true, true);
-        Cache::set('meeting.saving.fund', $fund);
+        $this->cache->set('meeting.saving.fund', $fund);
     }
 
     /**
@@ -55,7 +54,7 @@ class Member extends MeetingComponent
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.saving.member.home', [
-            'fund' => Cache::get('meeting.saving.fund'),
+            'fund' => $this->cache->get('meeting.saving.fund'),
         ]);
     }
 
@@ -114,8 +113,8 @@ class Member extends MeetingComponent
             return $this->response;
         }
 
-        $session = Cache::get('meeting.session');
-        $fund = Cache::get('meeting.saving.fund');
+        $session = $this->cache->get('meeting.session');
+        $fund = $this->cache->get('meeting.saving.fund');
         $saving = $this->savingService->findSaving($session, $fund, $member);
         $amount = !$saving ? '' : $this->localeService->getMoneyValue($saving->amount);
 
@@ -144,8 +143,8 @@ class Member extends MeetingComponent
             return $this->response;
         }
 
-        $session = Cache::get('meeting.session');
-        $fund = Cache::get('meeting.saving.fund');
+        $session = $this->cache->get('meeting.session');
+        $fund = $this->cache->get('meeting.saving.fund');
         $amount = str_replace(',', '.', trim($amount));
         if($amount === '')
         {

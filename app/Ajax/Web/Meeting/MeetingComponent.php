@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\SessionService;
@@ -43,7 +42,7 @@ abstract class MeetingComponent extends Component
         {
             throw new MessageException(trans('meeting.errors.session.not_opened'));
         }
-        Cache::set('meeting.session', $session);
+        $this->cache->set('meeting.session', $session);
     }
 
     /**

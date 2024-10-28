@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Planning;
 
-use App\Ajax\Cache;
 use App\Ajax\PageComponent;
 use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Model\Pool as PoolModel;
@@ -39,12 +38,12 @@ class PoolRoundEndSession extends PageComponent
     protected function getPool()
     {
         $poolId = (int)$this->bag('pool.round')->get('pool.id');
-        Cache::set('planning.pool', $this->poolService->getPool($poolId));
+        $this->cache->set('planning.pool', $this->poolService->getPool($poolId));
     }
 
     public function html(): string
     {
-        $pool = Cache::get('planning.pool');
+        $pool = $this->cache->get('planning.pool');
 
         return (string)$this->renderView('pages.planning.pool.round.sessions', [
             'field' => 'end',
@@ -82,14 +81,14 @@ class PoolRoundEndSession extends PageComponent
      */
     public function pool(PoolModel $pool, int $pageNumber): ComponentResponse
     {
-        Cache::set('planning.pool', $pool);
+        $this->cache->set('planning.pool', $pool);
 
         return $this->page($pageNumber);
     }
 
     public function showSessionPage(): ComponentResponse
     {
-        $pool = Cache::get('planning.pool');
+        $pool = $this->cache->get('planning.pool');
         if(!$pool || !$pool->pool_round)
         {
             return $this->response;

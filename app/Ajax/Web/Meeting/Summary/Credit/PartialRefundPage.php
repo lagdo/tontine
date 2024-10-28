@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Credit;
 
-use App\Ajax\Cache;
 use App\Ajax\PageComponent;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -34,8 +33,8 @@ class PartialRefundPage extends PageComponent
      */
     public function html(): string
     {
-        $session = Cache::get('summary.session');
-        $fund = Cache::get('summary.refund.partial.fund');
+        $session = $this->cache->get('summary.session');
+        $fund = $this->cache->get('summary.refund.partial.fund');
 
         return (string)$this->renderView('pages.meeting.summary.refund.partial.page', [
             'session' => $session,
@@ -45,8 +44,8 @@ class PartialRefundPage extends PageComponent
 
     protected function count(): int
     {
-        $session = Cache::get('summary.session');
-        $fund = Cache::get('summary.refund.partial.fund');
+        $session = $this->cache->get('summary.session');
+        $fund = $this->cache->get('summary.refund.partial.fund');
 
         return $this->refundService->getPartialRefundCount($session, $fund);
     }

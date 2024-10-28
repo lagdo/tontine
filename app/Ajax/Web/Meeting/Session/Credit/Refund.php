@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Credit;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingComponent;
 use Siak\Tontine\Model\Fund as FundModel;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
@@ -39,7 +38,7 @@ class Refund extends MeetingComponent
 
     public function html(): string
     {
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
 
         return (string)$this->renderView('pages.meeting.refund.home', [
             'session' => $session,
@@ -70,7 +69,7 @@ class Refund extends MeetingComponent
             $fund = $this->fundService->getDefaultFund();
             $this->bag('refund')->set('fund.id', $fund->id);
         }
-        Cache::set('meeting.refund.fund', $fund);
+        $this->cache->set('meeting.refund.fund', $fund);
     }
 
     /**
@@ -114,7 +113,7 @@ class Refund extends MeetingComponent
             return $this->response;
         }
 
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $this->refundService->createRefund($debt, $session);
 
         return $this->cl(RefundPage::class)->page();
@@ -132,7 +131,7 @@ class Refund extends MeetingComponent
             return $this->response;
         }
 
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $this->refundService->deleteRefund($debt, $session);
 
         return $this->cl(RefundPage::class)->page();

@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use App\Ajax\Web\Pagination;
 use Jaxon\Plugin\Response\Pagination\Paginator;
@@ -120,7 +119,7 @@ abstract class MeetingPageComponent extends Component
         {
             throw new MessageException(trans('meeting.errors.session.not_opened'));
         }
-        Cache::set('meeting.session', $session);
+        $this->cache->set('meeting.session', $session);
     }
 
     /**

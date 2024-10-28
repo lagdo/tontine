@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Pool;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 
@@ -21,7 +20,7 @@ class Deposit extends Component
 
     public function html(): string
     {
-        $session = Cache::get('summary.session');
+        $session = $this->cache->get('summary.session');
 
         return (string)$this->renderView('pages.meeting.summary.deposit.home', [
             'session' => $session,

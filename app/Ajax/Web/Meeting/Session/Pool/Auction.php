@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Pool;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
@@ -36,7 +35,7 @@ class Auction extends MeetingComponent
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.auction.home', [
-            'session' => Cache::get('meeting.session'),
+            'session' => $this->cache->get('meeting.session'),
         ]);
     }
 
@@ -57,7 +56,7 @@ class Auction extends MeetingComponent
     {
         $this->validator->validate($auctionId);
 
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $this->auctionService->toggleAuctionPayment($session, $auctionId);
 
         return $this->cl(AuctionPage::class)->page();

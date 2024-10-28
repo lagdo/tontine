@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Session\Charge\Libre;
 
-use App\Ajax\Cache;
 use App\Ajax\Web\Meeting\Session\Charge\ChargeComponent;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
@@ -37,11 +36,11 @@ class Target extends ChargeComponent
 
     protected function getTarget()
     {
-        $session = Cache::get('meeting.session');
-        $charge = Cache::get('meeting.session.charge');
+        $session = $this->cache->get('meeting.session');
+        $charge = $this->cache->get('meeting.session.charge');
         $target = $session !== null && $charge !== null ?
             $this->targetService->getTarget($charge, $session) : null;
-        Cache::set('meeting.session.charge.target', $target);
+        $this->cache->set('meeting.session.charge.target', $target);
     }
 
     /**
@@ -50,8 +49,8 @@ class Target extends ChargeComponent
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.charge.libre.target.home', [
-            'charge' => Cache::get('meeting.session.charge'),
-            'target' => Cache::get('meeting.session.charge.target'),
+            'charge' => $this->cache->get('meeting.session.charge'),
+            'target' => $this->cache->get('meeting.session.charge.target'),
         ]);
     }
 
@@ -90,13 +89,13 @@ class Target extends ChargeComponent
      */
     public function add()
     {
-        $target = Cache::get('meeting.session.charge.target');
+        $target = $this->cache->get('meeting.session.charge.target');
         if($target !== null)
         {
             return $this->response;
         }
 
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $title = trans('meeting.target.titles.set');
         $content = $this->renderView('pages.meeting.charge.libre.target.add', [
             'sessions' => $this->targetService->getDeadlineSessions($session),
@@ -125,14 +124,14 @@ class Target extends ChargeComponent
      */
     public function create(array $formValues)
     {
-        $target = Cache::get('meeting.session.charge.target');
+        $target = $this->cache->get('meeting.session.charge.target');
         if($target !== null)
         {
             return $this->response;
         }
 
-        $session = Cache::get('meeting.session');
-        $charge = Cache::get('meeting.session.charge');
+        $session = $this->cache->get('meeting.session');
+        $charge = $this->cache->get('meeting.session.charge');
         $formValues['global'] = isset($formValues['global']);
         $values = $this->validator->validateItem($formValues);
         $deadlineSession = $this->sessionService->getTontineSession($values['deadline']);
@@ -141,7 +140,7 @@ class Target extends ChargeComponent
             $deadlineSession, $values['amount'], $values['global']);
         $this->dialog->hide();
 
-        Cache::set('meeting.session.charge.target',
+        $this->cache->set('meeting.session.charge.target',
             $this->targetService->getTarget($charge, $session));
         return $this->charge($charge->id);
     }
@@ -152,13 +151,13 @@ class Target extends ChargeComponent
      */
     public function edit()
     {
-        $target = Cache::get('meeting.session.charge.target');
+        $target = $this->cache->get('meeting.session.charge.target');
         if($target === null)
         {
             return $this->response;
         }
 
-        $session = Cache::get('meeting.session');
+        $session = $this->cache->get('meeting.session');
         $title = trans('meeting.target.titles.set');
         $content = $this->renderView('pages.meeting.charge.libre.target.edit', [
             'target' => $target,
@@ -189,14 +188,14 @@ class Target extends ChargeComponent
      */
     public function update(array $formValues)
     {
-        $target = Cache::get('meeting.session.charge.target');
+        $target = $this->cache->get('meeting.session.charge.target');
         if($target === null)
         {
             return $this->response;
         }
 
-        $session = Cache::get('meeting.session');
-        $charge = Cache::get('meeting.session.charge');
+        $session = $this->cache->get('meeting.session');
+        $charge = $this->cache->get('meeting.session.charge');
         $formValues['global'] = isset($formValues['global']);
         $values = $this->validator->validateItem($formValues);
         $deadlineSession = $this->sessionService->getTontineSession($values['deadline']);
@@ -205,7 +204,7 @@ class Target extends ChargeComponent
             $deadlineSession, $values['amount'], $values['global']);
         $this->dialog->hide();
 
-        Cache::set('meeting.session.charge.target',
+        $this->cache->set('meeting.session.charge.target',
             $this->targetService->getTarget($charge, $session));
         return $this->charge($charge->id);
     }
@@ -216,19 +215,19 @@ class Target extends ChargeComponent
      */
     public function remove()
     {
-        $target = Cache::get('meeting.session.charge.target');
+        $target = $this->cache->get('meeting.session.charge.target');
         if($target === null)
         {
             return $this->response;
         }
 
-        $session = Cache::get('meeting.session');
-        $charge = Cache::get('meeting.session.charge');
+        $session = $this->cache->get('meeting.session');
+        $charge = $this->cache->get('meeting.session.charge');
         $this->targetService->deleteTarget($target);
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('meeting.target.messages.removed'));
 
-        Cache::set('meeting.session.charge.target',
+        $this->cache->set('meeting.session.charge.target',
             $this->targetService->getTarget($charge, $session));
         return $this->charge($charge->id);
     }

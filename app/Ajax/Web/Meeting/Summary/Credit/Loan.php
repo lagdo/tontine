@@ -2,7 +2,6 @@
 
 namespace App\Ajax\Web\Meeting\Summary\Credit;
 
-use App\Ajax\Cache;
 use App\Ajax\Component;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -24,7 +23,7 @@ class Loan extends Component
 
     public function html(): string
     {
-        $session = Cache::get('summary.session');
+        $session = $this->cache->get('summary.session');
         $loans = $this->loanService->getSessionLoans($session);
 
         return (string)$this->renderView('pages.meeting.summary.loan.home', [
