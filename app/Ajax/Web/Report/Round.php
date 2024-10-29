@@ -49,7 +49,7 @@ class Round extends Component
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         $this->response->js()->makeTableResponsive('content-pools');
         $this->response->js()->makeTableResponsive('content-amounts');

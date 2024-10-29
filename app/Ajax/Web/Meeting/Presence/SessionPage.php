@@ -29,6 +29,14 @@ class SessionPage extends PageComponent
     /**
      * @inheritDoc
      */
+    protected function count(): int
+    {
+        return $this->presenceService->getSessionCount();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         $member = $this->cl(Home::class)->getMember(); // Is null when showing presences by sessions.
@@ -43,20 +51,11 @@ class SessionPage extends PageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        return $this->presenceService->getSessionCount();
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('content-page-sessions');
-
-        return $this->response;
     }
 }

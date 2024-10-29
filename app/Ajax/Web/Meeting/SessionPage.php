@@ -44,14 +44,4 @@ class SessionPage extends PageComponent
     {
         return $this->sessionService->getSessionCount();
     }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
-        return $this->response;
-    }
 }

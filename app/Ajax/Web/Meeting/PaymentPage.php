@@ -55,14 +55,4 @@ class PaymentPage extends PageComponent
     {
         return $this->memberService->getMemberCount('');
     }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
-        return $this->response;
-    }
 }

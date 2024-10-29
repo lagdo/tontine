@@ -39,6 +39,16 @@ class TargetPage extends ChargePageComponent
     /**
      * @inheritDoc
      */
+    protected function count(): int
+    {
+        $search = trim($this->bag('meeting')->get('fee.member.search', ''));
+
+        return $this->targetService->getMemberCount($search);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         $search = trim($this->bag('meeting')->get('fee.member.search', ''));
@@ -55,22 +65,11 @@ class TargetPage extends ChargePageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        $search = trim($this->bag('meeting')->get('fee.member.search', ''));
-
-        return $this->targetService->getMemberCount($search);
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('meeting-fee-libre-target');
-
-        return $this->response;
     }
 }

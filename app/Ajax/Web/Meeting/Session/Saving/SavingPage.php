@@ -39,6 +39,17 @@ class SavingPage extends MeetingPageComponent
     /**
      * @inheritDoc
      */
+    protected function count(): int
+    {
+        $session = $this->cache->get('meeting.session');
+        $fund = $this->cache->get('meeting.saving.fund');
+
+        return $this->savingService->getSavingCount($session, $fund);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         $session = $this->cache->get('meeting.session');
@@ -50,23 +61,11 @@ class SavingPage extends MeetingPageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        $session = $this->cache->get('meeting.session');
-        $fund = $this->cache->get('meeting.saving.fund');
-
-        return $this->savingService->getSavingCount($session, $fund);
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('meeting-savings-page');
-
-        return $this->response;
     }
 }

@@ -59,7 +59,7 @@ class Home extends Component
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         $this->pools();
         $this->savings();

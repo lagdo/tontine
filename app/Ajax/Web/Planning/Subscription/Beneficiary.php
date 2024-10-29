@@ -72,7 +72,7 @@ class Beneficiary extends Component
     /**
      * @inheritDoc
      */
-    public function before()
+    protected function before()
     {
         $this->view()->shareValues($this->summaryService->getPayables($this->pool));
     }
@@ -91,7 +91,7 @@ class Beneficiary extends Component
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         $this->response->js()->makeTableResponsive('content-page');
     }

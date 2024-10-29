@@ -57,7 +57,7 @@ class Target extends ChargeComponent
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         $this->cl(TargetPage::class)->page();
     }

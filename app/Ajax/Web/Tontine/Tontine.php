@@ -71,7 +71,7 @@ class Tontine extends Component
     /**
      * @inheritDoc
      */
-    public function before()
+    protected function before()
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.tontines'));
     }
@@ -87,7 +87,7 @@ class Tontine extends Component
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         if(($tontine = $this->tenantService->tontine()))
         {

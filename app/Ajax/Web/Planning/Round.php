@@ -48,7 +48,7 @@ class Round extends Component
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         $this->cl(RoundPage::class)->page();
         $this->cl(Session::class)->show($this->tenantService->round());

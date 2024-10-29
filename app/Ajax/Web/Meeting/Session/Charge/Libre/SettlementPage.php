@@ -16,6 +16,19 @@ class SettlementPage extends ChargePageComponent
     /**
      * @inheritDoc
      */
+    protected function count(): int
+    {
+        $search = '';
+        $filter = $this->bag('meeting')->get('settlement.libre.filter', null);
+        $session = $this->cache->get('meeting.session');
+        $charge = $this->cache->get('meeting.session.charge');
+
+        return $this->billService->getBillCount($charge, $session, $search, $filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         $search = '';
@@ -30,25 +43,11 @@ class SettlementPage extends ChargePageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        $search = '';
-        $filter = $this->bag('meeting')->get('settlement.libre.filter', null);
-        $session = $this->cache->get('meeting.session');
-        $charge = $this->cache->get('meeting.session.charge');
-
-        return $this->billService->getBillCount($charge, $session, $search, $filter);
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('meeting-fee-libre-bills');
-
-        return $this->response;
     }
 }

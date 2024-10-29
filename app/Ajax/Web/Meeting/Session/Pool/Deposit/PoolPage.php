@@ -34,6 +34,17 @@ class PoolPage extends MeetingPageComponent
     /**
      * @inheritDoc
      */
+    protected function count(): int
+    {
+        $pool = $this->cache->get('meeting.pool');
+        $session = $this->cache->get('meeting.session');
+
+        return $this->depositService->getReceivableCount($pool, $session);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         $pool = $this->cache->get('meeting.pool');
@@ -44,14 +55,6 @@ class PoolPage extends MeetingPageComponent
             'session' => $session,
             'receivables' => $this->depositService->getReceivables($pool, $session, $this->page),
         ]);
-    }
-
-    protected function count(): int
-    {
-        $pool = $this->cache->get('meeting.pool');
-        $session = $this->cache->get('meeting.session');
-
-        return $this->depositService->getReceivableCount($pool, $session);
     }
 
     private function showTotal()
@@ -65,17 +68,12 @@ class PoolPage extends MeetingPageComponent
         $this->cl(Action::class)->render();
     }
 
-    public function page(int $pageNumber = 0)
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('meeting-pool-deposits');
-
         $this->showTotal();
-
-        return $this->response;
     }
 }

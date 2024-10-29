@@ -39,6 +39,17 @@ class PartialRefundPage extends MeetingPageComponent
     /**
      * @inheritDoc
      */
+    protected function count(): int
+    {
+        $session = $this->cache->get('meeting.session');
+        $fund = $this->cache->get('meeting.refund.partial.fund');
+
+        return $this->refundService->getPartialRefundCount($session, $fund);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         $session = $this->cache->get('meeting.session');
@@ -50,23 +61,11 @@ class PartialRefundPage extends MeetingPageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        $session = $this->cache->get('meeting.session');
-        $fund = $this->cache->get('meeting.refund.partial.fund');
-
-        return $this->refundService->getPartialRefundCount($session, $fund);
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('meeting-partial-refunds-page');
-
-        return $this->response;
     }
 }

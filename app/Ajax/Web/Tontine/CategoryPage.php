@@ -23,6 +23,17 @@ class CategoryPage extends PageComponent
     public function __construct(protected CategoryService $categoryService)
     {}
 
+    /**
+     * @inheritDoc
+     */
+    protected function count(): int
+    {
+        return $this->categoryService->getCategoryCount();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         return (string)$this->renderView('pages.options.category.page', [
@@ -30,20 +41,11 @@ class CategoryPage extends PageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        return $this->categoryService->getCategoryCount();
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('category-page');
-
-        return $this->response;
     }
 }

@@ -28,6 +28,15 @@ class MemberPage extends PageComponent
     /**
      * @inheritDoc
      */
+    protected function count(): int
+    {
+        $search = trim($this->bag('presence')->get('member.search', ''));
+        return $this->presenceService->getMemberCount($search);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         $session = $this->cl(Home::class)->getSession(); // Is null when showing presences by members.
@@ -43,21 +52,11 @@ class MemberPage extends PageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        $search = trim($this->bag('presence')->get('member.search', ''));
-        return $this->presenceService->getMemberCount($search);
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('content-page-members');
-
-        return $this->response;
     }
 }

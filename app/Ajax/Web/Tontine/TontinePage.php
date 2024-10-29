@@ -27,6 +27,17 @@ class TontinePage extends PageComponent
         private TontineService $tontineService)
     {}
 
+    /**
+     * @inheritDoc
+     */
+    protected function count(): int
+    {
+        return $this->tontineService->getTontineCount();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         $tontines = $this->tontineService->getTontines($this->page);
@@ -39,20 +50,11 @@ class TontinePage extends PageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        return $this->tontineService->getTontineCount();
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('content-page');
-
-        return $this->response;
     }
 }

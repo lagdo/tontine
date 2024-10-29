@@ -44,7 +44,7 @@ class Invite extends Component
     /**
      * @inheritDoc
      */
-    public function before()
+    protected function before()
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.tontines'));
     }
@@ -60,7 +60,7 @@ class Invite extends Component
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         $this->response->js()->setSmScreenHandler('invites-sm-screens');
 

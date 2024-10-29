@@ -56,7 +56,7 @@ class Home extends Component
     /**
      * @inheritDoc
      */
-    public function before()
+    protected function before()
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.presences'));
         $this->bag('presence')->set('session.id', 0);
@@ -85,7 +85,7 @@ class Home extends Component
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         $exchange = $this->bag('presence')->get('exchange', false);
         $clAtLeft = !$exchange ? $this->cl(Session::class) : $this->cl(Member::class);

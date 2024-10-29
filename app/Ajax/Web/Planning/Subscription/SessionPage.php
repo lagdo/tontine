@@ -25,6 +25,19 @@ class SessionPage extends PageComponent
     public function __construct(protected PoolService $poolService)
     {}
 
+    /**
+     * @inheritDoc
+     */
+    protected function count(): int
+    {
+        $pool = $this->cl(Home::class)->getPool();
+
+        return $this->poolService->getPoolSessionCount($pool);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         $pool = $this->cl(Home::class)->getPool();
@@ -35,22 +48,11 @@ class SessionPage extends PageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        $pool = $this->cl(Home::class)->getPool();
-
-        return $this->poolService->getPoolSessionCount($pool);
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('pool-subscription-sessions-page');
-
-        return $this->response;
     }
 }

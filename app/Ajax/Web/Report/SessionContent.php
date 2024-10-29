@@ -13,7 +13,7 @@ class SessionContent extends Component
     /**
      * @inheritDoc
      */
-    public function before(): void
+    protected function before(): void
     {
         // Render the page title.
         $this->cl(Session\ReportTitle::class)->render();
@@ -27,7 +27,7 @@ class SessionContent extends Component
         return (string)$this->renderView('pages.report.session.session');
     }
 
-    public function after(): void
+    protected function after(): void
     {
         // Initialize the page components.
         $this->cl(Session\Bill\Session::class)->render();

@@ -41,6 +41,17 @@ class PoolRoundEndSession extends PageComponent
         $this->cache->set('planning.pool', $this->poolService->getPool($poolId));
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function count(): int
+    {
+        return $this->sessionService->getTontineSessionCount();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         $pool = $this->cache->get('planning.pool');
@@ -52,21 +63,12 @@ class PoolRoundEndSession extends PageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        return $this->sessionService->getTontineSessionCount();
-    }
-
-    public function page(int $pageNumber = 0): ComponentResponse
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('pool-round-sessions-end');
-
-        return $this->response;
     }
 
     private function getSessionPageNumber(SessionModel $session): int

@@ -50,7 +50,7 @@ class Pool extends Component
     /**
      * @inheritDoc
      */
-    public function before()
+    protected function before()
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.planning'));
     }
@@ -68,7 +68,7 @@ class Pool extends Component
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         $this->cl(PoolPage::class)->page();
     }

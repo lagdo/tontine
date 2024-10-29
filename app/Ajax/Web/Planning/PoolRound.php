@@ -74,7 +74,7 @@ class PoolRound extends Component
     /**
      * @inheritDoc
      */
-    public function before()
+    protected function before()
     {
         $this->bag('pool.round')->set('pool.id', $this->pool->id);
     }
@@ -92,7 +92,7 @@ class PoolRound extends Component
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         $this->response->js()->setSmScreenHandler('pool-round-sessions-sm-screens-btn',
             'pool-round-sessions-sm-screens');

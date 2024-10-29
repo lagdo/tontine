@@ -35,7 +35,7 @@ class Member extends ChargeComponent
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         $this->cl(MemberPage::class)->page();
     }

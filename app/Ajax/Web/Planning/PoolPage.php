@@ -20,6 +20,17 @@ class PoolPage extends PageComponent
     public function __construct(private PoolService $poolService)
     {}
 
+    /**
+     * @inheritDoc
+     */
+    protected function count(): int
+    {
+        return $this->poolService->getPoolCount();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         return (string)$this->renderView('pages.planning.pool.page', [
@@ -28,20 +39,11 @@ class PoolPage extends PageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        return $this->poolService->getPoolCount();
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('content-page');
-
-        return $this->response;
     }
 }

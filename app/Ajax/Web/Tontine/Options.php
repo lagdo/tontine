@@ -40,7 +40,7 @@ class Options extends Component
     /**
      * @inheritDoc
      */
-    public function before()
+    protected function before()
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.tontine'));
     }
@@ -56,7 +56,7 @@ class Options extends Component
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         $this->response->js()->setSmScreenHandler('options-sm-screens');
 

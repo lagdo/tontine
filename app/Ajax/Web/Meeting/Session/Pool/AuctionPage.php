@@ -28,6 +28,17 @@ class AuctionPage extends MeetingPageComponent
     /**
      * @inheritDoc
      */
+    protected function count(): int
+    {
+        $session = $this->cache->get('meeting.session');
+        $filtered = $this->bag('auction')->get('filter', null);
+
+        return $this->auctionService->getAuctionCount($session, $filtered);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         $session = $this->cache->get('meeting.session');
@@ -39,23 +50,11 @@ class AuctionPage extends MeetingPageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        $session = $this->cache->get('meeting.session');
-        $filtered = $this->bag('auction')->get('filter', null);
-
-        return $this->auctionService->getAuctionCount($session, $filtered);
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('meeting-auctions-page');
-
-        return $this->response;
     }
 }

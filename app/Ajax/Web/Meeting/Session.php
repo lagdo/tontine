@@ -39,7 +39,7 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    public function before()
+    protected function before()
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.meeting'));
     }
@@ -55,7 +55,7 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         $this->cl(SessionPage::class)->page();
     }

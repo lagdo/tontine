@@ -4,6 +4,7 @@ namespace App\Ajax;
 
 use App\Ajax\Web\Pagination;
 use Jaxon\Plugin\Response\Pagination\Paginator;
+use Jaxon\Response\ComponentResponse;
 
 abstract class PageComponent extends Component
 {
@@ -80,5 +81,22 @@ abstract class PageComponent extends Component
                 // Render the page content.
                 $this->render();
             });
+    }
+
+    /**
+     * Render the page and pagination components
+     *
+     * @param int $pageNumber
+     *
+     * @return ComponentResponse|null
+     */
+    public function page(int $pageNumber = 0)
+    {
+        // Render the page content.
+        $this->renderPage($pageNumber)
+            // Render the paginator.
+            ->render($this->rq()->page());
+
+        return $this->response;
     }
 }

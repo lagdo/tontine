@@ -23,6 +23,17 @@ class HostPage extends PageComponent
     public function __construct(private GuestService $guestService)
     {}
 
+    /**
+     * @inheritDoc
+     */
+    protected function count(): int
+    {
+        return $this->guestService->getHostInviteCount();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         return $this->renderView('pages.invite.host.page', [
@@ -30,20 +41,11 @@ class HostPage extends PageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        return $this->guestService->getHostInviteCount();
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('content-host-invites-page');
-
-        return $this->response;
     }
 }

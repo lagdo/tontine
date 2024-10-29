@@ -32,6 +32,18 @@ class SessionPage extends PageComponent
         return $this->roundService->getRound($roundId);
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function count(): int
+    {
+        $round = $this->getRound();
+        return $this->roundService->getSessionCount($round);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         $round = $this->getRound();
@@ -42,21 +54,11 @@ class SessionPage extends PageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        $round = $this->getRound();
-        return $this->roundService->getSessionCount($round);
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('content-page-sessions');
-
-        return $this->response;
     }
 }

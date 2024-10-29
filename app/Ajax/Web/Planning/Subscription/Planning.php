@@ -64,7 +64,7 @@ class Planning extends Component
     /**
      * @inheritDoc
      */
-    public function before()
+    protected function before()
     {
         $this->view()->shareValues($this->summaryService->getReceivables($this->pool));
     }
@@ -82,7 +82,7 @@ class Planning extends Component
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         $this->response->js()->makeTableResponsive('content-page');
     }

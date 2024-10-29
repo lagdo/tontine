@@ -25,6 +25,17 @@ class ChargePage extends PageComponent
     public function __construct(protected ChargeService $chargeService)
     {}
 
+    /**
+     * @inheritDoc
+     */
+    protected function count(): int
+    {
+        return $this->chargeService->getChargeCount();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         return (string)$this->renderView('pages.options.charge.page', [
@@ -34,20 +45,11 @@ class ChargePage extends PageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        return $this->chargeService->getChargeCount();
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('content-page');
-
-        return $this->response;
     }
 }

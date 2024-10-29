@@ -40,7 +40,7 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    public function before()
+    protected function before()
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.report'));
     }
@@ -63,7 +63,7 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         $sessions = $this->sessionService->getRoundSessions(orderAsc: false)
             ->filter(fn($session) => ($session->opened || $session->closed));

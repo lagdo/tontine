@@ -25,6 +25,14 @@ class FixedFeePage extends MeetingPageComponent
     /**
      * @inheritDoc
      */
+    protected function count(): int
+    {
+        return $this->feeService->getFeeCount();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         $session = $this->cache->get('meeting.session');
@@ -37,20 +45,11 @@ class FixedFeePage extends MeetingPageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        return $this->feeService->getFeeCount();
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('meeting-fees-fixed-page');
-
-        return $this->response;
     }
 }

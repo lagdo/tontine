@@ -20,7 +20,7 @@ class Settlement extends ChargeComponent
     /**
      * @inheritDoc
      */
-    public function after()
+    protected function after()
     {
         $this->cl(SettlementPage::class)->page();
     }

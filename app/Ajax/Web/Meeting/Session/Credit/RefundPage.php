@@ -38,6 +38,18 @@ class RefundPage extends MeetingPageComponent
     /**
      * @inheritDoc
      */
+    protected function count(): int
+    {
+        $session = $this->cache->get('meeting.session');
+        $fund = $this->cache->get('meeting.refund.fund');
+        $filtered = $this->bag('refund')->get('filter', null);
+
+        return $this->refundService->getDebtCount($session, $fund, $filtered);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         $session = $this->cache->get('meeting.session');
@@ -50,24 +62,11 @@ class RefundPage extends MeetingPageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        $session = $this->cache->get('meeting.session');
-        $fund = $this->cache->get('meeting.refund.fund');
-        $filtered = $this->bag('refund')->get('filter', null);
-
-        return $this->refundService->getDebtCount($session, $fund, $filtered);
-    }
-
-    public function page(int $pageNumber = 0)
-    {
-        // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
-
         $this->response->js()->makeTableResponsive('meeting-debts-page');
-
-        return $this->response;
     }
 }
