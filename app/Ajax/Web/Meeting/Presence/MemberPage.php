@@ -9,6 +9,7 @@ use function trim;
 
 /**
  * @databag presence
+ * @before getSession
  */
 class MemberPage extends PageComponent
 {
@@ -25,12 +26,20 @@ class MemberPage extends PageComponent
     public function __construct(private PresenceService $presenceService)
     {}
 
+    protected function getSession()
+    {
+        $sessionId = $this->bag('presence')->get('session.id', 0);
+        $session = $sessionId === 0 ? null : $this->presenceService->getSession($sessionId);
+        $this->cache->set('presence.session', $session);
+    }
+
     /**
      * @inheritDoc
      */
     protected function count(): int
     {
         $search = trim($this->bag('presence')->get('member.search', ''));
+
         return $this->presenceService->getMemberCount($search);
     }
 
@@ -39,7 +48,7 @@ class MemberPage extends PageComponent
      */
     public function html(): string
     {
-        $session = $this->cl(Home::class)->getSession(); // Is null when showing presences by members.
+        $session = $this->cache->get('presence.session'); // Is null when showing presences by members.
         $search = trim($this->bag('presence')->get('member.search', ''));
 
         return (string)$this->renderView('pages.meeting.presence.member.page', [

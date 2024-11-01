@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\View\View;
-use Jaxon\Laravel\App\Jaxon;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\Tontine\TontineService;
 
 use function auth;
 use function view;
@@ -15,17 +15,18 @@ class IndexController extends Controller
     /**
      * Show the home page.
      *
-     * @param Jaxon $jaxon
+     * @param TontineService $tontineService
      *
      * @return View
      */
-    public function index(Jaxon $jaxon): View
+    public function index(TontineService $tontineService): View
     {
         view()->share([
             'user' => auth()->user(),
             'locales' => LaravelLocalization::getSupportedLocales(),
             'locale' => LaravelLocalization::getCurrentLocale(),
             'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
+            'hasGuestTontines' => $tontineService->hasGuestTontines()
         ]);
 
         return view("tontine::base.home");

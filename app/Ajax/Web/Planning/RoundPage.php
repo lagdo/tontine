@@ -6,7 +6,7 @@ use App\Ajax\PageComponent;
 use Siak\Tontine\Service\Planning\RoundService;
 
 /**
- * @databag tontine
+ * @databag planning
  */
 class RoundPage extends PageComponent
 {
@@ -15,7 +15,7 @@ class RoundPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['tontine', 'round.page'];
+    protected array $bagOptions = ['planning', 'round.page'];
 
     /**
      * @param RoundService $roundService

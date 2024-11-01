@@ -6,17 +6,14 @@ use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\SectionTitle;
 use Jaxon\Response\ComponentResponse;
-use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\PoolService;
-use Siak\Tontine\Service\Planning\SubscriptionService;
-use Siak\Tontine\Service\Planning\SummaryService;
 
 use function intval;
 use function trans;
 
 /**
  * @databag subscription
- * @before setPool
+ * @before getPool
  */
 class Home extends Component
 {
@@ -32,49 +29,18 @@ class Home extends Component
     protected PoolService $poolService;
 
     /**
-     * @var SummaryService
-     */
-    public SummaryService $summaryService;
-
-    /**
-     * @var SubscriptionService
-     */
-    public SubscriptionService $subscriptionService;
-
-    /**
-     * @var PoolModel|null
-     */
-    protected ?PoolModel $pool = null;
-
-    /**
      * @return void
      */
-    protected function setPool()
+    protected function getPool()
     {
         $poolId = $this->target()->method() === 'pool' ? $this->target()->args()[0] :
             intval($this->bag('subscription')->get('pool.id'));
-        $this->pool = $this->poolService->getPool($poolId);
-    }
-
-    /**
-     * @exclude
-     *
-     * @return PoolModel|null
-     */
-    public function getPool(): ?PoolModel
-    {
-        if(!$this->pool)
-        {
-            $poolId = intval($this->bag('subscription')->get('pool.id'));
-            $this->pool = $this->poolService->getPool($poolId);
-        }
-
-        return $this->pool;
+        $this->cache->set('planning.pool', $this->poolService->getPool($poolId));
     }
 
     public function pool(int $poolId = 0): ComponentResponse
     {
-        if($this->pool === null)
+        if($this->cache->get('planning.pool') === null)
         {
             return $this->response;
         }
@@ -89,7 +55,8 @@ class Home extends Component
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.planning'));
 
-        $this->bag('subscription')->set('pool.id', $this->pool->id);
+        $pool = $this->cache->get('planning.pool');
+        $this->bag('subscription')->set('pool.id', $pool->id);
         $this->bag('subscription')->set('member.filter', null);
         $this->bag('subscription')->set('member.search', '');
         $this->bag('subscription')->set('session.filter', false);

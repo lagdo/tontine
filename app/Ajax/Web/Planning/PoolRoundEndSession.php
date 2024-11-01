@@ -4,8 +4,6 @@ namespace App\Ajax\Web\Planning;
 
 use App\Ajax\PageComponent;
 use Jaxon\Response\ComponentResponse;
-use Siak\Tontine\Model\Pool as PoolModel;
-use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Planning\PoolService;
 
@@ -71,23 +69,6 @@ class PoolRoundEndSession extends PageComponent
         $this->response->js()->makeTableResponsive('pool-round-sessions-end');
     }
 
-    private function getSessionPageNumber(SessionModel $session): int
-    {
-        $sessionCount = $this->sessionService->getTontineSessionCount($session, true, false);
-
-        return (int)($sessionCount / $this->tenantService->getLimit()) + 1;
-    }
-
-    /**
-     * @exclude
-     */
-    public function pool(PoolModel $pool, int $pageNumber): ComponentResponse
-    {
-        $this->cache->set('planning.pool', $pool);
-
-        return $this->page($pageNumber);
-    }
-
     public function showSessionPage(): ComponentResponse
     {
         $pool = $this->cache->get('planning.pool');
@@ -96,7 +77,9 @@ class PoolRoundEndSession extends PageComponent
             return $this->response;
         }
 
-        $pageNumber = $this->getSessionPageNumber($pool->pool_round->start_session);
+        $session = $pool->pool_round->start_session;
+        $sessionCount = $this->sessionService->getTontineSessionCount($session, true, false);
+        $pageNumber = (int)($sessionCount / $this->tenantService->getLimit()) + 1;
 
         return $this->page($pageNumber);
     }

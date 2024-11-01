@@ -27,11 +27,14 @@ class SessionPage extends PageComponent
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function count(): int
     {
-        $this->response->js()->makeTableResponsive('content-page');
+        return $this->sessionService->getSessionCount();
     }
 
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.session.list.page', [
@@ -40,8 +43,11 @@ class SessionPage extends PageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        return $this->sessionService->getSessionCount();
+        $this->response->js()->makeTableResponsive('content-page');
     }
 }

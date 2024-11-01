@@ -25,7 +25,6 @@ trait SelectTrait
     protected function selectTontine(Tontine $tontine)
     {
         $this->cl(TontineName::class)->show($tontine->name);
-
         // Set the tontine sidebar menu
         $this->cl(SidebarMenuTontine::class)->render();
         $this->response->jq('a', '#sidebar-menu-tontine')->css('color', self::$activeMenuColor);

@@ -4,17 +4,14 @@ namespace App\Ajax\Web\Tontine;
 
 use App\Ajax\Component;
 use App\Ajax\SelectTrait;
-use App\Ajax\Web\Locale;
 use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\SectionTitle;
 use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Tontine\TontineValidator;
 
-use function Jaxon\jq;
 use function Jaxon\pm;
 use function collect;
 use function trans;
@@ -32,21 +29,9 @@ class Tontine extends Component
     protected $overrides = SectionContent::class;
 
     /**
-     * @di
      * @var LocaleService
      */
     protected LocaleService $localeService;
-
-    /**
-     * @di
-     * @var TontineService
-     */
-    protected TontineService $tontineService;
-
-    /**
-     * @var RoundService
-     */
-    protected RoundService $roundService;
 
     /**
      * @var MemberService
@@ -59,8 +44,12 @@ class Tontine extends Component
     protected TontineValidator $validator;
 
     /**
-     * @di $roundService
-     * @databag tontine
+     * @param TontineService $tontineService
+     */
+    public function __construct(private TontineService $tontineService)
+    {}
+
+    /**
      * @after hideMenuOnMobile
      */
     public function home(): ComponentResponse
@@ -81,7 +70,9 @@ class Tontine extends Component
      */
     public function html(): string
     {
-        return (string)$this->renderView('pages.tontine.home');
+        return (string)$this->renderView('pages.tontine.home', [
+            'hasGuestTontines' => $this->tontineService->hasGuestTontines(),
+        ]);
     }
 
     /**
@@ -122,8 +113,6 @@ class Tontine extends Component
 
         $this->dialog->hide();
         $this->dialog->show($title, $content, $buttons);
-        $this->response->jq('#select_country_dropdown')
-            ->on('change', $this->rq(Locale::class)->selectCurrency(jq()->val()));
 
         return $this->response;
     }
@@ -169,8 +158,6 @@ class Tontine extends Component
         ]];
 
         $this->dialog->show($title, $content, $buttons);
-        $this->response->jq('#select_country_dropdown')
-            ->on('change', $this->rq(Locale::class)->selectCurrency(jq()->val()));
 
         return $this->response;
     }

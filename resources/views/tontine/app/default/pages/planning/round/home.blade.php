@@ -2,6 +2,7 @@
   $rqSelect = Jaxon\rq(App\Ajax\Web\Tontine\Select::class);
   $rqRound = Jaxon\rq(App\Ajax\Web\Planning\Round::class);
   $rqRoundPage = Jaxon\rq(App\Ajax\Web\Planning\RoundPage::class);
+  $rqSession = Jaxon\rq(App\Ajax\Web\Planning\Session::class);
 @endphp
           <div class="row" id="round-sm-screens">
             <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-home-rounds">
@@ -37,6 +38,6 @@
               </div>
             </div>
 
-            <div class="col-md-6 col-sm-12 sm-screen" id="content-home-sessions">
+            <div @jxnShow($rqSession) class="col-md-6 col-sm-12 sm-screen" id="content-home-sessions">
             </div>
           </div>

@@ -3,12 +3,12 @@
 namespace App\Ajax\Web\Planning;
 
 use App\Ajax\PageComponent;
-use Siak\Tontine\Model\Round as RoundModel;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Planning\SessionService;
 
 /**
  * @databag planning
+ * @before getRound
  */
 class SessionPage extends PageComponent
 {
@@ -23,13 +23,10 @@ class SessionPage extends PageComponent
         private SessionService $sessionService)
     {}
 
-    /**
-     * @return RoundModel|null
-     */
-    private function getRound(): ?RoundModel
+    protected function getRound()
     {
         $roundId = $this->bag('planning')->get('round.id');
-        return $this->roundService->getRound($roundId);
+        $this->cache->set('planning.round', $this->roundService->getRound($roundId));
     }
 
     /**
@@ -37,7 +34,7 @@ class SessionPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->getRound();
+        $round = $this->cache->get('planning.round');
         return $this->roundService->getSessionCount($round);
     }
 
@@ -46,7 +43,8 @@ class SessionPage extends PageComponent
      */
     public function html(): string
     {
-        $round = $this->getRound();
+        $round = $this->cache->get('planning.round');
+
         return (string)$this->renderView('pages.planning.session.page', [
             'sessions' => $round === null ? []:
                 $this->roundService->getSessions($round, $this->page),

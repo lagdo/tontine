@@ -3,7 +3,6 @@
 namespace App\Ajax\Web\Meeting\Session\Credit;
 
 use App\Ajax\Web\Meeting\MeetingComponent;
-use Siak\Tontine\Model\Fund as FundModel;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
@@ -20,11 +19,6 @@ class Refund extends MeetingComponent
      * @var DebtValidator
      */
     protected DebtValidator $validator;
-
-    /**
-     * @var FundModel|null
-     */
-    private $fund = null;
 
     /**
      * The constructor

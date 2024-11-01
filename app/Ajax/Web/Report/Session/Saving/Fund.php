@@ -4,12 +4,8 @@ namespace App\Ajax\Web\Report\Session\Saving;
 
 use App\Ajax\Component;
 use Illuminate\Support\Collection;
-use Jaxon\Response\ComponentResponse;
-use Siak\Tontine\Model\Fund as FundModel;
-use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Saving\ClosingService;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
-use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\FundService;
 
@@ -21,24 +17,9 @@ use Siak\Tontine\Service\Tontine\FundService;
 class Fund extends Component
 {
     /**
-     * @var SessionModel|null
-     */
-    protected ?SessionModel $session = null;
-
-    /**
-     * @var FundModel|null
-     */
-    protected ?FundModel $fund = null;
-
-    /**
      * @var Collection
      */
     protected Collection $savings;
-
-    /**
-     * @var int|null
-     */
-    protected ?int $profitAmount = null;
 
     /**
      * @var bool
@@ -48,14 +29,14 @@ class Fund extends Component
     /**
      * The constructor
      *
-     * @param LocaleService $localeService
      * @param FundService $fundService
      * @param SessionService $sessionService
      * @param ProfitService $profitService
+     * @param ClosingService $closingService
      */
-    public function __construct(private LocaleService $localeService,
-        private FundService $fundService, private SessionService $sessionService,
-        private ProfitService $profitService, private ClosingService $closingService)
+    public function __construct(private FundService $fundService,
+        private SessionService $sessionService, private ProfitService $profitService,
+        private ClosingService $closingService)
     {}
 
     /**
@@ -64,7 +45,7 @@ class Fund extends Component
     protected function getSession()
     {
         $sessionId = $this->bag('report')->get('session.id');
-        $this->session = $this->sessionService->getSession($sessionId);
+        $this->cache->set('report.session', $this->sessionService->getSession($sessionId));
     }
 
     /**
@@ -78,28 +59,21 @@ class Fund extends Component
             $fundId = $this->target()->args()[0];
             $this->bag('report')->set('fund.id', $fundId);
         }
-        $this->fund = $this->fundService->getFund($fundId, true, true);
-    }
-
-    /**
-     * @exclude
-     *
-     * @return array
-     */
-    public function getData(): array
-    {
-        return [$this->savings, $this->session, $this->fund, $this->profitAmount];
+        $this->cache->set('report.fund', $this->fundService->getFund($fundId, true, true));
     }
 
     protected function before()
     {
-        if($this->profitAmount === null)
+        $session = $this->cache->get('report.session');
+        $fund = $this->cache->get('report.fund');
+        $profit = $this->cache->get('report.profit');
+        if($profit === null)
         {
-            $this->profitAmount = $this->closingService
-                ->getProfitAmount($this->session, $this->fund);
+            $profit = $this->closingService->getProfitAmount($session, $fund);
+            $this->cache->set('report.profit', $profit);
         }
-        $this->savings = $this->profitService
-            ->getDistributions($this->session, $this->fund, $this->profitAmount);
+        $this->cache->set('report.savings',
+            $this->profitService->getDistributions($session, $fund, $profit));
     }
 
     /**
@@ -108,29 +82,16 @@ class Fund extends Component
     protected function after()
     {
         $this->response->js()->makeTableResponsive('report-fund-savings-page');
+        $this->response->js()->makeTableResponsive('report-fund-savings-distribution');
     }
 
     public function html(): string
     {
         return (string)$this->renderView('pages.report.session.savings.fund', [
-            'fund' => $this->fund,
-            'profitAmount' => $this->profitAmount,
+            'fund' => $this->cache->get('report.fund'),
+            'profitAmount' => $this->cache->get('report.profit'),
             'backButton' => $this->backButton,
         ]);
-    }
-
-    /**
-     * @exclude
-     */
-    public function show(SessionModel $session, FundModel $fund): ComponentResponse
-    {
-        $this->bag('report')->set('session.id', $session->id);
-        $this->bag('report')->set('fund.id', $fund->id);
-        $this->session = $session;
-        $this->fund = $fund;
-        $this->backButton = true;
-
-        return $this->render();
     }
 
     public function fund(int $fundId)
@@ -140,12 +101,8 @@ class Fund extends Component
 
     public function amount(int $profitAmount)
     {
-        $this->profitAmount = $profitAmount;
-        $this->before();
-
-        $this->cl(Amount::class)->render();
-        $this->cl(Summary::class)->render();
-        $this->cl(Distribution::class)->render();
+        $this->cache->set('report.profit', $profitAmount);
+        $this->render();
 
         return $this->response;
     }

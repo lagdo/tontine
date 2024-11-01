@@ -4,6 +4,7 @@ namespace App\Ajax\Web\Planning;
 
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
+use App\Ajax\Web\SectionTitle;
 use App\Ajax\Web\Tontine\Select;
 use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Service\Planning\RoundService;
@@ -12,7 +13,7 @@ use function Jaxon\pm;
 use function trans;
 
 /**
- * @databag tontine
+ * @databag planning
  */
 class Round extends Component
 {
@@ -28,13 +29,20 @@ class Round extends Component
     {}
 
     /**
-     * @databag planning
      * @before checkGuestAccess ["planning", "sessions"]
      * @after hideMenuOnMobile
      */
     public function home(): ComponentResponse
     {
         return $this->render();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function before()
+    {
+        $this->cl(SectionTitle::class)->show(trans('tontine.menus.planning'));
     }
 
     /**
@@ -51,7 +59,17 @@ class Round extends Component
     protected function after()
     {
         $this->cl(RoundPage::class)->page();
-        $this->cl(Session::class)->show($this->tenantService->round());
+
+        // Show the session of the default round.
+        $round = $this->tenantService->round();
+        if($round !== null)
+        {
+            $this->bag('planning')->set('round.id', $round->id);
+            $this->cache->set('planning.round', $round);
+            $this->cl(Session::class)->render();
+        }
+
+        $this->response->js()->showSmScreen('content-home-sessions', 'round-sm-screens');
     }
 
     public function add()

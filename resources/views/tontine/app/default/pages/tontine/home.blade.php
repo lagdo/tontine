@@ -1,7 +1,7 @@
 @php
   $rqTontine = Jaxon\rq(App\Ajax\Web\Tontine\Tontine::class);
   $rqTontinePage = Jaxon\rq(App\Ajax\Web\Tontine\TontinePage::class);
-  $rqTontineGuest = Jaxon\rq(App\Ajax\Web\Tontine\Guest\Tontine::class);
+  $rqInviteTontine = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Tontine::class);
   $rqSelect = Jaxon\rq(App\Ajax\Web\Tontine\Select::class);
 @endphp
           <div class="section-body">
@@ -32,6 +32,8 @@
             </div>
           </div>
 
-          <div @jxnShow($rqTontineGuest)>
-            @jxnHtml($rqTontineGuest)
+@if ($hasGuestTontines)
+          <div @jxnShow($rqInviteTontine)>
+            @jxnHtml($rqInviteTontine)
           </div>
+@endif

@@ -4,6 +4,9 @@ namespace App\Ajax\Web\Report\Session\Saving;
 
 use App\Ajax\Component;
 
+/**
+ * @exclude
+ */
 class Distribution extends Component
 {
     /**
@@ -11,19 +14,11 @@ class Distribution extends Component
      */
     public function html(): string
     {
-        [$savings] = $this->cl(Fund::class)->getData();
+        $savings = $this->cache->get('report.savings');
 
         return (string)$this->renderView('pages.report.session.savings.distribution', [
             'savings' => $savings->groupBy('member_id'),
             'distributionSum' => $savings->sum('distribution'),
         ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function after()
-    {
-        $this->response->js()->makeTableResponsive('report-fund-savings-distribution');
     }
 }

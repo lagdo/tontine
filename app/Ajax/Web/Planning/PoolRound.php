@@ -5,8 +5,6 @@ namespace App\Ajax\Web\Planning;
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
 use Jaxon\Response\ComponentResponse;
-use Siak\Tontine\Model\Pool as PoolModel;
-use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Validation\Planning\PoolRoundValidator;
@@ -31,11 +29,6 @@ class PoolRound extends Component
     protected PoolRoundValidator $validator;
 
     /**
-     * @var PoolModel|null
-     */
-    protected ?PoolModel $pool = null;
-
-    /**
      * The constructor
      *
      * @param SessionService $sessionService
@@ -52,18 +45,12 @@ class PoolRound extends Component
     {
         $poolId = $this->target()->method() === 'home' ? $this->target()->args()[0] :
             (int)$this->bag('pool.round')->get('pool.id');
-        $this->pool = $this->poolService->getPool($poolId);
-    }
-
-    private function getSessionPageNumber(SessionModel $session): int
-    {
-        $sessionCount = $this->sessionService->getTontineSessionCount($session, true, false);
-        return (int)($sessionCount / $this->tenantService->getLimit()) + 1;
+        $this->cache->set('planning.pool', $this->poolService->getPool($poolId));
     }
 
     public function home(int $poolId): ComponentResponse
     {
-        if(!$this->pool)
+        if(!$this->cache->get('planning.pool'))
         {
             return $this->response;
         }
@@ -76,7 +63,8 @@ class PoolRound extends Component
      */
     protected function before()
     {
-        $this->bag('pool.round')->set('pool.id', $this->pool->id);
+        $pool = $this->cache->get('planning.pool');
+        $this->bag('pool.round')->set('pool.id', $pool->id);
     }
 
     /**
@@ -85,7 +73,7 @@ class PoolRound extends Component
     public function html(): string
     {
         return (string)$this->renderView('pages.planning.pool.round.home', [
-            'pool' => $this->pool,
+            'pool' => $this->cache->get('planning.pool'),
         ]);
     }
 
@@ -97,20 +85,17 @@ class PoolRound extends Component
         $this->response->js()->setSmScreenHandler('pool-round-sessions-sm-screens-btn',
             'pool-round-sessions-sm-screens');
 
+        $pool = $this->cache->get('planning.pool');
         $startSession = $endSession = trans('tontine.pool_round.labels.default');
-        $startPageNumber = $endPageNumber = 1;
-        if($this->pool->pool_round !== null)
+        if($pool->pool_round !== null)
         {
-            $startSession = $this->pool->start_date;
-            $endSession = $this->pool->end_date;
-            // Go to the pages of the round start and end sessions.
-            $startPageNumber = $this->getSessionPageNumber($this->pool->pool_round->start_session);
-            $endPageNumber = $this->getSessionPageNumber($this->pool->pool_round->end_session);
+            $startSession = $pool->start_date;
+            $endSession = $pool->end_date;
         }
 
-        $this->cl(PoolRoundAction::class)->pool($this->pool);
-        $this->cl(PoolRoundStartSession::class)->pool($this->pool, $startPageNumber);
-        $this->cl(PoolRoundEndSession::class)->pool($this->pool, $endPageNumber);
+        $this->cl(PoolRoundAction::class)->render();
+        $this->cl(PoolRoundStartSession::class)->showSessionPage();
+        $this->cl(PoolRoundEndSession::class)->showSessionPage();
 
         $response = jaxon()->getResponse();
         $response->html('pool-round-start-session-title',
@@ -124,8 +109,9 @@ class PoolRound extends Component
      */
     public function saveRound(array $formValues)
     {
+        $pool = $this->cache->get('planning.pool');
         $values = $this->validator->validateItem($formValues);
-        $this->poolService->saveRound($this->pool, $values);
+        $this->poolService->saveRound($pool, $values);
 
         // Reload the pool
         $this->getPool();
@@ -137,11 +123,12 @@ class PoolRound extends Component
 
     public function deleteRound()
     {
-        $this->poolService->deleteRound($this->pool);
+        $pool = $this->cache->get('planning.pool');
+        $this->poolService->deleteRound($pool);
 
         // Reload the pool
         $this->getPool();
-        $this->home($this->pool->id);
+        $this->home($pool->id);
         $this->notify->info(trans('tontine.pool_round.messages.deleted'));
 
         return $this->response;

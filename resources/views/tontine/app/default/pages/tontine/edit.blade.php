@@ -21,8 +21,10 @@
             </div>
             <div class="form-group row">
               {!! $htmlBuilder->label(__('common.labels.country'), 'country_code')->class('col-sm-3 col-form-label') !!}
-              <div class="col-sm-9">
-                {!! $htmlBuilder->select('country_code', $countries, $tontine->country_code)->class('form-control')->id('select_country_dropdown') !!}
+              <div class="col-sm-9" @jxnTarget()>
+                <div @jxnOn(['select', 'change', ''], Jaxon\rq(App\Ajax\Web\Locale::class)
+                  ->selectCurrency(Jaxon\jq()->val()))></div>
+                {!! $htmlBuilder->select('country_code', $countries, $tontine->country_code)->class('form-control') !!}
               </div>
             </div>
             <div class="form-group row">

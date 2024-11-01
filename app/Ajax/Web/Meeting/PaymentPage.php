@@ -38,11 +38,14 @@ class PaymentPage extends PageComponent
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function count(): int
     {
-        $this->response->js()->makeTableResponsive('payment-members-page');
+        return $this->memberService->getMemberCount('');
     }
 
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
         return (string)$this->renderView('pages.meeting.payment.page', [
@@ -51,8 +54,11 @@ class PaymentPage extends PageComponent
         ]);
     }
 
-    protected function count(): int
+    /**
+     * @inheritDoc
+     */
+    protected function after()
     {
-        return $this->memberService->getMemberCount('');
+        $this->response->js()->makeTableResponsive('payment-members-page');
     }
 }

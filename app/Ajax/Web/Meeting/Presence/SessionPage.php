@@ -8,6 +8,7 @@ use Siak\Tontine\Service\Meeting\SessionService;
 
 /**
  * @databag presence
+ * @before getMember
  */
 class SessionPage extends PageComponent
 {
@@ -26,6 +27,13 @@ class SessionPage extends PageComponent
         private PresenceService $presenceService)
     {}
 
+    protected function getMember()
+    {
+        $memberId = $this->bag('presence')->get('member.id', 0);
+        $member = $memberId === 0 ? null : $this->presenceService->getMember($memberId);
+        $this->cache->set('presence.member', $member);
+    }
+
     /**
      * @inheritDoc
      */
@@ -39,7 +47,7 @@ class SessionPage extends PageComponent
      */
     public function html(): string
     {
-        $member = $this->cl(Home::class)->getMember(); // Is null when showing presences by sessions.
+        $member = $this->cache->get('presence.member'); // Is null when showing presences by sessions.
 
         return (string)$this->renderView('pages.meeting.presence.session.page', [
             'member' => $member,

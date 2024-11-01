@@ -3,7 +3,7 @@
 namespace App\Ajax\Web\Tontine;
 
 use App\Ajax\Component;
-use Siak\Tontine\Model\Charge as ChargeModel;
+use Siak\TontineCharge as ChargeModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;

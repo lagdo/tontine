@@ -6,8 +6,6 @@ use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\SectionTitle;
 use Jaxon\Response\ComponentResponse;
-use Siak\Tontine\Model\Member as MemberModel;
-use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\PresenceService;
 
 use function trans;
@@ -30,27 +28,12 @@ class Home extends Component
     {}
 
     /**
-     * @exclude
+     * @before checkRoundSessions
+     * @after hideMenuOnMobile
      */
-    public function getSession(): ?SessionModel
+    public function home(): ComponentResponse
     {
-        if(($sessionId = $this->bag('presence')->get('session.id', 0)) === 0)
-        {
-            return null;
-        }
-        return $this->presenceService->getSession($sessionId);
-    }
-
-    /**
-     * @exclude
-     */
-    public function getMember(): ?MemberModel
-    {
-        if(($memberId = $this->bag('presence')->get('member.id', 0)) === 0)
-        {
-            return null;
-        }
-        return $this->presenceService->getMember($memberId);
+        return $this->render();
     }
 
     /**
@@ -61,15 +44,6 @@ class Home extends Component
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.presences'));
         $this->bag('presence')->set('session.id', 0);
         $this->bag('presence')->set('member.id', 0);
-    }
-
-    /**
-     * @before checkRoundSessions
-     * @after hideMenuOnMobile
-     */
-    public function home(): ComponentResponse
-    {
-        return $this->render();
     }
 
     /**
@@ -88,8 +62,7 @@ class Home extends Component
     protected function after()
     {
         $exchange = $this->bag('presence')->get('exchange', false);
-        $clAtLeft = !$exchange ? $this->cl(Session::class) : $this->cl(Member::class);
-        $clAtLeft->render();
+        !$exchange ? $this->cl(Session::class)->render() : $this->cl(Member::class)->render();
     }
 
     public function exchange()
@@ -106,6 +79,8 @@ class Home extends Component
         $this->bag('presence')->set('member.id', 0);
         $this->bag('presence')->set('member.page', 1);
 
+        $this->cache->set('presence.session', $this->presenceService->getSession($sessionId));
+
         return $this->cl(Member::class)->render();
     }
 
@@ -114,6 +89,8 @@ class Home extends Component
         $this->bag('presence')->set('member.id', $memberId);
         $this->bag('presence')->set('session.id', 0);
         $this->bag('presence')->set('session.page', 1);
+
+        $this->cache->set('presence.member', $this->presenceService->getMember($memberId));
 
         return $this->cl(Session::class)->render();
     }

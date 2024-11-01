@@ -5,7 +5,6 @@ namespace App\Ajax\Web\Planning\Subscription;
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
 use Jaxon\Response\ComponentResponse;
-use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Planning\SummaryService;
@@ -41,18 +40,13 @@ class Beneficiary extends Component
     public SubscriptionService $subscriptionService;
 
     /**
-     * @var PoolModel|null
-     */
-    protected ?PoolModel $pool = null;
-
-    /**
      * @return void
      */
     protected function getPool()
     {
         $poolId = $this->target()->method() === 'pool' ? $this->target()->args()[0] :
             intval($this->bag('subscription')->get('pool.id'));
-        $this->pool = $this->poolService->getPool($poolId);
+        $this->cache->set('planning.pool', $this->poolService->getPool($poolId));
     }
 
     /**
@@ -61,7 +55,8 @@ class Beneficiary extends Component
      */
     public function home(): ComponentResponse
     {
-        if(!$this->pool || !$this->pool->remit_planned)
+        $pool = $this->cache->get('planning.pool');
+        if(!$pool || !$pool->remit_planned)
         {
             return $this->response;
         }
@@ -74,7 +69,8 @@ class Beneficiary extends Component
      */
     protected function before()
     {
-        $this->view()->shareValues($this->summaryService->getPayables($this->pool));
+        $pool = $this->cache->get('planning.pool');
+        $this->view()->shareValues($this->summaryService->getPayables($pool));
     }
 
     /**
@@ -83,7 +79,7 @@ class Beneficiary extends Component
     public function html(): string
     {
         return (string)$this->renderView('pages.planning.subscription.beneficiaries', [
-            'pool' => $this->pool,
+            'pool' => $this->cache->get('planning.pool'),
             'pools' => $this->subscriptionService->getPools(),
         ]);
     }
@@ -102,16 +98,18 @@ class Beneficiary extends Component
      */
     public function save(int $sessionId, int $nextSubscriptionId, int $currSubscriptionId)
     {
-        if(!$this->pool || !$this->pool->remit_planned || $this->pool->remit_auction)
+        $pool = $this->cache->get('planning.pool');
+        if(!$pool || !$pool->remit_planned || $pool->remit_auction)
         {
             return $this->response;
         }
 
-        if(!$this->subscriptionService->saveBeneficiary($this->pool, $sessionId,
+        if(!$this->subscriptionService->saveBeneficiary($pool, $sessionId,
             $currSubscriptionId, $nextSubscriptionId))
         {
             $message = trans('tontine.beneficiary.errors.cant_change');
-            $this->notify->title(trans('common.titles.error'))->error($message);
+            $this->notify->title(trans('common.titles.error'))
+                ->error($message);
         }
 
         return $this->render();

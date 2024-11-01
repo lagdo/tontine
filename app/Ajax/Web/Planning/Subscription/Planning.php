@@ -5,7 +5,6 @@ namespace App\Ajax\Web\Planning\Subscription;
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
 use Jaxon\Response\ComponentResponse;
-use Siak\Tontine\Model\Pool as PoolModel;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SummaryService;
 
@@ -13,7 +12,7 @@ use function intval;
 
 /**
  * @databag subscription
- * @before setPool
+ * @before getPool
  */
 class Planning extends Component
 {
@@ -34,18 +33,13 @@ class Planning extends Component
     public SummaryService $summaryService;
 
     /**
-     * @var PoolModel|null
-     */
-    protected ?PoolModel $pool = null;
-
-    /**
      * @return void
      */
-    protected function setPool()
+    protected function getPool()
     {
         $poolId = $this->target()->method() === 'pool' ? $this->target()->args()[0] :
             intval($this->bag('subscription')->get('pool.id'));
-        $this->pool = $this->poolService->getPool($poolId);
+        $this->cache->set('planning.pool', $this->poolService->getPool($poolId));
     }
 
     /**
@@ -53,7 +47,8 @@ class Planning extends Component
      */
     public function home(): ComponentResponse
     {
-        if(!$this->pool || !$this->pool->remit_planned)
+        $pool = $this->cache->get('planning.pool');
+        if(!$pool || !$pool->remit_planned)
         {
             return $this->response;
         }
@@ -66,7 +61,8 @@ class Planning extends Component
      */
     protected function before()
     {
-        $this->view()->shareValues($this->summaryService->getReceivables($this->pool));
+        $pool = $this->cache->get('planning.pool');
+        $this->view()->shareValues($this->summaryService->getReceivables($pool));
     }
 
     /**
@@ -75,7 +71,7 @@ class Planning extends Component
     public function html(): string
     {
         return (string)$this->renderView('pages.planning.subscription.planning', [
-            'pool' => $this->pool,
+            'pool' => $this->cache->get('planning.pool'),
         ]);
     }
 

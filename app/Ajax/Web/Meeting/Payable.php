@@ -4,8 +4,6 @@ namespace App\Ajax\Web\Meeting;
 
 use App\Ajax\Component;
 use App\Events\OnPagePaymentPayables;
-use Siak\Tontine\Model\Member as MemberModel;
-use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\PaymentService;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\MemberService;
@@ -19,16 +17,6 @@ use function compact;
 class Payable extends Component
 {
     /**
-     * @var MemberModel
-     */
-    private MemberModel $member;
-
-    /**
-     * @var SessionModel
-     */
-    private SessionModel $session;
-
-    /**
      * @param MemberService $memberService
      * @param SessionService $sessionService
      * @param PaymentService $paymentService
@@ -37,10 +25,13 @@ class Payable extends Component
         private SessionService $sessionService, private PaymentService $paymentService)
     {}
 
+    /**
+     * @inheritDoc
+     */
     public function html(): string
     {
-        $member = $this->member;
-        $session = $this->session;
+        $member = $this->cache->get('payable.member');
+        $session = $this->cache->get('payable.session');
         [$receivables, $bills, $debts] = $this->paymentService->getPayables($member, $session);
 
         OnPagePaymentPayables::dispatch($member, $session, $receivables, $bills, $debts);
@@ -60,15 +51,17 @@ class Payable extends Component
 
     public function show(int $memberId, int $sessionId)
     {
-        if(!($this->member = $this->memberService->getMember($memberId)))
+        if(!($member = $this->memberService->getMember($memberId)))
         {
             return $this->response;
         }
-        if(!($this->session = $this->sessionService->getSession($sessionId)))
+        if(!($session = $this->sessionService->getSession($sessionId)))
         {
             return $this->response;
         }
 
+        $this->cache->set('payable.member', $member);
+        $this->cache->set('payable.session', $session);
         $this->render();
 
         return $this->response;

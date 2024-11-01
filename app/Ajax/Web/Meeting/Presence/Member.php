@@ -10,6 +10,7 @@ use function trim;
 
 /**
  * @databag presence
+ * @before getSession
  */
 class Member extends Component
 {
@@ -21,19 +22,27 @@ class Member extends Component
         private PresenceService $presenceService)
     {}
 
+    protected function getSession()
+    {
+        $sessionId = $this->bag('presence')->get('session.id', 0);
+        $session = $sessionId === 0 ? null : $this->presenceService->getSession($sessionId);
+        $this->cache->set('presence.session', $session);
+    }
+
     /**
      * @inheritDoc
      */
     public function html(): string
     {
         $exchange = $this->bag('presence')->get('exchange', false);
-        $session = $this->cl(Home::class)->getSession(); // Is null when showing presences by members.
+        $session = $this->cache->get('presence.session'); // Is null when showing presences by members.
         if(!$exchange && !$session)
         {
             return '';
         }
 
         $search = trim($this->bag('presence')->get('member.search', ''));
+
         return (string)$this->renderView('pages.meeting.presence.member.home', [
             'session' => $session,
             'memberCount' => $this->presenceService->getMemberCount($search),
@@ -59,15 +68,15 @@ class Member extends Component
     public function togglePresence(int $memberId)
     {
         $member = $this->memberService->getMember($memberId);
-        $session = $this->cl(Home::class)->getSession();
+        $session = $this->cache->get('presence.session');
         if(!$member || !$session)
         {
             return $this->response;
         }
 
         $this->presenceService->togglePresence($session, $member);
-
         $this->cl(SessionPage::class)->page();
+
         return $this->render();
     }
 }

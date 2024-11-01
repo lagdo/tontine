@@ -6,7 +6,7 @@ $rqRound = Jaxon\rq(App\Ajax\Web\Planning\Round::class);
 @endphp
                   <div class="table-responsive" @jxnTarget()>
                     <div @jxnOn(['.btn-round-edit', 'click', ''], $rqRound->edit($roundId))></div>
-                    <div @jxnOn(['.btn-round-sessions', 'click', ''], $rqSession->home($roundId))></div>
+                    <div @jxnOn(['.btn-round-sessions', 'click', ''], $rqSession->round($roundId))></div>
                     <div @jxnOn(['.btn-round-select', 'click', ''], $rqSelect->saveRound($roundId))></div>
                     <div @jxnOn(['.btn-round-delete', 'click', ''], $rqRound->delete($roundId)
                       ->confirm(__('tontine.round.questions.delete')))></div>
