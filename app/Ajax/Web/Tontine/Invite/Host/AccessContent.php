@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Ajax\Web\Tontine\Invite\Guest;
+namespace App\Ajax\Web\Tontine\Invite\Host;
 
 use App\Ajax\Component;
-use Siak\Tontine\Service\Tontine\GuestService;
+use Siak\Tontine\Service\Tontine\InviteService;
 
 /**
  * @exclude
@@ -11,9 +11,9 @@ use Siak\Tontine\Service\Tontine\GuestService;
 class AccessContent extends Component
 {
     /**
-     * @param GuestService $guestService
+     * @param InviteService $inviteService
      */
-    public function __construct(private GuestService $guestService)
+    public function __construct(private InviteService $inviteService)
     {}
 
     /**
@@ -23,11 +23,10 @@ class AccessContent extends Component
     {
         $invite = $this->cache->get('invite.invite');
         $tontine = $this->cache->get('invite.tontine');
-        $access = $this->guestService->getGuestTontineAccess($invite, $tontine);
 
         return (string)$this->renderView('pages.invite.guest.access.tontine', [
             'tontine' => $tontine,
-            'access' => $access,
+            'access' => $this->inviteService->getGuestTontineAccess($invite, $tontine),
         ]);
     }
 }

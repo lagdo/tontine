@@ -3,14 +3,14 @@
 namespace App\Ajax\Web\Tontine\Invite;
 
 use App\Ajax\Component;
-use Siak\Tontine\Service\Tontine\GuestService;
+use Siak\Tontine\Service\Tontine\InviteService;
 
 class Guest extends Component
 {
     /**
-     * @param GuestService $guestService
+     * @param InviteService $inviteService
      */
-    public function __construct(private GuestService $guestService)
+    public function __construct(private InviteService $inviteService)
     {}
 
     /**
@@ -31,7 +31,7 @@ class Guest extends Component
 
     public function accept(int $inviteId)
     {
-        $this->guestService->acceptInvite($inviteId);
+        $this->inviteService->acceptInvite($inviteId);
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.accepted'));
 
@@ -40,7 +40,7 @@ class Guest extends Component
 
     public function refuse(int $inviteId)
     {
-        $this->guestService->refuseInvite($inviteId);
+        $this->inviteService->refuseInvite($inviteId);
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.refused'));
 
@@ -49,7 +49,7 @@ class Guest extends Component
 
     public function delete(int $inviteId)
     {
-        if($this->guestService->deleteGuestInvite($inviteId))
+        if($this->inviteService->deleteGuestInvite($inviteId))
         {
             // The active tontine invite is deleted. Reload the page.
             $this->response->redirect('/');

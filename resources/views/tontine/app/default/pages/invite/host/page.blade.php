@@ -1,10 +1,10 @@
 @php
   $inviteId = Jaxon\jq()->parent()->attr('data-invite-id')->toInt();
   $rqHostInvite = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Host::class);
-  $rqGuestAccess = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Guest\Access::class);
+  $rqHostAccess = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Host\Access::class);
 @endphp
                   <div class="table-responsive" id="content-host-invites-page" @jxnTarget()>
-                    <div @jxnOn(['.btn-host-invite-access', 'click', ''], $rqGuestAccess->home($inviteId))></div>
+                    <div @jxnOn(['.btn-host-invite-access', 'click', ''], $rqHostAccess->home($inviteId))></div>
                     <div @jxnOn(['.btn-host-invite-cancel', 'click', ''], $rqHostInvite->cancel($inviteId)
                       ->confirm(trans('tontine.invite.questions.cancel')))></div>
                     <div @jxnOn(['.btn-host-invite-delete', 'click', ''], $rqHostInvite->delete($inviteId)

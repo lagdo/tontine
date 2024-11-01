@@ -48,7 +48,7 @@ use Siak\Tontine\Service\Report\SessionService as SessionReportService;
 use Siak\Tontine\Service\Tontine\CategoryService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Service\Tontine\FundService;
-use Siak\Tontine\Service\Tontine\GuestService;
+use Siak\Tontine\Service\Tontine\InviteService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Meeting\ClosingValidator;
@@ -160,7 +160,7 @@ class SiakServiceProvider extends ServiceProvider
 
         $this->app->singleton(TenantService::class, TenantService::class);
         $this->app->singleton(TontinePoolService::class, TontinePoolService::class);
-        $this->app->singleton(GuestService::class, GuestService::class);
+        $this->app->singleton(InviteService::class, InviteService::class);
         $this->app->singleton(MemberService::class, MemberService::class);
         $this->app->singleton(TontineService::class, TontineService::class);
 

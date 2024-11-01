@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Ajax\Web\Tontine\Invite\Guest;
+namespace App\Ajax\Web\Tontine\Invite\Host;
 
 use App\Ajax\Component;
-use App\Ajax\Web\Tontine\Invite\Guest;
+use App\Ajax\Web\Tontine\Invite\Host;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Service\Tontine\GuestService;
+use Siak\Tontine\Service\Tontine\InviteService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Tontine\GuestAccessValidator;
 
@@ -20,7 +20,7 @@ class Access extends Component
     /**
      * @var string
      */
-    protected $overrides = Guest::class;
+    protected $overrides = Host::class;
 
     /**
      * @var GuestAccessValidator
@@ -28,10 +28,10 @@ class Access extends Component
     protected GuestAccessValidator $validator;
 
     /**
-     * @param GuestService $guestService
+     * @param InviteService $inviteService
      * @param TontineService $tontineService
      */
-    public function __construct(private GuestService $guestService,
+    public function __construct(private InviteService $inviteService,
         private TontineService $tontineService)
     {}
 
@@ -42,7 +42,7 @@ class Access extends Component
             $this->bag('invite')->set('invite.id', $this->target()->args()[0]);
         }
         $inviteId = $this->bag('invite')->get('invite.id');
-        if(!($invite = $this->guestService->getHostInvite($inviteId)))
+        if(!($invite = $this->inviteService->getHostInvite($inviteId)))
         {
             throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
         }
@@ -112,7 +112,7 @@ class Access extends Component
         $invite = $this->cache->get('invite.invite');
         $tontine = $this->cache->get('invite.tontine');
         $access = $this->validator->validateItem($formValues['access'] ?? []);
-        $this->guestService->saveGuestTontineAccess($invite, $tontine, $access);
+        $this->inviteService->saveGuestTontineAccess($invite, $tontine, $access);
 
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.saved'));

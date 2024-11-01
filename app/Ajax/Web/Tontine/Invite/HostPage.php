@@ -3,7 +3,7 @@
 namespace App\Ajax\Web\Tontine\Invite;
 
 use App\Ajax\PageComponent;
-use Siak\Tontine\Service\Tontine\GuestService;
+use Siak\Tontine\Service\Tontine\InviteService;
 
 /**
  * @databag invite
@@ -18,9 +18,9 @@ class HostPage extends PageComponent
     protected array $bagOptions = ['invite', 'host.page'];
 
     /**
-     * @param GuestService $guestService
+     * @param InviteService $inviteService
      */
-    public function __construct(private GuestService $guestService)
+    public function __construct(private InviteService $inviteService)
     {}
 
     /**
@@ -28,7 +28,7 @@ class HostPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->guestService->getHostInviteCount();
+        return $this->inviteService->getHostInviteCount();
     }
 
     /**
@@ -37,7 +37,7 @@ class HostPage extends PageComponent
     public function html(): string
     {
         return $this->renderView('pages.invite.host.page', [
-            'invites' => $this->guestService->getHostInvites($this->page),
+            'invites' => $this->inviteService->getHostInvites($this->page),
         ]);
     }
 

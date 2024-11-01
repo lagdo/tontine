@@ -3,7 +3,7 @@
 namespace App\Ajax\Web\Tontine\Invite;
 
 use App\Ajax\Component;
-use Siak\Tontine\Service\Tontine\GuestService;
+use Siak\Tontine\Service\Tontine\InviteService;
 use Siak\Tontine\Validation\Tontine\GuestInviteValidator;
 
 use function Jaxon\pm;
@@ -16,9 +16,9 @@ class Host extends Component
     protected GuestInviteValidator $validator;
 
     /**
-     * @param GuestService $guestService
+     * @param InviteService $inviteService
      */
-    public function __construct(private GuestService $guestService)
+    public function __construct(private InviteService $inviteService)
     {}
 
     /**
@@ -63,7 +63,7 @@ class Host extends Component
     public function create(array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
-        $this->guestService->createInvite($values['email']);
+        $this->inviteService->createInvite($values['email']);
 
         $this->dialog->hide();
         $this->notify->title(trans('common.titles.success'))
@@ -74,7 +74,7 @@ class Host extends Component
 
     public function cancel(int $inviteId)
     {
-        $this->guestService->cancelInvite($inviteId);
+        $this->inviteService->cancelInvite($inviteId);
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.cancelled'));
 
@@ -83,7 +83,7 @@ class Host extends Component
 
     public function delete(int $inviteId)
     {
-        $this->guestService->deleteHostInvite($inviteId);
+        $this->inviteService->deleteHostInvite($inviteId);
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.deleted'));
 

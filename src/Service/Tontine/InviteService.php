@@ -13,7 +13,7 @@ use Siak\Tontine\Service\TenantService;
 use function count;
 use function now;
 
-class GuestService
+class InviteService
 {
     /**
      * @param TenantService $tenantService
