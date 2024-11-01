@@ -1,3 +1,7 @@
+@php
+  $rqTontine = Jaxon\rq(App\Ajax\Web\Tontine\Guest\Tontine::class);
+  $rqTontinePage = Jaxon\rq(App\Ajax\Web\Tontine\Guest\TontinePage::class);
+@endphp
             <div class="section-body">
               <div class="row">
                 <div class="col">

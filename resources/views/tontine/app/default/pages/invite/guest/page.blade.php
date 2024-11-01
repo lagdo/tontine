@@ -1,13 +1,13 @@
 @php
   $inviteId = Jaxon\jq()->parent()->attr('data-invite-id')->toInt();
-  $rqInvite = Jaxon\rq(App\Ajax\Web\Tontine\Guest\Invite::class);
+  $rqGuestInvite = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Guest::class);
 @endphp
                   <div class="table-responsive" id="content-guest-invites-page" @jxnTarget()>
-                    <div @jxnOn(['.btn-guest-invite-accept', 'click', ''], $rqInvite->accept($inviteId)
+                    <div @jxnOn(['.btn-guest-invite-accept', 'click', ''], $rqGuestInvite->accept($inviteId)
                       ->confirm(trans('tontine.invite.questions.accept')))></div>
-                    <div @jxnOn(['.btn-guest-invite-refuse', 'click', ''], $rqInvite->refuse($inviteId)
+                    <div @jxnOn(['.btn-guest-invite-refuse', 'click', ''], $rqGuestInvite->refuse($inviteId)
                       ->confirm(trans('tontine.invite.questions.refuse')))></div>
-                    <div @jxnOn(['.btn-guest-invite-delete', 'click', ''], $rqInvite->guestDelete($inviteId)
+                    <div @jxnOn(['.btn-guest-invite-delete', 'click', ''], $rqGuestInvite->delete($inviteId)
                       ->confirm(trans('tontine.invite.questions.delete')))></div>
 
                     <table class="table table-bordered responsive">

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\Web\Tontine\Guest;
+namespace App\Ajax\Web\Tontine\Invite;
 
 use App\Ajax\PageComponent;
 use Siak\Tontine\Service\LocaleService;
@@ -16,7 +16,7 @@ class TontinePage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['tontine', 'guest.page'];
+    protected array $bagOptions = ['tontine', 'invite.page'];
 
     /**
      * @param LocaleService $localeService
@@ -42,7 +42,7 @@ class TontinePage extends PageComponent
         $tontines = $this->tontineService->getGuestTontines($this->page);
         [$countries, $currencies] = $this->localeService->getNamesFromTontines($tontines);
 
-        return $this->renderView('pages.tontine.guest.page', [
+        return $this->renderView('pages.tontine.invite.page', [
             'tontines' => $tontines,
             'countries' => $countries,
             'currencies' => $currencies,

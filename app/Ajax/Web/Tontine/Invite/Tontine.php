@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\Web\Tontine\Guest;
+namespace App\Ajax\Web\Tontine\Invite;
 
 use App\Ajax\Component;
 use Siak\Tontine\Service\Tontine\TontineService;
@@ -19,10 +19,6 @@ class Tontine extends Component
     public function html(): string
     {
         return !$this->tontineService->hasGuestTontines() ? '' :
-            $this->renderView('pages.tontine.guest.home', [
-                'rqTontine' => $this->rq(),
-                'rqTontinePage' => $this->rq(TontinePage::class),
-                'rqTontinePagination' => $this->rq(TontinePagination::class),
-            ]);
+            $this->renderView('pages.tontine.invite.home');
     }
 }

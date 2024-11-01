@@ -1,13 +1,13 @@
 @php
   $inviteId = Jaxon\jq()->parent()->attr('data-invite-id')->toInt();
-  $rqInvite = Jaxon\rq(App\Ajax\Web\Tontine\Guest\Invite::class);
-  $rqAccess = Jaxon\rq(App\Ajax\Web\Tontine\Guest\Access::class);
+  $rqHostInvite = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Host::class);
+  $rqGuestAccess = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Guest\Access::class);
 @endphp
                   <div class="table-responsive" id="content-host-invites-page" @jxnTarget()>
-                    <div @jxnOn(['.btn-host-invite-access', 'click', ''], $rqAccess->home($inviteId))></div>
-                    <div @jxnOn(['.btn-host-invite-cancel', 'click', ''], $rqInvite->cancel($inviteId)
+                    <div @jxnOn(['.btn-host-invite-access', 'click', ''], $rqGuestAccess->home($inviteId))></div>
+                    <div @jxnOn(['.btn-host-invite-cancel', 'click', ''], $rqHostInvite->cancel($inviteId)
                       ->confirm(trans('tontine.invite.questions.cancel')))></div>
-                    <div @jxnOn(['.btn-host-invite-delete', 'click', ''], $rqInvite->hostDelete($inviteId)
+                    <div @jxnOn(['.btn-host-invite-delete', 'click', ''], $rqHostInvite->delete($inviteId)
                       ->confirm(trans('tontine.invite.questions.delete')))></div>
 
                     <table class="table table-bordered responsive">

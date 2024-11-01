@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\Web\Tontine\Guest\Invite;
+namespace App\Ajax\Web\Tontine\Invite;
 
 use App\Ajax\PageComponent;
 use Siak\Tontine\Service\Tontine\GuestService;
@@ -8,14 +8,14 @@ use Siak\Tontine\Service\Tontine\GuestService;
 /**
  * @databag invite
  */
-class HostPage extends PageComponent
+class GuestPage extends PageComponent
 {
     /**
      * The pagination databag options
      *
      * @var array
      */
-    protected array $bagOptions = ['invite', 'host.page'];
+    protected array $bagOptions = ['invite', 'guest.page'];
 
     /**
      * @param GuestService $guestService
@@ -28,7 +28,7 @@ class HostPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->guestService->getHostInviteCount();
+        return $this->guestService->getGuestInviteCount();
     }
 
     /**
@@ -36,8 +36,8 @@ class HostPage extends PageComponent
      */
     public function html(): string
     {
-        return $this->renderView('pages.invite.host.page', [
-            'invites' => $this->guestService->getHostInvites($this->page),
+        return $this->renderView('pages.invite.guest.page', [
+            'invites' => $this->guestService->getGuestInvites($this->page),
         ]);
     }
 
@@ -46,6 +46,6 @@ class HostPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('content-host-invites-page');
+        $this->response->js()->makeTableResponsive('content-guest-invites-page');
     }
 }

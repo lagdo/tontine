@@ -1,3 +1,7 @@
+@php
+  $formValues = Jaxon\pm()->form('guest-tontine-access-form');
+  $rqGuestAccess = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Guest\Access::class);
+@endphp
                 <div class="section-body">
                   <div class="row">
                     <div class="col">
@@ -5,7 +9,7 @@
                     </div>
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2" role="group">
-                        <button type="button" class="btn btn-primary" id="btn-save-guest-tontine-access"><i class="fa fa-save"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqGuestAccess->saveAccess($formValues))><i class="fa fa-save"></i></button>
                       </div>
                     </div>
                   </div>
