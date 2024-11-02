@@ -9,6 +9,8 @@ use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\FundService;
 
+use function trim;
+
 /**
  * @databag report
  * @before getSession
@@ -53,12 +55,11 @@ class Fund extends Component
      */
     protected function getFund()
     {
-        $fundId = $this->bag('report')->get('fund.id', 0);
         if($this->target()->method() === 'fund')
         {
-            $fundId = $this->target()->args()[0];
-            $this->bag('report')->set('fund.id', $fundId);
+            $this->bag('report')->set('fund.id', $this->target()->args()[0]);
         }
+        $fundId = $this->bag('report')->get('fund.id', 0);
         $this->cache->set('report.fund', $this->fundService->getFund($fundId, true, true));
     }
 
@@ -94,9 +95,9 @@ class Fund extends Component
         ]);
     }
 
-    public function fund(int $fundId)
+    public function fund(int $fundId, string $item = '')
     {
-        return $this->render();
+        return $this->item(trim($item))->render();
     }
 
     public function amount(int $profitAmount)

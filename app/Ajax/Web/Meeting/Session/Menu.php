@@ -2,6 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Session;
 
+use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\Meeting\MeetingComponent;
 
 /**
@@ -9,6 +10,11 @@ use App\Ajax\Web\Meeting\MeetingComponent;
  */
 class Menu extends MeetingComponent
 {
+    /**
+     * @var string
+     */
+    protected $overrides = SectionContent::class;
+
     /**
      * @var string
      */
@@ -20,7 +26,12 @@ class Menu extends MeetingComponent
     protected function getSessionId(): int
     {
         $sessionId = (int)($this->target()->args()[0] ?? 0);
-        return $sessionId > 0 ? $sessionId : parent::getSessionId();
+        if($sessionId > 0)
+        {
+            $this->bag('meeting')->set('session.id', $sessionId);
+            return $sessionId;
+        }
+        return parent::getSessionId();
     }
 
     /**
@@ -45,7 +56,7 @@ class Menu extends MeetingComponent
         $this->render();
     }
 
-    public function pools()
+    public function pools(int $sessionId = 0)
     {
         $this->renderSection('pools');
 
@@ -57,7 +68,7 @@ class Menu extends MeetingComponent
         return $this->response;
     }
 
-    public function savings()
+    public function savings(int $sessionId = 0)
     {
         $this->renderSection('savings');
 
@@ -69,7 +80,7 @@ class Menu extends MeetingComponent
         return $this->response;
     }
 
-    public function credits()
+    public function credits(int $sessionId = 0)
     {
         $this->renderSection('credits');
 
@@ -82,7 +93,7 @@ class Menu extends MeetingComponent
         return $this->response;
     }
 
-    public function cash()
+    public function cash(int $sessionId = 0)
     {
         $this->renderSection('cash');
 
@@ -91,7 +102,7 @@ class Menu extends MeetingComponent
         return $this->response;
     }
 
-    public function charges()
+    public function charges(int $sessionId = 0)
     {
         $this->renderSection('charges');
 
@@ -103,7 +114,7 @@ class Menu extends MeetingComponent
         return $this->response;
     }
 
-    public function reports()
+    public function reports(int $sessionId = 0)
     {
         $this->renderSection('reports');
 

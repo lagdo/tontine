@@ -1,5 +1,9 @@
 @include('tontine.app.default.pages.meeting.session.menu.wrapper', ['session' => $session])
-
+@php
+  $rqSaving = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Saving::class);
+  $rqClosing = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Closing::class);
+  $rqSavingReport = Jaxon\rq(App\Ajax\Web\Report\Session\Saving\Fund::class);
+@endphp
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">
               <div class="row sm-screen-selector mb-3" id="session-savings-sm-screens">
@@ -15,11 +19,11 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-savings">
+                <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-savings" @jxnShow($rqSaving)>
                 </div>
-                <div class="col-md-6 col-sm-12 sm-screen" id="meeting-closings">
+                <div class="col-md-6 col-sm-12 sm-screen" id="meeting-closings" @jxnShow($rqClosing)>
                 </div>
-                <div class="col-12 sm-screen" id="report-fund-savings">
+                <div class="col-12 sm-screen" id="report-fund-savings" @jxnShow($rqSavingReport, 'session')>
                 </div>
               </div>
             </div>

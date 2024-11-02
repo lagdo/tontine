@@ -31,7 +31,7 @@ class MemberPage extends MeetingPageComponent
 
     protected function getFund()
     {
-        $fundId = $this->bag('refund')->get('fund.id', 0);
+        $fundId = $this->bag('meeting.saving')->get('fund.id', 0);
         $fund = $this->fundService->getFund($fundId, true, true);
         $this->cache->set('meeting.saving.fund', $fund);
     }

@@ -3,7 +3,7 @@
   $closingFundId = Jaxon\pm()->select('closings-fund-id')->toInt();
   $selectFundId = Jaxon\jq()->parent()->attr('data-fund-id')->toInt();
   $rqClosing = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Closing::class);
-  $rqSaving = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Saving::class);
+  $rqSavingReport = Jaxon\rq(App\Ajax\Web\Report\Session\Saving\Fund::class);
 @endphp
                   <div class="row">
                     <div class="col">
@@ -26,7 +26,7 @@
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" @jxnClick($rqClosing->editRoundClosing($closingFundId))><i class="fa fa-circle-notch"></i></button>
                           <button type="button" class="btn btn-primary" @jxnClick($rqClosing->editInterestClosing($closingFundId))><i class="far fa-stop-circle"></i></button>
-                          <button type="button" class="btn btn-primary" @jxnClick($rqSaving->fund($closingFundId))><i class="fa fa-percentage"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqSavingReport->fund($closingFundId, 'session'))><i class="fa fa-percentage"></i></button>
                         </div>
                       </div>
                     </div>

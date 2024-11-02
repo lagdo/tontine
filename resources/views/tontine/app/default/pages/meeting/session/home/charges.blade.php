@@ -1,5 +1,8 @@
 @include('tontine.app.default.pages.meeting.session.menu.wrapper', ['session' => $session])
-
+@php
+  $rqFixedFee = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\FixedFee::class);
+  $rqLibreFee = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\LibreFee::class);
+@endphp
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">
               <div class="row sm-screen-selector mb-3" id="session-charges-sm-screens">
@@ -15,9 +18,9 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-fees-fixed">
+                <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-fees-fixed" @jxnShow($rqFixedFee)>
                 </div>
-                <div class="col-md-6 col-sm-12 sm-screen" id="meeting-fees-libre">
+                <div class="col-md-6 col-sm-12 sm-screen" id="meeting-fees-libre" @jxnShow($rqLibreFee)>
                 </div>
               </div>
             </div>

@@ -20,6 +20,11 @@ use function trim;
 class Member extends MeetingComponent
 {
     /**
+     * @var string
+     */
+    protected $overrides = Saving::class;
+
+    /**
      * @var LocaleService
      */
     protected LocaleService $localeService;
@@ -41,9 +46,11 @@ class Member extends MeetingComponent
 
     protected function getFund()
     {
-        $fundId = (int)($this->target()->method() === 'home' ?
-            $this->target()->args()[0] :
-            $this->bag('meeting.saving')->get('fund.id', 0));
+        if($this->target()->method() === 'fund')
+        {
+            $this->bag('meeting.saving')->set('fund.id', $this->target()->args()[0]);
+        }
+        $fundId = (int)$this->bag('meeting.saving')->get('fund.id', 0);
         $fund = $this->fundService->getFund($fundId, true, true);
         $this->cache->set('meeting.saving.fund', $fund);
     }
@@ -71,9 +78,8 @@ class Member extends MeetingComponent
      *
      * @return mixed
      */
-    public function home(int $fundId)
+    public function fund(int $fundId)
     {
-        $this->bag('meeting.saving')->set('fund.id', $fundId);
         $this->bag('meeting.saving')->set('member.filter', null);
         $this->bag('meeting.saving')->set('member.search', '');
         $this->bag('meeting.saving')->set('member.page', 1);
