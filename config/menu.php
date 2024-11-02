@@ -1,10 +1,10 @@
 <?php
 
-use App\Ajax\Web\Meeting\Payment;
-use App\Ajax\Web\Meeting\Presence\Home as Presence;
-use App\Ajax\Web\Meeting\Session as MeetingSession;
-use App\Ajax\Web\Planning\Pool;
-use App\Ajax\Web\Planning\Round as PlanningRound;
+use App\Ajax\Web\Meeting\Payment\Payment;
+use App\Ajax\Web\Meeting\Presence\Presence;
+use App\Ajax\Web\Meeting\Session\Session as MeetingSession;
+use App\Ajax\Web\Planning\Pool\Pool;
+use App\Ajax\Web\Planning\Session\Round as PlanningRound;
 use App\Ajax\Web\Report\Round as ReportRound;
 use App\Ajax\Web\Report\Session as ReportSession;
 use App\Ajax\Web\Tontine\Member;

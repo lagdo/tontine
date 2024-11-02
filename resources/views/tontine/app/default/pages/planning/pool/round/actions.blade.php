@@ -1,7 +1,7 @@
 @php
-  $rqPool = Jaxon\rq(App\Ajax\Web\Planning\Pool::class);
+  $rqPool = Jaxon\rq(App\Ajax\Web\Planning\Pool\Pool::class);
   $roundFormValues = Jaxon\pm()->form('round-form');
-  $rqPoolRound = Jaxon\rq(App\Ajax\Web\Planning\PoolRound::class);
+  $rqPoolRound = Jaxon\rq(App\Ajax\Web\Planning\Pool\PoolRound::class);
 @endphp
                 <div class="btn-group float-right ml-2 mb-2" role="group">
                   <button type="button" class="btn btn-primary" @jxnClick($rqPool->home())><i class="fa fa-arrow-left"></i></button>

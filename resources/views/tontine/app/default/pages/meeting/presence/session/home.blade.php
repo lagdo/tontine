@@ -1,5 +1,5 @@
 @php
-  $rqPresence = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Home::class);
+  $rqPresence = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Presence::class);
   $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Session::class);
   $rqSessionPage = Jaxon\rq(App\Ajax\Web\Meeting\Presence\SessionPage::class);
   $jsBackHandler = Jaxon\jw()->showSmScreen('content-home-members', 'presence-sm-screens');

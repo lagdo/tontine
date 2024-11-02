@@ -1,7 +1,7 @@
 @php
-  $rqFund = Jaxon\rq(App\Ajax\Web\Tontine\Fund::class);
-  $rqCategory = Jaxon\rq(App\Ajax\Web\Tontine\Category::class);
-  $rqCharge = Jaxon\rq(App\Ajax\Web\Tontine\Charge::class);
+  $rqFund = Jaxon\rq(App\Ajax\Web\Tontine\Options\Fund::class);
+  $rqCategory = Jaxon\rq(App\Ajax\Web\Tontine\Options\Category::class);
+  $rqCharge = Jaxon\rq(App\Ajax\Web\Tontine\Options\Charge::class);
 @endphp
           <div class="row sm-screen-selector mb-3" id="options-sm-screens">
             <div class="col-12">

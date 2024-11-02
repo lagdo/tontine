@@ -4,7 +4,7 @@ namespace App\Ajax\Web\Tontine;
 
 use App\Ajax\CallableClass;
 use App\Ajax\SelectTrait;
-use App\Ajax\Web\Planning\Session;
+use App\Ajax\Web\Planning\Session\Session;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Tontine\TontineService;
 

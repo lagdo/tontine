@@ -7,7 +7,7 @@
 @php
     $rqTontine = Jaxon\rq(App\Ajax\Web\Tontine\Tontine::class);
     $rqInvite = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Invite::class);
-    $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Misc::class);
+    $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Session::class);
 @endphp
 <script type='text/javascript'>
     const tontine = {

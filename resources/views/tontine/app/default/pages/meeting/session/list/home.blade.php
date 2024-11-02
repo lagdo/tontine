@@ -1,6 +1,6 @@
 @php
-  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session::class);
-  $rqSessionPage = Jaxon\rq(App\Ajax\Web\Meeting\SessionPage::class);
+  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Session::class);
+  $rqSessionPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\SessionPage::class);
 @endphp
           <div class="section-body">
             <div class="row">

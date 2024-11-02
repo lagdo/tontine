@@ -1,6 +1,6 @@
 @php
 $sessionId = Jaxon\jq()->parent()->attr('data-session-id')->toInt();
-$rqSession = Jaxon\rq(App\Ajax\Web\Planning\Session::class);
+$rqSession = Jaxon\rq(App\Ajax\Web\Planning\Session\Session::class);
 @endphp
                     <div class="table-responsive" id="content-page-sessions" @jxnTarget()>
                       <div @jxnOn(['.btn-session-edit', 'click', ''], $rqSession->edit($sessionId))></div>

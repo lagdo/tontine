@@ -1,5 +1,5 @@
 @php
-  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session::class);
+  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Session::class);
   $rqSessionMenu = Jaxon\rq(App\Ajax\Web\Meeting\Session\Menu::class);
 @endphp
                 <div class="btn-group float-right ml-1" role="group"  @jxnTarget()>

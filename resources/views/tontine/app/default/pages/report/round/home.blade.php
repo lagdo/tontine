@@ -1,10 +1,11 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('sqids', 'Sqids\SqidsInterface')
 @php
-  $rqRound = Jaxon\rq(App\Ajax\Web\Report\Round::class);
+  $rqRound = Jaxon\rq(App\Ajax\Web\Report\Round\Round::class);
   $rqRoundBalance = Jaxon\rq(App\Ajax\Web\Report\Round\Balance::class);
   $rqRoundPool = Jaxon\rq(App\Ajax\Web\Report\Round\Pool::class);
-  $rqOptions = Jaxon\rq(App\Ajax\Web\Tontine\Options::class);
+  $clRoundPool = Jaxon\cl(App\Ajax\Web\Report\Round\Pool::class);
+  $rqOptions = Jaxon\rq(App\Ajax\Web\Tontine\Options\Options::class);
 @endphp
           <div class="section-body">
             <div class="row">
@@ -50,7 +51,7 @@
 @foreach ($figures as $poolFigures)
 @php
   $pool = $poolFigures['pool'];
-  Jaxon\cl(App\Ajax\Web\Report\Round\Pool::class)->setFigures($poolFigures);
+  $clRoundPool->setFigures($poolFigures);
 @endphp
               <div class="row">
                 <div class="col">

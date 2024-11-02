@@ -2,7 +2,7 @@
 @php
   $disbursementId = Jaxon\jq()->parent()->attr('data-disbursement-id')->toInt();
   $rqDisbursement = Jaxon\rq(App\Ajax\Web\Meeting\Session\Cash\Disbursement::class);
-  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Misc::class);
+  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Session::class);
 @endphp
                   <div class="row">
                     <div class="col">

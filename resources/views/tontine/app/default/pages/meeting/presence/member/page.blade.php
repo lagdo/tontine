@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $memberId = Jaxon\jq()->parent()->attr('data-member-id')->toInt();
-  $rqPresence = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Home::class);
+  $rqPresence = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Presence::class);
   $rqMember = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Member::class);
 @endphp
                   <div class="table-responsive" id="content-page-members" @jxnTarget()>

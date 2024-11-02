@@ -1,6 +1,6 @@
 @php
-  $rqCharge = Jaxon\rq(App\Ajax\Web\Tontine\Charge::class);
-  $rqChargePage = Jaxon\rq(App\Ajax\Web\Tontine\ChargePage::class);
+  $rqCharge = Jaxon\rq(App\Ajax\Web\Tontine\Options\Charge::class);
+  $rqChargePage = Jaxon\rq(App\Ajax\Web\Tontine\Options\ChargePage::class);
 @endphp
           <div class="section-body">
             <div class="row">

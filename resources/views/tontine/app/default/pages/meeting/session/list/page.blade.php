@@ -1,7 +1,7 @@
 @php
-  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session::class);
+  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Session::class);
   $rqSessionMenu = Jaxon\rq(App\Ajax\Web\Meeting\Session\Menu::class);
-  $rqSummary = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Home::class);
+  $rqSummary = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Summary::class);
   $sessionId = Jaxon\jq()->parent()->attr('data-session-id')->toInt();
 @endphp
               <div class="table-responsive" id="content-page" @jxnTarget()>

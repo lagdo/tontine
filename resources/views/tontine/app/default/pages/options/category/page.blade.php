@@ -1,6 +1,6 @@
 @php
   $categoryId = Jaxon\jq()->parent()->attr('data-category-id')->toInt();
-  $rqCategory = Jaxon\rq(App\Ajax\Web\Tontine\Category::class);
+  $rqCategory = Jaxon\rq(App\Ajax\Web\Tontine\Options\Category::class);
 @endphp
                   <div class="table-responsive" @jxnTarget()>
                     <div @jxnOn(['.btn-category-edit', 'click', ''], $rqCategory->edit($categoryId))></div>

@@ -1,8 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
 $poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
-$rqPool = Jaxon\rq(App\Ajax\Web\Planning\Pool::class);
-$rqPoolRound = Jaxon\rq(App\Ajax\Web\Planning\PoolRound::class);
+$rqPool = Jaxon\rq(App\Ajax\Web\Planning\Pool\Pool::class);
+$rqPoolRound = Jaxon\rq(App\Ajax\Web\Planning\Pool\PoolRound::class);
 $rqSubscription = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Home::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>

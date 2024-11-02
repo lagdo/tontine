@@ -1,8 +1,8 @@
 @php
-  $rqPoolRound = Jaxon\rq(App\Ajax\Web\Planning\PoolRound::class);
-  $rqPoolRoundAction = Jaxon\rq(App\Ajax\Web\Planning\PoolRoundAction::class);
-  $rqPoolRoundStartSession = Jaxon\rq(App\Ajax\Web\Planning\PoolRoundStartSession::class);
-  $rqPoolRoundEndSession = Jaxon\rq(App\Ajax\Web\Planning\PoolRoundEndSession::class);
+  $rqPoolRound = Jaxon\rq(App\Ajax\Web\Planning\Pool\PoolRound::class);
+  $rqPoolRoundAction = Jaxon\rq(App\Ajax\Web\Planning\Pool\PoolRoundAction::class);
+  $rqPoolRoundStartSession = Jaxon\rq(App\Ajax\Web\Planning\Pool\PoolRoundStartSession::class);
+  $rqPoolRoundEndSession = Jaxon\rq(App\Ajax\Web\Planning\Pool\PoolRoundEndSession::class);
 @endphp
           <div class="section-body">
             <div class="row">

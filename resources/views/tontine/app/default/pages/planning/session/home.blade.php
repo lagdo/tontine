@@ -1,6 +1,6 @@
 @php
-  $rqSession = Jaxon\rq(App\Ajax\Web\Planning\Session::class);
-  $rqSessionPage = Jaxon\rq(App\Ajax\Web\Planning\SessionPage::class);
+  $rqSession = Jaxon\rq(App\Ajax\Web\Planning\Session\Session::class);
+  $rqSessionPage = Jaxon\rq(App\Ajax\Web\Planning\Session\SessionPage::class);
 @endphp
               <div class="section-body">
                 <div class="row">

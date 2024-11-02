@@ -1,6 +1,6 @@
 @php
   $sessionId = Jaxon\jq()->parent()->attr('data-session-id')->toInt();
-  $rqPresence = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Home::class);
+  $rqPresence = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Presence::class);
   $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Session::class);
 @endphp
                   <div class="table-responsive" id="content-page-sessions" @jxnTarget()>

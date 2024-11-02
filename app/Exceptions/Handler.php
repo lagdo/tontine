@@ -2,10 +2,10 @@
 
 namespace App\Exceptions;
 
-use App\Ajax\Web\Meeting\Session;
-use App\Ajax\Web\Planning\Pool;
-use App\Ajax\Web\Planning\Round;
-use App\Ajax\Web\Tontine\Member;
+use App\Ajax\Web\Meeting\Session\Session;
+use App\Ajax\Web\Planning\Pool\Pool;
+use App\Ajax\Web\Planning\Session\Round;
+use App\Ajax\Web\Tontine\Member\Member;
 use App\Ajax\Web\Tontine\Tontine;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;

@@ -1,5 +1,5 @@
 @php
-  $rqPool = Jaxon\rq(App\Ajax\Web\Planning\Pool::class);
+  $rqPool = Jaxon\rq(App\Ajax\Web\Planning\Pool\Pool::class);
   $rqMember = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Member::class);
   $rqMemberCounter = Jaxon\rq(App\Ajax\Web\Planning\Subscription\MemberCounter::class);
   $rqMemberPage = Jaxon\rq(App\Ajax\Web\Planning\Subscription\MemberPage::class);

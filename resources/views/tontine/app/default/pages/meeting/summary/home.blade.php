@@ -1,6 +1,6 @@
 @php
-  $rqSessionMenu = Jaxon\rq(App\Ajax\Web\Meeting\Session::class);
-  $rqSessionHome = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Home::class);
+  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Session::class);
+  $rqSummary = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Summary::class);
 
   $rqDeposit = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Pool\Deposit::class);
   $rqRemitment = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Pool\Remitment::class);
@@ -20,8 +20,8 @@
               </div>
               <div class="col">
                 <div class="btn-group float-right ml-1" role="group">
-                  <button type="button" class="btn btn-primary" @jxnClick($rqSessionMenu->home())><i class="fa fa-arrow-left"></i></button>
-                  <button type="button" class="btn btn-primary" @jxnClick($rqSessionHome->summary($session->id))><i class="fa fa-sync"></i></button>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqSession->home())><i class="fa fa-arrow-left"></i></button>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqSummary->summary($session->id))><i class="fa fa-sync"></i></button>
                 </div>
               </div>
             </div>

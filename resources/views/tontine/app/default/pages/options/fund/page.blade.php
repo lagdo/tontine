@@ -1,6 +1,6 @@
 @php
   $fundId = Jaxon\jq()->parent()->attr('data-fund-id')->toInt();
-  $rqFund = Jaxon\rq(App\Ajax\Web\Tontine\Fund::class);
+  $rqFund = Jaxon\rq(App\Ajax\Web\Tontine\Options\Fund::class);
 @endphp
                   <div class="table-responsive" @jxnTarget()>
                     <div @jxnOn(['.btn-fund-edit', 'click', ''], $rqFund->edit($fundId))></div>

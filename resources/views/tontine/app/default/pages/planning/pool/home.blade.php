@@ -1,6 +1,6 @@
 @php
-  $rqPool = Jaxon\rq(App\Ajax\Web\Planning\Pool::class);
-  $rqPoolPage = Jaxon\rq(App\Ajax\Web\Planning\PoolPage::class);
+  $rqPool = Jaxon\rq(App\Ajax\Web\Planning\Pool\Pool::class);
+  $rqPoolPage = Jaxon\rq(App\Ajax\Web\Planning\Pool\PoolPage::class);
 @endphp
           <div class="section-body">
             <div class="row">

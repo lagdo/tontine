@@ -1,8 +1,8 @@
 @php
   $sessionId = Jaxon\pm()->select('select-session')->toInt();
   $memberId = Jaxon\pm()->select('select-member')->toInt();
-  $rqSession = Jaxon\rq(App\Ajax\Web\Report\Session::class);
-  $rqSessionContent = Jaxon\rq(App\Ajax\Web\Report\SessionContent::class);
+  $rqSession = Jaxon\rq(App\Ajax\Web\Report\Session\Session::class);
+  $rqSessionContent = Jaxon\rq(App\Ajax\Web\Report\Session\SessionContent::class);
   $rqReportTitle = Jaxon\rq(App\Ajax\Web\Report\Session\ReportTitle::class);
   $rqActionExport = Jaxon\rq(App\Ajax\Web\Report\Session\Action\Export::class);
   $rqActionMenu = Jaxon\rq(App\Ajax\Web\Report\Session\Action\Menu::class);

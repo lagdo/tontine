@@ -1,6 +1,6 @@
 @php
   $memberId = Jaxon\jq()->parent()->attr('data-member-id')->toInt();
-  $rqMember = Jaxon\rq(App\Ajax\Web\Tontine\Member::class);
+  $rqMember = Jaxon\rq(App\Ajax\Web\Tontine\Member\Member::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
                   <div @jxnOn(['.btn-member-edit', 'click', ''], $rqMember->edit($memberId))></div>

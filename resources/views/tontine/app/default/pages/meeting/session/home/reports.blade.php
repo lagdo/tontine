@@ -2,7 +2,7 @@
 @php
   $agendaText = Jaxon\jq('#session-agenda')->summernote('code');
   $reportText = Jaxon\jq('#session-report')->summernote('code');
-  $rqMisc = Jaxon\rq(App\Ajax\Web\Meeting\Session\Misc::class);
+  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Session::class);
 @endphp
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">
@@ -14,7 +14,7 @@
                     </div>
                     <div class="col">
                       <div class="btn-group float-right" role="group">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqMisc->saveAgenda($agendaText))><i class="fa fa-save"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqSession->saveAgenda($agendaText))><i class="fa fa-save"></i></button>
                       </div>
                     </div>
                   </div>
@@ -33,7 +33,7 @@
                     </div>
                     <div class="col">
                       <div class="btn-group float-right" role="group">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqMisc->saveReport($reportText))><i class="fa fa-save"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqSession->saveReport($reportText))><i class="fa fa-save"></i></button>
                       </div>
                     </div>
                   </div>

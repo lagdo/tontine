@@ -22,6 +22,9 @@ class Pool extends Component
      */
     private $figures;
 
+    /**
+     * @exclude
+     */
     public function setFigures(array $figures): self
     {
         $this->figures = $figures;
