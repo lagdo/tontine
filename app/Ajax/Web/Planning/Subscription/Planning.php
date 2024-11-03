@@ -8,61 +8,32 @@ use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SummaryService;
 
-use function intval;
-
 /**
  * @databag subscription
  * @before getPool
  */
 class Planning extends Component
 {
+    use PoolTrait;
+
     /**
      * @var string
      */
     protected $overrides = SectionContent::class;
 
     /**
-     * @di
-     * @var PoolService
+     * The constructor
+     *
+     * @param PoolService $poolService
+     * @param SummaryService $summaryService
      */
-    protected PoolService $poolService;
+    public function __construct(private PoolService $poolService,
+        private SummaryService $summaryService)
+    {}
 
-    /**
-     * @var SummaryService
-     */
-    public SummaryService $summaryService;
-
-    /**
-     * @return void
-     */
-    protected function getPool()
+    public function pool(int $poolId): ComponentResponse
     {
-        $poolId = $this->target()->method() === 'pool' ? $this->target()->args()[0] :
-            intval($this->bag('subscription')->get('pool.id'));
-        $this->cache->set('planning.pool', $this->poolService->getPool($poolId));
-    }
-
-    /**
-     * @di $summaryService
-     */
-    public function home(): ComponentResponse
-    {
-        $pool = $this->cache->get('planning.pool');
-        if(!$pool || !$pool->remit_planned)
-        {
-            return $this->response;
-        }
-
         return $this->render();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function before()
-    {
-        $pool = $this->cache->get('planning.pool');
-        $this->view()->shareValues($this->summaryService->getReceivables($pool));
     }
 
     /**
@@ -70,8 +41,11 @@ class Planning extends Component
      */
     public function html(): string
     {
+        $pool = $this->cache->get('subscription.pool');
+        $this->view()->shareValues($this->summaryService->getReceivables($pool));
+
         return (string)$this->renderView('pages.planning.subscription.planning', [
-            'pool' => $this->cache->get('planning.pool'),
+            'pool' => $pool,
         ]);
     }
 

@@ -9,7 +9,6 @@ use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Planning\SummaryService;
 
-use function intval;
 use function trans;
 
 /**
@@ -18,59 +17,27 @@ use function trans;
  */
 class Beneficiary extends Component
 {
+    use PoolTrait;
+
     /**
      * @var string
      */
     protected $overrides = SectionContent::class;
 
     /**
-     * @di
-     * @var PoolService
+     * The constructor
+     *
+     * @param SubscriptionService $subscriptionService
+     * @param PoolService $poolService
+     * @param SummaryService $summaryService
      */
-    protected PoolService $poolService;
+    public function __construct(private SubscriptionService $subscriptionService,
+        private PoolService $poolService, private SummaryService $summaryService)
+    {}
 
-    /**
-     * @var SummaryService
-     */
-    public SummaryService $summaryService;
-
-    /**
-     * @var SubscriptionService
-     */
-    public SubscriptionService $subscriptionService;
-
-    /**
-     * @return void
-     */
-    protected function getPool()
+    public function pool(int $poolId): ComponentResponse
     {
-        $poolId = $this->target()->method() === 'pool' ? $this->target()->args()[0] :
-            intval($this->bag('subscription')->get('pool.id'));
-        $this->cache->set('planning.pool', $this->poolService->getPool($poolId));
-    }
-
-    /**
-     * @di $summaryService
-     * @di $subscriptionService
-     */
-    public function home(): ComponentResponse
-    {
-        $pool = $this->cache->get('planning.pool');
-        if(!$pool || !$pool->remit_planned)
-        {
-            return $this->response;
-        }
-
         return $this->render();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function before()
-    {
-        $pool = $this->cache->get('planning.pool');
-        $this->view()->shareValues($this->summaryService->getPayables($pool));
     }
 
     /**
@@ -78,8 +45,11 @@ class Beneficiary extends Component
      */
     public function html(): string
     {
+        $pool = $this->cache->get('subscription.pool');
+        $this->view()->shareValues($this->summaryService->getPayables($pool));
+
         return (string)$this->renderView('pages.planning.subscription.beneficiaries', [
-            'pool' => $this->cache->get('planning.pool'),
+            'pool' => $pool,
             'pools' => $this->subscriptionService->getPools(),
         ]);
     }
@@ -92,13 +62,9 @@ class Beneficiary extends Component
         $this->response->js()->makeTableResponsive('content-page');
     }
 
-    /**
-     * @di $summaryService
-     * @di $subscriptionService
-     */
     public function save(int $sessionId, int $nextSubscriptionId, int $currSubscriptionId)
     {
-        $pool = $this->cache->get('planning.pool');
+        $pool = $this->cache->get('subscription.pool');
         if(!$pool || !$pool->remit_planned || $pool->remit_auction)
         {
             return $this->response;

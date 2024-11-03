@@ -1,6 +1,6 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $rqSubscription = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Home::class);
+  $rqSubscription = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Subscription::class);
   $rqBeneficiary = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Beneficiary::class);
   $rqPlanning = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Planning::class);
 @endphp
@@ -16,14 +16,14 @@
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">
-                      <button type="button" class="btn btn-primary" @jxnClick($rqBeneficiary->home())>{{
+                      <button type="button" class="btn btn-primary" @jxnClick($rqBeneficiary->render())>{{
                         __('tontine.subscription.titles.beneficiaries') }}</i></button>
                     </div>
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">
-                      <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->pool($pool->id))><i class="fa fa-arrow-left"></i></button>
-                      <button type="button" class="btn btn-primary" @jxnClick($rqPlanning->home())><i class="fa fa-sync"></i></button>
+                      <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->render())><i class="fa fa-arrow-left"></i></button>
+                      <button type="button" class="btn btn-primary" @jxnClick($rqPlanning->render())><i class="fa fa-sync"></i></button>
                     </div>
                   </div>
                 </div>

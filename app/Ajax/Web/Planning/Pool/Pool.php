@@ -38,7 +38,6 @@ class Pool extends Component
     {}
 
     /**
-     * @databag subscription
      * @before checkGuestAccess ["planning", "pools"]
      * @after hideMenuOnMobile
      */

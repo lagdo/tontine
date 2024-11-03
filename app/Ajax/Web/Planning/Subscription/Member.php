@@ -3,26 +3,46 @@
 namespace App\Ajax\Web\Planning\Subscription;
 
 use App\Ajax\Component;
+use Jaxon\Response\ComponentResponse;
+use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 
 use function trim;
 
 /**
  * @databag subscription
+ * @before getPool
  */
 class Member extends Component
 {
+    use PoolTrait;
+
+    /**
+     * @var string
+     */
+    protected $overrides = PoolSection::class;
+
     /**
      * The constructor
      *
+     * @param PoolService $poolService
      * @param SubscriptionService $subscriptionService
      */
-    public function __construct(private SubscriptionService $subscriptionService)
+    public function __construct(private PoolService $poolService,
+        private SubscriptionService $subscriptionService)
     {}
+
+    public function pool(int $poolId): ComponentResponse
+    {
+        $this->bag('subscription')->set('member.filter', null);
+        $this->bag('subscription')->set('member.search', '');
+
+        return $this->render();
+    }
 
     public function html(): string
     {
-        $pool = $this->cl(Home::class)->getPool();
+        $pool = $this->cache->get('subscription.pool');
         return (string)$this->renderView('pages.planning.subscription.member.home', [
             'pool' => $pool,
         ]);
@@ -57,7 +77,7 @@ class Member extends Component
 
     public function create(int $memberId)
     {
-        $pool = $this->cl(Home::class)->getPool();
+        $pool = $this->cache->get('subscription.pool');
         $this->subscriptionService->createSubscription($pool, $memberId);
 
         // Refresh the current page
@@ -67,7 +87,7 @@ class Member extends Component
 
     public function delete(int $memberId)
     {
-        $pool = $this->cl(Home::class)->getPool();
+        $pool = $this->cache->get('subscription.pool');
         $this->subscriptionService->deleteSubscription($pool, $memberId);
 
         // Refresh the current page

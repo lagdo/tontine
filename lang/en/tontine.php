@@ -18,6 +18,7 @@ return [
         'session' => "Session",
         'sessions' => "Sessions",
         'pools' => "Tontines",
+        'subscriptions' => "Subscriptions",
         'presences' => "Presences",
         'payments' => "Payments",
         'profile' => "Profile",
@@ -316,6 +317,7 @@ return [
             'resync' => "Resync the sessions in this round?<br/>You need to do this if you have changed the members, the fees, or the subscriptions after it was opened.",
         ],
         'errors' => [
+            'not_found' => "Unable to find the session.",
             'opened' => "A session has already been opened.",
             'not_opened' => "The session is not opened",
             'delete' => "Cannot delete this session.",
@@ -422,6 +424,12 @@ return [
             'not_found' => "Cannot find the corresponding subscription.",
             'create' => "Cannot create a new subscription.",
             'delete' => "Cannot delete this subscription.",
+        ],
+        'actions' => [
+            'members' => "Members",
+            'sessions' => "Sessions",
+            'planning' => "Planning",
+            'beneficiaries' => "Beneficiaries",
         ],
     ],
     'beneficiary' => [

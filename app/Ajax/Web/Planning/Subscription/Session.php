@@ -3,13 +3,22 @@
 namespace App\Ajax\Web\Planning\Subscription;
 
 use App\Ajax\Component;
+use Jaxon\Response\ComponentResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 
 /**
  * @databag subscription
+ * @before getPool
  */
 class Session extends Component
 {
+    use PoolTrait;
+
+    /**
+     * @var string
+     */
+    protected $overrides = PoolSection::class;
+
     /**
      * The constructor
      *
@@ -18,11 +27,17 @@ class Session extends Component
     public function __construct(private PoolService $poolService)
     {}
 
+    public function pool(int $poolId): ComponentResponse
+    {
+        $this->bag('subscription')->set('session.filter', false);
+
+        return $this->render();
+    }
+
     public function html(): string
     {
-        $pool = $this->cl(Home::class)->getPool();
         return (string)$this->renderView('pages.planning.subscription.session.home', [
-            'pool' => $pool,
+            'pool' => $this->cache->get('subscription.pool'),
         ]);
     }
 
@@ -36,19 +51,21 @@ class Session extends Component
 
     public function enableSession(int $sessionId)
     {
-        $pool = $this->cl(Home::class)->getPool();
+        $pool = $this->cache->get('subscription.pool');
         $this->poolService->enableSession($pool, $sessionId);
 
         $this->cl(SessionCounter::class)->render();
+
         return $this->cl(SessionPage::class)->page();
     }
 
     public function disableSession(int $sessionId)
     {
-        $pool = $this->cl(Home::class)->getPool();
+        $pool = $this->cache->get('subscription.pool');
         $this->poolService->disableSession($pool, $sessionId);
 
         $this->cl(SessionCounter::class)->render();
+
         return $this->cl(SessionPage::class)->page();
     }
 }

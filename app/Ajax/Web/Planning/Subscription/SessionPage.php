@@ -7,9 +7,12 @@ use Siak\Tontine\Service\Planning\PoolService;
 
 /**
  * @databag subscription
+ * @before getPool
  */
 class SessionPage extends PageComponent
 {
+    use PoolTrait;
+
     /**
      * The pagination databag options
      *
@@ -30,7 +33,7 @@ class SessionPage extends PageComponent
      */
     protected function count(): int
     {
-        $pool = $this->cl(Home::class)->getPool();
+        $pool = $this->cache->get('subscription.pool');
 
         return $this->poolService->getPoolSessionCount($pool);
     }
@@ -40,7 +43,7 @@ class SessionPage extends PageComponent
      */
     public function html(): string
     {
-        $pool = $this->cl(Home::class)->getPool();
+        $pool = $this->cache->get('subscription.pool');
 
         return (string)$this->renderView('pages.planning.subscription.session.page', [
             'pool' => $pool,

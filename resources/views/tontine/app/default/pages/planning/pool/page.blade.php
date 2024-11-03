@@ -3,12 +3,10 @@
 $poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
 $rqPool = Jaxon\rq(App\Ajax\Web\Planning\Pool\Pool::class);
 $rqPoolRound = Jaxon\rq(App\Ajax\Web\Planning\Pool\PoolRound::class);
-$rqSubscription = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Home::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
                   <div @jxnOn(['.btn-pool-period', 'click', ''], $rqPoolRound->home($poolId))></div>
                   <div @jxnOn(['.btn-pool-edit', 'click', ''], $rqPool->edit($poolId))></div>
-                  <div @jxnOn(['.btn-pool-subscriptions', 'click', ''], $rqSubscription->pool($poolId))></div>
                   <div @jxnOn(['.btn-pool-delete', 'click', ''], $rqPool->delete($poolId)
                     ->confirm(__('tontine.pool.questions.delete')))></div>
 
@@ -58,9 +56,6 @@ $rqSubscription = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Home::class);
     [
       'class' => 'btn-pool-edit',
       'text' => __('common.actions.edit'),
-    ],[
-      'class' => 'btn-pool-subscriptions',
-      'text' => __('tontine.pool.actions.subscriptions'),
     ],[
       'class' => 'btn-pool-delete',
       'text' => __('common.actions.delete'),

@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $rqMember = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Member::class);
-  $rqSession = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Session::class);
+  $rqPool = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Pool::class);
+  $rqPoolSection = Jaxon\rq(App\Ajax\Web\Planning\Subscription\PoolSection::class);
 @endphp
           <div class="row sm-screen-selector mb-3" id="pool-subscription-sm-screens">
             <div class="col-12">
@@ -17,10 +17,9 @@
           </div>
 
           <div class="row" id="content-page">
-            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnShow($rqMember)>
-              @jxnHtml($rqMember)
+            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnShow($rqPool)>
+              @jxnHtml($rqPool)
             </div>
-            <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqSession)>
-              @jxnHtml($rqSession)
+            <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqPoolSection)>
             </div>
           </div>

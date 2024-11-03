@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Planning\Subscription;
 
-use Jaxon\App\Component;
+use App\Ajax\Component;
 use Siak\Tontine\Service\Planning\PoolService;
 
 class SessionCounter extends Component
@@ -15,7 +15,7 @@ class SessionCounter extends Component
 
     public function html(): string
     {
-        $pool = $this->cl(Home::class)->getPool();
+        $pool = $this->cache->get('subscription.pool');
 
         return (string)$this->poolService->getEnabledSessionCount($pool);
     }

@@ -18,6 +18,7 @@ return [
         'session' => "Séance",
         'sessions' => "Séances",
         'pools' => "Tontines",
+        'subscriptions' => "Souscriptions",
         'presences' => "Présences",
         'payments' => "Paiements",
         'profile' => "Profil",
@@ -316,6 +317,7 @@ return [
             'resync' => "Resynchroniser les séances de ce tour ?<br/>Vous devez le faire si vous avez changé les membres, les frais, ou les souscriptions après son ouverture.",
         ],
         'errors' => [
+            'not_found' => "Impossible de trouver la séance.",
             'opened' => "Une séance a déjà été ouverte.",
             'not_opened' => "La séance n'est pas ouverte.",
             'delete' => "Impossible de supprimer cette séance.",
@@ -422,6 +424,12 @@ return [
             'not_found' => "Impossible de trouver la souscription correspondante.",
             'create' => "Impossible de créer une nouvelle souscription.",
             'delete' => "Impossible de supprimer la souscription.",
+        ],
+        'actions' => [
+            'members' => "Membres",
+            'sessions' => "Séances",
+            'planning' => "Planning",
+            'beneficiaries' => "Bénéficiaires",
         ],
     ],
     'beneficiary' => [

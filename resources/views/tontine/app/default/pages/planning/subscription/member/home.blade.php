@@ -1,5 +1,4 @@
 @php
-  $rqPool = Jaxon\rq(App\Ajax\Web\Planning\Pool\Pool::class);
   $rqMember = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Member::class);
   $rqMemberCounter = Jaxon\rq(App\Ajax\Web\Planning\Subscription\MemberCounter::class);
   $rqMemberPage = Jaxon\rq(App\Ajax\Web\Planning\Subscription\MemberPage::class);
@@ -7,13 +6,8 @@
               <div class="section-body">
                 <div class="row">
                   <div class="col">
-                    <h2 class="section-title">{{ $pool->title }} :: {{ __('tontine.pool.titles.subscriptions')
+                    <h2 class="section-title">{{ $pool->title }} :: {{ __('tontine.pool.titles.members')
                       }} (<span @jxnShow($rqMemberCounter)>@jxnHtml($rqMemberCounter)</span>)</h2>
-                  </div>
-                  <div class="col-auto">
-                    <div class="btn-group float-right ml-2" role="group">
-                      <button type="button" class="btn btn-primary" @jxnClick($rqPool->home())><i class="fa fa-arrow-left"></i></button>
-                    </div>
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2" role="group">

@@ -2,6 +2,9 @@
               <li><a class="nav-link" id="planning-menu-pools" role="link">
                 <i class="fa fa-fw fa-coins"></i> <span>{{ __('tontine.menus.pools') }}</span>
               </a></li>
+              <li><a class="nav-link" id="planning-menu-subscriptions" role="link">
+                <i class="fa fa-fw fa-check-circle"></i> <span>{{ __('tontine.menus.subscriptions') }}</span>
+              </a></li>
 
               <li class="menu-header">{{ __('tontine.menus.meeting') }}</li>
               <li><a class="nav-link" id="meeting-menu-sessions" role="link">
