@@ -5,12 +5,11 @@ namespace App\Ajax\Web\Meeting\Session;
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\SectionTitle;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\SessionService;
 
-use function Jaxon\jaxon;
 use function trans;
 
 /**
@@ -44,7 +43,7 @@ class Session extends Component
      * @before checkRoundSessions
      * @after hideMenuOnMobile
      */
-    public function home(): ComponentResponse
+    public function home(): AjaxResponse
     {
         return $this->render();
     }
@@ -128,13 +127,13 @@ class Session extends Component
         $html = trans('meeting.loan.labels.amount_available', [
             'amount' => $this->localeService->formatMoney($amount),
         ]);
-        jaxon()->getResponse()->html('loan_amount_available', $html);
+        $this->response->html('loan_amount_available', $html);
 
         $amount = $this->balanceCalculator->getTotalBalance($session);
         $html = trans('meeting.disbursement.labels.amount_available', [
             'amount' => $this->localeService->formatMoney($amount),
         ]);
-        jaxon()->getResponse()->html('total_amount_available', $html);
+        $this->response->html('total_amount_available', $html);
 
         return $this->response;
     }

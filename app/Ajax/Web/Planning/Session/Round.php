@@ -6,7 +6,7 @@ use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\SectionTitle;
 use App\Ajax\Web\Tontine\Select;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\RoundService;
 
 use function Jaxon\pm;
@@ -32,7 +32,7 @@ class Round extends Component
      * @before checkGuestAccess ["planning", "sessions"]
      * @after hideMenuOnMobile
      */
-    public function home(): ComponentResponse
+    public function home(): AjaxResponse
     {
         return $this->render();
     }

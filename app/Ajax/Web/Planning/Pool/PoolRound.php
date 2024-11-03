@@ -4,12 +4,11 @@ namespace App\Ajax\Web\Planning\Pool;
 
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Validation\Planning\PoolRoundValidator;
 
-use function Jaxon\jaxon;
 use function trans;
 
 /**
@@ -48,7 +47,7 @@ class PoolRound extends Component
         $this->cache->set('planning.pool', $this->poolService->getPool($poolId));
     }
 
-    public function home(int $poolId): ComponentResponse
+    public function home(int $poolId): AjaxResponse
     {
         if(!$this->cache->get('planning.pool'))
         {
@@ -97,10 +96,9 @@ class PoolRound extends Component
         $this->cl(PoolRoundStartSession::class)->showSessionPage();
         $this->cl(PoolRoundEndSession::class)->showSessionPage();
 
-        $response = jaxon()->getResponse();
-        $response->html('pool-round-start-session-title',
+        $this->response->html('pool-round-start-session-title',
             trans('tontine.pool_round.titles.start_session', ['session' => $startSession]));
-        $response->html('pool-round-end-session-title',
+        $this->response->html('pool-round-end-session-title',
             trans('tontine.pool_round.titles.end_session', ['session' => $endSession]));
     }
 

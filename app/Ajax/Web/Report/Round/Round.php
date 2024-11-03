@@ -4,7 +4,7 @@ namespace App\Ajax\Web\Report\Round;
 
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\SummaryService;
 
 /**
@@ -28,7 +28,7 @@ class Round extends Component
      * @before checkOpenedSessions
      * @after hideMenuOnMobile
      */
-    public function home(): ComponentResponse
+    public function home(): AjaxResponse
     {
         return $this->render();
     }

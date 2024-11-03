@@ -5,7 +5,7 @@ namespace App\Ajax\Web\Planning\Pool;
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\SectionTitle;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\LocaleService;
@@ -41,7 +41,7 @@ class Pool extends Component
      * @before checkGuestAccess ["planning", "pools"]
      * @after hideMenuOnMobile
      */
-    public function home(): ComponentResponse
+    public function home(): AjaxResponse
     {
         return $this->render();
     }

@@ -8,7 +8,6 @@ use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\SavingValidator;
 
-use function Jaxon\jaxon;
 use function str_replace;
 use function trans;
 use function trim;
@@ -128,7 +127,7 @@ class Member extends MeetingComponent
             'memberId' => $memberId,
             'amount' => $amount,
         ]);
-        jaxon()->getResponse()->html("saving-member-$memberId", $html);
+        $this->response->html("saving-member-$memberId", $html);
 
         return $this->response;
     }

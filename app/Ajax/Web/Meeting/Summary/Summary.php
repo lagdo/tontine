@@ -4,7 +4,7 @@ namespace App\Ajax\Web\Meeting\Summary;
 
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\SessionService;
 
 use function trans;
@@ -26,7 +26,7 @@ class Summary extends Component
     public function __construct(protected SessionService $sessionService)
     {}
 
-    public function home(int $sessionId): ComponentResponse
+    public function home(int $sessionId): AjaxResponse
     {
         $this->bag('meeting')->set('session.id', $sessionId);
         // Sending an Ajax request to the Saving class needs to set

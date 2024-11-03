@@ -5,7 +5,7 @@
   $amount = Jaxon\jq('input', Jaxon\jq()->parent()->parent())->val()->toInt();
   $rqPool = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Deposit\Pool::class);
 @endphp
-                  <div class="table-responsive" id="meeting-pool-deposits">
+                  <div class="table-responsive" id="meeting-pool-deposits" @jxnTarget()>
                     <div @jxnOn(['.btn-add-deposit', 'click', ''], $rqPool->addDeposit($receivableId))></div>
                     <div @jxnOn(['.btn-del-deposit', 'click', ''], $rqPool->delDeposit($receivableId))></div>
                     <div @jxnOn(['.btn-save-deposit', 'click', ''], $rqPool->saveAmount($receivableId, $amount))></div>

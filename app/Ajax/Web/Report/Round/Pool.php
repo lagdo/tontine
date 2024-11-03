@@ -3,7 +3,7 @@
 namespace App\Ajax\Web\Report\Round;
 
 use App\Ajax\Component;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\SummaryService;
 
 use function trans;
@@ -41,9 +41,9 @@ class Pool extends Component
      *
      * @param int $poolId
      *
-     * @return ComponentResponse
+     * @return AjaxResponse
      */
-    public function refresh(int $poolId): ComponentResponse
+    public function refresh(int $poolId): AjaxResponse
     {
         $round = $this->tenantService->round();
         $pool = $round->pools()

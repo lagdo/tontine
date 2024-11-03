@@ -9,7 +9,6 @@ use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 
-use function Jaxon\jaxon;
 use function Jaxon\pm;
 use function array_filter;
 use function array_map;
@@ -143,7 +142,7 @@ class Session extends Component
         $html = collect($sessions)->map(function($session) {
             return $session->title . ';' . $session->date;
         })->join("\n");
-        jaxon()->getResponse()->html('new-sessions-list', $html);
+        $this->response->html('new-sessions-list', $html);
 
         return $this->response;
     }

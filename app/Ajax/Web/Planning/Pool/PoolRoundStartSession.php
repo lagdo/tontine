@@ -3,7 +3,7 @@
 namespace App\Ajax\Web\Planning\Pool;
 
 use App\Ajax\PageComponent;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Planning\PoolService;
 
@@ -69,7 +69,7 @@ class PoolRoundStartSession extends PageComponent
         $this->response->js()->makeTableResponsive('pool-round-sessions-start');
     }
 
-    public function showSessionPage(): ComponentResponse
+    public function showSessionPage(): AjaxResponse
     {
         $pool = $this->cache->get('planning.pool');
         if(!$pool || !$pool->pool_round)

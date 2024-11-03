@@ -8,8 +8,6 @@ use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
-use function Jaxon\jaxon;
-
 /**
  * @databag partial.refund
  * @before getFund
@@ -88,7 +86,7 @@ class PartialRefundEdit extends MeetingComponent
             'debt' => $debt,
             'amount' => $this->localeService->getMoneyValue($debt->partial_refund->amount),
         ]);
-        jaxon()->getResponse()->html("partial-refund-amount-{$debt->id}", $html);
+        $this->response->html("partial-refund-amount-{$debt->id}", $html);
 
         return $this->response;
     }

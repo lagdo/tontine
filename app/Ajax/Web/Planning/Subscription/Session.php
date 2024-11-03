@@ -3,7 +3,7 @@
 namespace App\Ajax\Web\Planning\Subscription;
 
 use App\Ajax\Component;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 
 /**
@@ -27,7 +27,7 @@ class Session extends Component
     public function __construct(private PoolService $poolService)
     {}
 
-    public function pool(int $poolId): ComponentResponse
+    public function pool(int $poolId): AjaxResponse
     {
         $this->bag('subscription')->set('session.filter', false);
 

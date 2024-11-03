@@ -5,7 +5,7 @@ namespace App\Ajax\Web\Tontine\Invite;
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\SectionTitle;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 
 use function trans;
 
@@ -22,7 +22,7 @@ class Invite extends Component
     /**
      * @after hideMenuOnMobile
      */
-    public function home(): ComponentResponse
+    public function home(): AjaxResponse
     {
         return $this->render();
     }

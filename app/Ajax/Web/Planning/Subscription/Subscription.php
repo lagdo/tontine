@@ -5,7 +5,7 @@ namespace App\Ajax\Web\Planning\Subscription;
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\SectionTitle;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 
 use function trans;
 
@@ -24,7 +24,7 @@ class Subscription extends Component
      * @before checkGuestAccess ["planning", "pools"]
      * @after hideMenuOnMobile
      */
-    public function home(): ComponentResponse
+    public function home(): AjaxResponse
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.planning'));
 

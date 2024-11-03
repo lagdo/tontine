@@ -4,7 +4,7 @@ namespace App\Ajax\Web\Planning\Subscription;
 
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Planning\SummaryService;
@@ -35,7 +35,7 @@ class Beneficiary extends Component
         private PoolService $poolService, private SummaryService $summaryService)
     {}
 
-    public function pool(int $poolId): ComponentResponse
+    public function pool(int $poolId): AjaxResponse
     {
         return $this->render();
     }

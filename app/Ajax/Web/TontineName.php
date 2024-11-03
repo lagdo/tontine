@@ -3,7 +3,7 @@
 namespace App\Ajax\Web;
 
 use Jaxon\App\Component;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 
 /**
  * @exclude
@@ -28,7 +28,7 @@ class TontineName extends Component
      *
      * @return void
      */
-    public function show(string $name): ComponentResponse
+    public function show(string $name): AjaxResponse
     {
         $this->name = $name;
 

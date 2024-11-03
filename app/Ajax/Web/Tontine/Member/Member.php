@@ -6,7 +6,7 @@ use App\Ajax\Component;
 use App\Ajax\Web\Faker;
 use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\SectionTitle;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Tontine\MemberValidator;
 
@@ -42,7 +42,7 @@ class Member extends Component
      * @before checkGuestAccess ["tontine", "members"]
      * @after hideMenuOnMobile
      */
-    public function home(): ComponentResponse
+    public function home(): AjaxResponse
     {
         return $this->render();
     }

@@ -3,7 +3,7 @@
 namespace App\Ajax\Web;
 
 use Jaxon\App\Component;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 
 /**
  * @exclude
@@ -28,7 +28,7 @@ class SectionTitle extends Component
      *
      * @return void
      */
-    public function show(string $title): ComponentResponse
+    public function show(string $title): AjaxResponse
     {
         $this->title = $title;
 

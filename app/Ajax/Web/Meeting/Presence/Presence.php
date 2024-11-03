@@ -5,7 +5,7 @@ namespace App\Ajax\Web\Meeting\Presence;
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\SectionTitle;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\PresenceService;
 
 use function trans;
@@ -31,7 +31,7 @@ class Presence extends Component
      * @before checkRoundSessions
      * @after hideMenuOnMobile
      */
-    public function home(): ComponentResponse
+    public function home(): AjaxResponse
     {
         return $this->render();
     }

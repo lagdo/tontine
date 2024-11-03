@@ -7,7 +7,6 @@ use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\LocaleService;
 
 use function filter_var;
-use function Jaxon\jaxon;
 use function str_replace;
 use function trans;
 use function trim;
@@ -153,7 +152,7 @@ class Member extends ChargeComponent
             'memberId' => $memberId,
             'amount' => $this->localeService->getMoneyValue($bill->bill->amount),
         ]);
-        jaxon()->getResponse()->html("member-$memberId", $html);
+        $this->response->html("member-$memberId", $html);
 
         return $this->response;
     }
