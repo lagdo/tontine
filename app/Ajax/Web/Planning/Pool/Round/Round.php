@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\Web\Planning\Pool;
+namespace App\Ajax\Web\Planning\Pool\Round;
 
 use App\Ajax\Component;
 use App\Ajax\Web\SectionContent;
@@ -15,7 +15,7 @@ use function trans;
  * @databag pool.round
  * @before getPool
  */
-class PoolRound extends Component
+class Round extends Component
 {
     /**
      * @var string
@@ -42,8 +42,11 @@ class PoolRound extends Component
      */
     protected function getPool()
     {
-        $poolId = $this->target()->method() === 'home' ? $this->target()->args()[0] :
-            (int)$this->bag('pool.round')->get('pool.id');
+        if($this->target()->method() === 'home')
+        {
+            $this->bag('pool.round')->set('pool.id', $this->target()->args()[0]);
+        }
+        $poolId = (int)$this->bag('pool.round')->get('pool.id');
         $this->cache->set('planning.pool', $this->poolService->getPool($poolId));
     }
 
@@ -55,15 +58,6 @@ class PoolRound extends Component
         }
 
         return $this->render();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function before()
-    {
-        $pool = $this->cache->get('planning.pool');
-        $this->bag('pool.round')->set('pool.id', $pool->id);
     }
 
     /**
@@ -84,22 +78,9 @@ class PoolRound extends Component
         $this->response->js()->setSmScreenHandler('pool-round-sessions-sm-screens-btn',
             'pool-round-sessions-sm-screens');
 
-        $pool = $this->cache->get('planning.pool');
-        $startSession = $endSession = trans('tontine.pool_round.labels.default');
-        if($pool->pool_round !== null)
-        {
-            $startSession = $pool->start_date;
-            $endSession = $pool->end_date;
-        }
-
-        $this->cl(PoolRoundAction::class)->render();
-        $this->cl(PoolRoundStartSession::class)->showSessionPage();
-        $this->cl(PoolRoundEndSession::class)->showSessionPage();
-
-        $this->response->html('pool-round-start-session-title',
-            trans('tontine.pool_round.titles.start_session', ['session' => $startSession]));
-        $this->response->html('pool-round-end-session-title',
-            trans('tontine.pool_round.titles.end_session', ['session' => $endSession]));
+        $this->cl(Action::class)->render();
+        $this->cl(StartSession::class)->showSessionPage();
+        $this->cl(EndSession::class)->showSessionPage();
     }
 
     /**
@@ -113,7 +94,7 @@ class PoolRound extends Component
 
         // Reload the pool
         $this->getPool();
-        $this->cl(PoolRoundAction::class)->render();
+        $this->render();
         $this->notify->info(trans('tontine.pool_round.messages.saved'));
 
         return $this->response;
@@ -126,7 +107,7 @@ class PoolRound extends Component
 
         // Reload the pool
         $this->getPool();
-        $this->home($pool->id);
+        $this->render();
         $this->notify->info(trans('tontine.pool_round.messages.deleted'));
 
         return $this->response;

@@ -2,7 +2,9 @@
   $rqPoolRound = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\Round::class);
   $rqRoundAction = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\Action::class);
   $rqStartSession = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\StartSession::class);
+  $rqStartSessionTitle = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\StartSessionTitle::class);
   $rqEndSession = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\EndSession::class);
+  $rqEndSessionTitle = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\EndSessionTitle::class);
 @endphp
           <div class="section-body">
             <div class="row">
@@ -33,7 +35,7 @@
                   <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="pool-round-sessions-start-screen">
                     <div class="row">
                       <div class="col">
-                        <h2 class="section-title" id="pool-round-start-session-title"></h2>
+                        <h2 class="section-title" @jxnShow($rqStartSessionTitle)></h2>
                       </div>
                       <div class="col-auto">
                         <div class="btn-group float-right" role="group">
@@ -48,7 +50,7 @@
                   <div class="col-md-6 col-sm-12 sm-screen" id="pool-round-sessions-end-screen">
                     <div class="row">
                       <div class="col">
-                        <h2 class="section-title" id="pool-round-end-session-title"></h2>
+                        <h2 class="section-title" @jxnShow($rqEndSessionTitle)></h2>
                       </div>
                       <div class="col-auto">
                         <div class="btn-group float-right" role="group">

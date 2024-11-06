@@ -26,8 +26,8 @@ class PoolRoundValidator extends AbstractValidator
             'start_session' => 'required|integer|min:1',
             'end_session' => 'required|integer|min:1',
         ], [
-            'start_session' => trans('tontine.pool.errors.start_session'),
-            'end_session' => trans('tontine.pool.errors.end_session'),
+            'start_session' => trans('tontine.pool_round.errors.start_session'),
+            'end_session' => trans('tontine.pool_round.errors.end_session'),
         ]);
         $validator->after(function($validator) use($values) {
             // No more check if there's already an error.
@@ -39,16 +39,16 @@ class PoolRoundValidator extends AbstractValidator
             $startSession = $this->sessionService->getTontineSession((int)$values['start_session']);
             if(!$startSession)
             {
-                $validator->errors()->add('start_session', trans('tontine.pool.errors.start_session'));
+                $validator->errors()->add('start_session', trans('tontine.pool_round.errors.start_session'));
             }
             $endSession = $this->sessionService->getTontineSession((int)$values['end_session']);
             if(!$endSession)
             {
-                $validator->errors()->add('end_session', trans('tontine.pool.errors.end_session'));
+                $validator->errors()->add('end_session', trans('tontine.pool_round.errors.end_session'));
             }
             if($endSession->id === $startSession->id || $endSession->start_at <= $startSession->start_at)
             {
-                $validator->errors()->add('end_session', trans('tontine.pool.errors.session_dates'));
+                $validator->errors()->add('end_session', trans('tontine.pool_round.errors.session_dates'));
             }
         });
         if($validator->fails())

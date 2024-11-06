@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Ajax\Web\Planning\Pool;
+namespace App\Ajax\Web\Planning\Pool\Round;
 
 use App\Ajax\Component;
 
 /**
  * @exclude
  */
-class PoolRoundAction extends Component
+class Action extends Component
 {
     /**
      * @inheritDoc

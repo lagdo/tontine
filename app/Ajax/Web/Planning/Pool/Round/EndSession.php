@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\Web\Planning\Pool;
+namespace App\Ajax\Web\Planning\Pool\Round;
 
 use App\Ajax\PageComponent;
 use Jaxon\Response\AjaxResponse;
@@ -11,14 +11,14 @@ use Siak\Tontine\Service\Planning\PoolService;
  * @databag pool.round
  * @before getPool
  */
-class PoolRoundStartSession extends PageComponent
+class EndSession extends PageComponent
 {
     /**
      * The pagination databag options
      *
      * @var array
      */
-    protected array $bagOptions = ['pool.round', 'session.start.page'];
+    protected array $bagOptions = ['pool.round', 'session.end.page'];
 
     /**
      * The constructor
@@ -55,9 +55,10 @@ class PoolRoundStartSession extends PageComponent
         $pool = $this->cache->get('planning.pool');
 
         return (string)$this->renderView('pages.planning.pool.round.sessions', [
-            'field' => 'start',
+            'field' => 'end',
+            'rqPoolRoundSession' => $this->rq(),
             'sessions' => $this->sessionService->getTontineSessions($this->page, orderAsc: false),
-            'sessionId' => $pool->pool_round ? $pool->pool_round->start_session_id : 0,
+            'sessionId' => $pool->pool_round ? $pool->pool_round->end_session_id : 0,
         ]);
     }
 
@@ -66,21 +67,32 @@ class PoolRoundStartSession extends PageComponent
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('pool-round-sessions-start');
+        $this->cl(EndSessionTitle::class)->render();
+
+        $this->response->js()->makeTableResponsive('pool-round-sessions-end');
+    }
+
+    private function getSessionPageNumber(): int
+    {
+        $pool = $this->cache->get('planning.pool');
+        if(!$pool->pool_round)
+        {
+            return 1;
+        }
+
+        $session = $pool->pool_round->start_session;
+        $sessionCount = $this->sessionService->getTontineSessionCount($session, true, false);
+        return (int)($sessionCount / $this->tenantService->getLimit()) + 1;
     }
 
     public function showSessionPage(): AjaxResponse
     {
         $pool = $this->cache->get('planning.pool');
-        if(!$pool || !$pool->pool_round)
+        if(!$pool)
         {
             return $this->response;
         }
 
-        $session = $pool->pool_round->end_session;
-        $sessionCount = $this->sessionService->getTontineSessionCount($session, true, false);
-        $pageNumber = (int)($sessionCount / $this->tenantService->getLimit()) + 1;
-
-        return $this->page($pageNumber);
+        return $this->page($this->getSessionPageNumber());
     }
 }
