@@ -1,4 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $rqTargetPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\Libre\TargetPage::class);
+@endphp
                   <div class="table-responsive" id="meeting-fee-libre-target">
                     <table class="table table-bordered responsive">
                       <thead>
@@ -21,4 +24,6 @@
 @endforeach
                       </tbody>
                     </table>
+                    <nav @jxnPagination($rqTargetPage)>
+                    </nav>
                   </div> <!-- End table -->

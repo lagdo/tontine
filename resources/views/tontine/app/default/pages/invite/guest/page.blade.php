@@ -1,6 +1,7 @@
 @php
   $inviteId = Jaxon\jq()->parent()->attr('data-invite-id')->toInt();
   $rqGuestInvite = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Guest::class);
+  $rqGuestInvitePage = Jaxon\rq(App\Ajax\Web\Tontine\Invite\GuestPage::class);
 @endphp
                   <div class="table-responsive" id="content-guest-invites-page" @jxnTarget()>
                     <div @jxnOn(['.btn-guest-invite-accept', 'click', ''], $rqGuestInvite->accept($inviteId)
@@ -47,4 +48,6 @@
 @endforeach
                       </tbody>
                     </table>
+                    <nav @jxnPagination($rqGuestInvitePage)>
+                    </nav>
                   </div> <!-- End table -->

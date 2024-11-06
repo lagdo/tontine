@@ -1,6 +1,7 @@
 @php
   $tontineId = Jaxon\jq()->parent()->attr('data-tontine-id')->toInt();
   $rqTontine = Jaxon\rq(App\Ajax\Web\Tontine\Tontine::class);
+  $rqTontinePage = Jaxon\rq(App\Ajax\Web\Tontine\TontinePage::class);
   $rqSelect = Jaxon\rq(App\Ajax\Web\Tontine\Select::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
@@ -46,4 +47,6 @@
 @endforeach
                     </tbody>
                   </table>
+                  <nav @jxnPagination($rqTontinePage)>
+                  </nav>
                 </div>

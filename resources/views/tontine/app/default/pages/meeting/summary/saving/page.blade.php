@@ -1,4 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $rqSavingPage = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Saving\SavingPage::class);
+@endphp
                   <div class="table-responsive" id="meeting-savings-page">
                     <table class="table table-bordered responsive">
                       <thead>
@@ -19,4 +22,6 @@
 @endforeach
                       </tbody>
                     </table>
+                    <nav @jxnPagination($rqSavingPage)>
+                    </nav>
                   </div> <!-- End table -->

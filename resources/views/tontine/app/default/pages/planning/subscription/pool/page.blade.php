@@ -1,6 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
+  $rqPoolPage = Jaxon\rq(App\Ajax\Web\Planning\Subscription\PoolPage::class);
   $rqMember = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Member::class);
   $rqSession = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Session::class);
   $rqPlanning = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Planning::class);
@@ -58,4 +59,6 @@
 @endforeach
                     </tbody>
                   </table>
+                  <nav @jxnPagination($rqPoolPage)>
+                  </nav>
                 </div>

@@ -16,9 +16,6 @@
             </div>
 
             <div class="card shadow mb-4">
-              <div class="card-body">
-                <div @jxnShow($rqTontinePage)>
-                </div>
-                <nav @jxnPagination($rqTontinePage)></nav>
+              <div class="card-body" @jxnShow($rqTontinePage)>
               </div>
             </div>

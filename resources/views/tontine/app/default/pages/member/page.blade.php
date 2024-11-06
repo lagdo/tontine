@@ -1,6 +1,7 @@
 @php
   $memberId = Jaxon\jq()->parent()->attr('data-member-id')->toInt();
   $rqMember = Jaxon\rq(App\Ajax\Web\Tontine\Member\Member::class);
+  $rqMemberPage = Jaxon\rq(App\Ajax\Web\Tontine\Member\MemberPage::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
                   <div @jxnOn(['.btn-member-edit', 'click', ''], $rqMember->edit($memberId))></div>
@@ -44,4 +45,6 @@
 @endforeach
                     </tbody>
                   </table>
+                  <nav @jxnPagination($rqMemberPage)>
+                  </nav>
                 </div>

@@ -2,6 +2,7 @@
 @php
   $billId = Jaxon\jq()->parent()->attr('data-bill-id')->toInt();
   $rqSettlement = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\Libre\Settlement::class);
+  $rqSettlementPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\Libre\SettlementPage::class);
 @endphp
                   <div class="table-responsive" id="meeting-fee-libre-bills" @jxnTarget()>
                     <div @jxnOn(['.btn-add-settlement', 'click', ''], $rqSettlement->addSettlement($billId))></div>
@@ -29,4 +30,6 @@
 @endforeach
                       </tbody>
                     </table>
+                    <nav @jxnPagination($rqSettlementPage)>
+                    </nav>
                   </div> <!-- End table -->

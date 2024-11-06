@@ -30,5 +30,3 @@
                   </div>
                   <div @jxnShow($rqSavingPage)>
                   </div>
-                  <nav @jxnPagination($rqSavingPage)>
-                  </nav>

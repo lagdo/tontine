@@ -1,5 +1,6 @@
 @php
   $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Session::class);
+  $rqSessionPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\SessionPage::class);
   $rqSessionMenu = Jaxon\rq(App\Ajax\Web\Meeting\Session\Menu::class);
   $rqSummary = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Summary::class);
   $sessionId = Jaxon\jq()->parent()->attr('data-session-id')->toInt();
@@ -80,4 +81,6 @@
 @endforeach
                   </tbody>
                 </table>
+                <nav @jxnPagination($rqSessionPage)>
+                </nav>
               </div>

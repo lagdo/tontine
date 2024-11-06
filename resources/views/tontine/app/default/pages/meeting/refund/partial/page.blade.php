@@ -4,6 +4,7 @@
 @php
   $refundId = Jaxon\jq()->parent()->attr('data-partial-refund-id')->toInt();
   $rqPartialRefund = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\PartialRefund::class);
+  $rqPartialRefundPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\PartialRefundPage::class);
 @endphp
                     <div class="table-responsive" id="meeting-partial-refunds-page">
                       <div @jxnOn(['.btn-partial-refund-edit', 'click', ''], $rqPartialRefund->editRefund($refundId))></div>
@@ -50,4 +51,6 @@
       @endforeach
                         </tbody>
                       </table>
+                      <nav @jxnPagination($rqPartialRefundPage)>
+                      </nav>
                     </div> <!-- End table -->

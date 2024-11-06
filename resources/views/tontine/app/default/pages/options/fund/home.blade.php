@@ -18,10 +18,6 @@
 
               <!-- Data tables -->
               <div class="card shadow mb-4">
-                <div class="card-body">
-                  <div @jxnShow($rqFundPage)>
-                  </div>
-                  <nav @jxnPagination($rqFundPage)>
-                  </nav>
+                <div class="card-body" @jxnShow($rqFundPage)>
                 </div>
               </div>

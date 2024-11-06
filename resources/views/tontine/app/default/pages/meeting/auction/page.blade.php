@@ -2,6 +2,7 @@
 @php
   $auctionId = Jaxon\jq()->parent()->attr('data-auction-id')->toInt();
   $rqAuction = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Auction::class);
+  $rqAuctionPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\AuctionPage::class);
 @endphp
                   <div class="table-responsive" id="meeting-auctions-page" @jxnTarget()>
                     <div @jxnOn(['.btn-toggle-payment', 'click', ''], $rqAuction->togglePayment($auctionId))></div>
@@ -35,4 +36,6 @@
 @endforeach
                       </tbody>
                     </table>
+                    <nav @jxnPagination($rqAuctionPage)>
+                    </nav>
                   </div> <!-- End table -->

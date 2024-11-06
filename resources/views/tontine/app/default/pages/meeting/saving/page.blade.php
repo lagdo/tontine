@@ -2,6 +2,7 @@
 @php
   $savingId = Jaxon\jq()->parent()->attr('data-saving-id')->toInt();
   $rqSaving = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Saving::class);
+  $rqSavingPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\SavingPage::class);
 @endphp
                   <div class="table-responsive" id="meeting-savings-page" @jxnTarget()>
                     <div @jxnOn(['.btn-saving-edit', 'click', ''], $rqSaving->editSaving($savingId))></div>
@@ -39,4 +40,6 @@
 @endforeach
                       </tbody>
                     </table>
+                    <nav @jxnPagination($rqSavingPage)>
+                    </nav>
                   </div> <!-- End table -->

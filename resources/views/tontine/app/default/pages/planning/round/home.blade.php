@@ -29,11 +29,7 @@
 
               <!-- Data tables -->
               <div class="card shadow mb-4">
-                <div class="card-body">
-                  <div @jxnShow($rqRoundPage)>
-                  </div>
-                  <nav @jxnPagination($rqRoundPage)>
-                  </nav>
+                <div class="card-body" @jxnShow($rqRoundPage)>
                 </div>
               </div>
             </div>

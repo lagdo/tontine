@@ -16,5 +16,3 @@
                   </div>
                   <div @jxnShow($rqLibreFeePage)>
                   </div>
-                  <nav @jxnPagination($rqLibreFeePage)>
-                  </nav>

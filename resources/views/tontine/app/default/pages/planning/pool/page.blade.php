@@ -1,8 +1,9 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-$poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
-$rqPool = Jaxon\rq(App\Ajax\Web\Planning\Pool\Pool::class);
-$rqPoolRound = Jaxon\rq(App\Ajax\Web\Planning\Pool\PoolRound::class);
+  $poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
+  $rqPool = Jaxon\rq(App\Ajax\Web\Planning\Pool\Pool::class);
+  $rqPoolPage = Jaxon\rq(App\Ajax\Web\Planning\Pool\PoolPage::class);
+  $rqPoolRound = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\Round::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
                   <div @jxnOn(['.btn-pool-period', 'click', ''], $rqPoolRound->home($poolId))></div>
@@ -67,5 +68,7 @@ $rqPoolRound = Jaxon\rq(App\Ajax\Web\Planning\Pool\PoolRound::class);
 @endforeach
                     </tbody>
                   </table>
+                  <nav @jxnPagination($rqPoolPage)>
+                  </nav>
                 </div>
 

@@ -16,10 +16,6 @@
               </div>
 
               <div class="card shadow mb-4">
-                <div class="card-body">
-                  <div @jxnShow($rqGuestInvitePage)>
-                  </div>
-                  <nav @jxnPagination($rqGuestInvitePage)>
-                  </nav>
+                <div class="card-body" @jxnShow($rqGuestInvitePage)>
                 </div>
               </div>

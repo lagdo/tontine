@@ -19,5 +19,3 @@
                   </div>
                   <div @jxnShow($rqPoolPage)>
                   </div>
-                  <nav @jxnPagination($rqPoolPage)>
-                  </nav>

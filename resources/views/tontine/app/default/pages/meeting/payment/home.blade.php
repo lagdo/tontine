@@ -30,8 +30,6 @@
                   </div>
                   <div @jxnShow($rqPaymentPage)>
                   </div>
-                  <nav @jxnPagination($rqPaymentPage)>
-                  </nav>
                 </div>
               </div>
             </div>

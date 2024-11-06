@@ -20,5 +20,6 @@
 @endforeach
                           </tbody>
                         </table>
-
+                        <nav @jxnPagination($rqPoolRoundSession)>
+                        </nav>
                       </div> <!-- End table -->

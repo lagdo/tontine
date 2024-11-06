@@ -21,7 +21,5 @@
                 <div class="card-body">
                   <div @jxnShow($rqHostInvitePage)>
                   </div> <!-- End table -->
-                  <nav @jxnPagination($rqHostInvitePage)>
-                  </nav>
                 </div>
               </div>

@@ -1,7 +1,7 @@
 @php
   $rqMember = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Member::class);
-  $rqMemberCounter = Jaxon\rq(App\Ajax\Web\Planning\Subscription\MemberCounter::class);
   $rqMemberPage = Jaxon\rq(App\Ajax\Web\Planning\Subscription\MemberPage::class);
+  $rqMemberCounter = Jaxon\rq(App\Ajax\Web\Planning\Subscription\MemberCounter::class);
 @endphp
               <div class="section-body">
                 <div class="row">
@@ -31,10 +31,6 @@
 
               <!-- Data tables -->
               <div class="card shadow mb-4">
-                <div class="card-body">
-                  <div @jxnShow($rqMemberPage)>
-                  </div>
-                  <nav @jxnPagination($rqMemberPage)>
-                  </nav>
+                <div class="card-body" @jxnShow($rqMemberPage)>
                 </div>
               </div>

@@ -48,5 +48,3 @@
 @endif
                   <div @jxnShow($rqTargetPage)>
                   </div>
-                  <nav @jxnPagination($rqTargetPage)>
-                  </nav>

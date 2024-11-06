@@ -4,6 +4,7 @@
   $receivableId = Jaxon\jq()->parent()->attr('data-receivable-id')->toInt();
   $amount = Jaxon\jq('input', Jaxon\jq()->parent()->parent())->val()->toInt();
   $rqPool = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Deposit\Pool::class);
+  $rqPoolPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Deposit\PoolPage::class);
 @endphp
                   <div class="table-responsive" id="meeting-pool-deposits" @jxnTarget()>
                     <div @jxnOn(['.btn-add-deposit', 'click', ''], $rqPool->addDeposit($receivableId))></div>
@@ -54,4 +55,6 @@
 @endforeach
                       </tbody>
                     </table>
+                    <nav @jxnPagination($rqPoolPage)>
+                    </nav>
                   </div> <!-- End table -->

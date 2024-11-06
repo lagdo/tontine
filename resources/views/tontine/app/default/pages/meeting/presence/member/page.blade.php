@@ -3,6 +3,7 @@
   $memberId = Jaxon\jq()->parent()->attr('data-member-id')->toInt();
   $rqPresence = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Presence::class);
   $rqMember = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Member::class);
+  $rqMemberPage = Jaxon\rq(App\Ajax\Web\Meeting\Presence\MemberPage::class);
 @endphp
                   <div class="table-responsive" id="content-page-members" @jxnTarget()>
                     <div @jxnOn(['.btn-toggle-member-presence', 'click', ''], $rqMember->togglePresence($memberId))></div>
@@ -35,4 +36,6 @@
 @endforeach
                       </tbody>
                     </table>
+                    <nav @jxnPagination($rqMemberPage)>
+                    </nav>
                   </div> <!-- End table -->

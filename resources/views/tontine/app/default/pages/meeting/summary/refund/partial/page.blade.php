@@ -1,6 +1,9 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('debtCalculator', 'Siak\Tontine\Service\Meeting\Credit\DebtCalculator')
 @inject('paymentService', 'Siak\Tontine\Service\Meeting\PaymentServiceInterface')
+@php
+  $rqPartialRefundPage = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Credit\PartialRefundPage::class);
+@endphp
                     <div class="table-responsive" id="meeting-partial-refunds-page">
                       <table class="table table-bordered responsive">
                         <thead>
@@ -32,4 +35,6 @@
 @endforeach
                         </tbody>
                       </table>
+                      <nav @jxnPagination($rqPartialRefundPage)>
+                      </nav>
                     </div> <!-- End table -->

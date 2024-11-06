@@ -28,5 +28,3 @@
                     </div>
                     <div @jxnShow($rqRefundPage)>
                     </div>
-                    <nav @jxnPagination($rqRefundPage)>
-                    </nav>

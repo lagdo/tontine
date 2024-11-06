@@ -2,6 +2,7 @@
 @php
   $chargeId = Jaxon\jq()->parent()->attr('data-charge-id')->toInt();
   $rqCharge = Jaxon\rq(App\Ajax\Web\Tontine\Options\Charge::class);
+  $rqChargePage = Jaxon\rq(App\Ajax\Web\Tontine\Options\ChargePage::class);
 @endphp
               <div class="table-responsive" @jxnTarget()>
                 <div @jxnOn(['.btn-charge-edit', 'click', ''], $rqCharge->edit($chargeId))></div>
@@ -52,5 +53,6 @@
 @endforeach
                   </tbody>
                 </table>
-
+                <nav @jxnPagination($rqChargePage)>
+                </nav>
               </div>

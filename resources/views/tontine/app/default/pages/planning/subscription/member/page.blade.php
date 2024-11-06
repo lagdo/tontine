@@ -1,6 +1,7 @@
 @php
   $memberId = Jaxon\jq()->parent()->parent()->attr('data-member-id')->toInt();
   $rqMember = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Member::class);
+  $rqMemberPage = Jaxon\rq(App\Ajax\Web\Planning\Subscription\MemberPage::class);
 @endphp
                   <div class="table-responsive" id="pool-subscription-members-page" @jxnTarget()>
                     <div @jxnOn(['.btn-subscription-member-add', 'click', ''], $rqMember->create($memberId))></div>
@@ -33,4 +34,6 @@
 @endforeach
                       </tbody>
                     </table>
+                    <nav @jxnPagination($rqMemberPage)>
+                    </nav>
                   </div> <!-- End table -->

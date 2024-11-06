@@ -23,5 +23,3 @@
                   </div>
                   <div @jxnShow($rqAuctionPage)>
                   </div>
-                  <nav @jxnPagination($rqAuctionPage)>
-                  </nav>

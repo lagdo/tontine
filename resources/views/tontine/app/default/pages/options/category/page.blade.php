@@ -1,6 +1,7 @@
 @php
   $categoryId = Jaxon\jq()->parent()->attr('data-category-id')->toInt();
   $rqCategory = Jaxon\rq(App\Ajax\Web\Tontine\Options\Category::class);
+  $rqCategoryPage = Jaxon\rq(App\Ajax\Web\Tontine\Options\CategoryPage::class);
 @endphp
                   <div class="table-responsive" @jxnTarget()>
                     <div @jxnOn(['.btn-category-edit', 'click', ''], $rqCategory->edit($categoryId))></div>
@@ -40,4 +41,6 @@
 @endforeach
                       </tbody>
                     </table>
+                    <nav @jxnPagination($rqCategoryPage)>
+                    </nav>
                   </div> <!-- End table -->

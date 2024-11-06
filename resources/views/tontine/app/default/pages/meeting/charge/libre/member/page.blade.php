@@ -2,8 +2,9 @@
 @php
   $memberId = Jaxon\jq()->parent()->attr('data-member-id')->toInt();
   $paid = Jaxon\pm()->checked('check-fee-libre-paid');
-  $amount = Jaxon\jq('input', jq()->parent()->parent())->val()->toInt();
+  $amount = Jaxon\jq('input', Jaxon\jq()->parent()->parent())->val()->toInt();
   $rqMember = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\Libre\Member::class);
+  $rqMemberPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\Libre\MemberPage::class);
 @endphp
                   <div class="table-responsive" id="meeting-fee-libre-members" @jxnTarget()>
                     <div @jxnOn(['.btn-add-bill', 'click', ''], $rqMember->addBill($memberId, $paid))></div>
@@ -56,4 +57,6 @@
 @endforeach
                       </tbody>
                     </table>
+                    <nav @jxnPagination($rqMemberPage)>
+                    </nav>
                   </div> <!-- End table -->

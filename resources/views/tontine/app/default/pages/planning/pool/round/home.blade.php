@@ -1,15 +1,15 @@
 @php
-  $rqPoolRound = Jaxon\rq(App\Ajax\Web\Planning\Pool\PoolRound::class);
-  $rqPoolRoundAction = Jaxon\rq(App\Ajax\Web\Planning\Pool\PoolRoundAction::class);
-  $rqPoolRoundStartSession = Jaxon\rq(App\Ajax\Web\Planning\Pool\PoolRoundStartSession::class);
-  $rqPoolRoundEndSession = Jaxon\rq(App\Ajax\Web\Planning\Pool\PoolRoundEndSession::class);
+  $rqPoolRound = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\Round::class);
+  $rqRoundAction = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\Action::class);
+  $rqStartSession = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\StartSession::class);
+  $rqEndSession = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\EndSession::class);
 @endphp
           <div class="section-body">
             <div class="row">
               <div class="col">
                 <h2 class="section-title">{{ __('tontine.pool_round.titles.sessions', ['pool' => $pool->title]) }}</h2>
               </div>
-              <div class="col-auto" @jxnShow($rqPoolRoundAction)>
+              <div class="col-auto" @jxnShow($rqRoundAction)>
               </div>
             </div>
           </div>
@@ -37,15 +37,13 @@
                       </div>
                       <div class="col-auto">
                         <div class="btn-group float-right" role="group">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqPoolRoundStartSession->showSessionPage())><i class="fa fa-arrow-circle-down"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqStartSession->showSessionPage())><i class="fa fa-arrow-circle-down"></i></button>
                         </div>
                       </div>
                     </div>
 
-                    <div @jxnShow($rqPoolRoundStartSession) id="pool-round-sessions-start">
+                    <div @jxnShow($rqStartSession) id="pool-round-sessions-start">
                     </div>
-                    <nav @jxnPagination($rqPoolRoundStartSession)>
-                    </nav>
                   </div>
                   <div class="col-md-6 col-sm-12 sm-screen" id="pool-round-sessions-end-screen">
                     <div class="row">
@@ -54,15 +52,13 @@
                       </div>
                       <div class="col-auto">
                         <div class="btn-group float-right" role="group">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqPoolRoundEndSession->showSessionPage())><i class="fa fa-arrow-circle-down"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqEndSession->showSessionPage())><i class="fa fa-arrow-circle-down"></i></button>
                         </div>
                       </div>
                     </div>
 
-                    <div @jxnShow($rqPoolRoundEndSession) id="pool-round-sessions-end">
+                    <div @jxnShow($rqEndSession) id="pool-round-sessions-end">
                     </div>
-                    <nav @jxnPagination($rqPoolRoundEndSession)>
-                    </nav>
                   </div>
                 </div>
               </form>

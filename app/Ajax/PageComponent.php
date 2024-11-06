@@ -4,7 +4,7 @@ namespace App\Ajax;
 
 use App\Ajax\Web\Pagination;
 use Jaxon\Plugin\Response\Pagination\Paginator;
-use Jaxon\Response\ComponentResponse;
+use Jaxon\Response\AjaxResponse;
 
 abstract class PageComponent extends Component
 {
@@ -34,7 +34,6 @@ abstract class PageComponent extends Component
         $bagName = $this->bagOptions[0];
         $attrName = $this->bagOptions[1] ?? 'page';
         $this->bag($bagName)->set($attrName, $pageNumber);
-
         $this->page = $pageNumber;
     }
 
@@ -67,19 +66,15 @@ abstract class PageComponent extends Component
      *
      * @return Paginator
      */
-    protected function renderPage(int $pageNumber): Paginator
+    protected function paginator(int $pageNumber): Paginator
     {
         return $this->cl(Pagination::class)
             // Use the js class name as component item identifier.
             ->item($this->rq()->_class())
-            ->pageNumber($this->getPageNumber($pageNumber))
-            ->totalItems($this->count())
-            ->itemsPerPage($this->tenantService->getLimit())
-            ->paginator()
+            ->paginator($this->getPageNumber($pageNumber),
+                $this->tenantService->getLimit(), $this->count())
             ->page(function(int $page) {
                 $this->setPageNumber($page);
-                // Render the page content.
-                $this->render();
             });
     }
 
@@ -88,14 +83,16 @@ abstract class PageComponent extends Component
      *
      * @param int $pageNumber
      *
-     * @return ComponentResponse|null
+     * @return AjaxResponse|null
      */
     public function page(int $pageNumber = 0)
     {
+        // Get the paginator. This will also set the final page number value.
+        $paginator = $this->paginator($pageNumber);
         // Render the page content.
-        $this->renderPage($pageNumber)
-            // Render the paginator.
-            ->render($this->rq()->page());
+        $this->render();
+        // Render the pagination component.
+        $paginator->render($this->rq()->page());
 
         return $this->response;
     }

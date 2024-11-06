@@ -3,6 +3,7 @@
 @php
   $debtId = Jaxon\jq()->parent()->attr('data-debt-id')->toInt();
   $rqRefund = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\Refund::class);
+  $rqRefundPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\RefundPage::class);
 @endphp
                     <div class="table-responsive" id="meeting-debts-page" @jxnTarget()>
                       <div @jxnOn(['.btn-add-refund', 'click', ''], $rqRefund->createRefund($debtId))></div>
@@ -38,4 +39,6 @@
 @endforeach
                         </tbody>
                       </table>
+                      <nav @jxnPagination($rqRefundPage)>
+                      </nav>
                     </div> <!-- End table -->

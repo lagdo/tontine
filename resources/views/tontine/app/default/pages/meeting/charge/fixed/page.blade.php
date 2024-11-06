@@ -1,6 +1,7 @@
 @php
   $chargeId = Jaxon\jq()->parent()->attr('data-charge-id')->toInt();
   $rqSettlement = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\Fixed\Settlement::class);
+  $rqFixedFeePage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\FixedFeePage::class);
 @endphp
                   <div class="table-responsive" id="meeting-fees-fixed-page" @jxnTarget()>
                     <div @jxnOn(['.btn-fee-fixed-settlements', 'click', ''], $rqSettlement->charge($chargeId))></div>
@@ -23,4 +24,6 @@
 @endforeach
                       </tbody>
                     </table>
+                    <nav @jxnPagination($rqFixedFeePage)>
+                    </nav>
                   </div> <!-- End table -->

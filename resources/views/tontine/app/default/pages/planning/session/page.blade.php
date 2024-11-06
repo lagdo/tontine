@@ -1,6 +1,7 @@
 @php
-$sessionId = Jaxon\jq()->parent()->attr('data-session-id')->toInt();
-$rqSession = Jaxon\rq(App\Ajax\Web\Planning\Session\Session::class);
+  $sessionId = Jaxon\jq()->parent()->attr('data-session-id')->toInt();
+  $rqSession = Jaxon\rq(App\Ajax\Web\Planning\Session\Session::class);
+  $rqSessionPage = Jaxon\rq(App\Ajax\Web\Planning\Session\SessionPage::class);
 @endphp
                     <div class="table-responsive" id="content-page-sessions" @jxnTarget()>
                       <div @jxnOn(['.btn-session-edit', 'click', ''], $rqSession->edit($sessionId))></div>
@@ -41,4 +42,6 @@ $rqSession = Jaxon\rq(App\Ajax\Web\Planning\Session\Session::class);
 @endforeach
                         </tbody>
                       </table>
+                      <nav @jxnPagination($rqSessionPage)>
+                      </nav>
                     </div> <!-- End table -->

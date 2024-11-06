@@ -26,5 +26,3 @@
                   </div>
                   <div @jxnShow($rqSettlementPage)>
                   </div>
-                  <nav @jxnPagination($rqSettlementPage)>
-                  </nav>
