@@ -3,10 +3,16 @@
 namespace App\Ajax\Web\Meeting\Session\Charge\Libre;
 
 use App\Ajax\Web\Meeting\Session\Charge\ChargeComponent;
+use App\Ajax\Web\Meeting\Session\Charge\LibreFee;
 use App\Ajax\Web\Meeting\Session\Charge\Settlement\Total;
 
 class Settlement extends ChargeComponent
 {
+    /**
+     * @var string
+     */
+    protected $overrides = LibreFee::class;
+
     /**
      * @inheritDoc
      */
@@ -32,7 +38,6 @@ class Settlement extends ChargeComponent
      */
     public function charge(int $chargeId)
     {
-        $this->bag('meeting')->set('charge.id', $chargeId);
         $this->bag('meeting')->set('settlement.libre.search', '');
         $this->bag('meeting')->set('settlement.libre.filter', null);
         $this->bag('meeting')->set('settlement.libre.page', 1);

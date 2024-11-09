@@ -1,7 +1,7 @@
 @php
   $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Session::class);
   $rqSessionPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\SessionPage::class);
-  $rqSessionMenu = Jaxon\rq(App\Ajax\Web\Meeting\Session\Menu::class);
+  $rqSection = Jaxon\rq(App\Ajax\Web\Meeting\Session\Section::class);
   $rqSummary = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Summary::class);
   $sessionId = Jaxon\jq()->parent()->attr('data-session-id')->toInt();
 @endphp
@@ -12,12 +12,12 @@
                 <div @jxnOn(['.btn-session-close', 'click', ''], $rqSession->close($sessionId)
                   ->confirm(__('tontine.session.questions.close')))></div>
                 <div @jxnOn(['.btn-session-summary', 'click', ''], $rqSummary->home($sessionId))></div>
-                <div @jxnOn(['.btn-session-pools', 'click', ''], $rqSessionMenu->pools($sessionId))></div>
-                <div @jxnOn(['.btn-session-savings', 'click', ''], $rqSessionMenu->savings($sessionId))></div>
-                <div @jxnOn(['.btn-session-credits', 'click', ''], $rqSessionMenu->credits($sessionId))></div>
-                <div @jxnOn(['.btn-session-cash', 'click', ''], $rqSessionMenu->cash($sessionId))></div>
-                <div @jxnOn(['.btn-session-charges', 'click', ''], $rqSessionMenu->charges($sessionId))></div>
-                <div @jxnOn(['.btn-session-reports', 'click', ''], $rqSessionMenu->reports($sessionId))></div>
+                <div @jxnOn(['.btn-session-pools', 'click', ''], $rqSection->pools($sessionId))></div>
+                <div @jxnOn(['.btn-session-savings', 'click', ''], $rqSection->savings($sessionId))></div>
+                <div @jxnOn(['.btn-session-credits', 'click', ''], $rqSection->credits($sessionId))></div>
+                <div @jxnOn(['.btn-session-cash', 'click', ''], $rqSection->cash($sessionId))></div>
+                <div @jxnOn(['.btn-session-charges', 'click', ''], $rqSection->charges($sessionId))></div>
+                <div @jxnOn(['.btn-session-reports', 'click', ''], $rqSection->reports($sessionId))></div>
 
                 <table class="table table-bordered responsive">
                   <thead>

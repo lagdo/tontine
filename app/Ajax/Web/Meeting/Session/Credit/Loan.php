@@ -50,7 +50,7 @@ class Loan extends MeetingComponent
         $this->response->js()->showBalanceAmountsWithDelay();
     }
 
-    public function addLoan()
+    public function add()
     {
         $session = $this->cache->get('meeting.session');
         $title = trans('meeting.loan.titles.add');
@@ -67,7 +67,7 @@ class Loan extends MeetingComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->createLoan(pm()->form('loan-form')),
+            'click' => $this->rq()->create(pm()->form('loan-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
         $this->response->js()->setLoanInterestLabel();
@@ -78,7 +78,7 @@ class Loan extends MeetingComponent
     /**
      * @di $validator
      */
-    public function createLoan(array $formValues)
+    public function create(array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
         if(!($member = $this->memberService->getMember($values['member'])))
@@ -97,10 +97,11 @@ class Loan extends MeetingComponent
 
         $this->dialog->hide();
 
+        $this->cl(Refund::class)->render();
         return $this->render();
     }
 
-    public function editLoan(int $loanId)
+    public function edit(int $loanId)
     {
         $session = $this->cache->get('meeting.session');
         $loan = $this->loanService->getSessionLoan($session, $loanId);
@@ -130,7 +131,7 @@ class Loan extends MeetingComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->updateLoan($loanId, pm()->form('loan-form')),
+            'click' => $this->rq()->update($loanId, pm()->form('loan-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
         $this->response->js()->setLoanInterestLabel();
@@ -141,7 +142,7 @@ class Loan extends MeetingComponent
     /**
      * @di $validator
      */
-    public function updateLoan(int $loanId, array $formValues)
+    public function update(int $loanId, array $formValues)
     {
         $session = $this->cache->get('meeting.session');
         $loan = $this->loanService->getSessionLoan($session, $loanId);
@@ -173,14 +174,16 @@ class Loan extends MeetingComponent
 
         $this->dialog->hide();
 
+        $this->cl(Refund::class)->render();
         return $this->render();
     }
 
-    public function deleteLoan(int $loanId)
+    public function delete(int $loanId)
     {
         $session = $this->cache->get('meeting.session');
         $this->loanService->deleteLoan($session, $loanId);
 
+        $this->cl(Refund::class)->render();
         return $this->render();
     }
 }

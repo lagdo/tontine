@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use Siak\Tontine\Model\PartialRefund;
 
 function localizedRoute(string $route, array $options = [])
 {

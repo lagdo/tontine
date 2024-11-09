@@ -1,7 +1,7 @@
 @php
   $fundId = Jaxon\pm()->select('partial-refunds-fund-id')->toInt();
-  $rqPartialRefund = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Credit\PartialRefund::class);
-  $rqPartialRefundPage = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Credit\PartialRefundPage::class);
+  $rqRefund = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Credit\PartialRefund::class);
+  $rqRefundPage = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Credit\PartialRefundPage::class);
 @endphp
                     <div class="row">
                       <div class="col-auto">
@@ -14,12 +14,12 @@
                           {!! $htmlBuilder->select('fund_id', $funds, 0)->id('partial-refunds-fund-id')
                             ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                           <div class="input-group-append">
-                            <button type="button" class="btn btn-primary" @jxnClick($rqPartialRefund->fund($fundId))><i class="fa fa-arrow-right"></i></button>
+                            <button type="button" class="btn btn-primary" @jxnClick($rqRefund->fund($fundId))><i class="fa fa-arrow-right"></i></button>
                           </div>
                         </div>
 @endif
                       </div>
 @endif
                     </div>
-                    <div @jxnShow($rqPartialRefundPage)>
+                    <div @jxnShow($rqRefundPage)>
                     </div>

@@ -2,7 +2,7 @@
 @php
   $rqLoan = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\Loan::class);
   $rqRefund = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\Refund::class);
-  $rqPartialRefund = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\PartialRefund::class);
+  $rqPartialRefund = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\Partial\Refund::class);
 @endphp
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">

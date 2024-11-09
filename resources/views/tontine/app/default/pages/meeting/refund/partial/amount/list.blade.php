@@ -3,8 +3,8 @@
 @php
   $debtId = Jaxon\jq()->parent()->attr('data-debt-id')->toInt();
   $amount = Jaxon\jq('input', Jaxon\jq()->parent()->parent())->val()->toInt();
-  $rqPartialRefund = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\PartialRefund::class);
-  $rqPartialRefundEdit = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\PartialRefundEdit::class);
+  $rqRefund = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\Partial\Refund::class);
+  $rqAmount = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\Partial\Amount::class);
 @endphp
                   <div class="row">
                     <div class="col-auto">
@@ -12,15 +12,15 @@
                     </div>
                     <div class="col">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqPartialRefund->render())><i class="fa fa-arrow-left"></i></button>
-                        <button type="button" class="btn btn-primary" @jxnClick($rqPartialRefundEdit->render())><i class="fa fa-sync"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqRefund->render())><i class="fa fa-arrow-left"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqAmount->render())><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
                   </div>
 
                   <div class="table-responsive" @jxnTarget()>
-                    <div @jxnOn(['.btn-partial-refund-edit-amount', 'click', ''], $rqPartialRefund->editAmount($debtId))></div>
-                    <div @jxnOn(['.btn-partial-refund-save-amount', 'click', ''], $rqPartialRefund->saveAmount($debtId, $amount))></div>
+                    <div @jxnOn(['.btn-partial-refund-edit-amount', 'click', ''], $rqAmount->edit($debtId))></div>
+                    <div @jxnOn(['.btn-partial-refund-save-amount', 'click', ''], $rqAmount->save($debtId, $amount))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>
@@ -32,14 +32,15 @@
                       <tbody>
 @foreach($debts as $debt)
 @php
-  $payableAmount = $locale->formatMoney($debtCalculator->getDebtPayableAmount($debt, $session), true);
+  $payableAmount = $debtCalculator->getDebtPayableAmount($debt, $session);
 @endphp
                         <tr>
                           <td>
-                            {{ $debt->loan->member->name }}: {{ $payableAmount }}<br/> {{
+                            {{ $debt->loan->member->name }}: {{ $locale->formatMoney($payableAmount, true) }}<br/> {{
                               __('meeting.loan.labels.' . $debt->type) }}: {{ $debt->loan->session->title }}
                           </td>
                           <td class="currency" id="partial-refund-amount-{{ $debt->id }}" style="width:200px">
+@if($payableAmount > 0)
 @if(!$debt->partial_refund)
 @include('tontine.app.default.pages.meeting.refund.partial.amount.edit', [
   'debt' => $debt,
@@ -50,6 +51,7 @@
   'debt' => $debt,
   'amount' => $locale->formatMoney($debt->partial_refund->amount, false),
 ])
+@endif
 @endif
                           </td>
                         </tr>

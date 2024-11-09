@@ -13,8 +13,11 @@ trait PoolTrait
      */
     protected function getPool()
     {
-        $poolId = $this->target()->method() === 'home' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('pool.id');
+        if($this->target()->method() === 'pool')
+        {
+            $this->bag('meeting')->set('pool.id', $this->target()->args()[0]);
+        }
+        $poolId = (int)$this->bag('meeting')->get('pool.id');
         $pool = $this->poolService->getPool($poolId);
 
         $session = $this->cache->get('meeting.session');

@@ -11,8 +11,7 @@ use Siak\Tontine\Service\Tontine\ChargeService;
 use function trans;
 
 /**
- * @databag meeting
- * @before getSession
+ * @before getCharge
  */
 abstract class ChargePageComponent extends MeetingPageComponent
 {
@@ -40,8 +39,7 @@ abstract class ChargePageComponent extends MeetingPageComponent
 
     protected function getCharge()
     {
-        $chargeId = $this->target()->method() === 'charge' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('charge.id');
+        $chargeId = $this->bag('meeting')->get('charge.id');
         $this->cache->set('meeting.session.charge', $this->chargeService->getCharge($chargeId));
     }
   

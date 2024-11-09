@@ -3,6 +3,7 @@
 namespace App\Ajax\Web\Meeting\Session\Charge\Fixed;
 
 use App\Ajax\Web\Meeting\Session\Charge\ChargeComponent;
+use App\Ajax\Web\Meeting\Session\Charge\FixedFee;
 use App\Ajax\Web\Meeting\Session\Charge\Settlement\Action;
 use App\Ajax\Web\Meeting\Session\Charge\Settlement\Total;
 
@@ -10,6 +11,11 @@ use function trim;
 
 class Settlement extends ChargeComponent
 {
+    /**
+     * @var string
+     */
+    protected $overrides = FixedFee::class;
+
     /**
      * @inheritDoc
      */
@@ -35,7 +41,6 @@ class Settlement extends ChargeComponent
      */
     public function charge(int $chargeId)
     {
-        $this->bag('meeting')->set('charge.id', $chargeId);
         $this->bag('meeting')->set('settlement.fixed.filter', null);
         $this->bag('meeting')->set('settlement.fixed.search', '');
         $this->bag('meeting')->set('settlement.fixed.page', 1);

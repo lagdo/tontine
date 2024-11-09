@@ -4,6 +4,7 @@ namespace App\Ajax\Web\Meeting\Session\Pool\Remitment;
 
 use App\Ajax\Web\Meeting\MeetingComponent;
 use App\Ajax\Web\Meeting\Session\Pool\PoolTrait;
+use App\Ajax\Web\Meeting\Session\Pool\Remitment;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
@@ -18,6 +19,11 @@ use function trans;
 class Pool extends MeetingComponent
 {
     use PoolTrait;
+
+    /**
+     * @var string
+     */
+    protected $overrides = Remitment::class;
 
     /**
      * @var BalanceCalculator
@@ -40,6 +46,14 @@ class Pool extends MeetingComponent
     {}
 
     /**
+     * @di $balanceCalculator
+     */
+    public function pool(int $poolId)
+    {
+        return $this->render();
+    }
+
+    /**
      * @inheritDoc
      */
     public function html(): string
@@ -59,16 +73,6 @@ class Pool extends MeetingComponent
     protected function after()
     {
         $this->cl(PoolPage::class)->render();
-    }
-
-    /**
-     * @di $balanceCalculator
-     */
-    public function home(int $poolId)
-    {
-        $this->bag('meeting')->set('pool.id', $poolId);
-
-        return $this->render();
     }
 
     public function createRemitment(int $payableId)

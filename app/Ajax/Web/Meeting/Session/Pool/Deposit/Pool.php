@@ -3,13 +3,13 @@
 namespace App\Ajax\Web\Meeting\Session\Pool\Deposit;
 
 use App\Ajax\Web\Meeting\MeetingComponent;
+use App\Ajax\Web\Meeting\Session\Pool\Deposit;
 use App\Ajax\Web\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 
-use function Jaxon\jaxon;
 use function filter_var;
 use function str_replace;
 use function trans;
@@ -21,6 +21,11 @@ use function trim;
 class Pool extends MeetingComponent
 {
     use PoolTrait;
+
+    /**
+     * @var string
+     */
+    protected $overrides = Deposit::class;
 
     /**
      * @var LocaleService
@@ -39,6 +44,18 @@ class Pool extends MeetingComponent
     {}
 
     /**
+     * @param int $poolId
+     *
+     * @return mixed
+     */
+    public function pool(int $poolId)
+    {
+        $this->bag('meeting')->set('deposit.page', 1);
+
+        return $this->render();
+    }
+
+    /**
      * @inheritDoc
      */
     public function html(): string
@@ -53,20 +70,7 @@ class Pool extends MeetingComponent
      */
     protected function after()
     {
-        $this->cl(PoolPage::class)->page();;
-    }
-
-    /**
-     * @param int $poolId
-     *
-     * @return mixed
-     */
-    public function home(int $poolId)
-    {
-        $this->bag('meeting')->set('pool.id', $poolId);
-        $this->bag('meeting')->set('deposit.page', 1);
-
-        return $this->render();
+        $this->cl(PoolPage::class)->page();
     }
 
     /**
@@ -104,7 +108,7 @@ class Pool extends MeetingComponent
             'amount' => !$receivable->deposit ? '' :
                 $this->localeService->getMoneyValue($receivable->deposit->amount),
         ]);
-        jaxon()->getResponse()->html("receivable-{$receivable->id}", $html);
+        $this->response->html("receivable-{$receivable->id}", $html);
 
         return $this->response;
     }

@@ -3,12 +3,12 @@
 @inject('paymentService', 'Siak\Tontine\Service\Meeting\PaymentServiceInterface')
 @php
   $refundId = Jaxon\jq()->parent()->attr('data-partial-refund-id')->toInt();
-  $rqPartialRefund = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\PartialRefund::class);
-  $rqPartialRefundPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\PartialRefundPage::class);
+  $rqRefund = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\Partial\Refund::class);
+  $rqRefundPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\Partial\RefundPage::class);
 @endphp
-                    <div class="table-responsive" id="meeting-partial-refunds-page">
-                      <div @jxnOn(['.btn-partial-refund-edit', 'click', ''], $rqPartialRefund->editRefund($refundId))></div>
-                      <div @jxnOn(['.btn-partial-refund-delete', 'click', ''], $rqPartialRefund->deleteRefund($refundId)
+                    <div class="table-responsive" id="meeting-partial-refunds-page" @jxnTarget()>
+                      <div @jxnOn(['.btn-partial-refund-edit', 'click', ''], $rqRefund->edit($refundId))></div>
+                      <div @jxnOn(['.btn-partial-refund-delete', 'click', ''], $rqRefund->delete($refundId)
                         ->confirm(__('meeting.refund.questions.delete')))></div>
 
                       <table class="table table-bordered responsive">
@@ -20,7 +20,10 @@
                           </tr>
                         </thead>
                         <tbody>
-      @foreach($refunds as $refund)
+@foreach($refunds as $refund)
+@php
+  $dueAmount = $debtCalculator->getDebtDueAmount($refund->debt, $session, false);
+@endphp
                           <tr>
                             <td>
                               {{ $refund->debt->loan->member->name }}<br/> {{
@@ -28,29 +31,29 @@
                             </td>
                             <td class="currency">
                               {{ $locale->formatMoney($refund->amount, true) }}<br/>
-                              {{ $locale->formatMoney($debtCalculator->getDebtDueAmount($refund->debt, $session, false), true) }}
+                              {{ $locale->formatMoney($dueAmount, true) }}
                             </td>
                             <td class="table-item-menu" data-partial-refund-id="{{ $refund->id }}">
-      @if( $refund->debt->refund !== null || !$paymentService->isEditable($refund) )
+@if( $refund->debt->refund !== null || !$paymentService->isEditable($refund) )
                               {!! paymentLink($refund, 'partial-refund', $refund->debt->refund !== null || !$session->opened) !!}
-      @else
-      @include('tontine.app.default.parts.table.menu', [
-        'dataIdKey' => 'data-partial-refund-id',
-        'dataIdValue' => $refund->id,
-        'menus' => [[
-          'class' => 'btn-partial-refund-edit',
-          'text' => __('common.actions.edit'),
-        ],[
-          'class' => 'btn-partial-refund-delete',
-          'text' => __('common.actions.delete'),
-        ]],
-      ])
-      @endif
+@else
+@include('tontine.app.default.parts.table.menu', [
+  'dataIdKey' => 'data-partial-refund-id',
+  'dataIdValue' => $refund->id,
+  'menus' => [[
+    'class' => 'btn-partial-refund-edit',
+    'text' => __('common.actions.edit'),
+  ],[
+    'class' => 'btn-partial-refund-delete',
+    'text' => __('common.actions.delete'),
+  ]],
+])
+@endif
                             </td>
                           </tr>
-      @endforeach
+@endforeach
                         </tbody>
                       </table>
-                      <nav @jxnPagination($rqPartialRefundPage)>
+                      <nav @jxnPagination($rqRefundPage)>
                       </nav>
                     </div> <!-- End table -->

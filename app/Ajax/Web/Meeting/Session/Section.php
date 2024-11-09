@@ -5,10 +5,7 @@ namespace App\Ajax\Web\Meeting\Session;
 use App\Ajax\Web\SectionContent;
 use App\Ajax\Web\Meeting\MeetingComponent;
 
-/**
- * @databag meeting
- */
-class Menu extends MeetingComponent
+class Section extends MeetingComponent
 {
     /**
      * @var string
@@ -85,7 +82,7 @@ class Menu extends MeetingComponent
         $this->renderSection('credits');
 
         $this->cl(Credit\Loan::class)->render();
-        $this->cl(Credit\PartialRefund::class)->render();
+        $this->cl(Credit\Partial\Refund::class)->render();
         $this->cl(Credit\Refund::class)->render();
 
         $this->response->js()->setSmScreenHandler('session-credits-sm-screens');

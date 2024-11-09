@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Ajax\Web\Meeting\Session\Credit;
+namespace App\Ajax\Web\Meeting\Session\Credit\Partial;
 
 use App\Ajax\Web\Meeting\MeetingComponent;
+use App\Ajax\Web\Meeting\Session\Credit\Refund as CreditRefund;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
@@ -13,7 +14,7 @@ use function trans;
 /**
  * @databag partial.refund
  */
-class PartialRefund extends MeetingComponent
+class Refund extends MeetingComponent
 {
     /**
      * @var DebtValidator
@@ -33,19 +34,22 @@ class PartialRefund extends MeetingComponent
     protected function getFund()
     {
         // Try to get the selected savings fund.
-        // If not found, then revert to the tontine default fund.
         $fund = null;
         $fundId = $this->bag('partial.refund')->get('fund.id', 0);
-        if($fundId !== 0 && ($fund = $this->fundService->getFund($fundId, true)) === null)
+        if($fundId !== 0)
         {
-            $fundId = 0;
+            if(($fund = $this->fundService->getFund($fundId, true)) === null)
+            {
+                $fundId = 0;
+            }
         }
         if($fundId === 0)
         {
+            // If not found, then revert to the tontine default fund.
             $fund = $this->fundService->getDefaultFund();
             $this->bag('partial.refund')->set('fund.id', $fund->id);
         }
-        $this->cache->set('meeting.refund.partial.fund', $fund);
+        $this->cache->set('meeting.refund.fund', $fund);
     }
 
     public function html(): string
@@ -53,6 +57,7 @@ class PartialRefund extends MeetingComponent
         return (string)$this->renderView('pages.meeting.refund.partial.home', [
             'session' => $this->cache->get('meeting.session'),
             'funds' => $this->fundService->getFundList(),
+            'currentFundId' => $this->bag('partial.refund')->get('fund.id', 0),
         ]);
     }
 
@@ -61,7 +66,7 @@ class PartialRefund extends MeetingComponent
      */
     protected function after()
     {
-        $this->fund(0);
+        $this->fund($this->bag('partial.refund')->get('fund.id', 0));
     }
 
     /**
@@ -75,10 +80,13 @@ class PartialRefund extends MeetingComponent
         $this->bag('partial.refund')->set('principal.page', 1);
         $this->getFund();
 
-        return $this->cl(PartialRefundPage::class)->page();
+        return $this->cl(RefundPage::class)->page();
     }
 
-    public function editRefund(int $refundId)
+    /**
+     * @before getFund
+     */
+    public function edit(int $refundId)
     {
         $session = $this->cache->get('meeting.session');
         $refund = $this->refundService->getPartialRefund($session, $refundId);
@@ -94,7 +102,7 @@ class PartialRefund extends MeetingComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->updateRefund($refundId, pm()->form('refund-form')),
+            'click' => $this->rq()->update($refundId, pm()->form('refund-form')),
         ]];
         $this->dialog->show($title, $content, $buttons);
 
@@ -105,7 +113,7 @@ class PartialRefund extends MeetingComponent
      * @before getFund
      * @di $validator
      */
-    public function updateRefund(int $refundId, array $formValues)
+    public function update(int $refundId, array $formValues)
     {
         $session = $this->cache->get('meeting.session');
         $formValues['debt'] = $refundId;
@@ -117,23 +125,23 @@ class PartialRefund extends MeetingComponent
         $this->dialog->hide();
 
         // Refresh the refunds page
-        $this->cl(Refund::class)->render();
+        $this->cl(CreditRefund::class)->render();
 
-        return $this->cl(PartialRefundPage::class)->page();
+        return $this->cl(RefundPage::class)->page();
     }
 
     /**
      * @before getFund
      */
-    public function deleteRefund(int $refundId)
+    public function delete(int $refundId)
     {
         $session = $this->cache->get('meeting.session');
         $refund = $this->refundService->getPartialRefund($session, $refundId);
         $this->refundService->deletePartialRefund($refund, $session);
 
         // Refresh the refunds page
-        $this->cl(Refund::class)->render();
+        $this->cl(CreditRefund::class)->render();
 
-        return $this->cl(PartialRefundPage::class)->page();
+        return $this->cl(RefundPage::class)->page();
     }
 }

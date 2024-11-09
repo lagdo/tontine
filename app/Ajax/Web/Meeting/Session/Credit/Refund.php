@@ -11,7 +11,6 @@ use function trans;
 
 /**
  * @databag refund
- * @before getFund
  */
 class Refund extends MeetingComponent
 {
@@ -51,15 +50,18 @@ class Refund extends MeetingComponent
     protected function getFund()
     {
         // Try to get the selected savings fund.
-        // If not found, then revert to the tontine default fund.
         $fund = null;
         $fundId = $this->bag('refund')->get('fund.id', 0);
-        if($fundId !== 0 && ($fund = $this->fundService->getFund($fundId, true)) === null)
+        if($fundId !== 0)
         {
-            $fundId = 0;
+            if(($fund = $this->fundService->getFund($fundId, true)) === null)
+            {
+                $fundId = 0;
+            }
         }
         if($fundId === 0)
         {
+            // If not found, then revert to the tontine default fund.
             $fund = $this->fundService->getDefaultFund();
             $this->bag('refund')->set('fund.id', $fund->id);
         }
@@ -98,7 +100,7 @@ class Refund extends MeetingComponent
      * @before getFund
      * @di $validator
      */
-    public function createRefund(string $debtId)
+    public function create(string $debtId)
     {
         $debt = $this->refundService->getDebt($debtId);
         if(!$debt)
@@ -110,13 +112,15 @@ class Refund extends MeetingComponent
         $session = $this->cache->get('meeting.session');
         $this->refundService->createRefund($debt, $session);
 
+        $this->cl(Partial\RefundPage::class)->render();
+
         return $this->cl(RefundPage::class)->page();
     }
 
     /**
      * @before getFund
      */
-    public function deleteRefund(int $debtId)
+    public function delete(int $debtId)
     {
         $debt = $this->refundService->getDebt($debtId);
         if(!$debt)
@@ -127,6 +131,8 @@ class Refund extends MeetingComponent
 
         $session = $this->cache->get('meeting.session');
         $this->refundService->deleteRefund($debt, $session);
+
+        $this->cl(Partial\RefundPage::class)->render();
 
         return $this->cl(RefundPage::class)->page();
     }

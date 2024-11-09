@@ -3,6 +3,7 @@
 namespace App\Ajax\Web\Meeting\Session\Charge\Libre;
 
 use App\Ajax\Web\Meeting\Session\Charge\ChargeComponent;
+use App\Ajax\Web\Meeting\Session\Charge\LibreFee;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
 use Siak\Tontine\Validation\Meeting\TargetValidator;
@@ -16,6 +17,11 @@ use function trim;
  */
 class Target extends ChargeComponent
 {
+    /**
+     * @var string
+     */
+    protected $overrides = LibreFee::class;
+
     /**
      * @var LocaleService
      */
@@ -69,7 +75,6 @@ class Target extends ChargeComponent
      */
     public function charge(int $chargeId)
     {
-        $this->bag('meeting')->set('charge.id', $chargeId);
         $this->bag('meeting')->set('fee.member.search', '');
         $this->bag('meeting')->set('fee.target.page', 1);
 

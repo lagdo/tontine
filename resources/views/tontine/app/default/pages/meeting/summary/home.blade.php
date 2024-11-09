@@ -7,7 +7,7 @@
   $rqSaving = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Saving\Saving::class);
   $rqClosing = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Saving\Closing::class);
   $rqLoan = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Credit\Loan::class);
-  $rqPartialRefund = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Credit\PartialRefund::class);
+  $rqRefund = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Credit\PartialRefund::class);
   $rqRefund = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Credit\Refund::class);
   $rqDisbursement = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Cash\Disbursement::class);
   $rqFixedFee = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Charge\FixedFee::class);
@@ -137,7 +137,7 @@
                         <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-loans-col">
                           <div @jxnShow($rqLoan) id="meeting-loans">
                           </div>
-                          <div @jxnShow($rqPartialRefund) id="meeting-partial-refunds">
+                          <div @jxnShow($rqRefund) id="meeting-partial-refunds">
                           </div>
                         </div>
                         <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqRefund) id="meeting-refunds">

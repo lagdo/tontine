@@ -39,8 +39,11 @@ abstract class ChargeComponent extends MeetingComponent
 
     protected function getCharge()
     {
-        $chargeId = $this->target()->method() === 'charge' ?
-            $this->target()->args()[0] : $this->bag('meeting')->get('charge.id');
+        if($this->target()->method() === 'charge')
+        {
+            $this->bag('meeting')->set('charge.id', $this->target()->args()[0]);
+        }
+        $chargeId = $this->bag('meeting')->get('charge.id');
         $this->cache->set('meeting.session.charge', $this->chargeService->getCharge($chargeId));
     }
   

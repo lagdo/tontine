@@ -1,14 +1,14 @@
 @php
   $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Session::class);
-  $rqSessionMenu = Jaxon\rq(App\Ajax\Web\Meeting\Session\Menu::class);
+  $rqSection = Jaxon\rq(App\Ajax\Web\Meeting\Session\Section::class);
 @endphp
                 <div class="btn-group float-right ml-1" role="group"  @jxnTarget()>
-                  <div @jxnOn(['.btn-session-pools', 'click', ''], $rqSessionMenu->pools())></div>
-                  <div @jxnOn(['.btn-session-charges', 'click', ''], $rqSessionMenu->charges())></div>
-                  <div @jxnOn(['.btn-session-savings', 'click', ''], $rqSessionMenu->savings())></div>
-                  <div @jxnOn(['.btn-session-credits', 'click', ''], $rqSessionMenu->credits())></div>
-                  <div @jxnOn(['.btn-session-cash', 'click', ''], $rqSessionMenu->cash())></div>
-                  <div @jxnOn(['.btn-session-reports', 'click', ''], $rqSessionMenu->reports())></div>
+                  <div @jxnOn(['.btn-session-pools', 'click', ''], $rqSection->pools())></div>
+                  <div @jxnOn(['.btn-session-charges', 'click', ''], $rqSection->charges())></div>
+                  <div @jxnOn(['.btn-session-savings', 'click', ''], $rqSection->savings())></div>
+                  <div @jxnOn(['.btn-session-credits', 'click', ''], $rqSection->credits())></div>
+                  <div @jxnOn(['.btn-session-cash', 'click', ''], $rqSection->cash())></div>
+                  <div @jxnOn(['.btn-session-reports', 'click', ''], $rqSection->reports())></div>
 
 @php
   $menus = [[
@@ -40,5 +40,5 @@
                 </div>
                 <div class="btn-group float-right ml-1" role="group">
                   <button type="button" class="btn btn-primary" @jxnClick($rqSession->home())><i class="fa fa-arrow-left"></i></button>
-                  <button type="button" class="btn btn-primary" @jxnClick($rqSessionMenu->$section())><i class="fa fa-sync"></i></button>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqSection->$section())><i class="fa fa-sync"></i></button>
                 </div>
