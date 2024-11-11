@@ -4,8 +4,8 @@ namespace App\Ajax\Web\Tontine;
 
 use App\Ajax\Component;
 use App\Ajax\SelectTrait;
-use App\Ajax\Web\SectionContent;
-use App\Ajax\Web\SectionTitle;
+use App\Ajax\Web\Component\SectionContent;
+use App\Ajax\Web\Component\SectionTitle;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Tontine\MemberService;
@@ -19,7 +19,7 @@ use function trans;
 /**
  * @databag tontine
  */
-class Tontine extends Component
+class Organisation extends Component
 {
     use SelectTrait;
 
@@ -89,7 +89,7 @@ class Tontine extends Component
             $this->selectRound($round);
         }
 
-        $this->cl(TontinePage::class)->page();
+        $this->cl(OrganisationPage::class)->page();
     }
 
     /**
@@ -128,7 +128,7 @@ class Tontine extends Component
         $this->dialog->hide();
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('tontine.messages.created'));
-        $this->cl(TontinePage::class)->page(); // Back to current page
+        $this->cl(OrganisationPage::class)->page(); // Back to current page
 
         return $this->response;
     }
@@ -173,7 +173,7 @@ class Tontine extends Component
         $this->dialog->hide();
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('tontine.messages.updated'));
-        $this->cl(TontinePage::class)->page(); // Back to current page
+        $this->cl(OrganisationPage::class)->page(); // Back to current page
 
         return $this->response;
     }
@@ -184,6 +184,8 @@ class Tontine extends Component
 
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('tontine.messages.deleted'));
-        $this->cl(TontinePage::class)->page(); // Back to current page
+        $this->cl(OrganisationPage::class)->page(); // Back to current page
+
+        return $this->response;
     }
 }

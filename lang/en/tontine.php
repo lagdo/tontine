@@ -6,7 +6,7 @@ return [
         'format_medium' => 'M j, Y',
     ],
     'menus' => [
-        'tontines' => "Associations",
+        'tontines' => "Organisations",
         'tontine' => "Tontine",
         'admins' => "Administrators",
         'planning' => "Planning",
@@ -25,15 +25,15 @@ return [
         'logout' => "Logout",
     ],
     'titles' => [
-        'tontines' => "Associations",
+        'tontines' => "Organisations",
         'tontine' => "Tontine",
         'members' => "Members",
         'rounds' => "Rounds",
         'sessions' => "Sessions",
         'session' => "Session",
-        'add' => "Add an association",
-        'edit' => "Edit an association",
-        'choose' => "Select an association",
+        'add' => "Add an organisation",
+        'edit' => "Edit an organisation",
+        'choose' => "Select an organisation",
         'type' => "Select the tontine type",
         'presences' => "Presences: :of",
     ],
@@ -46,7 +46,7 @@ return [
         ],
     ],
     'labels' => [
-        'tontine' => "Association",
+        'tontine' => "Organisation",
         'round' => "Round",
         'types' => [
             'libre' => "Free",
@@ -67,10 +67,10 @@ return [
         'choose' => "Choose",
     ],
     'messages' => [
-        'created' => "The association was successfully created.",
-        'updated' => "The association was successfully updated.",
-        'deleted' => "The association was successfully deleted.",
-        'selected' => "You have selected the association :tontine. You still need to add some rounds to its tontine.",
+        'created' => "The organisation was successfully created.",
+        'updated' => "The organisation was successfully updated.",
+        'deleted' => "The organisation was successfully deleted.",
+        'selected' => "You have selected the organisation :tontine. You still need to add some rounds to its tontine.",
         'screen' => [
             'orientation' => "If you are using a mobile device, we advise you to place it in landscape mode, for a better display.",
         ],
@@ -79,7 +79,7 @@ return [
         ],
     ],
     'questions' => [
-        'delete' => "Delete the association? The related members, rounds and charges will also be deleted.",
+        'delete' => "Delete the organisation? The related members, rounds and charges will also be deleted.",
     ],
     'errors' => [
         'action' => "Cannot proceed.",
@@ -102,7 +102,7 @@ return [
             'add' => "Send an invite",
             'add_desc' => "The user must already have a valid account.",
             'access' => "Access",
-            'associations' => "Guest :: Associations",
+            'organisations' => "Guest :: Organisations",
         ],
         'labels' => [
             'host' => "Host",
@@ -160,7 +160,7 @@ return [
             'created' => "The round was successfully created.",
             'updated' => "The round was successfully updated.",
             'deleted' => "The round was successfully deleted.",
-            'selected' => "You have selected the association :tontine and round :round.",
+            'selected' => "You have selected the organisation :tontine and round :round.",
         ],
         'questions' => [
             'open' => "Open this round? Make sure you have setup its planning correctly.",

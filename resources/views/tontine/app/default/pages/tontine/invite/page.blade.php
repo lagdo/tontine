@@ -3,7 +3,7 @@
   $rqSelect = Jaxon\rq(App\Ajax\Web\Tontine\Select::class);
 @endphp
                   <div class="table-responsive" @jxnTarget()>
-                    <div @jxnOn(['.btn-guest-tontine-choose', 'click', ''], $rqSelect->saveTontine($tontineId))></div>
+                    <div @jxnOn(['.btn-guest-tontine-choose', 'click', ''], $rqSelect->saveOrganisation($tontineId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

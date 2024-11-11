@@ -3,8 +3,8 @@
 namespace App\Ajax\Web\Tontine\Options;
 
 use App\Ajax\Component;
-use App\Ajax\Web\SectionContent;
-use App\Ajax\Web\SectionTitle;
+use App\Ajax\Web\Component\SectionContent;
+use App\Ajax\Web\Component\SectionTitle;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Tontine\OptionsValidator;

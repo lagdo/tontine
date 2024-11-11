@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\Web;
+namespace App\Ajax\Web\Component;
 
 use Jaxon\App\PaginationComponent;
 

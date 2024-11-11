@@ -26,7 +26,7 @@ class Select extends CallableClass
         protected RoundService $roundService)
     {}
 
-    public function showTontines()
+    public function showOrganisations()
     {
         $title = trans('tontine.titles.choose');
         $content = $this->renderView('pages.select.tontine', [
@@ -40,14 +40,14 @@ class Select extends CallableClass
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveTontine(pm()->select('tontine_id')->toInt()),
+            'click' => $this->rq()->saveOrganisation(pm()->select('tontine_id')->toInt()),
         ]];
         $this->dialog->show($title, $content, $buttons);
 
         return $this->response;
     }
 
-    public function saveTontine(int $tontineId)
+    public function saveOrganisation(int $tontineId)
     {
         if(!($tontine = $this->tontineService->getUserOrGuestTontine($tontineId)))
         {
@@ -98,6 +98,7 @@ class Select extends CallableClass
 
     /**
      * @databag planning
+     * @after refreshSession
      */
     public function saveRound(int $roundId)
     {
@@ -121,11 +122,15 @@ class Select extends CallableClass
         // Update the session list.
         $this->bag('planning')->set('round.id', $round->id);
         $this->cache->set('planning.round', $round);
-        $this->cl(Session::class)->render();
 
         $this->notify->info(trans('tontine.round.messages.selected',
             ['tontine' => $tontine->name, 'round' => $round->title]));
 
         return $this->response;
+    }
+
+    protected function refreshSession(): void
+    {
+        $this->cl(Session::class)->render();
     }
 }

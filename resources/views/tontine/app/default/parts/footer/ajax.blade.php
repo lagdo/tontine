@@ -5,13 +5,13 @@
 @jxnCss
 
 @php
-    $rqTontine = Jaxon\rq(App\Ajax\Web\Tontine\Tontine::class);
+    $rqOrganisation = Jaxon\rq(App\Ajax\Web\Tontine\Organisation::class);
     $rqInvite = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Invite::class);
     $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Session::class);
 @endphp
 <script type='text/javascript'>
     const tontine = {
-        home: () => {!! $rqTontine->home() !!},
+        home: () => {!! $rqOrganisation->home() !!},
         users: () => {!! $rqInvite->home() !!},
         labels: {
             amount: "{{ __('common.labels.amount') }}",

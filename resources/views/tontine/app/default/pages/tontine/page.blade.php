@@ -1,13 +1,13 @@
 @php
   $tontineId = Jaxon\jq()->parent()->attr('data-tontine-id')->toInt();
-  $rqTontine = Jaxon\rq(App\Ajax\Web\Tontine\Tontine::class);
-  $rqTontinePage = Jaxon\rq(App\Ajax\Web\Tontine\TontinePage::class);
+  $rqOrganisation = Jaxon\rq(App\Ajax\Web\Tontine\Organisation::class);
+  $rqOrganisationPage = Jaxon\rq(App\Ajax\Web\Tontine\OrganisationPage::class);
   $rqSelect = Jaxon\rq(App\Ajax\Web\Tontine\Select::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
-                  <div @jxnOn(['.btn-tontine-edit', 'click', ''], $rqTontine->edit($tontineId))></div>
-                  <div @jxnOn(['.btn-tontine-choose', 'click', ''], $rqSelect->saveTontine($tontineId))></div>
-                  <div @jxnOn(['.btn-tontine-delete', 'click', ''], $rqTontine->delete($tontineId)
+                  <div @jxnOn(['.btn-tontine-edit', 'click', ''], $rqOrganisation->edit($tontineId))></div>
+                  <div @jxnOn(['.btn-tontine-choose', 'click', ''], $rqSelect->saveOrganisation($tontineId))></div>
+                  <div @jxnOn(['.btn-tontine-delete', 'click', ''], $rqOrganisation->delete($tontineId)
                     ->confirm(__('tontine.questions.delete')))></div>
 
                   <table class="table table-bordered responsive" @jxnTarget()>
@@ -47,6 +47,6 @@
 @endforeach
                     </tbody>
                   </table>
-                  <nav @jxnPagination($rqTontinePage)>
+                  <nav @jxnPagination($rqOrganisationPage)>
                   </nav>
                 </div>

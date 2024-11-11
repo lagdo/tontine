@@ -2,9 +2,9 @@
 
 namespace App\Ajax;
 
-use App\Ajax\Web\SidebarMenuRound;
-use App\Ajax\Web\SidebarMenuTontine;
-use App\Ajax\Web\TontineName;
+use App\Ajax\Web\Component\Organisation;
+use App\Ajax\Web\Component\Sidebar\RoundMenu;
+use App\Ajax\Web\Component\Sidebar\TontineMenu;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 
@@ -24,9 +24,9 @@ trait SelectTrait
      */
     protected function selectTontine(Tontine $tontine)
     {
-        $this->cl(TontineName::class)->show($tontine->name);
+        $this->cl(Organisation::class)->show($tontine->name);
         // Set the tontine sidebar menu
-        $this->cl(SidebarMenuTontine::class)->render();
+        $this->cl(TontineMenu::class)->render();
         $this->response->jq('a', '#sidebar-menu-tontine')->css('color', self::$activeMenuColor);
 
         foreach(config('menu.tontine') as $menuId => $menuClass)
@@ -35,7 +35,7 @@ trait SelectTrait
         }
 
         // Reset the round sidebar menu
-        $this->cl(SidebarMenuRound::class)->render();
+        $this->cl(RoundMenu::class)->render();
     }
 
     /**
@@ -45,10 +45,10 @@ trait SelectTrait
      */
     protected function selectRound(Round $round)
     {
-        $this->cl(TontineName::class)->show($round->tontine->name . ' - ' . $round->title);
+        $this->cl(Organisation::class)->show($round->tontine->name . ' - ' . $round->title);
 
         // Set the round sidebar menu
-        $this->cl(SidebarMenuRound::class)->render();
+        $this->cl(RoundMenu::class)->render();
         $this->response->jq('a', '#sidebar-menu-round')->css('color', self::$activeMenuColor);
 
         foreach(config('menu.round') as $menuId => $menuClass)

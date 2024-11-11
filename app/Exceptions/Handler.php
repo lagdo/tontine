@@ -6,7 +6,7 @@ use App\Ajax\Web\Meeting\Session\Session;
 use App\Ajax\Web\Planning\Pool\Pool;
 use App\Ajax\Web\Planning\Session\Round;
 use App\Ajax\Web\Tontine\Member\Member;
-use App\Ajax\Web\Tontine\Tontine;
+use App\Ajax\Web\Tontine\Organisation;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
 use Jaxon\Laravel\App\Jaxon;
@@ -76,7 +76,7 @@ class Handler extends ExceptionHandler
         $tenantService = app()->make(TenantService::class);
         if(!($access = $tenantService->checkGuestAccess($section, $entry, true)))
         {
-            cl(Tontine::class)->home();
+            cl(Organisation::class)->home();
         }
         return $access;
     }

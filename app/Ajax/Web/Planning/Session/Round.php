@@ -3,8 +3,8 @@
 namespace App\Ajax\Web\Planning\Session;
 
 use App\Ajax\Component;
-use App\Ajax\Web\SectionContent;
-use App\Ajax\Web\SectionTitle;
+use App\Ajax\Web\Component\SectionContent;
+use App\Ajax\Web\Component\SectionTitle;
 use App\Ajax\Web\Tontine\Select;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\RoundService;
@@ -146,7 +146,7 @@ class Round extends Component
         if($currentRound !== null && $currentRound->id === $roundId)
         {
             // If the currently selected round is deleted, then choose another.
-            $this->cl(Select::class)->saveTontine($this->tenantService->tontine()->id);
+            $this->cl(Select::class)->saveOrganisation($this->tenantService->tontine()->id);
         }
 
         return $this->response;

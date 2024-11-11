@@ -10,7 +10,7 @@ use Siak\Tontine\Service\Tontine\TontineService;
  * @databag tontine
  * @databag pool
  */
-class TontinePage extends PageComponent
+class OrganisationPage extends PageComponent
 {
     /**
      * The pagination databag options

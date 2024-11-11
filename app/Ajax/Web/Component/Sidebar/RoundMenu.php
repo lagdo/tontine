@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Ajax\Web;
+namespace App\Ajax\Web\Component\Sidebar;
 
 use App\Ajax\Component;
 
 /**
  * @exclude
  */
-class SidebarMenuTontine extends Component
+class RoundMenu extends Component
 {
     /**
      * @inheritDoc
      */
     public function html(): string
     {
-        return $this->renderView('parts.sidebar.tontine');
+        return $this->renderView('parts.sidebar.round');
     }
 }

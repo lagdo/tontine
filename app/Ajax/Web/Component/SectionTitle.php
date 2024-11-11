@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ajax\Web;
+namespace App\Ajax\Web\Component;
 
 use Jaxon\App\Component;
 use Jaxon\Response\AjaxResponse;
@@ -8,29 +8,29 @@ use Jaxon\Response\AjaxResponse;
 /**
  * @exclude
  */
-class TontineName extends Component
+class SectionTitle extends Component
 {
     /**
      * @var string
      */
-    private string $name = '';
+    private string $title = '';
 
     /**
      * @inheritDoc
      */
     public function html(): string
     {
-        return $this->name;
+        return $this->title;
     }
 
     /**
-     * @param string $name
+     * @param string $title
      *
      * @return void
      */
-    public function show(string $name): AjaxResponse
+    public function show(string $title): AjaxResponse
     {
-        $this->name = $name;
+        $this->title = $title;
 
         return $this->render();
     }

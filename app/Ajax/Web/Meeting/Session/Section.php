@@ -2,7 +2,7 @@
 
 namespace App\Ajax\Web\Meeting\Session;
 
-use App\Ajax\Web\SectionContent;
+use App\Ajax\Web\Component\SectionContent;
 use App\Ajax\Web\Meeting\MeetingComponent;
 
 class Section extends MeetingComponent

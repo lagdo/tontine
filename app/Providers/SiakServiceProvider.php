@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Ajax\Web\Pagination;
+use App\Ajax\Web\Component\Pagination;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;

@@ -2,7 +2,7 @@
 
 namespace App\Ajax;
 
-use App\Ajax\Web\Pagination;
+use App\Ajax\Web\Component\Pagination;
 use Jaxon\Plugin\Response\Pagination\Paginator;
 use Jaxon\Response\AjaxResponse;
 

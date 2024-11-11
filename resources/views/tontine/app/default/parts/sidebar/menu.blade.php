@@ -1,7 +1,7 @@
 @if (!isset($hideSidebar) || !$hideSidebar)
 @php
-  $rqMenuTontine = Jaxon\rq(App\Ajax\Web\SidebarMenuTontine::class);
-  $rqMenuRound = Jaxon\rq(App\Ajax\Web\SidebarMenuRound::class);
+  $rqTontineMenu = Jaxon\rq(App\Ajax\Web\Component\Sidebar\TontineMenu::class);
+  $rqRoundMenu = Jaxon\rq(App\Ajax\Web\Component\Sidebar\RoundMenu::class);
 @endphp
       <div class="main-sidebar">
         <aside id="sidebar-wrapper">
@@ -20,11 +20,11 @@
               <i class="fa fa-fw fa-users-cog"></i> <span>{{ __('tontine.menus.admins') }}</span>
             </a></li>
           </ul>
-          <div @jxnShow($rqMenuTontine) id="sidebar-menu-tontine">
-            @jxnHtml($rqMenuTontine)
+          <div @jxnShow($rqTontineMenu) id="sidebar-menu-tontine">
+            @jxnHtml($rqTontineMenu)
           </div>
-          <div @jxnShow($rqMenuRound) id="sidebar-menu-round">
-            @jxnHtml($rqMenuRound)
+          <div @jxnShow($rqRoundMenu) id="sidebar-menu-round">
+            @jxnHtml($rqRoundMenu)
           </div>
         </aside>
       </div>

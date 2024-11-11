@@ -3,7 +3,7 @@
 namespace App\Ajax\Web\Report\Round;
 
 use App\Ajax\Component;
-use App\Ajax\Web\SectionContent;
+use App\Ajax\Web\Component\SectionContent;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\SummaryService;
 

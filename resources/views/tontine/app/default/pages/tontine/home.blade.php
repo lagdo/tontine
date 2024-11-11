@@ -1,6 +1,6 @@
 @php
-  $rqTontine = Jaxon\rq(App\Ajax\Web\Tontine\Tontine::class);
-  $rqTontinePage = Jaxon\rq(App\Ajax\Web\Tontine\TontinePage::class);
+  $rqOrganisation = Jaxon\rq(App\Ajax\Web\Tontine\Organisation::class);
+  $rqOrganisationPage = Jaxon\rq(App\Ajax\Web\Tontine\OrganisationPage::class);
   $rqInviteTontine = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Tontine::class);
   $rqSelect = Jaxon\rq(App\Ajax\Web\Tontine\Select::class);
 @endphp
@@ -11,11 +11,11 @@
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right ml-2 mb-2" role="group">
-                  <button type="button" class="btn btn-primary" @jxnClick($rqTontine->home())><i class="fa fa-sync"></i></button>
-                  <button type="button" class="btn btn-primary" @jxnClick($rqTontine->add())><i class="fa fa-plus"></i></button>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqOrganisation->home())><i class="fa fa-sync"></i></button>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqOrganisation->add())><i class="fa fa-plus"></i></button>
                 </div>
                 <div class="btn-group float-right" role="group">
-                  <button type="button" class="btn btn-primary" @jxnClick($rqSelect->showTontines())>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqSelect->showOrganisations())>
                     <i class="fa fa-check-square"></i> {{ __('tontine.actions.choose') }}
                   </button>
                 </div>
@@ -24,7 +24,7 @@
           </div>
 
           <div class="card shadow mb-4">
-            <div class="card-body" @jxnShow($rqTontinePage)>
+            <div class="card-body" @jxnShow($rqOrganisationPage)>
             </div>
           </div>
 
