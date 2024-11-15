@@ -22,7 +22,7 @@
                         <tr>
                           <td>{{ $category->name }}</td>
                           <td class="table-item-toggle" data-category-id="{{ $category->id }}">
-                            <a role="link" class="btn-category-toggle"><i class="fa fa-toggle-{{ $category->active ? 'on' : 'off' }}"></i></a>
+                            <a role="link" tabindex="0" class="btn-category-toggle"><i class="fa fa-toggle-{{ $category->active ? 'on' : 'off' }}"></i></a>
                           </td>
                           <td class="table-item-menu">
 @include('tontine.app.default.parts.table.menu', [

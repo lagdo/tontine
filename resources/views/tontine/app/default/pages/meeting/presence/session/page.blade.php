@@ -25,7 +25,7 @@
 @if (!$member)
                             <button type="button" class="btn btn-primary btn-show-session-presences"><i class="fa fa-arrow-circle-right"></i></button>
 @elseif ($session->opened)
-                            <a role="link" class="btn-toggle-session-presence"><i class="fa fa-toggle-{{
+                            <a role="link" tabindex="0" class="btn-toggle-session-presence"><i class="fa fa-toggle-{{
                               $absences->has($session->id) ? 'off' : 'on' }}"></i></a>
 @else
                             <i class="fa fa-toggle-{{ $absences->has($session->id) ? 'off' : 'on' }}"></i>

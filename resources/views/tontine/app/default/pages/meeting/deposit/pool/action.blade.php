@@ -3,9 +3,9 @@
   $rqPool = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\Pool::class);
 @endphp
 @if ($depositCount < $receivableCount)
-<a role="link" @jxnClick($rqPool->addAllDeposits())><i class="fa fa-toggle-off"></i></a>
+<a role="link" tabindex="0" @jxnClick($rqPool->addAllDeposits())><i class="fa fa-toggle-off"></i></a>
 @else
-<a role="link" @jxnClick($rqPool->delAllDeposits())><i class="fa fa-toggle-on"></i></a>
+<a role="link" tabindex="0" @jxnClick($rqPool->delAllDeposits())><i class="fa fa-toggle-on"></i></a>
 @endif
 @else
 <i class="fa fa-toggle-{{ $depositCount < $receivableCount ? 'off' : 'on' }}"></i>

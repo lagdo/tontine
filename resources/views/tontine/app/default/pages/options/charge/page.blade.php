@@ -34,7 +34,7 @@
                         <i class="fa fa-toggle-{{ $charge->lendable ? 'on' : 'off' }}"></i>
                       </td>
                       <td class="table-item-toggle" data-charge-id="{{ $charge->id }}">
-                        <a role="link" class="btn-charge-toggle"><i class="fa fa-toggle-{{ $charge->active ? 'on' : 'off' }}"></i></a>
+                        <a role="link" tabindex="0" class="btn-charge-toggle"><i class="fa fa-toggle-{{ $charge->active ? 'on' : 'off' }}"></i></a>
                       </td>
                       <td class="table-item-menu">
 @include('tontine.app.default.parts.table.menu', [

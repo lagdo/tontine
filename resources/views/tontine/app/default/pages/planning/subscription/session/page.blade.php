@@ -23,9 +23,9 @@
                           <td>{{ $session->date }}</td>
                           <td class="table-item-menu" data-session-id="{{ $session->id }}">
 @if($session->disabled($pool))
-                            <a role="link" class="pool-subscription-session-enable"><i class="fa fa-toggle-off"></i></a>
+                            <a role="link" tabindex="0" class="pool-subscription-session-enable"><i class="fa fa-toggle-off"></i></a>
 @else
-                            <a role="link" class="pool-subscription-session-disable"><i class="fa fa-toggle-on"></i></a>
+                            <a role="link" tabindex="0" class="pool-subscription-session-disable"><i class="fa fa-toggle-on"></i></a>
 @endif
                           </td>
                         </tr>

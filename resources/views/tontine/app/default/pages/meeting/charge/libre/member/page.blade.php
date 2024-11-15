@@ -29,9 +29,9 @@
 @if (!$session->opened || !$charge->is_active)
                             @if ($member->bill !== null)<i class="fa fa-toggle-on"></i>@else<i class="fa fa-toggle-off">@endif
 @elseif ($member->bill !== null)
-                            <a role="link" class="btn-del-bill"><i class="fa fa-toggle-on"></i></a>
+                            <a role="link" tabindex="0" class="btn-del-bill"><i class="fa fa-toggle-on"></i></a>
 @else
-                            <a role="link" class="btn-add-bill"><i class="fa fa-toggle-off"></i></a>
+                            <a role="link" tabindex="0" class="btn-add-bill"><i class="fa fa-toggle-off"></i></a>
 @endif
                           </td>
 @else

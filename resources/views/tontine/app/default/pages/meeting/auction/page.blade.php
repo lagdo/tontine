@@ -27,7 +27,7 @@
                           </td>
                           <td class="table-item-menu" data-auction-id="{{ $auction->id }}">
 @if ($session->opened)
-                            <a role="link" class="btn-toggle-payment"><i class="fa fa-toggle-{{ $auction->paid ? 'on' : 'off' }}"></i></a>
+                            <a role="link" tabindex="0" class="btn-toggle-payment"><i class="fa fa-toggle-{{ $auction->paid ? 'on' : 'off' }}"></i></a>
 @else
                             <i class="fa fa-toggle-{{ $auction->paid ? 'on' : 'off' }}"></i>
 @endif

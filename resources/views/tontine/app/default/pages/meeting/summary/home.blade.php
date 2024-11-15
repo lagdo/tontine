@@ -34,19 +34,19 @@
                   <ul class="nav nav-pills nav-fill" id="session-tabs" @jxnTarget()>
                     <div @jxnEvent(['a', 'click'], Jaxon\jq()->tab('show'))></div>
                     <li class="nav-item" role="presentation">
-                      <a class="nav-link active" id="session-tab-pools" data-target="#session-pools" role="link">{!! __('meeting.actions.pools') !!}</a>
+                      <a class="nav-link active" id="session-tab-pools" data-target="#session-pools" role="link" tabindex="0">{!! __('meeting.actions.pools') !!}</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                      <a class="nav-link" id="session-tab-charges" data-target="#session-charges" role="link">{!! __('meeting.actions.charges') !!}</a>
+                      <a class="nav-link" id="session-tab-charges" data-target="#session-charges" role="link" tabindex="0">{!! __('meeting.actions.charges') !!}</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                      <a class="nav-link" id="session-tab-savings" data-target="#session-savings" role="link">{!! __('meeting.actions.savings') !!}</a>
+                      <a class="nav-link" id="session-tab-savings" data-target="#session-savings" role="link" tabindex="0">{!! __('meeting.actions.savings') !!}</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                      <a class="nav-link" id="session-tab-credits" data-target="#session-credits" role="link">{!! __('meeting.actions.credits') !!}</a>
+                      <a class="nav-link" id="session-tab-credits" data-target="#session-credits" role="link" tabindex="0">{!! __('meeting.actions.credits') !!}</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                      <a class="nav-link" id="session-tab-cash" data-target="#session-cash" role="link">{!! __('meeting.actions.cash') !!}</a>
+                      <a class="nav-link" id="session-tab-cash" data-target="#session-cash" role="link" tabindex="0">{!! __('meeting.actions.cash') !!}</a>
                     </li>
                   </nav>
                 </div>

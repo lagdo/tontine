@@ -20,7 +20,7 @@
                         <tr>
                           <td>{{ $fund->title }}</td>
                           <td class="table-item-toggle" data-fund-id="{{ $fund->id }}">
-                            <a role="link" class="btn-fund-toggle"><i class="fa fa-toggle-{{ $fund->active ? 'on' : 'off' }}"></i></a>
+                            <a role="link" tabindex="0" class="btn-fund-toggle"><i class="fa fa-toggle-{{ $fund->active ? 'on' : 'off' }}"></i></a>
                           </td>
                           <td class="table-item-menu">
 @include('tontine.app.default.parts.table.menu', [

@@ -13,10 +13,10 @@
           </div>
           <ul class="sidebar-menu">
             <li class="menu-header">{{ __('tontine.menus.tontines') }}</li>
-            <li><a class="nav-link" id="tontine-menu-tontines" href="{{ $ajax ? 'javascript:void(0)' : route('tontine.home') }}">
+            <li><a class="nav-link" id="tontine-menu-tontines" role="link" {{ $ajax ? 'tabindex="0"' : 'href=' . route('tontine.home') }}>
               <i class="fa fa-fw fa-user-shield"></i> <span>{{ __('tontine.menus.tontines') }}</span>
             </a></li>
-            <li><a class="nav-link" id="tontine-menu-users" role="link">
+            <li><a class="nav-link" id="tontine-menu-users" role="link" tabindex="0">
               <i class="fa fa-fw fa-users-cog"></i> <span>{{ __('tontine.menus.admins') }}</span>
             </a></li>
           </ul>
