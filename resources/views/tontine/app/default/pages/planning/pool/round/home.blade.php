@@ -1,10 +1,10 @@
 @php
-  $rqPoolRound = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\Round::class);
-  $rqRoundAction = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\Action::class);
-  $rqStartSession = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\StartSession::class);
-  $rqStartSessionTitle = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\StartSessionTitle::class);
-  $rqEndSession = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\EndSession::class);
-  $rqEndSessionTitle = Jaxon\rq(App\Ajax\Web\Planning\Pool\Round\EndSessionTitle::class);
+  $rqPoolRound = Jaxon\rq(Ajax\App\Planning\Pool\Round\Round::class);
+  $rqRoundAction = Jaxon\rq(Ajax\App\Planning\Pool\Round\Action::class);
+  $rqStartSession = Jaxon\rq(Ajax\App\Planning\Pool\Round\StartSession::class);
+  $rqStartSessionTitle = Jaxon\rq(Ajax\App\Planning\Pool\Round\StartSessionTitle::class);
+  $rqEndSession = Jaxon\rq(Ajax\App\Planning\Pool\Round\EndSession::class);
+  $rqEndSessionTitle = Jaxon\rq(Ajax\App\Planning\Pool\Round\EndSessionTitle::class);
 @endphp
           <div class="section-body">
             <div class="row">

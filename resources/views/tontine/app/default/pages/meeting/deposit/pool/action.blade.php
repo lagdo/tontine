@@ -1,6 +1,6 @@
 @if (!$session->closed)
 @php
-  $rqPool = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Deposit\Pool::class);
+  $rqPool = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\Pool::class);
 @endphp
 @if ($depositCount < $receivableCount)
 <a role="link" @jxnClick($rqPool->addAllDeposits())><i class="fa fa-toggle-off"></i></a>

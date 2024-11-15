@@ -1,5 +1,5 @@
 @php
-  $rqFixedFeePage = Jaxon\rq(App\Ajax\Web\Meeting\Summary\Charge\FixedFeePage::class);
+  $rqFixedFeePage = Jaxon\rq(Ajax\App\Meeting\Summary\Charge\FixedFeePage::class);
 @endphp
                   <div class="row">
                     <div class="col-auto">

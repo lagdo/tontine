@@ -2,11 +2,11 @@
 
 namespace App\Exceptions;
 
-use App\Ajax\Web\Meeting\Session\Session;
-use App\Ajax\Web\Planning\Pool\Pool;
-use App\Ajax\Web\Planning\Session\Round;
-use App\Ajax\Web\Tontine\Member\Member;
-use App\Ajax\Web\Tontine\Organisation;
+use Ajax\App\Meeting\Session\Session;
+use Ajax\App\Planning\Pool\Pool;
+use Ajax\App\Planning\Session\Round;
+use Ajax\App\Tontine\Member\Member;
+use Ajax\App\Tontine\Organisation;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
 use Jaxon\Laravel\App\Jaxon;

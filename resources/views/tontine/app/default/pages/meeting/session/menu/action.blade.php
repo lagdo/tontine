@@ -1,6 +1,6 @@
 @php
-  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Session::class);
-  $rqSection = Jaxon\rq(App\Ajax\Web\Meeting\Session\Section::class);
+  $rqSession = Jaxon\rq(Ajax\App\Meeting\Session\Session::class);
+  $rqSection = Jaxon\rq(Ajax\App\Meeting\Session\Section::class);
 @endphp
                 <div class="btn-group float-right ml-1" role="group"  @jxnTarget()>
                   <div @jxnOn(['.btn-session-pools', 'click', ''], $rqSection->pools())></div>

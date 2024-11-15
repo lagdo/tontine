@@ -1,7 +1,7 @@
 @php
-  $rqInvite = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Invite::class);
-  $rqHostInvite = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Host::class);
-  $rqGuestInvite = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Guest::class);
+  $rqInvite = Jaxon\rq(Ajax\App\Tontine\Invite\Invite::class);
+  $rqHostInvite = Jaxon\rq(Ajax\App\Tontine\Invite\Host::class);
+  $rqGuestInvite = Jaxon\rq(Ajax\App\Tontine\Invite\Guest::class);
 @endphp
           <div class="row sm-screen-selector mb-3" id="invites-sm-screens">
             <div class="col-12">

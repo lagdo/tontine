@@ -1,8 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $rqPool = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Remitment\Pool::class);
-  $rqPoolPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Remitment\PoolPage::class);
-  $rqRemitment = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Remitment::class);
+  $rqPool = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Pool::class);
+  $rqPoolPage = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\PoolPage::class);
+  $rqRemitment = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment::class);
 @endphp
                   <div class="row">
                     <div class="col">

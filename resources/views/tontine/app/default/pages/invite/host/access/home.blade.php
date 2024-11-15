@@ -1,8 +1,8 @@
 @php
   $tontineId = Jaxon\pm()->select('select-invite-tontine');
-  $rqGuestAccess = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Guest\Access::class);
-  $rqGuestAccessContent = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Guest\AccessContent::class);
-  $rqInvite = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Invite::class);
+  $rqGuestAccess = Jaxon\rq(Ajax\App\Tontine\Invite\Guest\Access::class);
+  $rqGuestAccessContent = Jaxon\rq(Ajax\App\Tontine\Invite\Guest\AccessContent::class);
+  $rqInvite = Jaxon\rq(Ajax\App\Tontine\Invite\Invite::class);
 @endphp
               <div class="section-body">
                 <div class="row">

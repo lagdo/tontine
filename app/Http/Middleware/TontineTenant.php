@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -11,7 +12,6 @@ use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Model\User;
 use Siak\Tontine\Service\TenantService;
-use Closure;
 use Siak\Tontine\Service\Tontine\TontineService;
 
 use function auth;

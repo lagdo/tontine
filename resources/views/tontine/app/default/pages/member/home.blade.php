@@ -1,6 +1,6 @@
 @php
-  $rqMember = Jaxon\rq(App\Ajax\Web\Tontine\Member\Member::class);
-  $rqMemberPage = Jaxon\rq(App\Ajax\Web\Tontine\Member\MemberPage::class);
+  $rqMember = Jaxon\rq(Ajax\App\Tontine\Member\Member::class);
+  $rqMemberPage = Jaxon\rq(Ajax\App\Tontine\Member\MemberPage::class);
 @endphp
           <div class="section-body">
             <div class="row">

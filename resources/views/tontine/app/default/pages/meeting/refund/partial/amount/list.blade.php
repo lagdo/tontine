@@ -3,8 +3,8 @@
 @php
   $debtId = Jaxon\jq()->parent()->attr('data-debt-id')->toInt();
   $amount = Jaxon\jq('input', Jaxon\jq()->parent()->parent())->val()->toInt();
-  $rqRefund = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\Partial\Refund::class);
-  $rqAmount = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\Partial\Amount::class);
+  $rqRefund = Jaxon\rq(Ajax\App\Meeting\Session\Credit\Partial\Refund::class);
+  $rqAmount = Jaxon\rq(Ajax\App\Meeting\Session\Credit\Partial\Amount::class);
 @endphp
                   <div class="row">
                     <div class="col-auto">

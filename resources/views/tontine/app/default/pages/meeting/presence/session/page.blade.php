@@ -1,8 +1,8 @@
 @php
   $sessionId = Jaxon\jq()->parent()->attr('data-session-id')->toInt();
-  $rqPresence = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Presence::class);
-  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Session::class);
-  $rqSessionPage = Jaxon\rq(App\Ajax\Web\Meeting\Presence\SessionPage::class);
+  $rqPresence = Jaxon\rq(Ajax\App\Meeting\Presence\Presence::class);
+  $rqSession = Jaxon\rq(Ajax\App\Meeting\Presence\Session::class);
+  $rqSessionPage = Jaxon\rq(Ajax\App\Meeting\Presence\SessionPage::class);
 @endphp
                   <div class="table-responsive" id="content-page-sessions" @jxnTarget()>
                     <div @jxnOn(['.btn-toggle-session-presence', 'click', ''], $rqSession->togglePresence($sessionId))></div>

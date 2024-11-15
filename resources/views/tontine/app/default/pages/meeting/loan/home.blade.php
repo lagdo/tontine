@@ -2,8 +2,8 @@
 @inject('fundService', 'Siak\Tontine\Service\Tontine\FundService')
 @php
   $loanId = Jaxon\jq()->parent()->attr('data-loan-id')->toInt();
-  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Session::class);
-  $rqLoan = Jaxon\rq(App\Ajax\Web\Meeting\Session\Credit\Loan::class);
+  $rqSession = Jaxon\rq(Ajax\App\Meeting\Session\Session::class);
+  $rqLoan = Jaxon\rq(Ajax\App\Meeting\Session\Credit\Loan::class);
 @endphp
                   <div class="row">
                     <div class="col">

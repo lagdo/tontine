@@ -1,7 +1,7 @@
 @php
-  $rqSession = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Session::class);
-  $rqSessionCounter = Jaxon\rq(App\Ajax\Web\Planning\Subscription\SessionCounter::class);
-  $rqSessionPage = Jaxon\rq(App\Ajax\Web\Planning\Subscription\SessionPage::class);
+  $rqSession = Jaxon\rq(Ajax\App\Planning\Subscription\Session::class);
+  $rqSessionCounter = Jaxon\rq(Ajax\App\Planning\Subscription\SessionCounter::class);
+  $rqSessionPage = Jaxon\rq(Ajax\App\Planning\Subscription\SessionPage::class);
 @endphp
               <div class="section-body">
                 <div class="row">

@@ -1,7 +1,7 @@
 @php
-  $rqCharge = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\LibreFee::class);
-  $rqSettlement = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\Libre\Settlement::class);
-  $rqSettlementPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\Libre\SettlementPage::class);
+  $rqCharge = Jaxon\rq(Ajax\App\Meeting\Session\Charge\LibreFee::class);
+  $rqSettlement = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Settlement::class);
+  $rqSettlementPage = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\SettlementPage::class);
 @endphp
                   <div class="row">
                     <div class="col">

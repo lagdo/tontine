@@ -1,6 +1,6 @@
 @php
-  $rqGuestInvite = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Guest::class);
-  $rqGuestInvitePage = Jaxon\rq(App\Ajax\Web\Tontine\Invite\GuestPage::class);
+  $rqGuestInvite = Jaxon\rq(Ajax\App\Tontine\Invite\Guest::class);
+  $rqGuestInvitePage = Jaxon\rq(Ajax\App\Tontine\Invite\GuestPage::class);
 @endphp
               <div class="section-body">
                 <div class="row">

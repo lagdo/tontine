@@ -1,7 +1,7 @@
 @php
-  $rqMember = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Member::class);
-  $rqMemberPage = Jaxon\rq(App\Ajax\Web\Planning\Subscription\MemberPage::class);
-  $rqMemberCounter = Jaxon\rq(App\Ajax\Web\Planning\Subscription\MemberCounter::class);
+  $rqMember = Jaxon\rq(Ajax\App\Planning\Subscription\Member::class);
+  $rqMemberPage = Jaxon\rq(Ajax\App\Planning\Subscription\MemberPage::class);
+  $rqMemberCounter = Jaxon\rq(Ajax\App\Planning\Subscription\MemberCounter::class);
 @endphp
               <div class="section-body">
                 <div class="row">

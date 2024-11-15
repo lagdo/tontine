@@ -1,6 +1,6 @@
 @if ($charge->is_active && !$charge->is_variable)
 @php
-  $rqSettlement = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\Fixed\Settlement::class);
+  $rqSettlement = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Fixed\Settlement::class);
 @endphp
 @if (!$session->closed)
 @if ($settlementCount < $billCount)

@@ -1,6 +1,6 @@
 @php
   $amount = Jaxon\jq('input', jq()->parent()->parent())->val();
-  $rqPool = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Deposit\Pool::class);
+  $rqPool = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\Pool::class);
 @endphp
                         <div class="input-group">
                           {!! $htmlBuilder->text('amount', $amount)->class('form-control')

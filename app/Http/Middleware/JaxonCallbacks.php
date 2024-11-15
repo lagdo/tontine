@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\Ajax\CallableClass;
-use App\Ajax\Component;
+use Ajax\CallableClass;
+use Ajax\Component;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

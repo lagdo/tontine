@@ -1,15 +1,15 @@
 <?php
 
-use App\Ajax\Web\Meeting\Payment\Payment;
-use App\Ajax\Web\Meeting\Presence\Presence;
-use App\Ajax\Web\Meeting\Session\Session as MeetingSession;
-use App\Ajax\Web\Planning\Pool\Pool;
-use App\Ajax\Web\Planning\Session\Round as PlanningRound;
-use App\Ajax\Web\Planning\Subscription\Subscription;
-use App\Ajax\Web\Report\Round\Round as ReportRound;
-use App\Ajax\Web\Report\Session\Session as ReportSession;
-use App\Ajax\Web\Tontine\Member\Member;
-use App\Ajax\Web\Tontine\Options\Options;
+use Ajax\App\Meeting\Payment\Payment;
+use Ajax\App\Meeting\Presence\Presence;
+use Ajax\App\Meeting\Session\Session as MeetingSession;
+use Ajax\App\Planning\Pool\Pool;
+use Ajax\App\Planning\Session\Round as PlanningRound;
+use Ajax\App\Planning\Subscription\Subscription;
+use Ajax\App\Report\Round\Round as ReportRound;
+use Ajax\App\Report\Session\Session as ReportSession;
+use Ajax\App\Tontine\Member\Member;
+use Ajax\App\Tontine\Options\Options;
 
 return [
     'tontine' => [

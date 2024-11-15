@@ -1,8 +1,8 @@
 @php
   $tontineId = Jaxon\jq()->parent()->attr('data-tontine-id')->toInt();
-  $rqOrganisation = Jaxon\rq(App\Ajax\Web\Tontine\Organisation::class);
-  $rqOrganisationPage = Jaxon\rq(App\Ajax\Web\Tontine\OrganisationPage::class);
-  $rqSelect = Jaxon\rq(App\Ajax\Web\Tontine\Select::class);
+  $rqOrganisation = Jaxon\rq(Ajax\App\Tontine\Organisation::class);
+  $rqOrganisationPage = Jaxon\rq(Ajax\App\Tontine\OrganisationPage::class);
+  $rqSelect = Jaxon\rq(Ajax\App\Tontine\Select::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
                   <div @jxnOn(['.btn-tontine-edit', 'click', ''], $rqOrganisation->edit($tontineId))></div>

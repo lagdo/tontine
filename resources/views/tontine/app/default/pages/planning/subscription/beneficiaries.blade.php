@@ -1,8 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $rqSubscription = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Subscription::class);
-  $rqBeneficiary = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Beneficiary::class);
-  $rqPlanning = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Planning::class);
+  $rqSubscription = Jaxon\rq(Ajax\App\Planning\Subscription\Subscription::class);
+  $rqBeneficiary = Jaxon\rq(Ajax\App\Planning\Subscription\Beneficiary::class);
+  $rqPlanning = Jaxon\rq(Ajax\App\Planning\Subscription\Planning::class);
 @endphp
             <div class="col-md-12">
               <div class="section-body">

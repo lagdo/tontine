@@ -1,8 +1,8 @@
 @php
   $searchValue = Jaxon\jq('#txt-fee-settlements-search')->val();
-  $rqCharge = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\FixedFee::class);
-  $rqSettlement = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\Fixed\Settlement::class);
-  $rqSettlementPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Charge\Fixed\SettlementPage::class);
+  $rqCharge = Jaxon\rq(Ajax\App\Meeting\Session\Charge\FixedFee::class);
+  $rqSettlement = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Fixed\Settlement::class);
+  $rqSettlementPage = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Fixed\SettlementPage::class);
 @endphp
                   <div class="row">
                     <div class="col">

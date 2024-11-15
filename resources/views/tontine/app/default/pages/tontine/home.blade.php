@@ -1,8 +1,8 @@
 @php
-  $rqOrganisation = Jaxon\rq(App\Ajax\Web\Tontine\Organisation::class);
-  $rqOrganisationPage = Jaxon\rq(App\Ajax\Web\Tontine\OrganisationPage::class);
-  $rqInviteTontine = Jaxon\rq(App\Ajax\Web\Tontine\Invite\Tontine::class);
-  $rqSelect = Jaxon\rq(App\Ajax\Web\Tontine\Select::class);
+  $rqOrganisation = Jaxon\rq(Ajax\App\Tontine\Organisation::class);
+  $rqOrganisationPage = Jaxon\rq(Ajax\App\Tontine\OrganisationPage::class);
+  $rqInviteTontine = Jaxon\rq(Ajax\App\Tontine\Invite\Tontine::class);
+  $rqSelect = Jaxon\rq(Ajax\App\Tontine\Select::class);
 @endphp
           <div class="section-body">
             <div class="row">

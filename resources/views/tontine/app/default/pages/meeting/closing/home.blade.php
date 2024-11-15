@@ -2,8 +2,8 @@
 @php
   $closingFundId = Jaxon\pm()->select('closings-fund-id')->toInt();
   $selectFundId = Jaxon\jq()->parent()->attr('data-fund-id')->toInt();
-  $rqClosing = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Closing::class);
-  $rqSavingReport = Jaxon\rq(App\Ajax\Web\Report\Session\Saving\Fund::class);
+  $rqClosing = Jaxon\rq(Ajax\App\Meeting\Session\Saving\Closing::class);
+  $rqSavingReport = Jaxon\rq(Ajax\App\Report\Session\Saving\Fund::class);
 @endphp
                   <div class="row">
                     <div class="col">

@@ -23,8 +23,8 @@ return [
             ],
         ],
         'directories' => [
-            app_path('Ajax/Web') => [
-                'namespace' => '\\App\\Ajax\\Web',
+            base_path('ajax/App') => [
+                'namespace' => '\\Ajax\\App',
             ],
         ],
         'views' => [

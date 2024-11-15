@@ -1,7 +1,7 @@
 @php
   $sessionId = Jaxon\jq()->parent()->attr('data-session-id')->toInt();
-  $rqSession = Jaxon\rq(App\Ajax\Web\Planning\Subscription\Session::class);
-  $rqSessionPage = Jaxon\rq(App\Ajax\Web\Planning\Subscription\SessionPage::class);
+  $rqSession = Jaxon\rq(Ajax\App\Planning\Subscription\Session::class);
+  $rqSessionPage = Jaxon\rq(Ajax\App\Planning\Subscription\SessionPage::class);
 @endphp
                   <div class="table-responsive" id="pool-subscription-sessions-page" @jxnTarget()>
                     <div @jxnOn(['.pool-subscription-session-enable', 'click', ''], $rqSession->enableSession($sessionId))></div>

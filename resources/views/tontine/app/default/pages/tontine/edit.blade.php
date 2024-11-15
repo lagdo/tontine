@@ -1,3 +1,6 @@
+@php
+  $rqLocale = Jaxon\rq(Ajax\App\Locale::class);
+@endphp
       <div class="portlet-body form">
         <form class="form-horizontal" role="form" id="tontine-form">
           <div class="module-body">
@@ -21,9 +24,7 @@
             </div>
             <div class="form-group row">
               {!! $htmlBuilder->label(__('common.labels.country'), 'country_code')->class('col-sm-3 col-form-label') !!}
-              <div class="col-sm-9" @jxnTarget()>
-                <div @jxnOn(['select', 'change', ''], Jaxon\rq(App\Ajax\Web\Locale::class)
-                  ->selectCurrency(Jaxon\jq()->val()))></div>
+              <div class="col-sm-9" @jxnOn(['select', 'change'], $rqLocale->selectCurrency(Jaxon\jq()->val()))>
                 {!! $htmlBuilder->select('country_code', $countries, $tontine->country_code)->class('form-control') !!}
               </div>
             </div>

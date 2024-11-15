@@ -1,8 +1,8 @@
 @php
-  $rqSelect = Jaxon\rq(App\Ajax\Web\Tontine\Select::class);
-  $rqRound = Jaxon\rq(App\Ajax\Web\Planning\Session\Round::class);
-  $rqRoundPage = Jaxon\rq(App\Ajax\Web\Planning\Session\RoundPage::class);
-  $rqSession = Jaxon\rq(App\Ajax\Web\Planning\Session\Session::class);
+  $rqSelect = Jaxon\rq(Ajax\App\Tontine\Select::class);
+  $rqRound = Jaxon\rq(Ajax\App\Planning\Session\Round::class);
+  $rqRoundPage = Jaxon\rq(Ajax\App\Planning\Session\RoundPage::class);
+  $rqSession = Jaxon\rq(Ajax\App\Planning\Session\Session::class);
 @endphp
           <div class="row" id="round-sm-screens">
             <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-home-rounds">

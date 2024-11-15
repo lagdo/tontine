@@ -1,7 +1,7 @@
 @include('tontine.app.default.pages.meeting.session.menu.wrapper', ['session' => $session])
 @php
-  $rqDeposit = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Deposit::class);
-  $rqRemitment = Jaxon\rq(App\Ajax\Web\Meeting\Session\Pool\Remitment::class);
+  $rqDeposit = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit::class);
+  $rqRemitment = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment::class);
 @endphp
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">

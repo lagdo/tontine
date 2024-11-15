@@ -1,6 +1,6 @@
 @php
   $amountValue = Jaxon\jq("#saving-edit-member-$memberId")->val();
-  $rqMember = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Member::class);
+  $rqMember = Jaxon\rq(Ajax\App\Meeting\Session\Saving\Member::class);
 @endphp
                         <div class="input-group">
                           {!! $htmlBuilder->text('amount', $amount)->class('form-control')

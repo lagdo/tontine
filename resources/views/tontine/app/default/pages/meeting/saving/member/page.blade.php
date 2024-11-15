@@ -2,8 +2,8 @@
 @php
   $memberId = Jaxon\jq()->parent()->attr('data-member-id')->toInt();
   $amount = Jaxon\jq('input', Jaxon\jq()->parent()->parent())->val()->toInt();
-  $rqMember = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Member::class);
-  $rqMemberPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\MemberPage::class);
+  $rqMember = Jaxon\rq(Ajax\App\Meeting\Session\Saving\Member::class);
+  $rqMemberPage = Jaxon\rq(Ajax\App\Meeting\Session\Saving\MemberPage::class);
 @endphp
                   <div class="table-responsive" id="meeting-saving-members" @jxnTarget()>
                     <div @jxnOn(['.btn-save-saving', 'click', ''], $rqMember->saveSaving($memberId, $amount))></div>

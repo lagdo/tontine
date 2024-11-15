@@ -1,8 +1,8 @@
 @php
   $selectFundId = Jaxon\pm()->select('savings-fund-id')->toInt();
-  $rqSaving = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Saving::class);
-  $rqSavingPage = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\SavingPage::class);
-  $rqMember = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Member::class);
+  $rqSaving = Jaxon\rq(Ajax\App\Meeting\Session\Saving\Saving::class);
+  $rqSavingPage = Jaxon\rq(Ajax\App\Meeting\Session\Saving\SavingPage::class);
+  $rqMember = Jaxon\rq(Ajax\App\Meeting\Session\Saving\Member::class);
 @endphp
                   <div class="row">
                     <div class="col">

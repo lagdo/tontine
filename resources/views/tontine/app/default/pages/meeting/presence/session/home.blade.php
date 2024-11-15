@@ -1,7 +1,7 @@
 @php
-  $rqPresence = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Presence::class);
-  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Presence\Session::class);
-  $rqSessionPage = Jaxon\rq(App\Ajax\Web\Meeting\Presence\SessionPage::class);
+  $rqPresence = Jaxon\rq(Ajax\App\Meeting\Presence\Presence::class);
+  $rqSession = Jaxon\rq(Ajax\App\Meeting\Presence\Session::class);
+  $rqSessionPage = Jaxon\rq(Ajax\App\Meeting\Presence\SessionPage::class);
   $jsBackHandler = Jaxon\jw()->showSmScreen('content-home-members', 'presence-sm-screens');
 @endphp
               <div class="section-body">

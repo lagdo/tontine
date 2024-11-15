@@ -2,7 +2,7 @@
 @php
   $agendaText = Jaxon\jq('#session-agenda')->summernote('code');
   $reportText = Jaxon\jq('#session-report')->summernote('code');
-  $rqSession = Jaxon\rq(App\Ajax\Web\Meeting\Session\Session::class);
+  $rqSession = Jaxon\rq(Ajax\App\Meeting\Session\Session::class);
 @endphp
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">

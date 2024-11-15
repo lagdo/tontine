@@ -1,8 +1,8 @@
 @include('tontine.app.default.pages.meeting.session.menu.wrapper', ['session' => $session])
 @php
-  $rqSaving = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Saving::class);
-  $rqClosing = Jaxon\rq(App\Ajax\Web\Meeting\Session\Saving\Closing::class);
-  $rqSavingReport = Jaxon\rq(App\Ajax\Web\Report\Session\Saving\Fund::class);
+  $rqSaving = Jaxon\rq(Ajax\App\Meeting\Session\Saving\Saving::class);
+  $rqClosing = Jaxon\rq(Ajax\App\Meeting\Session\Saving\Closing::class);
+  $rqSavingReport = Jaxon\rq(Ajax\App\Report\Session\Saving\Fund::class);
 @endphp
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">
