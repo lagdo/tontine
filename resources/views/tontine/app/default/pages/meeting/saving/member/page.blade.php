@@ -6,8 +6,8 @@
   $rqMemberPage = Jaxon\rq(Ajax\App\Meeting\Session\Saving\MemberPage::class);
 @endphp
                   <div class="table-responsive" id="meeting-saving-members" @jxnTarget()>
-                    <div @jxnOn(['.btn-save-saving', 'click', ''], $rqMember->saveSaving($memberId, $amount))></div>
-                    <div @jxnOn(['.btn-edit-saving', 'click', ''], $rqMember->editSaving($memberId))></div>
+                    <div @jxnEvent(['.btn-save-saving', 'click'], $rqMember->saveSaving($memberId, $amount))></div>
+                    <div @jxnEvent(['.btn-edit-saving', 'click'], $rqMember->editSaving($memberId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

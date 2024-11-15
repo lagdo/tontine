@@ -32,11 +32,11 @@
                     </div>
                   </div>
                   <div class="table-responsive" @jxnTarget()>
-                    <div @jxnOn(['.btn-fund-edit-round-closing', 'click', ''], $rqClosing->editRoundClosing($selectFundId))></div>
-                    <div @jxnOn(['.btn-fund-edit-interest-closing', 'click', ''], $rqClosing->editInterestClosing($selectFundId))></div>
-                    <div @jxnOn(['.btn-fund-delete-round-closing', 'click', ''], $rqClosing->deleteRoundClosing($selectFundId)
+                    <div @jxnEvent(['.btn-fund-edit-round-closing', 'click'], $rqClosing->editRoundClosing($selectFundId))></div>
+                    <div @jxnEvent(['.btn-fund-edit-interest-closing', 'click'], $rqClosing->editInterestClosing($selectFundId))></div>
+                    <div @jxnEvent(['.btn-fund-delete-round-closing', 'click'], $rqClosing->deleteRoundClosing($selectFundId)
                       ->confirm(trans('meeting.closing.questions.delete')))></div>
-                    <div @jxnOn(['.btn-fund-delete-interest-closing', 'click', ''], $rqClosing->deleteInterestClosing($selectFundId)
+                    <div @jxnEvent(['.btn-fund-delete-interest-closing', 'click'], $rqClosing->deleteInterestClosing($selectFundId)
                       ->confirm(trans('meeting.closing.questions.delete')))></div>
 
                     <table class="table table-bordered responsive">

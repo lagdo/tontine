@@ -32,7 +32,7 @@
               <div class="row mb-2">
                 <div class="col">
                   <ul class="nav nav-pills nav-fill" id="session-tabs" @jxnTarget()>
-                    <div @jxnOn(['a', 'click', ''], Jaxon\jq()->tab('show'))></div>
+                    <div @jxnEvent(['a', 'click'], Jaxon\jq()->tab('show'))></div>
                     <li class="nav-item" role="presentation">
                       <a class="nav-link active" id="session-tab-pools" data-target="#session-pools" role="link">{!! __('meeting.actions.pools') !!}</a>
                     </li>

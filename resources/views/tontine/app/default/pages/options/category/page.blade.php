@@ -4,9 +4,9 @@
   $rqCategoryPage = Jaxon\rq(Ajax\App\Tontine\Options\CategoryPage::class);
 @endphp
                   <div class="table-responsive" @jxnTarget()>
-                    <div @jxnOn(['.btn-category-edit', 'click', ''], $rqCategory->edit($categoryId))></div>
-                    <div @jxnOn(['.btn-category-toggle', 'click', ''], $rqCategory->toggle($categoryId))></div>
-                    <div @jxnOn(['.btn-category-delete', 'click', ''], $rqCategory->delete($categoryId)
+                    <div @jxnEvent(['.btn-category-edit', 'click'], $rqCategory->edit($categoryId))></div>
+                    <div @jxnEvent(['.btn-category-toggle', 'click'], $rqCategory->toggle($categoryId))></div>
+                    <div @jxnEvent(['.btn-category-delete', 'click'], $rqCategory->delete($categoryId)
                       ->confirm(__('tontine.category.questions.delete')))></div>
 
                     <table class="table table-bordered responsive">

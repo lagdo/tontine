@@ -7,10 +7,10 @@
   $rqMemberPage = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\MemberPage::class);
 @endphp
                   <div class="table-responsive" id="meeting-fee-libre-members" @jxnTarget()>
-                    <div @jxnOn(['.btn-add-bill', 'click', ''], $rqMember->addBill($memberId, $paid))></div>
-                    <div @jxnOn(['.btn-del-bill', 'click', ''], $rqMember->delBill($memberId))></div>
-                    <div @jxnOn(['.btn-save-bill', 'click', ''], $rqMember->addBill($memberId, $paid, $amount))></div>
-                    <div @jxnOn(['.btn-edit-bill', 'click', ''], $rqMember->editBill($memberId))></div>
+                    <div @jxnEvent(['.btn-add-bill', 'click'], $rqMember->addBill($memberId, $paid))></div>
+                    <div @jxnEvent(['.btn-del-bill', 'click'], $rqMember->delBill($memberId))></div>
+                    <div @jxnEvent(['.btn-save-bill', 'click'], $rqMember->addBill($memberId, $paid, $amount))></div>
+                    <div @jxnEvent(['.btn-edit-bill', 'click'], $rqMember->editBill($memberId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

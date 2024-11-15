@@ -5,9 +5,9 @@
   $rqSelect = Jaxon\rq(Ajax\App\Tontine\Select::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
-                  <div @jxnOn(['.btn-tontine-edit', 'click', ''], $rqOrganisation->edit($tontineId))></div>
-                  <div @jxnOn(['.btn-tontine-choose', 'click', ''], $rqSelect->saveOrganisation($tontineId))></div>
-                  <div @jxnOn(['.btn-tontine-delete', 'click', ''], $rqOrganisation->delete($tontineId)
+                  <div @jxnEvent(['.btn-tontine-edit', 'click'], $rqOrganisation->edit($tontineId))></div>
+                  <div @jxnEvent(['.btn-tontine-choose', 'click'], $rqSelect->saveOrganisation($tontineId))></div>
+                  <div @jxnEvent(['.btn-tontine-delete', 'click'], $rqOrganisation->delete($tontineId)
                     ->confirm(__('tontine.questions.delete')))></div>
 
                   <table class="table table-bordered responsive" @jxnTarget()>

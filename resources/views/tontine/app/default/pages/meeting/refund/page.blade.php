@@ -6,8 +6,8 @@
   $rqRefundPage = Jaxon\rq(Ajax\App\Meeting\Session\Credit\RefundPage::class);
 @endphp
                     <div class="table-responsive" id="meeting-debts-page" @jxnTarget()>
-                      <div @jxnOn(['.btn-add-refund', 'click', ''], $rqRefund->create($debtId))></div>
-                      <div @jxnOn(['.btn-del-refund', 'click', ''], $rqRefund->delete($debtId))></div>
+                      <div @jxnEvent(['.btn-add-refund', 'click'], $rqRefund->create($debtId))></div>
+                      <div @jxnEvent(['.btn-del-refund', 'click'], $rqRefund->delete($debtId))></div>
 
                       <table class="table table-bordered responsive">
                         <thead>

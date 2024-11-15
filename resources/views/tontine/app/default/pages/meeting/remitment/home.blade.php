@@ -23,7 +23,7 @@
                     </div>
                   </div>
                   <div class="table-responsive" id="meeting-remitments" @jxnTarget()>
-                    <div @jxnOn(['.btn-pool-remitments', 'click', ''], $rqPoolRemitment->pool($poolId))></div>
+                    <div @jxnEvent(['.btn-pool-remitments', 'click'], $rqPoolRemitment->pool($poolId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

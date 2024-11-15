@@ -5,9 +5,9 @@
   $rqChargePage = Jaxon\rq(Ajax\App\Tontine\Options\ChargePage::class);
 @endphp
               <div class="table-responsive" @jxnTarget()>
-                <div @jxnOn(['.btn-charge-edit', 'click', ''], $rqCharge->edit($chargeId))></div>
-                <div @jxnOn(['.btn-charge-toggle', 'click', ''], $rqCharge->toggle($chargeId))></div>
-                <div @jxnOn(['.btn-charge-delete', 'click', ''], $rqCharge->delete($chargeId)
+                <div @jxnEvent(['.btn-charge-edit', 'click'], $rqCharge->edit($chargeId))></div>
+                <div @jxnEvent(['.btn-charge-toggle', 'click'], $rqCharge->toggle($chargeId))></div>
+                <div @jxnEvent(['.btn-charge-delete', 'click'], $rqCharge->delete($chargeId)
                   ->confirm(__('tontine.charge.questions.delete')))></div>
 
                 <table class="table table-bordered responsive">

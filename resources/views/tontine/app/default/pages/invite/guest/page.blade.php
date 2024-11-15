@@ -4,11 +4,11 @@
   $rqGuestInvitePage = Jaxon\rq(Ajax\App\Tontine\Invite\GuestPage::class);
 @endphp
                   <div class="table-responsive" id="content-guest-invites-page" @jxnTarget()>
-                    <div @jxnOn(['.btn-guest-invite-accept', 'click', ''], $rqGuestInvite->accept($inviteId)
+                    <div @jxnEvent(['.btn-guest-invite-accept', 'click'], $rqGuestInvite->accept($inviteId)
                       ->confirm(trans('tontine.invite.questions.accept')))></div>
-                    <div @jxnOn(['.btn-guest-invite-refuse', 'click', ''], $rqGuestInvite->refuse($inviteId)
+                    <div @jxnEvent(['.btn-guest-invite-refuse', 'click'], $rqGuestInvite->refuse($inviteId)
                       ->confirm(trans('tontine.invite.questions.refuse')))></div>
-                    <div @jxnOn(['.btn-guest-invite-delete', 'click', ''], $rqGuestInvite->delete($inviteId)
+                    <div @jxnEvent(['.btn-guest-invite-delete', 'click'], $rqGuestInvite->delete($inviteId)
                       ->confirm(trans('tontine.invite.questions.delete')))></div>
 
                     <table class="table table-bordered responsive">

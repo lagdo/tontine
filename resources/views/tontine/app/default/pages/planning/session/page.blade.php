@@ -4,9 +4,9 @@
   $rqSessionPage = Jaxon\rq(Ajax\App\Planning\Session\SessionPage::class);
 @endphp
                     <div class="table-responsive" id="content-page-sessions" @jxnTarget()>
-                      <div @jxnOn(['.btn-session-edit', 'click', ''], $rqSession->edit($sessionId))></div>
-                      <div @jxnOn(['.btn-session-venue', 'click', ''], $rqSession->editVenue($sessionId))></div>
-                      <div @jxnOn(['.btn-session-delete', 'click', ''], $rqSession->delete($sessionId)
+                      <div @jxnEvent(['.btn-session-edit', 'click'], $rqSession->edit($sessionId))></div>
+                      <div @jxnEvent(['.btn-session-venue', 'click'], $rqSession->editVenue($sessionId))></div>
+                      <div @jxnEvent(['.btn-session-delete', 'click'], $rqSession->delete($sessionId)
                         ->confirm(__('tontine.session.questions.delete')))></div>
 
                       <table class="table table-bordered responsive">

@@ -4,7 +4,7 @@
   $rqFixedFeePage = Jaxon\rq(Ajax\App\Meeting\Session\Charge\FixedFeePage::class);
 @endphp
                   <div class="table-responsive" id="meeting-fees-fixed-page" @jxnTarget()>
-                    <div @jxnOn(['.btn-fee-fixed-settlements', 'click', ''], $rqSettlement->charge($chargeId))></div>
+                    <div @jxnEvent(['.btn-fee-fixed-settlements', 'click'], $rqSettlement->charge($chargeId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

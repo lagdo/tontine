@@ -27,8 +27,8 @@
                     </div>
                   </div>
                   <div class="table-responsive" @jxnTarget()>
-                    <div @jxnOn(['.btn-disbursement-edit', 'click', ''], $rqDisbursement->editDisbursement($disbursementId))></div>
-                    <div @jxnOn(['.btn-disbursement-delete', 'click', ''], $rqDisbursement->deleteDisbursement($disbursementId)
+                    <div @jxnEvent(['.btn-disbursement-edit', 'click'], $rqDisbursement->editDisbursement($disbursementId))></div>
+                    <div @jxnEvent(['.btn-disbursement-delete', 'click'], $rqDisbursement->deleteDisbursement($disbursementId)
                       ->confirm(__('meeting.disbursement.questions.delete')))></div>
 
                     <table class="table table-bordered responsive">

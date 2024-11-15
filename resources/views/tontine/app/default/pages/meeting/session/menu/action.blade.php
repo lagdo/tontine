@@ -3,12 +3,12 @@
   $rqSection = Jaxon\rq(Ajax\App\Meeting\Session\Section::class);
 @endphp
                 <div class="btn-group float-right ml-1" role="group"  @jxnTarget()>
-                  <div @jxnOn(['.btn-session-pools', 'click', ''], $rqSection->pools())></div>
-                  <div @jxnOn(['.btn-session-charges', 'click', ''], $rqSection->charges())></div>
-                  <div @jxnOn(['.btn-session-savings', 'click', ''], $rqSection->savings())></div>
-                  <div @jxnOn(['.btn-session-credits', 'click', ''], $rqSection->credits())></div>
-                  <div @jxnOn(['.btn-session-cash', 'click', ''], $rqSection->cash())></div>
-                  <div @jxnOn(['.btn-session-reports', 'click', ''], $rqSection->reports())></div>
+                  <div @jxnEvent(['.btn-session-pools', 'click'], $rqSection->pools())></div>
+                  <div @jxnEvent(['.btn-session-charges', 'click'], $rqSection->charges())></div>
+                  <div @jxnEvent(['.btn-session-savings', 'click'], $rqSection->savings())></div>
+                  <div @jxnEvent(['.btn-session-credits', 'click'], $rqSection->credits())></div>
+                  <div @jxnEvent(['.btn-session-cash', 'click'], $rqSection->cash())></div>
+                  <div @jxnEvent(['.btn-session-reports', 'click'], $rqSection->reports())></div>
 
 @php
   $menus = [[

@@ -5,7 +5,7 @@
   $rqAuctionPage = Jaxon\rq(Ajax\App\Meeting\Session\Pool\AuctionPage::class);
 @endphp
                   <div class="table-responsive" id="meeting-auctions-page" @jxnTarget()>
-                    <div @jxnOn(['.btn-toggle-payment', 'click', ''], $rqAuction->togglePayment($auctionId))></div>
+                    <div @jxnEvent(['.btn-toggle-payment', 'click'], $rqAuction->togglePayment($auctionId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

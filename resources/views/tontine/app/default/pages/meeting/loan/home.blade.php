@@ -28,8 +28,8 @@
                     </div>
                   </div>
                   <div class="table-responsive" @jxnTarget()>
-                    <div @jxnOn(['.btn-loan-edit', 'click', ''], $rqLoan->edit($loanId))></div>
-                    <div @jxnOn(['.btn-loan-delete', 'click', ''], $rqLoan->delete($loanId)
+                    <div @jxnEvent(['.btn-loan-edit', 'click'], $rqLoan->edit($loanId))></div>
+                    <div @jxnEvent(['.btn-loan-delete', 'click'], $rqLoan->delete($loanId)
                       ->confirm(__('meeting.loan.questions.delete')))></div>
 
                     <table class="table table-bordered responsive">

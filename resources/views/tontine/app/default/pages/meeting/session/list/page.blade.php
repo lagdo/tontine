@@ -6,18 +6,18 @@
   $sessionId = Jaxon\jq()->parent()->attr('data-session-id')->toInt();
 @endphp
               <div class="table-responsive" id="content-page" @jxnTarget()>
-                <div @jxnOn(['.btn-session-open', 'click', ''], $rqSession->open($sessionId)
+                <div @jxnEvent(['.btn-session-open', 'click'], $rqSession->open($sessionId)
                   ->confirm(__('tontine.session.questions.open') . '<br/>' .
                     __('tontine.session.questions.warning')))></div>
-                <div @jxnOn(['.btn-session-close', 'click', ''], $rqSession->close($sessionId)
+                <div @jxnEvent(['.btn-session-close', 'click'], $rqSession->close($sessionId)
                   ->confirm(__('tontine.session.questions.close')))></div>
-                <div @jxnOn(['.btn-session-summary', 'click', ''], $rqSummary->home($sessionId))></div>
-                <div @jxnOn(['.btn-session-pools', 'click', ''], $rqSection->pools($sessionId))></div>
-                <div @jxnOn(['.btn-session-savings', 'click', ''], $rqSection->savings($sessionId))></div>
-                <div @jxnOn(['.btn-session-credits', 'click', ''], $rqSection->credits($sessionId))></div>
-                <div @jxnOn(['.btn-session-cash', 'click', ''], $rqSection->cash($sessionId))></div>
-                <div @jxnOn(['.btn-session-charges', 'click', ''], $rqSection->charges($sessionId))></div>
-                <div @jxnOn(['.btn-session-reports', 'click', ''], $rqSection->reports($sessionId))></div>
+                <div @jxnEvent(['.btn-session-summary', 'click'], $rqSummary->home($sessionId))></div>
+                <div @jxnEvent(['.btn-session-pools', 'click'], $rqSection->pools($sessionId))></div>
+                <div @jxnEvent(['.btn-session-savings', 'click'], $rqSection->savings($sessionId))></div>
+                <div @jxnEvent(['.btn-session-credits', 'click'], $rqSection->credits($sessionId))></div>
+                <div @jxnEvent(['.btn-session-cash', 'click'], $rqSection->cash($sessionId))></div>
+                <div @jxnEvent(['.btn-session-charges', 'click'], $rqSection->charges($sessionId))></div>
+                <div @jxnEvent(['.btn-session-reports', 'click'], $rqSection->reports($sessionId))></div>
 
                 <table class="table table-bordered responsive">
                   <thead>

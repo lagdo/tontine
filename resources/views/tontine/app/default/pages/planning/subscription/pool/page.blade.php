@@ -8,10 +8,10 @@
   $rqBeneficiary = Jaxon\rq(Ajax\App\Planning\Subscription\Beneficiary::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
-                  <div @jxnOn(['.btn-pool-member', 'click', ''], $rqMember->pool($poolId))></div>
-                  <div @jxnOn(['.btn-pool-session', 'click', ''], $rqSession->pool($poolId))></div>
-                  <div @jxnOn(['.btn-pool-planning', 'click', ''], $rqPlanning->pool($poolId))></div>
-                  <div @jxnOn(['.btn-pool-beneficiary', 'click', ''], $rqBeneficiary->pool($poolId))></div>
+                  <div @jxnEvent(['.btn-pool-member', 'click'], $rqMember->pool($poolId))></div>
+                  <div @jxnEvent(['.btn-pool-session', 'click'], $rqSession->pool($poolId))></div>
+                  <div @jxnEvent(['.btn-pool-planning', 'click'], $rqPlanning->pool($poolId))></div>
+                  <div @jxnEvent(['.btn-pool-beneficiary', 'click'], $rqBeneficiary->pool($poolId))></div>
 
                   <table class="table table-bordered responsive">
                     <thead>

@@ -5,9 +5,9 @@
   $rqSettlementPage = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\SettlementPage::class);
 @endphp
                   <div class="table-responsive" id="meeting-fee-libre-bills" @jxnTarget()>
-                    <div @jxnOn(['.btn-add-settlement', 'click', ''], $rqSettlement->addSettlement($billId))></div>
-                    <div @jxnOn(['.btn-del-settlement', 'click', ''], $rqSettlement->delSettlement($billId))></div>
-                    <div @jxnOn(['.btn-edit-notes', 'click', ''], $rqSettlement->editNotes($billId))></div>
+                    <div @jxnEvent(['.btn-add-settlement', 'click'], $rqSettlement->addSettlement($billId))></div>
+                    <div @jxnEvent(['.btn-del-settlement', 'click'], $rqSettlement->delSettlement($billId))></div>
+                    <div @jxnEvent(['.btn-edit-notes', 'click'], $rqSettlement->editNotes($billId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

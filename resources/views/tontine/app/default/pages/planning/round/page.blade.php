@@ -6,10 +6,10 @@
   $rqRoundPage = Jaxon\rq(Ajax\App\Planning\Session\RoundPage::class);
 @endphp
                   <div class="table-responsive" @jxnTarget()>
-                    <div @jxnOn(['.btn-round-edit', 'click', ''], $rqRound->edit($roundId))></div>
-                    <div @jxnOn(['.btn-round-sessions', 'click', ''], $rqSession->round($roundId))></div>
-                    <div @jxnOn(['.btn-round-select', 'click', ''], $rqSelect->saveRound($roundId))></div>
-                    <div @jxnOn(['.btn-round-delete', 'click', ''], $rqRound->delete($roundId)
+                    <div @jxnEvent(['.btn-round-edit', 'click'], $rqRound->edit($roundId))></div>
+                    <div @jxnEvent(['.btn-round-sessions', 'click'], $rqSession->round($roundId))></div>
+                    <div @jxnEvent(['.btn-round-select', 'click'], $rqSelect->saveRound($roundId))></div>
+                    <div @jxnEvent(['.btn-round-delete', 'click'], $rqRound->delete($roundId)
                       ->confirm(__('tontine.round.questions.delete')))></div>
 
                     <table class="table table-bordered responsive">

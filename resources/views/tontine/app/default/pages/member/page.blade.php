@@ -4,9 +4,9 @@
   $rqMemberPage = Jaxon\rq(Ajax\App\Tontine\Member\MemberPage::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
-                  <div @jxnOn(['.btn-member-edit', 'click', ''], $rqMember->edit($memberId))></div>
-                  <div @jxnOn(['.btn-member-toggle', 'click', ''], $rqMember->toggle($memberId))></div>
-                  <div @jxnOn(['.btn-member-delete', 'click', ''], $rqMember->delete($memberId)
+                  <div @jxnEvent(['.btn-member-edit', 'click'], $rqMember->edit($memberId))></div>
+                  <div @jxnEvent(['.btn-member-toggle', 'click'], $rqMember->toggle($memberId))></div>
+                  <div @jxnEvent(['.btn-member-delete', 'click'], $rqMember->delete($memberId)
                     ->confirm(__('tontine.questions.delete')))></div>
 
                   <table class="table table-bordered responsive">

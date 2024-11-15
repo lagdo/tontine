@@ -6,9 +6,9 @@
   $rqPoolRound = Jaxon\rq(Ajax\App\Planning\Pool\Round\Round::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
-                  <div @jxnOn(['.btn-pool-period', 'click', ''], $rqPoolRound->home($poolId))></div>
-                  <div @jxnOn(['.btn-pool-edit', 'click', ''], $rqPool->edit($poolId))></div>
-                  <div @jxnOn(['.btn-pool-delete', 'click', ''], $rqPool->delete($poolId)
+                  <div @jxnEvent(['.btn-pool-period', 'click'], $rqPoolRound->home($poolId))></div>
+                  <div @jxnEvent(['.btn-pool-edit', 'click'], $rqPool->edit($poolId))></div>
+                  <div @jxnEvent(['.btn-pool-delete', 'click'], $rqPool->delete($poolId)
                     ->confirm(__('tontine.pool.questions.delete')))></div>
 
                   <table class="table table-bordered responsive">

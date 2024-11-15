@@ -19,8 +19,8 @@
                   </div>
 
                   <div class="table-responsive" @jxnTarget()>
-                    <div @jxnOn(['.btn-partial-refund-edit-amount', 'click', ''], $rqAmount->edit($debtId))></div>
-                    <div @jxnOn(['.btn-partial-refund-save-amount', 'click', ''], $rqAmount->save($debtId, $amount))></div>
+                    <div @jxnEvent(['.btn-partial-refund-edit-amount', 'click'], $rqAmount->edit($debtId))></div>
+                    <div @jxnEvent(['.btn-partial-refund-save-amount', 'click'], $rqAmount->save($debtId, $amount))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

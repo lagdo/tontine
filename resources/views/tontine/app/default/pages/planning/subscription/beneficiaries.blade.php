@@ -33,7 +33,7 @@
               <div class="card shadow mb-4">
                 <div class="card-body">
                   <div class="table-responsive" @jxnTarget()>
-                    <div @jxnOn(['.select-beneficiary', 'change', ''], $rqBeneficiary->save(
+                    <div @jxnEvent(['.select-beneficiary', 'change'], $rqBeneficiary->save(
                         Jaxon\jq()->attr('data-session-id')->toInt(),
                         Jaxon\jq()->val()->toInt(),
                         Jaxon\jq()->attr('data-subscription-id')->toInt()

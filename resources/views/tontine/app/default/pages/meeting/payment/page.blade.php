@@ -6,7 +6,7 @@
 @endphp
                   <div class="table-responsive" id="payment-members-page" @jxnTarget()>
 @if ($sessions->count() > 0)
-                    <div @jxnOn(['.btn-member-payables', 'click', ''], $rqPayable->show($memberId, $sessionId))></div>
+                    <div @jxnEvent(['.btn-member-payables', 'click'], $rqPayable->show($memberId, $sessionId))></div>
 @endif
 
                     <table class="table table-bordered responsive">

@@ -7,10 +7,10 @@
   $rqPoolPage = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\PoolPage::class);
 @endphp
                   <div class="table-responsive" id="meeting-pool-deposits" @jxnTarget()>
-                    <div @jxnOn(['.btn-add-deposit', 'click', ''], $rqPool->addDeposit($receivableId))></div>
-                    <div @jxnOn(['.btn-del-deposit', 'click', ''], $rqPool->delDeposit($receivableId))></div>
-                    <div @jxnOn(['.btn-save-deposit', 'click', ''], $rqPool->saveAmount($receivableId, $amount))></div>
-                    <div @jxnOn(['.btn-edit-deposit', 'click', ''], $rqPool->editAmount($receivableId))></div>
+                    <div @jxnEvent(['.btn-add-deposit', 'click'], $rqPool->addDeposit($receivableId))></div>
+                    <div @jxnEvent(['.btn-del-deposit', 'click'], $rqPool->delDeposit($receivableId))></div>
+                    <div @jxnEvent(['.btn-save-deposit', 'click'], $rqPool->saveAmount($receivableId, $amount))></div>
+                    <div @jxnEvent(['.btn-edit-deposit', 'click'], $rqPool->editAmount($receivableId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

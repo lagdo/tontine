@@ -4,8 +4,8 @@
   $rqSessionPage = Jaxon\rq(Ajax\App\Planning\Subscription\SessionPage::class);
 @endphp
                   <div class="table-responsive" id="pool-subscription-sessions-page" @jxnTarget()>
-                    <div @jxnOn(['.pool-subscription-session-enable', 'click', ''], $rqSession->enableSession($sessionId))></div>
-                    <div @jxnOn(['.pool-subscription-session-disable', 'click', ''], $rqSession->disableSession($sessionId)
+                    <div @jxnEvent(['.pool-subscription-session-enable', 'click'], $rqSession->enableSession($sessionId))></div>
+                    <div @jxnEvent(['.pool-subscription-session-disable', 'click'], $rqSession->disableSession($sessionId)
                       ->confirm(__('tontine.session.questions.disable')))></div>
 
                     <table class="table table-bordered responsive">

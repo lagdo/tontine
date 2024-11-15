@@ -4,8 +4,8 @@
   $rqFundPage = Jaxon\rq(Ajax\App\Tontine\Options\FundPage::class);
 @endphp
                   <div class="table-responsive" @jxnTarget()>
-                    <div @jxnOn(['.btn-fund-edit', 'click', ''], $rqFund->edit($fundId))></div>
-                    <div @jxnOn(['.btn-fund-toggle', 'click', ''], $rqFund->toggle($fundId))></div>
+                    <div @jxnEvent(['.btn-fund-edit', 'click'], $rqFund->edit($fundId))></div>
+                    <div @jxnEvent(['.btn-fund-toggle', 'click'], $rqFund->toggle($fundId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>
