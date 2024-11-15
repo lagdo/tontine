@@ -2,8 +2,7 @@
 
 namespace Ajax\App;
 
-use Jaxon\App\Component;
-use Jaxon\Response\AjaxResponse;
+use Ajax\Component;
 
 /**
  * @exclude
@@ -11,27 +10,10 @@ use Jaxon\Response\AjaxResponse;
 class Organisation extends Component
 {
     /**
-     * @var string
-     */
-    private string $name = '';
-
-    /**
      * @inheritDoc
      */
     public function html(): string
     {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return void
-     */
-    public function show(string $name): AjaxResponse
-    {
-        $this->name = $name;
-
-        return $this->render();
+        return $this->cache->get('menu.tontine.name');
     }
 }

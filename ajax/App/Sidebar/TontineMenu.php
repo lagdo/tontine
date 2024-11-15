@@ -4,6 +4,8 @@ namespace Ajax\App\Sidebar;
 
 use Ajax\Component;
 
+use function config;
+
 /**
  * @exclude
  */
@@ -15,5 +17,21 @@ class TontineMenu extends Component
     public function html(): string
     {
         return $this->renderView('parts.sidebar.tontine');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function after()
+    {
+        if($this->cache->get('menu.tontine.active'))
+        {
+            $this->response->jq('a', '#sidebar-menu-tontine')
+                ->css('color', config('menu.color.active'));
+            foreach(config('menu.tontine') as $menuId => $menuClass)
+            {
+                $this->response->jq($menuId)->click($this->rq($menuClass)->home());
+            }
+        }
     }
 }

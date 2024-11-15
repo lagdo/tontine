@@ -8,15 +8,8 @@ use Ajax\App\Sidebar\TontineMenu;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 
-use function config;
-
 trait SelectTrait
 {
-    /**
-     * @var string
-     */
-    static protected $activeMenuColor = '#6777ef';
-
     /**
      * @param Tontine $tontine
      *
@@ -24,17 +17,15 @@ trait SelectTrait
      */
     protected function selectTontine(Tontine $tontine)
     {
-        $this->cl(Organisation::class)->show($tontine->name);
-        // Set the tontine sidebar menu
-        $this->cl(TontineMenu::class)->render();
-        $this->response->jq('a', '#sidebar-menu-tontine')->css('color', self::$activeMenuColor);
+        $this->cache->set('menu.tontine.name', $tontine->name);
+        $this->cl(Organisation::class)->render();
 
-        foreach(config('menu.tontine') as $menuId => $menuClass)
-        {
-            $this->response->jq($menuId)->click($this->rq($menuClass)->home());
-        }
+        // Set the tontine sidebar menu
+        $this->cache->set('menu.tontine.active', true);
+        $this->cl(TontineMenu::class)->render();
 
         // Reset the round sidebar menu
+        $this->cache->set('menu.round.active', false);
         $this->cl(RoundMenu::class)->render();
     }
 
@@ -45,15 +36,11 @@ trait SelectTrait
      */
     protected function selectRound(Round $round)
     {
-        $this->cl(Organisation::class)->show($round->tontine->name . ' - ' . $round->title);
+        $this->cache->set('menu.tontine.name', $round->tontine->name . ' - ' . $round->title);
+        $this->cl(Organisation::class)->render();
 
         // Set the round sidebar menu
+        $this->cache->set('menu.round.active', true);
         $this->cl(RoundMenu::class)->render();
-        $this->response->jq('a', '#sidebar-menu-round')->css('color', self::$activeMenuColor);
-
-        foreach(config('menu.round') as $menuId => $menuClass)
-        {
-            $this->response->jq($menuId)->click($this->rq($menuClass)->home());
-        }
     }
 }

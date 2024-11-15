@@ -26,4 +26,7 @@ return [
         '#report-menu-session' => ReportSession::class,
         '#report-menu-round' => ReportRound::class,
     ],
+    'color' => [
+        'active' => '#6777ef',
+    ],
 ];
