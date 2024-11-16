@@ -1522,12 +1522,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-core.git",
-                "reference": "266f4ddac6963e0c870e8b9f580dbe13b35e7fad"
+                "reference": "ab0c986ad36f152f9edff7b40ae3ce1ca725e7a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/266f4ddac6963e0c870e8b9f580dbe13b35e7fad",
-                "reference": "266f4ddac6963e0c870e8b9f580dbe13b35e7fad",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/ab0c986ad36f152f9edff7b40ae3ce1ca725e7a4",
+                "reference": "ab0c986ad36f152f9edff7b40ae3ce1ca725e7a4",
                 "shasum": ""
             },
             "require": {
@@ -1595,7 +1595,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-core/issues",
                 "source": "https://github.com/jaxon-php/jaxon-core"
             },
-            "time": "2024-11-05T00:20:04+00:00"
+            "time": "2024-11-15T23:50:31+00:00"
         },
         {
             "name": "jaxon-php/jaxon-dialogs",
@@ -1658,12 +1658,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-laravel.git",
-                "reference": "58a9904c2afe32a409a8afe77afd0376792b3e23"
+                "reference": "5fc342343d87eaa21e01af480b34805e3de05dd9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-laravel/zipball/58a9904c2afe32a409a8afe77afd0376792b3e23",
-                "reference": "58a9904c2afe32a409a8afe77afd0376792b3e23",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-laravel/zipball/5fc342343d87eaa21e01af480b34805e3de05dd9",
+                "reference": "5fc342343d87eaa21e01af480b34805e3de05dd9",
                 "shasum": ""
             },
             "require": {
@@ -1708,7 +1708,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-laravel/issues",
                 "source": "https://github.com/jaxon-php/jaxon-laravel/tree/main"
             },
-            "time": "2024-09-28T19:19:18+00:00"
+            "time": "2024-11-15T19:49:45+00:00"
         },
         {
             "name": "jaxon-php/jaxon-utils",
@@ -11051,6 +11051,6 @@
         "ext-gmp": "*",
         "ext-json": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
