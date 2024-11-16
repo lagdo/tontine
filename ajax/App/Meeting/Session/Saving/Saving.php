@@ -115,9 +115,9 @@ class Saving extends MeetingComponent
             $this->notify->warning(trans('tontine.member.errors.not_found'));
             return $this->response;
         }
-        if(!($fund = $this->fundService->getFund($values['fund'])))
+        if(!($fund = $this->fundService->getFund($values['fund'], true, true)))
         {
-            $this->notify->warning(trans('tontine.member.errors.not_found'));
+            $this->notify->warning(trans('tontine.fund.errors.not_found'));
             return $this->response;
         }
 
