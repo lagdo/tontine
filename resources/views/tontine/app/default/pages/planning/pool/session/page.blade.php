@@ -1,15 +1,15 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
-  $rqPoolPage = Jaxon\rq(Ajax\App\Planning\Subscription\PoolPage::class);
-  $rqMember = Jaxon\rq(Ajax\App\Planning\Subscription\Member::class);
-  $rqPlanning = Jaxon\rq(Ajax\App\Planning\Subscription\Planning::class);
-  $rqBeneficiary = Jaxon\rq(Ajax\App\Planning\Subscription\Beneficiary::class);
+  $rqPoolPage = Jaxon\rq(Ajax\App\Planning\Pool\Session\PoolPage::class);
+  $rqSession = Jaxon\rq(Ajax\App\Planning\Pool\Session\Pool\Session::class);
+  $rqStartSession = Jaxon\rq(Ajax\App\Planning\Pool\Session\Pool\StartSession::class);
+  $rqEndSession = Jaxon\rq(Ajax\App\Planning\Pool\Session\Pool\EndSession::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
-                  <div @jxnEvent(['.btn-pool-member', 'click'], $rqMember->pool($poolId))></div>
-                  <div @jxnEvent(['.btn-pool-planning', 'click'], $rqPlanning->pool($poolId))></div>
-                  <div @jxnEvent(['.btn-pool-beneficiary', 'click'], $rqBeneficiary->pool($poolId))></div>
+                  <div @jxnEvent(['.btn-pool-start-session', 'click'], $rqStartSession->pool($poolId))></div>
+                  <div @jxnEvent(['.btn-pool-end-session', 'click'], $rqEndSession->pool($poolId))></div>
+                  <div @jxnEvent(['.btn-pool-enabled-sessions', 'click'], $rqSession->pool($poolId))></div>
 
                   <table class="table table-bordered responsive">
                     <thead>
@@ -29,24 +29,20 @@
                           {{ $pool->end_at?->translatedFormat(__('tontine.date.format')) ?? '' }}
                         </td>
                         <td class="table-item-menu">
-@php
-  $plannedActions = !$pool->remit_planned ? [] : [[
-    'class' => 'btn-pool-planning',
-    'text' => __('tontine.subscription.actions.planning'),
-  ],[
-    'class' => 'btn-pool-beneficiary',
-    'text' => __('tontine.subscription.actions.beneficiaries'),
-  ]];
-@endphp
 @include('tontine.app.default.parts.table.menu', [
   'dataIdKey' => 'data-pool-id',
   'dataIdValue' => $pool->id,
   'menus' => [
     [
-      'class' => 'btn-pool-member',
-      'text' => __('tontine.subscription.actions.members'),
+      'class' => 'btn-pool-start-session',
+      'text' => __('tontine.pool_round.actions.start'),
+    ],[
+      'class' => 'btn-pool-end-session',
+      'text' => __('tontine.pool_round.actions.end'),
+    ],[
+      'class' => 'btn-pool-enabled-sessions',
+      'text' => __('tontine.pool_round.actions.enabled'),
     ],
-    ...$plannedActions,
   ],
 ])
                         </td>

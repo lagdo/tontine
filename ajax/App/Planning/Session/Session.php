@@ -58,7 +58,7 @@ class Session extends Component
      */
     public function html(): string
     {
-        return $this->renderView('pages.planning.session.home', [
+        return $this->renderView('pages.planning.round.session.home', [
             'round' => $this->cache->get('planning.round'),
         ]);
     }
@@ -82,7 +82,7 @@ class Session extends Component
     public function add()
     {
         $title = trans('tontine.session.titles.add');
-        $content = $this->renderView('pages.planning.session.add', [
+        $content = $this->renderView('pages.planning.round.session.add', [
             'members' => $this->memberService->getMemberList()->prepend('', 0),
         ]);
         $buttons = [[
@@ -117,7 +117,7 @@ class Session extends Component
     public function addList()
     {
         $title = trans('tontine.session.titles.add-list');
-        $content = $this->renderView('pages.planning.session.list');
+        $content = $this->renderView('pages.planning.round.session.list');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -209,7 +209,7 @@ class Session extends Component
         $round = $this->cache->get('planning.round');
         $session = $this->roundService->getSession($round, $sessionId);
         $title = trans('tontine.session.titles.edit');
-        $content = $this->renderView('pages.planning.session.edit', [
+        $content = $this->renderView('pages.planning.round.session.edit', [
             'session' => $session,
             'members' => $this->memberService->getMemberList()->prepend('', 0),
         ]);
@@ -251,7 +251,7 @@ class Session extends Component
         $session = $this->roundService->getSession($round, $sessionId);
 
         $title = trans('tontine.session.titles.venue');
-        $content = $this->renderView('pages.planning.session.venue', [
+        $content = $this->renderView('pages.planning.round.session.venue', [
             'session' => $session,
             'venue' => $session->venue ?? ($session->host ? $session->host->address : ''),
         ]);

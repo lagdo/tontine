@@ -45,7 +45,7 @@ class SessionPage extends PageComponent
     {
         $round = $this->cache->get('planning.round');
 
-        return $this->renderView('pages.planning.session.page', [
+        return $this->renderView('pages.planning.round.session.page', [
             'sessions' => $round === null ? []:
                 $this->roundService->getSessions($round, $this->page),
             'statuses' => $this->sessionService->getSessionStatuses(),

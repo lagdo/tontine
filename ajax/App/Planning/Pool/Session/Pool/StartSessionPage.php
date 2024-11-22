@@ -1,43 +1,36 @@
 <?php
 
-namespace Ajax\App\Planning\Pool\Round;
+namespace Ajax\App\Planning\Pool\Session\Pool;
 
 use Ajax\PageComponent;
 use Jaxon\Response\AjaxResponse;
-use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Planning\PoolService;
+use Siak\Tontine\Service\Planning\SessionService;
 
 /**
- * @databag pool.round
+ * @databag pool.session
  * @before getPool
  */
-class StartSession extends PageComponent
+class StartSessionPage extends PageComponent
 {
+    use PoolTrait;
+
     /**
      * The pagination databag options
      *
      * @var array
      */
-    protected array $bagOptions = ['pool.round', 'session.start.page'];
+    protected array $bagOptions = ['pool.session', 'session.start.page'];
 
     /**
      * The constructor
      *
-     * @param SessionService $sessionService
      * @param PoolService $poolService
+     * @param SessionService $sessionService
      */
-    public function __construct(private SessionService $sessionService,
-        private PoolService $poolService)
+    public function __construct(private PoolService $poolService,
+        private SessionService $sessionService)
     {}
-
-    /**
-     * @return void
-     */
-    protected function getPool()
-    {
-        $poolId = (int)$this->bag('pool.round')->get('pool.id');
-        $this->cache->set('planning.pool', $this->poolService->getPool($poolId));
-    }
 
     /**
      * @inheritDoc
@@ -52,11 +45,9 @@ class StartSession extends PageComponent
      */
     public function html(): string
     {
-        $pool = $this->cache->get('planning.pool');
+        $pool = $this->cache->get('pool.session.pool');
 
-        return $this->renderView('pages.planning.pool.round.sessions', [
-            'field' => 'start',
-            'rqPoolRoundSession' => $this->rq(),
+        return $this->renderView('pages.planning.pool.session.start.page', [
             'sessions' => $this->sessionService->getTontineSessions($this->page, orderAsc: false),
             'sessionId' => $pool->pool_round ? $pool->pool_round->start_session_id : 0,
         ]);
@@ -74,25 +65,22 @@ class StartSession extends PageComponent
 
     private function getSessionPageNumber(): int
     {
-        $pool = $this->cache->get('planning.pool');
+        $pool = $this->cache->get('pool.session.pool');
         if(!$pool->pool_round)
         {
             return 1;
         }
 
-        $session = $pool->pool_round->end_session;
+        $session = $pool->pool_round->start_session;
         $sessionCount = $this->sessionService->getTontineSessionCount($session, true, false);
         return (int)($sessionCount / $this->tenantService->getLimit()) + 1;
     }
 
-    public function showSessionPage(): AjaxResponse
+    /**
+     * Go to the page of the current start session
+     */
+    public function current(): AjaxResponse
     {
-        $pool = $this->cache->get('planning.pool');
-        if(!$pool)
-        {
-            return $this->response;
-        }
-
         return $this->page($this->getSessionPageNumber());
     }
 }

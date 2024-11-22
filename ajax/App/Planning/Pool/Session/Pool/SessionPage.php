@@ -1,12 +1,12 @@
 <?php
 
-namespace Ajax\App\Planning\Subscription;
+namespace Ajax\App\Planning\Pool\Session\Pool;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Planning\PoolService;
 
 /**
- * @databag subscription
+ * @databag pool.session
  * @before getPool
  */
 class SessionPage extends PageComponent
@@ -18,7 +18,7 @@ class SessionPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['subscription', 'session.page'];
+    protected array $bagOptions = ['pool.session', 'session.page'];
 
     /**
      * The constructor
@@ -33,7 +33,7 @@ class SessionPage extends PageComponent
      */
     protected function count(): int
     {
-        $pool = $this->cache->get('subscription.pool');
+        $pool = $this->cache->get('pool.session.pool');
 
         return $this->poolService->getPoolSessionCount($pool);
     }
@@ -43,9 +43,9 @@ class SessionPage extends PageComponent
      */
     public function html(): string
     {
-        $pool = $this->cache->get('subscription.pool');
+        $pool = $this->cache->get('pool.session.pool');
 
-        return $this->renderView('pages.planning.subscription.session.page', [
+        return $this->renderView('pages.planning.pool.session.enabled.page', [
             'pool' => $pool,
             'sessions' => $this->poolService->getPoolSessions($pool, $this->page),
         ]);

@@ -10,10 +10,35 @@ use Siak\Tontine\Validation\ValidationException;
 class PoolRoundValidator extends AbstractValidator
 {
     /**
+     * @var string
+     */
+    private string $key = 'start_session';
+
+    /**
      * @param SessionService $sessionService
      */
     public function __construct(private SessionService $sessionService)
     {}
+
+    /**
+     * @return static
+     */
+    public function start(): static
+    {
+        $this->key = 'start_session';
+
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function end(): static
+    {
+        $this->key = 'end_session';
+
+        return $this;
+    }
 
     /**
      * @param array $values
@@ -23,11 +48,9 @@ class PoolRoundValidator extends AbstractValidator
     public function validateItem(array $values): array
     {
         $validator = Validator::make($this->values($values), [
-            'start_session' => 'required|integer|min:1',
-            'end_session' => 'required|integer|min:1',
+            $this->key => 'required|integer|min:1',
         ], [
-            'start_session' => trans('tontine.pool_round.errors.start_session'),
-            'end_session' => trans('tontine.pool_round.errors.end_session'),
+            $this->key => trans('tontine.pool_round.errors.' . $this->key),
         ]);
         $validator->after(function($validator) use($values) {
             // No more check if there's already an error.
@@ -36,29 +59,25 @@ class PoolRoundValidator extends AbstractValidator
                 return;
             }
 
-            $startSession = $this->sessionService->getTontineSession((int)$values['start_session']);
-            if(!$startSession)
+            $session = $this->sessionService->getTontineSession((int)$values[$this->key]);
+            if(!$session)
             {
-                $validator->errors()->add('start_session', trans('tontine.pool_round.errors.start_session'));
+                $validator->errors()->add($this->key, trans('tontine.pool_round.errors.' . $this->key));
             }
-            $endSession = $this->sessionService->getTontineSession((int)$values['end_session']);
-            if(!$endSession)
-            {
-                $validator->errors()->add('end_session', trans('tontine.pool_round.errors.end_session'));
-            }
-            if($endSession->id === $startSession->id || $endSession->start_at <= $startSession->start_at)
-            {
-                $validator->errors()->add('end_session', trans('tontine.pool_round.errors.session_dates'));
-            }
+            // Todo: check that the start session comes before the end session.
+            // if($endSession->id === $startSession->id || $endSession->start_at <= $startSession->start_at)
+            // {
+            //     $validator->errors()->add('end_session', trans('tontine.pool_round.errors.session_dates'));
+            // }
         });
+
         if($validator->fails())
         {
             throw new ValidationException($validator);
         }
 
         return [
-            'start_session_id' => (int)$values['start_session'],
-            'end_session_id' => (int)$values['end_session'],
+            $this->key . '_id' => (int)$values[$this->key],
         ];
     }
 }

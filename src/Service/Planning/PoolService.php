@@ -142,16 +142,43 @@ class PoolService
     }
 
     /**
-     * Save the pool round.
+     * Save the pool start session.
      *
      * @param Pool $pool
      * @param array $values
      *
      * @return void
      */
-    public function saveRound(Pool $pool, array $values)
+    public function saveStartSession(Pool $pool, array $values)
     {
-        $pool->pool_round()->updateOrCreate([], $values);
+        if(!$pool->pool_round)
+        {
+            // The initial value is the same for start and end sessions.
+            $values['end_session_id'] = $values['start_session_id'];
+            $pool->pool_round()->create($values);
+            return;
+        }
+        $pool->pool_round()->update($values);
+    }
+
+    /**
+     * Save the pool start session.
+     *
+     * @param Pool $pool
+     * @param array $values
+     *
+     * @return void
+     */
+    public function saveEndSession(Pool $pool, array $values)
+    {
+        if(!$pool->pool_round)
+        {
+            // The initial value is the same for start and end sessions.
+            $values['start_session_id'] = $values['end_session_id'];
+            $pool->pool_round()->create($values);
+            return;
+        }
+        $pool->pool_round()->update($values);
     }
 
     /**

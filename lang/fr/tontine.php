@@ -31,6 +31,7 @@ return [
         'members' => "Membres",
         'sessions' => "Séances",
         'session' => "Séance",
+        'pools' => "Tontines",
         'add' => "Ajouter une organisation",
         'edit' => "Modifier une organisation",
         'choose' => "Choisir une organisation",
@@ -48,6 +49,7 @@ return [
     'labels' => [
         'tontine' => "Organisation",
         'round' => "Tour",
+        'pool' => "Tontine",
         'types' => [
             'libre' => "Libre",
             'mutual' => "Mutuelle",
@@ -361,11 +363,6 @@ return [
                 'auction' => "Cochez la case ci-dessous si le choix des bénéficiaires des cotisations est soumis aux enchères.",
             ],
         ],
-        'actions' => [
-            'subscriptions' => "Souscriptions",
-            'sessions' => "Séances",
-            'period' => "Début - Fin",
-        ],
         'questions' => [
             'delete' => "Supprimer cette tontine ?<br/>Il ne faut pas qu'il ait de souscription.",
         ],
@@ -395,6 +392,12 @@ return [
         ],
         'labels' => [
             'default' => "(Même que le tour)",
+            'sessions' => "Séances (:count)",
+        ],
+        'actions' => [
+            'enabled' => "Séances actives",
+            'start' => "Séance de début",
+            'end' => "Séance de fin",
         ],
         'questions' => [
             'delete' => "Supprimer les séances de cette tontine ?",

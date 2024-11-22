@@ -31,6 +31,7 @@ return [
         'rounds' => "Rounds",
         'sessions' => "Sessions",
         'session' => "Session",
+        'pools' => "Tontines",
         'add' => "Add an organisation",
         'edit' => "Edit an organisation",
         'choose' => "Select an organisation",
@@ -48,6 +49,7 @@ return [
     'labels' => [
         'tontine' => "Organisation",
         'round' => "Round",
+        'pool' => "Tontine",
         'types' => [
             'libre' => "Free",
             'mutual' => "Mutual",
@@ -361,11 +363,6 @@ return [
                 'auction' => "Check the box below if the choice of the tontine beneficiaries is subject to auction.",
             ],
         ],
-        'actions' => [
-            'subscriptions' => "Subscriptions",
-            'sessions' => "Sessions",
-            'period' => "Start - End",
-        ],
         'questions' => [
             'delete' => "Delete this tontine?<br/>Please, make sure it has no subscription.",
         ],
@@ -388,13 +385,15 @@ return [
     'pool_round' => [
         'titles' => [
             'sessions' => "Sessions of tontine: :pool",
-            'start_session' => "Start session: :session",
-            'end_session' => "End session: :session",
-            'start' => "Start session",
-            'end' => "End session",
         ],
         'labels' => [
             'default' => "(Same as the round)",
+            'sessions' => "Sessions (:count)",
+        ],
+        'actions' => [
+            'enabled' => "Enabled sessions",
+            'start' => "Start session",
+            'end' => "End session",
         ],
         'questions' => [
             'delete' => "Delete the sessions of this tontine?",

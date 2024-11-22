@@ -1,13 +1,13 @@
 <?php
 
-namespace Ajax\App\Planning\Subscription;
+namespace Ajax\App\Planning\Pool\Session\Pool;
 
 use Ajax\Component;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 
 /**
- * @databag subscription
+ * @databag pool.session
  * @before getPool
  */
 class Session extends Component
@@ -29,15 +29,13 @@ class Session extends Component
 
     public function pool(int $poolId): AjaxResponse
     {
-        $this->bag('subscription')->set('session.filter', false);
-
         return $this->render();
     }
 
     public function html(): string
     {
-        return $this->renderView('pages.planning.subscription.session.home', [
-            'pool' => $this->cache->get('subscription.pool'),
+        return $this->renderView('pages.planning.pool.session.enabled.home', [
+            'pool' => $this->cache->get('pool.session.pool'),
         ]);
     }
 
@@ -51,7 +49,7 @@ class Session extends Component
 
     public function enableSession(int $sessionId)
     {
-        $pool = $this->cache->get('subscription.pool');
+        $pool = $this->cache->get('pool.session.pool');
         $this->poolService->enableSession($pool, $sessionId);
 
         $this->cl(SessionCounter::class)->render();
@@ -61,7 +59,7 @@ class Session extends Component
 
     public function disableSession(int $sessionId)
     {
-        $pool = $this->cache->get('subscription.pool');
+        $pool = $this->cache->get('pool.session.pool');
         $this->poolService->disableSession($pool, $sessionId);
 
         $this->cl(SessionCounter::class)->render();

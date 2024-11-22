@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Planning\Subscription;
+namespace Ajax\App\Planning\Pool\Session;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Planning\PoolService;
@@ -15,7 +15,7 @@ class PoolPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['subscription', 'pool.page'];
+    protected array $bagOptions = ['pool.session', 'pool.page'];
 
     public function __construct(private PoolService $poolService)
     {}
@@ -33,8 +33,7 @@ class PoolPage extends PageComponent
      */
     public function html(): string
     {
-        return $this->renderView('pages.planning.subscription.pool.page', [
-            'round' => $this->tenantService->round(),
+        return $this->renderView('pages.planning.pool.session.page', [
             'pools' => $this->poolService->getPools($this->page),
         ]);
     }

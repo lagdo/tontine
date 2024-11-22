@@ -6,7 +6,7 @@
               <div class="section-body">
                 <div class="row">
                   <div class="col">
-                    <h2 class="section-title">{{ $pool->title }} :: {{ __('tontine.pool.titles.members')
+                    <h2 class="section-title">{{ $pool->title }} :: {{ __('tontine.pool.titles.subscriptions')
                       }} (<span @jxnShow($rqMemberCounter)>@jxnHtml($rqMemberCounter)</span>)</h2>
                   </div>
                   <div class="col-auto">
