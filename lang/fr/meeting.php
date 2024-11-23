@@ -146,6 +146,11 @@ return [
             'add' => "Ajouter une épargne",
             'edit' => "Modifier une épargne",
         ],
+        'actions' => [
+            'close' => "Clotûrer",
+            'saving' => "&Eacute;pargne",
+            'interest' => "Intérêts",
+        ],
         'labels' => [
             'closing' => "Clotûre",
         ],

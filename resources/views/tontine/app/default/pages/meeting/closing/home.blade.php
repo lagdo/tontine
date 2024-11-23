@@ -24,9 +24,18 @@
                         {!! $htmlBuilder->select('fund_id', $funds, 0)->id('closings-fund-id')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqClosing->editRoundClosing($closingFundId))><i class="fa fa-circle-notch"></i></button>
-                          <button type="button" class="btn btn-primary" @jxnClick($rqClosing->editInterestClosing($closingFundId))><i class="far fa-stop-circle"></i></button>
                           <button type="button" class="btn btn-primary" @jxnClick($rqSavingReport->fund($closingFundId, 'session'))><i class="fa fa-percentage"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="dropdown float-right">
+                        <button class="btn btn-primary dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <i class="fa fa-circle-notch"></i> {{ __('meeting.saving.actions.close') }}
+                        </button>
+                        <div class="dropdown-menu">
+                          <button type="button" class="dropdown-item" @jxnClick($rqClosing->editRoundClosing($closingFundId))>{!! __('meeting.saving.actions.saving') !!}</button>
+                          <button type="button" class="dropdown-item" @jxnClick($rqClosing->editInterestClosing($closingFundId))>{{ __('meeting.saving.actions.interest') }}</button>
                         </div>
                       </div>
                     </div>

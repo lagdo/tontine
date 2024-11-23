@@ -146,6 +146,11 @@ return [
             'add' => "Add a saving",
             'edit' => "Edit a saving",
         ],
+        'actions' => [
+            'close' => "Close",
+            'saving' => "Saving",
+            'interest' => "Interest",
+        ],
         'labels' => [
             'closing' => "Closing",
         ],
