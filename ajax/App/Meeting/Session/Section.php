@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Session;
 
 use Ajax\App\SectionContent;
 use Ajax\App\Meeting\MeetingComponent;
+use Stringable;
 
 class Section extends MeetingComponent
 {
@@ -34,7 +35,7 @@ class Section extends MeetingComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView("pages.meeting.session.home.{$this->section}", [
             'session' => $this->cache->get('meeting.session'),

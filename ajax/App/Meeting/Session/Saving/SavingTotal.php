@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\Component;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
+use Stringable;
 
 /**
  * @exclude
@@ -18,7 +19,7 @@ class SavingTotal extends Component
     public function __construct(protected SavingService $savingService)
     {}
 
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('meeting.session');
         $fund = $this->cache->get('meeting.saving.fund');

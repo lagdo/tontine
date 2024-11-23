@@ -5,6 +5,7 @@ namespace Ajax\App\Report\Round;
 use Ajax\Component;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Report\RoundService;
+use Stringable;
 
 class Balance extends Component
 {
@@ -17,7 +18,7 @@ class Balance extends Component
     {}
 
 
-    public function html(): string
+    public function html(): Stringable
     {
         $sessions = $this->sessionService->getRoundSessions();
         $sessionIds = $sessions->filter(fn($session) =>

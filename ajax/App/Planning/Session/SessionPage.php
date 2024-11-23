@@ -5,6 +5,7 @@ namespace Ajax\App\Planning\Session;
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Planning\SessionService;
+use Stringable;
 
 /**
  * @databag planning
@@ -41,7 +42,7 @@ class SessionPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $round = $this->cache->get('planning.round');
 

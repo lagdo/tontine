@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Session\Pool;
 
 use Ajax\App\Meeting\MeetingPageComponent;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;
+use Stringable;
 
 /**
  * @databag auction
@@ -39,7 +40,7 @@ class AuctionPage extends MeetingPageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('meeting.session');
         $filtered = $this->bag('auction')->get('filter', null);

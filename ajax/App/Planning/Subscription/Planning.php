@@ -7,6 +7,7 @@ use Ajax\App\SectionContent;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SummaryService;
+use Stringable;
 
 /**
  * @databag subscription
@@ -39,7 +40,7 @@ class Planning extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $pool = $this->cache->get('subscription.pool');
         $this->view()->shareValues($this->summaryService->getReceivables($pool));

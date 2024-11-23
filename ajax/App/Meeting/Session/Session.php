@@ -9,6 +9,7 @@ use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\SessionService;
+use Stringable;
 
 use function trans;
 
@@ -59,7 +60,7 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.session.list.home');
     }

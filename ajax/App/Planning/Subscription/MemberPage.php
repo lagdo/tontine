@@ -6,6 +6,7 @@ use Ajax\PageComponent;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
+use Stringable;
 
 use function trim;
 
@@ -50,7 +51,7 @@ class MemberPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $search = trim($this->bag('subscription')->get('member.search', ''));
         $filter = $this->bag('subscription')->get('member.filter', null);

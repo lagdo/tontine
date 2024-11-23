@@ -4,6 +4,7 @@ namespace Ajax\App\Tontine\Invite\Host;
 
 use Ajax\Component;
 use Siak\Tontine\Service\Tontine\InviteService;
+use Stringable;
 
 /**
  * @exclude
@@ -19,7 +20,7 @@ class AccessContent extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $invite = $this->cache->get('invite.invite');
         $tontine = $this->cache->get('invite.tontine');

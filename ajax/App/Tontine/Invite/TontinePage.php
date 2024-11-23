@@ -5,6 +5,7 @@ namespace Ajax\App\Tontine\Invite;
 use Ajax\PageComponent;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Tontine\TontineService;
+use Stringable;
 
 /**
  * @databag tontine
@@ -37,7 +38,7 @@ class TontinePage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $tontines = $this->tontineService->getGuestTontines($this->page);
         [$countries, $currencies] = $this->localeService->getNamesFromTontines($tontines);

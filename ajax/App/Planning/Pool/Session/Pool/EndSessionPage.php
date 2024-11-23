@@ -6,6 +6,7 @@ use Ajax\PageComponent;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SessionService;
+use Stringable;
 
 /**
  * @databag pool.session
@@ -43,7 +44,7 @@ class EndSessionPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $pool = $this->cache->get('pool.session.pool');
 

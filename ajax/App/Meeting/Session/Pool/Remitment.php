@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Session\Pool;
 
 use Ajax\App\Meeting\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
+use Stringable;
 
 class Remitment extends MeetingComponent
 {
@@ -18,7 +19,7 @@ class Remitment extends MeetingComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('meeting.session');
 

@@ -5,6 +5,7 @@ namespace Ajax\App\Meeting\Session\Credit\Partial;
 use Ajax\App\Meeting\MeetingPageComponent;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Service\Tontine\FundService;
+use Stringable;
 
 /**
  * @databag refund.partial
@@ -50,7 +51,7 @@ class RefundPage extends MeetingPageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('meeting.session');
         $fund = $this->cache->get('meeting.refund.fund');

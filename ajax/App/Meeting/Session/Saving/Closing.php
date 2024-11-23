@@ -6,6 +6,7 @@ use Ajax\App\Meeting\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Saving\ClosingService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\ClosingValidator;
+use Stringable;
 
 use function Jaxon\pm;
 use function trans;
@@ -33,7 +34,7 @@ class Closing extends MeetingComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('meeting.session');
 

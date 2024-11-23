@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Session\Pool\Deposit;
 
 use Ajax\Component;
 use Siak\Tontine\Service\BalanceCalculator;
+use Stringable;
 
 /**
  * @exclude
@@ -21,7 +22,7 @@ class Total extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('meeting.session');
         $pool = $this->cache->get('meeting.pool');

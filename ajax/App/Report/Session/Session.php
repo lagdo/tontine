@@ -8,6 +8,7 @@ use Ajax\App\SectionTitle;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\MemberService;
+use Stringable;
 
 /**
  * @databag report
@@ -48,7 +49,7 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $sessions = $this->sessionService->getRoundSessions(orderAsc: false)
             ->filter(fn($session) => ($session->opened || $session->closed));

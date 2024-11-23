@@ -7,6 +7,7 @@ use Siak\Tontine\Model\Charge as ChargeModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
+use Stringable;
 
 use function Jaxon\pm;
 use function trans;
@@ -34,7 +35,7 @@ class Charge extends Component
     public function __construct(protected ChargeService $chargeService)
     {}
 
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.options.charge.home');
     }

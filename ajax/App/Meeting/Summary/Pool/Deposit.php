@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Summary\Pool;
 
 use Ajax\Component;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
+use Stringable;
 
 /**
  * @exclude
@@ -18,7 +19,7 @@ class Deposit extends Component
     public function __construct(protected PoolService $poolService)
     {}
 
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('summary.session');
 

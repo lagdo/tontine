@@ -6,6 +6,7 @@ use Ajax\Component;
 use Ajax\App\SectionContent;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\SummaryService;
+use Stringable;
 
 /**
  * @databag meeting
@@ -36,7 +37,7 @@ class Round extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $round = $this->tenantService->round();
 

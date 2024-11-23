@@ -4,6 +4,7 @@ namespace Ajax\App\Report\Session\Saving;
 
 use Ajax\Component;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
+use Stringable;
 
 /**
  * @exclude
@@ -19,7 +20,7 @@ class Summary extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('report.session');
         $fund = $this->cache->get('report.fund');

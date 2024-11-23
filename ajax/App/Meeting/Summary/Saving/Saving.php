@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Summary\Saving;
 
 use Ajax\Component;
 use Siak\Tontine\Service\Tontine\FundService;
+use Stringable;
 
 /**
  * @databag meeting.saving
@@ -31,7 +32,7 @@ class Saving extends Component
     /**
      * @exclude
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.summary.saving.home', [
             'session' => $this->cache->get('summary.session'),

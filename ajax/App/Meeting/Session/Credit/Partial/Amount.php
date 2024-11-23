@@ -7,6 +7,7 @@ use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
+use Stringable;
 
 /**
  * @databag partial.refund
@@ -55,7 +56,7 @@ class Amount extends MeetingComponent
         $this->render();
     }
 
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('meeting.session');
         $fund = $this->cache->get('meeting.refund.fund');

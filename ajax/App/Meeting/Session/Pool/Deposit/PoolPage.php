@@ -6,6 +6,7 @@ use Ajax\App\Meeting\MeetingPageComponent;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
+use Stringable;
 
 /**
  * @before getPool
@@ -45,7 +46,7 @@ class PoolPage extends MeetingPageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $pool = $this->cache->get('meeting.pool');
         $session = $this->cache->get('meeting.session');

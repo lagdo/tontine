@@ -6,6 +6,7 @@ use Ajax\Component;
 use Ajax\App\SectionContent;
 use Ajax\App\SectionTitle;
 use Jaxon\Response\AjaxResponse;
+use Stringable;
 
 use function trans;
 
@@ -34,7 +35,7 @@ class Subscription extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.planning.subscription.home');
     }

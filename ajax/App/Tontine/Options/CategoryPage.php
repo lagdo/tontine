@@ -4,6 +4,7 @@ namespace Ajax\App\Tontine\Options;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Tontine\CategoryService;
+use Stringable;
 
 /**
  * @databag tontine
@@ -34,7 +35,7 @@ class CategoryPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.options.category.page', [
             'categories' => $this->categoryService->getCategories($this->page),

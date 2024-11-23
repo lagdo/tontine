@@ -5,6 +5,7 @@ namespace Ajax\App\Tontine;
 use Ajax\PageComponent;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Tontine\TontineService;
+use Stringable;
 
 /**
  * @databag tontine
@@ -38,7 +39,7 @@ class OrganisationPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $tontines = $this->tontineService->getTontines($this->page);
         [$countries, $currencies] = $this->localeService->getNamesFromTontines($tontines);

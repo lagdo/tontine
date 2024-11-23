@@ -8,6 +8,7 @@ use Ajax\App\SectionTitle;
 use Ajax\App\Tontine\Select;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\RoundService;
+use Stringable;
 
 use function Jaxon\pm;
 use function trans;
@@ -48,7 +49,7 @@ class Round extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.planning.round.home');
     }

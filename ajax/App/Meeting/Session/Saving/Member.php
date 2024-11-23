@@ -7,6 +7,7 @@ use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\SavingValidator;
+use Stringable;
 
 use function str_replace;
 use function trans;
@@ -57,7 +58,7 @@ class Member extends MeetingComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.saving.member.home', [
             'fund' => $this->cache->get('meeting.saving.fund'),

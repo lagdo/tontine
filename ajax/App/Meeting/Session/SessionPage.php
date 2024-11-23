@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Session;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Meeting\SessionService;
+use Stringable;
 
 /**
  * @databag session
@@ -35,7 +36,7 @@ class SessionPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.session.list.page', [
             'sessions' => $this->sessionService->getSessions($this->page),

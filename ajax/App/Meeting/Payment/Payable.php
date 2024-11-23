@@ -7,6 +7,7 @@ use App\Events\OnPagePaymentPayables;
 use Siak\Tontine\Service\Meeting\PaymentService;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\MemberService;
+use Stringable;
 
 use function compact;
 
@@ -28,7 +29,7 @@ class Payable extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $member = $this->cache->get('payable.member');
         $session = $this->cache->get('payable.session');

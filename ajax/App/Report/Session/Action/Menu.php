@@ -3,13 +3,14 @@
 namespace Ajax\App\Report\Session\Action;
 
 use Ajax\Component;
+use Stringable;
 
 class Menu extends Component
 {
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('report.session');
 

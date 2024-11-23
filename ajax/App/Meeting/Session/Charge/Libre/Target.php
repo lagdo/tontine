@@ -7,6 +7,7 @@ use Ajax\App\Meeting\Session\Charge\LibreFee;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
 use Siak\Tontine\Validation\Meeting\TargetValidator;
+use Stringable;
 
 use function Jaxon\pm;
 use function trans;
@@ -52,7 +53,7 @@ class Target extends ChargeComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.charge.libre.target.home', [
             'charge' => $this->cache->get('meeting.session.charge'),

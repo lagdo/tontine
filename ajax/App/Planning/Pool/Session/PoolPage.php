@@ -4,6 +4,7 @@ namespace Ajax\App\Planning\Pool\Session;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Planning\PoolService;
+use Stringable;
 
 /**
  * @databag pool
@@ -31,7 +32,7 @@ class PoolPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.planning.pool.session.page', [
             'pools' => $this->poolService->getPools($this->page),

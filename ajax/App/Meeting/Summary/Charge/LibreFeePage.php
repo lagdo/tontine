@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Summary\Charge;
 
 use Ajax\Component;
 use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
+use Stringable;
 
 /**
  * @exclude
@@ -18,7 +19,7 @@ class LibreFeePage extends Component
     public function __construct(protected LibreFeeService $feeService)
     {}
 
-    public function html(): string
+    public function html(): Stringable
     {
         $charges = $this->feeService->getFees();
         // Bill and settlement counts and amounts

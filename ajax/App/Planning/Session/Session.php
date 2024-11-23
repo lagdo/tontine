@@ -8,6 +8,7 @@ use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Planning\SessionValidator;
+use Stringable;
 
 use function Jaxon\pm;
 use function array_filter;
@@ -56,7 +57,7 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.planning.round.session.home', [
             'round' => $this->cache->get('planning.round'),

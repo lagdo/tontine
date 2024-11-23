@@ -4,6 +4,7 @@ namespace Ajax\App\Planning\Session;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Planning\RoundService;
+use Stringable;
 
 /**
  * @databag planning
@@ -34,7 +35,7 @@ class RoundPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.planning.round.page', [
             'rounds' => $this->roundService->getRounds($this->page),

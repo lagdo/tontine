@@ -8,6 +8,7 @@ use Siak\Tontine\Service\Meeting\Saving\ClosingService;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\FundService;
+use Stringable;
 
 use function trim;
 
@@ -86,7 +87,7 @@ class Fund extends Component
         $this->response->js()->makeTableResponsive('report-fund-savings-distribution');
     }
 
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.report.session.savings.fund', [
             'fund' => $this->cache->get('report.fund'),

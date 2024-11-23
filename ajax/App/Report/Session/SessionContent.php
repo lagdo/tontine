@@ -3,6 +3,7 @@
 namespace Ajax\App\Report\Session;
 
 use Ajax\Component;
+use Stringable;
 
 /**
  * @exclude
@@ -22,7 +23,7 @@ class SessionContent extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.report.session.session');
     }

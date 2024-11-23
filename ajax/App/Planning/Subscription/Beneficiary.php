@@ -8,6 +8,7 @@ use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Planning\SummaryService;
+use Stringable;
 
 use function trans;
 
@@ -43,7 +44,7 @@ class Beneficiary extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $pool = $this->cache->get('subscription.pool');
         $this->view()->shareValues($this->summaryService->getPayables($pool));

@@ -6,6 +6,7 @@ use Ajax\App\Meeting\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
+use Stringable;
 
 use function trans;
 
@@ -29,7 +30,7 @@ class Refund extends MeetingComponent
         protected RefundService $refundService)
     {}
 
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('meeting.session');
 

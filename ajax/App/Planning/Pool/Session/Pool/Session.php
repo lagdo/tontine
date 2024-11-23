@@ -5,6 +5,7 @@ namespace Ajax\App\Planning\Pool\Session\Pool;
 use Ajax\Component;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
+use Stringable;
 
 /**
  * @databag pool.session
@@ -32,7 +33,7 @@ class Session extends Component
         return $this->render();
     }
 
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.planning.pool.session.enabled.home', [
             'pool' => $this->cache->get('pool.session.pool'),

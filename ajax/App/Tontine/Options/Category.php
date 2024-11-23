@@ -5,6 +5,7 @@ namespace Ajax\App\Tontine\Options;
 use Ajax\Component;
 use Siak\Tontine\Model\Category as CategoryModel;
 use Siak\Tontine\Service\Tontine\CategoryService;
+use Stringable;
 
 use function Jaxon\pm;
 use function trans;
@@ -20,7 +21,7 @@ class Category extends Component
     public function __construct(protected CategoryService $categoryService)
     {}
 
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.options.category.home');
     }

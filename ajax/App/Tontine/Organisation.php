@@ -11,6 +11,7 @@ use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Tontine\TontineValidator;
+use Stringable;
 
 use function Jaxon\pm;
 use function collect;
@@ -68,7 +69,7 @@ class Organisation extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.tontine.home', [
             'hasGuestTontines' => $this->tontineService->hasGuestTontines(),

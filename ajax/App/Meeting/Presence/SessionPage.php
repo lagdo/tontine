@@ -5,6 +5,7 @@ namespace Ajax\App\Meeting\Presence;
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Meeting\PresenceService;
 use Siak\Tontine\Service\Meeting\SessionService;
+use Stringable;
 
 /**
  * @databag presence
@@ -45,7 +46,7 @@ class SessionPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $member = $this->cache->get('presence.member'); // Is null when showing presences by sessions.
 

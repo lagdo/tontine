@@ -7,6 +7,7 @@ use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Meeting\SavingValidator;
+use Stringable;
 
 use function Jaxon\pm;
 use function trans;
@@ -35,7 +36,7 @@ class Saving extends MeetingComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.saving.home', [
             'session' => $this->cache->get('meeting.session'),

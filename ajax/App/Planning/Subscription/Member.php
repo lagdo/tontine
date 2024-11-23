@@ -6,6 +6,7 @@ use Ajax\Component;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
+use Stringable;
 
 use function trim;
 
@@ -40,11 +41,10 @@ class Member extends Component
         return $this->render();
     }
 
-    public function html(): string
+    public function html(): Stringable
     {
-        $pool = $this->cache->get('subscription.pool');
         return $this->renderView('pages.planning.subscription.member.home', [
-            'pool' => $pool,
+            'pool' => $this->cache->get('subscription.pool'),
         ]);
     }
 

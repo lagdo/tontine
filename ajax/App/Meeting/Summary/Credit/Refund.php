@@ -5,6 +5,7 @@ namespace Ajax\App\Meeting\Summary\Credit;
 use Ajax\Component;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Service\Tontine\FundService;
+use Stringable;
 
 /**
  * @databag refund
@@ -24,7 +25,7 @@ class Refund extends Component
     /**
      * @exclude
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.summary.refund.home', [
             'session' => $this->cache->get('summary.session'),

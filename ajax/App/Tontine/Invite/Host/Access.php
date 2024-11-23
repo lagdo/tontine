@@ -8,6 +8,7 @@ use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Tontine\InviteService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Tontine\GuestAccessValidator;
+use Stringable;
 
 use function trans;
 
@@ -62,7 +63,7 @@ class Access extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $invite = $this->cache->get('invite.invite');
 

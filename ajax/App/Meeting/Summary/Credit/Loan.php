@@ -5,6 +5,7 @@ namespace Ajax\App\Meeting\Summary\Credit;
 use Ajax\Component;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Service\Tontine\FundService;
+use Stringable;
 
 /**
  * @exclude
@@ -21,7 +22,7 @@ class Loan extends Component
         protected FundService $fundService)
     {}
 
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('summary.session');
         $loans = $this->loanService->getSessionLoans($session);

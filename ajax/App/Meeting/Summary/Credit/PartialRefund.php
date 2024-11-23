@@ -6,6 +6,7 @@ use Ajax\Component;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Tontine\FundService;
+use Stringable;
 
 /**
  * @databag refund.partial
@@ -30,7 +31,7 @@ class PartialRefund extends Component
     /**
      * @exclude
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.summary.refund.partial.home', [
             'session' => $this->cache->get('summary.session'),

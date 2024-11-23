@@ -5,6 +5,7 @@ namespace Ajax\App\Meeting\Session\Pool;
 use Ajax\App\Meeting\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
+use Stringable;
 
 /**
  * @databag auction
@@ -32,7 +33,7 @@ class Auction extends MeetingComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.auction.home', [
             'session' => $this->cache->get('meeting.session'),

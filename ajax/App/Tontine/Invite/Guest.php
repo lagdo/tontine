@@ -4,6 +4,7 @@ namespace Ajax\App\Tontine\Invite;
 
 use Ajax\Component;
 use Siak\Tontine\Service\Tontine\InviteService;
+use Stringable;
 
 class Guest extends Component
 {
@@ -16,7 +17,7 @@ class Guest extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.invite.guest.home');
     }

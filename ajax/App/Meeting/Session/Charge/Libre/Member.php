@@ -6,6 +6,7 @@ use Ajax\App\Meeting\Session\Charge\ChargeComponent;
 use Ajax\App\Meeting\Session\Charge\LibreFee;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\LocaleService;
+use Stringable;
 
 use function filter_var;
 use function str_replace;
@@ -27,7 +28,7 @@ class Member extends ChargeComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $charge = $this->cache->get('meeting.session.charge');
 

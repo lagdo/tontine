@@ -9,6 +9,7 @@ use Ajax\App\SectionTitle;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Tontine\MemberValidator;
+use Stringable;
 
 use function Jaxon\pm;
 use function array_filter;
@@ -59,7 +60,7 @@ class Member extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.member.home');
     }

@@ -7,6 +7,7 @@ use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
+use Stringable;
 
 use function Jaxon\pm;
 use function trans;
@@ -29,7 +30,7 @@ class Loan extends MeetingComponent
         protected FundService $fundService, protected MemberService $memberService)
     {}
 
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('meeting.session');
         $loans = $this->loanService->getSessionLoans($session);

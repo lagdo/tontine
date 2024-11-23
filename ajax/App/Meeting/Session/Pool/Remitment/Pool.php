@@ -9,6 +9,7 @@ use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
 use Siak\Tontine\Validation\Meeting\RemitmentValidator;
+use Stringable;
 
 use function Jaxon\pm;
 use function trans;
@@ -56,7 +57,7 @@ class Pool extends MeetingComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $pool = $this->cache->get('meeting.pool');
         $session = $this->cache->get('meeting.session');

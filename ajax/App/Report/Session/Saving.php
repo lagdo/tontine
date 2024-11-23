@@ -6,6 +6,7 @@ use Ajax\Component;
 use Siak\Tontine\Service\Report\MemberService;
 use Siak\Tontine\Service\Report\SessionService;
 use Siak\Tontine\Service\Tontine\FundService;
+use Stringable;
 
 class Saving extends Component
 {
@@ -21,7 +22,7 @@ class Saving extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('report.session');
         $member = $this->cache->get('report.member');

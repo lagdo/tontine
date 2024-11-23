@@ -5,6 +5,7 @@ namespace Ajax\App\Meeting\Session\Cash;
 use Ajax\App\Meeting\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
+use Stringable;
 
 use function Jaxon\pm;
 use function trans;
@@ -24,7 +25,7 @@ class Disbursement extends MeetingComponent
     public function __construct(protected DisbursementService $disbursementService)
     {}
 
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('meeting.session');
 

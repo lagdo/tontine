@@ -4,6 +4,7 @@ namespace Ajax\App\Tontine\Invite;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Tontine\InviteService;
+use Stringable;
 
 /**
  * @databag invite
@@ -34,7 +35,7 @@ class HostPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.invite.host.page', [
             'invites' => $this->inviteService->getHostInvites($this->page),

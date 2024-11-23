@@ -3,6 +3,7 @@
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\ChargePageComponent;
+use Stringable;
 
 class SettlementPage extends ChargePageComponent
 {
@@ -29,7 +30,7 @@ class SettlementPage extends ChargePageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $search = '';
         $filter = $this->bag('meeting')->get('settlement.libre.filter', null);

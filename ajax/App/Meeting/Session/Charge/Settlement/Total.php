@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Session\Charge\Settlement;
 
 use Ajax\Component;
 use Siak\Tontine\Service\BalanceCalculator;
+use Stringable;
 
 /**
  * @exclude
@@ -21,7 +22,7 @@ class Total extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.charge.settlement.total', [
             'billCount' => $this->cache->get('meeting.session.bill.count'),

@@ -4,6 +4,7 @@ namespace Ajax\App\Tontine\Options;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Tontine\ChargeService;
+use Stringable;
 
 /**
  * @databag charge
@@ -36,7 +37,7 @@ class ChargePage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.options.charge.page', [
             'types' => $this->getChargeTypes(),

@@ -4,6 +4,7 @@ namespace Ajax\App\Tontine\Member;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Tontine\MemberService;
+use Stringable;
 
 use function trim;
 
@@ -28,7 +29,7 @@ class MemberPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $search = trim($this->bag('member')->get('search', ''));
 

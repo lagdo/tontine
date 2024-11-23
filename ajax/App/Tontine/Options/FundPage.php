@@ -4,6 +4,7 @@ namespace Ajax\App\Tontine\Options;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Tontine\FundService;
+use Stringable;
 
 /**
  * @databag tontine
@@ -34,7 +35,7 @@ class FundPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.options.fund.page', [
             'funds' => $this->fundService->getFunds($this->page),

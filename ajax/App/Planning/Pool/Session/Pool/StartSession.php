@@ -7,6 +7,7 @@ use Ajax\Component;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Validation\Planning\PoolRoundValidator;
+use Stringable;
 
 /**
  * @databag pool.session
@@ -39,7 +40,7 @@ class StartSession extends Component
         return $this->render();
     }
 
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.planning.pool.session.start.home', [
             'pool' => $this->cache->get('pool.session.pool'),

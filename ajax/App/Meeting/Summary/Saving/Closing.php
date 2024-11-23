@@ -5,6 +5,7 @@ namespace Ajax\App\Meeting\Summary\Saving;
 use Ajax\Component;
 use Siak\Tontine\Service\Meeting\Saving\ClosingService;
 use Siak\Tontine\Service\Tontine\FundService;
+use Stringable;
 
 /**
  * @exclude
@@ -24,7 +25,7 @@ class Closing extends Component
     /**
      * @exclude
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('summary.session');
 

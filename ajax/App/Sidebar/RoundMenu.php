@@ -3,6 +3,7 @@
 namespace Ajax\App\Sidebar;
 
 use Ajax\Component;
+use Stringable;
 
 use function config;
 
@@ -14,7 +15,7 @@ class RoundMenu extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('parts.sidebar.round');
     }

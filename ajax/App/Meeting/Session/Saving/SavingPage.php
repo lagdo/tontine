@@ -5,6 +5,7 @@ namespace Ajax\App\Meeting\Session\Saving;
 use Ajax\App\Meeting\MeetingPageComponent;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Tontine\FundService;
+use Stringable;
 
 /**
  * @databag meeting.saving
@@ -50,7 +51,7 @@ class SavingPage extends MeetingPageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('meeting.session');
         $fund = $this->cache->get('meeting.saving.fund');

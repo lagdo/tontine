@@ -5,6 +5,7 @@ namespace Ajax\App\Meeting\Session\Saving;
 use Ajax\App\Meeting\MeetingPageComponent;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Tontine\FundService;
+use Stringable;
 
 /**
  * @databag meeting.saving
@@ -52,7 +53,7 @@ class MemberPage extends MeetingPageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $search = trim($this->bag('meeting.saving')->get('member.search', ''));
         $filter = $this->bag('meeting.saving')->get('member.filter', null);

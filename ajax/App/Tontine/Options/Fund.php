@@ -5,6 +5,7 @@ namespace Ajax\App\Tontine\Options;
 use Ajax\Component;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Tontine\FundValidator;
+use Stringable;
 
 use function Jaxon\pm;
 use function trans;
@@ -25,7 +26,7 @@ class Fund extends Component
     public function __construct(protected FundService $fundService)
     {}
 
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.options.fund.home');
     }

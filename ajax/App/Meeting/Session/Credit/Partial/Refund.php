@@ -7,6 +7,7 @@ use Ajax\App\Meeting\Session\Credit\Refund as CreditRefund;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
+use Stringable;
 
 use function Jaxon\pm;
 use function trans;
@@ -52,7 +53,7 @@ class Refund extends MeetingComponent
         $this->cache->set('meeting.refund.fund', $fund);
     }
 
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.refund.partial.home', [
             'session' => $this->cache->get('meeting.session'),

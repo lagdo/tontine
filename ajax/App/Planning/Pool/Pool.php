@@ -10,6 +10,7 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Validation\Planning\PoolValidator;
+use Stringable;
 
 use function Jaxon\pm;
 use function trans;
@@ -57,7 +58,7 @@ class Pool extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.planning.pool.home', [
             'tontine' => $this->tenantService->tontine(),

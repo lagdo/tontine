@@ -6,6 +6,7 @@ use Ajax\PageComponent;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\MemberService;
+use Stringable;
 
 /**
  * @databag payment
@@ -46,7 +47,7 @@ class PaymentPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.payment.page', [
             'sessions' => $this->getOpenedSessions(),

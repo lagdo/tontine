@@ -9,6 +9,7 @@ use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
+use Stringable;
 
 use function filter_var;
 use function str_replace;
@@ -58,7 +59,7 @@ class Pool extends MeetingComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.deposit.pool.home', [
             'pool' => $this->cache->get('meeting.pool'),

@@ -6,6 +6,7 @@ use Ajax\App\Meeting\Session\Charge\ChargeComponent;
 use Ajax\App\Meeting\Session\Charge\FixedFee;
 use Ajax\App\Meeting\Session\Charge\Settlement\Action;
 use Ajax\App\Meeting\Session\Charge\Settlement\Total;
+use Stringable;
 
 use function trim;
 
@@ -19,7 +20,7 @@ class Settlement extends ChargeComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.charge.fixed.settlement.home', [
             'charge' => $this->cache->get('meeting.session.charge'),

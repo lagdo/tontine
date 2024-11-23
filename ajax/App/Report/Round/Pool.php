@@ -5,6 +5,7 @@ namespace Ajax\App\Report\Round;
 use Ajax\Component;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\SummaryService;
+use Stringable;
 
 use function trans;
 
@@ -31,7 +32,7 @@ class Pool extends Component
         return $this;
     }
 
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.report.round.pool', $this->figures);
     }

@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Session\Charge;
 
 use Ajax\App\Meeting\MeetingPageComponent;
 use Siak\Tontine\Service\Meeting\Charge\FixedFeeService;
+use Stringable;
 
 class FixedFeePage extends MeetingPageComponent
 {
@@ -33,7 +34,7 @@ class FixedFeePage extends MeetingPageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('meeting.session');
 

@@ -7,6 +7,7 @@ use Ajax\App\SectionContent;
 use Ajax\App\SectionTitle;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\PresenceService;
+use Stringable;
 
 use function trans;
 
@@ -49,7 +50,7 @@ class Presence extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.presence.home', [
             'exchange' => $this->bag('presence')->get('exchange', false),

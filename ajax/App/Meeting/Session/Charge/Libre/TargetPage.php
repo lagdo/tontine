@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\ChargePageComponent;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
+use Stringable;
 
 use function trim;
 
@@ -49,7 +50,7 @@ class TargetPage extends ChargePageComponent
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $search = trim($this->bag('meeting')->get('fee.member.search', ''));
         $session = $this->cache->get('meeting.session');

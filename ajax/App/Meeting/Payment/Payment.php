@@ -9,6 +9,7 @@ use App\Events\OnPagePaymentHome;
 use Illuminate\Support\Collection;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\SessionService;
+use Stringable;
 
 use function trans;
 
@@ -63,7 +64,7 @@ class Payment extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         return $this->renderView('pages.meeting.payment.home', [
             'sessions' => $this->sessions,

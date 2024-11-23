@@ -3,6 +3,7 @@
 namespace Ajax\App\Report\Session\Saving;
 
 use Ajax\Component;
+use Stringable;
 
 /**
  * @exclude
@@ -12,7 +13,7 @@ class Distribution extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $savings = $this->cache->get('report.savings');
 

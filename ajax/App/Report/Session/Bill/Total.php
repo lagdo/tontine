@@ -4,6 +4,7 @@ namespace Ajax\App\Report\Session\Bill;
 
 use Ajax\Component;
 use Siak\Tontine\Service\Report\SessionService;
+use Stringable;
 
 use function trans;
 
@@ -18,7 +19,7 @@ class Total extends Component
     /**
      * @inheritDoc
      */
-    public function html(): string
+    public function html(): Stringable
     {
         $session = $this->cache->get('report.session');
         $member = $this->cache->get('report.member');
