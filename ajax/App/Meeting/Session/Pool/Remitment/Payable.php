@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
 use Ajax\App\Meeting\MeetingComponent;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
-use Ajax\App\Meeting\Session\Pool\Remitment;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
@@ -17,7 +16,7 @@ use function trans;
 /**
  * @before getPool
  */
-class Pool extends MeetingComponent
+class Payable extends MeetingComponent
 {
     use PoolTrait;
 
@@ -62,7 +61,7 @@ class Pool extends MeetingComponent
         $pool = $this->cache->get('meeting.pool');
         $session = $this->cache->get('meeting.session');
 
-        return $this->renderView('pages.meeting.remitment.pool.home', [
+        return $this->renderView('pages.meeting.remitment.payable.home', [
             'pool' => $pool,
             'depositAmount' => $this->balanceCalculator->getPoolDepositAmount($pool, $session),
         ]);
@@ -73,7 +72,7 @@ class Pool extends MeetingComponent
      */
     protected function after()
     {
-        $this->cl(PoolPage::class)->render();
+        $this->cl(PayablePage::class)->render();
     }
 
     public function createRemitment(int $payableId)
@@ -88,7 +87,7 @@ class Pool extends MeetingComponent
         $session = $this->cache->get('meeting.session');
         $this->remitmentService->savePlannedRemitment($pool, $session, $payableId);
 
-        return $this->cl(PoolPage::class)->render();
+        return $this->cl(PayablePage::class)->render();
     }
 
     public function addRemitment(int $payableId)
@@ -103,7 +102,7 @@ class Pool extends MeetingComponent
         $session = $this->cache->get('meeting.session');
 
         $title = trans('meeting.remitment.titles.add');
-        $content = $this->renderView('pages.meeting.remitment.pool.add', [
+        $content = $this->renderView('pages.meeting.remitment.payable.add', [
             'pool' => $pool,
             'payableId' => $payableId,
             'members' => $this->remitmentService->getSubscriptions($pool, $session),
@@ -144,7 +143,7 @@ class Pool extends MeetingComponent
             $values['payable'], $values['auction']);
         $this->dialog->hide();
 
-        return $this->cl(PoolPage::class)->render();
+        return $this->cl(PayablePage::class)->render();
     }
 
     /**
@@ -156,6 +155,6 @@ class Pool extends MeetingComponent
         $session = $this->cache->get('meeting.session');
         $this->remitmentService->deleteRemitment($pool, $session, $payableId);
 
-        return $this->cl(PoolPage::class)->render();
+        return $this->cl(PayablePage::class)->render();
     }
 }

@@ -1,8 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $rqPool = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Pool::class);
-  $rqPoolPage = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\PoolPage::class);
-  $rqRemitment = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment::class);
+  $rqRemitment = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Remitment::class);
+  $rqPayable = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Payable::class);
+  $rqPayablePage = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\PayablePage::class);
 @endphp
                   <div class="row">
                     <div class="col">
@@ -15,10 +15,10 @@
                       <div class="btn-group float-right ml-2 mb-2" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqRemitment->render())><i class="fa fa-arrow-left"></i></button>
 @if (!$pool->remit_planned)
-                        <button type="button" class="btn btn-primary" @jxnClick($rqPool->addRemitment(0))><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqPayable->addRemitment(0))><i class="fa fa-plus"></i></button>
 @endif
                       </div>
                     </div>
                   </div>
-                  <div @jxnShow($rqPoolPage)>
+                  <div @jxnShow($rqPayablePage)>
                   </div>

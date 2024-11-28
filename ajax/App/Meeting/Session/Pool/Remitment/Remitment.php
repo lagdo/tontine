@@ -1,12 +1,12 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Pool;
+namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
 use Ajax\App\Meeting\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Stringable;
 
-class Deposit extends MeetingComponent
+class Remitment extends MeetingComponent
 {
     /**
      * The constructor
@@ -23,9 +23,10 @@ class Deposit extends MeetingComponent
     {
         $session = $this->cache->get('meeting.session');
 
-        return $this->renderView('pages.meeting.deposit.home', [
+        return $this->renderView('pages.meeting.remitment.home', [
             'session' => $session,
-            'pools' => $this->poolService->getPoolsWithReceivables($session),
+            'pools' => $this->poolService->getPoolsWithPayables($session),
+            'hasAuctions' => $this->poolService->hasPoolWithAuction(),
         ]);
     }
 
@@ -34,6 +35,6 @@ class Deposit extends MeetingComponent
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('meeting-deposits');
+        $this->response->js()->makeTableResponsive('meeting-remitments');
     }
 }

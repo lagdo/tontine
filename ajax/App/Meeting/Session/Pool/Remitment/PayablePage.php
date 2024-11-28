@@ -9,7 +9,7 @@ use Stringable;
 /**
  * @exclude
  */
-class PoolPage extends Component
+class PayablePage extends Component
 {
     /**
      * The constructor
@@ -27,7 +27,7 @@ class PoolPage extends Component
         $pool = $this->cache->get('meeting.pool');
         $session = $this->cache->get('meeting.session');
 
-        return $this->renderView('pages.meeting.remitment.pool.page', [
+        return $this->renderView('pages.meeting.remitment.payable.page', [
             'pool' => $pool,
             'session' => $session,
             'payables' => $this->remitmentService->getPayables($pool, $session),

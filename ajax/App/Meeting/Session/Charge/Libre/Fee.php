@@ -1,11 +1,11 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Charge;
+namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\MeetingComponent;
 use Stringable;
 
-class LibreFee extends MeetingComponent
+class Fee extends MeetingComponent
 {
     public function html(): Stringable
     {
@@ -19,6 +19,6 @@ class LibreFee extends MeetingComponent
      */
     protected function after()
     {
-        $this->cl(LibreFeePage::class)->page(1);
+        $this->cl(FeePage::class)->page(1);
     }
 }

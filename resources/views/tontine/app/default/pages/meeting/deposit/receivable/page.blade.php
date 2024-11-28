@@ -3,14 +3,14 @@
 @php
   $receivableId = Jaxon\jq()->parent()->attr('data-receivable-id')->toInt();
   $amount = Jaxon\jq('input', Jaxon\jq()->parent()->parent())->val()->toInt();
-  $rqPool = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\Pool::class);
-  $rqPoolPage = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\PoolPage::class);
+  $rqReceivable = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\Receivable::class);
+  $rqReceivablePage = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\ReceivablePage::class);
 @endphp
                   <div class="table-responsive" id="meeting-pool-deposits" @jxnTarget()>
-                    <div @jxnEvent(['.btn-add-deposit', 'click'], $rqPool->addDeposit($receivableId))></div>
-                    <div @jxnEvent(['.btn-del-deposit', 'click'], $rqPool->delDeposit($receivableId))></div>
-                    <div @jxnEvent(['.btn-save-deposit', 'click'], $rqPool->saveAmount($receivableId, $amount))></div>
-                    <div @jxnEvent(['.btn-edit-deposit', 'click'], $rqPool->editAmount($receivableId))></div>
+                    <div @jxnEvent(['.btn-add-deposit', 'click'], $rqReceivable->addDeposit($receivableId))></div>
+                    <div @jxnEvent(['.btn-del-deposit', 'click'], $rqReceivable->delDeposit($receivableId))></div>
+                    <div @jxnEvent(['.btn-save-deposit', 'click'], $rqReceivable->saveAmount($receivableId, $amount))></div>
+                    <div @jxnEvent(['.btn-edit-deposit', 'click'], $rqReceivable->editAmount($receivableId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>
@@ -55,6 +55,6 @@
 @endforeach
                       </tbody>
                     </table>
-                    <nav @jxnPagination($rqPoolPage)>
+                    <nav @jxnPagination($rqReceivablePage)>
                     </nav>
                   </div> <!-- End table -->

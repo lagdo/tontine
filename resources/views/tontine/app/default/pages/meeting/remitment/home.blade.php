@@ -1,9 +1,9 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
-  $rqRemitment = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment::class);
-  $rqAuction = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Auction::class);
-  $rqPoolRemitment = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Pool::class);
+  $rqRemitment = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Remitment::class);
+  $rqAuction = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Auction::class);
+  $rqPayable = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Payable::class);
 @endphp
                   <div class="row">
                     <div class="col">
@@ -23,7 +23,7 @@
                     </div>
                   </div>
                   <div class="table-responsive" id="meeting-remitments" @jxnTarget()>
-                    <div @jxnEvent(['.btn-pool-remitments', 'click'], $rqPoolRemitment->pool($poolId))></div>
+                    <div @jxnEvent(['.btn-pool-remitments', 'click'], $rqPayable->pool($poolId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

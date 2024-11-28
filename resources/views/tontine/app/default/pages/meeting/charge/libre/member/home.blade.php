@@ -4,7 +4,7 @@
   $rqMember = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Member::class);
   $rqMemberPage = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\MemberPage::class);
   $rqMemberTotal = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\MemberTotal::class);
-  $rqCharge = Jaxon\rq(Ajax\App\Meeting\Session\Charge\LibreFee::class);
+  $rqCharge = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Fee::class);
 @endphp
                   <div class="row">
                     <div class="col">

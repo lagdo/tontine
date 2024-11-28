@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Pool;
+namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
 use Ajax\App\Meeting\MeetingComponent;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;

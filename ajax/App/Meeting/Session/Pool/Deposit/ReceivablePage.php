@@ -11,7 +11,7 @@ use Stringable;
 /**
  * @before getPool
  */
-class PoolPage extends MeetingPageComponent
+class ReceivablePage extends MeetingPageComponent
 {
     use PoolTrait;
 
@@ -51,7 +51,7 @@ class PoolPage extends MeetingPageComponent
         $pool = $this->cache->get('meeting.pool');
         $session = $this->cache->get('meeting.session');
 
-        return $this->renderView('pages.meeting.deposit.pool.page', [
+        return $this->renderView('pages.meeting.deposit.receivable.page', [
             'pool' => $pool,
             'session' => $session,
             'receivables' => $this->depositService->getReceivables($pool, $session, $this->page),

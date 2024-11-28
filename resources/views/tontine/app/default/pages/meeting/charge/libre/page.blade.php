@@ -1,6 +1,6 @@
 @php
   $chargeId = Jaxon\jq()->parent()->attr('data-charge-id')->toInt();
-  $rqLibreFeePage = Jaxon\rq(Ajax\App\Meeting\Session\Charge\LibreFeePage::class);
+  $rqLibreFeePage = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\FeePage::class);
   $rqMember = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Member::class);
   $rqSettlement = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Settlement::class);
   $rqTarget = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Target::class);

@@ -1,26 +1,26 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Charge;
+namespace Ajax\App\Meeting\Session\Charge\Fixed;
 
 use Ajax\App\Meeting\MeetingPageComponent;
-use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
+use Siak\Tontine\Service\Meeting\Charge\FixedFeeService;
 use Stringable;
 
-class LibreFeePage extends MeetingPageComponent
+class FeePage extends MeetingPageComponent
 {
     /**
      * The pagination databag options
      *
      * @var array
      */
-    protected array $bagOptions = ['meeting', 'fee.libre.page'];
+    protected array $bagOptions = ['meeting', 'fee.fixed.page'];
 
     /**
      * The constructor
      *
-     * @param LibreFeeService $feeService
+     * @param FixedFeeService $feeService
      */
-    public function __construct(protected LibreFeeService $feeService)
+    public function __construct(protected FixedFeeService $feeService)
     {}
 
     /**
@@ -38,7 +38,7 @@ class LibreFeePage extends MeetingPageComponent
     {
         $session = $this->cache->get('meeting.session');
 
-        return $this->renderView('pages.meeting.charge.libre.page', [
+        return $this->renderView('pages.meeting.charge.fixed.page', [
             'session' => $session,
             'charges' => $this->feeService->getFees($this->page),
             'bills' => $this->feeService->getBills($session),
@@ -51,6 +51,6 @@ class LibreFeePage extends MeetingPageComponent
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('meeting-fees-libre-page');
+        $this->response->js()->makeTableResponsive('meeting-fees-fixed-page');
     }
 }

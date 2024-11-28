@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Pool\Deposit;
 
 use Ajax\App\Meeting\MeetingComponent;
-use Ajax\App\Meeting\Session\Pool\Deposit;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
@@ -19,7 +18,7 @@ use function trim;
 /**
  * @before getPool
  */
-class Pool extends MeetingComponent
+class Receivable extends MeetingComponent
 {
     use PoolTrait;
 
@@ -61,7 +60,7 @@ class Pool extends MeetingComponent
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.deposit.pool.home', [
+        return $this->renderView('pages.meeting.deposit.receivable.home', [
             'pool' => $this->cache->get('meeting.pool'),
         ]);
     }
@@ -71,7 +70,7 @@ class Pool extends MeetingComponent
      */
     protected function after()
     {
-        $this->cl(PoolPage::class)->page();
+        $this->cl(ReceivablePage::class)->page();
     }
 
     /**
@@ -85,7 +84,7 @@ class Pool extends MeetingComponent
         $session = $this->cache->get('meeting.session');
         $this->depositService->createDeposit($pool, $session, $receivableId);
 
-        return $this->cl(PoolPage::class)->page();
+        return $this->cl(ReceivablePage::class)->page();
     }
 
     /**
@@ -101,7 +100,7 @@ class Pool extends MeetingComponent
         $receivable = $this->depositService->getReceivable($pool, $session, $receivableId);
         if(!$receivable || !$receivable->deposit)
         {
-            return $this->cl(PoolPage::class)->page();
+            return $this->cl(ReceivablePage::class)->page();
         }
 
         $html = $this->renderView('pages.meeting.deposit.libre.edit', [
@@ -138,7 +137,7 @@ class Pool extends MeetingComponent
             $this->depositService->saveDepositAmount($pool, $session, $receivableId, $amount):
             $this->depositService->deleteDeposit($pool, $session, $receivableId);
 
-        return $this->cl(PoolPage::class)->page();
+        return $this->cl(ReceivablePage::class)->page();
     }
 
     /**
@@ -152,7 +151,7 @@ class Pool extends MeetingComponent
         $session = $this->cache->get('meeting.session');
         $this->depositService->deleteDeposit($pool, $session, $receivableId);
 
-        return $this->cl(PoolPage::class)->page();
+        return $this->cl(ReceivablePage::class)->page();
     }
 
     /**
@@ -169,7 +168,7 @@ class Pool extends MeetingComponent
         $session = $this->cache->get('meeting.session');
         $this->depositService->createAllDeposits($pool, $session);
 
-        return $this->cl(PoolPage::class)->page();
+        return $this->cl(ReceivablePage::class)->page();
     }
 
     /**
@@ -186,6 +185,6 @@ class Pool extends MeetingComponent
         $session = $this->cache->get('meeting.session');
         $this->depositService->deleteAllDeposits($pool, $session);
 
-        return $this->cl(PoolPage::class)->page();
+        return $this->cl(ReceivablePage::class)->page();
     }
 }

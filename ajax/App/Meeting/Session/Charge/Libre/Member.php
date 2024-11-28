@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\ChargeComponent;
-use Ajax\App\Meeting\Session\Charge\LibreFee;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\LocaleService;
 use Stringable;
@@ -18,7 +17,7 @@ class Member extends ChargeComponent
     /**
      * @var string
      */
-    protected $overrides = LibreFee::class;
+    protected $overrides = Fee::class;
 
     /**
      * @var LocaleService

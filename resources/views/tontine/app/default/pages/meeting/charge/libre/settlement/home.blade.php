@@ -1,5 +1,5 @@
 @php
-  $rqCharge = Jaxon\rq(Ajax\App\Meeting\Session\Charge\LibreFee::class);
+  $rqCharge = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Fee::class);
   $rqSettlement = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Settlement::class);
   $rqSettlementPage = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\SettlementPage::class);
 @endphp

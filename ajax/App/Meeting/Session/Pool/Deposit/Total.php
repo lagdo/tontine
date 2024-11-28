@@ -27,7 +27,7 @@ class Total extends Component
         $session = $this->cache->get('meeting.session');
         $pool = $this->cache->get('meeting.pool');
 
-        return $this->renderView('pages.meeting.deposit.pool.total', [
+        return $this->renderView('pages.meeting.deposit.receivable.total', [
             'depositCount' => $this->cache->get('meeting.pool.deposit.count'),
             'depositAmount' => $this->balanceCalculator->getPoolDepositAmount($pool, $session),
         ]);

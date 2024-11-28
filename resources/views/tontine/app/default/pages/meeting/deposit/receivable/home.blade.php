@@ -1,6 +1,6 @@
 @php
-  $rqPoolPage = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\PoolPage::class);
-  $rqDeposit = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit::class);
+  $rqDeposit = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\Deposit::class);
+  $rqReceivablePage = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\ReceivablePage::class);
   $rqAction = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\Action::class);
   $rqTotal = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\Total::class);
 @endphp
@@ -17,5 +17,5 @@
                       </div>
                     </div>
                   </div>
-                  <div @jxnShow($rqPoolPage)>
+                  <div @jxnShow($rqReceivablePage)>
                   </div>

@@ -1,7 +1,7 @@
 @include('tontine.app.default.pages.meeting.session.menu.wrapper', ['session' => $session])
 @php
-  $rqFixedFee = Jaxon\rq(Ajax\App\Meeting\Session\Charge\FixedFee::class);
-  $rqLibreFee = Jaxon\rq(Ajax\App\Meeting\Session\Charge\LibreFee::class);
+  $rqFixedFee = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Fixed\Fee::class);
+  $rqLibreFee = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Fee::class);
 @endphp
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">

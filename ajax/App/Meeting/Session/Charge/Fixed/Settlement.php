@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Charge\Fixed;
 
 use Ajax\App\Meeting\Session\Charge\ChargeComponent;
-use Ajax\App\Meeting\Session\Charge\FixedFee;
 use Ajax\App\Meeting\Session\Charge\Settlement\Action;
 use Ajax\App\Meeting\Session\Charge\Settlement\Total;
 use Stringable;
@@ -15,7 +14,7 @@ class Settlement extends ChargeComponent
     /**
      * @var string
      */
-    protected $overrides = FixedFee::class;
+    protected $overrides = Fee::class;
 
     /**
      * @inheritDoc

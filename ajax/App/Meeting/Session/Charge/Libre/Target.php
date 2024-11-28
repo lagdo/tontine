@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\ChargeComponent;
-use Ajax\App\Meeting\Session\Charge\LibreFee;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
 use Siak\Tontine\Validation\Meeting\TargetValidator;
@@ -21,7 +20,7 @@ class Target extends ChargeComponent
     /**
      * @var string
      */
-    protected $overrides = LibreFee::class;
+    protected $overrides = Fee::class;
 
     /**
      * @var LocaleService

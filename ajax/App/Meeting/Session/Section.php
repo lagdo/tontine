@@ -58,8 +58,8 @@ class Section extends MeetingComponent
     {
         $this->renderSection('pools');
 
-        $this->cl(Pool\Deposit::class)->render();
-        $this->cl(Pool\Remitment::class)->render();
+        $this->cl(Pool\Deposit\Deposit::class)->render();
+        $this->cl(Pool\Remitment\Remitment::class)->render();
 
         $this->response->js()->setSmScreenHandler('session-pools-sm-screens');
 
@@ -104,8 +104,8 @@ class Section extends MeetingComponent
     {
         $this->renderSection('charges');
 
-        $this->cl(Charge\FixedFee::class)->render();
-        $this->cl(Charge\LibreFee::class)->render();
+        $this->cl(Charge\Fixed\Fee::class)->render();
+        $this->cl(Charge\Libre\Fee::class)->render();
 
         $this->response->js()->setSmScreenHandler('session-charges-sm-screens');
 
