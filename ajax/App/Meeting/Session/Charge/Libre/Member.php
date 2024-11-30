@@ -153,11 +153,11 @@ class Member extends ChargeComponent
             return $this->response;
         }
 
-        $html = $this->renderView('pages.meeting.charge.libre.member.edit', [
-            'memberId' => $memberId,
-            'amount' => $this->localeService->getMoneyValue($bill->bill->amount),
-        ]);
-        $this->response->html("member-$memberId", $html);
+        $this->cache->set('meeting.session.charge.member', $memberId);
+        $this->cache->set('meeting.session.charge.amount',
+            $this->localeService->getMoneyValue($bill->bill->amount));
+
+        $this->cl(MemberEdit::class)->item($memberId)->render();
 
         return $this->response;
     }
@@ -174,16 +174,9 @@ class Member extends ChargeComponent
         $session = $this->cache->get('meeting.session');
         $charge = $this->cache->get('meeting.session.charge');
         $amount = $this->convertAmount($amount);
-        if(!$amount)
-        {
-            $this->billService->deleteBill($charge, $session, $memberId);
-
-            $this->showTotal();
-
-            return $this->cl(MemberPage::class)->page();
-        }
-
-        $this->billService->updateBill($charge, $session, $memberId, $amount);
+        !$amount ?
+            $this->billService->deleteBill($charge, $session, $memberId) :
+            $this->billService->updateBill($charge, $session, $memberId, $amount);
 
         $this->showTotal();
 

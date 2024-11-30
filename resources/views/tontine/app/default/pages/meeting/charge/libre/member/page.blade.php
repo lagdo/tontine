@@ -5,6 +5,7 @@
   $amount = Jaxon\jq('input', Jaxon\jq()->parent()->parent())->val()->toInt();
   $rqMember = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Member::class);
   $rqMemberPage = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\MemberPage::class);
+  $rqMemberEdit = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\MemberEdit::class);
 @endphp
                   <div class="table-responsive" id="meeting-fee-libre-members" @jxnTarget()>
                     <div @jxnEvent(['.btn-add-bill', 'click'], $rqMember->addBill($memberId, $paid))></div>
@@ -35,7 +36,7 @@
 @endif
                           </td>
 @else
-                          <td class="currency" id="member-{{ $member->id }}" data-member-id="{{ $member->id }}" style="width:200px">
+                          <td class="currency" @jxnShow($rqMemberEdit, $member->id) data-member-id="{{ $member->id }}" style="width:200px">
 @if (!$session->opened || !$charge->is_active)
                             @include('tontine.app.default.pages.meeting.charge.libre.member.closed', [
                               'amount' => !$member->bill ? '' : $locale->formatMoney($member->bill->amount, true),
@@ -44,6 +45,7 @@
                             @include('tontine.app.default.pages.meeting.charge.libre.member.edit', [
                               'id' => $member->id,
                               'amount' => '',
+                              'hasBill' => false,
                             ])
 @else
                             @include('tontine.app.default.pages.meeting.charge.libre.member.show', [

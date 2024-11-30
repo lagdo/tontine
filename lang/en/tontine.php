@@ -337,6 +337,9 @@ return [
             'members' => "Members",
             'sessions' => "Sessions",
         ],
+        'actions' => [
+            'sessions' => "Sessions",
+        ],
         'labels' => [
             'fixed' => "Amount fixed",
             'planned' => "Planned",
