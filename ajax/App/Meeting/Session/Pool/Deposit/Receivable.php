@@ -103,12 +103,11 @@ class Receivable extends MeetingComponent
             return $this->cl(ReceivablePage::class)->page();
         }
 
-        $html = $this->renderView('pages.meeting.deposit.libre.edit', [
-            'receivableId' => $receivable->id,
-            'amount' => !$receivable->deposit ? '' :
-                $this->localeService->getMoneyValue($receivable->deposit->amount),
-        ]);
-        $this->response->html("receivable-{$receivable->id}", $html);
+        $this->cache->set('meeting.session.receivable.id', $receivable->id);
+        $this->cache->set('meeting.session.receivable.amount', !$receivable->deposit ? '' :
+            $this->localeService->getMoneyValue($receivable->deposit->amount));
+
+        $this->cl(ReceivableEdit::class)->item($receivable->id)->render();
 
         return $this->response;
     }

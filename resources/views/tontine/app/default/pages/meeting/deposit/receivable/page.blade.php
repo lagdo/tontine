@@ -5,6 +5,7 @@
   $amount = Jaxon\jq('input', Jaxon\jq()->parent()->parent())->val()->toInt();
   $rqReceivable = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\Receivable::class);
   $rqReceivablePage = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\ReceivablePage::class);
+  $rqReceivableEdit = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\ReceivableEdit::class);
 @endphp
                   <div class="table-responsive" id="meeting-pool-deposits" @jxnTarget()>
                     <div @jxnEvent(['.btn-add-deposit', 'click'], $rqReceivable->addDeposit($receivableId))></div>
@@ -32,19 +33,19 @@
                             {!! paymentLink($receivable->deposit, 'deposit', !$session->opened) !!}
                           </td>
 @else
-                          <td class="currency" id="receivable-{{ $receivable->id }}" data-receivable-id="{{ $receivable->id }}" style="width:200px">
+                          <td class="currency" @jxnShow($rqReceivableEdit, $receivable->id) data-receivable-id="{{ $receivable->id }}" style="width:200px">
 @if ($session->closed)
                             @include('tontine.app.default.pages.meeting.deposit.libre.closed', [
                               'amount' => !$receivable->deposit ? '' : $locale->formatMoney($receivable->deposit->amount, true),
                             ])
 @elseif (!$receivable->deposit)
                             @include('tontine.app.default.pages.meeting.deposit.libre.edit', [
-                              'id' => $receivable->id,
+                              'receivableId' => $receivable->id,
                               'amount' => '',
                             ])
 @else
                             @include('tontine.app.default.pages.meeting.deposit.libre.show', [
-                              'id' => $receivable->id,
+                              'receivableId' => $receivable->id,
                               'amount' => $locale->formatMoney($receivable->deposit->amount, false),
                               'editable' => $paymentService->isEditable($receivable->deposit),
                             ])

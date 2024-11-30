@@ -29,6 +29,7 @@ class Action extends Component
 
         return $this->renderView('pages.meeting.deposit.receivable.action', [
             'session' => $session,
+            'pool' => $pool,
             'depositCount' => $this->cache->get('meeting.pool.deposit.count'),
             'receivableCount' => $this->depositService->getReceivableCount($pool, $session),
         ]);

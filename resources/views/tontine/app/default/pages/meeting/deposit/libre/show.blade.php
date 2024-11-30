@@ -1,8 +1,9 @@
                         <div class="input-group">
-                          {!! $htmlBuilder->text('amount', $amount)->class('form-control')->attribute('readonly', 'readonly')
+                          {!! $htmlBuilder->text('amount', $amount)
+                            ->class('form-control')->attribute('readonly', 'readonly')
                             ->attribute('style', 'height:36px; text-align:right') !!}
 @if ($editable)
-                          <div class="input-group-append" data-receivable-id="{{ $id }}">
+                          <div class="input-group-append" data-receivable-id="{{ $receivableId }}">
                             <button type="button" class="btn btn-primary btn-edit-deposit"><i class="fa fa-edit"></i></button>
                           </div>
 @else    
