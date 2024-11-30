@@ -33,5 +33,5 @@
                       </button>
                     </div>
                   </div>
-                  <div @jxnShow($rqSavingPage)>
+                  <div @jxnBind($rqSavingPage)>
                   </div>

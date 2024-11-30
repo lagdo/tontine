@@ -28,5 +28,5 @@
                     <div class="col-auto" id="meeting-saving-members-total">
                     </div>
                   </div>
-                  <div @jxnShow($rqMemberPage)>
+                  <div @jxnBind($rqMemberPage)>
                   </div>

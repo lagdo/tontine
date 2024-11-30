@@ -10,7 +10,7 @@
           <div class="section-body">
             <div class="row">
               <div class="col">
-                <h2 class="section-title" @jxnShow($rqReportTitle)></h2>
+                <h2 class="section-title" @jxnBind($rqReportTitle)></h2>
               </div>
               <div class="col-auto">
                 <div class="input-group">
@@ -21,7 +21,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-auto" @jxnShow($rqActionExport)>
+              <div class="col-auto" @jxnBind($rqActionExport)>
               </div>
               <div class="col-auto">
                 <div class="input-group">
@@ -32,13 +32,13 @@
                   </div>
                 </div>
               </div>
-              <div class="col-auto" @jxnShow($rqActionMenu)>
+              <div class="col-auto" @jxnBind($rqActionMenu)>
               </div>
             </div>
           </div>
 
           <!-- Data tables -->
           <div class="card shadow mb-4">
-            <div class="card-body" @jxnShow($rqSessionContent)>
+            <div class="card-body" @jxnBind($rqSessionContent)>
             </div>
           </div>

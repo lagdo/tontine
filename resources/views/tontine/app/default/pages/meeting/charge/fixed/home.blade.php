@@ -14,5 +14,5 @@
                     </div>
 @endif
                   </div>
-                  <div @jxnShow($rqFixedFeePage)>
+                  <div @jxnBind($rqFixedFeePage)>
                   </div>

@@ -16,8 +16,8 @@
             </div>
           </div>
           <div class="row">
-            <div @jxnShow($rqHostInvite) class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-host-invites-home">
+            <div @jxnBind($rqHostInvite) class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-host-invites-home">
             </div>
-            <div @jxnShow($rqGuestInvite) class="col-md-6 col-sm-12 sm-screen" id="content-guest-invites-home">
+            <div @jxnBind($rqGuestInvite) class="col-md-6 col-sm-12 sm-screen" id="content-guest-invites-home">
             </div>
           </div>

@@ -16,6 +16,6 @@
               </div>
 
               <div class="card shadow mb-4">
-                <div class="card-body" @jxnShow($rqGuestInvitePage)>
+                <div class="card-body" @jxnBind($rqGuestInvitePage)>
                 </div>
               </div>

@@ -29,11 +29,11 @@
 
               <!-- Data tables -->
               <div class="card shadow mb-4">
-                <div class="card-body" @jxnShow($rqRoundPage)>
+                <div class="card-body" @jxnBind($rqRoundPage)>
                 </div>
               </div>
             </div>
 
-            <div @jxnShow($rqSession) class="col-md-6 col-sm-12 sm-screen" id="content-home-sessions">
+            <div @jxnBind($rqSession) class="col-md-6 col-sm-12 sm-screen" id="content-home-sessions">
             </div>
           </div>

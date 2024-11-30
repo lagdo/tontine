@@ -8,7 +8,7 @@
                     <div class="col">
                       <div class="section-title mt-0">
                         {{ $pool->title }}<br/> {{ __('meeting.titles.deposits')
-                          }} (<span @jxnShow($rqTotal)></span>) <span @jxnShow($rqAction)></span>
+                          }} (<span @jxnBind($rqTotal)></span>) <span @jxnBind($rqAction)></span>
                       </div>
                     </div>
                     <div class="col-auto">
@@ -17,5 +17,5 @@
                       </div>
                     </div>
                   </div>
-                  <div @jxnShow($rqReceivablePage)>
+                  <div @jxnBind($rqReceivablePage)>
                   </div>

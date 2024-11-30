@@ -33,7 +33,7 @@
                             {!! paymentLink($receivable->deposit, 'deposit', !$session->opened) !!}
                           </td>
 @else
-                          <td class="currency" @jxnShow($rqReceivableEdit, $receivable->id) data-receivable-id="{{ $receivable->id }}" style="width:200px">
+                          <td class="currency" @jxnBind($rqReceivableEdit, $receivable->id) data-receivable-id="{{ $receivable->id }}" style="width:200px">
 @if ($session->closed)
                             @include('tontine.app.default.pages.meeting.deposit.libre.closed', [
                               'amount' => !$receivable->deposit ? '' : $locale->formatMoney($receivable->deposit->amount, true),

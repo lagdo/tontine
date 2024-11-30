@@ -19,15 +19,15 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnShow($rqFund)>
+            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnBind($rqFund)>
               @jxnHtml($rqFund)
             </div>
-            <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqCategory)>
+            <div class="col-md-6 col-sm-12 sm-screen" @jxnBind($rqCategory)>
               @jxnHtml($rqCategory)
             </div>
           </div>
           <div class="row">
-            <div class="col-12 sm-screen" @jxnShow($rqCharge)>
+            <div class="col-12 sm-screen" @jxnBind($rqCharge)>
               @jxnHtml($rqCharge)
             </div>
           </div>

@@ -65,7 +65,7 @@
               </div>
               <div class="row">
                 <div class="col">
-                  <div class="table-responsive" @jxnShow($rqRoundPool, "pool-{$pool->id}")>
+                  <div class="table-responsive" @jxnBind($rqRoundPool, "pool-{$pool->id}")>
                     @jxnHtml($rqRoundPool)
                   </div>
                 </div>
@@ -89,7 +89,7 @@
               </div>
               <div class="row">
                 <div class="col">
-                  <div class="table-responsive" @jxnShow($rqRoundBalance)>
+                  <div class="table-responsive" @jxnBind($rqRoundBalance)>
                     @jxnHtml($rqRoundBalance)
                   </div>
                 </div>

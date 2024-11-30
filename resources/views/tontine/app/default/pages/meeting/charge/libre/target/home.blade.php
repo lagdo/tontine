@@ -46,5 +46,5 @@
                     </div>
                   </div>
 @endif
-                  <div @jxnShow($rqTargetPage)>
+                  <div @jxnBind($rqTargetPage)>
                   </div>

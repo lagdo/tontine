@@ -7,7 +7,7 @@
                 <div class="row">
                   <div class="col">
                     <h2 class="section-title">{{ $pool->title }} :: {{ __('tontine.pool.titles.subscriptions')
-                      }} (<span @jxnShow($rqMemberCounter)>@jxnHtml($rqMemberCounter)</span>)</h2>
+                      }} (<span @jxnBind($rqMemberCounter)>@jxnHtml($rqMemberCounter)</span>)</h2>
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2" role="group">
@@ -31,6 +31,6 @@
 
               <!-- Data tables -->
               <div class="card shadow mb-4">
-                <div class="card-body" @jxnShow($rqMemberPage)>
+                <div class="card-body" @jxnBind($rqMemberPage)>
                 </div>
               </div>

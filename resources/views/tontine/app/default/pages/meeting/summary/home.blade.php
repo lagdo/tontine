@@ -69,9 +69,9 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnShow($rqDeposit) id="meeting-deposits">
+                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnBind($rqDeposit) id="meeting-deposits">
                         </div>
-                        <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqRemitment) id="meeting-remitments">
+                        <div class="col-md-6 col-sm-12 sm-screen" @jxnBind($rqRemitment) id="meeting-remitments">
                         </div>
                       </div>
                     </div>
@@ -90,9 +90,9 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnShow($rqFixedFee) id="meeting-fees-fixed">
+                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnBind($rqFixedFee) id="meeting-fees-fixed">
                         </div>
-                        <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqLibreFee) id="meeting-fees-libre">
+                        <div class="col-md-6 col-sm-12 sm-screen" @jxnBind($rqLibreFee) id="meeting-fees-libre">
                         </div>
                       </div>
                     </div>
@@ -111,9 +111,9 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnShow($rqSaving) id="meeting-savings">
+                        <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnBind($rqSaving) id="meeting-savings">
                         </div>
-                        <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqClosing) id="meeting-closings">
+                        <div class="col-md-6 col-sm-12 sm-screen" @jxnBind($rqClosing) id="meeting-closings">
                         </div>
                         <div class="col-12 sm-screen" id="report-fund-savings">
                         </div>
@@ -135,19 +135,19 @@
                       </div>
                       <div class="row">
                         <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-loans-col">
-                          <div @jxnShow($rqLoan) id="meeting-loans">
+                          <div @jxnBind($rqLoan) id="meeting-loans">
                           </div>
-                          <div @jxnShow($rqRefund) id="meeting-partial-refunds">
+                          <div @jxnBind($rqRefund) id="meeting-partial-refunds">
                           </div>
                         </div>
-                        <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqRefund) id="meeting-refunds">
+                        <div class="col-md-6 col-sm-12 sm-screen" @jxnBind($rqRefund) id="meeting-refunds">
                         </div>
                       </div>
                     </div>
 
                     <div class="tab-pane fade" id="session-cash" role="tabpanel" aria-labelledby="session-tab-cash">
                       <div class="row">
-                        <div class="col-md-12" @jxnShow($rqDisbursement) id="meeting-disbursements">
+                        <div class="col-md-12" @jxnBind($rqDisbursement) id="meeting-disbursements">
                         </div>
                       </div>
                     </div>

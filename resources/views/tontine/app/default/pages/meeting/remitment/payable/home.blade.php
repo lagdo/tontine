@@ -20,5 +20,5 @@
                       </div>
                     </div>
                   </div>
-                  <div @jxnShow($rqPayablePage)>
+                  <div @jxnBind($rqPayablePage)>
                   </div>

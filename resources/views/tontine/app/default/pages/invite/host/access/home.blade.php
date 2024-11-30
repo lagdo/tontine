@@ -33,5 +33,5 @@
                 </div>
               </div>
 
-              <div @jxnShow($rqGuestAccessContent) id="content-host-invite-access">
+              <div @jxnBind($rqGuestAccessContent) id="content-host-invite-access">
               </div>

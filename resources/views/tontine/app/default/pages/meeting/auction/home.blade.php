@@ -21,5 +21,5 @@
                     </div>
 @endif
                   </div>
-                  <div @jxnShow($rqAuctionPage)>
+                  <div @jxnBind($rqAuctionPage)>
                   </div>

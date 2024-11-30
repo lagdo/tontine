@@ -5,7 +5,7 @@
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">
               <div class="row">
-                <div class="col-md-12" id="meeting-disbursements" @jxnShow($rqDisbursement)>
+                <div class="col-md-12" id="meeting-disbursements" @jxnBind($rqDisbursement)>
                 </div>
               </div>
             </div>

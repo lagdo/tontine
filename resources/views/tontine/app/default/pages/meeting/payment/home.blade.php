@@ -28,11 +28,11 @@
                       <div class="section-title mt-0">{{ __('tontine.menus.members') }}</div>
                     </div>
                   </div>
-                  <div @jxnShow($rqPaymentPage)>
+                  <div @jxnBind($rqPaymentPage)>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-sm-12 sm-screen" id="payment-payables-home" @jxnShow($rqPayable)>
+            <div class="col-md-6 col-sm-12 sm-screen" id="payment-payables-home" @jxnBind($rqPayable)>
             </div>
           </div>

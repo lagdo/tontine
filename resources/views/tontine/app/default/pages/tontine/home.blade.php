@@ -24,12 +24,12 @@
           </div>
 
           <div class="card shadow mb-4">
-            <div class="card-body" @jxnShow($rqOrganisationPage)>
+            <div class="card-body" @jxnBind($rqOrganisationPage)>
             </div>
           </div>
 
 @if ($hasGuestTontines)
-          <div @jxnShow($rqInviteTontine)>
+          <div @jxnBind($rqInviteTontine)>
             @jxnHtml($rqInviteTontine)
           </div>
 @endif

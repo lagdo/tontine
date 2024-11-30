@@ -19,7 +19,7 @@
               <!-- Data tables -->
               <div class="card shadow mb-4">
                 <div class="card-body">
-                  <div @jxnShow($rqHostInvitePage)>
+                  <div @jxnBind($rqHostInvitePage)>
                   </div> <!-- End table -->
                 </div>
               </div>

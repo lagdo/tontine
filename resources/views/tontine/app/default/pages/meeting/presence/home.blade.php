@@ -5,8 +5,8 @@
   $rqAtRight = $exchange ? $rqSession : $rqMember;
 @endphp
           <div class="row" id="presence-sm-screens">
-            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnShow($rqAtLeft)>
+            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnBind($rqAtLeft)>
             </div>
-            <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqAtRight)>
+            <div class="col-md-6 col-sm-12 sm-screen" @jxnBind($rqAtRight)>
             </div>
           </div>

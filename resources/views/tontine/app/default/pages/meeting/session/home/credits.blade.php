@@ -20,12 +20,12 @@
               </div>
               <div class="row">
                 <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-loans-col">
-                  <div id="meeting-loans" @jxnShow($rqLoan)>
+                  <div id="meeting-loans" @jxnBind($rqLoan)>
                   </div>
-                  <div id="meeting-partial-refunds" @jxnShow($rqPartialRefund)>
+                  <div id="meeting-partial-refunds" @jxnBind($rqPartialRefund)>
                   </div>
                 </div>
-                <div class="col-md-6 col-sm-12 sm-screen" id="meeting-refunds" @jxnShow($rqRefund)>
+                <div class="col-md-6 col-sm-12 sm-screen" id="meeting-refunds" @jxnBind($rqRefund)>
                 </div>
               </div>
             </div>

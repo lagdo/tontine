@@ -17,9 +17,9 @@
           </div>
 
           <div class="row" id="content-page">
-            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnShow($rqPool)>
+            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnBind($rqPool)>
               @jxnHtml($rqPool)
             </div>
-            <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqPoolSection)>
+            <div class="col-md-6 col-sm-12 sm-screen" @jxnBind($rqPoolSection)>
             </div>
           </div>

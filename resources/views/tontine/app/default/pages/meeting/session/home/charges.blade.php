@@ -18,9 +18,9 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-fees-fixed" @jxnShow($rqFixedFee)>
+                <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="meeting-fees-fixed" @jxnBind($rqFixedFee)>
                 </div>
-                <div class="col-md-6 col-sm-12 sm-screen" id="meeting-fees-libre" @jxnShow($rqLibreFee)>
+                <div class="col-md-6 col-sm-12 sm-screen" id="meeting-fees-libre" @jxnBind($rqLibreFee)>
                 </div>
               </div>
             </div>

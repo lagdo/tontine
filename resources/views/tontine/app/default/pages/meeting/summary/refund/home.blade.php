@@ -26,5 +26,5 @@
                       </div>
 @endif
                     </div>
-                    <div @jxnShow($rqRefundPage)>
+                    <div @jxnBind($rqRefundPage)>
                     </div>

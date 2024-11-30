@@ -36,10 +36,10 @@
     
               <!-- Data tables -->
               <div class="card shadow mb-4">
-                <div class="card-body" @jxnShow($rqPoolPage)>
+                <div class="card-body" @jxnBind($rqPoolPage)>
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-sm-12 sm-screen" @jxnShow($rqPoolSection)>
+            <div class="col-md-6 col-sm-12 sm-screen" @jxnBind($rqPoolSection)>
             </div>
           </div>

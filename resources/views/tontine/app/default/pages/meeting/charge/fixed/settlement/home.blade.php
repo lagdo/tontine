@@ -32,5 +32,5 @@
                     <div class="col-auto" id="meeting-settlements-action">
                     </div>
                   </div>
-                  <div @jxnShow($rqSettlementPage)>
+                  <div @jxnBind($rqSettlementPage)>
                   </div>

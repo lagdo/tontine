@@ -47,6 +47,6 @@
 
               <!-- Data tables -->
               <div class="card shadow mb-4">
-                <div class="card-body" @jxnShow($rqMemberPage)>
+                <div class="card-body" @jxnBind($rqMemberPage)>
                 </div>
               </div>

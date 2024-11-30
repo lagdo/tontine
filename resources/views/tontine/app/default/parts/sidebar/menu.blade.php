@@ -20,10 +20,10 @@
               <i class="fa fa-fw fa-users-cog"></i> <span>{{ __('tontine.menus.admins') }}</span>
             </a></li>
           </ul>
-          <div @jxnShow($rqTontineMenu) id="sidebar-menu-tontine">
+          <div @jxnBind($rqTontineMenu) id="sidebar-menu-tontine">
             @jxnHtml($rqTontineMenu)
           </div>
-          <div @jxnShow($rqRoundMenu) id="sidebar-menu-round">
+          <div @jxnBind($rqRoundMenu) id="sidebar-menu-round">
             @jxnHtml($rqRoundMenu)
           </div>
         </aside>

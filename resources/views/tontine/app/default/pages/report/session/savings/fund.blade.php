@@ -13,12 +13,12 @@
                     </div>
 @endif
                   </div>
-                  <div class="row" @jxnShow($rqSummary)>
+                  <div class="row" @jxnBind($rqSummary)>
                     @jxnHtml($rqSummary)
                   </div>
-                  <div class="row" @jxnShow($rqAmount)>
+                  <div class="row" @jxnBind($rqAmount)>
                     @jxnHtml($rqAmount)
                   </div>
-                  <div class="table-responsive mt-2" id="report-fund-savings-distribution" @jxnShow($rqDistribution)>
+                  <div class="table-responsive mt-2" id="report-fund-savings-distribution" @jxnBind($rqDistribution)>
                     @jxnHtml($rqDistribution)
                   </div>

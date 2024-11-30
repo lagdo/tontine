@@ -21,10 +21,10 @@
                 <div class="card-body">
                   <div class="row">
                     <div class="col">
-                      <div class="section-title mt-0" @jxnShow($rqSessionCounter)>@jxnHtml($rqSessionCounter)</div>
+                      <div class="section-title mt-0" @jxnBind($rqSessionCounter)>@jxnHtml($rqSessionCounter)</div>
                     </div>
                   </div>
-                  <div @jxnShow($rqSessionPage)>
+                  <div @jxnBind($rqSessionPage)>
                   </div>
                 </div>
               </div>

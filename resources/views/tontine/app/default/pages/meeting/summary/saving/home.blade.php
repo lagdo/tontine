@@ -10,7 +10,7 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col" @jxnShow($rqSavingCount)>
+                    <div class="col" @jxnBind($rqSavingCount)>
                     </div>
                     <div class="col-auto">
                       <div class="input-group mb-2">
@@ -22,5 +22,5 @@
                       </div>
                     </div>
                   </div>
-                  <div @jxnShow($rqSavingPage)>
+                  <div @jxnBind($rqSavingPage)>
                   </div>

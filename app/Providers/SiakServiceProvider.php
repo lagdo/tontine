@@ -91,7 +91,7 @@ class SiakServiceProvider extends ServiceProvider
 
         Blade::directive('jxnPagination', function($expression) {
             $class = Pagination::class;
-            return "<?php echo \Jaxon\attr()->show(\Jaxon\\rq('$class'), {$expression}->_class()); ?>";
+            return "<?php echo \Jaxon\attr()->bind(\Jaxon\\rq('$class'), {$expression}->_class()); ?>";
         });
     }
 

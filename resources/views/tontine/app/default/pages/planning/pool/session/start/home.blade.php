@@ -24,12 +24,12 @@
                 <div class="card-body">
                   <div class="row">
                     <div class="col">
-                      <div class="section-title mt-0" @jxnShow($rqStartSessionTitle)></div>
+                      <div class="section-title mt-0" @jxnBind($rqStartSessionTitle)></div>
                     </div>
-                    <div class="col-auto" @jxnShow($rqStartSessionAction)>
+                    <div class="col-auto" @jxnBind($rqStartSessionAction)>
                     </div>
                   </div>
-                  <div @jxnShow($rqStartSessionPage)>
+                  <div @jxnBind($rqStartSessionPage)>
                   </div>
                 </div>
               </div>

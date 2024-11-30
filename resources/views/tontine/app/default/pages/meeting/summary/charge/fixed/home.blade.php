@@ -6,6 +6,6 @@
                       <div class="section-title mt-0">{!! __('meeting.charge.titles.fixed') !!}</div>
                     </div>
                   </div>
-                  <div class="table-responsive" @jxnShow($rqFixedFeePage)>
+                  <div class="table-responsive" @jxnBind($rqFixedFeePage)>
                     @jxnHtml($rqFixedFeePage)
                   </div> <!-- End table -->

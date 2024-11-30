@@ -10,7 +10,7 @@
                     <div class="col">
                       <div class="section-title mt-0">{{ $charge->name }}</div>
                     </div>
-                    <div class="col-auto" @jxnShow($rqMemberTotal)>
+                    <div class="col-auto" @jxnBind($rqMemberTotal)>
                     </div>
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
@@ -41,5 +41,5 @@
                       </div>
                     </div>
                   </div>
-                  <div @jxnShow($rqMemberPage)>
+                  <div @jxnBind($rqMemberPage)>
                   </div>
