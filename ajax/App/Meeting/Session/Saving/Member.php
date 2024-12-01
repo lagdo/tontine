@@ -3,14 +3,9 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\MeetingComponent;
-use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Tontine\FundService;
-use Siak\Tontine\Validation\Meeting\SavingValidator;
 use Stringable;
 
-use function str_replace;
-use function trans;
 use function trim;
 
 /**
@@ -25,23 +20,11 @@ class Member extends MeetingComponent
     protected $overrides = Saving::class;
 
     /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
-
-    /**
-     * @var SavingValidator
-     */
-    protected SavingValidator $validator;
-
-    /**
      * The constructor
      *
      * @param FundService $fundService
-     * @param SavingService $savingService
      */
-    public function __construct(private FundService $fundService,
-        private SavingService $savingService)
+    public function __construct(private FundService $fundService)
     {}
 
     protected function getFund()
@@ -101,74 +84,6 @@ class Member extends MeetingComponent
         // Switch between null, true and false
         $filter = $filter === null ? true : ($filter === true ? false : null);
         $this->bag('meeting.saving')->set('member.filter', $filter);
-
-        return $this->cl(MemberPage::class)->page();
-    }
-
-    /**
-     * @di $localeService
-     * @param int $memberId
-     *
-     * @return mixed
-     */
-    public function editSaving(int $memberId)
-    {
-        if(!($member = $this->savingService->getMember($memberId)))
-        {
-            $this->notify->warning(trans('tontine.member.errors.not_found'));
-            return $this->response;
-        }
-
-        $session = $this->cache->get('meeting.session');
-        $fund = $this->cache->get('meeting.saving.fund');
-        $saving = $this->savingService->findSaving($session, $fund, $member);
-        $amount = !$saving ? '' : $this->localeService->getMoneyValue($saving->amount);
-
-        $html = $this->renderView('pages.meeting.saving.member.edit', [
-            'memberId' => $memberId,
-            'amount' => $amount,
-        ]);
-        $this->response->html("saving-member-$memberId", $html);
-
-        return $this->response;
-    }
-
-    /**
-     * @di $validator
-     *
-     * @param int $memberId
-     * @param string $amount
-     *
-     * @return mixed
-     */
-    public function saveSaving(int $memberId, string $amount)
-    {
-        if(!($member = $this->savingService->getMember($memberId)))
-        {
-            $this->notify->warning(trans('tontine.member.errors.not_found'));
-            return $this->response;
-        }
-
-        $session = $this->cache->get('meeting.session');
-        $fund = $this->cache->get('meeting.saving.fund');
-        $amount = str_replace(',', '.', trim($amount));
-        if($amount === '')
-        {
-            $this->savingService->deleteMemberSaving($session, $fund, $member);
-
-            $this->notify->success(trans('meeting.messages.deleted'));
-
-            return $this->cl(MemberPage::class)->page();
-        }
-
-        $values = ['member' => $memberId, 'amount' => $amount, 'fund' => $fund->id];
-        $values = $this->validator->validateItem($values);
-        $this->savingService->saveSaving($session, $fund, $member, $values['amount']);
-
-        $this->notify->title(trans('common.titles.success'))
-            ->success(trans('meeting.messages.saved'));
-
-        $this->cl(MemberTotal::class)->render();
 
         return $this->cl(MemberPage::class)->page();
     }
