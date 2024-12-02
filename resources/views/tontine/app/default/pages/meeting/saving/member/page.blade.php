@@ -1,4 +1,5 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@inject('cache', 'Siak\Tontine\Cache\Cache')
 @php
   $rqMemberPage = Jaxon\rq(Ajax\App\Meeting\Session\Saving\MemberPage::class);
   $rqAmount = Jaxon\rq(Ajax\App\Meeting\Session\Saving\Amount::class);
@@ -13,26 +14,14 @@
                       </thead>
                       <tbody>
 @foreach ($members as $member)
+@php
+  $cache->set('meeting.saving.member', $member);
+  $cache->set('meeting.saving', $member->saving);
+@endphp
                         <tr>
                           <td>{{ $member->name }}</td>
                           <td class="currency" @jxnBind($rqAmount, $member->id) style="width:200px;">
-@if ($session->closed)
-                            @include('tontine.app.default.pages.meeting.saving.member.closed', [
-                              'amount' => !$member->saving ? '' : $locale->formatMoney($member->saving->amount, true),
-                            ])
-@elseif (!$member->saving)
-                            @include('tontine.app.default.pages.meeting.saving.member.edit', [
-                              'memberId' => $member->id,
-                              'amount' => '',
-                              'rqAmount' => $rqAmount,
-                            ])
-@else
-                            @include('tontine.app.default.pages.meeting.saving.member.show', [
-                              'memberId' => $member->id,
-                              'amount' => $locale->formatMoney($member->saving->amount, false),
-                              'rqAmount' => $rqAmount,
-                            ])
-@endif
+                            @jxnHtml($rqAmount)
                           </td>
                         </tr>
 @endforeach

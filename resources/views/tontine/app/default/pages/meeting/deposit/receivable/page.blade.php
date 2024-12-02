@@ -1,17 +1,14 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('paymentService', 'Siak\Tontine\Service\Meeting\PaymentServiceInterface')
+@inject('cache', 'Siak\Tontine\Cache\Cache')
 @php
   $receivableId = Jaxon\jq()->parent()->attr('data-receivable-id')->toInt();
-  $amount = Jaxon\jq('input', Jaxon\jq()->parent()->parent())->val()->toInt();
   $rqReceivable = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\Receivable::class);
   $rqReceivablePage = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\ReceivablePage::class);
-  $rqReceivableEdit = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\ReceivableEdit::class);
+  $rqAmount = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\Amount::class);
 @endphp
                   <div class="table-responsive" id="meeting-pool-deposits" @jxnTarget()>
                     <div @jxnEvent(['.btn-add-deposit', 'click'], $rqReceivable->addDeposit($receivableId))></div>
                     <div @jxnEvent(['.btn-del-deposit', 'click'], $rqReceivable->delDeposit($receivableId))></div>
-                    <div @jxnEvent(['.btn-save-deposit', 'click'], $rqReceivable->saveAmount($receivableId, $amount))></div>
-                    <div @jxnEvent(['.btn-edit-deposit', 'click'], $rqReceivable->editAmount($receivableId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>
@@ -33,23 +30,11 @@
                             {!! paymentLink($receivable->deposit, 'deposit', !$session->opened) !!}
                           </td>
 @else
-                          <td class="currency" @jxnBind($rqReceivableEdit, $receivable->id) data-receivable-id="{{ $receivable->id }}" style="width:200px">
-@if ($session->closed)
-                            @include('tontine.app.default.pages.meeting.deposit.libre.closed', [
-                              'amount' => !$receivable->deposit ? '' : $locale->formatMoney($receivable->deposit->amount, true),
-                            ])
-@elseif (!$receivable->deposit)
-                            @include('tontine.app.default.pages.meeting.deposit.libre.edit', [
-                              'receivableId' => $receivable->id,
-                              'amount' => '',
-                            ])
-@else
-                            @include('tontine.app.default.pages.meeting.deposit.libre.show', [
-                              'receivableId' => $receivable->id,
-                              'amount' => $locale->formatMoney($receivable->deposit->amount, false),
-                              'editable' => $paymentService->isEditable($receivable->deposit),
-                            ])
-@endif
+@php
+  $cache->set('meeting.session.receivable', $receivable);
+@endphp
+                          <td class="currency" @jxnBind($rqAmount, $receivable->id) style="width:200px">
+                            @jxnHtml($rqAmount)
                           </td>
 @endif
                         </tr>

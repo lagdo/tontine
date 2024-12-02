@@ -3,26 +3,18 @@
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\ChargeComponent;
-use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Service\LocaleService;
 use Stringable;
 
-use function filter_var;
-use function str_replace;
-use function trans;
 use function trim;
 
 class Member extends ChargeComponent
 {
+    use AmountTrait;
+
     /**
      * @var string
      */
     protected $overrides = Fee::class;
-
-    /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
 
     /**
      * @inheritDoc
@@ -59,18 +51,6 @@ class Member extends ChargeComponent
         return $this->render();
     }
 
-    private function showTotal()
-    {
-        $session = $this->cache->get('meeting.session');
-        $charge = $this->cache->get('meeting.session.charge');
-        $settlement = $this->settlementService->getSettlementCount($charge, $session);
-
-        $this->cache->set('meeting.session.settlement.count', $settlement->total ?? 0);
-        $this->cache->set('meeting.session.settlement.amount', $settlement->amount ?? 0);
-
-        $this->cl(MemberTotal::class)->render();
-    }
-
     public function toggleFilter()
     {
         $filter = $this->bag('meeting')->get('fee.member.filter', null);
@@ -88,31 +68,19 @@ class Member extends ChargeComponent
         return $this->cl(MemberPage::class)->page();
     }
 
-    private function convertAmount(string $amount): float
-    {
-        $amount = str_replace(',', '.', trim($amount));
-        if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
-        {
-            throw new MessageException(trans('meeting.errors.amount.invalid', [
-                'amount' => $amount,
-            ]));
-        }
-        return $amount === '' ? 0 : (float)$amount;
-    }
-
     /**
      * @before checkChargeEdit
+     *
      * @param int $memberId
-     * @param string $amount
+     * @param bool $paid
      *
      * @return mixed
      */
-    public function addBill(int $memberId, bool $paid, string $amount = '')
+    public function addBill(int $memberId, bool $paid)
     {
         $session = $this->cache->get('meeting.session');
         $charge = $this->cache->get('meeting.session.charge');
-        $this->billService
-            ->createBill($charge, $session, $memberId, $paid, $this->convertAmount($amount));
+        $this->billService->createBill($charge, $session, $memberId, $paid);
 
         $this->showTotal();
 
@@ -121,6 +89,7 @@ class Member extends ChargeComponent
 
     /**
      * @before checkChargeEdit
+     *
      * @param int $memberId
      *
      * @return mixed
@@ -130,53 +99,6 @@ class Member extends ChargeComponent
         $session = $this->cache->get('meeting.session');
         $charge = $this->cache->get('meeting.session.charge');
         $this->billService->deleteBill($charge, $session, $memberId);
-
-        $this->showTotal();
-
-        return $this->cl(MemberPage::class)->page();
-    }
-
-    /**
-     * @di $localeService
-     * @before checkChargeEdit
-     * @param int $memberId
-     *
-     * @return mixed
-     */
-    public function editBill(int $memberId)
-    {
-        $session = $this->cache->get('meeting.session');
-        $charge = $this->cache->get('meeting.session.charge');
-        $bill = $this->billService->getMemberBill($charge, $session, $memberId);
-        if($bill === null)
-        {
-            return $this->response;
-        }
-
-        $this->cache->set('meeting.session.charge.member', $memberId);
-        $this->cache->set('meeting.session.charge.amount',
-            $this->localeService->getMoneyValue($bill->bill->amount));
-
-        $this->cl(MemberEdit::class)->item($memberId)->render();
-
-        return $this->response;
-    }
-
-    /**
-     * @before checkChargeEdit
-     * @param int $memberId
-     * @param string $amount
-     *
-     * @return mixed
-     */
-    public function saveBill(int $memberId, string $amount)
-    {
-        $session = $this->cache->get('meeting.session');
-        $charge = $this->cache->get('meeting.session.charge');
-        $amount = $this->convertAmount($amount);
-        !$amount ?
-            $this->billService->deleteBill($charge, $session, $memberId) :
-            $this->billService->updateBill($charge, $session, $memberId, $amount);
 
         $this->showTotal();
 
