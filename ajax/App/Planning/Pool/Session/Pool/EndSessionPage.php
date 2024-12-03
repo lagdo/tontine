@@ -47,10 +47,11 @@ class EndSessionPage extends PageComponent
     public function html(): Stringable
     {
         $pool = $this->cache->get('pool.session.pool');
+        $endSession = $this->poolService->getPoolEndSession($pool);
 
         return $this->renderView('pages.planning.pool.session.end.page', [
             'sessions' => $this->sessionService->getTontineSessions($this->page, orderAsc: false),
-            'sessionId' => $pool->pool_round ? $pool->pool_round->end_session_id : 0,
+            'sessionId' => !$endSession ? 0 : $endSession->id,
         ]);
     }
 
@@ -67,13 +68,14 @@ class EndSessionPage extends PageComponent
     private function getSessionPageNumber(): int
     {
         $pool = $this->cache->get('pool.session.pool');
-        if(!$pool->pool_round)
+        $session = $this->poolService->getPoolEndSession($pool);
+        if(!$session)
         {
             return 1;
         }
 
-        $session = $pool->pool_round->end_session;
         $sessionCount = $this->sessionService->getTontineSessionCount($session, true, false);
+
         return (int)($sessionCount / $this->tenantService->getLimit()) + 1;
     }
 

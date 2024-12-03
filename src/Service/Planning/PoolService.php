@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Pool;
+use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
@@ -219,6 +220,30 @@ class PoolService
     public function getPoolSessionCount(Pool $pool): int
     {
         return $pool->sessions()->count();
+    }
+
+    /**
+     * Get the first session of the pool.
+     *
+     * @param Pool $pool
+     *
+     * @return Session|null
+     */
+    public function getPoolStartSession(Pool $pool): ?Session
+    {
+        return $pool->sessions()->orderBy('start_at', 'asc')->first();
+    }
+
+    /**
+     * Get the last session of the pool.
+     *
+     * @param Pool $pool
+     *
+     * @return Session|null
+     */
+    public function getPoolEndSession(Pool $pool): ?Session
+    {
+        return $pool->sessions()->orderBy('start_at', 'desc')->first();
     }
 
     /**
