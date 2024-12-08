@@ -61,9 +61,9 @@ class Options extends Component
     {
         $this->response->js()->setSmScreenHandler('options-sm-screens');
 
-        $this->cl(FundPage::class)->page();
-        $this->cl(CategoryPage::class)->page();
-        $this->cl(ChargePage::class)->page();
+        $this->cl(Fund::class)->render();
+        $this->cl(Category::class)->render();
+        $this->cl(Charge::class)->render();
     }
 
     public function editOptions()

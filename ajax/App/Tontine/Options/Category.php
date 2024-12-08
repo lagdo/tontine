@@ -26,6 +26,14 @@ class Category extends Component
         return $this->renderView('pages.options.category.home');
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function after()
+    {
+        $this->cl(CategoryPage::class)->page();
+    }
+
     public function add()
     {
         $types = [

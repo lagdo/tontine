@@ -31,6 +31,14 @@ class Fund extends Component
         return $this->renderView('pages.options.fund.home');
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function after()
+    {
+        $this->cl(FundPage::class)->page();
+    }
+
     public function add()
     {
         $title = trans('tontine.fund.titles.add');

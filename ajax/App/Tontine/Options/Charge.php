@@ -40,6 +40,14 @@ class Charge extends Component
         return $this->renderView('pages.options.charge.home');
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function after()
+    {
+        $this->cl(ChargePage::class)->page();
+    }
+
     public function select()
     {
         $title = '';
