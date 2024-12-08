@@ -4,7 +4,9 @@ namespace Ajax\App\Tontine;
 
 use Ajax\CallableClass;
 use Ajax\SelectTrait;
-use Ajax\App\Planning\Session\Session;
+use Ajax\App\Tontine\Member\Member;
+use Ajax\App\Planning\Pool\Pool;
+use Siak\Tontine\Model\Round as RoundModel;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
@@ -60,14 +62,16 @@ class Select extends CallableClass
 
         $this->selectTontine($tontine);
 
-        if(($round = $tontine->rounds->first()))
+        if($tontine->rounds->count() > 0)
         {
-            return $this->saveRound($round->id);
+            $this->_saveRound($tontine->rounds->first());
         }
 
         $this->dialog->hide();
         $this->notify->info(trans('tontine.messages.selected',
             ['tontine' => $tontine->name]));
+
+        $this->cl(Member::class)->home();
 
         return $this->response;
     }
@@ -96,9 +100,26 @@ class Select extends CallableClass
         return $this->response;
     }
 
+    protected function showPoolSection(): void
+    {
+        $this->cl(Pool::class)->home();
+    }
+
+    public function _saveRound(RoundModel $round): void
+    {
+        // Save the tontine and round ids in the user session.
+        $this->bag('tenant')->set('tontine.id', $round->tontine->id);
+        $this->bag('tenant')->set('round.id', $round->id);
+        $this->tenantService->setRound($round);
+
+        $this->selectRound($round);
+        $this->bag('planning')->set('round.id', $round->id);
+        $this->cache->set('planning.round', $round);
+    }
+
     /**
      * @databag planning
-     * @after refreshSession
+     * @after showPoolSection
      */
     public function saveRound(int $roundId)
     {
@@ -111,26 +132,13 @@ class Select extends CallableClass
             return $this->response;
         }
 
-        $this->dialog->hide();
-
         // Save the tontine and round ids in the user session.
-        $this->bag('tenant')->set('tontine.id', $tontine->id);
-        $this->bag('tenant')->set('round.id', $round->id);
-        $this->tenantService->setRound($round);
+        $this->_saveRound($round);
 
-        $this->selectRound($round);
-        // Update the session list.
-        $this->bag('planning')->set('round.id', $round->id);
-        $this->cache->set('planning.round', $round);
-
+        $this->dialog->hide();
         $this->notify->info(trans('tontine.round.messages.selected',
             ['tontine' => $tontine->name, 'round' => $round->title]));
 
         return $this->response;
-    }
-
-    protected function refreshSession(): void
-    {
-        $this->cl(Session::class)->render();
     }
 }

@@ -2,7 +2,6 @@
   $rqOrganisation = Jaxon\rq(Ajax\App\Tontine\Organisation::class);
   $rqOrganisationPage = Jaxon\rq(Ajax\App\Tontine\OrganisationPage::class);
   $rqInviteTontine = Jaxon\rq(Ajax\App\Tontine\Invite\Tontine::class);
-  $rqSelect = Jaxon\rq(Ajax\App\Tontine\Select::class);
 @endphp
           <div class="section-body">
             <div class="row">
@@ -13,11 +12,6 @@
                 <div class="btn-group float-right ml-2 mb-2" role="group">
                   <button type="button" class="btn btn-primary" @jxnClick($rqOrganisation->home())><i class="fa fa-sync"></i></button>
                   <button type="button" class="btn btn-primary" @jxnClick($rqOrganisation->add())><i class="fa fa-plus"></i></button>
-                </div>
-                <div class="btn-group float-right" role="group">
-                  <button type="button" class="btn btn-primary" @jxnClick($rqSelect->showOrganisations())>
-                    <i class="fa fa-check-square"></i> {{ __('tontine.actions.choose') }}
-                  </button>
                 </div>
               </div>
             </div>

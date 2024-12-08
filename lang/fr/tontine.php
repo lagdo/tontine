@@ -72,7 +72,7 @@ return [
         'created' => "L'organisation a été ajoutée",
         'updated' => "L'organisation a été modifiée",
         'deleted' => "L'organisation a été supprimée",
-        'selected' => "Vous avez sélectionné l'organisation :tontine. Vous devez encore ajouter des tours sur sa tontine.",
+        'selected' => "Vous avez sélectionné l'organisation :tontine.",
         'screen' => [
             'orientation' => "Si vous utilisez un appareil mobile, nous vous conseillons de le placer en mode paysage, pour un meilleur affichage.",
         ],

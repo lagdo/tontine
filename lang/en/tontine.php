@@ -72,7 +72,7 @@ return [
         'created' => "The organisation was successfully created.",
         'updated' => "The organisation was successfully updated.",
         'deleted' => "The organisation was successfully deleted.",
-        'selected' => "You have selected the organisation :tontine. You still need to add some rounds to its tontine.",
+        'selected' => "You have selected the organisation :tontine.",
         'screen' => [
             'orientation' => "If you are using a mobile device, we advise you to place it in landscape mode, for a better display.",
         ],

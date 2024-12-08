@@ -1,5 +1,4 @@
 @php
-  $rqSelect = Jaxon\rq(Ajax\App\Tontine\Select::class);
   $rqRound = Jaxon\rq(Ajax\App\Planning\Session\Round::class);
   $rqRoundPage = Jaxon\rq(Ajax\App\Planning\Session\RoundPage::class);
   $rqSession = Jaxon\rq(Ajax\App\Planning\Session\Session::class);
@@ -10,13 +9,6 @@
                 <div class="row">
                   <div class="col">
                     <h2 class="section-title">{{ __('tontine.titles.rounds') }}</h2>
-                  </div>
-                  <div class="col-auto">
-                    <div class="btn-group float-right" role="group">
-                      <button type="button" class="btn btn-primary" @jxnClick($rqSelect->showRounds())>
-                        <i class="fa fa-check-square"></i> {{ __('tontine.actions.choose') }}
-                      </button>
-                    </div>
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right" role="group">
