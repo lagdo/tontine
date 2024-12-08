@@ -6,8 +6,7 @@
               <div class="section-body">
                 <div class="row">
                   <div class="col">
-                    <h2 class="section-title">{{ $pool->title }} :: {{ __('tontine.pool.titles.subscriptions')
-                      }} (<span @jxnBind($rqMemberCounter)>@jxnHtml($rqMemberCounter)</span>)</h2>
+                    <h2 class="section-title">{{ $pool->title }} :: {{ __('tontine.pool.titles.subscriptions') }}</h2>
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2" role="group">
@@ -24,6 +23,11 @@
                       <div class="input-group-append">
                         <button type="button" class="btn btn-primary" @jxnClick($rqMember->search(Jaxon\jq('#txt-subscription-members-search')->val()))><i class="fa fa-search"></i></button>
                       </div>
+                    </div>
+                  </div>
+                  <div class="col-auto">
+                    <div style="width:90px; font-weight:bold; padding-top:10px;" @jxnBind($rqMemberCounter)>
+                      @jxnHtml($rqMemberCounter)
                     </div>
                   </div>
                 </div>

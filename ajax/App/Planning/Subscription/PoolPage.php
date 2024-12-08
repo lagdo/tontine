@@ -34,9 +34,13 @@ class PoolPage extends PageComponent
      */
     public function html(): Stringable
     {
+        $pools = $this->poolService->getPools($this->page);
+        // When showing the page for the first time, we'll need to get the first pool
+        $this->cache->set('subscription.pools', $pools);
+
         return $this->renderView('pages.planning.subscription.pool.page', [
             'round' => $this->tenantService->round(),
-            'pools' => $this->poolService->getPools($this->page),
+            'pools' => $pools,
         ]);
     }
 
