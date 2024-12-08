@@ -1,13 +1,13 @@
 <?php
 
-namespace Ajax\App\Tontine\Invite;
+namespace Ajax\App\Admin\User;
 
 use Ajax\PageComponent;
-use Siak\Tontine\Service\Tontine\InviteService;
+use Siak\Tontine\Service\Tontine\UserService;
 use Stringable;
 
 /**
- * @databag invite
+ * @databag user
  */
 class GuestPage extends PageComponent
 {
@@ -16,12 +16,12 @@ class GuestPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['invite', 'guest.page'];
+    protected array $bagOptions = ['user', 'guest.page'];
 
     /**
-     * @param InviteService $inviteService
+     * @param UserService $userService
      */
-    public function __construct(private InviteService $inviteService)
+    public function __construct(private UserService $userService)
     {}
 
     /**
@@ -29,7 +29,7 @@ class GuestPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->inviteService->getGuestInviteCount();
+        return $this->userService->getGuestInviteCount();
     }
 
     /**
@@ -37,8 +37,8 @@ class GuestPage extends PageComponent
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.invite.guest.page', [
-            'invites' => $this->inviteService->getGuestInvites($this->page),
+        return $this->renderView('pages.user.guest.page', [
+            'invites' => $this->userService->getGuestInvites($this->page),
         ]);
     }
 

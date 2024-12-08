@@ -15,7 +15,7 @@ use function trans;
 
 /**
  * @databag meeting
- * @before checkGuestAccess ["meeting", "sessions"]
+ * @before checkHostAccess ["meeting", "sessions"]
  */
 class Session extends Component
 {

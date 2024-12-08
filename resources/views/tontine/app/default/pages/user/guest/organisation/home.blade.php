@@ -1,6 +1,6 @@
 @php
-  $rqTontine = Jaxon\rq(Ajax\App\Tontine\Guest\Tontine::class);
-  $rqTontinePage = Jaxon\rq(Ajax\App\Tontine\Guest\TontinePage::class);
+  $rqOrganisation = Jaxon\rq(Ajax\App\Admin\User\Guest\Organisation::class);
+  $rqOrganisationPage = Jaxon\rq(Ajax\App\Admin\User\Guest\OrganisationPage::class);
 @endphp
             <div class="section-body">
               <div class="row">
@@ -9,13 +9,13 @@
                 </div>
                 <div class="col-auto">
                   <div class="btn-group float-right ml-2 mb-2" role="group">
-                    <button type="button" class="btn btn-primary" @jxnClick($rqTontine->render())><i class="fa fa-sync"></i></button>
+                    <button type="button" class="btn btn-primary" @jxnClick($rqOrganisation->render())><i class="fa fa-sync"></i></button>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="card shadow mb-4">
-              <div class="card-body" @jxnBind($rqTontinePage)>
+              <div class="card-body" @jxnBind($rqOrganisationPage)>
               </div>
             </div>

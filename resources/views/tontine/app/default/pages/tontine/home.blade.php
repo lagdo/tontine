@@ -1,7 +1,7 @@
 @php
-  $rqOrganisation = Jaxon\rq(Ajax\App\Tontine\Organisation::class);
-  $rqOrganisationPage = Jaxon\rq(Ajax\App\Tontine\OrganisationPage::class);
-  $rqInviteTontine = Jaxon\rq(Ajax\App\Tontine\Invite\Tontine::class);
+  $rqOrganisation = Jaxon\rq(Ajax\App\Admin\Organisation\Organisation::class);
+  $rqOrganisationPage = Jaxon\rq(Ajax\App\Admin\Organisation\OrganisationPage::class);
+  $rqUserTontine = Jaxon\rq(Ajax\App\Admin\User\Guest\Organisation::class);
 @endphp
           <div class="section-body">
             <div class="row">
@@ -22,8 +22,8 @@
             </div>
           </div>
 
-@if ($hasGuestTontines)
-          <div @jxnBind($rqInviteTontine)>
-            @jxnHtml($rqInviteTontine)
+@if ($hasGuestOrganisations)
+          <div @jxnBind($rqUserTontine)>
+            @jxnHtml($rqUserTontine)
           </div>
 @endif

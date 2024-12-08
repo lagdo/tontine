@@ -1,19 +1,19 @@
 <?php
 
-namespace Ajax\App\Tontine\Invite\Host;
+namespace Ajax\App\Admin\User\Host;
 
 use Ajax\Component;
-use Ajax\App\Tontine\Invite\Host;
+use Ajax\App\Admin\User\Host;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Service\Tontine\InviteService;
+use Siak\Tontine\Service\Tontine\UserService;
 use Siak\Tontine\Service\Tontine\TontineService;
-use Siak\Tontine\Validation\Tontine\GuestAccessValidator;
+use Siak\Tontine\Validation\Tontine\HostAccessValidator;
 use Stringable;
 
 use function trans;
 
 /**
- * @databag invite
+ * @databag user
  * @before getInvite
  */
 class Access extends Component
@@ -24,15 +24,15 @@ class Access extends Component
     protected $overrides = Host::class;
 
     /**
-     * @var GuestAccessValidator
+     * @var HostAccessValidator
      */
-    protected GuestAccessValidator $validator;
+    protected HostAccessValidator $validator;
 
     /**
-     * @param InviteService $inviteService
+     * @param UserService $userService
      * @param TontineService $tontineService
      */
-    public function __construct(private InviteService $inviteService,
+    public function __construct(private UserService $userService,
         private TontineService $tontineService)
     {}
 
@@ -40,14 +40,14 @@ class Access extends Component
     {
         if($this->target()->method() === 'home')
         {
-            $this->bag('invite')->set('invite.id', $this->target()->args()[0]);
+            $this->bag('user')->set('invite.id', $this->target()->args()[0]);
         }
-        $inviteId = $this->bag('invite')->get('invite.id');
-        if(!($invite = $this->inviteService->getHostInvite($inviteId)))
+        $inviteId = $this->bag('user')->get('invite.id');
+        if(!($invite = $this->userService->getHostInvite($inviteId)))
         {
             throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
         }
-        $this->cache->set('invite.invite', $invite);
+        $this->cache->set('user.invite', $invite);
 
         // Do not find the tontine on the home page.
         if($this->target()->method() === 'home')
@@ -56,8 +56,8 @@ class Access extends Component
         }
 
         $tontineId = $this->target()->method() === 'tontine' ? $this->target()->args()[0] :
-            $this->bag('invite')->get('tontine.id');
-        $this->cache->set('invite.tontine', $this->tontineService->getTontine($tontineId));
+            $this->bag('user')->get('tontine.id');
+        $this->cache->set('user.tontine', $this->tontineService->getTontine($tontineId));
     }
 
     /**
@@ -65,9 +65,9 @@ class Access extends Component
      */
     public function html(): Stringable
     {
-        $invite = $this->cache->get('invite.invite');
+        $invite = $this->cache->get('user.invite');
 
-        return $this->renderView('pages.invite.guest.access.home', [
+        return $this->renderView('pages.user.host.access.home', [
             'guest' => $invite->guest,
             'tontines' => $this->tenantService->user()->tontines->pluck('name', 'id'),
         ]);
@@ -92,15 +92,15 @@ class Access extends Component
         }
 
         $tontine = $tontines->first();
-        $this->bag('invite')->set('tontine.id', $tontine->id);
-        $this->cache->set('invite.tontine', $tontine);
+        $this->bag('user')->set('tontine.id', $tontine->id);
+        $this->cache->set('user.tontine', $tontine);
 
         return $this->render();
     }
 
     public function tontine(int $tontineId)
     {
-        $this->bag('invite')->set('tontine.id', $tontineId);
+        $this->bag('user')->set('tontine.id', $tontineId);
 
         return $this->cl(AccessContent::class)->render();
     }
@@ -110,10 +110,10 @@ class Access extends Component
      */
     public function saveAccess(array $formValues)
     {
-        $invite = $this->cache->get('invite.invite');
-        $tontine = $this->cache->get('invite.tontine');
+        $invite = $this->cache->get('user.invite');
+        $tontine = $this->cache->get('user.tontine');
         $access = $this->validator->validateItem($formValues['access'] ?? []);
-        $this->inviteService->saveGuestTontineAccess($invite, $tontine, $access);
+        $this->userService->saveHostTontineAccess($invite, $tontine, $access);
 
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.saved'));

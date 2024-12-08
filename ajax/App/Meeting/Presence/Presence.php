@@ -13,7 +13,7 @@ use function trans;
 
 /**
  * @databag presence
- * @before checkGuestAccess ["meeting", "presences"]
+ * @before checkHostAccess ["meeting", "presences"]
  */
 class Presence extends Component
 {

@@ -30,7 +30,7 @@ class Round extends Component
     {}
 
     /**
-     * @before checkGuestAccess ["planning", "sessions"]
+     * @before checkHostAccess ["planning", "sessions"]
      * @after hideMenuOnMobile
      */
     public function home(): AjaxResponse

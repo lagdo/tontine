@@ -1,14 +1,17 @@
 <?php
 
-namespace Ajax\App\Tontine\Invite;
+namespace Ajax\App\Admin\User;
 
 use Ajax\Component;
-use Siak\Tontine\Service\Tontine\InviteService;
+use Siak\Tontine\Service\Tontine\UserService;
 use Siak\Tontine\Validation\Tontine\GuestInviteValidator;
 use Stringable;
 
 use function Jaxon\pm;
 
+/**
+ * @databag user
+ */
 class Host extends Component
 {
     /**
@@ -17,9 +20,9 @@ class Host extends Component
     protected GuestInviteValidator $validator;
 
     /**
-     * @param InviteService $inviteService
+     * @param UserService $userService
      */
-    public function __construct(private InviteService $inviteService)
+    public function __construct(private UserService $userService)
     {}
 
     /**
@@ -27,7 +30,7 @@ class Host extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.invite.host.home');
+        return $this->renderView('pages.user.host.home');
     }
 
     /**
@@ -41,7 +44,7 @@ class Host extends Component
     public function add()
     {
         $title = trans('tontine.invite.titles.add');
-        $content = $this->renderView('pages.invite.host.add');
+        $content = $this->renderView('pages.user.host.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -64,7 +67,7 @@ class Host extends Component
     public function create(array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
-        $this->inviteService->createInvite($values['email']);
+        $this->userService->createInvite($values['email']);
 
         $this->dialog->hide();
         $this->notify->title(trans('common.titles.success'))
@@ -75,7 +78,7 @@ class Host extends Component
 
     public function cancel(int $inviteId)
     {
-        $this->inviteService->cancelInvite($inviteId);
+        $this->userService->cancelInvite($inviteId);
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.cancelled'));
 
@@ -84,7 +87,7 @@ class Host extends Component
 
     public function delete(int $inviteId)
     {
-        $this->inviteService->deleteHostInvite($inviteId);
+        $this->userService->deleteHostInvite($inviteId);
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.deleted'));
 

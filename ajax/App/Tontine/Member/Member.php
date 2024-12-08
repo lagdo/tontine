@@ -40,7 +40,7 @@ class Member extends Component
     {}
 
     /**
-     * @before checkGuestAccess ["tontine", "members"]
+     * @before checkHostAccess ["tontine", "members"]
      * @after hideMenuOnMobile
      */
     public function home(): AjaxResponse

@@ -29,7 +29,7 @@ class Options extends Component
     {}
 
     /**
-     * @before checkGuestAccess ["tontine", "categories"]
+     * @before checkHostAccess ["tontine", "categories"]
      * @databag charge
      * @after hideMenuOnMobile
      */

@@ -22,7 +22,7 @@ class Subscription extends Component
     protected $overrides = SectionContent::class;
 
     /**
-     * @before checkGuestAccess ["planning", "pools"]
+     * @before checkHostAccess ["planning", "pools"]
      * @after hideMenuOnMobile
      */
     public function home(): AjaxResponse

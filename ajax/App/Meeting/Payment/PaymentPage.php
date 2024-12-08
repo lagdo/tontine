@@ -10,7 +10,7 @@ use Stringable;
 
 /**
  * @databag payment
- * @before checkGuestAccess ["meeting", "payments"]
+ * @before checkHostAccess ["meeting", "payments"]
  */
 class PaymentPage extends PageComponent
 {

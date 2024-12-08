@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Tontine\Invite;
+namespace Ajax\App\Admin\User;
 
 use Ajax\Component;
 use Ajax\App\SectionContent;
@@ -11,9 +11,9 @@ use Stringable;
 use function trans;
 
 /**
- * @databag invite
+ * @databag user
  */
-class Invite extends Component
+class User extends Component
 {
     /**
      * @var string
@@ -41,7 +41,7 @@ class Invite extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.invite.home');
+        return $this->renderView('pages.user.home');
     }
 
     /**

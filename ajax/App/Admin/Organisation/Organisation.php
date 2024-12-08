@@ -1,9 +1,10 @@
 <?php
 
-namespace Ajax\App\Tontine;
+namespace Ajax\App\Admin\Organisation;
 
 use Ajax\Component;
 use Ajax\SelectTrait;
+use Ajax\App\Admin\User\Guest\Organisation as GuestOrganisation;
 use Ajax\App\SectionContent;
 use Ajax\App\SectionTitle;
 use Jaxon\Response\AjaxResponse;
@@ -72,7 +73,7 @@ class Organisation extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.tontine.home', [
-            'hasGuestTontines' => $this->tontineService->hasGuestTontines(),
+            'hasGuestOrganisations' => $this->tontineService->hasGuestOrganisations(),
         ]);
     }
 
@@ -91,6 +92,11 @@ class Organisation extends Component
         }
 
         $this->cl(OrganisationPage::class)->page();
+
+        if($this->tontineService->hasGuestOrganisations())
+        {
+            $this->cl(GuestOrganisation::class)->render();
+        }
     }
 
     /**

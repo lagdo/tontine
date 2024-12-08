@@ -39,7 +39,7 @@ class Pool extends Component
     {}
 
     /**
-     * @before checkGuestAccess ["planning", "pools"]
+     * @before checkHostAccess ["planning", "pools"]
      * @after hideMenuOnMobile
      */
     public function home(): AjaxResponse

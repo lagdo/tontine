@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Tontine;
+namespace Ajax\App\Admin\User\Guest;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\LocaleService;
@@ -8,8 +8,7 @@ use Siak\Tontine\Service\Tontine\TontineService;
 use Stringable;
 
 /**
- * @databag tontine
- * @databag pool
+ * @databag user
  */
 class OrganisationPage extends PageComponent
 {
@@ -18,7 +17,7 @@ class OrganisationPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['tontine', 'page'];
+    protected array $bagOptions = ['user', 'tontine.page'];
 
     /**
      * @param LocaleService $localeService
@@ -33,7 +32,7 @@ class OrganisationPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->tontineService->getTontineCount();
+        return $this->tontineService->getGuestTontineCount();
     }
 
     /**
@@ -41,10 +40,10 @@ class OrganisationPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $tontines = $this->tontineService->getTontines($this->page);
+        $tontines = $this->tontineService->getGuestTontines($this->page);
         [$countries, $currencies] = $this->localeService->getNamesFromTontines($tontines);
 
-        return $this->renderView('pages.tontine.page', [
+        return $this->renderView('pages.user.guest.organisation.page', [
             'tontines' => $tontines,
             'countries' => $countries,
             'currencies' => $currencies,

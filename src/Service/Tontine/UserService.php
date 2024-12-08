@@ -13,7 +13,7 @@ use Siak\Tontine\Service\TenantService;
 use function count;
 use function now;
 
-class InviteService
+class UserService
 {
     /**
      * @param TenantService $tenantService
@@ -264,7 +264,7 @@ class InviteService
      *
      * @return array
      */
-    public function getGuestTontineAccess(GuestInvite $invite, Tontine $tontine): array
+    public function getHostTontineAccess(GuestInvite $invite, Tontine $tontine): array
     {
         $inviteTontine = $invite->tontines()->find($tontine->id);
         return !$inviteTontine ? [] : $inviteTontine->permission->access;
@@ -279,7 +279,7 @@ class InviteService
      *
      * @return void
      */
-    public function saveGuestTontineAccess(GuestInvite $invite, Tontine $tontine, array $access)
+    public function saveHostTontineAccess(GuestInvite $invite, Tontine $tontine, array $access)
     {
         DB::transaction(function() use($invite, $tontine, $access) {
             $invite->tontines()->detach($tontine->id);

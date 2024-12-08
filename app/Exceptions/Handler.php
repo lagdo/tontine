@@ -6,7 +6,7 @@ use Ajax\App\Meeting\Session\Session;
 use Ajax\App\Planning\Pool\Pool;
 use Ajax\App\Planning\Session\Round;
 use Ajax\App\Tontine\Member\Member;
-use Ajax\App\Tontine\Organisation;
+use Ajax\App\Admin\Organisation\Organisation;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
 use Jaxon\Laravel\App\Jaxon;
@@ -70,11 +70,11 @@ class Handler extends ExceptionHandler
      *
      * @return bool
      */
-    private function checkGuestAccess(string $section, string $entry): bool
+    private function checkHostAccess(string $section, string $entry): bool
     {
         /** @var TenantService */
         $tenantService = app()->make(TenantService::class);
-        if(!($access = $tenantService->checkGuestAccess($section, $entry, true)))
+        if(!($access = $tenantService->checkHostAccess($section, $entry, true)))
         {
             cl(Organisation::class)->home();
         }
@@ -133,7 +133,7 @@ class Handler extends ExceptionHandler
 
         // Show the warning message in a dialog, and show the sessions page.
         $this->renderable(function (PlanningRoundException $e) {
-            if($this->checkGuestAccess('planning', 'sessions'))
+            if($this->checkHostAccess('planning', 'sessions'))
             {
                 cl(Round::class)->home();
             }
@@ -143,7 +143,7 @@ class Handler extends ExceptionHandler
 
         // Show the warning message in a dialog, and show the pools page.
         $this->renderable(function (PlanningPoolException $e) {
-            if($this->checkGuestAccess('planning', 'pools'))
+            if($this->checkHostAccess('planning', 'pools'))
             {
                 cl(Pool::class)->home();
             }
@@ -153,7 +153,7 @@ class Handler extends ExceptionHandler
 
         // Show the warning message in a dialog, and show the members page.
         $this->renderable(function (TontineMemberException $e) {
-            if($this->checkGuestAccess('tontine', 'members'))
+            if($this->checkHostAccess('tontine', 'members'))
             {
                 cl(Member::class)->home();
             }
@@ -163,7 +163,7 @@ class Handler extends ExceptionHandler
 
         // Show the warning message in a dialog, and show the sessions page.
         $this->renderable(function (MeetingRoundException $e) {
-            if($this->checkGuestAccess('meeting', 'sessions'))
+            if($this->checkHostAccess('meeting', 'sessions'))
             {
                 cl(Session::class)->home();
             }

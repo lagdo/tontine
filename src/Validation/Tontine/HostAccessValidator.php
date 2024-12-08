@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Validator;
 use Siak\Tontine\Validation\AbstractValidator;
 use Siak\Tontine\Validation\ValidationException;
 
-class GuestAccessValidator extends AbstractValidator
+class HostAccessValidator extends AbstractValidator
 {
     /**
      * @param array $values

@@ -48,7 +48,7 @@ use Siak\Tontine\Service\Report\SessionService as SessionReportService;
 use Siak\Tontine\Service\Tontine\CategoryService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Service\Tontine\FundService;
-use Siak\Tontine\Service\Tontine\InviteService;
+use Siak\Tontine\Service\Tontine\UserService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Meeting\ClosingValidator;
@@ -64,8 +64,8 @@ use Siak\Tontine\Validation\Planning\RoundValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
 use Siak\Tontine\Validation\Tontine\FundValidator;
-use Siak\Tontine\Validation\Tontine\GuestAccessValidator;
 use Siak\Tontine\Validation\Tontine\GuestInviteValidator;
+use Siak\Tontine\Validation\Tontine\HostAccessValidator;
 use Siak\Tontine\Validation\Tontine\MemberValidator;
 use Siak\Tontine\Validation\Tontine\OptionsValidator;
 use Siak\Tontine\Validation\Tontine\TontineValidator;
@@ -160,7 +160,7 @@ class SiakServiceProvider extends ServiceProvider
 
         $this->app->singleton(TenantService::class, TenantService::class);
         $this->app->singleton(TontinePoolService::class, TontinePoolService::class);
-        $this->app->singleton(InviteService::class, InviteService::class);
+        $this->app->singleton(UserService::class, UserService::class);
         $this->app->singleton(MemberService::class, MemberService::class);
         $this->app->singleton(TontineService::class, TontineService::class);
 
@@ -191,7 +191,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(OptionsValidator::class, OptionsValidator::class);
         $this->app->singleton(TontineValidator::class, TontineValidator::class);
         $this->app->singleton(TargetValidator::class, TargetValidator::class);
-        $this->app->singleton(GuestAccessValidator::class, GuestAccessValidator::class);
+        $this->app->singleton(HostAccessValidator::class, HostAccessValidator::class);
         $this->app->singleton(GuestInviteValidator::class, GuestInviteValidator::class);
     }
 }

@@ -1,7 +1,6 @@
 @php
-  $rqInvite = Jaxon\rq(Ajax\App\Tontine\Invite\Invite::class);
-  $rqHostInvite = Jaxon\rq(Ajax\App\Tontine\Invite\Host::class);
-  $rqGuestInvite = Jaxon\rq(Ajax\App\Tontine\Invite\Guest::class);
+  $rqHostUser = Jaxon\rq(Ajax\App\Admin\User\Host::class);
+  $rqGuestUser = Jaxon\rq(Ajax\App\Admin\User\Guest::class);
 @endphp
           <div class="row sm-screen-selector mb-3" id="invites-sm-screens">
             <div class="col-12">
@@ -16,8 +15,8 @@
             </div>
           </div>
           <div class="row">
-            <div @jxnBind($rqHostInvite) class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-host-invites-home">
+            <div @jxnBind($rqHostUser) class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-host-invites-home">
             </div>
-            <div @jxnBind($rqGuestInvite) class="col-md-6 col-sm-12 sm-screen" id="content-guest-invites-home">
+            <div @jxnBind($rqGuestUser) class="col-md-6 col-sm-12 sm-screen" id="content-guest-invites-home">
             </div>
           </div>

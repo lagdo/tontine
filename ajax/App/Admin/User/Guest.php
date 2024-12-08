@@ -1,17 +1,20 @@
 <?php
 
-namespace Ajax\App\Tontine\Invite;
+namespace Ajax\App\Admin\User;
 
 use Ajax\Component;
-use Siak\Tontine\Service\Tontine\InviteService;
+use Siak\Tontine\Service\Tontine\UserService;
 use Stringable;
 
+/**
+ * @databag user
+ */
 class Guest extends Component
 {
     /**
-     * @param InviteService $inviteService
+     * @param UserService $userService
      */
-    public function __construct(private InviteService $inviteService)
+    public function __construct(private UserService $userService)
     {}
 
     /**
@@ -19,7 +22,7 @@ class Guest extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.invite.guest.home');
+        return $this->renderView('pages.user.guest.home');
     }
 
     /**
@@ -32,7 +35,7 @@ class Guest extends Component
 
     public function accept(int $inviteId)
     {
-        $this->inviteService->acceptInvite($inviteId);
+        $this->userService->acceptInvite($inviteId);
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.accepted'));
 
@@ -41,7 +44,7 @@ class Guest extends Component
 
     public function refuse(int $inviteId)
     {
-        $this->inviteService->refuseInvite($inviteId);
+        $this->userService->refuseInvite($inviteId);
         $this->notify->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.refused'));
 
@@ -50,7 +53,7 @@ class Guest extends Component
 
     public function delete(int $inviteId)
     {
-        if($this->inviteService->deleteGuestInvite($inviteId))
+        if($this->userService->deleteGuestInvite($inviteId))
         {
             // The active tontine invite is deleted. Reload the page.
             $this->response->redirect('/');

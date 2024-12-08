@@ -8,7 +8,7 @@ use Stringable;
 
 /**
  * @databag session
- * @before checkGuestAccess ["meeting", "sessions"]
+ * @before checkHostAccess ["meeting", "sessions"]
  */
 class SessionPage extends PageComponent
 {

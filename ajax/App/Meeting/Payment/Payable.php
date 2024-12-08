@@ -13,7 +13,7 @@ use function compact;
 
 /**
  * @databag payment
- * @before checkGuestAccess ["meeting", "payments"]
+ * @before checkHostAccess ["meeting", "payments"]
  */
 class Payable extends Component
 {

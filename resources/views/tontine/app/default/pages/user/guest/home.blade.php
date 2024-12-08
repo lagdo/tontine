@@ -1,6 +1,6 @@
 @php
-  $rqGuestInvite = Jaxon\rq(Ajax\App\Tontine\Invite\Guest::class);
-  $rqGuestInvitePage = Jaxon\rq(Ajax\App\Tontine\Invite\GuestPage::class);
+  $rqGuestUser = Jaxon\rq(Ajax\App\Admin\User\Guest::class);
+  $rqGuestUserPage = Jaxon\rq(Ajax\App\Admin\User\GuestPage::class);
 @endphp
               <div class="section-body">
                 <div class="row">
@@ -9,13 +9,13 @@
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">
-                      <button type="button" class="btn btn-primary" @jxnClick($rqGuestInvite->render())><i class="fa fa-sync"></i></button>
+                      <button type="button" class="btn btn-primary" @jxnClick($rqGuestUser->render())><i class="fa fa-sync"></i></button>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div class="card shadow mb-4">
-                <div class="card-body" @jxnBind($rqGuestInvitePage)>
+                <div class="card-body" @jxnBind($rqGuestUserPage)>
                 </div>
               </div>

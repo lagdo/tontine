@@ -25,7 +25,7 @@ class Round extends Component
     {}
 
     /**
-     * @before checkGuestAccess ["report", "round"]
+     * @before checkHostAccess ["report", "round"]
      * @before checkOpenedSessions
      * @after hideMenuOnMobile
      */

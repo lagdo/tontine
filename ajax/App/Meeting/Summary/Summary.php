@@ -12,7 +12,7 @@ use function trans;
 
 /**
  * @databag meeting
- * @before checkGuestAccess ["meeting", "sessions"]
+ * @before checkHostAccess ["meeting", "sessions"]
  */
 class Summary extends Component
 {

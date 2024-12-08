@@ -15,7 +15,7 @@ use function trans;
 
 /**
  * @databag payment
- * @before checkGuestAccess ["meeting", "payments"]
+ * @before checkHostAccess ["meeting", "payments"]
  * @before getOpenedSessions
  * @after hideMenuOnMobile
  */

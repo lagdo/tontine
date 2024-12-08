@@ -5,14 +5,14 @@
 @jxnCss
 
 @php
-    $rqOrganisation = Jaxon\rq(Ajax\App\Tontine\Organisation::class);
-    $rqInvite = Jaxon\rq(Ajax\App\Tontine\Invite\Invite::class);
+    $rqOrganisation = Jaxon\rq(Ajax\App\Admin\Organisation\Organisation::class);
+    $rqUser = Jaxon\rq(Ajax\App\Admin\User\User::class);
     $rqSession = Jaxon\rq(Ajax\App\Meeting\Session\Session::class);
 @endphp
 <script type='text/javascript'>
     const tontine = {
         home: () => {!! $rqOrganisation->home() !!},
-        users: () => {!! $rqInvite->home() !!},
+        users: () => {!! $rqUser->home() !!},
         labels: {
             amount: "{{ __('common.labels.amount') }}",
             percentage: "{{ __('meeting.loan.labels.percentage') }}",

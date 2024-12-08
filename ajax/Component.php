@@ -37,9 +37,9 @@ abstract class Component extends JaxonComponent
      * @return bool
      * @throws MessageException
      */
-    protected function checkGuestAccess(string $section, string $entry, bool $return = false): bool
+    protected function checkHostAccess(string $section, string $entry, bool $return = false): bool
     {
-        return $this->tenantService->checkGuestAccess($section, $entry, $return);
+        return $this->tenantService->checkHostAccess($section, $entry, $return);
     }
 
     /**

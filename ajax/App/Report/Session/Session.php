@@ -29,7 +29,7 @@ class Session extends Component
     {}
 
     /**
-     * @before checkGuestAccess ["report", "session"]
+     * @before checkHostAccess ["report", "session"]
      * @before checkOpenedSessions
      * @after hideMenuOnMobile
      */

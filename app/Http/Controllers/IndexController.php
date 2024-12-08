@@ -26,7 +26,7 @@ class IndexController extends Controller
             'locales' => LaravelLocalization::getSupportedLocales(),
             'locale' => LaravelLocalization::getCurrentLocale(),
             'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
-            'hasGuestTontines' => $tontineService->hasGuestTontines()
+            'hasGuestOrganisations' => $tontineService->hasGuestOrganisations()
         ]);
 
         return view("tontine::base.home");
