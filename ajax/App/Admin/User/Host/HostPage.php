@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Admin\User;
+namespace Ajax\App\Admin\User\Host;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Tontine\UserService;
@@ -9,14 +9,14 @@ use Stringable;
 /**
  * @databag user
  */
-class GuestPage extends PageComponent
+class HostPage extends PageComponent
 {
     /**
      * The pagination databag options
      *
      * @var array
      */
-    protected array $bagOptions = ['user', 'guest.page'];
+    protected array $bagOptions = ['user', 'host.page'];
 
     /**
      * @param UserService $userService
@@ -29,7 +29,7 @@ class GuestPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->userService->getGuestInviteCount();
+        return $this->userService->getHostInviteCount();
     }
 
     /**
@@ -37,8 +37,8 @@ class GuestPage extends PageComponent
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.user.guest.page', [
-            'invites' => $this->userService->getGuestInvites($this->page),
+        return $this->renderView('pages.user.host.page', [
+            'invites' => $this->userService->getHostInvites($this->page),
         ]);
     }
 
@@ -47,6 +47,6 @@ class GuestPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('content-guest-invites-page');
+        $this->response->js()->makeTableResponsive('content-host-invites-page');
     }
 }

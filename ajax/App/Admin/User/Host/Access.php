@@ -3,7 +3,6 @@
 namespace Ajax\App\Admin\User\Host;
 
 use Ajax\Component;
-use Ajax\App\Admin\User\Host;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Tontine\UserService;
 use Siak\Tontine\Service\Tontine\TontineService;

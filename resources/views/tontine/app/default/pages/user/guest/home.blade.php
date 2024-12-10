@@ -1,6 +1,6 @@
 @php
-  $rqGuestUser = Jaxon\rq(Ajax\App\Admin\User\Guest::class);
-  $rqGuestUserPage = Jaxon\rq(Ajax\App\Admin\User\GuestPage::class);
+  $rqGuestUser = Jaxon\rq(Ajax\App\Admin\User\Guest\Guest::class);
+  $rqGuestUserPage = Jaxon\rq(Ajax\App\Admin\User\Guest\GuestPage::class);
 @endphp
               <div class="section-body">
                 <div class="row">

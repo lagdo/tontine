@@ -2,9 +2,11 @@
 
 namespace Ajax\App\Admin\User;
 
-use Ajax\Component;
+use Ajax\App\Admin\User\Guest\Guest;
+use Ajax\App\Admin\User\Host\Host;
 use Ajax\App\SectionContent;
 use Ajax\App\SectionTitle;
+use Ajax\Component;
 use Jaxon\Response\AjaxResponse;
 use Stringable;
 
@@ -51,6 +53,7 @@ class User extends Component
     {
         $this->cl(Host::class)->render();
         $this->cl(Guest::class)->render();
+
         $this->response->js()->setSmScreenHandler('invites-sm-screens');
     }
 }

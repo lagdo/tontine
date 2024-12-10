@@ -1,7 +1,7 @@
 @php
   $rqOrganisation = Jaxon\rq(Ajax\App\Admin\Organisation\Organisation::class);
   $rqOrganisationPage = Jaxon\rq(Ajax\App\Admin\Organisation\OrganisationPage::class);
-  $rqUserTontine = Jaxon\rq(Ajax\App\Admin\User\Guest\Organisation::class);
+  $rqGuestOrganisation = Jaxon\rq(Ajax\App\Admin\User\Guest\Organisation::class);
 @endphp
           <div class="section-body">
             <div class="row">
@@ -23,7 +23,7 @@
           </div>
 
 @if ($hasGuestOrganisations)
-          <div @jxnBind($rqUserTontine)>
-            @jxnHtml($rqUserTontine)
+          <div @jxnBind($rqGuestOrganisation)>
+            @jxnHtml($rqGuestOrganisation)
           </div>
 @endif

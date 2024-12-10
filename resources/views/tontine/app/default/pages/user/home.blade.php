@@ -1,6 +1,6 @@
 @php
-  $rqHostUser = Jaxon\rq(Ajax\App\Admin\User\Host::class);
-  $rqGuestUser = Jaxon\rq(Ajax\App\Admin\User\Guest::class);
+  $rqHostUser = Jaxon\rq(Ajax\App\Admin\User\Host\Host::class);
+  $rqGuestUser = Jaxon\rq(Ajax\App\Admin\User\Guest\Guest::class);
 @endphp
           <div class="row sm-screen-selector mb-3" id="invites-sm-screens">
             <div class="col-12">
