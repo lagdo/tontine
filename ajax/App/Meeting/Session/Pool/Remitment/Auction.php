@@ -40,6 +40,14 @@ class Auction extends MeetingComponent
         ]);
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function after()
+    {
+        $this->cl(AuctionPage::class)->page();
+    }
+
     public function toggleFilter()
     {
         $filtered = $this->bag('auction')->get('filter', null);
