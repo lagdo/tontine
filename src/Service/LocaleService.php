@@ -21,11 +21,6 @@ class LocaleService
     private $currency;
 
     /**
-     * @var string
-     */
-    private $locale;
-
-    /**
      * @var NumberFormatter
      */
     private $formatter = null;
@@ -160,9 +155,8 @@ class LocaleService
     private function makeDecimalFormatter(): NumberFormatter
     {
         $formatter = new NumberFormatter($this->_locale(), NumberFormatter::DECIMAL);
-        $precision = $this->currency->getPrecision();
-        $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $precision);
-        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $precision);
+        $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 0);
+        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $this->currency->getPrecision());
         return $formatter;
     }
 

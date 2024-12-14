@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.0.2",
         "ext-gmp": "*",
+        "ext-intl": "*",
         "ext-json": "*",
         "akaunting/laravel-money": "^4.0",
         "chrome-php/chrome": "^1.8",
