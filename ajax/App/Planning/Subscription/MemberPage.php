@@ -43,7 +43,7 @@ class MemberPage extends PageComponent
     {
         $search = trim($this->bag('subscription')->get('member.search', ''));
         $filter = $this->bag('subscription')->get('member.filter', null);
-        $pool = $this->cache->get('subscription.pool');
+        $pool = $this->cache()->get('subscription.pool');
 
         return $this->subscriptionService->getMemberCount($pool, $search, $filter);
     }
@@ -55,11 +55,11 @@ class MemberPage extends PageComponent
     {
         $search = trim($this->bag('subscription')->get('member.search', ''));
         $filter = $this->bag('subscription')->get('member.filter', null);
-        $pool = $this->cache->get('subscription.pool');
+        $pool = $this->cache()->get('subscription.pool');
 
         return $this->renderView('pages.planning.subscription.member.page', [
             'members' => $this->subscriptionService
-                ->getMembers($pool, $search, $filter, $this->page),
+                ->getMembers($pool, $search, $filter, $this->pageNumber()),
             'total' => $this->subscriptionService->getSubscriptionCount($pool),
         ]);
     }

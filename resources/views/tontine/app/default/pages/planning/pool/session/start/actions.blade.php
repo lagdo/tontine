@@ -1,7 +1,7 @@
 @php
-  $formValues = Jaxon\pm()->form('start-session-form');
-  $rqStartSession = Jaxon\rq(Ajax\App\Planning\Pool\Session\Pool\StartSession::class);
-  $rqStartSessionPage = Jaxon\rq(Ajax\App\Planning\Pool\Session\Pool\StartSessionPage::class);
+  $formValues = pm()->form('start-session-form');
+  $rqStartSession = rq(Ajax\App\Planning\Pool\Session\Pool\StartSession::class);
+  $rqStartSessionPage = rq(Ajax\App\Planning\Pool\Session\Pool\StartSessionPage::class);
 @endphp
                       <div class="btn-group float-right ml-2 mb-2" role="group">
 @if ($pool->pool_round)

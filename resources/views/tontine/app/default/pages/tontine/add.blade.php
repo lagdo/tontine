@@ -1,5 +1,5 @@
 @php
-  $rqLocale = Jaxon\rq(Ajax\App\Locale::class);
+  $rqLocale = rq(Ajax\App\Locale::class);
 @endphp
       <div class="portlet-body form">
         <form class="form-horizontal" role="form" id="tontine-form">

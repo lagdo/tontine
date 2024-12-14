@@ -1,6 +1,6 @@
 @php
-  $rqSession = Jaxon\rq(Ajax\App\Meeting\Presence\Session::class);
-  $rqMember = Jaxon\rq(Ajax\App\Meeting\Presence\Member::class);
+  $rqSession = rq(Ajax\App\Meeting\Presence\Session::class);
+  $rqMember = rq(Ajax\App\Meeting\Presence\Member::class);
   $rqAtLeft = !$exchange ? $rqSession : $rqMember;
   $rqAtRight = $exchange ? $rqSession : $rqMember;
 @endphp

@@ -1,6 +1,6 @@
 @php
-  $formValues = Jaxon\pm()->form('guest-tontine-access-form');
-  $rqHostAccess = Jaxon\rq(Ajax\App\Admin\User\Host\Access::class);
+  $formValues = pm()->form('guest-tontine-access-form');
+  $rqHostAccess = rq(Ajax\App\Admin\User\Host\Access::class);
 @endphp
                 <div class="section-body">
                   <div class="row">

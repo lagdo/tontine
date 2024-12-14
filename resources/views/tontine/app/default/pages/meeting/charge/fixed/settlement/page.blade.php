@@ -1,8 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $billId = Jaxon\jq()->parent()->attr('data-bill-id')->toInt();
-  $rqSettlement = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Fixed\Settlement::class);
-  $rqSettlementPage = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Fixed\SettlementPage::class);
+  $billId = jq()->parent()->attr('data-bill-id')->toInt();
+  $rqSettlement = rq(Ajax\App\Meeting\Session\Charge\Fixed\Settlement::class);
+  $rqSettlementPage = rq(Ajax\App\Meeting\Session\Charge\Fixed\SettlementPage::class);
 @endphp
                   <div class="table-responsive" id="meeting-fee-fixed-bills" @jxnTarget()>
                     <div @jxnEvent(['.btn-add-settlement', 'click'], $rqSettlement->addSettlement($billId))></div>

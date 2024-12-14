@@ -1,8 +1,8 @@
 @php
-  $fundId = Jaxon\pm()->select('partial-refunds-fund-id')->toInt();
-  $rqRefund = Jaxon\rq(Ajax\App\Meeting\Session\Credit\Partial\Refund::class);
-  $rqRefundPage = Jaxon\rq(Ajax\App\Meeting\Session\Credit\Partial\RefundPage::class);
-  $rqAmount = Jaxon\rq(Ajax\App\Meeting\Session\Credit\Partial\Amount::class);
+  $fundId = pm()->select('partial-refunds-fund-id')->toInt();
+  $rqRefund = rq(Ajax\App\Meeting\Session\Credit\Partial\Refund::class);
+  $rqRefundPage = rq(Ajax\App\Meeting\Session\Credit\Partial\RefundPage::class);
+  $rqAmount = rq(Ajax\App\Meeting\Session\Credit\Partial\Amount::class);
 @endphp
                     <div class="row">
                       <div class="col-auto">

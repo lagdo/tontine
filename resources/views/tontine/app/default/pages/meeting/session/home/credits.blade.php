@@ -1,8 +1,8 @@
 @include('tontine.app.default.pages.meeting.session.menu.wrapper', ['session' => $session])
 @php
-  $rqLoan = Jaxon\rq(Ajax\App\Meeting\Session\Credit\Loan::class);
-  $rqRefund = Jaxon\rq(Ajax\App\Meeting\Session\Credit\Refund::class);
-  $rqPartialRefund = Jaxon\rq(Ajax\App\Meeting\Session\Credit\Partial\Refund::class);
+  $rqLoan = rq(Ajax\App\Meeting\Session\Credit\Loan::class);
+  $rqRefund = rq(Ajax\App\Meeting\Session\Credit\Refund::class);
+  $rqPartialRefund = rq(Ajax\App\Meeting\Session\Credit\Partial\Refund::class);
 @endphp
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">

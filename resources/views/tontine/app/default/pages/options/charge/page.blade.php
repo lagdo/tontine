@@ -1,8 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $chargeId = Jaxon\jq()->parent()->attr('data-charge-id')->toInt();
-  $rqCharge = Jaxon\rq(Ajax\App\Tontine\Options\Charge::class);
-  $rqChargePage = Jaxon\rq(Ajax\App\Tontine\Options\ChargePage::class);
+  $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
+  $rqCharge = rq(Ajax\App\Tontine\Options\Charge::class);
+  $rqChargePage = rq(Ajax\App\Tontine\Options\ChargePage::class);
 @endphp
               <div class="table-responsive" @jxnTarget()>
                 <div @jxnEvent(['.btn-charge-edit', 'click'], $rqCharge->edit($chargeId))></div>

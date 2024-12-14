@@ -1,17 +1,17 @@
 @php
-  $rqSession = Jaxon\rq(Ajax\App\Meeting\Session\Session::class);
-  $rqSummary = Jaxon\rq(Ajax\App\Meeting\Summary\Summary::class);
+  $rqSession = rq(Ajax\App\Meeting\Session\Session::class);
+  $rqSummary = rq(Ajax\App\Meeting\Summary\Summary::class);
 
-  $rqDeposit = Jaxon\rq(Ajax\App\Meeting\Summary\Pool\Deposit::class);
-  $rqRemitment = Jaxon\rq(Ajax\App\Meeting\Summary\Pool\Remitment::class);
-  $rqSaving = Jaxon\rq(Ajax\App\Meeting\Summary\Saving\Saving::class);
-  $rqClosing = Jaxon\rq(Ajax\App\Meeting\Summary\Saving\Closing::class);
-  $rqLoan = Jaxon\rq(Ajax\App\Meeting\Summary\Credit\Loan::class);
-  $rqRefund = Jaxon\rq(Ajax\App\Meeting\Summary\Credit\PartialRefund::class);
-  $rqRefund = Jaxon\rq(Ajax\App\Meeting\Summary\Credit\Refund::class);
-  $rqDisbursement = Jaxon\rq(Ajax\App\Meeting\Summary\Cash\Disbursement::class);
-  $rqFixedFee = Jaxon\rq(Ajax\App\Meeting\Summary\Charge\FixedFee::class);
-  $rqLibreFee = Jaxon\rq(Ajax\App\Meeting\Summary\Charge\LibreFee::class);
+  $rqDeposit = rq(Ajax\App\Meeting\Summary\Pool\Deposit::class);
+  $rqRemitment = rq(Ajax\App\Meeting\Summary\Pool\Remitment::class);
+  $rqSaving = rq(Ajax\App\Meeting\Summary\Saving\Saving::class);
+  $rqClosing = rq(Ajax\App\Meeting\Summary\Saving\Closing::class);
+  $rqLoan = rq(Ajax\App\Meeting\Summary\Credit\Loan::class);
+  $rqRefund = rq(Ajax\App\Meeting\Summary\Credit\PartialRefund::class);
+  $rqRefund = rq(Ajax\App\Meeting\Summary\Credit\Refund::class);
+  $rqDisbursement = rq(Ajax\App\Meeting\Summary\Cash\Disbursement::class);
+  $rqFixedFee = rq(Ajax\App\Meeting\Summary\Charge\FixedFee::class);
+  $rqLibreFee = rq(Ajax\App\Meeting\Summary\Charge\LibreFee::class);
 @endphp
           <div class="section-body">
             <div class="row align-items-center">

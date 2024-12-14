@@ -35,7 +35,7 @@ class Member extends MeetingComponent
         }
         $fundId = (int)$this->bag('meeting.saving')->get('fund.id', 0);
         $fund = $this->fundService->getFund($fundId, true, true);
-        $this->cache->set('meeting.saving.fund', $fund);
+        $this->cache()->set('meeting.saving.fund', $fund);
     }
 
     /**
@@ -44,7 +44,7 @@ class Member extends MeetingComponent
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.saving.member.home', [
-            'fund' => $this->cache->get('meeting.saving.fund'),
+            'fund' => $this->cache()->get('meeting.saving.fund'),
         ]);
     }
 

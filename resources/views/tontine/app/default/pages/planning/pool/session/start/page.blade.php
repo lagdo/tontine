@@ -1,5 +1,5 @@
 @php
-  $rqStartSessionPage = Jaxon\rq(Ajax\App\Planning\Pool\Session\Pool\StartSessionPage::class);
+  $rqStartSessionPage = rq(Ajax\App\Planning\Pool\Session\Pool\StartSessionPage::class);
 @endphp
                       <div class="table-responsive">
                         <form id="start-session-form">

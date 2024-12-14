@@ -1,10 +1,10 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
-  $rqPoolPage = Jaxon\rq(Ajax\App\Planning\Subscription\PoolPage::class);
-  $rqMember = Jaxon\rq(Ajax\App\Planning\Subscription\Member::class);
-  $rqPlanning = Jaxon\rq(Ajax\App\Planning\Subscription\Planning::class);
-  $rqBeneficiary = Jaxon\rq(Ajax\App\Planning\Subscription\Beneficiary::class);
+  $poolId = jq()->parent()->attr('data-pool-id')->toInt();
+  $rqPoolPage = rq(Ajax\App\Planning\Subscription\PoolPage::class);
+  $rqMember = rq(Ajax\App\Planning\Subscription\Member::class);
+  $rqPlanning = rq(Ajax\App\Planning\Subscription\Planning::class);
+  $rqBeneficiary = rq(Ajax\App\Planning\Subscription\Beneficiary::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
                   <div @jxnEvent(['.btn-pool-member', 'click'], $rqMember->pool($poolId))></div>

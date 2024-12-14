@@ -1,10 +1,10 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('debtCalculator', 'Siak\Tontine\Service\Meeting\Credit\DebtCalculator')
 @php
-  $debtId = Jaxon\jq()->parent()->attr('data-debt-id')->toInt();
-  $amount = Jaxon\jq('input', Jaxon\jq()->parent()->parent())->val()->toInt();
-  $rqRefund = Jaxon\rq(Ajax\App\Meeting\Session\Credit\Partial\Refund::class);
-  $rqAmount = Jaxon\rq(Ajax\App\Meeting\Session\Credit\Partial\Amount::class);
+  $debtId = jq()->parent()->attr('data-debt-id')->toInt();
+  $amount = jq('input', Jaxon\jq()->parent()->parent())->val()->toInt();
+  $rqRefund = rq(Ajax\App\Meeting\Session\Credit\Partial\Refund::class);
+  $rqAmount = rq(Ajax\App\Meeting\Session\Credit\Partial\Amount::class);
 @endphp
                   <div class="row">
                     <div class="col-auto">

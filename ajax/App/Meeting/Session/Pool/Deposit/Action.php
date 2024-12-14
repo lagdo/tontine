@@ -24,13 +24,13 @@ class Action extends Component
      */
     public function html(): Stringable
     {
-        $session = $this->cache->get('meeting.session');
-        $pool = $this->cache->get('meeting.pool');
+        $session = $this->cache()->get('meeting.session');
+        $pool = $this->cache()->get('meeting.pool');
 
         return $this->renderView('pages.meeting.deposit.receivable.action', [
             'session' => $session,
             'pool' => $pool,
-            'depositCount' => $this->cache->get('meeting.pool.deposit.count'),
+            'depositCount' => $this->cache()->get('meeting.pool.deposit.count'),
             'receivableCount' => $this->depositService->getReceivableCount($pool, $session),
         ]);
     }

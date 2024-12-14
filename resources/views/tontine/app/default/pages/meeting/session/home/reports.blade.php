@@ -1,8 +1,8 @@
 @include('tontine.app.default.pages.meeting.session.menu.wrapper', ['session' => $session])
 @php
-  $agendaText = Jaxon\jq('#session-agenda')->summernote('code');
-  $reportText = Jaxon\jq('#session-report')->summernote('code');
-  $rqSession = Jaxon\rq(Ajax\App\Meeting\Session\Session::class);
+  $agendaText = jq('#session-agenda')->summernote('code');
+  $reportText = jq('#session-report')->summernote('code');
+  $rqSession = rq(Ajax\App\Meeting\Session\Session::class);
 @endphp
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">

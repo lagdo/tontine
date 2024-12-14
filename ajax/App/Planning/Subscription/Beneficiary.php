@@ -46,7 +46,7 @@ class Beneficiary extends Component
      */
     public function html(): Stringable
     {
-        $pool = $this->cache->get('subscription.pool');
+        $pool = $this->cache()->get('subscription.pool');
         $this->view()->shareValues($this->summaryService->getPayables($pool));
 
         return $this->renderView('pages.planning.subscription.beneficiaries', [
@@ -65,7 +65,7 @@ class Beneficiary extends Component
 
     public function save(int $sessionId, int $nextSubscriptionId, int $currSubscriptionId)
     {
-        $pool = $this->cache->get('subscription.pool');
+        $pool = $this->cache()->get('subscription.pool');
         if(!$pool || !$pool->remit_planned || $pool->remit_auction)
         {
             return $this->response;

@@ -1,8 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('cache', 'Siak\Tontine\Cache\Cache')
 @php
-  $rqMemberPage = Jaxon\rq(Ajax\App\Meeting\Session\Saving\MemberPage::class);
-  $rqAmount = Jaxon\rq(Ajax\App\Meeting\Session\Saving\Amount::class);
+  $rqMemberPage = rq(Ajax\App\Meeting\Session\Saving\MemberPage::class);
+  $rqAmount = rq(Ajax\App\Meeting\Session\Saving\Amount::class);
 @endphp
                   <div class="table-responsive" id="meeting-saving-members" @jxnTarget()>
                     <table class="table table-bordered responsive">

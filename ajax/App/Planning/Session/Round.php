@@ -66,7 +66,7 @@ class Round extends Component
         if($round !== null)
         {
             $this->bag('planning')->set('round.id', $round->id);
-            $this->cache->set('planning.round', $round);
+            $this->cache()->set('planning.round', $round);
             $this->cl(Session::class)->render();
         }
 

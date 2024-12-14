@@ -1,7 +1,7 @@
 @if (!isset($hideSidebar) || !$hideSidebar)
 @php
-  $rqTontineMenu = Jaxon\rq(Ajax\App\Sidebar\TontineMenu::class);
-  $rqRoundMenu = Jaxon\rq(Ajax\App\Sidebar\RoundMenu::class);
+  $rqTontineMenu = rq(Ajax\App\Sidebar\TontineMenu::class);
+  $rqRoundMenu = rq(Ajax\App\Sidebar\RoundMenu::class);
 @endphp
       <div class="main-sidebar">
         <aside id="sidebar-wrapper">

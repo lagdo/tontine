@@ -1,8 +1,8 @@
 @php
-  $searchValue = Jaxon\jq('#txt-fee-member-search')->val();
-  $rqMember = Jaxon\rq(Ajax\App\Meeting\Session\Saving\Member::class);
-  $rqMemberPage = Jaxon\rq(Ajax\App\Meeting\Session\Saving\MemberPage::class);
-  $rqSaving = Jaxon\rq(Ajax\App\Meeting\Session\Saving\Saving::class);
+  $searchValue = jq('#txt-fee-member-search')->val();
+  $rqMember = rq(Ajax\App\Meeting\Session\Saving\Member::class);
+  $rqMemberPage = rq(Ajax\App\Meeting\Session\Saving\MemberPage::class);
+  $rqSaving = rq(Ajax\App\Meeting\Session\Saving\Saving::class);
 @endphp
                   <div class="row">
                     <div class="col">

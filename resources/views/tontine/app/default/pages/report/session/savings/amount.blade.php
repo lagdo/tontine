@@ -1,6 +1,6 @@
 @php
-  $amountValue = Jaxon\pm()->input('fund-profit-amount')->toInt();
-  $rqFund = Jaxon\rq(Ajax\App\Report\Session\Saving\Fund::class);
+  $amountValue = pm()->input('fund-profit-amount')->toInt();
+  $rqFund = rq(Ajax\App\Report\Session\Saving\Fund::class);
 @endphp
                     <div class="col">&nbsp;</div>
                     <div class="col-auto">

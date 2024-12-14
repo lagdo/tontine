@@ -1,7 +1,7 @@
 @php
-  $fundId = Jaxon\pm()->select('partial-refunds-fund-id')->toInt();
-  $rqRefund = Jaxon\rq(Ajax\App\Meeting\Summary\Credit\PartialRefund::class);
-  $rqRefundPage = Jaxon\rq(Ajax\App\Meeting\Summary\Credit\PartialRefundPage::class);
+  $fundId = pm()->select('partial-refunds-fund-id')->toInt();
+  $rqRefund = rq(Ajax\App\Meeting\Summary\Credit\PartialRefund::class);
+  $rqRefundPage = rq(Ajax\App\Meeting\Summary\Credit\PartialRefundPage::class);
 @endphp
                     <div class="row">
                       <div class="col-auto">

@@ -51,7 +51,7 @@ class Session extends Component
             $this->bag('planning')->set('round.id', $this->target()->args()[0]);
         }
         $roundId = $this->bag('planning')->get('round.id');
-        $this->cache->set('planning.round', $this->roundService->getRound($roundId));
+        $this->cache()->set('planning.round', $this->roundService->getRound($roundId));
     }
 
     /**
@@ -60,7 +60,7 @@ class Session extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.round.session.home', [
-            'round' => $this->cache->get('planning.round'),
+            'round' => $this->cache()->get('planning.round'),
         ]);
     }
 
@@ -105,7 +105,7 @@ class Session extends Component
      */
     public function create(array $formValues)
     {
-        $round = $this->cache->get('planning.round');
+        $round = $this->cache()->get('planning.round');
         $values = $this->validator->validateItem($formValues);
         $this->sessionService->createSession($round, $values);
         $this->dialog->hide();
@@ -191,7 +191,7 @@ class Session extends Component
      */
     public function createList(array $formValues)
     {
-        $round = $this->cache->get('planning.round');
+        $round = $this->cache()->get('planning.round');
         $values = $this->parseSessionList($formValues['sessions'] ?? '');
 
         $this->sessionService->createSessions($round, $values);
@@ -207,7 +207,7 @@ class Session extends Component
      */
     public function edit(int $sessionId)
     {
-        $round = $this->cache->get('planning.round');
+        $round = $this->cache()->get('planning.round');
         $session = $this->roundService->getSession($round, $sessionId);
         $title = trans('tontine.session.titles.edit');
         $content = $this->renderView('pages.planning.round.session.edit', [
@@ -233,7 +233,7 @@ class Session extends Component
      */
     public function update(int $sessionId, array $formValues)
     {
-        $round = $this->cache->get('planning.round');
+        $round = $this->cache()->get('planning.round');
         $formValues['id'] = $sessionId;
         $values = $this->validator->validateItem($formValues);
         $session = $this->roundService->getSession($round, $sessionId);
@@ -248,7 +248,7 @@ class Session extends Component
 
     public function editVenue(int $sessionId)
     {
-        $round = $this->cache->get('planning.round');
+        $round = $this->cache()->get('planning.round');
         $session = $this->roundService->getSession($round, $sessionId);
 
         $title = trans('tontine.session.titles.venue');
@@ -275,7 +275,7 @@ class Session extends Component
      */
     public function saveVenue(int $sessionId, array $formValues)
     {
-        $round = $this->cache->get('planning.round');
+        $round = $this->cache()->get('planning.round');
         $values = $this->validator->validateVenue($formValues);
         $session = $this->roundService->getSession($round, $sessionId);
 
@@ -289,7 +289,7 @@ class Session extends Component
 
     public function delete(int $sessionId)
     {
-        $round = $this->cache->get('planning.round');
+        $round = $this->cache()->get('planning.round');
         $session = $this->roundService->getSession($round, $sessionId);
         $this->sessionService->deleteSession($session);
         $this->notify->title(trans('common.titles.success'))

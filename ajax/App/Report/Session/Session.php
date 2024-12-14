@@ -72,8 +72,8 @@ class Session extends Component
         {
             $session = $sessions->first();
             $this->bag('report')->set('session.id', $session->id);
-            $this->cache->set('report.session', $session);
-            $this->cache->set('report.member', null);
+            $this->cache()->set('report.session', $session);
+            $this->cache()->set('report.member', null);
             $this->cl(SessionContent::class)->render();
         }
     }
@@ -86,8 +86,8 @@ class Session extends Component
         }
 
         $this->bag('report')->set('session.id', $session->id);
-        $this->cache->set('report.session', $session);
-        $this->cache->set('report.member', null);
+        $this->cache()->set('report.session', $session);
+        $this->cache()->set('report.member', null);
 
         return $this->cl(SessionContent::class)->render();
     }
@@ -102,8 +102,8 @@ class Session extends Component
         }
 
         $this->bag('report')->set('session.id', $session->id);
-        $this->cache->set('report.session', $session);
-        $this->cache->set('report.member', $member);
+        $this->cache()->set('report.session', $session);
+        $this->cache()->set('report.member', $member);
 
         return $this->cl(SessionContent::class)->render();
     }

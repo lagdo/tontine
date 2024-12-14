@@ -1,8 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $rqRemitment = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Remitment::class);
-  $rqPayable = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Payable::class);
-  $rqPayablePage = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\PayablePage::class);
+  $rqRemitment = rq(Ajax\App\Meeting\Session\Pool\Remitment\Remitment::class);
+  $rqPayable = rq(Ajax\App\Meeting\Session\Pool\Remitment\Payable::class);
+  $rqPayablePage = rq(Ajax\App\Meeting\Session\Pool\Remitment\PayablePage::class);
 @endphp
                   <div class="row">
                     <div class="col">

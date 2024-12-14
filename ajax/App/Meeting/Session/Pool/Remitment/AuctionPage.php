@@ -31,7 +31,7 @@ class AuctionPage extends MeetingPageComponent
      */
     protected function count(): int
     {
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $filtered = $this->bag('auction')->get('filter', null);
 
         return $this->auctionService->getAuctionCount($session, $filtered);
@@ -42,12 +42,12 @@ class AuctionPage extends MeetingPageComponent
      */
     public function html(): Stringable
     {
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $filtered = $this->bag('auction')->get('filter', null);
 
         return $this->renderView('pages.meeting.auction.page', [
             'session' => $session,
-            'auctions' => $this->auctionService->getAuctions($session, $filtered, $this->page),
+            'auctions' => $this->auctionService->getAuctions($session, $filtered, $this->pageNumber()),
         ]);
     }
 

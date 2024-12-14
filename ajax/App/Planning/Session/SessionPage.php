@@ -27,7 +27,7 @@ class SessionPage extends PageComponent
     protected function getRound()
     {
         $roundId = $this->bag('planning')->get('round.id');
-        $this->cache->set('planning.round', $this->roundService->getRound($roundId));
+        $this->cache()->set('planning.round', $this->roundService->getRound($roundId));
     }
 
     /**
@@ -35,7 +35,7 @@ class SessionPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->cache->get('planning.round');
+        $round = $this->cache()->get('planning.round');
         return $this->roundService->getSessionCount($round);
     }
 
@@ -44,11 +44,11 @@ class SessionPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $round = $this->cache->get('planning.round');
+        $round = $this->cache()->get('planning.round');
 
         return $this->renderView('pages.planning.round.session.page', [
             'sessions' => $round === null ? []:
-                $this->roundService->getSessions($round, $this->page),
+                $this->roundService->getSessions($round, $this->pageNumber()),
             'statuses' => $this->sessionService->getSessionStatuses(),
         ]);
     }

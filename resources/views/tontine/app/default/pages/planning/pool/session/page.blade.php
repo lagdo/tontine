@@ -1,10 +1,10 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
-  $rqPoolPage = Jaxon\rq(Ajax\App\Planning\Pool\Session\PoolPage::class);
-  $rqSession = Jaxon\rq(Ajax\App\Planning\Pool\Session\Pool\Session::class);
-  $rqStartSession = Jaxon\rq(Ajax\App\Planning\Pool\Session\Pool\StartSession::class);
-  $rqEndSession = Jaxon\rq(Ajax\App\Planning\Pool\Session\Pool\EndSession::class);
+  $poolId = jq()->parent()->attr('data-pool-id')->toInt();
+  $rqPoolPage = rq(Ajax\App\Planning\Pool\Session\PoolPage::class);
+  $rqSession = rq(Ajax\App\Planning\Pool\Session\Pool\Session::class);
+  $rqStartSession = rq(Ajax\App\Planning\Pool\Session\Pool\StartSession::class);
+  $rqEndSession = rq(Ajax\App\Planning\Pool\Session\Pool\EndSession::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
                   <div @jxnEvent(['.btn-pool-start-session', 'click'], $rqStartSession->pool($poolId))></div>

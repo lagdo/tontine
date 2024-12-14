@@ -1,6 +1,6 @@
 @php
-  $rqFixedFee = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Fixed\Fee::class);
-  $rqFixedFeePage = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Fixed\FeePage::class);
+  $rqFixedFee = rq(Ajax\App\Meeting\Session\Charge\Fixed\Fee::class);
+  $rqFixedFeePage = rq(Ajax\App\Meeting\Session\Charge\Fixed\FeePage::class);
 @endphp
                   <div class="row">
                     <div class="col-auto">

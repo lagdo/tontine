@@ -1,11 +1,10 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('cache', 'Siak\Tontine\Cache\Cache')
 @php
-  $memberId = Jaxon\jq()->parent()->attr('data-member-id')->toInt();
-  $paid = Jaxon\pm()->checked('check-fee-libre-paid');
-  $rqMember = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Member::class);
-  $rqMemberPage = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\MemberPage::class);
-  $rqAmount = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Amount::class);
+  $memberId = jq()->parent()->attr('data-member-id')->toInt();
+  $paid = pm()->checked('check-fee-libre-paid');
+  $rqMember = rq(Ajax\App\Meeting\Session\Charge\Libre\Member::class);
+  $rqMemberPage = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberPage::class);
+  $rqAmount = rq(Ajax\App\Meeting\Session\Charge\Libre\Amount::class);
 @endphp
                   <div class="table-responsive" id="meeting-fee-libre-members" @jxnTarget()>
                     <div @jxnEvent(['.btn-add-bill', 'click'], $rqMember->addBill($memberId, $paid))></div>

@@ -1,9 +1,9 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $memberId = Jaxon\jq()->parent()->attr('data-member-id')->toInt();
-  $rqPresence = Jaxon\rq(Ajax\App\Meeting\Presence\Presence::class);
-  $rqMember = Jaxon\rq(Ajax\App\Meeting\Presence\Member::class);
-  $rqMemberPage = Jaxon\rq(Ajax\App\Meeting\Presence\MemberPage::class);
+  $memberId = jq()->parent()->attr('data-member-id')->toInt();
+  $rqPresence = rq(Ajax\App\Meeting\Presence\Presence::class);
+  $rqMember = rq(Ajax\App\Meeting\Presence\Member::class);
+  $rqMemberPage = rq(Ajax\App\Meeting\Presence\MemberPage::class);
 @endphp
                   <div class="table-responsive" id="content-page-members" @jxnTarget()>
                     <div @jxnEvent(['.btn-toggle-member-presence', 'click'], $rqMember->togglePresence($memberId))></div>

@@ -1,7 +1,7 @@
 @php
-  $sessionId = Jaxon\jq()->parent()->attr('data-session-id')->toInt();
-  $rqSession = Jaxon\rq(Ajax\App\Planning\Session\Session::class);
-  $rqSessionPage = Jaxon\rq(Ajax\App\Planning\Session\SessionPage::class);
+  $sessionId = jq()->parent()->attr('data-session-id')->toInt();
+  $rqSession = rq(Ajax\App\Planning\Session\Session::class);
+  $rqSessionPage = rq(Ajax\App\Planning\Session\SessionPage::class);
 @endphp
                     <div class="table-responsive" id="content-page-sessions" @jxnTarget()>
                       <div @jxnEvent(['.btn-session-edit', 'click'], $rqSession->edit($sessionId))></div>

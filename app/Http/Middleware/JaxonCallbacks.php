@@ -8,7 +8,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Jaxon\Laravel\App\Jaxon;
-use Siak\Tontine\Cache\Cache;
 use Closure;
 
 use function app;
@@ -36,7 +35,6 @@ class JaxonCallbacks
                 $dialog = $jaxon->ajaxResponse()->dialog;
                 $callable->dialog = $dialog;
                 $callable->notify = $dialog;
-                $callable->cache = app()->make(Cache::class);
             }
         });
 

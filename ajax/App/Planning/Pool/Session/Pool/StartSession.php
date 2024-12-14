@@ -43,7 +43,7 @@ class StartSession extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.pool.session.start.home', [
-            'pool' => $this->cache->get('pool.session.pool'),
+            'pool' => $this->cache()->get('pool.session.pool'),
         ]);
     }
 
@@ -64,7 +64,7 @@ class StartSession extends Component
      */
     public function save(array $formValues)
     {
-        $pool = $this->cache->get('pool.session.pool');
+        $pool = $this->cache()->get('pool.session.pool');
         $values = $this->validator->start()->validateItem($formValues);
         $this->poolService->saveStartSession($pool, $values);
 
@@ -82,7 +82,7 @@ class StartSession extends Component
 
     public function delete()
     {
-        $pool = $this->cache->get('pool.session.pool');
+        $pool = $this->cache()->get('pool.session.pool');
         $this->poolService->deleteRound($pool);
 
         // Reload the pool

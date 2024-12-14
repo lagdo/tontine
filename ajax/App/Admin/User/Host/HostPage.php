@@ -38,7 +38,7 @@ class HostPage extends PageComponent
     public function html(): Stringable
     {
         return $this->renderView('pages.user.host.page', [
-            'invites' => $this->userService->getHostInvites($this->page),
+            'invites' => $this->userService->getHostInvites($this->pageNumber()),
         ]);
     }
 

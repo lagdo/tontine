@@ -2,9 +2,9 @@
 @inject('debtCalculator', 'Siak\Tontine\Service\Meeting\Credit\DebtCalculator')
 @inject('paymentService', 'Siak\Tontine\Service\Meeting\PaymentServiceInterface')
 @php
-  $refundId = Jaxon\jq()->parent()->attr('data-partial-refund-id')->toInt();
-  $rqRefund = Jaxon\rq(Ajax\App\Meeting\Session\Credit\Partial\Refund::class);
-  $rqRefundPage = Jaxon\rq(Ajax\App\Meeting\Session\Credit\Partial\RefundPage::class);
+  $refundId = jq()->parent()->attr('data-partial-refund-id')->toInt();
+  $rqRefund = rq(Ajax\App\Meeting\Session\Credit\Partial\Refund::class);
+  $rqRefundPage = rq(Ajax\App\Meeting\Session\Credit\Partial\RefundPage::class);
 @endphp
                     <div class="table-responsive" id="meeting-partial-refunds-page" @jxnTarget()>
                       <div @jxnEvent(['.btn-partial-refund-edit', 'click'], $rqRefund->edit($refundId))></div>

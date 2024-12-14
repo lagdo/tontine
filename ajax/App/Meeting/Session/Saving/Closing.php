@@ -36,7 +36,7 @@ class Closing extends MeetingComponent
      */
     public function html(): Stringable
     {
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
 
         return $this->renderView('pages.meeting.closing.home', [
             'session' => $session,
@@ -53,7 +53,7 @@ class Closing extends MeetingComponent
         $this->response->js()->makeTableResponsive('meeting-closings');
         // Sending an Ajax request to the Saving class needs to set
         // the session id in the report databag.
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $this->bag('report')->set('session.id', $session->id);
     }
 
@@ -65,7 +65,7 @@ class Closing extends MeetingComponent
             return $this->response;
         }
 
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $title = trans('meeting.closing.titles.round');
         $content = $this->renderView('pages.meeting.closing.round', [
             'fund' => $fund,
@@ -96,7 +96,7 @@ class Closing extends MeetingComponent
             return $this->response;
         }
 
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $values = $this->validator->validateItem($formValues);
         $this->closingService->saveRoundClosing($session, $fund, $values['amount']);
 
@@ -115,7 +115,7 @@ class Closing extends MeetingComponent
             return $this->response;
         }
 
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $this->closingService->deleteRoundClosing($session, $fund);
 
         $this->dialog->hide();
@@ -133,7 +133,7 @@ class Closing extends MeetingComponent
             return $this->response;
         }
 
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $title = trans('meeting.closing.titles.interest');
         $content = $this->renderView('pages.meeting.closing.interest', [
             'fund' => $fund,
@@ -164,7 +164,7 @@ class Closing extends MeetingComponent
             return $this->response;
         }
 
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $this->closingService->saveInterestClosing($session, $fund);
 
         $this->dialog->hide();
@@ -182,7 +182,7 @@ class Closing extends MeetingComponent
             return $this->response;
         }
 
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $this->closingService->deleteInterestClosing($session, $fund);
 
         $this->dialog->hide();

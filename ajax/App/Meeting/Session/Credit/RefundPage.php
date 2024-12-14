@@ -33,7 +33,7 @@ class RefundPage extends MeetingPageComponent
     {
         $fundId = $this->bag('refund')->get('fund.id', 0);
         $fund = $this->fundService->getFund($fundId, true, true);
-        $this->cache->set('meeting.refund.fund', $fund);
+        $this->cache()->set('meeting.refund.fund', $fund);
     }
 
     /**
@@ -41,8 +41,8 @@ class RefundPage extends MeetingPageComponent
      */
     protected function count(): int
     {
-        $session = $this->cache->get('meeting.session');
-        $fund = $this->cache->get('meeting.refund.fund');
+        $session = $this->cache()->get('meeting.session');
+        $fund = $this->cache()->get('meeting.refund.fund');
         $filtered = $this->bag('refund')->get('filter', null);
 
         return $this->refundService->getDebtCount($session, $fund, $filtered);
@@ -53,13 +53,13 @@ class RefundPage extends MeetingPageComponent
      */
     public function html(): Stringable
     {
-        $session = $this->cache->get('meeting.session');
-        $fund = $this->cache->get('meeting.refund.fund');
+        $session = $this->cache()->get('meeting.session');
+        $fund = $this->cache()->get('meeting.refund.fund');
         $filtered = $this->bag('refund')->get('filter', null);
 
         return $this->renderView('pages.meeting.refund.page', [
             'session' => $session,
-            'debts' => $this->refundService->getDebts($session, $fund, $filtered, $this->page),
+            'debts' => $this->refundService->getDebts($session, $fund, $filtered, $this->pageNumber()),
         ]);
     }
 

@@ -1,7 +1,7 @@
 @php
-  $rqAmount = Jaxon\rq(Ajax\App\Report\Session\Saving\Amount::class);
-  $rqSummary = Jaxon\rq(Ajax\App\Report\Session\Saving\Summary::class);
-  $rqDistribution = Jaxon\rq(Ajax\App\Report\Session\Saving\Distribution::class);
+  $rqAmount = rq(Ajax\App\Report\Session\Saving\Amount::class);
+  $rqSummary = rq(Ajax\App\Report\Session\Saving\Summary::class);
+  $rqDistribution = rq(Ajax\App\Report\Session\Saving\Distribution::class);
 @endphp
                   <div class="row">
                     <div class="col">

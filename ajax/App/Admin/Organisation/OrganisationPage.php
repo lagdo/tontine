@@ -41,7 +41,7 @@ class OrganisationPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $tontines = $this->tontineService->getTontines($this->page);
+        $tontines = $this->tontineService->getTontines($this->pageNumber());
         [$countries, $currencies] = $this->localeService->getNamesFromTontines($tontines);
 
         return $this->renderView('pages.tontine.page', [

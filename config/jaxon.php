@@ -10,6 +10,7 @@ return [
     'app' => [
         'metadata' => 'annotations',
         'faker' => env('APP_FAKER', false),
+        'helpers' => true,
         'request' => [
             'route' => 'ajax',
             'middlewares' => [

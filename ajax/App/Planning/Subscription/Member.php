@@ -44,7 +44,7 @@ class Member extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.subscription.member.home', [
-            'pool' => $this->cache->get('subscription.pool'),
+            'pool' => $this->cache()->get('subscription.pool'),
         ]);
     }
 
@@ -77,7 +77,7 @@ class Member extends Component
 
     public function create(int $memberId)
     {
-        $pool = $this->cache->get('subscription.pool');
+        $pool = $this->cache()->get('subscription.pool');
         $this->subscriptionService->createSubscription($pool, $memberId);
 
         // Refresh the current page
@@ -87,7 +87,7 @@ class Member extends Component
 
     public function delete(int $memberId)
     {
-        $pool = $this->cache->get('subscription.pool');
+        $pool = $this->cache()->get('subscription.pool');
         $this->subscriptionService->deleteSubscription($pool, $memberId);
 
         // Refresh the current page

@@ -32,7 +32,7 @@ class Refund extends MeetingComponent
 
     public function html(): Stringable
     {
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
 
         return $this->renderView('pages.meeting.refund.home', [
             'session' => $session,
@@ -66,7 +66,7 @@ class Refund extends MeetingComponent
             $fund = $this->fundService->getDefaultFund();
             $this->bag('refund')->set('fund.id', $fund->id);
         }
-        $this->cache->set('meeting.refund.fund', $fund);
+        $this->cache()->set('meeting.refund.fund', $fund);
     }
 
     /**
@@ -110,7 +110,7 @@ class Refund extends MeetingComponent
             return $this->response;
         }
 
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $this->refundService->createRefund($debt, $session);
 
         $this->cl(Partial\RefundPage::class)->render();
@@ -130,7 +130,7 @@ class Refund extends MeetingComponent
             return $this->response;
         }
 
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $this->refundService->deleteRefund($debt, $session);
 
         $this->cl(Partial\RefundPage::class)->render();

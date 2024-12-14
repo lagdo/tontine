@@ -36,7 +36,7 @@ class PoolPage extends PageComponent
     {
         return $this->renderView('pages.planning.pool.page', [
             'round' => $this->tenantService->round(),
-            'pools' => $this->poolService->getPools($this->page),
+            'pools' => $this->poolService->getPools($this->pageNumber()),
         ]);
     }
 

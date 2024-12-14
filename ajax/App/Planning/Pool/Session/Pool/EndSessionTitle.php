@@ -16,7 +16,7 @@ class EndSessionTitle extends Component
      */
     public function html(): string
     {
-        $pool = $this->cache->get('pool.session.pool');
+        $pool = $this->cache()->get('pool.session.pool');
 
         return $pool->pool_round !== null ? $pool->end_date :
             trans('tontine.pool_round.labels.default');

@@ -1,8 +1,8 @@
 @php
-  $sessionId = Jaxon\pm()->select('select-session')->toInt();
-  $memberId = Jaxon\jq()->parent()->attr('data-member-id')->toInt();
-  $rqPayable = Jaxon\rq(Ajax\App\Meeting\Payment\Payable::class);
-  $rqPaymentPage = Jaxon\rq(Ajax\App\Meeting\Payment\PaymentPage::class);
+  $sessionId = pm()->select('select-session')->toInt();
+  $memberId = jq()->parent()->attr('data-member-id')->toInt();
+  $rqPayable = rq(Ajax\App\Meeting\Payment\Payable::class);
+  $rqPaymentPage = rq(Ajax\App\Meeting\Payment\PaymentPage::class);
 @endphp
                   <div class="table-responsive" id="payment-members-page" @jxnTarget()>
 @if ($sessions->count() > 0)

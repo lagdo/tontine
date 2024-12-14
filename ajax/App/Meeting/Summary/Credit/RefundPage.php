@@ -34,8 +34,8 @@ class RefundPage extends PageComponent
      */
     protected function count(): int
     {
-        $session = $this->cache->get('summary.session');
-        $fund = $this->cache->get('summary.refund.fund');
+        $session = $this->cache()->get('summary.session');
+        $fund = $this->cache()->get('summary.refund.fund');
         $filtered = $this->bag('refund')->get('filter', null);
 
         return $this->refundService->getDebtCount($session, $fund, $filtered);
@@ -46,13 +46,13 @@ class RefundPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $session = $this->cache->get('summary.session');
-        $fund = $this->cache->get('summary.refund.fund');
+        $session = $this->cache()->get('summary.session');
+        $fund = $this->cache()->get('summary.refund.fund');
         $filtered = $this->bag('refund')->get('filter', null);
 
         return $this->renderView('pages.meeting.summary.refund.page', [
             'session' => $session,
-            'debts' => $this->refundService->getDebts($session, $fund, $filtered, $this->page),
+            'debts' => $this->refundService->getDebts($session, $fund, $filtered, $this->pageNumber()),
         ]);
     }
 

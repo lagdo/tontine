@@ -21,7 +21,7 @@ class Remitment extends MeetingComponent
      */
     public function html(): Stringable
     {
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
 
         return $this->renderView('pages.meeting.remitment.home', [
             'session' => $session,

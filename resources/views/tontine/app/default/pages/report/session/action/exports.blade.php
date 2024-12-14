@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('sqids', 'Sqids\SqidsInterface')
 @php
-  $rqOptions = Jaxon\rq(Ajax\App\Tontine\Options\Options::class);
+  $rqOptions = rq(Ajax\App\Tontine\Options\Options::class);
 @endphp
               <div class="btn-group float-right ml-1">
                 <button type="button" class="btn btn-primary" @jxnClick($rqOptions->editOptions())><i class="fa fa-cog"></i></button>

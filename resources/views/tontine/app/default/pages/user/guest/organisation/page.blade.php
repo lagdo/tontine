@@ -1,6 +1,6 @@
 @php
-  $tontineId = Jaxon\jq()->parent()->attr('data-tontine-id')->toInt();
-  $rqSelect = Jaxon\rq(Ajax\App\Tontine\Select::class);
+  $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
+  $rqSelect = rq(Ajax\App\Tontine\Select::class);
 @endphp
                   <div class="table-responsive" @jxnTarget()>
                     <div @jxnEvent(['.btn-guest-tontine-choose', 'click'], $rqSelect->saveOrganisation($tontineId))></div>

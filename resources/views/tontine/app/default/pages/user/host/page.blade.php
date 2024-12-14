@@ -1,8 +1,8 @@
 @php
-  $inviteId = Jaxon\jq()->parent()->attr('data-invite-id')->toInt();
-  $rqHostUser = Jaxon\rq(Ajax\App\Admin\User\Host\Host::class);
-  $rqHostUserPage = Jaxon\rq(Ajax\App\Admin\User\Host\HostPage::class);
-  $rqHostAccess = Jaxon\rq(Ajax\App\Admin\User\Host\Access::class);
+  $inviteId = jq()->parent()->attr('data-invite-id')->toInt();
+  $rqHostUser = rq(Ajax\App\Admin\User\Host\Host::class);
+  $rqHostUserPage = rq(Ajax\App\Admin\User\Host\HostPage::class);
+  $rqHostAccess = rq(Ajax\App\Admin\User\Host\Access::class);
 @endphp
                   <div class="table-responsive" id="content-host-invites-page" @jxnTarget()>
                     <div @jxnEvent(['.btn-host-invite-access', 'click'], $rqHostAccess->home($inviteId))></div>

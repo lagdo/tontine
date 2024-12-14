@@ -1,7 +1,7 @@
 @php
-  $rqOrganisation = Jaxon\rq(Ajax\App\Admin\Organisation\Organisation::class);
-  $rqOrganisationPage = Jaxon\rq(Ajax\App\Admin\Organisation\OrganisationPage::class);
-  $rqGuestOrganisation = Jaxon\rq(Ajax\App\Admin\User\Guest\Organisation::class);
+  $rqOrganisation = rq(Ajax\App\Admin\Organisation\Organisation::class);
+  $rqOrganisationPage = rq(Ajax\App\Admin\Organisation\OrganisationPage::class);
+  $rqGuestOrganisation = rq(Ajax\App\Admin\User\Guest\Organisation::class);
 @endphp
           <div class="section-body">
             <div class="row">

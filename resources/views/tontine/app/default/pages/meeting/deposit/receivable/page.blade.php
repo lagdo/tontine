@@ -1,10 +1,9 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('cache', 'Siak\Tontine\Cache\Cache')
 @php
-  $receivableId = Jaxon\jq()->parent()->attr('data-receivable-id')->toInt();
-  $rqReceivable = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\Receivable::class);
-  $rqReceivablePage = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\ReceivablePage::class);
-  $rqAmount = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\Amount::class);
+  $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
+  $rqReceivable = rq(Ajax\App\Meeting\Session\Pool\Deposit\Receivable::class);
+  $rqReceivablePage = rq(Ajax\App\Meeting\Session\Pool\Deposit\ReceivablePage::class);
+  $rqAmount = rq(Ajax\App\Meeting\Session\Pool\Deposit\Amount::class);
 @endphp
                   <div class="table-responsive" id="meeting-pool-deposits" @jxnTarget()>
                     <div @jxnEvent(['.btn-add-deposit', 'click'], $rqReceivable->addDeposit($receivableId))></div>

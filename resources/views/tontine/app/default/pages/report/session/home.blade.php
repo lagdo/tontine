@@ -1,11 +1,11 @@
 @php
-  $sessionId = Jaxon\pm()->select('select-session')->toInt();
-  $memberId = Jaxon\pm()->select('select-member')->toInt();
-  $rqSession = Jaxon\rq(Ajax\App\Report\Session\Session::class);
-  $rqSessionContent = Jaxon\rq(Ajax\App\Report\Session\SessionContent::class);
-  $rqReportTitle = Jaxon\rq(Ajax\App\Report\Session\ReportTitle::class);
-  $rqActionExport = Jaxon\rq(Ajax\App\Report\Session\Action\Export::class);
-  $rqActionMenu = Jaxon\rq(Ajax\App\Report\Session\Action\Menu::class);
+  $sessionId = pm()->select('select-session')->toInt();
+  $memberId = pm()->select('select-member')->toInt();
+  $rqSession = rq(Ajax\App\Report\Session\Session::class);
+  $rqSessionContent = rq(Ajax\App\Report\Session\SessionContent::class);
+  $rqReportTitle = rq(Ajax\App\Report\Session\ReportTitle::class);
+  $rqActionExport = rq(Ajax\App\Report\Session\Action\Export::class);
+  $rqActionMenu = rq(Ajax\App\Report\Session\Action\Menu::class);
 @endphp
           <div class="section-body">
             <div class="row">

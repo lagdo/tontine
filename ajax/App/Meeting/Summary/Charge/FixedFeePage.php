@@ -23,7 +23,7 @@ class FixedFeePage extends Component
     {
         $charges = $this->feeService->getFees();
         // Bill and settlement counts and amounts
-        $session = $this->cache->get('summary.session');
+        $session = $this->cache()->get('summary.session');
         $bills = $this->feeService->getBills($session);
         $settlements = $this->feeService->getSettlements($session);
 

@@ -2,14 +2,12 @@
 
 namespace App\Providers;
 
-use Ajax\App\Pagination;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Mcamara\LaravelLocalization\LaravelLocalization;
-use Siak\Tontine\Cache\Cache;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
@@ -88,11 +86,6 @@ class SiakServiceProvider extends ServiceProvider
         // DB::listen(function($query) {
         //     Log::info($query->sql, $query->bindings, $query->time);
         // });
-
-        Blade::directive('jxnPagination', function($expression) {
-            $class = Pagination::class;
-            return "<?php echo \Jaxon\attr()->bind(\Jaxon\\rq('$class'), {$expression}->_class()); ?>";
-        });
     }
 
     /**
@@ -102,10 +95,6 @@ class SiakServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(Cache::class, function() {
-            return new Cache();
-        });
-
         $this->app->singleton(LocaleService::class, function($app) {
             $vendorDir = base_path('vendor');
             // Read country list from the umpirsky/country-list package data.

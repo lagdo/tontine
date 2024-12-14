@@ -1,9 +1,9 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('fundService', 'Siak\Tontine\Service\Tontine\FundService')
 @php
-  $loanId = Jaxon\jq()->parent()->attr('data-loan-id')->toInt();
-  $rqSession = Jaxon\rq(Ajax\App\Meeting\Session\Session::class);
-  $rqLoan = Jaxon\rq(Ajax\App\Meeting\Session\Credit\Loan::class);
+  $loanId = jq()->parent()->attr('data-loan-id')->toInt();
+  $rqSession = rq(Ajax\App\Meeting\Session\Session::class);
+  $rqLoan = rq(Ajax\App\Meeting\Session\Credit\Loan::class);
 @endphp
                   <div class="row">
                     <div class="col">

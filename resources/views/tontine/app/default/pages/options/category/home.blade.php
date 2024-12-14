@@ -1,6 +1,6 @@
 @php
-  $rqCategory = Jaxon\rq(Ajax\App\Tontine\Options\Category::class);
-  $rqCategoryPage = Jaxon\rq(Ajax\App\Tontine\Options\CategoryPage::class);
+  $rqCategory = rq(Ajax\App\Tontine\Options\Category::class);
+  $rqCategoryPage = rq(Ajax\App\Tontine\Options\CategoryPage::class);
 @endphp
               <div class="section-body">
                 <div class="row">

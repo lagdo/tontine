@@ -42,7 +42,7 @@ class Summary extends Component
             return $this->response;
         }
 
-        $this->cache->set('summary.session', $session);
+        $this->cache()->set('summary.session', $session);
 
         return $this->render();
     }
@@ -53,7 +53,7 @@ class Summary extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.summary.home', [
-            'session' => $this->cache->get('summary.session'),
+            'session' => $this->cache()->get('summary.session'),
         ]);
     }
 

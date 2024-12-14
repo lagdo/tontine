@@ -40,7 +40,7 @@ class Amount extends MeetingComponent
     {
         $fundId = (int)$this->bag('meeting.saving')->get('fund.id', 0);
         $fund = $this->fundService->getFund($fundId, true, true);
-        $this->cache->set('meeting.saving.fund', $fund);
+        $this->cache()->set('meeting.saving.fund', $fund);
     }
 
     /**
@@ -48,9 +48,9 @@ class Amount extends MeetingComponent
      */
     public function html(): Stringable
     {
-        $session = $this->cache->get('meeting.session');
-        $member = $this->cache->get('meeting.saving.member');
-        $saving = $this->cache->get('meeting.saving');
+        $session = $this->cache()->get('meeting.session');
+        $member = $this->cache()->get('meeting.saving.member');
+        $saving = $this->cache()->get('meeting.saving');
 
         if($session->closed)
         {
@@ -61,7 +61,7 @@ class Amount extends MeetingComponent
 
         // When editing the saving amount, or when there is no saving yet,
         // then show the amount edit form.
-        $edit = $this->cache->get('meeting.saving.edit');
+        $edit = $this->cache()->get('meeting.saving.edit');
         if($edit || !$saving)
         {
             return $this->renderView('pages.meeting.saving.member.edit', [
@@ -91,11 +91,11 @@ class Amount extends MeetingComponent
             return $this->response;
         }
 
-        $this->cache->set('meeting.saving.edit', true);
-        $this->cache->set('meeting.saving.member', $member);
-        $session = $this->cache->get('meeting.session');
-        $fund = $this->cache->get('meeting.saving.fund');
-        $this->cache->set('meeting.saving',
+        $this->cache()->set('meeting.saving.edit', true);
+        $this->cache()->set('meeting.saving.member', $member);
+        $session = $this->cache()->get('meeting.session');
+        $fund = $this->cache()->get('meeting.saving.fund');
+        $this->cache()->set('meeting.saving',
             $this->savingService->findSaving($session, $fund, $member));
 
         return $this->item($member->id)->render();
@@ -108,9 +108,9 @@ class Amount extends MeetingComponent
      */
     private function saveAmount(string $amount): void
     {
-        $session = $this->cache->get('meeting.session');
-        $member = $this->cache->get('meeting.saving.member');
-        $fund = $this->cache->get('meeting.saving.fund');
+        $session = $this->cache()->get('meeting.session');
+        $member = $this->cache()->get('meeting.saving.member');
+        $fund = $this->cache()->get('meeting.saving.fund');
         $amount = str_replace(',', '.', trim($amount));
 
         if($amount === '')
@@ -143,13 +143,13 @@ class Amount extends MeetingComponent
             return $this->response;
         }
 
-        $this->cache->set('meeting.saving.member', $member);
+        $this->cache()->set('meeting.saving.member', $member);
 
         $this->saveAmount($amount);
 
-        $session = $this->cache->get('meeting.session');
-        $fund = $this->cache->get('meeting.saving.fund');
-        $this->cache->set('meeting.saving',
+        $session = $this->cache()->get('meeting.session');
+        $fund = $this->cache()->get('meeting.saving.fund');
+        $this->cache()->set('meeting.saving',
             $this->savingService->findSaving($session, $fund, $member));
 
         $this->cl(MemberTotal::class)->render();

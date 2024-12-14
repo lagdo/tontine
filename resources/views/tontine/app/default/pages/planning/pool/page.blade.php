@@ -1,8 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
-  $rqPool = Jaxon\rq(Ajax\App\Planning\Pool\Pool::class);
-  $rqPoolPage = Jaxon\rq(Ajax\App\Planning\Pool\PoolPage::class);
+  $poolId = jq()->parent()->attr('data-pool-id')->toInt();
+  $rqPool = rq(Ajax\App\Planning\Pool\Pool::class);
+  $rqPoolPage = rq(Ajax\App\Planning\Pool\PoolPage::class);
 @endphp
                 <div class="table-responsive" @jxnTarget()>
                   <div @jxnEvent(['.btn-pool-edit', 'click'], $rqPool->edit($poolId))></div>

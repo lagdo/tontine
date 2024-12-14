@@ -38,7 +38,7 @@ class FundPage extends PageComponent
     public function html(): Stringable
     {
         return $this->renderView('pages.options.fund.page', [
-            'funds' => $this->fundService->getFunds($this->page),
+            'funds' => $this->fundService->getFunds($this->pageNumber()),
         ]);
     }
 

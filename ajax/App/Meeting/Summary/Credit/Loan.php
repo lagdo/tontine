@@ -24,7 +24,7 @@ class Loan extends Component
 
     public function html(): Stringable
     {
-        $session = $this->cache->get('summary.session');
+        $session = $this->cache()->get('summary.session');
         $loans = $this->loanService->getSessionLoans($session);
 
         return $this->renderView('pages.meeting.summary.loan.home', [

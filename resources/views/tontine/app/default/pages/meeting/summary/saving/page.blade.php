@@ -1,6 +1,6 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $rqSavingPage = Jaxon\rq(Ajax\App\Meeting\Summary\Saving\SavingPage::class);
+  $rqSavingPage = rq(Ajax\App\Meeting\Summary\Saving\SavingPage::class);
 @endphp
                   <div class="table-responsive" id="meeting-savings-page">
                     <table class="table table-bordered responsive">

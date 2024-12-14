@@ -1,8 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $savingId = Jaxon\jq()->parent()->attr('data-saving-id')->toInt();
-  $rqSaving = Jaxon\rq(Ajax\App\Meeting\Session\Saving\Saving::class);
-  $rqSavingPage = Jaxon\rq(Ajax\App\Meeting\Session\Saving\SavingPage::class);
+  $savingId = jq()->parent()->attr('data-saving-id')->toInt();
+  $rqSaving = rq(Ajax\App\Meeting\Session\Saving\Saving::class);
+  $rqSavingPage = rq(Ajax\App\Meeting\Session\Saving\SavingPage::class);
 @endphp
                   <div class="table-responsive" id="meeting-savings-page" @jxnTarget()>
                     <div @jxnEvent(['.btn-saving-edit', 'click'], $rqSaving->editSaving($savingId))></div>

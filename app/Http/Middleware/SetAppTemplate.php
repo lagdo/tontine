@@ -36,6 +36,7 @@ class SetAppTemplate
         $jaxonView->addNamespace('pagination', $paginationPath, '.blade.php', 'blade');
 
         View::share('htmlBuilder', html());
+        View::share('cache', jaxon()->di()->getCache());
 
         return $next($request);
     }

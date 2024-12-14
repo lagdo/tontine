@@ -2,18 +2,12 @@
 
 namespace Ajax;
 
-use Ajax\App\Pagination;
-use Jaxon\Plugin\Response\Pagination\Paginator;
+use Jaxon\App\PageComponent as BaseComponent;
 use Jaxon\Response\AjaxResponse;
 
-abstract class PageComponent extends Component
+abstract class PageComponent extends BaseComponent
 {
-    /**
-     * The current page number.
-     *
-     * @var int
-     */
-    protected int $page = 1;
+    use CallableTrait;
 
     /**
      * The pagination databag options
@@ -23,59 +17,27 @@ abstract class PageComponent extends Component
     protected array $bagOptions = [];
 
     /**
-     * Set the page number.
-     *
-     * @param int $pageNumber
-     *
-     * @return void
+     * @inheritDoc
      */
-    protected function setPageNumber(int $pageNumber): void
+    protected function bagName(): string
     {
-        $bagName = $this->bagOptions[0];
-        $attrName = $this->bagOptions[1] ?? 'page';
-        $this->bag($bagName)->set($attrName, $pageNumber);
-        $this->page = $pageNumber;
+        return (string)$this->bagOptions[0];
     }
 
     /**
-     * Get the page number.
-     *
-     * @param int $pageNumber
-     *
-     * @return int
+     * @inheritDoc
      */
-    protected function getPageNumber(int $pageNumber): int
+    protected function bagAttr(): string
     {
-        $bagName = $this->bagOptions[0];
-        $attrName = $this->bagOptions[1] ?? 'page';
-
-        return $pageNumber > 0 ? $pageNumber : (int)$this->bag($bagName)->get($attrName, 1);
+        return (string)($this->bagOptions[1] ?? 'page');
     }
 
     /**
-     * Get the total number of items to paginate.
-     *
-     * @return int
+     * @inheritDoc
      */
-    abstract protected function count(): int;
-
-    /**
-     * Render a page, and return a paginator for the component.
-     *
-     * @param int $pageNumber
-     *
-     * @return Paginator
-     */
-    protected function paginator(int $pageNumber): Paginator
+    protected function limit(): int
     {
-        return $this->cl(Pagination::class)
-            // Use the js class name as component item identifier.
-            ->item($this->rq()->_class())
-            ->paginator($this->getPageNumber($pageNumber),
-                $this->tenantService->getLimit(), $this->count())
-            ->page(function(int $page) {
-                $this->setPageNumber($page);
-            });
+        return $this->tenantService->getLimit();
     }
 
     /**
@@ -85,7 +47,7 @@ abstract class PageComponent extends Component
      *
      * @return AjaxResponse|null
      */
-    public function page(int $pageNumber = 0)
+    public function page(int $pageNumber = 0): ?AjaxResponse
     {
         // Get the paginator. This will also set the final page number value.
         $paginator = $this->paginator($pageNumber);

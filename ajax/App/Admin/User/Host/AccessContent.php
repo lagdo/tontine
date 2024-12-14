@@ -22,8 +22,8 @@ class AccessContent extends Component
      */
     public function html(): Stringable
     {
-        $invite = $this->cache->get('user.invite');
-        $tontine = $this->cache->get('user.tontine');
+        $invite = $this->cache()->get('user.invite');
+        $tontine = $this->cache()->get('user.tontine');
 
         return $this->renderView('pages.user.host.access.tontine', [
             'tontine' => $tontine,

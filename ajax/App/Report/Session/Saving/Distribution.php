@@ -15,7 +15,7 @@ class Distribution extends Component
      */
     public function html(): Stringable
     {
-        $savings = $this->cache->get('report.savings');
+        $savings = $this->cache()->get('report.savings');
 
         return $this->renderView('pages.report.session.savings.distribution', [
             'savings' => $savings->groupBy('member_id'),

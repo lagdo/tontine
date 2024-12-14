@@ -14,8 +14,8 @@ class ReportTitle extends Component
      */
     public function html(): string
     {
-        $session = $this->cache->get('report.session');
-        $member = $this->cache->get('report.member');
+        $session = $this->cache()->get('report.session');
+        $member = $this->cache()->get('report.member');
 
         return $member === null ? $session->title :
             $session->title . ' - ' . $member->name;

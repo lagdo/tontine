@@ -1,5 +1,5 @@
 @php
-  $amountValue = Jaxon\jq("#libre-deposit-input-$receivableId")->val();
+  $amountValue = jq("#libre-deposit-input-$receivableId")->val();
 @endphp
                         <div class="input-group">
                           {!! $htmlBuilder->text('amount', $amount)

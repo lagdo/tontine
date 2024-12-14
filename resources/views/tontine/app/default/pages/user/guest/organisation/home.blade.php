@@ -1,6 +1,6 @@
 @php
-  $rqOrganisation = Jaxon\rq(Ajax\App\Admin\User\Guest\Organisation::class);
-  $rqOrganisationPage = Jaxon\rq(Ajax\App\Admin\User\Guest\OrganisationPage::class);
+  $rqOrganisation = rq(Ajax\App\Admin\User\Guest\Organisation::class);
+  $rqOrganisationPage = rq(Ajax\App\Admin\User\Guest\OrganisationPage::class);
 @endphp
             <div class="section-body">
               <div class="row">

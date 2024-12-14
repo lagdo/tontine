@@ -1,8 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
-  $rqDeposit = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\Deposit::class);
-  $rqReceivable = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Deposit\Receivable::class);
+  $poolId = jq()->parent()->attr('data-pool-id')->toInt();
+  $rqDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Deposit::class);
+  $rqReceivable = rq(Ajax\App\Meeting\Session\Pool\Deposit\Receivable::class);
 @endphp
                   <div class="row">
                     <div class="col-auto">

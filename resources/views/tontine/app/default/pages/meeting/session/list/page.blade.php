@@ -1,9 +1,9 @@
 @php
-  $rqSession = Jaxon\rq(Ajax\App\Meeting\Session\Session::class);
-  $rqSessionPage = Jaxon\rq(Ajax\App\Meeting\Session\SessionPage::class);
-  $rqSection = Jaxon\rq(Ajax\App\Meeting\Session\Section::class);
-  $rqSummary = Jaxon\rq(Ajax\App\Meeting\Summary\Summary::class);
-  $sessionId = Jaxon\jq()->parent()->attr('data-session-id')->toInt();
+  $rqSession = rq(Ajax\App\Meeting\Session\Session::class);
+  $rqSessionPage = rq(Ajax\App\Meeting\Session\SessionPage::class);
+  $rqSection = rq(Ajax\App\Meeting\Session\Section::class);
+  $rqSummary = rq(Ajax\App\Meeting\Summary\Summary::class);
+  $sessionId = jq()->parent()->attr('data-session-id')->toInt();
 @endphp
               <div class="table-responsive" id="content-page" @jxnTarget()>
                 <div @jxnEvent(['.btn-session-open', 'click'], $rqSession->open($sessionId)

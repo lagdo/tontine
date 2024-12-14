@@ -58,8 +58,8 @@ class Payable extends MeetingComponent
      */
     public function html(): Stringable
     {
-        $pool = $this->cache->get('meeting.pool');
-        $session = $this->cache->get('meeting.session');
+        $pool = $this->cache()->get('meeting.pool');
+        $session = $this->cache()->get('meeting.session');
 
         return $this->renderView('pages.meeting.remitment.payable.home', [
             'pool' => $pool,
@@ -77,14 +77,14 @@ class Payable extends MeetingComponent
 
     public function createRemitment(int $payableId)
     {
-        $pool = $this->cache->get('meeting.pool');
+        $pool = $this->cache()->get('meeting.pool');
         if(!$pool->remit_planned || $pool->remit_auction)
         {
             // Only when remitments are planned and without auctions.
             return $this->response;
         }
 
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $this->remitmentService->savePlannedRemitment($pool, $session, $payableId);
 
         return $this->cl(PayablePage::class)->render();
@@ -98,8 +98,8 @@ class Payable extends MeetingComponent
         //     return $this->response;
         // }
 
-        $pool = $this->cache->get('meeting.pool');
-        $session = $this->cache->get('meeting.session');
+        $pool = $this->cache()->get('meeting.pool');
+        $session = $this->cache()->get('meeting.session');
 
         $title = trans('meeting.remitment.titles.add');
         $content = $this->renderView('pages.meeting.remitment.payable.add', [
@@ -126,7 +126,7 @@ class Payable extends MeetingComponent
      */
     public function saveRemitment(array $formValues)
     {
-        $pool = $this->cache->get('meeting.pool');
+        $pool = $this->cache()->get('meeting.pool');
         // if($pool->remit_planned && !$pool->remit_auction)
         // {
         //     // Only when remitments are not planned or with auctions.
@@ -137,7 +137,7 @@ class Payable extends MeetingComponent
         // Add some data in the input values to help validation.
         $formValues['remit_auction'] = $pool->remit_auction ? 1 : 0;
 
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $values = $this->validator->validateItem($formValues);
         $this->remitmentService->saveRemitment($pool, $session,
             $values['payable'], $values['auction']);
@@ -151,8 +151,8 @@ class Payable extends MeetingComponent
      */
     public function deleteRemitment(int $payableId)
     {
-        $pool = $this->cache->get('meeting.pool');
-        $session = $this->cache->get('meeting.session');
+        $pool = $this->cache()->get('meeting.pool');
+        $session = $this->cache()->get('meeting.session');
         $this->remitmentService->deleteRemitment($pool, $session, $payableId);
 
         return $this->cl(PayablePage::class)->render();

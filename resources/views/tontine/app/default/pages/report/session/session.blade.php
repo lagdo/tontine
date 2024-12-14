@@ -1,13 +1,13 @@
 @php
-  $rqBillSession = Jaxon\rq(Ajax\App\Report\Session\Bill\Session::class);
-  $rqBillTotal = Jaxon\rq(Ajax\App\Report\Session\Bill\Total::class);
-  $rqDeposit = Jaxon\rq(Ajax\App\Report\Session\Deposit::class);
-  $rqRemitment = Jaxon\rq(Ajax\App\Report\Session\Remitment::class);
-  $rqDisbursement = Jaxon\rq(Ajax\App\Report\Session\Disbursement::class);
-  $rqLoan = Jaxon\rq(Ajax\App\Report\Session\Loan::class);
-  $rqRefund = Jaxon\rq(Ajax\App\Report\Session\Refund::class);
-  $rqSaving = Jaxon\rq(Ajax\App\Report\Session\Saving::class);
-  $rqSavingFund = Jaxon\rq(Ajax\App\Report\Session\Saving\Fund::class);
+  $rqBillSession = rq(Ajax\App\Report\Session\Bill\Session::class);
+  $rqBillTotal = rq(Ajax\App\Report\Session\Bill\Total::class);
+  $rqDeposit = rq(Ajax\App\Report\Session\Deposit::class);
+  $rqRemitment = rq(Ajax\App\Report\Session\Remitment::class);
+  $rqDisbursement = rq(Ajax\App\Report\Session\Disbursement::class);
+  $rqLoan = rq(Ajax\App\Report\Session\Loan::class);
+  $rqRefund = rq(Ajax\App\Report\Session\Refund::class);
+  $rqSaving = rq(Ajax\App\Report\Session\Saving::class);
+  $rqSavingFund = rq(Ajax\App\Report\Session\Saving\Fund::class);
 @endphp
               <div class="row">
                 <div class="col-md-6 col-sm-12" id="report-deposits" @jxnBind($rqDeposit)>

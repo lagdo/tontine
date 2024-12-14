@@ -1,7 +1,7 @@
 @php
-  $rqAuction = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Auction::class);
-  $rqAuctionPage = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\AuctionPage::class);
-  $rqRemitment = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Remitment::class);
+  $rqAuction = rq(Ajax\App\Meeting\Session\Pool\Remitment\Auction::class);
+  $rqAuctionPage = rq(Ajax\App\Meeting\Session\Pool\Remitment\AuctionPage::class);
+  $rqRemitment = rq(Ajax\App\Meeting\Session\Pool\Remitment\Remitment::class);
 @endphp
                   <div class="row">
                     <div class="col">

@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('debtCalculator', 'Siak\Tontine\Service\Meeting\Credit\DebtCalculator')
 @php
-  $rqRefundPage = Jaxon\rq(Ajax\App\Meeting\Summary\Credit\RefundPage::class);
+  $rqRefundPage = rq(Ajax\App\Meeting\Summary\Credit\RefundPage::class);
 @endphp
                     <div class="table-responsive">
                       <table class="table table-bordered responsive">

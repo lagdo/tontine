@@ -1,7 +1,7 @@
 @php
-  $rqSession = Jaxon\rq(Ajax\App\Planning\Pool\Session\Pool\Session::class);
-  $rqSessionCounter = Jaxon\rq(Ajax\App\Planning\Pool\Session\Pool\SessionCounter::class);
-  $rqSessionPage = Jaxon\rq(Ajax\App\Planning\Pool\Session\Pool\SessionPage::class);
+  $rqSession = rq(Ajax\App\Planning\Pool\Session\Pool\Session::class);
+  $rqSessionCounter = rq(Ajax\App\Planning\Pool\Session\Pool\SessionCounter::class);
+  $rqSessionPage = rq(Ajax\App\Planning\Pool\Session\Pool\SessionPage::class);
 @endphp
               <div class="section-body">
                 <div class="row">

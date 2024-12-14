@@ -1,9 +1,9 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $closingFundId = Jaxon\pm()->select('closings-fund-id')->toInt();
-  $selectFundId = Jaxon\jq()->parent()->attr('data-fund-id')->toInt();
-  $rqClosing = Jaxon\rq(Ajax\App\Meeting\Session\Saving\Closing::class);
-  $rqSavingReport = Jaxon\rq(Ajax\App\Report\Session\Saving\Fund::class);
+  $closingFundId = pm()->select('closings-fund-id')->toInt();
+  $selectFundId = jq()->parent()->attr('data-fund-id')->toInt();
+  $rqClosing = rq(Ajax\App\Meeting\Session\Saving\Closing::class);
+  $rqSavingReport = rq(Ajax\App\Report\Session\Saving\Fund::class);
 @endphp
                   <div class="row">
                     <div class="col">

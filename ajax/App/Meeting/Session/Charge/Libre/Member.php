@@ -21,7 +21,7 @@ class Member extends ChargeComponent
      */
     public function html(): Stringable
     {
-        $charge = $this->cache->get('meeting.session.charge');
+        $charge = $this->cache()->get('meeting.session.charge');
 
         return $this->renderView('pages.meeting.charge.libre.member.home', [
             'charge' => $charge,
@@ -78,8 +78,8 @@ class Member extends ChargeComponent
      */
     public function addBill(int $memberId, bool $paid)
     {
-        $session = $this->cache->get('meeting.session');
-        $charge = $this->cache->get('meeting.session.charge');
+        $session = $this->cache()->get('meeting.session');
+        $charge = $this->cache()->get('meeting.session.charge');
         $this->billService->createBill($charge, $session, $memberId, $paid);
 
         $this->showTotal();
@@ -96,8 +96,8 @@ class Member extends ChargeComponent
      */
     public function delBill(int $memberId)
     {
-        $session = $this->cache->get('meeting.session');
-        $charge = $this->cache->get('meeting.session.charge');
+        $session = $this->cache()->get('meeting.session');
+        $charge = $this->cache()->get('meeting.session.charge');
         $this->billService->deleteBill($charge, $session, $memberId);
 
         $this->showTotal();

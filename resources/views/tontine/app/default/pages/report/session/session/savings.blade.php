@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $fundId = Jaxon\pm()->select('report-savings-fund-id')->toInt();
-  $rqFund = Jaxon\rq(Ajax\App\Report\Session\Saving\Fund::class);
+  $fundId = pm()->select('report-savings-fund-id')->toInt();
+  $rqFund = rq(Ajax\App\Report\Session\Saving\Fund::class);
 @endphp
                   <div class="row">
                     <div class="col">

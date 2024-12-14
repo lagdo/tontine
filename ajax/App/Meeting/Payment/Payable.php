@@ -31,8 +31,8 @@ class Payable extends Component
      */
     public function html(): Stringable
     {
-        $member = $this->cache->get('payable.member');
-        $session = $this->cache->get('payable.session');
+        $member = $this->cache()->get('payable.member');
+        $session = $this->cache()->get('payable.session');
         [$receivables, $bills, $debts] = $this->paymentService->getPayables($member, $session);
 
         OnPagePaymentPayables::dispatch($member, $session, $receivables, $bills, $debts);
@@ -61,8 +61,8 @@ class Payable extends Component
             return $this->response;
         }
 
-        $this->cache->set('payable.member', $member);
-        $this->cache->set('payable.session', $session);
+        $this->cache()->set('payable.member', $member);
+        $this->cache()->set('payable.session', $session);
         $this->render();
 
         return $this->response;

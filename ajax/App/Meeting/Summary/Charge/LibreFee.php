@@ -22,7 +22,7 @@ class LibreFee extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.summary.charge.libre.home', [
-            'session' => $this->cache->get('summary.session'),
+            'session' => $this->cache()->get('summary.session'),
         ]);
     }
 

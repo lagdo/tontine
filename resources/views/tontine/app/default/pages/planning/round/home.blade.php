@@ -1,7 +1,7 @@
 @php
-  $rqRound = Jaxon\rq(Ajax\App\Planning\Session\Round::class);
-  $rqRoundPage = Jaxon\rq(Ajax\App\Planning\Session\RoundPage::class);
-  $rqSession = Jaxon\rq(Ajax\App\Planning\Session\Session::class);
+  $rqRound = rq(Ajax\App\Planning\Session\Round::class);
+  $rqRoundPage = rq(Ajax\App\Planning\Session\RoundPage::class);
+  $rqSession = rq(Ajax\App\Planning\Session\Session::class);
 @endphp
           <div class="row" id="round-sm-screens">
             <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-home-rounds">

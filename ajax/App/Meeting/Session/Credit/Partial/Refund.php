@@ -50,13 +50,13 @@ class Refund extends MeetingComponent
             $fund = $this->fundService->getDefaultFund();
             $this->bag('partial.refund')->set('fund.id', $fund->id);
         }
-        $this->cache->set('meeting.refund.fund', $fund);
+        $this->cache()->set('meeting.refund.fund', $fund);
     }
 
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.refund.partial.home', [
-            'session' => $this->cache->get('meeting.session'),
+            'session' => $this->cache()->get('meeting.session'),
             'funds' => $this->fundService->getFundList(),
             'currentFundId' => $this->bag('partial.refund')->get('fund.id', 0),
         ]);
@@ -89,7 +89,7 @@ class Refund extends MeetingComponent
      */
     public function edit(int $refundId)
     {
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $refund = $this->refundService->getPartialRefund($session, $refundId);
         $title = trans('meeting.refund.titles.edit');
         $content = $this->renderView('pages.meeting.refund.partial.edit', [
@@ -116,7 +116,7 @@ class Refund extends MeetingComponent
      */
     public function update(int $refundId, array $formValues)
     {
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $formValues['debt'] = $refundId;
         $values = $this->validator->validateItem($formValues);
         $refund = $this->refundService->getPartialRefund($session, $refundId);
@@ -136,7 +136,7 @@ class Refund extends MeetingComponent
      */
     public function delete(int $refundId)
     {
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $refund = $this->refundService->getPartialRefund($session, $refundId);
         $this->refundService->deletePartialRefund($refund, $session);
 

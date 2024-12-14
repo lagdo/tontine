@@ -43,7 +43,7 @@ class EndSession extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.pool.session.end.home', [
-            'pool' => $this->cache->get('pool.session.pool'),
+            'pool' => $this->cache()->get('pool.session.pool'),
         ]);
     }
 
@@ -64,7 +64,7 @@ class EndSession extends Component
      */
     public function save(array $formValues)
     {
-        $pool = $this->cache->get('pool.session.pool');
+        $pool = $this->cache()->get('pool.session.pool');
         $values = $this->validator->end()->validateItem($formValues);
         $this->poolService->saveEndSession($pool, $values);
 
@@ -82,7 +82,7 @@ class EndSession extends Component
 
     public function delete()
     {
-        $pool = $this->cache->get('pool.session.pool');
+        $pool = $this->cache()->get('pool.session.pool');
         $this->poolService->deleteRound($pool);
 
         // Reload the pool

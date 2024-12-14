@@ -27,7 +27,7 @@ class Disbursement extends MeetingComponent
 
     public function html(): Stringable
     {
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
 
         return $this->renderView('pages.meeting.disbursement.home', [
             'session' => $session,
@@ -71,7 +71,7 @@ class Disbursement extends MeetingComponent
      */
     public function createDisbursement(array $formValues)
     {
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $values = $this->validator->validateItem($formValues);
         $this->disbursementService->createDisbursement($session, $values);
 
@@ -82,7 +82,7 @@ class Disbursement extends MeetingComponent
 
     public function editDisbursement(int $disbursementId)
     {
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $title = trans('meeting.disbursement.titles.edit');
         $content = $this->renderView('pages.meeting.disbursement.edit', [
             'disbursement' => $this->disbursementService
@@ -110,7 +110,7 @@ class Disbursement extends MeetingComponent
      */
     public function updateDisbursement(int $disbursementId, array $formValues)
     {
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $values = $this->validator->validateItem($formValues);
         $this->disbursementService->updateDisbursement($session, $disbursementId, $values);
 
@@ -121,7 +121,7 @@ class Disbursement extends MeetingComponent
 
     public function deleteDisbursement(int $disbursementId)
     {
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $this->disbursementService->deleteDisbursement($session, $disbursementId);
 
         return $this->render();

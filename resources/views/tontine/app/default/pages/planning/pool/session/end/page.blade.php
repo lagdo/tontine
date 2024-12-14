@@ -1,5 +1,5 @@
 @php
-  $rqEndSessionPage = Jaxon\rq(Ajax\App\Planning\Pool\Session\Pool\EndSessionPage::class);
+  $rqEndSessionPage = rq(Ajax\App\Planning\Pool\Session\Pool\EndSessionPage::class);
 @endphp
                       <div class="table-responsive">
                         <form id="end-session-form">

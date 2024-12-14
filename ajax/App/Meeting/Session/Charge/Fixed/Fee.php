@@ -10,7 +10,7 @@ class Fee extends MeetingComponent
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.charge.fixed.home', [
-            'session' => $this->cache->get('meeting.session'),
+            'session' => $this->cache()->get('meeting.session'),
         ]);
     }
 

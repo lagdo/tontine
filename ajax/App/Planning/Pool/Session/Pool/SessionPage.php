@@ -34,7 +34,7 @@ class SessionPage extends PageComponent
      */
     protected function count(): int
     {
-        $pool = $this->cache->get('pool.session.pool');
+        $pool = $this->cache()->get('pool.session.pool');
 
         return $this->poolService->getPoolSessionCount($pool);
     }
@@ -44,11 +44,11 @@ class SessionPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $pool = $this->cache->get('pool.session.pool');
+        $pool = $this->cache()->get('pool.session.pool');
 
         return $this->renderView('pages.planning.pool.session.enabled.page', [
             'pool' => $pool,
-            'sessions' => $this->poolService->getPoolSessions($pool, $this->page),
+            'sessions' => $this->poolService->getPoolSessions($pool, $this->pageNumber()),
         ]);
     }
 

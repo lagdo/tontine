@@ -1,9 +1,9 @@
 @php
-  $chargeId = Jaxon\jq()->parent()->attr('data-charge-id')->toInt();
-  $rqLibreFeePage = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\FeePage::class);
-  $rqMember = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Member::class);
-  $rqSettlement = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Settlement::class);
-  $rqTarget = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Target::class);
+  $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
+  $rqLibreFeePage = rq(Ajax\App\Meeting\Session\Charge\Libre\FeePage::class);
+  $rqMember = rq(Ajax\App\Meeting\Session\Charge\Libre\Member::class);
+  $rqSettlement = rq(Ajax\App\Meeting\Session\Charge\Libre\Settlement::class);
+  $rqTarget = rq(Ajax\App\Meeting\Session\Charge\Libre\Target::class);
 @endphp
                   <div class="table-responsive" id="meeting-fees-libre-page" @jxnTarget()>
                     <div @jxnEvent(['.btn-fee-libre-add', 'click'], $rqMember->charge($chargeId))></div>

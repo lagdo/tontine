@@ -36,7 +36,7 @@ class Auction extends MeetingComponent
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.auction.home', [
-            'session' => $this->cache->get('meeting.session'),
+            'session' => $this->cache()->get('meeting.session'),
         ]);
     }
 
@@ -65,7 +65,7 @@ class Auction extends MeetingComponent
     {
         $this->validator->validate($auctionId);
 
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $this->auctionService->toggleAuctionPayment($session, $auctionId);
 
         return $this->cl(AuctionPage::class)->page();

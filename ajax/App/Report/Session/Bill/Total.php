@@ -21,8 +21,8 @@ class Total extends Component
      */
     public function html(): Stringable
     {
-        $session = $this->cache->get('report.session');
-        $member = $this->cache->get('report.member');
+        $session = $this->cache()->get('report.session');
+        $member = $this->cache()->get('report.member');
 
         if(!$member)
         {

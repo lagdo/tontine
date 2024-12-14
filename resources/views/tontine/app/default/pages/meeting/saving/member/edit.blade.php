@@ -1,5 +1,5 @@
 @php
-  $amountValue = Jaxon\jq("#saving-edit-member-$memberId")->val();
+  $amountValue = jq("#saving-edit-member-$memberId")->val();
 @endphp
                         <div class="input-group">
                           {!! $htmlBuilder->text('amount', $amount)->class('form-control')

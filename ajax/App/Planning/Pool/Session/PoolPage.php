@@ -34,9 +34,9 @@ class PoolPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $pools = $this->poolService->getPools($this->page);
+        $pools = $this->poolService->getPools($this->pageNumber());
         // When showing the page for the first time, we'll need to get the first pool
-        $this->cache->set('pool.session.pools', $pools);
+        $this->cache()->set('pool.session.pools', $pools);
 
         return $this->renderView('pages.planning.pool.session.page', [
             'pools' => $pools,

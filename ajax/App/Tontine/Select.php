@@ -114,7 +114,7 @@ class Select extends CallableClass
 
         $this->selectRound($round);
         $this->bag('planning')->set('round.id', $round->id);
-        $this->cache->set('planning.round', $round);
+        $this->cache()->set('planning.round', $round);
     }
 
     /**

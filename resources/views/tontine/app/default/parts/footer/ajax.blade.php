@@ -5,9 +5,9 @@
 @jxnCss
 
 @php
-    $rqOrganisation = Jaxon\rq(Ajax\App\Admin\Organisation\Organisation::class);
-    $rqUser = Jaxon\rq(Ajax\App\Admin\User\User::class);
-    $rqSession = Jaxon\rq(Ajax\App\Meeting\Session\Session::class);
+    $rqOrganisation = rq(Ajax\App\Admin\Organisation\Organisation::class);
+    $rqUser = rq(Ajax\App\Admin\User\User::class);
+    $rqSession = rq(Ajax\App\Meeting\Session\Session::class);
 @endphp
 <script type='text/javascript'>
     const tontine = {

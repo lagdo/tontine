@@ -15,6 +15,6 @@ trait PoolTrait
         }
 
         $poolId = (int)$this->bag('subscription')->get('pool.id');
-        $this->cache->set('subscription.pool', $this->poolService->getPool($poolId));
+        $this->cache()->set('subscription.pool', $this->poolService->getPool($poolId));
     }
 }

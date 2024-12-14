@@ -1,9 +1,9 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $poolId = Jaxon\jq()->parent()->attr('data-pool-id')->toInt();
-  $rqRemitment = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Remitment::class);
-  $rqAuction = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Auction::class);
-  $rqPayable = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Payable::class);
+  $poolId = jq()->parent()->attr('data-pool-id')->toInt();
+  $rqRemitment = rq(Ajax\App\Meeting\Session\Pool\Remitment\Remitment::class);
+  $rqAuction = rq(Ajax\App\Meeting\Session\Pool\Remitment\Auction::class);
+  $rqPayable = rq(Ajax\App\Meeting\Session\Pool\Remitment\Payable::class);
 @endphp
                   <div class="row">
                     <div class="col">

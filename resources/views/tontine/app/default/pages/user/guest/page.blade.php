@@ -1,7 +1,7 @@
 @php
-  $inviteId = Jaxon\jq()->parent()->attr('data-invite-id')->toInt();
-  $rqGuestUser = Jaxon\rq(Ajax\App\Admin\User\Guest\Guest::class);
-  $rqGuestUserPage = Jaxon\rq(Ajax\App\Admin\User\Guest\GuestPage::class);
+  $inviteId = jq()->parent()->attr('data-invite-id')->toInt();
+  $rqGuestUser = rq(Ajax\App\Admin\User\Guest\Guest::class);
+  $rqGuestUserPage = rq(Ajax\App\Admin\User\Guest\GuestPage::class);
 @endphp
                   <div class="table-responsive" id="content-guest-invites-page" @jxnTarget()>
                     <div @jxnEvent(['.btn-guest-invite-accept', 'click'], $rqGuestUser->accept($inviteId)

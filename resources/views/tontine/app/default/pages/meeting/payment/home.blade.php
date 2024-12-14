@@ -1,7 +1,7 @@
 @php
-  // $rqPayment = Jaxon\rq(Ajax\App\Meeting\Payment\Payment::class);
-  $rqPaymentPage = Jaxon\rq(Ajax\App\Meeting\Payment\PaymentPage::class);
-  $rqPayable = Jaxon\rq(Ajax\App\Meeting\Payment\Payable::class);
+  // $rqPayment = rq(Ajax\App\Meeting\Payment\Payment::class);
+  $rqPaymentPage = rq(Ajax\App\Meeting\Payment\PaymentPage::class);
+  $rqPayable = rq(Ajax\App\Meeting\Payment\Payable::class);
 @endphp
           <div class="row" id="payment-sm-screens">
             <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="payment-members-home">

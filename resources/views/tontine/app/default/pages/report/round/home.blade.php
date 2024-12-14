@@ -1,11 +1,11 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('sqids', 'Sqids\SqidsInterface')
 @php
-  $rqRound = Jaxon\rq(Ajax\App\Report\Round\Round::class);
-  $rqRoundBalance = Jaxon\rq(Ajax\App\Report\Round\Balance::class);
-  $rqRoundPool = Jaxon\rq(Ajax\App\Report\Round\Pool::class);
-  $clRoundPool = Jaxon\cl(Ajax\App\Report\Round\Pool::class);
-  $rqOptions = Jaxon\rq(Ajax\App\Tontine\Options\Options::class);
+  $rqRound = rq(Ajax\App\Report\Round\Round::class);
+  $rqRoundBalance = rq(Ajax\App\Report\Round\Balance::class);
+  $rqRoundPool = rq(Ajax\App\Report\Round\Pool::class);
+  $clRoundPool = cl(Ajax\App\Report\Round\Pool::class);
+  $rqOptions = rq(Ajax\App\Tontine\Options\Options::class);
 @endphp
           <div class="section-body">
             <div class="row">

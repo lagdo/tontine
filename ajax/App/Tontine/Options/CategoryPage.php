@@ -38,7 +38,7 @@ class CategoryPage extends PageComponent
     public function html(): Stringable
     {
         return $this->renderView('pages.options.category.page', [
-            'categories' => $this->categoryService->getCategories($this->page),
+            'categories' => $this->categoryService->getCategories($this->pageNumber()),
         ]);
     }
 

@@ -24,8 +24,8 @@ class MemberTotal extends Component
      */
     public function html(): Stringable
     {
-        $session = $this->cache->get('meeting.session');
-        $fund = $this->cache->get('meeting.saving.fund');
+        $session = $this->cache()->get('meeting.session');
+        $fund = $this->cache()->get('meeting.saving.fund');
 
         return $this->renderView('pages.meeting.saving.total', [
             'savingCount' => $this->savingService->getSavingCount($session, $fund),

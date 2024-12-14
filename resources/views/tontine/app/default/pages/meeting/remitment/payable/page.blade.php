@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $payableId = Jaxon\jq()->parent()->attr('data-payable-id')->toInt();
-  $rqPayable = Jaxon\rq(Ajax\App\Meeting\Session\Pool\Remitment\Payable::class);
+  $payableId = jq()->parent()->attr('data-payable-id')->toInt();
+  $rqPayable = rq(Ajax\App\Meeting\Session\Pool\Remitment\Payable::class);
 @endphp
                   <div class="table-responsive" id="meeting-pool-remitments" @jxnTarget()>
                     <div @jxnEvent(['.btn-add-remitment', 'click'], $rqPayable->addRemitment($payableId))></div>

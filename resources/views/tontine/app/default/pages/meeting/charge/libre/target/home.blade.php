@@ -1,9 +1,9 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $searchValue = Jaxon\jq('#txt-fee-member-search')->val();
-  $rqTarget = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Target::class);
-  $rqTargetPage = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\TargetPage::class);
-  $rqCharge = Jaxon\rq(Ajax\App\Meeting\Session\Charge\Libre\Fee::class);
+  $searchValue = jq('#txt-fee-member-search')->val();
+  $rqTarget = rq(Ajax\App\Meeting\Session\Charge\Libre\Target::class);
+  $rqTargetPage = rq(Ajax\App\Meeting\Session\Charge\Libre\TargetPage::class);
+  $rqCharge = rq(Ajax\App\Meeting\Session\Charge\Libre\Fee::class);
 @endphp
                   <div class="row">
                     <div class="col">

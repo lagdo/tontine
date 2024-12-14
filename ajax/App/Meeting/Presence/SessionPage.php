@@ -32,7 +32,7 @@ class SessionPage extends PageComponent
     {
         $memberId = $this->bag('presence')->get('member.id', 0);
         $member = $memberId === 0 ? null : $this->presenceService->getMember($memberId);
-        $this->cache->set('presence.member', $member);
+        $this->cache()->set('presence.member', $member);
     }
 
     /**
@@ -48,11 +48,11 @@ class SessionPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $member = $this->cache->get('presence.member'); // Is null when showing presences by sessions.
+        $member = $this->cache()->get('presence.member'); // Is null when showing presences by sessions.
 
         return $this->renderView('pages.meeting.presence.session.page', [
             'member' => $member,
-            'sessions' => $this->presenceService->getSessions($this->page),
+            'sessions' => $this->presenceService->getSessions($this->pageNumber()),
             'absences' => !$member ? null :
                 $this->presenceService->getMemberAbsences($member),
             'statuses' => $this->sessionService->getSessionStatuses(),

@@ -1,9 +1,9 @@
 @php
-  $roundId = Jaxon\jq()->parent()->attr('data-round-id')->toInt();
-  $rqSelect = Jaxon\rq(Ajax\App\Tontine\Select::class);
-  $rqSession = Jaxon\rq(Ajax\App\Planning\Session\Session::class);
-  $rqRound = Jaxon\rq(Ajax\App\Planning\Session\Round::class);
-  $rqRoundPage = Jaxon\rq(Ajax\App\Planning\Session\RoundPage::class);
+  $roundId = jq()->parent()->attr('data-round-id')->toInt();
+  $rqSelect = rq(Ajax\App\Tontine\Select::class);
+  $rqSession = rq(Ajax\App\Planning\Session\Session::class);
+  $rqRound = rq(Ajax\App\Planning\Session\Round::class);
+  $rqRoundPage = rq(Ajax\App\Planning\Session\RoundPage::class);
 @endphp
                   <div class="table-responsive" @jxnTarget()>
                     <div @jxnEvent(['.btn-round-edit', 'click'], $rqRound->edit($roundId))></div>

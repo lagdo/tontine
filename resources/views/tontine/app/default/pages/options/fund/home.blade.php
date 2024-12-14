@@ -1,6 +1,6 @@
 @php
-  $rqFund = Jaxon\rq(Ajax\App\Tontine\Options\Fund::class);
-  $rqFundPage = Jaxon\rq(Ajax\App\Tontine\Options\FundPage::class);
+  $rqFund = rq(Ajax\App\Tontine\Options\Fund::class);
+  $rqFundPage = rq(Ajax\App\Tontine\Options\FundPage::class);
 @endphp
               <div class="section-body">
                 <div class="row">

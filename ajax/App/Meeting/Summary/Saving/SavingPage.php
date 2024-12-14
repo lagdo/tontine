@@ -31,8 +31,8 @@ class SavingPage extends PageComponent
      */
     protected function count(): int
     {
-        $session = $this->cache->get('summary.session');
-        $fund = $this->cache->get('meeting.saving.fund');
+        $session = $this->cache()->get('summary.session');
+        $fund = $this->cache()->get('meeting.saving.fund');
 
         return $this->savingService->getSavingCount($session, $fund);
     }
@@ -42,12 +42,12 @@ class SavingPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $session = $this->cache->get('summary.session');
-        $fund = $this->cache->get('meeting.saving.fund');
+        $session = $this->cache()->get('summary.session');
+        $fund = $this->cache()->get('meeting.saving.fund');
 
         return $this->renderView('pages.meeting.summary.saving.page', [
             'session' => $session,
-            'savings' => $this->savingService->getSavings($session, $fund, $this->page),
+            'savings' => $this->savingService->getSavings($session, $fund, $this->pageNumber()),
         ]);
     }
 

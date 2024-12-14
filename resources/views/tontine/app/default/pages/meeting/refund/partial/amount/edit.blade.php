@@ -1,6 +1,6 @@
 @php
-  $amountValue = Jaxon\pm()->input("partial-refund-amount-edit-{$debt->id}");
-  $rqAmount = Jaxon\rq(Ajax\App\Meeting\Session\Credit\Partial\Amount::class);
+  $amountValue = pm()->input("partial-refund-amount-edit-{$debt->id}");
+  $rqAmount = rq(Ajax\App\Meeting\Session\Credit\Partial\Amount::class);
 @endphp
                         <div class="input-group">
                           {!! $htmlBuilder->text('amount', $amount)->class('form-control')

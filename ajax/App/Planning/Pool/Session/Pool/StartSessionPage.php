@@ -46,11 +46,11 @@ class StartSessionPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $pool = $this->cache->get('pool.session.pool');
+        $pool = $this->cache()->get('pool.session.pool');
         $startSession = $this->poolService->getPoolStartSession($pool);
 
         return $this->renderView('pages.planning.pool.session.start.page', [
-            'sessions' => $this->sessionService->getTontineSessions($this->page, orderAsc: false),
+            'sessions' => $this->sessionService->getTontineSessions($this->pageNumber(), orderAsc: false),
             'sessionId' => !$startSession ? 0 : $startSession->id,
         ]);
     }
@@ -67,7 +67,7 @@ class StartSessionPage extends PageComponent
 
     private function getSessionPageNumber(): int
     {
-        $pool = $this->cache->get('pool.session.pool');
+        $pool = $this->cache()->get('pool.session.pool');
         $session = $this->poolService->getPoolStartSession($pool);
         if(!$session)
         {

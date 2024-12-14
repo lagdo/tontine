@@ -30,11 +30,11 @@ class TargetPage extends ChargePageComponent
 
     protected function getTarget()
     {
-        $session = $this->cache->get('meeting.session');
-        $charge = $this->cache->get('meeting.session.charge');
+        $session = $this->cache()->get('meeting.session');
+        $charge = $this->cache()->get('meeting.session.charge');
         $target = $session !== null && $charge !== null ?
             $this->targetService->getTarget($charge, $session) : null;
-        $this->cache->set('meeting.session.charge.target', $target);
+        $this->cache()->set('meeting.session.charge.target', $target);
     }
 
     /**
@@ -53,16 +53,16 @@ class TargetPage extends ChargePageComponent
     public function html(): Stringable
     {
         $search = trim($this->bag('meeting')->get('fee.member.search', ''));
-        $session = $this->cache->get('meeting.session');
-        $charge = $this->cache->get('meeting.session.charge');
-        $target = $this->cache->get('meeting.session.charge.target');
+        $session = $this->cache()->get('meeting.session');
+        $charge = $this->cache()->get('meeting.session.charge');
+        $target = $this->cache()->get('meeting.session.charge.target');
 
         return $this->renderView('pages.meeting.charge.libre.target.page', [
             'session' => $session,
             'target' => $target,
             'charge' => $charge,
             'members' => $this->targetService
-                ->getMembersWithSettlements($charge, $target, $search, $this->page),
+                ->getMembersWithSettlements($charge, $target, $search, $this->pageNumber()),
         ]);
     }
 

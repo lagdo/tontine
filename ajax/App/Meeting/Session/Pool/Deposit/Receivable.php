@@ -48,7 +48,7 @@ class Receivable extends MeetingComponent
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.deposit.receivable.home', [
-            'pool' => $this->cache->get('meeting.pool'),
+            'pool' => $this->cache()->get('meeting.pool'),
         ]);
     }
 
@@ -67,8 +67,8 @@ class Receivable extends MeetingComponent
      */
     public function addDeposit(int $receivableId)
     {
-        $pool = $this->cache->get('meeting.pool');
-        $session = $this->cache->get('meeting.session');
+        $pool = $this->cache()->get('meeting.pool');
+        $session = $this->cache()->get('meeting.session');
         $this->depositService->createDeposit($pool, $session, $receivableId);
 
         return $this->cl(ReceivablePage::class)->page();
@@ -81,8 +81,8 @@ class Receivable extends MeetingComponent
      */
     public function delDeposit(int $receivableId)
     {
-        $pool = $this->cache->get('meeting.pool');
-        $session = $this->cache->get('meeting.session');
+        $pool = $this->cache()->get('meeting.pool');
+        $session = $this->cache()->get('meeting.session');
         $this->depositService->deleteDeposit($pool, $session, $receivableId);
 
         return $this->cl(ReceivablePage::class)->page();
@@ -93,13 +93,13 @@ class Receivable extends MeetingComponent
      */
     public function addAllDeposits()
     {
-        $pool = $this->cache->get('meeting.pool');
+        $pool = $this->cache()->get('meeting.pool');
         if(!$pool->deposit_fixed)
         {
             return $this->response;
         }
 
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $this->depositService->createAllDeposits($pool, $session);
 
         return $this->cl(ReceivablePage::class)->page();
@@ -110,13 +110,13 @@ class Receivable extends MeetingComponent
      */
     public function delAllDeposits()
     {
-        $pool = $this->cache->get('meeting.pool');
+        $pool = $this->cache()->get('meeting.pool');
         if(!$pool->deposit_fixed)
         {
             return $this->response;
         }
 
-        $session = $this->cache->get('meeting.session');
+        $session = $this->cache()->get('meeting.session');
         $this->depositService->deleteAllDeposits($pool, $session);
 
         return $this->cl(ReceivablePage::class)->page();

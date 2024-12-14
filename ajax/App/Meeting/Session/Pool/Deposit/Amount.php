@@ -40,8 +40,8 @@ class Amount extends MeetingComponent
      */
     public function html(): Stringable
     {
-        $session = $this->cache->get('meeting.session');
-        $receivable = $this->cache->get('meeting.session.receivable');
+        $session = $this->cache()->get('meeting.session');
+        $receivable = $this->cache()->get('meeting.session.receivable');
 
         if($session->closed)
         {
@@ -53,7 +53,7 @@ class Amount extends MeetingComponent
 
         // When editing the deposit amount, or when there is no deposit yet,
         // then show the amount edit form.
-        $edit = $this->cache->get('meeting.session.edit');
+        $edit = $this->cache()->get('meeting.session.edit');
         if($edit || !$receivable->deposit)
         {
             return $this->renderView('pages.meeting.deposit.libre.edit', [
@@ -79,16 +79,16 @@ class Amount extends MeetingComponent
      */
     public function edit(int $receivableId): AjaxResponse
     {
-        $pool = $this->cache->get('meeting.pool');
-        $session = $this->cache->get('meeting.session');
+        $pool = $this->cache()->get('meeting.pool');
+        $session = $this->cache()->get('meeting.session');
         $receivable = $this->depositService->getReceivable($pool, $session, $receivableId);
         if(!$receivable || !$receivable->deposit)
         {
             return $this->cl(ReceivablePage::class)->page();
         }
 
-        $this->cache->set('meeting.session.edit', true);
-        $this->cache->set('meeting.session.receivable', $receivable);
+        $this->cache()->set('meeting.session.edit', true);
+        $this->cache()->set('meeting.session.receivable', $receivable);
 
         return $this->item($receivable->id)->render();
     }
@@ -110,14 +110,14 @@ class Amount extends MeetingComponent
             return $this->response;
         }
 
-        $pool = $this->cache->get('meeting.pool');
-        $session = $this->cache->get('meeting.session');
+        $pool = $this->cache()->get('meeting.pool');
+        $session = $this->cache()->get('meeting.session');
         $amount = $amount === '' ? 0 : $this->localeService->convertMoneyToInt((float)$amount);
         $amount > 0 ?
             $this->depositService->saveDepositAmount($pool, $session, $receivableId, $amount):
             $this->depositService->deleteDeposit($pool, $session, $receivableId);
 
-        $this->cache->set('meeting.session.receivable',
+        $this->cache()->set('meeting.session.receivable',
             $this->depositService->getReceivable($pool, $session, $receivableId));
 
         return $this->item($receivableId)->render();

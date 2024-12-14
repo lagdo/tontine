@@ -1,9 +1,9 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $rqHome = Jaxon\rq(Ajax\App\Planning\Pool\Pool::class);
-  $rqPool = Jaxon\rq(Ajax\App\Planning\Pool\Session\Pool::class);
-  $rqPoolPage = Jaxon\rq(Ajax\App\Planning\Pool\Session\PoolPage::class);
-  $rqPoolSection = Jaxon\rq(Ajax\App\Planning\Pool\Session\Pool\PoolSection::class);
+  $rqHome = rq(Ajax\App\Planning\Pool\Pool::class);
+  $rqPool = rq(Ajax\App\Planning\Pool\Session\Pool::class);
+  $rqPoolPage = rq(Ajax\App\Planning\Pool\Session\PoolPage::class);
+  $rqPoolSection = rq(Ajax\App\Planning\Pool\Session\Pool\PoolSection::class);
 @endphp
           {{-- <div class="row sm-screen-selector mb-3" id="pool-subscription-sm-screens">
             <div class="col-12">

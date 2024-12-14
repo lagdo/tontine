@@ -38,7 +38,7 @@ class RoundPage extends PageComponent
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.round.page', [
-            'rounds' => $this->roundService->getRounds($this->page),
+            'rounds' => $this->roundService->getRounds($this->pageNumber()),
         ]);
     }
 

@@ -1,8 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $disbursementId = Jaxon\jq()->parent()->attr('data-disbursement-id')->toInt();
-  $rqDisbursement = Jaxon\rq(Ajax\App\Meeting\Session\Cash\Disbursement::class);
-  $rqSession = Jaxon\rq(Ajax\App\Meeting\Session\Session::class);
+  $disbursementId = jq()->parent()->attr('data-disbursement-id')->toInt();
+  $rqDisbursement = rq(Ajax\App\Meeting\Session\Cash\Disbursement::class);
+  $rqSession = rq(Ajax\App\Meeting\Session\Session::class);
 @endphp
                   <div class="row">
                     <div class="col">
