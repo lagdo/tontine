@@ -17,16 +17,16 @@ trait SelectTrait
      */
     protected function selectTontine(Tontine $tontine)
     {
-        $this->temp->set('menu.current.tontine', $tontine);
-        $this->temp->set('menu.current.round', null);
+        $this->cache()->set('menu.current.tontine', $tontine);
+        $this->cache()->set('menu.current.round', null);
         $this->cl(MainTitle::class)->render();
 
         // Set the tontine sidebar menu
-        $this->temp->set('menu.tontine.active', true);
+        $this->cache()->set('menu.tontine.active', true);
         $this->cl(TontineMenu::class)->render();
 
         // Reset the round sidebar menu
-        $this->temp->set('menu.round.active', false);
+        $this->cache()->set('menu.round.active', false);
         $this->cl(RoundMenu::class)->render();
     }
 
@@ -37,12 +37,12 @@ trait SelectTrait
      */
     protected function selectRound(Round $round)
     {
-        $this->temp->set('menu.current.tontine', $round->tontine);
-        $this->temp->set('menu.current.round', $round);
+        $this->cache()->set('menu.current.tontine', $round->tontine);
+        $this->cache()->set('menu.current.round', $round);
         $this->cl(MainTitle::class)->render();
 
         // Set the round sidebar menu
-        $this->temp->set('menu.round.active', true);
+        $this->cache()->set('menu.round.active', true);
         $this->cl(RoundMenu::class)->render();
     }
 }
