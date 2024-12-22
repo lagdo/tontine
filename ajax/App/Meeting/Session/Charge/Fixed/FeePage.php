@@ -40,7 +40,7 @@ class FeePage extends MeetingPageComponent
 
         return $this->renderView('pages.meeting.charge.fixed.page', [
             'session' => $session,
-            'charges' => $this->feeService->getFees($this->pageNumber()),
+            'charges' => $this->feeService->getFees($this->currentPage()),
             'bills' => $this->feeService->getBills($session),
             'settlements' => $this->feeService->getSettlements($session),
         ]);

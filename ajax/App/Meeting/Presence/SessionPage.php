@@ -52,7 +52,7 @@ class SessionPage extends PageComponent
 
         return $this->renderView('pages.meeting.presence.session.page', [
             'member' => $member,
-            'sessions' => $this->presenceService->getSessions($this->pageNumber()),
+            'sessions' => $this->presenceService->getSessions($this->currentPage()),
             'absences' => !$member ? null :
                 $this->presenceService->getMemberAbsences($member),
             'statuses' => $this->sessionService->getSessionStatuses(),

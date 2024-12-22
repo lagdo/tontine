@@ -3,11 +3,13 @@
 namespace Ajax;
 
 use Jaxon\App\PageComponent as BaseComponent;
+use Jaxon\App\PageDatabagTrait;
 use Jaxon\Response\AjaxResponse;
 
 abstract class PageComponent extends BaseComponent
 {
     use CallableTrait;
+    use PageDatabagTrait;
 
     /**
      * The pagination databag options
@@ -49,7 +51,7 @@ abstract class PageComponent extends BaseComponent
      */
     public function page(int $pageNumber = 0): ?AjaxResponse
     {
-        // Get the paginator. This will also set the final page number value.
+        // Get the paginator. This will also set the current page number value.
         $paginator = $this->paginator($pageNumber);
         // Render the page content.
         $this->render();

@@ -47,7 +47,7 @@ class AuctionPage extends MeetingPageComponent
 
         return $this->renderView('pages.meeting.auction.page', [
             'session' => $session,
-            'auctions' => $this->auctionService->getAuctions($session, $filtered, $this->pageNumber()),
+            'auctions' => $this->auctionService->getAuctions($session, $filtered, $this->currentPage()),
         ]);
     }
 

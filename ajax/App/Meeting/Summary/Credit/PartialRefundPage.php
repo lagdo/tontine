@@ -50,7 +50,7 @@ class PartialRefundPage extends PageComponent
 
         return $this->renderView('pages.meeting.summary.refund.partial.page', [
             'session' => $session,
-            'refunds' => $this->refundService->getPartialRefunds($session, $fund, $this->pageNumber()),
+            'refunds' => $this->refundService->getPartialRefunds($session, $fund, $this->currentPage()),
         ]);
     }
 

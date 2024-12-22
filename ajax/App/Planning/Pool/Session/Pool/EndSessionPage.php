@@ -50,7 +50,7 @@ class EndSessionPage extends PageComponent
         $endSession = $this->poolService->getPoolEndSession($pool);
 
         return $this->renderView('pages.planning.pool.session.end.page', [
-            'sessions' => $this->sessionService->getTontineSessions($this->pageNumber(), orderAsc: false),
+            'sessions' => $this->sessionService->getTontineSessions($this->currentPage(), orderAsc: false),
             'sessionId' => !$endSession ? 0 : $endSession->id,
         ]);
     }

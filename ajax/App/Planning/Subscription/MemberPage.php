@@ -59,7 +59,7 @@ class MemberPage extends PageComponent
 
         return $this->renderView('pages.planning.subscription.member.page', [
             'members' => $this->subscriptionService
-                ->getMembers($pool, $search, $filter, $this->pageNumber()),
+                ->getMembers($pool, $search, $filter, $this->currentPage()),
             'total' => $this->subscriptionService->getSubscriptionCount($pool),
         ]);
     }

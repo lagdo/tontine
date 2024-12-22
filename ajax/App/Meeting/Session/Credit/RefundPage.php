@@ -59,7 +59,7 @@ class RefundPage extends MeetingPageComponent
 
         return $this->renderView('pages.meeting.refund.page', [
             'session' => $session,
-            'debts' => $this->refundService->getDebts($session, $fund, $filtered, $this->pageNumber()),
+            'debts' => $this->refundService->getDebts($session, $fund, $filtered, $this->currentPage()),
         ]);
     }
 

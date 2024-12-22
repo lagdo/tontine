@@ -50,7 +50,7 @@ class StartSessionPage extends PageComponent
         $startSession = $this->poolService->getPoolStartSession($pool);
 
         return $this->renderView('pages.planning.pool.session.start.page', [
-            'sessions' => $this->sessionService->getTontineSessions($this->pageNumber(), orderAsc: false),
+            'sessions' => $this->sessionService->getTontineSessions($this->currentPage(), orderAsc: false),
             'sessionId' => !$startSession ? 0 : $startSession->id,
         ]);
     }

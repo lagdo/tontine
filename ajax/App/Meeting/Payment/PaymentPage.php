@@ -51,7 +51,7 @@ class PaymentPage extends PageComponent
     {
         return $this->renderView('pages.meeting.payment.page', [
             'sessions' => $this->getOpenedSessions(),
-            'members' => $this->memberService->getMembers('', $this->pageNumber()),
+            'members' => $this->memberService->getMembers('', $this->currentPage()),
         ]);
     }
 

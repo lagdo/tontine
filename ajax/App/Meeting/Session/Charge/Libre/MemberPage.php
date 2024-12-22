@@ -43,7 +43,7 @@ class MemberPage extends ChargePageComponent
             'session' => $session,
             'charge' => $charge,
             'members' => $this->billService
-                ->getMembers($charge, $session, $search, $filter, $this->pageNumber()),
+                ->getMembers($charge, $session, $search, $filter, $this->currentPage()),
         ]);
     }
 

@@ -34,7 +34,7 @@ class MemberPage extends PageComponent
         $search = trim($this->bag('member')->get('search', ''));
 
         return $this->renderView('pages.member.page', [
-            'members' => $this->memberService->getMembers($search, $this->pageNumber()),
+            'members' => $this->memberService->getMembers($search, $this->currentPage()),
         ]);
     }
 

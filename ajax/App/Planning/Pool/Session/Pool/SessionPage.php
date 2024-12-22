@@ -48,7 +48,7 @@ class SessionPage extends PageComponent
 
         return $this->renderView('pages.planning.pool.session.enabled.page', [
             'pool' => $pool,
-            'sessions' => $this->poolService->getPoolSessions($pool, $this->pageNumber()),
+            'sessions' => $this->poolService->getPoolSessions($pool, $this->currentPage()),
         ]);
     }
 

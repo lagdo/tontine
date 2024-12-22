@@ -40,7 +40,7 @@ class SettlementPage extends ChargePageComponent
         return $this->renderView('pages.meeting.charge.libre.settlement.page', [
             'session' => $session,
             'charge' => $charge,
-            'bills' => $this->billService->getBills($charge, $session, $search, $filter, $this->pageNumber()),
+            'bills' => $this->billService->getBills($charge, $session, $search, $filter, $this->currentPage()),
         ]);
     }
 

@@ -38,7 +38,7 @@ class GuestPage extends PageComponent
     public function html(): Stringable
     {
         return $this->renderView('pages.user.guest.page', [
-            'invites' => $this->userService->getGuestInvites($this->pageNumber()),
+            'invites' => $this->userService->getGuestInvites($this->currentPage()),
         ]);
     }
 

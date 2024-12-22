@@ -47,7 +47,7 @@ class SavingPage extends PageComponent
 
         return $this->renderView('pages.meeting.summary.saving.page', [
             'session' => $session,
-            'savings' => $this->savingService->getSavings($session, $fund, $this->pageNumber()),
+            'savings' => $this->savingService->getSavings($session, $fund, $this->currentPage()),
         ]);
     }
 

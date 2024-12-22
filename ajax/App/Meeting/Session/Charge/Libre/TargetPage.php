@@ -62,7 +62,7 @@ class TargetPage extends ChargePageComponent
             'target' => $target,
             'charge' => $charge,
             'members' => $this->targetService
-                ->getMembersWithSettlements($charge, $target, $search, $this->pageNumber()),
+                ->getMembersWithSettlements($charge, $target, $search, $this->currentPage()),
         ]);
     }
 

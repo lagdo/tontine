@@ -63,7 +63,7 @@ class MemberPage extends MeetingPageComponent
         return $this->renderView('pages.meeting.saving.member.page', [
             'session' => $session,
             'members' => $this->savingService
-                ->getMembers($session, $fund, $search, $filter, $this->pageNumber()),
+                ->getMembers($session, $fund, $search, $filter, $this->currentPage()),
         ]);
     }
 

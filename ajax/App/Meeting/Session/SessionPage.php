@@ -39,7 +39,7 @@ class SessionPage extends PageComponent
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.session.list.page', [
-            'sessions' => $this->sessionService->getSessions($this->pageNumber()),
+            'sessions' => $this->sessionService->getSessions($this->currentPage()),
             'statuses' => $this->sessionService->getSessionStatuses(),
         ]);
     }

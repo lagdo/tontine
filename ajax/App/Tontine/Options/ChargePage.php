@@ -42,7 +42,7 @@ class ChargePage extends PageComponent
         return $this->renderView('pages.options.charge.page', [
             'types' => $this->getChargeTypes(),
             'periods' => $this->getChargePeriods(),
-            'charges' => $this->chargeService->getCharges($this->pageNumber()),
+            'charges' => $this->chargeService->getCharges($this->currentPage()),
         ]);
     }
 
