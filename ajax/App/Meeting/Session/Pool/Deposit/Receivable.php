@@ -14,6 +14,7 @@ use Stringable;
 class Receivable extends MeetingComponent
 {
     use PoolTrait;
+    use DepositTrait;
 
     /**
      * @var string
@@ -58,6 +59,7 @@ class Receivable extends MeetingComponent
     protected function after()
     {
         $this->cl(ReceivablePage::class)->page();
+        $this->showTotal();
     }
 
     /**

@@ -22,6 +22,7 @@ use function trim;
 class Amount extends MeetingComponent
 {
     use PoolTrait;
+    use DepositTrait;
 
     /**
      * The constructor
@@ -120,6 +121,7 @@ class Amount extends MeetingComponent
         $this->cache()->set('meeting.session.receivable',
             $this->depositService->getReceivable($pool, $session, $receivableId));
 
+        $this->showTotal();
         return $this->item($receivableId)->render();
     }
 }
