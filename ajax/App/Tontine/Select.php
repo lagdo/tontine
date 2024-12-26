@@ -44,7 +44,7 @@ class Select extends CallableClass
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveOrganisation(pm()->select('tontine_id')->toInt()),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -67,8 +67,8 @@ class Select extends CallableClass
             $this->_saveRound($tontine->rounds->first());
         }
 
-        $this->dialog->hide();
-        $this->notify->info(trans('tontine.messages.selected',
+        $this->modal()->hide();
+        $this->alert()->info(trans('tontine.messages.selected',
             ['tontine' => $tontine->name]));
 
         $this->cl(Member::class)->home();
@@ -95,7 +95,7 @@ class Select extends CallableClass
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveRound(pm()->select('round_id')->toInt()),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -135,8 +135,8 @@ class Select extends CallableClass
         // Save the tontine and round ids in the user session.
         $this->_saveRound($round);
 
-        $this->dialog->hide();
-        $this->notify->info(trans('tontine.round.messages.selected',
+        $this->modal()->hide();
+        $this->alert()->info(trans('tontine.round.messages.selected',
             ['tontine' => $tontine->name, 'round' => $round->title]));
 
         return $this->response;

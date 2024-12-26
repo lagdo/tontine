@@ -118,8 +118,8 @@ class Organisation extends Component
             'click' => $this->rq()->create(pm()->form('tontine-form')),
         ]];
 
-        $this->dialog->hide();
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->hide();
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -132,8 +132,8 @@ class Organisation extends Component
         $values = $this->validator->validateItem($formValues);
         $this->tontineService->createTontine($values);
 
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.messages.created'));
         $this->cl(OrganisationPage::class)->page(); // Back to current page
 
@@ -164,7 +164,7 @@ class Organisation extends Component
             'click' => $this->rq()->update($tontine->id, pm()->form('tontine-form')),
         ]];
 
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -177,8 +177,8 @@ class Organisation extends Component
         $values = $this->validator->validateItem($formValues);
         $this->tontineService->updateTontine($tontineId, $values);
 
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.messages.updated'));
         $this->cl(OrganisationPage::class)->page(); // Back to current page
 
@@ -189,7 +189,7 @@ class Organisation extends Component
     {
         $this->tontineService->deleteTontine($tontineId);
 
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.messages.deleted'));
         $this->cl(OrganisationPage::class)->page(); // Back to current page
 

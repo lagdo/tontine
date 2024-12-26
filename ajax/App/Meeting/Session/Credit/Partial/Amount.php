@@ -77,7 +77,7 @@ class Amount extends MeetingComponent
         $debt = $this->refundService->getUnpaidDebt($fund, $session, $debtId);
         if(!$debt)
         {
-            $this->notify->warning(trans('meeting.loan.errors.not_found'));
+            $this->alert()->warning(trans('meeting.loan.errors.not_found'));
             return $this->response;
         }
 
@@ -103,7 +103,7 @@ class Amount extends MeetingComponent
         $debt = $this->refundService->getUnpaidDebt($fund, $session, $debtId);
         if(!$debt)
         {
-            $this->notify->warning(trans('meeting.loan.errors.not_found'));
+            $this->alert()->warning(trans('meeting.loan.errors.not_found'));
             return $this->response;
         }
 

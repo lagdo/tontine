@@ -80,7 +80,7 @@ class Closing extends MeetingComponent
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveRoundClosing($fundId, pm()->form('closing-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -100,8 +100,8 @@ class Closing extends MeetingComponent
         $values = $this->validator->validateItem($formValues);
         $this->closingService->saveRoundClosing($session, $fund, $values['amount']);
 
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.profit.saved'));
 
         return $this->render();
@@ -118,8 +118,8 @@ class Closing extends MeetingComponent
         $session = $this->cache()->get('meeting.session');
         $this->closingService->deleteRoundClosing($session, $fund);
 
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.profit.deleted'));
 
         return $this->render();
@@ -148,7 +148,7 @@ class Closing extends MeetingComponent
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveInterestClosing($fundId),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -167,8 +167,8 @@ class Closing extends MeetingComponent
         $session = $this->cache()->get('meeting.session');
         $this->closingService->saveInterestClosing($session, $fund);
 
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.profit.saved'));
 
         return $this->render();
@@ -185,8 +185,8 @@ class Closing extends MeetingComponent
         $session = $this->cache()->get('meeting.session');
         $this->closingService->deleteInterestClosing($session, $fund);
 
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.profit.deleted'));
 
         return $this->render();

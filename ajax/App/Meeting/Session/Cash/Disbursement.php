@@ -61,7 +61,7 @@ class Disbursement extends MeetingComponent
             'class' => 'btn btn-primary',
             'click' => $this->rq()->createDisbursement(pm()->form('disbursement-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -75,7 +75,7 @@ class Disbursement extends MeetingComponent
         $values = $this->validator->validateItem($formValues);
         $this->disbursementService->createDisbursement($session, $values);
 
-        $this->dialog->hide();
+        $this->modal()->hide();
 
         return $this->render();
     }
@@ -100,7 +100,7 @@ class Disbursement extends MeetingComponent
             'class' => 'btn btn-primary',
             'click' => $this->rq()->updateDisbursement($disbursementId, pm()->form('disbursement-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -114,7 +114,7 @@ class Disbursement extends MeetingComponent
         $values = $this->validator->validateItem($formValues);
         $this->disbursementService->updateDisbursement($session, $disbursementId, $values);
 
-        $this->dialog->hide();
+        $this->modal()->hide();
 
         return $this->render();
     }

@@ -52,7 +52,7 @@ class Fund extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->create(pm()->form('fund-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -67,8 +67,8 @@ class Fund extends Component
         $this->fundService->createFund($values);
         $this->cl(FundPage::class)->page(); // Back to current page
 
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.fund.messages.created'));
 
         return $this->response;
@@ -89,7 +89,7 @@ class Fund extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->update($fund->id, pm()->form('fund-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -105,8 +105,8 @@ class Fund extends Component
         $this->fundService->updateFund($fund, $values);
         $this->cl(FundPage::class)->page(); // Back to current page
 
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.fund.messages.updated'));
 
         return $this->response;

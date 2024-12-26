@@ -2,9 +2,8 @@
 
 namespace Ajax;
 
+use Jaxon\App\Dialog\DialogTrait;
 use Jaxon\App\View\Store;
-use Jaxon\Plugin\Response\Dialog\MessageInterface;
-use Jaxon\Plugin\Response\Dialog\ModalInterface;
 use Siak\Tontine\Cache\Cache;
 use Siak\Tontine\Exception\MeetingRoundException;
 use Siak\Tontine\Exception\MessageException;
@@ -17,15 +16,7 @@ use function trans;
 
 trait CallableTrait
 {
-    /**
-     * @var ModalInterface
-     */
-    public $dialog;
-
-    /**
-     * @var MessageInterface
-     */
-    public $notify;
+    use DialogTrait;
 
     /**
      * @var Cache

@@ -86,7 +86,7 @@ class Pool extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->showDepositFixed(),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
         $this->bag('pool')->set('add', []);
 
         return $this->response;
@@ -94,7 +94,7 @@ class Pool extends Component
 
     public function showDepositFixed()
     {
-        $this->dialog->hide();
+        $this->modal()->hide();
 
         $title = trans('tontine.pool.titles.deposits');
         $properties = $this->bag('pool')->get('add', []);
@@ -110,7 +110,7 @@ class Pool extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveDepositFixed(pm()->checked('pool_deposit_fixed')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -131,7 +131,7 @@ class Pool extends Component
 
     public function showDepositLendable()
     {
-        $this->dialog->hide();
+        $this->modal()->hide();
 
         $properties = $this->bag('pool')->get('add', []);
         $title = trans('tontine.pool.titles.deposits');
@@ -151,7 +151,7 @@ class Pool extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveDepositLendable(pm()->checked('pool_deposit_lendable')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -167,7 +167,7 @@ class Pool extends Component
 
     public function showRemitPlanned()
     {
-        $this->dialog->hide();
+        $this->modal()->hide();
 
         $title = trans('tontine.pool.titles.remitments');
         $properties = $this->bag('pool')->get('add', []);
@@ -189,7 +189,7 @@ class Pool extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveRemitPlanned(pm()->checked('pool_remit_planned')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -205,7 +205,7 @@ class Pool extends Component
 
     public function showRemitAuction()
     {
-        $this->dialog->hide();
+        $this->modal()->hide();
 
         $properties = $this->bag('pool')->get('add', []);
 
@@ -226,7 +226,7 @@ class Pool extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveRemitAuction(pm()->checked('pool_remit_auction')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -242,7 +242,7 @@ class Pool extends Component
 
     public function add()
     {
-        $this->dialog->hide();
+        $this->modal()->hide();
 
         $title = trans('tontine.pool.titles.add');
         $content = $this->renderView('pages.planning.pool.add', [
@@ -257,7 +257,7 @@ class Pool extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->create(pm()->form('pool-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -272,8 +272,8 @@ class Pool extends Component
         $values = $this->validator->validateItem($formValues);
         $this->poolService->createPool($values);
 
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.pool.messages.created'));
 
         return $this->cl(PoolPage::class)->page();
@@ -296,7 +296,7 @@ class Pool extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->update($pool->id, pm()->form('pool-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -312,8 +312,8 @@ class Pool extends Component
         $values = $this->validator->validateItem($formValues);
         $this->poolService->updatePool($pool, $values);
 
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.pool.messages.updated'));
 
         return $this->cl(PoolPage::class)->page();
@@ -323,7 +323,7 @@ class Pool extends Component
     {
         $pool = $this->poolService->getPool($poolId);
         $this->poolService->deletePool($pool);
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.pool.messages.deleted'));
 
         return $this->cl(PoolPage::class)->page();

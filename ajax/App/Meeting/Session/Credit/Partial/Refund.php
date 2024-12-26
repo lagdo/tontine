@@ -105,7 +105,7 @@ class Refund extends MeetingComponent
             'class' => 'btn btn-primary',
             'click' => $this->rq()->update($refundId, pm()->form('refund-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -123,7 +123,7 @@ class Refund extends MeetingComponent
 
         $this->refundService->updatePartialRefund($refund, $session, $values['amount']);
 
-        $this->dialog->hide();
+        $this->modal()->hide();
 
         // Refresh the refunds page
         $this->cl(CreditRefund::class)->render();

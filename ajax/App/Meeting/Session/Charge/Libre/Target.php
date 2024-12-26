@@ -115,7 +115,7 @@ class Target extends ChargeComponent
             'click' => $this->rq()->create(pm()->form('target-form')),
         ]];
 
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -143,7 +143,7 @@ class Target extends ChargeComponent
 
         $this->targetService->createTarget($charge, $session,
             $deadlineSession, $values['amount'], $values['global']);
-        $this->dialog->hide();
+        $this->modal()->hide();
 
         $this->cache()->set('meeting.session.charge.target',
             $this->targetService->getTarget($charge, $session));
@@ -178,7 +178,7 @@ class Target extends ChargeComponent
             'click' => $this->rq()->update(pm()->form('target-form')),
         ]];
 
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -207,7 +207,7 @@ class Target extends ChargeComponent
 
         $this->targetService->updateTarget($target, $session,
             $deadlineSession, $values['amount'], $values['global']);
-        $this->dialog->hide();
+        $this->modal()->hide();
 
         $this->cache()->set('meeting.session.charge.target',
             $this->targetService->getTarget($charge, $session));
@@ -229,7 +229,7 @@ class Target extends ChargeComponent
         $session = $this->cache()->get('meeting.session');
         $charge = $this->cache()->get('meeting.session.charge');
         $this->targetService->deleteTarget($target);
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.target.messages.removed'));
 
         $this->cache()->set('meeting.session.charge.target',

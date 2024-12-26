@@ -52,7 +52,7 @@ class Pool extends Component
             ->find($poolId);
         if(!$pool || $pool->subscriptions_count === 0)
         {
-            $this->notify
+            $this->alert()
                 ->title(trans('common.titles.error'))
                 ->error(trans('tontine.pool.errors.not_found'));
             return $this->response;

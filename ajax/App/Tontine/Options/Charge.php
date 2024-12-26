@@ -64,7 +64,7 @@ class Charge extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->add($group),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -75,7 +75,7 @@ class Charge extends Component
      */
     public function add(int $group)
     {
-        $this->dialog->hide();
+        $this->modal()->hide();
 
         $tontine = $this->tenantService->tontine();
         [, $currency] = $this->localeService->getNameFromTontine($tontine);
@@ -97,7 +97,7 @@ class Charge extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->create($group, pm()->form('charge-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -127,9 +127,9 @@ class Charge extends Component
         $values = $this->validator->validateItem($formValues);
 
         $this->chargeService->createCharge($values);
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.charge.messages.created'));
-        $this->dialog->hide();
+        $this->modal()->hide();
 
         return $this->cl(ChargePage::class)->page();
     }
@@ -160,7 +160,7 @@ class Charge extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->update($charge->id, pm()->form('charge-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -183,8 +183,8 @@ class Charge extends Component
         $values = $this->validator->validateItem($formValues);
 
         $this->chargeService->updateCharge($charge, $values);
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.charge.messages.updated'));
 
         return $this->cl(ChargePage::class)->page();

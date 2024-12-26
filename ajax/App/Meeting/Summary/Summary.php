@@ -37,7 +37,7 @@ class Summary extends Component
         $session = $this->sessionService->getSession($sessionId);
         if(!$session)
         {
-            $this->notify->title(trans('common.titles.error'))
+            $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.not_opened'));
             return $this->response;
         }

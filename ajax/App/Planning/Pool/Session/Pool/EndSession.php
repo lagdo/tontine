@@ -75,7 +75,7 @@ class EndSession extends Component
         $this->cl(EndSessionPage::class)->page();
         $this->cl(PoolPage::class)->page();
 
-        $this->notify->info(trans('tontine.pool_round.messages.saved'));
+        $this->alert()->info(trans('tontine.pool_round.messages.saved'));
 
         return $this->response;
     }
@@ -92,7 +92,7 @@ class EndSession extends Component
         $this->cl(EndSessionPage::class)->page();
         $this->cl(PoolPage::class)->page();
 
-        $this->notify->info(trans('tontine.pool_round.messages.deleted'));
+        $this->alert()->info(trans('tontine.pool_round.messages.deleted'));
 
         return $this->response;
     }

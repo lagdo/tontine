@@ -116,7 +116,7 @@ class Payable extends MeetingComponent
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveRemitment(pm()->form('remitment-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -130,7 +130,7 @@ class Payable extends MeetingComponent
         // if($pool->remit_planned && !$pool->remit_auction)
         // {
         //     // Only when remitments are not planned or with auctions.
-        //     $this->dialog->hide();
+        //     $this->modal()->hide();
         //     return $this->response;
         // }
 
@@ -141,7 +141,7 @@ class Payable extends MeetingComponent
         $values = $this->validator->validateItem($formValues);
         $this->remitmentService->saveRemitment($pool, $session,
             $values['payable'], $values['auction']);
-        $this->dialog->hide();
+        $this->modal()->hide();
 
         return $this->cl(PayablePage::class)->render();
     }

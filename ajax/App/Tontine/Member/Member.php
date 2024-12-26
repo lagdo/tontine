@@ -93,7 +93,7 @@ class Member extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->create(pm()->form('member-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -105,8 +105,8 @@ class Member extends Component
     {
         $values = $this->validator->validateItem($formValues);
         $this->memberService->createMember($values);
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.member.messages.created'));
 
         return $this->cl(MemberPage::class)->page();
@@ -135,7 +135,7 @@ class Member extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->createList(pm()->form('member-list')),
         ];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -186,8 +186,8 @@ class Member extends Component
         $values = $this->parseMemberList($formValues['members'] ?? '');
 
         $this->memberService->createMembers($values);
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.member.messages.created'));
 
         return $this->cl(MemberPage::class)->page();
@@ -209,7 +209,7 @@ class Member extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->update($member->id, pm()->form('member-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -223,8 +223,8 @@ class Member extends Component
         $values = $this->validator->validateItem($formValues);
 
         $this->memberService->updateMember($member, $values);
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.member.messages.updated'));
 
         return $this->cl(MemberPage::class)->page();

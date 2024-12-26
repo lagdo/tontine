@@ -52,7 +52,7 @@ class Category extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->create(pm()->form('category-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -62,8 +62,8 @@ class Category extends Component
         $this->categoryService->createCategory($formValues);
         $this->cl(CategoryPage::class)->page(); // Back to current page
 
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.category.messages.created'));
 
         return $this->response;
@@ -90,7 +90,7 @@ class Category extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->update($category->id, pm()->form('category-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -101,8 +101,8 @@ class Category extends Component
         $this->categoryService->updateCategory($category, $formValues);
         $this->cl(CategoryPage::class)->page(); // Back to current page
 
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.category.messages.updated'));
 
         return $this->response;

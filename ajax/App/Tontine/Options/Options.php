@@ -88,7 +88,7 @@ class Options extends Component
             'click' => $this->rq()->saveOptions(pm()->form('options-form')),
         ]];
 
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -102,8 +102,8 @@ class Options extends Component
         $options = $this->validator->validateItem($formValues);
         $this->tontineService->saveTontineOptions($options);
 
-        $this->dialog->hide();
-        $this->notify->success(trans('tontine.options.messages.saved'));
+        $this->modal()->hide();
+        $this->alert()->success(trans('tontine.options.messages.saved'));
 
         return $this->response;
     }

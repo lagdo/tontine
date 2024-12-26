@@ -36,7 +36,7 @@ class Guest extends Component
     public function accept(int $inviteId)
     {
         $this->userService->acceptInvite($inviteId);
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.accepted'));
 
         return $this->cl(GuestPage::class)->page();
@@ -45,7 +45,7 @@ class Guest extends Component
     public function refuse(int $inviteId)
     {
         $this->userService->refuseInvite($inviteId);
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.refused'));
 
         return $this->cl(GuestPage::class)->page();
@@ -60,7 +60,7 @@ class Guest extends Component
             return $this->response;
         }
 
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.deleted'));
 
         return $this->cl(GuestPage::class)->page();

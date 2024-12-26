@@ -92,7 +92,7 @@ class Saving extends MeetingComponent
             'class' => 'btn btn-primary',
             'click' => $this->rq()->updateSaving($savingId, pm()->form('saving-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -106,25 +106,25 @@ class Saving extends MeetingComponent
         $session = $this->cache()->get('meeting.session');
         if(!($saving = $this->savingService->getSaving($session, $savingId)))
         {
-            $this->notify->warning(trans('meeting.saving.errors.not_found'));
+            $this->alert()->warning(trans('meeting.saving.errors.not_found'));
             return $this->response;
         }
 
         $values = $this->validator->validateItem($formValues);
         if(!($member = $this->savingService->getMember($values['member'])))
         {
-            $this->notify->warning(trans('tontine.member.errors.not_found'));
+            $this->alert()->warning(trans('tontine.member.errors.not_found'));
             return $this->response;
         }
         if(!($fund = $this->fundService->getFund($values['fund'], true, true)))
         {
-            $this->notify->warning(trans('tontine.fund.errors.not_found'));
+            $this->alert()->warning(trans('tontine.fund.errors.not_found'));
             return $this->response;
         }
 
         $this->savingService->updateSaving($session, $fund, $member, $saving, $values['amount']);
 
-        $this->dialog->hide();
+        $this->modal()->hide();
 
         $this->cl(SavingTotal::class)->render();
 

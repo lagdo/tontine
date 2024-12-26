@@ -75,7 +75,7 @@ class Beneficiary extends Component
             $currSubscriptionId, $nextSubscriptionId))
         {
             $message = trans('tontine.beneficiary.errors.cant_change');
-            $this->notify->title(trans('common.titles.error'))
+            $this->alert()->title(trans('common.titles.error'))
                 ->error($message);
         }
 

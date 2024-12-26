@@ -95,7 +95,7 @@ class Session extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->create(pm()->form('session-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -108,8 +108,8 @@ class Session extends Component
         $round = $this->cache()->get('planning.round');
         $values = $this->validator->validateItem($formValues);
         $this->sessionService->createSession($round, $values);
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.created'));
 
         return $this->cl(SessionPage::class)->page();
@@ -132,7 +132,7 @@ class Session extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->createList(pm()->form('session-list')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -195,8 +195,8 @@ class Session extends Component
         $values = $this->parseSessionList($formValues['sessions'] ?? '');
 
         $this->sessionService->createSessions($round, $values);
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.created'));
 
         return $this->cl(SessionPage::class)->page();
@@ -223,7 +223,7 @@ class Session extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->update($session->id, pm()->form('session-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -239,8 +239,8 @@ class Session extends Component
         $session = $this->roundService->getSession($round, $sessionId);
 
         $this->sessionService->updateSession($session, $values);
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.updated'));
 
         return  $this->cl(SessionPage::class)->page();
@@ -265,7 +265,7 @@ class Session extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveVenue($session->id, pm()->form('session-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -280,8 +280,8 @@ class Session extends Component
         $session = $this->roundService->getSession($round, $sessionId);
 
         $this->sessionService->saveSessionVenue($session, $values);
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.updated'));
 
         return $this->cl(SessionPage::class)->page();
@@ -292,7 +292,7 @@ class Session extends Component
         $round = $this->cache()->get('planning.round');
         $session = $this->roundService->getSession($round, $sessionId);
         $this->sessionService->deleteSession($session);
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.deleted'));
 
         return $this->cl(SessionPage::class)->page();

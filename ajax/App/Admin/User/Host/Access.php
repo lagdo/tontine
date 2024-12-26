@@ -85,7 +85,7 @@ class Access extends Component
         $tontines = $this->tenantService->user()->tontines;
         if($tontines->count() === 0)
         {
-            $this->notify->title(trans('common.titles.warning'))
+            $this->alert()->title(trans('common.titles.warning'))
                 ->warning(trans('tontine.invite.errors.tontines'));
             return $this->response;
         }
@@ -114,7 +114,7 @@ class Access extends Component
         $access = $this->validator->validateItem($formValues['access'] ?? []);
         $this->userService->saveHostTontineAccess($invite, $tontine, $access);
 
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.saved'));
 
         return $this->cl(AccessContent::class)->render();

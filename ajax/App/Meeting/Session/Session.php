@@ -77,7 +77,7 @@ class Session extends Component
     {
         $this->sessionService->resyncSessions();
 
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.resynced'));
         return $this->cl(SessionPage::class)->page();
     }
@@ -86,7 +86,7 @@ class Session extends Component
     {
         if(!($session = $this->sessionService->getSession($sessionId)) || $session->opened)
         {
-            $this->notify->title(trans('common.titles.error'))
+            $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.opened'));
             return $this->cl(SessionPage::class)->page();
         }
@@ -100,7 +100,7 @@ class Session extends Component
     {
         if(!($session = $this->sessionService->getSession($sessionId)) || !$session->opened)
         {
-            $this->notify->title(trans('common.titles.error'))
+            $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.not_opened'));
             return $this->cl(SessionPage::class)->page();
         }
@@ -119,7 +119,7 @@ class Session extends Component
         $sessionId = $this->bag('meeting')->get('session.id', 0);
         if(!($session = $this->sessionService->getSession($sessionId)))
         {
-            $this->notify->title(trans('common.titles.error'))
+            $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.not_found'));
             return $this->response;
         }
@@ -147,7 +147,7 @@ class Session extends Component
         $sessionId = $this->bag('meeting')->get('session.id', 0);
         if(!($session = $this->sessionService->getSession($sessionId)))
         {
-            $this->notify->title(trans('common.titles.error'))
+            $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.not_found'));
             return $this->response;
         }
@@ -163,7 +163,7 @@ class Session extends Component
             'class' => 'btn btn-tertiary',
             'click' => 'close',
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -173,13 +173,13 @@ class Session extends Component
         $sessionId = $this->bag('meeting')->get('session.id', 0);
         if(!($session = $this->sessionService->getSession($sessionId)))
         {
-            $this->notify->title(trans('common.titles.error'))
+            $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.not_found'));
             return $this->response;
         }
 
         $this->sessionService->saveAgenda($session, $text);
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.agenda.updated'));
 
         return $this->response;
@@ -190,13 +190,13 @@ class Session extends Component
         $sessionId = $this->bag('meeting')->get('session.id', 0);
         if(!($session = $this->sessionService->getSession($sessionId)))
         {
-            $this->notify->title(trans('common.titles.error'))
+            $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.not_found'));
             return $this->response;
         }
 
         $this->sessionService->saveReport($session, $text);
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.report.updated'));
 
         return $this->response;

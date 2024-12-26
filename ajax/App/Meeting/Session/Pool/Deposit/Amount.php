@@ -106,7 +106,7 @@ class Amount extends MeetingComponent
         if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
         {
             $error = trans('meeting.errors.amount.invalid', ['amount' => $amount]);
-            $this->notify->title(trans('common.titles.error'))->error($error);
+            $this->alert()->title(trans('common.titles.error'))->error($error);
 
             return $this->response;
         }

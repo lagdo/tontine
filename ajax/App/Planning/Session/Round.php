@@ -86,7 +86,7 @@ class Round extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->create(pm()->form('round-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -96,8 +96,8 @@ class Round extends Component
         $this->roundService->createRound($formValues);
 
         $this->cl(RoundPage::class)->page(); // Back to current page
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.round.messages.created'));
 
         return $this->response;
@@ -118,7 +118,7 @@ class Round extends Component
             'class' => 'btn btn-primary',
             'click' => $this->rq()->update($round->id, pm()->form('round-form')),
         ]];
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -128,8 +128,8 @@ class Round extends Component
         $this->roundService->updateRound($roundId, $formValues);
 
         $this->cl(RoundPage::class)->page(); // Back to current page
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.round.messages.updated'));
 
         return $this->response;
@@ -140,7 +140,7 @@ class Round extends Component
         $this->roundService->deleteRound($roundId);
 
         $this->cl(RoundPage::class)->page(); // Back to current page
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.round.messages.deleted'));
 
         $currentRound = $this->tenantService->round();

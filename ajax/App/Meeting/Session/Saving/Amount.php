@@ -87,7 +87,7 @@ class Amount extends MeetingComponent
     {
         if(!($member = $this->savingService->getMember($memberId)))
         {
-            $this->notify->warning(trans('tontine.member.errors.not_found'));
+            $this->alert()->warning(trans('tontine.member.errors.not_found'));
             return $this->response;
         }
 
@@ -116,14 +116,14 @@ class Amount extends MeetingComponent
         if($amount === '')
         {
             $this->savingService->deleteMemberSaving($session, $fund, $member);
-            $this->notify->success(trans('meeting.messages.deleted'));
+            $this->alert()->success(trans('meeting.messages.deleted'));
             return;
         }
 
         $values = ['member' => $member->id, 'amount' => $amount, 'fund' => $fund->id];
         $values = $this->validator->validateItem($values);
         $this->savingService->saveSaving($session, $fund, $member, $values['amount']);
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.saved'));
     }
 
@@ -139,7 +139,7 @@ class Amount extends MeetingComponent
     {
         if(!($member = $this->savingService->getMember($memberId)))
         {
-            $this->notify->warning(trans('tontine.member.errors.not_found'));
+            $this->alert()->warning(trans('tontine.member.errors.not_found'));
             return $this->response;
         }
 

@@ -55,8 +55,8 @@ class Host extends Component
             'click' => $this->rq()->create(pm()->form('invite-form')),
         ]];
 
-        $this->dialog->hide();
-        $this->dialog->show($title, $content, $buttons);
+        $this->modal()->hide();
+        $this->modal()->show($title, $content, $buttons);
 
         return $this->response;
     }
@@ -69,8 +69,8 @@ class Host extends Component
         $values = $this->validator->validateItem($formValues);
         $this->userService->createInvite($values['email']);
 
-        $this->dialog->hide();
-        $this->notify->title(trans('common.titles.success'))
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.sent'));
 
         return $this->cl(HostPage::class)->page();
@@ -79,7 +79,7 @@ class Host extends Component
     public function cancel(int $inviteId)
     {
         $this->userService->cancelInvite($inviteId);
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.cancelled'));
 
         return $this->cl(HostPage::class)->page();
@@ -88,7 +88,7 @@ class Host extends Component
     public function delete(int $inviteId)
     {
         $this->userService->deleteHostInvite($inviteId);
-        $this->notify->title(trans('common.titles.success'))
+        $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.deleted'));
 
         return $this->cl(HostPage::class)->page();
