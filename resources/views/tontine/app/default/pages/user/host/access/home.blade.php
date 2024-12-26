@@ -1,6 +1,6 @@
 @php
   $tontineId = pm()->select('select-invite-tontine');
-  $rqHostAccess = rq(Ajax\App\Admin\User\Host\Host\Access::class);
+  $rqHostAccess = rq(Ajax\App\Admin\User\Host\Access::class);
   $rqHostAccessContent = rq(Ajax\App\Admin\User\Host\AccessContent::class);
   $rqHost = rq(Ajax\App\Admin\User\Host\Host::class);
 @endphp
