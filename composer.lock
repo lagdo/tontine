@@ -1601,12 +1601,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-core.git",
-                "reference": "ea6d98c5e3a47d440147ce4fb1e4428f6a8bab78"
+                "reference": "038880cc3fe66102c43a6cc13172cdcb9ac3a36c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/ea6d98c5e3a47d440147ce4fb1e4428f6a8bab78",
-                "reference": "ea6d98c5e3a47d440147ce4fb1e4428f6a8bab78",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/038880cc3fe66102c43a6cc13172cdcb9ac3a36c",
+                "reference": "038880cc3fe66102c43a6cc13172cdcb9ac3a36c",
                 "shasum": ""
             },
             "require": {
@@ -1674,7 +1674,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-core/issues",
                 "source": "https://github.com/jaxon-php/jaxon-core"
             },
-            "time": "2024-12-22T11:30:34+00:00"
+            "time": "2024-12-26T19:02:18+00:00"
         },
         {
             "name": "jaxon-php/jaxon-dialogs",
@@ -1682,12 +1682,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-dialogs.git",
-                "reference": "28080c95767e3da2c6221dbba8ec418b176a226b"
+                "reference": "b9e4d73c91a4ac40934eb2a50428235b92effc26"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-dialogs/zipball/28080c95767e3da2c6221dbba8ec418b176a226b",
-                "reference": "28080c95767e3da2c6221dbba8ec418b176a226b",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-dialogs/zipball/b9e4d73c91a4ac40934eb2a50428235b92effc26",
+                "reference": "b9e4d73c91a4ac40934eb2a50428235b92effc26",
                 "shasum": ""
             },
             "require": {
@@ -1729,7 +1729,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-dialogs/issues",
                 "source": "https://github.com/jaxon-php/jaxon-dialogs"
             },
-            "time": "2024-09-20T23:46:20+00:00"
+            "time": "2024-12-25T20:19:07+00:00"
         },
         {
             "name": "jaxon-php/jaxon-laravel",
@@ -11204,6 +11204,6 @@
         "ext-intl": "*",
         "ext-json": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }
