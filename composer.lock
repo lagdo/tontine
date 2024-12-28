@@ -1544,12 +1544,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-annotations.git",
-                "reference": "07376e4baf565584a981bceb54be81112558586e"
+                "reference": "cd9bcb8adacdc16e257da8f523f83ca8c3581173"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-annotations/zipball/07376e4baf565584a981bceb54be81112558586e",
-                "reference": "07376e4baf565584a981bceb54be81112558586e",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-annotations/zipball/cd9bcb8adacdc16e257da8f523f83ca8c3581173",
+                "reference": "cd9bcb8adacdc16e257da8f523f83ca8c3581173",
                 "shasum": ""
             },
             "require": {
@@ -1593,7 +1593,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-annotations/issues",
                 "source": "https://github.com/jaxon-php/jaxon-annotations"
             },
-            "time": "2024-11-04T03:48:03+00:00"
+            "time": "2024-12-27T14:16:21+00:00"
         },
         {
             "name": "jaxon-php/jaxon-core",
@@ -1601,12 +1601,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-core.git",
-                "reference": "038880cc3fe66102c43a6cc13172cdcb9ac3a36c"
+                "reference": "c9ae6f95342e0589467bb39ae5353dddd98a8d9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/038880cc3fe66102c43a6cc13172cdcb9ac3a36c",
-                "reference": "038880cc3fe66102c43a6cc13172cdcb9ac3a36c",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/c9ae6f95342e0589467bb39ae5353dddd98a8d9d",
+                "reference": "c9ae6f95342e0589467bb39ae5353dddd98a8d9d",
                 "shasum": ""
             },
             "require": {
@@ -1674,7 +1674,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-core/issues",
                 "source": "https://github.com/jaxon-php/jaxon-core"
             },
-            "time": "2024-12-26T19:02:18+00:00"
+            "time": "2024-12-28T22:17:59+00:00"
         },
         {
             "name": "jaxon-php/jaxon-dialogs",
