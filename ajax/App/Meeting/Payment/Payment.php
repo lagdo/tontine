@@ -76,7 +76,8 @@ class Payment extends Component
      */
     protected function after()
     {
-        OnPagePaymentHome::dispatch();
         $this->cl(PaymentPage::class)->page();
+
+        OnPagePaymentHome::dispatch();
     }
 }

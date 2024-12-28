@@ -7,7 +7,7 @@
                     <button type="button" class="btn btn-primary" @jxnClick(Jaxon\jw()
                       ->showSmScreen('payment-members-home', 'payment-sm-screens'))><i class="fa fa-arrow-left"></i></button>
                   </div>
-                  <div class="col-auto" id="payment-request">
+                  <div class="col-auto">
                   </div>
                 </div>
               </div>

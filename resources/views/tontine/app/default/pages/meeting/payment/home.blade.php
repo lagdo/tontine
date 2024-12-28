@@ -10,7 +10,7 @@
                   <div class="col">
                     <h2 class="section-title">{{ __('tontine.menus.payments') }}</h2>
                   </div>
-                  <div class="col-auto" id="payment-settings">
+                  <div class="col-auto">
                   </div>
                   <div class="col-auto">
 @if ($sessions->count() > 0)

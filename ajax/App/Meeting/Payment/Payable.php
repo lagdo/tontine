@@ -34,10 +34,9 @@ class Payable extends Component
         $member = $this->cache()->get('payable.member');
         $session = $this->cache()->get('payable.session');
         [$receivables, $bills, $debts] = $this->paymentService->getPayables($member, $session);
+        $this->cache()->set('payable.data', [$member, $session, $receivables, $bills, $debts]);
 
-        OnPagePaymentPayables::dispatch($member, $session, $receivables, $bills, $debts);
-
-        return $this->renderView('pages.meeting.payment.items',
+        return $this->renderView('pages.meeting.payment.payables',
             compact('member', 'session', 'receivables', 'debts', 'bills'));
     }
 
@@ -48,6 +47,9 @@ class Payable extends Component
     {
         $this->response->js()->makeTableResponsive('payment-payables-home');
         $this->response->js()->showSmScreen('payment-payables-home', 'payment-sm-screens');
+
+        [$member, $session, $receivables, $bills, $debts] = $this->cache()->get('payable.data');
+        OnPagePaymentPayables::dispatch($member, $session, $receivables, $bills, $debts);
     }
 
     public function show(int $memberId, int $sessionId)
