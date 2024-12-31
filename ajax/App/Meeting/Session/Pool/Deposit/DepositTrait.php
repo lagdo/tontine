@@ -6,9 +6,9 @@ trait DepositTrait
 {
     private function showTotal()
     {
-        $session = $this->cache()->get('meeting.session');
-        $pool = $this->cache()->get('meeting.pool');
-        $this->cache()->set('meeting.pool.deposit.count',
+        $session = $this->stash()->get('meeting.session');
+        $pool = $this->stash()->get('meeting.pool');
+        $this->stash()->set('meeting.pool.deposit.count',
             $this->depositService->countDeposits($pool, $session));
 
         $this->cl(Total::class)->render();

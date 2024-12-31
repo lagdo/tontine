@@ -16,7 +16,7 @@ class StartSessionAction extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.pool.session.start.actions', [
-            'pool' => $this->cache()->get('pool.session.pool'),
+            'pool' => $this->stash()->get('pool.session.pool'),
         ]);
     }
 }

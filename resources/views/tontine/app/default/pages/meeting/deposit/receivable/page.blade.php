@@ -30,7 +30,7 @@
                           </td>
 @else
 @php
-  $cache->set('meeting.session.receivable', $receivable);
+  $stash->set('meeting.session.receivable', $receivable);
 @endphp
                           <td class="currency" @jxnBind($rqAmount, $receivable->id) style="width:200px">
                             @jxnHtml($rqAmount)

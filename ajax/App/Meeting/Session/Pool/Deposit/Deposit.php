@@ -21,7 +21,7 @@ class Deposit extends MeetingComponent
      */
     public function html(): Stringable
     {
-        $session = $this->cache()->get('meeting.session');
+        $session = $this->stash()->get('meeting.session');
 
         return $this->renderView('pages.meeting.deposit.home', [
             'session' => $session,

@@ -17,7 +17,7 @@ class SessionCounter extends Component
 
     public function html(): string
     {
-        $pool = $this->cache()->get('pool.session.pool');
+        $pool = $this->stash()->get('pool.session.pool');
 
         return trans('tontine.pool_round.labels.sessions', [
             'count' => $this->poolService->getEnabledSessionCount($pool),

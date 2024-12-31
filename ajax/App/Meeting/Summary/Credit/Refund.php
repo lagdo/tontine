@@ -28,7 +28,7 @@ class Refund extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.summary.refund.home', [
-            'session' => $this->cache()->get('summary.session'),
+            'session' => $this->stash()->get('summary.session'),
             'funds' => $this->fundService->getFundList(),
         ]);
     }
@@ -57,7 +57,7 @@ class Refund extends Component
             $this->bag('refund')->set('fund.id', $fund->id);
         }
 
-        $this->cache()->set('summary.refund.fund', $fund);
+        $this->stash()->set('summary.refund.fund', $fund);
     }
 
     /**

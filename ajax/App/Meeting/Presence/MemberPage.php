@@ -31,7 +31,7 @@ class MemberPage extends PageComponent
     {
         $sessionId = $this->bag('presence')->get('session.id', 0);
         $session = $sessionId === 0 ? null : $this->presenceService->getSession($sessionId);
-        $this->cache()->set('presence.session', $session);
+        $this->stash()->set('presence.session', $session);
     }
 
     /**
@@ -49,7 +49,7 @@ class MemberPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $session = $this->cache()->get('presence.session'); // Is null when showing presences by members.
+        $session = $this->stash()->get('presence.session'); // Is null when showing presences by members.
         $search = trim($this->bag('presence')->get('member.search', ''));
 
         return $this->renderView('pages.meeting.presence.member.page', [

@@ -25,7 +25,7 @@ class RoundMenu extends Component
      */
     protected function after()
     {
-        if($this->cache()->get('menu.round.active'))
+        if($this->stash()->get('menu.round.active'))
         {
             $this->response->jq('a', '#sidebar-menu-round')
                 ->css('color', config('menu.color.active'));

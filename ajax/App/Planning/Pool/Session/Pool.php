@@ -33,13 +33,13 @@ class Pool extends Component
     {
         $this->cl(PoolPage::class)->page();
 
-        $pools = $this->cache()->get('pool.session.pools');
+        $pools = $this->stash()->get('pool.session.pools');
         if($pools !== null && $pools->count() > 0)
         {
             $pool = $pools[0];
             $this->bag('pool.session')->set('pool.id', $pool->id);
             // Show the start session page of the first pool in the list.
-            $this->cache()->set('pool.session.pool', $pool);
+            $this->stash()->set('pool.session.pool', $pool);
             $this->cl(StartSession::class)->pool($pool->id);
         }
     }

@@ -25,7 +25,7 @@ class TontineMenu extends Component
      */
     protected function after()
     {
-        if($this->cache()->get('menu.tontine.active'))
+        if($this->stash()->get('menu.tontine.active'))
         {
             $this->response->jq('a', '#sidebar-menu-tontine')
                 ->css('color', config('menu.color.active'));

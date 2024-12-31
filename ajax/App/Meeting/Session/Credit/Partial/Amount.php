@@ -48,7 +48,7 @@ class Amount extends MeetingComponent
         }
         $fundId = $this->bag('partial.refund')->get('fund.id');
         $fund = $this->fundService->getFund($fundId, true, true);
-        $this->cache()->set('meeting.refund.fund', $fund);
+        $this->stash()->set('meeting.refund.fund', $fund);
     }
 
     public function fund(int $fundId)
@@ -58,8 +58,8 @@ class Amount extends MeetingComponent
 
     public function html(): Stringable
     {
-        $session = $this->cache()->get('meeting.session');
-        $fund = $this->cache()->get('meeting.refund.fund');
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->stash()->get('meeting.refund.fund');
 
         return $this->renderView('pages.meeting.refund.partial.amount.list', [
             'session' => $session,
@@ -72,8 +72,8 @@ class Amount extends MeetingComponent
      */
     public function edit(int $debtId)
     {
-        $session = $this->cache()->get('meeting.session');
-        $fund = $this->cache()->get('meeting.refund.fund');
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->stash()->get('meeting.refund.fund');
         $debt = $this->refundService->getUnpaidDebt($fund, $session, $debtId);
         if(!$debt)
         {
@@ -98,8 +98,8 @@ class Amount extends MeetingComponent
         // Validation
         $values = $this->validator->validateItem(['debt' => $debtId, 'amount' => $amount]);
 
-        $session = $this->cache()->get('meeting.session');
-        $fund = $this->cache()->get('meeting.refund.fund');
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->stash()->get('meeting.refund.fund');
         $debt = $this->refundService->getUnpaidDebt($fund, $session, $debtId);
         if(!$debt)
         {

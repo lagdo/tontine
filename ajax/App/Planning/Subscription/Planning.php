@@ -42,7 +42,7 @@ class Planning extends Component
      */
     public function html(): Stringable
     {
-        $pool = $this->cache()->get('subscription.pool');
+        $pool = $this->stash()->get('subscription.pool');
         $this->view()->shareValues($this->summaryService->getReceivables($pool));
 
         return $this->renderView('pages.planning.subscription.planning', [

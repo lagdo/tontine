@@ -36,7 +36,7 @@ class PoolPage extends PageComponent
     {
         $pools = $this->poolService->getPools($this->currentPage());
         // When showing the page for the first time, we'll need to get the first pool
-        $this->cache()->set('subscription.pools', $pools);
+        $this->stash()->set('subscription.pools', $pools);
 
         return $this->renderView('pages.planning.subscription.pool.page', [
             'round' => $this->tenantService->round(),

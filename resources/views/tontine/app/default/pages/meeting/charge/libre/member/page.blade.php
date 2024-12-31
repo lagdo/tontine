@@ -34,8 +34,8 @@
                           </td>
 @else
 @php
-  $cache->set('meeting.charge.member.id', $member->id);
-  $cache->set('meeting.charge.bill', $member->bill);
+  $stash->set('meeting.charge.member.id', $member->id);
+  $stash->set('meeting.charge.bill', $member->bill);
 @endphp
                           <td class="currency" @jxnBind($rqAmount, $member->id) style="width:200px">
                             @jxnHtml($rqAmount)

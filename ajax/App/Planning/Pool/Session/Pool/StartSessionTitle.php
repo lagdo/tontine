@@ -16,7 +16,7 @@ class StartSessionTitle extends Component
      */
     public function html(): string
     {
-        $pool = $this->cache()->get('pool.session.pool');
+        $pool = $this->stash()->get('pool.session.pool');
 
         return $pool->pool_round !== null ? $pool->start_date :
             trans('tontine.pool_round.labels.default');

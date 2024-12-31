@@ -25,9 +25,9 @@ class Total extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.charge.settlement.total', [
-            'billCount' => $this->cache()->get('meeting.session.bill.count'),
-            'settlementCount' => $this->cache()->get('meeting.session.settlement.count'),
-            'settlementAmount' => $this->cache()->get('meeting.session.settlement.amount'),
+            'billCount' => $this->stash()->get('meeting.session.bill.count'),
+            'settlementCount' => $this->stash()->get('meeting.session.settlement.count'),
+            'settlementAmount' => $this->stash()->get('meeting.session.settlement.amount'),
         ]);
     }
 }

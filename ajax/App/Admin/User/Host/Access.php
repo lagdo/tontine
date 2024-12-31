@@ -46,7 +46,7 @@ class Access extends Component
         {
             throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
         }
-        $this->cache()->set('user.invite', $invite);
+        $this->stash()->set('user.invite', $invite);
 
         // Do not find the tontine on the home page.
         if($this->target()->method() === 'home')
@@ -56,7 +56,7 @@ class Access extends Component
 
         $tontineId = $this->target()->method() === 'tontine' ? $this->target()->args()[0] :
             $this->bag('user')->get('tontine.id');
-        $this->cache()->set('user.tontine', $this->tontineService->getTontine($tontineId));
+        $this->stash()->set('user.tontine', $this->tontineService->getTontine($tontineId));
     }
 
     /**
@@ -64,7 +64,7 @@ class Access extends Component
      */
     public function html(): Stringable
     {
-        $invite = $this->cache()->get('user.invite');
+        $invite = $this->stash()->get('user.invite');
 
         return $this->renderView('pages.user.host.access.home', [
             'guest' => $invite->guest,
@@ -92,7 +92,7 @@ class Access extends Component
 
         $tontine = $tontines->first();
         $this->bag('user')->set('tontine.id', $tontine->id);
-        $this->cache()->set('user.tontine', $tontine);
+        $this->stash()->set('user.tontine', $tontine);
 
         return $this->render();
     }
@@ -109,8 +109,8 @@ class Access extends Component
      */
     public function saveAccess(array $formValues)
     {
-        $invite = $this->cache()->get('user.invite');
-        $tontine = $this->cache()->get('user.tontine');
+        $invite = $this->stash()->get('user.invite');
+        $tontine = $this->stash()->get('user.tontine');
         $access = $this->validator->validateItem($formValues['access'] ?? []);
         $this->userService->saveHostTontineAccess($invite, $tontine, $access);
 

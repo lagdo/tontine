@@ -22,12 +22,12 @@ class Summary extends Component
      */
     public function html(): Stringable
     {
-        $session = $this->cache()->get('report.session');
-        $fund = $this->cache()->get('report.fund');
-        $savings = $this->cache()->get('report.savings');
+        $session = $this->stash()->get('report.session');
+        $fund = $this->stash()->get('report.fund');
+        $savings = $this->stash()->get('report.savings');
 
         return $this->renderView('pages.report.session.savings.summary', [
-            'profitAmount' => $this->cache()->get('report.profit'),
+            'profitAmount' => $this->stash()->get('report.profit'),
             'partUnitValue' => $this->profitService->getPartUnitValue($savings),
             'distributionSum' => $savings->sum('distribution'),
             'distributionCount' => $savings->filter(fn($saving) => $saving->distribution > 0)->count(),

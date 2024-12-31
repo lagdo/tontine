@@ -27,10 +27,10 @@ class Amount extends ChargeComponent
      */
     public function html(): Stringable
     {
-        $session = $this->cache()->get('meeting.session');
-        $charge = $this->cache()->get('meeting.session.charge');
-        $bill = $this->cache()->get('meeting.charge.bill');
-        $memberId = $this->cache()->get('meeting.charge.member.id');
+        $session = $this->stash()->get('meeting.session');
+        $charge = $this->stash()->get('meeting.session.charge');
+        $bill = $this->stash()->get('meeting.charge.bill');
+        $memberId = $this->stash()->get('meeting.charge.member.id');
 
         if(!$session->opened || !$charge->is_active)
         {
@@ -41,7 +41,7 @@ class Amount extends ChargeComponent
 
         // When editing the bill amount, or when there is no bill yet,
         // then show the amount edit form.
-        $edit = $this->cache()->get('meeting.charge.edit');
+        $edit = $this->stash()->get('meeting.charge.edit');
         if($edit || !$bill)
         {
             $amountValue = jq("#member-charge-input-$memberId")->val();
@@ -68,16 +68,16 @@ class Amount extends ChargeComponent
      */
     private function refresh(int $memberId): AjaxResponse
     {
-        $session = $this->cache()->get('meeting.session');
-        $charge = $this->cache()->get('meeting.session.charge');
+        $session = $this->stash()->get('meeting.session');
+        $charge = $this->stash()->get('meeting.session.charge');
         $bill = $this->billService->getMemberBill($charge, $session, $memberId);
         if($bill === null)
         {
             return $this->response;
         }
 
-        $this->cache()->set('meeting.charge.bill', $bill->bill);
-        $this->cache()->set('meeting.charge.member.id', $memberId);
+        $this->stash()->set('meeting.charge.bill', $bill->bill);
+        $this->stash()->set('meeting.charge.member.id', $memberId);
 
         return $this->item($memberId)->render();
     }
@@ -90,7 +90,7 @@ class Amount extends ChargeComponent
      */
     public function edit(int $memberId): AjaxResponse
     {
-        $this->cache()->set('meeting.charge.edit', true);
+        $this->stash()->set('meeting.charge.edit', true);
 
         return $this->refresh($memberId);
     }
@@ -104,8 +104,8 @@ class Amount extends ChargeComponent
      */
     private function saveAmount(int $memberId, bool $paid, string $amount): void
     {
-        $session = $this->cache()->get('meeting.session');
-        $charge = $this->cache()->get('meeting.session.charge');
+        $session = $this->stash()->get('meeting.session');
+        $charge = $this->stash()->get('meeting.session.charge');
         $amount = $this->convertAmount($amount);
 
         if(!$amount)

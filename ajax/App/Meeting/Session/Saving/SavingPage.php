@@ -34,7 +34,7 @@ class SavingPage extends MeetingPageComponent
     {
         $fundId = $this->bag('meeting.saving')->get('fund.id', 0);
         $fund = $this->fundService->getFund($fundId, true, true);
-        $this->cache()->set('meeting.saving.fund', $fund);
+        $this->stash()->set('meeting.saving.fund', $fund);
     }
 
     /**
@@ -42,8 +42,8 @@ class SavingPage extends MeetingPageComponent
      */
     protected function count(): int
     {
-        $session = $this->cache()->get('meeting.session');
-        $fund = $this->cache()->get('meeting.saving.fund');
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->stash()->get('meeting.saving.fund');
 
         return $this->savingService->getSavingCount($session, $fund);
     }
@@ -53,8 +53,8 @@ class SavingPage extends MeetingPageComponent
      */
     public function html(): Stringable
     {
-        $session = $this->cache()->get('meeting.session');
-        $fund = $this->cache()->get('meeting.saving.fund');
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->stash()->get('meeting.saving.fund');
 
         return $this->renderView('pages.meeting.saving.page', [
             'session' => $session,

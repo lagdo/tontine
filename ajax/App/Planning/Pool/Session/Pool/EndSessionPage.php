@@ -46,7 +46,7 @@ class EndSessionPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $pool = $this->cache()->get('pool.session.pool');
+        $pool = $this->stash()->get('pool.session.pool');
         $endSession = $this->poolService->getPoolEndSession($pool);
 
         return $this->renderView('pages.planning.pool.session.end.page', [
@@ -67,7 +67,7 @@ class EndSessionPage extends PageComponent
 
     private function getSessionPageNumber(): int
     {
-        $pool = $this->cache()->get('pool.session.pool');
+        $pool = $this->stash()->get('pool.session.pool');
         $session = $this->poolService->getPoolEndSession($pool);
         if(!$session)
         {

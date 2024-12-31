@@ -4,7 +4,7 @@ namespace Ajax;
 
 use Jaxon\App\Dialog\DialogTrait;
 use Jaxon\App\View\Store;
-use Siak\Tontine\Cache\Cache;
+use Siak\Tontine\Stash\Stash;
 use Siak\Tontine\Exception\MeetingRoundException;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Exception\PlanningPoolException;
@@ -19,9 +19,9 @@ trait CallableTrait
     use DialogTrait;
 
     /**
-     * @var Cache
+     * @var Stash
      */
-    public $cache;
+    public $stash;
 
     /**
      * @di

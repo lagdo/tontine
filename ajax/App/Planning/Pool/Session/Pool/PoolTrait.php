@@ -15,6 +15,6 @@ trait PoolTrait
         }
 
         $poolId = (int)$this->bag('pool.session')->get('pool.id');
-        $this->cache()->set('pool.session.pool', $this->poolService->getPool($poolId));
+        $this->stash()->set('pool.session.pool', $this->poolService->getPool($poolId));
     }
 }

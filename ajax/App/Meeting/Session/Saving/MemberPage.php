@@ -34,7 +34,7 @@ class MemberPage extends MeetingPageComponent
     {
         $fundId = $this->bag('meeting.saving')->get('fund.id', 0);
         $fund = $this->fundService->getFund($fundId, true, true);
-        $this->cache()->set('meeting.saving.fund', $fund);
+        $this->stash()->set('meeting.saving.fund', $fund);
     }
 
     /**
@@ -44,8 +44,8 @@ class MemberPage extends MeetingPageComponent
     {
         $search = trim($this->bag('meeting.saving')->get('member.search', ''));
         $filter = $this->bag('meeting.saving')->get('member.filter', null);
-        $session = $this->cache()->get('meeting.session');
-        $fund = $this->cache()->get('meeting.saving.fund');
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->stash()->get('meeting.saving.fund');
 
         return $this->savingService->getMemberCount($session, $fund, $search, $filter);
     }
@@ -57,8 +57,8 @@ class MemberPage extends MeetingPageComponent
     {
         $search = trim($this->bag('meeting.saving')->get('member.search', ''));
         $filter = $this->bag('meeting.saving')->get('member.filter', null);
-        $session = $this->cache()->get('meeting.session');
-        $fund = $this->cache()->get('meeting.saving.fund');
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->stash()->get('meeting.saving.fund');
 
         return $this->renderView('pages.meeting.saving.member.page', [
             'session' => $session,

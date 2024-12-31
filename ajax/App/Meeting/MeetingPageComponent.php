@@ -42,7 +42,7 @@ abstract class MeetingPageComponent extends PageComponent
         {
             throw new MessageException(trans('meeting.errors.session.not_opened'));
         }
-        $this->cache()->set('meeting.session', $session);
+        $this->stash()->set('meeting.session', $session);
     }
 
     /**

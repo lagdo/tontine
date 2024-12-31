@@ -27,7 +27,7 @@ class Member extends Component
     {
         $sessionId = $this->bag('presence')->get('session.id', 0);
         $session = $sessionId === 0 ? null : $this->presenceService->getSession($sessionId);
-        $this->cache()->set('presence.session', $session);
+        $this->stash()->set('presence.session', $session);
     }
 
     /**
@@ -36,7 +36,7 @@ class Member extends Component
     public function html(): Stringable|string
     {
         $exchange = $this->bag('presence')->get('exchange', false);
-        $session = $this->cache()->get('presence.session'); // Is null when showing presences by members.
+        $session = $this->stash()->get('presence.session'); // Is null when showing presences by members.
         if(!$exchange && !$session)
         {
             return '';
@@ -69,7 +69,7 @@ class Member extends Component
     public function togglePresence(int $memberId)
     {
         $member = $this->memberService->getMember($memberId);
-        $session = $this->cache()->get('presence.session');
+        $session = $this->stash()->get('presence.session');
         if(!$member || !$session)
         {
             return $this->response;

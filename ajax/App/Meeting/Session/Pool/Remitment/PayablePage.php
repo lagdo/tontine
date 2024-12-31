@@ -24,8 +24,8 @@ class PayablePage extends Component
      */
     public function html(): Stringable
     {
-        $pool = $this->cache()->get('meeting.pool');
-        $session = $this->cache()->get('meeting.session');
+        $pool = $this->stash()->get('meeting.pool');
+        $session = $this->stash()->get('meeting.session');
 
         return $this->renderView('pages.meeting.remitment.payable.page', [
             'pool' => $pool,

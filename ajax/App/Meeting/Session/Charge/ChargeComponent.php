@@ -44,7 +44,7 @@ abstract class ChargeComponent extends MeetingComponent
             $this->bag('meeting')->set('charge.id', $this->target()->args()[0]);
         }
         $chargeId = $this->bag('meeting')->get('charge.id');
-        $this->cache()->set('meeting.session.charge', $this->chargeService->getCharge($chargeId));
+        $this->stash()->set('meeting.session.charge', $this->chargeService->getCharge($chargeId));
     }
   
     /**
@@ -52,12 +52,12 @@ abstract class ChargeComponent extends MeetingComponent
      */
     protected function checkChargeEdit()
     {
-        $session = $this->cache()->get('meeting.session');
+        $session = $this->stash()->get('meeting.session');
         if(!$session || $session->closed)
         {
             throw new MessageException(trans('meeting.warnings.session.closed'), false);
         }
-        $charge = $this->cache()->get('meeting.session.charge');
+        $charge = $this->stash()->get('meeting.session.charge');
         if(!$charge || !$charge->active)
         {
             throw new MessageException(trans('meeting.warnings.charge.disabled'), false);

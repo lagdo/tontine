@@ -26,4 +26,4 @@ Homestead.json
 /.vagrant
 .phpunit.result.cache
 
-public/jaxon/v*
+public/jaxon/js

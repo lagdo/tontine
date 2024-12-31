@@ -14,8 +14,8 @@
                       <tbody>
 @foreach ($members as $member)
 @php
-  $cache->set('meeting.saving.member', $member);
-  $cache->set('meeting.saving', $member->saving);
+  $stash->set('meeting.saving.member', $member);
+  $stash->set('meeting.saving', $member->saving);
 @endphp
                         <tr>
                           <td>{{ $member->name }}</td>

@@ -12,7 +12,7 @@ class Export extends Component
      */
     public function html(): Stringable
     {
-        $session = $this->cache()->get('report.session');
+        $session = $this->stash()->get('report.session');
 
         return $this->renderView('pages.report.session.action.exports', [
             'sessionId' => $session->id,

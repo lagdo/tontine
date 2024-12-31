@@ -23,8 +23,8 @@ class MemberPage extends ChargePageComponent
     {
         $search = trim($this->bag('meeting')->get('fee.member.search', ''));
         $filter = $this->bag('meeting')->get('fee.member.filter', null);
-        $session = $this->cache()->get('meeting.session');
-        $charge = $this->cache()->get('meeting.session.charge');
+        $session = $this->stash()->get('meeting.session');
+        $charge = $this->stash()->get('meeting.session.charge');
 
         return $this->billService->getMemberCount($charge, $session, $search, $filter);
     }
@@ -36,8 +36,8 @@ class MemberPage extends ChargePageComponent
     {
         $search = trim($this->bag('meeting')->get('fee.member.search', ''));
         $filter = $this->bag('meeting')->get('fee.member.filter', null);
-        $session = $this->cache()->get('meeting.session');
-        $charge = $this->cache()->get('meeting.session.charge');
+        $session = $this->stash()->get('meeting.session');
+        $charge = $this->stash()->get('meeting.session.charge');
 
         return $this->renderView('pages.meeting.charge.libre.member.page', [
             'session' => $session,

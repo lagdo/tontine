@@ -36,7 +36,7 @@ class FeePage extends MeetingPageComponent
      */
     public function html(): Stringable
     {
-        $session = $this->cache()->get('meeting.session');
+        $session = $this->stash()->get('meeting.session');
 
         return $this->renderView('pages.meeting.charge.fixed.page', [
             'session' => $session,

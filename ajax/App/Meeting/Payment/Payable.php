@@ -31,10 +31,10 @@ class Payable extends Component
      */
     public function html(): Stringable
     {
-        $member = $this->cache()->get('payable.member');
-        $session = $this->cache()->get('payable.session');
+        $member = $this->stash()->get('payable.member');
+        $session = $this->stash()->get('payable.session');
         [$receivables, $bills, $debts] = $this->paymentService->getPayables($member, $session);
-        $this->cache()->set('payable.data', [$member, $session, $receivables, $bills, $debts]);
+        $this->stash()->set('payable.data', [$member, $session, $receivables, $bills, $debts]);
 
         return $this->renderView('pages.meeting.payment.payables',
             compact('member', 'session', 'receivables', 'debts', 'bills'));
@@ -48,7 +48,7 @@ class Payable extends Component
         $this->response->js()->makeTableResponsive('payment-payables-home');
         $this->response->js()->showSmScreen('payment-payables-home', 'payment-sm-screens');
 
-        [$member, $session, $receivables, $bills, $debts] = $this->cache()->get('payable.data');
+        [$member, $session, $receivables, $bills, $debts] = $this->stash()->get('payable.data');
         OnPagePaymentPayables::dispatch($member, $session, $receivables, $bills, $debts);
     }
 
@@ -63,8 +63,8 @@ class Payable extends Component
             return $this->response;
         }
 
-        $this->cache()->set('payable.member', $member);
-        $this->cache()->set('payable.session', $session);
+        $this->stash()->set('payable.member', $member);
+        $this->stash()->set('payable.session', $session);
         $this->render();
 
         return $this->response;

@@ -36,7 +36,7 @@ class Session extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.pool.session.enabled.home', [
-            'pool' => $this->cache()->get('pool.session.pool'),
+            'pool' => $this->stash()->get('pool.session.pool'),
         ]);
     }
 
@@ -50,7 +50,7 @@ class Session extends Component
 
     public function enableSession(int $sessionId)
     {
-        $pool = $this->cache()->get('pool.session.pool');
+        $pool = $this->stash()->get('pool.session.pool');
         $this->poolService->enableSession($pool, $sessionId);
 
         $this->cl(SessionCounter::class)->render();
@@ -60,7 +60,7 @@ class Session extends Component
 
     public function disableSession(int $sessionId)
     {
-        $pool = $this->cache()->get('pool.session.pool');
+        $pool = $this->stash()->get('pool.session.pool');
         $this->poolService->disableSession($pool, $sessionId);
 
         $this->cl(SessionCounter::class)->render();

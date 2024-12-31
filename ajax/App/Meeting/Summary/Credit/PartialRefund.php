@@ -34,7 +34,7 @@ class PartialRefund extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.summary.refund.partial.home', [
-            'session' => $this->cache()->get('summary.session'),
+            'session' => $this->stash()->get('summary.session'),
             'funds' => $this->fundService->getFundList(),
         ]);
     }
@@ -63,7 +63,7 @@ class PartialRefund extends Component
             $this->bag('refund.partial')->set('fund.id', $fund->id);
         }
 
-        $this->cache()->set('summary.refund.partial.fund', $fund);
+        $this->stash()->set('summary.refund.partial.fund', $fund);
     }
 
     /**

@@ -37,8 +37,8 @@ class ReceivablePage extends MeetingPageComponent
      */
     protected function count(): int
     {
-        $pool = $this->cache()->get('meeting.pool');
-        $session = $this->cache()->get('meeting.session');
+        $pool = $this->stash()->get('meeting.pool');
+        $session = $this->stash()->get('meeting.session');
 
         return $this->depositService->getReceivableCount($pool, $session);
     }
@@ -48,8 +48,8 @@ class ReceivablePage extends MeetingPageComponent
      */
     public function html(): Stringable
     {
-        $pool = $this->cache()->get('meeting.pool');
-        $session = $this->cache()->get('meeting.session');
+        $pool = $this->stash()->get('meeting.pool');
+        $session = $this->stash()->get('meeting.session');
 
         return $this->renderView('pages.meeting.deposit.receivable.page', [
             'pool' => $pool,

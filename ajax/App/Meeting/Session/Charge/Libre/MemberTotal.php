@@ -25,8 +25,8 @@ class MemberTotal extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.charge.libre.member.total', [
-            'settlementCount' => $this->cache()->get('meeting.session.settlement.count'),
-            'settlementAmount' => $this->cache()->get('meeting.session.settlement.amount'),
+            'settlementCount' => $this->stash()->get('meeting.session.settlement.count'),
+            'settlementAmount' => $this->stash()->get('meeting.session.settlement.amount'),
         ]);
     }
 }

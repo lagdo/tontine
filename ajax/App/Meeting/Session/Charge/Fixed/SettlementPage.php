@@ -23,8 +23,8 @@ class SettlementPage extends ChargePageComponent
     {
         $search = trim($this->bag('meeting')->get('settlement.fixed.search', ''));
         $filter = $this->bag('meeting')->get('settlement.fixed.filter', null);
-        $session = $this->cache()->get('meeting.session');
-        $charge = $this->cache()->get('meeting.session.charge');
+        $session = $this->stash()->get('meeting.session');
+        $charge = $this->stash()->get('meeting.session.charge');
 
         return $this->billService->getBillCount($charge, $session, $search, $filter);
     }
@@ -36,8 +36,8 @@ class SettlementPage extends ChargePageComponent
     {
         $search = trim($this->bag('meeting')->get('settlement.fixed.search', ''));
         $filter = $this->bag('meeting')->get('settlement.fixed.filter', null);
-        $session = $this->cache()->get('meeting.session');
-        $charge = $this->cache()->get('meeting.session.charge');
+        $session = $this->stash()->get('meeting.session');
+        $charge = $this->stash()->get('meeting.session.charge');
 
         return $this->renderView('pages.meeting.charge.fixed.settlement.page', [
             'session' => $session,

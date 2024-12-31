@@ -13,12 +13,12 @@ trait AmountTrait
 {
     private function showTotal()
     {
-        $session = $this->cache()->get('meeting.session');
-        $charge = $this->cache()->get('meeting.session.charge');
+        $session = $this->stash()->get('meeting.session');
+        $charge = $this->stash()->get('meeting.session.charge');
         $settlement = $this->settlementService->getSettlementCount($charge, $session);
 
-        $this->cache()->set('meeting.session.settlement.count', $settlement->total ?? 0);
-        $this->cache()->set('meeting.session.settlement.amount', $settlement->amount ?? 0);
+        $this->stash()->set('meeting.session.settlement.count', $settlement->total ?? 0);
+        $this->stash()->set('meeting.session.settlement.amount', $settlement->amount ?? 0);
 
         $this->cl(MemberTotal::class)->render();
     }

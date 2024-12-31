@@ -24,11 +24,11 @@ class Total extends Component
      */
     public function html(): Stringable
     {
-        $session = $this->cache()->get('meeting.session');
-        $pool = $this->cache()->get('meeting.pool');
+        $session = $this->stash()->get('meeting.session');
+        $pool = $this->stash()->get('meeting.pool');
 
         return $this->renderView('pages.meeting.deposit.receivable.total', [
-            'depositCount' => $this->cache()->get('meeting.pool.deposit.count'),
+            'depositCount' => $this->stash()->get('meeting.pool.deposit.count'),
             'depositAmount' => $this->balanceCalculator->getPoolDepositAmount($pool, $session),
         ]);
     }

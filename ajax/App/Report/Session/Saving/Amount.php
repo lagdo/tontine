@@ -16,7 +16,7 @@ class Amount extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.report.session.savings.amount', [
-            'profitAmount' => $this->cache()->get('report.profit'),
+            'profitAmount' => $this->stash()->get('report.profit'),
         ]);
     }
 }

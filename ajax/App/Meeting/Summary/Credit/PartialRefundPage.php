@@ -34,8 +34,8 @@ class PartialRefundPage extends PageComponent
      */
     protected function count(): int
     {
-        $session = $this->cache()->get('summary.session');
-        $fund = $this->cache()->get('summary.refund.partial.fund');
+        $session = $this->stash()->get('summary.session');
+        $fund = $this->stash()->get('summary.refund.partial.fund');
 
         return $this->refundService->getPartialRefundCount($session, $fund);
     }
@@ -45,8 +45,8 @@ class PartialRefundPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $session = $this->cache()->get('summary.session');
-        $fund = $this->cache()->get('summary.refund.partial.fund');
+        $session = $this->stash()->get('summary.session');
+        $fund = $this->stash()->get('summary.refund.partial.fund');
 
         return $this->renderView('pages.meeting.summary.refund.partial.page', [
             'session' => $session,

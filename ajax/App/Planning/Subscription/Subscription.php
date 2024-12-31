@@ -48,13 +48,13 @@ class Subscription extends Component
         $this->cl(Pool::class)->render();
         $this->response->js()->setSmScreenHandler('pool-subscription-sm-screens');
 
-        $pools = $this->cache()->get('subscription.pools');
+        $pools = $this->stash()->get('subscription.pools');
         if($pools !== null && $pools->count() > 0)
         {
             $pool = $pools[0];
             $this->bag('subscription')->set('pool.id', $pool->id);
             // Show the start session page of the first pool in the list.
-            $this->cache()->set('subscription.pool', $pool);
+            $this->stash()->set('subscription.pool', $pool);
             $this->cl(Member::class)->pool($pool->id);
         }
     }

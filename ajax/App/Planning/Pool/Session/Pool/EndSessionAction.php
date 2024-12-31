@@ -16,7 +16,7 @@ class EndSessionAction extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.pool.session.end.actions', [
-            'pool' => $this->cache()->get('pool.session.pool'),
+            'pool' => $this->stash()->get('pool.session.pool'),
         ]);
     }
 }

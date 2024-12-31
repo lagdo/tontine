@@ -22,8 +22,8 @@ class Deposit extends Component
      */
     public function html(): Stringable
     {
-        $session = $this->cache()->get('report.session');
-        $member = $this->cache()->get('report.member');
+        $session = $this->stash()->get('report.session');
+        $member = $this->stash()->get('report.member');
 
         if(!$member)
         {

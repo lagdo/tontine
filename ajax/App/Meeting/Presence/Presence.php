@@ -80,7 +80,7 @@ class Presence extends Component
         $this->bag('presence')->set('member.id', 0);
         $this->bag('presence')->set('member.page', 1);
 
-        $this->cache()->set('presence.session', $this->presenceService->getSession($sessionId));
+        $this->stash()->set('presence.session', $this->presenceService->getSession($sessionId));
 
         return $this->cl(Member::class)->render();
     }
@@ -91,7 +91,7 @@ class Presence extends Component
         $this->bag('presence')->set('session.id', 0);
         $this->bag('presence')->set('session.page', 1);
 
-        $this->cache()->set('presence.member', $this->presenceService->getMember($memberId));
+        $this->stash()->set('presence.member', $this->presenceService->getMember($memberId));
 
         return $this->cl(Session::class)->render();
     }

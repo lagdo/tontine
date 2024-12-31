@@ -26,7 +26,7 @@ class Saving extends Component
     {
         $fundId = $this->bag('meeting.saving')->get('fund.id', 0);
         $fund = $fundId > 0 ? $this->fundService->getFund($fundId, true, true) : null;
-        $this->cache()->set('meeting.saving.fund', $fund);
+        $this->stash()->set('meeting.saving.fund', $fund);
     }
 
     /**
@@ -35,7 +35,7 @@ class Saving extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.summary.saving.home', [
-            'session' => $this->cache()->get('summary.session'),
+            'session' => $this->stash()->get('summary.session'),
             'fundId' => (int)$this->bag('meeting.saving')->get('fund.id', 0),
             'funds' => $this->fundService->getFundList()->prepend('', 0),
         ]);

@@ -38,7 +38,7 @@ class Section extends MeetingComponent
     public function html(): Stringable
     {
         return $this->renderView("pages.meeting.session.home.{$this->section}", [
-            'session' => $this->cache()->get('meeting.session'),
+            'session' => $this->stash()->get('meeting.session'),
         ]);
     }
 

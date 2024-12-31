@@ -34,7 +34,7 @@ class RefundPage extends MeetingPageComponent
     {
         $fundId = $this->bag('partial.refund')->get('fund.id', 0);
         $fund = $this->fundService->getFund($fundId, true, true);
-        $this->cache()->set('meeting.refund.fund', $fund);
+        $this->stash()->set('meeting.refund.fund', $fund);
     }
 
     /**
@@ -42,8 +42,8 @@ class RefundPage extends MeetingPageComponent
      */
     protected function count(): int
     {
-        $session = $this->cache()->get('meeting.session');
-        $fund = $this->cache()->get('meeting.refund.fund');
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->stash()->get('meeting.refund.fund');
 
         return $this->refundService->getPartialRefundCount($session, $fund);
     }
@@ -53,8 +53,8 @@ class RefundPage extends MeetingPageComponent
      */
     public function html(): Stringable
     {
-        $session = $this->cache()->get('meeting.session');
-        $fund = $this->cache()->get('meeting.refund.fund');
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->stash()->get('meeting.refund.fund');
 
         return $this->renderView('pages.meeting.refund.partial.page', [
             'session' => $session,

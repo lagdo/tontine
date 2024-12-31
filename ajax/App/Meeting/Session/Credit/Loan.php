@@ -32,7 +32,7 @@ class Loan extends MeetingComponent
 
     public function html(): Stringable
     {
-        $session = $this->cache()->get('meeting.session');
+        $session = $this->stash()->get('meeting.session');
         $loans = $this->loanService->getSessionLoans($session);
 
         return $this->renderView('pages.meeting.loan.home', [
@@ -53,7 +53,7 @@ class Loan extends MeetingComponent
 
     public function add()
     {
-        $session = $this->cache()->get('meeting.session');
+        $session = $this->stash()->get('meeting.session');
         $title = trans('meeting.loan.titles.add');
         $content = $this->renderView('pages.meeting.loan.add', [
             'amountAvailable' => $this->loanService->getAmountAvailableValue($session),
@@ -93,7 +93,7 @@ class Loan extends MeetingComponent
             return $this->response;
         }
 
-        $session = $this->cache()->get('meeting.session');
+        $session = $this->stash()->get('meeting.session');
         $this->loanService->createLoan($session, $member, $fund, $values);
 
         $this->modal()->hide();
@@ -104,7 +104,7 @@ class Loan extends MeetingComponent
 
     public function edit(int $loanId)
     {
-        $session = $this->cache()->get('meeting.session');
+        $session = $this->stash()->get('meeting.session');
         $loan = $this->loanService->getSessionLoan($session, $loanId);
         if(!$loan)
         {
@@ -145,7 +145,7 @@ class Loan extends MeetingComponent
      */
     public function update(int $loanId, array $formValues)
     {
-        $session = $this->cache()->get('meeting.session');
+        $session = $this->stash()->get('meeting.session');
         $loan = $this->loanService->getSessionLoan($session, $loanId);
         if(!$loan)
         {
@@ -181,7 +181,7 @@ class Loan extends MeetingComponent
 
     public function delete(int $loanId)
     {
-        $session = $this->cache()->get('meeting.session');
+        $session = $this->stash()->get('meeting.session');
         $this->loanService->deleteLoan($session, $loanId);
 
         $this->cl(Refund::class)->render();

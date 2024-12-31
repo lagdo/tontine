@@ -48,7 +48,7 @@ class Fund extends Component
     protected function getSession()
     {
         $sessionId = $this->bag('report')->get('session.id');
-        $this->cache()->set('report.session', $this->sessionService->getSession($sessionId));
+        $this->stash()->set('report.session', $this->sessionService->getSession($sessionId));
     }
 
     /**
@@ -61,20 +61,20 @@ class Fund extends Component
             $this->bag('report')->set('fund.id', $this->target()->args()[0]);
         }
         $fundId = $this->bag('report')->get('fund.id', 0);
-        $this->cache()->set('report.fund', $this->fundService->getFund($fundId, true, true));
+        $this->stash()->set('report.fund', $this->fundService->getFund($fundId, true, true));
     }
 
     protected function before()
     {
-        $session = $this->cache()->get('report.session');
-        $fund = $this->cache()->get('report.fund');
-        $profit = $this->cache()->get('report.profit');
+        $session = $this->stash()->get('report.session');
+        $fund = $this->stash()->get('report.fund');
+        $profit = $this->stash()->get('report.profit');
         if($profit === null)
         {
             $profit = $this->closingService->getProfitAmount($session, $fund);
-            $this->cache()->set('report.profit', $profit);
+            $this->stash()->set('report.profit', $profit);
         }
-        $this->cache()->set('report.savings',
+        $this->stash()->set('report.savings',
             $this->profitService->getDistributions($session, $fund, $profit));
     }
 
@@ -90,8 +90,8 @@ class Fund extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.report.session.savings.fund', [
-            'fund' => $this->cache()->get('report.fund'),
-            'profitAmount' => $this->cache()->get('report.profit'),
+            'fund' => $this->stash()->get('report.fund'),
+            'profitAmount' => $this->stash()->get('report.profit'),
             'backButton' => $this->backButton,
         ]);
     }
@@ -103,7 +103,7 @@ class Fund extends Component
 
     public function amount(int $profitAmount)
     {
-        $this->cache()->set('report.profit', $profitAmount);
+        $this->stash()->set('report.profit', $profitAmount);
         $this->render();
 
         return $this->response;
