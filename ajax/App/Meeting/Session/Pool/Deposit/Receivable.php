@@ -73,6 +73,7 @@ class Receivable extends MeetingComponent
         $session = $this->cache()->get('meeting.session');
         $this->depositService->createDeposit($pool, $session, $receivableId);
 
+        $this->showTotal();
         return $this->cl(ReceivablePage::class)->page();
     }
 
@@ -87,6 +88,7 @@ class Receivable extends MeetingComponent
         $session = $this->cache()->get('meeting.session');
         $this->depositService->deleteDeposit($pool, $session, $receivableId);
 
+        $this->showTotal();
         return $this->cl(ReceivablePage::class)->page();
     }
 
@@ -104,6 +106,7 @@ class Receivable extends MeetingComponent
         $session = $this->cache()->get('meeting.session');
         $this->depositService->createAllDeposits($pool, $session);
 
+        $this->showTotal();
         return $this->cl(ReceivablePage::class)->page();
     }
 
@@ -121,6 +124,7 @@ class Receivable extends MeetingComponent
         $session = $this->cache()->get('meeting.session');
         $this->depositService->deleteAllDeposits($pool, $session);
 
+        $this->showTotal();
         return $this->cl(ReceivablePage::class)->page();
     }
 }
