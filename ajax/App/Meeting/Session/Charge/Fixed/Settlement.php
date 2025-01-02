@@ -32,6 +32,7 @@ class Settlement extends ChargeComponent
     protected function after()
     {
         $this->cl(SettlementPage::class)->page();
+        $this->showTotal();
     }
 
     /**
@@ -59,8 +60,8 @@ class Settlement extends ChargeComponent
         $this->stash()->set('meeting.session.bill.count',
             $this->billService->getBillCount($charge, $session));
 
-        $this->cl(Action::class)->render();
-        $this->cl(Total::class)->render();
+        $this->cl(Action::class)->item('fixed')->render();
+        $this->cl(Total::class)->item('fixed')->render();
     }
 
     public function toggleFilter()
@@ -93,7 +94,6 @@ class Settlement extends ChargeComponent
         $this->settlementService->createSettlement($charge, $session, $billId);
 
         $this->showTotal();
-
         return $this->cl(SettlementPage::class)->page();
     }
 
@@ -110,7 +110,6 @@ class Settlement extends ChargeComponent
         $this->settlementService->deleteSettlement($charge, $session, $billId);
 
         $this->showTotal();
-
         return $this->cl(SettlementPage::class)->page();
     }
 
@@ -125,7 +124,6 @@ class Settlement extends ChargeComponent
         $this->settlementService->createAllSettlements($charge, $session);
 
         $this->showTotal();
-
         return $this->cl(SettlementPage::class)->page();
     }
 
@@ -140,7 +138,6 @@ class Settlement extends ChargeComponent
         $this->settlementService->deleteAllSettlements($charge, $session);
 
         $this->showTotal();
-
         return $this->cl(SettlementPage::class)->page();
     }
 }

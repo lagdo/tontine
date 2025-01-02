@@ -10,8 +10,6 @@
                     <div class="col">
                       <div class="section-title mt-0">{{ $charge->name }}</div>
                     </div>
-                    <div class="col-auto" @jxnBind($rqMemberTotal)>
-                    </div>
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqCharge->render())><i class="fa fa-arrow-left"></i></button>
@@ -28,6 +26,8 @@
                           <button type="button" class="btn btn-primary" @jxnClick($rqMember->search($searchValue))><i class="fa fa-search"></i></button>
                         </div>
                       </div>
+                    </div>
+                    <div class="col-auto" @jxnBind($rqMemberTotal) style="padding: 7px 5px;">
                     </div>
                     <div class="col-auto">
                       <div class="input-group input-group-sm float-right mb-1 mr-0 pr-0">

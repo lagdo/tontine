@@ -2,6 +2,7 @@
   $rqCharge = rq(Ajax\App\Meeting\Session\Charge\Libre\Fee::class);
   $rqSettlement = rq(Ajax\App\Meeting\Session\Charge\Libre\Settlement::class);
   $rqSettlementPage = rq(Ajax\App\Meeting\Session\Charge\Libre\SettlementPage::class);
+  $rqTotal = rq(Ajax\App\Meeting\Session\Charge\Settlement\Total::class);
 @endphp
                   <div class="row">
                     <div class="col">
@@ -19,9 +20,7 @@
                   <div class="row mb-2">
                     <div class="col">
                     </div>
-                    <div class="col-auto" id="meeting-settlements-total">
-                    </div>
-                    <div class="col-auto" id="meeting-settlements-action">
+                    <div class="col-auto" @jxnBind($rqTotal, 'libre') style="padding: 7px 15px 7px 5px;">
                     </div>
                   </div>
                   <div @jxnBind($rqSettlementPage)>

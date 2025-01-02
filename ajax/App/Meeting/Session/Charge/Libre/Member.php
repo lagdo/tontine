@@ -35,6 +35,7 @@ class Member extends ChargeComponent
     protected function after()
     {
         $this->cl(MemberPage::class)->page();
+        $this->showTotal();
     }
 
     /**
@@ -83,7 +84,6 @@ class Member extends ChargeComponent
         $this->billService->createBill($charge, $session, $memberId, $paid);
 
         $this->showTotal();
-
         return $this->cl(MemberPage::class)->page();
     }
 
@@ -101,7 +101,6 @@ class Member extends ChargeComponent
         $this->billService->deleteBill($charge, $session, $memberId);
 
         $this->showTotal();
-
         return $this->cl(MemberPage::class)->page();
     }
 }
