@@ -41,8 +41,8 @@
 @endphp
                         @include('tontine.app.default.pages.meeting.pool.' . $template, [
                           'pool' => $pool,
-                          'amount' => $pool->deposit_fixed ? $locale->formatMoney($pool->amount, true) :
-                            __('tontine.labels.types.libre'),
+                          'amount' => !$pool->deposit_fixed ? __('tontine.labels.types.libre') :
+                            $locale->formatMoney($pool->amount * $pool->pay_count, true),
                           'paid' => $pool->pay_paid,
                           'count' => $pool->pay_count,
                           'total' => $pool->amount_paid,

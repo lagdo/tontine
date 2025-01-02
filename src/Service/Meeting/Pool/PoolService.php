@@ -72,7 +72,7 @@ class PoolService
                 },
             ])
             ->get()
-            ->each(function($pool) use($session) {
+            ->each(function(Pool $pool) use($session) {
                 // Amount paid
                 $pool->amount_recv = $this->balanceCalculator->getPoolDepositAmount($pool, $session);
             });
@@ -96,7 +96,7 @@ class PoolService
                 },
             ])
             ->get()
-            ->each(function($pool) use($session) {
+            ->each(function(Pool $pool) use($session) {
                 // Expected
                 $pool->pay_count = $this->summaryService->getSessionRemitmentCount($pool, $session);
                 // Amount paid
