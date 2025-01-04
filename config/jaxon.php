@@ -18,6 +18,7 @@ return [
                 SetAppLocale::class,
                 SetAppTemplate::class,
                 JaxonAnnotations::class,
+                'jaxon.config',
                 'jaxon.ajax',
             ],
         ],
@@ -58,7 +59,7 @@ return [
             'app' => [
                 'uri' => env('JAXON_JS_APP_URI', '/jaxon'),
                 'dir' => env('JAXON_JS_APP_DIR', public_path('/jaxon')),
-                'file' => env('JAXON_JS_APP_FILE', 'js-4.0.0-15'),
+                'file' => env('JAXON_JS_APP_FILE', 'js-4.0.0-16'),
                 'export' => env('JAXON_JS_APP_EXPORT', !env('APP_DEBUG')),
                 'minify' => env('JAXON_JS_APP_MINIFY', !env('APP_DEBUG')),
             ],

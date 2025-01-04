@@ -4,8 +4,8 @@ namespace Ajax\App\Tontine\Member;
 
 use Ajax\Component;
 use Ajax\App\Faker;
-use Ajax\App\SectionContent;
-use Ajax\App\SectionTitle;
+use Ajax\App\Page\SectionContent;
+use Ajax\App\Page\SectionTitle;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Tontine\MemberValidator;

@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Summary;
 
 use Ajax\Component;
-use Ajax\App\SectionContent;
+use Ajax\App\Page\SectionContent;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Stringable;

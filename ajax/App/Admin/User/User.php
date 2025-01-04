@@ -4,8 +4,8 @@ namespace Ajax\App\Admin\User;
 
 use Ajax\App\Admin\User\Guest\Guest;
 use Ajax\App\Admin\User\Host\Host;
-use Ajax\App\SectionContent;
-use Ajax\App\SectionTitle;
+use Ajax\App\Page\SectionContent;
+use Ajax\App\Page\SectionTitle;
 use Ajax\Component;
 use Jaxon\Response\AjaxResponse;
 use Stringable;

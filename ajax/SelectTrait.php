@@ -2,9 +2,9 @@
 
 namespace Ajax;
 
-use Ajax\App\MainTitle;
-use Ajax\App\Sidebar\RoundMenu;
-use Ajax\App\Sidebar\TontineMenu;
+use Ajax\App\Page\MainTitle;
+use Ajax\App\Page\Sidebar\RoundMenu;
+use Ajax\App\Page\Sidebar\TontineMenu;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App;
+namespace Ajax\App\Page;
 
 use Ajax\Component;
 

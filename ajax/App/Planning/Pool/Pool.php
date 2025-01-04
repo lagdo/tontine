@@ -3,8 +3,8 @@
 namespace Ajax\App\Planning\Pool;
 
 use Ajax\Component;
-use Ajax\App\SectionContent;
-use Ajax\App\SectionTitle;
+use Ajax\App\Page\SectionContent;
+use Ajax\App\Page\SectionTitle;
 use Jaxon\Response\AjaxResponse;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Service\Planning\PoolService;

@@ -3,7 +3,7 @@
 namespace Ajax\App\Planning\Pool\Session;
 
 use Ajax\App\Planning\Pool\Session\Pool\StartSession;
-use Ajax\App\SectionContent;
+use Ajax\App\Page\SectionContent;
 use Ajax\Component;
 use Stringable;
 

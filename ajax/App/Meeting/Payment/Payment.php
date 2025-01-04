@@ -3,8 +3,8 @@
 namespace Ajax\App\Meeting\Payment;
 
 use Ajax\Component;
-use Ajax\App\SectionContent;
-use Ajax\App\SectionTitle;
+use Ajax\App\Page\SectionContent;
+use Ajax\App\Page\SectionTitle;
 use App\Events\OnPagePaymentHome;
 use Illuminate\Support\Collection;
 use Jaxon\Response\AjaxResponse;

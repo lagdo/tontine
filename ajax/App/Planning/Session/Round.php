@@ -3,8 +3,8 @@
 namespace Ajax\App\Planning\Session;
 
 use Ajax\Component;
-use Ajax\App\SectionContent;
-use Ajax\App\SectionTitle;
+use Ajax\App\Page\SectionContent;
+use Ajax\App\Page\SectionTitle;
 use Ajax\App\Tontine\Select;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\RoundService;

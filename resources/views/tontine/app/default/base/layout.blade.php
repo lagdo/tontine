@@ -31,7 +31,7 @@
 @include('tontine.app.default.parts.header.message')
         </div>
 
-        <div id="content-home" @jxnBind(Jaxon\rq(Ajax\App\SectionContent::class))>
+        <div id="content-home" @jxnBind(Jaxon\rq(Ajax\App\Page\SectionContent::class))>
 
 @yield('content')
 

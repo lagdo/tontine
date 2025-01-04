@@ -3,8 +3,8 @@
 namespace Ajax\App\Meeting\Session;
 
 use Ajax\Component;
-use Ajax\App\SectionContent;
-use Ajax\App\SectionTitle;
+use Ajax\App\Page\SectionContent;
+use Ajax\App\Page\SectionTitle;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;

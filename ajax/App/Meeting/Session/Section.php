@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session;
 
-use Ajax\App\SectionContent;
+use Ajax\App\Page\SectionContent;
 use Ajax\App\Meeting\MeetingComponent;
 use Stringable;
 
