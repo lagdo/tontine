@@ -49,6 +49,6 @@ class SettlementPage extends ChargePageComponent
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('meeting-fee-libre-bills');
+        $this->response->js('Tontine')->makeTableResponsive('meeting-fee-libre-bills');
     }
 }

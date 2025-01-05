@@ -57,6 +57,6 @@ class SessionPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('pool-subscription-sessions-page');
+        $this->response->js('Tontine')->makeTableResponsive('pool-subscription-sessions-page');
     }
 }

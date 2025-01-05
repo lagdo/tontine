@@ -49,8 +49,8 @@ class Saving extends Component
         $this->cl(SavingPage::class)->page();
         $this->cl(SavingCount::class)->render();
 
-        $this->response->js()->makeTableResponsive('meeting-savings-page');
-        $this->response->js()->showSmScreen('report-fund-savings', 'session-savings');
+        $this->response->js('Tontine')->makeTableResponsive('meeting-savings-page');
+        $this->response->js('Tontine')->showSmScreen('report-fund-savings', 'session-savings');
     }
 
     public function fund(int $fundId)

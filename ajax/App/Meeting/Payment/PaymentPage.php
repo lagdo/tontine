@@ -60,6 +60,6 @@ class PaymentPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('payment-members-page');
+        $this->response->js('Tontine')->makeTableResponsive('payment-members-page');
     }
 }

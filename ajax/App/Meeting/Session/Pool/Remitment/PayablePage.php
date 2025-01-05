@@ -39,6 +39,6 @@ class PayablePage extends Component
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('meeting-pool-remitments');
+        $this->response->js('Tontine')->makeTableResponsive('meeting-pool-remitments');
     }
 }

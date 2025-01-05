@@ -49,6 +49,6 @@ class SessionPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('content-page');
+        $this->response->js('Tontine')->makeTableResponsive('content-page');
     }
 }

@@ -67,6 +67,6 @@ class MemberPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('content-page-members');
+        $this->response->js('Tontine')->makeTableResponsive('content-page-members');
     }
 }

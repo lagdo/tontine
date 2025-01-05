@@ -69,6 +69,6 @@ class MemberPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('pool-subscription-members-page');
+        $this->response->js('Tontine')->makeTableResponsive('pool-subscription-members-page');
     }
 }

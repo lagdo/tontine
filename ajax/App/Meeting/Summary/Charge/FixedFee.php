@@ -31,6 +31,6 @@ class FixedFee extends Component
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('meeting-fees-fixed-page');
+        $this->response->js('Tontine')->makeTableResponsive('meeting-fees-fixed-page');
     }
 }

@@ -56,7 +56,7 @@ class Member extends Component
     protected function after()
     {
         $this->cl(MemberPage::class)->page();
-        $this->response->jw()->showSmScreen('content-home-members', 'presence-sm-screens');
+        $this->response->js('Tontine')->showSmScreen('content-home-members', 'presence-sm-screens');
     }
 
     public function search(string $search)

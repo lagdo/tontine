@@ -41,6 +41,6 @@ class Refund extends Component
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('report-refunds');
+        $this->response->js('Tontine')->makeTableResponsive('report-refunds');
     }
 }

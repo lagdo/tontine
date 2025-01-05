@@ -44,6 +44,6 @@ class Session extends Component
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('report-session-bills');
+        $this->response->js('Tontine')->makeTableResponsive('report-session-bills');
     }
 }

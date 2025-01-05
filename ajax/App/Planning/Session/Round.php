@@ -70,7 +70,7 @@ class Round extends Component
             $this->cl(Session::class)->render();
         }
 
-        $this->response->js()->showSmScreen('content-home-sessions', 'round-sm-screens');
+        $this->response->js('Tontine')->showSmScreen('content-home-sessions', 'round-sm-screens');
     }
 
     public function add()

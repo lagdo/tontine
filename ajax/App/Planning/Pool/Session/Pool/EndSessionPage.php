@@ -62,7 +62,7 @@ class EndSessionPage extends PageComponent
     {
         $this->cl(EndSessionTitle::class)->render();
 
-        $this->response->js()->makeTableResponsive('pool-round-sessions-end');
+        $this->response->js('Tontine')->makeTableResponsive('pool-round-sessions-end');
     }
 
     private function getSessionPageNumber(): int

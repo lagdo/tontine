@@ -48,7 +48,7 @@ class Loan extends MeetingComponent
     protected function after()
     {
         $this->cl(Balance::class)->render();
-        $this->response->js()->makeTableResponsive('meeting-loans');
+        $this->response->js('Tontine')->makeTableResponsive('meeting-loans');
     }
 
     public function add()
@@ -71,7 +71,7 @@ class Loan extends MeetingComponent
             'click' => $this->rq()->create(pm()->form('loan-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-        $this->response->js()->setLoanInterestLabel();
+        $this->response->js('Tontine')->setLoanInterestLabel();
 
         return $this->response;
     }
@@ -135,7 +135,7 @@ class Loan extends MeetingComponent
             'click' => $this->rq()->update($loanId, pm()->form('loan-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-        $this->response->js()->setLoanInterestLabel();
+        $this->response->js('Tontine')->setLoanInterestLabel();
 
         return $this->response;
     }

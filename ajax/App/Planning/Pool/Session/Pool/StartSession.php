@@ -56,7 +56,7 @@ class StartSession extends Component
         $this->cl(StartSessionAction::class)->render();
         $this->cl(StartSessionPage::class)->current();
 
-        $this->response->js()->makeTableResponsive('pool-round-sessions-start');
+        $this->response->js('Tontine')->makeTableResponsive('pool-round-sessions-start');
     }
 
     /**

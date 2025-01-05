@@ -46,7 +46,7 @@ class Subscription extends Component
     protected function after()
     {
         $this->cl(Pool::class)->render();
-        $this->response->js()->setSmScreenHandler('pool-subscription-sm-screens');
+        $this->response->js('Tontine')->setSmScreenHandler('pool-subscription-sm-screens');
 
         $pools = $this->stash()->get('subscription.pools');
         if($pools !== null && $pools->count() > 0)

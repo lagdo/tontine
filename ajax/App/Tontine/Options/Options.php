@@ -59,7 +59,7 @@ class Options extends Component
      */
     protected function after()
     {
-        $this->response->js()->setSmScreenHandler('options-sm-screens');
+        $this->response->js('Tontine')->setSmScreenHandler('options-sm-screens');
 
         $this->cl(Fund::class)->render();
         $this->cl(Category::class)->render();

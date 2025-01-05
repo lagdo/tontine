@@ -47,6 +47,6 @@ class RoundPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('content-page-rounds');
+        $this->response->js('Tontine')->makeTableResponsive('content-page-rounds');
     }
 }

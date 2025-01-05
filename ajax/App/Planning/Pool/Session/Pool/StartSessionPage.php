@@ -62,7 +62,7 @@ class StartSessionPage extends PageComponent
     {
         $this->cl(StartSessionTitle::class)->render();
 
-        $this->response->js()->makeTableResponsive('pool-round-sessions-start');
+        $this->response->js('Tontine')->makeTableResponsive('pool-round-sessions-start');
     }
 
     private function getSessionPageNumber(): int

@@ -41,6 +41,6 @@ class Loan extends Component
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('report-loans');
+        $this->response->js('Tontine')->makeTableResponsive('report-loans');
     }
 }

@@ -52,7 +52,7 @@ class Session extends Component
     protected function after()
     {
         $this->cl(SessionPage::class)->page();
-        $this->response->jw()->showSmScreen('content-home-sessions', 'presence-sm-screens');
+        $this->response->js('Tontine')->showSmScreen('content-home-sessions', 'presence-sm-screens');
     }
 
     public function togglePresence(int $sessionId)

@@ -56,7 +56,7 @@ class EndSession extends Component
         $this->cl(EndSessionAction::class)->render();
         $this->cl(EndSessionPage::class)->current();
 
-        $this->response->js()->makeTableResponsive('pool-round-sessions-end');
+        $this->response->js('Tontine')->makeTableResponsive('pool-round-sessions-end');
     }
 
     /**

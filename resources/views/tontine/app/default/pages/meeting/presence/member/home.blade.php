@@ -2,7 +2,7 @@
   $rqPresence = rq(Ajax\App\Meeting\Presence\Presence::class);
   $rqMember = rq(Ajax\App\Meeting\Presence\Member::class);
   $rqMemberPage = rq(Ajax\App\Meeting\Presence\MemberPage::class);
-  $jsBackHandler = jw()->showSmScreen('content-home-sessions', 'presence-sm-screens');
+  $jsBackHandler = js('Tontine')->showSmScreen('content-home-sessions', 'presence-sm-screens');
 @endphp
               <div class="section-body">
                 <div class="row">

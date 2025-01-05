@@ -61,7 +61,7 @@ class Section extends MeetingComponent
         $this->cl(Pool\Deposit\Deposit::class)->render();
         $this->cl(Pool\Remitment\Remitment::class)->render();
 
-        $this->response->js()->setSmScreenHandler('session-pools-sm-screens');
+        $this->response->js('Tontine')->setSmScreenHandler('session-pools-sm-screens');
 
         return $this->response;
     }
@@ -73,7 +73,7 @@ class Section extends MeetingComponent
         $this->cl(Saving\Saving::class)->render();
         $this->cl(Saving\Closing::class)->render();
 
-        $this->response->js()->setSmScreenHandler('session-savings-sm-screens');
+        $this->response->js('Tontine')->setSmScreenHandler('session-savings-sm-screens');
 
         return $this->response;
     }
@@ -86,7 +86,7 @@ class Section extends MeetingComponent
         $this->cl(Credit\Partial\Refund::class)->render();
         $this->cl(Credit\Refund::class)->render();
 
-        $this->response->js()->setSmScreenHandler('session-credits-sm-screens');
+        $this->response->js('Tontine')->setSmScreenHandler('session-credits-sm-screens');
 
         return $this->response;
     }
@@ -107,7 +107,7 @@ class Section extends MeetingComponent
         $this->cl(Charge\Fixed\Fee::class)->render();
         $this->cl(Charge\Libre\Fee::class)->render();
 
-        $this->response->js()->setSmScreenHandler('session-charges-sm-screens');
+        $this->response->js('Tontine')->setSmScreenHandler('session-charges-sm-screens');
 
         return $this->response;
     }

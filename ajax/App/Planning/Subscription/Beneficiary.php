@@ -60,7 +60,7 @@ class Beneficiary extends Component
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('content-page');
+        $this->response->js('Tontine')->makeTableResponsive('content-page');
     }
 
     public function save(int $sessionId, int $nextSubscriptionId, int $currSubscriptionId)

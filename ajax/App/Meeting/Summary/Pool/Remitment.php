@@ -35,6 +35,6 @@ class Remitment extends Component
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('meeting-remitments');
+        $this->response->js('Tontine')->makeTableResponsive('meeting-remitments');
     }
 }

@@ -47,6 +47,6 @@ class HostPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js()->makeTableResponsive('content-host-invites-page');
+        $this->response->js('Tontine')->makeTableResponsive('content-host-invites-page');
     }
 }
