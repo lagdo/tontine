@@ -10,6 +10,7 @@ use Rinvex\Country\CountryLoader;
 use Siak\Tontine\Model\Tontine;
 use NumberFormatter;
 
+use function array_merge;
 use function route;
 use function strtoupper;
 
@@ -52,12 +53,16 @@ class LocaleService
     }
 
     /**
+     * @param bool $withEmpty
+     *
      * @return array
      */
-    public function getCountries(): array
+    public function getCountries(bool $withEmpty = true): array
     {
         $locale = $this->localization->getCurrentLocale();
-        return include($this->countriesDataDir . "/{$locale}/country.php");
+        $countries = include($this->countriesDataDir . "/{$locale}/country.php");
+        // Append an empty item to the array.
+        return !$withEmpty ? $countries : array_merge(['' => ''], $countries);
     }
 
     /**
@@ -72,7 +77,7 @@ class LocaleService
         $localizedCurrencies = include($this->currenciesDataDir . "/{$locale}/currency.php");
 
         $currencies = [];
-        foreach($country['currency'] as $currency)
+        foreach($country['currency'] ?? [] as $currency)
         {
             $currencyCode = $currency['iso_4217_code'];
             $currencies[$currencyCode] = $localizedCurrencies[$currencyCode];
