@@ -41,6 +41,5 @@ class Disbursement extends Component
     protected function after()
     {
         $this->response->js()->makeTableResponsive('meeting-disbursements');
-        $this->response->js()->showBalanceAmountsWithDelay();
     }
 }

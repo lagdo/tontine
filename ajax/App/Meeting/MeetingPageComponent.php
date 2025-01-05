@@ -44,12 +44,4 @@ abstract class MeetingPageComponent extends PageComponent
         }
         $this->stash()->set('meeting.session', $session);
     }
-
-    /**
-     * @return void
-     */
-    protected function showBalanceAmounts()
-    {
-        $this->response->js()->showBalanceAmounts();
-    }
 }

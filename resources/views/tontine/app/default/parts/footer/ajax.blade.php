@@ -21,10 +21,4 @@
             message: "{{ __('common.titles.message') }}",
         },
     };
-    function showBalanceAmounts() {
-        {!! $rqSession->showBalanceAmounts() !!};
-    }
-    function showBalanceAmountsWithDelay() {
-        setTimeout(() => {!! $rqSession->showBalanceAmounts() !!}, 5);
-    }
 </script>

@@ -40,8 +40,8 @@ class Disbursement extends MeetingComponent
      */
     protected function after()
     {
+        $this->cl(Balance::class)->render();
         $this->response->js()->makeTableResponsive('meeting-disbursements');
-        $this->response->js()->showBalanceAmountsWithDelay();
     }
 
     public function addDisbursement()

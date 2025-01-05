@@ -2,22 +2,13 @@
 @php
   $disbursementId = jq()->parent()->attr('data-disbursement-id')->toInt();
   $rqDisbursement = rq(Ajax\App\Meeting\Session\Cash\Disbursement::class);
-  $rqSession = rq(Ajax\App\Meeting\Session\Session::class);
+  $rqBalance = rq(Ajax\App\Meeting\Session\Cash\Balance::class);
 @endphp
                   <div class="row">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.disbursements') }}</div>
                     </div>
-                    <div class="col-auto">
-                      <div class="input-group mb-2">
-                        <div class="input-group-prepend">
-                          {!! $htmlBuilder->span('...')->id('total_amount_available')
-                            ->class('input-group-text')->attribute('style', 'height:36px; padding:5px 15px;') !!}
-                        </div>
-                        <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqSession->showBalanceDetails(false))><i class="fa fa-caret-right"></i></button>
-                        </div>
-                      </div>
+                    <div class="col-auto" @jxnBind($rqBalance)>
                     </div>
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">

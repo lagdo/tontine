@@ -2,23 +2,14 @@
 @inject('fundService', 'Siak\Tontine\Service\Tontine\FundService')
 @php
   $loanId = jq()->parent()->attr('data-loan-id')->toInt();
-  $rqSession = rq(Ajax\App\Meeting\Session\Session::class);
   $rqLoan = rq(Ajax\App\Meeting\Session\Credit\Loan::class);
+  $rqBalance = rq(Ajax\App\Meeting\Session\Credit\Balance::class);
 @endphp
                   <div class="row">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.loans') }}</div>
                     </div>
-                    <div class="col-auto">
-                      <div class="input-group mb-2">
-                        <div class="input-group-prepend">
-                          {!! $htmlBuilder->span('...')->id('loan_amount_available')
-                            ->class('input-group-text')->attribute('style', 'height:36px; padding:5px 15px;') !!}
-                        </div>
-                        <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqSession->showBalanceDetails(true))><i class="fa fa-caret-right"></i></button>
-                        </div>
-                      </div>
+                    <div class="col-auto" @jxnBind($rqBalance)>
                     </div>
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
