@@ -24,7 +24,7 @@
             </div>
             <div class="form-group row">
               {!! $htmlBuilder->label(__('common.labels.country'), 'country_code')->class('col-sm-3 col-form-label') !!}
-              <div class="col-sm-9" @jxnEvent(['select', 'change'], $rqLocale->selectCurrency(Jaxon\jq()->val()))>
+              <div class="col-sm-9" @jxnOn(['select', 'change'], $rqLocale->selectCurrency(jq()->val()))>
                 {!! $htmlBuilder->select('country_code', $countries, '')->class('form-control') !!}
               </div>
             </div>

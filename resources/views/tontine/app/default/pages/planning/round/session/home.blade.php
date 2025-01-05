@@ -8,7 +8,7 @@
                     <h2 class="section-title">{{ __('tontine.titles.sessions') }}: {{ $round?->title ?? '' }}</h2>
                   </div>
                   <div class="col-auto sm-screen-hidden">
-                    <button type="button" class="btn btn-primary" @jxnClick(Jaxon\js()->showSmScreen('content-home-rounds', 'round-sm-screens'))><i class="fa fa-arrow-left"></i></button>
+                    <button type="button" class="btn btn-primary" @jxnClick(jw()->showSmScreen('content-home-rounds', 'round-sm-screens'))><i class="fa fa-arrow-left"></i></button>
                   </div>
 @if ($round !== null)
                   <div class="col-auto">

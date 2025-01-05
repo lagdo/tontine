@@ -38,7 +38,7 @@
                       {!! $htmlBuilder->text('search', '')->id('txt-presence-members-search')
                         ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                       <div class="input-group-append">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqMember->search(Jaxon\jq('#txt-presence-members-search')->val()))><i class="fa fa-search"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqMember->search(jq('#txt-presence-members-search')->val()))><i class="fa fa-search"></i></button>
                       </div>
                     </div>
                   </div>

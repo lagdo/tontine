@@ -2,7 +2,7 @@
 @inject('debtCalculator', 'Siak\Tontine\Service\Meeting\Credit\DebtCalculator')
 @php
   $debtId = jq()->parent()->attr('data-debt-id')->toInt();
-  $amount = jq('input', Jaxon\jq()->parent()->parent())->val()->toInt();
+  $amount = jq('input', jq()->parent()->parent())->val()->toInt();
   $rqRefund = rq(Ajax\App\Meeting\Session\Credit\Partial\Refund::class);
   $rqAmount = rq(Ajax\App\Meeting\Session\Credit\Partial\Amount::class);
 @endphp
