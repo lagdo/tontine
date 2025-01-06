@@ -39,7 +39,7 @@
                             {{ $debt->loan->member->name }}: {{ $locale->formatMoney($payableAmount, true) }}<br/> {{
                               __('meeting.loan.labels.' . $debt->type) }}: {{ $debt->loan->session->title }}
                           </td>
-                          <td class="currency" id="partial-refund-amount-{{ $debt->id }}" style="width:200px">
+                          <td class="currency amount" id="partial-refund-amount-{{ $debt->id }}">
 @if($payableAmount > 0)
 @if(!$debt->partial_refund)
 @include('tontine.app.default.pages.meeting.refund.partial.amount.edit', [

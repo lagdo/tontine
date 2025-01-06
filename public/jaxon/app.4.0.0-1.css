@@ -69,6 +69,11 @@ th.currency, td.currency {
 form .form-group .col-form-label {
   text-align: right !important;
 }
+@media only screen and (min-width: 700px) {
+  .currency.amount {
+    width: 200px;
+  }
+}
 
 /* Display on small screens */
 .sm-screen-hidden,

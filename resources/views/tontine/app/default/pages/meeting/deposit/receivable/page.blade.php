@@ -32,7 +32,7 @@
 @php
   $stash->set('meeting.session.receivable', $receivable);
 @endphp
-                          <td class="currency" @jxnBind($rqAmount, $receivable->id) style="width:200px">
+                          <td class="currency amount" @jxnBind($rqAmount, $receivable->id)>
                             @jxnHtml($rqAmount)
                           </td>
 @endif

@@ -19,7 +19,7 @@
 @endphp
                         <tr>
                           <td>{{ $member->name }}</td>
-                          <td class="currency" @jxnBind($rqAmount, $member->id) style="width:200px;">
+                          <td class="currency amount" @jxnBind($rqAmount, $member->id)>
                             @jxnHtml($rqAmount)
                           </td>
                         </tr>

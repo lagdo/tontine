@@ -37,7 +37,7 @@
   $stash->set('meeting.charge.member.id', $member->id);
   $stash->set('meeting.charge.bill', $member->bill);
 @endphp
-                          <td class="currency" @jxnBind($rqAmount, $member->id) style="width:200px">
+                          <td class="currency amount" @jxnBind($rqAmount, $member->id)>
                             @jxnHtml($rqAmount)
                           </td>
 @endif
