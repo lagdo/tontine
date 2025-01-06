@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\SetHtmlBuilder;
+use App\Http\Middleware\TontineHtmlBuilder;
 use App\Providers\RouteServiceProvider;
 use Laravel\Fortify\Features;
 
@@ -90,7 +90,7 @@ return [
     |
     */
 
-    'middleware' => ['web', SetHtmlBuilder::class],
+    'middleware' => ['web', TontineHtmlBuilder::class],
 
     /*
     |--------------------------------------------------------------------------

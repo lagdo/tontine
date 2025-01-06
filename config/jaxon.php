@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Middleware\JaxonAnnotations;
-use App\Http\Middleware\SetAppLocale;
-use App\Http\Middleware\SetAppTemplate;
-use App\Http\Middleware\SetHtmlBuilder;
+use App\Http\Middleware\TontineAnnotations;
+use App\Http\Middleware\TontineLocale;
+use App\Http\Middleware\TontineTemplate;
+use App\Http\Middleware\TontineHtmlBuilder;
 use App\Http\Middleware\TontineTenant;
 
 return [
@@ -16,10 +16,10 @@ return [
             'middlewares' => [
                 'web',
                 TontineTenant::class,
-                SetAppLocale::class,
-                SetAppTemplate::class,
-                SetHtmlBuilder::class,
-                JaxonAnnotations::class,
+                TontineLocale::class,
+                TontineTemplate::class,
+                TontineHtmlBuilder::class,
+                TontineAnnotations::class,
                 'jaxon.config',
                 'jaxon.ajax',
             ],
@@ -30,7 +30,7 @@ return [
             ],
         ],
         'views' => [
-            // 'pagination' => [], // Is set by the SetAppTemplate middleware
+            // 'pagination' => [], // Is set by the TontineTemplate middleware
         ],
         'packages' => [
         ],

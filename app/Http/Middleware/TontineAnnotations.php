@@ -10,7 +10,7 @@ use Closure;
 use function Jaxon\jaxon;
 use function storage_path;
 
-class JaxonAnnotations
+class TontineAnnotations
 {
     /**
      * Handle an incoming request.

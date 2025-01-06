@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\View;
 
 use function html;
 
-class SetHtmlBuilder
+class TontineHtmlBuilder
 {
     /**
      * Handle an incoming request.

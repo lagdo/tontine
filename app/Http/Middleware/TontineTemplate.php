@@ -12,7 +12,7 @@ use function config;
 use function Jaxon\jaxon;
 use function resource_path;
 
-class SetAppTemplate
+class TontineTemplate
 {
     /**
      * Handle an incoming request.

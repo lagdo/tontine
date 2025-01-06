@@ -13,7 +13,7 @@ use Closure;
 use function auth;
 use function setlocale;
 
-class SetAppLocale
+class TontineLocale
 {
     /**
      * @param Request $request
