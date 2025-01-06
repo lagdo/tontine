@@ -9,7 +9,6 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\View;
 
 use function config;
-use function html;
 use function Jaxon\jaxon;
 use function resource_path;
 
@@ -35,7 +34,6 @@ class SetAppTemplate
         $jaxonView->addNamespace('tontine', $templatePath, '.blade.php', 'blade');
         $jaxonView->addNamespace('pagination', $paginationPath, '.blade.php', 'blade');
 
-        View::share('htmlBuilder', html());
         View::share('stash', jaxon()->di()->getStash());
 
         return $next($request);

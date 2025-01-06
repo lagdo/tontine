@@ -3,6 +3,7 @@
 use App\Http\Middleware\JaxonAnnotations;
 use App\Http\Middleware\SetAppLocale;
 use App\Http\Middleware\SetAppTemplate;
+use App\Http\Middleware\SetHtmlBuilder;
 use App\Http\Middleware\TontineTenant;
 
 return [
@@ -17,6 +18,7 @@ return [
                 TontineTenant::class,
                 SetAppLocale::class,
                 SetAppTemplate::class,
+                SetHtmlBuilder::class,
                 JaxonAnnotations::class,
                 'jaxon.config',
                 'jaxon.ajax',

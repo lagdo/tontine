@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\SetHtmlBuilder;
 use App\Providers\RouteServiceProvider;
 use Laravel\Fortify\Features;
 
@@ -89,7 +90,7 @@ return [
     |
     */
 
-    'middleware' => ['web'],
+    'middleware' => ['web', SetHtmlBuilder::class],
 
     /*
     |--------------------------------------------------------------------------
