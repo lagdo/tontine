@@ -1,7 +1,7 @@
 @php
-  $rqStartSessionPage = rq(Ajax\App\Planning\Pool\Session\Pool\StartSessionPage::class);
+  $rqStartSessionPage = rq(Ajax\App\Planning\Pool\Session\StartSessionPage::class);
 @endphp
-                      <div class="table-responsive">
+                      <div class="table-responsive" id="content-planning-start-sessions-page">
                         <form id="start-session-form">
                           <table class="table table-bordered responsive">
                             <thead>

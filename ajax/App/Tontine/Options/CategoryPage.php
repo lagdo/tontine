@@ -47,6 +47,6 @@ class CategoryPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('category-page');
+        $this->response->js('Tontine')->makeTableResponsive('content-category-page');
     }
 }

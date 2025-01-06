@@ -59,6 +59,6 @@ class PartialRefundPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('meeting-partial-refunds-page');
+        $this->response->js('Tontine')->makeTableResponsive('content-summary-partial-refunds-page');
     }
 }

@@ -32,7 +32,7 @@
               <!-- Data tables -->
               <div class="card shadow mb-4">
                 <div class="card-body">
-                  <div class="table-responsive">
+                  <div class="table-responsive" id="content-subscription-planning">
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

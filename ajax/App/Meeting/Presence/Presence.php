@@ -64,6 +64,7 @@ class Presence extends Component
     {
         $exchange = $this->bag('presence')->get('exchange', false);
         !$exchange ? $this->cl(Session::class)->render() : $this->cl(Member::class)->render();
+        $this->response->js('Tontine')->showSmScreen('content-presence-left', 'presence-sm-screens');
     }
 
     public function exchange()

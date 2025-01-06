@@ -5,10 +5,13 @@
   $rqAmount = rq(Ajax\App\Meeting\Session\Credit\Partial\Amount::class);
 @endphp
                     <div class="row">
-                      <div class="col-auto">
+                      <div class="col">
                         <div class="section-title mt-0">{{ __('meeting.titles.partial-refunds') }}</div>
                       </div>
-                      <div class="col">
+                    </div>
+                    <div class="row">
+                      <div class="col">&nbsp;</div>
+                      <div class="col-auto">
 @if($funds->count() > 1)
                         <div class="input-group mb-2">
                           {!! $htmlBuilder->select('fund_id', $funds, $currentFundId)->id('partial-refunds-fund-id')

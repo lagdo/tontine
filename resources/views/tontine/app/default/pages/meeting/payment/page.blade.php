@@ -4,7 +4,7 @@
   $rqPayable = rq(Ajax\App\Meeting\Payment\Payable::class);
   $rqPaymentPage = rq(Ajax\App\Meeting\Payment\PaymentPage::class);
 @endphp
-                  <div class="table-responsive" id="payment-members-page" @jxnTarget()>
+                  <div class="table-responsive" id="content-payment-page" @jxnTarget()>
 @if ($sessions->count() > 0)
                     <div @jxnEvent(['.btn-member-payables', 'click'], $rqPayable->show($memberId, $sessionId))></div>
 @endif

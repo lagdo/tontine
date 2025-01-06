@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Planning\Pool\Session\Pool;
+namespace Ajax\App\Planning\Pool\Session;
 
 use Ajax\PageComponent;
 use Jaxon\Response\AjaxResponse;
@@ -62,7 +62,7 @@ class StartSessionPage extends PageComponent
     {
         $this->cl(StartSessionTitle::class)->render();
 
-        $this->response->js('Tontine')->makeTableResponsive('pool-round-sessions-start');
+        $this->response->js('Tontine')->makeTableResponsive('content-planning-start-sessions-page');
     }
 
     private function getSessionPageNumber(): int

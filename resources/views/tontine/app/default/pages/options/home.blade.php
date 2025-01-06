@@ -19,12 +19,12 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" @jxnBind($rqFund)>
+            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-funds-home" @jxnBind($rqFund)>
             </div>
-            <div class="col-md-6 col-sm-12 sm-screen" @jxnBind($rqCategory)>
+            <div class="col-md-6 col-sm-12 sm-screen" id="content-categories-home" @jxnBind($rqCategory)>
             </div>
           </div>
           <div class="row">
-            <div class="col-12 sm-screen" @jxnBind($rqCharge)>
+            <div class="col-12 sm-screen" id="content-charges-home" @jxnBind($rqCharge)>
             </div>
           </div>

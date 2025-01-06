@@ -1,7 +1,7 @@
 @php
   $formValues = pm()->form('start-session-form');
-  $rqStartSession = rq(Ajax\App\Planning\Pool\Session\Pool\StartSession::class);
-  $rqStartSessionPage = rq(Ajax\App\Planning\Pool\Session\Pool\StartSessionPage::class);
+  $rqStartSession = rq(Ajax\App\Planning\Pool\Session\StartSession::class);
+  $rqStartSessionPage = rq(Ajax\App\Planning\Pool\Session\StartSessionPage::class);
 @endphp
                       <div class="btn-group float-right ml-2 mb-2" role="group">
 @if ($pool->pool_round)

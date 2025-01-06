@@ -2,7 +2,7 @@
 @php
   $rqSavingPage = rq(Ajax\App\Meeting\Summary\Saving\SavingPage::class);
 @endphp
-                  <div class="table-responsive" id="meeting-savings-page">
+                  <div class="table-responsive" id="content-summary-savings-page">
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

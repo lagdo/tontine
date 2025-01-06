@@ -4,7 +4,7 @@
   $rqCharge = rq(Ajax\App\Tontine\Options\Charge::class);
   $rqChargePage = rq(Ajax\App\Tontine\Options\ChargePage::class);
 @endphp
-              <div class="table-responsive" @jxnTarget()>
+              <div class="table-responsive" id="content-charge-page" @jxnTarget()>
                 <div @jxnEvent(['.btn-charge-edit', 'click'], $rqCharge->edit($chargeId))></div>
                 <div @jxnEvent(['.btn-charge-toggle', 'click'], $rqCharge->toggle($chargeId))></div>
                 <div @jxnEvent(['.btn-charge-delete', 'click'], $rqCharge->delete($chargeId)

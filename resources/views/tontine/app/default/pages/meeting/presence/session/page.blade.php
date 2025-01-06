@@ -4,7 +4,7 @@
   $rqSession = rq(Ajax\App\Meeting\Presence\Session::class);
   $rqSessionPage = rq(Ajax\App\Meeting\Presence\SessionPage::class);
 @endphp
-                  <div class="table-responsive" id="content-page-sessions" @jxnTarget()>
+                  <div class="table-responsive" id="content-presence-sessions" @jxnTarget()>
                     <div @jxnEvent(['.btn-toggle-session-presence', 'click'], $rqSession->togglePresence($sessionId))></div>
                     <div @jxnEvent(['.btn-show-session-presences', 'click'], $rqPresence->selectSession($sessionId))></div>
 

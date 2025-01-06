@@ -41,6 +41,6 @@ class Disbursement extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('report-disbursements');
+        $this->response->js('Tontine')->makeTableResponsive('content-report-disbursements');
     }
 }

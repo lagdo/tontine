@@ -70,6 +70,7 @@ class Session extends Component
     protected function after()
     {
         $this->cl(SessionPage::class)->page();
+        $this->response->js('Tontine')->showSmScreen('content-planning-sessions', 'round-sm-screens');
     }
 
     public function round(int $roundId)

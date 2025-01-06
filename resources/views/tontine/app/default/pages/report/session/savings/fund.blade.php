@@ -19,6 +19,6 @@
                   <div class="row" @jxnBind($rqAmount)>
                     @jxnHtml($rqAmount)
                   </div>
-                  <div class="table-responsive mt-2" id="report-fund-savings-distribution" @jxnBind($rqDistribution)>
+                  <div class="table-responsive mt-2" id="content-fund-savings-distribution" @jxnBind($rqDistribution)>
                     @jxnHtml($rqDistribution)
                   </div>

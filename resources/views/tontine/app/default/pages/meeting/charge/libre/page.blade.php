@@ -5,7 +5,7 @@
   $rqSettlement = rq(Ajax\App\Meeting\Session\Charge\Libre\Settlement::class);
   $rqTarget = rq(Ajax\App\Meeting\Session\Charge\Libre\Target::class);
 @endphp
-                  <div class="table-responsive" id="meeting-fees-libre-page" @jxnTarget()>
+                  <div class="table-responsive" id="content-session-fees-libre-page" @jxnTarget()>
                     <div @jxnEvent(['.btn-fee-libre-add', 'click'], $rqMember->charge($chargeId))></div>
                     <div @jxnEvent(['.btn-fee-libre-settlements', 'click'], $rqSettlement->charge($chargeId))></div>
                     <div @jxnEvent(['.btn-fee-libre-target', 'click'], $rqTarget->charge($chargeId))></div>

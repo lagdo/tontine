@@ -44,6 +44,6 @@ class Saving extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('report-savings');
+        $this->response->js('Tontine')->makeTableResponsive('content-report-savings');
     }
 }

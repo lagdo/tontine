@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Planning\Pool\Session\Pool;
+namespace Ajax\App\Planning\Pool\Session;
 
 use Ajax\PageComponent;
 use Jaxon\Response\AjaxResponse;
@@ -62,7 +62,7 @@ class EndSessionPage extends PageComponent
     {
         $this->cl(EndSessionTitle::class)->render();
 
-        $this->response->js('Tontine')->makeTableResponsive('pool-round-sessions-end');
+        $this->response->js('Tontine')->makeTableResponsive('content-planning-end-sessions-page');
     }
 
     private function getSessionPageNumber(): int

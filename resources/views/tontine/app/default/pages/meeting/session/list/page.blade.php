@@ -5,7 +5,7 @@
   $rqSummary = rq(Ajax\App\Meeting\Summary\Summary::class);
   $sessionId = jq()->parent()->attr('data-session-id')->toInt();
 @endphp
-              <div class="table-responsive" id="content-page" @jxnTarget()>
+              <div class="table-responsive" id="content-sessions-page" @jxnTarget()>
                 <div @jxnEvent(['.btn-session-open', 'click'], $rqSession->open($sessionId)
                   ->confirm(__('tontine.session.questions.open') . '<br/>' .
                     __('tontine.session.questions.warning')))></div>

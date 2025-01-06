@@ -56,6 +56,6 @@ class AuctionPage extends MeetingPageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('meeting-auctions-page');
+        $this->response->js('Tontine')->makeTableResponsive('content-session-auctions-page');
     }
 }

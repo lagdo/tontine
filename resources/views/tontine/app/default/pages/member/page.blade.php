@@ -3,7 +3,7 @@
   $rqMember = rq(Ajax\App\Tontine\Member\Member::class);
   $rqMemberPage = rq(Ajax\App\Tontine\Member\MemberPage::class);
 @endphp
-                <div class="table-responsive" @jxnTarget()>
+                <div class="table-responsive" id="content-member-page" @jxnTarget()>
                   <div @jxnEvent(['.btn-member-edit', 'click'], $rqMember->edit($memberId))></div>
                   <div @jxnEvent(['.btn-member-toggle', 'click'], $rqMember->toggle($memberId))></div>
                   <div @jxnEvent(['.btn-member-delete', 'click'], $rqMember->delete($memberId)

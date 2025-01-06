@@ -55,6 +55,6 @@ class Planning extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-page');
+        $this->response->js('Tontine')->makeTableResponsive('content-subscription-planning');
     }
 }

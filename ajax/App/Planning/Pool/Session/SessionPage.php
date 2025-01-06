@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Planning\Pool\Session\Pool;
+namespace Ajax\App\Planning\Pool\Session;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Planning\PoolService;
@@ -57,6 +57,6 @@ class SessionPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('pool-subscription-sessions-page');
+        $this->response->js('Tontine')->makeTableResponsive('content-planning-enabled-sessions-page');
     }
 }

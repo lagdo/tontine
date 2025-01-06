@@ -2,7 +2,6 @@
 
 namespace Ajax\App\Planning\Pool\Session;
 
-use Ajax\App\Planning\Pool\Session\Pool\StartSession;
 use Ajax\App\Page\SectionContent;
 use Ajax\Component;
 use Stringable;
@@ -23,7 +22,7 @@ class Pool extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.planning.pool.session.home');
+        return $this->renderView('pages.planning.pool.session.pool.home');
     }
 
     /**
@@ -42,5 +41,7 @@ class Pool extends Component
             $this->stash()->set('pool.session.pool', $pool);
             $this->cl(StartSession::class)->pool($pool->id);
         }
+
+        $this->response->js('Tontine')->showSmScreen('content-planning-pools', 'pool-sm-screens');
     }
 }

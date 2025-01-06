@@ -8,7 +8,7 @@
                       <div class="section-title mt-0">{!! __('meeting.titles.remitments') !!}</div>
                     </div>
                   </div>
-                  <div class="table-responsive">
+                  <div class="table-responsive" id="content-summary-remitments">
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

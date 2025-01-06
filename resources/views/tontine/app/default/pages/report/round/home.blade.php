@@ -47,7 +47,7 @@
 
 @if (count($figures) > 0)
           <div class="card shadow mb-4">
-            <div class="card-body">
+            <div class="card-body" id="content-pools">
 @foreach ($figures as $poolFigures)
 @php
   $pool = $poolFigures['pool'];
@@ -89,7 +89,7 @@
               </div>
               <div class="row">
                 <div class="col">
-                  <div class="table-responsive" @jxnBind($rqRoundBalance)>
+                  <div class="table-responsive" id="content-amounts" @jxnBind($rqRoundBalance)>
                     @jxnHtml($rqRoundBalance)
                   </div>
                 </div>

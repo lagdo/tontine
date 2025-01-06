@@ -56,7 +56,11 @@ class Member extends Component
     protected function after()
     {
         $this->cl(MemberPage::class)->page();
-        $this->response->js('Tontine')->showSmScreen('content-home-members', 'presence-sm-screens');
+        $session = $this->stash()->get('presence.session'); // Is null when showing presences by members.
+        if($session !== null)
+        {
+            $this->response->js('Tontine')->showSmScreen('content-presence-right', 'presence-sm-screens');
+        }
     }
 
     public function search(string $search)

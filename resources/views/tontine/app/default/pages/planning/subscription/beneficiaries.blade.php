@@ -32,7 +32,7 @@
               <!-- Data tables -->
               <div class="card shadow mb-4">
                 <div class="card-body">
-                  <div class="table-responsive" @jxnTarget()>
+                  <div class="table-responsive" id="content-subscription-beneficiaries" @jxnTarget()>
                     <div @jxnEvent(['.select-beneficiary', 'change'], $rqBeneficiary->save(
                         jq()->attr('data-session-id')->toInt(),
                         jq()->val()->toInt(),

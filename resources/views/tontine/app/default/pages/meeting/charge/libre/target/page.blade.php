@@ -2,7 +2,7 @@
 @php
   $rqTargetPage = rq(Ajax\App\Meeting\Session\Charge\Libre\TargetPage::class);
 @endphp
-                  <div class="table-responsive" id="meeting-fee-libre-target">
+                  <div class="table-responsive" id="content-session-fee-libre-target">
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

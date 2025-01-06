@@ -4,7 +4,7 @@
   $rqOrganisationPage = rq(Ajax\App\Admin\Organisation\OrganisationPage::class);
   $rqSelect = rq(Ajax\App\Tontine\Select::class);
 @endphp
-                <div class="table-responsive" @jxnTarget()>
+                <div class="table-responsive" id="content-organisation-page" @jxnTarget()>
                   <div @jxnEvent(['.btn-tontine-edit', 'click'], $rqOrganisation->edit($tontineId))></div>
                   <div @jxnEvent(['.btn-tontine-choose', 'click'], $rqSelect->saveOrganisation($tontineId))></div>
                   <div @jxnEvent(['.btn-tontine-delete', 'click'], $rqOrganisation->delete($tontineId)

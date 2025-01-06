@@ -4,7 +4,7 @@
   $rqSession = rq(Ajax\App\Planning\Session\Session::class);
 @endphp
           <div class="row" id="round-sm-screens">
-            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-home-rounds">
+            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-planning-rounds">
               <div class="section-body">
                 <div class="row">
                   <div class="col">
@@ -26,6 +26,6 @@
               </div>
             </div>
 
-            <div @jxnBind($rqSession) class="col-md-6 col-sm-12 sm-screen" id="content-home-sessions">
+            <div @jxnBind($rqSession) class="col-md-6 col-sm-12 sm-screen" id="content-planning-sessions">
             </div>
           </div>

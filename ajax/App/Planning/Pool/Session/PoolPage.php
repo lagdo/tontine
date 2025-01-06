@@ -38,7 +38,7 @@ class PoolPage extends PageComponent
         // When showing the page for the first time, we'll need to get the first pool
         $this->stash()->set('pool.session.pools', $pools);
 
-        return $this->renderView('pages.planning.pool.session.page', [
+        return $this->renderView('pages.planning.pool.session.pool.page', [
             'pools' => $pools,
         ]);
     }
@@ -48,6 +48,6 @@ class PoolPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-page');
+        $this->response->js('Tontine')->makeTableResponsive('content-planning-session-pool-page');
     }
 }

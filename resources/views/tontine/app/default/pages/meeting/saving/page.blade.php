@@ -4,7 +4,7 @@
   $rqSaving = rq(Ajax\App\Meeting\Session\Saving\Saving::class);
   $rqSavingPage = rq(Ajax\App\Meeting\Session\Saving\SavingPage::class);
 @endphp
-                  <div class="table-responsive" id="meeting-savings-page" @jxnTarget()>
+                  <div class="table-responsive" id="content-session-savings-page" @jxnTarget()>
                     <div @jxnEvent(['.btn-saving-edit', 'click'], $rqSaving->editSaving($savingId))></div>
                     <div @jxnEvent(['.btn-saving-delete', 'click'], $rqSaving->deleteSaving($savingId)
                       ->confirm(__('meeting.saving.questions.delete')))></div>

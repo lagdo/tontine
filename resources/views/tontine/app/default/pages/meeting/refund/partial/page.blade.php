@@ -6,7 +6,7 @@
   $rqRefund = rq(Ajax\App\Meeting\Session\Credit\Partial\Refund::class);
   $rqRefundPage = rq(Ajax\App\Meeting\Session\Credit\Partial\RefundPage::class);
 @endphp
-                    <div class="table-responsive" id="meeting-partial-refunds-page" @jxnTarget()>
+                    <div class="table-responsive" id="content-session-partial-refunds-page" @jxnTarget()>
                       <div @jxnEvent(['.btn-partial-refund-edit', 'click'], $rqRefund->edit($refundId))></div>
                       <div @jxnEvent(['.btn-partial-refund-delete', 'click'], $rqRefund->delete($refundId)
                         ->confirm(__('meeting.refund.questions.delete')))></div>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Planning\Pool\Session\Pool;
+namespace Ajax\App\Planning\Pool\Session;
 
 use Ajax\Component;
 use Stringable;
@@ -8,14 +8,14 @@ use Stringable;
 /**
  * @exclude
  */
-class EndSessionAction extends Component
+class StartSessionAction extends Component
 {
     /**
      * @inheritDoc
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.planning.pool.session.end.actions', [
+        return $this->renderView('pages.planning.pool.session.start.actions', [
             'pool' => $this->stash()->get('pool.session.pool'),
         ]);
     }

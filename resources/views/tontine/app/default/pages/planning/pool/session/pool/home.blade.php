@@ -3,23 +3,10 @@
   $rqHome = rq(Ajax\App\Planning\Pool\Pool::class);
   $rqPool = rq(Ajax\App\Planning\Pool\Session\Pool::class);
   $rqPoolPage = rq(Ajax\App\Planning\Pool\Session\PoolPage::class);
-  $rqPoolSection = rq(Ajax\App\Planning\Pool\Session\Pool\PoolSection::class);
+  $rqPoolSection = rq(Ajax\App\Planning\Pool\Session\PoolSection::class);
 @endphp
-          {{-- <div class="row sm-screen-selector mb-3" id="pool-subscription-sm-screens">
-            <div class="col-12">
-              <div class="btn-group btn-group-sm btn-block" role="group">
-                <button data-target="pool-subscription-members" type="button" class="btn btn-primary">
-                  {{ __('tontine.titles.sessions') }}
-                </button>
-                <button data-target="pool-subscription-sessions" type="button" class="btn btn-outline-primary">
-                  {{ __('tontine.pool.titles.sessions') }}
-                </button>
-              </div>
-            </div>
-          </div> --}}
-
-          <div class="row" id="content-page">
-            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active">
+          <div class="row" id="pool-sm-screens">
+            <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-planning-pools">
               <div class="section-body">
                 <div class="row">
                   <div class="col">
@@ -40,6 +27,6 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-6 col-sm-12 sm-screen" @jxnBind($rqPoolSection)>
+            <div class="col-md-6 col-sm-12 sm-screen" id="content-planning-sessions" @jxnBind($rqPoolSection)>
             </div>
           </div>

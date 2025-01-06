@@ -3,7 +3,7 @@
 @php
   $rqRefundPage = rq(Ajax\App\Meeting\Summary\Credit\RefundPage::class);
 @endphp
-                    <div class="table-responsive">
+                    <div class="table-responsive" id="content-summary-refunds-page">
                       <table class="table table-bordered responsive">
                         <thead>
                           <tr>

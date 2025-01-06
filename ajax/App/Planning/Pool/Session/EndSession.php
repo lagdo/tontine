@@ -1,8 +1,7 @@
 <?php
 
-namespace Ajax\App\Planning\Pool\Session\Pool;
+namespace Ajax\App\Planning\Pool\Session;
 
-use Ajax\App\Planning\Pool\Session\PoolPage;
 use Ajax\Component;
 use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
@@ -13,7 +12,7 @@ use Stringable;
  * @databag pool.session
  * @before getPool
  */
-class StartSession extends Component
+class EndSession extends Component
 {
     use PoolTrait;
 
@@ -42,7 +41,7 @@ class StartSession extends Component
 
     public function html(): Stringable
     {
-        return $this->renderView('pages.planning.pool.session.start.home', [
+        return $this->renderView('pages.planning.pool.session.end.home', [
             'pool' => $this->stash()->get('pool.session.pool'),
         ]);
     }
@@ -52,11 +51,11 @@ class StartSession extends Component
      */
     protected function after()
     {
-        $this->cl(StartSessionTitle::class)->render();
-        $this->cl(StartSessionAction::class)->render();
-        $this->cl(StartSessionPage::class)->current();
+        $this->cl(EndSessionTitle::class)->render();
+        $this->cl(EndSessionAction::class)->render();
+        $this->cl(EndSessionPage::class)->current();
 
-        $this->response->js('Tontine')->makeTableResponsive('pool-round-sessions-start');
+        $this->response->js('Tontine')->showSmScreen('content-planning-sessions', 'pool-sm-screens');
     }
 
     /**
@@ -65,14 +64,14 @@ class StartSession extends Component
     public function save(array $formValues)
     {
         $pool = $this->stash()->get('pool.session.pool');
-        $values = $this->validator->start()->validateItem($formValues);
-        $this->poolService->saveStartSession($pool, $values);
+        $values = $this->validator->end()->validateItem($formValues);
+        $this->poolService->saveEndSession($pool, $values);
 
         // Reload the pool
         $this->getPool();
-        $this->cl(StartSessionTitle::class)->render();
-        $this->cl(StartSessionAction::class)->render();
-        $this->cl(StartSessionPage::class)->page();
+        $this->cl(EndSessionTitle::class)->render();
+        $this->cl(EndSessionAction::class)->render();
+        $this->cl(EndSessionPage::class)->page();
         $this->cl(PoolPage::class)->page();
 
         $this->alert()->info(trans('tontine.pool_round.messages.saved'));
@@ -87,9 +86,9 @@ class StartSession extends Component
 
         // Reload the pool
         $this->getPool();
-        $this->cl(StartSessionTitle::class)->render();
-        $this->cl(StartSessionAction::class)->render();
-        $this->cl(StartSessionPage::class)->page();
+        $this->cl(EndSessionTitle::class)->render();
+        $this->cl(EndSessionAction::class)->render();
+        $this->cl(EndSessionPage::class)->page();
         $this->cl(PoolPage::class)->page();
 
         $this->alert()->info(trans('tontine.pool_round.messages.deleted'));

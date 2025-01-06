@@ -52,6 +52,6 @@ class MemberPage extends ChargePageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('meeting-fee-libre-members');
+        $this->response->js('Tontine')->makeTableResponsive('content-session-fee-libre-members');
     }
 }

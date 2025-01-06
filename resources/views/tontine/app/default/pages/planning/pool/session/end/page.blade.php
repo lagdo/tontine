@@ -1,7 +1,7 @@
 @php
-  $rqEndSessionPage = rq(Ajax\App\Planning\Pool\Session\Pool\EndSessionPage::class);
+  $rqEndSessionPage = rq(Ajax\App\Planning\Pool\Session\EndSessionPage::class);
 @endphp
-                      <div class="table-responsive">
+                      <div class="table-responsive" id="content-planning-end-sessions-page">
                         <form id="end-session-form">
                           <table class="table table-bordered responsive">
                             <thead>

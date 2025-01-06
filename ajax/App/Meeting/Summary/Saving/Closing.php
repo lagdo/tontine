@@ -41,6 +41,6 @@ class Closing extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('meeting-closings');
+        $this->response->js('Tontine')->makeTableResponsive('content-summary-closings');
     }
 }

@@ -9,7 +9,7 @@
                   </div>
                   <div class="col-auto sm-screen-hidden">
                     <button type="button" class="btn btn-primary" @jxnClick(js('Tontine')
-                      ->showSmScreen('content-home-rounds', 'round-sm-screens'))><i class="fa fa-arrow-left"></i></button>
+                      ->showSmScreen('content-planning-rounds', 'round-sm-screens'))><i class="fa fa-arrow-left"></i></button>
                   </div>
 @if ($round !== null)
                   <div class="col-auto">

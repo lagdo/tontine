@@ -54,6 +54,9 @@ class Member extends Component
     protected function after()
     {
         $this->cl(MemberPage::class)->page();
+
+        $this->response->js('Tontine')
+            ->showSmScreen('content-subscription-members', 'subscription-sm-screens');
     }
 
     public function filter()

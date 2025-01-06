@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Planning\Pool\Session\Pool;
+namespace Ajax\App\Planning\Pool\Session;
 
 use Ajax\Component;
 
@@ -9,7 +9,7 @@ use function trans;
 /**
  * @exclude
  */
-class StartSessionTitle extends Component
+class EndSessionTitle extends Component
 {
     /**
      * @inheritDoc
@@ -18,7 +18,7 @@ class StartSessionTitle extends Component
     {
         $pool = $this->stash()->get('pool.session.pool');
 
-        return $pool->pool_round !== null ? $pool->start_date :
+        return $pool->pool_round !== null ? $pool->end_date :
             trans('tontine.pool_round.labels.default');
     }
 }

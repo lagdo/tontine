@@ -6,7 +6,7 @@
   $rqPlanning = rq(Ajax\App\Planning\Subscription\Planning::class);
   $rqBeneficiary = rq(Ajax\App\Planning\Subscription\Beneficiary::class);
 @endphp
-                <div class="table-responsive" @jxnTarget()>
+                <div class="table-responsive" id="content-subscription-pools-page" @jxnTarget()>
                   <div @jxnEvent(['.btn-pool-member', 'click'], $rqMember->pool($poolId))></div>
                   <div @jxnEvent(['.btn-pool-planning', 'click'], $rqPlanning->pool($poolId))></div>
                   <div @jxnEvent(['.btn-pool-beneficiary', 'click'], $rqBeneficiary->pool($poolId))></div>

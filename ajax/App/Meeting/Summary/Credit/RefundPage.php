@@ -61,6 +61,6 @@ class RefundPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('meeting-debts-page');
+        $this->response->js('Tontine')->makeTableResponsive('content-summary-refunds-page');
     }
 }

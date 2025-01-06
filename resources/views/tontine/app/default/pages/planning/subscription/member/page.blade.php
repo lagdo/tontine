@@ -3,7 +3,7 @@
   $rqMember = rq(Ajax\App\Planning\Subscription\Member::class);
   $rqMemberPage = rq(Ajax\App\Planning\Subscription\MemberPage::class);
 @endphp
-                  <div class="table-responsive" id="pool-subscription-members-page" @jxnTarget()>
+                  <div class="table-responsive" id="content-subscription-members-page" @jxnTarget()>
                     <div @jxnEvent(['.btn-subscription-member-add', 'click'], $rqMember->create($memberId))></div>
                     <div @jxnEvent(['.btn-subscription-member-del', 'click'], $rqMember->delete($memberId)
                       ->confirm(__('tontine.session.questions.disable')))></div>

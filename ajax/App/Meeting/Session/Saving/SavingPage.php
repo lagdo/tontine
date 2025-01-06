@@ -67,6 +67,6 @@ class SavingPage extends MeetingPageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('meeting-savings-page');
+        $this->response->js('Tontine')->makeTableResponsive('content-session-savings-page');
     }
 }

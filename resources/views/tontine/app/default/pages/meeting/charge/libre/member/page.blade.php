@@ -6,7 +6,7 @@
   $rqMemberPage = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberPage::class);
   $rqAmount = rq(Ajax\App\Meeting\Session\Charge\Libre\Amount::class);
 @endphp
-                  <div class="table-responsive" id="meeting-fee-libre-members" @jxnTarget()>
+                  <div class="table-responsive" id="content-session-fee-libre-members" @jxnTarget()>
                     <div @jxnEvent(['.btn-add-bill', 'click'], $rqMember->addBill($memberId, $paid))></div>
                     <div @jxnEvent(['.btn-del-bill', 'click'], $rqMember->delBill($memberId))></div>
 
@@ -14,7 +14,7 @@
                       <thead>
                         <tr>
                           <th>{{ __('common.labels.name') }}</th>
-                          <th class="currency">{{ __('common.labels.paid') }}</th>
+                          <th class="currency">&nbsp;</th>
                         </tr>
                       </thead>
                       <tbody>

@@ -34,6 +34,6 @@ class Deposit extends MeetingComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('meeting-deposits');
+        $this->response->js('Tontine')->makeTableResponsive('content-meeting-deposits');
     }
 }

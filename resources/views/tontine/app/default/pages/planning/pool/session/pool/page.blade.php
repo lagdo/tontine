@@ -2,11 +2,11 @@
 @php
   $poolId = jq()->parent()->attr('data-pool-id')->toInt();
   $rqPoolPage = rq(Ajax\App\Planning\Pool\Session\PoolPage::class);
-  $rqSession = rq(Ajax\App\Planning\Pool\Session\Pool\Session::class);
-  $rqStartSession = rq(Ajax\App\Planning\Pool\Session\Pool\StartSession::class);
-  $rqEndSession = rq(Ajax\App\Planning\Pool\Session\Pool\EndSession::class);
+  $rqSession = rq(Ajax\App\Planning\Pool\Session\Session::class);
+  $rqStartSession = rq(Ajax\App\Planning\Pool\Session\StartSession::class);
+  $rqEndSession = rq(Ajax\App\Planning\Pool\Session\EndSession::class);
 @endphp
-                <div class="table-responsive" @jxnTarget()>
+                <div class="table-responsive" id="content-planning-session-pool-page" @jxnTarget()>
                   <div @jxnEvent(['.btn-pool-start-session', 'click'], $rqStartSession->pool($poolId))></div>
                   <div @jxnEvent(['.btn-pool-end-session', 'click'], $rqEndSession->pool($poolId))></div>
                   <div @jxnEvent(['.btn-pool-enabled-sessions', 'click'], $rqSession->pool($poolId))></div>

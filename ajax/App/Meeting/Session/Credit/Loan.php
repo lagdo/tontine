@@ -48,7 +48,7 @@ class Loan extends MeetingComponent
     protected function after()
     {
         $this->cl(Balance::class)->render();
-        $this->response->js('Tontine')->makeTableResponsive('meeting-loans');
+        $this->response->js('Tontine')->makeTableResponsive('content-session-loans');
     }
 
     public function add()

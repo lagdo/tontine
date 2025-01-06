@@ -5,7 +5,7 @@
   $rqRound = rq(Ajax\App\Planning\Session\Round::class);
   $rqRoundPage = rq(Ajax\App\Planning\Session\RoundPage::class);
 @endphp
-                  <div class="table-responsive" @jxnTarget()>
+                  <div class="table-responsive" id="content-planning-rounds-page" @jxnTarget()>
                     <div @jxnEvent(['.btn-round-edit', 'click'], $rqRound->edit($roundId))></div>
                     <div @jxnEvent(['.btn-round-sessions', 'click'], $rqSession->round($roundId))></div>
                     <div @jxnEvent(['.btn-round-select', 'click'], $rqSelect->saveRound($roundId))></div>

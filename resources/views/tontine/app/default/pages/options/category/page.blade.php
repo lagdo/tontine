@@ -3,7 +3,7 @@
   $rqCategory = rq(Ajax\App\Tontine\Options\Category::class);
   $rqCategoryPage = rq(Ajax\App\Tontine\Options\CategoryPage::class);
 @endphp
-                  <div class="table-responsive" @jxnTarget()>
+                  <div class="table-responsive" id="content-category-page" @jxnTarget()>
                     <div @jxnEvent(['.btn-category-edit', 'click'], $rqCategory->edit($categoryId))></div>
                     <div @jxnEvent(['.btn-category-toggle', 'click'], $rqCategory->toggle($categoryId))></div>
                     <div @jxnEvent(['.btn-category-delete', 'click'], $rqCategory->delete($categoryId)

@@ -3,7 +3,7 @@
   $rqSession = rq(Ajax\App\Planning\Session\Session::class);
   $rqSessionPage = rq(Ajax\App\Planning\Session\SessionPage::class);
 @endphp
-                    <div class="table-responsive" id="content-page-sessions" @jxnTarget()>
+                    <div class="table-responsive" id="content-planning-sessions-page" @jxnTarget()>
                       <div @jxnEvent(['.btn-session-edit', 'click'], $rqSession->edit($sessionId))></div>
                       <div @jxnEvent(['.btn-session-venue', 'click'], $rqSession->editVenue($sessionId))></div>
                       <div @jxnEvent(['.btn-session-delete', 'click'], $rqSession->delete($sessionId)

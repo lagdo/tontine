@@ -49,7 +49,6 @@ class Saving extends Component
         $this->cl(SavingPage::class)->page();
         $this->cl(SavingCount::class)->render();
 
-        $this->response->js('Tontine')->makeTableResponsive('meeting-savings-page');
         $this->response->js('Tontine')->showSmScreen('report-fund-savings', 'session-savings');
     }
 

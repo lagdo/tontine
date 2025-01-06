@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Planning\Pool\Session\Pool;
+namespace Ajax\App\Planning\Pool\Session;
 
 use Ajax\Component;
 use Jaxon\Response\AjaxResponse;
@@ -46,6 +46,9 @@ class Session extends Component
     protected function after()
     {
         $this->cl(SessionPage::class)->page();
+
+        $this->response->js('Tontine')
+            ->showSmScreen('content-planning-sessions', 'pool-sm-screens');
     }
 
     public function enableSession(int $sessionId)

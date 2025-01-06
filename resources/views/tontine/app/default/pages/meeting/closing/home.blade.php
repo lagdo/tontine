@@ -40,7 +40,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="table-responsive" @jxnTarget()>
+                  <div class="table-responsive" id="content-session-closings" @jxnTarget()>
                     <div @jxnEvent(['.btn-fund-edit-round-closing', 'click'], $rqClosing->editRoundClosing($selectFundId))></div>
                     <div @jxnEvent(['.btn-fund-edit-interest-closing', 'click'], $rqClosing->editInterestClosing($selectFundId))></div>
                     <div @jxnEvent(['.btn-fund-delete-round-closing', 'click'], $rqClosing->deleteRoundClosing($selectFundId)

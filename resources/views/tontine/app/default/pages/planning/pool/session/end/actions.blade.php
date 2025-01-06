@@ -1,7 +1,7 @@
 @php
   $formValues = pm()->form('end-session-form');
-  $rqEndSession = rq(Ajax\App\Planning\Pool\Session\Pool\EndSession::class);
-  $rqEndSessionPage = rq(Ajax\App\Planning\Pool\Session\Pool\EndSessionPage::class);
+  $rqEndSession = rq(Ajax\App\Planning\Pool\Session\EndSession::class);
+  $rqEndSessionPage = rq(Ajax\App\Planning\Pool\Session\EndSessionPage::class);
 @endphp
                       <div class="btn-group float-right ml-2 mb-2" role="group">
 @if ($pool->pool_round)

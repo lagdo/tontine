@@ -4,7 +4,7 @@
                       <div class="section-title mt-0">{{ __('meeting.titles.disbursements') }}</div>
                     </div>
                   </div>
-                  <div class="table-responsive">
+                  <div class="table-responsive" id="content-summary-disbursements">
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

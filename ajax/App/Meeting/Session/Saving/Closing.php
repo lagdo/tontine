@@ -50,7 +50,7 @@ class Closing extends MeetingComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('meeting-closings');
+        $this->response->js('Tontine')->makeTableResponsive('content-session-closings');
         // Sending an Ajax request to the Saving class needs to set
         // the session id in the report databag.
         $session = $this->stash()->get('meeting.session');

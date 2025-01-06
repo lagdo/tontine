@@ -33,13 +33,13 @@ var Tontine = {};
         });
     }
 
-    self.makeTableResponsive = (tableId) => {
-        const table = document.querySelector('#' + tableId);
-        if(!table) {
+    self.makeTableResponsive = (wrapperId) => {
+        const wrapper = document.querySelector('#' + wrapperId);
+        if(!wrapper) {
             return;
         }
-        const labels = Array.from(table.querySelectorAll('th')).map(th => th.innerText);
-        table.querySelectorAll('td')
+        const labels = Array.from(wrapper.querySelectorAll('th')).map(th => th.innerText);
+        wrapper.querySelectorAll('td')
             .forEach((td, i) => td.setAttribute('data-label', labels[i % labels.length]));
     }
 

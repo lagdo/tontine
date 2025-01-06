@@ -31,6 +31,6 @@ class LibreFee extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('meeting-fees-libre-page');
+        $this->response->js('Tontine')->makeTableResponsive('content-summary-fees-libre-page');
     }
 }

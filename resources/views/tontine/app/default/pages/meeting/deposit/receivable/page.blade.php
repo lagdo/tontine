@@ -5,7 +5,7 @@
   $rqReceivablePage = rq(Ajax\App\Meeting\Session\Pool\Deposit\ReceivablePage::class);
   $rqAmount = rq(Ajax\App\Meeting\Session\Pool\Deposit\Amount::class);
 @endphp
-                  <div class="table-responsive" id="meeting-pool-deposits" @jxnTarget()>
+                  <div class="table-responsive" id="content-meeting-receivables" @jxnTarget()>
                     <div @jxnEvent(['.btn-add-deposit', 'click'], $rqReceivable->addDeposit($receivableId))></div>
                     <div @jxnEvent(['.btn-del-deposit', 'click'], $rqReceivable->delDeposit($receivableId))></div>
 

@@ -1,12 +1,16 @@
 @php
-  $rqSession = rq(Ajax\App\Planning\Pool\Session\Pool\Session::class);
-  $rqSessionCounter = rq(Ajax\App\Planning\Pool\Session\Pool\SessionCounter::class);
-  $rqSessionPage = rq(Ajax\App\Planning\Pool\Session\Pool\SessionPage::class);
+  $rqSession = rq(Ajax\App\Planning\Pool\Session\Session::class);
+  $rqSessionCounter = rq(Ajax\App\Planning\Pool\Session\SessionCounter::class);
+  $rqSessionPage = rq(Ajax\App\Planning\Pool\Session\SessionPage::class);
 @endphp
               <div class="section-body">
                 <div class="row">
                   <div class="col">
                     <h2 class="section-title">{{ $pool->title }} :: {{ __('tontine.pool.titles.sessions') }}</h2>
+                  </div>
+                  <div class="col-auto sm-screen-hidden">
+                    <button type="button" class="btn btn-primary" @jxnClick(js('Tontine')
+                      ->showSmScreen('content-planning-pools', 'pool-sm-screens'))><i class="fa fa-arrow-left"></i></button>
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">

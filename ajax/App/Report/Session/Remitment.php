@@ -43,6 +43,6 @@ class Remitment extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('report-remitments');
+        $this->response->js('Tontine')->makeTableResponsive('content-report-remitments');
     }
 }

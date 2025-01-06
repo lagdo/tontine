@@ -4,7 +4,7 @@
   $rqPool = rq(Ajax\App\Planning\Pool\Pool::class);
   $rqPoolPage = rq(Ajax\App\Planning\Pool\PoolPage::class);
 @endphp
-                <div class="table-responsive" @jxnTarget()>
+                <div class="table-responsive" id="content-planning-pool-page" @jxnTarget()>
                   <div @jxnEvent(['.btn-pool-edit', 'click'], $rqPool->edit($poolId))></div>
                   <div @jxnEvent(['.btn-pool-delete', 'click'], $rqPool->delete($poolId)
                     ->confirm(__('tontine.pool.questions.delete')))></div>

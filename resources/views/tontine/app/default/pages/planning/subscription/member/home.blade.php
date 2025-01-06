@@ -8,6 +8,10 @@
                   <div class="col">
                     <h2 class="section-title">{{ $pool->title }} :: {{ __('tontine.pool.titles.subscriptions') }}</h2>
                   </div>
+                  <div class="col-auto sm-screen-hidden">
+                    <button type="button" class="btn btn-primary" @jxnClick(js('Tontine')
+                      ->showSmScreen('content-subscription-pools', 'subscription-sm-screens'))><i class="fa fa-arrow-left"></i></button>
+                  </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2" role="group">
                       <button type="button" class="btn btn-primary" @jxnClick($rqMember->filter())><i class="fa fa-filter"></i></button>

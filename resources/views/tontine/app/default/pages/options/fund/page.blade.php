@@ -3,7 +3,7 @@
   $rqFund = rq(Ajax\App\Tontine\Options\Fund::class);
   $rqFundPage = rq(Ajax\App\Tontine\Options\FundPage::class);
 @endphp
-                  <div class="table-responsive" @jxnTarget()>
+                  <div class="table-responsive" id="content-fund-page" @jxnTarget()>
                     <div @jxnEvent(['.btn-fund-edit', 'click'], $rqFund->edit($fundId))></div>
                     <div @jxnEvent(['.btn-fund-toggle', 'click'], $rqFund->toggle($fundId))></div>
 

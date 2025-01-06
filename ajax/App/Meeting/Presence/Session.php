@@ -52,7 +52,11 @@ class Session extends Component
     protected function after()
     {
         $this->cl(SessionPage::class)->page();
-        $this->response->js('Tontine')->showSmScreen('content-home-sessions', 'presence-sm-screens');
+        $member = $this->stash()->get('presence.member'); // Is null when showing presences by sessions.
+        if($member !== null)
+        {
+            $this->response->js('Tontine')->showSmScreen('content-presence-right', 'presence-sm-screens');
+        }
     }
 
     public function togglePresence(int $sessionId)
