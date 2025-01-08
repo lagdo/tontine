@@ -54,9 +54,9 @@ class Session extends Base
      *
      * @var array
      */
-    protected $dates = [
-        'start_at',
-        'end_at',
+    protected $casts = [
+        'start_at' => 'datetime',
+        'end_at' => 'datetime',
     ];
 
     /**

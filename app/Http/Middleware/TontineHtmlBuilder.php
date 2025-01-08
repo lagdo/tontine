@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\View;
 
 use function html;
+use function Jaxon\jaxon;
 
 class TontineHtmlBuilder
 {
@@ -23,6 +24,7 @@ class TontineHtmlBuilder
     public function handle(Request $request, Closure $next)
     {
         View::share('htmlBuilder', html());
+        View::share('stash', jaxon()->di()->getStash());
 
         return $next($request);
     }

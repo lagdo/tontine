@@ -34,8 +34,6 @@ class TontineTemplate
         $jaxonView->addNamespace('tontine', $templatePath, '.blade.php', 'blade');
         $jaxonView->addNamespace('pagination', $paginationPath, '.blade.php', 'blade');
 
-        View::share('stash', jaxon()->di()->getStash());
-
         return $next($request);
     }
 }
