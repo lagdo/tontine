@@ -43,7 +43,5 @@ class Balance extends MeetingComponent
             'click' => 'close',
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 }

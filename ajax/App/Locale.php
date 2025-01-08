@@ -23,6 +23,5 @@ class Locale extends CallableClass
                 $this->localeService->getCountryCurrencies($countryCode),
         ]);
         $this->response->html('select_currency_container', $html);
-        return $this->response;
     }
 }

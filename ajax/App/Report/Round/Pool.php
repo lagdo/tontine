@@ -3,7 +3,6 @@
 namespace Ajax\App\Report\Round;
 
 use Ajax\Component;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Stringable;
 
@@ -42,9 +41,9 @@ class Pool extends Component
      *
      * @param int $poolId
      *
-     * @return AjaxResponse
+     * @return void
      */
-    public function refresh(int $poolId): AjaxResponse
+    public function refresh(int $poolId)
     {
         $round = $this->tenantService->round();
         $pool = $round->pools()
@@ -55,12 +54,12 @@ class Pool extends Component
             $this->alert()
                 ->title(trans('common.titles.error'))
                 ->error(trans('tontine.pool.errors.not_found'));
-            return $this->response;
+            return;
         }
 
         $figures = $this->summaryService->getFigures($round, $pool->id);
         $this->figures = $figures[0];
 
-        return $this->item("pool-{$pool->id}")->render();
+        $this->item("pool-{$pool->id}")->render();
     }
 }

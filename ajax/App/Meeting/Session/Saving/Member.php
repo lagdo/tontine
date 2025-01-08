@@ -67,7 +67,7 @@ class Member extends MeetingComponent
         $this->bag('meeting.saving')->set('member.search', '');
         $this->bag('meeting.saving')->set('member.page', 1);
 
-        return $this->render();
+        $this->render();
     }
 
     public function search(string $search)
@@ -75,7 +75,7 @@ class Member extends MeetingComponent
         $this->bag('meeting.saving')->set('member.search', trim($search));
         $this->bag('meeting.saving')->set('member.page', 1);
 
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 
     public function toggleFilter()
@@ -85,6 +85,6 @@ class Member extends MeetingComponent
         $filter = $filter === null ? true : ($filter === true ? false : null);
         $this->bag('meeting.saving')->set('member.filter', $filter);
 
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 }

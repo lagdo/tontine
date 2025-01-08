@@ -38,8 +38,6 @@ class Faker extends CallableClass
             return $member->name . ';' . $member->email;
         })->join("\n");
         $this->response->html('new-members-list', $html);
-
-        return $this->response;
     }
 
     /**
@@ -57,8 +55,6 @@ class Faker extends CallableClass
             $this->response->jq("#charge_name_$i")->val($charges[$i]->name);
             $this->response->jq("#charge_amount_$i")->val($charges[$i]->amount);
         }
-
-        return $this->response;
     }
 
     /**
@@ -75,7 +71,5 @@ class Faker extends CallableClass
             $this->response->jq("#pool_amount_$i")->val($pools[$i]->amount);
             $this->response->jq("#pool_notes_$i")->val($pools[$i]->notes);
         }
-
-        return $this->response;
     }
 }

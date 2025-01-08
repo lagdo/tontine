@@ -6,7 +6,6 @@ use Ajax\Component;
 use Ajax\App\Faker;
 use Ajax\App\Page\SectionContent;
 use Ajax\App\Page\SectionTitle;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Tontine\MemberValidator;
 use Stringable;
@@ -43,9 +42,9 @@ class Member extends Component
      * @before checkHostAccess ["tontine", "members"]
      * @after hideMenuOnMobile
      */
-    public function home(): AjaxResponse
+    public function home()
     {
-        return $this->render();
+        $this->render();
     }
 
     /**
@@ -77,7 +76,7 @@ class Member extends Component
     {
         $this->bag('member')->set('search', trim($search));
 
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 
     public function add()
@@ -94,8 +93,6 @@ class Member extends Component
             'click' => $this->rq()->create(pm()->form('member-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -109,7 +106,7 @@ class Member extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.member.messages.created'));
 
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 
     public function addList()
@@ -136,8 +133,6 @@ class Member extends Component
             'click' => $this->rq()->createList(pm()->form('member-list')),
         ];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -190,7 +185,7 @@ class Member extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.member.messages.created'));
 
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 
     public function edit(int $memberId)
@@ -210,8 +205,6 @@ class Member extends Component
             'click' => $this->rq()->update($member->id, pm()->form('member-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -227,7 +220,7 @@ class Member extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.member.messages.updated'));
 
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 
     public function toggle(int $memberId)
@@ -235,7 +228,7 @@ class Member extends Component
         $member = $this->memberService->getMember($memberId);
         $this->memberService->toggleMember($member);
 
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 
     public function delete(int $memberId)
@@ -243,6 +236,6 @@ class Member extends Component
         $member = $this->memberService->getMember($memberId);
         $this->memberService->deleteMember($member);
 
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 }

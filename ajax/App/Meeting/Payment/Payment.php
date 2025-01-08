@@ -7,7 +7,6 @@ use Ajax\App\Page\SectionContent;
 use Ajax\App\Page\SectionTitle;
 use App\Events\OnPagePaymentHome;
 use Illuminate\Support\Collection;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Stringable;
 
@@ -48,9 +47,9 @@ class Payment extends Component
      * @before getOpenedSessions
      * @after hideMenuOnMobile
      */
-    public function home(): AjaxResponse
+    public function home()
     {
-        return $this->render();
+        $this->render();
     }
 
     /**

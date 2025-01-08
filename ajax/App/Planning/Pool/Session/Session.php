@@ -3,7 +3,6 @@
 namespace Ajax\App\Planning\Pool\Session;
 
 use Ajax\Component;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 use Stringable;
 
@@ -28,9 +27,9 @@ class Session extends Component
     public function __construct(private PoolService $poolService)
     {}
 
-    public function pool(int $poolId): AjaxResponse
+    public function pool(int $poolId)
     {
-        return $this->render();
+        $this->render();
     }
 
     public function html(): Stringable
@@ -57,8 +56,7 @@ class Session extends Component
         $this->poolService->enableSession($pool, $sessionId);
 
         $this->cl(SessionCounter::class)->render();
-
-        return $this->cl(SessionPage::class)->page();
+        $this->cl(SessionPage::class)->page();
     }
 
     public function disableSession(int $sessionId)
@@ -67,7 +65,6 @@ class Session extends Component
         $this->poolService->disableSession($pool, $sessionId);
 
         $this->cl(SessionCounter::class)->render();
-
-        return $this->cl(SessionPage::class)->page();
+        $this->cl(SessionPage::class)->page();
     }
 }

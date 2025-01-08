@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Summary;
 
 use Ajax\Component;
 use Ajax\App\Page\SectionContent;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Stringable;
 
@@ -27,7 +26,7 @@ class Summary extends Component
     public function __construct(protected SessionService $sessionService)
     {}
 
-    public function home(int $sessionId): AjaxResponse
+    public function home(int $sessionId)
     {
         $this->bag('meeting')->set('session.id', $sessionId);
         // Sending an Ajax request to the Saving class needs to set
@@ -39,12 +38,12 @@ class Summary extends Component
         {
             $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.not_opened'));
-            return $this->response;
+            return;
         }
 
         $this->stash()->set('summary.session', $session);
 
-        return $this->render();
+        $this->render();
     }
 
     /**
@@ -76,8 +75,6 @@ class Summary extends Component
 
         $this->response->js('Tontine')
             ->setSmScreenHandler('summary-pools-sm-screens', 'summary-pools');
-
-        return $this->response;
     }
 
     private function savings()
@@ -87,8 +84,6 @@ class Summary extends Component
 
         $this->response->js('Tontine')
             ->setSmScreenHandler('summary-savings-sm-screens', 'summary-savings');
-
-        return $this->response;
     }
 
     private function credits()
@@ -99,15 +94,11 @@ class Summary extends Component
 
         $this->response->js('Tontine')
             ->setSmScreenHandler('summary-credits-sm-screens', 'summary-credits');
-
-        return $this->response;
     }
 
     private function cash()
     {
         $this->cl(Cash\Disbursement::class)->render();
-
-        return $this->response;
     }
 
     private function charges()
@@ -117,7 +108,5 @@ class Summary extends Component
 
         $this->response->js('Tontine')
             ->setSmScreenHandler('summary-charges-sm-screens', 'summary-charges');
-
-        return $this->response;
     }
 }

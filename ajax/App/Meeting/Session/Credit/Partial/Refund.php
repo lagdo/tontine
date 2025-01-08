@@ -81,7 +81,7 @@ class Refund extends MeetingComponent
         $this->bag('partial.refund')->set('principal.page', 1);
         $this->getFund();
 
-        return $this->cl(RefundPage::class)->page();
+        $this->cl(RefundPage::class)->page();
     }
 
     /**
@@ -106,8 +106,6 @@ class Refund extends MeetingComponent
             'click' => $this->rq()->update($refundId, pm()->form('refund-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -127,8 +125,7 @@ class Refund extends MeetingComponent
 
         // Refresh the refunds page
         $this->cl(CreditRefund::class)->render();
-
-        return $this->cl(RefundPage::class)->page();
+        $this->cl(RefundPage::class)->page();
     }
 
     /**
@@ -142,7 +139,6 @@ class Refund extends MeetingComponent
 
         // Refresh the refunds page
         $this->cl(CreditRefund::class)->render();
-
-        return $this->cl(RefundPage::class)->page();
+        $this->cl(RefundPage::class)->page();
     }
 }

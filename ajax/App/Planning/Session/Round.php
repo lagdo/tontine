@@ -6,7 +6,6 @@ use Ajax\Component;
 use Ajax\App\Page\SectionContent;
 use Ajax\App\Page\SectionTitle;
 use Ajax\App\Tontine\Select;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\RoundService;
 use Stringable;
 
@@ -33,9 +32,9 @@ class Round extends Component
      * @before checkHostAccess ["planning", "sessions"]
      * @after hideMenuOnMobile
      */
-    public function home(): AjaxResponse
+    public function home()
     {
-        return $this->render();
+        $this->render();
     }
 
     /**
@@ -87,8 +86,6 @@ class Round extends Component
             'click' => $this->rq()->create(pm()->form('round-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     public function create(array $formValues)
@@ -99,8 +96,6 @@ class Round extends Component
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.round.messages.created'));
-
-        return $this->response;
     }
 
     public function edit(int $roundId)
@@ -119,8 +114,6 @@ class Round extends Component
             'click' => $this->rq()->update($round->id, pm()->form('round-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     public function update(int $roundId, array $formValues)
@@ -131,8 +124,6 @@ class Round extends Component
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.round.messages.updated'));
-
-        return $this->response;
     }
 
     public function delete(int $roundId)
@@ -149,7 +140,5 @@ class Round extends Component
             // If the currently selected round is deleted, then choose another.
             $this->cl(Select::class)->saveOrganisation($this->tenantService->tontine()->id);
         }
-
-        return $this->response;
     }
 }

@@ -57,8 +57,6 @@ class Host extends Component
 
         $this->modal()->hide();
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -73,7 +71,7 @@ class Host extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.sent'));
 
-        return $this->cl(HostPage::class)->page();
+        $this->cl(HostPage::class)->page();
     }
 
     public function cancel(int $inviteId)
@@ -82,7 +80,7 @@ class Host extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.cancelled'));
 
-        return $this->cl(HostPage::class)->page();
+        $this->cl(HostPage::class)->page();
     }
 
     public function delete(int $inviteId)
@@ -91,6 +89,6 @@ class Host extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.deleted'));
 
-        return $this->cl(HostPage::class)->page();
+        $this->cl(HostPage::class)->page();
     }
 }

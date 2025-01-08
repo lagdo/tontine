@@ -53,8 +53,6 @@ class Category extends Component
             'click' => $this->rq()->create(pm()->form('category-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     public function create(array $formValues)
@@ -65,8 +63,6 @@ class Category extends Component
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.category.messages.created'));
-
-        return $this->response;
     }
 
     public function edit(int $categoryId)
@@ -91,8 +87,6 @@ class Category extends Component
             'click' => $this->rq()->update($category->id, pm()->form('category-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     public function update(int $categoryId, array $formValues)
@@ -104,8 +98,6 @@ class Category extends Component
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.category.messages.updated'));
-
-        return $this->response;
     }
 
     public function toggle(int $categoryId)
@@ -113,7 +105,7 @@ class Category extends Component
         $category = $this->categoryService->getCategory($categoryId);
         $this->categoryService->toggleCategory($category);
 
-        return $this->cl(CategoryPage::class)->page();
+        $this->cl(CategoryPage::class)->page();
     }
 
     public function delete(int $categoryId)
@@ -121,6 +113,6 @@ class Category extends Component
         $category = $this->categoryService->getCategory($categoryId);
         $this->categoryService->deleteCategory($category);
 
-        return $this->cl(CategoryPage::class)->page();
+        $this->cl(CategoryPage::class)->page();
     }
 }

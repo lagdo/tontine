@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Presence;
 use Ajax\Component;
 use Ajax\App\Page\SectionContent;
 use Ajax\App\Page\SectionTitle;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\PresenceService;
 use Stringable;
 
@@ -32,9 +31,9 @@ class Presence extends Component
      * @before checkRoundSessions
      * @after hideMenuOnMobile
      */
-    public function home(): AjaxResponse
+    public function home()
     {
-        return $this->render();
+        $this->render();
     }
 
     /**
@@ -72,7 +71,7 @@ class Presence extends Component
         $exchange = $this->bag('presence')->get('exchange', false);
         $this->bag('presence')->set('exchange', !$exchange);
 
-        return $this->home();
+        $this->home();
     }
 
     public function selectSession(int $sessionId)
@@ -83,7 +82,7 @@ class Presence extends Component
 
         $this->stash()->set('presence.session', $this->presenceService->getSession($sessionId));
 
-        return $this->cl(Member::class)->render();
+        $this->cl(Member::class)->render();
     }
 
     public function selectMember(int $memberId)
@@ -94,6 +93,6 @@ class Presence extends Component
 
         $this->stash()->set('presence.member', $this->presenceService->getMember($memberId));
 
-        return $this->cl(Session::class)->render();
+        $this->cl(Session::class)->render();
     }
 }

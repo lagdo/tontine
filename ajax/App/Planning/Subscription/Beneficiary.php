@@ -4,7 +4,6 @@ namespace Ajax\App\Planning\Subscription;
 
 use Ajax\Component;
 use Ajax\App\Page\SectionContent;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Planning\SummaryService;
@@ -36,9 +35,9 @@ class Beneficiary extends Component
         private PoolService $poolService, private SummaryService $summaryService)
     {}
 
-    public function pool(int $poolId): AjaxResponse
+    public function pool(int $poolId)
     {
-        return $this->render();
+        $this->render();
     }
 
     /**
@@ -68,7 +67,7 @@ class Beneficiary extends Component
         $pool = $this->stash()->get('subscription.pool');
         if(!$pool || !$pool->remit_planned || $pool->remit_auction)
         {
-            return $this->response;
+            return;
         }
 
         if(!$this->subscriptionService->saveBeneficiary($pool, $sessionId,
@@ -79,6 +78,6 @@ class Beneficiary extends Component
                 ->error($message);
         }
 
-        return $this->render();
+        $this->render();
     }
 }

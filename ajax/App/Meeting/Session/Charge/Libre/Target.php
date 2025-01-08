@@ -78,14 +78,14 @@ class Target extends ChargeComponent
         $this->bag('meeting')->set('fee.member.search', '');
         $this->bag('meeting')->set('fee.target.page', 1);
 
-        return $this->render();
+        $this->render();
     }
 
     public function search(string $search)
     {
         $this->bag('meeting')->set('fee.member.search', trim($search));
 
-        return $this->cl(TargetPage::class)->page();
+        $this->cl(TargetPage::class)->page();
     }
 
     /**
@@ -97,7 +97,7 @@ class Target extends ChargeComponent
         $target = $this->stash()->get('meeting.session.charge.target');
         if($target !== null)
         {
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
@@ -116,8 +116,6 @@ class Target extends ChargeComponent
         ]];
 
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -132,7 +130,7 @@ class Target extends ChargeComponent
         $target = $this->stash()->get('meeting.session.charge.target');
         if($target !== null)
         {
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
@@ -147,7 +145,7 @@ class Target extends ChargeComponent
 
         $this->stash()->set('meeting.session.charge.target',
             $this->targetService->getTarget($charge, $session));
-        return $this->charge($charge->id);
+        $this->charge($charge->id);
     }
 
     /**
@@ -159,7 +157,7 @@ class Target extends ChargeComponent
         $target = $this->stash()->get('meeting.session.charge.target');
         if($target === null)
         {
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
@@ -179,8 +177,6 @@ class Target extends ChargeComponent
         ]];
 
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -196,7 +192,7 @@ class Target extends ChargeComponent
         $target = $this->stash()->get('meeting.session.charge.target');
         if($target === null)
         {
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
@@ -211,7 +207,7 @@ class Target extends ChargeComponent
 
         $this->stash()->set('meeting.session.charge.target',
             $this->targetService->getTarget($charge, $session));
-        return $this->charge($charge->id);
+        $this->charge($charge->id);
     }
 
     /**
@@ -223,7 +219,7 @@ class Target extends ChargeComponent
         $target = $this->stash()->get('meeting.session.charge.target');
         if($target === null)
         {
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
@@ -234,6 +230,6 @@ class Target extends ChargeComponent
 
         $this->stash()->set('meeting.session.charge.target',
             $this->targetService->getTarget($charge, $session));
-        return $this->charge($charge->id);
+        $this->charge($charge->id);
     }
 }

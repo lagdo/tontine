@@ -4,7 +4,6 @@ namespace Ajax\App\Planning\Subscription;
 
 use Ajax\Component;
 use Ajax\App\Page\SectionContent;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SummaryService;
 use Stringable;
@@ -32,9 +31,9 @@ class Planning extends Component
         private SummaryService $summaryService)
     {}
 
-    public function pool(int $poolId): AjaxResponse
+    public function pool(int $poolId)
     {
-        return $this->render();
+        $this->render();
     }
 
     /**

@@ -45,15 +45,13 @@ class Select extends CallableClass
             'click' => $this->rq()->saveOrganisation(pm()->select('tontine_id')->toInt()),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     public function saveOrganisation(int $tontineId)
     {
         if(!($tontine = $this->tontineService->getUserOrGuestTontine($tontineId)))
         {
-            return $this->response;
+            return;
         }
 
         $this->bag('tenant')->set('tontine.id', $tontine->id);
@@ -72,15 +70,13 @@ class Select extends CallableClass
             ['tontine' => $tontine->name]));
 
         $this->cl(Member::class)->home();
-
-        return $this->response;
     }
 
     public function showRounds()
     {
         if(!($tontine = $this->tenantService->tontine()))
         {
-            return $this->response;
+            return;
         }
         $title = trans('tontine.round.titles.choose');
         $content = $this->renderView('pages.select.round', [
@@ -96,8 +92,6 @@ class Select extends CallableClass
             'click' => $this->rq()->saveRound(pm()->select('round_id')->toInt()),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     protected function showPoolSection(): void
@@ -125,11 +119,11 @@ class Select extends CallableClass
     {
         if(!($tontine = $this->tenantService->tontine()))
         {
-            return $this->response;
+            return;
         }
         if(!($round = $this->roundService->getRound($roundId)))
         {
-            return $this->response;
+            return;
         }
 
         // Save the tontine and round ids in the user session.
@@ -138,7 +132,5 @@ class Select extends CallableClass
         $this->modal()->hide();
         $this->alert()->info(trans('tontine.round.messages.selected',
             ['tontine' => $tontine->name, 'round' => $round->title]));
-
-        return $this->response;
     }
 }

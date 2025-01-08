@@ -98,14 +98,12 @@ class Fund extends Component
 
     public function fund(int $fundId, string $item = '')
     {
-        return $this->item(trim($item))->render();
+        $this->item(trim($item))->render();
     }
 
     public function amount(int $profitAmount)
     {
         $this->stash()->set('report.profit', $profitAmount);
         $this->render();
-
-        return $this->response;
     }
 }

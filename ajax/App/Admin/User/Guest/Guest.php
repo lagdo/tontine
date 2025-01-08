@@ -39,7 +39,7 @@ class Guest extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.accepted'));
 
-        return $this->cl(GuestPage::class)->page();
+        $this->cl(GuestPage::class)->page();
     }
 
     public function refuse(int $inviteId)
@@ -48,7 +48,7 @@ class Guest extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.refused'));
 
-        return $this->cl(GuestPage::class)->page();
+        $this->cl(GuestPage::class)->page();
     }
 
     public function delete(int $inviteId)
@@ -57,12 +57,12 @@ class Guest extends Component
         {
             // The active tontine invite is deleted. Reload the page.
             $this->response->redirect('/');
-            return $this->response;
+            return;
         }
 
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.deleted'));
 
-        return $this->cl(GuestPage::class)->page();
+       $this->cl(GuestPage::class)->page();
     }
 }

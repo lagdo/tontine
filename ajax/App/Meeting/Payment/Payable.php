@@ -56,17 +56,15 @@ class Payable extends Component
     {
         if(!($member = $this->memberService->getMember($memberId)))
         {
-            return $this->response;
+            return;
         }
         if(!($session = $this->sessionService->getSession($sessionId)))
         {
-            return $this->response;
+            return;
         }
 
         $this->stash()->set('payable.member', $member);
         $this->stash()->set('payable.session', $session);
         $this->render();
-
-        return $this->response;
     }
 }

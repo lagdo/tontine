@@ -46,7 +46,7 @@ class Settlement extends ChargeComponent
         $this->bag('meeting')->set('settlement.fixed.search', '');
         $this->bag('meeting')->set('settlement.fixed.page', 1);
 
-        return $this->render();
+        $this->render();
     }
 
     private function showTotal()
@@ -71,14 +71,14 @@ class Settlement extends ChargeComponent
         $onlyUnpaid = $onlyUnpaid === null ? true : ($onlyUnpaid === true ? false : null);
         $this->bag('meeting')->set('settlement.fixed.filter', $onlyUnpaid);
 
-        return $this->cl(SettlementPage::class)->page();
+        $this->cl(SettlementPage::class)->page();
     }
 
     public function search(string $search)
     {
         $this->bag('meeting')->set('settlement.fixed.search', trim($search));
 
-        return $this->cl(SettlementPage::class)->page();
+        $this->cl(SettlementPage::class)->page();
     }
 
     /**
@@ -94,7 +94,7 @@ class Settlement extends ChargeComponent
         $this->settlementService->createSettlement($charge, $session, $billId);
 
         $this->showTotal();
-        return $this->cl(SettlementPage::class)->page();
+        $this->cl(SettlementPage::class)->page();
     }
 
     /**
@@ -110,7 +110,7 @@ class Settlement extends ChargeComponent
         $this->settlementService->deleteSettlement($charge, $session, $billId);
 
         $this->showTotal();
-        return $this->cl(SettlementPage::class)->page();
+        $this->cl(SettlementPage::class)->page();
     }
 
     /**
@@ -124,7 +124,7 @@ class Settlement extends ChargeComponent
         $this->settlementService->createAllSettlements($charge, $session);
 
         $this->showTotal();
-        return $this->cl(SettlementPage::class)->page();
+        $this->cl(SettlementPage::class)->page();
     }
 
     /**
@@ -138,6 +138,6 @@ class Settlement extends ChargeComponent
         $this->settlementService->deleteAllSettlements($charge, $session);
 
         $this->showTotal();
-        return $this->cl(SettlementPage::class)->page();
+        $this->cl(SettlementPage::class)->page();
     }
 }

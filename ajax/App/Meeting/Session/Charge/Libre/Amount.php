@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\ChargeComponent;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\LocaleService;
 use Stringable;
 
@@ -64,35 +63,35 @@ class Amount extends ChargeComponent
     /**
      * @param int $memberId
      *
-     * @return AjaxResponse
+     * @return void
      */
-    private function refresh(int $memberId): AjaxResponse
+    private function refresh(int $memberId)
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
         $bill = $this->billService->getMemberBill($charge, $session, $memberId);
         if($bill === null)
         {
-            return $this->response;
+            return;
         }
 
         $this->stash()->set('meeting.charge.bill', $bill->bill);
         $this->stash()->set('meeting.charge.member.id', $memberId);
 
-        return $this->item($memberId)->render();
+        $this->item($memberId)->render();
     }
 
     /**
      * @before checkChargeEdit
      * @param int $memberId
      *
-     * @return AjaxResponse
+     * @return void
      */
-    public function edit(int $memberId): AjaxResponse
+    public function edit(int $memberId)
     {
         $this->stash()->set('meeting.charge.edit', true);
 
-        return $this->refresh($memberId);
+        $this->refresh($memberId);
     }
 
     /**
@@ -134,13 +133,13 @@ class Amount extends ChargeComponent
      * @param bool $paid
      * @param string $amount
      *
-     * @return AjaxResponse
+     * @return void
      */
-    public function save(int $memberId, bool $paid, string $amount): AjaxResponse
+    public function save(int $memberId, bool $paid, string $amount)
     {
         $this->saveAmount($memberId, $paid, $amount);
         $this->showTotal();
 
-        return $this->refresh($memberId);
+        $this->refresh($memberId);
     }
 }

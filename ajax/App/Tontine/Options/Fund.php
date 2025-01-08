@@ -53,8 +53,6 @@ class Fund extends Component
             'click' => $this->rq()->create(pm()->form('fund-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -70,8 +68,6 @@ class Fund extends Component
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.fund.messages.created'));
-
-        return $this->response;
     }
 
     public function edit(int $fundId)
@@ -90,8 +86,6 @@ class Fund extends Component
             'click' => $this->rq()->update($fund->id, pm()->form('fund-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -108,8 +102,6 @@ class Fund extends Component
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.fund.messages.updated'));
-
-        return $this->response;
     }
 
     public function toggle(int $fundId)
@@ -117,6 +109,6 @@ class Fund extends Component
         $fund = $this->fundService->getFund($fundId);
         $this->fundService->toggleFund($fund);
 
-        return $this->cl(FundPage::class)->page();
+        $this->cl(FundPage::class)->page();
     }
 }

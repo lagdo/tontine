@@ -5,7 +5,6 @@ namespace Ajax\App\Tontine\Options;
 use Ajax\Component;
 use Ajax\App\Page\SectionContent;
 use Ajax\App\Page\SectionTitle;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Tontine\OptionsValidator;
 use Stringable;
@@ -33,9 +32,9 @@ class Options extends Component
      * @databag charge
      * @after hideMenuOnMobile
      */
-    public function home(): AjaxResponse
+    public function home()
     {
-        return $this->render();
+        $this->render();
     }
 
     /**
@@ -89,8 +88,6 @@ class Options extends Component
         ]];
 
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -104,7 +101,5 @@ class Options extends Component
 
         $this->modal()->hide();
         $this->alert()->success(trans('tontine.options.messages.saved'));
-
-        return $this->response;
     }
 }

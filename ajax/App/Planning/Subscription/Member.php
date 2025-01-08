@@ -3,7 +3,6 @@
 namespace Ajax\App\Planning\Subscription;
 
 use Ajax\Component;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Stringable;
@@ -33,12 +32,12 @@ class Member extends Component
         private SubscriptionService $subscriptionService)
     {}
 
-    public function pool(int $poolId): AjaxResponse
+    public function pool(int $poolId)
     {
         $this->bag('subscription')->set('member.filter', null);
         $this->bag('subscription')->set('member.search', '');
 
-        return $this->render();
+        $this->render();
     }
 
     public function html(): Stringable
@@ -68,14 +67,14 @@ class Member extends Component
         $this->bag('subscription')->set('member.filter', $filter);
 
         // Show the first page
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 
     public function search(string $search)
     {
         $this->bag('subscription')->set('member.search', trim($search));
 
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 
     public function create(int $memberId)
@@ -85,7 +84,7 @@ class Member extends Component
 
         // Refresh the current page
         $this->cl(MemberCounter::class)->render();
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 
     public function delete(int $memberId)
@@ -95,6 +94,6 @@ class Member extends Component
 
         // Refresh the current page
         $this->cl(MemberCounter::class)->render();
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 }

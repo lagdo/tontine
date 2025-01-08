@@ -3,7 +3,6 @@
 namespace Ajax\App\Planning\Pool\Session;
 
 use Ajax\Component;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Validation\Planning\PoolRoundValidator;
 use Stringable;
@@ -34,9 +33,9 @@ class StartSession extends Component
     public function __construct(private PoolService $poolService)
     {}
 
-    public function pool(int $poolId): AjaxResponse
+    public function pool(int $poolId)
     {
-        return $this->render();
+        $this->render();
     }
 
     public function html(): Stringable
@@ -75,8 +74,6 @@ class StartSession extends Component
         $this->cl(PoolPage::class)->page();
 
         $this->alert()->info(trans('tontine.pool_round.messages.saved'));
-
-        return $this->response;
     }
 
     public function delete()
@@ -92,7 +89,5 @@ class StartSession extends Component
         $this->cl(PoolPage::class)->page();
 
         $this->alert()->info(trans('tontine.pool_round.messages.deleted'));
-
-        return $this->response;
     }
 }

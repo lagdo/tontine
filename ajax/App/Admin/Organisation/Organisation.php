@@ -7,7 +7,6 @@ use Ajax\SelectTrait;
 use Ajax\App\Admin\User\Guest\Organisation as GuestOrganisation;
 use Ajax\App\Page\SectionContent;
 use Ajax\App\Page\SectionTitle;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
@@ -54,9 +53,9 @@ class Organisation extends Component
     /**
      * @after hideMenuOnMobile
      */
-    public function home(): AjaxResponse
+    public function home()
     {
-        return $this->render();
+        $this->render();
     }
 
     /**
@@ -120,8 +119,6 @@ class Organisation extends Component
 
         $this->modal()->hide();
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -136,8 +133,6 @@ class Organisation extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.messages.created'));
         $this->cl(OrganisationPage::class)->page(); // Back to current page
-
-        return $this->response;
     }
 
     /**
@@ -165,8 +160,6 @@ class Organisation extends Component
         ]];
 
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -181,8 +174,6 @@ class Organisation extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.messages.updated'));
         $this->cl(OrganisationPage::class)->page(); // Back to current page
-
-        return $this->response;
     }
 
     public function delete(int $tontineId)
@@ -192,7 +183,5 @@ class Organisation extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.messages.deleted'));
         $this->cl(OrganisationPage::class)->page(); // Back to current page
-
-        return $this->response;
     }
 }

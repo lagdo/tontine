@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\MeetingComponent;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -81,14 +80,14 @@ class Amount extends MeetingComponent
     /**
      * @param int $memberId
      *
-     * @return AjaxResponse
+     * @return void
      */
-    public function edit(int $memberId): AjaxResponse
+    public function edit(int $memberId)
     {
         if(!($member = $this->savingService->getMember($memberId)))
         {
             $this->alert()->warning(trans('tontine.member.errors.not_found'));
-            return $this->response;
+            return;
         }
 
         $this->stash()->set('meeting.saving.edit', true);
@@ -98,7 +97,7 @@ class Amount extends MeetingComponent
         $this->stash()->set('meeting.saving',
             $this->savingService->findSaving($session, $fund, $member));
 
-        return $this->item($member->id)->render();
+        $this->item($member->id)->render();
     }
 
     /**
@@ -133,14 +132,14 @@ class Amount extends MeetingComponent
      * @param int $memberId
      * @param string $amount
      *
-     * @return AjaxResponse
+     * @return void
      */
-    public function save(int $memberId, string $amount): AjaxResponse
+    public function save(int $memberId, string $amount)
     {
         if(!($member = $this->savingService->getMember($memberId)))
         {
             $this->alert()->warning(trans('tontine.member.errors.not_found'));
-            return $this->response;
+            return;
         }
 
         $this->stash()->set('meeting.saving.member', $member);
@@ -153,7 +152,6 @@ class Amount extends MeetingComponent
             $this->savingService->findSaving($session, $fund, $member));
 
         $this->cl(MemberTotal::class)->render();
-
-        return $this->item($member->id)->render();
+        $this->item($member->id)->render();
     }
 }

@@ -67,7 +67,7 @@ class Member extends Component
     {
         $this->bag('presence')->set('member.search', trim($search));
 
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 
     public function togglePresence(int $memberId)
@@ -76,12 +76,12 @@ class Member extends Component
         $session = $this->stash()->get('presence.session');
         if(!$member || !$session)
         {
-            return $this->response;
+            return;
         }
 
         $this->presenceService->togglePresence($session, $member);
         $this->cl(SessionPage::class)->page();
 
-        return $this->render();
+        $this->render();
     }
 }

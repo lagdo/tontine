@@ -50,7 +50,7 @@ class Payable extends MeetingComponent
      */
     public function pool(int $poolId)
     {
-        return $this->render();
+        $this->render();
     }
 
     /**
@@ -81,13 +81,13 @@ class Payable extends MeetingComponent
         if(!$pool->remit_planned || $pool->remit_auction)
         {
             // Only when remitments are planned and without auctions.
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
         $this->remitmentService->savePlannedRemitment($pool, $session, $payableId);
 
-        return $this->cl(PayablePage::class)->render();
+        $this->cl(PayablePage::class)->render();
     }
 
     public function addRemitment(int $payableId)
@@ -95,7 +95,7 @@ class Payable extends MeetingComponent
         // if($pool->remit_planned && !$pool->remit_auction)
         // {
         //     // Only when remitments are not planned or with auctions.
-        //     return $this->response;
+        //     return;
         // }
 
         $pool = $this->stash()->get('meeting.pool');
@@ -117,8 +117,6 @@ class Payable extends MeetingComponent
             'click' => $this->rq()->saveRemitment(pm()->form('remitment-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -131,7 +129,7 @@ class Payable extends MeetingComponent
         // {
         //     // Only when remitments are not planned or with auctions.
         //     $this->modal()->hide();
-        //     return $this->response;
+        //     return;
         // }
 
         // Add some data in the input values to help validation.
@@ -143,7 +141,7 @@ class Payable extends MeetingComponent
             $values['payable'], $values['auction']);
         $this->modal()->hide();
 
-        return $this->cl(PayablePage::class)->render();
+        $this->cl(PayablePage::class)->render();
     }
 
     /**
@@ -155,6 +153,6 @@ class Payable extends MeetingComponent
         $session = $this->stash()->get('meeting.session');
         $this->remitmentService->deleteRemitment($pool, $session, $payableId);
 
-        return $this->cl(PayablePage::class)->render();
+        $this->cl(PayablePage::class)->render();
     }
 }

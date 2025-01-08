@@ -7,7 +7,6 @@ use Ajax\App\Admin\User\Host\Host;
 use Ajax\App\Page\SectionContent;
 use Ajax\App\Page\SectionTitle;
 use Ajax\Component;
-use Jaxon\Response\AjaxResponse;
 use Stringable;
 
 use function trans;
@@ -25,9 +24,9 @@ class User extends Component
     /**
      * @after hideMenuOnMobile
      */
-    public function home(): AjaxResponse
+    public function home()
     {
-        return $this->render();
+        $this->render();
     }
 
     /**

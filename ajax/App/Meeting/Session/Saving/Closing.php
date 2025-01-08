@@ -62,7 +62,7 @@ class Closing extends MeetingComponent
         $fund = $this->fundService->getFund($fundId, true, true);
         if(!$fund)
         {
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
@@ -81,8 +81,6 @@ class Closing extends MeetingComponent
             'click' => $this->rq()->saveRoundClosing($fundId, pm()->form('closing-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -93,7 +91,7 @@ class Closing extends MeetingComponent
         $fund = $this->fundService->getFund($fundId, true, true);
         if(!$fund)
         {
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
@@ -104,7 +102,7 @@ class Closing extends MeetingComponent
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.profit.saved'));
 
-        return $this->render();
+        $this->render();
     }
 
     public function deleteRoundClosing(int $fundId)
@@ -112,7 +110,7 @@ class Closing extends MeetingComponent
         $fund = $this->fundService->getFund($fundId, true, true);
         if(!$fund)
         {
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
@@ -122,7 +120,7 @@ class Closing extends MeetingComponent
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.profit.deleted'));
 
-        return $this->render();
+        $this->render();
     }
 
     public function editInterestClosing(int $fundId)
@@ -130,7 +128,7 @@ class Closing extends MeetingComponent
         $fund = $this->fundService->getFund($fundId, true, true);
         if(!$fund)
         {
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
@@ -149,8 +147,6 @@ class Closing extends MeetingComponent
             'click' => $this->rq()->saveInterestClosing($fundId),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -161,7 +157,7 @@ class Closing extends MeetingComponent
         $fund = $this->fundService->getFund($fundId, true, true);
         if(!$fund)
         {
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
@@ -171,7 +167,7 @@ class Closing extends MeetingComponent
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.profit.saved'));
 
-        return $this->render();
+        $this->render();
     }
 
     public function deleteInterestClosing(int $fundId)
@@ -179,7 +175,7 @@ class Closing extends MeetingComponent
         $fund = $this->fundService->getFund($fundId, true, true);
         if(!$fund)
         {
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
@@ -189,6 +185,6 @@ class Closing extends MeetingComponent
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.profit.deleted'));
 
-        return $this->render();
+        $this->render();
     }
 }

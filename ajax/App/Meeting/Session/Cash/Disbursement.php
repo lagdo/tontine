@@ -62,8 +62,6 @@ class Disbursement extends MeetingComponent
             'click' => $this->rq()->createDisbursement(pm()->form('disbursement-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -77,7 +75,7 @@ class Disbursement extends MeetingComponent
 
         $this->modal()->hide();
 
-        return $this->render();
+        $this->render();
     }
 
     public function editDisbursement(int $disbursementId)
@@ -101,8 +99,6 @@ class Disbursement extends MeetingComponent
             'click' => $this->rq()->updateDisbursement($disbursementId, pm()->form('disbursement-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -115,8 +111,7 @@ class Disbursement extends MeetingComponent
         $this->disbursementService->updateDisbursement($session, $disbursementId, $values);
 
         $this->modal()->hide();
-
-        return $this->render();
+        $this->render();
     }
 
     public function deleteDisbursement(int $disbursementId)
@@ -124,6 +119,6 @@ class Disbursement extends MeetingComponent
         $session = $this->stash()->get('meeting.session');
         $this->disbursementService->deleteDisbursement($session, $disbursementId);
 
-        return $this->render();
+        $this->render();
     }
 }

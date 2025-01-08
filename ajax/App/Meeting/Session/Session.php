@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Session;
 use Ajax\Component;
 use Ajax\App\Page\SectionContent;
 use Ajax\App\Page\SectionTitle;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Stringable;
 
@@ -32,9 +31,9 @@ class Session extends Component
      * @before checkRoundSessions
      * @after hideMenuOnMobile
      */
-    public function home(): AjaxResponse
+    public function home()
     {
-        return $this->render();
+        $this->render();
     }
 
     /**
@@ -67,7 +66,7 @@ class Session extends Component
 
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.resynced'));
-        return $this->cl(SessionPage::class)->page();
+        $this->cl(SessionPage::class)->page();
     }
 
     public function open(int $sessionId)
@@ -76,12 +75,13 @@ class Session extends Component
         {
             $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.opened'));
-            return $this->cl(SessionPage::class)->page();
+            $this->cl(SessionPage::class)->page();
+            return;
         }
 
         $this->sessionService->openSession($session);
 
-        return $this->cl(SessionPage::class)->page();
+        $this->cl(SessionPage::class)->page();
     }
 
     public function close(int $sessionId)
@@ -90,12 +90,13 @@ class Session extends Component
         {
             $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.not_opened'));
-            return $this->cl(SessionPage::class)->page();
+            $this->cl(SessionPage::class)->page();
+            return;
         }
 
         $this->sessionService->closeSession($session);
 
-        return $this->cl(SessionPage::class)->page();
+        $this->cl(SessionPage::class)->page();
     }
 
     public function saveAgenda(string $text)
@@ -105,14 +106,12 @@ class Session extends Component
         {
             $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.not_found'));
-            return $this->response;
+            return;
         }
 
         $this->sessionService->saveAgenda($session, $text);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.agenda.updated'));
-
-        return $this->response;
     }
 
     public function saveReport(string $text)
@@ -122,13 +121,11 @@ class Session extends Component
         {
             $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.not_found'));
-            return $this->response;
+            return;
         }
 
         $this->sessionService->saveReport($session, $text);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.report.updated'));
-
-        return $this->response;
     }
 }

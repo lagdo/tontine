@@ -72,8 +72,6 @@ class Loan extends MeetingComponent
         ]];
         $this->modal()->show($title, $content, $buttons);
         $this->response->js('Tontine')->setLoanInterestLabel();
-
-        return $this->response;
     }
 
     /**
@@ -85,12 +83,12 @@ class Loan extends MeetingComponent
         if(!($member = $this->memberService->getMember($values['member'])))
         {
             $this->alert()->warning(trans('tontine.member.errors.not_found'));
-            return $this->response;
+            return;
         }
         if(!($fund = $this->fundService->getFund($values['fund'], true, true)))
         {
             $this->alert()->warning(trans('tontine.fund.errors.not_found'));
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
@@ -99,7 +97,7 @@ class Loan extends MeetingComponent
         $this->modal()->hide();
 
         $this->cl(Refund::class)->render();
-        return $this->render();
+        $this->render();
     }
 
     public function edit(int $loanId)
@@ -109,13 +107,13 @@ class Loan extends MeetingComponent
         if(!$loan)
         {
             $this->alert()->warning(trans('meeting.loan.errors.not_found'));
-            return $this->response;
+            return;
         }
         // A refunded loan cannot be updated.
         if($loan->refunds_count > 0)
         {
             $this->alert()->warning(trans('meeting.loan.errors.update'));
-            return $this->response;
+            return;
         }
 
         $title = trans('meeting.loan.titles.edit');
@@ -136,8 +134,6 @@ class Loan extends MeetingComponent
         ]];
         $this->modal()->show($title, $content, $buttons);
         $this->response->js('Tontine')->setLoanInterestLabel();
-
-        return $this->response;
     }
 
     /**
@@ -150,25 +146,25 @@ class Loan extends MeetingComponent
         if(!$loan)
         {
             $this->alert()->warning(trans('meeting.loan.errors.not_found'));
-            return $this->response;
+            return;
         }
         // A refunded loan cannot be updated.
         if($loan->refunds_count > 0)
         {
             $this->alert()->warning(trans('meeting.loan.errors.update'));
-            return $this->response;
+            return;
         }
 
         $values = $this->validator->validateItem($formValues);
         if(!($member = $this->memberService->getMember($values['member'])))
         {
             $this->alert()->warning(trans('tontine.member.errors.not_found'));
-            return $this->response;
+            return;
         }
         if(!($fund = $this->fundService->getFund($values['fund'], true, true)))
         {
             $this->alert()->warning(trans('tontine.fund.errors.not_found'));
-            return $this->response;
+            return;
         }
 
         $this->loanService->updateLoan($member, $fund, $loan, $values);
@@ -176,7 +172,7 @@ class Loan extends MeetingComponent
         $this->modal()->hide();
 
         $this->cl(Refund::class)->render();
-        return $this->render();
+        $this->render();
     }
 
     public function delete(int $loanId)
@@ -185,6 +181,6 @@ class Loan extends MeetingComponent
         $this->loanService->deleteLoan($session, $loanId);
 
         $this->cl(Refund::class)->render();
-        return $this->render();
+        $this->render();
     }
 }

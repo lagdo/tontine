@@ -75,7 +75,7 @@ class Session extends Component
 
     public function round(int $roundId)
     {
-        return $this->render();
+        $this->render();
     }
 
     /**
@@ -97,8 +97,6 @@ class Session extends Component
             'click' => $this->rq()->create(pm()->form('session-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -113,7 +111,7 @@ class Session extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.created'));
 
-        return $this->cl(SessionPage::class)->page();
+        $this->cl(SessionPage::class)->page();
     }
 
     public function addList()
@@ -134,8 +132,6 @@ class Session extends Component
             'click' => $this->rq()->createList(pm()->form('session-list')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     public function years()
@@ -145,8 +141,6 @@ class Session extends Component
             return $session->title . ';' . $session->date;
         })->join("\n");
         $this->response->html('new-sessions-list', $html);
-
-        return $this->response;
     }
 
     /**
@@ -200,7 +194,7 @@ class Session extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.created'));
 
-        return $this->cl(SessionPage::class)->page();
+        $this->cl(SessionPage::class)->page();
     }
 
     /**
@@ -225,8 +219,6 @@ class Session extends Component
             'click' => $this->rq()->update($session->id, pm()->form('session-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -244,7 +236,7 @@ class Session extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.updated'));
 
-        return  $this->cl(SessionPage::class)->page();
+        $this->cl(SessionPage::class)->page();
     }
 
     public function editVenue(int $sessionId)
@@ -267,8 +259,6 @@ class Session extends Component
             'click' => $this->rq()->saveVenue($session->id, pm()->form('session-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -285,7 +275,7 @@ class Session extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.updated'));
 
-        return $this->cl(SessionPage::class)->page();
+        $this->cl(SessionPage::class)->page();
     }
 
     public function delete(int $sessionId)
@@ -296,6 +286,6 @@ class Session extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.deleted'));
 
-        return $this->cl(SessionPage::class)->page();
+        $this->cl(SessionPage::class)->page();
     }
 }

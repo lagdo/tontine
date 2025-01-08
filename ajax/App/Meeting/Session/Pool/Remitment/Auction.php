@@ -55,7 +55,7 @@ class Auction extends MeetingComponent
         $filtered = $filtered === null ? true : ($filtered === true ? false : null);
         $this->bag('auction')->set('filter', $filtered);
 
-        return $this->cl(AuctionPage::class)->page(1);
+        $this->cl(AuctionPage::class)->page(1);
     }
 
     /**
@@ -68,6 +68,6 @@ class Auction extends MeetingComponent
         $session = $this->stash()->get('meeting.session');
         $this->auctionService->toggleAuctionPayment($session, $auctionId);
 
-        return $this->cl(AuctionPage::class)->page();
+        $this->cl(AuctionPage::class)->page();
     }
 }

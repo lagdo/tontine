@@ -40,7 +40,7 @@ class Receivable extends MeetingComponent
     {
         $this->bag('meeting')->set('deposit.page', 1);
 
-        return $this->render();
+        $this->render();
     }
 
     /**
@@ -74,7 +74,7 @@ class Receivable extends MeetingComponent
         $this->depositService->createDeposit($pool, $session, $receivableId);
 
         $this->showTotal();
-        return $this->cl(ReceivablePage::class)->page();
+        $this->cl(ReceivablePage::class)->page();
     }
 
     /**
@@ -89,7 +89,7 @@ class Receivable extends MeetingComponent
         $this->depositService->deleteDeposit($pool, $session, $receivableId);
 
         $this->showTotal();
-        return $this->cl(ReceivablePage::class)->page();
+        $this->cl(ReceivablePage::class)->page();
     }
 
     /**
@@ -100,14 +100,14 @@ class Receivable extends MeetingComponent
         $pool = $this->stash()->get('meeting.pool');
         if(!$pool->deposit_fixed)
         {
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
         $this->depositService->createAllDeposits($pool, $session);
 
         $this->showTotal();
-        return $this->cl(ReceivablePage::class)->page();
+        $this->cl(ReceivablePage::class)->page();
     }
 
     /**
@@ -118,13 +118,13 @@ class Receivable extends MeetingComponent
         $pool = $this->stash()->get('meeting.pool');
         if(!$pool->deposit_fixed)
         {
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
         $this->depositService->deleteAllDeposits($pool, $session);
 
         $this->showTotal();
-        return $this->cl(ReceivablePage::class)->page();
+        $this->cl(ReceivablePage::class)->page();
     }
 }

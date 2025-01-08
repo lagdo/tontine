@@ -63,8 +63,6 @@ class Section extends MeetingComponent
 
         $this->response->js('Tontine')
             ->setSmScreenHandler('session-pools-sm-screens', 'session-pools');
-
-        return $this->response;
     }
 
     public function savings(int $sessionId = 0)
@@ -76,8 +74,6 @@ class Section extends MeetingComponent
 
         $this->response->js('Tontine')
             ->setSmScreenHandler('session-savings-sm-screens', 'session-savings');
-
-        return $this->response;
     }
 
     public function credits(int $sessionId = 0)
@@ -90,8 +86,6 @@ class Section extends MeetingComponent
 
         $this->response->js('Tontine')
             ->setSmScreenHandler('session-credits-sm-screens', 'session-credits');
-
-        return $this->response;
     }
 
     public function cash(int $sessionId = 0)
@@ -99,8 +93,6 @@ class Section extends MeetingComponent
         $this->renderSection('cash');
 
         $this->cl(Cash\Disbursement::class)->render();
-
-        return $this->response;
     }
 
     public function charges(int $sessionId = 0)
@@ -112,8 +104,6 @@ class Section extends MeetingComponent
 
         $this->response->js('Tontine')
             ->setSmScreenHandler('session-charges-sm-screens', 'session-charges');
-
-        return $this->response;
     }
 
     public function reports(int $sessionId = 0)
@@ -135,7 +125,5 @@ class Section extends MeetingComponent
         ];
         $this->response->jq('#session-agenda')->summernote($options);
         $this->response->jq('#session-report')->summernote($options);
-
-        return $this->response;
     }
 }

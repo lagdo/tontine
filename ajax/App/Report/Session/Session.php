@@ -5,7 +5,6 @@ namespace Ajax\App\Report\Session;
 use Ajax\Component;
 use Ajax\App\Page\SectionContent;
 use Ajax\App\Page\SectionTitle;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Stringable;
@@ -33,9 +32,9 @@ class Session extends Component
      * @before checkOpenedSessions
      * @after hideMenuOnMobile
      */
-    public function home(): AjaxResponse
+    public function home()
     {
-        return $this->render();
+        $this->render();
     }
 
     /**
@@ -82,14 +81,14 @@ class Session extends Component
     {
         if($sessionId <= 0 || !($session = $this->sessionService->getSession($sessionId)))
         {
-            return $this->response;
+            return;
         }
 
         $this->bag('report')->set('session.id', $session->id);
         $this->stash()->set('report.session', $session);
         $this->stash()->set('report.member', null);
 
-        return $this->cl(SessionContent::class)->render();
+        $this->cl(SessionContent::class)->render();
     }
 
     public function showMember(int $sessionId, int $memberId)
@@ -98,13 +97,13 @@ class Session extends Component
             !($session = $this->sessionService->getSession($sessionId)) ||
             !($member = $this->memberService->getMember($memberId)))
         {
-            return $this->response;
+            return;
         }
 
         $this->bag('report')->set('session.id', $session->id);
         $this->stash()->set('report.session', $session);
         $this->stash()->set('report.member', $member);
 
-        return $this->cl(SessionContent::class)->render();
+        $this->cl(SessionContent::class)->render();
     }
 }

@@ -49,7 +49,7 @@ class Member extends ChargeComponent
         $this->bag('meeting')->set('fee.member.search', '');
         $this->bag('meeting')->set('fee.member.page', 1);
 
-        return $this->render();
+        $this->render();
     }
 
     public function toggleFilter()
@@ -59,14 +59,14 @@ class Member extends ChargeComponent
         $filter = $filter === null ? true : ($filter === true ? false : null);
         $this->bag('meeting')->set('fee.member.filter', $filter);
 
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 
     public function search(string $search)
     {
         $this->bag('meeting')->set('fee.member.search', trim($search));
 
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 
     /**
@@ -84,7 +84,7 @@ class Member extends ChargeComponent
         $this->billService->createBill($charge, $session, $memberId, $paid);
 
         $this->showTotal();
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 
     /**
@@ -101,6 +101,6 @@ class Member extends ChargeComponent
         $this->billService->deleteBill($charge, $session, $memberId);
 
         $this->showTotal();
-        return $this->cl(MemberPage::class)->page();
+        $this->cl(MemberPage::class)->page();
     }
 }

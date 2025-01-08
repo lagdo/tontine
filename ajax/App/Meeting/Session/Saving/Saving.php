@@ -70,7 +70,7 @@ class Saving extends MeetingComponent
         $this->bag('meeting.saving')->set('page', 1);
         $this->getFund();
 
-        return $this->cl(SavingPage::class)->page();
+        $this->cl(SavingPage::class)->page();
     }
 
     public function editSaving(int $savingId)
@@ -93,8 +93,6 @@ class Saving extends MeetingComponent
             'click' => $this->rq()->updateSaving($savingId, pm()->form('saving-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -107,19 +105,19 @@ class Saving extends MeetingComponent
         if(!($saving = $this->savingService->getSaving($session, $savingId)))
         {
             $this->alert()->warning(trans('meeting.saving.errors.not_found'));
-            return $this->response;
+            return;
         }
 
         $values = $this->validator->validateItem($formValues);
         if(!($member = $this->savingService->getMember($values['member'])))
         {
             $this->alert()->warning(trans('tontine.member.errors.not_found'));
-            return $this->response;
+            return;
         }
         if(!($fund = $this->fundService->getFund($values['fund'], true, true)))
         {
             $this->alert()->warning(trans('tontine.fund.errors.not_found'));
-            return $this->response;
+            return;
         }
 
         $this->savingService->updateSaving($session, $fund, $member, $saving, $values['amount']);
@@ -127,8 +125,7 @@ class Saving extends MeetingComponent
         $this->modal()->hide();
 
         $this->cl(SavingTotal::class)->render();
-
-        return $this->cl(SavingPage::class)->page();
+        $this->cl(SavingPage::class)->page();
     }
 
     /**
@@ -140,7 +137,6 @@ class Saving extends MeetingComponent
         $this->savingService->deleteSaving($session, $savingId);
 
         $this->cl(SavingTotal::class)->render();
-
-        return $this->cl(SavingPage::class)->page();
+        $this->cl(SavingPage::class)->page();
     }
 }

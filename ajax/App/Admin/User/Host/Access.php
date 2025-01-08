@@ -87,21 +87,21 @@ class Access extends Component
         {
             $this->alert()->title(trans('common.titles.warning'))
                 ->warning(trans('tontine.invite.errors.tontines'));
-            return $this->response;
+            return;
         }
 
         $tontine = $tontines->first();
         $this->bag('user')->set('tontine.id', $tontine->id);
         $this->stash()->set('user.tontine', $tontine);
 
-        return $this->render();
+        $this->render();
     }
 
     public function tontine(int $tontineId)
     {
         $this->bag('user')->set('tontine.id', $tontineId);
 
-        return $this->cl(AccessContent::class)->render();
+        $this->cl(AccessContent::class)->render();
     }
 
     /**
@@ -117,6 +117,6 @@ class Access extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.saved'));
 
-        return $this->cl(AccessContent::class)->render();
+        $this->cl(AccessContent::class)->render();
     }
 }

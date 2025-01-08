@@ -5,7 +5,6 @@ namespace Ajax\App\Planning\Subscription;
 use Ajax\Component;
 use Ajax\App\Page\SectionContent;
 use Ajax\App\Page\SectionTitle;
-use Jaxon\Response\AjaxResponse;
 use Stringable;
 
 use function trans;
@@ -25,11 +24,11 @@ class Subscription extends Component
      * @before checkHostAccess ["planning", "pools"]
      * @after hideMenuOnMobile
      */
-    public function home(): AjaxResponse
+    public function home()
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.planning'));
 
-        return $this->render();
+        $this->render();
     }
 
     /**

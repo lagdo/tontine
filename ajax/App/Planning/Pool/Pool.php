@@ -5,7 +5,6 @@ namespace Ajax\App\Planning\Pool;
 use Ajax\Component;
 use Ajax\App\Page\SectionContent;
 use Ajax\App\Page\SectionTitle;
-use Jaxon\Response\AjaxResponse;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\LocaleService;
@@ -42,9 +41,9 @@ class Pool extends Component
      * @before checkHostAccess ["planning", "pools"]
      * @after hideMenuOnMobile
      */
-    public function home(): AjaxResponse
+    public function home()
     {
-        return $this->render();
+        $this->render();
     }
 
     /**
@@ -88,8 +87,6 @@ class Pool extends Component
         ]];
         $this->modal()->show($title, $content, $buttons);
         $this->bag('pool')->set('add', []);
-
-        return $this->response;
     }
 
     public function showDepositFixed()
@@ -111,8 +108,6 @@ class Pool extends Component
             'click' => $this->rq()->saveDepositFixed(pm()->checked('pool_deposit_fixed')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     public function saveDepositFixed(bool $fixed)
@@ -121,12 +116,8 @@ class Pool extends Component
         $properties['deposit']['fixed'] = $fixed;
         $this->bag('pool')->set('add', $properties);
 
-        if($fixed)
-        {
-            return $this->showDepositLendable();
-        }
         // Pools with libre deposits are not lendable.
-        return $this->saveDepositLendable(false);
+        $fixed ? $this->showDepositLendable() : $this->saveDepositLendable(false);
     }
 
     public function showDepositLendable()
@@ -152,8 +143,6 @@ class Pool extends Component
             'click' => $this->rq()->saveDepositLendable(pm()->checked('pool_deposit_lendable')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     public function saveDepositLendable(bool $lendable)
@@ -162,7 +151,7 @@ class Pool extends Component
         $properties['deposit']['lendable'] = $lendable;
         $this->bag('pool')->set('add', $properties);
 
-        return $this->showRemitPlanned();
+        $this->showRemitPlanned();
     }
 
     public function showRemitPlanned()
@@ -190,8 +179,6 @@ class Pool extends Component
             'click' => $this->rq()->saveRemitPlanned(pm()->checked('pool_remit_planned')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     public function saveRemitPlanned(bool $planned)
@@ -200,7 +187,7 @@ class Pool extends Component
         $properties['remit']['planned'] = $planned;
         $this->bag('pool')->set('add', $properties);
 
-        return $this->showRemitAuction();
+        $this->showRemitAuction();
     }
 
     public function showRemitAuction()
@@ -227,8 +214,6 @@ class Pool extends Component
             'click' => $this->rq()->saveRemitAuction(pm()->checked('pool_remit_auction')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     public function saveRemitAuction(bool $auction)
@@ -237,7 +222,7 @@ class Pool extends Component
         $properties['remit']['auction'] = $auction;
         $this->bag('pool')->set('add', $properties);
 
-        return $this->add();
+        $this->add();
     }
 
     public function add()
@@ -258,8 +243,6 @@ class Pool extends Component
             'click' => $this->rq()->create(pm()->form('pool-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -276,7 +259,7 @@ class Pool extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.pool.messages.created'));
 
-        return $this->cl(PoolPage::class)->page();
+        $this->cl(PoolPage::class)->page();
     }
 
     public function edit(int $poolId)
@@ -297,8 +280,6 @@ class Pool extends Component
             'click' => $this->rq()->update($pool->id, pm()->form('pool-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -316,7 +297,7 @@ class Pool extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.pool.messages.updated'));
 
-        return $this->cl(PoolPage::class)->page();
+        $this->cl(PoolPage::class)->page();
     }
 
     public function delete(int $poolId)
@@ -326,6 +307,6 @@ class Pool extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.pool.messages.deleted'));
 
-        return $this->cl(PoolPage::class)->page();
+        $this->cl(PoolPage::class)->page();
     }
 }

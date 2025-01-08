@@ -65,8 +65,6 @@ class Charge extends Component
             'click' => $this->rq()->add($group),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -98,8 +96,6 @@ class Charge extends Component
             'click' => $this->rq()->create($group, pm()->form('charge-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -131,7 +127,7 @@ class Charge extends Component
             ->success(trans('tontine.charge.messages.created'));
         $this->modal()->hide();
 
-        return $this->cl(ChargePage::class)->page();
+        $this->cl(ChargePage::class)->page();
     }
 
     /**
@@ -161,8 +157,6 @@ class Charge extends Component
             'click' => $this->rq()->update($charge->id, pm()->form('charge-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-
-        return $this->response;
     }
 
     /**
@@ -187,7 +181,7 @@ class Charge extends Component
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.charge.messages.updated'));
 
-        return $this->cl(ChargePage::class)->page();
+        $this->cl(ChargePage::class)->page();
     }
 
     /**
@@ -198,7 +192,7 @@ class Charge extends Component
         $charge = $this->chargeService->getCharge($chargeId);
         $this->chargeService->toggleCharge($charge);
 
-        return $this->cl(ChargePage::class)->page();
+        $this->cl(ChargePage::class)->page();
     }
 
     public function delete(int $chargeId)
@@ -206,6 +200,6 @@ class Charge extends Component
         $charge = $this->chargeService->getCharge($chargeId);
         $this->chargeService->deleteCharge($charge);
 
-        return $this->cl(ChargePage::class)->page();
+        $this->cl(ChargePage::class)->page();
     }
 }

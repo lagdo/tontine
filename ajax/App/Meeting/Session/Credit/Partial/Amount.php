@@ -78,7 +78,7 @@ class Amount extends MeetingComponent
         if(!$debt)
         {
             $this->alert()->warning(trans('meeting.loan.errors.not_found'));
-            return $this->response;
+            return;
         }
 
         $html = $this->renderView('pages.meeting.refund.partial.amount.edit', [
@@ -86,8 +86,6 @@ class Amount extends MeetingComponent
             'amount' => $this->localeService->getMoneyValue($debt->partial_refund->amount),
         ]);
         $this->response->html("partial-refund-amount-{$debt->id}", $html);
-
-        return $this->response;
     }
 
     /**
@@ -104,7 +102,7 @@ class Amount extends MeetingComponent
         if(!$debt)
         {
             $this->alert()->warning(trans('meeting.loan.errors.not_found'));
-            return $this->response;
+            return;
         }
 
         $values['amount'] === 0 ?
@@ -113,7 +111,6 @@ class Amount extends MeetingComponent
 
         // Refresh the refunds page
         $this->cl(Refund::class)->render();
-
-        return $this->render();
+        $this->render();
     }
 }

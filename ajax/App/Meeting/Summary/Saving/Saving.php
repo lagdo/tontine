@@ -56,6 +56,6 @@ class Saving extends Component
     {
         $this->bag('meeting.saving')->set('fund.id', $fundId);
 
-        return $this->render();
+        $this->render();
     }
 }

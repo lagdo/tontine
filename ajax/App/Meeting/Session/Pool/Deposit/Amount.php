@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Session\Pool\Deposit;
 
 use Ajax\App\Meeting\MeetingComponent;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
@@ -76,31 +75,32 @@ class Amount extends MeetingComponent
     /**
      * @param int $receivableId
      *
-     * @return AjaxResponse
+     * @return void
      */
-    public function edit(int $receivableId): AjaxResponse
+    public function edit(int $receivableId)
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
         $receivable = $this->depositService->getReceivable($pool, $session, $receivableId);
         if(!$receivable || !$receivable->deposit)
         {
-            return $this->cl(ReceivablePage::class)->page();
+            $this->cl(ReceivablePage::class)->page();
+            return;
         }
 
         $this->stash()->set('meeting.session.edit', true);
         $this->stash()->set('meeting.session.receivable', $receivable);
 
-        return $this->item($receivable->id)->render();
+        $this->item($receivable->id)->render();
     }
 
     /**
      * @param int $receivableId
      * @param string $amount
      *
-     * @return AjaxResponse
+     * @return void
      */
-    public function save(int $receivableId, string $amount): AjaxResponse
+    public function save(int $receivableId, string $amount)
     {
         $amount = str_replace(',', '.', trim($amount));
         if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
@@ -108,7 +108,7 @@ class Amount extends MeetingComponent
             $error = trans('meeting.errors.amount.invalid', ['amount' => $amount]);
             $this->alert()->title(trans('common.titles.error'))->error($error);
 
-            return $this->response;
+            return;
         }
 
         $pool = $this->stash()->get('meeting.pool');
@@ -122,6 +122,6 @@ class Amount extends MeetingComponent
             $this->depositService->getReceivable($pool, $session, $receivableId));
 
         $this->showTotal();
-        return $this->item($receivableId)->render();
+        $this->item($receivableId)->render();
     }
 }

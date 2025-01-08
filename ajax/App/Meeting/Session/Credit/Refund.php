@@ -72,7 +72,7 @@ class Refund extends MeetingComponent
     /**
      * @param int $fundId
      *
-     * @return mixed
+     * @return void
      */
     public function fund(int $fundId)
     {
@@ -80,7 +80,7 @@ class Refund extends MeetingComponent
         $this->bag('refund')->set('principal.page', 1);
         $this->getFund();
 
-        return $this->cl(RefundPage::class)->page();
+        $this->cl(RefundPage::class)->page();
     }
 
     /**
@@ -94,7 +94,7 @@ class Refund extends MeetingComponent
         $this->bag('refund')->set('filter', $filtered);
         $this->bag('refund')->set('principal.page', 1);
 
-        return $this->cl(RefundPage::class)->page();
+        $this->cl(RefundPage::class)->page();
     }
 
     /**
@@ -107,15 +107,14 @@ class Refund extends MeetingComponent
         if(!$debt)
         {
             $this->alert()->warning(trans('meeting.loan.errors.not_found'));
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
         $this->refundService->createRefund($debt, $session);
 
         $this->cl(Partial\RefundPage::class)->render();
-
-        return $this->cl(RefundPage::class)->page();
+        $this->cl(RefundPage::class)->page();
     }
 
     /**
@@ -127,14 +126,13 @@ class Refund extends MeetingComponent
         if(!$debt)
         {
             $this->alert()->warning(trans('meeting.loan.errors.not_found'));
-            return $this->response;
+            return;
         }
 
         $session = $this->stash()->get('meeting.session');
         $this->refundService->deleteRefund($debt, $session);
 
         $this->cl(Partial\RefundPage::class)->render();
-
-        return $this->cl(RefundPage::class)->page();
+        $this->cl(RefundPage::class)->page();
     }
 }

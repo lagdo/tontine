@@ -3,7 +3,6 @@
 namespace Ajax\App\Planning\Pool\Session;
 
 use Ajax\PageComponent;
-use Jaxon\Response\AjaxResponse;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SessionService;
 use Stringable;
@@ -82,8 +81,8 @@ class StartSessionPage extends PageComponent
     /**
      * Go to the page of the current start session
      */
-    public function current(): AjaxResponse
+    public function current()
     {
-        return $this->page($this->getSessionPageNumber());
+        $this->page($this->getSessionPageNumber());
     }
 }

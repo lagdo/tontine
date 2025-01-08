@@ -65,12 +65,12 @@ class Session extends Component
         $member = $this->stash()->get('presence.member');
         if(!$session || !$member)
         {
-            return $this->response;
+            return;
         }
 
         $this->presenceService->togglePresence($session, $member);
         $this->cl(MemberPage::class)->page();
 
-        return $this->render();
+        $this->render();
     }
 }
