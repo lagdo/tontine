@@ -12,6 +12,7 @@ use Closure;
 
 use function auth;
 use function setlocale;
+use function Jaxon\jaxon;
 
 class TontineLocale
 {
@@ -63,6 +64,8 @@ class TontineLocale
         setlocale(LC_TIME, $locale);
         // For comparison of strings with accented characters in french
         setlocale(LC_COLLATE, LaravelLocalization::getCurrentLocaleRegional() . '.utf8');
+
+        jaxon()->setOption('core.language', $locale);
 
         return $next($request);
     }
