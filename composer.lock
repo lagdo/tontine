@@ -1638,12 +1638,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-dialogs.git",
-                "reference": "4eeca52aafbd7a110036ec164d2e199583440d48"
+                "reference": "ecc48d70ef0683bac5a62c6c0079a8f215a5e26c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-dialogs/zipball/4eeca52aafbd7a110036ec164d2e199583440d48",
-                "reference": "4eeca52aafbd7a110036ec164d2e199583440d48",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-dialogs/zipball/ecc48d70ef0683bac5a62c6c0079a8f215a5e26c",
+                "reference": "ecc48d70ef0683bac5a62c6c0079a8f215a5e26c",
                 "shasum": ""
             },
             "require": {
@@ -1691,7 +1691,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-dialogs/issues",
                 "source": "https://github.com/jaxon-php/jaxon-dialogs"
             },
-            "time": "2025-01-11T21:23:27+00:00"
+            "time": "2025-01-12T04:25:02+00:00"
         },
         {
             "name": "jaxon-php/jaxon-laravel",
@@ -1757,12 +1757,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-utils.git",
-                "reference": "01fffc42d4c8e7bbd636811acabfa796fe18a3e3"
+                "reference": "8dde80554a2f359aa2d482dcc6a17f1d0d7e368e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-utils/zipball/01fffc42d4c8e7bbd636811acabfa796fe18a3e3",
-                "reference": "01fffc42d4c8e7bbd636811acabfa796fe18a3e3",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-utils/zipball/8dde80554a2f359aa2d482dcc6a17f1d0d7e368e",
+                "reference": "8dde80554a2f359aa2d482dcc6a17f1d0d7e368e",
                 "shasum": ""
             },
             "require": {
@@ -1804,7 +1804,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-utils/issues",
                 "source": "https://github.com/jaxon-php/jaxon-utils"
             },
-            "time": "2025-01-11T21:04:49+00:00"
+            "time": "2025-01-12T04:19:01+00:00"
         },
         {
             "name": "laravel/fortify",
