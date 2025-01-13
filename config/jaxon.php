@@ -25,7 +25,8 @@ return [
             ],
         ],
         'directories' => [
-            base_path('ajax/App') => [
+            [
+                'path' => base_path('ajax/App'),
                 'namespace' => '\\Ajax\\App',
             ],
         ],
