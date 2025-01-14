@@ -6,7 +6,8 @@
                   <div class="table-responsive" id="content-session-pool-remitments" @jxnTarget()>
                     <div @jxnEvent(['.btn-add-remitment', 'click'], $rqPayable->addRemitment($payableId))></div>
                     <div @jxnEvent(['.btn-save-remitment', 'click'], $rqPayable->createRemitment($payableId))></div>
-                    <div @jxnEvent(['.btn-del-remitment', 'click'], $rqPayable->deleteRemitment($payableId))></div>
+                    <div @jxnEvent(['.btn-del-remitment', 'click'], $rqPayable->deleteRemitment($payableId)
+                      ->confirm(__('meeting.remitment.questions.delete')))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

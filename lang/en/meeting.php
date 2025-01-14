@@ -140,6 +140,9 @@ return [
             'auction' => "Auction",
             'beneficiary' => "Beneficiary",
         ],
+        'questions' => [
+            'delete' => "Delete this remitment?",
+        ],
     ],
     'saving' => [
         'titles' => [

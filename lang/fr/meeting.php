@@ -140,6 +140,9 @@ return [
             'auction' => "Enchère",
             'beneficiary' => "Bénéficiaire",
         ],
+        'questions' => [
+            'delete' => "Supprimer cette remise ?",
+        ],
     ],
     'saving' => [
         'titles' => [

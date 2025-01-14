@@ -88,7 +88,7 @@ class RemitmentService
         $remitmentCount = $this->summaryService->getSessionRemitmentCount($pool, $session);
         $emptyPayable = (object)[
             'id' => 0,
-            'member' =>trans('tontine.remitment.labels.not-assigned'),
+            'member' => trans('tontine.remitment.labels.not-assigned'),
             'amount' => $amount,
             'remitment' => null,
         ];
@@ -241,18 +241,14 @@ class RemitmentService
         {
             // Only the beneficiaries that are not yet planned.
             return $subscriptions
-                ->filter(function($subscription) {
-                    return !$subscription->payable->session_id;
-                })
+                ->filter(fn($subscription) => !$subscription->payable->session_id)
                 ->pluck('member.name', 'payable.id');
         }
 
         // Return also the beneficiaries that have not yet been remitted.
         return $subscriptions
-            ->filter(function($subscription) use($session) {
-                return !$subscription->payable->session_id ||
-                    $subscription->payable->session_id === $session->id;
-            })
+            ->filter(fn($subscription) => !$subscription->payable->session_id ||
+                $subscription->payable->session_id === $session->id)
             ->pluck('member.name', 'payable.id');
     }
 }
