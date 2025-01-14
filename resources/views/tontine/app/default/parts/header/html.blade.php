@@ -18,4 +18,6 @@
 
 <link rel="stylesheet" href="/jaxon/app.4.0.0-1.css">
 
-@include('tontine.app.default.parts.header.custom')
+@if(config('tontine.templates.custom.css'))
+@includeIf(config('tontine.templates.custom.css'))
+@endif

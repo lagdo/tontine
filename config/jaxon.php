@@ -68,7 +68,7 @@ return [
     ],
     'lib' => [
         'core' => [
-            'language' => 'en',
+            // 'language' => 'en',
             'encoding' => 'UTF-8',
             'request' => [
                 'csrf_meta' => 'csrf-token',

@@ -5,7 +5,7 @@
 @endphp
           <div class="row" id="payment-sm-screens">
             <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="payment-members-home">
-              <div class="section-body">
+              <div class="section-body" id="payment-section-home">
                 <div class="row">
                   <div class="col">
                     <h2 class="section-title">{{ __('tontine.menus.payments') }}</h2>

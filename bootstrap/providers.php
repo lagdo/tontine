@@ -7,5 +7,5 @@ return [
     * Package Service Providers...
     */
     App\Providers\SiakServiceProvider::class,
-    App\Providers\SiakPdfServiceProvider::class,
+    App\Providers\SiakExtServiceProvider::class,
 ];

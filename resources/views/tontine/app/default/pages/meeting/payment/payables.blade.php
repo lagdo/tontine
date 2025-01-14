@@ -1,4 +1,4 @@
-              <div class="section-body">
+              <div class="section-body" id="payment-section-payables">
                 <div class="row">
                   <div class="col">
                     <h2 class="section-title">{{ $session->title }} - {{ $member->name }}</h2>

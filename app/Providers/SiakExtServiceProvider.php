@@ -11,7 +11,7 @@ use Siak\Tontine\Service\Report\Pdf\LocalGenerator;
 
 use function config;
 
-class SiakPdfServiceProvider extends ServiceProvider implements DeferrableProvider
+class SiakExtServiceProvider extends ServiceProvider implements DeferrableProvider
 {
     /**
      * Register any application services

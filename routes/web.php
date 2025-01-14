@@ -35,12 +35,13 @@ Route::middleware(['auth', TontineTenant::class, TontineLocale::class,
         //----------------------------------
         Route::get('/', [IndexController::class, 'index'])
             ->name('tontine.home')
-            ->middleware([TontineAnnotations::class]);
+            ->middleware([TontineAnnotations::class, 'jaxon.config']);
 
         // User profile page
         //----------------------------------
         Route::get('/profile', [IndexController::class, 'profile'])
-            ->name('user.profile');
+            ->name('user.profile')
+            ->middleware([TontineAnnotations::class, 'jaxon.config']);
 
         // Report pages
         //----------------------------------

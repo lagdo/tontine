@@ -77,6 +77,6 @@ class Payment extends Component
     {
         $this->cl(PaymentPage::class)->page();
 
-        OnPagePaymentHome::dispatch();
+        OnPagePaymentHome::dispatch($this->sessions);
     }
 }
