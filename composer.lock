@@ -1552,21 +1552,74 @@
             "time": "2025-01-08T16:52:49+00:00"
         },
         {
+            "name": "jaxon-php/jaxon-config",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jaxon-php/jaxon-config.git",
+                "reference": "0f224719cacc4401b85d7c4cd244202dd95a7115"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-config/zipball/0f224719cacc4401b85d7c4cd244202dd95a7115",
+                "reference": "0f224719cacc4401b85d7c4cd244202dd95a7115",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.5",
+                "phpunit/phpcov": "^8.2",
+                "phpunit/phpunit": "^9.5"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jaxon\\Config\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Thierry Feuzeu"
+                }
+            ],
+            "description": "Save config options in immutable objects.",
+            "homepage": "https://www.jaxon-php.org",
+            "keywords": [
+                "config",
+                "immutable",
+                "options"
+            ],
+            "support": {
+                "issues": "https://github.com/jaxon-php/jaxon-config/issues",
+                "source": "https://github.com/jaxon-php/jaxon-config"
+            },
+            "time": "2025-01-14T20:26:33+00:00"
+        },
+        {
             "name": "jaxon-php/jaxon-core",
             "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-core.git",
-                "reference": "2e1e62e4c54c594765d66ccb1032806505cd0105"
+                "reference": "d2aa5e89ade109e085e1d38d14e8f77decc32720"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/2e1e62e4c54c594765d66ccb1032806505cd0105",
-                "reference": "2e1e62e4c54c594765d66ccb1032806505cd0105",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/d2aa5e89ade109e085e1d38d14e8f77decc32720",
+                "reference": "d2aa5e89ade109e085e1d38d14e8f77decc32720",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
+                "jaxon-php/jaxon-config": "dev-main",
                 "jaxon-php/jaxon-utils": "dev-main",
                 "nyholm/psr7": "^1.8",
                 "nyholm/psr7-server": "^1.1",
@@ -1630,7 +1683,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-core/issues",
                 "source": "https://github.com/jaxon-php/jaxon-core"
             },
-            "time": "2025-01-13T02:45:43+00:00"
+            "time": "2025-01-14T20:05:03+00:00"
         },
         {
             "name": "jaxon-php/jaxon-dialogs",
@@ -1638,12 +1691,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-dialogs.git",
-                "reference": "ecc48d70ef0683bac5a62c6c0079a8f215a5e26c"
+                "reference": "62666c2324223619456ecfe9f79457a28fc1223a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-dialogs/zipball/ecc48d70ef0683bac5a62c6c0079a8f215a5e26c",
-                "reference": "ecc48d70ef0683bac5a62c6c0079a8f215a5e26c",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-dialogs/zipball/62666c2324223619456ecfe9f79457a28fc1223a",
+                "reference": "62666c2324223619456ecfe9f79457a28fc1223a",
                 "shasum": ""
             },
             "require": {
@@ -1691,7 +1744,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-dialogs/issues",
                 "source": "https://github.com/jaxon-php/jaxon-dialogs"
             },
-            "time": "2025-01-12T04:25:02+00:00"
+            "time": "2025-01-13T22:24:31+00:00"
         },
         {
             "name": "jaxon-php/jaxon-laravel",
@@ -1757,16 +1810,15 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-utils.git",
-                "reference": "b1635d7faf94fa4f7cb8d6baea7d31422c199eef"
+                "reference": "25b815e6e219b7bf9ca1d5e4191d794bafe84e2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-utils/zipball/b1635d7faf94fa4f7cb8d6baea7d31422c199eef",
-                "reference": "b1635d7faf94fa4f7cb8d6baea7d31422c199eef",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-utils/zipball/25b815e6e219b7bf9ca1d5e4191d794bafe84e2b",
+                "reference": "25b815e6e219b7bf9ca1d5e4191d794bafe84e2b",
                 "shasum": ""
             },
             "require": {
-                "ext-json": "*",
                 "php": ">=8.0",
                 "tedivm/jshrink": "^1.4"
             },
@@ -1804,7 +1856,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-utils/issues",
                 "source": "https://github.com/jaxon-php/jaxon-utils"
             },
-            "time": "2025-01-13T02:45:43+00:00"
+            "time": "2025-01-13T22:45:30+00:00"
         },
         {
             "name": "laravel/fortify",
