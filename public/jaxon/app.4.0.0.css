@@ -11,6 +11,10 @@
   height: 12px;
 }
 
+a.highlight {
+  color: #6777ef !important;
+}
+
 a[role="link"]:hover {
   cursor: pointer;
 }
