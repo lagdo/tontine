@@ -163,6 +163,9 @@ return [
         'errors' => [
             'not_found' => "Impossible de trouver l'épargne correspondante.",
         ],
+        'messages' => [
+            'select_fund' => "Vauillez sélectionner un fond dans la liste.",
+        ],
     ],
     'closing' => [
         'titles' => [

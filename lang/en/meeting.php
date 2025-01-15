@@ -163,6 +163,9 @@ return [
         'errors' => [
             'not_found' => "Cannot find the corresponding saving.",
         ],
+        'messages' => [
+            'select_fund' => "Please select a fund from the list.",
+        ],
     ],
     'closing' => [
         'titles' => [
