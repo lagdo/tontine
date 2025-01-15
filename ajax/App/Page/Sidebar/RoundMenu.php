@@ -27,11 +27,10 @@ class RoundMenu extends Component
     {
         if($this->stash()->get('menu.round.active'))
         {
-            $this->response->jq('a', '#sidebar-menu-round')
-                ->css('color', config('menu.color.active'));
+            $this->node()->jq('a')->css('color', config('menu.color.active'));
             foreach(config('menu.round') as $menuId => $menuClass)
             {
-                $this->response->jq($menuId)->click($this->rq($menuClass)->home());
+                $this->node()->jq($menuId)->click($this->rq($menuClass)->home());
             }
         }
     }

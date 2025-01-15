@@ -27,11 +27,10 @@ class TontineMenu extends Component
     {
         if($this->stash()->get('menu.tontine.active'))
         {
-            $this->response->jq('a', '#sidebar-menu-tontine')
-                ->css('color', config('menu.color.active'));
+            $this->node()->jq('a')->css('color', config('menu.color.active'));
             foreach(config('menu.tontine') as $menuId => $menuClass)
             {
-                $this->response->jq($menuId)->click($this->rq($menuClass)->home());
+                $this->node()->jq($menuId)->click($this->rq($menuClass)->home());
             }
         }
     }
