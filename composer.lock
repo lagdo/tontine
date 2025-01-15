@@ -1691,12 +1691,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-dialogs.git",
-                "reference": "803243ede56081f355d7fe87041a500d3c2303b7"
+                "reference": "59456c72f217a5c4ab9cbcde40af0add7199cffe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-dialogs/zipball/803243ede56081f355d7fe87041a500d3c2303b7",
-                "reference": "803243ede56081f355d7fe87041a500d3c2303b7",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-dialogs/zipball/59456c72f217a5c4ab9cbcde40af0add7199cffe",
+                "reference": "59456c72f217a5c4ab9cbcde40af0add7199cffe",
                 "shasum": ""
             },
             "require": {
@@ -1744,7 +1744,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-dialogs/issues",
                 "source": "https://github.com/jaxon-php/jaxon-dialogs"
             },
-            "time": "2025-01-15T19:30:31+00:00"
+            "time": "2025-01-15T20:15:16+00:00"
         },
         {
             "name": "jaxon-php/jaxon-laravel",
