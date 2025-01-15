@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Middleware\TontineAnnotations;
+use App\Http\Middleware\TontineHtmlBuilder;
 use App\Http\Middleware\TontineLocale;
 use App\Http\Middleware\TontineTemplate;
-use App\Http\Middleware\TontineHtmlBuilder;
 use App\Http\Middleware\TontineTenant;
 
 return [
