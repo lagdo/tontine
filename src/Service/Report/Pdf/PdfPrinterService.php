@@ -62,7 +62,8 @@ class PdfPrinterService
      */
     public function getSessionReportFilename(Session $session): string
     {
-        return Str::slug(trans('meeting.report.labels.session')) . '-' . Str::slug($session->title) . '.pdf';
+        return Str::slug(trans('meeting.report.labels.session')) .
+            '-' . Str::slug($session->title) . '.pdf';
     }
 
     /**
@@ -88,7 +89,8 @@ class PdfPrinterService
      */
     public function getSavingsReportFilename(Session $session): string
     {
-        return Str::slug(trans('meeting.report.labels.savings')) . '-' . Str::slug($session->title) . '.pdf';
+        return Str::slug(trans('meeting.report.labels.savings')) .
+            '-' . Str::slug($session->title) . '.pdf';
     }
 
     /**
@@ -114,7 +116,8 @@ class PdfPrinterService
      */
     public function getCreditReportFilename(Session $session): string
     {
-        return Str::slug(trans('meeting.report.labels.credit')) . '-' . Str::slug($session->title) . '.pdf';
+        return Str::slug(trans('meeting.report.labels.credit')) .
+            '-' . Str::slug($session->title) . '.pdf';
     }
 
     /**
@@ -140,7 +143,8 @@ class PdfPrinterService
      */
     public function getRoundReportFilename(Round $round): string
     {
-        return Str::slug(trans('meeting.report.labels.round')) . '-' . Str::slug($round->title) . '.pdf';
+        return Str::slug(trans('meeting.report.labels.round')) .
+            '-' . Str::slug($round->title) . '.pdf';
     }
 
     /**
