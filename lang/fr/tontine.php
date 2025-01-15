@@ -28,8 +28,8 @@ return [
     'titles' => [
         'tontines' => "Organisations",
         'tontine' => "Tontine",
-        'rounds' => "Tours",
         'members' => "Membres",
+        'rounds' => "Tours",
         'sessions' => "Séances",
         'session' => "Séance",
         'pools' => "Tontines",
@@ -450,6 +450,7 @@ return [
         ],
         'errors' => [
             'planning' => "Le bénéficiaire choisi est déjà planifié sur une autre séance.",
+            'max-count' => "Le nombre maximum de remises pour cette séance est déjà atteint.",
         ],
     ],
     'report' => [

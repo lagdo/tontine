@@ -342,7 +342,7 @@ return [
             'sessions' => "Sessions",
         ],
         'labels' => [
-            'fixed' => "Amount fixed",
+            'fixed' => "Fixed amount",
             'planned' => "Planned",
             'auction' => "At auction",
             'lendable' => "Available for loan",
@@ -389,6 +389,10 @@ return [
     'pool_round' => [
         'titles' => [
             'sessions' => "Sessions of tontine: :pool",
+            'start_session' => "Start session: :session",
+            'end_session' => "End session: :session",
+            'start' => "Start session",
+            'end' => "End session",
         ],
         'labels' => [
             'default' => "(Same as the round)",
@@ -446,6 +450,7 @@ return [
         ],
         'errors' => [
             'planning' => "The selected beneficiary is already planned on another session.",
+            'max-count' => "The max number of remitments for this session is already reached.",
         ],
     ],
     'report' => [

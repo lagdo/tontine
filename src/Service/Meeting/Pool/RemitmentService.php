@@ -167,6 +167,16 @@ class RemitmentService
             // The selected member is already planned on another session.
             throw new MessageException(trans('tontine.remitment.errors.planning'));
         }
+        // If the pool remitments are planned, then check the payable count for the session.
+        if($pool->remit_planned)
+        {
+            $plannedCount = $this->summaryService->getSessionRemitmentCount($pool, $session);
+            $remittedCount = $this->getQuery($pool, $session)->whereHas('remitment')->count();
+            if($remittedCount >= $plannedCount)
+            {
+                throw new MessageException(trans('tontine.remitment.errors.max-count'));
+            }
+        }
 
         DB::transaction(function() use($pool, $session, $payable, $auction) {
             // Associate the payable with the session.
@@ -235,6 +245,7 @@ class RemitmentService
             ->orderBy('members.name', 'asc')
             ->orderBy('subscriptions.id', 'asc')
             ->with(['payable', 'member'])
+            ->whereHas('payable', fn($query) => $query->whereDoesntHave('remitment'))
             ->select('subscriptions.*')
             ->get();
         if($pool->remit_planned && !$pool->remit_auction)
@@ -244,8 +255,7 @@ class RemitmentService
                 ->filter(fn($subscription) => !$subscription->payable->session_id)
                 ->pluck('member.name', 'payable.id');
         }
-
-        // Return also the beneficiaries that have not yet been remitted.
+        // Also return the beneficiaries that have not yet been remitted.
         return $subscriptions
             ->filter(fn($subscription) => !$subscription->payable->session_id ||
                 $subscription->payable->session_id === $session->id)
