@@ -26,13 +26,12 @@ class UpdateUserProfile implements UpdatesUserProfileInformation
             'name' => $input['name'],
         ])->save();
 
-        $user->profile ? $user->profile->fill([
+        $profileData = [
             'city' => $input['city'] ?? '',
             'country_code' => $input['country'],
-        ])->save() : $user->profile()->create([
-            'city' => $input['city'] ?? '',
-            'country_code' => $input['country'],
-        ]);
+        ];
+        !$user->profile ? $user->profile()->create($profileData) :
+            $user->profile->fill($profileData)->save();
     }
 
     /**
@@ -48,11 +47,12 @@ class UpdateUserProfile implements UpdatesUserProfileInformation
             'email_verified_at' => null,
         ])->save();
 
-        $user->profile ? $user->profile->fill([
+        $profileData = [
+            'city' => $input['city'] ?? '',
             'country_code' => $input['country'],
-        ])->save() : $user->profile()->create([
-            'country_code' => $input['country'],
-        ]);
+        ];
+        !$user->profile ? $user->profile()->create($profileData) :
+            $user->profile->fill($profileData)->save();
 
         $user->sendEmailVerificationNotification();
     }
