@@ -3,9 +3,10 @@
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ReportController;
-use App\Http\Middleware\JaxonAnnotations;
-use App\Http\Middleware\SetAppLocale;
-use App\Http\Middleware\SetAppTemplate;
+use App\Http\Middleware\TontineAnnotations;
+use App\Http\Middleware\TontineLocale;
+use App\Http\Middleware\TontineTemplate;
+use App\Http\Middleware\TontineHtmlBuilder;
 use App\Http\Middleware\TontineTenant;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -25,7 +26,8 @@ use Laravel\Fortify\RoutePath;
 |
 */
 
-Route::middleware(['auth', TontineTenant::class, SetAppLocale::class, SetAppTemplate::class])
+Route::middleware(['auth', TontineTenant::class, TontineLocale::class,
+    TontineTemplate::class, TontineHtmlBuilder::class])
     ->prefix(LaravelLocalization::setLocale())
     ->group(function()
     {
@@ -33,12 +35,13 @@ Route::middleware(['auth', TontineTenant::class, SetAppLocale::class, SetAppTemp
         //----------------------------------
         Route::get('/', [IndexController::class, 'index'])
             ->name('tontine.home')
-            ->middleware([JaxonAnnotations::class]);
+            ->middleware([TontineAnnotations::class, 'jaxon.config']);
 
         // User profile page
         //----------------------------------
         Route::get('/profile', [IndexController::class, 'profile'])
-            ->name('user.profile');
+            ->name('user.profile')
+            ->middleware([TontineAnnotations::class, 'jaxon.config']);
 
         // Report pages
         //----------------------------------

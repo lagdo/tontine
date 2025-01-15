@@ -1,15 +1,15 @@
 <?php
 
-use App\Ajax\Web\Meeting\Payment;
-use App\Ajax\Web\Meeting\Presence\Home as Presence;
-use App\Ajax\Web\Meeting\Session as MeetingSession;
-use App\Ajax\Web\Planning\Pool;
-use App\Ajax\Web\Planning\Round as PlanningRound;
-use App\Ajax\Web\Planning\Subscription\Home as Subscription;
-use App\Ajax\Web\Report\Round as ReportRound;
-use App\Ajax\Web\Report\Session as ReportSession;
-use App\Ajax\Web\Tontine\Member;
-use App\Ajax\Web\Tontine\Options;
+use Ajax\App\Meeting\Payment\Payment;
+use Ajax\App\Meeting\Presence\Presence;
+use Ajax\App\Meeting\Session\Session as MeetingSession;
+use Ajax\App\Planning\Pool\Pool;
+use Ajax\App\Planning\Session\Round as PlanningRound;
+use Ajax\App\Planning\Subscription\Subscription;
+use Ajax\App\Report\Round\Round as ReportRound;
+use Ajax\App\Report\Session\Session as ReportSession;
+use Ajax\App\Tontine\Member\Member;
+use Ajax\App\Tontine\Options\Options;
 
 return [
     'tontine' => [
@@ -25,5 +25,8 @@ return [
         '#meeting-menu-presences' => Presence::class,
         '#report-menu-session' => ReportSession::class,
         '#report-menu-round' => ReportRound::class,
+    ],
+    'color' => [
+        'active' => '#6777ef',
     ],
 ];

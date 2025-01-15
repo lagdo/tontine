@@ -6,9 +6,10 @@ return [
         'format_medium' => 'M j, Y',
     ],
     'menus' => [
-        'tontines' => "Associations",
+        'admin' => "Administration",
+        'tontines' => "Organisations",
         'tontine' => "Tontine",
-        'admins' => "Administrators",
+        'users' => "Users",
         'planning' => "Planning",
         'meeting' => "Meeting",
         'report' => "Report",
@@ -25,15 +26,16 @@ return [
         'logout' => "Logout",
     ],
     'titles' => [
-        'tontines' => "Associations",
+        'tontines' => "Organisations",
         'tontine' => "Tontine",
         'members' => "Members",
         'rounds' => "Rounds",
         'sessions' => "Sessions",
         'session' => "Session",
-        'add' => "Add an association",
-        'edit' => "Edit an association",
-        'choose' => "Select an association",
+        'pools' => "Tontines",
+        'add' => "Add an organisation",
+        'edit' => "Edit an organisation",
+        'choose' => "Select an organisation",
         'type' => "Select the tontine type",
         'presences' => "Presences: :of",
     ],
@@ -46,8 +48,9 @@ return [
         ],
     ],
     'labels' => [
-        'tontine' => "Association",
+        'tontine' => "Organisation",
         'round' => "Round",
+        'pool' => "Tontine",
         'types' => [
             'libre' => "Free",
             'mutual' => "Mutual",
@@ -67,19 +70,19 @@ return [
         'choose' => "Choose",
     ],
     'messages' => [
-        'created' => "The association was successfully created.",
-        'updated' => "The association was successfully updated.",
-        'deleted' => "The association was successfully deleted.",
-        'selected' => "You have selected the association :tontine. You still need to add some rounds to its tontine.",
+        'created' => "The organisation was successfully created.",
+        'updated' => "The organisation was successfully updated.",
+        'deleted' => "The organisation was successfully deleted.",
+        'selected' => "You have selected the organisation :tontine.",
         'screen' => [
             'orientation' => "If you are using a mobile device, we advise you to place it in landscape mode, for a better display.",
         ],
         'learning' => [
-            'intro' => "Learn about Siak Tontine's features in this introductory video <a href=\":url\" target=\"_blank\">:url</a> (in french).",
+            'intro' => "Learn about Siak Tontine's features in this introductory video <a class=\"highlight\" href=\":url\" target=\"_blank\">:url</a> (in french).",
         ],
     ],
     'questions' => [
-        'delete' => "Delete the association? The related members, rounds and charges will also be deleted.",
+        'delete' => "Delete the organisation? The related members, rounds and charges will also be deleted.",
     ],
     'errors' => [
         'action' => "Cannot proceed.",
@@ -102,7 +105,7 @@ return [
             'add' => "Send an invite",
             'add_desc' => "The user must already have a valid account.",
             'access' => "Access",
-            'associations' => "Guest :: Associations",
+            'organisations' => "Guest :: Organisations",
         ],
         'labels' => [
             'host' => "Host",
@@ -160,7 +163,7 @@ return [
             'created' => "The round was successfully created.",
             'updated' => "The round was successfully updated.",
             'deleted' => "The round was successfully deleted.",
-            'selected' => "You have selected the association :tontine and round :round.",
+            'selected' => "You have selected the organisation :tontine and round :round.",
         ],
         'questions' => [
             'open' => "Open this round? Make sure you have setup its planning correctly.",
@@ -317,6 +320,7 @@ return [
             'resync' => "Resync the sessions in this round?<br/>You need to do this if you have changed the members, the fees, or the subscriptions after it was opened.",
         ],
         'errors' => [
+            'not_found' => "Unable to find the session.",
             'opened' => "A session has already been opened.",
             'not_opened' => "The session is not opened",
             'delete' => "Cannot delete this session.",
@@ -334,8 +338,11 @@ return [
             'members' => "Members",
             'sessions' => "Sessions",
         ],
+        'actions' => [
+            'sessions' => "Sessions",
+        ],
         'labels' => [
-            'fixed' => "Amount fixed",
+            'fixed' => "Fixed amount",
             'planned' => "Planned",
             'auction' => "At auction",
             'lendable' => "Available for loan",
@@ -360,11 +367,6 @@ return [
                 'auction' => "Check the box below if the choice of the tontine beneficiaries is subject to auction.",
             ],
         ],
-        'actions' => [
-            'subscriptions' => "Subscriptions",
-            'sessions' => "Sessions",
-            'period' => "Start - End",
-        ],
         'questions' => [
             'delete' => "Delete this tontine?<br/>Please, make sure it has no subscription.",
         ],
@@ -375,6 +377,7 @@ return [
             'selected' => "Now showing the subscriptions of the tontine :tontine.",
         ],
         'errors' => [
+            'not_found' => "Unable to find this tontine.",
             'number' => [
                 'invalid' => "Please provide a valid number.",
                 'max' => "You can add a maximum of :max entries.",
@@ -393,6 +396,12 @@ return [
         ],
         'labels' => [
             'default' => "(Same as the round)",
+            'sessions' => "Sessions (:count)",
+        ],
+        'actions' => [
+            'enabled' => "Enabled sessions",
+            'start' => "Start session",
+            'end' => "End session",
         ],
         'questions' => [
             'delete' => "Delete the sessions of this tontine?",
@@ -423,6 +432,12 @@ return [
             'create' => "Cannot create a new subscription.",
             'delete' => "Cannot delete this subscription.",
         ],
+        'actions' => [
+            'members' => "Members",
+            'sessions' => "Sessions",
+            'planning' => "Planning",
+            'beneficiaries' => "Beneficiaries",
+        ],
     ],
     'beneficiary' => [
         'errors' => [
@@ -435,6 +450,7 @@ return [
         ],
         'errors' => [
             'planning' => "The selected beneficiary is already planned on another session.",
+            'max-count' => "The max number of remitments for this session is already reached.",
         ],
     ],
     'report' => [

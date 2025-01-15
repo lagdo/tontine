@@ -1,4 +1,8 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $rqSavingPage = rq(Ajax\App\Meeting\Summary\Saving\SavingPage::class);
+@endphp
+                  <div class="table-responsive" id="content-summary-savings-page">
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -18,4 +22,6 @@
 @endforeach
                       </tbody>
                     </table>
-                    <nav>{!! $pagination !!}</nav>
+                    <nav @jxnPagination($rqSavingPage)>
+                    </nav>
+                  </div> <!-- End table -->

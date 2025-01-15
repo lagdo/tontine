@@ -1,3 +1,15 @@
+@php
+  $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
+  $rqLibreFeePage = rq(Ajax\App\Meeting\Session\Charge\Libre\FeePage::class);
+  $rqMember = rq(Ajax\App\Meeting\Session\Charge\Libre\Member::class);
+  $rqSettlement = rq(Ajax\App\Meeting\Session\Charge\Libre\Settlement::class);
+  $rqTarget = rq(Ajax\App\Meeting\Session\Charge\Libre\Target::class);
+@endphp
+                  <div class="table-responsive" id="content-session-fees-libre-page" @jxnTarget()>
+                    <div @jxnEvent(['.btn-fee-libre-add', 'click'], $rqMember->charge($chargeId))></div>
+                    <div @jxnEvent(['.btn-fee-libre-settlements', 'click'], $rqSettlement->charge($chargeId))></div>
+                    <div @jxnEvent(['.btn-fee-libre-target', 'click'], $rqTarget->charge($chargeId))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -16,4 +28,6 @@
 @endforeach
                       </tbody>
                     </table>
-                    <nav>{!! $pagination !!}</nav>
+                    <nav @jxnPagination($rqLibreFeePage)>
+                    </nav>
+                  </div> <!-- End table -->

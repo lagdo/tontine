@@ -10,6 +10,7 @@ use Rinvex\Country\CountryLoader;
 use Siak\Tontine\Model\Tontine;
 use NumberFormatter;
 
+use function array_merge;
 use function route;
 use function strtoupper;
 
@@ -19,11 +20,6 @@ class LocaleService
      * @var Currency
      */
     private $currency;
-
-    /**
-     * @var string
-     */
-    private $locale;
 
     /**
      * @var NumberFormatter
@@ -57,12 +53,16 @@ class LocaleService
     }
 
     /**
+     * @param bool $withEmpty
+     *
      * @return array
      */
-    public function getCountries(): array
+    public function getCountries(bool $withEmpty = true): array
     {
         $locale = $this->localization->getCurrentLocale();
-        return include($this->countriesDataDir . "/{$locale}/country.php");
+        $countries = include($this->countriesDataDir . "/{$locale}/country.php");
+        // Append an empty item to the array.
+        return !$withEmpty ? $countries : array_merge(['' => ''], $countries);
     }
 
     /**
@@ -77,7 +77,7 @@ class LocaleService
         $localizedCurrencies = include($this->currenciesDataDir . "/{$locale}/currency.php");
 
         $currencies = [];
-        foreach($country['currency'] as $currency)
+        foreach($country['currency'] ?? [] as $currency)
         {
             $currencyCode = $currency['iso_4217_code'];
             $currencies[$currencyCode] = $localizedCurrencies[$currencyCode];
@@ -160,9 +160,8 @@ class LocaleService
     private function makeDecimalFormatter(): NumberFormatter
     {
         $formatter = new NumberFormatter($this->_locale(), NumberFormatter::DECIMAL);
-        $precision = $this->currency->getPrecision();
-        $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $precision);
-        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $precision);
+        $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 0);
+        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $this->currency->getPrecision());
         return $formatter;
     }
 

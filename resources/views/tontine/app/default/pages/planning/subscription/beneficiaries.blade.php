@@ -1,4 +1,9 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $rqSubscription = rq(Ajax\App\Planning\Subscription\Subscription::class);
+  $rqBeneficiary = rq(Ajax\App\Planning\Subscription\Beneficiary::class);
+  $rqPlanning = rq(Ajax\App\Planning\Subscription\Planning::class);
+@endphp
             <div class="col-md-12">
               <div class="section-body">
                 <div class="row">
@@ -11,14 +16,14 @@
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">
-                      <button type="button" class="btn btn-primary" id="btn-subscription-planning">{{
+                      <button type="button" class="btn btn-primary" @jxnClick($rqPlanning->render())>{{
                         __('tontine.subscription.titles.planning') }}</i></button>
                     </div>
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">
-                      <button type="button" class="btn btn-primary" id="btn-subscription-back"><i class="fa fa-arrow-left"></i></button>
-                      <button type="button" class="btn btn-primary" id="btn-subscription-refresh"><i class="fa fa-sync"></i></button>
+                      <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->render())><i class="fa fa-arrow-left"></i></button>
+                      <button type="button" class="btn btn-primary" @jxnClick($rqBeneficiary->render())><i class="fa fa-sync"></i></button>
                     </div>
                   </div>
                 </div>
@@ -27,7 +32,13 @@
               <!-- Data tables -->
               <div class="card shadow mb-4">
                 <div class="card-body">
-                  <div class="table-responsive">
+                  <div class="table-responsive" id="content-subscription-beneficiaries" @jxnTarget()>
+                    <div @jxnEvent(['.select-beneficiary', 'change'], $rqBeneficiary->save(
+                        jq()->attr('data-session-id')->toInt(),
+                        jq()->val()->toInt(),
+                        jq()->attr('data-subscription-id')->toInt()
+                      ))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

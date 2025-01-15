@@ -1,4 +1,10 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $poolId = jq()->parent()->attr('data-pool-id')->toInt();
+  $rqRemitment = rq(Ajax\App\Meeting\Session\Pool\Remitment\Remitment::class);
+  $rqAuction = rq(Ajax\App\Meeting\Session\Pool\Remitment\Auction::class);
+  $rqPayable = rq(Ajax\App\Meeting\Session\Pool\Remitment\Payable::class);
+@endphp
                   <div class="row">
                     <div class="col">
                       <div class="section-title mt-0">{!! __('meeting.titles.remitments') !!}</div>
@@ -6,17 +12,19 @@
 @if ($hasAuctions)
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
-                        <button type="button" class="btn btn-primary" id="btn-remitment-auctions">{{ __('meeting.titles.auctions') }}</button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqAuction->render())>{{ __('meeting.titles.auctions') }}</button>
                       </div>
                     </div>
 @endif
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
-                        <button type="button" class="btn btn-primary" id="btn-remitments-refresh"><i class="fa fa-sync"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqRemitment->render())><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
                   </div>
-                  <div class="table-responsive">
+                  <div class="table-responsive" id="content-session-remitments" @jxnTarget()>
+                    <div @jxnEvent(['.btn-pool-remitments', 'click'], $rqPayable->pool($poolId))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -33,8 +41,8 @@
 @endphp
                         @include('tontine.app.default.pages.meeting.pool.' . $template, [
                           'pool' => $pool,
-                          'amount' => $pool->deposit_fixed ? $locale->formatMoney($pool->amount, true) :
-                            __('tontine.labels.types.libre'),
+                          'amount' => !$pool->deposit_fixed ? __('tontine.labels.types.libre') :
+                            $locale->formatMoney($pool->amount * $pool->pay_count, true),
                           'paid' => $pool->pay_paid,
                           'count' => $pool->pay_count,
                           'total' => $pool->amount_paid,

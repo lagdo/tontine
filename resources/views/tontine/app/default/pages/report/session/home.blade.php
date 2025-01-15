@@ -1,80 +1,44 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('sqids', 'Sqids\SqidsInterface')
+@php
+  $sessionId = pm()->select('select-session')->toInt();
+  $memberId = pm()->select('select-member')->toInt();
+  $rqSession = rq(Ajax\App\Report\Session\Session::class);
+  $rqSessionContent = rq(Ajax\App\Report\Session\SessionContent::class);
+  $rqReportTitle = rq(Ajax\App\Report\Session\ReportTitle::class);
+  $rqActionExport = rq(Ajax\App\Report\Session\Action\Export::class);
+  $rqActionMenu = rq(Ajax\App\Report\Session\Action\Menu::class);
+@endphp
           <div class="section-body">
             <div class="row">
               <div class="col">
-                <h2 class="section-title" id="session-report-title"></h2>
+                <h2 class="section-title" @jxnBind($rqReportTitle)></h2>
               </div>
               <div class="col-auto">
                 <div class="input-group">
                   {{ $htmlBuilder->select('session_id', $sessions, 0)->id('select-session')
                     ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') }}
                   <div class="input-group-append">
-                    <button type="button" class="btn btn-primary" id="btn-session-select"><i class="fa fa-arrow-right"></i></button>
+                    <button type="button" class="btn btn-primary" @jxnClick($rqSession->showSession($sessionId))><i class="fa fa-arrow-right"></i></button>
                   </div>
                 </div>
               </div>
-              <div class="col-auto" id="session-reports-export">
+              <div class="col-auto" @jxnBind($rqActionExport)>
               </div>
               <div class="col-auto">
                 <div class="input-group">
                   {{ $htmlBuilder->select('member_id', $members, 0)->id('select-member')
                     ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') }}
                   <div class="input-group-append">
-                    <button type="button" class="btn btn-primary" id="btn-member-select"><i class="fa fa-arrow-right"></i></button>
+                    <button type="button" class="btn btn-primary" @jxnClick($rqSession->showMember($sessionId, $memberId))><i class="fa fa-arrow-right"></i></button>
                   </div>
                 </div>
               </div>
-@if ($sessionId > 0)
-              <div class="col-auto">
-                <div class="btn-group float-right ml-1">
-                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fa fa-file-alt"></i>
-                  </button>
-                  <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" target="_blank" href="{{ $locale->route('entry.session',
-                      ['sessionId' => $sqids->encode([$sessionId])]) }}">{{ __('meeting.entry.actions.session') }}</a>
-                    <a class="dropdown-item" target="_blank" href="{{ $locale->route('entry.form',
-                      ['form' => 'report', 'sessionId' => $sqids->encode([$sessionId])]) }}">{{ __('meeting.entry.actions.report') }}</a>
-                    <a class="dropdown-item" target="_blank" href="{{ $locale->route('entry.form',
-                      ['form' => 'transactions', 'sessionId' => $sqids->encode([$sessionId])]) }}">{{ __('meeting.entry.actions.transactions') }}</a>
-                  </div>
-                </div>
+              <div class="col-auto" @jxnBind($rqActionMenu)>
               </div>
-@endif
             </div>
           </div>
 
           <!-- Data tables -->
           <div class="card shadow mb-4">
-            <div class="card-body" id="content-page">
-              <div class="row">
-                <div class="col-md-6 col-sm-12" id="report-deposits">
-                </div>
-                <div class="col-md-6 col-sm-12" id="report-remitments">
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 col-sm-12" id="report-session-bills">
-                </div>
-                <div class="col-md-6 col-sm-12" id="report-total-bills">
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 col-sm-12" id="report-disbursements">
-                </div>
-                <div class="col-md-6 col-sm-12" id="report-loans">
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 col-sm-12" id="report-refunds">
-                </div>
-                <div class="col-md-6 col-sm-12" id="report-savings">
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-12" id="report-fund-savings">
-                </div>
-              </div>
+            <div class="card-body" @jxnBind($rqSessionContent)>
             </div>
           </div>

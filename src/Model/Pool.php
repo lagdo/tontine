@@ -62,21 +62,13 @@ class Pool extends Base
     ];
 
     /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'start_at',
-        'end_at',
-    ];
-
-    /**
      * The attributes that should be cast.
      *
      * @var array
      */
     protected $casts = [
+        'start_at' => 'datetime',
+        'end_at' => 'datetime',
         'properties' => 'array',
     ];
 

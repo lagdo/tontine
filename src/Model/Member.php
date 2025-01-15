@@ -39,12 +39,9 @@ class Member extends Base
      *
      * @var array
      */
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'registered_at',
-        'birthday',
+    protected $casts = [
+        'registered_at' => 'datetime',
+        'birthday' => 'datetime',
     ];
 
     /**

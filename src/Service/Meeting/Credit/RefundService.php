@@ -161,6 +161,11 @@ class RefundService
         {
             return false;
         }
+        // Cannot delete the principal refund if the interest is also refunded.
+        if($debt->is_principal && !$debt->loan->fixed_interest)
+        {
+            return $debt->loan->interest_debt->refund === null;
+        }
 
         return true;
     }

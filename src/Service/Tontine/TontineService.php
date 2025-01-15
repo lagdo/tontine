@@ -71,7 +71,7 @@ class TontineService
      *
      * @return bool
      */
-    public function hasGuestTontines(): bool
+    public function hasGuestOrganisations(): bool
     {
         return $this->getGuestTontinesQuery()->exists();
     }

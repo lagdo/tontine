@@ -1,49 +1,53 @@
 {
+    "$schema": "https://getcomposer.org/schema.json",
     "name": "laravel/laravel",
     "type": "project",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "description": "The skeleton application for the Laravel framework.",
+    "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.0.2",
+        "php": "^8.2",
         "ext-gmp": "*",
+        "ext-intl": "*",
         "ext-json": "*",
-        "akaunting/laravel-money": "^4.0",
-        "chrome-php/chrome": "^1.8",
-        "guzzlehttp/guzzle": "^7.2",
-        "jaxon-php/jaxon-annotations": "^2.2",
-        "jaxon-php/jaxon-core": "^4.8",
-        "jaxon-php/jaxon-dialogs": "^4.1",
-        "jaxon-php/jaxon-laravel": "^4.0",
-        "laravel/fortify": "^1.17",
-        "laravel/framework": "^9.19",
-        "laravel/sanctum": "^3.0",
-        "laravel/tinker": "^2.7",
-        "league/iso3166": "^4.2",
-        "mcamara/laravel-localization": "^1.8",
-        "mydnic/laravel-kustomer": "^1.9",
-        "propaganistas/laravel-phone": "^5.0",
+        "akaunting/laravel-money": "^5.2",
+        "chrome-php/chrome": "^1.12",
+        "jaxon-php/jaxon-annotations": "dev-main",
+        "jaxon-php/jaxon-core": "dev-main",
+        "jaxon-php/jaxon-dialogs": "dev-main",
+        "jaxon-php/jaxon-laravel": "dev-main",
+        "laravel/fortify": "^1.25",
+        "laravel/framework": "^11.31",
+        "laravel/sanctum": "^4.0",
+        "laravel/tinker": "^2.9",
+        "league/iso3166": "^4.3",
+        "mcamara/laravel-localization": "^2.2",
+        "mydnic/laravel-kustomer": "^1.10",
+        "propaganistas/laravel-phone": "^5.3",
         "rinvex/countries": "^9.0",
-        "spatie/laravel-html": "^3.5",
-        "spatie/laravel-validation-rules": "^3.2",
+        "spatie/laravel-html": "^3.11",
+        "spatie/laravel-validation-rules": "^3.4",
         "sqids/sqids": "^0.4.1",
         "umpirsky/country-list": "^2.0",
         "umpirsky/currency-list": "^1.1"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.8",
-        "fakerphp/faker": "^1.9.1",
-        "laravel-lang/common": "^3.1",
-        "laravel/pint": "^1.0",
-        "laravel/sail": "^1.0.1",
-        "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^6.1",
-        "phpunit/phpunit": "^9.5.10",
-        "spatie/laravel-ignition": "^1.0"
+        "fakerphp/faker": "^1.23",
+        "laravel-lang/attributes": "^2.11",
+        "laravel-lang/http-statuses": "^3.8",
+        "laravel-lang/lang": "^15.11",
+        "laravel/breeze": "^2.3",
+        "laravel/pail": "^1.1",
+        "laravel/pint": "^1.13",
+        "laravel/sail": "^1.26",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.1",
+        "phpunit/phpunit": "^11.0.1"
     },
     "autoload": {
         "psr-4": {
             "App\\": "app/",
+            "Ajax\\": "ajax/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
             "Siak\\Tontine\\": "src/"
@@ -63,14 +67,20 @@
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "@php artisan lang:update"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi",
-            "@php artisan annotations:mkdir"
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
         ]
     },
     "extra": {
@@ -83,7 +93,8 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
         }
     },
     "minimum-stability": "dev",

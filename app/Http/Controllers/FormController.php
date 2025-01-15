@@ -7,7 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\SessionService;
-use Siak\Tontine\Service\Report\Pdf\PrinterService;
+use Siak\Tontine\Service\Report\Pdf\PdfPrinterService;
 use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\TenantService;
 use Sqids\SqidsInterface;
@@ -22,11 +22,11 @@ class FormController extends Controller
 {
     /**
      * @param TenantService $tenantService
-     * @param PrinterService $printerService
      * @param SessionService $sessionService
+     * @param PdfPrinterService $printerService
      */
     public function __construct(private TenantService $tenantService,
-        private PrinterService $printerService, private SessionService $sessionService)
+        private SessionService $sessionService, private PdfPrinterService $printerService)
     {}
 
     /**

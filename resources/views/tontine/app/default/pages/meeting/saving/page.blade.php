@@ -1,4 +1,14 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $savingId = jq()->parent()->attr('data-saving-id')->toInt();
+  $rqSaving = rq(Ajax\App\Meeting\Session\Saving\Saving::class);
+  $rqSavingPage = rq(Ajax\App\Meeting\Session\Saving\SavingPage::class);
+@endphp
+                  <div class="table-responsive" id="content-session-savings-page" @jxnTarget()>
+                    <div @jxnEvent(['.btn-saving-edit', 'click'], $rqSaving->editSaving($savingId))></div>
+                    <div @jxnEvent(['.btn-saving-delete', 'click'], $rqSaving->deleteSaving($savingId)
+                      ->confirm(__('meeting.saving.questions.delete')))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -30,4 +40,6 @@
 @endforeach
                       </tbody>
                     </table>
-{!! $pagination !!}
+                    <nav @jxnPagination($rqSavingPage)>
+                    </nav>
+                  </div> <!-- End table -->

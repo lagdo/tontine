@@ -4,19 +4,8 @@
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.loans') }}</div>
                     </div>
-                    <div class="col-auto">
-                      <div class="input-group mb-2">
-                        <div class="input-group-prepend">
-                          {!! $htmlBuilder->span('...')->id('loan_amount_available')
-                            ->class('input-group-text')->attribute('style', 'height:36px; padding:5px 15px;') !!}
-                        </div>
-                        <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" id="btn-loan-balances"><i class="fa fa-caret-right"></i></button>
-                        </div>
-                      </div>
-                    </div>
                   </div>
-                  <div class="table-responsive">
+                  <div class="table-responsive" id="content-summary-loans">
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

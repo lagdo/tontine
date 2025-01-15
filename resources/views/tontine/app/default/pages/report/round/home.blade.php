@@ -1,5 +1,12 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('sqids', 'Sqids\SqidsInterface')
+@php
+  $rqRound = rq(Ajax\App\Report\Round\Round::class);
+  $rqRoundBalance = rq(Ajax\App\Report\Round\Balance::class);
+  $rqRoundPool = rq(Ajax\App\Report\Round\Pool::class);
+  $clRoundPool = cl(Ajax\App\Report\Round\Pool::class);
+  $rqOptions = rq(Ajax\App\Tontine\Options\Options::class);
+@endphp
           <div class="section-body">
             <div class="row">
               <div class="col">
@@ -7,12 +14,12 @@
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right ml-1" role="group">
-                  <button type="button" class="btn btn-primary" id="btn-meeting-report-refresh"><i class="fa fa-sync"></i></button>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqRound->home())><i class="fa fa-sync"></i></button>
                 </div>
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right ml-1">
-                  <button type="button" class="btn btn-primary" id="btn-tontine-options"><i class="fa fa-cog"></i></button>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqOptions->editOptions())><i class="fa fa-cog"></i></button>
                   <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-file-pdf"></i>
                   </button>
@@ -38,12 +45,54 @@
             </div>
           </div>
 
+@if (count($figures) > 0)
           <div class="card shadow mb-4">
             <div class="card-body" id="content-pools">
+@foreach ($figures as $poolFigures)
+@php
+  $pool = $poolFigures['pool'];
+  $clRoundPool->setFigures($poolFigures);
+@endphp
+              <div class="row">
+                <div class="col">
+                  <div class="section-title mt-0">{{ __('meeting.actions.pools') }} - {{ $pool->title }}</div>
+                </div>
+                <div class="col-auto">
+                  <div class="btn-group float-right ml-1" role="group">
+                    <button type="button" class="btn btn-primary" @jxnClick($rqRoundPool->refresh($pool->id))><i class="fa fa-sync"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="table-responsive" @jxnBind($rqRoundPool, "pool-{$pool->id}")>
+                    @jxnHtml($rqRoundPool)
+                  </div>
+                </div>
+              </div>
+@endforeach
             </div>
           </div>
+@endif
 
           <div class="card shadow mb-4">
-            <div class="card-body" id="content-amounts">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <div class="section-title mt-0">{!! __('meeting.titles.amounts') !!}</div>
+                </div>
+                <div class="col-auto">
+                  <div class="btn-group float-right ml-1" role="group">
+                    <button type="button" class="btn btn-primary" @jxnClick($rqRoundBalance->render())><i class="fa fa-sync"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="table-responsive" id="content-amounts" @jxnBind($rqRoundBalance)>
+                    @jxnHtml($rqRoundBalance)
+                  </div>
+                </div>
+              </div>
             </div>
           </div>

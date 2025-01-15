@@ -1,5 +1,15 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-              <div class="table-responsive">
+@php
+  $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
+  $rqCharge = rq(Ajax\App\Tontine\Options\Charge::class);
+  $rqChargePage = rq(Ajax\App\Tontine\Options\ChargePage::class);
+@endphp
+              <div class="table-responsive" id="content-charge-page" @jxnTarget()>
+                <div @jxnEvent(['.btn-charge-edit', 'click'], $rqCharge->edit($chargeId))></div>
+                <div @jxnEvent(['.btn-charge-toggle', 'click'], $rqCharge->toggle($chargeId))></div>
+                <div @jxnEvent(['.btn-charge-delete', 'click'], $rqCharge->delete($chargeId)
+                  ->confirm(__('tontine.charge.questions.delete')))></div>
+
                 <table class="table table-bordered responsive">
                   <thead>
                     <tr>
@@ -24,7 +34,7 @@
                         <i class="fa fa-toggle-{{ $charge->lendable ? 'on' : 'off' }}"></i>
                       </td>
                       <td class="table-item-toggle" data-charge-id="{{ $charge->id }}">
-                        <a href="javascript:void(0)" class="btn-charge-toggle"><i class="fa fa-toggle-{{ $charge->active ? 'on' : 'off' }}"></i></a>
+                        <a role="link" tabindex="0" class="btn-charge-toggle"><i class="fa fa-toggle-{{ $charge->active ? 'on' : 'off' }}"></i></a>
                       </td>
                       <td class="table-item-menu">
 @include('tontine.app.default.parts.table.menu', [
@@ -43,5 +53,6 @@
 @endforeach
                   </tbody>
                 </table>
-{!! $pagination !!}
+                <nav @jxnPagination($rqChargePage)>
+                </nav>
               </div>

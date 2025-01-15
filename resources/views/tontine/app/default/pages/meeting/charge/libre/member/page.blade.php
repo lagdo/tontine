@@ -1,9 +1,20 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $memberId = jq()->parent()->attr('data-member-id')->toInt();
+  $paid = pm()->checked('check-fee-libre-paid');
+  $rqMember = rq(Ajax\App\Meeting\Session\Charge\Libre\Member::class);
+  $rqMemberPage = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberPage::class);
+  $rqAmount = rq(Ajax\App\Meeting\Session\Charge\Libre\Amount::class);
+@endphp
+                  <div class="table-responsive" id="content-session-fee-libre-members" @jxnTarget()>
+                    <div @jxnEvent(['.btn-add-bill', 'click'], $rqMember->addBill($memberId, $paid))></div>
+                    <div @jxnEvent(['.btn-del-bill', 'click'], $rqMember->delBill($memberId))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
                           <th>{{ __('common.labels.name') }}</th>
-                          <th class="currency">{{ __('common.labels.paid') }}</th>
+                          <th class="currency">&nbsp;</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -16,32 +27,24 @@
 @if (!$session->opened || !$charge->is_active)
                             @if ($member->bill !== null)<i class="fa fa-toggle-on"></i>@else<i class="fa fa-toggle-off">@endif
 @elseif ($member->bill !== null)
-                            <a href="javascript:void(0)" class="btn-del-bill"><i class="fa fa-toggle-on"></i></a>
+                            <a role="link" tabindex="0" class="btn-del-bill"><i class="fa fa-toggle-on"></i></a>
 @else
-                            <a href="javascript:void(0)" class="btn-add-bill"><i class="fa fa-toggle-off"></i></a>
+                            <a role="link" tabindex="0" class="btn-add-bill"><i class="fa fa-toggle-off"></i></a>
 @endif
                           </td>
 @else
-                          <td class="currency" id="member-{{ $member->id }}" data-member-id="{{ $member->id }}" style="width:200px">
-@if (!$session->opened || !$charge->is_active)
-                            @include('tontine.app.default.pages.meeting.charge.libre.member.closed', [
-                              'amount' => !$member->bill ? '' : $locale->formatMoney($member->bill->amount, true),
-                            ])
-@elseif (!$member->bill)
-                            @include('tontine.app.default.pages.meeting.charge.libre.member.edit', [
-                              'id' => $member->id,
-                              'amount' => '',
-                            ])
-@else
-                            @include('tontine.app.default.pages.meeting.charge.libre.member.show', [
-                              'id' => $member->id,
-                              'amount' => $locale->formatMoney($member->bill->amount, false),
-                            ])
-@endif
+@php
+  $stash->set('meeting.charge.member.id', $member->id);
+  $stash->set('meeting.charge.bill', $member->bill);
+@endphp
+                          <td class="currency amount" @jxnBind($rqAmount, $member->id)>
+                            @jxnHtml($rqAmount)
                           </td>
 @endif
                         </tr>
 @endforeach
                       </tbody>
                     </table>
-                    <nav>{!! $pagination !!}</nav>
+                    <nav @jxnPagination($rqMemberPage)>
+                    </nav>
+                  </div> <!-- End table -->

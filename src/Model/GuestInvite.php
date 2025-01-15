@@ -51,8 +51,8 @@ class GuestInvite extends Base
      *
      * @var array
      */
-    protected $dates = [
-        'expires_at',
+    protected $casts = [
+        'expires_at' => 'datetime',
     ];
 
     public function host()

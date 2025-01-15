@@ -6,9 +6,10 @@ return [
         'format_medium' => 'j M Y',
     ],
     'menus' => [
-        'tontines' => "Associations",
+        'admin' => "Administration",
+        'tontines' => "Organisations",
         'tontine' => "Tontine",
-        'admins' => "Administrateurs",
+        'users' => "Utilisateurs",
         'planning' => "Planning",
         'meeting' => "Réunion",
         'report' => "Rapport",
@@ -25,15 +26,16 @@ return [
         'logout' => "Se déconnecter",
     ],
     'titles' => [
-        'tontines' => "Associations",
+        'tontines' => "Organisations",
         'tontine' => "Tontine",
-        'rounds' => "Tours",
         'members' => "Membres",
+        'rounds' => "Tours",
         'sessions' => "Séances",
         'session' => "Séance",
-        'add' => "Ajouter une association",
-        'edit' => "Modifier une association",
-        'choose' => "Choisir une association",
+        'pools' => "Tontines",
+        'add' => "Ajouter une organisation",
+        'edit' => "Modifier une organisation",
+        'choose' => "Choisir une organisation",
         'type' => "Choisir un type de tontine",
         'presences' => "Présences : :of",
     ],
@@ -46,8 +48,9 @@ return [
         ],
     ],
     'labels' => [
-        'tontine' => "Association",
+        'tontine' => "Organisation",
         'round' => "Tour",
+        'pool' => "Tontine",
         'types' => [
             'libre' => "Libre",
             'mutual' => "Mutuelle",
@@ -67,19 +70,19 @@ return [
         'choose' => "Choisir",
     ],
     'messages' => [
-        'created' => "L'association a été ajoutée",
-        'updated' => "L'association a été modifiée",
-        'deleted' => "L'association a été supprimée",
-        'selected' => "Vous avez sélectionné l'association :tontine. Vous devez encore ajouter des tours sur sa tontine.",
+        'created' => "L'organisation a été ajoutée",
+        'updated' => "L'organisation a été modifiée",
+        'deleted' => "L'organisation a été supprimée",
+        'selected' => "Vous avez sélectionné l'organisation :tontine.",
         'screen' => [
             'orientation' => "Si vous utilisez un appareil mobile, nous vous conseillons de le placer en mode paysage, pour un meilleur affichage.",
         ],
         'learning' => [
-            'intro' => "Découvrez les fonctionnalités de Siak Tontine dans cette vidéo d'introduction <a href=\":url\" target=\"_blank\">:url</a> (en français).",
+            'intro' => "Découvrez les fonctionnalités de Siak Tontine dans cette vidéo d'introduction <a class=\"highlight\" href=\":url\" target=\"_blank\">:url</a> (en français).",
         ],
     ],
     'questions' => [
-        'delete' => "Supprimer cette association ? Ses members, tours et frais seront également supprimés.",
+        'delete' => "Supprimer cette organisation ? Ses members, tours et frais seront également supprimés.",
     ],
     'errors' => [
         'action' => "Action impossible.",
@@ -102,7 +105,7 @@ return [
             'add' => "Inviter un utilisateur",
             'add_desc' => "L'utilisateur doit déjà avoir créé un compte.",
             'access' => "Accès",
-            'associations' => "Invité :: Associations",
+            'organisations' => "Invité :: Organisations",
         ],
         'labels' => [
             'host' => "Hôte",
@@ -160,7 +163,7 @@ return [
             'created' => "le tour a été ajouté.",
             'updated' => "le tour a été modifié.",
             'deleted' => "le tour a été supprimé.",
-            'selected' => "Vous avez sélectionné l'association :tontine et le tour :round.",
+            'selected' => "Vous avez sélectionné l'organisation :tontine et le tour :round.",
         ],
         'questions' => [
             'open' => "Ouvrir ce tour ? Assurez-vous d'avoir correctement rempli son planning.",
@@ -317,6 +320,7 @@ return [
             'resync' => "Resynchroniser les séances de ce tour ?<br/>Vous devez le faire si vous avez changé les membres, les frais, ou les souscriptions après son ouverture.",
         ],
         'errors' => [
+            'not_found' => "Impossible de trouver la séance.",
             'opened' => "Une séance a déjà été ouverte.",
             'not_opened' => "La séance n'est pas ouverte.",
             'delete' => "Impossible de supprimer cette séance.",
@@ -332,6 +336,9 @@ return [
             'remitments' => "Remises",
             'subscriptions' => "Souscriptions",
             'members' => "Membres",
+            'sessions' => "Séances",
+        ],
+        'actions' => [
             'sessions' => "Séances",
         ],
         'labels' => [
@@ -360,11 +367,6 @@ return [
                 'auction' => "Cochez la case ci-dessous si le choix des bénéficiaires des cotisations est soumis aux enchères.",
             ],
         ],
-        'actions' => [
-            'subscriptions' => "Souscriptions",
-            'sessions' => "Séances",
-            'period' => "Début - Fin",
-        ],
         'questions' => [
             'delete' => "Supprimer cette tontine ?<br/>Il ne faut pas qu'il ait de souscription.",
         ],
@@ -375,11 +377,12 @@ return [
             'selected' => "Vous affichez les souscriptions de la tontine :tontine.",
         ],
         'errors' => [
+            'not_found' => "Impossible de trouver cette tontine.",
             'number' => [
                 'invalid' => "Vous devez entrer un nombre valide.",
                 'max' => "Vous pouvez ajouter au plus :max entrées.",
             ],
-            'subscription' => "Cette tontines a encore des souscriptions.",
+            'subscription' => "Cette tontine a encore des souscriptions.",
             'no_subscription' => "Il y a encore des fonds sans souscription.",
         ],
     ],
@@ -393,6 +396,12 @@ return [
         ],
         'labels' => [
             'default' => "(Même que le tour)",
+            'sessions' => "Séances (:count)",
+        ],
+        'actions' => [
+            'enabled' => "Séances actives",
+            'start' => "Séance de début",
+            'end' => "Séance de fin",
         ],
         'questions' => [
             'delete' => "Supprimer les séances de cette tontine ?",
@@ -423,6 +432,12 @@ return [
             'create' => "Impossible de créer une nouvelle souscription.",
             'delete' => "Impossible de supprimer la souscription.",
         ],
+        'actions' => [
+            'members' => "Membres",
+            'sessions' => "Séances",
+            'planning' => "Planning",
+            'beneficiaries' => "Bénéficiaires",
+        ],
     ],
     'beneficiary' => [
         'errors' => [
@@ -435,6 +450,7 @@ return [
         ],
         'errors' => [
             'planning' => "Le bénéficiaire choisi est déjà planifié sur une autre séance.",
+            'max-count' => "Le nombre maximum de remises pour cette séance est déjà atteint.",
         ],
     ],
     'report' => [

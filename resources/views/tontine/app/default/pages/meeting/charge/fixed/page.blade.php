@@ -1,3 +1,11 @@
+@php
+  $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
+  $rqSettlement = rq(Ajax\App\Meeting\Session\Charge\Fixed\Settlement::class);
+  $rqFixedFeePage = rq(Ajax\App\Meeting\Session\Charge\Fixed\FeePage::class);
+@endphp
+                  <div class="table-responsive" id="content-session-fees-fixed-page" @jxnTarget()>
+                    <div @jxnEvent(['.btn-fee-fixed-settlements', 'click'], $rqSettlement->charge($chargeId))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -16,4 +24,6 @@
 @endforeach
                       </tbody>
                     </table>
-                    <nav>{!! $pagination !!}</nav>
+                    <nav @jxnPagination($rqFixedFeePage)>
+                    </nav>
+                  </div> <!-- End table -->

@@ -7,7 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Planning\SessionService;
-use Siak\Tontine\Service\Report\Pdf\PrinterService;
+use Siak\Tontine\Service\Report\Pdf\PdfPrinterService;
 use Siak\Tontine\Service\Report\ReportService;
 use Sqids\SqidsInterface;
 
@@ -22,11 +22,11 @@ class ReportController extends Controller
      * @param SessionService $sessionService
      * @param RoundService $roundService
      * @param ReportService $reportService
-     * @param PrinterService $printerService
+     * @param PdfPrinterService $printerService
      */
     public function __construct(private SessionService $sessionService,
         private RoundService $roundService, private ReportService $reportService,
-        private PrinterService $printerService)
+        private PdfPrinterService $printerService)
     {}
 
     /**

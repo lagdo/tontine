@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use Siak\Tontine\Model\PartialRefund;
 
 function localizedRoute(string $route, array $options = [])
 {
@@ -41,5 +40,5 @@ function paymentLink(?Model $payment, string $name, bool $sessionIsClosed)
     }
 
     return $sessionIsClosed ? $icon :
-        '<a href="javascript:void(0)" class="' . $linkClass . '">' . $icon . '</a>';
+        '<a role="link" tabindex="0" class="' . $linkClass . '">' . $icon . '</a>';
 }

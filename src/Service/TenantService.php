@@ -140,7 +140,7 @@ class TenantService
     /**
      * @return array
      */
-    private function getGuestAccess(): array
+    private function getHostAccess(): array
     {
         if(!$this->tontine || !$this->user)
         {
@@ -167,14 +167,14 @@ class TenantService
      * @return bool
      * @throws MessageException
      */
-    public function checkGuestAccess(string $section, string $entry, bool $return = false): bool
+    public function checkHostAccess(string $section, string $entry, bool $return = false): bool
     {
         if(!$this->userIsGuest())
         {
             return true;
         }
 
-        $guestAccess = $this->getGuestAccess();
+        $guestAccess = $this->getHostAccess();
         if(!($guestAccess[$section][$entry] ?? false))
         {
             if($return)

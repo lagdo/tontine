@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Mcamara\LaravelLocalization\LaravelLocalization;
@@ -38,14 +39,14 @@ use Siak\Tontine\Service\Planning\SessionService as PlanningSessionService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Planning\SummaryService as PlanningSummaryService;
 use Siak\Tontine\Service\Report\MemberService as MemberReportService;
-use Siak\Tontine\Service\Report\Pdf\PrinterService;
+use Siak\Tontine\Service\Report\Pdf\PdfPrinterService;
 use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\Report\RoundService as RoundReportService;
 use Siak\Tontine\Service\Report\SessionService as SessionReportService;
 use Siak\Tontine\Service\Tontine\CategoryService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Service\Tontine\FundService;
-use Siak\Tontine\Service\Tontine\GuestService;
+use Siak\Tontine\Service\Tontine\UserService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
 use Siak\Tontine\Validation\Meeting\ClosingValidator;
@@ -61,8 +62,8 @@ use Siak\Tontine\Validation\Planning\RoundValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 use Siak\Tontine\Validation\Tontine\ChargeValidator;
 use Siak\Tontine\Validation\Tontine\FundValidator;
-use Siak\Tontine\Validation\Tontine\GuestAccessValidator;
 use Siak\Tontine\Validation\Tontine\GuestInviteValidator;
+use Siak\Tontine\Validation\Tontine\HostAccessValidator;
 use Siak\Tontine\Validation\Tontine\MemberValidator;
 use Siak\Tontine\Validation\Tontine\OptionsValidator;
 use Siak\Tontine\Validation\Tontine\TontineValidator;
@@ -136,8 +137,8 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(RoundReportService::class, RoundReportService::class);
         $this->app->singleton(SessionReportService::class, SessionReportService::class);
         $this->app->singleton(ReportService::class, ReportService::class);
-        $this->app->singleton(PrinterService::class, PrinterService::class);
-        $this->app->when(PrinterService::class)
+        $this->app->singleton(PdfPrinterService::class, PdfPrinterService::class);
+        $this->app->when(PdfPrinterService::class)
             ->needs('$config')
             ->give(config('chrome.page'));
 
@@ -148,7 +149,7 @@ class SiakServiceProvider extends ServiceProvider
 
         $this->app->singleton(TenantService::class, TenantService::class);
         $this->app->singleton(TontinePoolService::class, TontinePoolService::class);
-        $this->app->singleton(GuestService::class, GuestService::class);
+        $this->app->singleton(UserService::class, UserService::class);
         $this->app->singleton(MemberService::class, MemberService::class);
         $this->app->singleton(TontineService::class, TontineService::class);
 
@@ -156,7 +157,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(PaymentServiceInterface::class, function() {
             return new class implements PaymentServiceInterface {
                 // By default, all the payment items are editable.
-                public function isEditable(Model $item): bool
+                public function isEditable(Model $_): bool
                 {
                     return true;
                 }
@@ -179,7 +180,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(OptionsValidator::class, OptionsValidator::class);
         $this->app->singleton(TontineValidator::class, TontineValidator::class);
         $this->app->singleton(TargetValidator::class, TargetValidator::class);
-        $this->app->singleton(GuestAccessValidator::class, GuestAccessValidator::class);
+        $this->app->singleton(HostAccessValidator::class, HostAccessValidator::class);
         $this->app->singleton(GuestInviteValidator::class, GuestInviteValidator::class);
     }
 }

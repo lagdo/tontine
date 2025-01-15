@@ -1,3 +1,14 @@
+@php
+  $categoryId = jq()->parent()->attr('data-category-id')->toInt();
+  $rqCategory = rq(Ajax\App\Tontine\Options\Category::class);
+  $rqCategoryPage = rq(Ajax\App\Tontine\Options\CategoryPage::class);
+@endphp
+                  <div class="table-responsive" id="content-category-page" @jxnTarget()>
+                    <div @jxnEvent(['.btn-category-edit', 'click'], $rqCategory->edit($categoryId))></div>
+                    <div @jxnEvent(['.btn-category-toggle', 'click'], $rqCategory->toggle($categoryId))></div>
+                    <div @jxnEvent(['.btn-category-delete', 'click'], $rqCategory->delete($categoryId)
+                      ->confirm(__('tontine.category.questions.delete')))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -11,7 +22,7 @@
                         <tr>
                           <td>{{ $category->name }}</td>
                           <td class="table-item-toggle" data-category-id="{{ $category->id }}">
-                            <a href="javascript:void(0)" class="btn-category-toggle"><i class="fa fa-toggle-{{ $category->active ? 'on' : 'off' }}"></i></a>
+                            <a role="link" tabindex="0" class="btn-category-toggle"><i class="fa fa-toggle-{{ $category->active ? 'on' : 'off' }}"></i></a>
                           </td>
                           <td class="table-item-menu">
 @include('tontine.app.default.parts.table.menu', [
@@ -30,4 +41,6 @@
 @endforeach
                       </tbody>
                     </table>
-{!! $pagination !!}
+                    <nav @jxnPagination($rqCategoryPage)>
+                    </nav>
+                  </div> <!-- End table -->

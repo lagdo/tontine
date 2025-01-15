@@ -16,7 +16,7 @@
   <script type="text/javascript">
   </script>
 
-@include('tontine.app.default.parts.footer.ajax', compact('jaxonJs', 'jaxonScript', 'jaxonCss'))
+@include('tontine.app.default.parts.footer.ajax')
 
-  <script src="/jaxon/app.3.4.0.js"></script>
+  <script src="/jaxon/app.4.0.0.js"></script>
 @endsection

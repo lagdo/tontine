@@ -54,9 +54,9 @@ class Bill extends Base
      *
      * @var array
      */
-    protected $dates = [
-        'issued_at',
-        'deadline',
+    protected $casts = [
+        'issued_at' => 'datetime',
+        'deadline' => 'datetime',
     ];
 
     /**

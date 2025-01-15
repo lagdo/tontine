@@ -16,6 +16,8 @@
 <link rel="stylesheet" href="/tpl/assets/css/components-v1.4.css">
 <link rel="stylesheet" href="/tpl/assets/css/custom.css">
 
-<link rel="stylesheet" href="/jaxon/app.3.4.2.css">
+<link rel="stylesheet" href="/jaxon/app.4.0.1.css">
 
-@include('tontine.app.default.parts.header.custom')
+@if(config('tontine.templates.custom.css'))
+@includeIf(config('tontine.templates.custom.css'))
+@endif

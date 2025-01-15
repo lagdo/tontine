@@ -9,21 +9,19 @@ class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
+        // app()->usePublicPath(__DIR__.'/public');
+
         Schema::defaultStringLength(190);
 
         // Force redirect to HTTPS.

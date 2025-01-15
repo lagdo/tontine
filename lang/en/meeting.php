@@ -140,11 +140,19 @@ return [
             'auction' => "Auction",
             'beneficiary' => "Beneficiary",
         ],
+        'questions' => [
+            'delete' => "Delete this remitment?",
+        ],
     ],
     'saving' => [
         'titles' => [
             'add' => "Add a saving",
             'edit' => "Edit a saving",
+        ],
+        'actions' => [
+            'close' => "Close",
+            'saving' => "Saving",
+            'interest' => "Interest",
         ],
         'labels' => [
             'closing' => "Closing",
