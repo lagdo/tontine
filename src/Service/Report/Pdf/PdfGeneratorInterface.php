@@ -2,7 +2,7 @@
 
 namespace Siak\Tontine\Service\Report\Pdf;
 
-interface GeneratorInterface
+interface PdfGeneratorInterface
 {
     /**
      * @param string $html

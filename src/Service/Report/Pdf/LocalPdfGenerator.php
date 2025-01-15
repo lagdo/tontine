@@ -4,7 +4,7 @@ namespace Siak\Tontine\Service\Report\Pdf;
 
 use HeadlessChromium\Browser;
 
-class LocalGenerator implements GeneratorInterface
+class LocalPdfGenerator implements PdfGeneratorInterface
 {
     /**
      * @param Browser $browser

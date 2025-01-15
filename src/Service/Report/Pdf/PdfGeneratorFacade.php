@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @method static string getPdf(string $html, array $config)
  */
-class GeneratorFacade extends Facade
+class PdfGeneratorFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return GeneratorInterface::class;
+        return PdfGeneratorInterface::class;
     }
 }

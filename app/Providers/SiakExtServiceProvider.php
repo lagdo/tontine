@@ -6,8 +6,8 @@ use HeadlessChromium\BrowserFactory;
 use HeadlessChromium\Browser;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
-use Siak\Tontine\Service\Report\Pdf\GeneratorInterface;
-use Siak\Tontine\Service\Report\Pdf\LocalGenerator;
+use Siak\Tontine\Service\Report\Pdf\PdfGeneratorInterface;
+use Siak\Tontine\Service\Report\Pdf\LocalPdfGenerator;
 
 use function config;
 
@@ -26,9 +26,9 @@ class SiakExtServiceProvider extends ServiceProvider implements DeferrableProvid
             return $browserFactory->createBrowser(config('chrome.browser', []));
         });
 
-        $this->app->bind(GeneratorInterface::class, LocalGenerator::class);
-        $this->app->singleton(LocalGenerator::class, function($app) {
-            return new LocalGenerator($app->make(Browser::class));
+        $this->app->bind(PdfGeneratorInterface::class, LocalPdfGenerator::class);
+        $this->app->singleton(LocalPdfGenerator::class, function($app) {
+            return new LocalPdfGenerator($app->make(Browser::class));
         });
     }
 
@@ -39,6 +39,6 @@ class SiakExtServiceProvider extends ServiceProvider implements DeferrableProvid
      */
     public function provides()
     {
-        return [GeneratorInterface::class];
+        return [PdfGeneratorInterface::class];
     }
 }

@@ -39,7 +39,7 @@ use Siak\Tontine\Service\Planning\SessionService as PlanningSessionService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Planning\SummaryService as PlanningSummaryService;
 use Siak\Tontine\Service\Report\MemberService as MemberReportService;
-use Siak\Tontine\Service\Report\Pdf\PrinterService;
+use Siak\Tontine\Service\Report\Pdf\PdfPrinterService;
 use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\Report\RoundService as RoundReportService;
 use Siak\Tontine\Service\Report\SessionService as SessionReportService;
@@ -137,8 +137,8 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(RoundReportService::class, RoundReportService::class);
         $this->app->singleton(SessionReportService::class, SessionReportService::class);
         $this->app->singleton(ReportService::class, ReportService::class);
-        $this->app->singleton(PrinterService::class, PrinterService::class);
-        $this->app->when(PrinterService::class)
+        $this->app->singleton(PdfPrinterService::class, PdfPrinterService::class);
+        $this->app->when(PdfPrinterService::class)
             ->needs('$config')
             ->give(config('chrome.page'));
 
@@ -157,7 +157,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(PaymentServiceInterface::class, function() {
             return new class implements PaymentServiceInterface {
                 // By default, all the payment items are editable.
-                public function isEditable(Model $item): bool
+                public function isEditable(Model $_): bool
                 {
                     return true;
                 }

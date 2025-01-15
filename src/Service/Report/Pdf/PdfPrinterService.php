@@ -10,7 +10,7 @@ use Siak\Tontine\Service\Tontine\TontineService;
 use function trans;
 use function view;
 
-class PrinterService
+class PdfPrinterService
 {
     /**
      * @param TontineService $tontineService
@@ -44,7 +44,7 @@ class PrinterService
             'headerTemplate' => (string)view("$templatePath.tpl.header"),
             'footerTemplate' => (string)view("$templatePath.tpl.footer"),
         ];
-        return GeneratorFacade::getPdf((string)view($templatePath), $config);
+        return PdfGeneratorFacade::getPdf((string)view($templatePath), $config);
     }
 
     /**
