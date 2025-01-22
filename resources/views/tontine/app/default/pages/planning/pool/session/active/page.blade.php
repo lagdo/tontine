@@ -3,7 +3,7 @@
   $rqSession = rq(Ajax\App\Planning\Pool\Session\Session::class);
   $rqSessionPage = rq(Ajax\App\Planning\Pool\Session\SessionPage::class);
 @endphp
-                      <div class="table-responsive" id="content-planning-enabled-sessions-page" @jxnTarget()>
+                      <div class="table-responsive" id="content-planning-active-sessions-page" @jxnTarget()>
                         <div @jxnEvent(['.pool-subscription-session-enable', 'click'], $rqSession->enableSession($sessionId))></div>
                         <div @jxnEvent(['.pool-subscription-session-disable', 'click'], $rqSession->disableSession($sessionId)
                           ->confirm(__('tontine.session.questions.disable')))></div>

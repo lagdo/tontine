@@ -46,7 +46,7 @@ class SessionPage extends PageComponent
     {
         $pool = $this->stash()->get('pool.session.pool');
 
-        return $this->renderView('pages.planning.pool.session.enabled.page', [
+        return $this->renderView('pages.planning.pool.session.active.page', [
             'pool' => $pool,
             'sessions' => $this->poolService->getPoolSessions($pool, $this->currentPage()),
         ]);
@@ -57,6 +57,6 @@ class SessionPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-planning-enabled-sessions-page');
+        $this->response->js('Tontine')->makeTableResponsive('content-planning-active-sessions-page');
     }
 }

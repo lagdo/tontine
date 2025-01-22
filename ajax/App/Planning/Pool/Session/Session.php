@@ -34,7 +34,7 @@ class Session extends Component
 
     public function html(): Stringable
     {
-        return $this->renderView('pages.planning.pool.session.enabled.home', [
+        return $this->renderView('pages.planning.pool.session.active.home', [
             'pool' => $this->stash()->get('pool.session.pool'),
         ]);
     }

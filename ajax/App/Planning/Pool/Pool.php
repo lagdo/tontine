@@ -75,7 +75,9 @@ class Pool extends Component
     public function showIntro()
     {
         $title = trans('tontine.pool.titles.add');
-        $content = $this->renderView('pages.planning.pool.add_intro');
+        $content = $this->renderView('pages.planning.pool.add_intro', [
+            'round' => $this->tenantService->round(),
+        ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

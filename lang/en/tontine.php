@@ -356,7 +356,7 @@ return [
             ],
         ],
         'help' => [
-            'intro' => "You are going to add a new tontine.<br/>" .
+            'intro' => "You are going to add a new tontine on round <b>:round</b>.<br/>" .
                 "We are going to ask you to specify its characteristics.",
             'deposit' => [
                 'fixed' => "Check the box below each member who subscribes to this tontine must pay a fixed amount at each session.",
@@ -399,7 +399,7 @@ return [
             'sessions' => "Sessions (:count)",
         ],
         'actions' => [
-            'enabled' => "Enabled sessions",
+            'active' => "Active sessions",
             'start' => "Start session",
             'end' => "End session",
         ],

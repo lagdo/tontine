@@ -9,7 +9,7 @@
                 <div class="table-responsive" id="content-planning-session-pool-page" @jxnTarget()>
                   <div @jxnEvent(['.btn-pool-start-session', 'click'], $rqStartSession->pool($poolId))></div>
                   <div @jxnEvent(['.btn-pool-end-session', 'click'], $rqEndSession->pool($poolId))></div>
-                  <div @jxnEvent(['.btn-pool-enabled-sessions', 'click'], $rqSession->pool($poolId))></div>
+                  <div @jxnEvent(['.btn-pool-active-sessions', 'click'], $rqSession->pool($poolId))></div>
 
                   <table class="table table-bordered responsive">
                     <thead>
@@ -40,8 +40,8 @@
       'class' => 'btn-pool-end-session',
       'text' => __('tontine.pool_round.actions.end'),
     ],[
-      'class' => 'btn-pool-enabled-sessions',
-      'text' => __('tontine.pool_round.actions.enabled'),
+      'class' => 'btn-pool-active-sessions',
+      'text' => __('tontine.pool_round.actions.active'),
     ],
   ],
 ])

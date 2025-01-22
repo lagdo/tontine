@@ -356,7 +356,7 @@ return [
             ],
         ],
         'help' => [
-            'intro' => "Vous allez ajouter une nouvelle tontine.<br/>" .
+            'intro' => "Vous allez ajouter une nouvelle tontine sur le tour <b>:round</b>.<br/>" .
                 "Nous allons vous demander de préciser ses caractéristiques.",
             'deposit' => [
                 'fixed' => "Cochez la case ci-dessous chaque membre qui souscrit à cette tontine doit verser un montant fixe à chaque séance.",
@@ -399,7 +399,7 @@ return [
             'sessions' => "Séances (:count)",
         ],
         'actions' => [
-            'enabled' => "Séances actives",
+            'active' => "Séances actives",
             'start' => "Séance de début",
             'end' => "Séance de fin",
         ],

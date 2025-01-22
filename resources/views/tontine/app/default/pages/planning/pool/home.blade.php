@@ -11,7 +11,7 @@
               <div class="col-auto">
                 <div class="btn-group float-right" role="group">
                   <button type="button" class="btn btn-primary" @jxnClick($rqSessionPool->render())>
-                    <i class="fa fa-cog"></i> {{ __('tontine.titles.sessions') }}
+                    {{ __('tontine.titles.sessions') }}
                   </button>
                 </div>
               </div>
