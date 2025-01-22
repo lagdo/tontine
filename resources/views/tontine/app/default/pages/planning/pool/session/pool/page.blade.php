@@ -14,7 +14,7 @@
                   <table class="table table-bordered responsive">
                     <thead>
                       <tr>
-                        <th>{!! __('tontine.labels.pool') !!}</th>
+                        <th>{!! __('common.labels.title') !!}</th>
                         <th>{!! __('common.labels.dates') !!}</th>
                         <th class="table-menu"></th>
                       </tr>
