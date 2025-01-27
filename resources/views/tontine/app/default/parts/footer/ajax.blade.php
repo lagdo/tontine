@@ -2,8 +2,6 @@
 
 @jxnScript
 
-@jxnCss
-
 @php
     $rqOrganisation = rq(Ajax\App\Admin\Organisation\Organisation::class);
     $rqUser = rq(Ajax\App\Admin\User\User::class);

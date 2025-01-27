@@ -1609,12 +1609,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-core.git",
-                "reference": "17aab6ab3a47ab10043d58d5242a24aa029660c7"
+                "reference": "dd8f52d4f70ea2b43322f0f68cf6d6ca1121c5a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/17aab6ab3a47ab10043d58d5242a24aa029660c7",
-                "reference": "17aab6ab3a47ab10043d58d5242a24aa029660c7",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/dd8f52d4f70ea2b43322f0f68cf6d6ca1121c5a5",
+                "reference": "dd8f52d4f70ea2b43322f0f68cf6d6ca1121c5a5",
                 "shasum": ""
             },
             "require": {
@@ -1683,7 +1683,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-core/issues",
                 "source": "https://github.com/jaxon-php/jaxon-core"
             },
-            "time": "2025-01-15T13:13:49+00:00"
+            "time": "2025-01-27T01:49:48+00:00"
         },
         {
             "name": "jaxon-php/jaxon-dialogs",
@@ -1691,12 +1691,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-dialogs.git",
-                "reference": "59456c72f217a5c4ab9cbcde40af0add7199cffe"
+                "reference": "a7f09016af1441f59102129f2fc07fc994712ddc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-dialogs/zipball/59456c72f217a5c4ab9cbcde40af0add7199cffe",
-                "reference": "59456c72f217a5c4ab9cbcde40af0add7199cffe",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-dialogs/zipball/a7f09016af1441f59102129f2fc07fc994712ddc",
+                "reference": "a7f09016af1441f59102129f2fc07fc994712ddc",
                 "shasum": ""
             },
             "require": {
@@ -1744,7 +1744,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-dialogs/issues",
                 "source": "https://github.com/jaxon-php/jaxon-dialogs"
             },
-            "time": "2025-01-15T20:15:16+00:00"
+            "time": "2025-01-27T01:49:48+00:00"
         },
         {
             "name": "jaxon-php/jaxon-laravel",
