@@ -15,6 +15,7 @@ jaxon.dom.ready(function() {
             document.body.style.cursor = 'auto';
         },
     };
+
     jaxon.ajax.callback.selectCurrency = {
         onRequest: function() {
             // Empty the currency list while fetching the new currencies.
@@ -31,7 +32,7 @@ var Tontine = {};
             $('#loan-interest-label').html(type === 'f' ?
                 self.labels.amount : self.labels.percentage);
         });
-    }
+    };
 
     self.makeTableResponsive = (wrapperId) => {
         const wrapper = document.querySelector('#' + wrapperId);
@@ -41,12 +42,12 @@ var Tontine = {};
         const labels = Array.from(wrapper.querySelectorAll('th')).map(th => th.innerText);
         wrapper.querySelectorAll('td')
             .forEach((td, i) => td.setAttribute('data-label', labels[i % labels.length]));
-    }
+    };
 
     self.showSmScreen = (targetId, wrapperId) => {
         $('.sm-screen', $('#' + wrapperId)).removeClass('sm-screen-active');
         $('#' + targetId).addClass('sm-screen-active');
-    }
+    };
 
     self.setSmScreenHandler = (btnWrapperId, screensWrapperId = 'content-home') => {
         const btnWrapper = $('#' + btnWrapperId);
@@ -64,5 +65,5 @@ var Tontine = {};
             $(this).removeClass('btn-outline-primary');
             $(this).addClass('btn-primary');
         });
-    }
+    };
 })(Tontine);
