@@ -11,7 +11,3 @@
   <script src="/tpl/assets/js/scripts.js"></script>
   <script src="/tpl/assets/js/custom.js"></script>
   <script src="{{ asset('vendor/kustomer/js/kustomer.js') }}" defer></script>
-
-@if(config('tontine.templates.custom.js'))
-@includeIf(config('tontine.templates.custom.js'))
-@endif

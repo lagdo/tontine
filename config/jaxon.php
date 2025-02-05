@@ -41,21 +41,7 @@ return [
                 'alert' => 'toastr',
                 'confirm' => 'noty',
             ],
-            // 'assets' => [
-            //     'include' => [
-            //         'all' => true,
-            //     ],
-            // ],
-            // 'bootbox' => [
-            //     'assets' => [
-            //         'js' => "https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.min.js",
-            //     ],
-            // ],
             'toastr' => [
-                // 'assets' => [
-                //     'js' => false,
-                //     'css' => false,
-                // ],
                 'options' => [
                     'alert' => [
                         'closeButton' => true,

@@ -1,8 +1,8 @@
 jaxon.dom.ready(function() {
-    $('#tontine-menu-tontines').click(tontine.home);
+    $('#tontine-menu-tontines').click(Tontine.home);
     $('#tontine-menu-users').css('color', '#6777ef');
-    $('#tontine-menu-users').click(tontine.users);
-    tontine.home();
+    $('#tontine-menu-users').click(Tontine.users);
+    Tontine.home();
 
     jaxon.ajax.callback.tontine = {
         onRequest: function() {
@@ -29,7 +29,7 @@ var Tontine = {};
         $('#loan-interest-type').change(() => {
             const type = $('#loan-interest-type').val();
             $('#loan-interest-label').html(type === 'f' ?
-                tontine.labels.amount : tontine.labels.percentage);
+                self.labels.amount : self.labels.percentage);
         });
     }
 

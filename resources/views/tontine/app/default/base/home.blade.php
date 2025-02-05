@@ -4,6 +4,10 @@
 
 @section('section-title', __('tontine.menus.tontine'))
 
+@section('styles')
+@include('tontine.app.default.parts.header.jaxon')
+@endsection
+
 @section('sidebar')
           @include('tontine.app.default.parts.sidebar.menu', ['ajax' => true])
 @endsection
@@ -13,10 +17,5 @@
 @endsection
 
 @section('script')
-  <script type="text/javascript">
-  </script>
-
-@include('tontine.app.default.parts.footer.ajax')
-
-  <script src="/jaxon/app.4.0.0.js"></script>
+@include('tontine.app.default.parts.footer.jaxon')
 @endsection

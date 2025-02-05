@@ -19,9 +19,6 @@ a[role="link"]:hover {
   cursor: pointer;
 }
 
-.modal-header {
-  display: block;
-}
 .btn-social-icon {
   color: #212529 !important;
 }

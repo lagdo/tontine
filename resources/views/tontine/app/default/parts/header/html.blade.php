@@ -13,12 +13,4 @@
 <!-- Template CSS -->
 <link rel="stylesheet" href="/tpl/assets/css/style.css">
 <link rel="stylesheet" href="/tpl/assets/css/components-v1.4.css">
-<link rel="stylesheet" href="/tpl/assets/css/custom.css">
-
-@jxnCss
-
-<link rel="stylesheet" href="/jaxon/app.4.0.1.css">
-
-@if(config('tontine.templates.custom.css'))
-@includeIf(config('tontine.templates.custom.css'))
-@endif
+<link rel="stylesheet" href="/jaxon/style.4.0.2.css">
