@@ -13,7 +13,7 @@
                       <div class="btn-group float-right ml-2 mb-2" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqCharge->render())><i class="fa fa-arrow-left"></i></button>
 @if ($charge->is_active)
-@if (!$target)
+@if ($target === null)
                         <button type="button" class="btn btn-primary" @jxnClick($rqTarget->add())><i class="fa fa-plus"></i></button>
 @else
                         <button type="button" class="btn btn-primary" @jxnClick($rqTarget->edit())><i class="fa fa-edit"></i></button>
@@ -24,15 +24,8 @@
                       </div>
                     </div>
                   </div>
-@if (($target))
-                  <div class="row">
-                    <div class="col">
-                      {{ __('meeting.target.titles.summary', [
-                          'deadline' => $target->deadline->title,
-                      ]) }}
-                    </div>
-                  </div>
-                  <div class="row">
+@if ($target !== null)
+                  <div class="row mb-1">
                     <div class="col">
                       <div class="input-group">
                         {!! $htmlBuilder->text('search', '')->class('form-control')->id('txt-fee-member-search') !!}
@@ -42,7 +35,10 @@
                       </div>
                     </div>
                     <div class="col-auto">
-                      {{ __('common.labels.amount') }}<br/>{{ $locale->formatMoney($target->amount, true) }}
+                      {{ __('meeting.target.labels.target', [
+                        'amount' => $locale->formatMoney($target->amount, true),
+                      ]) }}<br/>
+                      {{ $target->deadline->title }}
                     </div>
                   </div>
 @endif

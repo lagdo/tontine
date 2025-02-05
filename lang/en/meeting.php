@@ -103,13 +103,13 @@ return [
             'deadline' => "Deadline",
         ],
         'titles' => [
-            'set' => "Définir un délai",
-            'edit' => "Changer le délai",
-            'summary' => "Deadline: :deadline",
+            'set' => "Set a target",
+            'edit' => "Edit the target",
         ],
         'labels' => [
             'global' => "Check if the amount above is a total for all members.",
             'deadline' => "Deadline",
+            'target' => "Target: :amount",
             'remaining' => "Remaining amount: :amount",
         ],
         'questions' => [

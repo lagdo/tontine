@@ -65,7 +65,11 @@ class Target extends ChargeComponent
      */
     protected function after()
     {
-        $this->cl(TargetPage::class)->page();
+        // The member list is displayed only if a target is already defined.
+        if($this->stash()->get('meeting.session.charge.target') !== null)
+        {
+            $this->cl(TargetPage::class)->page();
+        }
     }
 
     /**

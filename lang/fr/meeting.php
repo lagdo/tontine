@@ -103,13 +103,13 @@ return [
             'deadline' => "Date limite",
         ],
         'titles' => [
-            'set' => "Définir un délai",
-            'edit' => "Changer le délai",
-            'summary' => "Date limite: :deadline",
+            'set' => "Définir un objectif",
+            'edit' => "Changer l'objectif",
         ],
         'labels' => [
             'global' => "Cocher si le montant ci-dessus est un total pour tous les membres.",
             'deadline' => "Dernier délai",
+            'target' => "Objectif : :amount",
             'remaining' => "Montant restant : :amount",
         ],
         'questions' => [

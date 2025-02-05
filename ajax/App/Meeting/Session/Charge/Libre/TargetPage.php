@@ -32,8 +32,8 @@ class TargetPage extends ChargePageComponent
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
-        $target = $session !== null && $charge !== null ?
-            $this->targetService->getTarget($charge, $session) : null;
+        $target = $session === null || $charge === null ? null :
+            $this->targetService->getTarget($charge, $session);
         $this->stash()->set('meeting.session.charge.target', $target);
     }
 
