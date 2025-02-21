@@ -11,6 +11,7 @@ use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\LibreBill;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
@@ -125,7 +126,7 @@ class BillService
      * @return Builder|Relation
      */
     private function getMembersQuery(Charge $charge, Session $session,
-        string $search = '', ?bool $filter): Builder|Relation
+        string $search = '', ?bool $filter = null): Builder|Relation
     {
         $filterFunction = function($query) use($charge, $session) {
             $query->where('charge_id', $charge->id)->where('session_id', $session->id);
@@ -158,16 +159,14 @@ class BillService
         $members = $this->getMembersQuery($charge, $session, $search, $filter)
             ->page($page, $this->tenantService->getLimit())
             ->with([
-                'libre_bills' => function($query) use($charge, $session) {
-                    $query->where('charge_id', $charge->id)->where('session_id', $session->id);
-                },
+                'libre_bills' => fn($query) => $query
+                    ->where('charge_id', $charge->id)->where('session_id', $session->id),
             ])
             ->orderBy('name', 'asc')
             ->get()
             ->each(function($member) {
                 $member->remaining = 0;
-                $member->bill = $member->libre_bills->count() > 0 ?
-                    $member->libre_bills->first()->bill : null;
+                $member->bill = $member->libre_bills->first()?->bill ?? null;
             });
         // Check if there is a settlement target.
         if(!($target = $this->targetService->getTarget($charge, $session)))
@@ -196,6 +195,41 @@ class BillService
         string $search = '', ?bool $filter = null): int
     {
         return $this->getMembersQuery($charge, $session, $search, $filter)->count();
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Session $session
+     * @param int $memberId
+     *
+     * @return Member|null
+     */
+    public function getMember(Charge $charge, Session $session, int $memberId): ?Member
+    {
+        $members = $this->getMembersQuery($charge, $session)
+            ->where('id', $memberId)
+            ->with([
+                'libre_bills.bill',
+                'libre_bills' => fn($query) => $query
+                    ->where('charge_id', $charge->id)->where('session_id', $session->id),
+            ])
+            ->get();
+        if($members->count() === 0)
+        {
+            return null;
+        }
+
+        $member = $members->first();
+        $member->bill = $member->libre_bills->first()?->bill ?? null;
+        $member->remaining = 0;
+        // Check if there is a settlement target.
+        if(($target = $this->targetService->getTarget($charge, $session)) !== null)
+        {
+            $settlements = $this->targetService->getMembersSettlements($charge, $target, $members);
+            $paid = $settlements[$member->id] ?? 0;
+            $member->remaining = $target->amount > $paid ? $target->amount - $paid : 0;
+        }
+        return $member;
     }
 
     /**

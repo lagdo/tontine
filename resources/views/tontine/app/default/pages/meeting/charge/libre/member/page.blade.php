@@ -1,9 +1,9 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $memberId = jq()->parent()->attr('data-member-id')->toInt();
   $paid = pm()->checked('check-fee-libre-paid');
   $rqMemberFunc = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberFunc::class);
   $rqMemberPage = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberPage::class);
+  $rqMemberName = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberName::class);
   $rqAmount = rq(Ajax\App\Meeting\Session\Charge\Libre\Amount::class);
 @endphp
                   <div class="table-responsive" id="content-session-fee-libre-members" @jxnTarget()>
@@ -19,9 +19,12 @@
                       </thead>
                       <tbody>
 @foreach ($members as $member)
+@php
+  $stash->set('meeting.charge.member', $member);
+  $stash->set('meeting.charge.bill', $member->bill);
+@endphp
                         <tr>
-                          <td>{{ $member->name }}@if ($member->remaining > 0)<br/>{{ __('meeting.target.labels.remaining',
-                            ['amount' => $locale->formatMoney($member->remaining, true)]) }}@endif</td>
+                          <td @jxnBind($rqMemberName, $member->id)>@jxnHtml($rqMemberName)</td>
 @if ($charge->has_amount)
                           <td class="currency" id="member-{{ $member->id }}" data-member-id="{{ $member->id }}">
 @if (!$session->opened || !$charge->is_active)
@@ -33,13 +36,7 @@
 @endif
                           </td>
 @else
-@php
-  $stash->set('meeting.charge.member.id', $member->id);
-  $stash->set('meeting.charge.bill', $member->bill);
-@endphp
-                          <td class="currency amount" @jxnBind($rqAmount, $member->id)>
-                            @jxnHtml($rqAmount)
-                          </td>
+                          <td class="currency amount" @jxnBind($rqAmount, $member->id)>@jxnHtml($rqAmount)</td>
 @endif
                         </tr>
 @endforeach

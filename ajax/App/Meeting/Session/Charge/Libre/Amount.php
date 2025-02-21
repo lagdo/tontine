@@ -29,7 +29,8 @@ class Amount extends Component
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
         $bill = $this->stash()->get('meeting.charge.bill');
-        $memberId = $this->stash()->get('meeting.charge.member.id');
+        $member = $this->stash()->get('meeting.charge.member');
+        $memberId = $member->id;
 
         if(!$session->opened || !$charge->is_active)
         {
@@ -41,22 +42,21 @@ class Amount extends Component
         // When editing the bill amount, or when there is no bill yet,
         // then show the amount edit form.
         $edit = $this->stash()->get('meeting.charge.edit');
-        if($edit || !$bill)
+        if(!$edit && $bill !== null)
         {
-            $amountValue = jq("#member-charge-input-$memberId")->val();
-            $paid = pm()->checked('check-fee-libre-paid');
-
-            return $this->renderView('pages.meeting.charge.libre.member.edit', [
+            return $this->renderView('pages.meeting.charge.libre.member.show', [
                 'memberId' => $memberId,
-                'amount' => !$bill ? '' : $this->localeService->getMoneyValue($bill->amount),
-                'handler' => $this->rq(AmountFunc::class)->save($memberId, $paid, $amountValue),
+                'amount' => $this->localeService->formatMoney($bill->amount, false),
+                'rqAmountFunc' => $this->rq(AmountFunc::class),
             ]);
         }
 
-        return $this->renderView('pages.meeting.charge.libre.member.show', [
+        $amountValue = jq("#member-charge-input-$memberId")->val();
+        $paid = pm()->checked('check-fee-libre-paid');
+        return $this->renderView('pages.meeting.charge.libre.member.edit', [
             'memberId' => $memberId,
-            'amount' => $this->localeService->formatMoney($bill->amount, false),
-            'rqAmountFunc' => $this->rq(AmountFunc::class),
+            'amount' => !$bill ? '' : $this->localeService->getMoneyValue($bill->amount),
+            'handler' => $this->rq(AmountFunc::class)->save($memberId, $paid, $amountValue),
         ]);
     }
 }

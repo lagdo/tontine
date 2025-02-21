@@ -26,15 +26,12 @@ class AmountFunc extends FuncComponent
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
-        $bill = $this->billService->getMemberBill($charge, $session, $memberId);
-        if($bill === null)
-        {
-            return;
-        }
+        $member = $this->billService->getMember($charge, $session, $memberId);
 
-        $this->stash()->set('meeting.charge.bill', $bill->bill);
-        $this->stash()->set('meeting.charge.member.id', $memberId);
+        $this->stash()->set('meeting.charge.member', $member);
+        $this->stash()->set('meeting.charge.bill', $member?->bill);
 
+        $this->cl(MemberName::class)->item($memberId)->render();
         $this->cl(Amount::class)->item($memberId)->render();
     }
 
