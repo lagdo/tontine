@@ -2,6 +2,7 @@
 @php
   $disbursementId = jq()->parent()->attr('data-disbursement-id')->toInt();
   $rqDisbursement = rq(Ajax\App\Meeting\Session\Cash\Disbursement::class);
+  $rqDisbursementFunc = rq(Ajax\App\Meeting\Session\Cash\DisbursementFunc::class);
   $rqBalance = rq(Ajax\App\Meeting\Session\Cash\Balance::class);
 @endphp
                   <div class="row">
@@ -12,14 +13,14 @@
                     </div>
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqDisbursement->addDisbursement())><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqDisbursementFunc->addDisbursement())><i class="fa fa-plus"></i></button>
                         <button type="button" class="btn btn-primary" @jxnClick($rqDisbursement->home())><i class="fa fa-sync"></i></button>
                       </div>
                     </div>
                   </div>
                   <div class="table-responsive" id="content-session-disbursements" @jxnTarget()>
-                    <div @jxnEvent(['.btn-disbursement-edit', 'click'], $rqDisbursement->editDisbursement($disbursementId))></div>
-                    <div @jxnEvent(['.btn-disbursement-delete', 'click'], $rqDisbursement->deleteDisbursement($disbursementId)
+                    <div @jxnEvent(['.btn-disbursement-edit', 'click'], $rqDisbursementFunc->editDisbursement($disbursementId))></div>
+                    <div @jxnEvent(['.btn-disbursement-delete', 'click'], $rqDisbursementFunc->deleteDisbursement($disbursementId)
                       ->confirm(__('meeting.disbursement.questions.delete')))></div>
 
                     <table class="table table-bordered responsive">

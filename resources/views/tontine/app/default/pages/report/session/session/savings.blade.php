@@ -12,7 +12,7 @@
                         {!! $htmlBuilder->select('fund_id', $funds, 0)->id('report-savings-fund-id')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqFund->fund($fundId, 'report'))>{!!
+                          <button type="button" class="btn btn-primary" @jxnClick($rqFund->fund($fundId))>{!!
                             __('tontine.report.actions.show') !!}</button>
                         </div>
                       </div>

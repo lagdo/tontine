@@ -1,11 +1,11 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $auctionId = jq()->parent()->attr('data-auction-id')->toInt();
-  $rqAuction = rq(Ajax\App\Meeting\Session\Pool\Remitment\Auction::class);
+  $rqAuctionFunc = rq(Ajax\App\Meeting\Session\Pool\Remitment\AuctionFunc::class);
   $rqAuctionPage = rq(Ajax\App\Meeting\Session\Pool\Remitment\AuctionPage::class);
 @endphp
                   <div class="table-responsive" id="content-session-auctions-page" @jxnTarget()>
-                    <div @jxnEvent(['.btn-toggle-payment', 'click'], $rqAuction->togglePayment($auctionId))></div>
+                    <div @jxnEvent(['.btn-toggle-payment', 'click'], $rqAuctionFunc->togglePayment($auctionId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

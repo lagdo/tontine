@@ -1,7 +1,7 @@
 @php
   $searchValue = jq('#txt-fee-settlements-search')->val();
   $rqCharge = rq(Ajax\App\Meeting\Session\Charge\Fixed\Fee::class);
-  $rqSettlement = rq(Ajax\App\Meeting\Session\Charge\Fixed\Settlement::class);
+  $rqSettlementFunc = rq(Ajax\App\Meeting\Session\Charge\Fixed\SettlementFunc::class);
   $rqSettlementPage = rq(Ajax\App\Meeting\Session\Charge\Fixed\SettlementPage::class);
   $rqTotal = rq(Ajax\App\Meeting\Session\Charge\Settlement\Total::class);
   $rqAction = rq(Ajax\App\Meeting\Session\Charge\Settlement\Action::class);
@@ -15,7 +15,7 @@
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqCharge->render())><i class="fa fa-arrow-left"></i></button>
-                        <button type="button" class="btn btn-primary" @jxnClick($rqSettlement->toggleFilter())><i class="fa fa-filter"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqSettlementFunc->toggleFilter())><i class="fa fa-filter"></i></button>
                       </div>
                     </div>
                   </div>
@@ -25,7 +25,7 @@
                         {!! $htmlBuilder->text('search', '')->id('txt-fee-settlements-search')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqSettlement->search($searchValue))><i class="fa fa-search"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqSettlementFunc->search($searchValue))><i class="fa fa-search"></i></button>
                         </div>
                       </div>
                     </div>

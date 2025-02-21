@@ -1,11 +1,11 @@
 @php
   $fundId = jq()->parent()->attr('data-fund-id')->toInt();
-  $rqFund = rq(Ajax\App\Tontine\Options\Fund::class);
+  $rqFundFunc = rq(Ajax\App\Tontine\Options\FundFunc::class);
   $rqFundPage = rq(Ajax\App\Tontine\Options\FundPage::class);
 @endphp
                   <div class="table-responsive" id="content-fund-page" @jxnTarget()>
-                    <div @jxnEvent(['.btn-fund-edit', 'click'], $rqFund->edit($fundId))></div>
-                    <div @jxnEvent(['.btn-fund-toggle', 'click'], $rqFund->toggle($fundId))></div>
+                    <div @jxnEvent(['.btn-fund-edit', 'click'], $rqFundFunc->edit($fundId))></div>
+                    <div @jxnEvent(['.btn-fund-toggle', 'click'], $rqFundFunc->toggle($fundId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

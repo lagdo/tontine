@@ -2,11 +2,11 @@
 
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
-use Ajax\App\Meeting\Session\Charge\ChargeComponent;
+use Ajax\App\Meeting\Session\Charge\Component;
 use Ajax\App\Meeting\Session\Charge\Settlement\Total;
 use Stringable;
 
-class Settlement extends ChargeComponent
+class Settlement extends Component
 {
     /**
      * @var string
@@ -58,47 +58,5 @@ class Settlement extends ChargeComponent
             $this->billService->getBillCount($charge, $session));
 
         $this->cl(Total::class)->item('libre')->render();
-    }
-
-    public function toggleFilter()
-    {
-        $onlyUnpaid = $this->bag('meeting')->get('settlement.libre.filter', null);
-        // Switch between null, true and false
-        $onlyUnpaid = $onlyUnpaid === null ? true : ($onlyUnpaid === true ? false : null);
-        $this->bag('meeting')->set('settlement.libre.filter', $onlyUnpaid);
-
-        $this->cl(SettlementPage::class)->page();
-    }
-
-    /**
-     * @before checkChargeEdit
-     * @param int $billId
-     *
-     * @return mixed
-     */
-    public function addSettlement(int $billId)
-    {
-        $session = $this->stash()->get('meeting.session');
-        $charge = $this->stash()->get('meeting.session.charge');
-        $this->settlementService->createSettlement($charge, $session, $billId);
-
-        $this->showTotal();
-        $this->cl(SettlementPage::class)->page();
-    }
-
-    /**
-     * @before checkChargeEdit
-     * @param int $billId
-     *
-     * @return mixed
-     */
-    public function delSettlement(int $billId)
-    {
-        $session = $this->stash()->get('meeting.session');
-        $charge = $this->stash()->get('meeting.session.charge');
-        $this->settlementService->deleteSettlement($charge, $session, $billId);
-
-        $this->showTotal();
-        $this->cl(SettlementPage::class)->page();
     }
 }

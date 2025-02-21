@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Tontine;
 
-use Ajax\CallableClass;
+use Ajax\FuncComponent;
 use Ajax\SelectTrait;
 use Ajax\App\Tontine\Member\Member;
 use Ajax\App\Planning\Pool\Pool;
@@ -11,13 +11,12 @@ use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Tontine\TontineService;
 
 use function Jaxon\pm;
-use function session;
 use function trans;
 
 /**
  * @databag tontine
  */
-class Select extends CallableClass
+class SelectFunc extends FuncComponent
 {
     use SelectTrait;
 
@@ -103,7 +102,7 @@ class Select extends CallableClass
         $this->cl(Pool::class)->home();
     }
 
-    public function _saveRound(RoundModel $round): void
+    private function _saveRound(RoundModel $round): void
     {
         // Save the tontine and round ids in the user session.
         $this->bag('tenant')->set('tontine.id', $round->tontine->id);

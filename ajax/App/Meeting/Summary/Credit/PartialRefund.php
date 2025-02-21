@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Summary\Credit;
 
-use Ajax\Component;
+use Ajax\App\Meeting\Summary\Component;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Tontine\FundService;

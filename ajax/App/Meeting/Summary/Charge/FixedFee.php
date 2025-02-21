@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Summary\Charge;
 
-use Ajax\Component;
+use Ajax\App\Meeting\Summary\Component;
 use Siak\Tontine\Service\Meeting\Charge\FixedFeeService;
 use Stringable;
 

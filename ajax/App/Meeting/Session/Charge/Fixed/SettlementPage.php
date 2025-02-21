@@ -2,12 +2,12 @@
 
 namespace Ajax\App\Meeting\Session\Charge\Fixed;
 
-use Ajax\App\Meeting\Session\Charge\ChargePageComponent;
+use Ajax\App\Meeting\Session\Charge\PageComponent;
 use Stringable;
 
 use function trim;
 
-class SettlementPage extends ChargePageComponent
+class SettlementPage extends PageComponent
 {
     /**
      * The pagination databag options

@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Presence;
 
 use Ajax\Component;
 use Siak\Tontine\Service\Meeting\PresenceService;
-use Siak\Tontine\Service\Meeting\SessionService;
 use Stringable;
 
 /**
@@ -14,11 +13,9 @@ use Stringable;
 class Session extends Component
 {
     /**
-     * @param SessionService $sessionService
      * @param PresenceService $presenceService
      */
-    public function __construct(private SessionService $sessionService,
-        private PresenceService $presenceService)
+    public function __construct(private PresenceService $presenceService)
     {}
 
     protected function getMember()
@@ -57,20 +54,5 @@ class Session extends Component
         {
             $this->response->js('Tontine')->showSmScreen('content-presence-right', 'presence-sm-screens');
         }
-    }
-
-    public function togglePresence(int $sessionId)
-    {
-        $session = $this->sessionService->getSession($sessionId);
-        $member = $this->stash()->get('presence.member');
-        if(!$session || !$member)
-        {
-            return;
-        }
-
-        $this->presenceService->togglePresence($session, $member);
-        $this->cl(MemberPage::class)->page();
-
-        $this->render();
     }
 }

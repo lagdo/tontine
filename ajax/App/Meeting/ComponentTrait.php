@@ -2,17 +2,12 @@
 
 namespace Ajax\App\Meeting;
 
-use Ajax\PageComponent;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\SessionService;
 
 use function trans;
 
-/**
- * @databag meeting
- * @before getSession
- */
-abstract class MeetingPageComponent extends PageComponent
+trait ComponentTrait
 {
     /**
      * @di

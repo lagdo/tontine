@@ -10,8 +10,6 @@ use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;
 
-use function trim;
-
 /**
  * @databag report
  * @before getSession
@@ -96,9 +94,9 @@ class Fund extends Component
         ]);
     }
 
-    public function fund(int $fundId, string $item = '')
+    public function fund(int $fundId)
     {
-        $this->item(trim($item))->render();
+        $this->render();
     }
 
     public function amount(int $profitAmount)

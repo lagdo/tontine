@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Saving;
 
-use Ajax\App\Meeting\MeetingPageComponent;
+use Ajax\App\Meeting\PageComponent;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;
@@ -11,7 +11,7 @@ use Stringable;
  * @databag meeting.saving
  * @before getFund
  */
-class MemberPage extends MeetingPageComponent
+class MemberPage extends PageComponent
 {
     /**
      * The pagination databag options

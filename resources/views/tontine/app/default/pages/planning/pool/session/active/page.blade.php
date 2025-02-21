@@ -1,11 +1,11 @@
 @php
   $sessionId = jq()->parent()->attr('data-session-id')->toInt();
-  $rqSession = rq(Ajax\App\Planning\Pool\Session\Session::class);
+  $rqSessionFunc = rq(Ajax\App\Planning\Pool\Session\SessionFunc::class);
   $rqSessionPage = rq(Ajax\App\Planning\Pool\Session\SessionPage::class);
 @endphp
                       <div class="table-responsive" id="content-planning-active-sessions-page" @jxnTarget()>
-                        <div @jxnEvent(['.pool-subscription-session-enable', 'click'], $rqSession->enableSession($sessionId))></div>
-                        <div @jxnEvent(['.pool-subscription-session-disable', 'click'], $rqSession->disableSession($sessionId)
+                        <div @jxnEvent(['.pool-subscription-session-enable', 'click'], $rqSessionFunc->enableSession($sessionId))></div>
+                        <div @jxnEvent(['.pool-subscription-session-disable', 'click'], $rqSessionFunc->disableSession($sessionId)
                           ->confirm(__('tontine.session.questions.disable')))></div>
 
                         <table class="table table-bordered responsive">

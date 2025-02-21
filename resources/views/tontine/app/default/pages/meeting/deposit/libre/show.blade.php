@@ -4,8 +4,7 @@
                             ->attribute('style', 'height:36px; text-align:right') !!}
 @if ($editable)
                           <div class="input-group-append">
-                            <button type="button" class="btn btn-primary" @jxnClick($rqAmount
-                              ->edit($receivableId))><i class="fa fa-edit"></i></button>
+                            <button @jxnClick($rqAmountFunc->edit($receivableId)) type="button" class="btn btn-primary"><i class="fa fa-edit"></i></button>
                           </div>
 @else    
                           <div class="input-group-append">

@@ -2,13 +2,13 @@
 
 namespace Ajax\App\Meeting\Session\Credit;
 
-use Ajax\App\Meeting\MeetingComponent;
+use Ajax\App\Meeting\Component;
 use Siak\Tontine\Service\BalanceCalculator;
 use Stringable;
 
 use function trans;
 
-class Balance extends MeetingComponent
+class Balance extends Component
 {
     /**
      * @param BalanceCalculator $balanceCalculator

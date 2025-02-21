@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Summary\Cash;
 
-use Ajax\Component;
+use Ajax\App\Meeting\Summary\Component;
 use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
 use Stringable;

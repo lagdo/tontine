@@ -13,7 +13,7 @@ use Siak\Tontine\Service\TenantService;
 
 use function trans;
 
-trait CallableTrait
+trait ComponentTrait
 {
     use DialogTrait;
 

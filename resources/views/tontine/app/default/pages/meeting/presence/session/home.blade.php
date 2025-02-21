@@ -1,5 +1,5 @@
 @php
-  $rqPresence = rq(Ajax\App\Meeting\Presence\Presence::class);
+  $rqPresenceFunc = rq(Ajax\App\Meeting\Presence\PresenceFunc::class);
   $rqSession = rq(Ajax\App\Meeting\Presence\Session::class);
   $rqSessionPage = rq(Ajax\App\Meeting\Presence\SessionPage::class);
   $jsBackHandler = js('Tontine')->showSmScreen('content-presence-left', 'presence-sm-screens');
@@ -18,7 +18,7 @@
                   </div>
 @if (!$member)
                   <div class="col-auto">
-                    <button type="button" class="btn btn-primary" @jxnClick($rqPresence->exchange())><i class="fa fa-exchange-alt"></i></button>
+                    <button type="button" class="btn btn-primary" @jxnClick($rqPresenceFunc->exchange())><i class="fa fa-exchange-alt"></i></button>
                   </div>
 @else
                   <div class="col-auto sm-screen-hidden">

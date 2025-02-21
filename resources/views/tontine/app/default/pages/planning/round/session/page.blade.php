@@ -1,12 +1,12 @@
 @php
   $sessionId = jq()->parent()->attr('data-session-id')->toInt();
-  $rqSession = rq(Ajax\App\Planning\Session\Session::class);
+  $rqSessionFunc = rq(Ajax\App\Planning\Session\SessionFunc::class);
   $rqSessionPage = rq(Ajax\App\Planning\Session\SessionPage::class);
 @endphp
                     <div class="table-responsive" id="content-planning-sessions-page" @jxnTarget()>
-                      <div @jxnEvent(['.btn-session-edit', 'click'], $rqSession->edit($sessionId))></div>
-                      <div @jxnEvent(['.btn-session-venue', 'click'], $rqSession->editVenue($sessionId))></div>
-                      <div @jxnEvent(['.btn-session-delete', 'click'], $rqSession->delete($sessionId)
+                      <div @jxnEvent(['.btn-session-edit', 'click'], $rqSessionFunc->edit($sessionId))></div>
+                      <div @jxnEvent(['.btn-session-venue', 'click'], $rqSessionFunc->editVenue($sessionId))></div>
+                      <div @jxnEvent(['.btn-session-delete', 'click'], $rqSessionFunc->delete($sessionId)
                         ->confirm(__('tontine.session.questions.delete')))></div>
 
                       <table class="table table-bordered responsive">

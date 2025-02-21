@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
-use Ajax\App\Meeting\Session\Charge\ChargePageComponent;
+use Ajax\App\Meeting\Session\Charge\PageComponent;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
 use Stringable;
 
@@ -11,7 +11,7 @@ use function trim;
 /**
  * @before getTarget
  */
-class TargetPage extends ChargePageComponent
+class TargetPage extends PageComponent
 {
     /**
      * The constructor

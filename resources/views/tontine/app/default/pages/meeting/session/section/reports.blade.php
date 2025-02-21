@@ -2,7 +2,7 @@
 @php
   $agendaText = jq('#session-agenda')->summernote('code');
   $reportText = jq('#session-report')->summernote('code');
-  $rqSession = rq(Ajax\App\Meeting\Session\Session::class);
+  $rqSessionFunc = rq(Ajax\App\Meeting\Session\SessionFunc::class);
 @endphp
           <div class="card shadow mb-4">
             <div class="card-body" id="content-page">
@@ -14,7 +14,7 @@
                     </div>
                     <div class="col">
                       <div class="btn-group float-right" role="group">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqSession->saveAgenda($agendaText))><i class="fa fa-save"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqSessionFunc->saveAgenda($agendaText))><i class="fa fa-save"></i></button>
                       </div>
                     </div>
                   </div>
@@ -33,7 +33,7 @@
                     </div>
                     <div class="col">
                       <div class="btn-group float-right" role="group">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqSession->saveReport($reportText))><i class="fa fa-save"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqSessionFunc->saveReport($reportText))><i class="fa fa-save"></i></button>
                       </div>
                     </div>
                   </div>

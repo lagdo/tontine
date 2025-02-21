@@ -1,5 +1,6 @@
 @php
   $rqOrganisation = rq(Ajax\App\Admin\Organisation\Organisation::class);
+  $rqOrganisationFunc = rq(Ajax\App\Admin\Organisation\OrganisationFunc::class);
   $rqOrganisationPage = rq(Ajax\App\Admin\Organisation\OrganisationPage::class);
   $rqGuestOrganisation = rq(Ajax\App\Admin\User\Guest\Organisation::class);
 @endphp
@@ -11,7 +12,7 @@
               <div class="col-auto">
                 <div class="btn-group float-right ml-2 mb-2" role="group">
                   <button type="button" class="btn btn-primary" @jxnClick($rqOrganisation->home())><i class="fa fa-sync"></i></button>
-                  <button type="button" class="btn btn-primary" @jxnClick($rqOrganisation->add())><i class="fa fa-plus"></i></button>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqOrganisationFunc->add())><i class="fa fa-plus"></i></button>
                 </div>
               </div>
             </div>

@@ -2,12 +2,12 @@
 
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
-use Ajax\App\Meeting\Session\Charge\ChargePageComponent;
+use Ajax\App\Meeting\Session\Charge\PageComponent;
 use Stringable;
 
 use function trim;
 
-class MemberPage extends ChargePageComponent
+class MemberPage extends PageComponent
 {
     /**
      * The pagination databag options

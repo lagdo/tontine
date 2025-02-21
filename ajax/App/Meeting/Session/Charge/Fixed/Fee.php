@@ -2,10 +2,10 @@
 
 namespace Ajax\App\Meeting\Session\Charge\Fixed;
 
-use Ajax\App\Meeting\MeetingComponent;
+use Ajax\App\Meeting\Component;
 use Stringable;
 
-class Fee extends MeetingComponent
+class Fee extends Component
 {
     public function html(): Stringable
     {

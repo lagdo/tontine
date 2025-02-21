@@ -8,7 +8,7 @@ use Jaxon\Response\AjaxResponse;
 
 abstract class PageComponent extends BaseComponent
 {
-    use CallableTrait;
+    use ComponentTrait;
     use PageDatabagTrait;
 
     /**

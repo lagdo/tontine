@@ -2,14 +2,14 @@
 
 namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
-use Ajax\App\Meeting\MeetingPageComponent;
+use Ajax\App\Meeting\PageComponent;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;
 use Stringable;
 
 /**
  * @databag auction
  */
-class AuctionPage extends MeetingPageComponent
+class AuctionPage extends PageComponent
 {
     /**
      * The pagination databag options
