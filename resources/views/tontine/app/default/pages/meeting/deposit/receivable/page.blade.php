@@ -1,13 +1,13 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
-  $rqReceivable = rq(Ajax\App\Meeting\Session\Pool\Deposit\Receivable::class);
+  $rqReceivableFunc = rq(Ajax\App\Meeting\Session\Pool\Deposit\ReceivableFunc::class);
   $rqReceivablePage = rq(Ajax\App\Meeting\Session\Pool\Deposit\ReceivablePage::class);
   $rqAmount = rq(Ajax\App\Meeting\Session\Pool\Deposit\Amount::class);
 @endphp
                   <div class="table-responsive" id="content-meeting-receivables" @jxnTarget()>
-                    <div @jxnEvent(['.btn-add-deposit', 'click'], $rqReceivable->addDeposit($receivableId))></div>
-                    <div @jxnEvent(['.btn-del-deposit', 'click'], $rqReceivable->delDeposit($receivableId))></div>
+                    <div @jxnEvent(['.btn-add-deposit', 'click'], $rqReceivableFunc->addDeposit($receivableId))></div>
+                    <div @jxnEvent(['.btn-del-deposit', 'click'], $rqReceivableFunc->delDeposit($receivableId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

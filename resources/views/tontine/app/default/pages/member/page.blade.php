@@ -1,12 +1,12 @@
 @php
   $memberId = jq()->parent()->attr('data-member-id')->toInt();
-  $rqMember = rq(Ajax\App\Tontine\Member\Member::class);
+  $rqMemberFunc = rq(Ajax\App\Tontine\Member\MemberFunc::class);
   $rqMemberPage = rq(Ajax\App\Tontine\Member\MemberPage::class);
 @endphp
                 <div class="table-responsive" id="content-member-page" @jxnTarget()>
-                  <div @jxnEvent(['.btn-member-edit', 'click'], $rqMember->edit($memberId))></div>
-                  <div @jxnEvent(['.btn-member-toggle', 'click'], $rqMember->toggle($memberId))></div>
-                  <div @jxnEvent(['.btn-member-delete', 'click'], $rqMember->delete($memberId)
+                  <div @jxnEvent(['.btn-member-edit', 'click'], $rqMemberFunc->edit($memberId))></div>
+                  <div @jxnEvent(['.btn-member-toggle', 'click'], $rqMemberFunc->toggle($memberId))></div>
+                  <div @jxnEvent(['.btn-member-delete', 'click'], $rqMemberFunc->delete($memberId)
                     ->confirm(__('tontine.questions.delete')))></div>
 
                   <table class="table table-bordered responsive">

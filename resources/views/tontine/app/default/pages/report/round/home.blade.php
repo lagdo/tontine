@@ -5,7 +5,7 @@
   $rqRoundBalance = rq(Ajax\App\Report\Round\Balance::class);
   $rqRoundPool = rq(Ajax\App\Report\Round\Pool::class);
   $clRoundPool = cl(Ajax\App\Report\Round\Pool::class);
-  $rqOptions = rq(Ajax\App\Tontine\Options\Options::class);
+  $rqOptionsFunc = rq(Ajax\App\Tontine\Options\OptionsFunc::class);
 @endphp
           <div class="section-body">
             <div class="row">
@@ -19,7 +19,7 @@
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right ml-1">
-                  <button type="button" class="btn btn-primary" @jxnClick($rqOptions->editOptions())><i class="fa fa-cog"></i></button>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqOptionsFunc->editOptions())><i class="fa fa-cog"></i></button>
                   <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-file-pdf"></i>
                   </button>

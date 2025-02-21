@@ -1,5 +1,6 @@
 @php
   $rqCategory = rq(Ajax\App\Tontine\Options\Category::class);
+  $rqCategoryFunc = rq(Ajax\App\Tontine\Options\CategoryFunc::class);
   $rqCategoryPage = rq(Ajax\App\Tontine\Options\CategoryPage::class);
 @endphp
               <div class="section-body">
@@ -10,7 +11,7 @@
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">
                       <button type="button" class="btn btn-primary" @jxnClick($rqCategory->render())><i class="fa fa-sync"></i></button>
-                      <button type="button" class="btn btn-primary" @jxnClick($rqCategory->add())><i class="fa fa-plus"></i></button>
+                      <button type="button" class="btn btn-primary" @jxnClick($rqCategoryFunc->add())><i class="fa fa-plus"></i></button>
                     </div>
                   </div>
                 </div>

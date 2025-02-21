@@ -1,5 +1,6 @@
 @php
   $rqRound = rq(Ajax\App\Planning\Session\Round::class);
+  $rqRoundFunc = rq(Ajax\App\Planning\Session\RoundFunc::class);
   $rqRoundPage = rq(Ajax\App\Planning\Session\RoundPage::class);
   $rqSession = rq(Ajax\App\Planning\Session\Session::class);
 @endphp
@@ -13,7 +14,7 @@
                   <div class="col-auto">
                     <div class="btn-group float-right" role="group">
                       <button type="button" class="btn btn-primary" @jxnClick($rqRound->home())><i class="fa fa-sync"></i></button>
-                      <button type="button" class="btn btn-primary" @jxnClick($rqRound->add())><i class="fa fa-plus"></i></button>
+                      <button type="button" class="btn btn-primary" @jxnClick($rqRoundFunc->add())><i class="fa fa-plus"></i></button>
                     </div>
                   </div>
                 </div>

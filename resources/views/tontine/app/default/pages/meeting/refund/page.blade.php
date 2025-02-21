@@ -2,12 +2,12 @@
 @inject('debtCalculator', 'Siak\Tontine\Service\Meeting\Credit\DebtCalculator')
 @php
   $debtId = jq()->parent()->attr('data-debt-id')->toInt();
-  $rqRefund = rq(Ajax\App\Meeting\Session\Credit\Refund::class);
+  $rqRefundFunc = rq(Ajax\App\Meeting\Session\Credit\RefundFunc::class);
   $rqRefundPage = rq(Ajax\App\Meeting\Session\Credit\RefundPage::class);
 @endphp
                     <div class="table-responsive" id="content-session-refunds-page" @jxnTarget()>
-                      <div @jxnEvent(['.btn-add-refund', 'click'], $rqRefund->create($debtId))></div>
-                      <div @jxnEvent(['.btn-del-refund', 'click'], $rqRefund->delete($debtId))></div>
+                      <div @jxnEvent(['.btn-add-refund', 'click'], $rqRefundFunc->create($debtId))></div>
+                      <div @jxnEvent(['.btn-del-refund', 'click'], $rqRefundFunc->delete($debtId))></div>
 
                       <table class="table table-bordered responsive">
                         <thead>

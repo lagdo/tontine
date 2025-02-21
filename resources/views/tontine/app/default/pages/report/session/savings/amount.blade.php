@@ -8,8 +8,7 @@
                         {!! $htmlBuilder->text('fund-profit-amount', $profitAmount)->class('form-control')
                           ->id('fund-profit-amount')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqFund
-                            ->amount($amountValue))><i class="fa fa-sync"></i></button>
+                          <button @jxnClick($rqFund->amount($amountValue)) type="button" class="btn btn-primary"><i class="fa fa-sync"></i></button>
                         </div>
                       </div>
                     </div>

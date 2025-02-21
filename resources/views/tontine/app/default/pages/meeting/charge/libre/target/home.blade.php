@@ -2,6 +2,7 @@
 @php
   $searchValue = jq('#txt-fee-member-search')->val();
   $rqTarget = rq(Ajax\App\Meeting\Session\Charge\Libre\Target::class);
+  $rqTargetFunc = rq(Ajax\App\Meeting\Session\Charge\Libre\TargetFunc::class);
   $rqTargetPage = rq(Ajax\App\Meeting\Session\Charge\Libre\TargetPage::class);
   $rqCharge = rq(Ajax\App\Meeting\Session\Charge\Libre\Fee::class);
 @endphp
@@ -14,10 +15,10 @@
                         <button type="button" class="btn btn-primary" @jxnClick($rqCharge->render())><i class="fa fa-arrow-left"></i></button>
 @if ($charge->is_active)
 @if ($target === null)
-                        <button type="button" class="btn btn-primary" @jxnClick($rqTarget->add())><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqTargetFunc->add())><i class="fa fa-plus"></i></button>
 @else
-                        <button type="button" class="btn btn-primary" @jxnClick($rqTarget->edit())><i class="fa fa-edit"></i></button>
-                        <button type="button" class="btn btn-primary" @jxnClick($rqTarget->remove()
+                        <button type="button" class="btn btn-primary" @jxnClick($rqTargetFunc->edit())><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqTargetFunc->remove()
                           ->confirm(__('meeting.target.questions.remove')))><i class="fa fa-trash"></i></button>
 @endif
 @endif
@@ -30,7 +31,7 @@
                       <div class="input-group">
                         {!! $htmlBuilder->text('search', '')->class('form-control')->id('txt-fee-member-search') !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqTarget->search($searchValue))><i class="fa fa-search"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqTargetFunc->search($searchValue))><i class="fa fa-search"></i></button>
                         </div>
                       </div>
                     </div>

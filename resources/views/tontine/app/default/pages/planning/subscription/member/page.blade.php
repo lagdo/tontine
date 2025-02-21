@@ -1,11 +1,11 @@
 @php
   $memberId = jq()->parent()->parent()->attr('data-member-id')->toInt();
-  $rqMember = rq(Ajax\App\Planning\Subscription\Member::class);
+  $rqMemberFunc = rq(Ajax\App\Planning\Subscription\MemberFunc::class);
   $rqMemberPage = rq(Ajax\App\Planning\Subscription\MemberPage::class);
 @endphp
                   <div class="table-responsive" id="content-subscription-members-page" @jxnTarget()>
-                    <div @jxnEvent(['.btn-subscription-member-add', 'click'], $rqMember->create($memberId))></div>
-                    <div @jxnEvent(['.btn-subscription-member-del', 'click'], $rqMember->delete($memberId)
+                    <div @jxnEvent(['.btn-subscription-member-add', 'click'], $rqMemberFunc->create($memberId))></div>
+                    <div @jxnEvent(['.btn-subscription-member-del', 'click'], $rqMemberFunc->delete($memberId)
                       ->confirm(__('tontine.session.questions.disable')))></div>
 
                     <table class="table table-bordered responsive">

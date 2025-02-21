@@ -3,9 +3,9 @@
 namespace Ajax\App;
 
 use Siak\Tontine\Service\LocaleService;
-use Ajax\CallableClass;
+use Ajax\FuncComponent;
 
-class Locale extends CallableClass
+class LocaleFunc extends FuncComponent
 {
     /**
      * @di

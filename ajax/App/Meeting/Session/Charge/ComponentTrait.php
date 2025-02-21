@@ -2,7 +2,6 @@
 
 namespace Ajax\App\Meeting\Session\Charge;
 
-use Ajax\App\Meeting\MeetingPageComponent;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementService;
@@ -10,10 +9,7 @@ use Siak\Tontine\Service\Tontine\ChargeService;
 
 use function trans;
 
-/**
- * @before getCharge
- */
-abstract class ChargePageComponent extends MeetingPageComponent
+trait ComponentTrait
 {
     /**
      * @di
@@ -39,6 +35,10 @@ abstract class ChargePageComponent extends MeetingPageComponent
 
     protected function getCharge()
     {
+        if($this->target()->method() === 'charge')
+        {
+            $this->bag('meeting')->set('charge.id', $this->target()->args()[0]);
+        }
         $chargeId = $this->bag('meeting')->get('charge.id');
         $this->stash()->set('meeting.session.charge', $this->chargeService->getCharge($chargeId));
     }

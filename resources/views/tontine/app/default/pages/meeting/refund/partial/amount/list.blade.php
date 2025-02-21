@@ -5,6 +5,7 @@
   $amount = jq('input', jq()->parent()->parent())->val()->toInt();
   $rqRefund = rq(Ajax\App\Meeting\Session\Credit\Partial\Refund::class);
   $rqAmount = rq(Ajax\App\Meeting\Session\Credit\Partial\Amount::class);
+  $rqAmountFunc = rq(Ajax\App\Meeting\Session\Credit\Partial\AmountFunc::class);
 @endphp
                   <div class="row">
                     <div class="col-auto">
@@ -19,8 +20,8 @@
                   </div>
 
                   <div class="table-responsive" @jxnTarget()>
-                    <div @jxnEvent(['.btn-partial-refund-edit-amount', 'click'], $rqAmount->edit($debtId))></div>
-                    <div @jxnEvent(['.btn-partial-refund-save-amount', 'click'], $rqAmount->save($debtId, $amount))></div>
+                    <div @jxnEvent(['.btn-partial-refund-edit-amount', 'click'], $rqAmountFunc->edit($debtId))></div>
+                    <div @jxnEvent(['.btn-partial-refund-save-amount', 'click'], $rqAmountFunc->save($debtId, $amount))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

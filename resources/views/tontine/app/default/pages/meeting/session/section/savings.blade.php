@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-md-6 col-sm-12 sm-screen" id="content-session-closings" @jxnBind($rqClosing)>
                 </div>
-                <div class="col-12 sm-screen" id="report-fund-savings" @jxnBind($rqSavingReport, 'session')>
+                <div class="col-12 sm-screen" id="report-fund-savings" @jxnBind($rqSavingReport)>
                 </div>
               </div>
             </div>

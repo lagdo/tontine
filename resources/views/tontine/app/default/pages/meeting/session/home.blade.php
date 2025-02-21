@@ -1,5 +1,5 @@
 @php
-  $rqSession = rq(Ajax\App\Meeting\Session\Session::class);
+  $rqSessionFunc = rq(Ajax\App\Meeting\Session\SessionFunc::class);
   $rqSessionPage = rq(Ajax\App\Meeting\Session\SessionPage::class);
 @endphp
           <div class="section-body">
@@ -9,9 +9,9 @@
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right ml-2" role="group">
-                  <button type="button" class="btn btn-primary" @jxnClick($rqSession->resync()
+                  <button type="button" class="btn btn-primary" @jxnClick($rqSessionFunc->resync()
                     ->confirm(__('tontine.session.questions.resync')))><i class="fa fa-redo"></i></button>
-                  <button type="button" class="btn btn-primary" @jxnClick($rqSession->page())><i class="fa fa-sync"></i></button>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqSessionPage->page())><i class="fa fa-sync"></i></button>
                 </div>
               </div>
             </div>

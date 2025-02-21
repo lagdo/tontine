@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Summary\Saving;
 
-use Ajax\PageComponent;
+use Ajax\App\Meeting\Summary\PageComponent;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Stringable;
 

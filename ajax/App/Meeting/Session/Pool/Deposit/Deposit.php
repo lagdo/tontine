@@ -2,11 +2,11 @@
 
 namespace Ajax\App\Meeting\Session\Pool\Deposit;
 
-use Ajax\App\Meeting\MeetingComponent;
+use Ajax\App\Meeting\Component;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Stringable;
 
-class Deposit extends MeetingComponent
+class Deposit extends Component
 {
     /**
      * The constructor
@@ -22,7 +22,6 @@ class Deposit extends MeetingComponent
     public function html(): Stringable
     {
         $session = $this->stash()->get('meeting.session');
-
         return $this->renderView('pages.meeting.deposit.home', [
             'session' => $session,
             'pools' => $this->poolService->getPoolsWithReceivables($session),

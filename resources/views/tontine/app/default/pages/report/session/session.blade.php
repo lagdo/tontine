@@ -34,6 +34,6 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-12" id="content-report-fund-savings" @jxnBind($rqSavingFund, 'report')>
+                <div class="col-12" id="content-report-fund-savings" @jxnBind($rqSavingFund)>
                 </div>
               </div>

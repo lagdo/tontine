@@ -6,7 +6,6 @@
                             ->id("libre-deposit-input-$receivableId")->class('form-control')
                             ->attribute('style', 'height:36px; width:50px; border-color:#a1a1a1;') !!}
                           <div class="input-group-append">
-                            <button type="button" class="btn btn-primary" @jxnClick($rqAmount
-                              ->save($receivableId, $amountValue))><i class="fa fa-save"></i></button>
+                            <button @jxnClick($rqAmountFunc->save($receivableId, $amountValue)) type="button" class="btn btn-primary"><i class="fa fa-save"></i></button>
                           </div>
                         </div>

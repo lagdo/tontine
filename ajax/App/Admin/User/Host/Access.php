@@ -6,7 +6,6 @@ use Ajax\Component;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Tontine\UserService;
 use Siak\Tontine\Service\Tontine\TontineService;
-use Siak\Tontine\Validation\Tontine\HostAccessValidator;
 use Stringable;
 
 use function trans;
@@ -21,11 +20,6 @@ class Access extends Component
      * @var string
      */
     protected $overrides = Host::class;
-
-    /**
-     * @var HostAccessValidator
-     */
-    protected HostAccessValidator $validator;
 
     /**
      * @param UserService $userService
@@ -95,28 +89,5 @@ class Access extends Component
         $this->stash()->set('user.tontine', $tontine);
 
         $this->render();
-    }
-
-    public function tontine(int $tontineId)
-    {
-        $this->bag('user')->set('tontine.id', $tontineId);
-
-        $this->cl(AccessContent::class)->render();
-    }
-
-    /**
-     * @di $validator
-     */
-    public function saveAccess(array $formValues)
-    {
-        $invite = $this->stash()->get('user.invite');
-        $tontine = $this->stash()->get('user.tontine');
-        $access = $this->validator->validateItem($formValues['access'] ?? []);
-        $this->userService->saveHostTontineAccess($invite, $tontine, $access);
-
-        $this->alert()->title(trans('common.titles.success'))
-            ->success(trans('meeting.messages.saved'));
-
-        $this->cl(AccessContent::class)->render();
     }
 }

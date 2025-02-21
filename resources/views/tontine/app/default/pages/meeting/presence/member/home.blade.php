@@ -1,6 +1,7 @@
 @php
-  $rqPresence = rq(Ajax\App\Meeting\Presence\Presence::class);
+  $rqPresenceFunc = rq(Ajax\App\Meeting\Presence\PresenceFunc::class);
   $rqMember = rq(Ajax\App\Meeting\Presence\Member::class);
+  $rqMemberFunc = rq(Ajax\App\Meeting\Presence\MemberFunc::class);
   $rqMemberPage = rq(Ajax\App\Meeting\Presence\MemberPage::class);
   $jsBackHandler = js('Tontine')->showSmScreen('content-presence-left', 'presence-sm-screens');
 @endphp
@@ -18,7 +19,7 @@
                   </div>
 @if (!$session)
                   <div class="col-auto">
-                    <button type="button" class="btn btn-primary" @jxnClick($rqPresence->exchange())><i class="fa fa-exchange-alt"></i></button>
+                    <button type="button" class="btn btn-primary" @jxnClick($rqPresenceFunc->exchange())><i class="fa fa-exchange-alt"></i></button>
                   </div>
 @else
                   <div class="col-auto sm-screen-hidden">
@@ -38,7 +39,7 @@
                       {!! $htmlBuilder->text('search', '')->id('txt-presence-members-search')
                         ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                       <div class="input-group-append">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqMember->search(jq('#txt-presence-members-search')->val()))><i class="fa fa-search"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqMemberFunc->search(jq('#txt-presence-members-search')->val()))><i class="fa fa-search"></i></button>
                       </div>
                     </div>
                   </div>

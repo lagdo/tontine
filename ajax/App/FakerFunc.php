@@ -5,11 +5,11 @@ namespace Ajax\App;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Service\Tontine\MemberService;
-use Ajax\CallableClass;
+use Ajax\FuncComponent;
 
 use function intval;
 
-class Faker extends CallableClass
+class FakerFunc extends FuncComponent
 {
     /**
      * @var MemberService

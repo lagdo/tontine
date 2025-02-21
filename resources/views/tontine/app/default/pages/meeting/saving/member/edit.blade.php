@@ -5,7 +5,6 @@
                           {!! $htmlBuilder->text('amount', $amount)->class('form-control')
                             ->id("saving-edit-member-$memberId")->attribute('style', 'height:36px;') !!}
                           <div class="input-group-append">
-                            <button type="button" class="btn btn-primary" @jxnClick($rqAmount
-                              ->save($memberId, $amountValue))><i class="fa fa-save"></i></button>
+                            <button @jxnClick($rqAmountFunc->save($memberId, $amountValue)) type="button" class="btn btn-primary"><i class="fa fa-save"></i></button>
                           </div>
                         </div>

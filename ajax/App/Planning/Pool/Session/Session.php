@@ -49,22 +49,4 @@ class Session extends Component
         $this->response->js('Tontine')
             ->showSmScreen('content-planning-sessions', 'pool-sm-screens');
     }
-
-    public function enableSession(int $sessionId)
-    {
-        $pool = $this->stash()->get('pool.session.pool');
-        $this->poolService->enableSession($pool, $sessionId);
-
-        $this->cl(SessionCounter::class)->render();
-        $this->cl(SessionPage::class)->page();
-    }
-
-    public function disableSession(int $sessionId)
-    {
-        $pool = $this->stash()->get('pool.session.pool');
-        $this->poolService->disableSession($pool, $sessionId);
-
-        $this->cl(SessionCounter::class)->render();
-        $this->cl(SessionPage::class)->page();
-    }
 }

@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Credit\Partial;
 
-use Ajax\App\Meeting\MeetingPageComponent;
+use Ajax\App\Meeting\PageComponent;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;
@@ -11,7 +11,7 @@ use Stringable;
  * @databag refund.partial
  * @before getFund
  */
-class RefundPage extends MeetingPageComponent
+class RefundPage extends PageComponent
 {
     /**
      * The pagination databag options

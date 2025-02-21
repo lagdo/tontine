@@ -1,15 +1,15 @@
 @php
   $roundId = jq()->parent()->attr('data-round-id')->toInt();
-  $rqSelect = rq(Ajax\App\Tontine\Select::class);
-  $rqSession = rq(Ajax\App\Planning\Session\Session::class);
-  $rqRound = rq(Ajax\App\Planning\Session\Round::class);
+  $rqRoundFunc = rq(Ajax\App\Planning\Session\RoundFunc::class);
   $rqRoundPage = rq(Ajax\App\Planning\Session\RoundPage::class);
+  $rqSelectFunc = rq(Ajax\App\Tontine\SelectFunc::class);
+  $rqSession = rq(Ajax\App\Planning\Session\Session::class);
 @endphp
                   <div class="table-responsive" id="content-planning-rounds-page" @jxnTarget()>
-                    <div @jxnEvent(['.btn-round-edit', 'click'], $rqRound->edit($roundId))></div>
+                    <div @jxnEvent(['.btn-round-edit', 'click'], $rqRoundFunc->edit($roundId))></div>
                     <div @jxnEvent(['.btn-round-sessions', 'click'], $rqSession->round($roundId))></div>
-                    <div @jxnEvent(['.btn-round-select', 'click'], $rqSelect->saveRound($roundId))></div>
-                    <div @jxnEvent(['.btn-round-delete', 'click'], $rqRound->delete($roundId)
+                    <div @jxnEvent(['.btn-round-select', 'click'], $rqSelectFunc->saveRound($roundId))></div>
+                    <div @jxnEvent(['.btn-round-delete', 'click'], $rqRoundFunc->delete($roundId)
                       ->confirm(__('tontine.round.questions.delete')))></div>
 
                     <table class="table table-bordered responsive">

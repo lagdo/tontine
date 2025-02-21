@@ -3,11 +3,18 @@
 namespace Ajax\App\Meeting\Session\Pool;
 
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Service\Meeting\Pool\PoolService;
 
 use function trans;
 
 trait PoolTrait
 {
+    /**
+     * @di
+     * @var PoolService
+     */
+    protected PoolService $poolService;
+
     /**
      * @return void
      */

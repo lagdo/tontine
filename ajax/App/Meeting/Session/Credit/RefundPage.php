@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Credit;
 
-use Ajax\App\Meeting\MeetingPageComponent;
+use Ajax\App\Meeting\PageComponent;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;
@@ -10,8 +10,10 @@ use Stringable;
 /**
  * @databag refund
  */
-class RefundPage extends MeetingPageComponent
+class RefundPage extends PageComponent
 {
+    use FundTrait;
+
     /**
      * The pagination databag options
      *
@@ -28,13 +30,6 @@ class RefundPage extends MeetingPageComponent
     public function __construct(protected FundService $fundService,
         protected RefundService $refundService)
     {}
-
-    protected function getFund()
-    {
-        $fundId = $this->bag('refund')->get('fund.id', 0);
-        $fund = $this->fundService->getFund($fundId, true, true);
-        $this->stash()->set('meeting.refund.fund', $fund);
-    }
 
     /**
      * @inheritDoc
@@ -56,10 +51,11 @@ class RefundPage extends MeetingPageComponent
         $session = $this->stash()->get('meeting.session');
         $fund = $this->stash()->get('meeting.refund.fund');
         $filtered = $this->bag('refund')->get('filter', null);
+        $debts = $this->refundService->getDebts($session, $fund, $filtered, $this->currentPage());
 
         return $this->renderView('pages.meeting.refund.page', [
             'session' => $session,
-            'debts' => $this->refundService->getDebts($session, $fund, $filtered, $this->currentPage()),
+            'debts' => $debts,
         ]);
     }
 

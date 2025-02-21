@@ -2,14 +2,14 @@
 
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
-use Ajax\App\Meeting\Session\Charge\ChargeComponent;
+use Ajax\App\Meeting\Session\Charge\Component;
 use Siak\Tontine\Service\LocaleService;
 use Stringable;
 
 use function Jaxon\jq;
 use function Jaxon\pm;
 
-class Amount extends ChargeComponent
+class Amount extends Component
 {
     use AmountTrait;
 
@@ -49,97 +49,14 @@ class Amount extends ChargeComponent
             return $this->renderView('pages.meeting.charge.libre.member.edit', [
                 'memberId' => $memberId,
                 'amount' => !$bill ? '' : $this->localeService->getMoneyValue($bill->amount),
-                'handler' => $this->rq()->save($memberId, $paid, $amountValue),
+                'handler' => $this->rq(AmountFunc::class)->save($memberId, $paid, $amountValue),
             ]);
         }
 
         return $this->renderView('pages.meeting.charge.libre.member.show', [
             'memberId' => $memberId,
             'amount' => $this->localeService->formatMoney($bill->amount, false),
-            'rqAmount' => $this->rq(),
+            'rqAmountFunc' => $this->rq(AmountFunc::class),
         ]);
-    }
-
-    /**
-     * @param int $memberId
-     *
-     * @return void
-     */
-    private function refresh(int $memberId)
-    {
-        $session = $this->stash()->get('meeting.session');
-        $charge = $this->stash()->get('meeting.session.charge');
-        $bill = $this->billService->getMemberBill($charge, $session, $memberId);
-        if($bill === null)
-        {
-            return;
-        }
-
-        $this->stash()->set('meeting.charge.bill', $bill->bill);
-        $this->stash()->set('meeting.charge.member.id', $memberId);
-
-        $this->item($memberId)->render();
-    }
-
-    /**
-     * @before checkChargeEdit
-     * @param int $memberId
-     *
-     * @return void
-     */
-    public function edit(int $memberId)
-    {
-        $this->stash()->set('meeting.charge.edit', true);
-
-        $this->refresh($memberId);
-    }
-
-    /**
-     * @param int $memberId
-     * @param bool $paid
-     * @param string $amount
-     *
-     * @return void
-     */
-    private function saveAmount(int $memberId, bool $paid, string $amount): void
-    {
-        $session = $this->stash()->get('meeting.session');
-        $charge = $this->stash()->get('meeting.session.charge');
-        $amount = $this->convertAmount($amount);
-
-        if(!$amount)
-        {
-            // No amount provided => the bill is deleted.
-            $this->billService->deleteBill($charge, $session, $memberId);
-            return;
-        }
-
-        $bill = $this->billService->getMemberBill($charge, $session, $memberId);
-        if($bill !== null)
-        {
-            // The bill exists => it is updated.
-            $this->billService->updateBill($charge, $session, $memberId, $amount);
-            return;
-        }
-
-        // The bill is created.
-        $this->billService->createBill($charge, $session, $memberId, $paid, $amount);
-    }
-
-    /**
-     * @before checkChargeEdit
-     *
-     * @param int $memberId
-     * @param bool $paid
-     * @param string $amount
-     *
-     * @return void
-     */
-    public function save(int $memberId, bool $paid, string $amount)
-    {
-        $this->saveAmount($memberId, $paid, $amount);
-        $this->showTotal();
-
-        $this->refresh($memberId);
     }
 }

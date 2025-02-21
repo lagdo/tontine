@@ -1,18 +1,13 @@
 <?php
 
-namespace Ajax\App\Meeting;
+namespace Ajax\App\Meeting\Summary;
 
-use Ajax\Component;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\SessionService;
 
 use function trans;
 
-/**
- * @databag meeting
- * @before getSession
- */
-abstract class MeetingComponent extends Component
+trait ComponentTrait
 {
     /**
      * @di
@@ -42,6 +37,6 @@ abstract class MeetingComponent extends Component
         {
             throw new MessageException(trans('meeting.errors.session.not_opened'));
         }
-        $this->stash()->set('meeting.session', $session);
+        $this->stash()->set('summary.session', $session);
     }
 }

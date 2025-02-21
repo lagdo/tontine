@@ -2,11 +2,11 @@
 
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
-use Ajax\App\Meeting\MeetingPageComponent;
+use Ajax\App\Meeting\PageComponent;
 use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
 use Stringable;
 
-class FeePage extends MeetingPageComponent
+class FeePage extends PageComponent
 {
     /**
      * The pagination databag options

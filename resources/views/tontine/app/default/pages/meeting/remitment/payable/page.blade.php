@@ -1,12 +1,12 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $payableId = jq()->parent()->attr('data-payable-id')->toInt();
-  $rqPayable = rq(Ajax\App\Meeting\Session\Pool\Remitment\Payable::class);
+  $rqPayableFunc = rq(Ajax\App\Meeting\Session\Pool\Remitment\PayableFunc::class);
 @endphp
                   <div class="table-responsive" id="content-session-pool-remitments" @jxnTarget()>
-                    <div @jxnEvent(['.btn-add-remitment', 'click'], $rqPayable->addRemitment($payableId))></div>
-                    <div @jxnEvent(['.btn-save-remitment', 'click'], $rqPayable->createRemitment($payableId))></div>
-                    <div @jxnEvent(['.btn-del-remitment', 'click'], $rqPayable->deleteRemitment($payableId)
+                    <div @jxnEvent(['.btn-add-remitment', 'click'], $rqPayableFunc->addRemitment($payableId))></div>
+                    <div @jxnEvent(['.btn-save-remitment', 'click'], $rqPayableFunc->createRemitment($payableId))></div>
+                    <div @jxnEvent(['.btn-del-remitment', 'click'], $rqPayableFunc->deleteRemitment($payableId)
                       ->confirm(__('meeting.remitment.questions.delete')))></div>
 
                     <table class="table table-bordered responsive">

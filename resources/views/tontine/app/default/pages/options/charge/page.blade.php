@@ -1,13 +1,13 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
-  $rqCharge = rq(Ajax\App\Tontine\Options\Charge::class);
+  $rqChargeFunc = rq(Ajax\App\Tontine\Options\ChargeFunc::class);
   $rqChargePage = rq(Ajax\App\Tontine\Options\ChargePage::class);
 @endphp
               <div class="table-responsive" id="content-charge-page" @jxnTarget()>
-                <div @jxnEvent(['.btn-charge-edit', 'click'], $rqCharge->edit($chargeId))></div>
-                <div @jxnEvent(['.btn-charge-toggle', 'click'], $rqCharge->toggle($chargeId))></div>
-                <div @jxnEvent(['.btn-charge-delete', 'click'], $rqCharge->delete($chargeId)
+                <div @jxnEvent(['.btn-charge-edit', 'click'], $rqChargeFunc->edit($chargeId))></div>
+                <div @jxnEvent(['.btn-charge-toggle', 'click'], $rqChargeFunc->toggle($chargeId))></div>
+                <div @jxnEvent(['.btn-charge-delete', 'click'], $rqChargeFunc->delete($chargeId)
                   ->confirm(__('tontine.charge.questions.delete')))></div>
 
                 <table class="table table-bordered responsive">

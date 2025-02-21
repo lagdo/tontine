@@ -2,8 +2,7 @@
 
 namespace Ajax\App\Meeting\Summary\Credit;
 
-use Ajax\Component;
-use Siak\Tontine\Service\Meeting\Credit\RefundService;
+use Ajax\App\Meeting\Summary\Component;
 use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;
 
@@ -16,10 +15,8 @@ class Refund extends Component
      * The constructor
      *
      * @param FundService $fundService
-     * @param RefundService $refundService
      */
-    public function __construct(protected FundService $fundService,
-        protected RefundService $refundService)
+    public function __construct(protected FundService $fundService)
     {}
 
     /**
@@ -69,19 +66,6 @@ class Refund extends Component
     {
         $this->bag('refund')->set('fund.id', $fundId);
         $this->getFund();
-
-        $this->cl(RefundPage::class)->page();
-    }
-
-    /**
-     * @before getFund
-     */
-    public function toggleFilter()
-    {
-        $filtered = $this->bag('refund')->get('filter', null);
-        // Switch between null, true and false
-        $filtered = $filtered === null ? true : ($filtered === true ? false : null);
-        $this->bag('refund')->set('filter', $filtered);
 
         $this->cl(RefundPage::class)->page();
     }

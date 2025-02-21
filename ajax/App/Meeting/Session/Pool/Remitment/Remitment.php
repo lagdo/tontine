@@ -2,11 +2,11 @@
 
 namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
-use Ajax\App\Meeting\MeetingComponent;
+use Ajax\App\Meeting\Component;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Stringable;
 
-class Remitment extends MeetingComponent
+class Remitment extends Component
 {
     /**
      * The constructor

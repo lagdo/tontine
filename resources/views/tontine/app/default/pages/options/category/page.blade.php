@@ -1,12 +1,12 @@
 @php
   $categoryId = jq()->parent()->attr('data-category-id')->toInt();
-  $rqCategory = rq(Ajax\App\Tontine\Options\Category::class);
+  $rqCategoryFunc = rq(Ajax\App\Tontine\Options\CategoryFunc::class);
   $rqCategoryPage = rq(Ajax\App\Tontine\Options\CategoryPage::class);
 @endphp
                   <div class="table-responsive" id="content-category-page" @jxnTarget()>
-                    <div @jxnEvent(['.btn-category-edit', 'click'], $rqCategory->edit($categoryId))></div>
-                    <div @jxnEvent(['.btn-category-toggle', 'click'], $rqCategory->toggle($categoryId))></div>
-                    <div @jxnEvent(['.btn-category-delete', 'click'], $rqCategory->delete($categoryId)
+                    <div @jxnEvent(['.btn-category-edit', 'click'], $rqCategoryFunc->edit($categoryId))></div>
+                    <div @jxnEvent(['.btn-category-toggle', 'click'], $rqCategoryFunc->toggle($categoryId))></div>
+                    <div @jxnEvent(['.btn-category-delete', 'click'], $rqCategoryFunc->delete($categoryId)
                       ->confirm(__('tontine.category.questions.delete')))></div>
 
                     <table class="table table-bordered responsive">

@@ -1,14 +1,14 @@
 @php
   $rqSession = rq(Ajax\App\Meeting\Session\Session::class);
-  $rqSection = rq(Ajax\App\Meeting\Session\Section::class);
+  $rqSectionFunc = rq(Ajax\App\Meeting\Session\SectionFunc::class);
 @endphp
                 <div class="btn-group float-right ml-1" role="group"  @jxnTarget()>
-                  <div @jxnEvent(['.btn-session-pools', 'click'], $rqSection->pools())></div>
-                  <div @jxnEvent(['.btn-session-charges', 'click'], $rqSection->charges())></div>
-                  <div @jxnEvent(['.btn-session-savings', 'click'], $rqSection->savings())></div>
-                  <div @jxnEvent(['.btn-session-credits', 'click'], $rqSection->credits())></div>
-                  <div @jxnEvent(['.btn-session-cash', 'click'], $rqSection->cash())></div>
-                  <div @jxnEvent(['.btn-session-reports', 'click'], $rqSection->reports())></div>
+                  <div @jxnEvent(['.btn-session-pools', 'click'], $rqSectionFunc->pools())></div>
+                  <div @jxnEvent(['.btn-session-charges', 'click'], $rqSectionFunc->charges())></div>
+                  <div @jxnEvent(['.btn-session-savings', 'click'], $rqSectionFunc->savings())></div>
+                  <div @jxnEvent(['.btn-session-credits', 'click'], $rqSectionFunc->credits())></div>
+                  <div @jxnEvent(['.btn-session-cash', 'click'], $rqSectionFunc->cash())></div>
+                  <div @jxnEvent(['.btn-session-reports', 'click'], $rqSectionFunc->reports())></div>
 
 @php
   $menus = [[
@@ -40,5 +40,5 @@
                 </div>
                 <div class="btn-group float-right ml-1" role="group">
                   <button type="button" class="btn btn-primary" @jxnClick($rqSession->home())><i class="fa fa-arrow-left"></i></button>
-                  <button type="button" class="btn btn-primary" @jxnClick($rqSection->$section())><i class="fa fa-sync"></i></button>
+                  <button type="button" class="btn btn-primary" @jxnClick($rqSectionFunc->$section())><i class="fa fa-sync"></i></button>
                 </div>

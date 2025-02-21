@@ -1,5 +1,6 @@
 @php
   $rqHostUser = rq(Ajax\App\Admin\User\Host\Host::class);
+  $rqHostUserFunc = rq(Ajax\App\Admin\User\Host\HostFunc::class);
   $rqHostUserPage = rq(Ajax\App\Admin\User\Host\HostPage::class);
 @endphp
               <div class="section-body">
@@ -10,7 +11,7 @@
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">
                       <button type="button" class="btn btn-primary" @jxnClick($rqHostUser->render())><i class="fa fa-sync"></i></button>
-                      <button type="button" class="btn btn-primary" @jxnClick($rqHostUser->add())><i class="fa fa-plus"></i></button>
+                      <button type="button" class="btn btn-primary" @jxnClick($rqHostUserFunc->add())><i class="fa fa-plus"></i></button>
                     </div>
                   </div>
                 </div>

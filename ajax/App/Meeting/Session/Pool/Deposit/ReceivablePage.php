@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Pool\Deposit;
 
-use Ajax\App\Meeting\MeetingPageComponent;
+use Ajax\App\Meeting\PageComponent;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
@@ -11,7 +11,7 @@ use Stringable;
 /**
  * @before getPool
  */
-class ReceivablePage extends MeetingPageComponent
+class ReceivablePage extends PageComponent
 {
     use PoolTrait;
 

@@ -2,17 +2,15 @@
 
 namespace Ajax\App\Meeting\Session\Saving;
 
-use Ajax\App\Meeting\MeetingComponent;
+use Ajax\App\Meeting\Component;
 use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;
-
-use function trim;
 
 /**
  * @databag meeting.saving
  * @before getFund
  */
-class Member extends MeetingComponent
+class Member extends Component
 {
     /**
      * @var string
@@ -68,23 +66,5 @@ class Member extends MeetingComponent
         $this->bag('meeting.saving')->set('member.page', 1);
 
         $this->render();
-    }
-
-    public function search(string $search)
-    {
-        $this->bag('meeting.saving')->set('member.search', trim($search));
-        $this->bag('meeting.saving')->set('member.page', 1);
-
-        $this->cl(MemberPage::class)->page();
-    }
-
-    public function toggleFilter()
-    {
-        $filter = $this->bag('meeting.saving')->get('member.filter', null);
-        // Switch between null, true and false
-        $filter = $filter === null ? true : ($filter === true ? false : null);
-        $this->bag('meeting.saving')->set('member.filter', $filter);
-
-        $this->cl(MemberPage::class)->page();
     }
 }

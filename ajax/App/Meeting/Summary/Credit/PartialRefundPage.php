@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Summary\Credit;
 
-use Ajax\PageComponent;
+use Ajax\App\Meeting\Summary\PageComponent;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;

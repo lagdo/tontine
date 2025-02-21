@@ -3,7 +3,8 @@
   $closingFundId = pm()->select('closings-fund-id')->toInt();
   $selectFundId = jq()->parent()->attr('data-fund-id')->toInt();
   $rqClosing = rq(Ajax\App\Meeting\Session\Saving\Closing::class);
-  $rqSavingReport = rq(Ajax\App\Report\Session\Saving\Fund::class);
+  $rqClosingFunc = rq(Ajax\App\Meeting\Session\Saving\ClosingFunc::class);
+  $rqFundReport = rq(Ajax\App\Report\Session\Saving\Fund::class);
 @endphp
                   <div class="row">
                     <div class="col">
@@ -24,7 +25,7 @@
                         {!! $htmlBuilder->select('fund_id', $funds, 0)->id('closings-fund-id')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqSavingReport->fund($closingFundId, 'session'))><i class="fa fa-percentage"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqFundReport->fund($closingFundId))><i class="fa fa-percentage"></i></button>
                         </div>
                       </div>
                     </div>
@@ -34,18 +35,18 @@
                           <i class="fa fa-circle-notch"></i> {{ __('meeting.saving.actions.close') }}
                         </button>
                         <div class="dropdown-menu">
-                          <button type="button" class="dropdown-item" @jxnClick($rqClosing->editRoundClosing($closingFundId))>{!! __('meeting.saving.actions.saving') !!}</button>
-                          <button type="button" class="dropdown-item" @jxnClick($rqClosing->editInterestClosing($closingFundId))>{{ __('meeting.saving.actions.interest') }}</button>
+                          <button type="button" class="dropdown-item" @jxnClick($rqClosingFunc->editRoundClosing($closingFundId))>{!! __('meeting.saving.actions.saving') !!}</button>
+                          <button type="button" class="dropdown-item" @jxnClick($rqClosingFunc->editInterestClosing($closingFundId))>{{ __('meeting.saving.actions.interest') }}</button>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div class="table-responsive" id="content-session-closings" @jxnTarget()>
-                    <div @jxnEvent(['.btn-fund-edit-round-closing', 'click'], $rqClosing->editRoundClosing($selectFundId))></div>
-                    <div @jxnEvent(['.btn-fund-edit-interest-closing', 'click'], $rqClosing->editInterestClosing($selectFundId))></div>
-                    <div @jxnEvent(['.btn-fund-delete-round-closing', 'click'], $rqClosing->deleteRoundClosing($selectFundId)
+                    <div @jxnEvent(['.btn-fund-edit-round-closing', 'click'], $rqClosingFunc->editRoundClosing($selectFundId))></div>
+                    <div @jxnEvent(['.btn-fund-edit-interest-closing', 'click'], $rqClosingFunc->editInterestClosing($selectFundId))></div>
+                    <div @jxnEvent(['.btn-fund-delete-round-closing', 'click'], $rqClosingFunc->deleteRoundClosing($selectFundId)
                       ->confirm(trans('meeting.closing.questions.delete')))></div>
-                    <div @jxnEvent(['.btn-fund-delete-interest-closing', 'click'], $rqClosing->deleteInterestClosing($selectFundId)
+                    <div @jxnEvent(['.btn-fund-delete-interest-closing', 'click'], $rqClosingFunc->deleteInterestClosing($selectFundId)
                       ->confirm(trans('meeting.closing.questions.delete')))></div>
 
                     <table class="table table-bordered responsive">

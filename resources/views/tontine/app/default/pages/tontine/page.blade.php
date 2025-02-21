@@ -1,13 +1,13 @@
 @php
   $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
-  $rqOrganisation = rq(Ajax\App\Admin\Organisation\Organisation::class);
+  $rqOrganisationFunc = rq(Ajax\App\Admin\Organisation\OrganisationFunc::class);
   $rqOrganisationPage = rq(Ajax\App\Admin\Organisation\OrganisationPage::class);
-  $rqSelect = rq(Ajax\App\Tontine\Select::class);
+  $rqSelectFunc = rq(Ajax\App\Tontine\SelectFunc::class);
 @endphp
                 <div class="table-responsive" id="content-organisation-page" @jxnTarget()>
-                  <div @jxnEvent(['.btn-tontine-edit', 'click'], $rqOrganisation->edit($tontineId))></div>
-                  <div @jxnEvent(['.btn-tontine-choose', 'click'], $rqSelect->saveOrganisation($tontineId))></div>
-                  <div @jxnEvent(['.btn-tontine-delete', 'click'], $rqOrganisation->delete($tontineId)
+                  <div @jxnEvent(['.btn-tontine-edit', 'click'], $rqOrganisationFunc->edit($tontineId))></div>
+                  <div @jxnEvent(['.btn-tontine-choose', 'click'], $rqSelectFunc->saveOrganisation($tontineId))></div>
+                  <div @jxnEvent(['.btn-tontine-delete', 'click'], $rqOrganisationFunc->delete($tontineId)
                     ->confirm(__('tontine.questions.delete')))></div>
 
                   <table class="table table-bordered responsive" @jxnTarget()>

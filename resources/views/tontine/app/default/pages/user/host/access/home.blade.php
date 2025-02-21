@@ -1,6 +1,6 @@
 @php
   $tontineId = pm()->select('select-invite-tontine');
-  $rqHostAccess = rq(Ajax\App\Admin\User\Host\Access::class);
+  $rqHostAccessFunc = rq(Ajax\App\Admin\User\Host\AccessFunc::class);
   $rqHostAccessContent = rq(Ajax\App\Admin\User\Host\AccessContent::class);
   $rqHost = rq(Ajax\App\Admin\User\Host\Host::class);
 @endphp
@@ -25,7 +25,7 @@
                       <div class="input-group">
                         {{ $htmlBuilder->select('tontine_id', $tontines, 0)->class('form-control')->id('select-invite-tontine') }}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqHostAccess->tontine($tontineId))><i class="fa fa-arrow-right"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqHostAccessFunc->tontine($tontineId))><i class="fa fa-arrow-right"></i></button>
                         </div>
                       </div>
                     </div>
