@@ -4,7 +4,7 @@ use Ajax\App\Meeting\Payment\Payment;
 use Ajax\App\Meeting\Presence\Presence;
 use Ajax\App\Meeting\Session\Session as MeetingSession;
 use Ajax\App\Planning\Pool\Pool;
-use Ajax\App\Planning\Session\Round as PlanningRound;
+use Ajax\App\Planning\Calendar\Round as Calendar;
 use Ajax\App\Planning\Subscription\Subscription;
 use Ajax\App\Report\Round\Round as ReportRound;
 use Ajax\App\Report\Session\Session as ReportSession;
@@ -15,7 +15,7 @@ return [
     'tontine' => [
         '#tontine-menu-members' => Member::class,
         '#tontine-menu-categories' => Options::class,
-        '#planning-menu-sessions' => PlanningRound::class,
+        '#tontine-menu-calendar' => Calendar::class,
     ],
     'round' => [
         '#planning-menu-pools' => Pool::class,

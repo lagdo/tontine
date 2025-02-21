@@ -1,9 +1,9 @@
 @php
   $roundId = jq()->parent()->attr('data-round-id')->toInt();
-  $rqRoundFunc = rq(Ajax\App\Planning\Session\RoundFunc::class);
-  $rqRoundPage = rq(Ajax\App\Planning\Session\RoundPage::class);
+  $rqRoundFunc = rq(Ajax\App\Planning\Calendar\RoundFunc::class);
+  $rqRoundPage = rq(Ajax\App\Planning\Calendar\RoundPage::class);
   $rqSelectFunc = rq(Ajax\App\Tontine\SelectFunc::class);
-  $rqSession = rq(Ajax\App\Planning\Session\Session::class);
+  $rqSession = rq(Ajax\App\Planning\Calendar\Session::class);
 @endphp
                   <div class="table-responsive" id="content-planning-rounds-page" @jxnTarget()>
                     <div @jxnEvent(['.btn-round-edit', 'click'], $rqRoundFunc->edit($roundId))></div>
@@ -16,7 +16,9 @@
                       <thead>
                         <tr>
                           <th>{!! __('common.labels.title') !!}</th>
-                          <th>{!! __('common.labels.dates') !!}</th>
+                          <th>&nbsp;</th>
+                          <th>{!! __('tontine.pool_round.titles.start') !!}</th>
+                          <th>{!! __('tontine.pool_round.titles.end') !!}</th>
                           <th class="table-menu"></th>
                         </tr>
                       </thead>
@@ -24,8 +26,11 @@
 @foreach ($rounds as $round)
                         <tr>
                           <td>{{ $round->title }}</td>
+                          <td>{{ $round->notes ?? '' }}</td>
                           <td>
                             {{ !$round->start_at ? '' : $round->start_at->translatedFormat(__('tontine.date.format')) }}<br/>
+                          </td>
+                          <td>
                             {{ !$round->end_at ? '' : $round->end_at->translatedFormat(__('tontine.date.format')) }}
                           </td>
                           <td class="table-item-menu">

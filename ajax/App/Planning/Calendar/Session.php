@@ -1,7 +1,8 @@
 <?php
 
-namespace Ajax\App\Planning\Session;
+namespace Ajax\App\Planning\Calendar;
 
+use Ajax\App\Page\SectionContent;
 use Ajax\Component;
 use Siak\Tontine\Service\Planning\RoundService;
 use Stringable;
@@ -12,6 +13,11 @@ use Stringable;
  */
 class Session extends Component
 {
+    /**
+     * @var string
+     */
+    protected $overrides = SectionContent::class;
+
     /**
      * The constructor
      *
@@ -44,7 +50,7 @@ class Session extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.planning.round.session.home', [
+        return $this->renderView('pages.planning.calendar.session.home', [
             'round' => $this->stash()->get('planning.round'),
         ]);
     }
@@ -55,6 +61,5 @@ class Session extends Component
     protected function after()
     {
         $this->cl(SessionPage::class)->page();
-        $this->response->js('Tontine')->showSmScreen('content-planning-sessions', 'round-sm-screens');
     }
 }

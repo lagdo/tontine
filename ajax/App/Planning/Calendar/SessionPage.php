@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Planning\Session;
+namespace Ajax\App\Planning\Calendar;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Planning\RoundService;
@@ -46,7 +46,7 @@ class SessionPage extends PageComponent
     {
         $round = $this->stash()->get('planning.round');
 
-        return $this->renderView('pages.planning.round.session.page', [
+        return $this->renderView('pages.planning.calendar.session.page', [
             'sessions' => $round === null ? []:
                 $this->roundService->getSessions($round, $this->currentPage()),
             'statuses' => $this->sessionService->getSessionStatuses(),

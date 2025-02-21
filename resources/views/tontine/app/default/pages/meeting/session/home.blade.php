@@ -5,7 +5,7 @@
           <div class="section-body">
             <div class="row">
               <div class="col">
-                <h2 class="section-title">{{ __('tontine.menus.sessions') }}</h2>
+                <h2 class="section-title">{{ __('tontine.titles.sessions') }}</h2>
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right ml-2" role="group">

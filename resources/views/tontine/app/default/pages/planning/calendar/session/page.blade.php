@@ -1,7 +1,7 @@
 @php
   $sessionId = jq()->parent()->attr('data-session-id')->toInt();
-  $rqSessionFunc = rq(Ajax\App\Planning\Session\SessionFunc::class);
-  $rqSessionPage = rq(Ajax\App\Planning\Session\SessionPage::class);
+  $rqSessionFunc = rq(Ajax\App\Planning\Calendar\SessionFunc::class);
+  $rqSessionPage = rq(Ajax\App\Planning\Calendar\SessionPage::class);
 @endphp
                     <div class="table-responsive" id="content-planning-sessions-page" @jxnTarget()>
                       <div @jxnEvent(['.btn-session-edit', 'click'], $rqSessionFunc->edit($sessionId))></div>
@@ -13,15 +13,19 @@
                         <thead>
                           <tr>
                             <th>{!! __('common.labels.title') !!}</th>
+                            <th>{!! __('common.labels.status') !!}</th>
                             <th>{!! __('common.labels.date') !!}</th>
+                            <th>{!! __('tontine.session.labels.times') !!}</th>
                             <th class="table-menu"></th>
                           </tr>
                         </thead>
                         <tbody>
 @foreach ($sessions as $session)
                           <tr>
-                            <td>{{ $session->title }}<br/>{{ $statuses[$session->status] }}</td>
-                            <td>{{ $session->date }}<br/>{{ $session->times }}</td>
+                            <td>{{ $session->title }}</td>
+                            <td>{{ $statuses[$session->status] }}</td>
+                            <td>{{ $session->date }}</td>
+                            <td>{{ $session->times }}</td>
                             <td class="table-item-menu">
 @include('tontine.app.default.parts.table.menu', [
   'dataIdKey' => 'data-session-id',

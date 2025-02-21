@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Planning\Session;
+namespace Ajax\App\Planning\Calendar;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Planning\RoundService;
@@ -37,7 +37,7 @@ class RoundPage extends PageComponent
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.planning.round.page', [
+        return $this->renderView('pages.planning.calendar.round.page', [
             'rounds' => $this->roundService->getRounds($this->currentPage()),
         ]);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Planning\Session;
+namespace Ajax\App\Planning\Calendar;
 
 use Ajax\FuncComponent;
 use Ajax\App\Tontine\SelectFunc;
@@ -23,7 +23,7 @@ class RoundFunc extends FuncComponent
     public function add()
     {
         $title = trans('tontine.round.titles.add');
-        $content = $this->renderView('pages.planning.round.add');
+        $content = $this->renderView('pages.planning.calendar.round.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -51,7 +51,7 @@ class RoundFunc extends FuncComponent
         $round = $this->roundService->getRound($roundId);
 
         $title = trans('tontine.round.titles.edit');
-        $content = $this->renderView('pages.planning.round.edit')->with('round', $round);
+        $content = $this->renderView('pages.planning.calendar.round.edit')->with('round', $round);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

@@ -6,9 +6,9 @@
               <li><a class="nav-link" id="tontine-menu-categories" role="link" tabindex="0">
                 <i class="fa fa-fw fa-cogs"></i> <span>{{ __('tontine.menus.categories') }}</span>
               </a></li>
+              <li><a class="nav-link" id="tontine-menu-calendar" role="link" tabindex="0">
+                <i class="fa fa-fw fa-calendar-day"></i> <span>{{ __('tontine.menus.calendar') }}</span>
+              </a></li>
 
               <li class="menu-header">{{ __('tontine.menus.planning') }}</li>
-              <li><a class="nav-link" id="planning-menu-sessions" role="link" tabindex="0">
-                <i class="fa fa-fw fa-calendar-day"></i> <span>{{ __('tontine.menus.sessions') }}</span>
-              </a></li>
             </ul>

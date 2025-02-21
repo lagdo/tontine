@@ -31,13 +31,13 @@
                                 {!! $htmlBuilder->checkbox('access[tontine][categories]', $access['tontine']['categories'] ?? false, '1') !!}
                                 {!! $htmlBuilder->label(__('tontine.menus.categories'), '')->class('form-check-label') !!}
                               </div>
+                              <div class="col-md-11 offset-md-1">
+                                {!! $htmlBuilder->checkbox('access[tontine][calendar]', $access['tontine']['calendar'] ?? false, '1') !!}
+                                {!! $htmlBuilder->label(__('tontine.menus.calendar'), '')->class('form-check-label') !!}
+                              </div>
                             </div>
                             <div class="form-group row">
                               <div class="col-md-12">{{ __('tontine.menus.planning') }}</div>
-                              <div class="col-md-11 offset-md-1">
-                                {!! $htmlBuilder->checkbox('access[planning][sessions]', $access['planning']['sessions'] ?? false, '1') !!}
-                                {!! $htmlBuilder->label(__('tontine.menus.sessions'), '')->class('form-check-label') !!}
-                              </div>
                               <div class="col-md-11 offset-md-1">
                                 {!! $htmlBuilder->checkbox('access[planning][pools]', $access['planning']['pools'] ?? false, '1') !!}
                                 {!! $htmlBuilder->label(__('tontine.menus.pools'), '')->class('form-check-label') !!}

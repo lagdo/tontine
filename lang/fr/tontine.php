@@ -15,6 +15,7 @@ return [
         'report' => "Rapport",
         'members' => "Membres",
         'categories' => "Catégories",
+        'calendar' => "Calendrier",
         'round' => "Tour",
         'session' => "Séance",
         'sessions' => "Séances",

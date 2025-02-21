@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Planning\Session;
+namespace Ajax\App\Planning\Calendar;
 
 use Ajax\FuncComponent;
 use Siak\Tontine\Exception\MessageException;
@@ -54,7 +54,7 @@ class SessionFunc extends FuncComponent
     public function add()
     {
         $title = trans('tontine.session.titles.add');
-        $content = $this->renderView('pages.planning.round.session.add', [
+        $content = $this->renderView('pages.planning.calendar.session.add', [
             'members' => $this->memberService->getMemberList()->prepend('', 0),
         ]);
         $buttons = [[
@@ -87,7 +87,7 @@ class SessionFunc extends FuncComponent
     public function addList()
     {
         $title = trans('tontine.session.titles.add-list');
-        $content = $this->renderView('pages.planning.round.session.list');
+        $content = $this->renderView('pages.planning.calendar.session.list');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -175,7 +175,7 @@ class SessionFunc extends FuncComponent
         $round = $this->stash()->get('planning.round');
         $session = $this->roundService->getSession($round, $sessionId);
         $title = trans('tontine.session.titles.edit');
-        $content = $this->renderView('pages.planning.round.session.edit', [
+        $content = $this->renderView('pages.planning.calendar.session.edit', [
             'session' => $session,
             'members' => $this->memberService->getMemberList()->prepend('', 0),
         ]);
@@ -215,7 +215,7 @@ class SessionFunc extends FuncComponent
         $session = $this->roundService->getSession($round, $sessionId);
 
         $title = trans('tontine.session.titles.venue');
-        $content = $this->renderView('pages.planning.round.session.venue', [
+        $content = $this->renderView('pages.planning.calendar.session.venue', [
             'session' => $session,
             'venue' => $session->venue ?? ($session->host ? $session->host->address : ''),
         ]);

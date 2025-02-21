@@ -15,6 +15,7 @@ return [
         'report' => "Report",
         'members' => "Members",
         'categories' => "Categories",
+        'calendar' => "Calendar",
         'round' => "Round",
         'session' => "Session",
         'sessions' => "Sessions",
