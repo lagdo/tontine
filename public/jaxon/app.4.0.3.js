@@ -1,7 +1,4 @@
 jaxon.dom.ready(function() {
-    $('#tontine-menu-tontines').click(Tontine.home);
-    $('#tontine-menu-users').css('color', '#6777ef');
-    $('#tontine-menu-users').click(Tontine.users);
     Tontine.home();
 
     jaxon.ajax.callback.tontine = {

@@ -1,4 +1,4 @@
-<script src="/jaxon/app.4.0.2.js"></script>
+<script src="/jaxon/app.4.0.3.js"></script>
 
 @php
     $rqMenuFunc = rq(Ajax\App\MenuFunc::class);
