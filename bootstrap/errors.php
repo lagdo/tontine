@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Ajax\App\Meeting\Session\Session;
 use Ajax\App\Planning\Calendar\Round;
-use Ajax\App\Planning\Pool\Pool;
+use Ajax\App\Planning\Financial\Pool;
 use Ajax\App\Tontine\Member\Member;
 use Ajax\App\Admin\Organisation\Organisation;
 use Illuminate\Foundation\Configuration\Exceptions;

@@ -133,6 +133,14 @@ class TontineService
     }
 
     /**
+     * @return Tontine|null
+     */
+    public function getFirstTontine(): ?Tontine
+    {
+        return $this->getTontines()->first() ?? $this->getGuestTontines()->first();
+    }
+
+    /**
      * Add a new tontine.
      *
      * @param array $values

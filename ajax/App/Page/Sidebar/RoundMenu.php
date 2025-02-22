@@ -13,6 +13,11 @@ use function config;
 class RoundMenu extends Component
 {
     /**
+     * @var string
+     */
+    protected $overrides = Menu::class;
+
+    /**
      * @inheritDoc
      */
     public function html(): Stringable
@@ -25,13 +30,10 @@ class RoundMenu extends Component
      */
     protected function after()
     {
-        if($this->stash()->get('menu.round.active'))
+        $this->node()->jq('.sidebar-menu a')->css('color', config('menu.color.active'));
+        foreach(config('menu.round') as $menuId => $menuClass)
         {
-            $this->node()->jq('a')->css('color', config('menu.color.active'));
-            foreach(config('menu.round') as $menuId => $menuClass)
-            {
-                $this->node()->jq($menuId)->click($this->rq($menuClass)->home());
-            }
+            $this->node()->jq($menuId)->click($this->rq($menuClass)->home());
         }
     }
 }

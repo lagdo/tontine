@@ -2,11 +2,11 @@
   $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
   $rqOrganisationFunc = rq(Ajax\App\Admin\Organisation\OrganisationFunc::class);
   $rqOrganisationPage = rq(Ajax\App\Admin\Organisation\OrganisationPage::class);
-  $rqSelectFunc = rq(Ajax\App\Tontine\SelectFunc::class);
+  $rqMenuFunc = rq(Ajax\App\MenuFunc::class);
 @endphp
                 <div class="table-responsive" id="content-organisation-page" @jxnTarget()>
                   <div @jxnEvent(['.btn-tontine-edit', 'click'], $rqOrganisationFunc->edit($tontineId))></div>
-                  <div @jxnEvent(['.btn-tontine-choose', 'click'], $rqSelectFunc->saveOrganisation($tontineId))></div>
+                  <div @jxnEvent(['.btn-tontine-choose', 'click'], $rqMenuFunc->saveOrganisation($tontineId))></div>
                   <div @jxnEvent(['.btn-tontine-delete', 'click'], $rqOrganisationFunc->delete($tontineId)
                     ->confirm(__('tontine.questions.delete')))></div>
 

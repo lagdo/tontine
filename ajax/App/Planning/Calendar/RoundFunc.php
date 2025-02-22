@@ -2,15 +2,15 @@
 
 namespace Ajax\App\Planning\Calendar;
 
+use Ajax\App\Page\MainTitle;
 use Ajax\FuncComponent;
-use Ajax\App\Tontine\SelectFunc;
 use Siak\Tontine\Service\Planning\RoundService;
 
 use function Jaxon\pm;
 use function trans;
 
 /**
- * @databag planning
+ * @databag planning.calendar
  */
 class RoundFunc extends FuncComponent
 {
@@ -44,6 +44,8 @@ class RoundFunc extends FuncComponent
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.round.messages.created'));
+
+        $this->cl(MainTitle::class)->render();
     }
 
     public function edit(int $roundId)
@@ -82,12 +84,6 @@ class RoundFunc extends FuncComponent
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.round.messages.deleted'));
 
-        $currentRound = $this->tenantService->round();
-        if($currentRound !== null && $currentRound->id === $roundId)
-        {
-            // If the currently selected round is deleted, then choose another.
-            $this->cl(SelectFunc::class)
-                ->saveOrganisation($this->tenantService->tontine()->id);
-        }
+        $this->cl(MainTitle::class)->render();
     }
 }

@@ -1,18 +1,18 @@
 <?php
 
-namespace Ajax\App\Planning\Calendar;
+namespace Ajax\App\Planning\Financial;
 
+use Ajax\Component;
 use Ajax\App\Page\SectionContent;
 use Ajax\App\Page\SectionTitle;
-use Ajax\Component;
 use Stringable;
 
 use function trans;
 
 /**
- * @databag planning.calendar
+ * @databag pool
  */
-class Round extends Component
+class Pool extends Component
 {
     /**
      * @var string
@@ -20,7 +20,7 @@ class Round extends Component
     protected $overrides = SectionContent::class;
 
     /**
-     * @before checkHostAccess ["planning", "sessions"]
+     * @before checkHostAccess ["planning", "pools"]
      * @after hideMenuOnMobile
      */
     public function home()
@@ -33,7 +33,7 @@ class Round extends Component
      */
     protected function before()
     {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.tontine'));
+        $this->cl(SectionTitle::class)->show(trans('tontine.menus.planning'));
     }
 
     /**
@@ -41,7 +41,9 @@ class Round extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.planning.calendar.round.home');
+        return $this->renderView('pages.planning.financial.pool.home', [
+            'tontine' => $this->tenantService->tontine(),
+        ]);
     }
 
     /**
@@ -49,6 +51,6 @@ class Round extends Component
      */
     protected function after()
     {
-        $this->cl(RoundPage::class)->page();
+        $this->cl(PoolPage::class)->page();
     }
 }

@@ -2,8 +2,9 @@
 
 namespace Ajax\App\Admin\Organisation;
 
+use Ajax\App\Page\MainTitle;
+use Ajax\App\Page\Sidebar\AdminMenu;
 use Ajax\FuncComponent;
-use Ajax\SelectTrait;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Service\Tontine\TontineService;
@@ -18,8 +19,6 @@ use function trans;
  */
 class OrganisationFunc extends FuncComponent
 {
-    use SelectTrait;
-
     /**
      * @var LocaleService
      */
@@ -76,6 +75,9 @@ class OrganisationFunc extends FuncComponent
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.messages.created'));
         $this->cl(OrganisationPage::class)->page(); // Back to current page
+
+        $this->cl(MainTitle::class)->render();
+        $this->cl(AdminMenu::class)->render();
     }
 
     /**
@@ -126,5 +128,8 @@ class OrganisationFunc extends FuncComponent
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.messages.deleted'));
         $this->cl(OrganisationPage::class)->page(); // Back to current page
+
+        $this->cl(MainTitle::class)->render();
+        $this->cl(AdminMenu::class)->render();
     }
 }

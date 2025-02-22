@@ -14,9 +14,6 @@ class MainTitle extends Component
      */
     public function html(): string
     {
-        return $this->renderView('pages.select.title', [
-            'tontine' => $this->stash()->get('menu.current.tontine'),
-            'round' => $this->stash()->get('menu.current.round'),
-        ]);
+        return $this->renderView('pages.select.title');
     }
 }

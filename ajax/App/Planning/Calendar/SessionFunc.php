@@ -20,7 +20,7 @@ use function trans;
 use function trim;
 
 /**
- * @databag planning
+ * @databag planning.calendar
  * @before getRound
  */
 class SessionFunc extends FuncComponent
@@ -44,8 +44,8 @@ class SessionFunc extends FuncComponent
      */
     protected function getRound(): void
     {
-        $roundId = $this->bag('planning')->get('round.id');
-        $this->stash()->set('planning.round', $this->roundService->getRound($roundId));
+        $roundId = $this->bag('planning.calendar')->get('round.id');
+        $this->stash()->set('planning.calendar.round', $this->roundService->getRound($roundId));
     }
 
     /**
@@ -74,7 +74,7 @@ class SessionFunc extends FuncComponent
      */
     public function create(array $formValues)
     {
-        $round = $this->stash()->get('planning.round');
+        $round = $this->stash()->get('planning.calendar.round');
         $values = $this->validator->validateItem($formValues);
         $this->sessionService->createSession($round, $values);
         $this->modal()->hide();
@@ -156,7 +156,7 @@ class SessionFunc extends FuncComponent
      */
     public function createList(array $formValues)
     {
-        $round = $this->stash()->get('planning.round');
+        $round = $this->stash()->get('planning.calendar.round');
         $values = $this->parseSessionList($formValues['sessions'] ?? '');
 
         $this->sessionService->createSessions($round, $values);
@@ -172,7 +172,7 @@ class SessionFunc extends FuncComponent
      */
     public function edit(int $sessionId)
     {
-        $round = $this->stash()->get('planning.round');
+        $round = $this->stash()->get('planning.calendar.round');
         $session = $this->roundService->getSession($round, $sessionId);
         $title = trans('tontine.session.titles.edit');
         $content = $this->renderView('pages.planning.calendar.session.edit', [
@@ -196,7 +196,7 @@ class SessionFunc extends FuncComponent
      */
     public function update(int $sessionId, array $formValues)
     {
-        $round = $this->stash()->get('planning.round');
+        $round = $this->stash()->get('planning.calendar.round');
         $formValues['id'] = $sessionId;
         $values = $this->validator->validateItem($formValues);
         $session = $this->roundService->getSession($round, $sessionId);
@@ -211,7 +211,7 @@ class SessionFunc extends FuncComponent
 
     public function editVenue(int $sessionId)
     {
-        $round = $this->stash()->get('planning.round');
+        $round = $this->stash()->get('planning.calendar.round');
         $session = $this->roundService->getSession($round, $sessionId);
 
         $title = trans('tontine.session.titles.venue');
@@ -236,7 +236,7 @@ class SessionFunc extends FuncComponent
      */
     public function saveVenue(int $sessionId, array $formValues)
     {
-        $round = $this->stash()->get('planning.round');
+        $round = $this->stash()->get('planning.calendar.round');
         $values = $this->validator->validateVenue($formValues);
         $session = $this->roundService->getSession($round, $sessionId);
 
@@ -250,7 +250,7 @@ class SessionFunc extends FuncComponent
 
     public function delete(int $sessionId)
     {
-        $round = $this->stash()->get('planning.round');
+        $round = $this->stash()->get('planning.calendar.round');
         $session = $this->roundService->getSession($round, $sessionId);
         $this->sessionService->deleteSession($session);
         $this->alert()->title(trans('common.titles.success'))

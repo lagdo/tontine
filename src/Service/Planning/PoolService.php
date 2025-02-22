@@ -63,7 +63,7 @@ class PoolService
      */
     public function getPool(int $poolId): ?Pool
     {
-        return $this->getQuery()->find($poolId);
+        return $this->getQuery()->with('counter')->find($poolId);
     }
 
     /**
@@ -143,43 +143,33 @@ class PoolService
     }
 
     /**
-     * Save the pool start session.
+     * Save the pool start and/or end session.
      *
      * @param Pool $pool
      * @param array $values
      *
      * @return void
      */
-    public function saveStartSession(Pool $pool, array $values)
+    public function saveSessions(Pool $pool, array $values)
     {
-        if(!$pool->pool_round)
+        if($pool->pool_round !== null)
         {
-            // The initial value is the same for start and end sessions.
-            $values['end_session_id'] = $values['start_session_id'];
-            $pool->pool_round()->create($values);
+            $pool->pool_round()->update($values);
             return;
         }
-        $pool->pool_round()->update($values);
-    }
 
-    /**
-     * Save the pool start session.
-     *
-     * @param Pool $pool
-     * @param array $values
-     *
-     * @return void
-     */
-    public function saveEndSession(Pool $pool, array $values)
-    {
-        if(!$pool->pool_round)
+        // The initial value is the same for start and end sessions.
+        if(!isset($values['start_session_id']))
         {
-            // The initial value is the same for start and end sessions.
-            $values['start_session_id'] = $values['end_session_id'];
-            $pool->pool_round()->create($values);
-            return;
+            $values['start_session_id'] = $this
+                ->getPoolStartSession($pool)?->id ?? $values['end_session_id'];
         }
-        $pool->pool_round()->update($values);
+        if(!isset($values['end_session_id']))
+        {
+            $values['end_session_id'] = $this
+                ->getPoolEndSession($pool)?->id ?? $values['start_session_id'];
+        }
+        $pool->pool_round()->create($values);
     }
 
     /**

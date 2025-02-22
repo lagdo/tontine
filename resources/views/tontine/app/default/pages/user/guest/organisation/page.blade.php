@@ -1,9 +1,9 @@
 @php
   $tontineId = jq()->parent()->attr('data-tontine-id')->toInt();
-  $rqSelectFunc = rq(Ajax\App\Tontine\SelectFunc::class);
+  $rqMenuFunc = rq(Ajax\App\MenuFunc::class);
 @endphp
                   <div class="table-responsive" @jxnTarget()>
-                    <div @jxnEvent(['.btn-guest-tontine-choose', 'click'], $rqSelectFunc->saveOrganisation($tontineId))></div>
+                    <div @jxnEvent(['.btn-guest-tontine-choose', 'click'], $rqMenuFunc->saveOrganisation($tontineId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>

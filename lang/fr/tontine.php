@@ -39,6 +39,10 @@ return [
         'choose' => "Choisir une organisation",
         'type' => "Choisir un type de tontine",
         'presences' => "Présences : :of",
+        'select' => [
+            'tontine' => "(Choisir une tontine)",
+            'round' => "(Choisir un tour)",
+        ],
     ],
     'descriptions' => [
         'types' => [
@@ -390,19 +394,17 @@ return [
     'pool_round' => [
         'titles' => [
             'sessions' => "Séances de la tontine : :pool",
-            'start_session' => "Séance de début : :session",
-            'end_session' => "Séance de fin : :session",
-            'start' => "Séance de début",
-            'end' => "Séance de fin",
+            'start_session' => "Séance de début",
+            'end_session' => "Séance de fin",
         ],
         'labels' => [
-            'default' => "(Même que le tour)",
-            'sessions' => "Séances (:count)",
-        ],
-        'actions' => [
-            'active' => "Séances actives",
-            'start' => "Séance de début",
-            'end' => "Séance de fin",
+            'default' => "(tour)",
+            'start_session' => "Séance de début : :session",
+            'end_session' => "Séance de fin : :session",
+            'session_count' => "Nombre de séances : :count",
+            'active' => "Active",
+            'start' => "Début",
+            'end' => "Fin",
         ],
         'questions' => [
             'delete' => "Supprimer les séances de cette tontine ?",

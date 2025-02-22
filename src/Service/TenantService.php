@@ -86,6 +86,14 @@ class TenantService
     }
 
     /**
+     * @return void
+     */
+    public function resetRound(): void
+    {
+        $this->round = null;
+    }
+
+    /**
      * @return User|null
      */
     public function user(): ?User
@@ -110,8 +118,6 @@ class TenantService
     }
 
     /**
-     * Get a single round.
-     *
      * @param int $roundId    The round id
      *
      * @return Round|null
@@ -119,6 +125,14 @@ class TenantService
     public function getRound(int $roundId): ?Round
     {
         return $this->tontine->rounds()->find($roundId);
+    }
+
+    /**
+     * @return Round|null
+     */
+    public function getFirstRound(): ?Round
+    {
+        return $this->tontine->rounds()->first();
     }
 
     /**

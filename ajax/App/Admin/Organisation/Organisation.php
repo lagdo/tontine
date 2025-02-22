@@ -3,7 +3,6 @@
 namespace Ajax\App\Admin\Organisation;
 
 use Ajax\Component;
-use Ajax\SelectTrait;
 use Ajax\App\Admin\User\Guest\Organisation as GuestOrganisation;
 use Ajax\App\Page\SectionContent;
 use Ajax\App\Page\SectionTitle;
@@ -17,8 +16,6 @@ use function trans;
  */
 class Organisation extends Component
 {
-    use SelectTrait;
-
     /**
      * @var string
      */
@@ -61,17 +58,7 @@ class Organisation extends Component
      */
     protected function after()
     {
-        if(($tontine = $this->tenantService->tontine()))
-        {
-            $this->selectTontine($tontine);
-        }
-        if(($round = $this->tenantService->round()))
-        {
-            $this->selectRound($round);
-        }
-
         $this->cl(OrganisationPage::class)->page();
-
         if($this->tontineService->hasGuestOrganisations())
         {
             $this->cl(GuestOrganisation::class)->render();

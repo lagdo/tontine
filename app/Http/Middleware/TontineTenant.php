@@ -7,7 +7,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Jaxon\Laravel\App\Jaxon;
-use Jaxon\Plugin\Response\DataBag\DataBagContext;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Model\User;
@@ -38,7 +37,6 @@ class TontineTenant
      */
     private function setLatestTontine(User $user): ?Tontine
     {
-        /** @var DataBagContext */
         $tenantDatabag = jaxon()->getResponse()->bag('tenant');
 
         // First try to get the current tontine id from the databag.
@@ -58,10 +56,9 @@ class TontineTenant
         }
         if(!$tontine)
         {
-            $tontine = $this->tontineService->getTontines()->first() ??
-                $this->tontineService->getGuestTontines()->first();
+            $tontine = $this->tontineService->getFirstTontine();
         }
-        if(($tontine))
+        if($tontine !== null)
         {
             $tenantDatabag->set('tontine.id', $tontine->id);
             $tenantDatabag->set('round.id', 0);
@@ -79,14 +76,13 @@ class TontineTenant
      */
     private function setLatestRound(Tontine $tontine): ?Round
     {
-        /** @var DataBagContext */
         $tenantDatabag = jaxon()->getResponse()->bag('tenant');
 
         // First try to get the current round id from the databag.
         $round = null;
         $roundId = $tenantDatabag->get('round.id', 0);
         if($roundId > 0 &&
-            ($round = $tontine->rounds()->find($roundId)) !== null)
+            ($round = $this->tenantService->getRound($roundId)) !== null)
         {
             $this->tenantService->setRound($round);
             return $round;
@@ -95,13 +91,13 @@ class TontineTenant
         // Try to get the latest round the user worked on.
         if(($roundId = $tontine->user->properties['latest']['round'] ?? 0) > 0)
         {
-            $round = $tontine->rounds()->find($roundId);
+            $round = $this->tenantService->getRound($roundId);
         }
         if(!$round)
         {
-            $round = $tontine->rounds()->first();
+            $round = $this->tenantService->getFirstRound();
         }
-        if(($round))
+        if($round !== null)
         {
             $this->tenantService->setRound($round);
             $tenantDatabag->set('tontine.id', $tontine->id);

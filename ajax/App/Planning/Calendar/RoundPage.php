@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Planning\RoundService;
 use Stringable;
 
 /**
- * @databag planning
+ * @databag planning.calendar
  */
 class RoundPage extends PageComponent
 {

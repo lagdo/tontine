@@ -39,6 +39,10 @@ return [
         'choose' => "Select an organisation",
         'type' => "Select the tontine type",
         'presences' => "Presences: :of",
+        'select' => [
+            'tontine' => "(Select a tontine)",
+            'round' => "(Select a round)",
+        ],
     ],
     'descriptions' => [
         'types' => [
@@ -390,19 +394,17 @@ return [
     'pool_round' => [
         'titles' => [
             'sessions' => "Sessions of tontine: :pool",
-            'start_session' => "Start session: :session",
-            'end_session' => "End session: :session",
-            'start' => "Start session",
-            'end' => "End session",
+            'start_session' => "Start session",
+            'end_session' => "End session",
         ],
         'labels' => [
-            'default' => "(Same as the round)",
-            'sessions' => "Sessions (:count)",
-        ],
-        'actions' => [
-            'active' => "Active sessions",
-            'start' => "Start session",
-            'end' => "End session",
+            'default' => "(round)",
+            'start_session' => "Start session: :session",
+            'end_session' => "End session: :session",
+            'session_count' => "Number of sessions: :count",
+            'active' => "Active",
+            'start' => "Start",
+            'end' => "End",
         ],
         'questions' => [
             'delete' => "Delete the sessions of this tontine?",
