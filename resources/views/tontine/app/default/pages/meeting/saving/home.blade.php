@@ -25,14 +25,12 @@
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" @jxnClick($rqSaving
                             ->fund($selectFundId))><i class="fa fa-caret-right"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqMember->fund($selectFundId)
+                            ->ifgt($selectFundId, 0)->elseWarning(__('meeting.saving.messages.select_fund')))>
+                            <i class="fa fa-edit"></i>
+                          </button>
                         </div>
                       </div>
-                    </div>
-                    <div class="col-auto">
-                      <button type="button" class="btn btn-primary" @jxnClick($rqMember->fund($selectFundId)
-                        ->ifgt($selectFundId, 0)->elseWarning(__('meeting.saving.messages.select_fund')))>
-                        <i class="fa fa-edit"></i> {{ __('common.actions.edit') }}
-                      </button>
                     </div>
                   </div>
                   <div @jxnBind($rqSavingPage)>

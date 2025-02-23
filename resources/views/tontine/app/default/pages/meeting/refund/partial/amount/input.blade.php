@@ -3,9 +3,9 @@
 @php
   $debtId = jq()->parent()->attr('data-debt-id')->toInt();
   $amount = jq('input', jq()->parent()->parent())->val()->toInt();
-  $rqRefund = rq(Ajax\App\Meeting\Session\Credit\Partial\Refund::class);
-  $rqAmount = rq(Ajax\App\Meeting\Session\Credit\Partial\Amount::class);
-  $rqAmountFunc = rq(Ajax\App\Meeting\Session\Credit\Partial\AmountFunc::class);
+  $rqRefund = rq(Ajax\App\Meeting\Session\Refund\Partial\Refund::class);
+  $rqAmount = rq(Ajax\App\Meeting\Session\Refund\Partial\Amount::class);
+  $rqAmountFunc = rq(Ajax\App\Meeting\Session\Refund\Partial\AmountFunc::class);
 @endphp
                   <div class="row">
                     <div class="col-auto">

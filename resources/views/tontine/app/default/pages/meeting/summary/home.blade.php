@@ -7,8 +7,8 @@
   $rqSaving = rq(Ajax\App\Meeting\Summary\Saving\Saving::class);
   $rqClosing = rq(Ajax\App\Meeting\Summary\Saving\Closing::class);
   $rqLoan = rq(Ajax\App\Meeting\Summary\Credit\Loan::class);
-  $rqTotalRefund = rq(Ajax\App\Meeting\Summary\Credit\Total\Refund::class);
-  $rqPartialRefund = rq(Ajax\App\Meeting\Summary\Credit\Partial\Refund::class);
+  $rqTotalRefund = rq(Ajax\App\Meeting\Summary\Refund\Total\Refund::class);
+  $rqPartialRefund = rq(Ajax\App\Meeting\Summary\Refund\Partial\Refund::class);
   $rqDisbursement = rq(Ajax\App\Meeting\Summary\Cash\Disbursement::class);
   $rqFixedFee = rq(Ajax\App\Meeting\Summary\Charge\FixedFee::class);
   $rqLibreFee = rq(Ajax\App\Meeting\Summary\Charge\LibreFee::class);
@@ -42,7 +42,7 @@
                       <a class="nav-link" id="summary-tab-savings" data-target="#summary-savings" role="link" tabindex="0">{!! __('meeting.actions.savings') !!}</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                      <a class="nav-link" id="summary-tab-loans" data-target="#summary-loans" role="link" tabindex="0">{!! __('meeting.actions.loans') !!}</a>
+                      <a class="nav-link" id="summary-tab-credits" data-target="#summary-credits" role="link" tabindex="0">{!! __('meeting.actions.credits') !!}</a>
                     </li>
                     <li class="nav-item" role="presentation">
                       <a class="nav-link" id="summary-tab-refunds" data-target="#summary-refunds" role="link" tabindex="0">{!! __('meeting.actions.refunds') !!}</a>
@@ -147,7 +147,7 @@
                   </div>
                 </div>
 
-                <div class="tab-pane fade" id="summary-loans" role="tabpanel" aria-labelledby="summary-tab-loans">
+                <div class="tab-pane fade" id="summary-credits" role="tabpanel" aria-labelledby="summary-tab-credits">
                   <div class="row">
                     <div class="col-md-12">
                       <div class="card shadow mb-2">

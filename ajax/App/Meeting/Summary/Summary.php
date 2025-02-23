@@ -94,8 +94,8 @@ class Summary extends Component
 
     private function refunds()
     {
-        $this->cl(Credit\Total\Refund::class)->render();
-        $this->cl(Credit\Partial\Refund::class)->render();
+        $this->cl(Refund\Total\Refund::class)->render();
+        $this->cl(Refund\Partial\Refund::class)->render();
 
         $this->response->js('Tontine')
             ->setSmScreenHandler('summary-refunds-sm-screens', 'summary-refunds');

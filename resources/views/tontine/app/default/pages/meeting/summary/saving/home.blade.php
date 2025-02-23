@@ -17,7 +17,7 @@
                         {!! $htmlBuilder->select('fund', $funds, $fundId)->id('savings-fund-id')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqSaving->fund($selectFundId))><i class="fa fa-arrow-right"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqSaving->fund($selectFundId))><i class="fa fa-caret-right"></i></button>
                         </div>
                       </div>
                     </div>

@@ -1,14 +1,15 @@
 <?php
 
-namespace Ajax\App\Meeting\Summary\Credit\Partial;
+namespace Ajax\App\Meeting\Session\Refund\Partial;
 
-use Ajax\App\Meeting\Summary\PageComponent;
+use Ajax\App\Meeting\PageComponent;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;
 
 /**
  * @databag refund.partial
+ * @before getFund
  */
 class RefundPage extends PageComponent
 {
@@ -17,7 +18,7 @@ class RefundPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['refund.partial', 'principal.page'];
+    protected array $bagOptions = ['partial.refund', 'principal.page'];
 
     /**
      * The constructor
@@ -29,13 +30,20 @@ class RefundPage extends PageComponent
         protected PartialRefundService $refundService)
     {}
 
+    protected function getFund()
+    {
+        $fundId = $this->bag('partial.refund')->get('fund.id', 0);
+        $fund = $this->fundService->getFund($fundId, true, true);
+        $this->stash()->set('meeting.refund.fund', $fund);
+    }
+
     /**
      * @inheritDoc
      */
     protected function count(): int
     {
-        $session = $this->stash()->get('summary.session');
-        $fund = $this->stash()->get('summary.refund.partial.fund');
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->stash()->get('meeting.refund.fund');
 
         return $this->refundService->getPartialRefundCount($session, $fund);
     }
@@ -45,10 +53,10 @@ class RefundPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $session = $this->stash()->get('summary.session');
-        $fund = $this->stash()->get('summary.refund.partial.fund');
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->stash()->get('meeting.refund.fund');
 
-        return $this->renderView('pages.meeting.summary.refund.partial.page', [
+        return $this->renderView('pages.meeting.refund.partial.page', [
             'session' => $session,
             'refunds' => $this->refundService->getPartialRefunds($session, $fund, $this->currentPage()),
         ]);
@@ -59,6 +67,6 @@ class RefundPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-summary-partial-refunds-page');
+        $this->response->js('Tontine')->makeTableResponsive('content-session-partial-refunds-page');
     }
 }

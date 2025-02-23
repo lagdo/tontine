@@ -1,6 +1,6 @@
 @php
   $amountValue = pm()->input("partial-refund-amount-edit-{$debt->id}");
-  $rqAmountFunc = rq(Ajax\App\Meeting\Session\Credit\Partial\AmountFunc::class);
+  $rqAmountFunc = rq(Ajax\App\Meeting\Session\Refund\Partial\AmountFunc::class);
 @endphp
                         <div class="input-group">
                           {!! $htmlBuilder->text('amount', $amount)->class('form-control')

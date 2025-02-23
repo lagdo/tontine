@@ -1,9 +1,9 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Credit\Partial;
+namespace Ajax\App\Meeting\Session\Refund\Partial;
 
 use Ajax\App\Meeting\Component;
-use Ajax\App\Meeting\Session\Credit\FundTrait;
+use Ajax\App\Meeting\Session\Refund\FundTrait;
 use Stringable;
 
 /**

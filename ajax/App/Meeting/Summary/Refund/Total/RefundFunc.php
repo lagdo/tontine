@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Meeting\Summary\Credit\Total;
+namespace Ajax\App\Meeting\Summary\Refund\Total;
 
 use Ajax\FuncComponent;
 use Siak\Tontine\Service\Tontine\FundService;

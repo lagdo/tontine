@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('debtCalculator', 'Siak\Tontine\Service\Meeting\Credit\DebtCalculator')
 @php
-  $rqTotalRefundPage = rq(Ajax\App\Meeting\Summary\Credit\Total\RefundPage::class);
+  $rqTotalRefundPage = rq(Ajax\App\Meeting\Summary\Refund\Total\RefundPage::class);
 @endphp
                     <div class="table-responsive" id="content-summary-refunds-page">
                       <table class="table table-bordered responsive">

@@ -1,10 +1,10 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Credit\Partial;
+namespace Ajax\App\Meeting\Session\Refund\Partial;
 
 use Ajax\App\Meeting\FuncComponent;
-use Ajax\App\Meeting\Session\Credit\FundTrait;
-use Ajax\App\Meeting\Session\Credit\Total\Refund as TotalRefund;
+use Ajax\App\Meeting\Session\Refund\FundTrait;
+use Ajax\App\Meeting\Session\Refund\Total\Refund as TotalRefund;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 

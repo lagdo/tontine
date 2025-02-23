@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Credit;
+namespace Ajax\App\Meeting\Session\Refund;
 
 use Siak\Tontine\Service\Tontine\FundService;
 

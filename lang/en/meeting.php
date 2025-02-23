@@ -43,7 +43,7 @@ return [
         'pools' => "Pools",
         'charges' => "Fees",
         'cash' => "Cash",
-        'credits' => "Credit",
+        'credits' => "Credits",
         'profits' => "Profits",
     ],
     'labels' => [

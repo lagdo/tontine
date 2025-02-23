@@ -1,9 +1,9 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Credit\Total;
+namespace Ajax\App\Meeting\Session\Refund\Total;
 
 use Ajax\App\Meeting\Component;
-use Ajax\App\Meeting\Session\Credit\FundTrait;
+use Ajax\App\Meeting\Session\Refund\FundTrait;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 use Stringable;
 

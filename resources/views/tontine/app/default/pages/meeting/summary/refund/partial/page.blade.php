@@ -2,7 +2,7 @@
 @inject('debtCalculator', 'Siak\Tontine\Service\Meeting\Credit\DebtCalculator')
 @inject('paymentService', 'Siak\Tontine\Service\Meeting\PaymentServiceInterface')
 @php
-  $rqPartialRefundPage = rq(Ajax\App\Meeting\Summary\Credit\Partial\RefundPage::class);
+  $rqPartialRefundPage = rq(Ajax\App\Meeting\Summary\Refund\Partial\RefundPage::class);
 @endphp
                     <div class="table-responsive" id="content-summary-partial-refunds-page">
                       <table class="table table-bordered responsive">

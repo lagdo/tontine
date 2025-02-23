@@ -1,30 +1,27 @@
 @php
   $fundId = pm()->select('partial-refunds-fund-id')->toInt();
-  $rqRefund = rq(Ajax\App\Meeting\Session\Credit\Partial\Refund::class);
-  $rqRefundPage = rq(Ajax\App\Meeting\Session\Credit\Partial\RefundPage::class);
-  $rqAmount = rq(Ajax\App\Meeting\Session\Credit\Partial\Amount::class);
+  $rqRefund = rq(Ajax\App\Meeting\Session\Refund\Partial\Refund::class);
+  $rqRefundPage = rq(Ajax\App\Meeting\Session\Refund\Partial\RefundPage::class);
+  $rqAmount = rq(Ajax\App\Meeting\Session\Refund\Partial\Amount::class);
 @endphp
                     <div class="row">
                       <div class="col">
                         <div class="section-title mt-0">{{ __('meeting.refund.titles.partial') }}</div>
                       </div>
-                      <div class="col-auto">
-@if($funds->count() > 1)
+                      <div class="col-auto" style="padding-left:0;padding-right:0;">
                         <div class="input-group mb-2">
                           {!! $htmlBuilder->select('fund_id', $funds, $currentFundId)->id('partial-refunds-fund-id')
                             ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                           <div class="input-group-append">
-                            <button type="button" class="btn btn-primary" @jxnClick($rqRefund->fund($fundId))><i class="fa fa-arrow-right"></i></button>
+                            <button type="button" class="btn btn-primary" @jxnClick($rqRefund->fund($fundId))><i class="fa fa-caret-right"></i></button>
                             <button type="button" class="btn btn-primary" @jxnClick($rqAmount->fund($fundId))><i class="fa fa-edit"></i></button>
-                            <button type="button" class="btn btn-primary" @jxnClick($rqRefund->render())><i class="fa fa-sync"></i></button>
                           </div>
                         </div>
-@else
+                      </div>
+                      <div class="col-auto">
                         <div class="btn-group float-right ml-2 mb-2" role="group">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqAmount->fund($fundId))><i class="fa fa-edit"></i></button>
                           <button type="button" class="btn btn-primary" @jxnClick($rqRefund->render())><i class="fa fa-sync"></i></button>
                         </div>
-@endif
                       </div>
                     </div>
                     <div @jxnBind($rqRefundPage)>

@@ -1,7 +1,7 @@
 @include('tontine.app.default.pages.meeting.session.menu.wrapper', ['session' => $session])
 @php
-  $rqTotalRefund = rq(Ajax\App\Meeting\Session\Credit\Total\Refund::class);
-  $rqPartialRefund = rq(Ajax\App\Meeting\Session\Credit\Partial\Refund::class);
+  $rqTotalRefund = rq(Ajax\App\Meeting\Session\Refund\Total\Refund::class);
+  $rqPartialRefund = rq(Ajax\App\Meeting\Session\Refund\Partial\Refund::class);
 @endphp
           <div class="row sm-screen-selector mt-2 mb-1" id="session-refunds-sm-screens">
             <div class="col-12">

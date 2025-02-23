@@ -25,7 +25,7 @@
                       <div class="input-group">
                         {{ $htmlBuilder->select('tontine_id', $tontines, 0)->class('form-control')->id('select-invite-tontine') }}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqHostAccessFunc->tontine($tontineId))><i class="fa fa-arrow-right"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqHostAccessFunc->tontine($tontineId))><i class="fa fa-caret-right"></i></button>
                         </div>
                       </div>
                     </div>

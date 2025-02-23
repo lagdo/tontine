@@ -3,8 +3,8 @@
 @inject('paymentService', 'Siak\Tontine\Service\Meeting\PaymentServiceInterface')
 @php
   $refundId = jq()->parent()->attr('data-partial-refund-id')->toInt();
-  $rqRefundFunc = rq(Ajax\App\Meeting\Session\Credit\Partial\RefundFunc::class);
-  $rqRefundPage = rq(Ajax\App\Meeting\Session\Credit\Partial\RefundPage::class);
+  $rqRefundFunc = rq(Ajax\App\Meeting\Session\Refund\Partial\RefundFunc::class);
+  $rqRefundPage = rq(Ajax\App\Meeting\Session\Refund\Partial\RefundPage::class);
 @endphp
                     <div class="table-responsive" id="content-session-partial-refunds-page" @jxnTarget()>
                       <div @jxnEvent(['.btn-partial-refund-edit', 'click'], $rqRefundFunc->edit($refundId))></div>

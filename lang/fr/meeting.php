@@ -43,7 +43,7 @@ return [
         'pools' => "Cotisations",
         'charges' => "Frais",
         'cash' => "Caisse",
-        'credits' => "Crédit",
+        'credits' => "Crédits",
         'profits' => "Gains",
     ],
     'labels' => [
