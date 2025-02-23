@@ -436,7 +436,7 @@ return [
             'delete' => "Impossible de supprimer la souscription.",
         ],
         'actions' => [
-            'members' => "Membres",
+            'subscriptions' => "Souscriptions",
             'sessions' => "Séances",
             'planning' => "Planning",
             'beneficiaries' => "Bénéficiaires",

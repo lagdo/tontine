@@ -1,8 +1,9 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Credit;
+namespace Ajax\App\Meeting\Session\Credit\Total;
 
 use Ajax\App\Meeting\PageComponent;
+use Ajax\App\Meeting\Session\Credit\FundTrait;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;
@@ -53,7 +54,7 @@ class RefundPage extends PageComponent
         $filtered = $this->bag('refund')->get('filter', null);
         $debts = $this->refundService->getDebts($session, $fund, $filtered, $this->currentPage());
 
-        return $this->renderView('pages.meeting.refund.page', [
+        return $this->renderView('pages.meeting.refund.final.page', [
             'session' => $session,
             'debts' => $debts,
         ]);

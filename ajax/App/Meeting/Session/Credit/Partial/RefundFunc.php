@@ -4,7 +4,7 @@ namespace Ajax\App\Meeting\Session\Credit\Partial;
 
 use Ajax\App\Meeting\FuncComponent;
 use Ajax\App\Meeting\Session\Credit\FundTrait;
-use Ajax\App\Meeting\Session\Credit\Refund as CreditRefund;
+use Ajax\App\Meeting\Session\Credit\Total\Refund as TotalRefund;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
@@ -67,7 +67,7 @@ class RefundFunc extends FuncComponent
 
         $this->modal()->hide();
         // Refresh the refunds page
-        $this->cl(CreditRefund::class)->render();
+        $this->cl(TotalRefund::class)->render();
         $this->cl(RefundPage::class)->page();
     }
 
@@ -78,7 +78,7 @@ class RefundFunc extends FuncComponent
         $this->refundService->deletePartialRefund($refund, $session);
 
         // Refresh the refunds page
-        $this->cl(CreditRefund::class)->render();
+        $this->cl(TotalRefund::class)->render();
         $this->cl(RefundPage::class)->page();
     }
 }

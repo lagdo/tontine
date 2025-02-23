@@ -74,7 +74,7 @@ class LoanFunc extends FuncComponent
 
         $this->modal()->hide();
 
-        $this->cl(Refund::class)->render();
+        $this->cl(Total\Refund::class)->render();
         $this->cl(Loan::class)->render();
     }
 
@@ -149,7 +149,7 @@ class LoanFunc extends FuncComponent
 
         $this->modal()->hide();
 
-        $this->cl(Refund::class)->render();
+        $this->cl(Total\Refund::class)->render();
         $this->cl(Loan::class)->render();
     }
 
@@ -158,7 +158,7 @@ class LoanFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
         $this->loanService->deleteLoan($session, $loanId);
 
-        $this->cl(Refund::class)->render();
+        $this->cl(Total\Refund::class)->render();
         $this->cl(Loan::class)->render();
     }
 }

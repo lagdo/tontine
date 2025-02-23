@@ -6,11 +6,8 @@
 @endphp
                     <div class="row">
                       <div class="col">
-                        <div class="section-title mt-0">{{ __('meeting.titles.partial-refunds') }}</div>
+                        <div class="section-title mt-0">{{ __('meeting.refund.titles.partial') }}</div>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="col">&nbsp;</div>
                       <div class="col-auto">
 @if($funds->count() > 1)
                         <div class="input-group mb-2">

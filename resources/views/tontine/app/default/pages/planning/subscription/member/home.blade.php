@@ -7,7 +7,7 @@
               <div class="section-body">
                 <div class="row">
                   <div class="col">
-                    <h2 class="section-title">{{ $pool->title }} :: {{ __('tontine.pool.titles.subscriptions') }}</h2>
+                    <h2 class="section-title">{{ __('tontine.pool.titles.subscriptions') }} :: {{ $pool->title }}</h2>
                   </div>
                   <div class="col-auto sm-screen-hidden">
                     <button type="button" class="btn btn-primary" @jxnClick(js('Tontine')

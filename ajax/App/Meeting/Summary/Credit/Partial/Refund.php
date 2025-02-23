@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Meeting\Summary\Credit;
+namespace Ajax\App\Meeting\Summary\Credit\Partial;
 
 use Ajax\App\Meeting\Summary\Component;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
@@ -11,7 +11,7 @@ use Stringable;
 /**
  * @databag refund.partial
  */
-class PartialRefund extends Component
+class Refund extends Component
 {
     /**
      * @var LocaleService
@@ -45,7 +45,6 @@ class PartialRefund extends Component
     protected function after()
     {
         $this->fund(0);
-        $this->cl(PartialRefundPage::class)->page();
     }
 
     protected function getFund()
@@ -75,7 +74,6 @@ class PartialRefund extends Component
     {
         $this->bag('refund.partial')->set('fund.id', $fundId);
         $this->getFund();
-
-        $this->cl(PartialRefundPage::class)->page();
+        $this->cl(RefundPage::class)->page();
     }
 }

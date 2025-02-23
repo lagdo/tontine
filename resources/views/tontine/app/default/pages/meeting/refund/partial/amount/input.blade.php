@@ -9,7 +9,7 @@
 @endphp
                   <div class="row">
                     <div class="col-auto">
-                      <div class="section-title mt-0">{{ __('meeting.titles.partial-refunds') }}</div>
+                      <div class="section-title mt-0">{{ __('meeting.refund.titles.input') }}</div>
                     </div>
                     <div class="col">
                       <div class="btn-group float-right ml-2 mb-2" role="group">

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Meeting\Summary\Credit;
+namespace Ajax\App\Meeting\Summary\Credit\Partial;
 
 use Ajax\App\Meeting\Summary\PageComponent;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
@@ -10,7 +10,7 @@ use Stringable;
 /**
  * @databag refund.partial
  */
-class PartialRefundPage extends PageComponent
+class RefundPage extends PageComponent
 {
     /**
      * The pagination databag options

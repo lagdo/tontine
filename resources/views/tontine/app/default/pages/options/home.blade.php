@@ -3,7 +3,7 @@
   $rqCategory = rq(Ajax\App\Tontine\Options\Category::class);
   $rqCharge = rq(Ajax\App\Tontine\Options\Charge::class);
 @endphp
-          <div class="row sm-screen-selector mb-3" id="options-sm-screens">
+          <div class="row sm-screen-selector mt-2 mb-1" id="options-sm-screens">
             <div class="col-12">
               <div class="btn-group btn-group-sm btn-block" role="group">
                 <button data-target="content-funds-home" type="button" class="btn btn-primary">

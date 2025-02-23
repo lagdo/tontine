@@ -40,7 +40,7 @@ class SectionFunc extends FuncComponent
         $this->cl(Pool\Remitment\Remitment::class)->render();
 
         $this->response->js('Tontine')
-            ->setSmScreenHandler('session-pools-sm-screens', 'session-pools');
+            ->setSmScreenHandler('session-pools-sm-screens', 'content-home');
     }
 
     public function savings(int $sessionId = 0)
@@ -51,19 +51,25 @@ class SectionFunc extends FuncComponent
         $this->cl(Saving\Closing::class)->render();
 
         $this->response->js('Tontine')
-            ->setSmScreenHandler('session-savings-sm-screens', 'session-savings');
+            ->setSmScreenHandler('session-savings-sm-screens', 'content-home');
     }
 
-    public function credits(int $sessionId = 0)
+    public function loans(int $sessionId = 0)
     {
-        $this->renderSection('credits');
+        $this->renderSection('loans');
 
         $this->cl(Credit\Loan::class)->render();
+    }
+
+    public function refunds(int $sessionId = 0)
+    {
+        $this->renderSection('refunds');
+
+        $this->cl(Credit\Total\Refund::class)->render();
         $this->cl(Credit\Partial\Refund::class)->render();
-        $this->cl(Credit\Refund::class)->render();
 
         $this->response->js('Tontine')
-            ->setSmScreenHandler('session-credits-sm-screens', 'session-credits');
+            ->setSmScreenHandler('session-refunds-sm-screens', 'content-home');
     }
 
     public function cash(int $sessionId = 0)
@@ -81,7 +87,7 @@ class SectionFunc extends FuncComponent
         $this->cl(Charge\Libre\Fee::class)->render();
 
         $this->response->js('Tontine')
-            ->setSmScreenHandler('session-charges-sm-screens', 'session-charges');
+            ->setSmScreenHandler('session-charges-sm-screens', 'content-home');
     }
 
     public function reports(int $sessionId = 0)
@@ -103,5 +109,8 @@ class SectionFunc extends FuncComponent
         ];
         $this->response->jq('#session-agenda')->summernote($options);
         $this->response->jq('#session-report')->summernote($options);
+
+        $this->response->js('Tontine')
+            ->setSmScreenHandler('session-reports-sm-screens', 'content-home');
     }
 }

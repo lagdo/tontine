@@ -2,7 +2,7 @@
   $rqHostUser = rq(Ajax\App\Admin\User\Host\Host::class);
   $rqGuestUser = rq(Ajax\App\Admin\User\Guest\Guest::class);
 @endphp
-          <div class="row sm-screen-selector mb-3" id="invites-sm-screens">
+          <div class="row sm-screen-selector mt-2 mb-1" id="invites-sm-screens">
             <div class="col-12">
               <div class="btn-group btn-group-sm btn-block" role="group">
                 <button data-target="content-host-invites-home" type="button" class="btn btn-primary">

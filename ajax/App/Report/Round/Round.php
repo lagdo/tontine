@@ -51,7 +51,6 @@ class Round extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-pools');
-        $this->response->js('Tontine')->makeTableResponsive('content-amounts');
+        $this->response->js('Tontine')->makeTableResponsive('content-home');
     }
 }

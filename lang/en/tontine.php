@@ -436,7 +436,7 @@ return [
             'delete' => "Cannot delete this subscription.",
         ],
         'actions' => [
-            'members' => "Members",
+            'subscriptions' => "Subscriptions",
             'sessions' => "Sessions",
             'planning' => "Planning",
             'beneficiaries' => "Beneficiaries",

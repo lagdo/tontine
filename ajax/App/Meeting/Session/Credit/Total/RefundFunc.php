@@ -1,8 +1,10 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Credit;
+namespace Ajax\App\Meeting\Session\Credit\Total;
 
 use Ajax\App\Meeting\FuncComponent;
+use Ajax\App\Meeting\Session\Credit\FundTrait;
+use Ajax\App\Meeting\Session\Credit\Partial\RefundPage as PartialRefundPage;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
@@ -55,7 +57,7 @@ class RefundFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
         $this->refundService->createRefund($debt, $session);
 
-        $this->cl(Partial\RefundPage::class)->page();
+        $this->cl(PartialRefundPage::class)->page();
         $this->cl(RefundPage::class)->page();
     }
 
@@ -71,7 +73,7 @@ class RefundFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
         $this->refundService->deleteRefund($debt, $session);
 
-        $this->cl(Partial\RefundPage::class)->page();
+        $this->cl(PartialRefundPage::class)->page();
         $this->cl(RefundPage::class)->page();
     }
 }

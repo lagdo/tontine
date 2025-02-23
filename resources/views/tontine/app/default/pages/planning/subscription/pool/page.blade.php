@@ -7,14 +7,14 @@
   $rqBeneficiary = rq(Ajax\App\Planning\Subscription\Beneficiary::class);
 @endphp
                 <div class="table-responsive" id="content-subscription-pools-page" @jxnTarget()>
-                  <div @jxnEvent(['.btn-pool-member', 'click'], $rqMember->pool($poolId))></div>
+                  <div @jxnEvent(['.btn-pool-subscription', 'click'], $rqMember->pool($poolId))></div>
                   <div @jxnEvent(['.btn-pool-planning', 'click'], $rqPlanning->pool($poolId))></div>
                   <div @jxnEvent(['.btn-pool-beneficiary', 'click'], $rqBeneficiary->pool($poolId))></div>
 
                   <table class="table table-bordered responsive">
                     <thead>
                       <tr>
-                        <th>{!! __('tontine.labels.pool') !!}</th>
+                        <th>{!! __('common.labels.title') !!}</th>
                         <th>{!! __('common.labels.dates') !!}</th>
                         <th class="table-menu"></th>
                       </tr>
@@ -43,8 +43,8 @@
   'dataIdValue' => $pool->id,
   'menus' => [
     [
-      'class' => 'btn-pool-member',
-      'text' => __('tontine.subscription.actions.members'),
+      'class' => 'btn-pool-subscription',
+      'text' => __('tontine.subscription.actions.subscriptions'),
     ],
     ...$plannedActions,
   ],

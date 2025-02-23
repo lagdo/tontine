@@ -1,8 +1,9 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Credit;
+namespace Ajax\App\Meeting\Session\Credit\Total;
 
 use Ajax\App\Meeting\Component;
+use Ajax\App\Meeting\Session\Credit\FundTrait;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 use Stringable;
 
@@ -23,7 +24,7 @@ class Refund extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.refund.home', [
+        return $this->renderView('pages.meeting.refund.final.home', [
             'session' => $this->stash()->get('meeting.session'),
             'funds' => $this->fundService->getFundList(),
         ]);

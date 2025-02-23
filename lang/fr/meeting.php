@@ -24,7 +24,6 @@ return [
         'benefit' => "Bénéfice",
         'refund' => "Remboursement",
         'refunds' => "Remboursements",
-        'partial-refunds' => "Remboursements partiels",
         'disbursements' => "Décaissements",
         'profits' => "Répartition des gains",
         'summary' => "Résumé",
@@ -35,6 +34,7 @@ return [
         'settlements' => "Règlements",
         'savings' => "&Eacute;pargne",
         'loans' => "Emprunts",
+        'refunds' => "Remboursements",
         'amounts' => "Montants",
         'reports' => "Rapports",
         'report' => "Rapport",
@@ -225,6 +225,9 @@ return [
         'titles' => [
             'add' => "Ajouter un remboursement partiel",
             'edit' => "Modifier un remboursement partiel",
+            'final' => "Finaux",
+            'partial' => "Partiels",
+            'input' => "Saisie de partiels",
         ],
         'labels' => [
             'partial' => "Partiel",

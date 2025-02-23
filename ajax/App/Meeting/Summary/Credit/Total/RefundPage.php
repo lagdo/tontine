@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Meeting\Summary\Credit;
+namespace Ajax\App\Meeting\Summary\Credit\Total;
 
 use Ajax\PageComponent;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
@@ -50,9 +50,10 @@ class RefundPage extends PageComponent
         $fund = $this->stash()->get('summary.refund.fund');
         $filtered = $this->bag('refund')->get('filter', null);
 
-        return $this->renderView('pages.meeting.summary.refund.page', [
+        return $this->renderView('pages.meeting.summary.refund.final.page', [
             'session' => $session,
-            'debts' => $this->refundService->getDebts($session, $fund, $filtered, $this->currentPage()),
+            'debts' => $this->refundService
+                ->getDebts($session, $fund, $filtered, $this->currentPage()),
         ]);
     }
 

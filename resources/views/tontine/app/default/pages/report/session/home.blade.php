@@ -37,8 +37,5 @@
             </div>
           </div>
 
-          <!-- Data tables -->
-          <div class="card shadow mb-4">
-            <div class="card-body" @jxnBind($rqSessionContent)>
-            </div>
+          <div @jxnBind($rqSessionContent)>
           </div>

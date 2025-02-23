@@ -49,7 +49,7 @@ class Amount extends Component
         $session = $this->stash()->get('meeting.session');
         $fund = $this->stash()->get('meeting.refund.fund');
 
-        return $this->renderView('pages.meeting.refund.partial.amount.list', [
+        return $this->renderView('pages.meeting.refund.partial.amount.input', [
             'session' => $session,
             'debts' => $this->refundService->getUnpaidDebts($fund, $session),
         ]);

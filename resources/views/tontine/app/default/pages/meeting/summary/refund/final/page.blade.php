@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('debtCalculator', 'Siak\Tontine\Service\Meeting\Credit\DebtCalculator')
 @php
-  $rqRefundPage = rq(Ajax\App\Meeting\Summary\Credit\RefundPage::class);
+  $rqTotalRefundPage = rq(Ajax\App\Meeting\Summary\Credit\Total\RefundPage::class);
 @endphp
                     <div class="table-responsive" id="content-summary-refunds-page">
                       <table class="table table-bordered responsive">
@@ -34,6 +34,6 @@
 @endforeach
                         </tbody>
                       </table>
-                      <nav @jxnPagination($rqRefundPage)>
+                      <nav @jxnPagination($rqTotalRefundPage)>
                       </nav>
                     </div> <!-- End table -->

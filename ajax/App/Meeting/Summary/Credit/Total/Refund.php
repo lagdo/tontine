@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Meeting\Summary\Credit;
+namespace Ajax\App\Meeting\Summary\Credit\Total;
 
 use Ajax\App\Meeting\Summary\Component;
 use Siak\Tontine\Service\Tontine\FundService;
@@ -24,7 +24,7 @@ class Refund extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.summary.refund.home', [
+        return $this->renderView('pages.meeting.summary.refund.final.home', [
             'session' => $this->stash()->get('summary.session'),
             'funds' => $this->fundService->getFundList(),
         ]);

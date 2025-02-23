@@ -24,7 +24,6 @@ return [
         'benefit' => "Benefit",
         'refund' => "Refund",
         'refunds' => "Refunds",
-        'partial-refunds' => "Partial refunds",
         'disbursements' => "Disbursements",
         'profits' => "Profits distribution",
         'summary' => "Summary",
@@ -35,6 +34,7 @@ return [
         'settlements' => "Settlements",
         'savings' => "Savings",
         'loans' => "Loans",
+        'refunds' => "Refunds",
         'amounts' => "Amounts",
         'reports' => "Reports",
         'report' => "Report",
@@ -225,6 +225,9 @@ return [
         'titles' => [
             'add' => "Add a partial refund",
             'edit' => "Edit a partial refund",
+            'final' => "Final",
+            'partial' => "Partial",
+            'input' => "Partial input",
         ],
         'labels' => [
             'partial' => "Partial",
