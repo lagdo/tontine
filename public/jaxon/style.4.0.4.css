@@ -71,6 +71,17 @@ th.currency, td.currency {
 #text-session-notes, #text-session-venue {
   height: 120px;
 }
+.card .card-header {
+  min-height: 50px;
+  padding: 10px 25px;
+}
+.card .card-header input.form-control {
+  border-radius:.25rem 0 0 .25rem;
+}
+.card .card-header .input-group .btn {
+  margin-top: 0;
+  border-radius:0 .25rem .25rem 0;
+}
 form .form-group .col-form-label {
   text-align: right !important;
 }

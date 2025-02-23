@@ -44,11 +44,11 @@ class MenuFunc extends FuncComponent
             'tontines' => $this->tontineService->getTontines()->pluck('name', 'id'),
         ]);
         $buttons = [[
-            'title' => trans('common.actions.close'),
+            'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
             'click' => 'close',
         ],[
-            'title' => trans('common.actions.save'),
+            'title' => trans('tontine.actions.choose'),
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveOrganisation(pm()->select('tontine_id')->toInt()),
         ]];
@@ -92,11 +92,11 @@ class MenuFunc extends FuncComponent
             'rounds' => $tontine->rounds->pluck('title', 'id'),
         ]);
         $buttons = [[
-            'title' => trans('common.actions.close'),
+            'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
             'click' => 'close',
         ],[
-            'title' => trans('common.actions.save'),
+            'title' => trans('tontine.actions.choose'),
             'class' => 'btn btn-primary',
             'click' => $this->rq()->saveRound(pm()->select('round_id')->toInt()),
         ]];

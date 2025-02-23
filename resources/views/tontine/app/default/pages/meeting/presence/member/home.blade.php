@@ -32,22 +32,24 @@
                     </div>
                   </div>
                 </div>
-                <div class="row mb-2">
-                  <div class="col">&nbsp;</div>
-                  <div class="col-auto">
-                    <div class="input-group">
-                      {!! $htmlBuilder->text('search', '')->id('txt-presence-members-search')
-                        ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
-                      <div class="input-group-append">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqMemberFunc->search(jq('#txt-presence-members-search')->val()))><i class="fa fa-search"></i></button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               <!-- Data tables -->
               <div class="card shadow mb-4">
+                <div class="card-header">
+                  <div class="row w-100">
+                    <div class="col">
+                      <div class="input-group">
+                        {!! $htmlBuilder->text('search', '')->id('txt-presence-members-search')
+                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
+                        <div class="input-group-append">
+                          <button type="button" class="btn btn-primary" @jxnClick($rqMemberFunc->search(jq('#txt-presence-members-search')->val()))><i class="fa fa-search"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-auto" style="width:40px;">&nbsp;</div>
+                  </div>
+                </div>
                 <div class="card-body" @jxnBind($rqMemberPage)>
                 </div>
               </div>

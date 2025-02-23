@@ -20,26 +20,28 @@
                     </div>
                   </div>
                 </div>
-                <div class="row mb-2">
-                  <div class="col">
-                    <div class="input-group">
-                      {!! $htmlBuilder->text('search', '')->id('txt-subscription-members-search')
-                        ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
-                      <div class="input-group-append">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqMemberFunc->search(jq('#txt-subscription-members-search')->val()))><i class="fa fa-search"></i></button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-auto">
-                    <div style="width:90px; font-weight:bold; padding-top:10px;" @jxnBind($rqMemberCounter)>
-                      @jxnHtml($rqMemberCounter)
-                    </div>
-                  </div>
-                </div>
               </div>
 
               <!-- Data tables -->
               <div class="card shadow mb-4">
+                <div class="card-header">
+                  <div class="row w-100">
+                    <div class="col">
+                      <div class="input-group">
+                        {!! $htmlBuilder->text('search', '')->id('txt-subscription-members-search')
+                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
+                        <div class="input-group-append">
+                          <button type="button" class="btn btn-primary" @jxnClick($rqMemberFunc->search(jq('#txt-subscription-members-search')->val()))><i class="fa fa-search"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                      <div style="width:40px; font-weight:bold; padding-top:5px;" @jxnBind($rqMemberCounter)>
+                        @jxnHtml($rqMemberCounter)
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div class="card-body" @jxnBind($rqMemberPage)>
                 </div>
               </div>

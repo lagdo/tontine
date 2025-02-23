@@ -38,14 +38,14 @@
   'dataIdKey' => 'data-round-id',
   'dataIdValue' => $round->id,
   'menus' => [[
-    'class' => 'btn-round-edit',
-    'text' => __('common.actions.edit'),
+    'class' => 'btn-round-select',
+    'text' => __('tontine.actions.choose'),
   ],[
     'class' => 'btn-round-sessions',
     'text' => __('tontine.pool.actions.sessions'),
   ],[
-    'class' => 'btn-round-select',
-    'text' => __('tontine.actions.choose'),
+    'class' => 'btn-round-edit',
+    'text' => __('common.actions.edit'),
   ],[
     'class' => 'btn-round-delete',
     'text' => __('common.actions.delete'),
