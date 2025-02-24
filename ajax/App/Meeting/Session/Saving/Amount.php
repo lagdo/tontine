@@ -4,12 +4,10 @@ namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\Component;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;
 
 /**
- * @databag meeting.saving
- * @before getFund
+ * @exclude
  */
 class Amount extends Component
 {
@@ -17,18 +15,9 @@ class Amount extends Component
      * The constructor
      *
      * @param LocaleService $localeService
-     * @param FundService $fundService
      */
-    public function __construct(private LocaleService $localeService,
-        private FundService $fundService)
+    public function __construct(private LocaleService $localeService)
     {}
-
-    protected function getFund()
-    {
-        $fundId = (int)$this->bag('meeting.saving')->get('fund.id', 0);
-        $fund = $this->fundService->getFund($fundId, true, true);
-        $this->stash()->set('meeting.saving.fund', $fund);
-    }
 
     /**
      * @inheritDoc
@@ -42,7 +31,8 @@ class Amount extends Component
         if($session->closed)
         {
             return $this->renderView('pages.meeting.saving.member.closed', [
-                'amount' => !$saving ? '' : $this->localeService->formatMoney($saving->amount, true),
+                'amount' => !$saving ? '' :
+                    $this->localeService->formatMoney($saving->amount, true),
             ]);
         }
 
@@ -53,7 +43,8 @@ class Amount extends Component
         {
             return $this->renderView('pages.meeting.saving.member.edit', [
                 'memberId' => $member->id,
-                'amount' => !$saving ? '' : $this->localeService->getMoneyValue($saving->amount),
+                'amount' => !$saving ? '' :
+                    $this->localeService->getMoneyValue($saving->amount),
                 'rqAmountFunc' => $this->rq(AmountFunc::class),
             ]);
         }

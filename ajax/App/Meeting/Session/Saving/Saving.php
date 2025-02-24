@@ -3,21 +3,21 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\Component;
-use Siak\Tontine\Service\Tontine\FundService;
+use Ajax\App\Meeting\Session\FundTrait;
 use Stringable;
 
 /**
  * @databag meeting.saving
+ * @before getFund
  */
 class Saving extends Component
 {
+    use FundTrait;
+
     /**
-     * The constructor
-     *
-     * @param FundService $fundService
+     * @var string
      */
-    public function __construct(protected FundService $fundService)
-    {}
+    protected string $bagId = 'meeting.saving';
 
     /**
      * @inheritDoc
@@ -26,8 +26,8 @@ class Saving extends Component
     {
         return $this->renderView('pages.meeting.saving.home', [
             'session' => $this->stash()->get('meeting.session'),
-            'fundId' => (int)$this->bag('meeting.saving')->get('fund.id', 0),
-            'funds' => $this->fundService->getFundList()->prepend('', 0),
+            'funds' => $this->fundService->getFundList()/*->prepend('', 0)*/,
+            'fund' => $this->getStashedFund(),
         ]);
     }
 
@@ -36,26 +36,25 @@ class Saving extends Component
      */
     protected function after()
     {
-        $this->fund((int)$this->bag('meeting.saving')->get('fund.id', 0));
-    }
-
-    protected function getFund()
-    {
-        $fund = null;
-        $fundId = $this->bag('meeting.saving')->get('fund.id', 0);
-        if($fundId > 0 && ($fund = $this->fundService->getFund($fundId, true, true)) === null)
-        {
-            $this->bag('meeting.saving')->set('fund.id', 0);
-        }
-        $this->stash()->set('meeting.saving.fund', $fund);
+        $this->cl(SavingPage::class)->page();
     }
 
     public function fund(int $fundId)
     {
-        $this->bag('meeting.saving')->set('fund.id', $fundId);
-        $this->bag('meeting.saving')->set('page', 1);
-        $this->getFund();
+        $this->bag($this->bagId)->set('page', 1);
+        $this->render();
+    }
 
-        $this->cl(SavingPage::class)->page();
+    /**
+     * @exclude
+     */
+    public function show()
+    {
+        // We need to explicitely get the default fund here.
+        $fundId = $this->tenantService->tontine()->default_fund?->id ?? 0;
+        $this->bag($this->bagId)->set('fund.id', $fundId);
+        $this->getFund(true);
+
+        $this->render();
     }
 }

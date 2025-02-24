@@ -3,8 +3,8 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\FuncComponent;
+use Ajax\App\Meeting\Session\FundTrait;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
-use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Meeting\SavingValidator;
 
@@ -13,9 +13,17 @@ use function trans;
 
 /**
  * @databag meeting.saving
+ * @before getFund
  */
 class SavingFunc extends FuncComponent
 {
+    use FundTrait;
+
+    /**
+     * @var string
+     */
+    protected string $bagId = 'meeting.saving';
+
     /**
      * @var SavingValidator
      */
@@ -25,11 +33,10 @@ class SavingFunc extends FuncComponent
      * The constructor
      *
      * @param SavingService $savingService
-     * @param FundService $fundService
      * @param MemberService $memberService
      */
     public function __construct(protected SavingService $savingService,
-        protected FundService $fundService, protected MemberService $memberService)
+        protected MemberService $memberService)
     {}
 
     public function edit(int $savingId)

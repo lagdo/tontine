@@ -3,22 +3,28 @@
 namespace Ajax\App\Meeting\Session\Refund\Partial;
 
 use Ajax\App\Meeting\Component;
-use Ajax\App\Meeting\Session\Refund\FundTrait;
+use Ajax\App\Meeting\Session\FundTrait;
 use Stringable;
 
 /**
- * @databag partial.refund
+ * @databag meeting.refund.partial
+ * @before getFund
  */
 class Refund extends Component
 {
     use FundTrait;
+
+    /**
+     * @var string
+     */
+    protected string $bagId = 'meeting.refund.partial';
 
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.refund.partial.home', [
             'session' => $this->stash()->get('meeting.session'),
             'funds' => $this->fundService->getFundList(),
-            'currentFundId' => $this->bag('partial.refund')->get('fund.id', 0),
+            'fund' => $this->getStashedFund(),
         ]);
     }
 
@@ -27,7 +33,7 @@ class Refund extends Component
      */
     protected function after()
     {
-        $this->fund($this->bag('partial.refund')->get('fund.id', 0));
+        $this->cl(RefundPage::class)->page();
     }
 
     /**
@@ -37,10 +43,20 @@ class Refund extends Component
      */
     public function fund(int $fundId)
     {
-        $this->bag('partial.refund')->set('fund.id', $fundId);
-        $this->bag('partial.refund')->set('principal.page', 1);
-        $this->getFund();
+        $this->bag($this->bagId)->set('page', 1);
+        $this->render();
+    }
 
-        $this->cl(RefundPage::class)->page();
+    /**
+     * @exclude
+     */
+    public function show()
+    {
+        // We need to explicitely get the default fund here.
+        $fundId = $this->tenantService->tontine()->default_fund?->id ?? 0;
+        $this->bag($this->bagId)->set('fund.id', $fundId);
+        $this->getFund(true);
+
+        $this->render();
     }
 }

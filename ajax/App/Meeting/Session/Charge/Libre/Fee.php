@@ -21,4 +21,12 @@ class Fee extends Component
     {
         $this->cl(FeePage::class)->page(1);
     }
+
+    /**
+     * @exclude
+     */
+    public function show()
+    {
+        $this->render();
+    }
 }

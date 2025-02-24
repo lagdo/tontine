@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Credit;
 
 use Ajax\App\Meeting\FuncComponent;
-use Ajax\App\Meeting\Session\Refund\Total\Refund;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Service\Tontine\MemberService;
@@ -75,7 +74,6 @@ class LoanFunc extends FuncComponent
 
         $this->modal()->hide();
 
-        $this->cl(Refund::class)->render();
         $this->cl(Loan::class)->render();
     }
 
@@ -150,16 +148,27 @@ class LoanFunc extends FuncComponent
 
         $this->modal()->hide();
 
-        $this->cl(Refund::class)->render();
         $this->cl(Loan::class)->render();
     }
 
     public function delete(int $loanId)
     {
         $session = $this->stash()->get('meeting.session');
+        $loan = $this->loanService->getSessionLoan($session, $loanId);
+        if(!$loan)
+        {
+            $this->alert()->warning(trans('meeting.loan.errors.not_found'));
+            return;
+        }
+        // A refunded loan cannot be deleted.
+        if($loan->refunds_count > 0)
+        {
+            $this->alert()->warning(trans('meeting.loan.errors.update'));
+            return;
+        }
+
         $this->loanService->deleteLoan($session, $loanId);
 
-        $this->cl(Refund::class)->render();
         $this->cl(Loan::class)->render();
     }
 }

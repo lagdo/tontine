@@ -35,4 +35,12 @@ class Deposit extends Component
     {
         $this->response->js('Tontine')->makeTableResponsive('content-meeting-deposits');
     }
+
+    /**
+     * @exclude
+     */
+    public function show()
+    {
+        $this->render();
+    }
 }

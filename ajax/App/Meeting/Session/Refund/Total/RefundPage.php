@@ -3,33 +3,36 @@
 namespace Ajax\App\Meeting\Session\Refund\Total;
 
 use Ajax\App\Meeting\PageComponent;
-use Ajax\App\Meeting\Session\Refund\FundTrait;
+use Ajax\App\Meeting\Session\FundTrait;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
-use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;
 
 /**
- * @databag refund
+ * @databag meeting.refund.final
+ * @before getFund
  */
 class RefundPage extends PageComponent
 {
     use FundTrait;
 
     /**
+     * @var string
+     */
+    protected string $bagId = 'meeting.refund.final';
+
+    /**
      * The pagination databag options
      *
      * @var array
      */
-    protected array $bagOptions = ['refund', 'principal.page'];
+    protected array $bagOptions = ['meeting.refund.final', 'page'];
 
     /**
      * The constructor
      *
-     * @param FundService $fundService
      * @param RefundService $refundService
      */
-    public function __construct(protected FundService $fundService,
-        protected RefundService $refundService)
+    public function __construct(protected RefundService $refundService)
     {}
 
     /**
@@ -38,8 +41,8 @@ class RefundPage extends PageComponent
     protected function count(): int
     {
         $session = $this->stash()->get('meeting.session');
-        $fund = $this->stash()->get('meeting.refund.fund');
-        $filtered = $this->bag('refund')->get('filter', null);
+        $fund = $this->getStashedFund();
+        $filtered = $this->bag($this->bagId)->get('filter', null);
 
         return $this->refundService->getDebtCount($session, $fund, $filtered);
     }
@@ -50,9 +53,10 @@ class RefundPage extends PageComponent
     public function html(): Stringable
     {
         $session = $this->stash()->get('meeting.session');
-        $fund = $this->stash()->get('meeting.refund.fund');
-        $filtered = $this->bag('refund')->get('filter', null);
-        $debts = $this->refundService->getDebts($session, $fund, $filtered, $this->currentPage());
+        $fund = $this->getStashedFund();
+        $filtered = $this->bag($this->bagId)->get('filter', null);
+        $debts = $this->refundService
+            ->getDebts($session, $fund, $filtered, $this->currentPage());
 
         return $this->renderView('pages.meeting.refund.final.page', [
             'session' => $session,

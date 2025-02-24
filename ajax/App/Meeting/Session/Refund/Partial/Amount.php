@@ -3,55 +3,44 @@
 namespace Ajax\App\Meeting\Session\Refund\Partial;
 
 use Ajax\App\Meeting\Component;
-use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
-use Siak\Tontine\Service\Tontine\FundService;
+use Siak\Tontine\Service\LocaleService;
 use Stringable;
 
 /**
- * @databag partial.refund
- * @before getFund
+ * @exclude
  */
 class Amount extends Component
 {
     /**
-     * @var string
-     */
-    protected $overrides = Refund::class;
-
-    /**
      * The constructor
      *
-     * @param FundService $fundService
-     * @param PartialRefundService $refundService
+     * @param LocaleService $localeService
      */
-    public function __construct(protected FundService $fundService,
-        protected PartialRefundService $refundService)
+    public function __construct(private LocaleService $localeService)
     {}
 
-    protected function getFund()
+    public function html(): Stringable|string
     {
-        if($this->target()->method() === 'fund')
+        $debt = $this->stash()->get('meeting.refund.partial.debt');
+        if(!$debt || !$debt->partial_refund)
         {
-            $this->bag('partial.refund')->set('fund.id', $this->target()->args()[0]);
+            return $this->renderView('pages.meeting.refund.partial.amount.edit', [
+                'debt' => $debt,
+                'amount' => '',
+            ]);
         }
-        $fundId = $this->bag('partial.refund')->get('fund.id');
-        $fund = $this->fundService->getFund($fundId, true, true);
-        $this->stash()->set('meeting.refund.fund', $fund);
-    }
 
-    public function fund(int $fundId)
-    {
-        $this->render();
-    }
+        if($this->stash()->get('meeting.refund.partial.edit', false))
+        {
+            return $this->renderView('pages.meeting.refund.partial.amount.edit', [
+                'debt' => $debt,
+                'amount' => $this->localeService->getMoneyValue($debt->partial_refund->amount),
+            ]);
+        }
 
-    public function html(): Stringable
-    {
-        $session = $this->stash()->get('meeting.session');
-        $fund = $this->stash()->get('meeting.refund.fund');
-
-        return $this->renderView('pages.meeting.refund.partial.amount.input', [
-            'session' => $session,
-            'debts' => $this->refundService->getUnpaidDebts($fund, $session),
+        return $this->renderView('pages.meeting.refund.partial.amount.show', [
+            'debt' => $debt,
+            'amount' => $this->localeService->formatMoney($debt->partial_refund->amount, false),
         ]);
     }
 }

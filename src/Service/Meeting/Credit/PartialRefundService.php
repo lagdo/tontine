@@ -116,7 +116,7 @@ class PartialRefundService
     {
         return $this->getDebtsQuery($session, $fund, false)
         ->with([
-            'partial_refunds' => fn($query) => $query->where('session_id', $session->id),
+            'partial_refund' => fn($query) => $query->where('session_id', $session->id),
         ]);
     }
 

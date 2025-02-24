@@ -88,13 +88,16 @@ class FundService
      */
     public function getFund(int $fundId, bool $onlyActive = false, bool $withDefault = false): ?Fund
     {
-        if($withDefault && $fundId === $this->tenantService->tontine()->default_fund->id)
+        if($withDefault && ($fundId === 0 ||
+            $fundId === $this->tenantService->tontine()->default_fund->id))
         {
             return $this->getDefaultFund();
         }
-        return $this->tenantService->tontine()->funds()
+
+        $fund = $this->tenantService->tontine()->funds()
             ->when($onlyActive, fn(Builder $query) => $query->active())
             ->find($fundId);
+        return $fund ?? ($withDefault ? $this->getDefaultFund() : null);
     }
 
     /**

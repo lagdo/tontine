@@ -36,8 +36,8 @@ class SectionFunc extends FuncComponent
     {
         $this->renderSection('pools');
 
-        $this->cl(Pool\Deposit\Deposit::class)->render();
-        $this->cl(Pool\Remitment\Remitment::class)->render();
+        $this->cl(Pool\Deposit\Deposit::class)->show();
+        $this->cl(Pool\Remitment\Remitment::class)->show();
 
         $this->response->js('Tontine')
             ->setSmScreenHandler('session-pools-sm-screens', 'content-home');
@@ -47,8 +47,8 @@ class SectionFunc extends FuncComponent
     {
         $this->renderSection('savings');
 
-        $this->cl(Saving\Saving::class)->render();
-        $this->cl(Saving\Closing::class)->render();
+        $this->cl(Saving\Saving::class)->show();
+        $this->cl(Saving\Closing::class)->show();
 
         $this->response->js('Tontine')
             ->setSmScreenHandler('session-savings-sm-screens', 'content-home');
@@ -58,15 +58,15 @@ class SectionFunc extends FuncComponent
     {
         $this->renderSection('credits');
 
-        $this->cl(Credit\Loan::class)->render();
+        $this->cl(Credit\Loan::class)->show();
     }
 
     public function refunds(int $sessionId = 0)
     {
         $this->renderSection('refunds');
 
-        $this->cl(Refund\Total\Refund::class)->render();
-        $this->cl(Refund\Partial\Refund::class)->render();
+        $this->cl(Refund\Total\Refund::class)->show();
+        $this->cl(Refund\Partial\Refund::class)->show();
 
         $this->response->js('Tontine')
             ->setSmScreenHandler('session-refunds-sm-screens', 'content-home');
@@ -76,15 +76,15 @@ class SectionFunc extends FuncComponent
     {
         $this->renderSection('cash');
 
-        $this->cl(Cash\Disbursement::class)->render();
+        $this->cl(Cash\Disbursement::class)->show();
     }
 
     public function charges(int $sessionId = 0)
     {
         $this->renderSection('charges');
 
-        $this->cl(Charge\Fixed\Fee::class)->render();
-        $this->cl(Charge\Libre\Fee::class)->render();
+        $this->cl(Charge\Fixed\Fee::class)->show();
+        $this->cl(Charge\Libre\Fee::class)->show();
 
         $this->response->js('Tontine')
             ->setSmScreenHandler('session-charges-sm-screens', 'content-home');

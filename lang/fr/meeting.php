@@ -219,6 +219,7 @@ return [
         'errors' => [
             'not_found' => "Impossible de trouver l'emprunt.",
             'update' => "Cet emprunt ne peut pas être modifié.",
+            'delete' => "Cet emprunt ne peut pas être supprimé.",
         ],
     ],
     'refund' => [
@@ -227,7 +228,7 @@ return [
             'edit' => "Modifier un remboursement partiel",
             'final' => "Finaux",
             'partial' => "Partiels",
-            'input' => "Saisie de partiels",
+            'inputs' => "Saisies",
         ],
         'labels' => [
             'partial' => "Partiel",

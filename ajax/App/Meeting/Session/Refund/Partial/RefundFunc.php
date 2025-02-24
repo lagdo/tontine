@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Session\Refund\Partial;
 
 use Ajax\App\Meeting\FuncComponent;
-use Ajax\App\Meeting\Session\Refund\FundTrait;
+use Ajax\App\Meeting\Session\FundTrait;
 use Ajax\App\Meeting\Session\Refund\Total\Refund as TotalRefund;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
@@ -12,12 +12,17 @@ use function Jaxon\pm;
 use function trans;
 
 /**
- * @databag partial.refund
+ * @databag meeting.refund.partial
  * @before getFund
  */
 class RefundFunc extends FuncComponent
 {
     use FundTrait;
+
+    /**
+     * @var string
+     */
+    protected string $bagId = 'meeting.refund.partial';
 
     /**
      * @var DebtValidator
@@ -66,9 +71,12 @@ class RefundFunc extends FuncComponent
         $this->refundService->updatePartialRefund($refund, $session, $values['amount']);
 
         $this->modal()->hide();
+
         // Refresh the refunds page
-        $this->cl(TotalRefund::class)->render();
         $this->cl(RefundPage::class)->page();
+        // The fund needs to be shared with the other page.
+        $this->stash()->set('meeting.refund.final.fund', $this->getStashedFund());
+        $this->cl(TotalRefund::class)->render();
     }
 
     public function delete(int $refundId)
@@ -78,7 +86,9 @@ class RefundFunc extends FuncComponent
         $this->refundService->deletePartialRefund($refund, $session);
 
         // Refresh the refunds page
-        $this->cl(TotalRefund::class)->render();
         $this->cl(RefundPage::class)->page();
+        // The fund needs to be shared with the other page.
+        $this->stash()->set('meeting.refund.final.fund', $this->getStashedFund());
+        $this->cl(TotalRefund::class)->render();
     }
 }

@@ -36,4 +36,12 @@ class Disbursement extends Component
         $this->response->js('Tontine')
             ->makeTableResponsive('content-session-disbursements');
     }
+
+    /**
+     * @exclude
+     */
+    public function show()
+    {
+        $this->render();
+    }
 }

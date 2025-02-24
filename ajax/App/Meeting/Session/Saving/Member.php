@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\Component;
-use Siak\Tontine\Service\Tontine\FundService;
+use Ajax\App\Meeting\Session\FundTrait;
 use Stringable;
 
 /**
@@ -12,29 +12,17 @@ use Stringable;
  */
 class Member extends Component
 {
+    use FundTrait;
+
+    /**
+     * @var string
+     */
+    protected string $bagId = 'meeting.saving';
+
     /**
      * @var string
      */
     protected $overrides = Saving::class;
-
-    /**
-     * The constructor
-     *
-     * @param FundService $fundService
-     */
-    public function __construct(private FundService $fundService)
-    {}
-
-    protected function getFund()
-    {
-        if($this->target()->method() === 'fund')
-        {
-            $this->bag('meeting.saving')->set('fund.id', $this->target()->args()[0]);
-        }
-        $fundId = (int)$this->bag('meeting.saving')->get('fund.id', 0);
-        $fund = $this->fundService->getFund($fundId, true, true);
-        $this->stash()->set('meeting.saving.fund', $fund);
-    }
 
     /**
      * @inheritDoc
@@ -42,7 +30,7 @@ class Member extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.saving.member.home', [
-            'fund' => $this->stash()->get('meeting.saving.fund'),
+            'fund' => $this->getStashedFund(),
         ]);
     }
 
@@ -61,9 +49,9 @@ class Member extends Component
      */
     public function fund(int $fundId)
     {
-        $this->bag('meeting.saving')->set('member.filter', null);
-        $this->bag('meeting.saving')->set('member.search', '');
-        $this->bag('meeting.saving')->set('member.page', 1);
+        $this->bag($this->bagId)->set('member.filter', null);
+        $this->bag($this->bagId)->set('member.search', '');
+        $this->bag($this->bagId)->set('member.page', 1);
 
         $this->render();
     }

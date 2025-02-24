@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Session\Refund\Total;
 
 use Ajax\App\Meeting\FuncComponent;
-use Ajax\App\Meeting\Session\Refund\FundTrait;
+use Ajax\App\Meeting\Session\FundTrait;
 use Ajax\App\Meeting\Session\Refund\Partial\RefundPage as PartialRefundPage;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
@@ -11,12 +11,17 @@ use Siak\Tontine\Validation\Meeting\DebtValidator;
 use function trans;
 
 /**
- * @databag refund
+ * @databag meeting.refund.final
  * @before getFund
  */
 class RefundFunc extends FuncComponent
 {
     use FundTrait;
+
+    /**
+     * @var string
+     */
+    protected string $bagId = 'meeting.refund.final';
 
     /**
      * @var DebtValidator
@@ -33,11 +38,11 @@ class RefundFunc extends FuncComponent
 
     public function toggleFilter()
     {
-        $filtered = $this->bag('refund')->get('filter', null);
+        $filtered = $this->bag($this->bagId)->get('filter', null);
         // Switch between null, true and false
         $filtered = $filtered === null ? true : ($filtered === true ? false : null);
-        $this->bag('refund')->set('filter', $filtered);
-        $this->bag('refund')->set('principal.page', 1);
+        $this->bag($this->bagId)->set('filter', $filtered);
+        $this->bag($this->bagId)->set('page', 1);
 
         $this->cl(RefundPage::class)->page();
     }

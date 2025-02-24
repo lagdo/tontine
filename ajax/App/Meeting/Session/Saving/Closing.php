@@ -46,4 +46,12 @@ class Closing extends Component
         $session = $this->stash()->get('meeting.session');
         $this->bag('report')->set('session.id', $session->id);
     }
+
+    /**
+     * @exclude
+     */
+    public function show()
+    {
+        $this->render();
+    }
 }

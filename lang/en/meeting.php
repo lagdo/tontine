@@ -219,6 +219,7 @@ return [
         'errors' => [
             'not_found' => "Cannot find the loan.",
             'update' => "This loan cannot be updated.",
+            'delete' => "This loan cannot be deleted.",
         ],
     ],
     'refund' => [
@@ -227,7 +228,7 @@ return [
             'edit' => "Edit a partial refund",
             'final' => "Final",
             'partial' => "Partial",
-            'input' => "Partial input",
+            'inputs' => "Inputs",
         ],
         'labels' => [
             'partial' => "Partial",

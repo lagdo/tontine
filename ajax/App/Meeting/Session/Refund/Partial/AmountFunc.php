@@ -3,17 +3,25 @@
 namespace Ajax\App\Meeting\Session\Refund\Partial;
 
 use Ajax\App\Meeting\FuncComponent;
+use Ajax\App\Meeting\Session\FundTrait;
+use Ajax\App\Meeting\Session\Refund\Total\Refund as TotalRefund;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
-use Siak\Tontine\Service\Tontine\FundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 /**
- * @databag partial.refund
+ * @databag meeting.refund.partial
  * @before getFund
  */
 class AmountFunc extends FuncComponent
 {
+    use FundTrait;
+
+    /**
+     * @var string
+     */
+    protected string $bagId = 'meeting.refund.partial';
+
     /**
      * @var LocaleService
      */
@@ -27,23 +35,10 @@ class AmountFunc extends FuncComponent
     /**
      * The constructor
      *
-     * @param FundService $fundService
      * @param PartialRefundService $refundService
      */
-    public function __construct(protected FundService $fundService,
-        protected PartialRefundService $refundService)
+    public function __construct(protected PartialRefundService $refundService)
     {}
-
-    protected function getFund()
-    {
-        if($this->target()->method() === 'fund')
-        {
-            $this->bag('partial.refund')->set('fund.id', $this->target()->args()[0]);
-        }
-        $fundId = $this->bag('partial.refund')->get('fund.id');
-        $fund = $this->fundService->getFund($fundId, true, true);
-        $this->stash()->set('meeting.refund.fund', $fund);
-    }
 
     /**
      * @di $localeService
@@ -51,7 +46,7 @@ class AmountFunc extends FuncComponent
     public function edit(int $debtId)
     {
         $session = $this->stash()->get('meeting.session');
-        $fund = $this->stash()->get('meeting.refund.fund');
+        $fund = $this->getStashedFund();
         $debt = $this->refundService->getUnpaidDebt($fund, $session, $debtId);
         if(!$debt)
         {
@@ -59,11 +54,9 @@ class AmountFunc extends FuncComponent
             return;
         }
 
-        $html = $this->renderView('pages.meeting.refund.partial.amount.edit', [
-            'debt' => $debt,
-            'amount' => $this->localeService->getMoneyValue($debt->partial_refund->amount),
-        ]);
-        $this->response->html("partial-refund-amount-{$debt->id}", $html);
+        $this->stash()->set('meeting.refund.partial.debt', $debt);
+        $this->stash()->set('meeting.refund.partial.edit', true);
+        $this->cl(Amount::class)->item($debt->id)->render();
     }
 
     /**
@@ -75,7 +68,7 @@ class AmountFunc extends FuncComponent
         $values = $this->validator->validateItem(['debt' => $debtId, 'amount' => $amount]);
 
         $session = $this->stash()->get('meeting.session');
-        $fund = $this->stash()->get('meeting.refund.fund');
+        $fund = $this->getStashedFund();
         $debt = $this->refundService->getUnpaidDebt($fund, $session, $debtId);
         if(!$debt)
         {
@@ -88,7 +81,9 @@ class AmountFunc extends FuncComponent
             $this->refundService->savePartialRefund($debt, $session, $values['amount']);
 
         // Refresh the refunds page
-        $this->cl(Refund::class)->render();
-        $this->cl(Amount::class)->render();
+        $this->cl(Debt::class)->render();
+        // The fund needs to be shared with the other page.
+        $this->stash()->set('meeting.refund.final.fund', $this->getStashedFund());
+        $this->cl(TotalRefund::class)->render();
     }
 }

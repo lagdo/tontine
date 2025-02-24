@@ -37,4 +37,12 @@ class Remitment extends Component
     {
         $this->response->js('Tontine')->makeTableResponsive('content-session-remitments');
     }
+
+    /**
+     * @exclude
+     */
+    public function show()
+    {
+        $this->render();
+    }
 }

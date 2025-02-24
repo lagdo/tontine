@@ -3,8 +3,8 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\PageComponent;
+use Ajax\App\Meeting\Session\FundTrait;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
-use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;
 
 /**
@@ -13,6 +13,13 @@ use Stringable;
  */
 class SavingPage extends PageComponent
 {
+    use FundTrait;
+
+    /**
+     * @var string
+     */
+    protected string $bagId = 'meeting.saving';
+
     /**
      * The pagination databag options
      *
@@ -24,18 +31,9 @@ class SavingPage extends PageComponent
      * The constructor
      *
      * @param SavingService $savingService
-     * @param FundService $fundService
      */
-    public function __construct(protected SavingService $savingService,
-        protected FundService $fundService)
+    public function __construct(protected SavingService $savingService)
     {}
-
-    protected function getFund()
-    {
-        $fundId = $this->bag('meeting.saving')->get('fund.id', 0);
-        $fund = $this->fundService->getFund($fundId, true, true);
-        $this->stash()->set('meeting.saving.fund', $fund);
-    }
 
     /**
      * @inheritDoc
@@ -43,7 +41,7 @@ class SavingPage extends PageComponent
     protected function count(): int
     {
         $session = $this->stash()->get('meeting.session');
-        $fund = $this->stash()->get('meeting.saving.fund');
+        $fund = $this->getStashedFund();
 
         return $this->savingService->getSavingCount($session, $fund);
     }
@@ -54,11 +52,12 @@ class SavingPage extends PageComponent
     public function html(): Stringable
     {
         $session = $this->stash()->get('meeting.session');
-        $fund = $this->stash()->get('meeting.saving.fund');
+        $fund = $this->getStashedFund();
 
         return $this->renderView('pages.meeting.saving.page', [
             'session' => $session,
-            'savings' => $this->savingService->getSavings($session, $fund, $this->currentPage()),
+            'savings' => $this->savingService
+                ->getSavings($session, $fund, $this->currentPage()),
         ]);
     }
 

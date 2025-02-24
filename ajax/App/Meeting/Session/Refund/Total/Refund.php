@@ -3,16 +3,22 @@
 namespace Ajax\App\Meeting\Session\Refund\Total;
 
 use Ajax\App\Meeting\Component;
-use Ajax\App\Meeting\Session\Refund\FundTrait;
+use Ajax\App\Meeting\Session\FundTrait;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 use Stringable;
 
 /**
- * @databag refund
+ * @databag meeting.refund.final
+ * @before getFund
  */
 class Refund extends Component
 {
     use FundTrait;
+
+    /**
+     * @var string
+     */
+    protected string $bagId = 'meeting.refund.final';
 
     /**
      * @var DebtValidator
@@ -27,6 +33,7 @@ class Refund extends Component
         return $this->renderView('pages.meeting.refund.final.home', [
             'session' => $this->stash()->get('meeting.session'),
             'funds' => $this->fundService->getFundList(),
+            'fund' => $this->getStashedFund(),
         ]);
     }
 
@@ -35,7 +42,7 @@ class Refund extends Component
      */
     protected function after()
     {
-        $this->fund(0);
+        $this->cl(RefundPage::class)->page();
     }
 
     /**
@@ -45,10 +52,21 @@ class Refund extends Component
      */
     public function fund(int $fundId)
     {
-        $this->bag('refund')->set('fund.id', $fundId);
-        $this->bag('refund')->set('principal.page', 1);
-        $this->getFund();
+        $this->bag($this->bagId)->set('page', 1);
 
-        $this->cl(RefundPage::class)->page();
+        $this->render();
+    }
+
+    /**
+     * @exclude
+     */
+    public function show()
+    {
+        // We need to explicitely get the default fund here.
+        $fundId = $this->tenantService->tontine()->default_fund?->id ?? 0;
+        $this->bag($this->bagId)->set('fund.id', $fundId);
+        $this->getFund(true);
+
+        $this->render();
     }
 }

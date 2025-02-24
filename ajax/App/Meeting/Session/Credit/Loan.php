@@ -37,4 +37,12 @@ class Loan extends Component
         $this->cl(Balance::class)->render();
         $this->response->js('Tontine')->makeTableResponsive('content-session-loans');
     }
+
+    /**
+     * @exclude
+     */
+    public function show()
+    {
+        $this->render();
+    }
 }
