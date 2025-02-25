@@ -19,8 +19,8 @@
                   </div>
                   <div class="card-body">
                     <div class="form-group">
-                      {!! $htmlBuilder->label(__('common.labels.name'), 'name') !!}
-                      {!! $htmlBuilder->text('name', old('name', $user->name))->class($errors->profile->has('name') ? 'form-control is-invalid' : 'form-control') !!}
+                      {!! $html->label(__('common.labels.name'), 'name') !!}
+                      {!! $html->text('name', old('name', $user->name))->class($errors->profile->has('name') ? 'form-control is-invalid' : 'form-control') !!}
 @if($errors->profile->has('name'))
                       <div class="invalid-feedback">
                         {{ $errors->profile->first('name') }}
@@ -28,8 +28,8 @@
 @endif
                     </div>
                     <div class="form-group">
-                      {!! $htmlBuilder->label(__('common.labels.city'), 'city') !!}
-                      {!! $htmlBuilder->text('city', old('city', $user->city))->class($errors->profile->has('city') ? 'form-control is-invalid' : 'form-control') !!}
+                      {!! $html->label(__('common.labels.city'), 'city') !!}
+                      {!! $html->text('city', old('city', $user->city))->class($errors->profile->has('city') ? 'form-control is-invalid' : 'form-control') !!}
 @if($errors->profile->has('city'))
                       <div class="invalid-feedback">
                         {{ $errors->profile->first('city') }}
@@ -37,8 +37,8 @@
 @endif
                     </div>
                     <div class="form-group">
-                      {!! $htmlBuilder->label(__('common.labels.country'), 'country') !!}
-                      {!! $htmlBuilder->select('country', $countries, old('country', $user->country_code))
+                      {!! $html->label(__('common.labels.country'), 'country') !!}
+                      {!! $html->select('country', $countries, old('country', $user->country_code))
                         ->class($errors->profile->has('country') ? 'form-control is-invalid' : 'form-control') !!}
 @if($errors->profile->has('country'))
                       <div class="invalid-feedback">
@@ -62,8 +62,8 @@
                   </div>
                   <div class="card-body">
                     <div class="form-group">
-                      {!! $htmlBuilder->label(__('user.password.labels.current'), 'current_password') !!}
-                      {!! $htmlBuilder->password('current_password')
+                      {!! $html->label(__('user.password.labels.current'), 'current_password') !!}
+                      {!! $html->password('current_password')
                         ->class($errors->password->has('current_password') ? 'form-control is-invalid' : 'form-control') !!}
 @if($errors->password->has('current_password'))
                       <div class="invalid-feedback">
@@ -72,8 +72,8 @@
 @endif
                     </div>
                     <div class="form-group">
-                      {!! $htmlBuilder->label(__('user.password.labels.new'), 'password') !!}
-                      {!! $htmlBuilder->password('password')
+                      {!! $html->label(__('user.password.labels.new'), 'password') !!}
+                      {!! $html->password('password')
                         ->class($errors->password->has('password') ? 'form-control is-invalid' : 'form-control') !!}
 @if($errors->password->has('password'))
                       <div class="invalid-feedback">
@@ -82,8 +82,8 @@
 @endif
                     </div>
                     <div class="form-group">
-                      {!! $htmlBuilder->label(__('user.password.labels.confirm'), 'password_confirmation') !!}
-                      {!! $htmlBuilder->password('password_confirmation')
+                      {!! $html->label(__('user.password.labels.confirm'), 'password_confirmation') !!}
+                      {!! $html->password('password_confirmation')
                         ->class($errors->password->has('password_confirmation') ? 'form-control is-invalid' : 'form-control') !!}
 @if($errors->password->has('password_confirmation'))
                       <div class="invalid-feedback">

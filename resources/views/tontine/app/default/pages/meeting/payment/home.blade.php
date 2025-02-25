@@ -14,7 +14,7 @@
                   </div>
                   <div class="col-auto">
 @if ($sessions->count() > 0)
-                    {{ $htmlBuilder->select('session_id', $sessions, 0)->class('form-control')->id('select-session') }}
+                    {{ $html->select('session_id', $sessions, 0)->class('form-control')->id('select-session') }}
 @endif
                   </div>
                 </div>

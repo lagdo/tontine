@@ -5,9 +5,9 @@
               <div class="col-md-11">{!! __('tontine.invite.titles.add_desc') !!}</div>
             </div>
             <div class="form-group row">
-              {!! $htmlBuilder->label(__('common.labels.email'), 'email')->class('col-sm-3 col-form-label') !!}
+              {!! $html->label(__('common.labels.email'), 'email')->class('col-sm-3 col-form-label') !!}
               <div class="col-md-8">
-                {!! $htmlBuilder->text('email', '')->class('form-control') !!}
+                {!! $html->text('email', '')->class('form-control') !!}
               </div>
             </div>
           </div>

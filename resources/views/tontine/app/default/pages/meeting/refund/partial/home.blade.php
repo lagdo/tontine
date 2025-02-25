@@ -10,7 +10,7 @@
                       </div>
                       <div class="col-auto" style="padding-left:0;padding-right:0;">
                         <div class="input-group mb-2">
-                          {!! $htmlBuilder->select('fund_id', $funds, $fund->id)->id('partial-refunds-fund-id')
+                          {!! $html->select('fund_id', $funds, $fund->id)->id('partial-refunds-fund-id')
                             ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                           <div class="input-group-append">
                             <button type="button" class="btn btn-primary" @jxnClick($rqRefund->fund($fundId))><i class="fa fa-caret-right"></i></button>

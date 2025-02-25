@@ -1,1 +1,1 @@
-                {!! $htmlBuilder->select('currency_code', $currencies ?? [], $currency ?? '')->class('form-control') !!}
+                {!! $html->select('currency_code', $currencies ?? [], $currency ?? '')->class('form-control') !!}

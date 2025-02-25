@@ -2,15 +2,15 @@
         <form class="form-horizontal" role="form" id="fund-form">
           <div class="module-body">
             <div class="form-group row">
-              {!! $htmlBuilder->label(__('common.labels.title'), 'title')->class('col-sm-3 col-form-label') !!}
+              {!! $html->label(__('common.labels.title'), 'title')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-8">
-                {!! $htmlBuilder->text('title', '')->class('form-control') !!}
+                {!! $html->text('title', '')->class('form-control') !!}
               </div>
             </div>
             <div class="form-group row">
-              {!! $htmlBuilder->label(__('common.labels.notes'), 'notes')->class('col-sm-3 col-form-label') !!}
+              {!! $html->label(__('common.labels.notes'), 'notes')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-8">
-                {!! $htmlBuilder->text('notes', '')->class('form-control') !!}
+                {!! $html->text('notes', '')->class('form-control') !!}
               </div>
             </div>
           </div>

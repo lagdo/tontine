@@ -23,7 +23,7 @@
               <div class="row w-100">
                 <div class="col-md-4 col-sd-12">
                   <div class="input-group">
-                    {!! $htmlBuilder->text('search', '')->id('txt-member-search')->class('form-control')
+                    {!! $html->text('search', '')->id('txt-member-search')->class('form-control')
                       ->attribute('style', 'height:36px; padding:5px;') !!}
                     <div class="input-group-append">
                       <button type="button" class="btn btn-primary" @jxnClick($rqMemberFunc

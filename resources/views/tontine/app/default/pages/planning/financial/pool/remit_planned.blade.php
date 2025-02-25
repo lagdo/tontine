@@ -7,8 +7,8 @@
             <div class="form-group row">
               <div class="col-11">
                 <div class="form-check">
-                  {!! $htmlBuilder->checkbox('planned', $planned, '1')->id('pool_remit_planned') !!}
-                  {!! $htmlBuilder->label(__('tontine.pool.labels.remit.planned'), 'planned')->class('form-check-label') !!}
+                  {!! $html->checkbox('planned', $planned, '1')->id('pool_remit_planned') !!}
+                  {!! $html->label(__('tontine.pool.labels.remit.planned'), 'planned')->class('form-check-label') !!}
                 </div>
               </div>
             </div>

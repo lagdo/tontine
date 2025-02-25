@@ -4,7 +4,7 @@ use App\Http\Controllers\FormController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ReportController;
 use App\Http\Middleware\TontineAnnotations;
-use App\Http\Middleware\TontineHtmlBuilder;
+use App\Http\Middleware\TontineHelper;
 use App\Http\Middleware\TontineLocale;
 use App\Http\Middleware\TontineTemplate;
 use App\Http\Middleware\TontineTenant;
@@ -27,7 +27,7 @@ use Laravel\Fortify\RoutePath;
 */
 
 Route::middleware(['auth', TontineTenant::class, TontineLocale::class,
-    TontineTemplate::class, TontineHtmlBuilder::class])
+    TontineTemplate::class, TontineHelper::class])
     ->prefix(LaravelLocalization::setLocale())
     ->group(function()
     {

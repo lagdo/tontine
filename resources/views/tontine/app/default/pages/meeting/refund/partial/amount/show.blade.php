@@ -1,6 +1,6 @@
 @inject('paymentService', 'Siak\Tontine\Service\Meeting\PaymentServiceInterface')
                         <div class="input-group">
-                          {!! $htmlBuilder->text('amount', $amount)->attribute('readonly', 'readonly')
+                          {!! $html->text('amount', $amount)->attribute('readonly', 'readonly')
                             ->class('form-control')->attribute('style', 'height:36px; text-align:right') !!}
                           <div class="input-group-append" data-debt-id="{{ $debt->id }}">
 @if($paymentService->isEditable($debt->partial_refund))

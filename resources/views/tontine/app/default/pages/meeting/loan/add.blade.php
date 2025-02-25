@@ -2,36 +2,36 @@
         <form class="form-horizontal" role="form" id="loan-form">
           <div class="module-body">
             <div class="form-group row">
-              {!! $htmlBuilder->label(__('meeting.labels.member'), 'member')->class('col-sm-3 col-form-label') !!}
+              {!! $html->label(__('meeting.labels.member'), 'member')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-8">
-                {!! $htmlBuilder->select('member', $members, 0)->class('form-control') !!}
+                {!! $html->select('member', $members, 0)->class('form-control') !!}
               </div>
             </div>
             <div class="form-group row">
-              {!! $htmlBuilder->label(__('meeting.loan.labels.principal'), 'principal')->class('col-sm-3 col-form-label') !!}
+              {!! $html->label(__('meeting.loan.labels.principal'), 'principal')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-5">
-                {!! $htmlBuilder->text('principal', $amountAvailable)->class('form-control') !!}
+                {!! $html->text('principal', $amountAvailable)->class('form-control') !!}
               </div>
             </div>
             <div class="form-group row">
-              {!! $htmlBuilder->label(__('meeting.loan.labels.fund'), 'fund')->class('col-sm-3 col-form-label') !!}
+              {!! $html->label(__('meeting.loan.labels.fund'), 'fund')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-8">
-                {!! $htmlBuilder->select('fund', $funds, '')->class('form-control') !!}
+                {!! $html->select('fund', $funds, '')->class('form-control') !!}
               </div>
             </div>
             <div class="form-group row">
               <div class="col-sm-12">{{ __('meeting.loan.labels.interest') }}</div>
             </div>
             <div class="form-group row">
-              {!! $htmlBuilder->label(__('common.labels.type'), 'interest_type')->class('col-sm-3 col-form-label') !!}
+              {!! $html->label(__('common.labels.type'), 'interest_type')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-7">
-                {!! $htmlBuilder->select('interest_type', $interestTypes, 'f')->class('form-control')->id('loan-interest-type') !!}
+                {!! $html->select('interest_type', $interestTypes, 'f')->class('form-control')->id('loan-interest-type') !!}
               </div>
             </div>
             <div class="form-group row">
-              {!! $htmlBuilder->label(__('common.labels.amount'), 'interest')->class('col-sm-3 col-form-label')->id('loan-interest-label') !!}
+              {!! $html->label(__('common.labels.amount'), 'interest')->class('col-sm-3 col-form-label')->id('loan-interest-label') !!}
               <div class="col-sm-5">
-                {!! $htmlBuilder->text('interest', '')->class('form-control') !!}
+                {!! $html->text('interest', '')->class('form-control') !!}
               </div>
             </div>
           </div>

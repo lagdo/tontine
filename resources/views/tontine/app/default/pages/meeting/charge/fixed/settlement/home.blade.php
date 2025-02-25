@@ -22,7 +22,7 @@
                   <div class="row mb-2">
                     <div class="col">
                       <div class="input-group">
-                        {!! $htmlBuilder->text('search', '')->id('txt-fee-settlements-search')
+                        {!! $html->text('search', '')->id('txt-fee-settlements-search')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" @jxnClick($rqSettlementFunc->search($searchValue))><i class="fa fa-search"></i></button>

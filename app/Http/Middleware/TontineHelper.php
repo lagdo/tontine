@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\View;
 use function html;
 use function Jaxon\jaxon;
 
-class TontineHtmlBuilder
+class TontineHelper
 {
     /**
      * Handle an incoming request.
@@ -23,7 +23,7 @@ class TontineHtmlBuilder
      */
     public function handle(Request $request, Closure $next)
     {
-        View::share('htmlBuilder', html());
+        View::share('html', html());
         View::share('stash', jaxon()->di()->getStash());
 
         return $next($request);

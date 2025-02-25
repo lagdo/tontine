@@ -18,7 +18,7 @@
                   <div class="row mb-2">
                     <div class="col">
                       <div class="input-group">
-                        {!! $htmlBuilder->text('search', '')->id('txt-fee-member-search')
+                        {!! $html->text('search', '')->id('txt-fee-member-search')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" @jxnClick($rqMemberFunc->search($searchValue))><i class="fa fa-search"></i></button>

@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
                       <div class="input-group mb-2">
                         <div class="input-group-prepend">
-                          {!! $htmlBuilder->span(__('meeting.disbursement.labels.amount_available', [
+                          {!! $html->span(__('meeting.disbursement.labels.amount_available', [
                               'amount' => $locale->formatMoney($amount),
                             ]))
                             ->class('input-group-text')->attribute('style', 'height:36px; padding:5px 15px;') !!}

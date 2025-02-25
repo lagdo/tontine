@@ -74,7 +74,7 @@
     $items = collect($subscriptions->all())->put($subscription, $beneficiaries[$subscription]);
   }
 @endphp
-                            {!! $htmlBuilder->select('', $items, $subscription)->class('form-control my-2 select-beneficiary')
+                            {!! $html->select('', $items, $subscription)->class('form-control my-2 select-beneficiary')
                               ->attributes(['data-session-id' => $session->id, 'data-subscription-id' => $subscription]) !!}
 @endforeach
                           </div></td>

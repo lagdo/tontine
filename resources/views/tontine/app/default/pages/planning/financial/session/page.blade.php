@@ -25,10 +25,10 @@
                                 <td>{{ $session->title }}</td>
                                 <td>{{ $session->date }}</td>
                                 <td class="table-item-menu">
-                                  {!! $htmlBuilder->radio('start_session', $session->id === $startSessionId, $session->id) !!}
+                                  {!! $html->radio('start_session', $session->id === $startSessionId, $session->id) !!}
                                 </td>
                                 <td class="table-item-menu">
-                                  {!! $htmlBuilder->radio('end_session', $session->id === $endSessionId, $session->id) !!}
+                                  {!! $html->radio('end_session', $session->id === $endSessionId, $session->id) !!}
                                 </td>
                                 <td class="table-item-menu" data-session-id="{{ $session->id }}">
 @if(!$session->candidate)

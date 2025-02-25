@@ -23,7 +23,7 @@
                     <div class="col">{{ __('tontine.titles.tontine') }}</div>
                     <div class="col-auto">
                       <div class="input-group">
-                        {{ $htmlBuilder->select('tontine_id', $tontines, 0)->class('form-control')->id('select-invite-tontine') }}
+                        {{ $html->select('tontine_id', $tontines, 0)->class('form-control')->id('select-invite-tontine') }}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" @jxnClick($rqHostAccessFunc->tontine($tontineId))><i class="fa fa-caret-right"></i></button>
                         </div>

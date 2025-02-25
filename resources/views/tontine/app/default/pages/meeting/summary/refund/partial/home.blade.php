@@ -11,7 +11,7 @@
                       <div class="col-auto">
 @if($funds->count() > 1)
                         <div class="input-group mb-2">
-                          {!! $htmlBuilder->select('fund_id', $funds, 0)->id('partial-refunds-fund-id')
+                          {!! $html->select('fund_id', $funds, 0)->id('partial-refunds-fund-id')
                             ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                           <div class="input-group-append">
                             <button type="button" class="btn btn-primary" @jxnClick($rqPartialRefund->fund($fundId))><i class="fa fa-caret-right"></i></button>

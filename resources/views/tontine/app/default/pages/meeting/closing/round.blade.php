@@ -8,9 +8,9 @@
               </div>
             </div>
             <div class="form-group row">
-              {!! $htmlBuilder->label(__('meeting.closing.labels.amount'), 'amount')->class('col-sm-5 col-form-label') !!}
+              {!! $html->label(__('meeting.closing.labels.amount'), 'amount')->class('col-sm-5 col-form-label') !!}
               <div class="col-sm-6">
-                {!! $htmlBuilder->text('amount', $closing !== null ?
+                {!! $html->text('amount', $closing !== null ?
                   $locale->convertMoneyToInt($closing->profit) : '')->class('form-control') !!}
               </div>
             </div>

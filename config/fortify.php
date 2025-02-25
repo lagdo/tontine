@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\TontineHtmlBuilder;
+use App\Http\Middleware\TontineHelper;
 use Laravel\Fortify\Features;
 
 return [
@@ -102,7 +102,7 @@ return [
     |
     */
 
-    'middleware' => ['web', TontineHtmlBuilder::class],
+    'middleware' => ['web', TontineHelper::class],
 
     /*
     |--------------------------------------------------------------------------

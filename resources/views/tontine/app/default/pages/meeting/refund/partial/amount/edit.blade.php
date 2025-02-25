@@ -3,7 +3,7 @@
   $rqAmountFunc = rq(Ajax\App\Meeting\Session\Refund\Partial\AmountFunc::class);
 @endphp
                         <div class="input-group">
-                          {!! $htmlBuilder->text('amount', $amount)->class('form-control')
+                          {!! $html->text('amount', $amount)->class('form-control')
                             ->id("partial-refund-amount-edit-{$debt->id}")
                             ->attribute('style', 'height:36px; width:50px; border-color:#a1a1a1;') !!}
                           <div class="input-group-append">

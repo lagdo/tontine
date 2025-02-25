@@ -7,8 +7,8 @@
             <div class="form-group row">
               <div class="col-11">
                 <div class="form-check">
-                  {!! $htmlBuilder->checkbox('fixed', $fixed, '1')->id('pool_deposit_fixed') !!}
-                  {!! $htmlBuilder->label(__('tontine.pool.labels.deposit.fixed'), 'fixed')->class('form-check-label') !!}
+                  {!! $html->checkbox('fixed', $fixed, '1')->id('pool_deposit_fixed') !!}
+                  {!! $html->label(__('tontine.pool.labels.deposit.fixed'), 'fixed')->class('form-check-label') !!}
                 </div>
               </div>
             </div>
