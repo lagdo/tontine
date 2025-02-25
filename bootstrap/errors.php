@@ -8,9 +8,7 @@ use Ajax\App\Planning\Financial\Pool;
 use Ajax\App\Tontine\Member\Member;
 use Ajax\App\Admin\Organisation\Organisation;
 use Illuminate\Foundation\Configuration\Exceptions;
-use Illuminate\Http\Response;
 use Jaxon\Laravel\App\Jaxon;
-use Siak\Tontine\Exception\AuthenticationException;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Exception\MeetingRoundException;
 use Siak\Tontine\Exception\PlanningPoolException;
@@ -18,6 +16,7 @@ use Siak\Tontine\Exception\PlanningRoundException;
 use Siak\Tontine\Exception\TontineMemberException;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 use function app;
@@ -67,7 +66,6 @@ function showMessage(string $message, bool $isError): Response
 function handle(Exceptions $exceptions)
 {
     $exceptions->dontReport([
-        AuthenticationException::class,
         MessageException::class,
         ValidationException::class,
         PlanningPoolException::class,
@@ -80,10 +78,14 @@ function handle(Exceptions $exceptions)
         //
     });
 
-    // Redirect to the login page
-    $exceptions->render(function (AuthenticationException $e) {
+    $exceptions->respond(function (Response $response) {
         /** @var Jaxon */
         $jaxon = app()->make(Jaxon::class);
+        if ($response->getStatusCode() !== 419 || !$jaxon->canProcessRequest()) {
+            return $response;
+        }
+ 
+        // Handle token expiration errors on Jaxon requests.
         $ajaxResponse = $jaxon->ajaxResponse();
         $ajaxResponse->redirect(route('login'));
 

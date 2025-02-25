@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureEmailIsVerified;
 use App\Http\Middleware\TontineAnnotations;
 use App\Http\Middleware\TontineHelper;
 use App\Http\Middleware\TontineLocale;
@@ -8,6 +9,7 @@ use App\Http\Middleware\TontineTenant;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 require_once __DIR__ . '/errors.php';
 
@@ -20,11 +22,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->api(prepend: [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            EnsureFrontendRequestsAreStateful::class,
         ]);
 
         $middleware->alias([
-            'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+            'verified' => EnsureEmailIsVerified::class,
+            // Tontine middlewares
             'annotations' => TontineAnnotations::class,
         ]);
 
