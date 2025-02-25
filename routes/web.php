@@ -3,11 +3,6 @@
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ReportController;
-use App\Http\Middleware\TontineAnnotations;
-use App\Http\Middleware\TontineHelper;
-use App\Http\Middleware\TontineLocale;
-use App\Http\Middleware\TontineTemplate;
-use App\Http\Middleware\TontineTenant;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
@@ -26,8 +21,7 @@ use Laravel\Fortify\RoutePath;
 |
 */
 
-Route::middleware(['auth', TontineTenant::class, TontineLocale::class,
-    TontineTemplate::class, TontineHelper::class])
+Route::middleware(['auth', 'tontine'])
     ->prefix(LaravelLocalization::setLocale())
     ->group(function()
     {
@@ -35,13 +29,13 @@ Route::middleware(['auth', TontineTenant::class, TontineLocale::class,
         //----------------------------------
         Route::get('/', [IndexController::class, 'index'])
             ->name('tontine.home')
-            ->middleware([TontineAnnotations::class, 'jaxon.config']);
+            ->middleware(['annotations', 'jaxon.config']);
 
         // User profile page
         //----------------------------------
         Route::get('/profile', [IndexController::class, 'profile'])
             ->name('user.profile')
-            ->middleware([TontineAnnotations::class, 'jaxon.config']);
+            ->middleware(['annotations', 'jaxon.config']);
 
         // Report pages
         //----------------------------------
@@ -59,20 +53,24 @@ Route::middleware(['auth', TontineTenant::class, TontineLocale::class,
         Route::get('/pdf/entry/session/{sessionId}', [FormController::class, 'session'])
             ->name('entry.session');
         Route::get('/pdf/entry/{form}/{sessionId?}', [FormController::class, 'entry'])
-            ->name('entry.form')->where('form', 'report|transactions');
+            ->name('entry.form')
+            ->where('form', 'report|transactions');
     });
 
 // Redefine Fortify routes with different HTTP verbs
 //--------------------------------------------------------
 // Profile Information...
+$middleware = config('fortify.auth_middleware', 'auth') . ':' . config('fortify.guard');
+
 $path = RoutePath::for('user-profile-information.update', '/user/profile-information');
 Route::post($path, [ProfileInformationController::class, 'update'])
-    ->middleware([config('fortify.auth_middleware', 'auth').':'.config('fortify.guard')]);
+    ->middleware([$middleware]);
 
 // Passwords...
 $path = RoutePath::for('user-password.update', '/user/password');
 Route::post($path, [PasswordController::class, 'update'])
-    ->middleware([config('fortify.auth_middleware', 'auth').':'.config('fortify.guard')]);
+    ->middleware([$middleware]);
 
 // Logout
-Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout.get');
+Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->name('logout.get');

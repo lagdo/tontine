@@ -1,11 +1,5 @@
 <?php
 
-use App\Http\Middleware\TontineAnnotations;
-use App\Http\Middleware\TontineHelper;
-use App\Http\Middleware\TontineLocale;
-use App\Http\Middleware\TontineTemplate;
-use App\Http\Middleware\TontineTenant;
-
 return [
     'app' => [
         'metadata' => 'annotations',
@@ -15,11 +9,8 @@ return [
             'route' => 'ajax',
             'middlewares' => [
                 'web',
-                TontineTenant::class,
-                TontineLocale::class,
-                TontineTemplate::class,
-                TontineHelper::class,
-                TontineAnnotations::class,
+                'tontine',
+                'annotations',
                 'jaxon.config',
                 'jaxon.ajax',
             ],
