@@ -34,7 +34,7 @@
                             {{ !$round->end_at ? '' : $round->end_at->translatedFormat(__('tontine.date.format')) }}
                           </td>
                           <td class="table-item-menu">
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-round-id',
   'dataIdValue' => $round->id,
   'menus' => [[

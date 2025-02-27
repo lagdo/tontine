@@ -35,7 +35,7 @@
     'text' => __('meeting.actions.reports'),
   ]];
 @endphp
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'btnSize' => '',
   'dataIdKey' => 'data-session-id',
   'dataIdValue' => 0,

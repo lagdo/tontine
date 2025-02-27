@@ -38,7 +38,7 @@
     'text' => __('tontine.subscription.actions.beneficiaries'),
   ]];
 @endphp
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-pool-id',
   'dataIdValue' => $pool->id,
   'menus' => [

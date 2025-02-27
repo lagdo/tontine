@@ -43,7 +43,7 @@
                             ($pool->remit_auction ? 'yes' : 'no')) }}
                         </td>
                         <td class="table-item-menu">
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-pool-id',
   'dataIdValue' => $pool->id,
   'menus' => [

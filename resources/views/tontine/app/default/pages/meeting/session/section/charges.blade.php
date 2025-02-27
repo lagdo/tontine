@@ -1,4 +1,4 @@
-@include('tontine.app.default.pages.meeting.session.menu.wrapper', ['session' => $session])
+@include('tontine::pages.meeting.session.menu.wrapper', ['session' => $session])
 @php
   $rqFixedFee = rq(Ajax\App\Meeting\Session\Charge\Fixed\Fee::class);
   $rqLibreFee = rq(Ajax\App\Meeting\Session\Charge\Libre\Fee::class);

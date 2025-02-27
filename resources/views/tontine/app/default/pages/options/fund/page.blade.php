@@ -23,7 +23,7 @@
                             <a role="link" tabindex="0" class="btn-fund-toggle"><i class="fa fa-toggle-{{ $fund->active ? 'on' : 'off' }}"></i></a>
                           </td>
                           <td class="table-item-menu">
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-fund-id',
   'dataIdValue' => $fund->id,
   'menus' => [[

@@ -42,7 +42,7 @@
                           <td>@if (($disbursement->charge)) {{ $disbursement->charge->name }}@endif</td>
                           <td class="currency">{{ $locale->formatMoney($disbursement->amount, true) }}</td>
                           <td class="table-item-menu">
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-disbursement-id',
   'dataIdValue' => $disbursement->id,
   'menus' => [[

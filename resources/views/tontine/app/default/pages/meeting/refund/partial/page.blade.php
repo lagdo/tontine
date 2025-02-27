@@ -37,7 +37,7 @@
 @if( $refund->debt->refund !== null || !$paymentService->isEditable($refund) )
                               {!! paymentLink($refund, 'partial-refund', $refund->debt->refund !== null || !$session->opened) !!}
 @else
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-partial-refund-id',
   'dataIdValue' => $refund->id,
   'menus' => [[

@@ -29,7 +29,7 @@
                           <a role="link" tabindex="0" class="btn-member-toggle"><i class="fa fa-toggle-{{ $member->active ? 'on' : 'off' }}"></i></a>
                         </td>
                         <td class="table-item-menu">
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-member-id',
   'dataIdValue' => $member->id,
   'menus' => [[

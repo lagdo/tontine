@@ -1,4 +1,4 @@
-@include('tontine.app.default.pages.meeting.session.menu.wrapper', ['session' => $session])
+@include('tontine::pages.meeting.session.menu.wrapper', ['session' => $session])
 @php
   $rqSaving = rq(Ajax\App\Meeting\Session\Saving\Saving::class);
   $rqClosing = rq(Ajax\App\Meeting\Session\Saving\Closing::class);

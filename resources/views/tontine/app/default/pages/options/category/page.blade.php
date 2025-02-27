@@ -25,7 +25,7 @@
                             <a role="link" tabindex="0" class="btn-category-toggle"><i class="fa fa-toggle-{{ $category->active ? 'on' : 'off' }}"></i></a>
                           </td>
                           <td class="table-item-menu">
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-category-id',
   'dataIdValue' => $category->id,
   'menus' => [[

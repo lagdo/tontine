@@ -37,7 +37,7 @@
                         <a role="link" tabindex="0" class="btn-charge-toggle"><i class="fa fa-toggle-{{ $charge->active ? 'on' : 'off' }}"></i></a>
                       </td>
                       <td class="table-item-menu">
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-charge-id',
   'dataIdValue' => $charge->id,
   'menus' => [[

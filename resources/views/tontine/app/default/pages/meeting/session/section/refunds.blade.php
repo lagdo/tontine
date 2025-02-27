@@ -1,4 +1,4 @@
-@include('tontine.app.default.pages.meeting.session.menu.wrapper', ['session' => $session])
+@include('tontine::pages.meeting.session.menu.wrapper', ['session' => $session])
 @php
   $rqTotalRefund = rq(Ajax\App\Meeting\Session\Refund\Total\Refund::class);
   $rqPartialRefund = rq(Ajax\App\Meeting\Session\Refund\Partial\Refund::class);

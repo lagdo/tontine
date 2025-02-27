@@ -27,7 +27,7 @@
                             <td>{{ $session->date }}</td>
                             <td>{{ $session->times }}</td>
                             <td class="table-item-menu">
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-session-id',
   'dataIdValue' => $session->id,
   'menus' => [[

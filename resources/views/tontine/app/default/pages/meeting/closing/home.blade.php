@@ -69,7 +69,7 @@
 @php
   $label = $closing->label;
 @endphp
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-fund-id',
   'dataIdValue' => $closing->fund_id,
   'menus' => [[

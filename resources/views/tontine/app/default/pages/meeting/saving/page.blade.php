@@ -24,7 +24,7 @@
                             $saving->fund->title : __('tontine.fund.labels.default') !!}</td>
                           <td class="currency">{{ $locale->formatMoney($saving->amount, true) }}</td>
                           <td class="table-item-menu">
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-saving-id',
   'dataIdValue' => $saving->id,
   'menus' => [[

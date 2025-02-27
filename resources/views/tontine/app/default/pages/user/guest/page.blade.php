@@ -34,7 +34,7 @@
                           <td>{{ $invite->host->name }}@if (($invite->active_label))<br/>{!! $invite->active_label !!}@endif</td>
                           <td>{{ $invite->status_label }}</td>
                           <td class="table-item-menu">
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-invite-id',
   'dataIdValue' => $invite->id,
   'menus' => [

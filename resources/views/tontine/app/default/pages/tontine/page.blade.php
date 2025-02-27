@@ -28,7 +28,7 @@
                         <td>{{ $countries[$tontine->country_code] }}</td>
                         <td>{{ $currencies[$tontine->currency_code] }}</td>
                         <td class="table-item-menu">
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-tontine-id',
   'dataIdValue' => $tontine->id,
   'menus' => [[

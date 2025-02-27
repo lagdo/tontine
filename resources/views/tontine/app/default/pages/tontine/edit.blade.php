@@ -31,7 +31,7 @@
             <div class="form-group row">
               {!! $html->label(__('common.labels.currency'), 'currency_code')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-9" id="select_currency_container">
-@include('tontine.app.default.pages.tontine.currency')
+@include('tontine::pages.tontine.currency')
               </div>
             </div>
           </div>

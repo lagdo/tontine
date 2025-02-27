@@ -36,7 +36,7 @@
                               $locale->formatMoney($sessionSettlementAmount, true) }}@endif
                           </td>
                           <td class="table-item-menu">
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-charge-id',
   'dataIdValue' => $charge->id,
   'menus' => $menus,

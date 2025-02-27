@@ -1,4 +1,4 @@
-@include('tontine.app.default.pages.meeting.session.menu.wrapper', ['session' => $session])
+@include('tontine::pages.meeting.session.menu.wrapper', ['session' => $session])
 @php
   $rqLoan = rq(Ajax\App\Meeting\Session\Credit\Loan::class);
 @endphp

@@ -1,4 +1,4 @@
-@include('tontine.app.default.pages.meeting.session.menu.wrapper', ['session' => $session])
+@include('tontine::pages.meeting.session.menu.wrapper', ['session' => $session])
 @php
   $rqDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Deposit::class);
   $rqRemitment = rq(Ajax\App\Meeting\Session\Pool\Remitment\Remitment::class);

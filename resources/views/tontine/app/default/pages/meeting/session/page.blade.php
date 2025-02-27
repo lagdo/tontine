@@ -70,7 +70,7 @@
     null,
   ];
 @endphp
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-session-id',
   'dataIdValue' => $session->id,
   'menus' => [[

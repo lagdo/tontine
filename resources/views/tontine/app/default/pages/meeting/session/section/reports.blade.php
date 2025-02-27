@@ -1,4 +1,4 @@
-@include('tontine.app.default.pages.meeting.session.menu.wrapper', ['session' => $session])
+@include('tontine::pages.meeting.session.menu.wrapper', ['session' => $session])
 @php
   $agendaText = jq('#session-agenda')->summernote('code');
   $reportText = jq('#session-report')->summernote('code');

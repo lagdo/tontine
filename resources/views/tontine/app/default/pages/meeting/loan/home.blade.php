@@ -48,7 +48,7 @@
 @if (($loan->remitment_id))
                             <i class="fa fa-trash-alt"></i>
 @else
-@include('tontine.app.default.parts.table.menu', [
+@include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-loan-id',
   'dataIdValue' => $loan->id,
   'menus' => [[

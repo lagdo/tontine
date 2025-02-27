@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  @include('tontine.app.default.parts.header.html')
+  @include('tontine::parts.header.html')
 
 @yield('styles')
 </head>
@@ -12,7 +12,7 @@
     <div class="main-wrapper">
       <div class="navbar-bg"></div>
       <nav class="navbar navbar-expand-lg main-navbar">
-@include('tontine.app.default.parts.header.menu')
+@include('tontine::parts.header.menu')
       </nav>
 
 @yield('sidebar')
@@ -23,12 +23,12 @@
         <!-- Page heading -->
         <div class="section-header">
 
-@include('tontine.app.default.parts.header.topbar')
+@include('tontine::parts.header.topbar')
 
         </div>
 
         <div>
-@include('tontine.app.default.parts.header.message')
+@include('tontine::parts.header.message')
         </div>
 
         <div id="content-home" @jxnBind(rq(Ajax\App\Page\SectionContent::class))>
@@ -42,10 +42,10 @@
     </div>
   </div>
 
-@include('tontine.app.default.parts.content.feedback')
+@include('tontine::parts.content.feedback')
 </body>
 
-@include('tontine.app.default.parts.footer.html')
+@include('tontine::parts.footer.html')
 
 @yield('script')
 </html>
