@@ -50,7 +50,8 @@
     [
       'class' => 'btn-pool-sessions',
       'text' => __('tontine.pool.actions.sessions'),
-    ],[
+    ],
+    null,[
       'class' => 'btn-pool-edit',
       'text' => __('common.actions.edit'),
     ],[

@@ -47,25 +47,28 @@
                       </td>
                       <td class="table-item-menu">
 @php
-  $openedSessionItems = !$session->opened ? [] : [[
-    'class' => 'btn-session-pools',
-    'text' => __('meeting.actions.pools'),
-  ],[
-    'class' => 'btn-session-charges',
-    'text' => __('meeting.actions.charges'),
-  ],[
-    'class' => 'btn-session-savings',
-    'text' => __('meeting.actions.savings'),
-  ],[
-    'class' => 'btn-session-credits',
-    'text' => __('meeting.actions.credits'),
-  ],[
-    'class' => 'btn-session-refunds',
-    'text' => __('meeting.actions.refunds'),
-  ],[
-    'class' => 'btn-session-cash',
-    'text' => __('meeting.actions.cash'),
-  ]];
+  $openedSessionItems = !$session->opened ? [] : [
+    null, [
+      'class' => 'btn-session-pools',
+      'text' => __('meeting.actions.pools'),
+    ],[
+      'class' => 'btn-session-charges',
+      'text' => __('meeting.actions.charges'),
+    ],[
+      'class' => 'btn-session-savings',
+      'text' => __('meeting.actions.savings'),
+    ],[
+      'class' => 'btn-session-credits',
+      'text' => __('meeting.actions.credits'),
+    ],[
+      'class' => 'btn-session-refunds',
+      'text' => __('meeting.actions.refunds'),
+    ],[
+      'class' => 'btn-session-cash',
+      'text' => __('meeting.actions.cash'),
+    ],
+    null,
+  ];
 @endphp
 @include('tontine.app.default.parts.table.menu', [
   'dataIdKey' => 'data-session-id',

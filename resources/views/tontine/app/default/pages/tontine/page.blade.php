@@ -29,18 +29,19 @@
                         <td>{{ $currencies[$tontine->currency_code] }}</td>
                         <td class="table-item-menu">
 @include('tontine.app.default.parts.table.menu', [
-'dataIdKey' => 'data-tontine-id',
-'dataIdValue' => $tontine->id,
-'menus' => [[
-  'class' => 'btn-tontine-edit',
-  'text' => __('common.actions.edit'),
-],[
-  'class' => 'btn-tontine-choose',
-  'text' => __('tontine.actions.choose'),
-],[
-  'class' => 'btn-tontine-delete',
-  'text' => __('common.actions.delete'),
-]],
+  'dataIdKey' => 'data-tontine-id',
+  'dataIdValue' => $tontine->id,
+  'menus' => [[
+    'class' => 'btn-tontine-choose',
+    'text' => __('tontine.actions.choose'),
+  ],
+  null,[
+    'class' => 'btn-tontine-edit',
+    'text' => __('common.actions.edit'),
+  ],[
+    'class' => 'btn-tontine-delete',
+    'text' => __('common.actions.delete'),
+  ]],
 ])
                         </td>
                       </tr>

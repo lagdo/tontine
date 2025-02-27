@@ -40,10 +40,12 @@
   'menus' => [[
     'class' => 'btn-round-select',
     'text' => __('tontine.actions.choose'),
-  ],[
+  ],
+  null,[
     'class' => 'btn-round-sessions',
     'text' => __('tontine.pool.actions.sessions'),
-  ],[
+  ],
+  null,[
     'class' => 'btn-round-edit',
     'text' => __('common.actions.edit'),
   ],[
