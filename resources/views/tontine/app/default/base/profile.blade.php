@@ -5,7 +5,7 @@
 @section('section-title', __('user.titles.profile'))
 
 @section('sidebar')
-          @include('tontine::parts.sidebar.menu', ['ajax' => false])
+          @include('tontine::parts.sidebar.menu')
 @endsection
 
 @section('content')

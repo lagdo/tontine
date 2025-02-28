@@ -9,7 +9,7 @@
 @endsection
 
 @section('sidebar')
-          @include('tontine::parts.sidebar.menu', ['ajax' => true])
+          @include('tontine::parts.sidebar.menu')
 @endsection
 
 @section('content')
