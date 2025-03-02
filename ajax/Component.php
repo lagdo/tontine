@@ -2,7 +2,7 @@
 
 namespace Ajax;
 
-use Jaxon\App\Component as BaseComponent;
+use Jaxon\App\NodeComponent as BaseComponent;
 
 /**
  * @databag tenant
