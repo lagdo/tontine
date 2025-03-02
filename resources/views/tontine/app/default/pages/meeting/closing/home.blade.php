@@ -32,7 +32,7 @@
                     <div class="col-auto">
                       <div class="dropdown float-right">
                         <button class="btn btn-primary dropdown-toggle" type="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="fa fa-circle-notch"></i> {{ __('meeting.saving.actions.close') }}
+                          <i class="fa fa-arrows-spin"></i> {{ __('meeting.saving.actions.close') }}
                         </button>
                         <div class="dropdown-menu">
                           <button type="button" class="dropdown-item" @jxnClick($rqClosingFunc->editRoundClosing($closingFundId))>{!! __('meeting.saving.actions.saving') !!}</button>

@@ -27,6 +27,6 @@
                 <i class="fa fa-fw fa-calendar-day"></i> <span>{{ __('tontine.menus.session') }}</span>
               </a></li>
               <li><a class="nav-link" id="report-menu-round" role="link" tabindex="0">
-                <i class="fa fa-fw fa-circle-notch"></i> <span>{{ __('tontine.menus.round') }}</span>
+                <i class="fa fa-fw fa-arrows-spin"></i> <span>{{ __('tontine.menus.round') }}</span>
               </a></li>
             </ul>
