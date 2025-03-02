@@ -308,6 +308,7 @@ return [
         'actions' => [
             'host' => "Hôte",
             'venue' => "Lieu",
+            'resync' => "Resynchroniser",
         ],
         'messages' => [
             'created' => "La séance a été ajoutée.",
@@ -322,7 +323,7 @@ return [
             'close' => "Fermer cette séance ?",
             'delete' => "Supprimer cette séance ?",
             'disable' => "Désactiver cette séance ?<br/>Si elle avait déjà été ouverte, ceci pourrait supprimer des données relatives.",
-            'resync' => "Resynchroniser les séances de ce tour ?<br/>Vous devez le faire si vous avez changé les membres, les frais, ou les souscriptions après son ouverture.",
+            'resync' => "Resynchroniser les données des séances ?<br/>Vous devez le faire si vous avez changé les membres, les séances, les frais, ou les souscriptions après avoir ouvert une séance.",
         ],
         'errors' => [
             'not_found' => "Impossible de trouver la séance.",

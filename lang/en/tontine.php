@@ -308,6 +308,7 @@ return [
         'actions' => [
             'host' => "Host",
             'venue' => "Venue",
+            'resync' => "Resynchronize",
         ],
         'messages' => [
             'created' => "The session was successfully created.",
@@ -322,7 +323,7 @@ return [
             'close' => "Close this session?",
             'delete' => "Delete this session?",
             'disable' => "Disable this session?<br/>If the session was already opened, this may also delete related data.",
-            'resync' => "Resync the sessions in this round?<br/>You need to do this if you have changed the members, the fees, or the subscriptions after it was opened.",
+            'resync' => "Resynchronize the sessions data?<br/>You need to do this if you have changed the members, the sessions, the charges, or the subscriptions after a session was opened.",
         ],
         'errors' => [
             'not_found' => "Unable to find the session.",

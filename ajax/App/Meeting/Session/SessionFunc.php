@@ -25,7 +25,6 @@ class SessionFunc extends FuncComponent
 
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.resynced'));
-        $this->cl(SessionPage::class)->page();
     }
 
     public function open(int $sessionId)

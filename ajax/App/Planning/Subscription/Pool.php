@@ -15,10 +15,7 @@ class Pool extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.planning.subscription.pool.home', [
-            'rqPool' => $this->rq(),
-            'rqPoolPage' => $this->rq(PoolPage::class),
-        ]);
+        return $this->renderView('pages.planning.subscription.pool.home');
     }
 
     /**
