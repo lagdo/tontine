@@ -244,9 +244,15 @@ return [
         'questions' => [
             'delete' => "Supprimer ce remboursement partiel ?",
         ],
+        'messages' => [
+            'created' => "Le remboursement partiel a été créé.",
+            'updated' => "Le remboursement partiel a été modifié.",
+            'deleted' => "Le remboursement partiel a été supprimé.",
+        ],
         'errors' => [
             'not_found' => "Impossible de trouver le remboursement partiel.",
             'pr_amount' => "Le montant du remboursement partiel doit être inférieur au montant dû.",
+            'nul_amount' => "Le montant du remboursement partiel doit être supérieur à 0.",
             'cannot_create' => "Impossible de créer un remboursement partiel.",
             'cannot_update' => "Impossible de modifier ce remboursement partiel.",
             'cannot_delete' => "Impossible de supprimer ce remboursement partiel.",

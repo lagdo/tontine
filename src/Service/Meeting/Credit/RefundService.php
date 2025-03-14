@@ -108,13 +108,9 @@ class RefundService
         {
             return false;
         }
-        // From there, fixed and unique interest debts can be refunded.
-        if(!$debt->loan->recurrent_interest)
-        {
-            return true;
-        }
-        // Cannot refund the interest debt before the principal.
-        if($debt->is_interest)
+
+        // Cannot refund a recurrent interest debt before the principal.
+        if($debt->is_interest && $debt->loan->recurrent_interest)
         {
             return $debt->loan->principal_debt->refund !== null;
         }

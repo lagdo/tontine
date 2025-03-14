@@ -89,24 +89,6 @@ class PartialRefundService
     }
 
     /**
-     * @param Debt $debt
-     * @param Session $session
-     *
-     * @return bool
-     */
-    private function canCreatePartialRefund(Debt $debt, Session $session): bool
-    {
-        // Cannot refund the principal debt in the same session.
-        if(!$session->opened || $debt->refund !== null ||
-            ($debt->is_principal && $debt->loan->session->id === $session->id))
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * @param Session $session The session
      * @param Fund $fund
      *
@@ -115,9 +97,19 @@ class PartialRefundService
     private function getUnpaidDebtsQuery(Session $session, Fund $fund): Builder|Relation
     {
         return $this->getDebtsQuery($session, $fund, false)
-        ->with([
-            'partial_refund' => fn($query) => $query->where('session_id', $session->id),
-        ]);
+            // A debt in the current session can be refunded only if it is an interest
+            // debt with fixed or unique interest.
+            ->where(function(Builder $query) use($session) {
+                $query->whereHas('loan', function(Builder $query) use($session) {
+                    $query->where('session_id', '!=', $session->id);
+                })->orWhere(function(Builder $query) {
+                    $query->interest()
+                        ->whereHas('loan', fn(Builder $query) => $query->fixedInterest());
+                });
+            })
+            ->with([
+                'partial_refund' => fn($query) => $query->where('session_id', $session->id),
+            ]);
     }
 
     /**
@@ -130,9 +122,7 @@ class PartialRefundService
      */
     public function getUnpaidDebts(Fund $fund, Session $session): Collection
     {
-        return $this->getUnpaidDebtsQuery($session, $fund)
-            ->get()
-            ->filter(fn(Debt $debt) => $this->canCreatePartialRefund($debt, $session));
+        return $this->getUnpaidDebtsQuery($session, $fund)->get();
     }
 
     /**
@@ -149,19 +139,14 @@ class PartialRefundService
     }
 
     /**
-     * Create or update a refund.
-     *
      * @param Debt $debt
-     * @param Session $session The session
-     * @param int $amount
+     * @param Session $session
      *
-     * @return void
+     * @return bool
      */
-    public function savePartialRefund(Debt $debt, Session $session, int $amount): void
+    private function canCreatePartialRefund(Debt $debt, Session $session): bool
     {
-        $debt->partial_refund === null ?
-            $this->createPartialRefund($debt, $session, $amount) :
-            $this->updatePartialRefund($debt->partial_refund, $session, $amount);
+        return $session->opened && !$debt->refund;
     }
 
     /**
@@ -201,13 +186,8 @@ class PartialRefundService
     private function canModifyPartialRefund(PartialRefund $refund, Session $session): bool
     {
         // A partial refund cannot be updated or deleted if the debt is already refunded.
-        if(!$session->opened || $refund->debt->refund !== null ||
-            !$this->paymentService->isEditable($refund))
-        {
-            return false;
-        }
-
-        return true;
+        return $session->opened && $refund->debt->refund === null &&
+            $this->paymentService->isEditable($refund);
     }
 
     /**

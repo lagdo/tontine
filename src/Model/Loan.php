@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Model;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -133,6 +134,17 @@ class Loan extends Base
             get: fn() => $this->interest_type === self::INTEREST_SIMPLE ||
                 $this->interest_type === self::INTEREST_COMPOUND,
         );
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeFixedInterest(Builder $query): Builder
+    {
+        return $query->where('interest_type', self::INTEREST_FIXED)
+            ->orWhere('interest_type', self::INTEREST_UNIQUE);
     }
 
     public function session()

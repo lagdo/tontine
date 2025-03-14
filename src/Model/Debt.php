@@ -2,8 +2,8 @@
 
 namespace Siak\Tontine\Model;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Debt extends Base
 {

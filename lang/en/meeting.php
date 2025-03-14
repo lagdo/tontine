@@ -244,9 +244,15 @@ return [
         'questions' => [
             'delete' => "Delete this partial refund?",
         ],
+        'messages' => [
+            'created' => "The partial refund has been created.",
+            'updated' => "The partial refund has been updated.",
+            'deleted' => "The partial refund has been deleted.",
+        ],
         'errors' => [
             'not_found' => "Cannot find the partial refund.",
             'pr_amount' => "The partial refund amount must be lower than the amount due.",
+            'nul_amount' => "The partial refund amount must be greater than 0.",
             'cannot_create' => "Cannot create a partial refund.",
             'cannot_update' => "Cannot update this partial refund.",
             'cannot_delete' => "Cannot delete this partial refund.",
