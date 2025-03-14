@@ -218,6 +218,11 @@ return [
         'questions' => [
             'delete' => "Delete this loan?",
         ],
+        'messages' => [
+            'created' => "The loan has been created.",
+            'updated' => "The loan has been updated.",
+            'deleted' => "The loan has been deleted.",
+        ],
         'errors' => [
             'not_found' => "Cannot find the loan.",
             'update' => "This loan cannot be updated.",

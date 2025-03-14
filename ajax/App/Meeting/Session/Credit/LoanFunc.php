@@ -73,7 +73,7 @@ class LoanFunc extends FuncComponent
         $this->loanService->createLoan($session, $member, $fund, $values);
 
         $this->modal()->hide();
-
+        $this->alert()->success(trans('meeting.loan.messages.created'));
         $this->cl(Loan::class)->render();
     }
 
@@ -147,7 +147,7 @@ class LoanFunc extends FuncComponent
         $this->loanService->updateLoan($member, $fund, $loan, $values);
 
         $this->modal()->hide();
-
+        $this->alert()->success(trans('meeting.loan.messages.updated'));
         $this->cl(Loan::class)->render();
     }
 
@@ -169,6 +169,7 @@ class LoanFunc extends FuncComponent
 
         $this->loanService->deleteLoan($session, $loanId);
 
+        $this->alert()->success(trans('meeting.loan.messages.deleted'));
         $this->cl(Loan::class)->render();
     }
 }

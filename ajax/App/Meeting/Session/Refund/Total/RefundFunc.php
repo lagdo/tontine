@@ -62,8 +62,10 @@ class RefundFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
         $this->refundService->createRefund($debt, $session);
 
-        $this->cl(PartialRefundPage::class)->page();
         $this->cl(RefundPage::class)->page();
+        $this->stash()->set('meeting.refund.partial.fund',
+            $this->stash()->get('meeting.refund.final.fund'));
+        $this->cl(PartialRefundPage::class)->page();
     }
 
     public function delete(int $debtId)
@@ -78,7 +80,9 @@ class RefundFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
         $this->refundService->deleteRefund($debt, $session);
 
-        $this->cl(PartialRefundPage::class)->page();
         $this->cl(RefundPage::class)->page();
+        $this->stash()->set('meeting.refund.partial.fund',
+            $this->stash()->get('meeting.refund.final.fund'));
+        $this->cl(PartialRefundPage::class)->page();
     }
 }

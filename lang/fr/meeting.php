@@ -218,6 +218,11 @@ return [
         'questions' => [
             'delete' => "Supprimer cet emprunt ?",
         ],
+        'messages' => [
+            'created' => "L'emprunt a été créé.",
+            'updated' => "L'emprunt a été modifié.",
+            'deleted' => "L'emprunt a été supprimé.",
+        ],
         'errors' => [
             'not_found' => "Impossible de trouver l'emprunt.",
             'update' => "Cet emprunt ne peut pas être modifié.",
