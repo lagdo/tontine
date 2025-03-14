@@ -32,6 +32,11 @@ class Loan extends Base
     /**
      * @const
      */
+    const INTEREST_UNIQUE = 'u';
+
+    /**
+     * @const
+     */
     const INTEREST_SIMPLE = 's';
 
     /**
@@ -58,29 +63,64 @@ class Loan extends Base
         'session_id',
     ];
 
-    public function getPrincipalAttribute()
+    /**
+     * @return Attribute
+     */
+    protected function principal(): Attribute
     {
-        return $this->principal_debt ? $this->principal_debt->amount : 0;
+        return Attribute::make(
+            get: fn() => $this->principal_debt?->amount ?? 0,
+        );
     }
 
-    public function getInterestAttribute()
+    /**
+     * @return Attribute
+     */
+    protected function interest(): Attribute
     {
-        return $this->interest_debt ? $this->interest_debt->amount : 0;
+        return Attribute::make(
+            get: fn() => $this->interest_debt?->amount ?? 0,
+        );
     }
 
-    public function getFixedInterestAttribute()
+    /**
+     * @return Attribute
+     */
+    protected function fixedInterest(): Attribute
     {
-        return $this->interest_type === self::INTEREST_FIXED;
+        return Attribute::make(
+            get: fn() => $this->interest_type === self::INTEREST_FIXED,
+        );
     }
 
-    public function getSimpleInterestAttribute()
+    /**
+     * @return Attribute
+     */
+    protected function uniqueInterest(): Attribute
     {
-        return $this->interest_type === self::INTEREST_SIMPLE;
+        return Attribute::make(
+            get: fn() => $this->interest_type === self::INTEREST_UNIQUE,
+        );
     }
 
-    public function getCompoundInterestAttribute()
+    /**
+     * @return Attribute
+     */
+    protected function simpleInterest(): Attribute
     {
-        return $this->interest_type === self::INTEREST_COMPOUND;
+        return Attribute::make(
+            get: fn() => $this->interest_type === self::INTEREST_SIMPLE,
+        );
+    }
+
+    /**
+     * @return Attribute
+     */
+    protected function compoundInterest(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->interest_type === self::INTEREST_COMPOUND,
+        );
     }
 
     public function session()

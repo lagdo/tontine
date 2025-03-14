@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('loans', function (Blueprint $table) {
-            // enum('type', ['f', 's', 'c']); // "fixed", "simple" and "compound".
+            // enum('type', ['f', 'u', 's', 'c']); // "fixed", "unique", "simple" and "compound".
             $table->char('interest_type', 1)->default('f');
             $table->integer('interest_rate')->default(0);
         });

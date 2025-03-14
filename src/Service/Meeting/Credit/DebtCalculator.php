@@ -60,13 +60,9 @@ class DebtCalculator
      */
     private function getRefundFilter(Session $current, bool $withCurrent): Closure
     {
-        return $withCurrent ?
-            function(PartialRefund|Refund $refund) use($current) {
-                return $refund->session->start_at <= $current->start_at;
-            } :
-            function(PartialRefund|Refund $refund) use($current) {
-                return $refund->session->start_at < $current->start_at;
-            };
+        return !$withCurrent ?
+            fn(PartialRefund|Refund $refund) => $refund->session->start_at < $current->start_at :
+            fn(PartialRefund|Refund $refund) => $refund->session->start_at <= $current->start_at;
     }
 
     /**
@@ -175,6 +171,19 @@ class DebtCalculator
     }
 
     /**
+     * @param Debt $debt
+     *
+     * @return bool
+     */
+    public function debtAmountIsRight(Debt $debt): bool
+    {
+        // The amount in a debt model is right if it is a principal debt, it has already been
+        // totally refunded, it is an interest debt with fixed amount or unique interest rate.
+        return $debt->is_principal || $debt->refund ||
+            $debt->loan->fixed_interest || $debt->loan->unique_interest;
+    }
+
+    /**
      * Get the amount of a given debt.
      *
      * @param Debt $debt
@@ -184,14 +193,10 @@ class DebtCalculator
      */
     public function getDebtAmount(Debt $debt, Session $session): int
     {
-        if($debt->is_principal || $debt->refund || $debt->loan->fixed_interest)
-        {
-            return $debt->amount;
-        }
-
-        return $debt->loan->simple_interest ?
-            $this->getSimpleInterestAmount($debt, $session) :
-            $this->getCompoundInterestAmount($debt, $session);
+        return $this->debtAmountIsRight($debt) ? $debt->amount :
+            ($debt->loan->simple_interest ?
+                $this->getSimpleInterestAmount($debt, $session) :
+                $this->getCompoundInterestAmount($debt, $session));
     }
 
     /**
@@ -218,7 +223,8 @@ class DebtCalculator
      */
     public function getDebtUnpaidAmount(Debt $debt, Session $session): int
     {
-        return $this->getDebtAmount($debt, $session) - $this->getDebtPaidAmount($debt, $session);
+        return $this->getDebtAmount($debt, $session) -
+            $this->getDebtPaidAmount($debt, $session);
     }
 
     /**

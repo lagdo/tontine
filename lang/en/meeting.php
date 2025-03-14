@@ -207,9 +207,11 @@ return [
         ],
         'interest' => [
             'f' => "Fixed",
+            'u' => "Unique",
             's' => "Simple",
             'c' => "Compound",
-            'if' => "Fixed interest",
+            'if' => "Fixed amount",
+            'iu' => "Unique interest",
             'is' => "Simple interest",
             'ic' => "Compound interest",
         ],

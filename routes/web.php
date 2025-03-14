@@ -23,8 +23,7 @@ use Laravel\Fortify\RoutePath;
 
 Route::middleware(['auth', 'tontine'])
     ->prefix(LaravelLocalization::setLocale())
-    ->group(function()
-    {
+    ->group(function() {
         // Home page
         //----------------------------------
         Route::get('/', [IndexController::class, 'index'])

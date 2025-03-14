@@ -37,9 +37,10 @@ class LoanService
     public function getInterestTypes(): array
     {
         return [
-            Loan::INTEREST_FIXED => trans('meeting.loan.interest.f'),
-            Loan::INTEREST_SIMPLE => trans('meeting.loan.interest.s'),
-            Loan::INTEREST_COMPOUND => trans('meeting.loan.interest.c'),
+            Loan::INTEREST_FIXED => trans('meeting.loan.interest.if'),
+            Loan::INTEREST_UNIQUE => trans('meeting.loan.interest.iu'),
+            Loan::INTEREST_SIMPLE => trans('meeting.loan.interest.is'),
+            Loan::INTEREST_COMPOUND => trans('meeting.loan.interest.ic'),
         ];
     }
 
@@ -197,7 +198,9 @@ class LoanService
      */
     public function deleteLoan(Session $session, int $loanId): void
     {
-        if(($loan = $session->loans()->find($loanId)) !== null)
+        /** @var Loan|null */
+        $loan = $session->loans()->find($loanId);
+        if($loan !== null)
         {
             DB::transaction(function() use($loan) {
                 $loan->refunds()->delete();
