@@ -179,8 +179,7 @@ class DebtCalculator
     {
         // The amount in a debt model is right if it is a principal debt, it has already been
         // totally refunded, it is an interest debt with fixed amount or unique interest rate.
-        return $debt->is_principal || $debt->refund ||
-            $debt->loan->fixed_interest || $debt->loan->unique_interest;
+        return $debt->is_principal || $debt->refund || !$debt->loan->recurrent_interest;
     }
 
     /**

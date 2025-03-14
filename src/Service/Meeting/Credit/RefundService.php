@@ -102,19 +102,24 @@ class RefundService
     private function canCreateRefund(Debt $debt, Session $session): bool
     {
         // Already refunded
-        // Cannot refund the principal debt in the same session.
+        // Cannot refund the principal debt in the same session as the loan.
         if(!$session->opened || $debt->refund !== null ||
             $debt->is_principal && $debt->loan->session->id === $session->id)
         {
             return false;
         }
+        // From there, fixed and unique interest debts can be refunded.
+        if(!$debt->loan->recurrent_interest)
+        {
+            return true;
+        }
         // Cannot refund the interest debt before the principal.
-        if($debt->is_interest && !$debt->loan->fixed_interest)
+        if($debt->is_interest)
         {
             return $debt->loan->principal_debt->refund !== null;
         }
 
-        // Cannot be refunded before the last partial refund.
+        // Cannot refund the principal debt before the last partial refund.
         $lastRefund = $debt->partial_refunds->sortByDesc('session.start_at')->first();
         return !$lastRefund || $lastRefund->session->start_at < $session->start_at;
     }
@@ -140,7 +145,7 @@ class RefundService
         DB::transaction(function() use($debt, $session, $refund) {
             $refund->save();
             // For simple or compound interest, also save the final amount.
-            if($debt->is_interest && !$debt->loan->fixed_interest)
+            if($debt->is_interest && $debt->loan->recurrent_interest)
             {
                 $debt->amount = $this->debtCalculator->getDebtDueAmount($debt, $session, true);
                 $debt->save();
@@ -162,7 +167,7 @@ class RefundService
             return false;
         }
         // Cannot delete the principal refund if the interest is also refunded.
-        if($debt->is_principal && !$debt->loan->fixed_interest)
+        if($debt->is_principal && $debt->loan->recurrent_interest)
         {
             return $debt->loan->interest_debt->refund === null;
         }

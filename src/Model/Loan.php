@@ -123,6 +123,18 @@ class Loan extends Base
         );
     }
 
+    /**
+     * @return Attribute
+     */
+    protected function recurrentInterest(): Attribute
+    {
+        // Interests that grows after each session.
+        return Attribute::make(
+            get: fn() => $this->interest_type === self::INTEREST_SIMPLE ||
+                $this->interest_type === self::INTEREST_COMPOUND,
+        );
+    }
+
     public function session()
     {
         return $this->belongsTo(Session::class);
