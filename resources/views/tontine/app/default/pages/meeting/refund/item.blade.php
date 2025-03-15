@@ -5,29 +5,35 @@
   $rqRefundFunc = rq(Ajax\App\Meeting\Session\Credit\Refund\RefundFunc::class);
   $rqAmount = rq(Ajax\App\Meeting\Session\Credit\Refund\Amount::class);
   $debtAmount = $debtCalculator->getDebtAmount($debt, $session);
-  $paidAmount = $debtCalculator->getDebtPaidAmount($debt, $session);
+  $refundedAmount = $debtCalculator->getDebtRefundedAmount($debt);
+  $paidAmount = $debtCalculator->getDebtPaidAmount($debt, $session, false);
   $dueAmount = $debtCalculator->getDebtDueAmount($debt, $session, false);
   $remainingAmount = $debtCalculator->getDebtDueAmount($debt, $session, true);
   $payableAmount = $debtCalculator->getDebtPayableAmount($debt, $session);
 @endphp
                           <td>
-                            {{ $debt->loan->member->name }}<br/> {{
-                              __('meeting.loan.labels.' . $debt->type) }}: {{
-                                $debt->loan->session->title }}
-                          </td>
-                          <td class="currency">
-                            {{ __('meeting.refund.labels.amount', [
+                            {{ __('meeting.refund.labels.loan', [
+                              'member' => $debt->loan->member->name,
                               'amount' => $locale->formatMoney($debtAmount, true),
                             ]) }}<br/>
-                            {{ __('meeting.refund.labels.refunded', [
-                              'amount' => $locale->formatMoney($paidAmount, true),
+                            {{ __('meeting.refund.labels.debt', [
+                              'session' => $debt->loan->session->title,
+                              'type' => __('meeting.loan.labels.' . $debt->type),
                             ]) }}
                           </td>
                           <td class="currency">
-                            {{ __('meeting.refund.labels.amount', [
+                            {{ __('meeting.refund.labels.before', [
+                              'amount' => $locale->formatMoney($paidAmount, true),
+                            ]) }}<br/>
+                            {{ __('meeting.refund.labels.total', [
+                              'amount' => $locale->formatMoney($refundedAmount, true),
+                            ]) }}
+                          </td>
+                          <td class="currency">
+                            {{ __('meeting.refund.labels.before', [
                               'amount' => $locale->formatMoney($dueAmount, true),
                             ]) }}<br/>
-                            {{ __('meeting.refund.labels.remaining', [
+                            {{ __('meeting.refund.labels.after', [
                               'amount' => $locale->formatMoney($remainingAmount, true),
                             ]) }}
                           </td>

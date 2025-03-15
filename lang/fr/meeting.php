@@ -232,24 +232,25 @@ return [
     'refund' => [
         'titles' => [
             'loan' => "Emprunt",
+            'paid' => "Payé",
             'debt' => "Dette",
             'partial' => "Partiel",
             'final' => "Final",
         ],
         'labels' => [
-            'partial' => "Partiel",
-            'loan' => "Emprunt",
-            'amount' => "Montant : :amount",
-            'refunded' => "Remboursé : :amount",
-            'remaining' => "Restant : :amount",
+            'loan' => ":member : :amount",
+            'debt' => ":session : :type",
+            'total' => "Total : :amount",
+            'before' => "Av. séance : :amount",
+            'after' => "Ap. séance : :amount",
         ],
         'questions' => [
-            'delete' => "Supprimer ce remboursement partiel ?",
+            'delete' => "Supprimer ce remboursement ?",
         ],
         'messages' => [
-            'created' => "Le remboursement partiel a été créé.",
-            'updated' => "Le remboursement partiel a été modifié.",
-            'deleted' => "Le remboursement partiel a été supprimé.",
+            'created' => "Le remboursement a été créé.",
+            'updated' => "Le remboursement a été modifié.",
+            'deleted' => "Le remboursement a été supprimé.",
         ],
         'errors' => [
             'not_found' => "Impossible de trouver le remboursement partiel.",

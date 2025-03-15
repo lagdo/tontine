@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Session\Credit\Refund;
 
 use Ajax\App\Meeting\FuncComponent;
 use Ajax\App\Meeting\Session\FundTrait;
+use Siak\Tontine\Model\Debt as DebtModel;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
@@ -47,6 +48,49 @@ class RefundFunc extends FuncComponent
     }
 
     /**
+     * @param int $debtId
+     *
+     * @return DebtModel|null
+     */
+    private function refreshDebt(int $debtId): ?DebtModel
+    {
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->getStashedFund();
+        $debt = $this->refundService->getFundDebt($session, $fund, $debtId);
+        // Al already refunded debt will not be returned here.
+        if($debt !== null)
+        {
+            $this->stash()->set('meeting.refund.debt', $debt);
+            $this->cl(RefundItem::class)->item($debt->id)->render();
+        }
+        return $debt;
+    }
+
+    /**
+     * @param int $debtId
+     *
+     * @return void
+     */
+    private function refreshDebts(int $debtId): void
+    {
+        // Refresh the modified debt in the table.
+        $debt = $this->refreshDebt($debtId);
+        if(!$debt)
+        {
+            return;
+        }
+
+        // When a debt from a loan with recurring interest is changed,
+        // the other debt of the same loan must also be refreshed.
+        $loan = $debt->loan;
+        if($loan->recurrent_interest)
+        {
+            $this->refreshDebt($debt->is_principal ?
+                $loan->interest_debt->id : $loan->principal_debt->id);
+        }
+    }
+
+    /**
      * @di $validator
      */
     public function create(string $debtId)
@@ -61,10 +105,8 @@ class RefundFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
         $this->refundService->createRefund($debt, $session);
 
-        $fund = $this->getStashedFund();
-        $debt = $this->refundService->getFundDebt($session, $fund, $debtId);
-        $this->stash()->set('meeting.refund.debt', $debt);
-        $this->cl(RefundItem::class)->item($debt->id)->render();
+        $this->alert()->success(trans('meeting.refund.messages.created'));
+        $this->refreshDebts($debtId);
     }
 
     public function delete(int $debtId)
@@ -79,9 +121,7 @@ class RefundFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
         $this->refundService->deleteRefund($debt, $session);
 
-        $fund = $this->getStashedFund();
-        $debt = $this->refundService->getFundDebt($session, $fund, $debtId);
-        $this->stash()->set('meeting.refund.debt', $debt);
-        $this->cl(RefundItem::class)->item($debt->id)->render();
+        $this->alert()->success(trans('meeting.refund.messages.deleted'));
+        $this->refreshDebts($debtId);
     }
 }

@@ -189,6 +189,6 @@ trait RefundTrait
     public function getFundDebt(Session $session, Fund $fund, int $debtId): ?Debt
     {
         return tap($this->getDebtsQuery($session, $fund, null, true)->find($debtId),
-            fn(Debt $debt) => $debt !== null && $this->fillDebt($debt, $session));
+            fn(?Debt $debt) => $debt !== null && $this->fillDebt($debt, $session));
     }
 }

@@ -232,24 +232,25 @@ return [
     'refund' => [
         'titles' => [
             'loan' => "Loan",
+            'paid' => "Paid",
             'debt' => "Debt",
             'partial' => "Partial",
             'final' => "Final",
         ],
         'labels' => [
-            'partial' => "Partial",
-            'loan' => "Loan",
-            'amount' => "Amount: :amount",
-            'refunded' => "Refunded: :amount",
-            'remaining' => "Remaining: :amount",
+            'loan' => ":member: :amount",
+            'debt' => ":session: :type",
+            'total' => "Total: :amount",
+            'before' => "Be. session: :amount",
+            'after' => "Af. session: :amount",
         ],
         'questions' => [
-            'delete' => "Delete this partial refund?",
+            'delete' => "Delete this refund?",
         ],
         'messages' => [
-            'created' => "The partial refund has been created.",
-            'updated' => "The partial refund has been updated.",
-            'deleted' => "The partial refund has been deleted.",
+            'created' => "The refund has been created.",
+            'updated' => "The refund has been updated.",
+            'deleted' => "The refund has been deleted.",
         ],
         'errors' => [
             'not_found' => "Cannot find the partial refund.",

@@ -199,34 +199,6 @@ class DebtCalculator
     }
 
     /**
-     * Get the paid amount for a given debt at a given session.
-     *
-     * @param Debt $debt
-     * @param Session $session
-     *
-     * @return int
-     */
-    public function getDebtPaidAmount(Debt $debt, Session $session): int
-    {
-        return $debt->refund !== null ? $debt->amount :
-            $this->getPartialRefunds($debt, $session, true)->sum('amount');
-    }
-
-    /**
-     * Get the unpaid amount for a given debt at a given session.
-     *
-     * @param Debt $debt
-     * @param Session $session
-     *
-     * @return int
-     */
-    public function getDebtUnpaidAmount(Debt $debt, Session $session): int
-    {
-        return $this->getDebtAmount($debt, $session) -
-            $this->getDebtPaidAmount($debt, $session);
-    }
-
-    /**
      * @param Debt $debt
      * @param Session $current
      *
@@ -257,7 +229,7 @@ class DebtCalculator
         {
             return 0;
         }
-        if($debt->is_principal || $debt->loan->fixed_interest)
+        if($debt->is_principal || !$debt->loan->recurrent_interest)
         {
             return $debt->amount - $debt->partial_refunds()->sum('amount');
         }
@@ -269,6 +241,37 @@ class DebtCalculator
             $this->getDebtDueAmount($debt, $session, true) :
             min($this->getDebtDueAmount($debt, $session, true),
                 $this->getDebtDueAmount($debt, $lastPartialRefund->session, true));
+    }
+
+    /**
+     * Get the paid amount for a given debt at a given session.
+     *
+     * @param Debt $debt
+     * @param Session $session
+     * @param bool $withCurrent Take the current session into account.
+     *
+     * @return int
+     */
+    public function getDebtPaidAmount(Debt $debt, Session $session, bool $withCurrent): int
+    {
+        $refundFilter = $this->getRefundFilter($session, $withCurrent);
+        return ($debt->refund !== null && $refundFilter($debt->refund)) ? $debt->amount :
+            $this->getPartialRefunds($debt, $session, $withCurrent)->sum('amount');
+    }
+
+    /**
+     * Get the unpaid amount for a given debt at a given session.
+     *
+     * @param Debt $debt
+     * @param Session $session
+     * @param bool $withCurrent Take the current session into account.
+     *
+     * @return int
+     */
+    public function getDebtUnpaidAmount(Debt $debt, Session $session, bool $withCurrent): int
+    {
+        return $this->getDebtAmount($debt, $session) -
+            $this->getDebtPaidAmount($debt, $session, $withCurrent);
     }
 
     /**
@@ -290,5 +293,17 @@ class DebtCalculator
 
         return $this->getDebtAmount($debt, $session) -
             $this->getPartialRefunds($debt, $session, $withCurrent)->sum('amount');
+    }
+
+    /**
+     * Get the total refunded amount.
+     *
+     * @param Debt $debt
+     *
+     * @return int
+     */
+    public function getDebtRefundedAmount(Debt $debt): int
+    {
+        return $debt->refund !== null ? $debt->amount : $debt->partial_refunds()->sum('amount');
     }
 }
