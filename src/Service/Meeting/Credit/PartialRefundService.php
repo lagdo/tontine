@@ -91,60 +91,79 @@ class PartialRefundService
     /**
      * @param Session $session The session
      * @param Fund $fund
+     * @param bool $with
      *
      * @return Builder|Relation
      */
-    private function getUnpaidDebtsQuery(Session $session, Fund $fund): Builder|Relation
+    private function getUnpaidDebtsQuery(Session $session, Fund $fund, bool $with): Builder|Relation
     {
-        return $this->getDebtsQuery($session, $fund, false)
-            // A debt in the current session can be refunded only if it is an interest
-            // debt with fixed or unique interest.
+        return $this->getDebtsQuery($session, $fund, false, false)
+            // A debt from a loan created in the current session can be refunded only
+            // if it is an interest debt with fixed or unique interest.
             ->where(function(Builder $query) use($session) {
                 $query->whereHas('loan', function(Builder $query) use($session) {
                     $query->where('session_id', '!=', $session->id);
                 })->orWhere(function(Builder $query) {
                     $query->interest()
-                        ->whereHas('loan', fn(Builder $query) => $query->fixedInterest());
+                        ->whereHas('loan', fn(Builder $q) => $q->fixedInterest());
                 });
             })
-            ->with([
-                'partial_refund' => fn($query) => $query->where('session_id', $session->id),
-            ]);
+            ->when($with, function(Builder $query) use($session) {
+                $query->with([
+                    'partial_refund' => fn($q) => $q->where('session_id', $session->id),
+                ]);
+            });
+    }
+
+    /**
+     * Count the unpaid debts.
+     *
+     * @param Session $session The session
+     * @param Fund $fund
+     *
+     * @return int
+     */
+    public function getUnpaidDebtCount(Session $session, Fund $fund): int
+    {
+        return $this->getUnpaidDebtsQuery($session, $fund, false)->count();
     }
 
     /**
      * Get the unpaid debts.
      *
-     * @param Fund $fund
      * @param Session $session The session
+     * @param Fund $fund
+     * @param int $page
      *
      * @return Collection
      */
-    public function getUnpaidDebts(Fund $fund, Session $session): Collection
+    public function getUnpaidDebts(Session $session, Fund $fund, int $page = 0): Collection
     {
-        return $this->getUnpaidDebtsQuery($session, $fund)->get();
+        return $this->getUnpaidDebtsQuery($session, $fund, true)
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
     }
 
     /**
      * Get an unpaid debt.
      *
-     * @param Fund $fund
      * @param Session $session The session
+     * @param Fund $fund
      *
      * @return Debt|null
      */
-    public function getUnpaidDebt(Fund $fund, Session $session, int $debtId): ?Debt
+    public function getUnpaidDebt(Session $session, Fund $fund, int $debtId): ?Debt
     {
-        return $this->getUnpaidDebtsQuery($session, $fund)->find($debtId);
+        return $this->getUnpaidDebtsQuery($session, $fund, true)->find($debtId);
     }
 
     /**
-     * @param Debt $debt
      * @param Session $session
+     * @param Debt $debt
      *
      * @return bool
      */
-    private function canCreatePartialRefund(Debt $debt, Session $session): bool
+    private function canPartiallyRefund(Session $session, Debt $debt): bool
     {
         return $session->opened && !$debt->refund;
     }
@@ -152,15 +171,15 @@ class PartialRefundService
     /**
      * Create a refund.
      *
+     * @param Session $session
      * @param Debt $debt
-     * @param Session $session The session
      * @param int $amount
      *
      * @return void
      */
-    public function createPartialRefund(Debt $debt, Session $session, int $amount): void
+    public function createPartialRefund(Session $session, Debt $debt, int $amount): void
     {
-        if(!$this->canCreatePartialRefund($debt, $session))
+        if(!$this->canPartiallyRefund($session, $debt))
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_create'));
         }
@@ -178,12 +197,12 @@ class PartialRefundService
     }
 
     /**
-     * @param PartialRefund $refund
      * @param Session $session
+     * @param PartialRefund $refund
      *
      * @return bool
      */
-    private function canModifyPartialRefund(PartialRefund $refund, Session $session): bool
+    private function canModifyPartialRefund(Session $session, PartialRefund $refund): bool
     {
         // A partial refund cannot be updated or deleted if the debt is already refunded.
         return $session->opened && $refund->debt->refund === null &&
@@ -214,15 +233,15 @@ class PartialRefundService
     /**
      * Update a refund.
      *
-     * @param PartialRefund $refund
      * @param Session $session The session
+     * @param PartialRefund $refund
      * @param int $amount
      *
      * @return void
      */
-    public function updatePartialRefund(PartialRefund $refund, Session $session, int $amount): void
+    public function updatePartialRefund(Session $session, PartialRefund $refund, int $amount): void
     {
-        if(!$this->canModifyPartialRefund($refund, $session))
+        if(!$this->canModifyPartialRefund($session, $refund))
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_update'));
         }
@@ -240,14 +259,14 @@ class PartialRefundService
     /**
      * Delete a refund.
      *
-     * @param PartialRefund $refund
      * @param Session $session The session
+     * @param PartialRefund $refund
      *
      * @return void
      */
-    public function deletePartialRefund(PartialRefund $refund, Session $session): void
+    public function deletePartialRefund(Session $session, PartialRefund $refund): void
     {
-        if(!$this->canModifyPartialRefund($refund, $session))
+        if(!$this->canModifyPartialRefund($session, $refund))
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_delete'));
         }

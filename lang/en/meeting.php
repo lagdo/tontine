@@ -231,15 +231,17 @@ return [
     ],
     'refund' => [
         'titles' => [
-            'add' => "Add a partial refund",
-            'edit' => "Edit a partial refund",
-            'final' => "Final",
+            'loan' => "Loan",
+            'debt' => "Debt",
             'partial' => "Partial",
-            'inputs' => "Inputs",
+            'final' => "Final",
         ],
         'labels' => [
             'partial' => "Partial",
             'loan' => "Loan",
+            'amount' => "Amount: :amount",
+            'refunded' => "Refunded: :amount",
+            'remaining' => "Remaining: :amount",
         ],
         'questions' => [
             'delete' => "Delete this partial refund?",

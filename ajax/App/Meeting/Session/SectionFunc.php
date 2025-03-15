@@ -54,22 +54,18 @@ class SectionFunc extends FuncComponent
             ->setSmScreenHandler('session-savings-sm-screens', 'content-home');
     }
 
-    public function credits(int $sessionId = 0)
+    public function loans(int $sessionId = 0)
     {
-        $this->renderSection('credits');
+        $this->renderSection('loans');
 
-        $this->cl(Credit\Loan::class)->show();
+        $this->cl(Credit\Loan\Loan::class)->show();
     }
 
     public function refunds(int $sessionId = 0)
     {
         $this->renderSection('refunds');
 
-        $this->cl(Refund\Total\Refund::class)->show();
-        $this->cl(Refund\Partial\Refund::class)->show();
-
-        $this->response->js('Tontine')
-            ->setSmScreenHandler('session-refunds-sm-screens', 'content-home');
+        $this->cl(Credit\Refund\Refund::class)->show();
     }
 
     public function cash(int $sessionId = 0)

@@ -1,14 +1,13 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Refund\Total;
+namespace Ajax\App\Meeting\Session\Credit\Refund;
 
 use Ajax\App\Meeting\Component;
 use Ajax\App\Meeting\Session\FundTrait;
-use Siak\Tontine\Validation\Meeting\DebtValidator;
 use Stringable;
 
 /**
- * @databag meeting.refund.final
+ * @databag meeting.refund
  * @before getFund
  */
 class Refund extends Component
@@ -18,19 +17,14 @@ class Refund extends Component
     /**
      * @var string
      */
-    protected string $bagId = 'meeting.refund.final';
-
-    /**
-     * @var DebtValidator
-     */
-    protected DebtValidator $validator;
+    protected string $bagId = 'meeting.refund';
 
     /**
      * @inheritDoc
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.refund.final.home', [
+        return $this->renderView('pages.meeting.refund.home', [
             'session' => $this->stash()->get('meeting.session'),
             'funds' => $this->fundService->getFundList(),
             'fund' => $this->getStashedFund(),

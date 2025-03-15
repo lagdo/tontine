@@ -2,9 +2,9 @@
 @inject('fundService', 'Siak\Tontine\Service\Tontine\FundService')
 @php
   $loanId = jq()->parent()->attr('data-loan-id')->toInt();
-  $rqLoan = rq(Ajax\App\Meeting\Session\Credit\Loan::class);
-  $rqLoanFunc = rq(Ajax\App\Meeting\Session\Credit\LoanFunc::class);
-  $rqBalance = rq(Ajax\App\Meeting\Session\Credit\Balance::class);
+  $rqLoan = rq(Ajax\App\Meeting\Session\Credit\Loan\Loan::class);
+  $rqLoanFunc = rq(Ajax\App\Meeting\Session\Credit\Loan\LoanFunc::class);
+  $rqBalance = rq(Ajax\App\Meeting\Session\Credit\Loan\Balance::class);
 @endphp
                   <div class="row">
                     <div class="col">
