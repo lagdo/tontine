@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Credit;
+namespace Ajax\App\Meeting\Session\Credit\Loan;
 
 use Ajax\App\Meeting\Component;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;

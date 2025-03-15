@@ -231,15 +231,17 @@ return [
     ],
     'refund' => [
         'titles' => [
-            'add' => "Ajouter un remboursement partiel",
-            'edit' => "Modifier un remboursement partiel",
-            'final' => "Finaux",
-            'partial' => "Partiels",
-            'inputs' => "Saisies",
+            'loan' => "Emprunt",
+            'debt' => "Dette",
+            'partial' => "Partiel",
+            'final' => "Final",
         ],
         'labels' => [
             'partial' => "Partiel",
             'loan' => "Emprunt",
+            'amount' => "Montant : :amount",
+            'refunded' => "Remboursé : :amount",
+            'remaining' => "Restant : :amount",
         ],
         'questions' => [
             'delete' => "Supprimer ce remboursement partiel ?",

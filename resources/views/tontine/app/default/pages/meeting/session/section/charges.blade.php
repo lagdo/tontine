@@ -1,8 +1,19 @@
-@include('tontine::pages.meeting.session.menu.wrapper', ['session' => $session])
 @php
   $rqFixedFee = rq(Ajax\App\Meeting\Session\Charge\Fixed\Fee::class);
   $rqLibreFee = rq(Ajax\App\Meeting\Session\Charge\Libre\Fee::class);
 @endphp
+          <div class="section-body">
+            <div class="row">
+              <div class="col-auto">
+                <h2 class="section-title">{{ $session->title }}: {!! __("meeting.actions.charges") !!}</h2>
+              </div>
+              <div class="col">
+@include('tontine::pages.report.session.action.exports', ['sessionId' => $session->id])
+@include('tontine::pages.meeting.session.section.action')
+              </div>
+            </div>
+          </div>
+
           <div class="row sm-screen-selector mt-2 mb-1" id="session-charges-sm-screens">
             <div class="col-12">
               <div class="btn-group btn-group-sm btn-block" role="group">

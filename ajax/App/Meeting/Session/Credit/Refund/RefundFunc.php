@@ -1,17 +1,16 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Refund\Total;
+namespace Ajax\App\Meeting\Session\Credit\Refund;
 
 use Ajax\App\Meeting\FuncComponent;
 use Ajax\App\Meeting\Session\FundTrait;
-use Ajax\App\Meeting\Session\Refund\Partial\RefundPage as PartialRefundPage;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 use function trans;
 
 /**
- * @databag meeting.refund.final
+ * @databag meeting.refund
  * @before getFund
  */
 class RefundFunc extends FuncComponent
@@ -21,7 +20,7 @@ class RefundFunc extends FuncComponent
     /**
      * @var string
      */
-    protected string $bagId = 'meeting.refund.final';
+    protected string $bagId = 'meeting.refund';
 
     /**
      * @var DebtValidator
@@ -62,10 +61,10 @@ class RefundFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
         $this->refundService->createRefund($debt, $session);
 
-        $this->cl(RefundPage::class)->page();
-        $this->stash()->set('meeting.refund.partial.fund',
-            $this->stash()->get('meeting.refund.final.fund'));
-        $this->cl(PartialRefundPage::class)->page();
+        $fund = $this->getStashedFund();
+        $debt = $this->refundService->getFundDebt($session, $fund, $debtId);
+        $this->stash()->set('meeting.refund.debt', $debt);
+        $this->cl(RefundItem::class)->item($debt->id)->render();
     }
 
     public function delete(int $debtId)
@@ -80,9 +79,9 @@ class RefundFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
         $this->refundService->deleteRefund($debt, $session);
 
-        $this->cl(RefundPage::class)->page();
-        $this->stash()->set('meeting.refund.partial.fund',
-            $this->stash()->get('meeting.refund.final.fund'));
-        $this->cl(PartialRefundPage::class)->page();
+        $fund = $this->getStashedFund();
+        $debt = $this->refundService->getFundDebt($session, $fund, $debtId);
+        $this->stash()->set('meeting.refund.debt', $debt);
+        $this->cl(RefundItem::class)->item($debt->id)->render();
     }
 }

@@ -1,8 +1,19 @@
-@include('tontine::pages.meeting.session.menu.wrapper', ['session' => $session])
 @php
   $rqDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Deposit::class);
   $rqRemitment = rq(Ajax\App\Meeting\Session\Pool\Remitment\Remitment::class);
 @endphp
+          <div class="section-body">
+            <div class="row">
+              <div class="col-auto">
+                <h2 class="section-title">{{ $session->title }}: {!! __("meeting.actions.pools") !!}</h2>
+              </div>
+              <div class="col">
+@include('tontine::pages.report.session.action.exports', ['sessionId' => $session->id])
+@include('tontine::pages.meeting.session.section.action')
+              </div>
+            </div>
+          </div>
+
           <div class="row sm-screen-selector mt-2 mb-1" id="session-pools-sm-screens">
             <div class="col-12">
               <div class="btn-group btn-group-sm btn-block" role="group">

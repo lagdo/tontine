@@ -10,6 +10,8 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Tontine\FundService;
 
+use function tap;
+
 trait RefundTrait
 {
     /**
@@ -26,11 +28,12 @@ trait RefundTrait
      * @param Session $session The session
      * @param Fund $fund
      * @param bool|null $onlyPaid
+     * @param bool $with
      *
      * @return Builder|Relation
      */
     private function getDebtsQuery(Session $session, Fund $fund,
-        ?bool $onlyPaid): Builder|Relation
+        ?bool $onlyPaid, bool $with): Builder|Relation
     {
         $prevSessions = $this->fundService->getFundSessionIds($session, $fund)
             ->filter(fn(int $sessionId) => $sessionId !== $session->id);
@@ -69,7 +72,97 @@ trait RefundTrait
                         });
                     });
                 });
+            })
+            ->when($with, function(Builder $query) use($session) {
+                $query->with([
+                    'loan.member',
+                    'loan.session',
+                    'refund.session',
+                    'partial_refunds.session',
+                    'partial_refund' => fn($q) => $q->where('session_id', $session->id),
+                ]);
             });
+    }
+
+    /**
+     * @param Debt $debt
+     * @param Session $session
+     *
+     * @return bool
+     */
+    private function canCreateRefund(Debt $debt, Session $session): bool
+    {
+        // Already refunded
+        // Cannot refund the principal debt in the same session as the loan.
+        if(!$session->opened || $debt->refund !== null ||
+            $debt->is_principal && $debt->loan->session->id === $session->id)
+        {
+            return false;
+        }
+
+        // Cannot refund a recurrent interest debt before the principal.
+        if($debt->is_interest && $debt->loan->recurrent_interest)
+        {
+            return $debt->loan->principal_debt->refund !== null;
+        }
+
+        // Cannot refund the principal debt before the last partial refund.
+        $lastRefund = $debt->partial_refunds->sortByDesc('session.start_at')->first();
+        return !$lastRefund || $lastRefund->session->start_at < $session->start_at;
+    }
+
+    /**
+     * @param Debt $debt
+     * @param Session $session
+     *
+     * @return bool
+     */
+    private function canDeleteRefund(Debt $debt, Session $session): bool
+    {
+        // A refund can only be deleted in the same session it was created.
+        if(!$session->opened || !$debt->refund || $debt->refund->session_id !== $session->id)
+        {
+            return false;
+        }
+        // Cannot delete the principal refund if the interest is also refunded.
+        if($debt->is_principal && $debt->loan->recurrent_interest)
+        {
+            return $debt->loan->interest_debt->refund === null;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Debt $debt
+     * @param Session $session
+     *
+     * @return bool
+     */
+    private function canCreatePartialRefund(Debt $debt, Session $session): bool
+    {
+        // Cannot refund the principal debt in the same session.
+        if(!$session->opened || $debt->refund !== null ||
+            ($debt->is_principal && $debt->loan->session->id === $session->id))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Debt $debt
+     * @param Session $session
+     *
+     * @return void
+     */
+    private function fillDebt(Debt $debt, Session $session): void
+    {
+        $debt->isEditable = $debt->refund !== null ?
+            $this->canDeleteRefund($debt, $session) :
+            $this->canCreateRefund($debt, $session);
+        $debt->canPartiallyRefund = $this->canCreatePartialRefund($debt, $session);
     }
 
     /**
@@ -79,11 +172,23 @@ trait RefundTrait
      */
     public function getDebt(int $debtId): ?Debt
     {
-        return Debt::whereHas('loan', function(Builder|Relation $query) {
-                $query->whereHas('member', function(Builder|Relation $query) {
-                    $query->where('tontine_id', $this->tenantService->tontine()->id);
-                });
-            })
+        return Debt::whereHas('loan',
+            fn(Builder|Relation $loanQuery) => $loanQuery->whereHas('member',
+                fn(Builder|Relation $memberQuery) => $memberQuery->where('tontine_id',
+                    $this->tenantService->tontine()->id)))
             ->find($debtId);
+    }
+
+    /**
+     * @param Session $session The session
+     * @param Fund $fund
+     * @param int $debtId
+     *
+     * @return Debt|null
+     */
+    public function getFundDebt(Session $session, Fund $fund, int $debtId): ?Debt
+    {
+        return tap($this->getDebtsQuery($session, $fund, null, true)->find($debtId),
+            fn(Debt $debt) => $debt !== null && $this->fillDebt($debt, $session));
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Refund\Total;
+namespace Ajax\App\Meeting\Session\Credit\Refund;
 
 use Ajax\App\Meeting\PageComponent;
 use Ajax\App\Meeting\Session\FundTrait;
@@ -8,7 +8,7 @@ use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Stringable;
 
 /**
- * @databag meeting.refund.final
+ * @databag meeting.refund
  * @before getFund
  */
 class RefundPage extends PageComponent
@@ -18,14 +18,14 @@ class RefundPage extends PageComponent
     /**
      * @var string
      */
-    protected string $bagId = 'meeting.refund.final';
+    protected string $bagId = 'meeting.refund';
 
     /**
      * The pagination databag options
      *
      * @var array
      */
-    protected array $bagOptions = ['meeting.refund.final', 'page'];
+    protected array $bagOptions = ['meeting.refund', 'page'];
 
     /**
      * The constructor
@@ -58,8 +58,7 @@ class RefundPage extends PageComponent
         $debts = $this->refundService
             ->getDebts($session, $fund, $filtered, $this->currentPage());
 
-        return $this->renderView('pages.meeting.refund.final.page', [
-            'session' => $session,
+        return $this->renderView('pages.meeting.refund.page', [
             'debts' => $debts,
         ]);
     }

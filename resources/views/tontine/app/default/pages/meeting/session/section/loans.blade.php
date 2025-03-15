@@ -1,5 +1,5 @@
 @php
-  $rqRefund = rq(Ajax\App\Meeting\Session\Credit\Refund\Refund::class);
+  $rqLoan = rq(Ajax\App\Meeting\Session\Credit\Loan\Loan::class);
 @endphp
           <div class="section-body">
             <div class="row">
@@ -16,7 +16,7 @@
           <div class="card shadow mb-2">
             <div class="card-body">
               <div class="row">
-                <div class="col-md-12" id="content-session-refunds" @jxnBind($rqRefund)>
+                <div class="col-md-12" id="content-session-loans" @jxnBind($rqLoan)>
                 </div>
               </div>
             </div>

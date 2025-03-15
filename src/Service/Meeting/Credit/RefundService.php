@@ -47,7 +47,7 @@ class RefundService
      */
     public function getDebtCount(Session $session, Fund $fund, ?bool $onlyPaid): int
     {
-        return $this->getDebtsQuery($session, $fund, $onlyPaid)->count();
+        return $this->getDebtsQuery($session, $fund, $onlyPaid, false)->count();
     }
 
     /**
@@ -60,19 +60,13 @@ class RefundService
      *
      * @return Collection
      */
-    public function getDebts(Session $session, Fund $fund, ?bool $onlyPaid,
-        int $page = 0): Collection
+    public function getDebts(Session $session, Fund $fund,
+        ?bool $onlyPaid, int $page = 0): Collection
     {
-        return $this->getDebtsQuery($session, $fund, $onlyPaid)
+        return $this->getDebtsQuery($session, $fund, $onlyPaid, true)
             ->page($page, $this->tenantService->getLimit())
-            ->with(['loan', 'loan.member', 'loan.session', 'refund', 'refund.session',
-                'partial_refunds', 'partial_refunds.session'])
             ->get()
-            ->each(function(Debt $debt) use($session) {
-                $debt->isEditable = $debt->refund !== null ?
-                    $this->canDeleteRefund($debt, $session) :
-                    $this->canCreateRefund($debt, $session);
-            })
+            ->each(fn(Debt $debt) => $this->fillDebt($debt, $session))
             ->sortBy('loan.member.name', SORT_LOCALE_STRING)
             ->values();
     }
@@ -91,33 +85,6 @@ class RefundService
             ->page($page, $this->tenantService->getLimit())
             ->with('debt.loan.member')
             ->get();
-    }
-
-    /**
-     * @param Debt $debt
-     * @param Session $session
-     *
-     * @return bool
-     */
-    private function canCreateRefund(Debt $debt, Session $session): bool
-    {
-        // Already refunded
-        // Cannot refund the principal debt in the same session as the loan.
-        if(!$session->opened || $debt->refund !== null ||
-            $debt->is_principal && $debt->loan->session->id === $session->id)
-        {
-            return false;
-        }
-
-        // Cannot refund a recurrent interest debt before the principal.
-        if($debt->is_interest && $debt->loan->recurrent_interest)
-        {
-            return $debt->loan->principal_debt->refund !== null;
-        }
-
-        // Cannot refund the principal debt before the last partial refund.
-        $lastRefund = $debt->partial_refunds->sortByDesc('session.start_at')->first();
-        return !$lastRefund || $lastRefund->session->start_at < $session->start_at;
     }
 
     /**
@@ -147,28 +114,6 @@ class RefundService
                 $debt->save();
             }
         });
-    }
-
-    /**
-     * @param Debt $debt
-     * @param Session $session
-     *
-     * @return bool
-     */
-    private function canDeleteRefund(Debt $debt, Session $session): bool
-    {
-        // A refund can only be deleted in the same session it was created.
-        if(!$session->opened || !$debt->refund || $debt->refund->session_id !== $session->id)
-        {
-            return false;
-        }
-        // Cannot delete the principal refund if the interest is also refunded.
-        if($debt->is_principal && $debt->loan->recurrent_interest)
-        {
-            return $debt->loan->interest_debt->refund === null;
-        }
-
-        return true;
     }
 
     /**

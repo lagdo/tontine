@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Refund\Partial;
+namespace Ajax\App\Meeting\Session\Credit\Refund;
 
 use Ajax\App\Meeting\Component;
 use Siak\Tontine\Service\LocaleService;
@@ -21,24 +21,24 @@ class Amount extends Component
 
     public function html(): Stringable|string
     {
-        $debt = $this->stash()->get('meeting.refund.partial.debt');
+        $debt = $this->stash()->get('meeting.refund.debt');
         if(!$debt || !$debt->partial_refund)
         {
-            return $this->renderView('pages.meeting.refund.partial.amount.edit', [
+            return $this->renderView('pages.meeting.refund.amount.edit', [
                 'debt' => $debt,
                 'amount' => '',
             ]);
         }
 
-        if($this->stash()->get('meeting.refund.partial.edit', false))
+        if($this->stash()->get('meeting.refund.edit', false))
         {
-            return $this->renderView('pages.meeting.refund.partial.amount.edit', [
+            return $this->renderView('pages.meeting.refund.amount.edit', [
                 'debt' => $debt,
                 'amount' => $this->localeService->getMoneyValue($debt->partial_refund->amount),
             ]);
         }
 
-        return $this->renderView('pages.meeting.refund.partial.amount.show', [
+        return $this->renderView('pages.meeting.refund.amount.show', [
             'debt' => $debt,
             'amount' => $this->localeService->formatMoney($debt->partial_refund->amount, false),
         ]);
