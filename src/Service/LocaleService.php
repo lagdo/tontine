@@ -49,7 +49,17 @@ class LocaleService
      */
     public function getCurrencyName(): string
     {
-        return $this->currency->getName();
+        return $this->currency?->getName() ?? '';
+    }
+
+    /**
+     * Get the currency symbol
+     *
+     * @return string
+     */
+    public function getCurrencySymbol(): string
+    {
+        return $this->currency?->getSymbol() ?? '';
     }
 
     /**
@@ -96,8 +106,8 @@ class LocaleService
     public function getNames(array $countries, array $currencies): array
     {
         $locale = $this->localization->getCurrentLocale();
-        $localizedCountries = include($this->countriesDataDir . "/{$locale}/country.php");
-        $localizedCurrencies = include($this->currenciesDataDir . "/{$locale}/currency.php");
+        $localizedCountries = include $this->countriesDataDir . "/{$locale}/country.php";
+        $localizedCurrencies = include $this->currenciesDataDir . "/{$locale}/currency.php";
 
         $countryNames = [];
         foreach($countries as $code)
@@ -160,17 +170,22 @@ class LocaleService
     private function makeDecimalFormatter(): NumberFormatter
     {
         $formatter = new NumberFormatter($this->_locale(), NumberFormatter::DECIMAL);
-        $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 0);
-        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $this->currency->getPrecision());
+        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS,
+            $this->currency->getPrecision());
         return $formatter;
     }
 
     /**
+     * @param bool $fixedPrecision
+     *
      * @return NumberFormatter
      */
-    private function decimalFormatter(): NumberFormatter
+    private function decimalFormatter(bool $fixedPrecision = false): NumberFormatter
     {
-        return $this->formatter ??= $this->makeDecimalFormatter();
+        $this->formatter ??= $this->makeDecimalFormatter();
+        $this->formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS,
+            $fixedPrecision ? $this->currency->getPrecision() : 0);
+        return $this->formatter;
     }
 
     /**
@@ -178,14 +193,16 @@ class LocaleService
      *
      * @param int $amount
      * @param bool $showSymbol
+     * @param bool $fixedPrecision
      *
      * @return string
      */
-    public function formatMoney(int $amount, bool $showSymbol = true): string
+    public function formatMoney(int $amount, bool $showSymbol = true,
+        bool $fixedPrecision = false): string
     {
         $money = new Money($amount, $this->currency);
         return $showSymbol ? $money->formatLocale($this->_locale()) :
-            $this->decimalFormatter()->format($money->getValue());
+            $this->decimalFormatter($fixedPrecision)->format($money->getValue());
     }
 
     /**

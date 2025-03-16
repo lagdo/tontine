@@ -1,3 +1,4 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $fundId = pm()->select('refunds-fund-id')->toInt();
   $rqRefund = rq(Ajax\App\Meeting\Session\Credit\Refund\Refund::class);
@@ -6,7 +7,7 @@
 @endphp
                     <div class="row">
                       <div class="col">
-                        <div class="section-title mt-0">{{ __('meeting.titles.refunds') }}</div>
+                        <div class="section-title mt-0">{{ __('meeting.titles.refunds') }} ({{ $locale->getCurrencySymbol() }})</div>
                       </div>
 @if($funds->count() > 1)
                       <div class="col-auto" style="padding-left:0;padding-right:0;">

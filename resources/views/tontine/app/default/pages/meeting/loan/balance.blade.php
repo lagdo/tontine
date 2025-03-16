@@ -2,7 +2,7 @@
                       <div class="input-group mb-2">
                         <div class="input-group-prepend">
                           {!! $html->span(__('meeting.loan.labels.amount_available', [
-                              'amount' => $locale->formatMoney($amount),
+                              'amount' => $locale->formatMoney($amount, false, true),
                             ]))
                             ->class('input-group-text')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         </div>

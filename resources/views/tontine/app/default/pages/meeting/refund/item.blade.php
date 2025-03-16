@@ -14,7 +14,7 @@
                           <td>
                             {{ __('meeting.refund.labels.loan', [
                               'member' => $debt->loan->member->name,
-                              'amount' => $locale->formatMoney($debtAmount, true),
+                              'amount' => $locale->formatMoney($debtAmount, false, true),
                             ]) }}<br/>
                             {{ __('meeting.refund.labels.debt', [
                               'session' => $debt->loan->session->title,
@@ -23,18 +23,18 @@
                           </td>
                           <td class="currency">
                             {{ __('meeting.refund.labels.before', [
-                              'amount' => $locale->formatMoney($paidAmount, true),
+                              'amount' => $locale->formatMoney($paidAmount, false, true),
                             ]) }}<br/>
                             {{ __('meeting.refund.labels.total', [
-                              'amount' => $locale->formatMoney($refundedAmount, true),
+                              'amount' => $locale->formatMoney($refundedAmount, false, true),
                             ]) }}
                           </td>
                           <td class="currency">
                             {{ __('meeting.refund.labels.before', [
-                              'amount' => $locale->formatMoney($dueAmount, true),
+                              'amount' => $locale->formatMoney($dueAmount, false, true),
                             ]) }}<br/>
                             {{ __('meeting.refund.labels.after', [
-                              'amount' => $locale->formatMoney($remainingAmount, true),
+                              'amount' => $locale->formatMoney($remainingAmount, false, true),
                             ]) }}
                           </td>
                           <td class="currency amount" @jxnBind($rqAmount, $debt->id)>

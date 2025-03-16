@@ -26,10 +26,10 @@
                           <tr>
                             <td>{{ $loan->member->name }}</td>
                             <td>{!! $fundService->getFundTitle($loan->fund) !!}</td>
-                            <td class="currency">{{ $locale->formatMoney($loan->principal, true) }}</td>
+                            <td class="currency">{{ $locale->formatMoney($loan->principal, false, true) }}</td>
                             <td>
                               {{ __('meeting.loan.interest.i' . $loan->interest_type) }}: {{ $loan->fixed_interest ?
-                                $locale->formatMoney($loan->interest, true) : ($loan->interest_rate / 100) . '%' }}
+                                $locale->formatMoney($loan->interest, false, true) : ($loan->interest_rate / 100) . '%' }}
                             </td>
                             <td class="table-item-menu">
 @if ($loan->remitment_id > 0)
