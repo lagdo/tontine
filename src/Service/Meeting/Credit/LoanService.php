@@ -97,15 +97,31 @@ class LoanService
     }
 
     /**
-     * Get the loans for a given session.
+     * Gett the number of loans for a given session.
      *
      * @param Session $session
      *
+     * @return int
+     */
+    public function getSessionLoanCount(Session $session): int
+    {
+        return $session->loans()->count();
+    }
+
+    /**
+     * Get the loans for a given session.
+     *
+     * @param Session $session
+     * @param int $page
+     *
      * @return Collection
      */
-    public function getSessionLoans(Session $session): Collection
+    public function getSessionLoans(Session $session, int $page = 0): Collection
     {
-        return $session->loans()->with(['member', 'fund'])->get();
+        return $session->loans()
+            ->with(['member', 'fund'])
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
     }
 
     /**
