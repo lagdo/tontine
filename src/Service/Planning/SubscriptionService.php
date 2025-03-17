@@ -243,7 +243,10 @@ class SubscriptionService
     public function saveBeneficiary(Pool $pool, int $sessionId, int $currSubscriptionId,
         int $nextSubscriptionId): bool
     {
-        $session = $pool->sessions()->find($sessionId);
+        $session = $this->tenantService->tontine()
+            ->sessions()
+            ->ofPool($pool)
+            ->find($sessionId);
         $currSubscription = null;
         $nextSubscription = null;
         if($currSubscriptionId > 0)

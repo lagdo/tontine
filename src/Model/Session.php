@@ -3,7 +3,6 @@
 namespace Siak\Tontine\Model;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 
 use function trans;
@@ -141,29 +140,9 @@ class Session extends Base
         return $this->hasMany(Payable::class)->orderBy('payables.id', 'asc');
     }
 
-    public function payableAmounts()
-    {
-        return $this->hasMany(Payable::class)
-            ->join('subscriptions', 'subscriptions.id', '=', 'payables.subscription_id')
-            ->join('pools', 'subscriptions.pool_id', '=', 'pools.id')
-            ->whereHas('remitment')
-            ->groupBy('pools.id')
-            ->select('pools.id', DB::raw('sum(pools.amount) as amount'));
-    }
-
     public function receivables()
     {
         return $this->hasMany(Receivable::class);
-    }
-
-    public function receivableAmounts()
-    {
-        return $this->hasMany(Receivable::class)
-            ->join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
-            ->join('pools', 'subscriptions.pool_id', '=', 'pools.id')
-            ->whereHas('deposit')
-            ->groupBy('pools.id')
-            ->select('pools.id', DB::raw('sum(pools.amount) as amount'));
     }
 
     public function session_bills()
@@ -221,14 +200,28 @@ class Session extends Base
         return $this->belongsToMany(Member::class, 'absences');
     }
 
-    public function enabled(Pool $pool)
+    /**
+     * @param  Builder  $query
+     * @param  Pool $pool
+     *
+     * @return Builder
+     */
+    public function scopeEnabled(Builder $query, Pool $pool): Builder
     {
-        return $this->disabledPools->find($pool->id) === null;
+        return $query->whereDoesntHave('disabledPools',
+            fn($q) => $q->where('pools.id', $pool->id));
     }
 
-    public function disabled(Pool $pool)
+    /**
+     * @param  Builder  $query
+     * @param  Pool $pool
+     *
+     * @return Builder
+     */
+    public function scopeDisabled(Builder $query, Pool $pool): Builder
     {
-        return $this->disabledPools->find($pool->id) !== null;
+        return $query->whereHas('disabledPools',
+            fn($q) => $q->where('pools.id', $pool->id));
     }
 
     /**
@@ -249,5 +242,19 @@ class Session extends Base
     public function scopeOpened(Builder $query): Builder
     {
         return $query->where('status', '=', self::STATUS_OPENED);
+    }
+
+    /**
+     * @param  Builder  $query
+     * @param  Pool $pool
+     *
+     * @return Builder
+     */
+    public function scopeOfPool(Builder $query, Pool $pool): Builder
+    {
+        return !$pool->pool_round ?
+            $query->where('round_id', $pool->round_id) :
+            $query->whereDate('start_at', '<=', $pool->end_at->format('Y-m-d'))
+                ->whereDate('start_at', '>=', $pool->start_at->format('Y-m-d'));
     }
 }

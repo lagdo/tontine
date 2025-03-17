@@ -1,3 +1,4 @@
+@inject('poolService', 'Siak\Tontine\Service\Planning\PoolService')
 @php
   $sessionId = jq()->parent()->attr('data-session-id')->toInt();
   $rqSessionFunc = rq(Ajax\App\Planning\Financial\SessionFunc::class);
@@ -34,7 +35,7 @@
 @if(!$session->candidate)
                                   &nbsp;
 @else
-@if($session->disabled($pool))
+@if($poolService->disabled($pool, $session))
                                   <a role="link" tabindex="0" class="pool-session-enable"><i class="fa fa-toggle-off"></i></a>
 @else
                                   <a role="link" tabindex="0" class="pool-session-disable"><i class="fa fa-toggle-on"></i></a>

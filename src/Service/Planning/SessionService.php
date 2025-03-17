@@ -32,7 +32,7 @@ class SessionService
             ->where('properties->remit->planned', true)
             ->get()
             ->each(function($pool) use($session) {
-                $pool->disabledSessions()->attach($session->id);
+                $pool->disabled_sessions()->attach($session->id);
             });
     }
 

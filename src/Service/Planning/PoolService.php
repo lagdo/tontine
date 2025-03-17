@@ -185,34 +185,6 @@ class PoolService
     }
 
     /**
-     * Get a paginated list of sessions.
-     *
-     * @param Pool $pool
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getPoolSessions(Pool $pool, int $page = 0): Collection
-    {
-        return $pool->sessions()
-            ->orderBy('start_at', 'asc')
-            ->page($page, $this->tenantService->getLimit())
-            ->get();
-    }
-
-    /**
-     * Get the number of sessions.
-     *
-     * @param Pool $pool
-     *
-     * @return int
-     */
-    public function getPoolSessionCount(Pool $pool): int
-    {
-        return $pool->sessions()->count();
-    }
-
-    /**
      * Get the first session of the pool.
      *
      * @param Pool $pool
@@ -221,7 +193,8 @@ class PoolService
      */
     public function getPoolStartSession(Pool $pool): ?Session
     {
-        return $pool->sessions()->orderBy('start_at', 'asc')->first();
+        return $pool->pool_round?->start_session ??
+            $pool->round->sessions()->orderBy('start_at', 'asc')->first();
     }
 
     /**
@@ -233,7 +206,8 @@ class PoolService
      */
     public function getPoolEndSession(Pool $pool): ?Session
     {
-        return $pool->sessions()->orderBy('start_at', 'desc')->first();
+        return $pool->pool_round?->end_session ??
+            $pool->round->sessions()->orderBy('start_at', 'desc')->first();
     }
 
     /**
@@ -253,14 +227,18 @@ class PoolService
         // {
         //     return;
         // }
-        $session = $pool->sessions()->find($sessionId);
-        if(!$session || $session->enabled($pool))
+        $session = $this->tenantService->tontine()
+            ->sessions()
+            ->ofPool($pool)
+            ->disabled($pool)
+            ->find($sessionId);
+        if(!$session)
         {
             return;
         }
 
         // Enable the session for the pool.
-        $pool->disabledSessions()->detach($session->id);
+        $pool->disabled_sessions()->detach($session->id);
     }
 
     /**
@@ -280,8 +258,12 @@ class PoolService
         // {
         //     return;
         // }
-        $session = $pool->sessions()->find($sessionId);
-        if(!$session || $session->disabled($pool))
+        $session = $this->tenantService->tontine()
+            ->sessions()
+            ->ofPool($pool)
+            ->enabled($pool)
+            ->find($sessionId);
+        if(!$session)
         {
             return;
         }
@@ -299,8 +281,30 @@ class PoolService
                 ->whereIn('subscription_id', $subscriptionIds)
                 ->update(['session_id' => null]);
             // Disable the session for the pool.
-            $pool->disabledSessions()->attach($session->id);
+            $pool->disabled_sessions()->attach($session->id);
         });
+    }
+
+    /**
+     * @param Pool $pool
+     * @param Session $session
+     *
+     * @return bool
+     */
+    public function enabled(Pool $pool, Session $session): bool
+    {
+        return $session->disabledPools->find($pool->id) === null;
+    }
+
+    /**
+     * @param Pool $pool
+     * @param Session $session
+     *
+     * @return bool
+     */
+    public function disabled(Pool $pool, Session $session): bool
+    {
+        return $session->disabledPools->find($pool->id) !== null;
     }
 
     /**
@@ -312,7 +316,12 @@ class PoolService
      */
     public function getEnabledSessions(Pool $pool): Collection
     {
-        return $pool->enabledSessions()->orderBy('start_at')->get();
+        return $this->tenantService->tontine()
+            ->sessions()
+            ->ofPool($pool)
+            ->enabled($pool)
+            ->orderBy('start_at')
+            ->get();
     }
 
     /**
@@ -324,6 +333,10 @@ class PoolService
      */
     public function getEnabledSessionCount(Pool $pool): int
     {
-        return $pool->enabledSessions()->count();
+        return $this->tenantService->tontine()
+            ->sessions()
+            ->ofPool($pool)
+            ->enabled($pool)
+            ->count();
     }
 }

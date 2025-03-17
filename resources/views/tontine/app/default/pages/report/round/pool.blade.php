@@ -1,4 +1,5 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@inject('poolService', 'Siak\Tontine\Service\Planning\PoolService')
                 <table class="table table-bordered responsive">
                   <thead>
                     <tr>
@@ -16,7 +17,7 @@
 @foreach ($sessions as $session)
                     <tr>
                       <td><b>{{ $session->title }}</b></td>
-@if($session->disabled($pool) || ($session->pending && !$pool->remit_planned))
+@if($poolService->disabled($pool, $session) || ($session->pending && !$pool->remit_planned))
                       <td></td>
                       <td></td>
                       <td></td>

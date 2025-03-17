@@ -3,6 +3,7 @@
 namespace Ajax\App\Planning\Financial;
 
 use Ajax\PageComponent;
+use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SessionService;
 use Stringable;
 
@@ -37,10 +38,19 @@ class SessionPage extends PageComponent
         return $this->sessionService->getTontineSessionCount();
     }
 
-    private function isCandidate($session, $pool, $startSession, $endSession): void
+    /**
+     * @param SessionModel $session
+     * @param SessionModel $startSession
+     * @param SessionModel $endSession
+     *
+     * @return void
+     */
+    private function isCandidate(SessionModel $session,
+        SessionModel $startSession, SessionModel $endSession): void
     {
-        $session->candidate = $session->start_at->lte($endSession->start_at) &&
-            $session->start_at->gte($startSession->start_at);
+        $session->candidate = !$startSession || !$endSession ? false :
+            $session->start_at->lte($endSession->start_at) &&
+                $session->start_at->gte($startSession->start_at);
     }
 
     /**
@@ -51,16 +61,10 @@ class SessionPage extends PageComponent
         $pool = $this->stash()->get('planning.financial.pool');
         $startSession = $this->poolService->getPoolStartSession($pool);
         $endSession = $this->poolService->getPoolEndSession($pool);
-        \Log::debug('Pool page sessions', [
-            'start' => $startSession->start_at,
-            'pool_start' => $pool->start_at,
-            'end' => $endSession->start_at,
-            'pool_end' => $pool->end_at,
-        ]);
         $sessions = $this->sessionService
             ->getTontineSessions($this->currentPage(), orderAsc: false)
-            ->each(function($session) use($pool, $startSession, $endSession) {
-                $this->isCandidate($session, $pool, $startSession, $endSession);
+            ->each(function($session) use($startSession, $endSession) {
+                $this->isCandidate($session, $startSession, $endSession);
             });
 
         return $this->renderView('pages.planning.financial.session.page', [
@@ -86,7 +90,8 @@ class SessionPage extends PageComponent
             return 1;
         }
 
-        $sessionCount = $this->sessionService->getTontineSessionCount($session, true, false);
+        $sessionCount = $this->sessionService
+            ->getTontineSessionCount($session, true, false);
         return (int)($sessionCount / $this->tenantService->getLimit()) + 1;
     }
 

@@ -1,4 +1,5 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@inject('poolService', 'Siak\Tontine\Service\Planning\PoolService')
 @php
   $rqSubscription = rq(Ajax\App\Planning\Subscription\Subscription::class);
   $rqBeneficiary = rq(Ajax\App\Planning\Subscription\Beneficiary::class);
@@ -51,7 +52,7 @@
                       </thead>
                       <tbody>
 @foreach ($sessions as $session)
-@if ($session->disabled($pool))
+@if ($poolService->disabled($pool, $session))
                         <tr>
                           <td>{{ $session->title }}</td>
                           <td>&nbsp;</td>

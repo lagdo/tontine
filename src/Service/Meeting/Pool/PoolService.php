@@ -10,7 +10,6 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Planning\PoolService as PlanningPoolService;
 use Siak\Tontine\Service\TenantService;
 
 class PoolService
@@ -18,24 +17,23 @@ class PoolService
     /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
-     * @param BalanceCalculator $balanceCalculator
      * @param SummaryService $summaryService
+     * @param BalanceCalculator $balanceCalculator
      */
     public function __construct(protected LocaleService $localeService,
-        protected TenantService $tenantService, protected BalanceCalculator $balanceCalculator,
-        protected SummaryService $summaryService, protected PlanningPoolService $poolService)
+        protected TenantService $tenantService, protected SummaryService $summaryService,
+        protected BalanceCalculator $balanceCalculator)
     {}
 
     /**
-     * Get a single pool.
-     *
      * @param int $poolId    The pool id
+     * @param Session $session
      *
      * @return Pool|null
      */
-    public function getPool(int $poolId): ?Pool
+    public function getPool(int $poolId, Session $session): ?Pool
     {
-        return $this->poolService->getPool($poolId);
+        return Pool::ofSession($session)->with('counter')->find($poolId);
     }
 
     /**
@@ -45,12 +43,7 @@ class PoolService
      */
     private function getQuery(Session $session): Builder|Relation
     {
-        return Pool::ofSession($session)
-            ->whereHas('subscriptions', function(Builder $query) use($session) {
-                $query->whereHas('receivables', function(Builder $query) use($session) {
-                    $query->where('session_id', $session->id);
-                });
-            });
+        return Pool::ofSession($session);
     }
 
     /**
@@ -88,6 +81,7 @@ class PoolService
     public function getPoolsWithPayables(Session $session): Collection
     {
         return $this->getQuery($session)
+            ->with(['counter'])
             ->withCount([
                 'subscriptions as pay_paid' => function(Builder $query) use($session) {
                     $query->whereHas('payable', function(Builder $query) use($session) {
@@ -112,8 +106,6 @@ class PoolService
     public function hasPoolWithAuction(): bool
     {
         $round = $this->tenantService->round();
-        return $round && $round->pools->contains(function($pool) {
-            return $pool->remit_auction;
-        });
+        return $round && $round->pools->contains(fn($pool) => $pool->remit_auction);
     }
 }
