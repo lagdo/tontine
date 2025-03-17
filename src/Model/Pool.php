@@ -4,6 +4,7 @@ namespace Siak\Tontine\Model;
 
 use Carbon\Carbon;
 use Database\Factories\PoolFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -163,39 +164,53 @@ class Pool extends Base
         return $this->filterOnRoundOrDates($query, $session->round, $date, $date);
     }
 
-    public function getStartDateAttribute()
+    public function startDate(): Attribute
     {
-        return $this->start_at->translatedFormat(trans('tontine.date.format'));
+        return Attribute::make(
+            get: fn() => $this->start_at->translatedFormat(trans('tontine.date.format')),
+        );
     }
 
-    public function getEndDateAttribute()
+    public function endDate(): Attribute
     {
-        return $this->end_at->translatedFormat(trans('tontine.date.format'));
+        return Attribute::make(
+            get: fn() => $this->end_at->translatedFormat(trans('tontine.date.format')),
+        );
     }
 
-    public function getDepositFixedAttribute()
+    public function depositFixed(): Attribute
     {
-        return ($this->properties['deposit']['fixed'] ?? true) === true;
+        return Attribute::make(
+            get: fn() => ($this->properties['deposit']['fixed'] ?? true) === true,
+        );
     }
 
-    public function getDepositLendableAttribute()
+    public function depositLendable(): Attribute
     {
-        return ($this->properties['deposit']['lendable'] ?? false) === true;
+        return Attribute::make(
+            get: fn() => ($this->properties['deposit']['lendable'] ?? false) === true,
+        );
     }
 
-    public function getRemitPlannedAttribute()
+    public function remitPlanned(): Attribute
     {
-        return ($this->properties['remit']['planned'] ?? true) === true;
+        return Attribute::make(
+            get: fn() => ($this->properties['remit']['planned'] ?? true) === true,
+        );
     }
 
-    public function getRemitAuctionAttribute()
+    public function remitAuction(): Attribute
     {
-        return ($this->properties['remit']['auction'] ?? false) === true;
+        return Attribute::make(
+            get: fn() => ($this->properties['remit']['auction'] ?? false) === true,
+        );
     }
 
-    public function getRemitPayableAttribute()
+    public function remitPayable(): Attribute
     {
-        return $this->remit_planned && !$this->remit_auction;
+        return Attribute::make(
+            get: fn() => $this->remit_planned && !$this->remit_auction,
+        );
     }
 
     public function round()

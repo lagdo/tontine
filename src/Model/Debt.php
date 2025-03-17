@@ -34,19 +34,25 @@ class Debt extends Base
         'amount',
     ];
 
-    public function getIsPrincipalAttribute()
+    public function isPrincipal(): Attribute
     {
-        return $this->type === self::TYPE_PRINCIPAL;
+        return Attribute::make(
+            get: fn() => $this->type === self::TYPE_PRINCIPAL,
+        );
     }
 
-    public function getIsInterestAttribute()
+    public function isInterest(): Attribute
     {
-        return $this->type === self::TYPE_INTEREST;
+        return Attribute::make(
+            get: fn() => $this->type === self::TYPE_INTEREST,
+        );
     }
 
-    public function getTypeStrAttribute()
+    public function typeStr(): Attribute
     {
-        return $this->type === self::TYPE_PRINCIPAL ? 'principal' : 'interest';
+        return Attribute::make(
+            get: fn() => $this->type === self::TYPE_PRINCIPAL ? 'principal' : 'interest',
+        );
     }
 
     /**

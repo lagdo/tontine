@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Model;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -69,44 +70,60 @@ class Session extends Base
         'disabledPools',
     ];
 
-    public function getNotFirstAttribute()
+    public function notFirst(): Attribute
     {
-        return $this->round->sessions()->where('start_at', '<', $this->start_at)->exists();
+        return Attribute::make(
+            get: fn() => $this->round->sessions()->where('start_at', '<', $this->start_at)->exists(),
+        );
     }
 
-    public function getNotLastAttribute()
+    public function notLast(): Attribute
     {
-        return $this->round->sessions()->where('start_at', '>', $this->start_at)->exists();
+        return Attribute::make(
+            get: fn() => $this->round->sessions()->where('start_at', '>', $this->start_at)->exists(),
+        );
     }
 
-    public function getAbbrevAttribute($value)
+    public function abbrev(): Attribute
     {
-        return $value ?? $this->start_at->format('M y');
+        return Attribute::make(
+            get: fn($value) => $value ?? $this->start_at->format('M y'),
+        );
     }
 
-    public function getDateAttribute()
+    public function date(): Attribute
     {
-        return $this->start_at->translatedFormat(trans('tontine.date.format'));
+        return Attribute::make(
+            get: fn() => $this->start_at->translatedFormat(trans('tontine.date.format')),
+        );
     }
 
-    public function getTimesAttribute()
+    public function times(): Attribute
     {
-        return $this->start_at->format('H:i') . ' - ' . $this->end_at->format('H:i');
+        return Attribute::make(
+            get: fn() => $this->start_at->format('H:i') . ' - ' . $this->end_at->format('H:i'),
+        );
     }
 
-    public function getPendingAttribute()
+    public function pending(): Attribute
     {
-        return $this->status === self::STATUS_PENDING;
+        return Attribute::make(
+            get: fn() => $this->status === self::STATUS_PENDING,
+        );
     }
 
-    public function getOpenedAttribute()
+    public function opened(): Attribute
     {
-        return $this->status === self::STATUS_OPENED;
+        return Attribute::make(
+            get: fn() => $this->status === self::STATUS_OPENED,
+        );
     }
 
-    public function getClosedAttribute()
+    public function closed(): Attribute
     {
-        return $this->status === self::STATUS_CLOSED;
+        return Attribute::make(
+            get: fn() => $this->status === self::STATUS_CLOSED,
+        );
     }
 
     public function round()

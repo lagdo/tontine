@@ -2,6 +2,8 @@
 
 namespace Siak\Tontine\Model;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
 class Round extends Base
 {
     use Traits\HasProperty;
@@ -39,31 +41,45 @@ class Round extends Base
         'notes',
     ];
 
-    public function getStartAtAttribute()
+    public function startAt(): Attribute
     {
-        $startSession = $this->sessions()->orderBy('start_at')->first();
-        return !$startSession ? null : $startSession->start_at;
+        return Attribute::make(
+            get: function() {
+                $startSession = $this->sessions()->orderBy('start_at')->first();
+                return !$startSession ? null : $startSession->start_at;
+            },
+        );
     }
 
-    public function getEndAtAttribute()
+    public function endAt(): Attribute
     {
-        $endSession = $this->sessions()->orderByDesc('start_at')->first();
-        return !$endSession ? null : $endSession->start_at;
+        return Attribute::make(
+            get: function() {
+                $endSession = $this->sessions()->orderByDesc('start_at')->first();
+                return !$endSession ? null : $endSession->start_at;
+            },
+        );
     }
 
-    public function getPendingAttribute()
+    public function pending(): Attribute
     {
-        return $this->status === self::STATUS_PENDING;
+        return Attribute::make(
+            get: fn() => $this->status === self::STATUS_PENDING,
+        );
     }
 
-    public function getOpenedAttribute()
+    public function opened(): Attribute
     {
-        return $this->status === self::STATUS_OPENED;
+        return Attribute::make(
+            get: fn() => $this->status === self::STATUS_OPENED,
+        );
     }
 
-    public function getClosedAttribute()
+    public function closed(): Attribute
     {
-        return $this->status === self::STATUS_CLOSED;
+        return Attribute::make(
+            get: fn() => $this->status === self::STATUS_CLOSED,
+        );
     }
 
     public function tontine()
