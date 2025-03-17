@@ -390,6 +390,7 @@ return [
             ],
             'subscription' => "The tontine still has subscriptions.",
             'no_subscription' => "There are tontines with no subscription.",
+            'payments' => "All deposits and remitments must be deleted prior to deleting or disabling a tontine pool.",
         ],
     ],
     'pool_round' => [

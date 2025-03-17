@@ -18,8 +18,10 @@ class PoolService
 {
     /**
      * @param TenantService $tenantService
+     * @param DataSyncService $dataSyncService
      */
-    public function __construct(protected TenantService $tenantService)
+    public function __construct(protected TenantService $tenantService,
+        private DataSyncService $dataSyncService)
     {}
 
     /**
@@ -112,22 +114,13 @@ class PoolService
      */
     public function deletePool(Pool $pool)
     {
-        try
-        {
-            DB::transaction(function() use($pool) {
-                DB::table('pool_session_disabled')->where('pool_id', $pool->id)->delete();
-                $subscriptionIds = $pool->subscriptions()->pluck('id');
-                DB::table('receivables')->whereIn('subscription_id', $subscriptionIds)->delete();
-                DB::table('payables')->whereIn('subscription_id', $subscriptionIds)->delete();
-                $pool->subscriptions()->delete();
-                $pool->delete();
-            });
-        }
-        catch(Exception $e)
-        {
-            throw new MessageException(trans('tontine.errors.action') .
-                '<br/>' . trans('tontine.pool.errors.subscription'));
-        }
+        DB::transaction(function() use($pool) {
+            $this->dataSyncService->syncPool($pool, false);
+
+            $pool->pool_round()->delete();
+            $pool->subscriptions()->delete();
+            $pool->delete();
+        });
     }
 
     /**
@@ -150,7 +143,7 @@ class PoolService
      *
      * @return void
      */
-    public function saveSessions(Pool $pool, array $values)
+    private function _saveSessions(Pool $pool, array $values)
     {
         if($pool->pool_round !== null)
         {
@@ -173,6 +166,23 @@ class PoolService
     }
 
     /**
+     * Save the pool start and/or end session.
+     *
+     * @param Pool $pool
+     * @param array $values
+     *
+     * @return void
+     */
+    public function saveSessions(Pool $pool, array $values)
+    {
+        DB::transaction(function() use($pool, $values) {
+            $this->_saveSessions($pool, $values);
+
+            $this->dataSyncService->syncPool($pool, true);
+        });
+    }
+
+    /**
      * Delete the pool round.
      *
      * @param Pool $pool
@@ -181,7 +191,11 @@ class PoolService
      */
     public function deleteRound(Pool $pool)
     {
-        $pool->pool_round()->delete();
+        DB::transaction(function() use($pool) {
+            $pool->pool_round()->delete();
+
+            $this->dataSyncService->syncPool($pool, true);
+        });
     }
 
     /**
@@ -270,18 +284,9 @@ class PoolService
 
         // Disable the session for the pool.
         DB::transaction(function() use($pool, $session) {
-            // If a session was already opened, delete the receivables and payables.
-            // Will fail if any of them is already paid.
-            $subscriptionIds = $pool->subscriptions()->pluck('id');
-            $session->receivables()
-                ->whereIn('subscription_id', $subscriptionIds)
-                ->delete();
-            // The payables should not be deleted, but detached from the session instead.
-            $session->payables()
-                ->whereIn('subscription_id', $subscriptionIds)
-                ->update(['session_id' => null]);
-            // Disable the session for the pool.
             $pool->disabled_sessions()->attach($session->id);
+
+            $this->dataSyncService->syncPool($pool, true);
         });
     }
 
