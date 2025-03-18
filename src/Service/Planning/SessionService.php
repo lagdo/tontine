@@ -135,7 +135,7 @@ class SessionService
                 // Also delete related data that may have been automatically created.
                 $session->receivables()->delete();
                 $session->session_bills()->delete();
-                $session->disabledPools()->detach();
+                $session->disabled_pools()->detach();
                 $session->delete();
             });
         }

@@ -66,7 +66,7 @@ class Session extends Base
      */
     protected $with = [
         'host',
-        'disabledPools',
+        'disabled_pools',
     ];
 
     public function notFirst(): Attribute
@@ -190,7 +190,7 @@ class Session extends Base
         return $this->hasMany(Disbursement::class);
     }
 
-    public function disabledPools()
+    public function disabled_pools()
     {
         return $this->belongsToMany(Pool::class, 'pool_session_disabled');
     }
@@ -208,7 +208,7 @@ class Session extends Base
      */
     public function scopeEnabled(Builder $query, Pool $pool): Builder
     {
-        return $query->whereDoesntHave('disabledPools',
+        return $query->whereDoesntHave('disabled_pools',
             fn($q) => $q->where('pools.id', $pool->id));
     }
 
@@ -220,7 +220,7 @@ class Session extends Base
      */
     public function scopeDisabled(Builder $query, Pool $pool): Builder
     {
-        return $query->whereHas('disabledPools',
+        return $query->whereHas('disabled_pools',
             fn($q) => $q->where('pools.id', $pool->id));
     }
 

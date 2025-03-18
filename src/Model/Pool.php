@@ -143,6 +143,8 @@ class Pool extends Base
                 ->when($round->start_at !== null && $round->end_at !== null,
                     function($query) use($round) {
                         $query->orWhere(function($query) use($round) {
+                            // Take the other pools of the tontine with overlapped sessions.
+                            $query->where('v.tontine_id', $round->tontine_id);
                             $this->filterOnDates($query, $round->start_at, $round->end_at);
                         });
                     });
@@ -159,8 +161,8 @@ class Pool extends Base
      */
     public function scopeOfSession(Builder $query, Session $session): Builder
     {
-        $date = $session->start_at;
-        return $this->filterOnDates($query, $date, $date)
+        $query->where('v.tontine_id', $session->round->tontine_id);
+        return $this->filterOnDates($query, $session->start_at, $session->start_at)
             // Also filter on enabled sessions.
             ->whereDoesntHave('disabled_sessions',
                 fn($q) => $q->where('sessions.id', $session->id));

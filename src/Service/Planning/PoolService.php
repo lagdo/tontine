@@ -298,7 +298,7 @@ class PoolService
      */
     public function enabled(Pool $pool, Session $session): bool
     {
-        return $session->disabledPools->find($pool->id) === null;
+        return $session->disabled_pools->find($pool->id) === null;
     }
 
     /**
@@ -309,7 +309,7 @@ class PoolService
      */
     public function disabled(Pool $pool, Session $session): bool
     {
-        return $session->disabledPools->find($pool->id) !== null;
+        return $session->disabled_pools->find($pool->id) !== null;
     }
 
     /**
