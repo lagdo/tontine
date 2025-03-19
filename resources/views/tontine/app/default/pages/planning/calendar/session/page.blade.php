@@ -31,11 +31,12 @@
   'dataIdKey' => 'data-session-id',
   'dataIdValue' => $session->id,
   'menus' => [[
-    'class' => 'btn-session-edit',
-    'text' => __('common.actions.edit'),
-  ],[
     'class' => 'btn-session-venue',
     'text' => __('tontine.session.actions.venue'),
+  ],
+  null,[
+    'class' => 'btn-session-edit',
+    'text' => __('common.actions.edit'),
   ],[
     'class' => 'btn-session-delete',
     'text' => __('common.actions.delete'),

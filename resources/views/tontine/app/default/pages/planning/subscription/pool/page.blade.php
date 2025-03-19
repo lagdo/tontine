@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $poolId = jq()->parent()->attr('data-pool-id')->toInt();
   $rqPoolPage = rq(Ajax\App\Planning\Subscription\PoolPage::class);
@@ -30,7 +29,8 @@
                         </td>
                         <td class="table-item-menu">
 @php
-  $plannedActions = !$pool->remit_planned ? [] : [[
+  $plannedActions = !$pool->remit_planned ? [] :
+  [null, [
     'class' => 'btn-pool-planning',
     'text' => __('tontine.subscription.actions.planning'),
   ],[
