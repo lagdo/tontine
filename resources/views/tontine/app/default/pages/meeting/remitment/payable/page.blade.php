@@ -22,7 +22,7 @@
                         <tr>
                           <td>{{ $payable->member }}</td>
                           <td class="currency">
-                            {{ $locale->formatMoney($payable->amount, true) }}
+                            {{ $locale->formatMoney($payable->amount) }}
 @if ($payable->remitment && $payable->remitment->auction)
                             <br/>{{ __('meeting.remitment.labels.auction') }}: {{
                               $locale->formatMoney($payable->remitment->auction->amount) }}

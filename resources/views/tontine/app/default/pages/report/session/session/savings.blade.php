@@ -29,7 +29,7 @@
                       <tbody>
                         <tr>
                           <td>{{ $saving->total_count }}</td>
-                          <td class="currency">{{ $locale->formatMoney($saving->total_amount, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($saving->total_amount) }}</td>
                         </tr>
                       </tbody>
                     </table>

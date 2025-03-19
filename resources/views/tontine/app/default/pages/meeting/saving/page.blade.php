@@ -22,7 +22,7 @@
                         <tr>
                           <td>{{ $saving->member }}<br/>{!! $saving->fund ?
                             $saving->fund->title : __('tontine.fund.labels.default') !!}</td>
-                          <td class="currency">{{ $locale->formatMoney($saving->amount, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($saving->amount) }}</td>
                           <td class="table-item-menu">
 @include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-saving-id',

@@ -21,8 +21,8 @@
                                 __('meeting.loan.labels.' . $refund->debt->type) }}: {{ $refund->debt->loan->session->title }}
                             </td>
                             <td class="currency">
-                              {{ $locale->formatMoney($refund->amount, true) }}<br/>
-                              {{ $locale->formatMoney($debtCalculator->getDebtDueAmount($refund->debt, $session, false), true) }}
+                              {{ $locale->formatMoney($refund->amount) }}<br/>
+                              {{ $locale->formatMoney($debtCalculator->getDebtDueAmount($refund->debt, $session, false)) }}
                             </td>
 @if( $refund->debt->refund !== null || !$paymentService->isEditable($refund) )
                             <td class="table-item-menu">

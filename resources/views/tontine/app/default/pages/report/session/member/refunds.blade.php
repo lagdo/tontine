@@ -18,7 +18,7 @@
                         <tr>
                           <td>{{ __('meeting.loan.labels.' . $refund->debt->type_str) }}@if ($refund->is_partial) ({{
                             __('meeting.refund.labels.partial') }})@endif<br/>{{ $refund->debt->session->title }}</td>
-                          <td class="currency">{{ $locale->formatMoney($refund->amount, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($refund->amount) }}</td>
                           <td class="table-item-menu"><i class="fa fa-toggle-{{ true ? 'on' : 'off' }}"></i></td>
                         </tr>
 @endforeach

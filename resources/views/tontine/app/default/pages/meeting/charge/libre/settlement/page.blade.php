@@ -22,7 +22,7 @@
                         <tr>
                           <td>{{ $bill->member }}@if ($bill->libre && $bill->session->id !== $session->id) <br/>{{
                             $bill->session->title }} @endif</td>
-                          <td class="currency">{{ $locale->formatMoney($bill->amount, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($bill->amount) }}</td>
                           <td class="table-item-menu" data-bill-id="{{ $bill->id }}">
                             {!! paymentLink($bill->settlement, 'settlement', !$session->opened || !$charge->is_active) !!}
                           </td>

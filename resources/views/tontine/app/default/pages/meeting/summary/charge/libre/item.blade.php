@@ -9,12 +9,12 @@
                         <tr>
                           <td @if (!$charge->is_active) style="text-decoration:line-through" @endif>
                             {{ $charge->name }}<br/>{{ $charge->has_amount ?
-                              $locale->formatMoney($charge->amount, true) : __('tontine.labels.fees.variable') }}
+                              $locale->formatMoney($charge->amount) : __('tontine.labels.fees.variable') }}
                           </td>
                           <td class="currency">
                             {{ $sessionSettlementTotal }}/{{ $sessionBillTotal }} @if ($roundBillTotal > 0) - {{
                               $roundSettlementTotal }}/{{ $roundBillTotal }}@endif @if ($sessionSettlementAmount > 0)<br/>{{
-                              $locale->formatMoney($sessionSettlementAmount, true) }}@endif
+                              $locale->formatMoney($sessionSettlementAmount) }}@endif
                           </td>
                           <td class="table-item-menu">&nbsp;</td>
                         </tr>

@@ -16,7 +16,7 @@
 @foreach($disbursements as $disbursement)
                         <tr>
                           <td>{{ $disbursement->category->name }}<br/>{{ $disbursement->session->title }}</td>
-                          <td class="currency">{{ $locale->formatMoney($disbursement->amount, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($disbursement->amount) }}</td>
                         </tr>
 @endforeach
                       </tbody>

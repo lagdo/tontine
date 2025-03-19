@@ -16,7 +16,7 @@
 @foreach($savings as $saving)
                         <tr>
                           <td>{{ $saving->session->title }}</td>
-                          <td class="currency">{{ $locale->formatMoney($saving->amount, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($saving->amount) }}</td>
                         </tr>
 @endforeach
                       </tbody>

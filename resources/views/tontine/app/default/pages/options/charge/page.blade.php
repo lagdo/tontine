@@ -29,7 +29,7 @@
                       <td>{{ $periods[$charge->period] ?? '' }}</td>
                       <td>{{ $charge->name }}</td>
                       <td class="currency">{{ $charge->has_amount ?
-                        $locale->formatMoney($charge->amount, true) : __('tontine.labels.fees.variable') }}</td>
+                        $locale->formatMoney($charge->amount) : __('tontine.labels.fees.variable') }}</td>
                       <td class="table-item-toggle">
                         <i class="fa fa-toggle-{{ $charge->lendable ? 'on' : 'off' }}"></i>
                       </td>

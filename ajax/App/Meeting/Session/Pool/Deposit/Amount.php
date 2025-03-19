@@ -37,7 +37,7 @@ class Amount extends Component
         {
             return $this->renderView('pages.meeting.deposit.libre.closed', [
                 'amount' => !$receivable->deposit ? '' :
-                    $this->localeService->formatMoney($receivable->deposit->amount, true),
+                    $this->localeService->formatMoney($receivable->deposit->amount),
             ]);
         }
 

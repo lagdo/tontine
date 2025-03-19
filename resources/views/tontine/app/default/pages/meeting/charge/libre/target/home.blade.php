@@ -37,7 +37,7 @@
                     </div>
                     <div class="col-auto">
                       {{ __('meeting.target.labels.target', [
-                        'amount' => $locale->formatMoney($target->amount, true),
+                        'amount' => $locale->formatMoney($target->amount),
                       ]) }}<br/>
                       {{ $target->deadline->title }}
                     </div>

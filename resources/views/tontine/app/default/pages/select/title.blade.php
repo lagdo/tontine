@@ -1,4 +1,5 @@
 @inject('tenant', Siak\Tontine\Service\TenantService::class)
+@inject('locale', Siak\Tontine\Service\LocaleService::class)
 @php
   $rqMenuFunc = rq(Ajax\App\MenuFunc::class);
 @endphp
@@ -10,6 +11,7 @@
   $round = $tenant->round();
 @endphp
 {{ $tontine?->name ?? __('tontine.titles.select.tontine') }}
+@if ($tontine !== null)({{ $locale->getCurrencyName() }})@endif
 <a class="highlight" role="link" @jxnClick($rqMenuFunc->showOrganisations())><i class="fa fa-caret-square-right"></i></a>
 
 @if($tontine !== null && $tontine->rounds()->count() > 0)

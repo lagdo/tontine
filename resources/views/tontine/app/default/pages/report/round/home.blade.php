@@ -10,7 +10,7 @@
           <div class="section-body">
             <div class="row">
               <div class="col">
-                <h2 class="section-title">{{ __('figures.titles.amounts') }} ({{ $locale->getCurrencyName() }})</h2>
+                <h2 class="section-title">{{ __('figures.titles.amounts') }}</h2>
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right ml-1" role="group">

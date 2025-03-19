@@ -18,8 +18,8 @@
 @endphp
                         <tr>
                           <td>{{ $member->name }}@if ($remaining > 0)<br/>{{ __('meeting.target.labels.remaining',
-                            ['amount' => $locale->formatMoney($remaining, true)]) }}@endif</td>
-                          <td class="currency">{{ $locale->formatMoney($paid, true) }}</td>
+                            ['amount' => $locale->formatMoney($remaining)]) }}@endif</td>
+                          <td class="currency">{{ $locale->formatMoney($paid) }}</td>
                         </tr>
 @endforeach
                       </tbody>

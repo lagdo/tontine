@@ -13,7 +13,7 @@
                       <thead>
                         <tr>
                           <th>{!! __('common.labels.name') !!}</th>
-                          <th class="table-menu"></th>
+                          <th class="table-item-menu"></th>
                         </tr>
                       </thead>
                       <tbody>

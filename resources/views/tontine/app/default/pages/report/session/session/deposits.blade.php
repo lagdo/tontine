@@ -17,9 +17,9 @@
 @foreach($pools as $pool)
                         <tr>
                           <td>{{ $pool->title }}<br/>{{ $pool->deposit_fixed ?
-                            $locale->formatMoney($pool->amount, true) : __('tontine.labels.types.libre') }}</td>
+                            $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre') }}</td>
                           <td>{{ $pool->paid_count }}/{{ $pool->total_count }}</td>
-                          <td class="currency">{{ $locale->formatMoney($pool->paid_amount, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($pool->paid_amount) }}</td>
                         </tr>
 @endforeach
                       </tbody>

@@ -15,7 +15,7 @@
                       <tbody>
                         <tr>
                           <td>{{ $disbursement->total_count }}</td>
-                          <td class="currency">{{ $locale->formatMoney($disbursement->total_amount, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($disbursement->total_amount) }}</td>
                         </tr>
                       </tbody>
                     </table>

@@ -18,7 +18,7 @@
                         <tr>
                           <td>{{ $payable->pool->title }}</td>
                           <td class="currency">
-                            {{ $locale->formatMoney($payable->amount, true) }}
+                            {{ $locale->formatMoney($payable->amount) }}
 @isset ($auctions[$payable->id])
                             <br/>{{ __('meeting.remitment.labels.auction') }}: {{ $locale->formatMoney($auctions[$payable->id]->amount) }}
 @endisset

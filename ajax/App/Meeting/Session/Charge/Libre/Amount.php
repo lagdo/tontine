@@ -35,7 +35,7 @@ class Amount extends Component
         if(!$session->opened || !$charge->is_active)
         {
             return $this->renderView('pages.meeting.charge.libre.member.closed', [
-                'amount' => !$bill ? '' : $this->localeService->formatMoney($bill->amount, true),
+                'amount' => !$bill ? '' : $this->localeService->formatMoney($bill->amount),
             ]);
         }
 

@@ -63,9 +63,9 @@
 @else
                         <tr>
                           <td>{{ $session->title }}</td>
-                          <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv) }}</td>
                           <td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>
-                          <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount) }}</td>
                           <td style="flex-direction:column"><div style="width:97%;">
 @foreach ($session->beneficiaries as $subscription)
 @php

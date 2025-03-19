@@ -21,9 +21,9 @@
 @foreach($pools as $pool)
                         <tr>
                           <td>{{ $pool->title }}<br/>{{ $pool->deposit_fixed ?
-                            $locale->formatMoney($pool->amount, true) : __('tontine.labels.types.libre') }}</td>
+                            $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre') }}</td>
                           <td class="currency">{{ $pool->recv_paid }}/{{ $pool->recv_count }}@if ($pool->amount_recv > 0)<br/>{{
-                            $locale->formatMoney($pool->amount_recv, true) }}@endif</td>
+                            $locale->formatMoney($pool->amount_recv) }}@endif</td>
                           <td class="table-item-menu">&nbsp;</td>
                         </tr>
 @endforeach

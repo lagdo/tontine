@@ -63,7 +63,7 @@
                           <td>{!! $funds[$closing->fund_id] !!}</td>
                           <td class="currency">
                             {!! $closing->title !!}@if( $closing->is_round ) <br/>{{
-                              $locale->formatMoney($closing->profit, true) }}@endif
+                              $locale->formatMoney($closing->profit) }}@endif
                           </td>
                           <td class="table-item-menu">
 @php

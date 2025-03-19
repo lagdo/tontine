@@ -8,12 +8,12 @@
 @endphp
                         <tr>
                           <td @if (!$charge->is_active) style="text-decoration:line-through" @endif>
-                            {{ $charge->name }}<br/>{{ $locale->formatMoney($charge->amount, true) }}
+                            {{ $charge->name }}<br/>{{ $locale->formatMoney($charge->amount) }}
                           </td>
                           <td class="currency">
                             {{ $sessionSettlementTotal }}/{{ $sessionBillTotal }} @if ($roundBillTotal > 0) - {{
                               $roundSettlementTotal }}/{{ $roundBillTotal }}@endif @if ($sessionSettlementAmount > 0)<br/>{{
-                              $locale->formatMoney($sessionSettlementAmount, true) }}@endif
+                              $locale->formatMoney($sessionSettlementAmount) }}@endif
                           </td>
                           <td class="table-item-menu" data-charge-id="{{ $charge->id }}">
                             <button type="button" class="btn btn-primary btn-fee-fixed-settlements"><i class="fa fa-arrow-circle-right"></i></button>

@@ -18,8 +18,8 @@
                         <tr>
                           <td>{{ $receivable->pool->title }}</td>
                           <td class="currency">{{ $receivable->pool->deposit_fixed ?
-                            $locale->formatMoney($receivable->amount, true) : ($receivable->paid ?
-                            $locale->formatMoney($receivable->deposit->amount, true) :
+                            $locale->formatMoney($receivable->amount) : ($receivable->paid ?
+                            $locale->formatMoney($receivable->deposit->amount) :
                             __('tontine.labels.types.libre')) }}</td>
                           <td class="table-item-menu"><i class="fa fa-toggle-{{ $receivable->paid ? 'on' : 'off' }}"></i></td>
                         </tr>

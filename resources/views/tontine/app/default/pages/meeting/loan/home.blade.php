@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $rqLoan = rq(Ajax\App\Meeting\Session\Credit\Loan\Loan::class);
   $rqLoanPage = rq(Ajax\App\Meeting\Session\Credit\Loan\LoanPage::class);
@@ -7,7 +6,7 @@
 @endphp
                   <div class="row">
                     <div class="col">
-                      <div class="section-title mt-0">{{ __('meeting.titles.loans') }} ({{ $locale->getCurrencySymbol() }})</div>
+                      <div class="section-title mt-0">{{ __('meeting.titles.loans') }}</div>
                     </div>
                     <div class="col-auto" @jxnBind($rqBalance)>
                     </div>

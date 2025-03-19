@@ -24,8 +24,8 @@
                                 __('meeting.loan.labels.' . $debt->type) }}: {{ $debt->loan->session->title }}
                             </td>
                             <td class="currency">
-                              {{ __('meeting.report.labels.due') }} {{ $locale->formatMoney($debtDueAmount, true) }}<br/>
-                              {{ $locale->formatMoney($debtAmount, true) }}
+                              {{ __('meeting.report.labels.due') }} {{ $locale->formatMoney($debtDueAmount) }}<br/>
+                              {{ $locale->formatMoney($debtAmount) }}
                             </td>
                             <td class="table-item-menu">
                               {!! paymentLink($debt->refund, 'refund', true) !!}

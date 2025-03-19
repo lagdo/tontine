@@ -197,8 +197,8 @@ class LocaleService
      *
      * @return string
      */
-    public function formatMoney(int $amount, bool $showSymbol = true,
-        bool $fixedPrecision = false): string
+    public function formatMoney(int $amount, bool $showSymbol = false,
+        bool $fixedPrecision = true): string
     {
         $money = new Money($amount, $this->currency);
         return $showSymbol ? $money->formatLocale($this->_locale()) :

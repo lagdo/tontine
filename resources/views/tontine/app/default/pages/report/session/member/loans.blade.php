@@ -17,8 +17,8 @@
 @foreach($loans as $loan)
                         <tr>
                           <td>{{ $loan->session->title }}</td>
-                          <td class="currency">{{ $locale->formatMoney($loan->principal, true) }}</td>
-                          <td class="currency">{{ $locale->formatMoney($loan->interest, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($loan->principal) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($loan->interest) }}</td>
                         </tr>
 @endforeach
                       </tbody>

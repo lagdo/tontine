@@ -32,7 +32,7 @@ class Amount extends Component
         {
             return $this->renderView('pages.meeting.saving.member.closed', [
                 'amount' => !$saving ? '' :
-                    $this->localeService->formatMoney($saving->amount, true),
+                    $this->localeService->formatMoney($saving->amount),
             ]);
         }
 

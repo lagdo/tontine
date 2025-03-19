@@ -9,16 +9,16 @@
                       <thead>
                         <tr>
                           <th>{{ __('common.labels.title') }}</th>
-                          <th>{{ __('common.labels.amount') }}</th>
-                          <th>{{ __('common.labels.paid') }}</th>
+                          <th class="currency">{{ __('common.labels.amount') }}</th>
+                          <th class="table-item-menu">{{ __('common.labels.paid') }}</th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach($bills as $bill)
                         <tr>
                           <td>{{ $bill->charge }}@isset($bill->session)<br/>{{ $bill->session->title }}@endisset</td>
-                          <td>{{ $locale->formatMoney($bill->amount) }}</td>
-                          <td><i class="fa fa-toggle-{{ $bill->paid ? 'on' : 'off' }}"></i></td>
+                          <td class="currency">{{ $locale->formatMoney($bill->amount) }}</td>
+                          <td class="table-item-menu"><i class="fa fa-toggle-{{ $bill->paid ? 'on' : 'off' }}"></i></td>
                         </tr>
 @endforeach
                       </tbody>

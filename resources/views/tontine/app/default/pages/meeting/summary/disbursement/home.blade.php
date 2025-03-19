@@ -22,7 +22,7 @@
                             $disbursement->comment }}@endif</td>
                           <td>@if (($disbursement->member)) {{ $disbursement->member->name }}@endif</td>
                           <td>@if (($disbursement->charge)) {{ $disbursement->charge->name }}@endif</td>
-                          <td class="currency">{{ $locale->formatMoney($disbursement->amount, true) }}</td>
+                          <td class="currency">{{ $locale->formatMoney($disbursement->amount) }}</td>
                           <td class="table-item-menu">&nbsp;</td>
                         </tr>
 @endforeach
