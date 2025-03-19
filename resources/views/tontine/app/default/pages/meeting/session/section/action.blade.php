@@ -2,7 +2,7 @@
   $rqSession = rq(Ajax\App\Meeting\Session\Session::class);
   $rqSectionFunc = rq(Ajax\App\Meeting\Session\SectionFunc::class);
 @endphp
-                <div class="btn-group float-right ml-1" role="group"  @jxnTarget()>
+                <div class="btn-group float-right ml-1" role="group" @jxnTarget()>
                   <div @jxnEvent(['.btn-session-pools', 'click'], $rqSectionFunc->pools())></div>
                   <div @jxnEvent(['.btn-session-charges', 'click'], $rqSectionFunc->charges())></div>
                   <div @jxnEvent(['.btn-session-savings', 'click'], $rqSectionFunc->savings())></div>
@@ -37,9 +37,35 @@
 @endphp
 @include('tontine::parts.table.menu', [
   'btnSize' => '',
-  'dataIdKey' => 'data-session-id',
-  'dataIdValue' => 0,
+  'btnIcon' => 'fa-stream',
   'menus' => array_filter($menus, fn($item) => $item['class'] !== "btn-session-$section"),
+])
+                </div>
+                <div class="btn-group float-right ml-1" role="group" @jxnTarget()>
+                  <div @jxnEvent(['.btn-session-prev', 'click'], $rqSectionFunc->$section($prevSession?->id ?? 0))></div>
+                  <div @jxnEvent(['.btn-session-next', 'click'], $rqSectionFunc->$section($nextSession?->id ?? 0))></div>
+
+@php
+  $menus = [];
+  if($prevSession !== null)
+  {
+    $menus[] = [
+      'class' => 'btn-session-prev',
+      'text' => __('meeting.session.actions.prev'),
+    ];
+  }
+  if($nextSession !== null)
+  {
+    $menus[] = [
+      'class' => 'btn-session-next',
+      'text' => __('meeting.session.actions.next'),
+    ];
+  }
+@endphp
+@include('tontine::parts.table.menu', [
+  'btnSize' => '',
+  'btnIcon' => 'fa-sort fa-rotate-90',
+  'menus' => $menus,
 ])
                 </div>
                 <div class="btn-group float-right ml-1" role="group">

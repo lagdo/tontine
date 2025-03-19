@@ -1,10 +1,9 @@
                         <div class="dropdown float-right">
-                          <button class="btn btn-primary {{ $btnSize ?? 'btn-sm' }} dropdown-toggle" type="button" id="{{ $dataIdKey }}-{{
-                            $dataIdValue }}-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-bars"></i>
+                          <button class="btn btn-primary dropdown-toggle {{ $btnSize ?? 'btn-sm'
+                            }}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa {{ $btnIcon ?? 'fa-bars' }}"></i>
                           </button>
-                          <div {{ $dataIdKey }}="{{ $dataIdValue }}" class="dropdown-menu" aria-labelledby="{{
-                            $dataIdKey }}-{{ $dataIdValue }}-menu">
+                          <div @isset($dataIdKey) {{ $dataIdKey }}="{{ $dataIdValue }}" @endif class="dropdown-menu">
 @foreach ($menus ?? [] as $menu)
 @if(!$menu)
                             <div class="dropdown-divider"></div>

@@ -130,6 +130,12 @@ return [
             'not_found' => "Cannot find the corresponding category.",
         ],
     ],
+    'session' => [
+        'actions' => [
+            'prev' => "Prev. session",
+            'next' => "Next session",
+        ],
+    ],
     'remitment' => [
         'titles' => [
             'add' => "Add a remitment",

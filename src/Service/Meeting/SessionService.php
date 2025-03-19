@@ -184,6 +184,36 @@ and "v_bills"."session_id" in (?, ?, ?, ?, ?)))
     }
 
     /**
+     * Find the prev session.
+     *
+     * @param Session $session
+     *
+     * @return Session|null
+     */
+    public function getPrevSession(Session $session): ?Session
+    {
+        return $this->tenantService->round()->sessions()->active()
+            ->where('start_at', '<', $session->start_at)
+            ->orderBy('start_at', 'desc')
+            ->first();
+    }
+
+    /**
+     * Find the next session.
+     *
+     * @param Session $session
+     *
+     * @return Session|null
+     */
+    public function getNextSession(Session $session): ?Session
+    {
+        return $this->tenantService->round()->sessions()->active()
+            ->where('start_at', '>', $session->start_at)
+            ->orderBy('start_at', 'asc')
+            ->first();
+    }
+
+    /**
      * Update a session agenda.
      *
      * @param Session $session
