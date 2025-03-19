@@ -3,13 +3,12 @@
 namespace Siak\Tontine\Service\Planning;
 
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Support\Facades\DB;
-use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\SessionTrait;
+use stdClass;
 
 use function intval;
 use function now;
@@ -21,20 +20,11 @@ class SessionService
 
     /**
      * @param TenantService $tenantService
+     * @param DataSyncService $dataSyncService
      */
-    public function __construct(protected TenantService $tenantService)
+    public function __construct(protected TenantService $tenantService,
+        private DataSyncService $dataSyncService)
     {}
-
-    private function disableSessionOnPools(Session $session)
-    {
-        // Disable this session on all planned pools
-        $this->tenantService->round()->pools()
-            ->where('properties->remit->planned', true)
-            ->get()
-            ->each(function($pool) use($session) {
-                $pool->disabled_sessions()->attach($session->id);
-            });
-    }
 
     /**
      * Add a new session.
@@ -51,9 +41,8 @@ class SessionService
         DB::transaction(function() use($round, $values) {
             /** @var Session */
             $session = $round->sessions()->create($values);
-            $this->disableSessionOnPools($session);
+            $this->dataSyncService->onNewSession($round, $session);
         });
-
         return true;
     }
 
@@ -76,10 +65,9 @@ class SessionService
             $sessions = $round->sessions()->createMany($values);
             foreach($sessions as $session)
             {
-                $this->disableSessionOnPools($session);
+                $this->dataSyncService->onNewSession($round, $session);
             }
         });
-
         return true;
     }
 
@@ -93,6 +81,9 @@ class SessionService
      */
     public function updateSession(Session $session, array $values): bool
     {
+        $tontine = $this->tenantService->tontine();
+        $this->dataSyncService->onUpdateSession($tontine, $session, $values);
+
         $values['start_at'] = $values['date'] . ' ' . $values['start'] . ':00';
         $values['end_at'] = $values['date'] . ' ' . $values['end'] . ':00';
         // Make sure the host belongs to the same tontine
@@ -100,9 +91,8 @@ class SessionService
         $values['host_id'] = null;
         if($hostId > 0)
         {
-            $values['host_id'] = $this->tenantService->tontine()->members()->find($hostId)->id;
+            $values['host_id'] = $tontine->members()->find($hostId)?->id ?? null;
         }
-
         return $session->update($values);
     }
 
@@ -128,21 +118,10 @@ class SessionService
      */
     public function deleteSession(Session $session)
     {
-        // Delete the session. Will fail if there's still some data attached.
-        try
-        {
-            DB::transaction(function() use($session) {
-                // Also delete related data that may have been automatically created.
-                $session->receivables()->delete();
-                $session->session_bills()->delete();
-                $session->disabled_pools()->detach();
-                $session->delete();
-            });
-        }
-        catch(Exception $e)
-        {
-            throw new MessageException(trans('tontine.session.errors.delete'));
-        }
+        DB::transaction(function() use($session) {
+            $this->dataSyncService->onDeleteSession($session);
+            $session->delete();
+        });
     }
 
     /**
@@ -155,7 +134,7 @@ class SessionService
         $sessions = [];
         for($i = 0; $i < 12; $i++)
         {
-            $session = new \stdClass();
+            $session = new stdClass();
             $session->title = trans('tontine.session.labels.title', [
                 'date' => $date->translatedFormat(trans('tontine.date.format_my')),
             ]);

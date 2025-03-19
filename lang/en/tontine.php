@@ -333,6 +333,7 @@ return [
             'not_opened' => "The session is not opened",
             'delete' => "Cannot delete this session.",
             'date_dup' => "There is another session with the same date.",
+            'sorting' => "The session sorting cannot be modified.",
         ],
     ],
     'pool' => [

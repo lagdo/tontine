@@ -2,6 +2,8 @@
 
 namespace Siak\Tontine\Model;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class Payable extends Base
 {
     /**
@@ -33,5 +35,15 @@ class Payable extends Base
     public function remitment()
     {
         return $this->hasOne(Remitment::class);
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopePaid(Builder $query): Builder
+    {
+        return $query->whereHas('remitment');
     }
 }

@@ -333,6 +333,7 @@ return [
             'not_opened' => "La séance n'est pas ouverte.",
             'delete' => "Impossible de supprimer cette séance.",
             'date_dup' => "Il existe déjà une séance avec la même date.",
+            'sorting' => "L'ordre des séances ne peut pas être modifié.",
         ],
     ],
     'pool' => [

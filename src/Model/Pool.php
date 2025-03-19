@@ -168,6 +168,16 @@ class Pool extends Base
                 fn($q) => $q->where('sessions.id', $session->id));
     }
 
+    /**
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeRemitPlanned(Builder $query): Builder
+    {
+        return $query->where('properties->remit->planned', true);
+    }
+
     public function startDate(): Attribute
     {
         return Attribute::make(

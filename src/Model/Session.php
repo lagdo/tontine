@@ -231,7 +231,7 @@ class Session extends Base
      */
     public function scopeActive(Builder $query): Builder
     {
-        return $query->where('status', '!=', self::STATUS_PENDING);
+        return $query->where('sessions.status', '!=', self::STATUS_PENDING);
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace Siak\Tontine\Model;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class SessionBill extends Base
 {
     /**
@@ -29,5 +31,15 @@ class SessionBill extends Base
     public function bill()
     {
         return $this->belongsTo(Bill::class);
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopePaid(Builder $query): Builder
+    {
+        return $query->whereHas('bill', fn(Builder $billQuery) => $billQuery->paid());
     }
 }

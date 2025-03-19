@@ -2,6 +2,8 @@
 
 namespace Siak\Tontine\Model;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class Receivable extends Base
 {
     /**
@@ -34,5 +36,15 @@ class Receivable extends Base
     public function deposit()
     {
         return $this->hasOne(Deposit::class);
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopePaid(Builder $query): Builder
+    {
+        return $query->whereHas('deposit');
     }
 }
