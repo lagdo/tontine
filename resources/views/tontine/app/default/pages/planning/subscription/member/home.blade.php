@@ -22,7 +22,6 @@
                 </div>
               </div>
 
-              <!-- Data tables -->
               <div class="card shadow mb-4">
                 <div class="card-header">
                   <div class="row w-100">
@@ -42,6 +41,7 @@
                     </div>
                   </div>
                 </div>
+                <!-- Data tables -->
                 <div class="card-body" @jxnBind($rqMemberPage)>
                 </div>
               </div>

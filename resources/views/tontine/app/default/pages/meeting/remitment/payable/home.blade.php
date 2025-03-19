@@ -1,15 +1,12 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $rqRemitment = rq(Ajax\App\Meeting\Session\Pool\Remitment\Remitment::class);
   $rqPayableFunc = rq(Ajax\App\Meeting\Session\Pool\Remitment\PayableFunc::class);
   $rqPayablePage = rq(Ajax\App\Meeting\Session\Pool\Remitment\PayablePage::class);
+  $rqTotal = rq(Ajax\App\Meeting\Session\Pool\Remitment\Total::class);
 @endphp
                   <div class="row">
                     <div class="col">
-                      <div class="section-title mt-0">
-                        {{ $pool->title }}<br/>{{ __('meeting.titles.remitments') }}@if (!$pool->remit_planned) ({{
-                          $locale->formatMoney($depositAmount) }})@endif
-                      </div>
+                      <div class="section-title mt-0">{{ __('meeting.titles.remitments') }}</div>
                     </div>
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2 mb-2" role="group">
@@ -20,5 +17,13 @@
                       </div>
                     </div>
                   </div>
+                  <div class="row p-2 font-weight-bold">
+                    <div class="col">
+                      <div>{{ $pool->title }}</div>
+                    </div>
+                    <div class="col-auto" @jxnBind($rqTotal)>
+                    </div>
+                  </div>
+
                   <div @jxnBind($rqPayablePage)>
                   </div>

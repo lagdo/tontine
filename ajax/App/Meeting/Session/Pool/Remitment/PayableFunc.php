@@ -42,6 +42,7 @@ class PayableFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
         $this->remitmentService->savePlannedRemitment($pool, $session, $payableId);
 
+        $this->cl(Total::class)->render();
         $this->cl(PayablePage::class)->render();
     }
 
@@ -96,6 +97,7 @@ class PayableFunc extends FuncComponent
             $values['payable'], $values['auction']);
         $this->modal()->hide();
 
+        $this->cl(Total::class)->render();
         $this->cl(PayablePage::class)->render();
     }
 
@@ -108,6 +110,7 @@ class PayableFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
         $this->remitmentService->deleteRemitment($pool, $session, $payableId);
 
+        $this->cl(Total::class)->render();
         $this->cl(PayablePage::class)->render();
     }
 }

@@ -19,8 +19,7 @@
 @foreach($auctions as $auction)
                         <tr>
                           <td>
-                            {{ $auction->member->name }}<br/>
-                            {{ $auction->remitment->payable->session->title }}@if ($auction->paid) - {{ $auction->session->title }}@endif
+                            {{ $auction->member->name }}@if ($auction->paid)<br/>{{ $auction->session->title }}@endif
                           </td>
                           <td class="currency">
                             {{ $locale->formatMoney($auction->amount) }}<br/>{{ __('meeting.remitment.labels.auction') }}

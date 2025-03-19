@@ -14,7 +14,7 @@
                         <tr>
                           <th>{!! __('common.labels.name') !!}</th>
                           <th class="currency">{!! __('common.labels.amount') !!}</th>
-                          <th>{!! __('common.labels.paid') !!}</th>
+                          <th class="table-item-menu">{!! __('common.labels.paid') !!}</th>
                         </tr>
                       </thead>
                       <tbody>

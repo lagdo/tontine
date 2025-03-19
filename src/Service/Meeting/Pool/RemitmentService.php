@@ -42,13 +42,12 @@ class RemitmentService
     private function getQuery(Pool $pool, Session $session): Builder|Relation
     {
         return $session->payables()
-            ->select('payables.*')
             ->join('subscriptions', 'subscriptions.id', '=', 'payables.subscription_id')
             ->where('subscriptions.pool_id', $pool->id);
     }
 
     /**
-     * Get the number of payables in the selected round.
+     * Get the number of payables in the given pool.
      *
      * @param Pool $pool
      * @param Session $session
@@ -58,6 +57,38 @@ class RemitmentService
     public function getPayableCount(Pool $pool, Session $session): int
     {
         return $this->getQuery($pool, $session)->count();
+    }
+
+    /**
+     * Get the number of remitments in the given pool.
+     *
+     * @param Pool $pool
+     * @param Session $session
+     *
+     * @return int
+     */
+    public function getRemitmentCount(Pool $pool, Session $session): int
+    {
+        return $this->getQuery($pool, $session)->whereHas('remitment')->count();
+    }
+
+    /**
+     * @param Pool $pool
+     * @param Session $session
+     *
+     * @return int
+     */
+    public function getRemitmentAmount(Pool $pool, Session $session): int
+    {
+        $count = $this->getRemitmentCount($pool, $session);
+        if(!$pool->deposit_fixed)
+        {
+            // Sum the amounts for all deposits
+            return $count === 0 ? 0 :
+                $this->balanceCalculator->getPoolDepositAmount($pool, $session);
+        }
+
+        return $count * $this->balanceCalculator->getPayableAmount($pool, $session);
     }
 
     /**
@@ -71,6 +102,7 @@ class RemitmentService
     {
         $amount = $this->balanceCalculator->getPayableAmount($pool, $session);
         $payables = $this->getQuery($pool, $session)
+            ->select('payables.*')
             ->addSelect(DB::raw('members.name as member'))
             ->join('members', 'members.id', '=', 'subscriptions.member_id')
             ->with(['remitment', 'remitment.auction'])
@@ -108,7 +140,9 @@ class RemitmentService
     public function getPayable(Pool $pool, Session $session, int $payableId): ?Payable
     {
         return $this->getQuery($pool, $session)
-            ->with(['remitment', 'remitment.auction'])->find($payableId);
+            ->with(['remitment', 'remitment.auction'])
+            ->select('payables.*')
+            ->find($payableId);
     }
 
     /**
@@ -171,7 +205,7 @@ class RemitmentService
         if($pool->remit_planned)
         {
             $plannedCount = $this->summaryService->getSessionRemitmentCount($pool, $session);
-            $remittedCount = $this->getQuery($pool, $session)->whereHas('remitment')->count();
+            $remittedCount = $this->getRemitmentCount($pool, $session);
             if($remittedCount >= $plannedCount)
             {
                 throw new MessageException(trans('tontine.remitment.errors.max-count'));
@@ -211,6 +245,7 @@ class RemitmentService
     {
         $payable = $this->getQuery($pool, $session)
             ->with(['remitment', 'remitment.auction'])
+            ->select('payables.*')
             ->find($payableId);
         if(!$payable || !($remitment = $payable->remitment))
         {
