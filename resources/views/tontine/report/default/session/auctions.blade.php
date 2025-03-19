@@ -1,4 +1,5 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@inject('poolService', 'Siak\Tontine\Service\Planning\PoolService')
                   <div class="row mt-0">
                     <div class="col d-flex justify-content-center">
                       <h5>{{ __('meeting.remitment.titles.auctions') }}</h5>
@@ -8,7 +9,7 @@
 @php
   $total = 0;
 @endphp
-@if ($pool->remit_auction && $session->enabled($pool))
+@if ($pool->remit_auction && $poolService->enabled($pool, $session))
                   <div class="row">
                     <div class="col">
                       <h6>{{ $pool->title }}</h6>

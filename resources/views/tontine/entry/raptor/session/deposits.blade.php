@@ -1,8 +1,9 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@inject('poolService', 'Siak\Tontine\Service\Planning\PoolService')
 @if ($pools->count() > 0)
                   <div class="section-title">{{ __('meeting.titles.deposits') }}</div>
 @foreach ($pools as $pool)
-@if ($session->enabled($pool))
+@if ($poolService->enabled($pool, $session))
 @php
   $poolReceivables = $receivables->filter(fn($receivable) => $receivable->pool->id === $pool->id);
 @endphp

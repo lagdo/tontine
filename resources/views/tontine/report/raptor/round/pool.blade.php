@@ -1,4 +1,5 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@inject('poolService', 'Siak\Tontine\Service\Planning\PoolService')
               <div class="table-title">
                 {{ __('meeting.actions.pools') }} - {{ $pool->title }}
               </div>
@@ -18,7 +19,7 @@
 @foreach ($sessions as $session)
                     <tr>
                       <td>{{ $session->title }}</td>
-@if($session->disabled($pool) || ($session->pending && !$pool->remit_planned))
+@if($poolService->disabled($pool, $session) || ($session->pending && !$pool->remit_planned))
                       <td class="report-round-pool-amount"></td>
                       <td class="report-round-pool-count"></td>
                       <td class="report-round-pool-amount"></td>

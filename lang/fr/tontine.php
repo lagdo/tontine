@@ -390,6 +390,7 @@ return [
             ],
             'subscription' => "Cette tontine a encore des souscriptions.",
             'no_subscription' => "Il y a encore des fonds sans souscription.",
+            'payments' => "Tous les versements et remises doivent être supprimés avant de supprimer ou désactiver une tontine.",
         ],
     ],
     'pool_round' => [

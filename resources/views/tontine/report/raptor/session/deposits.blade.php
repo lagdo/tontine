@@ -1,9 +1,10 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
+@inject('poolService', 'Siak\Tontine\Service\Planning\PoolService')
                   <div class="section-title">
                     {{ __('meeting.titles.deposits') }}
                   </div>
 @foreach ($pools as $pool)
-@if ($session->enabled($pool))
+@if ($poolService->enabled($pool, $session))
                   <div class="table-title">
                     {{ $pool->title }} :: {{ $pool->deposit_fixed ?
                         $locale->formatMoney($pool->amount, true) : ('(' . __('tontine.labels.types.libre') . ')') }}

@@ -2,7 +2,7 @@
 
 namespace Siak\Tontine\Model;
 
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Builder;
 
 use function trans;
@@ -66,47 +66,63 @@ class Session extends Base
      */
     protected $with = [
         'host',
-        'disabledPools',
+        'disabled_pools',
     ];
 
-    public function getNotFirstAttribute()
+    public function notFirst(): Attribute
     {
-        return $this->round->sessions()->where('start_at', '<', $this->start_at)->exists();
+        return Attribute::make(
+            get: fn() => $this->round->sessions()->where('start_at', '<', $this->start_at)->exists(),
+        );
     }
 
-    public function getNotLastAttribute()
+    public function notLast(): Attribute
     {
-        return $this->round->sessions()->where('start_at', '>', $this->start_at)->exists();
+        return Attribute::make(
+            get: fn() => $this->round->sessions()->where('start_at', '>', $this->start_at)->exists(),
+        );
     }
 
-    public function getAbbrevAttribute($value)
+    public function abbrev(): Attribute
     {
-        return $value ?? $this->start_at->format('M y');
+        return Attribute::make(
+            get: fn($value) => $value ?? $this->start_at->format('M y'),
+        );
     }
 
-    public function getDateAttribute()
+    public function date(): Attribute
     {
-        return $this->start_at->translatedFormat(trans('tontine.date.format'));
+        return Attribute::make(
+            get: fn() => $this->start_at->translatedFormat(trans('tontine.date.format')),
+        );
     }
 
-    public function getTimesAttribute()
+    public function times(): Attribute
     {
-        return $this->start_at->format('H:i') . ' - ' . $this->end_at->format('H:i');
+        return Attribute::make(
+            get: fn() => $this->start_at->format('H:i') . ' - ' . $this->end_at->format('H:i'),
+        );
     }
 
-    public function getPendingAttribute()
+    public function pending(): Attribute
     {
-        return $this->status === self::STATUS_PENDING;
+        return Attribute::make(
+            get: fn() => $this->status === self::STATUS_PENDING,
+        );
     }
 
-    public function getOpenedAttribute()
+    public function opened(): Attribute
     {
-        return $this->status === self::STATUS_OPENED;
+        return Attribute::make(
+            get: fn() => $this->status === self::STATUS_OPENED,
+        );
     }
 
-    public function getClosedAttribute()
+    public function closed(): Attribute
     {
-        return $this->status === self::STATUS_CLOSED;
+        return Attribute::make(
+            get: fn() => $this->status === self::STATUS_CLOSED,
+        );
     }
 
     public function round()
@@ -124,29 +140,9 @@ class Session extends Base
         return $this->hasMany(Payable::class)->orderBy('payables.id', 'asc');
     }
 
-    public function payableAmounts()
-    {
-        return $this->hasMany(Payable::class)
-            ->join('subscriptions', 'subscriptions.id', '=', 'payables.subscription_id')
-            ->join('pools', 'subscriptions.pool_id', '=', 'pools.id')
-            ->whereHas('remitment')
-            ->groupBy('pools.id')
-            ->select('pools.id', DB::raw('sum(pools.amount) as amount'));
-    }
-
     public function receivables()
     {
         return $this->hasMany(Receivable::class);
-    }
-
-    public function receivableAmounts()
-    {
-        return $this->hasMany(Receivable::class)
-            ->join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
-            ->join('pools', 'subscriptions.pool_id', '=', 'pools.id')
-            ->whereHas('deposit')
-            ->groupBy('pools.id')
-            ->select('pools.id', DB::raw('sum(pools.amount) as amount'));
     }
 
     public function session_bills()
@@ -194,7 +190,7 @@ class Session extends Base
         return $this->hasMany(Disbursement::class);
     }
 
-    public function disabledPools()
+    public function disabled_pools()
     {
         return $this->belongsToMany(Pool::class, 'pool_session_disabled');
     }
@@ -204,14 +200,28 @@ class Session extends Base
         return $this->belongsToMany(Member::class, 'absences');
     }
 
-    public function enabled(Pool $pool)
+    /**
+     * @param  Builder  $query
+     * @param  Pool $pool
+     *
+     * @return Builder
+     */
+    public function scopeEnabled(Builder $query, Pool $pool): Builder
     {
-        return $this->disabledPools->find($pool->id) === null;
+        return $query->whereDoesntHave('disabled_pools',
+            fn($q) => $q->where('pools.id', $pool->id));
     }
 
-    public function disabled(Pool $pool)
+    /**
+     * @param  Builder  $query
+     * @param  Pool $pool
+     *
+     * @return Builder
+     */
+    public function scopeDisabled(Builder $query, Pool $pool): Builder
     {
-        return $this->disabledPools->find($pool->id) !== null;
+        return $query->whereHas('disabled_pools',
+            fn($q) => $q->where('pools.id', $pool->id));
     }
 
     /**
@@ -232,5 +242,19 @@ class Session extends Base
     public function scopeOpened(Builder $query): Builder
     {
         return $query->where('status', '=', self::STATUS_OPENED);
+    }
+
+    /**
+     * @param  Builder  $query
+     * @param  Pool $pool
+     *
+     * @return Builder
+     */
+    public function scopeOfPool(Builder $query, Pool $pool): Builder
+    {
+        return !$pool->pool_round ?
+            $query->where('round_id', $pool->round_id) :
+            $query->whereDate('start_at', '<=', $pool->end_at->format('Y-m-d'))
+                ->whereDate('start_at', '>=', $pool->start_at->format('Y-m-d'));
     }
 }

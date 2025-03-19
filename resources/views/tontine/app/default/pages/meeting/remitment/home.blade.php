@@ -36,16 +36,16 @@
                       <tbody>
 @foreach($pools as $pool)
 @php
-  $template = $session->disabled($pool) ? 'disabled' :
-    ($session->closed ? 'closed' : ($session->pending ? 'pending' : 'opened'));
+  $template = $session->closed ? 'closed' : ($session->pending ? 'pending' : 'opened');
 @endphp
                         @include('tontine::pages.meeting.pool.' . $template, [
                           'pool' => $pool,
                           'amount' => !$pool->deposit_fixed ? __('tontine.labels.types.libre') :
-                            $locale->formatMoney($pool->amount * $pool->pay_count, true),
+                            $locale->formatMoney($pool->amount, true),
                           'paid' => $pool->pay_paid,
                           'count' => $pool->pay_count,
-                          'total' => $pool->amount_paid,
+                          'total' => !$pool->remit_planned ? $pool->amount_paid : $pool->amount *
+                            ($pool->counter->sessions - $pool->counter->disabled_sessions),
                           'menuClass' => 'btn-pool-remitments',
                         ])
 @endforeach

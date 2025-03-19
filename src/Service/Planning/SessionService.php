@@ -32,7 +32,7 @@ class SessionService
             ->where('properties->remit->planned', true)
             ->get()
             ->each(function($pool) use($session) {
-                $pool->disabledSessions()->attach($session->id);
+                $pool->disabled_sessions()->attach($session->id);
             });
     }
 
@@ -135,7 +135,7 @@ class SessionService
                 // Also delete related data that may have been automatically created.
                 $session->receivables()->delete();
                 $session->session_bills()->delete();
-                $session->disabledPools()->detach();
+                $session->disabled_pools()->detach();
                 $session->delete();
             });
         }

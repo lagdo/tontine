@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Model\Traits;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Siak\Tontine\Service\LocaleService;
 
 use function app;
@@ -14,8 +15,10 @@ trait HasCurrency
      *
      * @return float
      */
-    public function getAmountValueAttribute(): float
+    public function amountValue(): Attribute
     {
-        return app(LocaleService::class)->getMoneyValue(intval($this->amount));
+        return Attribute::make(
+            get: fn() => app(LocaleService::class)->getMoneyValue(intval($this->amount)),
+        );
     }
 }

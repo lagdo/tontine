@@ -16,16 +16,16 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach($deposits as $dpool)
-@if ($session->enabled($dpool))
+@foreach($deposits as $pool)
+@if ($poolService->enabled($pool, $session))
 @php
-  $rpool = $remitments[$dpool->id];
+  $rpool = $remitments[$pool->id];
 @endphp
                         <tr>
-                          <td>{{ $dpool->title }}</td>
-                          <td style="width:10%;text-align:right;">@if ($dpool->paid_count > 0){{ $dpool->paid_count }}@else &nbsp; @endif</td>
-                          <td style="width:20%;text-align:right;">@if ($dpool->paid_count > 0){{
-                            $locale->formatMoney($dpool->paid_amount, true) }}@else &nbsp; @endif</td>
+                          <td>{{ $pool->title }}</td>
+                          <td style="width:10%;text-align:right;">@if ($pool->paid_count > 0){{ $pool->paid_count }}@else &nbsp; @endif</td>
+                          <td style="width:20%;text-align:right;">@if ($pool->paid_count > 0){{
+                            $locale->formatMoney($pool->paid_amount, true) }}@else &nbsp; @endif</td>
                           <td style="width:10%;text-align:right;">@if ($rpool !== null && $rpool->paid_count > 0){{
                             $rpool->paid_count }}@else &nbsp; @endif</td>
                           <td style="width:20%;text-align:right;">@if ($rpool !== null && $rpool->paid_count > 0){{

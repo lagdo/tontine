@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Traits;
 
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\TontineBill;
 use Siak\Tontine\Model\RoundBill;
@@ -42,7 +43,7 @@ trait EventTrait
      *
      * @return void
      */
-    private function createTontineBill(Charge $charge, Member $member, DateTime $today)
+    private function createTontineBill(Charge $charge, Member $member, DateTime $today): void
     {
         $bill = $this->createBill($charge, $today);
         $tontineBill = new TontineBill();
@@ -60,7 +61,7 @@ trait EventTrait
      *
      * @return void
      */
-    private function createRoundBill(Charge $charge, Member $member, Round $round, DateTime $today)
+    private function createRoundBill(Charge $charge, Member $member, Round $round, DateTime $today): void
     {
         $bill = $this->createBill($charge, $today);
         $roundBill = new RoundBill();
@@ -79,7 +80,7 @@ trait EventTrait
      *
      * @return void
      */
-    private function createSessionBill(Charge $charge, Member $member, Session $session, DateTime $today)
+    private function createSessionBill(Charge $charge, Member $member, Session $session, DateTime $today): void
     {
         $bill = $this->createBill($charge, $today);
         $sessionBill = new SessionBill();
@@ -96,7 +97,7 @@ trait EventTrait
      *
      * @return void
      */
-    protected function chargeCreated(Tontine $tontine, Charge $charge)
+    protected function chargeCreated(Tontine $tontine, Charge $charge): void
     {
         if(!$charge->period_once)
         {
@@ -116,7 +117,7 @@ trait EventTrait
      *
      * @return void
      */
-    protected function memberCreated(Tontine $tontine, Member $member)
+    protected function memberCreated(Tontine $tontine, Member $member): void
     {
         $today = now();
         // Create a tontine bill for each charge
@@ -132,24 +133,25 @@ trait EventTrait
      *
      * @return void
      */
-    protected function roundSynced(Tontine $tontine, Round $round)
+    protected function roundSynced(Tontine $tontine, Round $round): void
     {
         $today = now();
-        $members = $tontine->members()->with([
-            'tontine_bills',
-            'round_bills' => function($query) use($round) {
-                $query->where('round_id', $round->id);
-            },
-        ])->get();
+        $members = $tontine
+            ->members()
+            ->with([
+                'tontine_bills',
+                'round_bills' => fn($query) => $query->where('round_id', $round->id),
+            ])
+            ->get();
         $roundCharges = $tontine->charges()->active()->round()->get();
         // Create a round bill for each member
         foreach($members as $member)
         {
             foreach($roundCharges as $charge)
             {
-                $count = $member->round_bills->filter(function($bill) use($charge) {
-                    return $bill->charge_id = $charge->id;
-                })->count();
+                $count = $member->round_bills
+                    ->filter(fn($bill) => $bill->charge_id === $charge->id)
+                    ->count();
                 if($count === 0)
                 {
                     $this->createRoundBill($charge, $member, $round, $today);
@@ -162,9 +164,9 @@ trait EventTrait
         {
             foreach($tontineCharges as $charge)
             {
-                $count = $member->tontine_bills->filter(function($bill) use($charge) {
-                    return $bill->charge_id = $charge->id;
-                })->count();
+                $count = $member->tontine_bills
+                    ->filter(fn($bill) => $bill->charge_id === $charge->id)
+                    ->count();
                 if($count === 0)
                 {
                     $this->createTontineBill($charge, $member, $today);
@@ -179,17 +181,18 @@ trait EventTrait
      *
      * @return void
      */
-    protected function sessionSynced(Tontine $tontine, Session $session)
+    protected function sessionSynced(Tontine $tontine, Session $session): void
     {
         // Make sure the round is also opened.
         $this->roundSynced($tontine, $session->round);
 
         $today = now();
-        $members = $tontine->members()->with([
-            'session_bills' => function($query) use($session) {
-                $query->where('session_id', $session->id);
-            },
-        ])->get();
+        $members = $tontine
+            ->members()
+            ->with([
+                'session_bills' => fn($query) => $query->where('session_id', $session->id),
+            ])
+            ->get();
         $sessionCharges = $tontine->charges()->active()->session()->get();
 
         // Sync the session bills for each member and each session charge
@@ -197,9 +200,9 @@ trait EventTrait
         {
             foreach($members as $member)
             {
-                $count = $member->session_bills->filter(function($bill) use($charge) {
-                    return $bill->charge_id = $charge->id;
-                })->count();
+                $count = $member->session_bills
+                    ->filter(fn($bill) => $bill->charge_id === $charge->id)
+                    ->count();
                 if($count === 0)
                 {
                     $this->createSessionBill($charge, $member, $session, $today);
@@ -208,20 +211,16 @@ trait EventTrait
         };
 
         // Sync the receivables for each subscription on each pool
-        /** @var array<Pool> */
         $pools = Pool::ofSession($session)->get();
         foreach($pools as $pool)
         {
-            if($session->enabled($pool))
+            $subscriptions = $pool
+                ->subscriptions()
+                ->whereDoesntHave('receivables',
+                    fn(Builder $query) => $query->where('session_id', $session->id));
+            foreach($subscriptions->get() as $subscription)
             {
-                $subscriptions = $pool->subscriptions()
-                    ->whereDoesntHave('receivables', function(Builder $query) use($session) {
-                        return $query->where('session_id', $session->id);
-                    });
-                foreach($subscriptions->get() as $subscription)
-                {
-                    $subscription->receivables()->create(['session_id' => $session->id]);
-                }
+                $subscription->receivables()->create(['session_id' => $session->id]);
             }
         }
     }

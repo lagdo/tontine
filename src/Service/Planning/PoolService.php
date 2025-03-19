@@ -18,8 +18,10 @@ class PoolService
 {
     /**
      * @param TenantService $tenantService
+     * @param DataSyncService $dataSyncService
      */
-    public function __construct(protected TenantService $tenantService)
+    public function __construct(protected TenantService $tenantService,
+        private DataSyncService $dataSyncService)
     {}
 
     /**
@@ -112,22 +114,13 @@ class PoolService
      */
     public function deletePool(Pool $pool)
     {
-        try
-        {
-            DB::transaction(function() use($pool) {
-                DB::table('pool_session_disabled')->where('pool_id', $pool->id)->delete();
-                $subscriptionIds = $pool->subscriptions()->pluck('id');
-                DB::table('receivables')->whereIn('subscription_id', $subscriptionIds)->delete();
-                DB::table('payables')->whereIn('subscription_id', $subscriptionIds)->delete();
-                $pool->subscriptions()->delete();
-                $pool->delete();
-            });
-        }
-        catch(Exception $e)
-        {
-            throw new MessageException(trans('tontine.errors.action') .
-                '<br/>' . trans('tontine.pool.errors.subscription'));
-        }
+        DB::transaction(function() use($pool) {
+            $this->dataSyncService->syncPool($pool, false);
+
+            $pool->pool_round()->delete();
+            $pool->subscriptions()->delete();
+            $pool->delete();
+        });
     }
 
     /**
@@ -150,7 +143,7 @@ class PoolService
      *
      * @return void
      */
-    public function saveSessions(Pool $pool, array $values)
+    private function _saveSessions(Pool $pool, array $values)
     {
         if($pool->pool_round !== null)
         {
@@ -173,6 +166,23 @@ class PoolService
     }
 
     /**
+     * Save the pool start and/or end session.
+     *
+     * @param Pool $pool
+     * @param array $values
+     *
+     * @return void
+     */
+    public function saveSessions(Pool $pool, array $values)
+    {
+        DB::transaction(function() use($pool, $values) {
+            $this->_saveSessions($pool, $values);
+
+            $this->dataSyncService->syncPool($pool, true);
+        });
+    }
+
+    /**
      * Delete the pool round.
      *
      * @param Pool $pool
@@ -181,35 +191,11 @@ class PoolService
      */
     public function deleteRound(Pool $pool)
     {
-        $pool->pool_round()->delete();
-    }
+        DB::transaction(function() use($pool) {
+            $pool->pool_round()->delete();
 
-    /**
-     * Get a paginated list of sessions.
-     *
-     * @param Pool $pool
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getPoolSessions(Pool $pool, int $page = 0): Collection
-    {
-        return $pool->sessions()
-            ->orderBy('start_at', 'asc')
-            ->page($page, $this->tenantService->getLimit())
-            ->get();
-    }
-
-    /**
-     * Get the number of sessions.
-     *
-     * @param Pool $pool
-     *
-     * @return int
-     */
-    public function getPoolSessionCount(Pool $pool): int
-    {
-        return $pool->sessions()->count();
+            $this->dataSyncService->syncPool($pool, true);
+        });
     }
 
     /**
@@ -221,7 +207,8 @@ class PoolService
      */
     public function getPoolStartSession(Pool $pool): ?Session
     {
-        return $pool->sessions()->orderBy('start_at', 'asc')->first();
+        return $pool->pool_round?->start_session ??
+            $pool->round->sessions()->orderBy('start_at', 'asc')->first();
     }
 
     /**
@@ -233,7 +220,8 @@ class PoolService
      */
     public function getPoolEndSession(Pool $pool): ?Session
     {
-        return $pool->sessions()->orderBy('start_at', 'desc')->first();
+        return $pool->pool_round?->end_session ??
+            $pool->round->sessions()->orderBy('start_at', 'desc')->first();
     }
 
     /**
@@ -253,14 +241,18 @@ class PoolService
         // {
         //     return;
         // }
-        $session = $pool->sessions()->find($sessionId);
-        if(!$session || $session->enabled($pool))
+        $session = $this->tenantService->tontine()
+            ->sessions()
+            ->ofPool($pool)
+            ->disabled($pool)
+            ->find($sessionId);
+        if(!$session)
         {
             return;
         }
 
         // Enable the session for the pool.
-        $pool->disabledSessions()->detach($session->id);
+        $pool->disabled_sessions()->detach($session->id);
     }
 
     /**
@@ -280,27 +272,44 @@ class PoolService
         // {
         //     return;
         // }
-        $session = $pool->sessions()->find($sessionId);
-        if(!$session || $session->disabled($pool))
+        $session = $this->tenantService->tontine()
+            ->sessions()
+            ->ofPool($pool)
+            ->enabled($pool)
+            ->find($sessionId);
+        if(!$session)
         {
             return;
         }
 
         // Disable the session for the pool.
         DB::transaction(function() use($pool, $session) {
-            // If a session was already opened, delete the receivables and payables.
-            // Will fail if any of them is already paid.
-            $subscriptionIds = $pool->subscriptions()->pluck('id');
-            $session->receivables()
-                ->whereIn('subscription_id', $subscriptionIds)
-                ->delete();
-            // The payables should not be deleted, but detached from the session instead.
-            $session->payables()
-                ->whereIn('subscription_id', $subscriptionIds)
-                ->update(['session_id' => null]);
-            // Disable the session for the pool.
-            $pool->disabledSessions()->attach($session->id);
+            $pool->disabled_sessions()->attach($session->id);
+
+            $this->dataSyncService->syncPool($pool, true);
         });
+    }
+
+    /**
+     * @param Pool $pool
+     * @param Session $session
+     *
+     * @return bool
+     */
+    public function enabled(Pool $pool, Session $session): bool
+    {
+        return $session->disabled_pools->find($pool->id) === null;
+    }
+
+    /**
+     * @param Pool $pool
+     * @param Session $session
+     *
+     * @return bool
+     */
+    public function disabled(Pool $pool, Session $session): bool
+    {
+        return $session->disabled_pools->find($pool->id) !== null;
     }
 
     /**
@@ -312,7 +321,12 @@ class PoolService
      */
     public function getEnabledSessions(Pool $pool): Collection
     {
-        return $pool->enabledSessions()->orderBy('start_at')->get();
+        return $this->tenantService->tontine()
+            ->sessions()
+            ->ofPool($pool)
+            ->enabled($pool)
+            ->orderBy('start_at')
+            ->get();
     }
 
     /**
@@ -324,6 +338,10 @@ class PoolService
      */
     public function getEnabledSessionCount(Pool $pool): int
     {
-        return $pool->enabledSessions()->count();
+        return $this->tenantService->tontine()
+            ->sessions()
+            ->ofPool($pool)
+            ->enabled($pool)
+            ->count();
     }
 }

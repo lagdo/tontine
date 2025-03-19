@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Model;
 
 use Database\Factories\ChargeFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -106,49 +107,67 @@ class Charge extends Base
         return $this->hasMany(SettlementTarget::class);
     }
 
-    public function getIsFeeAttribute()
+    public function isFee(): Attribute
     {
-        return intval($this->type) === self::TYPE_FEE;
+        return Attribute::make(
+            get: fn() => intval($this->type) === self::TYPE_FEE,
+        );
     }
 
-    public function getIsFineAttribute()
+    public function isFine(): Attribute
     {
-        return intval($this->type) === self::TYPE_FINE;
+        return Attribute::make(
+            get: fn() => intval($this->type) === self::TYPE_FINE,
+        );
     }
 
-    public function getPeriodOnceAttribute()
+    public function periodOnce(): Attribute
     {
-        return intval($this->period) === self::PERIOD_ONCE;
+        return Attribute::make(
+            get: fn() => intval($this->period) === self::PERIOD_ONCE,
+        );
     }
 
-    public function getPeriodRoundAttribute()
+    public function periodRound(): Attribute
     {
-        return intval($this->period) === self::PERIOD_ROUND;
+        return Attribute::make(
+            get: fn() => intval($this->period) === self::PERIOD_ROUND,
+        );
     }
 
-    public function getPeriodSessionAttribute()
+    public function periodSession(): Attribute
     {
-        return intval($this->period) === self::PERIOD_SESSION;
+        return Attribute::make(
+            get: fn() => intval($this->period) === self::PERIOD_SESSION,
+        );
     }
 
-    public function getIsFixedAttribute()
+    public function isFixed(): Attribute
     {
-        return intval($this->period) !== self::PERIOD_NONE;
+        return Attribute::make(
+            get: fn() => intval($this->period) !== self::PERIOD_NONE,
+        );
     }
 
-    public function getIsVariableAttribute()
+    public function isVariable(): Attribute
     {
-        return intval($this->period) === self::PERIOD_NONE;
+        return Attribute::make(
+            get: fn() => intval($this->period) === self::PERIOD_NONE,
+        );
     }
 
-    public function getHasAmountAttribute()
+    public function hasAmount(): Attribute
     {
-        return $this->is_fixed || $this->amount > 0;
+        return Attribute::make(
+            get: fn() => $this->is_fixed || $this->amount > 0,
+        );
     }
 
-    public function getIsActiveAttribute()
+    public function isActive(): Attribute
     {
-        return $this->active == true;
+        return Attribute::make(
+            get: fn() => $this->active == true,
+        );
     }
 
     /**

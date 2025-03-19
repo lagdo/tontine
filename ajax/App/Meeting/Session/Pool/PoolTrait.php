@@ -24,11 +24,10 @@ trait PoolTrait
         {
             $this->bag('meeting')->set('pool.id', $this->target()->args()[0]);
         }
-        $poolId = (int)$this->bag('meeting')->get('pool.id');
-        $pool = $this->poolService->getPool($poolId);
-
         $session = $this->stash()->get('meeting.session');
-        if(!$pool || $session->disabled($pool))
+        $poolId = (int)$this->bag('meeting')->get('pool.id');
+        $pool = $this->poolService->getPool($poolId, $session);
+        if(!$pool)
         {
             throw new MessageException(trans('tontine.session.errors.disabled'));
         }

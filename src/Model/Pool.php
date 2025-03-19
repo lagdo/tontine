@@ -4,6 +4,7 @@ namespace Siak\Tontine\Model;
 
 use Carbon\Carbon;
 use Database\Factories\PoolFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -29,8 +30,7 @@ use function trans;
  * @property-read bool $remit_payable
  * @property-read Collection $subscriptions
  * @property-read Collection $sessions
- * @property-read Collection $enabledSessions
- * @property-read Collection $disabledSessions
+ * @property-read Collection $disabled_sessions
  * @property-read Round $round
  * @property-read PoolRound $pool_round
  * @property-read Tontine $tontine
@@ -108,30 +108,24 @@ class Pool extends Base
     protected static function booted()
     {
         static::addGlobalScope('dates', function (Builder $query) {
-            $query->addSelect(['pools.*', 'v.end_at', 'v.start_at', 'v.tontine_id'])
+            $query
+                ->addSelect(['pools.*', 'v.end_at', 'v.start_at', 'v.tontine_id'])
                 ->join(DB::raw('v_pools as v'), 'v.id', '=', 'pools.id');
         });
     }
 
     /**
      * @param Builder $query
-     * @param Round $round
-     * @param Carbon|null $startDate
-     * @param Carbon|null $endDate
+     * @param Carbon $startDate
+     * @param Carbon $endDate
      *
      * @return Builder
      */
-    private function filterOnRoundOrDates(Builder $query, Round $round,
-        ?Carbon $startDate, ?Carbon $endDate): Builder
+    private function filterOnDates(Builder $query, Carbon $startDate, Carbon $endDate): Builder
     {
-        return $query->where(fn(Builder $query) => $query
-            ->where('pools.round_id', $round->id)
-            ->when($startDate !== null && $endDate !== null,
-                fn(Builder $query) => $query
-                    ->orWhere(fn(Builder $query) => $query
-                        ->where('v.tontine_id', $round->tontine_id)
-                        ->whereDate('v.end_at', '>=', $startDate->format('Y-m-d'))
-                        ->whereDate('v.start_at', '<=', $endDate->format('Y-m-d')))));
+        return $query
+            ->whereDate('v.end_at', '>=', $startDate->format('Y-m-d'))
+            ->whereDate('v.start_at', '<=', $endDate->format('Y-m-d'));
     }
 
     /**
@@ -144,9 +138,17 @@ class Pool extends Base
      */
     public function scopeOfRound(Builder $query, Round $round): Builder
     {
-        $startDate = $round->start_at;
-        $endDate = $round->end_at;
-        return $this->filterOnRoundOrDates($query, $round, $startDate, $endDate);
+        return $query->where(function($query) use($round) {
+            $query->where('pools.round_id', $round->id)
+                ->when($round->start_at !== null && $round->end_at !== null,
+                    function($query) use($round) {
+                        $query->orWhere(function($query) use($round) {
+                            // Take the other pools of the tontine with overlapped sessions.
+                            $query->where('v.tontine_id', $round->tontine_id);
+                            $this->filterOnDates($query, $round->start_at, $round->end_at);
+                        });
+                    });
+        });
     }
 
     /**
@@ -159,43 +161,60 @@ class Pool extends Base
      */
     public function scopeOfSession(Builder $query, Session $session): Builder
     {
-        $date = $session->start_at;
-        return $this->filterOnRoundOrDates($query, $session->round, $date, $date);
+        $query->where('v.tontine_id', $session->round->tontine_id);
+        return $this->filterOnDates($query, $session->start_at, $session->start_at)
+            // Also filter on enabled sessions.
+            ->whereDoesntHave('disabled_sessions',
+                fn($q) => $q->where('sessions.id', $session->id));
     }
 
-    public function getStartDateAttribute()
+    public function startDate(): Attribute
     {
-        return $this->start_at->translatedFormat(trans('tontine.date.format'));
+        return Attribute::make(
+            get: fn() => $this->start_at->translatedFormat(trans('tontine.date.format')),
+        );
     }
 
-    public function getEndDateAttribute()
+    public function endDate(): Attribute
     {
-        return $this->end_at->translatedFormat(trans('tontine.date.format'));
+        return Attribute::make(
+            get: fn() => $this->end_at->translatedFormat(trans('tontine.date.format')),
+        );
     }
 
-    public function getDepositFixedAttribute()
+    public function depositFixed(): Attribute
     {
-        return ($this->properties['deposit']['fixed'] ?? true) === true;
+        return Attribute::make(
+            get: fn() => ($this->properties['deposit']['fixed'] ?? true) === true,
+        );
     }
 
-    public function getDepositLendableAttribute()
+    public function depositLendable(): Attribute
     {
-        return ($this->properties['deposit']['lendable'] ?? false) === true;
+        return Attribute::make(
+            get: fn() => ($this->properties['deposit']['lendable'] ?? false) === true,
+        );
     }
 
-    public function getRemitPlannedAttribute()
+    public function remitPlanned(): Attribute
     {
-        return ($this->properties['remit']['planned'] ?? true) === true;
+        return Attribute::make(
+            get: fn() => ($this->properties['remit']['planned'] ?? true) === true,
+        );
     }
 
-    public function getRemitAuctionAttribute()
+    public function remitAuction(): Attribute
     {
-        return ($this->properties['remit']['auction'] ?? false) === true;
+        return Attribute::make(
+            get: fn() => ($this->properties['remit']['auction'] ?? false) === true,
+        );
     }
 
-    public function getRemitPayableAttribute()
+    public function remitPayable(): Attribute
     {
-        return $this->remit_planned && !$this->remit_auction;
+        return Attribute::make(
+            get: fn() => $this->remit_planned && !$this->remit_auction,
+        );
     }
 
     public function round()
@@ -218,11 +237,6 @@ class Pool extends Base
         return $this->hasMany(Subscription::class);
     }
 
-    public function disabledSessions()
-    {
-        return $this->belongsToMany(Session::class, 'pool_session_disabled');
-    }
-
     public function tontine()
     {
         // The "tontine_id" field is added to the table by the join
@@ -230,20 +244,8 @@ class Pool extends Base
         return $this->belongsTo(Tontine::class);
     }
 
-    public function sessions()
+    public function disabled_sessions()
     {
-        if(!$this->pool_round)
-        {
-            return $this->round->sessions();
-        }
-        return $this->tontine->sessions()
-            ->whereDate('start_at', '>=', $this->start_at->format('Y-m-d'))
-            ->whereDate('start_at', '<=', $this->end_at->format('Y-m-d'));
-    }
-
-    public function enabledSessions()
-    {
-        return $this->sessions()->whereDoesntHave('disabledPools',
-            fn(Builder $query) => $query->where('pools.id', $this->id));
+        return $this->belongsToMany(Session::class, 'pool_session_disabled');
     }
 }
