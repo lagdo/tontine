@@ -151,12 +151,14 @@ class SessionService
     public function getYearSessions(): array
     {
         $year = now()->format('Y');
-        $date = Carbon::createFromDate($year, 1, 5, 'Africa/Douala')->locale('fr');
+        $date = Carbon::createFromDate($year, 1, 5, 'Africa/Douala');
         $sessions = [];
         for($i = 0; $i < 12; $i++)
         {
             $session = new \stdClass();
-            $session->title = 'Séance de ' . $date->isoFormat('MMMM YYYY');
+            $session->title = trans('tontine.session.labels.title', [
+                'date' => $date->translatedFormat(trans('tontine.date.format_my')),
+            ]);
             $session->date = $date->format('Y-m-d');
             $session->start = '00:00';
             $session->end = '00:00';

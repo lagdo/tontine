@@ -4,6 +4,7 @@ return [
     'date' => [
         'format' => 'D j M Y',
         'format_medium' => 'j M Y',
+        'format_my' => 'F Y',
     ],
     'menus' => [
         'admin' => "Administration",
@@ -304,6 +305,7 @@ return [
             'times' => "Horaires",
             'host' => "Hôte",
             'address' => "Adresse",
+            'title' => "Séance de :date",
         ],
         'actions' => [
             'host' => "Hôte",
