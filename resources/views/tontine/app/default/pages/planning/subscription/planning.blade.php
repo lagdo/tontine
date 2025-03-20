@@ -15,12 +15,14 @@
                         $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre')) }}
                     </h2>
                   </div>
+@if ($pool->remit_planned)
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">
                       <button type="button" class="btn btn-primary" @jxnClick($rqBeneficiary->render())>{{
                         __('tontine.subscription.titles.beneficiaries') }}</i></button>
                     </div>
                   </div>
+@endif
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2 mb-2" role="group">
                       <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->render())><i class="fa fa-arrow-left"></i></button>
@@ -30,9 +32,9 @@
                 </div>
               </div>
 
-              <!-- Data tables -->
               <div class="card shadow mb-4">
                 <div class="card-body">
+                  <!-- Data tables -->
                   <div class="table-responsive" id="content-subscription-planning">
                     <table class="table table-bordered responsive">
                       <thead>
@@ -49,17 +51,9 @@
                       </thead>
                       <tbody>
 @foreach ($sessions as $session)
+@if($poolService->active($pool, $session))
                         <tr>
                           <td><b>{{ $session->title }}</b></td>
-@if($poolService->disabled($pool, $session))
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-@else
                           <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, false) }}</td>
                           <td class="currency">{{ $figures->expected[$session->id]->deposit->count }}</td>
                           <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, false) }}</td>
@@ -67,8 +61,8 @@
                           <td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>
                           <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, false) }}</td>
                           <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->end, false) }}</td>
-@endif
                         </tr>
+@endif
 @endforeach
                       </tbody>
                     </table>

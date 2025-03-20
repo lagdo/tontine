@@ -4,6 +4,7 @@ namespace Ajax\App\Planning\Subscription;
 
 use Ajax\Component;
 use Ajax\App\Page\SectionContent;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Planning\SummaryService;
@@ -43,6 +44,18 @@ class Beneficiary extends Component
     /**
      * @inheritDoc
      */
+    protected function before()
+    {
+        $pool = $this->stash()->get('subscription.pool');
+        if(!$pool->remit_planned)
+        {
+            throw new MessageException(trans('tontine.beneficiary.errors.not_planned'));
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): Stringable
     {
         $pool = $this->stash()->get('subscription.pool');
@@ -59,7 +72,8 @@ class Beneficiary extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-subscription-beneficiaries');
+        $this->response->js('Tontine')
+            ->makeTableResponsive('content-subscription-beneficiaries');
     }
 
     public function save(int $sessionId, int $nextSubscriptionId, int $currSubscriptionId)

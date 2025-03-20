@@ -450,6 +450,7 @@ return [
     'beneficiary' => [
         'errors' => [
             'cant_change' => "Cannot change the beneficiary.",
+            'not_planned' => "Cannot show the beneficiaries of a tontine with remitments not planned.",
         ],
     ],
     'remitment' => [

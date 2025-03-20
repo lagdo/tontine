@@ -29,25 +29,25 @@
                         </td>
                         <td class="table-item-menu">
 @php
-  $plannedActions = !$pool->remit_planned ? [] :
-  [null, [
+  $menus = [[
+    'class' => 'btn-pool-subscription',
+    'text' => __('tontine.subscription.actions.subscriptions'),
+  ], null, [
     'class' => 'btn-pool-planning',
     'text' => __('tontine.subscription.actions.planning'),
-  ],[
-    'class' => 'btn-pool-beneficiary',
-    'text' => __('tontine.subscription.actions.beneficiaries'),
   ]];
+  if($pool->remit_planned)
+  {
+    $menus[] = [
+      'class' => 'btn-pool-beneficiary',
+      'text' => __('tontine.subscription.actions.beneficiaries'),
+    ];
+  }
 @endphp
 @include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-pool-id',
   'dataIdValue' => $pool->id,
-  'menus' => [
-    [
-      'class' => 'btn-pool-subscription',
-      'text' => __('tontine.subscription.actions.subscriptions'),
-    ],
-    ...$plannedActions,
-  ],
+  'menus' => $menus,
 ])
                         </td>
                       </tr>

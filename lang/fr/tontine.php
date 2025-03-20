@@ -450,6 +450,7 @@ return [
     'beneficiary' => [
         'errors' => [
             'cant_change' => "Impossible de modifier le bénéficiaire.",
+            'not_planned' => "Impossible d'afficher les bénéficiaires d'une tontine dont les remises ne sont pas planifiées.",
         ],
     ],
     'remitment' => [
