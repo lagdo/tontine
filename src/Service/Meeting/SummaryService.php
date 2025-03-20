@@ -183,16 +183,21 @@ class SummaryService
      */
     public function getSessionRemitmentCount(Pool $pool, Session $session): int
     {
+        if(!$pool->remit_planned)
+        {
+            return -1;
+        }
         if(!$pool->deposit_fixed)
         {
             return 1;
         }
 
         $sessions = $this->poolService->getEnabledSessions($pool);
-        $position = $sessions->filter(function($_session) use($session) {
-            return $_session->start_at->lt($session->start_at);
-        })->count();
+        $position = $sessions->filter(
+            fn($_session) => $_session->start_at->lt($session->start_at)
+        )->count();
 
-        return $this->getRemitmentCount($sessions->count(), $pool->subscriptions()->count(), $position);
+        return $this->getRemitmentCount($sessions->count(),
+            $pool->subscriptions()->count(), $position);
     }
 }
