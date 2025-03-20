@@ -19,16 +19,8 @@
                   </thead>
                   <tbody>
 @foreach ($sessions as $session)
+@if($poolService->active($pool, $session))
                     <tr>
-                      <td>{{ $session->title }}</td>
-@if($poolService->disabled($pool, $session) || ($session->pending && !$pool->remit_planned))
-                      <td class="report-round-pool-amount"></td>
-                      <td class="report-round-pool-count"></td>
-                      <td class="report-round-pool-amount"></td>
-                      <td class="report-round-pool-amount"></td>
-                      <td class="report-round-pool-count"></td>
-                      <td class="report-round-pool-amount"></td>
-                      <td class="report-round-pool-amount"></td>
 @elseif (!$pool->remit_planned)
                       <td class="report-round-pool-amount"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->start, false) !!}</b></td>
                       <td class="report-round-pool-count"><b>{!! $figures->collected[$session->id]->deposit->count !!}</b></td>
@@ -76,6 +68,7 @@
                       </td>
 @endif
                     </tr>
+@endif
 @endforeach
                   </tbody>
                 </table>

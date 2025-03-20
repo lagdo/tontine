@@ -85,7 +85,7 @@ class SummaryService
         {
             if(($disabledSessions && $disabledSessions->has($session->id)) || $session->pending)
             {
-                $collectedFigures[$session->id] = $this->makeFigures('&nbsp;');
+                $collectedFigures[$session->id] = $this->makeFigures(0);
                 continue;
             }
 

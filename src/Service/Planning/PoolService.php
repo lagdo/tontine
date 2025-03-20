@@ -309,6 +309,22 @@ class PoolService
     }
 
     /**
+     * @param Pool $pool
+     * @param Session $session
+     *
+     * @return bool
+     */
+    public function active(Pool $pool, Session $session): int
+    {
+        return $this->tenantService->tontine()
+            ->sessions()
+            ->ofPool($pool)
+            ->enabled($pool)
+            ->where('sessions.id', $session->id)
+            ->exists();
+    }
+
+    /**
      * Get the sessions enabled for a pool.
      *
      * @param Pool $pool

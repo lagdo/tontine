@@ -15,17 +15,10 @@
                   </thead>
                   <tbody>
 @foreach ($sessions as $session)
+@if($poolService->active($pool, $session))
                     <tr>
                       <td><b>{{ $session->title }}</b></td>
-@if($poolService->disabled($pool, $session) || ($session->pending && !$pool->remit_planned))
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-@elseif (!$pool->remit_planned)
+@if (!$pool->remit_planned)
                       <td class="currency">
                         <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->start, false) !!}</b>
                       </td>
@@ -107,6 +100,7 @@
                       </div></td>
 @endif
                     </tr>
+@endif
 @endforeach
                   </tbody>
                 </table>

@@ -18,11 +18,11 @@ trait ReportTrait
     protected PoolService $poolService;
 
     /**
-     * @param mixed $defaultValue
+     * @param int $defaultValue
      *
      * @return stdClass
      */
-    private function makeFigures($defaultValue): stdClass
+    private function makeFigures(int $defaultValue = 0): stdClass
     {
         $figures = new stdClass();
 
