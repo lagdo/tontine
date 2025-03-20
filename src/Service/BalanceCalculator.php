@@ -206,10 +206,10 @@ class BalanceCalculator
      */
     private function getSettlementsAmount(Collection $sessionIds, bool $lendable)
     {
-        return Bill::when($lendable, fn($query) => $query->where('lendable', true))
-            ->whereHas('settlement', function($query) use($sessionIds) {
+        return Bill::whereHas('settlement', function($query) use($sessionIds) {
                 $query->whereIn('session_id', $sessionIds);
             })
+            ->when($lendable, fn($query) => $query->where('lendable', true))
             ->sum('amount');
     }
 
@@ -223,8 +223,12 @@ class BalanceCalculator
     {
         return Disbursement::whereIn('session_id', $sessionIds)
             ->when($lendable, function($query) {
-                $query->whereDoesntHave('charge')
-                    ->orWhereHas('charge', fn($query) => $query->where('lendable', true));
+                $query->where(function($query) {
+                    $query->whereDoesntHave('charge')
+                        ->orWhereHas('charge', function($query) {
+                            $query->where('lendable', true);
+                        });
+                });
             })
             ->sum('amount');
     }
