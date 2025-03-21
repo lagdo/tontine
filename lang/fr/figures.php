@@ -3,12 +3,14 @@
 return [
     'titles' => [
         'session' => "Séance",
-        'deposits' => "Cotisations",
+        'deposits' => "Versements",
+        'remitments' => "Remises",
+        'auctions' => "Enchères",
         'amounts' => "Montants en caisse",
         'amount' => "Montant en caisse",
-        'start' => "Début de séance",
-        'recv' => "Après cotisations",
-        'end' => "Fin de séance",
+        'start' => "Début de<br/>séance",
+        'recv' => "Après<br/>versements",
+        'end' => "Fin de<br/>séance",
         'beneficiaries' => "Bénéficiaires",
     ],
     'actions' => [

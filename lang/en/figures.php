@@ -4,11 +4,13 @@ return [
     'titles' => [
         'session' => "Session",
         'deposits' => "Deposits",
+        'remitments' => "Remitments",
+        'auctions' => "Auctions",
         'amounts' => "Cash amounts",
         'amount' => "Cash amount",
-        'start' => "Start of session",
-        'recv' => "After deposits",
-        'end' => "End of session",
+        'start' => "Start of<br/>session",
+        'recv' => "After<br/>deposits",
+        'end' => "End of<br/>session",
         'beneficiaries' => "Beneficiaries",
     ],
     'actions' => [

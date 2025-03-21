@@ -26,7 +26,7 @@ class Balance extends Component
 
         return $this->renderView('pages.report.round.balance', [
             'sessions' => $sessions,
-            'auctions' => $this->roundService->getAuctionAmounts($sessionIds),
+            // 'auctions' => $this->roundService->getAuctionAmounts($sessionIds),
             'settlements' => $this->roundService->getSettlementAmounts($sessionIds),
             'loans' => $this->roundService->getLoanAmounts($sessionIds),
             'refunds' => $this->roundService->getRefundAmounts($sessionIds),

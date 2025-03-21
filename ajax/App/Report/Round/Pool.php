@@ -15,25 +15,10 @@ class Pool extends Component
      */
     protected $summaryService;
 
-    /**
-     * The figures for a given pool
-     *
-     * @var array
-     */
-    private $figures;
-
-    /**
-     * @exclude
-     */
-    public function setFigures(array $figures): self
-    {
-        $this->figures = $figures;
-        return $this;
-    }
-
     public function html(): Stringable
     {
-        return $this->renderView('pages.report.round.pool', $this->figures);
+        $figures = $this->stash()->get('report.round.figures');
+        return $this->renderView('pages.report.round.pool', $figures);
     }
 
     /**
@@ -58,8 +43,7 @@ class Pool extends Component
         }
 
         $figures = $this->summaryService->getFigures($round, $pool->id);
-        $this->figures = $figures[0];
-
+        $this->stash()->set('report.round.figures', $figures[0]);
         $this->item("pool-{$pool->id}")->render();
     }
 }

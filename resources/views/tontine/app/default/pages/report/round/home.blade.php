@@ -4,7 +4,6 @@
   $rqRound = rq(Ajax\App\Report\Round\Round::class);
   $rqRoundBalance = rq(Ajax\App\Report\Round\Balance::class);
   $rqRoundPool = rq(Ajax\App\Report\Round\Pool::class);
-  $clRoundPool = cl(Ajax\App\Report\Round\Pool::class);
   $rqOptionsFunc = rq(Ajax\App\Tontine\Options\OptionsFunc::class);
 @endphp
           <div class="section-body">
@@ -49,7 +48,7 @@
 @foreach ($figures as $poolFigures)
 @php
   $pool = $poolFigures['pool'];
-  $clRoundPool->setFigures($poolFigures);
+  $stash->set('report.round.figures', $poolFigures);
 @endphp
           <div class="card shadow mb-4">
             <div class="card-body">

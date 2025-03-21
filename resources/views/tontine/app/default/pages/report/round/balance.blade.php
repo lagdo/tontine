@@ -6,13 +6,12 @@
                   <thead>
                     <tr>
                       <th>{{ __('figures.titles.session') }}</th>
-                      <th>{!! __('meeting.titles.auctions') !!}</th>
-                      <th>{!! __('meeting.titles.fees') !!}</th>
-                      <th>{!! __('meeting.titles.loans') !!}</th>
-                      <th>{!! __('meeting.titles.refunds') !!}</th>
-                      <th>{!! __('meeting.titles.savings') !!}</th>
-                      <th>{!! __('meeting.titles.disbursements') !!}</th>
-                      <th>{!! __('figures.titles.end') !!}</th>
+                      <th class="currency">{!! __('meeting.titles.fees') !!}</th>
+                      <th class="currency">{!! __('meeting.titles.loans') !!}</th>
+                      <th class="currency">{!! __('meeting.titles.refunds') !!}</th>
+                      <th class="currency">{!! __('meeting.titles.savings') !!}</th>
+                      <th class="currency">{!! __('meeting.titles.disbursements') !!}</th>
+                      <th class="currency">{!! __('figures.titles.end') !!}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -26,26 +25,23 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td></td>
 @else
 @php
   $settlement = $settlements[$session->id] ?? 0;
-  $auction = $auctions[$session->id] ?? 0;
   $saving = $savings[$session->id] ?? 0;
   $loan = $loans[$session->id] ?? 0;
   $refund = $refunds[$session->id] ?? 0;
   $disbursement = $disbursements[$session->id] ?? 0;
-  $balance = $auction + $settlement + $refund + $saving - $loan - $disbursement;
+  $balance = $settlement + $refund + $saving - $loan - $disbursement;
   $cash += $balance;
 @endphp
-                      <td class="currency"><b>{!! $locale->formatMoney($auction, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($settlement, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($loan, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($refund, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($saving, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($disbursement, false) !!}</b></td>
-                      <td class="currency"><b>{!! $locale->formatMoney($balance, false) !!}<br/>{!!
-                        $locale->formatMoney($cash, false) !!}</b></td>
+                      <td class="currency"><b>{!! $locale->formatMoney($settlement, false, false) !!}</b></td>
+                      <td class="currency"><b>{!! $locale->formatMoney($loan, false, false) !!}</b></td>
+                      <td class="currency"><b>{!! $locale->formatMoney($refund, false, false) !!}</b></td>
+                      <td class="currency"><b>{!! $locale->formatMoney($saving, false, false) !!}</b></td>
+                      <td class="currency"><b>{!! $locale->formatMoney($disbursement, false, false) !!}</b></td>
+                      <td class="currency"><b>{!! $locale->formatMoney($balance, false, false) !!}<br/>{!!
+                        $locale->formatMoney($cash, false, false) !!}</b></td>
 @endif
                     </tr>
 @endforeach
