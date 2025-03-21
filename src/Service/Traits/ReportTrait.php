@@ -82,25 +82,25 @@ trait ReportTrait
      *
      * @return Collection
      */
-    private function getEnabledSessions(Pool $pool, array $with = []): Collection
+    private function getActiveSessions(Pool $pool, array $with = []): Collection
     {
         $with['payables'] = function($query) use($pool) {
             // Keep only the subscriptions of the current pool.
             $query->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
                 ->where('subscriptions.pool_id', $pool->id);
         };
-        return $this->poolService->getEnabledSessions($pool)->load($with);
+        return $this->poolService->getActiveSessions($pool)->load($with);
     }
 
     /**
      * @param Pool $pool
      * @param Collection $sessions
-     * @param int $depositCount
      *
      * @return array
      */
-    private function getExpectedFigures(Pool $pool, Collection $sessions, int $depositCount): array
+    private function getExpectedFigures(Pool $pool, Collection $sessions): array
     {
+        $depositCount = $pool->subscriptions()->count();
         $sessionCount = $sessions->count();
         $subscriptionCount = $depositCount;
         $depositAmount = $pool->amount * $depositCount;
@@ -124,7 +124,6 @@ trait ReportTrait
 
             $expectedFigures[$session->id] = $figures;
         }
-
         return $expectedFigures;
     }
 }

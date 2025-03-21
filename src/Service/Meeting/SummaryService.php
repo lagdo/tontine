@@ -36,16 +36,6 @@ class SummaryService
     private $auctions;
 
     /**
-     * @var Collection
-     */
-    private $allSessions;
-
-    /**
-     * @var Collection
-     */
-    private $disabledSessions;
-
-    /**
      * @param BalanceCalculator $balanceCalculator
      * @param TenantService $tenantService
      * @param PoolService $poolService
@@ -71,18 +61,19 @@ class SummaryService
         $figures->cashier->start = $cashier;
         $figures->cashier->recv = $cashier;
 
-        $depositCount = !$deposit ? 0 : $deposit->total;
-        $depositAmount = $pool->deposit_fixed ? $pool->amount * $depositCount :
-            (!$deposit ? 0 : $deposit->amount);
+        $depositCount = $deposit?->count ?? 0;
+        $depositAmount = $pool->deposit_fixed ?
+            $pool->amount * $depositCount : ($deposit?->amount ?? 0);
 
         $figures->deposit->amount += $depositAmount;
         $figures->cashier->recv += $depositAmount;
         $figures->deposit->count = $depositCount;
 
         $sessionCount = $pool->counter->sessions - $pool->counter->disabled_sessions;
-        $remitmentCount = !$remitment ? 0 : $remitment->total;
-        $remitmentAmount = !$pool->deposit_fixed ? $depositAmount :
-            $pool->amount * $sessionCount * $remitmentCount;
+        $remitmentCount = $remitment?->count ?? 0;
+        $remitmentAmount = $pool->deposit_fixed ?
+            $pool->amount * $sessionCount * $remitmentCount :
+            ($remitmentCount > 0 ? $depositAmount : 0);
 
         $figures->cashier->end = $figures->cashier->recv;
         $figures->remitment->amount += $remitmentAmount;
@@ -94,26 +85,16 @@ class SummaryService
 
     /**
      * @param Pool $pool
+     * @param Collection $sessions
      *
      * @return array
      */
-    private function getCollectedFigures(Pool $pool): array
+    private function getCollectedFigures(Pool $pool, Collection $sessions): array
     {
-        $disabledSessions = $this->disabledSessions[$pool->id] ?? null;
-        // Enabled sessions
-        $sessions = !$disabledSessions ? $this->allSessions :
-            $this->allSessions->filter(fn($session) => !$disabledSessions->has($session->id));
-
         $cashier = 0;
         $collectedFigures = [];
         foreach($sessions as $session)
         {
-            if(($disabledSessions && $disabledSessions->has($session->id)) || $session->pending)
-            {
-                $collectedFigures[$session->id] = $this->makeFigures(0);
-                continue;
-            }
-
             $deposit = $this->deposits[$pool->id][$session->id] ?? null;
             $remitment = $this->remitments[$pool->id][$session->id] ?? null;
             $figures = $this->getSessionFigures($pool, $cashier, $deposit, $remitment);
@@ -139,7 +120,7 @@ class SummaryService
     {
         $this->deposits = DB::table('deposits')
             ->select('subscriptions.pool_id', 'receivables.session_id',
-                DB::raw('count(*) as total'), DB::raw('sum(deposits.amount) as amount'))
+                DB::raw('count(*) as count'), DB::raw('sum(deposits.amount) as amount'))
             ->join('receivables', 'receivables.id', '=', 'deposits.receivable_id')
             ->join('subscriptions', 'receivables.subscription_id', '=', 'subscriptions.id')
             ->join('sessions', 'receivables.session_id', '=', 'sessions.id')
@@ -162,7 +143,7 @@ class SummaryService
     private function getRemitments(Round $round, Collection $poolIds): void
     {
         $this->remitments = DB::table('remitments')
-            ->select('subscriptions.pool_id', 'payables.session_id', DB::raw('count(*) as total'))
+            ->select('subscriptions.pool_id', 'payables.session_id', DB::raw('count(*) as count'))
             ->join('payables', 'payables.id', '=', 'remitments.payable_id')
             ->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
             ->join('sessions', 'payables.session_id', '=', 'sessions.id')
@@ -186,7 +167,7 @@ class SummaryService
     {
         $this->auctions = DB::table('auctions')
             ->select('subscriptions.pool_id', 'auctions.session_id',
-                DB::raw('count(*) as total'), DB::raw('sum(amount) as amount'))
+                DB::raw('count(*) as count'), DB::raw('sum(amount) as amount'))
             ->join('remitments', 'auctions.remitment_id', '=', 'remitments.id')
             ->join('payables', 'remitments.payable_id', '=', 'payables.id')
             ->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
@@ -202,41 +183,20 @@ class SummaryService
     }
 
     /**
-     * @param Round $round
-     * @param Collection $poolIds
-     *
-     * @return void
-     */
-    private function getSessions(Round $round, Collection $poolIds): void
-    {
-        $this->allSessions = $round->sessions()->orderBy('start_at', 'asc')->get();
-        $this->disabledSessions = DB::table('pool_session_disabled')
-            ->whereIn('pool_id', $poolIds)
-            ->get()
-            // Group the data (boolean true) by pool id and session id.
-            ->groupBy('pool_id')
-            ->map(fn($sessions) => $sessions->groupBy('session_id')->map(fn() => true));
-    }
-
-    /**
      * @param Pool $pool
      *
      * @return array
      */
     private function getPoolFigures(Pool $pool): array
     {
-        $disabledSessions = $this->disabledSessions[$pool->id] ?? null;
-        // Enabled sessions
-        $sessions = !$disabledSessions ? $this->allSessions :
-            $this->allSessions->filter(fn($session) => !$disabledSessions->has($session->id));
+        $sessions = $this->poolService->getActiveSessions($pool);
 
         $figures = new stdClass();
         if($pool->remit_planned)
         {
-            $depositCount = $pool->subscriptions()->count();
-            $figures->expected = $this->getExpectedFigures($pool, $sessions, $depositCount);
+            $figures->expected = $this->getExpectedFigures($pool, $sessions);
         }
-        $figures->collected = $this->getCollectedFigures($pool);
+        $figures->collected = $this->getCollectedFigures($pool, $sessions);
         if($pool->remit_auction)
         {
             $figures->auctions = $this->auctions[$pool->id] ?? collect();
@@ -269,7 +229,6 @@ class SummaryService
         $this->getDeposits($round, $poolIds);
         $this->getRemitments($round, $poolIds);
         $this->getAuctions($round, $poolIds);
-        $this->getSessions($round, $poolIds);
 
         return $pools->map(fn(Pool $pool) => $this->getPoolFigures($pool));
     }
@@ -291,7 +250,7 @@ class SummaryService
             return 1;
         }
 
-        $sessions = $this->poolService->getEnabledSessions($pool);
+        $sessions = $this->poolService->getActiveSessions($pool);
         $position = $sessions->filter(
             fn($_session) => $_session->start_at->lt($session->start_at)
         )->count();

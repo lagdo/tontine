@@ -331,7 +331,7 @@ class PoolService
      *
      * @return Collection
      */
-    public function getEnabledSessions(Pool $pool): Collection
+    public function getActiveSessions(Pool $pool): Collection
     {
         return $this->tenantService->tontine()
             ->sessions()
@@ -348,7 +348,7 @@ class PoolService
      *
      * @return int
      */
-    public function getEnabledSessionCount(Pool $pool): int
+    public function getActiveSessionCount(Pool $pool): int
     {
         return $this->tenantService->tontine()
             ->sessions()

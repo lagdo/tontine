@@ -73,18 +73,26 @@
                         {{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, false, false) }}
                       </div></td>
 @endif
+<!-- Auction cell start -->
+@php
+  $auctionAmount = $figures->auctions[$session->id]?->amount ?? 0;
+  $cashierEnd = $figures->collected[$session->id]->cashier->end;
+@endphp
                       <td class="currency"><div>
 @if(!$session->pending && $pool->remit_auction)
                         <b>{!! $figures->auctions[$session->id]?->count ?? 0 !!}</b> /
-                        <b>{!! $locale->formatMoney($figures->auctions[$session->id]?->amount ?? 0, false, false) !!}</b>
+                        <b>{!! $locale->formatMoney($auctionAmount, false, false) !!}</b>
 @else
                         <b>-</b>
 @endif
-                        <br/>-
+@if ($pool->remit_planned)
+                        <br/><b>{!! $locale->formatMoney($cashierEnd - $auctionAmount, false, false) !!}</b>
+@endif
                       </div></td>
+<!-- Auction cell end -->
 @if (!$pool->remit_planned)
                       <td class="currency">
-                        <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->end, false, false) !!}</b>
+                        <b>{!! $locale->formatMoney($cashierEnd, false, false) !!}</b>
                       </td>
 @elseif($session->pending)
                       <td class="currency"><div>

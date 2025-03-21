@@ -39,14 +39,12 @@
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
-                          <th>{{ __('figures.titles.session') }}</th>
-                          <th>{{ __('figures.titles.start') }}</th>
-                          <th>{{ __('figures.deposit.titles.count') }}</th>
-                          <th>{{ __('figures.deposit.titles.amount') }}</th>
-                          <th>{{ __('figures.titles.recv') }}</th>
-                          <th>{{ __('figures.remitment.titles.count') }}</th>
-                          <th>{{ __('figures.remitment.titles.amount') }}</th>
-                          <th>{{ __('figures.titles.end') }}</th>
+                          <th>{!! __('figures.titles.session') !!}</th>
+                          <th class="currency">{!! __('figures.titles.start') !!}</th>
+                          <th class="currency">{!! __('figures.titles.deposits') !!}</th>
+                          <th class="currency">{!! __('figures.titles.recv') !!}</th>
+                          <th class="currency">{!! __('figures.titles.remitments') !!}</th>
+                          <th class="currency">{!! __('figures.titles.end') !!}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -55,11 +53,15 @@
                         <tr>
                           <td><b>{{ $session->title }}</b></td>
                           <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, false) }}</td>
-                          <td class="currency">{{ $figures->expected[$session->id]->deposit->count }}</td>
-                          <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, false) }}</td>
+                          <td class="currency">
+                            {{ $figures->expected[$session->id]->deposit->count }} /
+                            {{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, false) }}
+                          </td>
                           <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, false) }}</td>
-                          <td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>
-                          <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, false) }}</td>
+                          <td class="currency">
+                            {{ $figures->expected[$session->id]->remitment->count }} /
+                            {{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, false) }}
+                          </td>
                           <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->end, false) }}</td>
                         </tr>
 @endif

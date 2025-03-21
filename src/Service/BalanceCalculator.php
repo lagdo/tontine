@@ -105,7 +105,7 @@ class BalanceCalculator
             // Sum the amounts for all deposits
             return $this->getPoolDepositAmount($pool, $session);
         }
-        return $pool->amount * $this->poolService->getEnabledSessionCount($pool);
+        return $pool->amount * $this->poolService->getActiveSessionCount($pool);
     }
 
     /**

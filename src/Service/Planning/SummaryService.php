@@ -37,11 +37,10 @@ class SummaryService
      */
     public function getReceivables(Pool $pool): array
     {
-        $sessions = $this->poolService->getEnabledSessions($pool);
+        $sessions = $this->poolService->getActiveSessions($pool);
         $subscriptions = $pool->subscriptions()->with(['member'])->get();
         $figures = new stdClass();
-        $depositCount = $subscriptions->count();
-        $figures->expected = $this->getExpectedFigures($pool, $sessions, $depositCount);
+        $figures->expected = $this->getExpectedFigures($pool, $sessions);
 
         return compact('pool', 'sessions', 'subscriptions', 'figures');
     }
@@ -55,7 +54,7 @@ class SummaryService
      */
     public function getPayables(Pool $pool): array
     {
-        $sessions = $this->getEnabledSessions($pool, ['payables.subscription']);
+        $sessions = $this->getActiveSessions($pool, ['payables.subscription']);
         $subscriptions = $pool->subscriptions()
             ->with(['payable', 'payable.session', 'member'])
             ->get();
@@ -64,8 +63,7 @@ class SummaryService
         // Expected figures only for pools with fixed deposit amount
         if($pool->remit_planned /*$pool->deposit_fixed*/)
         {
-            $depositCount = $subscriptions->count();
-            $figures->expected = $this->getExpectedFigures($pool, $sessions, $depositCount);
+            $figures->expected = $this->getExpectedFigures($pool, $sessions);
         }
 
         // Set the subscriptions that will be pay at each session.
