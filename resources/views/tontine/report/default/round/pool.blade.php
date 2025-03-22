@@ -22,7 +22,7 @@
 @foreach ($sessions as $session)
 @if($poolService->active($pool, $session))
 @php
-  $expected = $figures->expected[$session->id] ?? [];
+  $expected = $figures->expected[$session->id] ?? null;
   $collected = $figures->collected[$session->id];
   $auction = $figures->auctions[$session->id] ?? null;
 @endphp
