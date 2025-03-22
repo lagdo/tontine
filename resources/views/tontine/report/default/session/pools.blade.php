@@ -20,7 +20,7 @@
                       </thead>
                       <tbody>
 @foreach($deposits as $pool)
-@if ($poolService->enabled($pool, $session))
+@if ($poolService->active($pool, $session))
 @php
   $rpool = $remitments[$pool->id];
 @endphp
