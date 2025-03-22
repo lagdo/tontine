@@ -8,64 +8,48 @@
                   <thead>
                     <tr>
                       <th></th>
-                      <th style="text-align:right;">{{ __('figures.titles.start') }}</th>
-                      <th style="text-align:right;" colspan="2">{{ __('figures.deposit.titles.amount') }}</th>
-                      <th style="text-align:right;">{{ __('figures.titles.recv') }}</th>
-                      <th style="text-align:right;" colspan="2">{{ __('figures.remitment.titles.amount') }}</th>
-                      <th style="text-align:right;">{{ __('figures.titles.end') }}</th>
+                      <th style="text-align:right;">{!! __('figures.titles.start') !!}</th>
+                      <th style="text-align:right;">{!! __('figures.titles.deposits') !!}</th>
+                      <th style="text-align:right;">{!! __('figures.titles.recv') !!}</th>
+                      <th style="text-align:right;">{!! __('figures.titles.remitments') !!}</th>
+                      <th style="text-align:right;">{!! __('figures.titles.auctions') !!}</th>
+                      <th style="text-align:right;">{!! __('figures.titles.end') !!}</th>
                     </tr>
                   </thead>
                   <tbody>
 @foreach ($sessions as $session)
 @if ($poolService->active($pool, $session))
+@php
+  $expected = $figures->expected[$session->id] ?? [];
+  $collected = $figures->collected[$session->id];
+  $auction = $figures->auctions[$session->id] ?? null;
+@endphp
                     <tr>
                       <td>{{ $session->title }}</td>
-@if (!$pool->remit_planned)
-                      <td class="report-round-pool-amount"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->start, false) !!}</b></td>
-                      <td class="report-round-pool-count"><b>{!! $figures->collected[$session->id]->deposit->count !!}</b></td>
-                      <td class="report-round-pool-amount"><b>{!! $locale->formatMoney($figures->collected[$session->id]->deposit->amount, false) !!}</b></td>
-                      <td class="report-round-pool-amount"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->recv, false) !!}</b></td>
-                      <td class="report-round-pool-count"><b>{!! $figures->collected[$session->id]->remitment->count !!}</b></td>
-                      <td class="report-round-pool-amount"><b>{!! $locale->formatMoney($figures->collected[$session->id]->remitment->amount, false) !!}</b></td>
-                      <td class="report-round-pool-amount"><b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->end, false) !!}</b></td>
-@elseif($session->pending)
-                      <td class="report-round-pool-amount"><b>-</b><br/>{{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, false) }}</td>
-                      <td class="report-round-pool-count"><b>-</b><br/>{{ $figures->expected[$session->id]->deposit->count }}</td>
-                      <td class="report-round-pool-amount"><b>-</b><br/>{{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, false) }}</td>
-                      <td class="report-round-pool-amount"><b>-</b><br/>{{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, false) }}</td>
-                      <td class="report-round-pool-count"><b>-</b><br/>{{ $figures->expected[$session->id]->remitment->count }}</td>
-                      <td class="report-round-pool-amount"><b>-</b><br/>{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, false) }}</td>
-                      <td class="report-round-pool-amount"><b>-</b><br/>{{ $locale->formatMoney($figures->expected[$session->id]->cashier->end, false) }}</td>
-@else
                       <td class="report-round-pool-amount">
-                        <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->start, false) !!}</b><br/>
-                        {{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, false) }}
+                        @include('tontine.report.pool.start',
+                          compact('locale', 'pool', 'session', 'expected', 'collected'))
                       </td>
                       <td class="report-round-pool-count">
-                        <b>{!! $figures->collected[$session->id]->deposit->count !!}</b><br/>
-                        {{ $figures->expected[$session->id]->deposit->count }}
+                        @include('tontine.report.pool.deposit',
+                          compact('locale', 'pool', 'session', 'expected', 'collected'))
                       </td>
                       <td class="report-round-pool-amount">
-                        <b>{!! $locale->formatMoney($figures->collected[$session->id]->deposit->amount, false) !!}</b><br/>
-                        {{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, false) }}
-                      </td>
-                      <td class="report-round-pool-amount">
-                        <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->recv, false) !!}</b><br/>
-                        {{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, false) }}
+                        @include('tontine.report.pool.recv',
+                          compact('locale', 'pool', 'session', 'expected', 'collected'))
                       </td>
                       <td class="report-round-pool-count">
-                        <b>{!! $figures->collected[$session->id]->remitment->count !!}</b><br/>
-                        {{ $figures->expected[$session->id]->remitment->count }}
+                        @include('tontine.report.pool.remitment',
+                          compact('locale', 'pool', 'session', 'expected', 'collected'))
                       </td>
                       <td class="report-round-pool-amount">
-                        <b>{!! $locale->formatMoney($figures->collected[$session->id]->remitment->amount, false) !!}</b><br/>
-                        {{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, false) }}
+                        @include('tontine.report.pool.auction',
+                          compact('locale', 'pool', 'session', 'auction', 'collected'))
                       </td>
                       <td class="report-round-pool-amount">
-                        <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->end, false) !!}</b><br/>
-                        {{ $locale->formatMoney($figures->expected[$session->id]->cashier->end, false) }}
+                        @include('tontine.report.pool.end',
+                          compact('locale', 'pool', 'session', 'expected', 'collected'))
                       </td>
-@endif
                     </tr>
 @endif
 @endforeach

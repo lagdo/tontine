@@ -167,9 +167,8 @@ class ReportService
         $profits = $this->getSessionProfitAmounts($session);
 
         $funds = $funds
-            ->map(function($fund) use($session, $profits) {
-                return $this->getFundSavingsReport($session, $fund, $profits[$fund->id] ?? 0);
-            })
+            ->map(fn($fund) => $this
+                ->getFundSavingsReport($session, $fund, $profits[$fund->id] ?? 0))
             ->filter(fn($report) => $report['savings']->count() > 0);
 
         return compact('tontine', 'session', 'country', 'funds');
@@ -232,16 +231,12 @@ class ReportService
         $tontine = $this->tenantService->tontine();
         [$country, $currency] = $this->localeService->getNameFromTontine($tontine);
 
-        $pools = $this->summaryService->getFigures($round);
-        $sessions = $round->sessions()->orderBy('start_at', 'asc')->get();
-        // Sessions with data
-        $sessionIds = $sessions->filter(function($session) {
-            return $session->status === Session::STATUS_CLOSED ||
-                $session->status === Session::STATUS_OPENED;
-        })->pluck('id');
+        $pools = $this->summaryService->getFigures($round); 
+
+        $sessions = $this->roundService->getRoundSessions($round);
+        $sessionIds = $sessions->pluck('id');
         $amounts = [
             'sessions' => $sessions,
-            'auctions' => $this->roundService->getAuctionAmounts($sessionIds),
             'settlements' => $this->roundService->getSettlementAmounts($sessionIds),
             'loans' => $this->roundService->getLoanAmounts($sessionIds),
             'refunds' => $this->roundService->getRefundAmounts($sessionIds),

@@ -15,96 +15,37 @@
                   <tbody>
 @foreach ($sessions as $session)
 @if($poolService->active($pool, $session))
+@php
+  $expected = $figures->expected[$session->id] ?? [];
+  $collected = $figures->collected[$session->id];
+  $auction = $figures->auctions[$session->id] ?? null;
+@endphp
                     <tr>
                       <td><b>{{ $session->title }}</b></td>
-@if (!$pool->remit_planned)
                       <td class="currency">
-                        <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->start, false, false) !!}</b>
+                        @include('tontine.report.pool.start',
+                          compact('locale', 'pool', 'session', 'expected', 'collected'))
                       </td>
                       <td class="currency">
-                        <b>{!! $figures->collected[$session->id]->deposit->count !!}</b> /
-                        <b>{!! $locale->formatMoney($figures->collected[$session->id]->deposit->amount, false, false) !!}</b>
+                        @include('tontine.report.pool.deposit',
+                          compact('locale', 'pool', 'session', 'expected', 'collected'))
                       </td>
                       <td class="currency">
-                        <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->recv, false, false) !!}</b>
+                        @include('tontine.report.pool.recv',
+                          compact('locale', 'pool', 'session', 'expected', 'collected'))
                       </td>
                       <td class="currency">
-                        <b>{!! $figures->collected[$session->id]->remitment->count !!}</b> /
-                        <b>{!! $locale->formatMoney($figures->collected[$session->id]->remitment->amount, false, false) !!}</b>
+                        @include('tontine.report.pool.remitment',
+                          compact('locale', 'pool', 'session', 'expected', 'collected'))
                       </td>
-@elseif($session->pending)
-                      <td class="currency"><div>
-                        <b>-</b><br/>
-                        {{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, false, false) }}
-                      </div></td>
-                      <td class="currency"><div>
-                        <b>-</b><br/>
-                        {{ $figures->expected[$session->id]->deposit->count }} /
-                        {{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, false, false) }}
-                      </div></td>
-                      <td class="currency"><div>
-                        <b>-</b><br/>
-                        {{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, false, false) }}
-                      </div></td>
-                      <td class="currency"><div>
-                        <b>-</b><br/>
-                        {{ $figures->expected[$session->id]->remitment->count }} /
-                        {{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, false, false) }}
-                      </div></td>
-@else
-                      <td class="currency"><div>
-                        <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->start, false, false) !!}</b><br/>
-                        {{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, false, false) }}
-                      </div></td>
-                      <td class="currency"><div>
-                        <b>{!! $figures->collected[$session->id]->deposit->count !!}</b> /
-                        <b>{!! $locale->formatMoney($figures->collected[$session->id]->deposit->amount, false, false) !!}</b><br/>
-                        {{ $figures->expected[$session->id]->deposit->count }} /
-                        {{ $locale->formatMoney($figures->expected[$session->id]->deposit->amount, false, false) }}
-                      </div></td>
-                      <td class="currency"><div>
-                        <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->recv, false, false) !!}</b><br/>
-                        {{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv, false, false) }}
-                      </div></td>
-                      <td class="currency"><div>
-                        <b>{!! $figures->collected[$session->id]->remitment->count !!}</b> /
-                        <b>{!! $locale->formatMoney($figures->collected[$session->id]->remitment->amount, false, false) !!}</b><br/>
-                        {{ $figures->expected[$session->id]->remitment->count }} /
-                        {{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount, false, false) }}
-                      </div></td>
-@endif
-<!-- Auction cell start -->
-@php
-  $auctionAmount = $figures->auctions[$session->id]?->amount ?? 0;
-  $cashierEnd = $figures->collected[$session->id]->cashier->end;
-@endphp
-                      <td class="currency"><div>
-@if(!$session->pending && $pool->remit_auction)
-                        <b>{!! $figures->auctions[$session->id]?->count ?? 0 !!}</b> /
-                        <b>{!! $locale->formatMoney($auctionAmount, false, false) !!}</b>
-@else
-                        <b>-</b>
-@endif
-@if ($pool->remit_planned)
-                        <br/><b>{!! $locale->formatMoney($cashierEnd - $auctionAmount, false, false) !!}</b>
-@endif
-                      </div></td>
-<!-- Auction cell end -->
-@if (!$pool->remit_planned)
                       <td class="currency">
-                        <b>{!! $locale->formatMoney($cashierEnd, false, false) !!}</b>
+                        @include('tontine.report.pool.auction',
+                          compact('locale', 'pool', 'session', 'auction', 'collected'))
                       </td>
-@elseif($session->pending)
-                      <td class="currency"><div>
-                        <b>-</b><br/>
-                        {{ $locale->formatMoney($figures->expected[$session->id]->cashier->end, false, false) }}
-                      </div></td>
-@else
-                      <td class="currency"><div>
-                        <b>{!! $locale->formatMoney($figures->collected[$session->id]->cashier->end, false, false) !!}</b><br/>
-                        {{ $locale->formatMoney($figures->expected[$session->id]->cashier->end, false, false) }}
-                      </div></td>
-@endif
+                      <td class="currency">
+                        @include('tontine.report.pool.end',
+                          compact('locale', 'pool', 'session', 'expected', 'collected'))
+                      </td>
                     </tr>
 @endif
 @endforeach

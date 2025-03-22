@@ -12,7 +12,6 @@
                   <thead>
                     <tr>
                       <th></th>
-                      <th class="report-round-cash-amount">{{ __('meeting.titles.auctions') }}</th>
                       <th class="report-round-cash-amount">{{ __('meeting.titles.fees') }}</th>
                       <th class="report-round-cash-amount">{{ __('meeting.titles.loans') }}</th>
                       <th class="report-round-cash-amount">{{ __('meeting.titles.refunds') }}</th>
@@ -32,19 +31,16 @@
                       <td class="report-round-cash-amount"></td>
                       <td class="report-round-cash-amount"></td>
                       <td class="report-round-cash-amount"></td>
-                      <td class="report-round-cash-amount"></td>
 @else
 @php
   $settlement = $settlements[$session->id] ?? 0;
-  $auction = $auctions[$session->id] ?? 0;
   $saving = $savings[$session->id] ?? 0;
   $loan = $loans[$session->id] ?? 0;
   $refund = $refunds[$session->id] ?? 0;
   $disbursement = $disbursements[$session->id] ?? 0;
-  $balance = $auction + $settlement + $refund + $saving - $loan - $disbursement;
+  $balance = $settlement + $refund + $saving - $loan - $disbursement;
   $cash += $balance;
 @endphp
-                      <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($auction, false) !!}</b></td>
                       <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($settlement, false) !!}</b></td>
                       <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($loan, false) !!}</b></td>
                       <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($refund, false) !!}</b></td>

@@ -5,10 +5,21 @@ namespace Siak\Tontine\Service\Report;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
+use Siak\Tontine\Model\Round;
 
 class RoundService
 {
     use Traits\Queries;
+
+    /**
+     * @param Round $round
+     *
+     * @return Collection
+     */
+    public function getRoundSessions(Round $round): Collection
+    {
+        return $round->sessions()->active()->orderBy('start_at', 'asc')->get();
+    }
 
     /**
      * @param Collection $sessionIds

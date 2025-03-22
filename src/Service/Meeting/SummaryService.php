@@ -172,6 +172,7 @@ class SummaryService
             ->join('payables', 'remitments.payable_id', '=', 'payables.id')
             ->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
             ->join('sessions', 'payables.session_id', '=', 'sessions.id')
+            ->where('paid', true)
             ->whereIn('subscriptions.pool_id', $poolIds)
             ->where('sessions.round_id', $round->id)
             ->groupBy(['subscriptions.pool_id', 'auctions.session_id'])
