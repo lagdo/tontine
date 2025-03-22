@@ -10,12 +10,12 @@
                   <thead>
                     <tr>
                       <th></th>
-                      <th class="report-round-cash-amount">{{ __('meeting.titles.fees') }}</th>
-                      <th class="report-round-cash-amount">{{ __('meeting.titles.loans') }}</th>
-                      <th class="report-round-cash-amount">{{ __('meeting.titles.refunds') }}</th>
+                      <th class="report-round-cash-amount">{!! __('meeting.titles.fees') !!}</th>
+                      <th class="report-round-cash-amount">{!! __('meeting.titles.loans') !!}</th>
+                      <th class="report-round-cash-amount">{!! __('meeting.titles.refunds') !!}</th>
                       <th class="report-round-cash-amount">{!! __('meeting.titles.savings') !!}</th>
-                      <th class="report-round-cash-amount">{{ __('meeting.titles.disbursements') }}</th>
-                      <th>{{ __('figures.titles.end') }}</th>
+                      <th class="report-round-cash-amount">{!! __('meeting.titles.disbursements') !!}</th>
+                      <th>{!! __('figures.titles.end') !!}</th>
                     </tr>
                   </thead>
                   <tbody>
