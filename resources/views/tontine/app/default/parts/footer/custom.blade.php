@@ -1,8 +1,5 @@
-<script src="/jaxon/app.4.0.3.js"></script>
+<script src="/jaxon/app.4.0.4.js"></script>
 
-@php
-    $rqMenuFunc = rq(Ajax\App\MenuFunc::class);
-@endphp
 <script type='text/javascript'>
 (function(self) {
     self.labels = {
@@ -14,6 +11,6 @@
         message: "{{ __('common.titles.message') }}",
     };
 
-    self.home = () => {!! $rqMenuFunc->admin() !!};
+    self.home = () => {!! rq(Ajax\App\MenuFunc::class)->admin() !!};
 })(Tontine);
 </script>

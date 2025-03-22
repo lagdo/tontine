@@ -9,9 +9,9 @@
                     <tr>
                       <th></th>
                       <th style="text-align:right;">{!! __('figures.titles.start') !!}</th>
-                      <th style="text-align:right;">{!! __('figures.titles.deposits') !!}</th>
+                      <th style="text-align:right;" colspan="2">{!! __('figures.titles.deposits') !!}</th>
                       <th style="text-align:right;">{!! __('figures.titles.recv') !!}</th>
-                      <th style="text-align:right;">{!! __('figures.titles.remitments') !!}</th>
+                      <th style="text-align:right;" colspan="2">{!! __('figures.titles.remitments') !!}</th>
                       <th style="text-align:right;">{!! __('figures.titles.auctions') !!}</th>
                       <th style="text-align:right;">{!! __('figures.titles.end') !!}</th>
                     </tr>
@@ -20,35 +20,40 @@
 @foreach ($sessions as $session)
 @if ($poolService->active($pool, $session))
 @php
-  $expected = $figures->expected[$session->id] ?? null;
-  $collected = $figures->collected[$session->id];
-  $auction = $figures->auctions[$session->id] ?? null;
+  $options = [
+    'locale' => $locale,
+    'pool' => $pool,
+    'session' => $session,
+    'expected' => $figures->expected[$session->id] ?? null,
+    'collected' => $figures->collected[$session->id],
+    'auction' => $figures->auctions[$session->id] ?? null,
+  ];
 @endphp
                     <tr>
                       <td>{{ $session->title }}</td>
                       <td class="report-round-pool-amount">
-                        @include('tontine.report.pool.start',
-                          compact('locale', 'pool', 'session', 'expected', 'collected'))
+                        @include('tontine.report.pool.start', $options)
                       </td>
                       <td class="report-round-pool-count">
-                        @include('tontine.report.pool.deposit',
-                          compact('locale', 'pool', 'session', 'expected', 'collected'))
+                        @include('tontine.report.pool.deposit.count', $options)
                       </td>
                       <td class="report-round-pool-amount">
-                        @include('tontine.report.pool.recv',
-                          compact('locale', 'pool', 'session', 'expected', 'collected'))
+                        @include('tontine.report.pool.deposit.amount', $options)
+                      </td>
+                      <td class="report-round-pool-amount">
+                        @include('tontine.report.pool.recv', $options)
                       </td>
                       <td class="report-round-pool-count">
-                        @include('tontine.report.pool.remitment',
-                          compact('locale', 'pool', 'session', 'expected', 'collected'))
+                        @include('tontine.report.pool.remitment.count', $options)
                       </td>
                       <td class="report-round-pool-amount">
-                        @include('tontine.report.pool.auction',
-                          compact('locale', 'pool', 'session', 'auction', 'collected'))
+                        @include('tontine.report.pool.remitment.amount', $options)
                       </td>
                       <td class="report-round-pool-amount">
-                        @include('tontine.report.pool.end',
-                          compact('locale', 'pool', 'session', 'expected', 'collected'))
+                        @include('tontine.report.pool.auction', $options)
+                      </td>
+                      <td class="report-round-pool-amount">
+                        @include('tontine.report.pool.end', $options)
                       </td>
                     </tr>
 @endif

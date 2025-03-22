@@ -53,7 +53,7 @@ a[role="link"]:hover {
   color: #6777ef;
 }
 .table td.table-item-menu, .table th.table-item-menu {
-  width: 90px;
+  width: 70px;
 }
 .table td.table-item-counter {
   width: 120px;
@@ -64,6 +64,18 @@ td.table-item-counter span.input-group-text {
 }
 th.currency, td.currency {
   text-align: right;
+}
+.table:not(.table-sm):not(.table-md):not(.dataTable) th,
+.table:not(.table-sm):not(.table-md):not(.dataTable) td {
+  padding: 0 12px;
+}
+.table.table-bordered th:not(:first-child) {
+  border-left-color: white;
+  border-left-width: 1px;
+}
+.table.table-bordered th:not(:last-child) {
+  border-right-color: white;
+  border-right-width: 1px;
 }
 #text-session-agenda, #text-session-report, #receivable-notes {
   height: 220px;
@@ -157,7 +169,7 @@ form .form-group .col-form-label {
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.04);
     color: #666;
-    display: flex;
+    /*display: flex;*/
     align-items: center;
     font-weight: bold;
     border-bottom: 1px solid #f6f6f6;

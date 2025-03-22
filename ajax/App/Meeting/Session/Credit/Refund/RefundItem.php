@@ -25,4 +25,12 @@ class RefundItem extends Component
             'debt' => $this->stash()->get('meeting.refund.debt'),
         ]);
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function after()
+    {
+        $this->response->js('Tontine')->makeTableResponsive('content-session-refunds-page');
+    }
 }

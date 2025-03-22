@@ -31,14 +31,26 @@ var Tontine = {};
         });
     };
 
+    // Get the labels for tables cells, taking the colspan attr into account.
+    const headerLabels = (tableHeaders) => {
+        const labels = [];
+        Array.from(tableHeaders).forEach((header) => {
+            const colCount = parseInt(header.getAttribute('colspan') ?? '1');
+            for (let i = 0; i < colCount; i++) {
+                labels.push(header.innerHTML.replace('<br>', "\n").replace('&nbsp;', ' '));
+            }
+        });
+        return labels;
+    };
+
+    const makeTableResponsive = (table) => {
+        const labels = headerLabels(table.querySelectorAll('th'));
+        table.querySelectorAll('td').forEach((td, i) => td
+            .setAttribute('data-label', labels[i % labels.length]));
+    };
+
     self.makeTableResponsive = (wrapperId) => {
-        const wrapper = document.querySelector('#' + wrapperId);
-        if(!wrapper) {
-            return;
-        }
-        const labels = Array.from(wrapper.querySelectorAll('th')).map(th => th.innerText);
-        wrapper.querySelectorAll('td')
-            .forEach((td, i) => td.setAttribute('data-label', labels[i % labels.length]));
+        document.querySelectorAll(`#${wrapperId} table`).forEach((table) => makeTableResponsive(table));
     };
 
     self.showSmScreen = (targetId, wrapperId) => {
