@@ -6,6 +6,7 @@ return [
         'deposits' => "Versements",
         'remitments' => "Remises",
         'auctions' => "Enchères",
+        'pools' => "Cotisations",
         'amounts' => "Montants en caisse",
         'amount' => "Montant en caisse",
         'start' => "Début de<br/>séance",

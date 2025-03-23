@@ -235,6 +235,24 @@ class SummaryService
     }
 
     /**
+     * @param Collection $figures
+     *
+     * @return array
+     */
+    public function getPoolsBalance(Collection $figures): array
+    {
+        $pools = [];
+        foreach($figures as $poolData)
+        {
+            foreach($poolData['figures']->collected as $sessionId => $collected)
+            {
+                $pools[$sessionId] = ($pools[$sessionId] ?? 0) + $collected->cashier->end;
+            }
+        }
+        return $pools;
+    }
+
+    /**
      * @param Pool $pool
      * @param Session $session
      *

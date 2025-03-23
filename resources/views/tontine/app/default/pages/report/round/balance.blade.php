@@ -11,6 +11,7 @@
                       <th class="currency">{!! __('meeting.titles.refunds') !!}</th>
                       <th class="currency">{!! __('meeting.titles.savings') !!}</th>
                       <th class="currency">{!! __('meeting.titles.disbursements') !!}</th>
+                      <th class="currency">{!! __('figures.titles.pools') !!}</th>
                       <th class="currency">{!! __('figures.titles.end') !!}</th>
                     </tr>
                   </thead>
@@ -25,6 +26,7 @@
                       <td></td>
                       <td></td>
                       <td></td>
+                      <td></td>
 @else
 @php
   $settlement = $settlements[$session->id] ?? 0;
@@ -32,7 +34,8 @@
   $loan = $loans[$session->id] ?? 0;
   $refund = $refunds[$session->id] ?? 0;
   $disbursement = $disbursements[$session->id] ?? 0;
-  $balance = $settlement + $refund + $saving - $loan - $disbursement;
+  $pool = $pools[$session->id] ?? 0;
+  $balance = $settlement + $refund + $saving + $pool - $loan - $disbursement;
   $cash += $balance;
 @endphp
                       <td class="currency"><b>{!! $locale->formatMoney($settlement, false, false) !!}</b></td>
@@ -40,6 +43,7 @@
                       <td class="currency"><b>{!! $locale->formatMoney($refund, false, false) !!}</b></td>
                       <td class="currency"><b>{!! $locale->formatMoney($saving, false, false) !!}</b></td>
                       <td class="currency"><b>{!! $locale->formatMoney($disbursement, false, false) !!}</b></td>
+                      <td class="currency"><b>{!! $locale->formatMoney($pool, false, false) !!}</b></td>
                       <td class="currency"><b>{!! $locale->formatMoney($balance, false, false) !!}<br/>{!!
                         $locale->formatMoney($cash, false, false) !!}</b></td>
 @endif

@@ -15,6 +15,7 @@
                       <th class="report-round-cash-amount">{!! __('meeting.titles.refunds') !!}</th>
                       <th class="report-round-cash-amount">{!! __('meeting.titles.savings') !!}</th>
                       <th class="report-round-cash-amount">{!! __('meeting.titles.disbursements') !!}</th>
+                      <th class="report-round-cash-amount">{{ __('figures.titles.pools') }}</th>
                       <th>{!! __('figures.titles.end') !!}</th>
                     </tr>
                   </thead>
@@ -29,6 +30,7 @@
                       <td class="report-round-cash-amount"></td>
                       <td class="report-round-cash-amount"></td>
                       <td class="report-round-cash-amount"></td>
+                      <td class="report-round-cash-amount"></td>
 @else
 @php
   $settlement = $settlements[$session->id] ?? 0;
@@ -36,7 +38,8 @@
   $loan = $loans[$session->id] ?? 0;
   $refund = $refunds[$session->id] ?? 0;
   $disbursement = $disbursements[$session->id] ?? 0;
-  $balance = $settlement + $refund + $saving - $loan - $disbursement;
+  $pool = $pools[$session->id] ?? 0;
+  $balance = $settlement + $refund + $saving + $pool - $loan - $disbursement;
   $cash += $balance;
 @endphp
                       <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($settlement, false) !!}</b></td>
@@ -44,6 +47,7 @@
                       <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($refund, false) !!}</b></td>
                       <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($saving, false) !!}</b></td>
                       <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($disbursement, false) !!}</b></td>
+                      <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($pool, false) !!}</b></td>
                       <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($balance, false) !!}<br/>{!!
                         $locale->formatMoney($cash, false) !!}</b></td>
 @endif

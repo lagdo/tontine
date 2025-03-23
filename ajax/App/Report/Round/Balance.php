@@ -3,18 +3,35 @@
 namespace Ajax\App\Report\Round;
 
 use Ajax\Component;
+use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Report\RoundService;
 use Stringable;
 
+/**
+ * @before getPools
+ */
 class Balance extends Component
 {
     /**
      * @param RoundService $roundService
+     * @param SummaryService $summaryService
      */
-    public function __construct(private RoundService $roundService)
+    public function __construct(private RoundService $roundService,
+        private SummaryService $summaryService)
     {}
 
+    protected function getPools(): void
+    {
+        $round = $this->tenantService->round();
+        $figures = $this->summaryService->getFigures($round); 
+        $pools = $this->summaryService->getPoolsBalance($figures);
+        $this->view()->share('figures', $figures);
+        $this->view()->share('pools', $pools);
+    }
 
+    /**
+     * @inheritDoc
+     */
     public function html(): Stringable
     {
         $round = $this->tenantService->round();

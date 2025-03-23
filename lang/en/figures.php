@@ -6,6 +6,7 @@ return [
         'deposits' => "Deposits",
         'remitments' => "Remitments",
         'auctions' => "Auctions",
+        'pools' => "Pools",
         'amounts' => "Cash amounts",
         'amount' => "Cash amount",
         'start' => "Start of<br/>session",
