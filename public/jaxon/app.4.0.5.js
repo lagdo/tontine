@@ -37,7 +37,8 @@ var Tontine = {};
         Array.from(tableHeaders).forEach((header) => {
             const colCount = parseInt(header.getAttribute('colspan') ?? '1');
             for (let i = 0; i < colCount; i++) {
-                labels.push(header.innerHTML.replace('<br>', "\n").replace('&nbsp;', ' '));
+                labels.push(header.innerHTML.replace('-<br>', '')
+                    .replace('<br>', ' ').replace('&nbsp;', ' '));
             }
         });
         return labels;

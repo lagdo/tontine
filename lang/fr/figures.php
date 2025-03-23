@@ -7,6 +7,8 @@ return [
         'remitments' => "Remises",
         'auctions' => "Enchères",
         'pools' => "Cotisations",
+        'refunds' => "Rembour-<br/>sements",
+        'disbursements' => "Décais-<br/>sements",
         'amounts' => "Montants en caisse",
         'amount' => "Montant en caisse",
         'start' => "Début de<br/>séance",

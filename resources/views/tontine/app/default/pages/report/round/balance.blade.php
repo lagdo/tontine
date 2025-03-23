@@ -8,9 +8,9 @@
                       <th>{{ __('figures.titles.session') }}</th>
                       <th class="currency">{!! __('meeting.titles.fees') !!}</th>
                       <th class="currency">{!! __('meeting.titles.loans') !!}</th>
-                      <th class="currency">{!! __('meeting.titles.refunds') !!}</th>
+                      <th class="currency">{!! __('figures.titles.refunds') !!}</th>
                       <th class="currency">{!! __('meeting.titles.savings') !!}</th>
-                      <th class="currency">{!! __('meeting.titles.disbursements') !!}</th>
+                      <th class="currency">{!! __('figures.titles.disbursements') !!}</th>
                       <th class="currency">{!! __('figures.titles.pools') !!}</th>
                       <th class="currency">{!! __('figures.titles.end') !!}</th>
                     </tr>
