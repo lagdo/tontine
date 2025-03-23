@@ -231,11 +231,11 @@ class ReportService
         $tontine = $this->tenantService->tontine();
         [$country, $currency] = $this->localeService->getNameFromTontine($tontine);
 
-        $pools = $this->summaryService->getFigures($round); 
+        $figures = $this->summaryService->getFigures($round); 
 
         $sessions = $this->roundService->getRoundSessions($round);
         $sessionIds = $sessions->pluck('id');
-        $amounts = [
+        $balance = [
             'sessions' => $sessions,
             'settlements' => $this->roundService->getSettlementAmounts($sessionIds),
             'loans' => $this->roundService->getLoanAmounts($sessionIds),
@@ -244,6 +244,6 @@ class ReportService
             'disbursements' => $this->roundService->getDisbursementAmounts($sessionIds),
         ];
 
-        return compact('tontine', 'round', 'country', 'currency', 'pools', 'amounts');
+        return compact('tontine', 'round', 'country', 'currency', 'figures', 'balance');
     }
 }

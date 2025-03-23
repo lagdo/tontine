@@ -99,13 +99,13 @@
         {{ __('figures.titles.amounts') }} ({{ $currency }})
       </div>
 
-@foreach ($pools as $pool)
-      @include('tontine.report.raptor.round.pool', $pool)
+@foreach ($figures as $poolFigures)
+      @include('tontine.report.raptor.round.pool', $poolFigures)
 
       <div class="pagebreak"></div>
 @endforeach
 
-      @include('tontine.report.raptor.round.amounts', $amounts)
+      @include('tontine.report.raptor.round.balance', $balance)
     </main>
   </body>
 </html>

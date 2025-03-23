@@ -41,11 +41,11 @@
 @endsection
 
 @section('content')
-@foreach ($pools as $pool)
-          @include('tontine.report.default.round.pool', $pool)
+@foreach ($figures as $poolFigures)
+          @include('tontine.report.default.round.pool', $poolFigures)
 
           <div class="pagebreak"></div>
 @endforeach
 
-          @include('tontine.report.default.round.amounts', $amounts)
+          @include('tontine.report.default.round.balance', $balance)
 @endsection
