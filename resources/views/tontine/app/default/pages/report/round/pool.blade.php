@@ -8,7 +8,7 @@
                       <th class="currency" colspan="2">{!! __('figures.titles.deposits') !!}</th>
                       <th class="currency">{!! __('figures.titles.recv') !!}</th>
                       <th class="currency" colspan="2">{!! __('figures.titles.remitments') !!}</th>
-                      <th class="currency">{!! __('figures.titles.auctions') !!}</th>
+                      <th class="currency"@if($pool->remit_auction) colspan="2"@endif>{!! __('figures.titles.auctions') !!}</th>
                       <th class="currency">{!! __('figures.titles.end') !!}</th>
                     </tr>
                   </thead>
@@ -45,8 +45,13 @@
                       <td class="currency">
                         @include('tontine.report.pool.remitment.amount', $options)
                       </td>
+@if($pool->remit_auction)
                       <td class="currency">
-                        @include('tontine.report.pool.auction', $options)
+                        @include('tontine.report.pool.auction.count', $options)
+                      </td>
+@endif
+                      <td class="currency">
+                        @include('tontine.report.pool.auction.amount', $options)
                       </td>
                       <td class="currency">
                         @include('tontine.report.pool.end', $options)

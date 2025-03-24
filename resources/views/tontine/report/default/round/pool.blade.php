@@ -14,7 +14,7 @@
                       <th style="text-align:right;" colspan="2">{!! __('figures.titles.deposits') !!}</th>
                       <th style="text-align:right;">{!! __('figures.titles.recv') !!}</th>
                       <th style="text-align:right;" colspan="2">{!! __('figures.titles.remitments') !!}</th>
-                      <th style="text-align:right;">{!! __('figures.titles.auctions') !!}</th>
+                      <th style="text-align:right;"@if($pool->remit_auction) colspan="2"@endif>{!! __('figures.titles.auctions') !!}</th>
                       <th style="text-align:right;">{!! __('figures.titles.end') !!}</th>
                     </tr>
                   </thead>
@@ -51,8 +51,13 @@
                       <td class="report-round-pool-amount">
                         @include('tontine.report.pool.remitment.amount', $options)
                       </td>
+@if($pool->remit_auction)
+                      <td class="report-round-pool-count">
+                        @include('tontine.report.pool.auction.count', $options)
+                      </td>
+@endif
                       <td class="report-round-pool-amount">
-                        @include('tontine.report.pool.auction', $options)
+                        @include('tontine.report.pool.auction.amount', $options)
                       </td>
                       <td class="report-round-pool-amount">
                         @include('tontine.report.pool.end', $options)
