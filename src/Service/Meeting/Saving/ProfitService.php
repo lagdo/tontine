@@ -39,17 +39,48 @@ class ProfitService
     }
 
     /**
+     * Get the amount corresponding to one part for a given distribution
+     *
+     * @param Collection $savings
+     *
+     * @return int
+     */
+    private function getPartValue(Collection $savings): int
+    {
+        // The value of the unit part is the gcd of the saving amounts.
+        // The distribution values might be optimized by using the saving distribution
+        // value instead of the amount, but the resulting part value might be confusing
+        // since it can be greater than some saving amounts in certain cases.
+        return (int)$savings->reduce(function($gcd, $saving) {
+            if($gcd === 0)
+            {
+                return $saving->amount;
+            }
+            if($saving->duration === 0)
+            {
+                return $gcd;
+            }
+            return gmp_gcd($gcd, $saving->amount);
+        }, $savings->first()->amount);
+    }
+
+    /**
      * Get the profit distribution for savings.
      *
      * @param Collection $sessions
      * @param Collection $savings
      * @param int $profitAmount
      *
-     * @return Collection
+     * @return Distribution
      */
-    private function setDistributions(Collection $sessions, Collection $savings,
-        int $profitAmount): Collection
+    private function distribution(Collection $sessions, Collection $savings,
+        int $profitAmount): Distribution
     {
+        if($savings->count() === 0)
+        {
+            return new Distribution($savings);
+        }
+
         // Set savings durations and distributions
         foreach($savings as $saving)
         {
@@ -57,29 +88,19 @@ class ProfitService
             $saving->distribution = $saving->amount * $saving->duration;
             $saving->profit = 0;
         }
-        // Reduce the distributions
-        $distributionGcd = (int)$savings->reduce(function($gcd, $saving) {
-            if($gcd === 0)
-            {
-                return $saving->distribution;
-            }
-            if($saving->duration === 0)
-            {
-                return $gcd;
-            }
-            return gmp_gcd($gcd, $saving->distribution);
-        }, $savings->first()->distribution);
-        if($distributionGcd > 0)
+
+        // Reduce the distributions by the value of the unit part.
+        $partValue = $this->getPartValue($savings);
+        if($partValue > 0)
         {
-            $sum = (int)($savings->sum('distribution') / $distributionGcd);
+            $sum = (int)($savings->sum('distribution') / $partValue);
             foreach($savings as $saving)
             {
-                $saving->distribution /= $distributionGcd;
+                $saving->distribution /= $partValue;
                 $saving->profit = (int)($profitAmount * $saving->distribution / $sum);
             }
         }
-
-        return $savings;
+        return new Distribution($savings, $partValue);
     }
 
     /**
@@ -89,9 +110,9 @@ class ProfitService
      * @param Fund $fund
      * @param int $profitAmount
      *
-     * @return Collection
+     * @return Distribution
      */
-    public function getDistributions(Session $session, Fund $fund, int $profitAmount): Collection
+    public function getDistribution(Session $session, Fund $fund, int $profitAmount): Distribution
     {
         $sessions = $this->fundService->getFundSessions($session, $fund);
         // Get the savings to be rewarded
@@ -104,33 +125,7 @@ class ProfitService
             ->orderBy('sessions.start_at', 'asc')
             ->with(['session', 'member'])
             ->get();
-        if($savings->count() === 0)
-        {
-            return $savings;
-        }
-
-        return $this->setDistributions($sessions, $savings, $profitAmount);
-    }
-
-    /**
-     * Get the amount corresponding to one part for a given distribution
-     *
-     * @param Collection $savings
-     *
-     * @return int
-     */
-    public function getPartUnitValue(Collection $savings): int
-    {
-        // The part value makes sense only iwhen there is more than 2 savings
-        // with distribution greater than 0.
-        $savings = $savings->filter(fn($saving) => $saving->distribution > 0);
-        if($savings->count() < 2)
-        {
-            return 0;
-        }
-
-        $saving = $savings->first();
-        return (int)($saving->amount * $saving->duration / $saving->distribution);
+        return $this->distribution($sessions, $savings, $profitAmount);
     }
 
     /**

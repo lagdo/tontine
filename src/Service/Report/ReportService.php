@@ -145,8 +145,9 @@ class ReportService
     private function getFundSavingsReport(Session $session, Fund $fund, int $profitAmount): array
     {
         $name = $fund->title;
-        $savings = $this->profitService->getDistributions($session, $fund, $profitAmount);
-        $partUnitValue = $this->profitService->getPartUnitValue($savings);
+        $distribution = $this->profitService->getDistribution($session, $fund, $profitAmount);
+        $savings = $distribution->savings;
+        $partUnitValue = $distribution->partValue;
         $distributionSum = $savings->sum('distribution');
         $distributionCount = $savings->filter(fn($saving) => $saving->distribution > 0)->count();
 
