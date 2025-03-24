@@ -15,11 +15,8 @@ class Distribution extends Component
      */
     public function html(): Stringable
     {
-        $distribution = $this->stash()->get('report.savings.distribution');
-
         return $this->renderView('pages.report.session.savings.distribution', [
-            'savings' => $distribution->savings->groupBy('member_id'),
-            'distributionSum' => $distribution->savings->sum('distribution'),
+            'distribution' => $this->stash()->get('report.savings.distribution'),
         ]);
     }
 }

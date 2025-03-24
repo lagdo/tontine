@@ -4,12 +4,26 @@ namespace Siak\Tontine\Service\Meeting\Saving;
 
 use Illuminate\Support\Collection;
 
+use function collect;
+
 class Distribution
 {
     /**
-     * @param Collection $savings
-     * @param int $partValue
+     * The savings qualified for profit distribution.
+     *
+     * @var Collection
      */
-    public function __construct(public Collection $savings, public int $partValue = 0)
-    {}
+    public Collection $selected;
+
+    /**
+     * @param Collection $sessions
+     * @param Collection $savings
+     * @param int $profitAmount
+     * @param int $partAmount
+     */
+    public function __construct(public Collection $sessions, public Collection $savings,
+        public int $profitAmount, public int $partAmount = 0)
+    {
+        $this->selected = collect();
+    }
 }

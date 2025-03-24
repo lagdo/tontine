@@ -11,40 +11,34 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($savings as $memberSavings)
-@if ($memberSavings->count() === 1)
+@foreach ($distribution->savings->groupBy('member_id') as $savings)
+@if ($savings->count() === 1)
 @php
-  $saving = $memberSavings[0];
+  $saving = $savings[0];
 @endphp
                         <tr>
                           <td>{{ $saving->member->name }}</td>
                           <td><b>{{ $locale->formatMoney($saving->amount) }}</b></td>
                           <td>{{ $saving->session->title }}</td>
                           <td>{{ $saving->duration }}</td>
-                          <td><b>{{ $saving->distribution }} ({{ sprintf('%.2f', $distributionSum === 0 ?
-                            0 : 100 * $saving->distribution / $distributionSum) }}%)</b></td>
+                          <td><b>{{ $saving->parts }} ({{ sprintf('%.2f', $saving->percent) }}%)</b></td>
                           <td><b>{{ $locale->formatMoney($saving->profit) }}</b></td>
                         </tr>
-@else
-@php
-  $memberDistribution = $memberSavings->sum('distribution');
-@endphp
+@elseif ($savings->count() > 1)
                         <tr>
-                          <td rowspan="{{ $memberSavings->count() + 1 }}">{{ $memberSavings[0]->member->name }}</td>
-                          <td><b>{{ $locale->formatMoney($memberSavings->sum('amount')) }}</b></td>
+                          <td rowspan="{{ $savings->count() + 1 }}">{{ $savings[0]->member->name }}</td>
+                          <td><b>{{ $locale->formatMoney($savings->sum('amount')) }}</b></td>
                           <td>&nbsp;</td>
                           <td>&nbsp;</td>
-                          <td><b>{{ $memberDistribution }} ({{ sprintf('%.2f', $distributionSum === 0 ?
-                            0 : 100 * $memberDistribution / $distributionSum) }}%)</b></td>
-                          <td><b>{{ $locale->formatMoney($memberSavings->sum('profit')) }}</b></td>
+                          <td><b>{{ $savings->sum('parts') }} ({{ sprintf('%.2f', $savings->sum('percent')) }}%)</b></td>
+                          <td><b>{{ $locale->formatMoney($savings->sum('profit')) }}</b></td>
                         </tr>
-@foreach ($memberSavings as $saving)
+@foreach ($savings as $saving)
                         <tr>
                           <td>{{ $locale->formatMoney($saving->amount) }}</td>
                           <td>{{ $saving->session->title }}</td>
                           <td>{{ $saving->duration }}</td>
-                          <td>{{ $saving->distribution }} ({{ sprintf('%.2f', $distributionSum === 0 ?
-                            0 : 100 * $saving->distribution / $distributionSum) }}%)</td>
+                          <td>{{ $saving->parts }} ({{ sprintf('%.2f', $saving->percent) }}%)</td>
                           <td>{{ $locale->formatMoney($saving->profit) }}</td>
                         </tr>
 @endforeach

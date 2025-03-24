@@ -33,74 +33,71 @@ class ProfitService
     private function getSavingDuration(Collection $sessions, Saving $saving): int
     {
         // Count the number of sessions before the current one.
-        return $sessions->filter(function($session) use($saving) {
-            return $session->start_at > $saving->session->start_at;
-        })->count();
+        return $sessions
+            ->filter(fn($session) => $session->start_at > $saving->session->start_at)
+            ->count();
+    }
+
+    /**
+     * @param Collection $values
+     *
+     * @return int
+     */
+    private function gcd(Collection $values): int
+    {
+        return (int)$values->reduce(function($gcd, $value) {
+            if($gcd === 0)
+            {
+                return $value;
+            }
+            return gmp_gcd($gcd, $value);
+        }, $values->first());
     }
 
     /**
      * Get the amount corresponding to one part for a given distribution
      *
-     * @param Collection $savings
+     * @param Distribution $distribution
      *
-     * @return int
+     * @return void
      */
-    private function getPartValue(Collection $savings): int
+    private function setDistributions(Distribution $distribution): void
     {
-        // The value of the unit part is the gcd of the saving amounts.
-        // The distribution values might be optimized by using the saving distribution
-        // value instead of the amount, but the resulting part value might be confusing
-        // since it can be greater than some saving amounts in certain cases.
-        return (int)$savings->reduce(function($gcd, $saving) {
-            if($gcd === 0)
-            {
-                return $saving->amount;
-            }
-            if($saving->duration === 0)
-            {
-                return $gcd;
-            }
-            return gmp_gcd($gcd, $saving->amount);
-        }, $savings->first()->amount);
-    }
-
-    /**
-     * Get the profit distribution for savings.
-     *
-     * @param Collection $sessions
-     * @param Collection $savings
-     * @param int $profitAmount
-     *
-     * @return Distribution
-     */
-    private function distribution(Collection $sessions, Collection $savings,
-        int $profitAmount): Distribution
-    {
-        if($savings->count() === 0)
-        {
-            return new Distribution($savings);
-        }
-
+        $sessions = $distribution->sessions;
+        $savings = $distribution->savings;
         // Set savings durations and distributions
         foreach($savings as $saving)
         {
             $saving->duration = $this->getSavingDuration($sessions, $saving);
-            $saving->distribution = $saving->amount * $saving->duration;
+            $saving->parts = $saving->amount * $saving->duration;
             $saving->profit = 0;
+            $saving->percent = 0;
         }
 
-        // Reduce the distributions by the value of the unit part.
-        $partValue = $this->getPartValue($savings);
-        if($partValue > 0)
+        $distribution->selected = $savings->filter(fn($saving) => $saving->duration > 0);
+        // The value of the unit part is the gcd of the saving amounts.
+        // The distribution values might be optimized by using the saving parts value
+        // instead of the amount, but the resulting part amount might be confusing
+        // since it can be greater than some saving amounts in certain cases.
+        $partsGcd = $this->gcd($distribution->selected->pluck('parts'));
+        if($partsGcd > 0)
         {
-            $sum = (int)($savings->sum('distribution') / $partValue);
-            foreach($savings as $saving)
-            {
-                $saving->distribution /= $partValue;
-                $saving->profit = (int)($profitAmount * $saving->distribution / $sum);
-            }
+            $amountGcd = $this->gcd($distribution->selected->pluck('amount'));
+            $distribution->partAmount = $amountGcd;
+
+            $savings->each(function($saving) use($partsGcd, $amountGcd) {
+                $saving->profit = $saving->parts / $partsGcd;
+                $saving->parts /= $amountGcd;
+            });
+
+            $profitSum = $savings->sum('profit');
+            $profitAmount = $distribution->profitAmount;
+            $savings->each(function($saving) use($profitSum, $profitAmount) {
+                $percent = $saving->profit / $profitSum;
+                $saving->percent = $percent * 100;
+                $saving->profit = (int)($profitAmount * $percent);
+            });
         }
-        return new Distribution($savings, $partValue);
     }
 
     /**
@@ -125,7 +122,16 @@ class ProfitService
             ->orderBy('sessions.start_at', 'asc')
             ->with(['session', 'member'])
             ->get();
-        return $this->distribution($sessions, $savings, $profitAmount);
+
+        $distribution = new Distribution($sessions, $savings, $profitAmount);
+        if($savings->count() === 0)
+        {
+            return $distribution;
+        }
+
+        // Reduce the distributions by the value of the unit part.
+        $this->setDistributions($distribution);
+        return $distribution;
     }
 
     /**
