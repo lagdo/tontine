@@ -15,6 +15,7 @@ return [
         'recv' => "After<br/>deposits",
         'end' => "End of<br/>session",
         'beneficiaries' => "Beneficiaries",
+        'subtotals' => "Sub-<br/>totals",
     ],
     'actions' => [
         'amounts' => "Amounts",
