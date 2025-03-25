@@ -9,11 +9,11 @@ use function collect;
 class Distribution
 {
     /**
-     * The savings qualified for profit distribution.
+     * The savings to be rewarded.
      *
      * @var Collection
      */
-    public Collection $selected;
+    public Collection $rewarded;
 
     /**
      * @param Collection $sessions
@@ -24,6 +24,6 @@ class Distribution
     public function __construct(public Collection $sessions, public Collection $savings,
         public int $profitAmount, public int $partAmount = 0)
     {
-        $this->selected = collect();
+        $this->rewarded = collect();
     }
 }

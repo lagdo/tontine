@@ -9,11 +9,11 @@
                       {!! __('meeting.profit.distribution.amount', [
                         'amount' => $locale->formatMoney($profitAmount),
                       ]) !!}
-@if ($distribution->selected->count() > 0)
+@if ($distribution->rewarded->count() > 0)
                       {!! __('meeting.profit.distribution.parts', [
                         'parts' => $distribution->savings->sum('parts'),
                       ]) !!}
-@if ($distribution->selected->count() > 1)
+@if ($distribution->rewarded->count() > 1)
                       {!! __('meeting.profit.distribution.basis', [
                         'unit' => $locale->formatMoney($distribution->partAmount),
                       ]) !!}

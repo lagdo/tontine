@@ -5,7 +5,7 @@
             'parts' => $distribution->savings->sum('parts'),
           ]) }}
       </div>
-@if ($distribution->selected->count() > 1)
+@if ($distribution->rewarded->count() > 1)
       <div class="section section-subtitle">
         {!! __('meeting.profit.distribution.basis', [
           'unit' => $locale->formatMoney($distribution->partAmount, true),

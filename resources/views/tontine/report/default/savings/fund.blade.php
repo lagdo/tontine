@@ -7,7 +7,7 @@
                         ]) }}</h5>
                     </div>
                   </div>
-@if ($distribution->selected->count() > 1)
+@if ($distribution->rewarded->count() > 1)
                   <div class="row mt-0">
                     <div class="col d-flex justify-content-center">
                       <h6>{!! __('meeting.profit.distribution.basis', [
