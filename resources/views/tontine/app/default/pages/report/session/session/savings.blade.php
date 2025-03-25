@@ -22,13 +22,13 @@
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
-                          <th>{{ __('common.labels.total') }}</th>
+                          <th class="currency">{{ __('common.labels.total') }}</th>
                           <th class="currency">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td>{{ $saving->total_count }}</td>
+                          <td class="currency">{{ $saving->total_count }}</td>
                           <td class="currency">{{ $locale->formatMoney($saving->total_amount) }}</td>
                         </tr>
                       </tbody>

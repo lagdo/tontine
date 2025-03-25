@@ -9,7 +9,7 @@
                       <thead>
                         <tr>
                           <th>{{ __('common.labels.title') }}</th>
-                          <th>&nbsp;</th>
+                          <th class="currency">&nbsp;</th>
                           <th class="currency">{{ __('common.labels.total') }}</th>
                         </tr>
                       </thead>
@@ -18,7 +18,7 @@
                         <tr>
                           <td>{{ $pool->title }}<br/>{{ $pool->deposit_fixed ?
                             $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre') }}</td>
-                          <td>{{ $pool->paid_count }}/{{ $pool->total_count }}</td>
+                          <td class="currency">{{ $pool->paid_count }}/{{ $pool->total_count }}</td>
                           <td class="currency">{{ $locale->formatMoney($pool->paid_amount) }}</td>
                         </tr>
 @endforeach
