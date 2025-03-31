@@ -3,8 +3,6 @@
 @php
   $rqMenuFunc = rq(Ajax\App\MenuFunc::class);
 @endphp
-<a class="highlight" role="link" @jxnClick($rqMenuFunc->admin())><i class="fa fa-caret-square-left"></i></a>
-
 @if($tenant->user()->tontines()->count() > 0)
 @php
   $tontine = $tenant->tontine();

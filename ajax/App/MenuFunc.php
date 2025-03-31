@@ -30,6 +30,7 @@ class MenuFunc extends FuncComponent
         $this->tenantService->resetRound();
         $this->stash()->set('menu.current.tontine', $tontine);
 
+        $this->response->jq('#header-menu-home')->hide();
         $this->cl(AdminMenu::class)->render();
         $this->cl(MainTitle::class)->render();
         $this->cl(Organisation::class)->home();
@@ -68,6 +69,7 @@ class MenuFunc extends FuncComponent
         $this->tenantService->setTontine($tontine);
         $this->tenantService->resetRound();
 
+        $this->response->jq('#header-menu-home')->hide();
         $this->cl(MainTitle::class)->render();
         $this->cl(AdminMenu::class)->render();
         $this->cl(Member::class)->home();
@@ -126,6 +128,7 @@ class MenuFunc extends FuncComponent
         $this->bag('tenant')->set('round.id', $round->id);
         $this->tenantService->setRound($round);
 
+        $this->response->jq('#header-menu-home')->show();
         $this->cl(RoundMenu::class)->render();
         $this->cl(MainTitle::class)->render();
         $this->cl(Pool::class)->home();
