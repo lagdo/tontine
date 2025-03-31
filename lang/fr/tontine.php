@@ -76,6 +76,7 @@ return [
         'choose' => "Choisir",
     ],
     'messages' => [
+        'bonjour' => "Bonjour, :name",
         'created' => "L'organisation a été ajoutée",
         'updated' => "L'organisation a été modifiée",
         'deleted' => "L'organisation a été supprimée",

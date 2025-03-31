@@ -76,6 +76,7 @@ return [
         'choose' => "Choose",
     ],
     'messages' => [
+        'bonjour' => "Hi, :name",
         'created' => "The organisation was successfully created.",
         'updated' => "The organisation was successfully updated.",
         'deleted' => "The organisation was successfully deleted.",

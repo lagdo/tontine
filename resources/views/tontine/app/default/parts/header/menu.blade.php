@@ -22,7 +22,9 @@
           <li class="dropdown">
             <a role="link" tabindex="0" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
               <img alt="image" src="/tpl/assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
-              <div class="d-sm-none d-lg-inline-block">Hi, {{ $user->name }}</div>
+              <div class="d-sm-none d-lg-inline-block">{{ __('tontine.messages.bonjour', [
+                'name' => $user->name,
+              ]) }}</div>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
               <a href="{{ route('user.profile') }}" class="dropdown-item has-icon">
