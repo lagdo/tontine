@@ -14,6 +14,6 @@ class MainTitle extends Component
      */
     public function html(): string
     {
-        return $this->renderView('pages.select.title');
+        return $this->renderView('parts.header.title');
     }
 }
