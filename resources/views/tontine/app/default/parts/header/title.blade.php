@@ -16,7 +16,7 @@
                 </h2>
               </div>
               <div class="col-auto">
-                @if ($tontine !== null)<h2>{{ $locale->getCurrencyName() }}</h2>@else &nbsp;@endif
+                @if ($tontine !== null)<h2>{{ $locale->getCurrencyName() }} <i class="fa fa-money-bill"></i></h2>@else &nbsp;@endif
               </div>
             </div>
             <div class="row">
