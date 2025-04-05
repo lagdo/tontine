@@ -24,7 +24,7 @@ class OptionsFunc extends FuncComponent
         $options = $this->tontineService->getTontineOptions();
         $template = $options['reports']['template'] ?? 'default';
         $title = trans('tontine.options.titles.edit');
-        $content = $this->renderView('pages.options.edit', [
+        $content = $this->renderView('pages.tontine.options.edit', [
             'template' => $template,
             'templates' => [
                 'default' => trans('tontine.options.labels.default'),

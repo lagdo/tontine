@@ -60,7 +60,7 @@ class Access extends Component
     {
         $invite = $this->stash()->get('user.invite');
 
-        return $this->renderView('pages.user.host.access.home', [
+        return $this->renderView('pages.admin.user.host.access.home', [
             'guest' => $invite->guest,
             'tontines' => $this->tenantService->user()->tontines->pluck('name', 'id'),
         ]);

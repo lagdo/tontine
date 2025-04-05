@@ -26,7 +26,7 @@ class CategoryFunc extends FuncComponent
             CategoryModel::TYPE_DISBURSEMENT => trans('tontine.category.types.disbursement'),
         ];
         $title = trans('tontine.category.titles.add');
-        $content = $this->renderView('pages.options.category.add', [
+        $content = $this->renderView('pages.tontine.options.category.add', [
             'types' => $types,
         ]);
         $buttons = [[
@@ -59,7 +59,7 @@ class CategoryFunc extends FuncComponent
         $types = [
             CategoryModel::TYPE_DISBURSEMENT => trans('tontine.category.types.disbursement'),
         ];
-        $content = $this->renderView('pages.options.category.edit', [
+        $content = $this->renderView('pages.tontine.options.category.edit', [
             'types' => $types,
             'category' => $category,
         ]);

@@ -25,7 +25,7 @@ class AccessContent extends Component
         $invite = $this->stash()->get('user.invite');
         $tontine = $this->stash()->get('user.tontine');
 
-        return $this->renderView('pages.user.host.access.tontine', [
+        return $this->renderView('pages.admin.user.host.access.tontine', [
             'tontine' => $tontine,
             'access' => $this->userService->getHostTontineAccess($invite, $tontine),
         ]);

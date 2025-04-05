@@ -15,7 +15,7 @@ class Host extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.user.host.home');
+        return $this->renderView('pages.admin.user.host.home');
     }
 
     /**

@@ -12,7 +12,7 @@ class Charge extends Component
 {
     public function html(): Stringable
     {
-        return $this->renderView('pages.options.charge.home');
+        return $this->renderView('pages.tontine.options.charge.home');
     }
 
     /**

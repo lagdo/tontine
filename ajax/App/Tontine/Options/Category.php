@@ -12,7 +12,7 @@ class Category extends Component
 {
     public function html(): Stringable
     {
-        return $this->renderView('pages.options.category.home');
+        return $this->renderView('pages.tontine.options.category.home');
     }
 
     /**

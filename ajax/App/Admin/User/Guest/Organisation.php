@@ -12,7 +12,7 @@ class Organisation extends Component
 {
     public function html(): Stringable|string
     {
-        return $this->renderView('pages.user.guest.organisation.home');
+        return $this->renderView('pages.admin.user.guest.organisation.home');
     }
 
     /**

@@ -48,7 +48,7 @@ class Organisation extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.tontine.home', [
+        return $this->renderView('pages.admin.organisation.home', [
             'hasGuestOrganisations' => $this->tontineService->hasGuestOrganisations(),
         ]);
     }

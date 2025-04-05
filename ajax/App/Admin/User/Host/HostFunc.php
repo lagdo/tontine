@@ -27,7 +27,7 @@ class HostFunc extends FuncComponent
     public function add()
     {
         $title = trans('tontine.invite.titles.add');
-        $content = $this->renderView('pages.user.host.add');
+        $content = $this->renderView('pages.admin.user.host.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

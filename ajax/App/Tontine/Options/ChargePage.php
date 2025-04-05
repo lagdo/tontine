@@ -39,7 +39,7 @@ class ChargePage extends PageComponent
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.options.charge.page', [
+        return $this->renderView('pages.tontine.options.charge.page', [
             'types' => $this->getChargeTypes(),
             'periods' => $this->getChargePeriods(),
             'charges' => $this->chargeService->getCharges($this->currentPage()),

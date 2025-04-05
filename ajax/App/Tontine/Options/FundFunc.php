@@ -28,7 +28,7 @@ class FundFunc extends FuncComponent
     public function add()
     {
         $title = trans('tontine.fund.titles.add');
-        $content = $this->renderView('pages.options.fund.add');
+        $content = $this->renderView('pages.tontine.options.fund.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -61,7 +61,7 @@ class FundFunc extends FuncComponent
         $fund = $this->fundService->getFund($fundId);
 
         $title = trans('tontine.fund.titles.edit');
-        $content = $this->renderView('pages.options.fund.edit')->with('fund', $fund);
+        $content = $this->renderView('pages.tontine.options.fund.edit')->with('fund', $fund);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

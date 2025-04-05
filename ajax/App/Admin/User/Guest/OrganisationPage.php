@@ -43,7 +43,7 @@ class OrganisationPage extends PageComponent
         $tontines = $this->tontineService->getGuestTontines($this->currentPage());
         [$countries, $currencies] = $this->localeService->getNamesFromTontines($tontines);
 
-        return $this->renderView('pages.user.guest.organisation.page', [
+        return $this->renderView('pages.admin.user.guest.organisation.page', [
             'tontines' => $tontines,
             'countries' => $countries,
             'currencies' => $currencies,

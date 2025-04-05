@@ -39,7 +39,7 @@ class Options extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.options.home');
+        return $this->renderView('pages.tontine.options.home');
     }
 
     /**

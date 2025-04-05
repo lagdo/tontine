@@ -12,7 +12,7 @@ class Fund extends Component
 {
     public function html(): Stringable
     {
-        return $this->renderView('pages.options.fund.home');
+        return $this->renderView('pages.tontine.options.fund.home');
     }
 
     /**

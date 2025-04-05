@@ -38,7 +38,7 @@ class ChargeFunc extends FuncComponent
     public function select()
     {
         $title = '';
-        $content = $this->renderView('pages.options.charge.select', [
+        $content = $this->renderView('pages.tontine.options.charge.select', [
             'groups' => $this->getChargeGroups()
         ]);
         $group = pm()->input('charge-group')->toInt();
@@ -66,7 +66,7 @@ class ChargeFunc extends FuncComponent
         [, $currency] = $this->localeService->getNameFromTontine($tontine);
 
         $title = trans('tontine.charge.titles.add');
-        $content = $this->renderView('pages.options.charge.add', [
+        $content = $this->renderView('pages.tontine.options.charge.add', [
             'fixed' => $group === self::$GROUP_FIXED,
             'label' => $this->getChargeGroups()[$group],
             'currency' => $currency,
@@ -128,7 +128,7 @@ class ChargeFunc extends FuncComponent
         [, $currency] = $this->localeService->getNameFromTontine($tontine);
 
         $title = trans('tontine.charge.titles.edit');
-        $content = $this->renderView('pages.options.charge.edit', [
+        $content = $this->renderView('pages.tontine.options.charge.edit', [
             'charge' => $charge,
             'currency' => $currency,
             'types' => $this->getChargeTypes(),

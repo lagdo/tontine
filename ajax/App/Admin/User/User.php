@@ -42,7 +42,7 @@ class User extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.user.home');
+        return $this->renderView('pages.admin.user.home');
     }
 
     /**

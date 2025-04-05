@@ -42,7 +42,7 @@ class Member extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.member.home');
+        return $this->renderView('pages.tontine.member.home');
     }
 
     /**

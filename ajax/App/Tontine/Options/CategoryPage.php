@@ -37,7 +37,7 @@ class CategoryPage extends PageComponent
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.options.category.page', [
+        return $this->renderView('pages.tontine.options.category.page', [
             'categories' => $this->categoryService->getCategories($this->currentPage()),
         ]);
     }

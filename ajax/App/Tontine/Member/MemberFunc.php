@@ -40,7 +40,7 @@ class MemberFunc extends FuncComponent
     public function add()
     {
         $title = trans('tontine.member.titles.add');
-        $content = $this->renderView('pages.member.add');
+        $content = $this->renderView('pages.tontine.member.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -70,7 +70,7 @@ class MemberFunc extends FuncComponent
     public function addList()
     {
         $title = trans('tontine.member.titles.add');
-        $content = $this->renderView('pages.member.list');
+        $content = $this->renderView('pages.tontine.member.list');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -151,7 +151,7 @@ class MemberFunc extends FuncComponent
         $member = $this->memberService->getMember($memberId);
 
         $title = trans('tontine.member.titles.edit');
-        $content = $this->renderView('pages.member.edit')
+        $content = $this->renderView('pages.tontine.member.edit')
             ->with('member', $member);
         $buttons = [[
             'title' => trans('common.actions.cancel'),

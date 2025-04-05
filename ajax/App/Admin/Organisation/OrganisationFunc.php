@@ -46,7 +46,7 @@ class OrganisationFunc extends FuncComponent
     public function add()
     {
         $title = trans('tontine.titles.add');
-        $content = $this->renderView('pages.tontine.add', [
+        $content = $this->renderView('pages.admin.organisation.add', [
             'countries' => $this->localeService->getCountries(),
         ]);
         $buttons = [[
@@ -89,7 +89,7 @@ class OrganisationFunc extends FuncComponent
 
         $title = trans('tontine.titles.edit');
         [, $currencies] = $this->localeService->getNamesFromTontines(collect([$tontine]));
-        $content = $this->renderView('pages.tontine.edit', [
+        $content = $this->renderView('pages.admin.organisation.edit', [
             'tontine' => $tontine,
             'countries' => $this->localeService->getCountries(),
             'currencies' => $currencies

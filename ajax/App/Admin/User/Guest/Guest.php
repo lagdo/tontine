@@ -15,7 +15,7 @@ class Guest extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.user.guest.home');
+        return $this->renderView('pages.admin.user.guest.home');
     }
 
     /**
