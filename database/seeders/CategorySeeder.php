@@ -45,7 +45,7 @@ class CategorySeeder extends Seeder
         }
         foreach($globalCategories as $category)
         {
-            if(!Category::where('name', $category['name'])->whereNull('tontine_id')->first())
+            if(!Category::where('name', $category['name'])->whereNull('guild_id')->first())
             {
                 Category::create($category);
             }

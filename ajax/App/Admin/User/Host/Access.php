@@ -4,8 +4,8 @@ namespace Ajax\App\Admin\User\Host;
 
 use Ajax\Component;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Service\Tontine\GuildService;
 use Siak\Tontine\Service\Tontine\UserService;
-use Siak\Tontine\Service\Tontine\TontineService;
 use Stringable;
 
 use function trans;
@@ -23,10 +23,10 @@ class Access extends Component
 
     /**
      * @param UserService $userService
-     * @param TontineService $tontineService
+     * @param GuildService $guildService
      */
     public function __construct(private UserService $userService,
-        private TontineService $tontineService)
+        private GuildService $guildService)
     {}
 
     protected function getInvite()
@@ -42,15 +42,14 @@ class Access extends Component
         }
         $this->stash()->set('user.invite', $invite);
 
-        // Do not find the tontine on the home page.
+        // Do not find the invite on the home page.
         if($this->target()->method() === 'home')
         {
             return;
         }
 
-        $tontineId = $this->target()->method() === 'tontine' ? $this->target()->args()[0] :
-            $this->bag('user')->get('tontine.id');
-        $this->stash()->set('user.tontine', $this->tontineService->getTontine($tontineId));
+        $guildId = $this->bag('user')->get('guild.id');
+        $this->stash()->set('user.guild', $this->guildService->getGuild($guildId));
     }
 
     /**
@@ -62,7 +61,7 @@ class Access extends Component
 
         return $this->renderView('pages.admin.user.host.access.home', [
             'guest' => $invite->guest,
-            'tontines' => $this->tenantService->user()->tontines->pluck('name', 'id'),
+            'guilds' => $this->tenantService->user()->guilds->pluck('name', 'id'),
         ]);
     }
 
@@ -76,17 +75,17 @@ class Access extends Component
 
     public function home(int $inviteId)
     {
-        $tontines = $this->tenantService->user()->tontines;
-        if($tontines->count() === 0)
+        $guilds = $this->tenantService->user()->guilds;
+        if($guilds->count() === 0)
         {
             $this->alert()->title(trans('common.titles.warning'))
-                ->warning(trans('tontine.invite.errors.tontines'));
+                ->warning(trans('tontine.invite.errors.no_guild'));
             return;
         }
 
-        $tontine = $tontines->first();
-        $this->bag('user')->set('tontine.id', $tontine->id);
-        $this->stash()->set('user.tontine', $tontine);
+        $guild = $guilds->first();
+        $this->bag('user')->set('guild.id', $guild->id);
+        $this->stash()->set('user.guild', $guild);
 
         $this->render();
     }

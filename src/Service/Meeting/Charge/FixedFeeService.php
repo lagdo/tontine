@@ -30,7 +30,7 @@ class FixedFeeService
      */
     public function getFees(int $page = 0): Collection
     {
-        return $this->tenantService->tontine()->charges()
+        return $this->tenantService->guild()->charges()
             ->fixed()->orderBy('id', 'desc')
             ->page($page, $this->tenantService->getLimit())
             ->get();
@@ -43,7 +43,7 @@ class FixedFeeService
      */
     public function getFeeCount(): int
     {
-        return $this->tenantService->tontine()->charges()->fixed()->count();
+        return $this->tenantService->guild()->charges()->fixed()->count();
     }
 
     /**

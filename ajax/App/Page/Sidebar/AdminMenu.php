@@ -30,9 +30,9 @@ class AdminMenu extends Component
      */
     protected function after()
     {
-        // if(($tontine = $this->tenantService->tontine()))
+        // if(($guild = $this->tenantService->guild()))
         // {
-        //     $this->selectTontine($tontine);
+        //     $this->selectGuild($guild);
         // }
         // if(($round = $this->tenantService->round()))
         // {
@@ -45,10 +45,10 @@ class AdminMenu extends Component
             $this->node()->jq($menuId)->click($this->rq($menuClass)->home());
         }
 
-        if($this->stash()->get('menu.current.tontine') !== null)
+        if($this->stash()->get('menu.current.guild') !== null)
         {
-            $this->node()->jq('#tontine-menu a')->css('color', config('menu.color.active'));
-            foreach(config('menu.tontine') as $menuId => $menuClass)
+            $this->node()->jq('#guild-menu a')->css('color', config('menu.color.active'));
+            foreach(config('menu.guild') as $menuId => $menuClass)
             {
                 $this->node()->jq($menuId)->click($this->rq($menuClass)->home());
             }

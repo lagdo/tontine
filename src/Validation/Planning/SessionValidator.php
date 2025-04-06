@@ -27,7 +27,7 @@ class SessionValidator extends AbstractValidator
      */
     private function sessionDateExists(string $startAt, int $sessionId): bool
     {
-        return $this->tenantService->tontine()->sessions()
+        return $this->tenantService->guild()->sessions()
             ->where('sessions.id', '!=', $sessionId)
             ->whereDate('sessions.start_at', $startAt)
             ->first() !== null;

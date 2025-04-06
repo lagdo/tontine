@@ -49,7 +49,7 @@ class MemberService
      */
     private function getQuery(string $search = ''): Builder|Relation
     {
-        return $this->tenantService->tontine()->members()
+        return $this->tenantService->guild()->members()
             ->when($this->filterActive, fn(Builder $query) => $query->active())
             ->when($search !== '', function(Builder $query) use($search) {
                 $search = '%' . strtolower($search) . '%';
@@ -105,7 +105,7 @@ class MemberService
      */
     public function getMemberList(): Collection
     {
-        return $this->tenantService->tontine()->members()->active()
+        return $this->tenantService->guild()->members()->active()
             ->orderBy('name', 'asc')->pluck('name', 'id');
     }
 
@@ -116,13 +116,13 @@ class MemberService
      */
     private function saveActiveMembers()
     {
-        if(!($tontine = $this->tenantService->tontine()) ||
+        if(!($guild = $this->tenantService->guild()) ||
             !($round = $this->tenantService->round()))
         {
             return;
         }
         $properties = $round->properties;
-        $properties['members'] = $tontine->members()->active()->pluck('id')->all();
+        $properties['members'] = $guild->members()->active()->pluck('id')->all();
         $round->saveProperties($properties);
     }
 
@@ -156,10 +156,10 @@ class MemberService
     public function createMember(array $values): bool
     {
         DB::transaction(function() use($values) {
-            $tontine = $this->tenantService->tontine();
-            $member = $tontine->members()->create($values);
+            $guild = $this->tenantService->guild();
+            $member = $guild->members()->create($values);
             // Create members bills
-            $this->memberCreated($tontine, $member);
+            $this->memberCreated($guild, $member);
             $this->saveActiveMembers();
         });
 
@@ -176,12 +176,12 @@ class MemberService
     public function createMembers(array $values): bool
     {
         DB::transaction(function() use($values) {
-            $tontine = $this->tenantService->tontine();
-            $members = $tontine->members()->createMany($values);
+            $guild = $this->tenantService->guild();
+            $members = $guild->members()->createMany($values);
             // Create members bills
             foreach($members as $member)
             {
-                $this->memberCreated($tontine, $member);
+                $this->memberCreated($guild, $member);
             }
             $this->saveActiveMembers();
         });
@@ -248,7 +248,7 @@ class MemberService
     public function getFakeMembers(int $count): Collection
     {
         return Member::factory()->count($count)->make([
-            'tontine_id' => $this->tenantService->tontine(),
+            'guild_id' => $this->tenantService->guild(),
         ]);
     }
 }

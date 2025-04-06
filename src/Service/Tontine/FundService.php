@@ -26,7 +26,7 @@ class FundService
      */
     public function getDefaultFund(): Fund
     {
-        $defaultFund = $this->tenantService->tontine()->default_fund;
+        $defaultFund = $this->tenantService->guild()->default_fund;
         $defaultFund->title = trans('tontine.fund.labels.default');
         return $defaultFund;
     }
@@ -38,7 +38,7 @@ class FundService
      */
     public function getActiveFunds(): Collection
     {
-        return $this->tenantService->tontine()->funds()->active()
+        return $this->tenantService->guild()->funds()->active()
             ->get()
             ->prepend($this->getDefaultFund());
     }
@@ -62,7 +62,7 @@ class FundService
      */
     public function getFunds(int $page = 0): Collection
     {
-        return $this->tenantService->tontine()->funds()
+        return $this->tenantService->guild()->funds()
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -74,7 +74,7 @@ class FundService
      */
     public function getFundCount(): int
     {
-        return $this->tenantService->tontine()->funds()->count();
+        return $this->tenantService->guild()->funds()->count();
     }
 
     /**
@@ -89,12 +89,12 @@ class FundService
     public function getFund(int $fundId, bool $onlyActive = false, bool $withDefault = false): ?Fund
     {
         if($withDefault && ($fundId === 0 ||
-            $fundId === $this->tenantService->tontine()->default_fund->id))
+            $fundId === $this->tenantService->guild()->default_fund->id))
         {
             return $this->getDefaultFund();
         }
 
-        $fund = $this->tenantService->tontine()->funds()
+        $fund = $this->tenantService->guild()->funds()
             ->when($onlyActive, fn(Builder $query) => $query->active())
             ->find($fundId);
         return $fund ?? ($withDefault ? $this->getDefaultFund() : null);
@@ -107,7 +107,7 @@ class FundService
      */
     public function getFundTitle(Fund $fund): string
     {
-        return $fund->id === $this->tenantService->tontine()->default_fund->id ?
+        return $fund->id === $this->tenantService->guild()->default_fund->id ?
             $this->getDefaultFund()->title : $fund->title;
     }
 
@@ -120,7 +120,7 @@ class FundService
      */
     public function createFund(array $values): bool
     {
-        $this->tenantService->tontine()->funds()->create($values);
+        $this->tenantService->guild()->funds()->create($values);
         return true;
     }
 
@@ -169,14 +169,14 @@ class FundService
      */
     private function getFundSessionsQuery(Session $currentSession, Fund $fund): Builder|Relation
     {
-        // Will return all the tontine sessions,
+        // Will return all the guild sessions,
         // or all those after the last closing, if there's any.
         $lastSessionDate = $currentSession->start_at->format('Y-m-d');
-        $sessionsQuery = $this->tenantService->tontine()->sessions()
+        $sessionsQuery = $this->tenantService->guild()->sessions()
             ->whereDate('start_at', '<=', $lastSessionDate);
 
         // The closing sessions before te current session.
-        $closingSessions = $this->tenantService->tontine()->sessions()
+        $closingSessions = $this->tenantService->guild()->sessions()
             ->whereDate('start_at', '<', $lastSessionDate)
             ->whereHas('closings', function(Builder|Relation $query) use($fund) {
                 $query->round()->where('fund_id', $fund->id);

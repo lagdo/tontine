@@ -34,7 +34,7 @@ class DisbursementService
      */
     public function getMembers(): Collection
     {
-        return $this->tenantService->tontine()->members()->active()
+        return $this->tenantService->guild()->members()->active()
             ->orderBy('name', 'asc')->pluck('name', 'id')->prepend('', 0);
     }
 
@@ -47,7 +47,7 @@ class DisbursementService
      */
     public function getMember(int $memberId): ?Member
     {
-        return $this->tenantService->tontine()->members()->active()->find($memberId);
+        return $this->tenantService->guild()->members()->active()->find($memberId);
     }
 
     /**
@@ -57,7 +57,7 @@ class DisbursementService
      */
     public function getCharges(): Collection
     {
-        return $this->tenantService->tontine()->charges()->fee()->active()
+        return $this->tenantService->guild()->charges()->fee()->active()
             ->orderBy('name', 'asc')->pluck('name', 'id')->prepend('', 0);
     }
 
@@ -70,7 +70,7 @@ class DisbursementService
      */
     public function getCharge(int $chargeId): ?Charge
     {
-        return $this->tenantService->tontine()->charges()->fee()->find($chargeId);
+        return $this->tenantService->guild()->charges()->fee()->find($chargeId);
     }
 
     /**
@@ -87,9 +87,9 @@ class DisbursementService
         [$otherCategory, $globalCategories] = $globalCategories->partition(fn($category) =>
             $category->getAttributes()['name'] === 'other');
 
-        $tontineCategories = $this->tenantService->tontine()->categories()->disbursement()
+        $guildCategories = $this->tenantService->guild()->categories()->disbursement()
             ->active()->get();
-        return $globalCategories->concat($tontineCategories)->concat($otherCategory)
+        return $globalCategories->concat($guildCategories)->concat($otherCategory)
             ->pluck('name', 'id');
     }
 

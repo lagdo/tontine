@@ -8,7 +8,7 @@ return [
     ],
     'menus' => [
         'admin' => "Administration",
-        'tontines' => "Organisations",
+        'guilds' => "Organisations",
         'tontine' => "Tontine",
         'users' => "Utilisateurs",
         'planning' => "Planning",
@@ -28,7 +28,7 @@ return [
         'logout' => "Se déconnecter",
     ],
     'titles' => [
-        'tontines' => "Organisations",
+        'guilds' => "Organisations",
         'tontine' => "Tontine",
         'members' => "Membres",
         'rounds' => "Tours",
@@ -41,7 +41,7 @@ return [
         'type' => "Choisir un type de tontine",
         'presences' => "Présences : :of",
         'select' => [
-            'tontine' => "(Choisir une tontine)",
+            'guild' => "(Choisir une organisation)",
             'round' => "(Choisir un tour)",
         ],
     ],
@@ -80,7 +80,7 @@ return [
         'created' => "L'organisation a été ajoutée",
         'updated' => "L'organisation a été modifiée",
         'deleted' => "L'organisation a été supprimée",
-        'selected' => "Vous avez sélectionné l'organisation :tontine.",
+        'selected' => "Vous avez sélectionné l'organisation :guild.",
         'screen' => [
             'orientation' => "Si vous utilisez un appareil mobile, nous vous conseillons de le placer en mode paysage, pour un meilleur affichage.",
         ],
@@ -158,6 +158,7 @@ return [
             'invite_not_found' => "Impossible de trouver l'invitation.",
             'invite_expired' => "Désolé, cette invitation a expiré.",
             'access_denied' => "En tant qu'invité, vous n'avez pas accès à cette section. Désolé.",
+            'no_guild' => "Vous devez avoir ajouté une organisation.",
         ],
     ],
     'round' => [
@@ -170,7 +171,7 @@ return [
             'created' => "le tour a été ajouté.",
             'updated' => "le tour a été modifié.",
             'deleted' => "le tour a été supprimé.",
-            'selected' => "Vous avez sélectionné l'organisation :tontine et le tour :round.",
+            'selected' => "Vous avez sélectionné l'organisation :guild et le tour :round.",
         ],
         'questions' => [
             'open' => "Ouvrir ce tour ? Assurez-vous d'avoir correctement rempli son planning.",
@@ -384,7 +385,7 @@ return [
             'created' => "La tontine a été ajoutée.",
             'updated' => "La tontine a été modifiée.",
             'deleted' => "La tontine a été supprimée.",
-            'selected' => "Vous affichez les souscriptions de la tontine :tontine.",
+            'selected' => "Vous affichez les souscriptions de la tontine :pool.",
         ],
         'errors' => [
             'not_found' => "Impossible de trouver cette tontine.",

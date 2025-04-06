@@ -26,7 +26,7 @@ class RoundService
     {}
 
     /**
-     * Get a paginated list of rounds in the selected tontine.
+     * Get a paginated list of rounds in the selected guild.
      *
      * @param int $page
      *
@@ -34,24 +34,24 @@ class RoundService
      */
     public function getRounds(int $page = 0): Collection
     {
-        if(!($tontine = $this->tenantService->tontine()))
+        if(!($guild = $this->tenantService->guild()))
         {
             return collect([]);
         }
-        return $tontine->rounds()
+        return $guild->rounds()
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
 
     /**
-     * Get the number of rounds in the selected tontine.
+     * Get the number of rounds in the selected guild.
      *
      * @return int
      */
     public function getRoundCount(): int
     {
-        $tontine = $this->tenantService->tontine();
-        return !$tontine ? 0 : $tontine->rounds()->count();
+        $guild = $this->tenantService->guild();
+        return !$guild ? 0 : $guild->rounds()->count();
     }
 
     /**
@@ -63,7 +63,7 @@ class RoundService
      */
     public function getRound(int $roundId): ?Round
     {
-        return $this->tenantService->tontine()->rounds()->find($roundId);
+        return $this->tenantService->guild()->rounds()->find($roundId);
     }
 
     /**
@@ -76,7 +76,7 @@ class RoundService
     public function createRound(array $values): bool
     {
         $values = $this->validator->validateItem($values);
-        $this->tenantService->tontine()->rounds()->create($values);
+        $this->tenantService->guild()->rounds()->create($values);
         return true;
     }
 
@@ -91,7 +91,7 @@ class RoundService
     public function updateRound(int $roundId, array $values): int
     {
         $values = $this->validator->validateItem($values);
-        return $this->tenantService->tontine()
+        return $this->tenantService->guild()
             ->rounds()
             ->where('id', $roundId)
             ->update($values);
@@ -111,9 +111,9 @@ class RoundService
         {
             DB::transaction(function() use($roundId) {
                 // Delete the round and all the related sessions.
-                $tontine = $this->tenantService->tontine();
-                $tontine->sessions()->where('round_id', $roundId)->delete();
-                $tontine->rounds()->where('id', $roundId)->delete();
+                $guild = $this->tenantService->guild();
+                $guild->sessions()->where('round_id', $roundId)->delete();
+                $guild->rounds()->where('id', $roundId)->delete();
             });
         }
         catch(Exception $e)

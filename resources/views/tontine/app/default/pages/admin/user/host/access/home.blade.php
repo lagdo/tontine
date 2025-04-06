@@ -1,5 +1,5 @@
 @php
-  $tontineId = pm()->select('select-invite-tontine');
+  $guildId = pm()->select('select-invite-guild');
   $rqHostAccessFunc = rq(Ajax\App\Admin\User\Host\AccessFunc::class);
   $rqHostAccessContent = rq(Ajax\App\Admin\User\Host\AccessContent::class);
   $rqHost = rq(Ajax\App\Admin\User\Host\Host::class);
@@ -23,9 +23,9 @@
                     <div class="col">{{ __('tontine.titles.tontine') }}</div>
                     <div class="col-auto">
                       <div class="input-group">
-                        {{ $html->select('tontine_id', $tontines, 0)->class('form-control')->id('select-invite-tontine') }}
+                        {{ $html->select('guild_id', $guilds, 0)->class('form-control')->id('select-invite-guild') }}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqHostAccessFunc->tontine($tontineId))><i class="fa fa-caret-right"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqHostAccessFunc->guild($guildId))><i class="fa fa-caret-right"></i></button>
                         </div>
                       </div>
                     </div>

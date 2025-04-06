@@ -166,7 +166,7 @@ class Bill extends Base
                 })
                 ->orWhere(function($query) use($session) {
                     $query->where('v.bill_type', self::TYPE_TONTINE)
-                        ->where('v.tontine_id', $session->round->tontine_id)
+                        ->where('v.guild_id', $session->round->guild_id)
                         ->whereDate('s.start_at', '<=', $session->start_at);
                 });
             })
@@ -211,7 +211,7 @@ class Bill extends Base
                 })
                 ->orWhere(function($query) use($session) {
                     $query->where('v.bill_type', self::TYPE_TONTINE)
-                        ->where('v.tontine_id', $session->round->tontine_id)
+                        ->where('v.guild_id', $session->round->guild_id)
                         ->where(function($query) use($session) {
                             $query->orWhere(function(Builder $query) {
                                 $query->whereDoesntHave('settlement');

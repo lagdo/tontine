@@ -33,7 +33,7 @@ use function trans;
  * @property-read Collection $disabled_sessions
  * @property-read Round $round
  * @property-read PoolRound $pool_round
- * @property-read Tontine $tontine
+ * @property-read Guild $guild
  * @method static Builder ofSession(Session $session)
  * @method static Builder ofRound(Round $round)
  */
@@ -109,7 +109,7 @@ class Pool extends Base
     {
         static::addGlobalScope('dates', function (Builder $query) {
             $query
-                ->addSelect(['pools.*', 'v.end_at', 'v.start_at', 'v.tontine_id'])
+                ->addSelect(['pools.*', 'v.end_at', 'v.start_at', 'v.guild_id'])
                 ->join(DB::raw('v_pools as v'), 'v.id', '=', 'pools.id');
         });
     }
@@ -143,8 +143,8 @@ class Pool extends Base
                 ->when($round->start_at !== null && $round->end_at !== null,
                     function($query) use($round) {
                         $query->orWhere(function($query) use($round) {
-                            // Take the other pools of the tontine with overlapped sessions.
-                            $query->where('v.tontine_id', $round->tontine_id);
+                            // Take the other pools of the guild with overlapped sessions.
+                            $query->where('v.guild_id', $round->guild_id);
                             $this->filterOnDates($query, $round->start_at, $round->end_at);
                         });
                     });
@@ -161,7 +161,7 @@ class Pool extends Base
      */
     public function scopeOfSession(Builder $query, Session $session): Builder
     {
-        $query->where('v.tontine_id', $session->round->tontine_id);
+        $query->where('v.guild_id', $session->round->guild_id);
         return $this->filterOnDates($query, $session->start_at, $session->start_at)
             // Also filter on enabled sessions.
             ->whereDoesntHave('disabled_sessions',
@@ -247,11 +247,9 @@ class Pool extends Base
         return $this->hasMany(Subscription::class);
     }
 
-    public function tontine()
+    public function guild()
     {
-        // The "tontine_id" field is added to the table by the join
-        // with the v_pools view. So we can now add this relationship.
-        return $this->belongsTo(Tontine::class);
+        return $this->belongsTo(Guild::class);
     }
 
     public function disabled_sessions()

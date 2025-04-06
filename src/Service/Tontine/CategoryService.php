@@ -23,7 +23,7 @@ class CategoryService
      */
     public function getCategories(int $page = 0): Collection
     {
-        return $this->tenantService->tontine()
+        return $this->tenantService->guild()
             ->categories()
             ->disbursement()
             ->page($page, $this->tenantService->getLimit())
@@ -37,7 +37,7 @@ class CategoryService
      */
     public function getCategoryCount(): int
     {
-        return $this->tenantService->tontine()->categories()->disbursement()->count();
+        return $this->tenantService->guild()->categories()->disbursement()->count();
     }
 
     /**
@@ -49,7 +49,7 @@ class CategoryService
      */
     public function getCategory(int $categoryId): ?Category
     {
-        return $this->tenantService->tontine()->categories()->disbursement()->find($categoryId);
+        return $this->tenantService->guild()->categories()->disbursement()->find($categoryId);
     }
 
     /**
@@ -61,7 +61,7 @@ class CategoryService
      */
     public function createCategory(array $values): bool
     {
-        $this->tenantService->tontine()->categories()->create($values);
+        $this->tenantService->guild()->categories()->create($values);
         return true;
     }
 

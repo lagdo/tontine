@@ -37,9 +37,9 @@ class Fund extends Base
         });
     }
 
-    public function tontine()
+    public function guild()
     {
-        return $this->belongsTo(Tontine::class);
+        return $this->belongsTo(Guild::class);
     }
 
     public function savings()

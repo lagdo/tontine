@@ -6,10 +6,10 @@ use Carbon\Carbon;
 use Closure;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Model\Tontine;
 
 use function trans;
 
@@ -150,14 +150,14 @@ class DataSyncService
     /**
      * Find the prev session.
      *
-     * @param Tontine $tontine
+     * @param Guild $guild
      * @param Session $session
      *
      * @return Session|null
      */
-    private function getPrevSession(Tontine $tontine, Session $session): ?Session
+    private function getPrevSession(Guild $guild, Session $session): ?Session
     {
-        return $tontine->sessions()->active()
+        return $guild->sessions()->active()
             ->where('start_at', '<', $session->start_at)
             ->orderBy('start_at', 'desc')
             ->first();
@@ -166,14 +166,14 @@ class DataSyncService
     /**
      * Find the next session.
      *
-     * @param Tontine $tontine
+     * @param Guild $guild
      * @param Session $session
      *
      * @return Session|null
      */
-    private function getNextSession(Tontine $tontine, Session $session): ?Session
+    private function getNextSession(Guild $guild, Session $session): ?Session
     {
-        return $tontine->sessions()->active()
+        return $guild->sessions()->active()
             ->where('start_at', '>', $session->start_at)
             ->orderBy('start_at', 'asc')
             ->first();
@@ -182,18 +182,18 @@ class DataSyncService
     /**
      * Called before a session is updated
      *
-     * @param Tontine $tontine
+     * @param Guild $guild
      * @param Session $session
      * @param array $values
      *
      * @return void
      */
-    public function onUpdateSession(Tontine $tontine, Session $session, array $values): void
+    public function onUpdateSession(Guild $guild, Session $session, array $values): void
     {
         // Check that the sessions date sorting is not modified.
         $date = Carbon::createFromFormat('Y-m-d', $values['date']);
-        $prevSession = $this->getPrevSession($tontine, $session);
-        $nextSession = $this->getNextSession($tontine, $session);
+        $prevSession = $this->getPrevSession($guild, $session);
+        $nextSession = $this->getNextSession($guild, $session);
         if(($prevSession !== null && $prevSession->start_at->startOfDay()->gte($date)) ||
             ($nextSession !== null && $nextSession->start_at->startOfDay()->lte($date)))
         {

@@ -65,13 +65,13 @@ class GuestInvite extends Base
         return $this->belongsTo(User::class, 'guest_id');
     }
 
-    public function tontines()
+    public function guilds()
     {
-        return $this->belongsToMany(Tontine::class,
-            'guest_tontine', 'invite_id', 'tontine_id')
+        return $this->belongsToMany(Guild::class,
+            'guest_tontine', 'invite_id', 'guild_id')
             ->as('permission')
             ->withPivot('access')
-            ->using(GuestTontine::class);
+            ->using(GuestGuild::class);
     }
 
     /**

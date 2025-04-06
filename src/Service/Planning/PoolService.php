@@ -237,7 +237,7 @@ class PoolService
         // {
         //     return;
         // }
-        $session = $this->tenantService->tontine()
+        $session = $this->tenantService->guild()
             ->sessions()
             ->ofPool($pool)
             ->disabled($pool)
@@ -268,7 +268,7 @@ class PoolService
         // {
         //     return;
         // }
-        $session = $this->tenantService->tontine()
+        $session = $this->tenantService->guild()
             ->sessions()
             ->ofPool($pool)
             ->enabled($pool)
@@ -316,7 +316,7 @@ class PoolService
      */
     public function active(Pool $pool, Session $session): int
     {
-        return $this->tenantService->tontine()
+        return $this->tenantService->guild()
             ->sessions()
             ->ofPool($pool)
             ->enabled($pool)
@@ -333,7 +333,7 @@ class PoolService
      */
     public function getActiveSessions(Pool $pool): Collection
     {
-        return $this->tenantService->tontine()
+        return $this->tenantService->guild()
             ->sessions()
             ->ofPool($pool)
             ->enabled($pool)
@@ -350,7 +350,7 @@ class PoolService
      */
     public function getActiveSessionCount(Pool $pool): int
     {
-        return $this->tenantService->tontine()
+        return $this->tenantService->guild()
             ->sessions()
             ->ofPool($pool)
             ->enabled($pool)

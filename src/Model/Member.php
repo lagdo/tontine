@@ -54,9 +54,9 @@ class Member extends Base
         return MemberFactory::new();
     }
 
-    public function tontine()
+    public function guild()
     {
-        return $this->belongsTo(Tontine::class);
+        return $this->belongsTo(Guild::class);
     }
 
     public function subscriptions()

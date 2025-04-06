@@ -4,7 +4,7 @@
   $rqRound = rq(Ajax\App\Report\Round\Round::class);
   $rqRoundBalance = rq(Ajax\App\Report\Round\Balance::class);
   $rqRoundPool = rq(Ajax\App\Report\Round\Pool::class);
-  $rqOptionsFunc = rq(Ajax\App\Tontine\Options\OptionsFunc::class);
+  $rqOptionsFunc = rq(Ajax\App\Guild\Options\OptionsFunc::class);
 @endphp
           <div class="section-body">
             <div class="row">

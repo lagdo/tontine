@@ -98,7 +98,7 @@ trait SessionTrait
      */
     public function getTontineSession(int $sessionId): ?Session
     {
-        return $this->tenantService->tontine()->sessions()
+        return $this->tenantService->guild()->sessions()
             ->when($this->filterActive, fn(Builder $query) => $query->active())
             ->find($sessionId);
     }
@@ -111,7 +111,7 @@ trait SessionTrait
      */
     public function getTontineSessions(int $page = 0, bool $orderAsc = true): Collection
     {
-        return $this->tenantService->tontine()->sessions()
+        return $this->tenantService->guild()->sessions()
             ->when($this->filterActive, fn(Builder $query) => $query->active())
             ->orderBy('start_at', $orderAsc ? 'asc' : 'desc')
             ->page($page, $this->tenantService->getLimit())
@@ -183,7 +183,7 @@ trait SessionTrait
      */
     private function getTontineSessionsQuery(?Session $currSession, bool $getAfter, bool $withCurr): Builder|Relation
     {
-        $query = $this->tenantService->tontine()->sessions();
+        $query = $this->tenantService->guild()->sessions();
         return $this->getSessionsQuery($query, $currSession, $getAfter, $withCurr);
     }
 

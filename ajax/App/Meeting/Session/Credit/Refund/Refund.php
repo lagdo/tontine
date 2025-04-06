@@ -57,7 +57,7 @@ class Refund extends Component
     public function show()
     {
         // We need to explicitely get the default fund here.
-        $fundId = $this->tenantService->tontine()->default_fund?->id ?? 0;
+        $fundId = $this->tenantService->guild()->default_fund?->id ?? 0;
         $this->bag($this->bagId)->set('fund.id', $fundId);
         $this->getFund(true);
 

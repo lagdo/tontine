@@ -217,7 +217,7 @@ class SummaryService
     public function getFigures(Round $round, int $poolId = 0): Collection
     {
         $pools = $round->pools()
-            ->with(['round.tontine', 'counter'])
+            ->with(['round.guild', 'counter'])
             ->whereHas('subscriptions')
             ->when($poolId > 0, fn($query) => $query->where('pools.id', $poolId))
             ->get();

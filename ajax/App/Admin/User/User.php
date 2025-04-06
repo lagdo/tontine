@@ -34,7 +34,8 @@ class User extends Component
      */
     protected function before()
     {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.tontines'));
+        $this->cl(SectionTitle::class)
+            ->show(trans('tontine.menus.guilds'));
     }
 
     /**

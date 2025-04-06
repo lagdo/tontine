@@ -6,15 +6,15 @@ use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Bill;
-use Siak\Tontine\Model\OneoffBill;
-use Siak\Tontine\Model\RoundBill;
-use Siak\Tontine\Model\SessionBill;
 use Siak\Tontine\Model\Charge;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\OneoffBill;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
+use Siak\Tontine\Model\RoundBill;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Model\Tontine;
+use Siak\Tontine\Model\SessionBill;
 
 use function now;
 
@@ -92,58 +92,58 @@ trait EventTrait
     }
 
     /**
-     * @param Tontine $tontine
+     * @param Guild $guild
      * @param Charge $charge
      *
      * @return void
      */
-    protected function chargeCreated(Tontine $tontine, Charge $charge): void
+    protected function chargeCreated(Guild $guild, Charge $charge): void
     {
         if(!$charge->period_once)
         {
             return;
         }
         $today = now();
-        // Create a tontine bill for each member
-        foreach($tontine->members()->get() as $member)
+        // Create a one off bill for each member
+        foreach($guild->members()->get() as $member)
         {
             $this->createOneoffBill($charge, $member, $today);
         }
     }
 
     /**
-     * @param Tontine $tontine
+     * @param Guild $guild
      * @param Member $member
      *
      * @return void
      */
-    protected function memberCreated(Tontine $tontine, Member $member): void
+    protected function memberCreated(Guild $guild, Member $member): void
     {
         $today = now();
-        // Create a tontine bill for each charge
-        foreach($tontine->charges()->active()->once()->get() as $charge)
+        // Create a one off bill for each charge
+        foreach($guild->charges()->active()->once()->get() as $charge)
         {
             $this->createOneoffBill($charge, $member, $today);
         }
     }
 
     /**
-     * @param Tontine $tontine
+     * @param Guild $guild
      * @param Round $round
      *
      * @return void
      */
-    protected function roundSynced(Tontine $tontine, Round $round): void
+    protected function roundSynced(Guild $guild, Round $round): void
     {
         $today = now();
-        $members = $tontine
+        $members = $guild
             ->members()
             ->with([
                 'oneoff_bills',
                 'round_bills' => fn($query) => $query->where('round_id', $round->id),
             ])
             ->get();
-        $roundCharges = $tontine->charges()->active()->round()->get();
+        $roundCharges = $guild->charges()->active()->round()->get();
         // Create a round bill for each member
         foreach($members as $member)
         {
@@ -158,11 +158,11 @@ trait EventTrait
                 }
             }
         }
-        $tontineCharges = $tontine->charges()->active()->once()->get();
-        // Create a tontine bill for each member
+        $guildCharges = $guild->charges()->active()->once()->get();
+        // Create a one off bill for each member
         foreach($members as $member)
         {
-            foreach($tontineCharges as $charge)
+            foreach($guildCharges as $charge)
             {
                 $count = $member->oneoff_bills
                     ->filter(fn($bill) => $bill->charge_id === $charge->id)
@@ -176,24 +176,24 @@ trait EventTrait
     }
 
     /**
-     * @param Tontine $tontine
+     * @param Guild $guild
      * @param Session $session
      *
      * @return void
      */
-    protected function sessionSynced(Tontine $tontine, Session $session): void
+    protected function sessionSynced(Guild $guild, Session $session): void
     {
         // Make sure the round is also opened.
-        $this->roundSynced($tontine, $session->round);
+        $this->roundSynced($guild, $session->round);
 
         $today = now();
-        $members = $tontine
+        $members = $guild
             ->members()
             ->with([
                 'session_bills' => fn($query) => $query->where('session_id', $session->id),
             ])
             ->get();
-        $sessionCharges = $tontine->charges()->active()->session()->get();
+        $sessionCharges = $guild->charges()->active()->session()->get();
 
         // Sync the session bills for each member and each session charge
         foreach($sessionCharges as $charge)

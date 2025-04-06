@@ -223,7 +223,7 @@ class SavingService
         string $search, ?bool $filter): Builder|Relation
     {
         $savingsFilter = $this->getMemberSavingsFilter($session, $fund);
-        return $this->tenantService->tontine()->members()->active()
+        return $this->tenantService->guild()->members()->active()
             ->when($search !== '', function(Builder $query) use($search) {
                 $search = '%' . strtolower($search) . '%';
                 return $query->where(DB::raw('lower(name)'), 'like', $search);
@@ -301,6 +301,6 @@ class SavingService
      */
     public function getMember(int $id): ?Member
     {
-        return $this->tenantService->tontine()->members()->active()->find($id);
+        return $this->tenantService->guild()->members()->active()->find($id);
     }
 }

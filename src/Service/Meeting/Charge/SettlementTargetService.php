@@ -29,7 +29,7 @@ class SettlementTargetService
      */
     public function getDeadlineSessions(Session $currentSession): Collection
     {
-        return $this->tenantService->tontine()->sessions()
+        return $this->tenantService->guild()->sessions()
             ->whereDate('start_at', '>', $currentSession->start_at->format('Y-m-d'))
             ->pluck('title', 'id');
     }
@@ -59,7 +59,7 @@ class SettlementTargetService
      */
     private function getMembersQuery(string $search = ''): Builder|Relation
     {
-        return $this->tenantService->tontine()->members()->active()
+        return $this->tenantService->guild()->members()->active()
             ->when($search !== '', function($query) use($search) {
                 return $query->where(DB::raw('lower(members.name)'),
                     'like', '%' . strtolower($search) . '%');

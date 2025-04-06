@@ -30,7 +30,7 @@ class ChargeService
      */
     public function getCharges(int $page = 0): Collection
     {
-        return $this->tenantService->tontine()->charges()
+        return $this->tenantService->guild()->charges()
             // ->withCount(['oneoff_bills', 'round_bills', 'session_bills', 'libre_bills'])
             ->page($page, $this->tenantService->getLimit())
             ->orderBy('type', 'asc')
@@ -46,7 +46,7 @@ class ChargeService
      */
     public function getChargeCount(): int
     {
-        return $this->tenantService->tontine()->charges()->count();
+        return $this->tenantService->guild()->charges()->count();
     }
 
     /**
@@ -58,7 +58,7 @@ class ChargeService
      */
     public function getCharge(int $chargeId): ?Charge
     {
-        return $this->tenantService->tontine()->charges()
+        return $this->tenantService->guild()->charges()
             // ->withCount(['oneoff_bills', 'round_bills', 'session_bills', 'libre_bills'])
             ->find($chargeId);
     }
@@ -73,10 +73,10 @@ class ChargeService
     public function createCharge(array $values): bool
     {
         DB::transaction(function() use($values) {
-            $tontine = $this->tenantService->tontine();
-            $charge = $tontine->charges()->create($values);
+            $guild = $this->tenantService->guild();
+            $charge = $guild->charges()->create($values);
             // Create charges bills
-            $this->chargeCreated($tontine, $charge);
+            $this->chargeCreated($guild, $charge);
         });
         return true;
     }
@@ -143,7 +143,7 @@ class ChargeService
     public function getFakeCharges(int $count): Collection
     {
         return Charge::factory()->count($count)->make([
-            'tontine_id' => $this->tenantService->tontine(),
+            'guild_id' => $this->tenantService->guild(),
         ]);
     }
 }

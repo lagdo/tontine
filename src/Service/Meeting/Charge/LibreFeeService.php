@@ -30,7 +30,7 @@ class LibreFeeService
      */
     public function getFees(int $page = 0): Collection
     {
-        return $this->tenantService->tontine()->charges()
+        return $this->tenantService->guild()->charges()
             ->variable()->orderBy('id', 'desc')
             ->page($page, $this->tenantService->getLimit())
             ->get();
@@ -43,7 +43,7 @@ class LibreFeeService
      */
     public function getFeeCount(): int
     {
-        return $this->tenantService->tontine()->charges()->variable()->count();
+        return $this->tenantService->guild()->charges()->variable()->count();
     }
 
     /**

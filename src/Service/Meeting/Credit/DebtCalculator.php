@@ -31,7 +31,7 @@ class DebtCalculator
      */
     private function getSessionCount(Session $fromSession, Session $toSession): int
     {
-        return $this->tenantService->tontine()->sessions()
+        return $this->tenantService->guild()->sessions()
             ->whereDate('start_at', '>', $fromSession->start_at->format('Y-m-d'))
             ->whereDate('start_at', '<=', $toSession->start_at->format('Y-m-d'))
             ->count();

@@ -78,11 +78,11 @@ class SessionService
 
             // Sync the round.
             $session->round->update(['status' => Round::STATUS_OPENED]);
-            $this->roundSynced($this->tenantService->tontine(), $session->round);
+            $this->roundSynced($this->tenantService->guild(), $session->round);
 
             // Sync the session
             $session->update(['status' => Session::STATUS_OPENED]);
-            $this->sessionSynced($this->tenantService->tontine(), $session);
+            $this->sessionSynced($this->tenantService->guild(), $session);
         });
     }
 
@@ -135,12 +135,12 @@ class SessionService
             // Sync the round.
             $round = $this->tenantService->round();
             $round->update(['status' => Round::STATUS_OPENED]);
-            $this->roundSynced($this->tenantService->tontine(), $round);
+            $this->roundSynced($this->tenantService->guild(), $round);
 
             // Sync the sessions.
             $round->sessions()->opened()->get()
                 ->each(function($session) {
-                    $this->sessionSynced($this->tenantService->tontine(), $session);
+                    $this->sessionSynced($this->tenantService->guild(), $session);
                 });
 
             // Update the bills amounts.

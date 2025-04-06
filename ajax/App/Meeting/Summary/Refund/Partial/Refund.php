@@ -50,7 +50,7 @@ class Refund extends Component
     protected function getFund()
     {
         // Try to get the selected savings fund.
-        // If not found, then revert to the tontine default fund.
+        // If not found, then revert to the guild default fund.
         $fundId = $this->bag('refund.partial')->get('fund.id', 0);
         if($fundId !== 0 && ($fund = $this->fundService->getFund($fundId, true)) === null)
         {

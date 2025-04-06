@@ -4,8 +4,8 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Member;
-use Siak\Tontine\Model\Tontine;
 
 class MemberFactory extends Factory
 {
@@ -31,7 +31,7 @@ class MemberFactory extends Factory
             'address' => $this->faker->address(),
             'city' => $this->faker->city(),
             'birthday' => $this->faker->date(),
-            'tontine_id' => Tontine::get()->random(),
+            'guild_id' => Guild::get()->random(),
         ];
     }
 }

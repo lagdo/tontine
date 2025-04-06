@@ -23,11 +23,11 @@ class AccessContent extends Component
     public function html(): Stringable
     {
         $invite = $this->stash()->get('user.invite');
-        $tontine = $this->stash()->get('user.tontine');
+        $guild = $this->stash()->get('user.guild');
 
-        return $this->renderView('pages.admin.user.host.access.tontine', [
-            'tontine' => $tontine,
-            'access' => $this->userService->getHostTontineAccess($invite, $tontine),
+        return $this->renderView('pages.admin.user.host.access.guild', [
+            'guild' => $guild,
+            'access' => $this->userService->getHostGuildAccess($invite, $guild),
         ]);
     }
 }

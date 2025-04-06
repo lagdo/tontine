@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\GuestInvite;
-use Siak\Tontine\Model\Tontine;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\User;
 use Siak\Tontine\Service\TenantService;
 
@@ -246,46 +246,46 @@ class UserService
             throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
         }
 
-        $activeTontineInviteIsDeleted = DB::table('guest_tontine')
+        $inviteIsDeleted = DB::table('guest_tontine')
             ->where('invite_id', $invite->id)
-            ->where('tontine_id', $this->tenantService->tontine()->id)
+            ->where('guild_id', $this->tenantService->guild()->id)
             ->exists();
 
         $this->deleteInvite($invite);
 
-        return $activeTontineInviteIsDeleted;
+        return $inviteIsDeleted;
     }
 
     /**
-     * Get the guest access on a given tontine
+     * Get the guest access on a given guild
      *
      * @param GuestInvite $invite
-     * @param Tontine $tontine
+     * @param Guild $guild
      *
      * @return array
      */
-    public function getHostTontineAccess(GuestInvite $invite, Tontine $tontine): array
+    public function getHostGuildAccess(GuestInvite $invite, Guild $guild): array
     {
-        $inviteTontine = $invite->tontines()->find($tontine->id);
+        $inviteTontine = $invite->guilds()->find($guild->id);
         return !$inviteTontine ? [] : $inviteTontine->permission->access;
     }
 
     /**
-     * Get the guest access on a given tontine
+     * Get the guest access on a given guild
      *
      * @param GuestInvite $invite
-     * @param Tontine $tontine
+     * @param Guild $guild
      * @param array $access
      *
      * @return void
      */
-    public function saveHostTontineAccess(GuestInvite $invite, Tontine $tontine, array $access)
+    public function saveHostGuildAccess(GuestInvite $invite, Guild $guild, array $access)
     {
-        DB::transaction(function() use($invite, $tontine, $access) {
-            $invite->tontines()->detach($tontine->id);
+        DB::transaction(function() use($invite, $guild, $access) {
+            $invite->guilds()->detach($guild->id);
             if(count($access) > 0)
             {
-                $invite->tontines()->attach($tontine->id, ['access' => $access]);
+                $invite->guilds()->attach($guild->id, ['access' => $access]);
             }
         });
     }

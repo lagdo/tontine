@@ -2,21 +2,21 @@
 @inject('locale', Siak\Tontine\Service\LocaleService::class)
 @php
   $rqMenuFunc = rq(Ajax\App\MenuFunc::class);
-  $tontine = $tenant->tontine();
+  $guild = $tenant->guild();
   $round = $tenant->round();
-  $tontineCount = $tenant->user()->tontines()->count();
-  $roundCount = $tontine?->rounds()->count() ?? 0;
+  $guildCount = $tenant->user()->guilds()->count();
+  $roundCount = $guild?->rounds()->count() ?? 0;
 @endphp
             <div class="row">
               <div class="col">
                 <h2>
-                  @if($tontineCount > 0)<a class="highlight" role="link" @jxnClick($rqMenuFunc
-                    ->showOrganisations())><i class="fa fa-caret-square-right"></i></a>@endif
-                  {{ $tontine?->name ?? __('tontine.titles.select.tontine') }}
+                  @if($guildCount > 0)<a class="highlight" role="link" @jxnClick($rqMenuFunc
+                    ->showGuilds())><i class="fa fa-caret-square-right"></i></a>@endif
+                  {{ $guild?->name ?? __('tontine.titles.select.guild') }}
                 </h2>
               </div>
               <div class="col-auto">
-                @if ($tontine !== null)<h2>{{ $locale->getCurrencyName() }} <i class="fa fa-money-bill"></i></h2>@else &nbsp;@endif
+                @if ($guild !== null)<h2>{{ $locale->getCurrencyName() }} <i class="fa fa-money-bill"></i></h2>@else &nbsp;@endif
               </div>
             </div>
             <div class="row">

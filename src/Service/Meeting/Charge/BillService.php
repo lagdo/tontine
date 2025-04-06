@@ -132,7 +132,7 @@ class BillService
             $query->where('charge_id', $charge->id)->where('session_id', $session->id);
         };
 
-        return $this->tenantService->tontine()->members()->active()
+        return $this->tenantService->guild()->members()->active()
             ->when($search !== '', function($query) use($search) {
                 return $query->where(DB::raw('lower(name)'), 'like', '%' . strtolower($search) . '%');
             })
@@ -244,7 +244,7 @@ class BillService
     public function createBill(Charge $charge, Session $session,
         int $memberId, bool $paid, float $amount = 0): void
     {
-        $member = $this->tenantService->tontine()->members()->find($memberId);
+        $member = $this->tenantService->guild()->members()->find($memberId);
         if(!$member)
         {
             throw new MessageException(trans('tontine.member.errors.not_found'));
@@ -286,7 +286,7 @@ class BillService
      */
     public function getMemberBill(Charge $charge, Session $session, int $memberId): ?LibreBill
     {
-        if(!($member = $this->tenantService->tontine()->members()->find($memberId)))
+        if(!($member = $this->tenantService->guild()->members()->find($memberId)))
         {
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }

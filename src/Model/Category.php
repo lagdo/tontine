@@ -40,13 +40,13 @@ class Category extends Base
     protected function name(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => !$this->tontine ? trans('meeting.category.types.' . $value) : $value,
+            get: fn($value) => !$this->guild ? trans('meeting.category.types.' . $value) : $value,
         );
     }
 
-    public function tontine()
+    public function guild()
     {
-        return $this->belongsTo(Tontine::class);
+        return $this->belongsTo(Guild::class);
     }
 
     /**

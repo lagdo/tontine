@@ -8,7 +8,7 @@ return [
     ],
     'menus' => [
         'admin' => "Administration",
-        'tontines' => "Organisations",
+        'guilds' => "Organisations",
         'tontine' => "Tontine",
         'users' => "Users",
         'planning' => "Planning",
@@ -28,7 +28,7 @@ return [
         'logout' => "Logout",
     ],
     'titles' => [
-        'tontines' => "Organisations",
+        'guilds' => "Organisations",
         'tontine' => "Tontine",
         'members' => "Members",
         'rounds' => "Rounds",
@@ -41,7 +41,7 @@ return [
         'type' => "Select the tontine type",
         'presences' => "Presences: :of",
         'select' => [
-            'tontine' => "(Select a tontine)",
+            'guild' => "(Select an organisation)",
             'round' => "(Select a round)",
         ],
     ],
@@ -80,7 +80,7 @@ return [
         'created' => "The organisation was successfully created.",
         'updated' => "The organisation was successfully updated.",
         'deleted' => "The organisation was successfully deleted.",
-        'selected' => "You have selected the organisation :tontine.",
+        'selected' => "You have selected the organisation :guild.",
         'screen' => [
             'orientation' => "If you are using a mobile device, we advise you to place it in landscape mode, for a better display.",
         ],
@@ -158,6 +158,7 @@ return [
             'invite_not_found' => "Unable to find the invite.",
             'invite_expired' => "Sorry, this invite has expired.",
             'access_denied' => "As a guest, you don't have access to this section. Sorry.",
+            'no_guild' => "You need to add at least one organisation.",
         ],
     ],
     'round' => [
@@ -170,7 +171,7 @@ return [
             'created' => "The round was successfully created.",
             'updated' => "The round was successfully updated.",
             'deleted' => "The round was successfully deleted.",
-            'selected' => "You have selected the organisation :tontine and round :round.",
+            'selected' => "You have selected the organisation :guild and round :round.",
         ],
         'questions' => [
             'open' => "Open this round? Make sure you have setup its planning correctly.",
@@ -384,7 +385,7 @@ return [
             'created' => "The tontine was successfully created.",
             'updated' => "The tontine was successfully updated.",
             'deleted' => "The tontine was successfully deleted.",
-            'selected' => "Now showing the subscriptions of the tontine :tontine.",
+            'selected' => "Now showing the subscriptions of the tontine :pool.",
         ],
         'errors' => [
             'not_found' => "Unable to find this tontine.",

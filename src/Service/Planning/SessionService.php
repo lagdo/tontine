@@ -81,17 +81,17 @@ class SessionService
      */
     public function updateSession(Session $session, array $values): bool
     {
-        $tontine = $this->tenantService->tontine();
-        $this->dataSyncService->onUpdateSession($tontine, $session, $values);
+        $guild = $this->tenantService->guild();
+        $this->dataSyncService->onUpdateSession($guild, $session, $values);
 
         $values['start_at'] = $values['date'] . ' ' . $values['start'] . ':00';
         $values['end_at'] = $values['date'] . ' ' . $values['end'] . ':00';
-        // Make sure the host belongs to the same tontine
+        // Make sure the host belongs to the same guild
         $hostId = intval($values['host_id']);
         $values['host_id'] = null;
         if($hostId > 0)
         {
-            $values['host_id'] = $tontine->members()->find($hostId)?->id ?? null;
+            $values['host_id'] = $guild->members()->find($hostId)?->id ?? null;
         }
         return $session->update($values);
     }

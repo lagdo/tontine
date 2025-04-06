@@ -138,7 +138,7 @@ class SessionService
      */
     private function getBills(Closure $settlementFilter, ?Member $member = null): Collection
     {
-        $tontineBillsQuery = DB::table('bills')
+        $oneoffBillsQuery = DB::table('bills')
             ->join('oneoff_bills', 'bills.id', '=', 'oneoff_bills.bill_id')
             ->select(DB::raw('sum(bills.amount) as total_amount'),
                 DB::raw('count(bills.id) as total_count'), 'oneoff_bills.charge_id')
@@ -175,7 +175,7 @@ class SessionService
                 return $query->where('libre_bills.member_id', $member->id);
             });
 
-        return $tontineBillsQuery
+        return $oneoffBillsQuery
             ->union($roundBillsQuery)
             ->union($sessionBillsQuery)
             ->union($libreBillsQuery)
@@ -199,7 +199,7 @@ class SessionService
         $bills = $this->getBills($settlementFilter);
         $sessionIds = collect([$session->id]);
 
-        $charges = $this->tenantService->tontine()->charges()/*->active()*/->get();
+        $charges = $this->tenantService->guild()->charges()/*->active()*/->get();
         $disbursements = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
 
         return $charges->each(function($charge) use($bills, $disbursements) {
@@ -230,7 +230,7 @@ class SessionService
         };
         $bills = $this->getBills($settlementFilter, $member);
 
-        $charges = $this->tenantService->tontine()->charges()/*->active()*/->get();
+        $charges = $this->tenantService->guild()->charges()/*->active()*/->get();
         $disbursements = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
         if($member !== null)
         {

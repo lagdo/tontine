@@ -42,7 +42,7 @@ class Pool extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.financial.pool.home', [
-            'tontine' => $this->tenantService->tontine(),
+            'guild' => $this->tenantService->guild(),
         ]);
     }
 

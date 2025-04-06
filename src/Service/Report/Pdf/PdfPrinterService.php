@@ -5,7 +5,7 @@ namespace Siak\Tontine\Service\Report\Pdf;
 use Illuminate\Support\Str;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Tontine\TontineService;
+use Siak\Tontine\Service\Tontine\GuildService;
 
 use function trans;
 use function view;
@@ -13,10 +13,10 @@ use function view;
 class PdfPrinterService
 {
     /**
-     * @param TontineService $tontineService
+     * @param GuildService $guildService
      * @param array $config
      */
-    public function __construct(private TontineService $tontineService, private array $config)
+    public function __construct(private GuildService $guildService, private array $config)
     {}
 
     /**
@@ -26,7 +26,7 @@ class PdfPrinterService
      */
     private function getViewPath(string $report): string
     {
-        $template = $this->tontineService->getReportTemplate();
+        $template = $this->guildService->getReportTemplate();
         return "tontine.report.$template.$report";
     }
 

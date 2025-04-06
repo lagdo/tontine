@@ -174,8 +174,8 @@ trait RefundTrait
     {
         return Debt::whereHas('loan',
             fn(Builder|Relation $loanQuery) => $loanQuery->whereHas('member',
-                fn(Builder|Relation $memberQuery) => $memberQuery->where('tontine_id',
-                    $this->tenantService->tontine()->id)))
+                fn(Builder|Relation $memberQuery) => $memberQuery->where('guild_id',
+                    $this->tenantService->guild()->id)))
             ->find($debtId);
     }
 

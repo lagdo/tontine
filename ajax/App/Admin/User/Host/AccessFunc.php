@@ -4,9 +4,9 @@ namespace Ajax\App\Admin\User\Host;
 
 use Ajax\FuncComponent;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Service\Tontine\GuildService;
 use Siak\Tontine\Service\Tontine\UserService;
-use Siak\Tontine\Service\Tontine\TontineService;
-use Siak\Tontine\Validation\Tontine\HostAccessValidator;
+use Siak\Tontine\Validation\Guild\HostAccessValidator;
 
 use function trans;
 
@@ -23,10 +23,10 @@ class AccessFunc extends FuncComponent
 
     /**
      * @param UserService $userService
-     * @param TontineService $tontineService
+     * @param GuildService $guildService
      */
     public function __construct(private UserService $userService,
-        private TontineService $tontineService)
+        private GuildService $guildService)
     {}
 
     protected function getInvite()
@@ -42,20 +42,20 @@ class AccessFunc extends FuncComponent
         }
         $this->stash()->set('user.invite', $invite);
 
-        // Do not find the tontine on the home page.
+        // Do not find the invite on the home page.
         if($this->target()->method() === 'home')
         {
             return;
         }
 
-        $tontineId = $this->target()->method() === 'tontine' ? $this->target()->args()[0] :
-            $this->bag('user')->get('tontine.id');
-        $this->stash()->set('user.tontine', $this->tontineService->getTontine($tontineId));
+        $guildId = $this->target()->method() === 'guild' ? $this->target()->args()[0] :
+            $this->bag('user')->get('guild.id');
+        $this->stash()->set('user.guild', $this->guildService->getGuild($guildId));
     }
 
-    public function tontine(int $tontineId)
+    public function guild(int $guildId)
     {
-        $this->bag('user')->set('tontine.id', $tontineId);
+        $this->bag('user')->set('guild.id', $guildId);
 
         $this->cl(AccessContent::class)->render();
     }
@@ -66,9 +66,9 @@ class AccessFunc extends FuncComponent
     public function saveAccess(array $formValues)
     {
         $invite = $this->stash()->get('user.invite');
-        $tontine = $this->stash()->get('user.tontine');
+        $guild = $this->stash()->get('user.guild');
         $access = $this->validator->validateItem($formValues['access'] ?? []);
-        $this->userService->saveHostTontineAccess($invite, $tontine, $access);
+        $this->userService->saveHostGuildAccess($invite, $guild, $access);
 
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('meeting.messages.saved'));

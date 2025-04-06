@@ -7,7 +7,7 @@ use Akaunting\Money\Money;
 use Illuminate\Support\Collection;
 use Mcamara\LaravelLocalization\LaravelLocalization;
 use Rinvex\Country\CountryLoader;
-use Siak\Tontine\Model\Tontine;
+use Siak\Tontine\Model\Guild;
 use NumberFormatter;
 
 use function array_merge;
@@ -129,29 +129,29 @@ class LocaleService
     }
 
     /**
-     * Get the names of countries and currencies from a tontine model
+     * Get the names of countries and currencies from a guild
      *
-     * @param Tontine $tontine
+     * @param Guild $guild
      *
      * @return array
      */
-    public function getNameFromTontine(Tontine $tontine): array
+    public function getNameFromGuild(Guild $guild): array
     {
-        [$countries, $currencies] = $this->getNames([$tontine->country_code], [$tontine->currency_code]);
-        return [$countries[$tontine->country_code] ?? '', $currencies[$tontine->currency_code] ?? ''];
+        [$countries, $currencies] = $this->getNames([$guild->country_code], [$guild->currency_code]);
+        return [$countries[$guild->country_code] ?? '', $currencies[$guild->currency_code] ?? ''];
     }
 
     /**
-     * Get the names of countries and currencies from a collection of tontines
+     * Get the names of countries and currencies from a collection of guilds
      *
-     * @param Collection $tontines
+     * @param Collection $guilds
      *
      * @return array
      */
-    public function getNamesFromTontines(Collection $tontines): array
+    public function getNamesFromGuilds(Collection $guilds): array
     {
-        $countryCodes = $tontines->pluck('country_code')->toArray();
-        $currencyCodes = $tontines->pluck('currency_code')->toArray();
+        $countryCodes = $guilds->pluck('country_code')->toArray();
+        $currencyCodes = $guilds->pluck('currency_code')->toArray();
         return $this->getNames($countryCodes, $currencyCodes);
     }
 

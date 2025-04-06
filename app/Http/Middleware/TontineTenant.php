@@ -7,11 +7,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Jaxon\Laravel\App\Jaxon;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Round;
-use Siak\Tontine\Model\Tontine;
 use Siak\Tontine\Model\User;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Tontine\TontineService;
+use Siak\Tontine\Service\Tontine\GuildService;
 
 use function auth;
 use function Jaxon\jaxon;
@@ -22,59 +22,59 @@ class TontineTenant
     /**
      * @param Jaxon $jaxon
      * @param TenantService $tenantService
-     * @param TontineService $tontineService
+     * @param GuildService $guildService
      */
     public function __construct(private Jaxon $jaxon, private TenantService $tenantService,
-        private TontineService $tontineService)
+        private GuildService $guildService)
     {}
 
     /**
-     * Get the latest user tontine, from the session or the database.
+     * Get the latest user guild, from the session or the database.
      *
      * @param User $user
      *
-     * @return Tontine|null
+     * @return Guild|null
      */
-    private function setLatestTontine(User $user): ?Tontine
+    private function setLatestGuild(User $user): ?Guild
     {
         $tenantDatabag = jaxon()->getResponse()->bag('tenant');
 
-        // First try to get the current tontine id from the databag.
-        $tontine = null;
-        $tontineId = $tenantDatabag->get('tontine.id', 0);
-        if($tontineId > 0 &&
-            ($tontine = $this->tontineService->getUserOrGuestTontine($tontineId)) !== null)
+        // First try to get the current guild id from the databag.
+        $guild = null;
+        $guildId = $tenantDatabag->get('guild.id', 0);
+        if($guildId > 0 &&
+            ($guild = $this->guildService->getUserOrGuestGuild($guildId)) !== null)
         {
-            $this->tenantService->setTontine($tontine);
-            return $tontine;
+            $this->tenantService->setGuild($guild);
+            return $guild;
         }
 
-        // Try to get the latest tontine the user worked on.
-        if(($tontineId = $user->properties['latest']['tontine'] ?? 0) > 0)
+        // Try to get the latest guild the user worked on.
+        if(($guildId = $user->properties['latest']['guild'] ?? 0) > 0)
         {
-            $tontine = $this->tontineService->getUserOrGuestTontine($tontineId);
+            $guild = $this->guildService->getUserOrGuestGuild($guildId);
         }
-        if(!$tontine)
+        if(!$guild)
         {
-            $tontine = $this->tontineService->getFirstTontine();
+            $guild = $this->guildService->getFirstGuild();
         }
-        if($tontine !== null)
+        if($guild !== null)
         {
-            $tenantDatabag->set('tontine.id', $tontine->id);
+            $tenantDatabag->set('guild.id', $guild->id);
             $tenantDatabag->set('round.id', 0);
-            $this->tenantService->setTontine($tontine);
+            $this->tenantService->setGuild($guild);
         }
-        return $tontine;
+        return $guild;
     }
 
     /**
-     * Get the latest tontine round, from the session or the database.
+     * Get the latest guild round, from the session or the database.
      *
-     * @param Tontine $tontine
+     * @param Guild $guild
      *
      * @return Round|null
      */
-    private function setLatestRound(Tontine $tontine): ?Round
+    private function setLatestRound(Guild $guild): ?Round
     {
         $tenantDatabag = jaxon()->getResponse()->bag('tenant');
 
@@ -89,7 +89,7 @@ class TontineTenant
         }
 
         // Try to get the latest round the user worked on.
-        if(($roundId = $tontine->user->properties['latest']['round'] ?? 0) > 0)
+        if(($roundId = $guild->user->properties['latest']['round'] ?? 0) > 0)
         {
             $round = $this->tenantService->getRound($roundId);
         }
@@ -100,7 +100,7 @@ class TontineTenant
         if($round !== null)
         {
             $this->tenantService->setRound($round);
-            $tenantDatabag->set('tontine.id', $tontine->id);
+            $tenantDatabag->set('guild.id', $guild->id);
             $tenantDatabag->set('round.id', $round->id);
         }
         return $round;
@@ -120,11 +120,11 @@ class TontineTenant
         $user = auth()->user();
         $this->tenantService->setUser($user);
 
-        if(($tontine = $this->setLatestTontine($user)) !== null)
+        if(($guild = $this->setLatestGuild($user)) !== null)
         {
-            $this->setLatestRound($tontine);
+            $this->setLatestRound($guild);
         }
-        view()->share('tontine', $tontine);
+        view()->share('guild', $guild);
 
         return $next($request);
     }

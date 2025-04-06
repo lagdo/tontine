@@ -4,7 +4,7 @@ namespace Ajax\App\Admin\User\Host;
 
 use Ajax\FuncComponent;
 use Siak\Tontine\Service\Tontine\UserService;
-use Siak\Tontine\Validation\Tontine\GuestInviteValidator;
+use Siak\Tontine\Validation\Guild\GuestInviteValidator;
 
 use function Jaxon\pm;
 

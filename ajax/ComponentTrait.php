@@ -95,8 +95,8 @@ trait ComponentTrait
         // First check for created sessions
         $this->checkRoundSessions();
 
-        $tontine = $this->tenantService->tontine();
-        if(!$tontine || $tontine->members()->active()->count() === 0)
+        $guild = $this->tenantService->guild();
+        if(!$guild || $guild->members()->active()->count() === 0)
         {
             throw new TontineMemberException(trans('tontine.errors.checks.members'));
         }

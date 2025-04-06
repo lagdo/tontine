@@ -1,5 +1,5 @@
       <div class="portlet-body form">
-        <form class="form-horizontal" role="form" id="tontine-form">
+        <form class="form-horizontal" role="form" id="pool-form">
           <div class="module-body">
             <div class="form-group row">
               <div class="col-11">{{ __('tontine.pool.help.deposit.lendable') }}</div>

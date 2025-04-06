@@ -2,11 +2,11 @@
 
 namespace App\Exceptions;
 
+use Ajax\App\Guild\Member\Member;
 use Ajax\App\Meeting\Session\Session;
 use Ajax\App\Planning\Calendar\Round;
 use Ajax\App\Planning\Financial\Pool;
-use Ajax\App\Tontine\Member\Member;
-use Ajax\App\Admin\Organisation\Organisation;
+use Ajax\App\Admin\Guild\Guild;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Jaxon\Laravel\App\Jaxon;
 use Siak\Tontine\Exception\MessageException;
@@ -38,7 +38,7 @@ function checkHostAccess(string $section, string $entry): bool
     $tenantService = app()->make(TenantService::class);
     if(!($access = $tenantService->checkHostAccess($section, $entry, true)))
     {
-        cl(Organisation::class)->home();
+        cl(Guild::class)->home();
     }
     return $access;
 }

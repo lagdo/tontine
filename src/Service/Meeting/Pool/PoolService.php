@@ -99,7 +99,7 @@ class PoolService
     }
 
     /**
-     * Check if the current tontine has at least one pool with auctions.
+     * Check if the current round has at least one pool with auctions.
      *
      * @return bool
      */

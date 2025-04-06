@@ -43,9 +43,9 @@
   <body>
     <header>
       <div class="header">
-        <div class="tontine">
-          <h2>{{ $tontine->name }}</h2>
-          <p>@if(($tontine->city)){{ $tontine->city }} - @endif{{ $country }}</p>
+        <div class="guild">
+          <h2>{{ $guild->name }}</h2>
+          <p>@if(($guild->city)){{ $guild->city }} - @endif{{ $country }}</p>
         </div>
         <div class="report">
           <h2>{{ __('tontine.report.titles.round') }}</h2>

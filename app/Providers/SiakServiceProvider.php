@@ -47,9 +47,16 @@ use Siak\Tontine\Service\Report\SessionService as SessionReportService;
 use Siak\Tontine\Service\Tontine\CategoryService;
 use Siak\Tontine\Service\Tontine\ChargeService;
 use Siak\Tontine\Service\Tontine\FundService;
+use Siak\Tontine\Service\Tontine\GuildService;
 use Siak\Tontine\Service\Tontine\UserService;
 use Siak\Tontine\Service\Tontine\MemberService;
-use Siak\Tontine\Service\Tontine\TontineService;
+use Siak\Tontine\Validation\Guild\ChargeValidator;
+use Siak\Tontine\Validation\Guild\FundValidator;
+use Siak\Tontine\Validation\Guild\GuestInviteValidator;
+use Siak\Tontine\Validation\Guild\GuildValidator;
+use Siak\Tontine\Validation\Guild\HostAccessValidator;
+use Siak\Tontine\Validation\Guild\MemberValidator;
+use Siak\Tontine\Validation\Guild\OptionsValidator;
 use Siak\Tontine\Validation\Meeting\ClosingValidator;
 use Siak\Tontine\Validation\Meeting\DisbursementValidator;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
@@ -61,13 +68,6 @@ use Siak\Tontine\Validation\Planning\PoolValidator;
 use Siak\Tontine\Validation\Planning\PoolRoundValidator;
 use Siak\Tontine\Validation\Planning\RoundValidator;
 use Siak\Tontine\Validation\Planning\SessionValidator;
-use Siak\Tontine\Validation\Tontine\ChargeValidator;
-use Siak\Tontine\Validation\Tontine\FundValidator;
-use Siak\Tontine\Validation\Tontine\GuestInviteValidator;
-use Siak\Tontine\Validation\Tontine\HostAccessValidator;
-use Siak\Tontine\Validation\Tontine\MemberValidator;
-use Siak\Tontine\Validation\Tontine\OptionsValidator;
-use Siak\Tontine\Validation\Tontine\TontineValidator;
 use Sqids\Sqids;
 use Sqids\SqidsInterface;
 
@@ -153,7 +153,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(PlanningPoolService::class, PlanningPoolService::class);
         $this->app->singleton(UserService::class, UserService::class);
         $this->app->singleton(MemberService::class, MemberService::class);
-        $this->app->singleton(TontineService::class, TontineService::class);
+        $this->app->singleton(GuildService::class, GuildService::class);
 
         $this->app->singleton(PaymentService::class, PaymentService::class);
         $this->app->singleton(PaymentServiceInterface::class, function() {
@@ -180,7 +180,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(RemitmentValidator::class, RemitmentValidator::class);
         $this->app->singleton(SessionValidator::class, SessionValidator::class);
         $this->app->singleton(OptionsValidator::class, OptionsValidator::class);
-        $this->app->singleton(TontineValidator::class, TontineValidator::class);
+        $this->app->singleton(GuildValidator::class, GuildValidator::class);
         $this->app->singleton(TargetValidator::class, TargetValidator::class);
         $this->app->singleton(HostAccessValidator::class, HostAccessValidator::class);
         $this->app->singleton(GuestInviteValidator::class, GuestInviteValidator::class);
