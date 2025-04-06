@@ -15,8 +15,8 @@ return new class extends Migration
      */
     private function copyData(string $source, string $target)
     {
-        DB::statement("INSERT INTO $target(bill_id,charge_id,member_id,session_id) " .
-            "SELECT bill_id,charge_id,member_id,session_id FROM $source ORDER BY id ASC");
+        $fields = 'bill_id,charge_id,member_id,session_id';
+        DB::statement("INSERT INTO $target($fields) SELECT $fields FROM $source ORDER BY id ASC");
     }
 
     /**

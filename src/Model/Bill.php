@@ -79,9 +79,9 @@ class Bill extends Base
         return $this->hasOne(Settlement::class);
     }
 
-    public function tontine_bill()
+    public function oneoff_bill()
     {
-        return $this->hasOne(TontineBill::class);
+        return $this->hasOne(OneoffBill::class);
     }
 
     public function round_bill()
@@ -239,7 +239,7 @@ class Bill extends Base
     {
         return $query->addSelect(['bills.*'])
             ->where(function($query) use($charge, $withLibre) {
-                $query->orWhereHas('tontine_bill', function($query) use($charge) {
+                $query->orWhereHas('oneoff_bill', function($query) use($charge) {
                         $query->where('charge_id', $charge->id);
                     })
                     ->orWhereHas('round_bill', function($query) use($charge) {

@@ -31,7 +31,7 @@ class ChargeService
     public function getCharges(int $page = 0): Collection
     {
         return $this->tenantService->tontine()->charges()
-            // ->withCount(['tontine_bills', 'round_bills', 'session_bills', 'libre_bills'])
+            // ->withCount(['oneoff_bills', 'round_bills', 'session_bills', 'libre_bills'])
             ->page($page, $this->tenantService->getLimit())
             ->orderBy('type', 'asc')
             ->orderBy('period', 'desc')
@@ -59,7 +59,7 @@ class ChargeService
     public function getCharge(int $chargeId): ?Charge
     {
         return $this->tenantService->tontine()->charges()
-            // ->withCount(['tontine_bills', 'round_bills', 'session_bills', 'libre_bills'])
+            // ->withCount(['oneoff_bills', 'round_bills', 'session_bills', 'libre_bills'])
             ->find($chargeId);
     }
 
@@ -121,7 +121,7 @@ class ChargeService
         {
             DB::transaction(function() use($charge) {
                 $billIds = Bill::ofCharge($charge, true)->pluck('id');
-                $charge->tontine_bills()->delete();
+                $charge->oneoff_bills()->delete();
                 $charge->round_bills()->delete();
                 $charge->session_bills()->delete();
                 $charge->libre_bills()->delete();

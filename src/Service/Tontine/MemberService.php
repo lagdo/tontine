@@ -225,12 +225,12 @@ class MemberService
     public function deleteMember(Member $member)
     {
         // Will fail if any bill is already paid.
-        $billIds = $member->tontine_bills()->pluck('bill_id')
+        $billIds = $member->oneoff_bills()->pluck('bill_id')
             ->concat($member->round_bills()->pluck('bill_id'))
             ->concat($member->session_bills()->pluck('bill_id'))
             ->concat($member->libre_bills()->pluck('bill_id'));
         DB::transaction(function() use($member, $billIds) {
-            $member->tontine_bills()->delete();
+            $member->oneoff_bills()->delete();
             $member->round_bills()->delete();
             $member->session_bills()->delete();
             $member->libre_bills()->delete();

@@ -92,9 +92,9 @@ class Charge extends Base
         return $this->hasMany(RoundBill::class);
     }
 
-    public function tontine_bills()
+    public function oneoff_bills()
     {
-        return $this->hasMany(TontineBill::class);
+        return $this->hasMany(OneoffBill::class);
     }
 
     public function libre_bills()

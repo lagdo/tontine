@@ -6,7 +6,7 @@ use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Bill;
-use Siak\Tontine\Model\TontineBill;
+use Siak\Tontine\Model\OneoffBill;
 use Siak\Tontine\Model\RoundBill;
 use Siak\Tontine\Model\SessionBill;
 use Siak\Tontine\Model\Charge;
@@ -43,14 +43,14 @@ trait EventTrait
      *
      * @return void
      */
-    private function createTontineBill(Charge $charge, Member $member, DateTime $today): void
+    private function createOneoffBill(Charge $charge, Member $member, DateTime $today): void
     {
         $bill = $this->createBill($charge, $today);
-        $tontineBill = new TontineBill();
-        $tontineBill->bill()->associate($bill);
-        $tontineBill->charge()->associate($charge);
-        $tontineBill->member()->associate($member);
-        $tontineBill->save();
+        $oneoffBill = new OneoffBill();
+        $oneoffBill->bill()->associate($bill);
+        $oneoffBill->charge()->associate($charge);
+        $oneoffBill->member()->associate($member);
+        $oneoffBill->save();
     }
 
     /**
@@ -107,7 +107,7 @@ trait EventTrait
         // Create a tontine bill for each member
         foreach($tontine->members()->get() as $member)
         {
-            $this->createTontineBill($charge, $member, $today);
+            $this->createOneoffBill($charge, $member, $today);
         }
     }
 
@@ -123,7 +123,7 @@ trait EventTrait
         // Create a tontine bill for each charge
         foreach($tontine->charges()->active()->once()->get() as $charge)
         {
-            $this->createTontineBill($charge, $member, $today);
+            $this->createOneoffBill($charge, $member, $today);
         }
     }
 
@@ -139,7 +139,7 @@ trait EventTrait
         $members = $tontine
             ->members()
             ->with([
-                'tontine_bills',
+                'oneoff_bills',
                 'round_bills' => fn($query) => $query->where('round_id', $round->id),
             ])
             ->get();
@@ -164,12 +164,12 @@ trait EventTrait
         {
             foreach($tontineCharges as $charge)
             {
-                $count = $member->tontine_bills
+                $count = $member->oneoff_bills
                     ->filter(fn($bill) => $bill->charge_id === $charge->id)
                     ->count();
                 if($count === 0)
                 {
-                    $this->createTontineBill($charge, $member, $today);
+                    $this->createOneoffBill($charge, $member, $today);
                 }
             }
         }

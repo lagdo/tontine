@@ -139,13 +139,13 @@ class SessionService
     private function getBills(Closure $settlementFilter, ?Member $member = null): Collection
     {
         $tontineBillsQuery = DB::table('bills')
-            ->join('tontine_bills', 'bills.id', '=', 'tontine_bills.bill_id')
+            ->join('oneoff_bills', 'bills.id', '=', 'oneoff_bills.bill_id')
             ->select(DB::raw('sum(bills.amount) as total_amount'),
-                DB::raw('count(bills.id) as total_count'), 'tontine_bills.charge_id')
-            ->groupBy('tontine_bills.charge_id')
+                DB::raw('count(bills.id) as total_count'), 'oneoff_bills.charge_id')
+            ->groupBy('oneoff_bills.charge_id')
             ->whereExists($settlementFilter)
             ->when($member !== null, function($query) use($member) {
-                return $query->where('tontine_bills.member_id', $member->id);
+                return $query->where('oneoff_bills.member_id', $member->id);
             });
         $roundBillsQuery = DB::table('bills')
             ->join('round_bills', 'bills.id', '=', 'round_bills.bill_id')
