@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Session;
 
 use Siak\Tontine\Model\Fund;
-use Siak\Tontine\Service\Tontine\FundService;
+use Siak\Tontine\Service\Guild\FundService;
 
 trait FundTrait
 {

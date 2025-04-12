@@ -10,8 +10,8 @@ use Jaxon\Laravel\App\Jaxon;
 use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\User;
+use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Tontine\GuildService;
 
 use function auth;
 use function Jaxon\jaxon;

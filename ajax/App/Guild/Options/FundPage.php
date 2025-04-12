@@ -3,7 +3,7 @@
 namespace Ajax\App\Guild\Options;
 
 use Ajax\PageComponent;
-use Siak\Tontine\Service\Tontine\FundService;
+use Siak\Tontine\Service\Guild\FundService;
 use Stringable;
 
 /**

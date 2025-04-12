@@ -6,8 +6,8 @@ use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Tontine\MemberService;
 
 class PresenceService
 {

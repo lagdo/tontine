@@ -8,8 +8,8 @@ use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Saving;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
+use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Tontine\FundService;
 
 use function gmp_gcd;
 

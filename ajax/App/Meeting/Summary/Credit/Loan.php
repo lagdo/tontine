@@ -3,8 +3,8 @@
 namespace Ajax\App\Meeting\Summary\Credit;
 
 use Ajax\App\Meeting\Summary\Component;
+use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
-use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;
 
 /**

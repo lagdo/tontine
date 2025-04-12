@@ -5,7 +5,7 @@ namespace Siak\Tontine\Service\Report\Pdf;
 use Illuminate\Support\Str;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Tontine\GuildService;
+use Siak\Tontine\Service\Guild\GuildService;
 
 use function trans;
 use function view;

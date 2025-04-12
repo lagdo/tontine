@@ -3,7 +3,7 @@
 namespace Ajax\App\Guild\Member;
 
 use Ajax\PageComponent;
-use Siak\Tontine\Service\Tontine\MemberService;
+use Siak\Tontine\Service\Guild\MemberService;
 use Stringable;
 
 use function trim;

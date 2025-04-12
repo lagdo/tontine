@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Summary\Refund\Total;
 
 use Ajax\App\Meeting\Summary\Component;
-use Siak\Tontine\Service\Tontine\FundService;
+use Siak\Tontine\Service\Guild\FundService;
 use Stringable;
 
 /**

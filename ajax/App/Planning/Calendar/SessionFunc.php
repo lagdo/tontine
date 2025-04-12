@@ -4,9 +4,9 @@ namespace Ajax\App\Planning\Calendar;
 
 use Ajax\FuncComponent;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\Planning\RoundService;
 use Siak\Tontine\Service\Planning\SessionService;
-use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Planning\SessionValidator;
 
 use function Jaxon\pm;

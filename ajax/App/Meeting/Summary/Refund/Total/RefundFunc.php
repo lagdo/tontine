@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Summary\Refund\Total;
 
 use Ajax\FuncComponent;
-use Siak\Tontine\Service\Tontine\FundService;
+use Siak\Tontine\Service\Guild\FundService;
 
 /**
  * @databag refund

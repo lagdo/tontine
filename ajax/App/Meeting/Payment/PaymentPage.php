@@ -4,8 +4,8 @@ namespace Ajax\App\Meeting\Payment;
 
 use Ajax\PageComponent;
 use Illuminate\Support\Collection;
+use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\Meeting\SessionService;
-use Siak\Tontine\Service\Tontine\MemberService;
 use Stringable;
 
 /**

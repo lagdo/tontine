@@ -5,7 +5,7 @@ namespace Ajax\App\Guild\Options;
 use Ajax\FuncComponent;
 use Siak\Tontine\Model\Charge as ChargeModel;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Tontine\ChargeService;
+use Siak\Tontine\Service\Guild\ChargeService;
 use Siak\Tontine\Validation\Guild\ChargeValidator;
 
 use function Jaxon\pm;

@@ -15,9 +15,9 @@ use Siak\Tontine\Model\PartialRefund;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Planning\PoolService;
-use Siak\Tontine\Service\Tontine\FundService;
 
 class BalanceCalculator
 {

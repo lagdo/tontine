@@ -3,7 +3,7 @@
 namespace Ajax\App\Admin\User\Host;
 
 use Ajax\Component;
-use Siak\Tontine\Service\Tontine\UserService;
+use Siak\Tontine\Service\Guild\UserService;
 use Stringable;
 
 /**

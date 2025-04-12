@@ -3,9 +3,9 @@
 namespace Ajax\App\Meeting\Session\Charge;
 
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Service\Guild\ChargeService;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementService;
-use Siak\Tontine\Service\Tontine\ChargeService;
 
 use function trans;
 

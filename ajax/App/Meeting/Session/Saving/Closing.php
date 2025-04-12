@@ -3,8 +3,8 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\Component;
+use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\Meeting\Saving\ClosingService;
-use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;
 
 /**

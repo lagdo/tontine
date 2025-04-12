@@ -5,9 +5,9 @@ namespace Ajax\App\Admin\Guild;
 use Ajax\App\Page\MainTitle;
 use Ajax\App\Page\Sidebar\AdminMenu;
 use Ajax\FuncComponent;
+use Siak\Tontine\Service\Guild\GuildService;
+use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Tontine\GuildService;
-use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Guild\GuildValidator;
 
 use function Jaxon\pm;

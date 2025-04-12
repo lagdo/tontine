@@ -4,8 +4,8 @@ namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\FuncComponent;
 use Ajax\App\Meeting\Session\FundTrait;
+use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
-use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Meeting\SavingValidator;
 
 use function Jaxon\pm;

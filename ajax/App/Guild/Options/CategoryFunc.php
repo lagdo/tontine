@@ -4,7 +4,7 @@ namespace Ajax\App\Guild\Options;
 
 use Ajax\FuncComponent;
 use Siak\Tontine\Model\Category as CategoryModel;
-use Siak\Tontine\Service\Tontine\CategoryService;
+use Siak\Tontine\Service\Guild\CategoryService;
 
 use function Jaxon\pm;
 use function trans;

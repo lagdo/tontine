@@ -11,9 +11,9 @@ use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Saving;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Tontine\FundService;
 
 class SavingService
 {

@@ -3,7 +3,7 @@
 namespace Ajax\App\Admin\User\Guest;
 
 use Ajax\FuncComponent;
-use Siak\Tontine\Service\Tontine\UserService;
+use Siak\Tontine\Service\Guild\UserService;
 
 /**
  * @databag user

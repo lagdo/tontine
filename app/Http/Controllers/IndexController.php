@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\View\View;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Tontine\GuildService;
 
 use function auth;
 use function view;

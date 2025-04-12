@@ -2,9 +2,9 @@
 
 namespace Ajax\App;
 
+use Siak\Tontine\Service\Guild\ChargeService;
+use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\Planning\PoolService;
-use Siak\Tontine\Service\Tontine\ChargeService;
-use Siak\Tontine\Service\Tontine\MemberService;
 use Ajax\FuncComponent;
 
 use function intval;

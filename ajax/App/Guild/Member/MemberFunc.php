@@ -4,7 +4,7 @@ namespace Ajax\App\Guild\Member;
 
 use Ajax\FuncComponent;
 use Ajax\App\FakerFunc;
-use Siak\Tontine\Service\Tontine\MemberService;
+use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Validation\Guild\MemberValidator;
 
 use function Jaxon\pm;

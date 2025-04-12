@@ -11,10 +11,10 @@ use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\PartialRefund;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Tontine\FundService;
 
 use function trans;
 

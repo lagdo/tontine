@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service\Tontine;
+namespace Siak\Tontine\Service\Guild;
 
 use Exception;
 use Illuminate\Support\Collection;

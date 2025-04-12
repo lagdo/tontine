@@ -4,10 +4,10 @@ namespace Ajax\App\Report\Session\Saving;
 
 use Ajax\Component;
 use Illuminate\Support\Collection;
+use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\Meeting\Saving\ClosingService;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Siak\Tontine\Service\Meeting\SessionService;
-use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;
 
 /**

@@ -3,9 +3,9 @@
 namespace Ajax\App\Meeting\Session\Credit\Loan;
 
 use Ajax\App\Meeting\FuncComponent;
+use Siak\Tontine\Service\Guild\FundService;
+use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
-use Siak\Tontine\Service\Tontine\FundService;
-use Siak\Tontine\Service\Tontine\MemberService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 
 use function Jaxon\pm;

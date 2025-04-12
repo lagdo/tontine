@@ -3,7 +3,7 @@
 namespace Ajax\App\Guild\Options;
 
 use Ajax\FuncComponent;
-use Siak\Tontine\Service\Tontine\GuildService;
+use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Validation\Guild\OptionsValidator;
 
 use function Jaxon\pm;

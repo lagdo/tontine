@@ -3,8 +3,8 @@
 namespace Ajax\App\Admin\User\Guest;
 
 use Ajax\PageComponent;
+use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Tontine\GuildService;
 use Stringable;
 
 /**

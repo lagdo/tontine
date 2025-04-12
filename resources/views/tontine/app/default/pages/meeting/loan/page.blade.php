@@ -1,5 +1,5 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('fundService', 'Siak\Tontine\Service\Tontine\FundService')
+@inject('fundService', 'Siak\Tontine\Service\Guild\FundService')
 @php
   $loanId = jq()->parent()->attr('data-loan-id')->toInt();
   $rqLoanPage = rq(Ajax\App\Meeting\Session\Credit\Loan\LoanPage::class);

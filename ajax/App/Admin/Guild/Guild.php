@@ -6,7 +6,7 @@ use Ajax\Component;
 use Ajax\App\Admin\User\Guest\Guild as GuestGuild;
 use Ajax\App\Page\SectionContent;
 use Ajax\App\Page\SectionTitle;
-use Siak\Tontine\Service\Tontine\GuildService;
+use Siak\Tontine\Service\Guild\GuildService;
 use Stringable;
 
 use function trans;

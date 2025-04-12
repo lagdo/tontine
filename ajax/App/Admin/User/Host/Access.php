@@ -4,8 +4,8 @@ namespace Ajax\App\Admin\User\Host;
 
 use Ajax\Component;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Service\Tontine\GuildService;
-use Siak\Tontine\Service\Tontine\UserService;
+use Siak\Tontine\Service\Guild\GuildService;
+use Siak\Tontine\Service\Guild\UserService;
 use Stringable;
 
 use function trans;

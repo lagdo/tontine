@@ -11,10 +11,10 @@ use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
+use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\Meeting\SessionService as MeetingSessionService;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Tontine\MemberService;
 
 use function collect;
 

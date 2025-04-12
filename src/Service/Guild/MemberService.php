@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service\Tontine;
+namespace Siak\Tontine\Service\Guild;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;

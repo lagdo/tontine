@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service\Tontine;
+namespace Siak\Tontine\Service\Guild;
 
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Category;

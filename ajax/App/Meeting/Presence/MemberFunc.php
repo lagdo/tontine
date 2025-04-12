@@ -3,8 +3,8 @@
 namespace Ajax\App\Meeting\Presence;
 
 use Ajax\FuncComponent;
+use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\Meeting\PresenceService;
-use Siak\Tontine\Service\Tontine\MemberService;
 
 use function trim;
 
