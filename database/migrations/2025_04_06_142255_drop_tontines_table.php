@@ -75,9 +75,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // $this->dropForeignKeys('tontine_id');
+        $this->dropForeignKeys('tontine_id');
 
-        // Schema::dropIfExists('tontines');
+        Schema::dropIfExists('tontines');
     }
 
     /**
@@ -86,24 +86,24 @@ return new class extends Migration
     public function down(): void
     {
         // The type field is ignored
-        // Schema::create('tontines', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('name', 100);
-        //     $table->string('shortname', 25);
-        //     $table->text('biography')->nullable();
-        //     $table->string('email', 100)->nullable();
-        //     $table->string('phone', 100)->nullable();
-        //     $table->string('address', 500)->nullable();
-        //     $table->string('city', 100)->nullable();
-        //     $table->string('website', 100)->nullable();
-        //     $table->string('country_code', 2);
-        //     $table->string('currency_code', 3);
-        //     $table->timestamps();
-        //     $table->unsignedBigInteger('user_id');
-        //     $table->foreign('user_id')->references('id')->on('users');
-        // });
+        Schema::create('tontines', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 100);
+            $table->string('shortname', 25);
+            $table->text('biography')->nullable();
+            $table->string('email', 100)->nullable();
+            $table->string('phone', 100)->nullable();
+            $table->string('address', 500)->nullable();
+            $table->string('city', 100)->nullable();
+            $table->string('website', 100)->nullable();
+            $table->string('country_code', 2);
+            $table->string('currency_code', 3);
+            $table->timestamps();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+        });
 
-        // $this->copyData('guilds', 'tontines');
-        // $this->setForeignKeys('guild', 'tontine');
+        $this->copyData('guilds', 'tontines');
+        $this->setForeignKeys('guild', 'tontine');
     }
 };
