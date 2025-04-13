@@ -1,19 +1,12 @@
 @php
-  $rqPool = rq(Ajax\App\Planning\Financial\Pool::class);
-  $rqPoolFunc = rq(Ajax\App\Planning\Financial\PoolFunc::class);
-  $rqPoolPage = rq(Ajax\App\Planning\Financial\PoolPage::class);
-  $rqSessionFunc = rq(Ajax\App\Meeting\Session\SessionFunc::class);
+  $rqPool = rq(Ajax\App\Guild\Pool\Pool::class);
+  $rqPoolFunc = rq(Ajax\App\Guild\Pool\PoolFunc::class);
+  $rqPoolPage = rq(Ajax\App\Guild\Pool\PoolPage::class);
 @endphp
           <div class="section-body">
             <div class="row">
               <div class="col">
                 <h2 class="section-title">{{ __('tontine.titles.pools') }}</h2>
-              </div>
-              <div class="col-auto">
-                <button type="button" class="btn btn-primary" @jxnClick($rqSessionFunc->resync()
-                  ->confirm(__('tontine.session.questions.resync')))>
-                  <i class="fa fa-redo"></i> {{ __('tontine.session.actions.resync') }}
-                </button>
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right" role="group">

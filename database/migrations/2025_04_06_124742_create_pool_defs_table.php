@@ -30,6 +30,10 @@ insert into pool_defs(id,title,amount,notes,properties,active,guild_id)
         from pools p inner join rounds r on r.id=p.round_id
 SQL;
         DB::statement($insertQuery);
+        if(DB::getDriverName() === 'pgsql')
+        {
+            DB::statement("select setval('pool_defs_id_seq', (select MAX(id) FROM pool_defs))");
+        }
 
         Schema::table('pools', function(Blueprint $table) {
             $table->unsignedBigInteger('def_id')->nullable();

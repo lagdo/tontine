@@ -253,6 +253,9 @@ return [
             'default' => "&Eacute;pargne",
             'fund' => "Fonds d'épargne",
         ],
+        'questions' => [
+            'delete' => "Supprimer ce fonds d'épargne ?",
+        ],
         'messages' => [
             'created' => "Le fonds d'épargne a été ajouté.",
             'updated' => "Le fonds d'épargne a été modifié.",

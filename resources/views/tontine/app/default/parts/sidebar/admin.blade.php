@@ -16,6 +16,9 @@
               <li><a class="nav-link" id="guild-menu-members" role="link" tabindex="0">
                 <i class="fa fa-fw fa-users"></i> <span>{{ __('tontine.menus.members') }}</span>
               </a></li>
+              <li><a class="nav-link" id="guild-menu-pools" role="link" tabindex="0">
+                <i class="fa fa-fw fa-coins"></i> <span>{{ __('tontine.menus.pools') }}</span>
+              </a></li>
               <li><a class="nav-link" id="guild-menu-categories" role="link" tabindex="0">
                 <i class="fa fa-fw fa-cogs"></i> <span>{{ __('tontine.menus.categories') }}</span>
               </a></li>

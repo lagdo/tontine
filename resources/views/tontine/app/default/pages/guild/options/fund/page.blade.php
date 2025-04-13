@@ -6,6 +6,8 @@
                   <div class="table-responsive" id="content-fund-page" @jxnTarget()>
                     <div @jxnEvent(['.btn-fund-edit', 'click'], $rqFundFunc->edit($fundId))></div>
                     <div @jxnEvent(['.btn-fund-toggle', 'click'], $rqFundFunc->toggle($fundId))></div>
+                    <div @jxnEvent(['.btn-fund-delete', 'click'], $rqFundFunc->delete($fundId)
+                      ->confirm(__('tontine.fund.questions.delete')))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>
@@ -29,10 +31,10 @@
   'menus' => [[
     'class' => 'btn-fund-edit',
     'text' => __('common.actions.edit'),
-  ]/*,[
+  ],[
     'class' => 'btn-fund-delete',
     'text' => __('common.actions.delete'),
-  ]*/],
+  ]],
 ])
                           </td>
                         </tr>

@@ -26,6 +26,10 @@ insert into fund_defs(id,title,notes,active,guild_id)
     select id,title,notes,active,guild_id from funds
 SQL;
         DB::statement($insertQuery);
+        if(DB::getDriverName() === 'pgsql')
+        {
+            DB::statement("select setval('fund_defs_id_seq', (select MAX(id) FROM fund_defs))");
+        }
 
         Schema::table('funds', function(Blueprint $table) {
             $table->json('options')->nullable();

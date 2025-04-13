@@ -3,10 +3,8 @@
 namespace Siak\Tontine\Service\Guild;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
-use Siak\Tontine\Model\Fund;
-use Siak\Tontine\Model\Session;
+use Siak\Tontine\Model\FundDef;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
@@ -22,9 +20,9 @@ class FundService
     /**
      * Get the default fund.
      *
-     * @return Fund
+     * @return FundDef
      */
-    public function getDefaultFund(): Fund
+    public function getDefaultFund(): FundDef
     {
         $defaultFund = $this->tenantService->guild()->default_fund;
         $defaultFund->title = trans('tontine.fund.labels.default');
@@ -84,9 +82,9 @@ class FundService
      * @param bool $onlyActive
      * @param bool $withDefault
      *
-     * @return Fund|null
+     * @return FundDef|null
      */
-    public function getFund(int $fundId, bool $onlyActive = false, bool $withDefault = false): ?Fund
+    public function getFund(int $fundId, bool $onlyActive = false, bool $withDefault = false): ?FundDef
     {
         if($withDefault && ($fundId === 0 ||
             $fundId === $this->tenantService->guild()->default_fund->id))
@@ -96,16 +94,17 @@ class FundService
 
         $fund = $this->tenantService->guild()->funds()
             ->when($onlyActive, fn(Builder $query) => $query->active())
+            ->withCount('funds')
             ->find($fundId);
         return $fund ?? ($withDefault ? $this->getDefaultFund() : null);
     }
 
     /**
-     * @param Fund $fund
+     * @param FundDef $fund
      *
      * @return string
      */
-    public function getFundTitle(Fund $fund): string
+    public function getFundTitle(FundDef $fund): string
     {
         return $fund->id === $this->tenantService->guild()->default_fund->id ?
             $this->getDefaultFund()->title : $fund->title;
@@ -121,18 +120,19 @@ class FundService
     public function createFund(array $values): bool
     {
         $this->tenantService->guild()->funds()->create($values);
+
         return true;
     }
 
     /**
      * Update a fund.
      *
-     * @param Fund $fund
+     * @param FundDef $fund
      * @param array $values
      *
      * @return bool
      */
-    public function updateFund(Fund $fund, array $values): bool
+    public function updateFund(FundDef $fund, array $values): bool
     {
         return $fund->update($values);
     }
@@ -140,11 +140,11 @@ class FundService
     /**
      * Toggle a fund.
      *
-     * @param Fund $fund
+     * @param FundDef $fund
      *
      * @return void
      */
-    public function toggleFund(Fund $fund)
+    public function toggleFund(FundDef $fund)
     {
         $fund->update(['active' => !$fund->active]);
     }
@@ -152,72 +152,18 @@ class FundService
     /**
      * Delete a fund.
      *
-     * @param Fund $fund
+     * @param FundDef $fund
      *
      * @return void
      */
-    public function deleteFund(Fund $fund)
+    public function deleteFund(FundDef $fund)
     {
-        $fund->delete();
-    }
-
-    /**
-     * @param Session $currentSession
-     * @param Fund $fund
-     *
-     * @return Builder|Relation
-     */
-    private function getFundSessionsQuery(Session $currentSession, Fund $fund): Builder|Relation
-    {
-        // Will return all the guild sessions,
-        // or all those after the last closing, if there's any.
-        $lastSessionDate = $currentSession->start_at->format('Y-m-d');
-        $sessionsQuery = $this->tenantService->guild()->sessions()
-            ->whereDate('start_at', '<=', $lastSessionDate);
-
-        // The closing sessions before te current session.
-        $closingSessions = $this->tenantService->guild()->sessions()
-            ->whereDate('start_at', '<', $lastSessionDate)
-            ->whereHas('closings', function(Builder|Relation $query) use($fund) {
-                $query->round()->where('fund_id', $fund->id);
-            })
-            ->orderByDesc('start_at')
-            ->get();
-        if($closingSessions->count() === 0)
+        if($fund->id === $this->tenantService->guild()->default_fund->id)
         {
-            // All the closing sessions are after the current session.
-            return $sessionsQuery;
+            // Cannot delete the default fund.
+            return;
         }
 
-        // The most recent previous closing session
-        $firstSessionDate = $closingSessions->last()->start_at->format('Y-m-d');
-        // Return all the sessions after the most recent previous closing session
-        return $sessionsQuery->whereDate('start_at', '>', $firstSessionDate);
-    }
-
-    /**
-     * Get the sessions to be used for profit calculation.
-     *
-     * @param Session $currentSession
-     * @param Fund $fund
-     *
-     * @return Collection
-     */
-    public function getFundSessions(Session $currentSession, Fund $fund): Collection
-    {
-        return $this->getFundSessionsQuery($currentSession, $fund)->get();
-    }
-
-    /**
-     * Get the id of sessions to be used for profit calculation.
-     *
-     * @param Session $currentSession
-     * @param Fund $fund
-     *
-     * @return Collection
-     */
-    public function getFundSessionIds(Session $currentSession, Fund $fund): Collection
-    {
-        return $this->getFundSessionsQuery($currentSession, $fund)->pluck('id');
+        $fund->delete();
     }
 }

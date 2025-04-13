@@ -97,4 +97,19 @@ class FundFunc extends FuncComponent
 
         $this->cl(FundPage::class)->page();
     }
+
+    public function delete(int $fundId)
+    {
+        $fund = $this->fundService->getFund($fundId);
+        if($fund->funds_count > 0)
+        {
+            // A fund that is already in use cannot be deleted.
+            return;
+        }
+        $this->fundService->deleteFund($fund);
+        $this->alert()->title(trans('common.titles.success'))
+            ->success(trans('tontine.fund.messages.deleted'));
+
+        $this->cl(FundPage::class)->page();
+    }
 }

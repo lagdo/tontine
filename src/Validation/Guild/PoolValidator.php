@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Validation\Planning;
+namespace Siak\Tontine\Validation\Guild;
 
 use Illuminate\Support\Facades\Validator;
 use Siak\Tontine\Service\LocaleService;

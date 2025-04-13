@@ -1,23 +1,17 @@
 <?php
 
-namespace Siak\Tontine\Service\Planning;
+namespace Siak\Tontine\Service\Guild;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Siak\Tontine\Model\Pool;
-use Siak\Tontine\Model\Session;
+use Siak\Tontine\Model\PoolDef;
 use Siak\Tontine\Service\TenantService;
 
 class PoolService
 {
     /**
      * @param TenantService $tenantService
-     * @param DataSyncService $dataSyncService
      */
-    public function __construct(protected TenantService $tenantService,
-        private DataSyncService $dataSyncService)
+    public function __construct(protected TenantService $tenantService)
     {}
 
     /**
@@ -30,6 +24,7 @@ class PoolService
     public function getPools(int $page = 0): Collection
     {
         return $this->tenantService->guild()->pools()
+            ->orderBy('id')
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -49,11 +44,11 @@ class PoolService
      *
      * @param int $poolId    The pool id
      *
-     * @return Pool|null
+     * @return PoolDef|null
      */
-    public function getPool(int $poolId): ?Pool
+    public function getPool(int $poolId): ?PoolDef
     {
-        return $this->tenantService->guild()->pools()->find($poolId);
+        return $this->tenantService->guild()->pools()->withCount('pools')->find($poolId);
     }
 
     /**
@@ -66,39 +61,44 @@ class PoolService
     public function createPool(array $values): bool
     {
         $this->tenantService->guild()->pools()->create($values);
-
         return true;
     }
 
     /**
      * Update a pool.
      *
-     * @param Pool $pool
+     * @param PoolDef $pool
      * @param array $values
      *
      * @return bool
      */
-    public function updatePool(Pool $pool, array $values): bool
+    public function updatePool(PoolDef $pool, array $values): bool
     {
         return $pool->update($values);
     }
 
     /**
-     * Delete a pool.
+     * Toggle a pool.
      *
-     * @param Pool $pool
+     * @param PoolDef $pool
      *
      * @return void
      */
-    public function deletePool(Pool $pool)
+    public function togglePool(PoolDef $pool)
     {
-        DB::transaction(function() use($pool) {
-            $this->dataSyncService->syncPool($pool, false);
+        $pool->update(['active' => !$pool->active]);
+    }
 
-            $pool->pool_round()->delete();
-            $pool->subscriptions()->delete();
-            $pool->delete();
-        });
+    /**
+     * Delete a pool.
+     *
+     * @param PoolDef $pool
+     *
+     * @return void
+     */
+    public function deletePool(PoolDef $pool)
+    {
+        $pool->delete();
     }
 
     /**
@@ -108,7 +108,7 @@ class PoolService
      */
     public function getFakePools(int $count): Collection
     {
-        return Pool::factory()->count($count)->make([
+        return PoolDef::factory()->count($count)->make([
             'guild_id' => $this->tenantService->guild(),
         ]);
     }

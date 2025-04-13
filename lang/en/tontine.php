@@ -253,6 +253,9 @@ return [
             'default' => "Saving",
             'fund' => "Savings fund",
         ],
+        'questions' => [
+            'delete' => "Delete this savings fund?",
+        ],
         'messages' => [
             'created' => "The savings fund was successfully created.",
             'updated' => "The savings fund was successfully updated.",

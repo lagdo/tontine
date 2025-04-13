@@ -4,6 +4,7 @@ use Ajax\App\Admin\Guild\Guild;
 use Ajax\App\Admin\User\User;
 use Ajax\App\Guild\Member\Member;
 use Ajax\App\Guild\Options\Options;
+use Ajax\App\Guild\Pool\Pool;
 use Ajax\App\Meeting\Payment\Payment;
 use Ajax\App\Meeting\Presence\Presence;
 use Ajax\App\Meeting\Session\Session as MeetingSession;
@@ -20,6 +21,7 @@ return [
     ],
     'guild' => [
         '#guild-menu-members' => Member::class,
+        '#guild-menu-pools' => Pool::class,
         '#guild-menu-categories' => Options::class,
         '#guild-menu-calendar' => Calendar::class,
     ],

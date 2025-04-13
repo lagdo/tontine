@@ -88,9 +88,14 @@ class Guild extends Base
             ->select('sessions.*');
     }
 
+    public function pools()
+    {
+        return $this->hasMany(PoolDef::class);
+    }
+
     public function funds()
     {
-        return $this->hasMany(Fund::class);
+        return $this->hasMany(FundDef::class);
     }
 
     /**
@@ -98,7 +103,7 @@ class Guild extends Base
      */
     public function default_fund()
     {
-        return $this->hasOne(Fund::class)
+        return $this->hasOne(FundDef::class)
             ->withoutGlobalScope('user')
             ->ofMany(['id' => 'max'], fn(Builder $query) => $query->where('title', ''));
     }

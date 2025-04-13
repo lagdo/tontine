@@ -1,12 +1,10 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $poolId = jq()->parent()->attr('data-pool-id')->toInt();
-  $rqPoolFunc = rq(Ajax\App\Planning\Financial\PoolFunc::class);
-  $rqPoolPage = rq(Ajax\App\Planning\Financial\PoolPage::class);
-  $rqSession = rq(Ajax\App\Planning\Financial\Session::class);
+  $rqPoolFunc = rq(Ajax\App\Guild\Pool\PoolFunc::class);
+  $rqPoolPage = rq(Ajax\App\Guild\Pool\PoolPage::class);
 @endphp
                 <div class="table-responsive" id="content-planning-pool-page" @jxnTarget()>
-                  <div @jxnEvent(['.btn-pool-sessions', 'click'], $rqSession->pool($poolId))></div>
                   <div @jxnEvent(['.btn-pool-edit', 'click'], $rqPoolFunc->edit($poolId))></div>
                   <div @jxnEvent(['.btn-pool-delete', 'click'], $rqPoolFunc->delete($poolId)
                     ->confirm(__('tontine.pool.questions.delete')))></div>
@@ -15,9 +13,9 @@
                     <thead>
                       <tr>
                         <th>{!! __('common.labels.title') !!}</th>
-                        <th>{!! __('common.labels.dates') !!}</th>
                         <th>{!! __('tontine.pool.titles.deposits') !!}</th>
                         <th>{!! __('tontine.pool.titles.remitments') !!}</th>
+                        <th>{!! __('common.labels.active') !!}</th>
                         <th class="table-menu"></th>
                       </tr>
                     </thead>
@@ -25,10 +23,7 @@
 @foreach ($pools as $pool)
                       <tr>
                         <td>
-                          <b>{{ $pool->title }}<br/>{{ $pool->round->title }}</b></td>
-                        <td>
-                          {{ $pool->start_at?->translatedFormat(__('tontine.date.format')) ?? '' }}<br/>
-                          {{ $pool->end_at?->translatedFormat(__('tontine.date.format')) ?? '' }}
+                          <b>{{ $pool->title }}</b>
                         </td>
                         <td>
                           {!! __('common.labels.amount') !!}: {{ $pool->deposit_fixed ?
@@ -42,16 +37,15 @@
                           {!! __('tontine.pool.labels.auction') !!}: {{ __('common.labels.' .
                             ($pool->remit_auction ? 'yes' : 'no')) }}
                         </td>
+                        <td class="table-item-toggle" data-pool-id="{{ $pool->id }}">
+                          <a role="link" tabindex="0" class="btn-pool-toggle"><i class="fa fa-toggle-{{ $pool->active ? 'on' : 'off' }}"></i></a>
+                        </td>
                         <td class="table-item-menu">
 @include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-pool-id',
   'dataIdValue' => $pool->id,
   'menus' => [
     [
-      'class' => 'btn-pool-sessions',
-      'text' => __('tontine.pool.actions.sessions'),
-    ],
-    null,[
       'class' => 'btn-pool-edit',
       'text' => __('common.actions.edit'),
     ],[
