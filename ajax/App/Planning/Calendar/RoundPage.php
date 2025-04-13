@@ -47,6 +47,7 @@ class RoundPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-planning-rounds-page');
+        $this->response->js('Tontine')
+            ->makeTableResponsive('content-planning-rounds-page');
     }
 }

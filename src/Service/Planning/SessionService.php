@@ -41,7 +41,7 @@ class SessionService
         DB::transaction(function() use($round, $values) {
             /** @var Session */
             $session = $round->sessions()->create($values);
-            $this->dataSyncService->onNewSession($round, $session);
+            $this->dataSyncService->onNewSession($session);
         });
         return true;
     }
@@ -65,7 +65,7 @@ class SessionService
             $sessions = $round->sessions()->createMany($values);
             foreach($sessions as $session)
             {
-                $this->dataSyncService->onNewSession($round, $session);
+                $this->dataSyncService->onNewSession($session);
             }
         });
         return true;

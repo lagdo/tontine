@@ -68,9 +68,8 @@ SQL;
 
 $sql = <<<SQL
 create view v_pools as
-    select p.id, pd.guild_id, ss.start_at, se.start_at as end_at
+    select p.id as pool_id, ss.start_at, se.start_at as end_at
         from pools p
-        inner join pool_defs pd on p.def_id=pd.id
         inner join sessions ss on p.start_sid=ss.id
         inner join sessions se on p.end_sid=se.id
 SQL;

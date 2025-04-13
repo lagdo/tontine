@@ -94,33 +94,21 @@ class DataSyncService
     }
 
     /**
-     * @param Round $round
+     * Called after a new session is created
+     *
      * @param Session $session
      *
      * @return void
      */
-    private function disableSessionOnPools(Round $round, Session $session)
+    public function onNewSession(Session $session)
     {
         // Disable this session on all planned pools
-        $round->pools()
+        Pool::ofSession($session)
             ->remitPlanned()
             ->get()
             ->each(function($pool) use($session) {
                 $pool->disabled_sessions()->attach($session->id);
             });
-    }
-
-    /**
-     * Called after a new session is created
-     *
-     * @param Round $round
-     * @param Session $session
-     *
-     * @return void
-     */
-    public function onNewSession(Round $round, Session $session)
-    {
-        $this->disableSessionOnPools($round, $session);
     }
 
     /**
@@ -157,7 +145,7 @@ class DataSyncService
      */
     private function getPrevSession(Guild $guild, Session $session): ?Session
     {
-        return $guild->sessions()->active()
+        return $guild->sessions()
             ->where('start_at', '<', $session->start_at)
             ->orderBy('start_at', 'desc')
             ->first();
@@ -173,7 +161,7 @@ class DataSyncService
      */
     private function getNextSession(Guild $guild, Session $session): ?Session
     {
-        return $guild->sessions()->active()
+        return $guild->sessions()
             ->where('start_at', '>', $session->start_at)
             ->orderBy('start_at', 'asc')
             ->first();

@@ -59,16 +59,6 @@ class Session extends Base
         'end_at' => 'datetime',
     ];
 
-    /**
-     * The relationships that should always be loaded.
-     *
-     * @var array
-     */
-    protected $with = [
-        'host',
-        'disabled_pools',
-    ];
-
     public function notFirst(): Attribute
     {
         return Attribute::make(
@@ -252,9 +242,8 @@ class Session extends Base
      */
     public function scopeOfPool(Builder $query, Pool $pool): Builder
     {
-        return !$pool->pool_round ?
-            $query->where('round_id', $pool->round_id) :
-            $query->whereDate('start_at', '<=', $pool->end_at->format('Y-m-d'))
-                ->whereDate('start_at', '>=', $pool->start_at->format('Y-m-d'));
+        return $query
+            ->where('start_at', '<=', $pool->end_at)
+            ->where('start_at', '>=', $pool->start_at);
     }
 }

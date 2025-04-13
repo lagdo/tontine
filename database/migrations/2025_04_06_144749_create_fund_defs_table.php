@@ -83,6 +83,20 @@ update closings t set fund_id=(select f.id from funds f
 SQL;
         DB::statement($updateQuery);
 
+        $sql = <<<SQL
+drop view if exists v_funds
+SQL;
+        DB::statement($sql);
+
+$sql = <<<SQL
+create view v_funds as
+    select p.id as fund_id, ss.start_at, se.start_at as end_at
+        from funds p
+        inner join sessions ss on p.start_sid=ss.id
+        inner join sessions se on p.end_sid=se.id
+SQL;
+        DB::statement($sql);
+
         // Copy closings data
         DB::table('closings')->get()->each(function($closing) {
             $query = DB::table('funds')->where('id', $closing->fund_id);
@@ -93,8 +107,9 @@ SQL;
                     'end_sid' => $closing->session_id,
                     'interest_sid' => $closing->session_id,
                 ]);
+                return;
             }
-            elseif($closing->type === 'i')
+            if($closing->type === 'i')
             {
                 $query->update([
                     'interest_sid' => $closing->session_id,
@@ -142,6 +157,11 @@ insert into closings(options,type,session_id,fund_id)
     where f.interest_sid != f.end_sid
 SQL;
         DB::statement($insertQuery);
+
+        $sql = <<<SQL
+drop view if exists v_funds
+SQL;
+        DB::statement($sql);
 
         Schema::table('funds', function(Blueprint $table) {
             $table->string('title', 100)->default('');
