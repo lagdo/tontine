@@ -33,7 +33,7 @@ class Pool extends Component
      */
     protected function before()
     {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.tontine'));
+        $this->cl(SectionTitle::class)->show(trans('tontine.menus.finance'));
     }
 
     /**

@@ -1,9 +1,7 @@
 <?php
 
-namespace Ajax\App\Admin\User;
+namespace Ajax\App\Guild\Calendar;
 
-use Ajax\App\Admin\User\Guest\Guest;
-use Ajax\App\Admin\User\Host\Host;
 use Ajax\App\Page\SectionContent;
 use Ajax\App\Page\SectionTitle;
 use Ajax\Component;
@@ -12,9 +10,9 @@ use Stringable;
 use function trans;
 
 /**
- * @databag user
+ * @databag planning.calendar
  */
-class User extends Component
+class Round extends Component
 {
     /**
      * @var string
@@ -22,6 +20,7 @@ class User extends Component
     protected $overrides = SectionContent::class;
 
     /**
+     * @before checkHostAccess ["planning", "sessions"]
      * @after hideMenuOnMobile
      */
     public function home()
@@ -34,7 +33,7 @@ class User extends Component
      */
     protected function before()
     {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.admin'));
+        $this->cl(SectionTitle::class)->show(trans('tontine.menus.tontine'));
     }
 
     /**
@@ -42,7 +41,7 @@ class User extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.admin.user.home');
+        return $this->renderView('pages.guild.calendar.round.home');
     }
 
     /**
@@ -50,9 +49,6 @@ class User extends Component
      */
     protected function after()
     {
-        $this->cl(Host::class)->render();
-        $this->cl(Guest::class)->render();
-
-        $this->response->js('Tontine')->setSmScreenHandler('invites-sm-screens');
+        $this->cl(RoundPage::class)->page();
     }
 }

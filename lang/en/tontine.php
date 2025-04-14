@@ -15,7 +15,9 @@ return [
         'meeting' => "Meeting",
         'report' => "Report",
         'members' => "Members",
-        'categories' => "Categories",
+        'finance' => "Finance",
+        'accounts' => "Accounts",
+        'charges' => "Charges",
         'calendar' => "Calendar",
         'round' => "Round",
         'session' => "Session",
@@ -245,6 +247,7 @@ return [
     ],
     'fund' => [
         'titles' => [
+            'savings' => "Savings",
             'funds' => "Savings funds",
             'add' => "Add a savings fund",
             'edit' => "Edit a savings fund",
@@ -252,6 +255,7 @@ return [
         'labels' => [
             'default' => "Saving",
             'fund' => "Savings fund",
+            'savings' => "Savings",
         ],
         'questions' => [
             'delete' => "Delete this savings fund?",
@@ -265,22 +269,22 @@ return [
             'not_found' => "Cannot find the corresponding fund.",
         ],
     ],
-    'category' => [
+    'account' => [
         'titles' => [
-            'categories' => "Disbursements",
-            'add' => "Add a category",
-            'edit' => "Edit a category",
+            'disbursements' => "Disbursements",
+            'add' => "Add an account",
+            'edit' => "Edit an account",
         ],
         'types' => [
             'disbursement' => "Disbursement",
         ],
         'questions' => [
-            'delete' => "Delete this category?",
+            'delete' => "Delete this account?",
         ],
         'messages' => [
-            'created' => "The category was successfully created.",
-            'updated' => "The category was successfully updated.",
-            'deleted' => "The category was successfully deleted.",
+            'created' => "The account was successfully created.",
+            'updated' => "The account was successfully updated.",
+            'deleted' => "The account was successfully deleted.",
         ],
     ],
     'bill' => [

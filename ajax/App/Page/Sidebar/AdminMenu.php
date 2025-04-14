@@ -47,8 +47,13 @@ class AdminMenu extends Component
 
         if($this->stash()->get('menu.current.guild') !== null)
         {
-            $this->node()->jq('#guild-menu a')->css('color', config('menu.color.active'));
-            foreach(config('menu.guild') as $menuId => $menuClass)
+            $this->node()->jq('#finance-menu a')->css('color', config('menu.color.active'));
+            foreach(config('menu.finance') as $menuId => $menuClass)
+            {
+                $this->node()->jq($menuId)->click($this->rq($menuClass)->home());
+            }
+            $this->node()->jq('#tontine-menu a')->css('color', config('menu.color.active'));
+            foreach(config('menu.tontine') as $menuId => $menuClass)
             {
                 $this->node()->jq($menuId)->click($this->rq($menuClass)->home());
             }

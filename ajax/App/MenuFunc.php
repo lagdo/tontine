@@ -10,7 +10,7 @@ use Ajax\App\Planning\Financial\Pool;
 use Ajax\App\Guild\Member\Member;
 use Ajax\FuncComponent;
 use Siak\Tontine\Service\Guild\GuildService;
-use Siak\Tontine\Service\Planning\RoundService;
+use Siak\Tontine\Service\Guild\RoundService;
 
 use function Jaxon\pm;
 use function trans;

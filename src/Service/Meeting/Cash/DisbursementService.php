@@ -78,7 +78,7 @@ class DisbursementService
      *
      * @return Collection
      */
-    public function getCategories(): Collection
+    public function getAccounts(): Collection
     {
         // It is important to call get() before pluck() so the name field is translated.
         $globalCategories = Category::disbursement()->get();
@@ -100,7 +100,7 @@ class DisbursementService
      *
      * @return Category|null
      */
-    public function getCategory(int $categoryId): ?Category
+    public function getAccount(int $categoryId): ?Category
     {
         return Category::disbursement()->find($categoryId);
     }
@@ -191,7 +191,7 @@ class DisbursementService
     {
         $member = $this->getMember($values['member']);
         $charge = $this->getCharge($values['charge']);
-        $category = $this->getCategory($values['category']);
+        $category = $this->getAccount($values['category']);
         if(!$category)
         {
             throw new MessageException(trans('meeting.category.errors.not_found'));
@@ -231,7 +231,7 @@ class DisbursementService
     {
         $member = $this->getMember($values['member']);
         $charge = $this->getCharge($values['charge']);
-        $category = $this->getCategory($values['category']);
+        $category = $this->getAccount($values['category']);
         if(!$category)
         {
             throw new MessageException(trans('meeting.category.errors.not_found'));

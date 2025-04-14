@@ -15,7 +15,9 @@ return [
         'meeting' => "Réunion",
         'report' => "Rapport",
         'members' => "Membres",
-        'categories' => "Catégories",
+        'finance' => "Finance",
+        'accounts' => "Caisses",
+        'charges' => "Charges",
         'calendar' => "Calendrier",
         'round' => "Tour",
         'session' => "Séance",
@@ -245,42 +247,44 @@ return [
     ],
     'fund' => [
         'titles' => [
+            'savings' => "&Eacute;pargne",
             'funds' => "Fonds d'épargne",
-            'add' => "Ajouter un fonds d'épargne",
-            'edit' => "Modifier un fonds d'épargne",
+            'add' => "Ajouter une caisse d'épargne",
+            'edit' => "Modifier une caisse d'épargne",
         ],
         'labels' => [
             'default' => "&Eacute;pargne",
             'fund' => "Fonds d'épargne",
+            'savings' => "&Eacute;pargne",
         ],
         'questions' => [
-            'delete' => "Supprimer ce fonds d'épargne ?",
+            'delete' => "Supprimer cette caisse d'épargne ?",
         ],
         'messages' => [
-            'created' => "Le fonds d'épargne a été ajouté.",
-            'updated' => "Le fonds d'épargne a été modifié.",
-            'deleted' => "Le fonds d'épargne a été supprimé.",
+            'created' => "La caisse d'épargne a été ajoutée.",
+            'updated' => "La caisse d'épargne a été modifiée.",
+            'deleted' => "La caisse d'épargne a été supprimée.",
         ],
         'errors' => [
-            'not_found' => "Impossible de trouver le fonds correspondant.",
+            'not_found' => "Impossible de trouver la caisse correspondant.",
         ],
     ],
-    'category' => [
+    'account' => [
         'titles' => [
-            'categories' => "Décaissements",
-            'add' => "Ajouter une catégorie",
-            'edit' => "Modifier une catégorie",
+            'disbursements' => "Décaissements",
+            'add' => "Ajouter une caisse",
+            'edit' => "Modifier une caisse",
         ],
         'types' => [
             'disbursement' => "Décaissement",
         ],
         'questions' => [
-            'delete' => "Supprimer cette catégorie ?",
+            'delete' => "Supprimer cette caisse ?",
         ],
         'messages' => [
-            'created' => "La catégorie a été ajoutée.",
-            'updated' => "La catégorie a été modifiée.",
-            'deleted' => "La catégorie a été supprimée.",
+            'created' => "La caisse a été ajoutée.",
+            'updated' => "La caisse a été modifiée.",
+            'deleted' => "La caisse a été supprimée.",
         ],
     ],
     'bill' => [

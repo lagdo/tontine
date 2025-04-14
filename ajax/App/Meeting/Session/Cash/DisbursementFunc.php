@@ -28,7 +28,7 @@ class DisbursementFunc extends FuncComponent
     {
         $title = trans('meeting.disbursement.titles.add');
         $content = $this->renderView('pages.meeting.disbursement.add', [
-            'categories' => $this->disbursementService->getCategories(),
+            'categories' => $this->disbursementService->getAccounts(),
             'members' => $this->disbursementService->getMembers(),
             'charges' => $this->disbursementService->getCharges(),
         ]);
@@ -65,7 +65,7 @@ class DisbursementFunc extends FuncComponent
         $content = $this->renderView('pages.meeting.disbursement.edit', [
             'disbursement' => $this->disbursementService
                 ->getSessionDisbursement($session, $disbursementId),
-            'categories' => $this->disbursementService->getCategories(),
+            'categories' => $this->disbursementService->getAccounts(),
             'members' => $this->disbursementService->getMembers(),
             'charges' => $this->disbursementService->getCharges(),
         ]);

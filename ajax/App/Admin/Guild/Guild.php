@@ -40,7 +40,7 @@ class Guild extends Component
      */
     protected function before()
     {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.guilds'));
+        $this->cl(SectionTitle::class)->show(trans('tontine.menus.admin'));
     }
 
     /**

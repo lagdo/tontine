@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
-use Siak\Tontine\Service\Planning\RoundService;
+use Siak\Tontine\Service\Guild\RoundService;
 use Siak\Tontine\Service\Planning\SessionService;
 use Siak\Tontine\Service\Report\Pdf\PdfPrinterService;
 use Siak\Tontine\Service\Report\ReportService;
