@@ -47,13 +47,16 @@ class GuestInvite extends Base
     ];
 
     /**
-     * The attributes that should be mutated to dates.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'expires_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'expires_at' => 'datetime',
+        ];
+    }
 
     public function host()
     {

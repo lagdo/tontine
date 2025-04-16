@@ -16,22 +16,22 @@
                       <thead>
                         <tr>
                           <th>{!! __('common.labels.title') !!}</th>
-                          <th>&nbsp;</th>
-                          <th>{!! __('tontine.pool_round.titles.start_session') !!}</th>
-                          <th>{!! __('tontine.pool_round.titles.end_session') !!}</th>
+                          <th>{!! __('common.labels.dates') !!}</th>
+                          <th>{!! __('common.labels.options') !!}</th>
                           <th class="table-menu"></th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach ($rounds as $round)
                         <tr>
-                          <td>{{ $round->title }}</td>
-                          <td>{{ $round->notes ?? '' }}</td>
+                          <td>{{ $round->title }}<br/>{{ $round->notes ?? '' }}</td>
                           <td>
                             {{ !$round->start_at ? '' : $round->start_at->translatedFormat(__('tontine.date.format')) }}<br/>
+                            {{ !$round->end_at ? '' : $round->end_at->translatedFormat(__('tontine.date.format')) }}
                           </td>
                           <td>
-                            {{ !$round->end_at ? '' : $round->end_at->translatedFormat(__('tontine.date.format')) }}
+                            <i class="fa fa-toggle-{{ $round->add_default_fund ? 'on' : 'off' }}"></i>
+                            {{ __('tontine.round.labels.savings') }}
                           </td>
                           <td class="table-item-menu">
 @include('tontine::parts.table.menu', [
@@ -43,7 +43,7 @@
   ],
   null,[
     'class' => 'btn-round-sessions',
-    'text' => __('tontine.pool.actions.sessions'),
+    'text' => __('tontine.actions.sessions'),
   ],
   null,[
     'class' => 'btn-round-edit',

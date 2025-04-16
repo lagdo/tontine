@@ -4,6 +4,7 @@
   $rqSubscription = rq(Ajax\App\Planning\Subscription\Subscription::class);
   $rqBeneficiary = rq(Ajax\App\Planning\Subscription\Beneficiary::class);
   $rqPlanning = rq(Ajax\App\Planning\Subscription\Planning::class);
+  $poolSessionIds = $pool->sessions->pluck('id', 'id');
 @endphp
             <div class="col-md-12">
               <div class="section-body">
@@ -49,7 +50,7 @@
                       </thead>
                       <tbody>
 @foreach ($sessions as $session)
-@if($poolService->active($pool, $session))
+@if($poolSessionIds->has($session->id))
                         <tr>
                           <td><b>{{ $session->title }}</b></td>
                           <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, false) }}</td>

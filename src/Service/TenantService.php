@@ -65,6 +65,7 @@ class TenantService
         $properties = $this->user->properties;
         $properties['latest']['guild'] = $guild->id;
         $this->user->saveProperties($properties);
+        $this->resetRound();
     }
 
     /**

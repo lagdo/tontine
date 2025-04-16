@@ -3,16 +3,13 @@
 namespace Siak\Tontine\Service\Meeting\Credit;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Debt;
-use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\PartialRefund;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\Meeting\FundService;
 use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
 use Siak\Tontine\Service\TenantService;
 
@@ -38,66 +35,16 @@ class PartialRefundService
     }
 
     /**
-     * @param Session $session The session
-     * @param Fund $fund
-     *
-     * @return Builder|Relation
-     */
-    private function getQuery(Session $session, Fund $fund): Builder|Relation
-    {
-        return $session->partial_refunds()
-            ->whereHas('debt', function(Builder|Relation $query) use($fund) {
-                $query->whereHas('loan', function(Builder|Relation $query) use($fund) {
-                    $query->where('fund_id', $fund->id);
-                });
-            });
-    }
-
-    /**
-     * Get the number of partial refunds.
+     * Get an unpaid debt.
      *
      * @param Session $session The session
-     * @param Fund $fund
+     * @param int $debtId
      *
-     * @return int
+     * @return Debt|null
      */
-    public function getPartialRefundCount(Session $session, Fund $fund): int
+    public function getUnpaidDebt(Session $session, int $debtId): ?Debt
     {
-        return $this->getQuery($session, $fund)->count();
-    }
-
-    /**
-     * Get the partial refunds.
-     *
-     * @param Session $session The session
-     * @param Fund $fund
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getPartialRefunds(Session $session, Fund $fund, int $page = 0): Collection
-    {
-        return $this->getQuery($session, $fund)
-            ->page($page, $this->tenantService->getLimit())
-            ->with(['debt.refund', 'debt.loan.member', 'debt.loan.session'])
-            ->orderBy('id')
-            ->get()
-            ->each(fn(PartialRefund $refund) => $refund->debtAmount =
-                $this->debtCalculator->getDebtDueAmount($refund->debt, $session, false))
-            ->sortBy('debt.loan.member.name', SORT_LOCALE_STRING)
-            ->values();
-    }
-
-    /**
-     * @param Session $session The session
-     * @param Fund $fund
-     * @param bool $with
-     *
-     * @return Builder|Relation
-     */
-    private function getUnpaidDebtsQuery(Session $session, Fund $fund, bool $with): Builder|Relation
-    {
-        return $this->getDebtsQuery($session, $fund, false, false)
+        return $this->getDebtsQuery($session, null, false, false)
             // A debt from a loan created in the current session can be refunded only
             // if it is an interest debt with fixed or unique interest.
             ->where(function(Builder $query) use($session) {
@@ -108,53 +55,10 @@ class PartialRefundService
                         ->whereHas('loan', fn(Builder $q) => $q->fixedInterest());
                 });
             })
-            ->when($with, function(Builder $query) use($session) {
-                $query->with([
-                    'partial_refund' => fn($q) => $q->where('session_id', $session->id),
-                ]);
-            });
-    }
-
-    /**
-     * Count the unpaid debts.
-     *
-     * @param Session $session The session
-     * @param Fund $fund
-     *
-     * @return int
-     */
-    public function getUnpaidDebtCount(Session $session, Fund $fund): int
-    {
-        return $this->getUnpaidDebtsQuery($session, $fund, false)->count();
-    }
-
-    /**
-     * Get the unpaid debts.
-     *
-     * @param Session $session The session
-     * @param Fund $fund
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getUnpaidDebts(Session $session, Fund $fund, int $page = 0): Collection
-    {
-        return $this->getUnpaidDebtsQuery($session, $fund, true)
-            ->page($page, $this->tenantService->getLimit())
-            ->get();
-    }
-
-    /**
-     * Get an unpaid debt.
-     *
-     * @param Session $session The session
-     * @param Fund $fund
-     *
-     * @return Debt|null
-     */
-    public function getUnpaidDebt(Session $session, Fund $fund, int $debtId): ?Debt
-    {
-        return $this->getUnpaidDebtsQuery($session, $fund, true)->find($debtId);
+            ->with([
+                'partial_refund' => fn($q) => $q->where('session_id', $session->id),
+            ])
+            ->find($debtId);
     }
 
     /**
@@ -207,27 +111,6 @@ class PartialRefundService
         // A partial refund cannot be updated or deleted if the debt is already refunded.
         return $session->opened && $refund->debt->refund === null &&
             $this->paymentService->isEditable($refund);
-    }
-
-    /**
-     * Find a refund.
-     *
-     * @param Session $session The session
-     * @param int $refundId
-     *
-     * @return PartialRefund
-     */
-    public function getPartialRefund(Session $session, int $refundId): PartialRefund
-    {
-        $refund = PartialRefund::where('session_id', $session->id)
-            ->with(['debt.refund'])
-            ->find($refundId);
-        if(!$refund)
-        {
-            throw new MessageException(trans('meeting.refund.errors.not_found'));
-        }
-
-        return $refund;
     }
 
     /**

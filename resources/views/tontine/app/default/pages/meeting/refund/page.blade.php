@@ -6,6 +6,7 @@
                       <table class="table table-bordered responsive">
                         <thead>
                           <tr>
+                            <th>{!! __('meeting.labels.member') !!}</th>
                             <th>{!! __('meeting.refund.titles.loan') !!}</th>
                             <th class="currency">{!! __('meeting.refund.titles.paid') !!}</th>
                             <th class="currency">{!! __('meeting.refund.titles.debt') !!}</th>

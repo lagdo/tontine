@@ -1,9 +1,9 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('poolService', 'Siak\Tontine\Service\Planning\PoolService')
 @php
   $rqSubscription = rq(Ajax\App\Planning\Subscription\Subscription::class);
   $rqBeneficiary = rq(Ajax\App\Planning\Subscription\Beneficiary::class);
   $rqPlanning = rq(Ajax\App\Planning\Subscription\Planning::class);
+  $poolSessionIds = $pool->sessions->pluck('id', 'id');
 @endphp
             <div class="col-md-12">
               <div class="section-body">
@@ -52,7 +52,7 @@
                       </thead>
                       <tbody>
 @foreach ($sessions as $session)
-@if ($poolService->disabled($pool, $session))
+@if (!$poolSessionIds->has($session->id))
                         <tr>
                           <td>{{ $session->title }}</td>
                           <td>&nbsp;</td>

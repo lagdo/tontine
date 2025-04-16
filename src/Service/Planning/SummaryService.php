@@ -72,16 +72,18 @@ class SummaryService
             // Pick the subscriptions ids, and fill with 0's to the max available.
             $remitmentCount = !$pool->deposit_fixed ? 1 :
                 $figures->expected[$session->id]->remitment->count;
-            $session->beneficiaries = $session->payables->map(function($payable) {
-                return $payable->subscription_id;
-            })->pad($remitmentCount, 0);
+            $session->beneficiaries = $session->payables
+                ->map(fn($payable) => $payable->subscription_id)
+                ->pad($remitmentCount, 0);
         });
 
         // Separate subscriptions that already have a beneficiary assigned from the others.
-        [$beneficiaries, $subscriptions] = $subscriptions->partition(function($subscription) use($pool) {
-            $session = $subscription->payable ? $subscription->payable->session : null;
-            return $session !== null && $this->poolService->enabled($pool, $session);
-        });
+        $poolSessionIds = $pool->sessions->pluck('id', 'id');
+        [$beneficiaries, $subscriptions] = $subscriptions
+            ->partition(function($subscription) use($poolSessionIds) {
+                $session = $subscription->payable?->session ?? null;
+                return $session !== null && $poolSessionIds->has($session->id);
+            });
         $beneficiaries = $beneficiaries->pluck('member.name', 'id');
         // Do not show the list of subscriptions for pools with auctions
         if($pool->remit_auction)

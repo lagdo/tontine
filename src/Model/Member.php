@@ -35,14 +35,17 @@ class Member extends Base
     ];
 
     /**
-     * The attributes that should be mutated to dates.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'registered_at' => 'datetime',
-        'birthday' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'registered_at' => 'datetime',
+            'birthday' => 'datetime',
+        ];
+    }
 
     /**
      * Create a new factory instance for the model.

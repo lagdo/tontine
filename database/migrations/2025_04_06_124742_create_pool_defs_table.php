@@ -44,6 +44,20 @@ SQL;
             $table->foreign('end_sid')->references('id')->on('sessions');
         });
 
+        // The pool updates queries require all rounds to have at least one session.
+        DB::table('rounds')->whereNotExists(function ($query) {
+            $query->select(DB::raw(1))->from('sessions')
+                ->whereColumn('sessions.round_id', 'rounds.id');
+        })->get()->each(function($round) {
+            DB::table('sessions')->insert([
+                'title' => 'First session',
+                'status' => 0,
+                'start_at' => '2022-01-01',
+                'end_at' => '2022-01-01',
+                'round_id' => $round->id,
+            ]);
+        });
+
         $updateQuery = <<<SQL
 update pools p set def_id = id,
     end_sid=(select se.id from sessions se
@@ -68,10 +82,20 @@ SQL;
 
 $sql = <<<SQL
 create view v_pools as
-    select p.id as pool_id, ss.start_at, se.start_at as end_at
+    select p.id as pool_id, ss.start_at, se.start_at as end_at,
+        (select count(s.id) from sessions s
+            where s.start_at between ss.start_at and se.start_at
+            and s.round_id in (select id from rounds r where r.guild_id=pd.guild_id))
+            as sessions_count,
+        (select count(psd.session_id)
+            from pool_session_disabled psd
+            inner join sessions pss on pss.id=psd.session_id
+            where psd.pool_id=p.id and pss.start_at between ss.start_at and se.start_at)
+            as disabled_sessions_count
         from pools p
-        inner join sessions ss on p.start_sid=ss.id
-        inner join sessions se on p.end_sid=se.id
+        inner join pool_defs pd on pd.id=p.def_id
+        inner join sessions ss on ss.id=p.start_sid
+        inner join sessions se on se.id=p.end_sid
 SQL;
         DB::statement($sql);
 
@@ -89,23 +113,14 @@ create view v_pool_session as
         inner join sessions ss on ss.id=p.start_sid
         inner join sessions s on s.start_at between ss.start_at and se.start_at
             and s.round_id in (select id from rounds r where r.guild_id=pd.guild_id)
+            and not exists (select * from pool_session_disabled psd
+                where psd.pool_id=p.id and psd.session_id=s.id)
 SQL;
         DB::statement($sql);
 
+        // This view is no more used.
         $sql = <<<SQL
 drop view if exists v_pool_counters
-SQL;
-        DB::statement($sql);
-
-        // Create a view for pools with their numbers of sessions and disabled sessions.
-        $sql = <<<SQL
-create view v_pool_counters as
-    select p.id, pd.title, pd.amount,
-        (select count(*) from v_pool_session vp where vp.pool_id=p.id) as sessions,
-        (select count(*) from pool_session_disabled psd where psd.pool_id=p.id
-            and psd.session_id in (select vps.session_id from v_pool_session vps
-                where psd.pool_id=vps.pool_id)) as disabled_sessions
-    from pools p inner join pool_defs pd on p.def_id=pd.id
 SQL;
         DB::statement($sql);
 
@@ -183,11 +198,6 @@ create view v_pools as select pp.id, rp.guild_id,
             else (select max(start_at) from sessions sd where sd.round_id = pp.round_id)
     end as end_at
 from pools pp inner join rounds rp on pp.round_id = rp.id;
-SQL;
-        DB::statement($sql);
-
-        $sql = <<<SQL
-drop view if exists v_pool_counters
 SQL;
         DB::statement($sql);
 

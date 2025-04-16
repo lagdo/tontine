@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\DataSyncService;
 use Siak\Tontine\Service\TenantService;
 use stdClass;
 
@@ -53,6 +54,8 @@ class SessionService
             /** @var Session */
             $session = $round->sessions()->create($values);
             $this->dataSyncService->onNewSession($session);
+            // Update the default savings fund
+            $this->dataSyncService->saveDefaultFund($round);
         });
         return true;
     }
@@ -78,6 +81,8 @@ class SessionService
             {
                 $this->dataSyncService->onNewSession($session);
             }
+            // Update the default savings fund
+            $this->dataSyncService->saveDefaultFund($round);
         });
         return true;
     }
@@ -131,7 +136,23 @@ class SessionService
     {
         DB::transaction(function() use($session) {
             $this->dataSyncService->onDeleteSession($session);
+            $round = $session->round;
+            $sessionCount = $round->sessions()->count();
+
+            $fundDef = $round->guild->default_fund;
+            $defaultFund = $fundDef->funds()->where('round_id', $round->id)->first();
+            // Delete the default fund if it is related to the session
+            if($defaultFund->start_sid === $session->id || $defaultFund->end_sid === $session->id)
+            {
+                $defaultFund->delete();
+            }
+
             $session->delete();
+            // Update the default savings fund, only if this wasn't the last session in the round.
+            if($sessionCount > 1)
+            {
+                $this->dataSyncService->saveDefaultFund($round);
+            }
         });
     }
 

@@ -21,9 +21,9 @@
                           <td class="currency">@if ($charge->total_count > 0){{
                             $locale->formatMoney($charge->total_amount) }}<br/>{{
                             $charge->total_count }}@else &nbsp; @endif</td>
-                          <td class="currency">@if ($charge->disbursement !== null){{
-                            $locale->formatMoney($charge->disbursement->total_amount) }}<br/>{{
-                            $charge->disbursement->total_count }}@else &nbsp; @endif</td>
+                          <td class="currency">@if ($charge->outflow !== null){{
+                            $locale->formatMoney($charge->outflow->total_amount) }}<br/>{{
+                            $charge->outflow->total_count }}@else &nbsp; @endif</td>
                         </tr>
 @endforeach
                       </tbody>

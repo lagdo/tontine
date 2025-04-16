@@ -4,8 +4,8 @@
 
   $rqDeposit = rq(Ajax\App\Meeting\Summary\Pool\Deposit::class);
   $rqRemitment = rq(Ajax\App\Meeting\Summary\Pool\Remitment::class);
+  $rqProfit = rq(Ajax\App\Meeting\Summary\Saving\Profit::class);
   $rqSaving = rq(Ajax\App\Meeting\Summary\Saving\Saving::class);
-  $rqClosing = rq(Ajax\App\Meeting\Summary\Saving\Closing::class);
   $rqLoan = rq(Ajax\App\Meeting\Summary\Credit\Loan::class);
   $rqTotalRefund = rq(Ajax\App\Meeting\Summary\Refund\Total\Refund::class);
   $rqPartialRefund = rq(Ajax\App\Meeting\Summary\Refund\Partial\Refund::class);
@@ -48,7 +48,7 @@
                       <a class="nav-link" id="summary-tab-refunds" data-target="#summary-refunds" role="link" tabindex="0">{!! __('meeting.actions.refunds') !!}</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                      <a class="nav-link" id="summary-tab-cash" data-target="#summary-cash" role="link" tabindex="0">{!! __('meeting.actions.cash') !!}</a>
+                      <a class="nav-link" id="summary-tab-outflows" data-target="#summary-outflows" role="link" tabindex="0">{!! __('meeting.actions.outflows') !!}</a>
                     </li>
                   </nav>
                 </div>
@@ -125,8 +125,8 @@
                         <button data-target="content-summary-savings" type="button" class="btn btn-primary">
                           {!! __('meeting.titles.savings') !!}
                         </button>
-                        <button data-target="content-summary-closings" type="button" class="btn btn-outline-primary">
-                          {!! __('meeting.titles.closings') !!}
+                        <button data-target="content-summary-loans" type="button" class="btn btn-outline-primary">
+                          {!! __('meeting.titles.loans') !!}
                         </button>
                       </div>
                     </div>
@@ -138,20 +138,9 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-6 col-sm-12 sm-screen" id="content-summary-closings">
+                    <div class="col-md-6 col-sm-12 sm-screen" id="content-summary-loans">
                       <div class="card shadow mb-2">
-                        <div class="card-body" @jxnBind($rqClosing)>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="tab-pane fade" id="summary-credits" role="tabpanel" aria-labelledby="summary-tab-credits">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div class="card shadow mb-2">
-                        <div class="card-body" @jxnBind($rqLoan) id="content-summary-loans">
+                        <div class="card-body" @jxnBind($rqLoan)>
                         </div>
                       </div>
                     </div>
@@ -187,7 +176,18 @@
                   </div>
                 </div>
 
-                <div class="tab-pane fade" id="summary-cash" role="tabpanel" aria-labelledby="summary-tab-cash">
+                <div class="tab-pane fade" id="summary-profits" role="tabpanel" aria-labelledby="summary-tab-profits">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="card shadow mb-2">
+                        <div class="card-body" @jxnBind($rqProfit) id="content-summary-profits">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tab-pane fade" id="summary-outflows" role="tabpanel" aria-labelledby="summary-tab-outflows">
                   <div class="row">
                     <div class="col-md-12">
                       <div class="card shadow mb-2">

@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Session;
 
 use Siak\Tontine\Model\Fund;
-use Siak\Tontine\Service\Guild\FundService;
+use Siak\Tontine\Service\Meeting\FundService;
 
 trait FundTrait
 {
@@ -26,8 +26,10 @@ trait FundTrait
             $this->bag($this->bagId)->set('fund.id', $this->target()->args()[0]);
         }
 
+        $session = $this->stash()->get('meeting.session');
         $fundId = $this->bag($this->bagId)->get('fund.id', 0);
-        if(($fund = $this->fundService->getFund($fundId, true, true)) === null)
+        $fund = $this->fundService->getSessionFund($session, $fundId);
+        if($fund === null)
         {
             $this->bag($this->bagId)->set('fund.id', 0);
         }

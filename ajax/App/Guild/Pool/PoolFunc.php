@@ -73,10 +73,19 @@ class PoolFunc extends FuncComponent
     {
         $properties = $this->bag('pool')->get('add', []);
         $properties['deposit']['fixed'] = $fixed;
-        $this->bag('pool')->set('add', $properties);
+        if($fixed)
+        {
+            $this->bag('pool')->set('add', $properties);
+            $this->showDepositLendable();
+            return;
+        }
 
         // Pools with libre deposits are not lendable.
-        $fixed ? $this->showDepositLendable() : $this->saveDepositLendable(false);
+        $properties['deposit']['lendable'] = false;
+        $properties['remit']['planned'] = true;
+        $properties['remit']['auction'] = false;
+        $this->bag('pool')->set('add', $properties);
+        $this->add();
     }
 
     public function showDepositLendable()

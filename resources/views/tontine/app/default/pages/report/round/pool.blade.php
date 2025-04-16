@@ -1,5 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('poolService', 'Siak\Tontine\Service\Planning\PoolService')
+@php
+  $poolSessionIds = $pool->sessions->pluck('id', 'id');
+@endphp
                 <table class="table table-bordered responsive">
                   <thead>
                     <tr>
@@ -14,7 +16,7 @@
                   </thead>
                   <tbody>
 @foreach ($sessions as $session)
-@if($poolService->active($pool, $session))
+@if($poolSessionIds->has($session->id))
 @php
   $options = [
     'locale' => $locale,

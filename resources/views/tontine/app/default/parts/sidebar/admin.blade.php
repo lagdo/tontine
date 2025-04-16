@@ -15,11 +15,11 @@
               <li><a class="nav-link" id="finance-menu-charges" role="link" tabindex="0">
                 <i class="fa fa-fw fa-money-check"></i> <span>{{ __('tontine.menus.charges') }}</span>
               </a></li>
-              <li><a class="nav-link" id="finance-menu-pools" role="link" tabindex="0">
-                <i class="fa fa-fw fa-coins"></i> <span>{{ __('tontine.menus.pools') }}</span>
-              </a></li>
               <li><a class="nav-link" id="finance-menu-accounts" role="link" tabindex="0">
                 <i class="fa fa-fw fa-wallet"></i> <span>{{ __('tontine.menus.accounts') }}</span>
+              </a></li>
+              <li><a class="nav-link" id="finance-menu-pools" role="link" tabindex="0">
+                <i class="fa fa-fw fa-coins"></i> <span>{{ __('tontine.menus.pools') }}</span>
               </a></li>
             </ul>
             <ul class="sidebar-menu" id="tontine-menu">

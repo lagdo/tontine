@@ -39,15 +39,6 @@ class Guild extends Base
     ];
 
     /**
-     * The relationships that should always be loaded.
-     *
-     * @var array
-     */
-    protected $with = [
-        'default_fund',
-    ];
-
-    /**
      * @return Attribute
      */
     protected function locale(): Attribute
@@ -104,8 +95,7 @@ class Guild extends Base
     public function default_fund()
     {
         return $this->hasOne(FundDef::class)
-            ->withoutGlobalScope('user')
-            ->ofMany(['id' => 'max'], fn(Builder $query) => $query->where('title', ''));
+            ->ofMany(['id' => 'max'], fn(Builder $query) => $query->auto());
     }
 
     public function charges()

@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $in = ['auctions', 'charges', 'deposits', 'savings', 'refunds'];
-  $out = ['remitments', 'disbursements', 'loans'];
+  $out = ['remitments', 'outflows', 'loans'];
   $total = array_reduce(Arr::only($balances, $in), fn($item, $sum) => $item + $sum, 0)
     - array_reduce(Arr::only($balances, $out), fn($item, $sum) => $item + $sum, 0);
 @endphp

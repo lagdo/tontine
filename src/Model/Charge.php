@@ -5,7 +5,6 @@ namespace Siak\Tontine\Model;
 use Database\Factories\ChargeFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Siak\Tontine\Model\Traits\HasCurrency;
 
@@ -13,7 +12,6 @@ use function intval;
 
 class Charge extends Base
 {
-    use HasFactory;
     use HasCurrency;
 
     /**

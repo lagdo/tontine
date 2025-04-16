@@ -159,7 +159,7 @@ class Loan extends Base
 
     public function fund()
     {
-        return $this->belongsTo(Fund::class)->withoutGlobalScope('user');
+        return $this->belongsTo(Fund::class);
     }
 
     public function debts()

@@ -7,8 +7,6 @@ use Illuminate\Support\Collection;
 use Siak\Tontine\Model\FundDef;
 use Siak\Tontine\Service\TenantService;
 
-use function trans;
-
 class FundService
 {
     /**
@@ -16,40 +14,6 @@ class FundService
      */
     public function __construct(protected TenantService $tenantService)
     {}
-
-    /**
-     * Get the default fund.
-     *
-     * @return FundDef
-     */
-    public function getDefaultFund(): FundDef
-    {
-        $defaultFund = $this->tenantService->guild()->default_fund;
-        $defaultFund->title = trans('tontine.fund.labels.default');
-        return $defaultFund;
-    }
-
-    /**
-     * Get all active funds, included the default one.
-     *
-     * @return Collection
-     */
-    public function getActiveFunds(): Collection
-    {
-        return $this->tenantService->guild()->funds()->active()
-            ->get()
-            ->prepend($this->getDefaultFund());
-    }
-
-    /**
-     * Get a list of funds for the dropdown select component.
-     *
-     * @return Collection
-     */
-    public function getFundList(): Collection
-    {
-        return $this->getActiveFunds()->pluck('title', 'id');
-    }
 
     /**
      * Get a paginated list of funds.
@@ -60,7 +24,7 @@ class FundService
      */
     public function getFunds(int $page = 0): Collection
     {
-        return $this->tenantService->guild()->funds()
+        return $this->tenantService->guild()->funds()->user()
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -72,7 +36,7 @@ class FundService
      */
     public function getFundCount(): int
     {
-        return $this->tenantService->guild()->funds()->count();
+        return $this->tenantService->guild()->funds()->user()->count();
     }
 
     /**
@@ -86,28 +50,16 @@ class FundService
      */
     public function getFund(int $fundId, bool $onlyActive = false, bool $withDefault = false): ?FundDef
     {
-        if($withDefault && ($fundId === 0 ||
-            $fundId === $this->tenantService->guild()->default_fund->id))
+        if($withDefault && $fundId === 0)
         {
-            return $this->getDefaultFund();
+            return $this->tenantService->guild()->default_fund;
         }
 
         $fund = $this->tenantService->guild()->funds()
             ->when($onlyActive, fn(Builder $query) => $query->active())
             ->withCount('funds')
             ->find($fundId);
-        return $fund ?? ($withDefault ? $this->getDefaultFund() : null);
-    }
-
-    /**
-     * @param FundDef $fund
-     *
-     * @return string
-     */
-    public function getFundTitle(FundDef $fund): string
-    {
-        return $fund->id === $this->tenantService->guild()->default_fund->id ?
-            $this->getDefaultFund()->title : $fund->title;
+        return $fund ?? ($withDefault ? $this->tenantService->guild()->default_fund : null);
     }
 
     /**
@@ -119,6 +71,7 @@ class FundService
      */
     public function createFund(array $values): bool
     {
+        $values['type'] = FundDef::TYPE_USER;
         $this->tenantService->guild()->funds()->create($values);
 
         return true;
@@ -134,6 +87,8 @@ class FundService
      */
     public function updateFund(FundDef $fund, array $values): bool
     {
+        $values['type'] = FundDef::TYPE_USER;
+
         return $fund->update($values);
     }
 

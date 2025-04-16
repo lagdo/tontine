@@ -2,6 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -13,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('fund_defs', function (Blueprint $table) {
             $table->id();
+            $table->smallInteger('type')->default(0);
             $table->string('title', 100);
             $table->string('notes')->nullable();
             $table->boolean('active')->default(true);
@@ -26,6 +29,12 @@ insert into fund_defs(id,title,notes,active,guild_id)
     select id,title,notes,active,guild_id from funds
 SQL;
         DB::statement($insertQuery);
+
+        $updateQuery = <<<SQL
+update fund_defs set type=1 where title<>''
+SQL;
+        DB::statement($updateQuery);
+
         if(DB::getDriverName() === 'pgsql')
         {
             DB::statement("select setval('fund_defs_id_seq', (select MAX(id) FROM fund_defs))");
@@ -43,6 +52,10 @@ SQL;
             $table->foreign('end_sid')->references('id')->on('sessions');
             $table->unsignedBigInteger('interest_sid')->nullable();
             $table->foreign('interest_sid')->references('id')->on('sessions');
+            $table->unsignedBigInteger('pool_id')->nullable();
+            $table->foreign('pool_id')->references('id')->on('pools');
+            // Not more than one fund for a given pool
+            $table->unique(['pool_id']);
         });
 
         // Fill the funds table
@@ -88,22 +101,13 @@ drop view if exists v_funds
 SQL;
         DB::statement($sql);
 
-$sql = <<<SQL
-create view v_funds as
-    select p.id as fund_id, ss.start_at, se.start_at as end_at
-        from funds p
-        inner join sessions ss on p.start_sid=ss.id
-        inner join sessions se on p.end_sid=se.id
-SQL;
-        DB::statement($sql);
-
         // Copy closings data
         DB::table('closings')->get()->each(function($closing) {
             $query = DB::table('funds')->where('id', $closing->fund_id);
             if($closing->type === 'r')
             {
                 $query->update([
-                    'options' => $closing->options,
+                    'options' => $closing->options ?? [],
                     'end_sid' => $closing->session_id,
                     'interest_sid' => $closing->session_id,
                 ]);
@@ -124,9 +128,51 @@ SQL;
             $table->dropColumn('active');
             $table->dropColumn('guild_id');
         });
-
         // Delete the obsolete entries
         DB::table('funds')->whereNull('round_id')->delete();
+
+        Schema::table('funds', function(Blueprint $table) {
+            if(DB::connection()->getDriverName() !== 'mysql')
+            {
+                $table->json('options')->default('{}')->change();
+            }
+            $table->json('options')->nullable(false)->change();
+            $table->unsignedBigInteger('round_id')->nullable(false)->change();
+            $table->unsignedBigInteger('def_id')->nullable(false)->change();
+            $table->unsignedBigInteger('start_sid')->nullable(false)->change();
+            $table->unsignedBigInteger('end_sid')->nullable(false)->change();
+            $table->unsignedBigInteger('interest_sid')->nullable(false)->change();
+        });
+
+$sql = <<<SQL
+create view v_funds as
+    select f.id as fund_id, ss.start_at, se.start_at as end_at, si.start_at as interest_at,
+        (select count(s.id) from sessions s
+            where s.start_at between ss.start_at and se.start_at
+            and s.round_id in (select id from rounds r where r.guild_id=fd.guild_id))
+            as sessions_count
+        from funds f
+        inner join fund_defs fd on f.def_id=fd.id
+        inner join sessions ss on f.start_sid=ss.id
+        inner join sessions se on f.end_sid=se.id
+        inner join sessions si on f.interest_sid=si.id
+SQL;
+        DB::statement($sql);
+
+$sql = <<<SQL
+create view v_fund_session as
+    select distinct f.id as fund_id, s.id as session_id
+        from funds f
+        inner join fund_defs fd on fd.id=f.def_id
+        inner join sessions se on se.id=f.end_sid
+        inner join sessions ss on ss.id=f.start_sid
+        inner join sessions s on s.start_at between ss.start_at and se.start_at
+            and s.round_id in (select id from rounds r where r.guild_id=fd.guild_id)
+SQL;
+        DB::statement($sql);
+
+        // Update the default fund properties.
+        Artisan::call('round:update-funds');
     }
 
     /**
@@ -134,6 +180,14 @@ SQL;
      */
     public function down(): void
     {
+        // Delete the pool related funds
+        DB::table('funds')->whereNotNull('pool_id')->delete();
+
+        $sql = <<<SQL
+drop view if exists v_fund_session
+SQL;
+        DB::statement($sql);
+
         Schema::create('closings', function (Blueprint $table) {
             $table->id();
             $table->json('options');
@@ -169,12 +223,17 @@ SQL;
             $table->boolean('active')->default(true);
             $table->unsignedBigInteger('guild_id')->nullable();
             $table->foreign('guild_id')->references('id')->on('guilds');
+            // These columns will be deleted at the end.
+            $table->unsignedBigInteger('round_id')->nullable()->change();
+            $table->unsignedBigInteger('start_sid')->nullable()->change();
+            $table->unsignedBigInteger('end_sid')->nullable()->change();
+            $table->unsignedBigInteger('interest_sid')->nullable()->change();
         });
 
         // Fill the funds table
         $insertQuery = <<<SQL
-insert into funds(title,notes,active,guild_id,def_id)
-    select title,notes,active,guild_id,id from fund_defs
+insert into funds(title,notes,options,active,def_id,guild_id)
+    select title,notes,'{}',active,id,guild_id from fund_defs fd
 SQL;
         DB::statement($insertQuery);
 
@@ -210,12 +269,14 @@ SQL;
 
         Schema::table('funds', function(Blueprint $table) {
             $table->unsignedBigInteger('guild_id')->nullable(false)->change();
+            $table->dropColumn('type');
             $table->dropColumn('options');
             $table->dropColumn('round_id');
             $table->dropColumn('def_id');
             $table->dropColumn('start_sid');
             $table->dropColumn('end_sid');
             $table->dropColumn('interest_sid');
+            $table->dropColumn('pool_id');
         });
 
         Schema::dropIfExists('fund_defs');

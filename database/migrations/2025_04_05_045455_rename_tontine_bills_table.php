@@ -38,6 +38,7 @@ return new class extends Migration
             $table->unique(['charge_id', 'member_id']);
         });
 
+        // The tontine_bills table is dropped in a next migration.
         $this->copyData('tontine_bills', 'oneoff_bills');
     }
 

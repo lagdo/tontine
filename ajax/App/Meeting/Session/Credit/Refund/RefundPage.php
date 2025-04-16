@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Credit\Refund;
 
 use Ajax\App\Meeting\PageComponent;
-use Ajax\App\Meeting\Session\FundTrait;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Stringable;
 

@@ -13,6 +13,13 @@
                 {!! $html->text('notes', $round->notes)->class('form-control') !!}
               </div>
             </div>
+            <div class="form-group row">
+              {!! $html->label('&nbsp;')->class('col-sm-3 col-form-label') !!}
+              <div class="col-sm-8">
+                {!! $html->checkbox('savings', $round->add_default_fund, '1') !!}
+                {!! $html->label(__('tontine.round.labels.savings'), 'savings')->class('form-check-label') !!}
+              </div>
+            </div>
           </div>
         </form>
       </div>

@@ -1,5 +1,4 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('fundService', 'Siak\Tontine\Service\Guild\FundService')
                   <div class="row">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.loans') }}</div>
@@ -20,7 +19,7 @@
 @foreach ($loans as $loan)
                         <tr>
                           <td>{{ $loan->member->name }}</td>
-                          <td>{!! $fundService->getFundTitle($loan->fund) !!}</td>
+                          <td>{!! $loan->fund->title !!}</td>
                           <td class="currency">{{ $locale->formatMoney($loan->principal) }}</td>
                           <td>
                             {{ __('meeting.loan.interest.i' . $loan->interest_type) }}: {{ $loan->fixed_interest ?

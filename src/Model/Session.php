@@ -50,14 +50,17 @@ class Session extends Base
     ];
 
     /**
-     * The attributes that should be mutated to dates.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'start_at' => 'datetime',
-        'end_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'start_at' => 'datetime',
+            'end_at' => 'datetime',
+        ];
+    }
 
     public function notFirst(): Attribute
     {
@@ -170,14 +173,19 @@ class Session extends Base
         return $this->hasMany(Saving::class);
     }
 
-    public function closings()
+    public function outflows()
     {
-        return $this->hasMany(Closing::class);
+        return $this->hasMany(Outflow::class);
     }
 
-    public function disbursements()
+    public function funds()
     {
-        return $this->hasMany(Disbursement::class);
+        return $this->belongsToMany(Fund::class, 'v_fund_session');
+    }
+
+    public function pools()
+    {
+        return $this->belongsToMany(Pool::class, 'v_pool_session');
     }
 
     public function disabled_pools()
@@ -188,30 +196,6 @@ class Session extends Base
     public function absents()
     {
         return $this->belongsToMany(Member::class, 'absences');
-    }
-
-    /**
-     * @param  Builder  $query
-     * @param  Pool $pool
-     *
-     * @return Builder
-     */
-    public function scopeEnabled(Builder $query, Pool $pool): Builder
-    {
-        return $query->whereDoesntHave('disabled_pools',
-            fn($q) => $q->where('pools.id', $pool->id));
-    }
-
-    /**
-     * @param  Builder  $query
-     * @param  Pool $pool
-     *
-     * @return Builder
-     */
-    public function scopeDisabled(Builder $query, Pool $pool): Builder
-    {
-        return $query->whereHas('disabled_pools',
-            fn($q) => $q->where('pools.id', $pool->id));
     }
 
     /**
@@ -232,18 +216,5 @@ class Session extends Base
     public function scopeOpened(Builder $query): Builder
     {
         return $query->where('status', '=', self::STATUS_OPENED);
-    }
-
-    /**
-     * @param  Builder  $query
-     * @param  Pool $pool
-     *
-     * @return Builder
-     */
-    public function scopeOfPool(Builder $query, Pool $pool): Builder
-    {
-        return $query
-            ->where('start_at', '<=', $pool->end_at)
-            ->where('start_at', '>=', $pool->start_at);
     }
 }

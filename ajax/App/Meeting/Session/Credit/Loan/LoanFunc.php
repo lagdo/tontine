@@ -3,9 +3,9 @@
 namespace Ajax\App\Meeting\Session\Credit\Loan;
 
 use Ajax\App\Meeting\FuncComponent;
-use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
+use Siak\Tontine\Service\Meeting\FundService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 
 use function Jaxon\pm;
@@ -36,7 +36,7 @@ class LoanFunc extends FuncComponent
         $content = $this->renderView('pages.meeting.loan.add', [
             'amountAvailable' => $this->loanService->getAmountAvailableValue($session),
             'interestTypes' => $this->loanService->getInterestTypes(),
-            'funds' => $this->fundService->getFundList(),
+            'funds' => $this->fundService->getSessionFundList($session, false),
             'members' => $this->memberService->getMemberList(),
         ]);
         $buttons = [[
@@ -63,13 +63,13 @@ class LoanFunc extends FuncComponent
             $this->alert()->warning(trans('tontine.member.errors.not_found'));
             return;
         }
-        if(!($fund = $this->fundService->getFund($values['fund'], true, true)))
+        $session = $this->stash()->get('meeting.session');
+        if(!($fund = $this->fundService->getSessionFund($session, $values['fund'], false)))
         {
             $this->alert()->warning(trans('tontine.fund.errors.not_found'));
             return;
         }
 
-        $session = $this->stash()->get('meeting.session');
         $this->loanService->createLoan($session, $member, $fund, $values);
 
         $this->modal()->hide();
@@ -97,7 +97,7 @@ class LoanFunc extends FuncComponent
         $content = $this->renderView('pages.meeting.loan.edit', [
             'loan' => $loan,
             'interestTypes' => $this->loanService->getInterestTypes(),
-            'funds' => $this->fundService->getFundList(),
+            'funds' => $this->fundService->getSessionFundList($session, false),
             'members' => $this->memberService->getMemberList(),
         ]);
         $buttons = [[
@@ -138,7 +138,7 @@ class LoanFunc extends FuncComponent
             $this->alert()->warning(trans('tontine.member.errors.not_found'));
             return;
         }
-        if(!($fund = $this->fundService->getFund($values['fund'], true, true)))
+        if(!($fund = $this->fundService->getSessionFund($session, $values['fund'], false)))
         {
             $this->alert()->warning(trans('tontine.fund.errors.not_found'));
             return;

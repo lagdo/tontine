@@ -50,14 +50,17 @@ class Bill extends Base
     ];
 
     /**
-     * The attributes that should be mutated to dates.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'issued_at' => 'datetime',
-        'deadline' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'issued_at' => 'datetime',
+            'deadline' => 'datetime',
+        ];
+    }
 
     /**
      * @return Attribute

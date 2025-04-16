@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Log;
 use Siak\Tontine\Model\Auction;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Debt;
-use Siak\Tontine\Model\Disbursement;
+use Siak\Tontine\Model\Outflow;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\PartialRefund;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Guild\FundService;
+use Siak\Tontine\Service\Meeting\FundService;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Siak\Tontine\Service\Planning\PoolService;
 
@@ -56,24 +56,22 @@ class BalanceCalculator
             ->join('receivables', 'deposits.receivable_id', '=', 'receivables.id')
             ->join('subscriptions', 'receivables.subscription_id', '=', 'subscriptions.id')
             ->when($withPoolTable, function(Builder $query) {
-                $query->join('pools', 'subscriptions.pool_id', '=', 'pools.id');
+                $query->join('pools', 'subscriptions.pool_id', '=', 'pools.id')
+                    ->join(DB::raw('pool_defs as pd'), 'pools.def_id', '=', 'pd.id');
             });
     }
 
     /**
-     * @param bool $withPoolTable
-     *
      * @return Builder
      */
-    private function getRemitmentQuery(bool $withPoolTable): Builder
+    private function getRemitmentQuery(): Builder
     {
         return DB::table('remitments')
             ->join('payables', 'remitments.payable_id', '=', 'payables.id')
             ->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
-            ->when($withPoolTable, function(Builder $query) {
-                $query->join('pools', 'subscriptions.pool_id', '=', 'pools.id')
-                    ->join('v_pool_counters', 'v_pool_counters.id', '=', 'pools.id');
-            });
+            ->join('pools', 'subscriptions.pool_id', '=', 'pools.id')
+            ->join(DB::raw('v_pools as vp'), 'vp.pool_id', '=', 'pools.id')
+            ->join(DB::raw('pool_defs as pd'), 'pools.def_id', '=', 'pd.id');
     }
 
     /**
@@ -113,7 +111,7 @@ class BalanceCalculator
      */
     private function getRemitmentAmountSqlValue(): string
     {
-        return 'v_pool_counters.amount * (v_pool_counters.sessions - v_pool_counters.disabled_sessions)';
+        return 'pd.amount * (vp.sessions_count - vp.disabled_sessions_count)';
     }
 
     /**
@@ -130,7 +128,7 @@ class BalanceCalculator
             return $this->getPoolDepositAmount($pool, $session);
         }
 
-        return $this->getRemitmentQuery(true)
+        return $this->getRemitmentQuery()
             ->where('payables.session_id', $session->id)
             ->where('subscriptions.pool_id', $pool->id)
             ->sum(DB::raw($this->getRemitmentAmountSqlValue()));
@@ -147,9 +145,9 @@ class BalanceCalculator
         return $this->getDepositQuery(true)
             ->whereIn('deposits.session_id', $sessionIds)
             ->when($lendable, function(Builder $query) {
-                $query->where('pools.properties->deposit->lendable', true);
+                $query->where('pd.properties->deposit->lendable', true);
             })
-            ->sum(DB::raw('deposits.amount + pools.amount'));
+            ->sum(DB::raw('deposits.amount + pd.amount'));
     }
 
     /**
@@ -163,11 +161,11 @@ class BalanceCalculator
         return
             // Remitment sum for pools with fixed deposits.
             // Each value is the pool amount multiply by the number od sessions.
-            $this->getRemitmentQuery(true)
+            $this->getRemitmentQuery()
                 ->whereIn('payables.session_id', $sessionIds)
-                ->where('pools.properties->deposit->fixed', true)
+                ->where('pd.properties->deposit->fixed', true)
                 ->when($lendable, function(Builder $query) {
-                    $query->where('pools.properties->deposit->lendable', true);
+                    $query->where('pd.properties->deposit->lendable', true);
                 })
                 ->sum(DB::raw($this->getRemitmentAmountSqlValue()))
             // Remitment sum for pools with libre deposits.
@@ -181,9 +179,9 @@ class BalanceCalculator
                         ->whereColumn('p.session_id', 'deposits.session_id')
                         ->whereColumn('s.pool_id', 'pools.id');
                 })
-                ->where('pools.properties->deposit->fixed', false)
+                ->where('pd.properties->deposit->fixed', false)
                 ->when($lendable, function(Builder $query) {
-                    $query->where('pools.properties->deposit->lendable', true);
+                    $query->where('pd.properties->deposit->lendable', true);
                 })
                 ->sum('deposits.amount');
     }
@@ -219,9 +217,9 @@ class BalanceCalculator
      *
      * @return int
      */
-    private function getDisbursementsAmount(Collection $sessionIds, bool $lendable)
+    private function getOutflowsAmount(Collection $sessionIds, bool $lendable)
     {
-        return Disbursement::whereIn('session_id', $sessionIds)
+        return Outflow::whereIn('session_id', $sessionIds)
             ->when($lendable, function($query) {
                 $query->where(function($query) {
                     $query->whereDoesntHave('charge')
@@ -300,9 +298,9 @@ class BalanceCalculator
     private function getFundsAmount(Session $session)
     {
         // Each fund can have a different set of sessions, so we need to loop on all funds.
-        return $this->fundService->getActiveFunds()
+        return $this->fundService->getSessionFunds($session)
             ->reduce(function(int $amount, Fund $fund) use($session) {
-                $sessionIds = $this->fundService->getFundSessionIds($session, $fund);
+                $sessionIds = $this->fundService->getFundSessionIds($fund, $session);
 
                 return $amount
                     + $this->getSavingsAmount($sessionIds, $fund)
@@ -328,12 +326,12 @@ class BalanceCalculator
             + $this->getSettlementsAmount($sessionIds, true)
             + $this->getDepositsAmount($sessionIds, true)
             - $this->getRemitmentsAmount($sessionIds, true)
-            - $this->getDisbursementsAmount($sessionIds, true)
+            - $this->getOutflowsAmount($sessionIds, true)
             + $this->getFundsAmount($session);
     }
 
     /**
-     * Get the amount available for disbursement.
+     * Get the amount available for outflow.
      *
      * @param Session $session    The session
      *
@@ -348,7 +346,7 @@ class BalanceCalculator
             + $this->getSettlementsAmount($sessionIds, false)
             + $this->getDepositsAmount($sessionIds, false)
             - $this->getRemitmentsAmount($sessionIds, false)
-            - $this->getDisbursementsAmount($sessionIds, false)
+            - $this->getOutflowsAmount($sessionIds, false)
             + $this->getFundsAmount($session);
     }
 
@@ -362,9 +360,9 @@ class BalanceCalculator
      */
     public function getBalances(Session $session, bool $lendable): array
     {
-        $fundAmounts = $this->fundService->getActiveFunds()
+        $fundAmounts = $this->fundService->getSessionFunds($session)
             ->reduce(function(array $amounts, Fund $fund) use($session) {
-                $sessionIds = $this->fundService->getFundSessionIds($session, $fund);
+                $sessionIds = $this->fundService->getFundSessionIds($fund, $session);
 
                 return [
                     'savings' => $amounts['savings'] + $this->getSavingsAmount($sessionIds, $fund),
@@ -381,7 +379,7 @@ class BalanceCalculator
             'charges' => $this->getSettlementsAmount($sessionIds, $lendable),
             'deposits' => $this->getDepositsAmount($sessionIds, $lendable),
             'remitments' => $this->getRemitmentsAmount($sessionIds, $lendable),
-            'disbursements' => $this->getDisbursementsAmount($sessionIds, $lendable),
+            'outflows' => $this->getOutflowsAmount($sessionIds, $lendable),
             ...$fundAmounts,
         ];
     }

@@ -30,15 +30,6 @@ class AdminMenu extends Component
      */
     protected function after()
     {
-        // if(($guild = $this->tenantService->guild()))
-        // {
-        //     $this->selectGuild($guild);
-        // }
-        // if(($round = $this->tenantService->round()))
-        // {
-        //     $this->selectRound($round);
-        // }
-
         $this->node()->jq('#admin-menu a')->css('color', config('menu.color.active'));
         foreach(config('menu.admin') as $menuId => $menuClass)
         {

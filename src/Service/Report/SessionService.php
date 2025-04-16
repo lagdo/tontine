@@ -8,7 +8,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Member;
-use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\Guild\MemberService;
@@ -41,7 +40,7 @@ class SessionService
      */
     public function getReceivables(Session $session): Collection
     {
-        return Pool::ofSession($session)
+        return $session->pools()
             ->withCount([
                 'subscriptions as total_count' => function($query) use($session) {
                     $query->whereHas('receivables', function($query) use($session) {
@@ -68,7 +67,7 @@ class SessionService
      */
     public function getPayables(Session $session): Collection
     {
-        return Pool::ofSession($session)
+        return $session->pools()
             ->withCount([
                 'subscriptions as total_count' => function($query) use($session) {
                     $query->whereHas('payable', function($query) use($session) {
@@ -120,7 +119,7 @@ class SessionService
             return collect();
         }
 
-        return DB::table('disbursements')
+        return DB::table('outflows')
             ->select(DB::raw('sum(amount) as total_amount'),
                 DB::raw('count(*) as total_count'), 'charge_id')
             ->groupBy('charge_id')
@@ -200,16 +199,16 @@ class SessionService
         $sessionIds = collect([$session->id]);
 
         $charges = $this->tenantService->guild()->charges()/*->active()*/->get();
-        $disbursements = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
+        $outflows = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
 
-        return $charges->each(function($charge) use($bills, $disbursements) {
+        return $charges->each(function($charge) use($bills, $outflows) {
             $bill = $bills[$charge->id] ?? null;
             $charge->total_count = $bill ? $bill->total_count : 0;
             $charge->total_amount = $bill ? $bill->total_amount : 0;
-            $charge->disbursement = $disbursements[$charge->id] ?? null;
+            $charge->outflow = $outflows[$charge->id] ?? null;
         })->filter(function($charge) {
-            return $charge->total_count > 0 || ($charge->disbursement !== null &&
-                $charge->disbursement->total_count > 0);
+            return $charge->total_count > 0 || ($charge->outflow !== null &&
+                $charge->outflow->total_count > 0);
         });
     }
 
@@ -231,26 +230,26 @@ class SessionService
         $bills = $this->getBills($settlementFilter, $member);
 
         $charges = $this->tenantService->guild()->charges()/*->active()*/->get();
-        $disbursements = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
+        $outflows = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
         if($member !== null)
         {
-            // The disbursement part of each member id calculated by dividing each amount
+            // The outflow part of each member id calculated by dividing each amount
             // by the number of members.
             $memberCount = $this->memberService->countActiveMembers();
-            foreach($disbursements as $disbursement)
+            foreach($outflows as $outflow)
             {
-                $disbursement->total_amount /= $memberCount;
+                $outflow->total_amount /= $memberCount;
             }
         }
 
-        return $charges->each(function($charge) use($bills, $disbursements) {
+        return $charges->each(function($charge) use($bills, $outflows) {
             $bill = $bills[$charge->id] ?? null;
             $charge->total_count = $bill ? $bill->total_count : 0;
             $charge->total_amount = $bill ? $bill->total_amount : 0;
-            $charge->disbursement = $disbursements[$charge->id] ?? null;
+            $charge->outflow = $outflows[$charge->id] ?? null;
         })->filter(function($charge) {
-            return $charge->total_count > 0 || ($charge->disbursement !== null &&
-                $charge->disbursement->total_count > 0);
+            return $charge->total_count > 0 || ($charge->outflow !== null &&
+                $charge->outflow->total_count > 0);
         });
     }
 
@@ -329,21 +328,21 @@ class SessionService
      *
      * @return object
      */
-    public function getDisbursement(Session $session): object
+    public function getOutflow(Session $session): object
     {
-        $disbursement = DB::table('disbursements')
+        $outflow = DB::table('outflows')
             ->select(DB::raw('sum(amount) as total_amount'), DB::raw('count(id) as total_count'))
             ->where('session_id', $session->id)
             ->first();
-        if(!$disbursement->total_amount)
+        if(!$outflow->total_amount)
         {
-            $disbursement->total_amount = 0;
+            $outflow->total_amount = 0;
         }
-        if(!$disbursement->total_count)
+        if(!$outflow->total_count)
         {
-            $disbursement->total_count = 0;
+            $outflow->total_count = 0;
         }
 
-        return $disbursement;
+        return $outflow;
     }
 }

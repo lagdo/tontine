@@ -45,7 +45,7 @@
                           'paid' => $pool->pay_paid,
                           'count' => $pool->pay_count,
                           'total' => !$pool->remit_planned ? $pool->amount_paid : $pool->amount *
-                            ($pool->counter->sessions - $pool->counter->disabled_sessions),
+                            ($pool->sessions->count() - $pool->disabled_sessions->count()),
                           'menuClass' => 'btn-pool-remitments',
                         ])
 @endforeach

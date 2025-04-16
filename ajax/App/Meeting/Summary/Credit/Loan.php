@@ -3,8 +3,8 @@
 namespace Ajax\App\Meeting\Summary\Credit;
 
 use Ajax\App\Meeting\Summary\Component;
-use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
+use Siak\Tontine\Service\Meeting\FundService;
 use Stringable;
 
 /**
@@ -24,13 +24,13 @@ class Loan extends Component
 
     public function html(): Stringable
     {
+        $round = $this->tenantService->round();
         $session = $this->stash()->get('summary.session');
-        $loans = $this->loanService->getSessionLoans($session);
 
         return $this->renderView('pages.meeting.summary.loan.home', [
             'session' => $session,
-            'loans' => $loans,
-            'defaultFund' => $this->fundService->getDefaultFund(),
+            'loans' => $this->loanService->getSessionLoans($session),
+            'defaultFund' => $this->fundService->getDefaultFund($round),
         ]);
     }
 

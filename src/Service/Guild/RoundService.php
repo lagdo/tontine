@@ -3,11 +3,14 @@
 namespace Siak\Tontine\Service\Guild;
 
 use Exception;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\DataSyncService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\Guild\RoundValidator;
 
@@ -20,9 +23,11 @@ class RoundService
      * @param TenantService $tenantService
      * @param PoolService $poolService
      * @param RoundValidator $validator
+     * @param DataSyncService $dataSyncService
      */
     public function __construct(protected TenantService $tenantService,
-        protected PoolService $poolService, protected RoundValidator $validator)
+        protected PoolService $poolService, protected RoundValidator $validator,
+        private DataSyncService $dataSyncService)
     {}
 
     /**
@@ -41,6 +46,24 @@ class RoundService
         return $guild->rounds()
             ->page($page, $this->tenantService->getLimit())
             ->get();
+    }
+
+    /**
+     * Get a list of rounds for the dropdown select.
+     *
+     * @param Guild $guild
+     *
+     * @return Collection
+     */
+    public function getRoundList(Guild $guild): Collection
+    {
+        // Only rounds with at least 2 sessions are selectable.
+        return $guild->rounds()
+            ->join('sessions', 'sessions.round_id', '=', 'rounds.id')
+            ->select('rounds.title', 'rounds.id', DB::raw('count(sessions.id)'))
+            ->groupBy('rounds.title', 'rounds.id')
+            ->havingRaw('count(sessions.id) > ?', [1])
+            ->pluck('title', 'id');
     }
 
     /**
@@ -76,7 +99,13 @@ class RoundService
     public function createRound(array $values): bool
     {
         $values = $this->validator->validateItem($values);
-        $this->tenantService->guild()->rounds()->create($values);
+        DB::transaction(function() use($values) {
+            $round = $this->tenantService->guild()->rounds()
+                ->create(Arr::except($values, 'savings'));
+            $properties = $round->properties;
+            $properties['savings']['fund']['default'] = $values['savings'];
+            $round->saveProperties($properties);
+        });
         return true;
     }
 
@@ -91,10 +120,17 @@ class RoundService
     public function updateRound(int $roundId, array $values): int
     {
         $values = $this->validator->validateItem($values);
-        return $this->tenantService->guild()
-            ->rounds()
-            ->where('id', $roundId)
-            ->update($values);
+        return DB::transaction(function() use($roundId, $values) {
+            $round = $this->tenantService->guild()->rounds()->find($roundId);
+            $properties = $round->properties;
+            $properties['savings']['fund']['default'] = $values['savings'];
+            $round->saveProperties($properties);
+
+            // Create the default savings fund.
+            $this->dataSyncService->saveDefaultFund($round);
+
+            return $round->update(Arr::except($values, 'savings'));
+        });
     }
 
     /**
@@ -114,6 +150,7 @@ class RoundService
                 $guild = $this->tenantService->guild();
                 $guild->sessions()->where('round_id', $roundId)->delete();
                 $guild->rounds()->where('id', $roundId)->delete();
+                $guild->default_fund->funds()->where('round_id', $roundId)->delete();
             });
         }
         catch(Exception $e)

@@ -41,23 +41,31 @@ class Round extends Base
         'notes',
     ];
 
+    public function start(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->sessions()->orderBy('start_at')->first(),
+        );
+    }
+
     public function startAt(): Attribute
     {
         return Attribute::make(
-            get: function() {
-                $startSession = $this->sessions()->orderBy('start_at')->first();
-                return !$startSession ? null : $startSession->start_at;
-            },
+            get: fn() => $this->start?->start_at ?? null,
+        );
+    }
+
+    public function end(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->sessions()->orderByDesc('start_at')->first(),
         );
     }
 
     public function endAt(): Attribute
     {
         return Attribute::make(
-            get: function() {
-                $endSession = $this->sessions()->orderByDesc('start_at')->first();
-                return !$endSession ? null : $endSession->start_at;
-            },
+            get: fn() => $this->end?->start_at ?? null,
         );
     }
 
@@ -82,9 +90,21 @@ class Round extends Base
         );
     }
 
+    public function addDefaultFund(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->properties['savings']['fund']['default'] ?? false,
+        );
+    }
+
     public function guild()
     {
         return $this->belongsTo(Guild::class);
+    }
+
+    public function funds()
+    {
+        return $this->hasMany(Fund::class);
     }
 
     public function pools()

@@ -329,9 +329,9 @@ class MemberService
      *
      * @return Collection
      */
-    public function getDisbursements(Session $session, ?Member $member = null): Collection
+    public function getOutflows(Session $session, ?Member $member = null): Collection
     {
-        return $session->disbursements()->with(['member', 'category'])
+        return $session->outflows()->with(['member', 'category'])
             ->when($member !== null, function($query) use($member) {
                 return $query->where('member_id', $member->id);
             })

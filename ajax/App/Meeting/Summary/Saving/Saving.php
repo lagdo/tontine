@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Summary\Saving;
 
 use Ajax\App\Meeting\Summary\Component;
-use Siak\Tontine\Service\Guild\FundService;
+use Siak\Tontine\Service\Meeting\FundService;
 use Stringable;
 
 /**
@@ -24,8 +24,9 @@ class Saving extends Component
      */
     protected function before()
     {
+        $session = $this->stash()->get('summary.session');
         $fundId = $this->bag('meeting.saving')->get('fund.id', 0);
-        $fund = $fundId > 0 ? $this->fundService->getFund($fundId, true, true) : null;
+        $fund = $fundId > 0 ? $this->fundService->getSessionFund($session, $fundId) : null;
         $this->stash()->set('meeting.saving.fund', $fund);
     }
 
@@ -34,10 +35,11 @@ class Saving extends Component
      */
     public function html(): Stringable
     {
+        $session = $this->stash()->get('summary.session');
         return $this->renderView('pages.meeting.summary.saving.home', [
-            'session' => $this->stash()->get('summary.session'),
+            'session' => $session,
             'fundId' => (int)$this->bag('meeting.saving')->get('fund.id', 0),
-            'funds' => $this->fundService->getFundList()->prepend('', 0),
+            'funds' => $this->fundService->getSessionFundList($session)->prepend('', 0),
         ]);
     }
 

@@ -40,10 +40,19 @@ class PoolValidator extends AbstractValidator
             // The amount must be greater than 0 when the deposit property is set to fixed.
             if($values['properties']['deposit']['fixed'] && (float)$values['amount'] <= 0)
             {
-                $validator->errors()->add('principal', trans('validation.gt.numeric', [
-                    'attribute' => 'amount',
-                    'value' => 0,
-                ]));
+                $validator->errors()
+                    ->add('principal', trans('validation.gt.numeric', [
+                        'attribute' => 'amount',
+                        'value' => 0,
+                    ]));
+            }
+
+            // Enforce rules on properties values.
+            if(!$values['properties']['deposit']['fixed'])
+            {
+                $values['properties']['deposit']['lendable'] = false;
+                $values['properties']['remit']['planned'] = true;
+                $values['properties']['remit']['auction'] = false;
             }
         });
         if($validator->fails())

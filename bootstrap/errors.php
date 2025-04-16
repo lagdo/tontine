@@ -6,7 +6,7 @@ use Ajax\App\Admin\Guild\Guild;
 use Ajax\App\Guild\Calendar\Round;
 use Ajax\App\Guild\Member\Member;
 use Ajax\App\Meeting\Session\Session;
-use Ajax\App\Planning\Financial\Pool;
+use Ajax\App\Planning\Finance\Finance;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Jaxon\Laravel\App\Jaxon;
 use Siak\Tontine\Exception\MessageException;
@@ -114,9 +114,9 @@ function handle(Exceptions $exceptions)
 
     // Show the warning message in a dialog, and show the pools page.
     $exceptions->render(function (PlanningPoolException $e) {
-        if(checkHostAccess('planning', 'pools'))
+        if(checkHostAccess('planning', 'finance'))
         {
-            cl(Pool::class)->home();
+            cl(Finance::class)->home();
         }
 
         return showMessage($e->getMessage(), false);

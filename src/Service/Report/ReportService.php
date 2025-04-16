@@ -8,9 +8,8 @@ use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
-use Siak\Tontine\Service\Meeting\Saving\ClosingService;
+use Siak\Tontine\Service\Meeting\FundService;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Report\RoundService;
@@ -26,16 +25,15 @@ class ReportService
      * @param MemberService $memberService
      * @param RoundService $roundService
      * @param FundService $fundService
-     * @param ClosingService $closingService
      * @param SummaryService $summaryService
      * @param ProfitService $profitService
+     * @param DebtCalculator $debtCalculator
      */
     public function __construct(protected LocaleService $localeService,
         protected TenantService $tenantService, protected SessionService $sessionService,
         protected MemberService $memberService, protected RoundService $roundService,
-        protected FundService $fundService, protected ClosingService $closingService,
-        protected SummaryService $summaryService, protected ProfitService $profitService,
-        protected DebtCalculator $debtCalculator)
+        protected FundService $fundService, protected SummaryService $summaryService,
+        protected ProfitService $profitService, protected DebtCalculator $debtCalculator)
     {}
 
     /**
@@ -80,12 +78,12 @@ class ReportService
             ],
             'savings' => [
                 'savings' => $this->memberService->getSavings($session),
-                'funds' => $this->fundService->getFundList(),
+                'funds' => $this->fundService->getSessionFundList($session),
                 'total' => $this->sessionService->getSaving($session),
             ],
-            'disbursements' => [
-                'disbursements' => $this->memberService->getDisbursements($session),
-                'total' => $this->sessionService->getDisbursement($session),
+            'outflows' => [
+                'outflows' => $this->memberService->getOutflows($session),
+                'total' => $this->sessionService->getOutflow($session),
             ],
         ];
     }
@@ -129,9 +127,7 @@ class ReportService
      */
     private function getSessionProfitAmounts(Session $session): Collection
     {
-        $closings = $this->closingService->getRoundClosings($session);
-
-        return $closings->keyBy('fund_id')->map(fn($closing) => $closing->profit);
+        return $session->funds->keyBy('id')->map(fn($fund) => $fund->profit);
     }
 
     /**
@@ -143,7 +139,7 @@ class ReportService
     {
         $guild = $this->tenantService->guild();
         [$country] = $this->localeService->getNameFromGuild($guild);
-        $funds = $this->fundService->getActiveFunds();
+        $funds = $this->fundService->getSessionFunds($session);
         $profits = $this->getSessionProfitAmounts($session);
 
         $funds = $funds
@@ -182,9 +178,9 @@ class ReportService
         $guild = $this->tenantService->guild();
         [$country, $currency] = $this->localeService->getNameFromGuild($guild);
 
-        $funds = $this->fundService->getActiveFunds()
+        $funds = $this->fundService->getSessionFunds($session)
             ->each(function($fund) use($session) {
-                $sessionIds = $this->fundService->getFundSessionIds($session, $fund);
+                $sessionIds = $this->fundService->getFundSessionIds($fund, $session);
                 $fund->loans = Loan::select('loans.*')
                     ->join('sessions', 'loans.session_id', '=', 'sessions.id')
                     ->where(fn($query) => $query->where('fund_id', $fund->id))
@@ -224,7 +220,7 @@ class ReportService
             'loans' => $this->roundService->getLoanAmounts($sessionIds),
             'refunds' => $this->roundService->getRefundAmounts($sessionIds),
             'savings' => $this->roundService->getSavingAmounts($sessionIds),
-            'disbursements' => $this->roundService->getDisbursementAmounts($sessionIds),
+            'outflows' => $this->roundService->getOutflowAmounts($sessionIds),
             'pools' => $this->summaryService->getPoolsBalance($figures),
         ];
 

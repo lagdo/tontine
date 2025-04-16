@@ -85,15 +85,8 @@ class DebtCalculator
      */
     private function getLastSessionForInterest(Debt $debt, Session $current): Session
     {
-        // We use a join instead of a subquery so we can order the results by session date.
-        $closing = $debt->loan->fund->closings()->interest()
-            ->select('closings.*')
-            ->join('sessions', 'sessions.id', '=', 'closings.session_id')
-            ->where('sessions.start_at', '>=', $debt->loan->session->start_at)
-            ->where('sessions.start_at', '<', $current->start_at)
-            ->orderBy('sessions.start_at', 'desc')
-            ->first();
-        return $closing !== null ? $closing->session : $current;
+        $endSession = $debt->loan->fund->interest;
+        return $current->start_at < $endSession->start_at ? $current : $endSession;
     }
 
     /**

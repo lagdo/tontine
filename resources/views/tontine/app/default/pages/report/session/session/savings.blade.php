@@ -1,7 +1,7 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $fundId = pm()->select('report-savings-fund-id')->toInt();
-  $rqFund = rq(Ajax\App\Report\Session\Saving\Fund::class);
+  $rqProfit = rq(Ajax\App\Report\Session\Saving\Profit::class);
 @endphp
                   <div class="row">
                     <div class="col">
@@ -12,7 +12,7 @@
                         {!! $html->select('fund_id', $funds, 0)->id('report-savings-fund-id')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqFund->fund($fundId))>{!!
+                          <button type="button" class="btn btn-primary" @jxnClick($rqProfit->fund($fundId))>{!!
                             __('tontine.report.actions.show') !!}</button>
                         </div>
                       </div>

@@ -26,7 +26,7 @@ class Remitment extends Component
         return $this->renderView('pages.meeting.summary.remitment.home', [
             'session' => $session,
             'pools' => $this->poolService->getPoolsWithPayables($session),
-            'hasAuctions' => $this->poolService->hasPoolWithAuction(),
+            'hasAuctions' => $this->poolService->hasPoolWithAuction($session),
         ]);
     }
 

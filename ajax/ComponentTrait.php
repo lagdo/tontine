@@ -4,6 +4,7 @@ namespace Ajax;
 
 use Jaxon\App\Dialog\DialogTrait;
 use Jaxon\App\View\Store;
+use Jaxon\App\View\ViewRenderer;
 use Siak\Tontine\Exception\MeetingRoundException;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Exception\PlanningPoolException;
@@ -22,6 +23,13 @@ trait ComponentTrait
      * @var TenantService
      */
     protected TenantService $tenantService;
+
+    /**
+     * Get the view renderer
+     *
+     * @return ViewRenderer
+     */
+    abstract protected function view(): ViewRenderer;
 
     /**
      * Render a view

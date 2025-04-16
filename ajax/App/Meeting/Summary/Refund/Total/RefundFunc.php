@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Summary\Refund\Total;
 
 use Ajax\FuncComponent;
-use Siak\Tontine\Service\Guild\FundService;
+use Siak\Tontine\Service\Meeting\FundService;
 
 /**
  * @databag refund
@@ -23,17 +23,11 @@ class RefundFunc extends FuncComponent
     {
         // Try to get the selected savings fund.
         // If not found, then revert to the guild default fund.
+        $session = $this->stash()->get('summary.session');
         $fundId = $this->bag('refund')->get('fund.id', 0);
-        if($fundId !== 0 && ($fund = $this->fundService->getFund($fundId, true)) === null)
-        {
-            $fundId = 0;
-        }
-        if($fundId === 0)
-        {
-            $fund = $this->fundService->getDefaultFund();
-            $this->bag('refund')->set('fund.id', $fund->id);
-        }
+        $fund = $this->fundService->getSessionFund($session, $fundId);
 
+        $this->bag('refund')->set('fund.id', $fund?->id ?? 0);
         $this->stash()->set('summary.refund.fund', $fund);
     }
 

@@ -27,6 +27,64 @@ class SavingService
     {}
 
     /**
+     * Count the session funds.
+     *
+     * @param Session $session
+     *
+     * @return int
+     */
+    public function getFundCount(Session $session): int
+    {
+        return $session->funds()->real()->count();
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return Relation
+     */
+    public function getFundQuery(Session $session): Relation
+    {
+        $sqlFrom = "savings s where s.fund_id=funds.id and s.session_id={$session->id}";
+        return $session->funds()->real()
+            ->addSelect([
+                DB::raw("(select count(*) from $sqlFrom) as s_count"),
+                DB::raw("(select sum(s.amount) from $sqlFrom) as s_amount"),
+            ]);
+    }
+
+    /**
+     * Get the session funds.
+     *
+     * @param Session $session
+     * @param int $page
+     *
+     * @return Collection
+     */
+    public function getFunds(Session $session, int $page = 0): Collection
+    {
+        return $this->getFundQuery($session)
+            ->page($page, $this->tenantService->getLimit())
+            ->join('fund_defs', 'fund_defs.id', '=', 'funds.def_id')
+            ->orderBy('fund_defs.type') // The default fund is first in the list.
+            ->orderBy('funds.id')
+            ->get();
+    }
+
+    /**
+     * Get a session fund.
+     *
+     * @param Session $session
+     * @param int $fundId
+     *
+     * @return Fund|null
+     */
+    public function getFund(Session $session, int $fundId): ?Fund
+    {
+        return $this->getFundQuery($session)->find($fundId);
+    }
+
+    /**
      * @param Session $session
      * @param Fund|null $fund
      *

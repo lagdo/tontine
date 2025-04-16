@@ -32,7 +32,7 @@ return new class extends Migration
         }
 
         // Update the new field values with the seeder
-        Artisan::call('db:seed', ['--class' => 'PoolPropertiesSeeder']);
+        // Artisan::call('db:seed', ['--class' => 'PoolPropertiesSeeder']);
 
         // Todo: uncomment in a future release
         // Schema::table('tontines', function (Blueprint $table) {
@@ -47,10 +47,11 @@ return new class extends Migration
      */
     public function down()
     {
-        // Todo: uncomment in a future release
-        // Schema::table('tontines', function (Blueprint $table) {
-        //     $table->char('type', 1); // enum('type', ['m', 'f', 'l']);
-        // });
+        // Do not rollback this migration if the database already contains data
+        if(DB::table('tontines')->where('id', '>', 0)->exists())
+        {
+            throw new Exception('Rollback is not allowed on this migration.');
+        }
 
         Schema::table('pools', function (Blueprint $table) {
             $table->dropColumn('properties');

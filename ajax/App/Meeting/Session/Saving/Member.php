@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\Component;
-use Ajax\App\Meeting\Session\FundTrait;
+use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Stringable;
 
 /**
@@ -25,6 +25,14 @@ class Member extends Component
     protected $overrides = Saving::class;
 
     /**
+     * The constructor
+     *
+     * @param SavingService $savingService
+     */
+    public function __construct(protected SavingService $savingService)
+    {}
+
+    /**
      * @inheritDoc
      */
     public function html(): Stringable
@@ -39,6 +47,7 @@ class Member extends Component
      */
     protected function after()
     {
+        $this->cl(MemberTotal::class)->render();
         $this->cl(MemberPage::class)->page();
     }
 

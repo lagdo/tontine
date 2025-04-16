@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\PageComponent;
-use Ajax\App\Meeting\Session\FundTrait;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Stringable;
 
@@ -34,7 +33,7 @@ class MemberPage extends PageComponent
      *
      * @param SavingService $savingService
      */
-    public function __construct(private SavingService $savingService)
+    public function __construct(protected SavingService $savingService)
     {}
 
     /**

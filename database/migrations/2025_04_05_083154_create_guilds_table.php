@@ -95,6 +95,11 @@ return new class extends Migration
 
         $this->copyData('tontines', 'guilds');
         $this->setForeignKeys('tontine', 'guild');
+        DB::table('properties')
+            ->where('owner_type', 'Siak\\Tontine\\Model\\Tontine')
+            ->update([
+                'owner_type' => 'Siak\\Tontine\\Model\\Guild',
+            ]);
     }
 
     /**
@@ -105,5 +110,10 @@ return new class extends Migration
         $this->dropForeignKeys('guild_id');
 
         Schema::dropIfExists('guilds');
+        DB::table('properties')
+            ->where('owner_type', 'Siak\\Tontine\\Model\\Guild')
+            ->update([
+                'owner_type' => 'Siak\\Tontine\\Model\\Tontine',
+            ]);
     }
 };

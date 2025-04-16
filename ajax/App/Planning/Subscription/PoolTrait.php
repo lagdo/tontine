@@ -11,10 +11,13 @@ trait PoolTrait
     {
         if($this->target()->method() === 'pool')
         {
-            $this->bag('subscription')->set('pool.id', $this->target()->args()[0]);
+            $poolId = $this->target()->args()[0];
+            $this->bag('subscription')->set('pool.id', $poolId);
         }
 
+        $round = $this->tenantService->round();
         $poolId = (int)$this->bag('subscription')->get('pool.id');
-        $this->stash()->set('subscription.pool', $this->poolService->getPool($poolId));
+        $pool = $this->poolService->getPool($round, $poolId);
+        $this->stash()->set('subscription.pool', $pool);
     }
 }

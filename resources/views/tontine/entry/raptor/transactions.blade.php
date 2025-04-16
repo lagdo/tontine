@@ -93,7 +93,7 @@
               <th><input type="checkbox" />{{ __('meeting.titles.loans') }}</th>
               <th><input type="checkbox" />{{ __('meeting.titles.refunds') }}</th>
               <th><input type="checkbox" />{!! __('meeting.titles.savings') !!}</th>
-              <th><input type="checkbox" />{{ __('meeting.titles.disbursements') }}</th>
+              <th><input type="checkbox" />{{ __('meeting.titles.outflows') }}</th>
               <th><input type="checkbox" />{{ __('meeting.remitment.titles.auctions') }}</th>
             </tr>
           </thead>

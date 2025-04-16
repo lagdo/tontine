@@ -63,9 +63,8 @@ class Summary extends Component
     {
         $this->pools();
         $this->savings();
-        $this->loans();
         $this->refunds();
-        $this->cash();
+        $this->outflows();
         $this->charges();
     }
 
@@ -81,15 +80,10 @@ class Summary extends Component
     private function savings()
     {
         $this->cl(Saving\Saving::class)->render();
-        $this->cl(Saving\Closing::class)->render();
+        $this->cl(Credit\Loan::class)->render();
 
         $this->response->js('Tontine')
             ->setSmScreenHandler('summary-savings-sm-screens', 'summary-savings');
-    }
-
-    private function loans()
-    {
-        $this->cl(Credit\Loan::class)->render();
     }
 
     private function refunds()
@@ -101,7 +95,7 @@ class Summary extends Component
             ->setSmScreenHandler('summary-refunds-sm-screens', 'summary-refunds');
     }
 
-    private function cash()
+    private function outflows()
     {
         $this->cl(Cash\Disbursement::class)->render();
     }

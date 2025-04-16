@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -35,6 +36,12 @@ return new class extends Migration
      */
     public function down()
     {
+        // Do not rollback this migration if the database already contains data
+        if(DB::table('tontines')->where('id', '>', 0)->exists())
+        {
+            throw new Exception('Rollback is not allowed on this migration.');
+        }
+
         Artisan::call('closing:copy-to-attrs');
 
         Schema::dropIfExists('closings');

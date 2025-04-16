@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Model\FundDef;
 use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Service\TenantService;
 
@@ -145,16 +146,17 @@ class GuildService
      *
      * @param array $values
      *
-     * @return bool
+     * @return Guild|null
      */
-    public function createGuild(array $values): bool
+    public function createGuild(array $values): ?Guild
     {
-        DB::transaction(function() use($values) {
+        return DB::transaction(function() use($values) {
             $guild = $this->tenantService->user()->guilds()->create($values);
             // Also create the default savings fund for the new guild.
-            $guild->funds()->create(['title' => '', 'active' => true]);
+            $fund = $guild->funds()->create(['title' => '', 'active' => true]);
+            $this->setDefaultFund($guild, $fund);
+            return $guild;
         });
-        return true;
     }
 
     /**
@@ -185,7 +187,7 @@ class GuildService
             return;
         }
         DB::transaction(function() use($guild) {
-            $guild->funds()->withoutGlobalScope('user')->delete();
+            $guild->funds()->delete();
             $guild->members()->delete();
             $guild->rounds()->delete();
             $guild->charges()->delete();
@@ -213,7 +215,8 @@ class GuildService
     public function getReportTemplate(): string
     {
         $options = $this->getGuildOptions();
-        return $options['reports']['template'] ?? config('tontine.templates.report', 'default');
+        return $options['reports']['template'] ??
+            config('tontine.templates.report', 'default');
     }
 
     /**
@@ -228,6 +231,21 @@ class GuildService
         $guild = $this->tenantService->guild();
         $properties = $guild->properties;
         $properties['reports'] = $options['reports'];
+        $guild->saveProperties($properties);
+    }
+
+    /**
+     * Set the default fund
+     *
+     * @param Guild $guild
+     * @param FundDef $fund
+     *
+     * @return void
+     */
+    public function setDefaultFund(Guild $guild, FundDef $fund): void
+    {
+        $properties = $guild->properties;
+        $properties['savings']['fund']['default'] = $fund->id;
         $guild->saveProperties($properties);
     }
 }

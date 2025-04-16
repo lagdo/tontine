@@ -22,7 +22,7 @@ class Balance extends Component
     public function html(): Stringable
     {
         $session = $this->stash()->get('meeting.session');
-        return $this->renderView('pages.meeting.disbursement.balance', [
+        return $this->renderView('pages.meeting.outflow.balance', [
             'rqBalance' => $this->rq(),
             'amount' => $this->balanceCalculator->getTotalBalance($session),
         ]);

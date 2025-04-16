@@ -10,8 +10,8 @@ use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\Meeting\FundService;
 use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
 use Siak\Tontine\Service\TenantService;
 
@@ -40,12 +40,12 @@ class RefundService
      * Get the number of debts.
      *
      * @param Session $session The session
-     * @param Fund $fund
+     * @param Fund|null $fund
      * @param bool|null $onlyPaid
      *
      * @return int
      */
-    public function getDebtCount(Session $session, Fund $fund, ?bool $onlyPaid): int
+    public function getDebtCount(Session $session, ?Fund $fund, ?bool $onlyPaid): int
     {
         return $this->getDebtsQuery($session, $fund, $onlyPaid, false)->count();
     }
@@ -54,13 +54,13 @@ class RefundService
      * Get the debts.
      *
      * @param Session $session The session
-     * @param Fund $fund
+     * @param Fund|null $fund
      * @param bool|null $onlyPaid
      * @param int $page
      *
      * @return Collection
      */
-    public function getDebts(Session $session, Fund $fund,
+    public function getDebts(Session $session, ?Fund $fund,
         ?bool $onlyPaid, int $page = 0): Collection
     {
         return $this->getDebtsQuery($session, $fund, $onlyPaid, true)

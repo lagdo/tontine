@@ -70,10 +70,10 @@
                           <td style="width:10%;text-align:right;">@if ($charge->total_count > 0){{ $charge->total_count }}@else &nbsp; @endif</td>
                           <td style="width:20%;text-align:right;">@if ($charge->total_count > 0){{
                             $locale->formatMoney($charge->total_amount, true) }}@else &nbsp; @endif</td>
-                          <td style="width:10%;text-align:right;">@if ($charge->disbursement !== null){{
-                            $charge->disbursement->total_count }}@else &nbsp; @endif</td>
-                          <td style="width:20%;text-align:right;">@if ($charge->disbursement !== null){{
-                            $locale->formatMoney($charge->disbursement->total_amount, true) }}@else &nbsp; @endif</td>
+                          <td style="width:10%;text-align:right;">@if ($charge->outflow !== null){{
+                            $charge->outflow->total_count }}@else &nbsp; @endif</td>
+                          <td style="width:20%;text-align:right;">@if ($charge->outflow !== null){{
+                            $locale->formatMoney($charge->outflow->total_amount, true) }}@else &nbsp; @endif</td>
                         </tr>
 @endforeach
                       </tbody>
@@ -101,10 +101,10 @@
                           <td style="width:10%;text-align:right;">@if ($charge->total_count > 0){{ $charge->total_count }}@else &nbsp; @endif</td>
                           <td style="width:20%;text-align:right;">@if ($charge->total_count > 0){{
                             $locale->formatMoney($charge->total_amount, true) }}@else &nbsp; @endif</td>
-                          <td style="width:10%;text-align:right;">@if ($charge->disbursement !== null){{
-                            $charge->disbursement->total_count }}@else &nbsp; @endif</td>
-                          <td style="width:20%;text-align:right;">@if ($charge->disbursement !== null){{
-                            $locale->formatMoney($charge->disbursement->total_amount, true) }}@else &nbsp; @endif</td>
+                          <td style="width:10%;text-align:right;">@if ($charge->outflow !== null){{
+                            $charge->outflow->total_count }}@else &nbsp; @endif</td>
+                          <td style="width:20%;text-align:right;">@if ($charge->outflow !== null){{
+                            $locale->formatMoney($charge->outflow->total_amount, true) }}@else &nbsp; @endif</td>
                         </tr>
 @endforeach
                       </tbody>

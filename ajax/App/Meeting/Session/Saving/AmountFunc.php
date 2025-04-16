@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\FuncComponent;
-use Ajax\App\Meeting\Session\FundTrait;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Validation\Meeting\SavingValidator;
 
@@ -34,7 +33,7 @@ class AmountFunc extends FuncComponent
      *
      * @param SavingService $savingService
      */
-    public function __construct(private SavingService $savingService)
+    public function __construct(protected SavingService $savingService)
     {}
 
     /**
@@ -72,14 +71,18 @@ class AmountFunc extends FuncComponent
         $fund = $this->getStashedFund();
         $amount = str_replace(',', '.', trim($amount));
 
-        if($amount === '')
+        if($amount === '' || $amount === '0')
         {
             $this->savingService->deleteMemberSaving($session, $fund, $member);
             $this->alert()->success(trans('meeting.messages.deleted'));
             return;
         }
 
-        $values = ['member' => $member->id, 'amount' => $amount, 'fund' => $fund->id];
+        $values = [
+            'fund' => $fund->id,
+            'member' => $member->id,
+            'amount' => $amount,
+        ];
         $values = $this->validator->validateItem($values);
         $this->savingService->saveSaving($session, $fund, $member, $values['amount']);
 
@@ -108,6 +111,8 @@ class AmountFunc extends FuncComponent
         $this->saveAmount($amount);
 
         $session = $this->stash()->get('meeting.session');
+
+        $this->getFund(); // Refresh the modified data.
         $fund = $this->getStashedFund();
         $this->stash()->set('meeting.saving',
             $this->savingService->findSaving($session, $fund, $member));

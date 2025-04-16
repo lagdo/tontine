@@ -3,7 +3,6 @@
 namespace Siak\Tontine\Service\Meeting\Pool;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
@@ -33,17 +32,9 @@ class PoolService
      */
     public function getPool(int $poolId, Session $session): ?Pool
     {
-        return Pool::ofSession($session)->with('counter')->find($poolId);
-    }
-
-    /**
-     * @param Session $session
-     *
-     * @return Builder|Relation
-     */
-    private function getQuery(Session $session): Builder|Relation
-    {
-        return Pool::ofSession($session);
+        return $session->pools()
+            ->withCount(['sessions', 'disabled_sessions'])
+            ->find($poolId);
     }
 
     /**
@@ -55,7 +46,7 @@ class PoolService
      */
     public function getPoolsWithReceivables(Session $session): Collection
     {
-        return $this->getQuery($session)
+        return $session->pools()
             ->withCount([
                 'subscriptions as recv_count',
                 'subscriptions as recv_paid' => function(Builder $query) use($session) {
@@ -80,9 +71,10 @@ class PoolService
      */
     public function getPoolsWithPayables(Session $session): Collection
     {
-        return $this->getQuery($session)
-            ->with(['counter'])
+        return $session->pools()
             ->withCount([
+                'sessions',
+                'disabled_sessions',
                 'subscriptions as pay_paid' => function(Builder $query) use($session) {
                     $query->whereHas('payable', function(Builder $query) use($session) {
                         $query->where('session_id', $session->id)->whereHas('remitment');
@@ -101,11 +93,12 @@ class PoolService
     /**
      * Check if the current round has at least one pool with auctions.
      *
+     * @param Session $session
+     *
      * @return bool
      */
-    public function hasPoolWithAuction(): bool
+    public function hasPoolWithAuction(Session $session): bool
     {
-        $round = $this->tenantService->round();
-        return $round && $round->pools->contains(fn($pool) => $pool->remit_auction);
+        return $session->pools->contains(fn($pool) => $pool->remit_auction);
     }
 }

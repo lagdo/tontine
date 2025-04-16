@@ -49,7 +49,7 @@ class Beneficiary extends Component
         $pool = $this->stash()->get('subscription.pool');
         if(!$pool->remit_planned)
         {
-            throw new MessageException(trans('tontine.beneficiary.errors.not_planned'));
+            throw new MessageException(trans('tontine.pool.errors.not_planned'));
         }
     }
 

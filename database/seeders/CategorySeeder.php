@@ -18,19 +18,19 @@ class CategorySeeder extends Seeder
         $globalCategories = [
             [
                 'name' => 'expense',
-                'item_type' => 'disbursement',
+                'item_type' => 'outflow',
             ],
             [
                 'name' => 'support',
-                'item_type' => 'disbursement',
+                'item_type' => 'outflow',
             ],
             [
                 'name' => 'reception',
-                'item_type' => 'disbursement',
+                'item_type' => 'outflow',
             ],
             [
                 'name' => 'other',
-                'item_type' => 'disbursement',
+                'item_type' => 'outflow',
             ],
         ];
 

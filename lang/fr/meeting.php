@@ -14,7 +14,6 @@ return [
         'remitments' => "Remises",
         'auctions' => "Enchères",
         'savings' => "&Eacute;pargnes",
-        'closings' => "Clotûres",
         'loan' => "Emprunt",
         'loans' => "Emprunts",
         'amounts' => "Montants",
@@ -24,7 +23,7 @@ return [
         'benefit' => "Bénéfice",
         'refund' => "Remboursement",
         'refunds' => "Remboursements",
-        'disbursements' => "Décaissements",
+        'outflows' => "Sorties",
         'profits' => "Répartition des gains",
         'summary' => "Résumé",
     ],
@@ -45,6 +44,7 @@ return [
         'cash' => "Caisse",
         'credits' => "Crédits",
         'profits' => "Gains",
+        'outflows' => "Sorties",
     ],
     'labels' => [
         'member' => "Membre",
@@ -161,7 +161,6 @@ return [
             'interest' => "Intérêts",
         ],
         'labels' => [
-            'closing' => "Clotûre",
         ],
         'questions' => [
             'delete' => "Supprimer cette épargne ?",
@@ -173,28 +172,12 @@ return [
             'select_fund' => "Vauillez sélectionner un fond dans la liste.",
         ],
     ],
-    'closing' => [
-        'titles' => [
-            'round' => "Clotûre tour",
-            'interest' => "Clotûre intérêts",
-            'r' => "Tour",
-            'i' => "Intérêt",
-        ],
-        'labels' => [
-            'fund' => "Fonds",
-            'amount' => "Montant à distribuer",
-            'interest' => "Le calcul des intérêts s'arrête à cette séance.",
-        ],
-        'questions' => [
-            'delete' => "Supprimer cette clotûre?",
-        ],
-    ],
     'profit' => [
         'distribution' => [
             'total' => "&Eacute;pargne: :saving. Intérêts: :refund.",
             'amount' => "Distribution: :amount.",
             'parts' => ":parts parts.",
-            'basis' => "Pour chaque séance, :unit = une part.",
+            'basis' => "Pour chaque séance, une part = :unit.",
         ],
     ],
     'loan' => [
@@ -267,7 +250,7 @@ return [
             'cannot_delete' => "Impossible de supprimer ce remboursement partiel.",
         ],
     ],
-    'disbursement' => [
+    'outflow' => [
         'titles' => [
             'add' => "Ajouter un décaissement",
             'edit' => "Modifier un décaissement",

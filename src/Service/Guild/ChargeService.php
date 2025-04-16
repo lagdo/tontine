@@ -8,17 +8,17 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Charge;
+use Siak\Tontine\Service\DataSyncService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Traits\EventTrait;
 
 class ChargeService
 {
-    use EventTrait;
-
     /**
      * @param TenantService $tenantService
+     * @param DataSyncService $dataSyncService
      */
-    public function __construct(protected TenantService $tenantService)
+    public function __construct(private TenantService $tenantService,
+        private DataSyncService $dataSyncService)
     {}
 
     /**
@@ -76,7 +76,7 @@ class ChargeService
             $guild = $this->tenantService->guild();
             $charge = $guild->charges()->create($values);
             // Create charges bills
-            $this->chargeCreated($guild, $charge);
+            $this->dataSyncService->chargeCreated($guild, $charge);
         });
         return true;
     }
@@ -133,17 +133,5 @@ class ChargeService
         {
             throw new MessageException(trans('tontine.charge.errors.cannot_delete'));
         }
-    }
-
-    /**
-     * @param int $count
-     *
-     * @return Collection
-     */
-    public function getFakeCharges(int $count): Collection
-    {
-        return Charge::factory()->count($count)->make([
-            'guild_id' => $this->tenantService->guild(),
-        ]);
     }
 }

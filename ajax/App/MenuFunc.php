@@ -6,9 +6,9 @@ use Ajax\App\Admin\Guild\Guild;
 use Ajax\App\Page\Sidebar\AdminMenu;
 use Ajax\App\Page\Sidebar\RoundMenu;
 use Ajax\App\Page\MainTitle;
-use Ajax\App\Planning\Financial\Pool;
-use Ajax\App\Guild\Member\Member;
+use Ajax\App\Planning\Finance\Finance;
 use Ajax\FuncComponent;
+use Siak\Tontine\Model\Guild as GuildModel;
 use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\Guild\RoundService;
 
@@ -24,7 +24,7 @@ class MenuFunc extends FuncComponent
         protected RoundService $roundService)
     {}
 
-    public function admin()
+    public function admin(): void
     {
         $guild = $this->tenantService->guild();
         $this->tenantService->resetRound();
@@ -34,9 +34,17 @@ class MenuFunc extends FuncComponent
         $this->cl(AdminMenu::class)->render();
         $this->cl(MainTitle::class)->render();
         $this->cl(Guild::class)->home();
+
+        if(!$guild)
+        {
+            return;
+        }
+        $this->alert()->info(trans('tontine.messages.back_to_admin', [
+            'guild' => $guild->name,
+        ]));
     }
 
-    public function showGuilds()
+    public function showGuilds(): void
     {
         $guild = $this->tenantService->guild();
         $title = trans('tontine.titles.choose');
@@ -56,6 +64,20 @@ class MenuFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
+    /**
+     * @exclude
+     * @param GuildModel $guild
+     *
+     * @return void
+     */
+    public function setCurrentGuild(GuildModel $guild): void
+    {
+        $this->bag('tenant')->set('guild.id', $guild->id);
+        $this->bag('tenant')->set('round.id', 0);
+        $this->stash()->set('menu.current.guild', $guild);
+        $this->tenantService->setGuild($guild);
+    }
+
     public function saveGuild(int $guildId)
     {
         if(!($guild = $this->guildService->getUserOrGuestGuild($guildId)))
@@ -63,16 +85,12 @@ class MenuFunc extends FuncComponent
             return;
         }
 
-        $this->bag('tenant')->set('guild.id', $guild->id);
-        $this->bag('tenant')->set('round.id', 0);
-        $this->stash()->set('menu.current.guild', $guild);
-        $this->tenantService->setGuild($guild);
-        $this->tenantService->resetRound();
+        $this->setCurrentGuild($guild);
 
         $this->response->jq('#header-menu-home')->hide();
         $this->cl(MainTitle::class)->render();
         $this->cl(AdminMenu::class)->render();
-        $this->cl(Member::class)->home();
+        $this->cl(Guild::class)->home();
 
         $this->modal()->hide();
         $this->alert()->info(trans('tontine.messages.selected', [
@@ -80,7 +98,7 @@ class MenuFunc extends FuncComponent
         ]));
     }
 
-    public function showRounds()
+    public function showRounds(): void
     {
         if(!($guild = $this->tenantService->guild()))
         {
@@ -91,7 +109,7 @@ class MenuFunc extends FuncComponent
         $title = trans('tontine.round.titles.choose');
         $content = $this->renderView('pages.select.round', [
             'current' => $round?->id ?? 0,
-            'rounds' => $guild->rounds->pluck('title', 'id'),
+            'rounds' => $this->roundService->getRoundList($guild),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -108,13 +126,14 @@ class MenuFunc extends FuncComponent
     /**
      * @databag planning
      */
-    public function saveRound(int $roundId)
+    public function saveRound(int $roundId): void
     {
         if(!($guild = $this->tenantService->guild()))
         {
             return;
         }
-        if(!($round = $this->roundService->getRound($roundId)))
+        if(!($round = $this->roundService->getRound($roundId)) ||
+            $this->roundService->getSessionCount($round) === 0)
         {
             return;
         }
@@ -131,7 +150,7 @@ class MenuFunc extends FuncComponent
         $this->response->jq('#header-menu-home')->show();
         $this->cl(RoundMenu::class)->render();
         $this->cl(MainTitle::class)->render();
-        $this->cl(Pool::class)->home();
+        $this->cl(Finance::class)->home();
 
         $this->modal()->hide();
         $this->alert()->info(trans('tontine.round.messages.selected', [

@@ -101,5 +101,6 @@ return [
         'total' => "Total",
         'birthday' => "Birthday",
         'status' => "Status",
+        'options' => "Options",
     ],
 ];

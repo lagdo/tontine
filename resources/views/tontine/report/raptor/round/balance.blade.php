@@ -14,7 +14,7 @@
                       <th class="report-round-cash-amount">{!! __('meeting.titles.loans') !!}</th>
                       <th class="report-round-cash-amount">{!! __('figures.titles.refunds') !!}</th>
                       <th class="report-round-cash-amount">{!! __('meeting.titles.savings') !!}</th>
-                      <th class="report-round-cash-amount">{!! __('figures.titles.disbursements') !!}</th>
+                      <th class="report-round-cash-amount">{!! __('figures.titles.outflows') !!}</th>
                       <th class="report-round-cash-amount">{!! __('figures.titles.subtotals') !!}</th>
                       <th class="report-round-cash-amount">{!! __('figures.titles.end') !!}</th>
                     </tr>
@@ -37,16 +37,16 @@
   $saving = $savings[$session->id] ?? 0;
   $loan = $loans[$session->id] ?? 0;
   $refund = $refunds[$session->id] ?? 0;
-  $disbursement = $disbursements[$session->id] ?? 0;
+  $outflow = $outflows[$session->id] ?? 0;
   $pool = $pools[$session->id] ?? 0;
-  $balance = $settlement + $refund + $saving - $loan - $disbursement;
+  $balance = $settlement + $refund + $saving - $loan - $outflow;
   $cash += $balance;
 @endphp
                       <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($settlement, false) !!}</b></td>
                       <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($loan, false) !!}</b></td>
                       <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($refund, false) !!}</b></td>
                       <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($saving, false) !!}</b></td>
-                      <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($disbursement, false) !!}</b></td>
+                      <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($outflow, false) !!}</b></td>
                       <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($balance, false) !!}<br/>{!!
                         $locale->formatMoney($cash, false) !!}</b></td>
                       <td class="report-round-cash-amount"><b>{!! $locale->formatMoney($pool, false) !!}<br/>{!!

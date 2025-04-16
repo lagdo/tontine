@@ -72,6 +72,7 @@ return [
     ],
     'actions' => [
         'rounds' => "Rounds",
+        'sessions' => "Sessions",
         'open' => "Open",
         'enter' => "Enter",
         'select' => "Select",
@@ -83,6 +84,7 @@ return [
         'updated' => "The organisation was successfully updated.",
         'deleted' => "The organisation was successfully deleted.",
         'selected' => "You have selected the organisation :guild.",
+        'back_to_admin' => "You are back to the Administration section of the organisation :guild.",
         'screen' => [
             'orientation' => "If you are using a mobile device, we advise you to place it in landscape mode, for a better display.",
         ],
@@ -168,6 +170,9 @@ return [
             'add' => "Add a round",
             'edit' => "Edit a round",
             'choose' => "Select a round",
+        ],
+        'labels' => [
+            'savings' => "Add a default savings fund",
         ],
         'messages' => [
             'created' => "The round was successfully created.",
@@ -259,11 +264,14 @@ return [
         ],
         'questions' => [
             'delete' => "Delete this savings fund?",
+            'disable' => "Disable this savings fund?",
         ],
         'messages' => [
             'created' => "The savings fund was successfully created.",
             'updated' => "The savings fund was successfully updated.",
             'deleted' => "The savings fund was successfully deleted.",
+            'enabled' => "The savings fund was successfully enabled.",
+            'disabled' => "The savings fund was successfully disabled.",
         ],
         'errors' => [
             'not_found' => "Cannot find the corresponding fund.",
@@ -271,12 +279,12 @@ return [
     ],
     'account' => [
         'titles' => [
-            'disbursements' => "Disbursements",
+            'outflows' => "Cash outflows",
             'add' => "Add an account",
             'edit' => "Edit an account",
         ],
         'types' => [
-            'disbursement' => "Disbursement",
+            'outflow' => "Cash outflow",
         ],
         'questions' => [
             'delete' => "Delete this account?",
@@ -305,6 +313,8 @@ return [
             'title' => "Session of :month :year",
             'host' => "Edit the host",
             'venue' => "Venue",
+            'start' => "Start session",
+            'end' => "End session",
         ],
         'tips' => [
             'add' => "Enter a session on each line. Separate the title and date with a semicolon. The date must be in 'YYYY-MM-DD' format.",
@@ -315,6 +325,14 @@ return [
             'host' => "Host",
             'address' => "Address",
             'title' => ":date session",
+            'start_session' => "Start session: :session",
+            'end_session' => "End session: :session",
+            'end_interest' => "End interest: :session",
+            'count' => "Number of sessions: :count",
+            'active' => "Active",
+            'start' => "Start",
+            'end' => "End",
+            'interest' => "Int.",
         ],
         'actions' => [
             'host' => "Host",
@@ -326,6 +344,12 @@ return [
             'updated' => "The session was successfully updated.",
             'deleted' => "The session was successfully deleted.",
             'resynced' => "The sessions were successfully resynced.",
+            'fund' => [
+                'saved' => "The sessions of the savings fund was successfully saved.",
+            ],
+            'pool' => [
+                'saved' => "The sessions of the tontine fund was successfully saved.",
+            ],
         ],
         'questions' => [
             'open' => "Open this session?",
@@ -343,20 +367,25 @@ return [
             'delete' => "Cannot delete this session.",
             'date_dup' => "There is another session with the same date.",
             'sorting' => "The session sorting cannot be modified.",
+            'start' => "The start session is incorrect.",
+            'end' => "The end session is incorrect.",
+            'interest' => "The interest end session is incorrect.",
+            'dates' => [
+                'end' => "The start session must precede the end session.",
+                'int' => "The interest end session must be between the start and the end sessions.",
+            ],
         ],
     ],
     'pool' => [
         'titles' => [
-            'add' => "Add a tontine",
-            'add_many' => "Add tontines",
-            'edit' => "Edit a tontine",
+            'pools' => "Tontine funds",
+            'add' => "Add a tontine fund",
+            'add_many' => "Add tontine funds",
+            'edit' => "Edit a tontine fund",
             'deposits' => "Deposits",
             'remitments' => "Remitments",
             'subscriptions' => "Subscriptions",
             'members' => "Members",
-            'sessions' => "Sessions",
-        ],
-        'actions' => [
             'sessions' => "Sessions",
         ],
         'labels' => [
@@ -374,10 +403,10 @@ return [
             ],
         ],
         'help' => [
-            'intro' => "You are going to add a new tontine on round <b>:round</b>.<br/>" .
+            'intro' => "You are going to add a new tontine fund.<br/>" .
                 "We are going to ask you to specify its characteristics.",
             'deposit' => [
-                'fixed' => "Check the box below each member who subscribes to this tontine must pay a fixed amount at each session.",
+                'fixed' => "Check the box below each member who subscribes to this tontine fund must pay a fixed amount at each session.",
                 'lendable' => "Check the box below if the amounts remaining in the pool after remitments can be loaned.",
             ],
             'remit' => [
@@ -386,51 +415,27 @@ return [
             ],
         ],
         'questions' => [
-            'delete' => "Delete this tontine?<br/>Please, make sure it has no subscription.",
+            'delete' => "Delete this tontine fund?<br/>Please, make sure it has no subscription.",
+            'disable' => "Disable this tontine fund?<br/>Please, make sure it has no subscription.",
         ],
         'messages' => [
-            'created' => "The tontine was successfully created.",
-            'updated' => "The tontine was successfully updated.",
-            'deleted' => "The tontine was successfully deleted.",
-            'selected' => "Now showing the subscriptions of the tontine :pool.",
+            'created' => "The tontine fund was successfully created.",
+            'updated' => "The tontine fund was successfully updated.",
+            'deleted' => "The tontine was fund successfully deleted.",
+            'selected' => "Now showing the subscriptions of the tontine fund :pool.",
+            'enabled' => "The tontine fund was successfully enabled.",
+            'disabled' => "The tontine fund was successfully disabled.",
         ],
         'errors' => [
-            'not_found' => "Unable to find this tontine.",
+            'not_found' => "Unable to find this tontine fund.",
             'number' => [
                 'invalid' => "Please provide a valid number.",
                 'max' => "You can add a maximum of :max entries.",
             ],
             'subscription' => "The tontine still has subscriptions.",
             'no_subscription' => "There are tontines with no subscription.",
-            'payments' => "All deposits and remitments must be deleted prior to deleting or disabling a tontine pool.",
-        ],
-    ],
-    'pool_round' => [
-        'titles' => [
-            'sessions' => "Sessions of tontine: :pool",
-            'start_session' => "Start session",
-            'end_session' => "End session",
-        ],
-        'labels' => [
-            'default' => "(round)",
-            'start_session' => "Start session: :session",
-            'end_session' => "End session: :session",
-            'session_count' => "Number of sessions: :count",
-            'active' => "Active",
-            'start' => "Start",
-            'end' => "End",
-        ],
-        'questions' => [
-            'delete' => "Delete the sessions of this tontine?",
-        ],
-        'messages' => [
-            'saved' => "The sessions of the tontine was successfully saved.",
-            'deleted' => "The sessions of the tontine was successfully deleted.",
-        ],
-        'errors' => [
-            'start_session' => "The start session is incorrect.",
-            'end_session' => "The end session is incorrect.",
-            'session_dates' => "The start session must precede the end session.",
+            'payments' => "All deposits and remitments must be deleted prior to deleting or disabling a tontine fund.",
+            'not_planned' => "Cannot show the planning or beneficiaries of a tontine with remitments not planned.",
         ],
     ],
     'subscription' => [
@@ -459,7 +464,6 @@ return [
     'beneficiary' => [
         'errors' => [
             'cant_change' => "Cannot change the beneficiary.",
-            'not_planned' => "Cannot show the beneficiaries of a tontine with remitments not planned.",
         ],
     ],
     'remitment' => [

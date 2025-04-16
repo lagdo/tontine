@@ -14,7 +14,6 @@ return [
         'remitments' => "Remitments",
         'auctions' => "Auctions",
         'savings' => "Savings",
-        'closings' => "Closings",
         'loan' => "Loan",
         'loans' => "Loans",
         'amounts' => "Amounts",
@@ -24,7 +23,7 @@ return [
         'benefit' => "Benefit",
         'refund' => "Refund",
         'refunds' => "Refunds",
-        'disbursements' => "Disbursements",
+        'outflows' => "Outflows",
         'profits' => "Profits distribution",
         'summary' => "Summary",
     ],
@@ -45,6 +44,7 @@ return [
         'cash' => "Cash",
         'credits' => "Credits",
         'profits' => "Profits",
+        'outflows' => "Outflows",
     ],
     'labels' => [
         'member' => "Member",
@@ -161,7 +161,6 @@ return [
             'interest' => "Interest",
         ],
         'labels' => [
-            'closing' => "Closing",
         ],
         'questions' => [
             'delete' => "Delete this saving?",
@@ -173,28 +172,12 @@ return [
             'select_fund' => "Please select a fund from the list.",
         ],
     ],
-    'closing' => [
-        'titles' => [
-            'round' => "Round closing",
-            'interest' => "Interest closing",
-            'r' => "Round",
-            'i' => "Interest",
-        ],
-        'labels' => [
-            'fund' => "Fund",
-            'amount' => "Amount to share",
-            'interest' => "The calculation of interest stops at this session.",
-        ],
-        'questions' => [
-            'delete' => "Delete this closing?",
-        ],
-    ],
     'profit' => [
         'distribution' => [
             'total' => "Saving: :saving. Interests: :refund.",
             'amount' => "Distribution: :amount.",
             'parts' => ":parts parts.",
-            'basis' => "For each session, :unit = one part.",
+            'basis' => "For each session, one part = :unit.",
         ],
     ],
     'loan' => [
@@ -267,19 +250,19 @@ return [
             'cannot_delete' => "Cannot delete this partial refund.",
         ],
     ],
-    'disbursement' => [
+    'outflow' => [
         'titles' => [
-            'add' => "Add a disbursement",
-            'edit' => "Edit a disbursement",
+            'add' => "Add a cash outflow",
+            'edit' => "Edit a cash outflow",
         ],
         'labels' => [
             'amount_available' => "Available: :amount",
         ],
         'questions' => [
-            'delete' => "Delete this disbursement?",
+            'delete' => "Delete this cash outflow?",
         ],
         'errors' => [
-            'not_found' => "Cannot find the disbursement.",
+            'not_found' => "Cannot find the cash outflow.",
         ],
     ],
     'entry' => [

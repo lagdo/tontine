@@ -1,16 +1,16 @@
 <?php
 
+use Ajax\App\Guild\Account\Account;
 use Ajax\App\Admin\Guild\Guild;
-use Ajax\App\Admin\User\User;
 use Ajax\App\Guild\Calendar\Round as Calendar;
 use Ajax\App\Guild\Charge\Charge;
 use Ajax\App\Guild\Member\Member;
-use Ajax\App\Guild\Account\Account;
 use Ajax\App\Guild\Pool\Pool;
+use Ajax\App\Admin\User\User;
 use Ajax\App\Meeting\Payment\Payment;
 use Ajax\App\Meeting\Presence\Presence;
-use Ajax\App\Meeting\Session\Session as MeetingSession;
-use Ajax\App\Planning\Financial\Pool as Financial;
+use Ajax\App\Meeting\Session\Session;
+use Ajax\App\Planning\Finance\Finance;
 use Ajax\App\Planning\Subscription\Subscription;
 use Ajax\App\Report\Round\Round as ReportRound;
 use Ajax\App\Report\Session\Session as ReportSession;
@@ -30,9 +30,9 @@ return [
         '#tontine-menu-calendar' => Calendar::class,
     ],
     'round' => [
-        '#planning-menu-financial' => Financial::class,
+        '#planning-menu-finance' => Finance::class,
         '#planning-menu-subscriptions' => Subscription::class,
-        '#meeting-menu-sessions' => MeetingSession::class,
+        '#meeting-menu-sessions' => Session::class,
         '#meeting-menu-payments' => Payment::class,
         '#meeting-menu-presences' => Presence::class,
         '#report-menu-session' => ReportSession::class,

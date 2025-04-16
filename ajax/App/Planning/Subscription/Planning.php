@@ -4,6 +4,7 @@ namespace Ajax\App\Planning\Subscription;
 
 use Ajax\Component;
 use Ajax\App\Page\SectionContent;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SummaryService;
 use Stringable;
@@ -34,6 +35,18 @@ class Planning extends Component
     public function pool(int $poolId)
     {
         $this->render();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function before()
+    {
+        $pool = $this->stash()->get('subscription.pool');
+        if(!$pool->remit_planned)
+        {
+            throw new MessageException(trans('tontine.pool.errors.not_planned'));
+        }
     }
 
     /**

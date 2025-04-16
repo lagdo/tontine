@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\FuncComponent;
-use Ajax\App\Meeting\Session\FundTrait;
+use Siak\Tontine\Service\Meeting\Saving\SavingService;
 
 use function trim;
 
@@ -19,6 +19,14 @@ class MemberFunc extends FuncComponent
      * @var string
      */
     protected string $bagId = 'meeting.saving';
+
+    /**
+     * The constructor
+     *
+     * @param SavingService $savingService
+     */
+    public function __construct(protected SavingService $savingService)
+    {}
 
     /**
      * @var string

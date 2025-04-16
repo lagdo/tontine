@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Summary\Refund\Partial;
 
 use Ajax\App\Meeting\Summary\PageComponent;
-use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
 use Stringable;
 
@@ -22,11 +21,9 @@ class RefundPage extends PageComponent
     /**
      * The constructor
      *
-     * @param FundService $fundService
      * @param PartialRefundService $refundService
      */
-    public function __construct(protected FundService $fundService,
-        protected PartialRefundService $refundService)
+    public function __construct(protected PartialRefundService $refundService)
     {}
 
     /**

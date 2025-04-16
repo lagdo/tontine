@@ -30,15 +30,6 @@ class PoolDef extends Base
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'properties' => 'array',
-    ];
-
-    /**
      * The model's default values for attributes.
      *
      * @var array
@@ -46,6 +37,18 @@ class PoolDef extends Base
     protected $attributes = [
         'properties' => '{}',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'properties' => 'array',
+        ];
+    }
 
     /**
      * Create a new factory instance for the model.
@@ -85,13 +88,6 @@ class PoolDef extends Base
         );
     }
 
-    public function remitPayable(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->remit_planned && !$this->remit_auction,
-        );
-    }
-
     public function pools()
     {
         return $this->hasMany(Pool::class, 'def_id');
@@ -110,5 +106,15 @@ class PoolDef extends Base
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('active', true);
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeDepositLendable(Builder $query): Builder
+    {
+        return $query->where('properties->deposit->lendable', true);
     }
 }

@@ -26,7 +26,8 @@ class PoolPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->poolService->getPoolCount();
+        $round = $this->tenantService->round();
+        return $this->poolService->getPoolCount($round);
     }
 
     /**
@@ -34,12 +35,13 @@ class PoolPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $pools = $this->poolService->getPools($this->currentPage());
+        $round = $this->tenantService->round();
+        $pools = $this->poolService->getPools($round, $this->currentPage());
         // When showing the page for the first time, we'll need to get the first pool
         $this->stash()->set('subscription.pools', $pools);
 
         return $this->renderView('pages.planning.subscription.pool.page', [
-            'round' => $this->tenantService->round(),
+            'round' => $round,
             'pools' => $pools,
         ]);
     }

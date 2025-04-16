@@ -23,11 +23,14 @@ class GuestGuild extends Pivot
     ];
 
     /**
-     * The attributes that should be cast.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'access' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'access' => 'array',
+        ];
+    }
 }

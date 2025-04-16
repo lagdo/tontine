@@ -112,9 +112,9 @@ class RoundService
      *
      * @return Collection
      */
-    public function getDisbursementAmounts(Collection $sessionIds): Collection
+    public function getOutflowAmounts(Collection $sessionIds): Collection
     {
-        return DB::table('disbursements')
+        return DB::table('outflows')
             ->select(DB::raw('sum(amount) as total_amount'), 'session_id')
             ->whereIn('session_id', $sessionIds)
             ->groupBy('session_id')

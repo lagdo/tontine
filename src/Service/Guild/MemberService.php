@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Service\DataSyncService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Traits\EventTrait;
 use Siak\Tontine\Service\Traits\WithTrait;
 
 use function count;
@@ -17,7 +17,6 @@ use function tap;
 
 class MemberService
 {
-    use EventTrait;
     use WithTrait;
 
     /**
@@ -27,8 +26,10 @@ class MemberService
 
     /**
      * @param TenantService $tenantService
+     * @param DataSyncService $dataSyncService
      */
-    public function __construct(protected TenantService $tenantService)
+    public function __construct(private TenantService $tenantService,
+        private DataSyncService $dataSyncService)
     {}
 
     /**
@@ -159,7 +160,7 @@ class MemberService
             $guild = $this->tenantService->guild();
             $member = $guild->members()->create($values);
             // Create members bills
-            $this->memberCreated($guild, $member);
+            $this->dataSyncService->memberCreated($guild, $member);
             $this->saveActiveMembers();
         });
 
@@ -181,7 +182,7 @@ class MemberService
             // Create members bills
             foreach($members as $member)
             {
-                $this->memberCreated($guild, $member);
+                $this->dataSyncService->memberCreated($guild, $member);
             }
             $this->saveActiveMembers();
         });

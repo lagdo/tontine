@@ -12,7 +12,7 @@ class Category extends Base
     /**
      * @const
      */
-    const TYPE_DISBURSEMENT = 'disbursement';
+    const TYPE_OUTFLOW = 'outflow';
 
     /**
      * Indicates if the model should be timestamped.
@@ -54,9 +54,9 @@ class Category extends Base
      *
      * @return Builder
      */
-    public function scopeDisbursement(Builder $query): Builder
+    public function scopeOutflow(Builder $query): Builder
     {
-        return $query->where('item_type', self::TYPE_DISBURSEMENT);
+        return $query->where('item_type', self::TYPE_OUTFLOW);
     }
 
     /**

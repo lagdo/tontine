@@ -2,11 +2,12 @@
 
 namespace Ajax\App\Admin\Guild;
 
+use Ajax\App\MenuFunc;
 use Ajax\App\Page\MainTitle;
 use Ajax\App\Page\Sidebar\AdminMenu;
 use Ajax\FuncComponent;
+use Siak\Tontine\Model\Guild as GuildModel;
 use Siak\Tontine\Service\Guild\GuildService;
-use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Validation\Guild\GuildValidator;
 
@@ -23,11 +24,6 @@ class GuildFunc extends FuncComponent
      * @var LocaleService
      */
     protected LocaleService $localeService;
-
-    /**
-     * @var MemberService
-     */
-    protected MemberService $memberService;
 
     /**
      * @var GuildValidator
@@ -64,20 +60,34 @@ class GuildFunc extends FuncComponent
     }
 
     /**
+     * @param GuildModel $guild
+     *
+     * @return void
+     */
+    private function guildCreated(GuildModel $guild): void
+    {
+        if(!$this->tenantService->guild() || $this->guildService->getGuildCount() === 0)
+        {
+            $this->cl(MenuFunc::class)->setCurrentGuild($guild);
+        }
+    }
+
+    /**
      * @di $validator
      */
     public function create(array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
-        $this->guildService->createGuild($values);
+        $guild = $this->guildService->createGuild($values);
+
+        $this->guildCreated($guild);
+        $this->cl(MainTitle::class)->render();
+        $this->cl(AdminMenu::class)->render();
 
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.messages.created'));
         $this->cl(GuildPage::class)->page(); // Back to current page
-
-        $this->cl(MainTitle::class)->render();
-        $this->cl(AdminMenu::class)->render();
     }
 
     /**
@@ -121,15 +131,29 @@ class GuildFunc extends FuncComponent
         $this->cl(GuildPage::class)->page(); // Back to current page
     }
 
+    /**
+     * @return void
+     */
+    private function guildDeleted(int $guildId): void
+    {
+        $currentGuild = $this->tenantService->guild();
+        if($currentGuild !== null && $currentGuild->id === $guildId &&
+            ($firstGuild = $this->guildService->getFirstGuild()) !== null)
+        {
+            $this->cl(MenuFunc::class)->setCurrentGuild($firstGuild);
+        }
+    }
+
     public function delete(int $guildId)
     {
         $this->guildService->deleteGuild($guildId);
 
-        $this->alert()->title(trans('common.titles.success'))
-            ->success(trans('tontine.messages.deleted'));
-        $this->cl(GuildPage::class)->page(); // Back to current page
-
+        $this->guildDeleted($guildId);
         $this->cl(MainTitle::class)->render();
         $this->cl(AdminMenu::class)->render();
+
+        $this->cl(GuildPage::class)->page(); // Back to current page
+        $this->alert()->title(trans('common.titles.success'))
+            ->success(trans('tontine.messages.deleted'));
     }
 }

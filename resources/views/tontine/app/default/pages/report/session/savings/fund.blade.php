@@ -1,24 +1,24 @@
 @php
-  $rqAmount = rq(Ajax\App\Report\Session\Saving\Amount::class);
-  $rqSummary = rq(Ajax\App\Report\Session\Saving\Summary::class);
   $rqDistribution = rq(Ajax\App\Report\Session\Saving\Distribution::class);
+  $rqAmount = rq(Ajax\App\Report\Session\Saving\Amount::class);
+  $rqTotal = rq(Ajax\App\Report\Session\Saving\Distribution\Total::class);
+  $rqParts = rq(Ajax\App\Report\Session\Saving\Distribution\Parts::class);
+  $rqBasis = rq(Ajax\App\Report\Session\Saving\Distribution\Basis::class);
 @endphp
                   <div class="row">
-                    <div class="col">
-                      <div class="section-title mt-0">{!! $fund->title !!}</div>
+                    <div class="col py-2 font-weight-bold" @jxnBind($rqTotal)>
+                      @jxnHtml($rqTotal)
                     </div>
-@if ($backButton)
-                    <div class="col-auto sm-screen-hidden">
-                      <button type="button" class="btn btn-primary" id="btn-presence-sessions-back"><i class="fa fa-arrow-left"></i></button>
+                    <div class="col-auto py-2 font-weight-bold" @jxnBind($rqParts)>
+                      @jxnHtml($rqParts)
                     </div>
-@endif
+                    <div class="col-auto py-2 font-weight-bold" @jxnBind($rqBasis)>
+                      @jxnHtml($rqBasis)
+                    </div>
+                    <div class="col-auto" @jxnBind($rqAmount)>
+                      @jxnHtml($rqAmount)
+                    </div>
                   </div>
-                  <div class="row" @jxnBind($rqSummary)>
-                    @jxnHtml($rqSummary)
-                  </div>
-                  <div class="row" @jxnBind($rqAmount)>
-                    @jxnHtml($rqAmount)
-                  </div>
-                  <div class="table-responsive mt-2" id="content-fund-savings-distribution" @jxnBind($rqDistribution)>
+                  <div class="table-responsive mt-2" id="content-report-profit-distribution" @jxnBind($rqDistribution)>
                     @jxnHtml($rqDistribution)
                   </div>

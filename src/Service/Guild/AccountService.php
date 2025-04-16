@@ -25,7 +25,7 @@ class AccountService
     {
         return $this->tenantService->guild()
             ->categories()
-            ->disbursement()
+            ->outflow()
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -37,7 +37,7 @@ class AccountService
      */
     public function getCategoryCount(): int
     {
-        return $this->tenantService->guild()->categories()->disbursement()->count();
+        return $this->tenantService->guild()->categories()->outflow()->count();
     }
 
     /**
@@ -49,7 +49,7 @@ class AccountService
      */
     public function getAccount(int $categoryId): ?Category
     {
-        return $this->tenantService->guild()->categories()->disbursement()->find($categoryId);
+        return $this->tenantService->guild()->categories()->outflow()->find($categoryId);
     }
 
     /**

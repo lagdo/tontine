@@ -8,7 +8,7 @@ use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Saving;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
-use Siak\Tontine\Service\Guild\FundService;
+use Siak\Tontine\Service\Meeting\FundService;
 use Siak\Tontine\Service\TenantService;
 
 use function gmp_gcd;
@@ -111,7 +111,7 @@ class ProfitService
      */
     public function getDistribution(Session $session, Fund $fund, int $profitAmount): Distribution
     {
-        $sessions = $this->fundService->getFundSessions($session, $fund);
+        $sessions = $this->fundService->getFundSessions($fund, $session);
         // Get the savings until the given session.
         $savings = $fund->savings()
             ->select('savings.*')
@@ -139,7 +139,7 @@ class ProfitService
     public function getSavingAmounts(Session $session, Fund $fund): array
     {
         // Get the ids of all the sessions until the current one.
-        $sessionIds = $this->fundService->getFundSessionIds($session, $fund);
+        $sessionIds = $this->fundService->getFundSessionIds($fund, $session);
         return [
             'saving' => $this->balanceCalculator->getSavingsAmount($sessionIds, $fund),
             'refund' => $this->balanceCalculator->getRefundsAmount($sessionIds, $fund) +

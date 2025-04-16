@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Credit\Refund;
 
 use Ajax\App\Meeting\FuncComponent;
-use Ajax\App\Meeting\Session\FundTrait;
 use Siak\Tontine\Model\Debt as DebtModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
@@ -40,8 +39,7 @@ class AmountFunc extends FuncComponent
     public function edit(int $debtId)
     {
         $session = $this->stash()->get('meeting.session');
-        $fund = $this->getStashedFund();
-        $debt = $this->refundService->getUnpaidDebt($session, $fund, $debtId);
+        $debt = $this->refundService->getUnpaidDebt($session, $debtId);
         if(!$debt)
         {
             $this->alert()->warning(trans('meeting.loan.errors.not_found'));
@@ -90,8 +88,7 @@ class AmountFunc extends FuncComponent
         ]);
 
         $session = $this->stash()->get('meeting.session');
-        $fund = $this->getStashedFund();
-        $debt = $this->refundService->getUnpaidDebt($session, $fund, $debtId);
+        $debt = $this->refundService->getUnpaidDebt($session, $debtId);
         if(!$debt)
         {
             $this->alert()->error(trans('meeting.loan.errors.not_found'));
@@ -105,7 +102,7 @@ class AmountFunc extends FuncComponent
 
         $this->_save($session, $debt, $values['amount']);
 
-        $debt = $this->refundService->getFundDebt($session, $fund, $debtId);
+        $debt = $this->refundService->getFundDebt($session, null, $debtId);
         $this->stash()->set('meeting.refund.debt', $debt);
         $this->cl(RefundItem::class)->item($debt->id)->render();
     }

@@ -50,6 +50,6 @@ class Account extends Component
         $this->response->js('Tontine')->setSmScreenHandler('account-sm-screens');
 
         $this->cl(Fund::class)->render();
-        $this->cl(Disbursement::class)->render();
+        $this->cl(Outflow::class)->render();
     }
 }
