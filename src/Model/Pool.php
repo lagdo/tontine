@@ -46,8 +46,8 @@ class Pool extends Base
     protected function casts(): array
     {
         return [
-            'start_at' => 'datetime',
-            'end_at' => 'datetime',
+            'start_date' => 'datetime:Y-m-d',
+            'end_date' => 'datetime:Y-m-d',
         ];
     }
 
@@ -105,8 +105,8 @@ class Pool extends Base
         static::addGlobalScope('sessions', function (Builder $query) {
             $query->addSelect([
                 'pools.*',
-                'v.end_at',
-                'v.start_at',
+                'v.end_date',
+                'v.start_date',
                 'v.sessions_count',
                 'v.disabled_sessions_count'
             ])->join(DB::raw('v_pools as v'), 'v.pool_id', '=', 'pools.id');
@@ -122,8 +122,8 @@ class Pool extends Base
      */
     private function filterOnDates(Builder $query, Carbon $startDate, Carbon $endDate): Builder
     {
-        return $query->where('v.end_at', '>=', $startDate)
-            ->where('v.start_at', '<=', $endDate);
+        return $query->where('v.end_date', '>=', $startDate)
+            ->where('v.start_date', '<=', $endDate);
     }
 
     /**
@@ -137,7 +137,7 @@ class Pool extends Base
     public function scopeOfRound(Builder $query, Round $round): Builder
     {
         $query->whereHas('def', fn($q) => $q->where('guild_id', $round->guild_id));
-        return $this->filterOnDates($query, $round->start_at, $round->end_at);
+        return $this->filterOnDates($query, $round->start_date, $round->end_date);
     }
 
     /**
@@ -150,17 +150,17 @@ class Pool extends Base
         return $query->whereHas('def', fn($q) => $q->where('properties->remit->planned', true));
     }
 
-    public function startDate(): Attribute
+    public function dateStart(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->start_at->translatedFormat(trans('tontine.date.format')),
+            get: fn() => $this->start_date->translatedFormat(trans('tontine.date.format')),
         );
     }
 
-    public function endDate(): Attribute
+    public function dateEnd(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->end_at->translatedFormat(trans('tontine.date.format')),
+            get: fn() => $this->end_date->translatedFormat(trans('tontine.date.format')),
         );
     }
 

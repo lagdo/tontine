@@ -48,8 +48,6 @@ class SessionService
      */
     public function createSession(Round $round, array $values): bool
     {
-        $values['start_at'] = $values['date'] . ' ' . $values['start'] . ':00';
-        $values['end_at'] = $values['date'] . ' ' . $values['end'] . ':00';
         DB::transaction(function() use($round, $values) {
             /** @var Session */
             $session = $round->sessions()->create($values);
@@ -70,11 +68,6 @@ class SessionService
      */
     public function createSessions(Round $round, array $values): bool
     {
-        foreach($values as &$value)
-        {
-            $value['start_at'] = $value['date'] . ' ' . $value['start'] . ':00';
-            $value['end_at'] = $value['date'] . ' ' . $value['end'] . ':00';
-        }
         DB::transaction(function() use($round, $values) {
             $sessions = $round->sessions()->createMany($values);
             foreach($sessions as $session)
@@ -100,8 +93,6 @@ class SessionService
         $guild = $this->tenantService->guild();
         $this->dataSyncService->onUpdateSession($guild, $session, $values);
 
-        $values['start_at'] = $values['date'] . ' ' . $values['start'] . ':00';
-        $values['end_at'] = $values['date'] . ' ' . $values['end'] . ':00';
         // Make sure the host belongs to the same guild
         $hostId = intval($values['host_id']);
         $values['host_id'] = null;

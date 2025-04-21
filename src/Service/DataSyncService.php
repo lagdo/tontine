@@ -419,8 +419,8 @@ class DataSyncService
     private function getPrevSession(Guild $guild, Session $session): ?Session
     {
         return $guild->sessions()
-            ->where('start_at', '<', $session->start_at)
-            ->orderBy('start_at', 'desc')
+            ->where('day_date', '<', $session->day_date)
+            ->orderBy('day_date', 'desc')
             ->first();
     }
 
@@ -435,8 +435,8 @@ class DataSyncService
     private function getNextSession(Guild $guild, Session $session): ?Session
     {
         return $guild->sessions()
-            ->where('start_at', '>', $session->start_at)
-            ->orderBy('start_at', 'asc')
+            ->where('day_date', '>', $session->day_date)
+            ->orderBy('day_date', 'asc')
             ->first();
     }
 
@@ -452,11 +452,11 @@ class DataSyncService
     public function onUpdateSession(Guild $guild, Session $session, array $values): void
     {
         // Check that the sessions date sorting is not modified.
-        $date = Carbon::createFromFormat('Y-m-d', $values['date']);
+        $date = Carbon::createFromFormat('Y-m-d', $values['day_date']);
         $prevSession = $this->getPrevSession($guild, $session);
         $nextSession = $this->getNextSession($guild, $session);
-        if(($prevSession !== null && $prevSession->start_at->startOfDay()->gte($date)) ||
-            ($nextSession !== null && $nextSession->start_at->startOfDay()->lte($date)))
+        if(($prevSession !== null && $prevSession->day_date->gte($date)) ||
+            ($nextSession !== null && $nextSession->day_date->lte($date)))
         {
             throw new MessageException(trans('tontine.errors.action') .
                 '<br/>' . trans('tontine.session.errors.sorting'));

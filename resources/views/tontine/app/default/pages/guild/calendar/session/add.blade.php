@@ -14,18 +14,18 @@
               </div>
             </div>
             <div class="form-group row">
-              {!! $html->label(__('common.labels.date'), 'date')->class('col-sm-3 col-form-label') !!}*
+              {!! $html->label(__('common.labels.date'), 'day_date')->class('col-sm-3 col-form-label') !!}*
               <div class="col-sm-6">
-                {!! $html->date('date', '')->class('form-control') !!}
+                {!! $html->date('day_date', '')->class('form-control') !!}
               </div>
             </div>
             <div class="form-group row">
-              {!! $html->label(__('tontine.session.labels.times'), 'start')->class('col-sm-3 col-form-label') !!}
+              {!! $html->label(__('tontine.session.labels.times'), 'start_time')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-4">
-                {!! $html->time('start', '00:00')->class('form-control') !!}
+                {!! $html->time('start_time', '00:00')->class('form-control') !!}
               </div>
               <div class="col-sm-4">
-                {!! $html->time('end', '00:00')->class('form-control') !!}
+                {!! $html->time('end_time', '00:00')->class('form-control') !!}
               </div>
             </div>
             <div class="form-group row">

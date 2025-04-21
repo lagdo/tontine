@@ -110,8 +110,8 @@ class FundService
     private function getFundSessionsQuery(Fund $fund, Session $session): Builder|Relation
     {
         return $fund->sessions()
-            ->where('start_at', '<=', $session->start_at)
-            ->where('start_at', '<=', $fund->interest->start_at);
+            ->where('day_date', '<=', $session->day_date)
+            ->where('day_date', '<=', $fund->interest->day_date);
     }
 
     /**

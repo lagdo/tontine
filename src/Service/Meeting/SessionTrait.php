@@ -74,7 +74,7 @@ trait SessionTrait
     public function getSessions(int $page = 0, bool $orderAsc = true): Collection
     {
         return tap($this->_getRoundSessionsQuery(), fn($query) => $this->addWith($query))
-            ->orderBy('start_at', $orderAsc ? 'asc' : 'desc')
+            ->orderBy('day_date', $orderAsc ? 'asc' : 'desc')
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -114,7 +114,7 @@ trait SessionTrait
     {
         return $this->tenantService->guild()->sessions()
             ->when($this->filterActive, fn(Builder $query) => $query->active())
-            ->orderBy('start_at', $orderAsc ? 'asc' : 'desc')
+            ->orderBy('day_date', $orderAsc ? 'asc' : 'desc')
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -130,9 +130,8 @@ trait SessionTrait
     private function getSessionsQuery($query, ?Session $currSession, bool $getAfter, bool $withCurr): Builder|Relation
     {
         $operator = $getAfter ? ($withCurr ? '>=' : '>') : ($withCurr ? '<=' : '<');
-        $currSessionDate = !$currSession ? '' : $currSession->start_at->format('Y-m-d');
         return $query->when($currSession !== null, fn(Builder $query) =>
-            $query->whereDate('start_at', $operator, $currSessionDate));
+            $query->where('day_date', $operator, $currSession->day_date));
     }
 
     /**

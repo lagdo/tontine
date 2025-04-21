@@ -196,7 +196,7 @@ class RoundService
     public function getSessions(Round $round, int $page = 0, bool $orderAsc = true): Collection
     {
         return $round->sessions()
-            ->orderBy('start_at', $orderAsc ? 'asc' : 'desc')
+            ->orderBy('day_date', $orderAsc ? 'asc' : 'desc')
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }

@@ -44,28 +44,28 @@ class Round extends Base
     public function start(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->sessions()->orderBy('start_at')->first(),
+            get: fn() => $this->sessions()->orderBy('day_date')->first(),
         );
     }
 
-    public function startAt(): Attribute
+    public function startDate(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->start?->start_at ?? null,
+            get: fn() => $this->start?->day_date ?? null,
         );
     }
 
     public function end(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->sessions()->orderByDesc('start_at')->first(),
+            get: fn() => $this->sessions()->orderByDesc('day_date')->first(),
         );
     }
 
-    public function endAt(): Attribute
+    public function endDate(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->end?->start_at ?? null,
+            get: fn() => $this->end?->day_date ?? null,
         );
     }
 

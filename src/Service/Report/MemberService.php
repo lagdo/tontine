@@ -216,7 +216,7 @@ class MemberService
     public function getDebts(Session $session, Member $member): Collection
     {
         $prevSessions = $this->tenantService->round()->sessions()
-            ->where('start_at', '<', $session->start_at)->pluck('id');
+            ->where('day_date', '<', $session->day_date)->pluck('id');
         return Debt::with(['loan.session', 'refund'])
             // Member debts
             ->whereHas('loan', function(Builder $query) use($member) {

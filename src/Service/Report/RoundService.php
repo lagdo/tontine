@@ -18,7 +18,7 @@ class RoundService
      */
     public function getRoundSessions(Round $round): Collection
     {
-        return $round->sessions()->active()->orderBy('start_at', 'asc')->get();
+        return $round->sessions()->active()->orderBy('day_date', 'asc')->get();
     }
 
     /**

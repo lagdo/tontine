@@ -56,13 +56,13 @@ class FundSessionsValidator extends AbstractValidator
         }
 
         // Verify that the start session comes before the end session.
-        if($sessions['end_sid']->start_at <= $sessions['start_sid']->start_at)
+        if($sessions['end_sid']->day_date <= $sessions['start_sid']->day_date)
         {
             $validator->errors()->add('end_sid', trans('tontine.session.errors.dates.end'));
         }
         // Verify that the interest session is between the start and end sessions.
-        if($sessions['interest_sid']->start_at <= $sessions['start_sid']->start_at ||
-            $sessions['interest_sid']->start_at > $sessions['end_sid']->start_at)
+        if($sessions['interest_sid']->day_date <= $sessions['start_sid']->day_date ||
+            $sessions['interest_sid']->day_date > $sessions['end_sid']->day_date)
         {
             $validator->errors()->add('interest_sid', trans('tontine.session.errors.dates.int'));
         }

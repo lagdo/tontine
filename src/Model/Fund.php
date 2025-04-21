@@ -50,9 +50,9 @@ class Fund extends Base
     {
         return [
             'options' => 'array',
-            'start_at' => 'datetime',
-            'end_at' => 'datetime',
-            'interest_at' => 'datetime',
+            'start_date' => 'datetime:Y-m-d',
+            'end_date' => 'datetime:Y-m-d',
+            'interest_date' => 'datetime:Y-m-d',
         ];
     }
 
@@ -112,9 +112,9 @@ class Fund extends Base
         static::addGlobalScope('sessions', function (Builder $query) {
             $query->addSelect([
                 'funds.*',
-                'v.end_at',
-                'v.start_at',
-                'v.interest_at',
+                'v.end_date',
+                'v.start_date',
+                'v.interest_date',
                 'v.sessions_count',
             ])->join(DB::raw('v_funds as v'), 'v.fund_id', '=', 'funds.id');
         });
@@ -129,8 +129,8 @@ class Fund extends Base
      */
     private function filterOnDates(Builder $query, Carbon $startDate, Carbon $endDate): Builder
     {
-        return $query->where('v.end_at', '>=', $startDate)
-            ->where('v.start_at', '<=', $endDate);
+        return $query->where('v.end_date', '>=', $startDate)
+            ->where('v.start_date', '<=', $endDate);
     }
 
     /**
@@ -144,7 +144,7 @@ class Fund extends Base
     public function scopeOfRound(Builder $query, Round $round): Builder
     {
         $query->whereHas('def', fn($q) => $q->where('guild_id', $round->guild_id));
-        return $this->filterOnDates($query, $round->start_at, $round->end_at);
+        return $this->filterOnDates($query, $round->start_date, $round->end_date);
     }
 
     /**
@@ -158,27 +158,27 @@ class Fund extends Base
     public function scopeOfSession(Builder $query, Session $session): Builder
     {
         $query->whereHas('def', fn($q) => $q->where('guild_id', $session->round->guild_id));
-        return $this->filterOnDates($query, $session->start_at, $session->start_at);
+        return $this->filterOnDates($query, $session->day_date, $session->day_date);
     }
 
-    public function startDate(): Attribute
+    public function dateStart(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->start_at->translatedFormat(trans('tontine.date.format')),
+            get: fn() => $this->start_date->translatedFormat(trans('tontine.date.format')),
         );
     }
 
-    public function endDate(): Attribute
+    public function dateEnd(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->end_at->translatedFormat(trans('tontine.date.format')),
+            get: fn() => $this->end_date->translatedFormat(trans('tontine.date.format')),
         );
     }
 
-    public function interestDate(): Attribute
+    public function dateInterest(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->interest_at->translatedFormat(trans('tontine.date.format')),
+            get: fn() => $this->interest_date->translatedFormat(trans('tontine.date.format')),
         );
     }
 

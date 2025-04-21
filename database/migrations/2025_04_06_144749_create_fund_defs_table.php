@@ -144,7 +144,7 @@ SQL;
             $table->unsignedBigInteger('interest_sid')->nullable(false)->change();
         });
 
-$sql = <<<SQL
+        $sql = <<<SQL
 create view v_funds as
     select f.id as fund_id, ss.start_at, se.start_at as end_at, si.start_at as interest_at,
         (select count(s.id) from sessions s
@@ -159,7 +159,7 @@ create view v_funds as
 SQL;
         DB::statement($sql);
 
-$sql = <<<SQL
+        $sql = <<<SQL
 create view v_fund_session as
     select distinct f.id as fund_id, s.id as session_id
         from funds f

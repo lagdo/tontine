@@ -271,7 +271,7 @@ class SummaryService
 
         $sessions = $this->poolService->getActiveSessions($pool);
         $position = $sessions->filter(
-            fn($_session) => $_session->start_at->lt($session->start_at)
+            fn($_session) => $_session->day_date->lt($session->day_date)
         )->count();
 
         return $this->getRemitmentCount($sessions->count(),

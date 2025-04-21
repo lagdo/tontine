@@ -32,8 +32,8 @@ class DebtCalculator
     private function getSessionCount(Session $fromSession, Session $toSession): int
     {
         return $this->tenantService->guild()->sessions()
-            ->whereDate('start_at', '>', $fromSession->start_at->format('Y-m-d'))
-            ->whereDate('start_at', '<=', $toSession->start_at->format('Y-m-d'))
+            ->where('day_date', '>', $fromSession->day_date)
+            ->where('day_date', '<=', $toSession->day_date)
             ->count();
     }
 
@@ -48,7 +48,7 @@ class DebtCalculator
     private function getLastSession(Debt $debt, Session $currentSession): Session
     {
         return $debt->refund &&
-            $debt->refund->session->start_at < $currentSession->start_at ?
+            $debt->refund->session->day_date < $currentSession->day_date ?
             $debt->refund->session : $currentSession;
     }
 
@@ -61,8 +61,8 @@ class DebtCalculator
     private function getRefundFilter(Session $current, bool $withCurrent): Closure
     {
         return !$withCurrent ?
-            fn(PartialRefund|Refund $refund) => $refund->session->start_at < $current->start_at :
-            fn(PartialRefund|Refund $refund) => $refund->session->start_at <= $current->start_at;
+            fn(PartialRefund|Refund $refund) => $refund->session->day_date < $current->day_date :
+            fn(PartialRefund|Refund $refund) => $refund->session->day_date <= $current->day_date;
     }
 
     /**
@@ -86,7 +86,7 @@ class DebtCalculator
     private function getLastSessionForInterest(Debt $debt, Session $current): Session
     {
         $endSession = $debt->loan->fund->interest;
-        return $current->start_at < $endSession->start_at ? $current : $endSession;
+        return $current->day_date < $endSession->day_date ? $current : $endSession;
     }
 
     /**
@@ -110,7 +110,7 @@ class DebtCalculator
 
         // Take refunds before the end session and sort by session date.
         $partialRefunds = $this->getPartialRefunds($principalDebt, $endSession, false)
-            ->sortBy('session.start_at');
+            ->sortBy('session.day_date');
         foreach($partialRefunds as $refund)
         {
             $sessionCount = $this->getSessionCount($startSession, $refund->session);
@@ -147,7 +147,7 @@ class DebtCalculator
 
         // Take refunds before the current session and sort by session date.
         $partialRefunds = $this->getPartialRefunds($principalDebt, $endSession, false)
-            ->sortBy('session.start_at');
+            ->sortBy('session.day_date');
         foreach($partialRefunds as $refund)
         {
             $sessionCount = $this->getSessionCount($startSession, $refund->session);
@@ -203,8 +203,8 @@ class DebtCalculator
         return $debt->partial_refunds()
             ->select('partial_refunds.*')
             ->join('sessions', 'sessions.id', '=', 'partial_refunds.session_id')
-            ->where('sessions.start_at', '>', $current->start_at)
-            ->orderBy('sessions.start_at', 'desc')
+            ->where('sessions.day_date', '>', $current->day_date)
+            ->orderBy('sessions.day_date', 'desc')
             ->first();
     }
 

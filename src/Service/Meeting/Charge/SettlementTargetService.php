@@ -30,7 +30,7 @@ class SettlementTargetService
     public function getDeadlineSessions(Session $currentSession): Collection
     {
         return $this->tenantService->guild()->sessions()
-            ->whereDate('start_at', '>', $currentSession->start_at->format('Y-m-d'))
+            ->where('day_date', '>', $currentSession->day_date)
             ->pluck('title', 'id');
     }
 
@@ -46,8 +46,8 @@ class SettlementTargetService
             ->with(['session', 'deadline'])
             ->get()
             ->filter(function($target) use($session) {
-                return $session->start_at >= $target->session->start_at &&
-                    $session->start_at <= $target->deadline->start_at;
+                return $session->day_date >= $target->session->day_date &&
+                    $session->day_date <= $target->deadline->day_date;
             })
             ->first();
     }
@@ -78,8 +78,8 @@ class SettlementTargetService
     {
         $sessions = $this->tenantService->round()->sessions
             ->filter(function($session) use($target) {
-                return $session->start_at >= $target->session->start_at &&
-                    $session->start_at <= $target->deadline->start_at;
+                return $session->day_date >= $target->session->day_date &&
+                    $session->day_date <= $target->deadline->day_date;
             });
         return DB::table('settlements')
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
@@ -106,8 +106,8 @@ class SettlementTargetService
     {
         $sessions = $this->tenantService->round()->sessions
             ->filter(function($session) use($target) {
-                return $session->start_at >= $target->session->start_at &&
-                    $session->start_at <= $target->deadline->start_at;
+                return $session->day_date >= $target->session->day_date &&
+                    $session->day_date <= $target->deadline->day_date;
             });
         return $this->getMembersQuery($search)
             ->select('members.id', 'members.name')

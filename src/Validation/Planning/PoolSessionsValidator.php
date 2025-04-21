@@ -54,7 +54,7 @@ class PoolSessionsValidator extends AbstractValidator
         }
 
         // Verify that the start session comes before the end session.
-        if($sessions['end_sid']->start_at <= $sessions['start_sid']->start_at)
+        if($sessions['end_sid']->day_date <= $sessions['start_sid']->day_date)
         {
             $validator->errors()->add('end_sid', trans('tontine.session.errors.dates.end'));
         }

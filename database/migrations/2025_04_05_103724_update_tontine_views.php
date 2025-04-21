@@ -38,7 +38,7 @@ drop view if exists v_bills
 SQL;
         DB::statement($sql);
 
-$sql = <<<SQL
+        $sql = <<<SQL
 create view v_bills as
     select libre_bills.bill_id, 0 as bill_type, members.name as member,
         libre_bills.charge_id, members.guild_id, sessions.round_id, libre_bills.session_id

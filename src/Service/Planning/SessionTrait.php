@@ -44,7 +44,7 @@ trait SessionTrait
     {
         return $this->tenantService->guild()->sessions()
             ->when($this->filterActive, fn(Builder $query) => $query->active())
-            ->orderBy('start_at', $orderAsc ? 'asc' : 'desc')
+            ->orderBy('day_date', $orderAsc ? 'asc' : 'desc')
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -72,8 +72,7 @@ trait SessionTrait
         bool $withCurr = true): int
     {
         $operator = $getAfter ? ($withCurr ? '>=' : '>') : ($withCurr ? '<=' : '<');
-        $currSessionDate = !$currSession ? '' : $currSession->start_at->format('Y-m-d');
         return $this->tenantService->guild()->sessions()
-            ->whereDate('start_at', $operator, $currSessionDate)->count();
+            ->where('day_date', $operator, $currSession->day_date)->count();
     }
 }

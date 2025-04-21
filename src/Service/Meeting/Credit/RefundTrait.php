@@ -34,13 +34,13 @@ trait RefundTrait
     {
         if($fund !== null)
         {
-            return $fund->sessions()->where('start_at', '<', $session->start_at);
+            return $fund->sessions()->where('day_date', '<', $session->day_date);
         }
 
         $fundIds = $session->funds()->pluck('id');
         return $this->tenantService->guild()
             ->sessions()
-            ->where('start_at', '<', $session->start_at)
+            ->where('day_date', '<', $session->day_date)
             ->whereHas('funds', fn($query) => $query->whereIn('id', $fundIds));
     }
 
@@ -121,8 +121,8 @@ trait RefundTrait
         }
 
         // Cannot refund the principal debt before the last partial refund.
-        $lastRefund = $debt->partial_refunds->sortByDesc('session.start_at')->first();
-        return !$lastRefund || $lastRefund->session->start_at < $session->start_at;
+        $lastRefund = $debt->partial_refunds->sortByDesc('session.day_date')->first();
+        return !$lastRefund || $lastRefund->session->day_date < $session->day_date;
     }
 
     /**

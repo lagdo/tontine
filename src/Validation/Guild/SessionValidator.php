@@ -29,7 +29,7 @@ class SessionValidator extends AbstractValidator
     {
         return $this->tenantService->guild()->sessions()
             ->where('sessions.id', '!=', $sessionId)
-            ->whereDate('sessions.start_at', $startAt)
+            ->where('sessions.day_date', $startAt)
             ->first() !== null;
     }
 
@@ -40,19 +40,19 @@ class SessionValidator extends AbstractValidator
      */
     public function validateItem(array $values): array
     {
-        $values['start'] = substr($values['start'], 0, 5);
-        $values['end'] = substr($values['end'], 0, 5);
+        $values['start_time'] = substr($values['start_time'], 0, 5);
+        $values['end_time'] = substr($values['end_time'], 0, 5);
         $validator = Validator::make($this->values($values), [
             'title' => 'required|string|min:1',
-            'date' => 'required|date_format:Y-m-d',
-            'start' => 'required|date_format:H:i',
-            'end' => 'required|date_format:H:i',
+            'day_date' => 'required|date_format:Y-m-d',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i',
             'host_id' => 'integer|min:0',
         ]);
         $validator->after(function($validator) use($values) {
-            if($this->sessionDateExists($values['date'], $values['id'] ?? 0))
+            if($this->sessionDateExists($values['day_date'], $values['id'] ?? 0))
             {
-                $validator->errors()->add('date', trans('tontine.session.errors.date_dup'));
+                $validator->errors()->add('day_date', trans('tontine.session.errors.date_dup'));
             }
         });
         if($validator->fails())

@@ -170,7 +170,7 @@ class GuestInvite extends Base
      */
     public function scopeExpired(Builder $query): Builder
     {
-        return $query->whereDate('expires_at', '<', now());
+        return $query->where('expires_at', '<', now());
     }
 
     /**
@@ -180,7 +180,7 @@ class GuestInvite extends Base
      */
     public function scopePending(Builder $query): Builder
     {
-        return $query->whereDate('expires_at', '>=', now())
+        return $query->where('expires_at', '>=', now())
             ->where('status', self::STATUS_PENDING);
     }
 

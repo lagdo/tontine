@@ -190,7 +190,7 @@ class ReportService
                             $query->whereIn('session_id', $sessionIds);
                         },
                         'debts.partial_refunds.session'])
-                    ->orderBy('sessions.start_at')
+                    ->orderBy('sessions.day_date')
                     ->get()
                     ->each(fn(Loan $loan) => $this->setDebtAmount($loan, $session))
                     ->groupBy('member.id');

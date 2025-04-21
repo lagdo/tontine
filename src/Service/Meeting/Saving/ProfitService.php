@@ -34,7 +34,7 @@ class ProfitService
     {
         // Count the number of sessions before the current one.
         return $sessions
-            ->filter(fn($session) => $session->start_at > $saving->session->start_at)
+            ->filter(fn($session) => $session->day_date > $saving->session->day_date)
             ->count();
     }
 
@@ -119,7 +119,7 @@ class ProfitService
             ->join('sessions', 'sessions.id', '=', 'savings.session_id')
             ->whereIn('sessions.id', $sessions->pluck('id'))
             ->orderBy('members.name', 'asc')
-            ->orderBy('sessions.start_at', 'asc')
+            ->orderBy('sessions.day_date', 'asc')
             ->with(['session', 'member'])
             ->get();
 

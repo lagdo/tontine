@@ -193,8 +193,8 @@ and "v_bills"."session_id" in (?, ?, ?, ?, ?)))
     public function getPrevSession(Session $session): ?Session
     {
         return $this->tenantService->round()->sessions()->active()
-            ->where('start_at', '<', $session->start_at)
-            ->orderBy('start_at', 'desc')
+            ->where('day_date', '<', $session->day_date)
+            ->orderBy('day_date', 'desc')
             ->first();
     }
 
@@ -208,8 +208,8 @@ and "v_bills"."session_id" in (?, ?, ?, ?, ?)))
     public function getNextSession(Session $session): ?Session
     {
         return $this->tenantService->round()->sessions()->active()
-            ->where('start_at', '>', $session->start_at)
-            ->orderBy('start_at', 'asc')
+            ->where('day_date', '>', $session->day_date)
+            ->orderBy('day_date', 'asc')
             ->first();
     }
 

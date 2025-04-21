@@ -141,7 +141,7 @@ class PoolService
      */
     public function getActiveSessions(Pool $pool): Collection
     {
-        return $pool->sessions()->orderBy('start_at')->get();
+        return $pool->sessions()->orderBy('day_date')->get();
     }
 
     /**
