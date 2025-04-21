@@ -6,7 +6,7 @@
           <div class="row" id="payment-sm-screens">
             <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="payment-members-home">
               <div class="section-body" id="payment-section-home">
-                <div class="row">
+                <div class="row mb-2">
                   <div class="col">
                     <h2 class="section-title">{{ __('tontine.menus.payments') }}</h2>
                   </div>
@@ -23,7 +23,7 @@
               <!-- Data tables -->
               <div class="card shadow mb-4">
                 <div class="card-body">
-                  <div class="row">
+                  <div class="row mb-2">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('tontine.menus.members') }}</div>
                     </div>

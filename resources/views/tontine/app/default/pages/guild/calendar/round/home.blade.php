@@ -4,7 +4,7 @@
   $rqRoundPage = rq(Ajax\App\Guild\Calendar\RoundPage::class);
 @endphp
           <div class="section-body">
-            <div class="row">
+            <div class="row mb-2">
               <div class="col">
                 <h2 class="section-title">{{ __('tontine.titles.rounds') }}</h2>
               </div>

@@ -7,7 +7,7 @@
   $rqOptionsFunc = rq(Ajax\App\Guild\Options\OptionsFunc::class);
 @endphp
           <div class="section-body">
-            <div class="row">
+            <div class="row mb-2">
               <div class="col">
                 <h2 class="section-title">{{ __('figures.titles.amounts') }}</h2>
               </div>
@@ -52,7 +52,7 @@
 @endphp
           <div class="card shadow mb-4">
             <div class="card-body">
-              <div class="row">
+              <div class="row mb-2">
                 <div class="col">
                   <div class="section-title mt-0">{{ __('meeting.actions.pools') }} - {{ $pool->title }}</div>
                 </div>
@@ -76,7 +76,7 @@
 
           <div class="card shadow mb-4">
             <div class="card-body">
-              <div class="row">
+              <div class="row mb-2">
                 <div class="col">
                   <div class="section-title mt-0">{!! __('meeting.titles.amounts') !!}</div>
                 </div>

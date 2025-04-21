@@ -3,7 +3,7 @@
   $rqPoolPage = rq(Ajax\App\Planning\Finance\Pool\PoolPage::class);
 @endphp
           <div class="section-body">
-            <div class="row">
+            <div class="row mb-2">
               <div class="col">
                 <h2 class="section-title">{{ __('tontine.pool.titles.pools') }}</h2>
               </div>

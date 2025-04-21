@@ -4,7 +4,7 @@
   $rqChargePage = rq(Ajax\App\Guild\Charge\ChargePage::class);
 @endphp
           <div class="section-body">
-            <div class="row">
+            <div class="row mb-2">
               <div class="col">
                 <h2 class="section-title">{{ __('tontine.charge.titles.charges') }}</h2>
               </div>

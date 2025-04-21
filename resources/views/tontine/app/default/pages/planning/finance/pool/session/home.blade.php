@@ -7,7 +7,7 @@
   $rqPool = rq(Ajax\App\Planning\Finance\Pool\Pool::class);
 @endphp
           <div class="section-body">
-            <div class="row">
+            <div class="row mb-2">
               <div class="col">
                 <h2 class="section-title">{{ $pool->title }} :: {{ __('tontine.titles.sessions') }}</h2>
               </div>
@@ -15,7 +15,7 @@
                 <button type="button" class="btn btn-primary" @jxnClick($rqPool->render())><i class="fa fa-arrow-left"></i></button>
               </div>
               <div class="col-auto">
-                <div class="btn-group float-right ml-2 mb-2" role="group">
+                <div class="btn-group float-right ml-2" role="group">
                   <button type="button" class="btn btn-primary" @jxnClick($rqSessionFunc->save($formValues))><i class="fa fa-save"></i></button>
                   <button type="button" class="btn btn-primary" @jxnClick($rqSession->render())><i class="fa fa-sync"></i></button>
                 </div>

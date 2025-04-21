@@ -1,5 +1,5 @@
               <div class="section-body" id="payment-section-payables">
-                <div class="row">
+                <div class="row mb-2">
                   <div class="col">
                     <h2 class="section-title">{{ $session->title }} - {{ $member->name }}</h2>
                   </div>

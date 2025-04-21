@@ -69,7 +69,7 @@
               <div class="col-12">
                 <div class="card shadow mb-4">
                   <div class="card-body">
-                    <div class="row">
+                    <div class="row mb-2">
                       <div class="col">
                         <div class="section-title mt-0" id="content-report-profits-fund"></div>
                       </div>

@@ -3,7 +3,7 @@
   $rqHostAccessFunc = rq(Ajax\App\Admin\User\Host\AccessFunc::class);
 @endphp
                 <div class="section-body">
-                  <div class="row">
+                  <div class="row mb-2">
                     <div class="col">
                       <h2 class="section-title">{!! $guild->name !!}</h2>
                     </div>

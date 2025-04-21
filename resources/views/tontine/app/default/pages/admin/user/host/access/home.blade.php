@@ -5,7 +5,7 @@
   $rqHost = rq(Ajax\App\Admin\User\Host\Host::class);
 @endphp
               <div class="section-body">
-                <div class="row">
+                <div class="row mb-2">
                   <div class="col">
                     <h2 class="section-title">{{ __('tontine.invite.titles.access') }} :: {!! $guest->name !!}</h2>
                   </div>

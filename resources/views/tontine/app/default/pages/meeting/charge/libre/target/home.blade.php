@@ -6,12 +6,12 @@
   $rqTargetPage = rq(Ajax\App\Meeting\Session\Charge\Libre\TargetPage::class);
   $rqCharge = rq(Ajax\App\Meeting\Session\Charge\Libre\Fee::class);
 @endphp
-                  <div class="row">
+                  <div class="row mb-2">
                     <div class="col">
                       <div class="section-title mt-0">{{ $charge->name }}</div>
                     </div>
                     <div class="col-auto">
-                      <div class="btn-group float-right ml-2 mb-2" role="group">
+                      <div class="btn-group float-right ml-2" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqCharge->render())><i class="fa fa-arrow-left"></i></button>
 @if ($charge->is_active)
 @if ($target === null)
@@ -26,7 +26,7 @@
                     </div>
                   </div>
 @if ($target !== null)
-                  <div class="row mb-1">
+                  <div class="row mb-2">
                     <div class="col">
                       <div class="input-group">
                         {!! $html->text('search', '')->class('form-control')->id('txt-fee-member-search') !!}

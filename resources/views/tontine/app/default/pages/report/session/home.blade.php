@@ -8,7 +8,7 @@
   $rqActionMenu = rq(Ajax\App\Report\Session\Action\Menu::class);
 @endphp
           <div class="section-body">
-            <div class="row">
+            <div class="row mb-2">
               <div class="col">
                 <h2 class="section-title" @jxnBind($rqReportTitle)></h2>
               </div>

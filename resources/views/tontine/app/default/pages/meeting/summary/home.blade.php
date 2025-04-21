@@ -13,11 +13,11 @@
   $rqOutflow = rq(Ajax\App\Meeting\Summary\Cash\Outflow::class);
 @endphp
           <div class="section-body">
-            <div class="row align-items-center">
-              <div class="col-auto">
+            <div class="row mb-2 align-items-center">
+              <div class="col">
                 <h2 class="section-title">{{ $session->title }}</h2>
               </div>
-              <div class="col">
+              <div class="col-auto">
                 <div class="btn-group float-right ml-1" role="group">
                   <button type="button" class="btn btn-primary" @jxnClick($rqSession->home())><i class="fa fa-arrow-left"></i></button>
                   <button type="button" class="btn btn-primary" @jxnClick($rqSummary->home($session->id))><i class="fa fa-sync"></i></button>

@@ -4,12 +4,12 @@
   $rqDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Deposit::class);
   $rqReceivable = rq(Ajax\App\Meeting\Session\Pool\Deposit\Receivable::class);
 @endphp
-                  <div class="row">
-                    <div class="col-auto">
+                  <div class="row mb-2">
+                    <div class="col">
                       <div class="section-title mt-0">{!! __('meeting.titles.deposits') !!}</div>
                     </div>
-                    <div class="col">
-                      <div class="btn-group float-right ml-2 mb-2" role="group">
+                    <div class="col-auto">
+                      <div class="btn-group float-right ml-2" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqDeposit->render())><i class="fa fa-sync"></i></button>
                       </div>
                     </div>

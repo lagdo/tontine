@@ -3,12 +3,12 @@
   $fundId = pm()->select('report-savings-fund-id')->toInt();
   $rqProfit = rq(Ajax\App\Report\Session\Saving\Profit::class);
 @endphp
-                  <div class="row">
+                  <div class="row mb-2">
                     <div class="col">
                       <div class="section-title mt-0">{!! __('meeting.titles.savings') !!}</div>
                     </div>
                     <div class="col-auto">
-                      <div class="input-group mb-2">
+                      <div class="input-group">
                         {!! $html->select('fund_id', $funds, 0)->id('report-savings-fund-id')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
                         <div class="input-group-append">

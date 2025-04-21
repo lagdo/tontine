@@ -1,5 +1,5 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-                  <div class="row">
+                  <div class="row mb-2">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('tontine.report.titles.bills.total') }}</div>
                     </div>

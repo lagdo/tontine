@@ -4,7 +4,7 @@
   $rqMemberPage = rq(Ajax\App\Guild\Member\MemberPage::class);
 @endphp
           <div class="section-body">
-            <div class="row">
+            <div class="row mb-2">
               <div class="col">
                 <h2 class="section-title">{{ __('tontine.menus.members') }}</h2>
               </div>
@@ -21,7 +21,7 @@
           <div class="card shadow mb-4">
             <div class="card-header">
               <div class="row w-100">
-                <div class="col-md-4 col-sd-12">
+                <div class="col-md-4 col-sm-12">
                   <div class="input-group">
                     {!! $html->text('search', '')->id('txt-member-search')->class('form-control')
                       ->attribute('style', 'height:36px; padding:5px;') !!}
