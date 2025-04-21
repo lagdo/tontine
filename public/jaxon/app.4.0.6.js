@@ -35,19 +35,51 @@ var Tontine = {};
     const headerLabels = (tableHeaders) => {
         const labels = [];
         Array.from(tableHeaders).forEach((header) => {
-            const colCount = parseInt(header.getAttribute('colspan') ?? '1');
-            for (let i = 0; i < colCount; i++) {
-                labels.push(header.innerHTML.replace('-<br>', '')
-                    .replace('<br>', ' ').replace('&nbsp;', ' '));
+            const colSpan = parseInt(header.getAttribute('colspan') ?? '1');
+            // The label can be duplicated depending on the colspan attribute.
+            const colLabel = header.innerHTML.replace('-<br>', '')
+                .replace('<br>', ' ').replace('&nbsp;', ' ');
+            for (let i = 0; i < colSpan; i++) {
+                labels.push(colLabel);
             }
         });
         return labels;
     };
 
     const makeTableResponsive = (table) => {
+        const spanOffsets = [];
+        const setOffset = (row, col, span) => {
+            spanOffsets[`${row}-${col}`] = span + (spanOffsets[`${row}-${col}`] ?? 0);
+        };
+
         const labels = headerLabels(table.querySelectorAll('th'));
-        table.querySelectorAll('td').forEach((td, i) => td
-            .setAttribute('data-label', labels[i % labels.length]));
+        table.querySelectorAll('tr').forEach((tr, trIndex) => {
+            let rowOffset = 0;
+            let colCount = labels.length;
+            tr.querySelectorAll('td').forEach((td, tdIndex) => {
+                rowOffset += (spanOffsets[`${trIndex}-${tdIndex}`] ?? 0);
+                const rowIndex = tdIndex + rowOffset;
+
+                const colSpan = parseInt(td.getAttribute('colspan') ?? '1');
+                if(colSpan > 1)
+                {
+                    colSpan -= 1;
+                    colCount -= colSpan;
+                    for (let i = rowIndex + 1; i < colCount; i++) {
+                        setOffset(trIndex, i, colSpan);
+                    }
+                }
+                const rowSpan = parseInt(td.getAttribute('rowspan') ?? '1');
+                if(rowSpan > 1)
+                {
+                    for (let i = 1; i < rowSpan; i++) {
+                        setOffset(trIndex + i, rowIndex, 1);
+                    }
+                }
+
+                td.setAttribute('data-label', labels[rowIndex]);
+            });
+        });
     };
 
     self.makeTableResponsive = (wrapperId) => {
