@@ -132,9 +132,9 @@ class SessionFunc extends FuncComponent
             }
             return [
                 'title' => trim($values[0]),
-                'date' => trim($values[1]),
-                'start' => '00:00',
-                'end' => '00:00',
+                'day_date' => trim($values[1]),
+                'start_time' => '00:00',
+                'end_time' => '00:00',
                 'host_id' => 0,
             ];
         }, explode("\n", trim($sessions, " \t\n\r;")));
@@ -142,7 +142,9 @@ class SessionFunc extends FuncComponent
         $sessions = array_filter($sessions, fn($session) => count($session) > 0);
 
         // Check uniqueness of session dates
-        $sessionDates = array_unique(array_map(fn($session) => $session['date'], $sessions));
+        $sessionDates = array_unique(
+            array_map(fn($session) => $session['day_date'], $sessions)
+        );
         if(count($sessions) !== count($sessionDates))
         {
             throw new MessageException(trans('tontine.session.errors.date_dup'));
