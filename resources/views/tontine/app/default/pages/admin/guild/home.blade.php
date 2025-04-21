@@ -2,7 +2,7 @@
   $rqGuild = rq(Ajax\App\Admin\Guild\Guild::class);
   $rqGuildFunc = rq(Ajax\App\Admin\Guild\GuildFunc::class);
   $rqGuildPage = rq(Ajax\App\Admin\Guild\GuildPage::class);
-  $rqGuestGuild = rq(Ajax\App\Admin\User\Guest\Guild::class);
+  // $rqGuestGuild = rq(Ajax\App\Admin\User\Guest\Guild::class);
 @endphp
           <div class="section-body">
             <div class="row">
@@ -22,9 +22,10 @@
             <div class="card-body" @jxnBind($rqGuildPage)>
             </div>
           </div>
-
+{{-- 
 @if ($hasGuestGuilds)
           <div @jxnBind($rqGuestGuild)>
             @jxnHtml($rqGuestGuild)
           </div>
 @endif
+--}}

@@ -18,7 +18,7 @@ use Ajax\App\Report\Session\Session as ReportSession;
 return [
     'admin' => [
         '#admin-menu-guilds' => Guild::class,
-        '#admin-menu-users' => User::class,
+        // '#admin-menu-users' => User::class,
     ],
     'finance' => [
         '#finance-menu-pools' => Pool::class,
