@@ -4,14 +4,13 @@
 
   $rqDeposit = rq(Ajax\App\Meeting\Summary\Pool\Deposit::class);
   $rqRemitment = rq(Ajax\App\Meeting\Summary\Pool\Remitment::class);
-  $rqProfit = rq(Ajax\App\Meeting\Summary\Saving\Profit::class);
-  $rqSaving = rq(Ajax\App\Meeting\Summary\Saving\Saving::class);
-  $rqLoan = rq(Ajax\App\Meeting\Summary\Credit\Loan::class);
-  $rqTotalRefund = rq(Ajax\App\Meeting\Summary\Refund\Total\Refund::class);
-  $rqPartialRefund = rq(Ajax\App\Meeting\Summary\Refund\Partial\Refund::class);
-  $rqDisbursement = rq(Ajax\App\Meeting\Summary\Cash\Disbursement::class);
   $rqFixedFee = rq(Ajax\App\Meeting\Summary\Charge\FixedFee::class);
   $rqLibreFee = rq(Ajax\App\Meeting\Summary\Charge\LibreFee::class);
+  $rqLoan = rq(Ajax\App\Meeting\Summary\Credit\Loan::class);
+  $rqSaving = rq(Ajax\App\Meeting\Summary\Saving\Saving::class);
+  $rqProfit = rq(Ajax\App\Meeting\Summary\Saving\Profit::class);
+  $rqRefund = rq(Ajax\App\Meeting\Summary\Refund\Partial\Refund::class);
+  $rqOutflow = rq(Ajax\App\Meeting\Summary\Cash\Outflow::class);
 @endphp
           <div class="section-body">
             <div class="row align-items-center">
@@ -148,26 +147,8 @@
                 </div>
 
                 <div class="tab-pane fade" id="summary-refunds" role="tabpanel" aria-labelledby="summary-tab-refunds">
-                  <div class="row sm-screen-selector mt-2 mb-1" id="summary-refunds-sm-screens">
-                    <div class="col-12">
-                      <div class="btn-group btn-group-sm btn-block" role="group" aria-label="">
-                        <button data-target="content-summary-total-refunds" type="button" class="btn btn-primary">
-                          {!! __('meeting.refund.titles.final') !!}
-                        </button>
-                        <button data-target="content-summary-partial-refunds" type="button" class="btn btn-outline-primary">
-                          {!! __('meeting.refund.titles.partial') !!}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
                   <div class="row">
-                    <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-summary-total-refunds">
-                      <div class="card shadow mb-2">
-                        <div class="card-body" @jxnBind($rqTotalRefund)>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6 col-sm-12 sm-screen" id="content-summary-partial-refunds">
+                    <div class="col-md-12" id="content-summary-partial-refunds">
                       <div class="card shadow mb-2">
                         <div class="card-body" @jxnBind($rqPartialRefund)>
                         </div>
@@ -191,7 +172,7 @@
                   <div class="row">
                     <div class="col-md-12">
                       <div class="card shadow mb-2">
-                        <div class="card-body" @jxnBind($rqDisbursement) id="content-summary-disbursements">
+                        <div class="card-body" @jxnBind($rqOutflow) id="content-summary-outflows">
                         </div>
                       </div>
                     </div>
