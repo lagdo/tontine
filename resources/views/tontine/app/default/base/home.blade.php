@@ -13,7 +13,7 @@
 @endsection
 
 @section('content')
-          @include('tontine::pages.tontine.home')
+          @include('tontine::pages.admin.guild.home')
 @endsection
 
 @section('script')

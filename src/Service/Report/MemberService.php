@@ -123,7 +123,7 @@ class MemberService
     public function getBills(Session $session, ?Member $member = null): Collection
     {
         return Bill::with(['settlement', 'libre_bill.session', 'libre_bill.member', 'round_bill.member',
-                'tontine_bill.member', 'session_bill.member', 'session_bill.session'])
+                'oneoff_bill.member', 'session_bill.member', 'session_bill.session'])
             ->where(function($query) use($session) {
                 return $query
                     // Unsettled bills.
@@ -136,14 +136,14 @@ class MemberService
             ->where(function($query) use($session, $member) {
                 return $query
                     // Tontine bills.
-                    ->orWhereHas('tontine_bill', function(Builder $query) use($member) {
+                    ->orWhereHas('oneoff_bill', function(Builder $query) use($member) {
                         return $query->when($member !== null, function($query) use($member) {
                                 return $query->where('member_id', $member->id);
                             })
                             ->when($member === null, function($query) {
                                 return $query->whereHas('member', function($query) {
-                                    $tontine = $this->tenantService->tontine();
-                                    return $query->where('tontine_id', $tontine->id);
+                                    $guild = $this->tenantService->guild();
+                                    return $query->where('guild_id', $guild->id);
                                 });
                             });
                     })
@@ -174,7 +174,7 @@ class MemberService
             ->each(function($bill) {
                 // Take the only value which is not null
                 $_bill = $bill->session_bill ?? $bill->round_bill ??
-                    $bill->tontine_bill ?? $bill->libre_bill;
+                    $bill->oneoff_bill ?? $bill->libre_bill;
 
                 $bill->paid = $bill->settlement !== null;
                 $bill->session = $bill->libre_bill ? $_bill->session : null;
@@ -216,7 +216,7 @@ class MemberService
     public function getDebts(Session $session, Member $member): Collection
     {
         $prevSessions = $this->tenantService->round()->sessions()
-            ->where('start_at', '<', $session->start_at)->pluck('id');
+            ->where('day_date', '<', $session->day_date)->pluck('id');
         return Debt::with(['loan.session', 'refund'])
             // Member debts
             ->whereHas('loan', function(Builder $query) use($member) {
@@ -329,9 +329,9 @@ class MemberService
      *
      * @return Collection
      */
-    public function getDisbursements(Session $session, ?Member $member = null): Collection
+    public function getOutflows(Session $session, ?Member $member = null): Collection
     {
-        return $session->disbursements()->with(['member', 'category'])
+        return $session->outflows()->with(['member', 'category'])
             ->when($member !== null, function($query) use($member) {
                 return $query->where('member_id', $member->id);
             })

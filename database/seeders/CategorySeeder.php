@@ -18,19 +18,19 @@ class CategorySeeder extends Seeder
         $globalCategories = [
             [
                 'name' => 'expense',
-                'item_type' => 'disbursement',
+                'item_type' => 'outflow',
             ],
             [
                 'name' => 'support',
-                'item_type' => 'disbursement',
+                'item_type' => 'outflow',
             ],
             [
                 'name' => 'reception',
-                'item_type' => 'disbursement',
+                'item_type' => 'outflow',
             ],
             [
                 'name' => 'other',
-                'item_type' => 'disbursement',
+                'item_type' => 'outflow',
             ],
         ];
 
@@ -45,7 +45,7 @@ class CategorySeeder extends Seeder
         }
         foreach($globalCategories as $category)
         {
-            if(!Category::where('name', $category['name'])->whereNull('tontine_id')->first())
+            if(!Category::where('name', $category['name'])->whereNull('guild_id')->first())
             {
                 Category::create($category);
             }

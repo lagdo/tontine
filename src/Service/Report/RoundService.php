@@ -18,7 +18,7 @@ class RoundService
      */
     public function getRoundSessions(Round $round): Collection
     {
-        return $round->sessions()->active()->orderBy('start_at', 'asc')->get();
+        return $round->sessions()->active()->orderBy('day_date', 'asc')->get();
     }
 
     /**
@@ -112,9 +112,9 @@ class RoundService
      *
      * @return Collection
      */
-    public function getDisbursementAmounts(Collection $sessionIds): Collection
+    public function getOutflowAmounts(Collection $sessionIds): Collection
     {
-        return DB::table('disbursements')
+        return DB::table('outflows')
             ->select(DB::raw('sum(amount) as total_amount'), 'session_id')
             ->whereIn('session_id', $sessionIds)
             ->groupBy('session_id')

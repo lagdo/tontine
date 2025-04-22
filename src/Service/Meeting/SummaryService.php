@@ -69,7 +69,7 @@ class SummaryService
         $figures->cashier->recv += $depositAmount;
         $figures->deposit->count = $depositCount;
 
-        $sessionCount = $pool->counter->sessions - $pool->counter->disabled_sessions;
+        $sessionCount = $pool->sessions->count() - $pool->disabled_sessions->count();
         $remitmentCount = $remitment?->count ?? 0;
         $remitmentAmount = $pool->deposit_fixed ?
             $pool->amount * $sessionCount * $remitmentCount :
@@ -217,7 +217,7 @@ class SummaryService
     public function getFigures(Round $round, int $poolId = 0): Collection
     {
         $pools = $round->pools()
-            ->with(['round.tontine', 'counter'])
+            ->with(['round.guild', 'sessions'])
             ->whereHas('subscriptions')
             ->when($poolId > 0, fn($query) => $query->where('pools.id', $poolId))
             ->get();
@@ -271,7 +271,7 @@ class SummaryService
 
         $sessions = $this->poolService->getActiveSessions($pool);
         $position = $sessions->filter(
-            fn($_session) => $_session->start_at->lt($session->start_at)
+            fn($_session) => $_session->day_date->lt($session->day_date)
         )->count();
 
         return $this->getRemitmentCount($sessions->count(),

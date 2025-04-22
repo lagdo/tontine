@@ -8,7 +8,7 @@ return [
         'auctions' => "Auctions",
         'pools' => "Pools",
         'refunds' => "Refunds",
-        'disbursements' => "Disbur-<br/>sements",
+        'outflows' => "Outflows",
         'amounts' => "Cash amounts",
         'amount' => "Cash amount",
         'start' => "Start of<br/>session",

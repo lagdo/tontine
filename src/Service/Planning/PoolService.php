@@ -2,16 +2,17 @@
 
 namespace Siak\Tontine\Service\Planning;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Pool;
-use Siak\Tontine\Model\Session;
+use Siak\Tontine\Model\Round;
+use Siak\Tontine\Service\DataSyncService;
 use Siak\Tontine\Service\TenantService;
 
 class PoolService
 {
+    use SessionTrait;
+
     /**
      * @param TenantService $tenantService
      * @param DataSyncService $dataSyncService
@@ -21,23 +22,18 @@ class PoolService
     {}
 
     /**
-     * @return Builder|Relation
-     */
-    private function getQuery(): Builder|Relation
-    {
-        return Pool::ofRound($this->tenantService->round());
-    }
-
-    /**
      * Get a paginated list of pools.
      *
      * @param int $page
      *
      * @return Collection
      */
-    public function getPools(int $page = 0): Collection
+    public function getPoolDefs(Round $round, int $page = 0): Collection
     {
-        return $this->getQuery()
+        return $this->tenantService->guild()->pools()
+            ->with([
+                'pools' => fn($query) => $query->ofRound($round),
+            ])
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -47,122 +43,121 @@ class PoolService
      *
      * @return int
      */
-    public function getPoolCount(): int
+    public function getPoolDefCount(): int
     {
-        return $this->getQuery()->count();
+        return $this->tenantService->guild()->pools()->count();
     }
 
     /**
-     * Get a single pool.
-     *
-     * @param int $poolId    The pool id
-     *
-     * @return Pool|null
-     */
-    public function getPool(int $poolId): ?Pool
-    {
-        return $this->getQuery()->with('counter')->find($poolId);
-    }
-
-    /**
-     * Get the pools in the current round.
-     *
-     * @return Collection
-     */
-    public function getRoundPools(): Collection
-    {
-        return $this->tenantService->round()->pools()->get();
-    }
-
-    /**
-     * Add a new pool.
-     *
-     * @param array $values
-     *
-     * @return bool
-     */
-    public function createPool(array $values): bool
-    {
-        $this->tenantService->round()->pools()->create($values);
-
-        return true;
-    }
-
-    /**
-     * Update a pool.
-     *
-     * @param Pool $pool
-     * @param array $values
-     *
-     * @return bool
-     */
-    public function updatePool(Pool $pool, array $values): bool
-    {
-        return $pool->update($values);
-    }
-
-    /**
-     * Delete a pool.
-     *
-     * @param Pool $pool
+     * @param int $defId
      *
      * @return void
      */
-    public function deletePool(Pool $pool)
+    public function enablePool(Round $round, int $defId): void
     {
-        DB::transaction(function() use($pool) {
-            $this->dataSyncService->syncPool($pool, false);
+        $def = $this->tenantService->guild()->pools()
+            ->withCount([
+                'pools' => fn($query) => $query->ofRound($round),
+            ])
+            ->find($defId);
+        if(!$def || $def->pools_count > 0)
+        {
+            return;
+        }
 
-            $pool->pool_round()->delete();
-            $pool->subscriptions()->delete();
-            $pool->delete();
-        });
-    }
-
-    /**
-     * @param int $count
-     *
-     * @return Collection
-     */
-    public function getFakePools(int $count): Collection
-    {
-        return Pool::factory()->count($count)->make([
-            'round_id' => $this->tenantService->round(),
+        // Create the pool
+        $def->pools()->create([
+            'round_id' => $round->id,
+            'start_sid' => $round->start->id,
+            'end_sid' => $round->end->id,
         ]);
     }
 
     /**
-     * Save the pool start and/or end session.
-     *
-     * @param Pool $pool
-     * @param array $values
+     * @param int $defId
      *
      * @return void
      */
-    private function _saveSessions(Pool $pool, array $values)
+    public function disablePool(Round $round, int $defId): void
     {
-        if($pool->pool_round !== null)
+        $def = $this->tenantService->guild()->pools()
+            ->withCount([
+                'pools' => fn($query) => $query->ofRound($round),
+            ])
+            ->find($defId);
+        if(!$def || $def->pools_count === 0)
         {
-            $pool->pool_round()->update($values);
             return;
         }
 
-        // The initial value is the same for start and end sessions.
-        if(!isset($values['start_session_id']))
-        {
-            $values['start_session_id'] = $this
-                ->getPoolStartSession($pool)?->id ?? $values['end_session_id'];
-        }
-        if(!isset($values['end_session_id']))
-        {
-            $values['end_session_id'] = $this
-                ->getPoolEndSession($pool)?->id ?? $values['start_session_id'];
-        }
-        $pool->pool_round()->create($values);
+        // Delete the pool
+        $poolIds = $def->pools()->ofRound($round)->pluck('id');
+        DB::table('pool_session_disabled')->whereIn('pool_id', $poolIds)->delete();
+        Pool::whereIn('id', $poolIds)->delete();
     }
 
     /**
-     * Save the pool start and/or end session.
+     * Get a paginated list of pools.
+     *
+     * @param int $page
+     *
+     * @return Collection
+     */
+    public function getPools(Round $round, int $page = 0): Collection
+    {
+        return Pool::ofRound($round)
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
+    }
+
+    /**
+     * Get the number of pools.
+     *
+     * @return int
+     */
+    public function getPoolCount(Round $round): int
+    {
+        return Pool::ofRound($round)->count();
+    }
+
+    /**
+     * Get a pool.
+     *
+     * @return Pool|null
+     */
+    public function getPool(Round $round, int $poolId): ?Pool
+    {
+        return Pool::ofRound($round)
+            ->with(['sessions', 'disabled_sessions'])
+            ->find($poolId);
+    }
+
+    /**
+     * Get the sessions enabled for a pool.
+     *
+     * @param Pool $pool
+     *
+     * @return Collection
+     */
+    public function getActiveSessions(Pool $pool): Collection
+    {
+        return $pool->sessions()->orderBy('day_date')->get();
+    }
+
+    /**
+     * Get the number of sessions enabled for a pool.
+     *
+     * @param Pool $pool
+     *
+     * @return int
+     */
+    public function getActiveSessionCount(Pool $pool): int
+    {
+        return $pool->sessions()->count();
+    }
+
+    /**
+     * Save the pool sessions.
      *
      * @param Pool $pool
      * @param array $values
@@ -172,52 +167,10 @@ class PoolService
     public function saveSessions(Pool $pool, array $values)
     {
         DB::transaction(function() use($pool, $values) {
-            $this->_saveSessions($pool, $values);
+            $pool->update($values);
 
-            $this->dataSyncService->syncPool($pool, true);
+            // $this->dataSyncService->syncPool($pool, true);
         });
-    }
-
-    /**
-     * Delete the pool round.
-     *
-     * @param Pool $pool
-     *
-     * @return void
-     */
-    public function deleteRound(Pool $pool)
-    {
-        DB::transaction(function() use($pool) {
-            $pool->pool_round()->delete();
-
-            $this->dataSyncService->syncPool($pool, true);
-        });
-    }
-
-    /**
-     * Get the first session of the pool.
-     *
-     * @param Pool $pool
-     *
-     * @return Session|null
-     */
-    public function getPoolStartSession(Pool $pool): ?Session
-    {
-        return $pool->pool_round?->start_session ??
-            $pool->round->sessions()->orderBy('start_at', 'asc')->first();
-    }
-
-    /**
-     * Get the last session of the pool.
-     *
-     * @param Pool $pool
-     *
-     * @return Session|null
-     */
-    public function getPoolEndSession(Pool $pool): ?Session
-    {
-        return $pool->pool_round?->end_session ??
-            $pool->round->sessions()->orderBy('start_at', 'desc')->first();
     }
 
     /**
@@ -237,11 +190,7 @@ class PoolService
         // {
         //     return;
         // }
-        $session = $this->tenantService->tontine()
-            ->sessions()
-            ->ofPool($pool)
-            ->disabled($pool)
-            ->find($sessionId);
+        $session = $pool->disabled_sessions()->find($sessionId);
         if(!$session)
         {
             return;
@@ -268,11 +217,7 @@ class PoolService
         // {
         //     return;
         // }
-        $session = $this->tenantService->tontine()
-            ->sessions()
-            ->ofPool($pool)
-            ->enabled($pool)
-            ->find($sessionId);
+        $session = $pool->sessions()->find($sessionId);
         if(!$session)
         {
             return;
@@ -282,78 +227,7 @@ class PoolService
         DB::transaction(function() use($pool, $session) {
             $pool->disabled_sessions()->attach($session->id);
 
-            $this->dataSyncService->syncPool($pool, true);
+            // $this->dataSyncService->syncPool($pool, true);
         });
-    }
-
-    /**
-     * @param Pool $pool
-     * @param Session $session
-     *
-     * @return bool
-     */
-    public function enabled(Pool $pool, Session $session): bool
-    {
-        return $session->disabled_pools->find($pool->id) === null;
-    }
-
-    /**
-     * @param Pool $pool
-     * @param Session $session
-     *
-     * @return bool
-     */
-    public function disabled(Pool $pool, Session $session): bool
-    {
-        return $session->disabled_pools->find($pool->id) !== null;
-    }
-
-    /**
-     * @param Pool $pool
-     * @param Session $session
-     *
-     * @return bool
-     */
-    public function active(Pool $pool, Session $session): int
-    {
-        return $this->tenantService->tontine()
-            ->sessions()
-            ->ofPool($pool)
-            ->enabled($pool)
-            ->where('sessions.id', $session->id)
-            ->exists();
-    }
-
-    /**
-     * Get the sessions enabled for a pool.
-     *
-     * @param Pool $pool
-     *
-     * @return Collection
-     */
-    public function getActiveSessions(Pool $pool): Collection
-    {
-        return $this->tenantService->tontine()
-            ->sessions()
-            ->ofPool($pool)
-            ->enabled($pool)
-            ->orderBy('start_at')
-            ->get();
-    }
-
-    /**
-     * Get the number of sessions enabled for a pool.
-     *
-     * @param Pool $pool
-     *
-     * @return int
-     */
-    public function getActiveSessionCount(Pool $pool): int
-    {
-        return $this->tenantService->tontine()
-            ->sessions()
-            ->ofPool($pool)
-            ->enabled($pool)
-            ->count();
     }
 }

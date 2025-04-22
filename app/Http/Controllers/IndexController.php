@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\View\View;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Tontine\TontineService;
 
 use function auth;
 use function view;
@@ -15,18 +15,18 @@ class IndexController extends Controller
     /**
      * Show the home page.
      *
-     * @param TontineService $tontineService
+     * @param GuildService $guildService
      *
      * @return View
      */
-    public function index(TontineService $tontineService): View
+    public function index(GuildService $guildService): View
     {
         view()->share([
             'user' => auth()->user(),
             'locales' => LaravelLocalization::getSupportedLocales(),
             'locale' => LaravelLocalization::getCurrentLocale(),
             'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
-            'hasGuestOrganisations' => $tontineService->hasGuestOrganisations()
+            'hasGuestGuilds' => $guildService->hasGuestGuilds()
         ]);
 
         return view("tontine::base.home");

@@ -50,14 +50,17 @@ class Bill extends Base
     ];
 
     /**
-     * The attributes that should be mutated to dates.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'issued_at' => 'datetime',
-        'deadline' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'issued_at' => 'datetime',
+            'deadline' => 'datetime',
+        ];
+    }
 
     /**
      * @return Attribute
@@ -79,9 +82,9 @@ class Bill extends Base
         return $this->hasOne(Settlement::class);
     }
 
-    public function tontine_bill()
+    public function oneoff_bill()
     {
-        return $this->hasOne(TontineBill::class);
+        return $this->hasOne(OneoffBill::class);
     }
 
     public function round_bill()
@@ -147,14 +150,14 @@ class Bill extends Base
      */
     public function scopeOfSession(Builder $query, Session $session): Builder
     {
-        return $query->addSelect(['bills.*', 'v.*', DB::raw('s.start_at as bill_date')])
+        return $query->addSelect(['bills.*', 'v.*', DB::raw('s.day_date as bill_date')])
             ->join(DB::raw('v_bills as v'), 'v.bill_id', '=', 'bills.id')
             ->join(DB::raw('sessions as s'), 'v.session_id', '=', 's.id')
             ->where(function($query) use($session) {
                 $query->orWhere(function($query) use($session) {
                     $query->where('v.bill_type', self::TYPE_LIBRE)
                         ->where('v.round_id', $session->round_id)
-                        ->whereDate('s.start_at', '<=', $session->start_at);
+                        ->where('s.day_date', '<=', $session->day_date);
                 })
                 ->orWhere(function($query) use($session) {
                     $query->where('v.bill_type', self::TYPE_SESSION)
@@ -166,8 +169,8 @@ class Bill extends Base
                 })
                 ->orWhere(function($query) use($session) {
                     $query->where('v.bill_type', self::TYPE_TONTINE)
-                        ->where('v.tontine_id', $session->round->tontine_id)
-                        ->whereDate('s.start_at', '<=', $session->start_at);
+                        ->where('v.guild_id', $session->round->guild_id)
+                        ->where('s.day_date', '<=', $session->day_date);
                 });
             })
             ->where(function(Builder $query) use($session) {
@@ -191,19 +194,19 @@ class Bill extends Base
      */
     public function scopeOfRound(Builder $query, Session $session): Builder
     {
-        return $query->addSelect(['bills.*', 'v.*', DB::raw('s.start_at as bill_date')])
+        return $query->addSelect(['bills.*', 'v.*', DB::raw('s.day_date as bill_date')])
             ->join(DB::raw('v_bills as v'), 'v.bill_id', '=', 'bills.id')
             ->join(DB::raw('sessions as s'), 'v.session_id', '=', 's.id')
             ->where(function($query) use($session) {
                 $query->orWhere(function($query) use($session) {
                     $query->where('v.bill_type', self::TYPE_LIBRE)
                         ->where('v.round_id', $session->round_id)
-                        ->whereDate('s.start_at', '<', $session->start_at);
+                        ->where('s.day_date', '<', $session->day_date);
                 })
                 ->orWhere(function($query) use($session) {
                     $query->where('v.bill_type', self::TYPE_SESSION)
                         ->where('v.round_id', $session->round_id)
-                        ->whereDate('s.start_at', '<', $session->start_at);
+                        ->where('s.day_date', '<', $session->day_date);
                 })
                 ->orWhere(function($query) use($session) {
                     $query->where('v.bill_type', self::TYPE_ROUND)
@@ -211,7 +214,7 @@ class Bill extends Base
                 })
                 ->orWhere(function($query) use($session) {
                     $query->where('v.bill_type', self::TYPE_TONTINE)
-                        ->where('v.tontine_id', $session->round->tontine_id)
+                        ->where('v.guild_id', $session->round->guild_id)
                         ->where(function($query) use($session) {
                             $query->orWhere(function(Builder $query) {
                                 $query->whereDoesntHave('settlement');
@@ -239,7 +242,7 @@ class Bill extends Base
     {
         return $query->addSelect(['bills.*'])
             ->where(function($query) use($charge, $withLibre) {
-                $query->orWhereHas('tontine_bill', function($query) use($charge) {
+                $query->orWhereHas('oneoff_bill', function($query) use($charge) {
                         $query->where('charge_id', $charge->id);
                     })
                     ->orWhereHas('round_bill', function($query) use($charge) {

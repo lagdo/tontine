@@ -11,9 +11,9 @@ use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Saving;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Tontine\FundService;
 
 class SavingService
 {
@@ -25,6 +25,64 @@ class SavingService
     public function __construct(private LocaleService $localeService,
         private TenantService $tenantService, private FundService $fundService)
     {}
+
+    /**
+     * Count the session funds.
+     *
+     * @param Session $session
+     *
+     * @return int
+     */
+    public function getFundCount(Session $session): int
+    {
+        return $session->funds()->real()->count();
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return Relation
+     */
+    public function getFundQuery(Session $session): Relation
+    {
+        $sqlFrom = "savings s where s.fund_id=funds.id and s.session_id={$session->id}";
+        return $session->funds()->real()
+            ->addSelect([
+                DB::raw("(select count(*) from $sqlFrom) as s_count"),
+                DB::raw("(select sum(s.amount) from $sqlFrom) as s_amount"),
+            ]);
+    }
+
+    /**
+     * Get the session funds.
+     *
+     * @param Session $session
+     * @param int $page
+     *
+     * @return Collection
+     */
+    public function getFunds(Session $session, int $page = 0): Collection
+    {
+        return $this->getFundQuery($session)
+            ->page($page, $this->tenantService->getLimit())
+            ->join('fund_defs', 'fund_defs.id', '=', 'funds.def_id')
+            ->orderBy('fund_defs.type') // The default fund is first in the list.
+            ->orderBy('funds.id')
+            ->get();
+    }
+
+    /**
+     * Get a session fund.
+     *
+     * @param Session $session
+     * @param int $fundId
+     *
+     * @return Fund|null
+     */
+    public function getFund(Session $session, int $fundId): ?Fund
+    {
+        return $this->getFundQuery($session)->find($fundId);
+    }
 
     /**
      * @param Session $session
@@ -223,7 +281,7 @@ class SavingService
         string $search, ?bool $filter): Builder|Relation
     {
         $savingsFilter = $this->getMemberSavingsFilter($session, $fund);
-        return $this->tenantService->tontine()->members()->active()
+        return $this->tenantService->guild()->members()->active()
             ->when($search !== '', function(Builder $query) use($search) {
                 $search = '%' . strtolower($search) . '%';
                 return $query->where(DB::raw('lower(name)'), 'like', $search);
@@ -301,6 +359,6 @@ class SavingService
      */
     public function getMember(int $id): ?Member
     {
-        return $this->tenantService->tontine()->members()->active()->find($id);
+        return $this->tenantService->guild()->members()->active()->find($id);
     }
 }

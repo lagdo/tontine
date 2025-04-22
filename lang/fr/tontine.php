@@ -8,14 +8,16 @@ return [
     ],
     'menus' => [
         'admin' => "Administration",
-        'tontines' => "Organisations",
+        'guilds' => "Organisations",
         'tontine' => "Tontine",
         'users' => "Utilisateurs",
         'planning' => "Planning",
         'meeting' => "Réunion",
         'report' => "Rapport",
         'members' => "Membres",
-        'categories' => "Catégories",
+        'finance' => "Finance",
+        'accounts' => "Caisses",
+        'charges' => "Charges",
         'calendar' => "Calendrier",
         'round' => "Tour",
         'session' => "Séance",
@@ -28,7 +30,7 @@ return [
         'logout' => "Se déconnecter",
     ],
     'titles' => [
-        'tontines' => "Organisations",
+        'guilds' => "Organisations",
         'tontine' => "Tontine",
         'members' => "Membres",
         'rounds' => "Tours",
@@ -41,7 +43,7 @@ return [
         'type' => "Choisir un type de tontine",
         'presences' => "Présences : :of",
         'select' => [
-            'tontine' => "(Choisir une tontine)",
+            'guild' => "(Choisir une organisation)",
             'round' => "(Choisir un tour)",
         ],
     ],
@@ -70,6 +72,7 @@ return [
     ],
     'actions' => [
         'rounds' => "Tours",
+        'sessions' => "Séances",
         'open' => "Ouvrir",
         'enter' => "Entrer",
         'select' => "Sélectionner",
@@ -80,7 +83,8 @@ return [
         'created' => "L'organisation a été ajoutée",
         'updated' => "L'organisation a été modifiée",
         'deleted' => "L'organisation a été supprimée",
-        'selected' => "Vous avez sélectionné l'organisation :tontine.",
+        'selected' => "Vous avez sélectionné l'organisation :guild.",
+        'back_to_admin' => "Vous êtes de retour sur la section Administration de l'organisation :guild.",
         'screen' => [
             'orientation' => "Si vous utilisez un appareil mobile, nous vous conseillons de le placer en mode paysage, pour un meilleur affichage.",
         ],
@@ -158,6 +162,7 @@ return [
             'invite_not_found' => "Impossible de trouver l'invitation.",
             'invite_expired' => "Désolé, cette invitation a expiré.",
             'access_denied' => "En tant qu'invité, vous n'avez pas accès à cette section. Désolé.",
+            'no_guild' => "Vous devez avoir ajouté une organisation.",
         ],
     ],
     'round' => [
@@ -166,11 +171,14 @@ return [
             'edit' => "Modifier un tour",
             'choose' => "Choisir un tour",
         ],
+        'labels' => [
+            'savings' => "Ajouter un premier fonds d'épargne",
+        ],
         'messages' => [
             'created' => "le tour a été ajouté.",
             'updated' => "le tour a été modifié.",
             'deleted' => "le tour a été supprimé.",
-            'selected' => "Vous avez sélectionné l'organisation :tontine et le tour :round.",
+            'selected' => "Vous avez sélectionné l'organisation :guild et le tour :round.",
         ],
         'questions' => [
             'open' => "Ouvrir ce tour ? Assurez-vous d'avoir correctement rempli son planning.",
@@ -244,6 +252,7 @@ return [
     ],
     'fund' => [
         'titles' => [
+            'savings' => "&Eacute;pargne",
             'funds' => "Fonds d'épargne",
             'add' => "Ajouter un fonds d'épargne",
             'edit' => "Modifier un fonds d'épargne",
@@ -251,32 +260,39 @@ return [
         'labels' => [
             'default' => "&Eacute;pargne",
             'fund' => "Fonds d'épargne",
+            'savings' => "&Eacute;pargne",
+        ],
+        'questions' => [
+            'delete' => "Supprimer ce fonds d'épargne ?",
+            'disable' => "Supprimer ce fonds d'épargne ?",
         ],
         'messages' => [
             'created' => "Le fonds d'épargne a été ajouté.",
             'updated' => "Le fonds d'épargne a été modifié.",
             'deleted' => "Le fonds d'épargne a été supprimé.",
+            'enabled' => "Le fonds d'épargne a été activé.",
+            'disabled' => "Le fonds d'épargne a été désactivé.",
         ],
         'errors' => [
             'not_found' => "Impossible de trouver le fonds correspondant.",
         ],
     ],
-    'category' => [
+    'account' => [
         'titles' => [
-            'categories' => "Décaissements",
-            'add' => "Ajouter une catégorie",
-            'edit' => "Modifier une catégorie",
+            'outflows' => "Sorties de caisse",
+            'add' => "Ajouter une caisse",
+            'edit' => "Modifier une caisse",
         ],
         'types' => [
-            'disbursement' => "Décaissement",
+            'outflow' => "Sortie de caisse",
         ],
         'questions' => [
-            'delete' => "Supprimer cette catégorie ?",
+            'delete' => "Supprimer cette caisse ?",
         ],
         'messages' => [
-            'created' => "La catégorie a été ajoutée.",
-            'updated' => "La catégorie a été modifiée.",
-            'deleted' => "La catégorie a été supprimée.",
+            'created' => "La caisse a été ajoutée.",
+            'updated' => "La caisse a été modifiée.",
+            'deleted' => "La caisse a été supprimée.",
         ],
     ],
     'bill' => [
@@ -297,6 +313,8 @@ return [
             'title' => "Séance de :month :year",
             'host' => "Choisir l'hôte",
             'venue' => "Lieu",
+            'start' => "Séance de début",
+            'end' => "Séance de fin",
         ],
         'tips' => [
             'add' => "Saisir une séance sur chaque ligne. Séparer le titre et la date avec un point-virgule. La date doit être au format AAAA-MM-JJ",
@@ -307,6 +325,14 @@ return [
             'host' => "Hôte",
             'address' => "Adresse",
             'title' => "Séance de :date",
+            'start_session' => "Séance de début : :session",
+            'end_session' => "Séance de fin : :session",
+            'end_interest' => "Fin intérêts: :session",
+            'count' => "Nombre de séances : :count",
+            'active' => "Active",
+            'start' => "Début",
+            'end' => "Fin",
+            'interest' => "Int.",
         ],
         'actions' => [
             'host' => "Hôte",
@@ -318,6 +344,12 @@ return [
             'updated' => "La séance a été modifiée.",
             'deleted' => "La séance a été supprimée.",
             'resynced' => "Les séances ont été resynchronisées.",
+            'fund' => [
+                'saved' => "Les séances du fonds d'épargne ont été enregistrées.",
+            ],
+            'pool' => [
+                'saved' => "Les séances du fonds de tontine ont été enregistrées.",
+            ],
         ],
         'questions' => [
             'open' => "Ouvrir cette séance ?",
@@ -335,20 +367,25 @@ return [
             'delete' => "Impossible de supprimer cette séance.",
             'date_dup' => "Il existe déjà une séance avec la même date.",
             'sorting' => "L'ordre des séances ne peut pas être modifié.",
+            'start' => "La séance de début est incorrecte.",
+            'end' => "La séance de fin est incorrecte.",
+            'interest' => "La séance de fin des intérêts est incorrecte.",
+            'dates' => [
+                'end' => "La séance de début doit préceder la séance de fin.",
+                'int' => "La séance de fin des intérêts doit être entre les séances de début et de fin.",
+            ],
         ],
     ],
     'pool' => [
         'titles' => [
-            'add' => "Ajouter une tontine",
-            'add_many' => "Ajouter des tontines",
-            'edit' => "Modifier une tontine",
+            'pools' => "Fonds de tontine",
+            'add' => "Ajouter un fonds de tontine",
+            'add_many' => "Ajouter des fonds de tontine",
+            'edit' => "Modifier un fonds de tontine",
             'deposits' => "Dépôts",
             'remitments' => "Remises",
             'subscriptions' => "Souscriptions",
             'members' => "Membres",
-            'sessions' => "Séances",
-        ],
-        'actions' => [
             'sessions' => "Séances",
         ],
         'labels' => [
@@ -366,10 +403,10 @@ return [
             ],
         ],
         'help' => [
-            'intro' => "Vous allez ajouter une nouvelle tontine sur le tour <b>:round</b>.<br/>" .
+            'intro' => "Vous allez ajouter un nouveau fonds de tontine.<br/>" .
                 "Nous allons vous demander de préciser ses caractéristiques.",
             'deposit' => [
-                'fixed' => "Cochez la case ci-dessous chaque membre qui souscrit à cette tontine doit verser un montant fixe à chaque séance.",
+                'fixed' => "Cochez la case ci-dessous chaque membre qui souscrit à ce fonds de tontine doit verser un montant fixe à chaque séance.",
                 'lendable' => "Cochez la case ci-dessous si les montants des cotisations restant en caisse peuvent être prêtés.",
             ],
             'remit' => [
@@ -378,51 +415,27 @@ return [
             ],
         ],
         'questions' => [
-            'delete' => "Supprimer cette tontine ?<br/>Il ne faut pas qu'il ait de souscription.",
+            'delete' => "Supprimer ce fonds de tontine ?<br/>Il ne faut pas qu'il ait de souscription.",
+            'disable' => "Supprimer ce fonds de tontine ?<br/>Il ne faut pas qu'il ait de souscription.",
         ],
         'messages' => [
-            'created' => "La tontine a été ajoutée.",
-            'updated' => "La tontine a été modifiée.",
-            'deleted' => "La tontine a été supprimée.",
-            'selected' => "Vous affichez les souscriptions de la tontine :tontine.",
+            'created' => "Le fonds de tontine a été ajouté.",
+            'updated' => "Le fonds de tontine a été modifié.",
+            'deleted' => "Le fonds de tontine a été supprimé.",
+            'selected' => "Vous affichez les souscriptions du fonds de tontine :pool.",
+            'enabled' => "Le fonds de tontine a été activé.",
+            'disabled' => "Le fonds de tontine a été désactivé.",
         ],
         'errors' => [
-            'not_found' => "Impossible de trouver cette tontine.",
+            'not_found' => "Impossible de trouver ce fonds de tontine.",
             'number' => [
                 'invalid' => "Vous devez entrer un nombre valide.",
                 'max' => "Vous pouvez ajouter au plus :max entrées.",
             ],
-            'subscription' => "Cette tontine a encore des souscriptions.",
+            'subscription' => "Ce fonds de tontine a encore des souscriptions.",
             'no_subscription' => "Il y a encore des fonds sans souscription.",
-            'payments' => "Tous les versements et remises doivent être supprimés avant de supprimer ou désactiver une tontine.",
-        ],
-    ],
-    'pool_round' => [
-        'titles' => [
-            'sessions' => "Séances de la tontine : :pool",
-            'start_session' => "Séance de début",
-            'end_session' => "Séance de fin",
-        ],
-        'labels' => [
-            'default' => "(tour)",
-            'start_session' => "Séance de début : :session",
-            'end_session' => "Séance de fin : :session",
-            'session_count' => "Nombre de séances : :count",
-            'active' => "Active",
-            'start' => "Début",
-            'end' => "Fin",
-        ],
-        'questions' => [
-            'delete' => "Supprimer les séances de cette tontine ?",
-        ],
-        'messages' => [
-            'saved' => "Les séances de la tontine ont été enregistrées.",
-            'deleted' => "Les séances de la tontine ont été supprimées.",
-        ],
-        'errors' => [
-            'start_session' => "La séance de début est incorrecte.",
-            'end_session' => "La séance de fin est incorrecte.",
-            'session_dates' => "La séance de début doit préceder la séance de fin.",
+            'payments' => "Tous les versements et remises doivent être supprimés avant de supprimer ou désactiver un fonds de tontine.",
+            'not_planned' => "Impossible d'afficher le planning ou les bénéficiaires d'une tontine dont les remises ne sont pas planifiées.",
         ],
     ],
     'subscription' => [
@@ -451,7 +464,6 @@ return [
     'beneficiary' => [
         'errors' => [
             'cant_change' => "Impossible de modifier le bénéficiaire.",
-            'not_planned' => "Impossible d'afficher les bénéficiaires d'une tontine dont les remises ne sont pas planifiées.",
         ],
     ],
     'remitment' => [

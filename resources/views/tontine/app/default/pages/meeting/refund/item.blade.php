@@ -12,14 +12,15 @@
   $payableAmount = $debtCalculator->getDebtPayableAmount($debt, $session);
 @endphp
                           <td>
-                            {{ __('meeting.refund.labels.loan', [
-                              'member' => $debt->loan->member->name,
+                            {!! $debt->loan->member->name !!}<br/>
+                            {!! $debt->loan->session->title !!}
+                          </td>
+                          <td>
+                            {!! __('meeting.refund.labels.loan', [
+                              'member' => __('meeting.loan.labels.' . $debt->type),
                               'amount' => $locale->formatMoney($debtAmount, false, true),
-                            ]) }}<br/>
-                            {{ __('meeting.refund.labels.debt', [
-                              'session' => $debt->loan->session->title,
-                              'type' => __('meeting.loan.labels.' . $debt->type),
-                            ]) }}
+                            ]) !!}<br/>
+                            {!! $debt->loan->fund->title !!}
                           </td>
                           <td class="currency">
                             {{ __('meeting.refund.labels.before', [

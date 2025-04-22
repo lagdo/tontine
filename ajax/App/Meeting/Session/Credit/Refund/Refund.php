@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Credit\Refund;
 
 use Ajax\App\Meeting\Component;
-use Ajax\App\Meeting\Session\FundTrait;
 use Stringable;
 
 /**
@@ -24,9 +23,12 @@ class Refund extends Component
      */
     public function html(): Stringable
     {
+        $session = $this->stash()->get('meeting.session');
+        $funds = $this->fundService->getSessionFundList($session, false);
+        $funds->prepend('', 0);
         return $this->renderView('pages.meeting.refund.home', [
-            'session' => $this->stash()->get('meeting.session'),
-            'funds' => $this->fundService->getFundList(),
+            'session' => $session,
+            'funds' => $funds,
             'fund' => $this->getStashedFund(),
         ]);
     }
@@ -57,9 +59,9 @@ class Refund extends Component
     public function show()
     {
         // We need to explicitely get the default fund here.
-        $fundId = $this->tenantService->tontine()->default_fund?->id ?? 0;
-        $this->bag($this->bagId)->set('fund.id', $fundId);
-        $this->getFund(true);
+        $this->bag($this->bagId)->set('fund.id', 0);
+        $this->bag($this->bagId)->set('page', 1);
+        $this->stash()->set("{$this->bagId}.fund", null);
 
         $this->render();
     }

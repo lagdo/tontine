@@ -21,28 +21,23 @@
                     <tbody>
 @foreach ($pools as $pool)
                       <tr>
-                        <td>
-                          <b>{{ $pool->title }}<br/>{{ $pool->round->title }}</b></td>
-                        <td>
-                          {{ $pool->start_at?->translatedFormat(__('tontine.date.format')) ?? '' }}<br/>
-                          {{ $pool->end_at?->translatedFormat(__('tontine.date.format')) ?? '' }}
-                        </td>
+                        <td><b>{{ $pool->title }}<br/>{{ $pool->round->title }}</b></td>
+                        <td>{{ $pool->start_date }}<br/>{{ $pool->end_date }}</td>
                         <td class="table-item-menu">
 @php
-  $menus = [[
-    'class' => 'btn-pool-subscription',
-    'text' => __('tontine.subscription.actions.subscriptions'),
-  ], null, [
-    'class' => 'btn-pool-planning',
-    'text' => __('tontine.subscription.actions.planning'),
-  ]];
-  if($pool->remit_planned)
-  {
-    $menus[] = [
+  $menus = !$pool->remit_planned ? [[
+      'class' => 'btn-pool-subscription',
+      'text' => __('tontine.subscription.actions.subscriptions'),
+    ]] : [[
+      'class' => 'btn-pool-subscription',
+      'text' => __('tontine.subscription.actions.subscriptions'),
+    ], null, [
+      'class' => 'btn-pool-planning',
+      'text' => __('tontine.subscription.actions.planning'),
+    ], [
       'class' => 'btn-pool-beneficiary',
       'text' => __('tontine.subscription.actions.beneficiaries'),
-    ];
-  }
+    ]];
 @endphp
 @include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-pool-id',

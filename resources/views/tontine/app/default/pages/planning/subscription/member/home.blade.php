@@ -5,7 +5,7 @@
   $rqMemberCounter = rq(Ajax\App\Planning\Subscription\MemberCounter::class);
 @endphp
               <div class="section-body">
-                <div class="row">
+                <div class="row mb-2">
                   <div class="col">
                     <h2 class="section-title">{{ __('tontine.pool.titles.subscriptions') }} :: {{ $pool->title }}</h2>
                   </div>

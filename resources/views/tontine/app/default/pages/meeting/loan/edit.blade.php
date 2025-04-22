@@ -30,7 +30,8 @@
               </div>
             </div>
             <div class="form-group row">
-              {!! $html->label('interest', $loan->fixed_interest ? __('common.labels.amount') : __('meeting.loan.labels.percentage'))->class('col-sm-3 col-form-label')->id('loan-interest-label') !!}
+              {!! $html->label($loan->fixed_interest ? __('common.labels.amount') :
+                __('meeting.loan.labels.percentage'), 'interest')->class('col-sm-3 col-form-label')->id('loan-interest-label') !!}
               <div class="col-sm-5">
                 {!! $html->text('interest', $loan->fixed_interest ? $locale->getMoneyValue($loan->interest) :
                   $loan->interest_rate / 100)->class('form-control') !!}

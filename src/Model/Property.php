@@ -21,15 +21,6 @@ class Property extends Base
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'content' => 'array',
-    ];
-
-    /**
      * The model's default values for attributes.
      *
      * @var array
@@ -37,6 +28,18 @@ class Property extends Base
     protected $attributes = [
         'content' => '{}',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'content' => 'array',
+        ];
+    }
 
     /**
      * Get the parent owner model.

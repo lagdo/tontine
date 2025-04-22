@@ -43,38 +43,6 @@ class SectionFunc extends FuncComponent
             ->setSmScreenHandler('session-pools-sm-screens', 'content-home');
     }
 
-    public function savings(int $sessionId = 0)
-    {
-        $this->renderSection('savings');
-
-        $this->cl(Saving\Saving::class)->show();
-        $this->cl(Saving\Closing::class)->show();
-
-        $this->response->js('Tontine')
-            ->setSmScreenHandler('session-savings-sm-screens', 'content-home');
-    }
-
-    public function loans(int $sessionId = 0)
-    {
-        $this->renderSection('loans');
-
-        $this->cl(Credit\Loan\Loan::class)->show();
-    }
-
-    public function refunds(int $sessionId = 0)
-    {
-        $this->renderSection('refunds');
-
-        $this->cl(Credit\Refund\Refund::class)->show();
-    }
-
-    public function cash(int $sessionId = 0)
-    {
-        $this->renderSection('cash');
-
-        $this->cl(Cash\Disbursement::class)->show();
-    }
-
     public function charges(int $sessionId = 0)
     {
         $this->renderSection('charges');
@@ -84,6 +52,38 @@ class SectionFunc extends FuncComponent
 
         $this->response->js('Tontine')
             ->setSmScreenHandler('session-charges-sm-screens', 'content-home');
+    }
+
+    public function savings(int $sessionId = 0)
+    {
+        $this->renderSection('savings');
+
+        $this->cl(Saving\Saving::class)->show();
+        $this->cl(Credit\Loan\Loan::class)->show();
+
+        $this->response->js('Tontine')
+            ->setSmScreenHandler('session-savings-sm-screens', 'content-home');
+    }
+
+    public function refunds(int $sessionId = 0)
+    {
+        $this->renderSection('refunds');
+
+        $this->cl(Credit\Refund\Refund::class)->show();
+    }
+
+    public function profits(int $sessionId = 0)
+    {
+        $this->renderSection('profits');
+
+        $this->cl(Saving\Profit::class)->show();
+    }
+
+    public function outflows(int $sessionId = 0)
+    {
+        $this->renderSection('outflows');
+
+        $this->cl(Cash\Outflow::class)->show();
     }
 
     public function reports(int $sessionId = 0)
@@ -105,7 +105,6 @@ class SectionFunc extends FuncComponent
         ];
         $this->response->jq('#session-agenda')->summernote($options);
         $this->response->jq('#session-report')->summernote($options);
-
         $this->response->js('Tontine')
             ->setSmScreenHandler('session-reports-sm-screens', 'content-home');
     }

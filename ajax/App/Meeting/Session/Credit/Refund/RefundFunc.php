@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Credit\Refund;
 
 use Ajax\App\Meeting\FuncComponent;
-use Ajax\App\Meeting\Session\FundTrait;
 use Siak\Tontine\Model\Debt as DebtModel;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;

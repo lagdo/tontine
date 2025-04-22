@@ -5,7 +5,6 @@ namespace Siak\Tontine\Model;
 use Database\Factories\ChargeFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Siak\Tontine\Model\Traits\HasCurrency;
 
@@ -13,7 +12,6 @@ use function intval;
 
 class Charge extends Base
 {
-    use HasFactory;
     use HasCurrency;
 
     /**
@@ -77,9 +75,9 @@ class Charge extends Base
         return ChargeFactory::new();
     }
 
-    public function tontine()
+    public function guild()
     {
-        return $this->belongsTo(Tontine::class);
+        return $this->belongsTo(Guild::class);
     }
 
     public function session_bills()
@@ -92,9 +90,9 @@ class Charge extends Base
         return $this->hasMany(RoundBill::class);
     }
 
-    public function tontine_bills()
+    public function oneoff_bills()
     {
-        return $this->hasMany(TontineBill::class);
+        return $this->hasMany(OneoffBill::class);
     }
 
     public function libre_bills()

@@ -45,9 +45,9 @@ class User extends \App\Models\User
         return $this->hasOne(Profile::class);
     }
 
-    public function tontines()
+    public function guilds()
     {
-        return $this->hasMany(Tontine::class)->orderBy('tontines.id', 'desc');
+        return $this->hasMany(Guild::class)->orderBy('guilds.id', 'desc');
     }
 
     public function host_invites()

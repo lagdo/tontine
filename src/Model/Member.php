@@ -35,14 +35,17 @@ class Member extends Base
     ];
 
     /**
-     * The attributes that should be mutated to dates.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'registered_at' => 'datetime',
-        'birthday' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'registered_at' => 'datetime',
+            'birthday' => 'datetime',
+        ];
+    }
 
     /**
      * Create a new factory instance for the model.
@@ -54,9 +57,9 @@ class Member extends Base
         return MemberFactory::new();
     }
 
-    public function tontine()
+    public function guild()
     {
-        return $this->belongsTo(Tontine::class);
+        return $this->belongsTo(Guild::class);
     }
 
     public function subscriptions()
@@ -84,9 +87,9 @@ class Member extends Base
         return $this->hasMany(RoundBill::class);
     }
 
-    public function tontine_bills()
+    public function oneoff_bills()
     {
-        return $this->hasMany(TontineBill::class);
+        return $this->hasMany(OneoffBill::class);
     }
 
     public function savings()

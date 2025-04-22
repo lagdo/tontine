@@ -25,13 +25,13 @@ class TontineTemplate
     public function handle(Request $request, Closure $next)
     {
         $template = config('tontine.templates.app', 'default');
-        $tontinePath = resource_path("views/tontine/app/$template");
-        $paginationPath = "$tontinePath/parts/table/pagination";
-        View::addNamespace('tontine', $tontinePath);
+        $guildPath = resource_path("views/tontine/app/$template");
+        $paginationPath = "$guildPath/parts/table/pagination";
+        View::addNamespace('tontine', $guildPath);
 
         // Register the namespaces in the Jaxon view renderer.
         $jaxonView = jaxon()->view();
-        $jaxonView->addNamespace('tontine', $tontinePath, '.blade.php', 'blade');
+        $jaxonView->addNamespace('tontine', $guildPath, '.blade.php', 'blade');
         $jaxonView->addNamespace('pagination', $paginationPath, '.blade.php', 'blade');
 
         return $next($request);

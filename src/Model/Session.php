@@ -44,63 +44,58 @@ class Session extends Base
         'status',
         'notes',
         'venue',
-        'start_at',
-        'end_at',
+        'day_date',
+        'start_time',
+        'end_time',
         'host_id',
     ];
 
     /**
-     * The attributes that should be mutated to dates.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'start_at' => 'datetime',
-        'end_at' => 'datetime',
-    ];
-
-    /**
-     * The relationships that should always be loaded.
-     *
-     * @var array
-     */
-    protected $with = [
-        'host',
-        'disabled_pools',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'day_date' => 'datetime:Y-m-d',
+            'start_time' => 'datetime:H:i',
+            'end_time' => 'datetime:H:i',
+        ];
+    }
 
     public function notFirst(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->round->sessions()->where('start_at', '<', $this->start_at)->exists(),
+            get: fn() => $this->round->sessions()->where('day_date', '<', $this->day_date)->exists(),
         );
     }
 
     public function notLast(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->round->sessions()->where('start_at', '>', $this->start_at)->exists(),
+            get: fn() => $this->round->sessions()->where('day_date', '>', $this->day_date)->exists(),
         );
     }
 
     public function abbrev(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => $value ?? $this->start_at->format('M y'),
+            get: fn($value) => $value ?? $this->day_date->format('M y'),
         );
     }
 
     public function date(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->start_at->translatedFormat(trans('tontine.date.format')),
+            get: fn() => $this->day_date->translatedFormat(trans('tontine.date.format')),
         );
     }
 
     public function times(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->start_at->format('H:i') . ' - ' . $this->end_at->format('H:i'),
+            get: fn() => $this->start_time->format('H:i') . ' - ' . $this->end_time->format('H:i'),
         );
     }
 
@@ -180,14 +175,19 @@ class Session extends Base
         return $this->hasMany(Saving::class);
     }
 
-    public function closings()
+    public function outflows()
     {
-        return $this->hasMany(Closing::class);
+        return $this->hasMany(Outflow::class);
     }
 
-    public function disbursements()
+    public function funds()
     {
-        return $this->hasMany(Disbursement::class);
+        return $this->belongsToMany(Fund::class, 'v_fund_session');
+    }
+
+    public function pools()
+    {
+        return $this->belongsToMany(Pool::class, 'v_pool_session');
     }
 
     public function disabled_pools()
@@ -198,30 +198,6 @@ class Session extends Base
     public function absents()
     {
         return $this->belongsToMany(Member::class, 'absences');
-    }
-
-    /**
-     * @param  Builder  $query
-     * @param  Pool $pool
-     *
-     * @return Builder
-     */
-    public function scopeEnabled(Builder $query, Pool $pool): Builder
-    {
-        return $query->whereDoesntHave('disabled_pools',
-            fn($q) => $q->where('pools.id', $pool->id));
-    }
-
-    /**
-     * @param  Builder  $query
-     * @param  Pool $pool
-     *
-     * @return Builder
-     */
-    public function scopeDisabled(Builder $query, Pool $pool): Builder
-    {
-        return $query->whereHas('disabled_pools',
-            fn($q) => $q->where('pools.id', $pool->id));
     }
 
     /**
@@ -242,19 +218,5 @@ class Session extends Base
     public function scopeOpened(Builder $query): Builder
     {
         return $query->where('status', '=', self::STATUS_OPENED);
-    }
-
-    /**
-     * @param  Builder  $query
-     * @param  Pool $pool
-     *
-     * @return Builder
-     */
-    public function scopeOfPool(Builder $query, Pool $pool): Builder
-    {
-        return !$pool->pool_round ?
-            $query->where('round_id', $pool->round_id) :
-            $query->whereDate('start_at', '<=', $pool->end_at->format('Y-m-d'))
-                ->whereDate('start_at', '>=', $pool->start_at->format('Y-m-d'));
     }
 }

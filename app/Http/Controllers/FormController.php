@@ -84,15 +84,15 @@ class FormController extends Controller
     public function entry(Request $request, LocaleService $localeService,
         SqidsInterface $sqids, string $form, string $sessionSqid = '')
     {
-        $tontine = $this->tenantService->tontine();
-        [$country] = $localeService->getNameFromTontine($tontine);
+        $guild = $this->tenantService->guild();
+        [$country] = $localeService->getNameFromGuild($guild);
         $session = null;
         if($sessionSqid !== '')
         {
             [$sessionId] = $sqids->decode($sessionSqid);
             $session = $this->sessionService->getSession($sessionId);
         }
-        view()->share(compact('tontine', 'country', 'session'));
+        view()->share(compact('guild', 'country', 'session'));
 
         return $this->form($request, $form);
     }

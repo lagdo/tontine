@@ -10,10 +10,10 @@ use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
+use Siak\Tontine\Service\Guild\FundService;
+use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Tontine\FundService;
-use Siak\Tontine\Service\Tontine\MemberService;
 
 use function trans;
 

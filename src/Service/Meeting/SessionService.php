@@ -8,21 +8,21 @@ use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\DataSyncService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Traits\EventTrait;
-use Siak\Tontine\Service\Traits\SessionTrait;
 
 use function trans;
 
 class SessionService
 {
-    use EventTrait;
     use SessionTrait;
 
     /**
      * @param TenantService $tenantService
+     * @param DataSyncService $dataSyncService
      */
-    public function __construct(private TenantService $tenantService)
+    public function __construct(private TenantService $tenantService,
+        private DataSyncService $dataSyncService)
     {}
 
     /**
@@ -78,11 +78,11 @@ class SessionService
 
             // Sync the round.
             $session->round->update(['status' => Round::STATUS_OPENED]);
-            $this->roundSynced($this->tenantService->tontine(), $session->round);
+            $this->dataSyncService->roundSynced($this->tenantService->guild(), $session->round);
 
             // Sync the session
             $session->update(['status' => Session::STATUS_OPENED]);
-            $this->sessionSynced($this->tenantService->tontine(), $session);
+            $this->dataSyncService->sessionSynced($this->tenantService->guild(), $session);
         });
     }
 
@@ -135,12 +135,12 @@ class SessionService
             // Sync the round.
             $round = $this->tenantService->round();
             $round->update(['status' => Round::STATUS_OPENED]);
-            $this->roundSynced($this->tenantService->tontine(), $round);
+            $this->dataSyncService->roundSynced($this->tenantService->guild(), $round);
 
             // Sync the sessions.
             $round->sessions()->opened()->get()
                 ->each(function($session) {
-                    $this->sessionSynced($this->tenantService->tontine(), $session);
+                    $this->dataSyncService->sessionSynced($this->tenantService->guild(), $session);
                 });
 
             // Update the bills amounts.
@@ -193,8 +193,8 @@ and "v_bills"."session_id" in (?, ?, ?, ?, ?)))
     public function getPrevSession(Session $session): ?Session
     {
         return $this->tenantService->round()->sessions()->active()
-            ->where('start_at', '<', $session->start_at)
-            ->orderBy('start_at', 'desc')
+            ->where('day_date', '<', $session->day_date)
+            ->orderBy('day_date', 'desc')
             ->first();
     }
 
@@ -208,8 +208,8 @@ and "v_bills"."session_id" in (?, ?, ?, ?, ?)))
     public function getNextSession(Session $session): ?Session
     {
         return $this->tenantService->round()->sessions()->active()
-            ->where('start_at', '>', $session->start_at)
-            ->orderBy('start_at', 'asc')
+            ->where('day_date', '>', $session->day_date)
+            ->orderBy('day_date', 'asc')
             ->first();
     }
 

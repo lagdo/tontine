@@ -33,9 +33,9 @@
                   <div @jxnEvent(['.btn-session-pools', 'click'], $rqSectionFunc->pools())></div>
                   <div @jxnEvent(['.btn-session-charges', 'click'], $rqSectionFunc->charges())></div>
                   <div @jxnEvent(['.btn-session-savings', 'click'], $rqSectionFunc->savings())></div>
-                  <div @jxnEvent(['.btn-session-loans', 'click'], $rqSectionFunc->loans())></div>
                   <div @jxnEvent(['.btn-session-refunds', 'click'], $rqSectionFunc->refunds())></div>
-                  <div @jxnEvent(['.btn-session-cash', 'click'], $rqSectionFunc->cash())></div>
+                  <div @jxnEvent(['.btn-session-profits', 'click'], $rqSectionFunc->profits())></div>
+                  <div @jxnEvent(['.btn-session-outflows', 'click'], $rqSectionFunc->outflows())></div>
                   <div @jxnEvent(['.btn-session-reports', 'click'], $rqSectionFunc->reports())></div>
 
 @php
@@ -49,14 +49,14 @@
     'class' => 'btn-session-savings',
     'text' => __('meeting.actions.savings'),
   ],[
-    'class' => 'btn-session-loans',
-    'text' => __('meeting.actions.loans'),
-  ],[
     'class' => 'btn-session-refunds',
     'text' => __('meeting.actions.refunds'),
   ],[
-    'class' => 'btn-session-cash',
-    'text' => __('meeting.actions.cash'),
+    'class' => 'btn-session-profits',
+    'text' => __('meeting.actions.profits'),
+  ],[
+    'class' => 'btn-session-outflows',
+    'text' => __('meeting.actions.outflows'),
   ],[
     'class' => 'btn-session-reports',
     'text' => __('meeting.actions.reports'),

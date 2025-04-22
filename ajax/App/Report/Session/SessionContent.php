@@ -34,12 +34,12 @@ class SessionContent extends Component
         $this->cl(Bill\Session::class)->render();
         $this->cl(Bill\Total::class)->render();
         $this->cl(Deposit::class)->render();
-        $this->cl(Disbursement::class)->render();
+        $this->cl(Outflow::class)->render();
         $this->cl(Loan::class)->render();
         $this->cl(Refund::class)->render();
         $this->cl(Remitment::class)->render();
         $this->cl(Saving::class)->render();
-        $this->cl(Saving\Fund::class)->clear();
+        $this->cl(Saving\Profit::class)->clear();
 
         // Render the page buttons.
         $this->cl(Action\Export::class)->render();

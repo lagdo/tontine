@@ -35,7 +35,7 @@ class SubscriptionService
     public function getPools(bool $pluck = true): Collection
     {
         $query = $this->tenantService->round()->pools()
-            ->with(['round.tontine'])->whereHas('subscriptions');
+            ->with(['round.guild'])->whereHas('subscriptions');
         return $pluck ? $query->get()->pluck('title', 'id') : $query->get();
     }
 
@@ -50,7 +50,7 @@ class SubscriptionService
      */
     public function getQuery(Pool $pool, string $search, ?bool $filter): Builder|Relation
     {
-        return $this->tenantService->tontine()->members()->active()
+        return $this->tenantService->guild()->members()->active()
             ->when($filter === true, function(Builder $query) use($pool) {
                 // Return only members with subscription in this pool
                 return $query->whereHas('subscriptions', function(Builder $query) use($pool) {
@@ -122,7 +122,7 @@ class SubscriptionService
         //     throw new MessageException(trans('tontine.subscription.errors.create'));
         // }
 
-        $member = $this->tenantService->tontine()->members()->find($memberId);
+        $member = $this->tenantService->guild()->members()->find($memberId);
         $subscription = new Subscription();
         $subscription->title = '';
         $subscription->pool()->associate($pool);
@@ -243,10 +243,7 @@ class SubscriptionService
     public function saveBeneficiary(Pool $pool, int $sessionId, int $currSubscriptionId,
         int $nextSubscriptionId): bool
     {
-        $session = $this->tenantService->tontine()
-            ->sessions()
-            ->ofPool($pool)
-            ->find($sessionId);
+        $session = $pool->sessions()->find($sessionId);
         $currSubscription = null;
         $nextSubscription = null;
         if($currSubscriptionId > 0)

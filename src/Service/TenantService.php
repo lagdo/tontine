@@ -4,7 +4,7 @@ namespace Siak\Tontine\Service;
 
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Round;
-use Siak\Tontine\Model\Tontine;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\User;
 
 class TenantService
@@ -15,9 +15,9 @@ class TenantService
     protected ?User $user = null;
 
     /**
-     * @var Tontine|null
+     * @var Guild|null
      */
-    protected ?Tontine $tontine = null;
+    protected ?Guild $guild = null;
 
     /**
      * @var Round|null
@@ -46,24 +46,26 @@ class TenantService
     }
 
     /**
-     * @param Tontine $tontine
+     * @param Guild $guild
      *
      * @return void
      */
-    public function setTontine(Tontine $tontine): void
+    public function setGuild(Guild $guild): void
     {
-        $this->tontine = $tontine;
+        $this->guild = $guild;
         // Set the currency for locales.
-        $this->localeService->setCurrency($tontine->currency_code);
-        // Save as latest tontine id if it has changed.
-        $tontineId = $this->user?->properties['latest']['tontine'] ?? 0;
-        if(!$this->user || $tontineId === $tontine->id)
+        $this->localeService->setCurrency($guild->currency_code);
+        // Save as latest guild id if it has changed.
+        $guildId = $this->user?->properties['latest']['guild'] ?? 0;
+        if(!$this->user || $guildId === $guild->id)
         {
             return;
         }
+
         $properties = $this->user->properties;
-        $properties['latest']['tontine'] = $tontine->id;
+        $properties['latest']['guild'] = $guild->id;
         $this->user->saveProperties($properties);
+        $this->resetRound();
     }
 
     /**
@@ -80,6 +82,7 @@ class TenantService
         {
             return;
         }
+
         $properties = $this->user->properties;
         $properties['latest']['round'] = $round->id;
         $this->user->saveProperties($properties);
@@ -102,11 +105,11 @@ class TenantService
     }
 
     /**
-     * @return Tontine|null
+     * @return Guild|null
      */
-    public function tontine(): ?Tontine
+    public function guild(): ?Guild
     {
-        return $this->tontine;
+        return $this->guild;
     }
 
     /**
@@ -124,7 +127,7 @@ class TenantService
      */
     public function getRound(int $roundId): ?Round
     {
-        return $this->tontine->rounds()->find($roundId);
+        return $this->guild->rounds()->find($roundId);
     }
 
     /**
@@ -132,7 +135,7 @@ class TenantService
      */
     public function getFirstRound(): ?Round
     {
-        return $this->tontine->rounds()->first();
+        return $this->guild->rounds()->first();
     }
 
     /**
@@ -148,7 +151,7 @@ class TenantService
      */
     private function userIsGuest(): bool
     {
-        return $this->tontine !== null && $this->tontine->isGuest;
+        return $this->guild !== null && $this->guild->isGuest;
     }
 
     /**
@@ -156,11 +159,11 @@ class TenantService
      */
     private function getHostAccess(): array
     {
-        if(!$this->tontine || !$this->user)
+        if(!$this->guild || !$this->user)
         {
             return [];
         }
-        $userInvite = $this->tontine->invites()
+        $userInvite = $this->guild->invites()
             ->where('guest_id', $this->user->id)
             ->first();
         if(!$userInvite)

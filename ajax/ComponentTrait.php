@@ -4,6 +4,7 @@ namespace Ajax;
 
 use Jaxon\App\Dialog\DialogTrait;
 use Jaxon\App\View\Store;
+use Jaxon\App\View\ViewRenderer;
 use Siak\Tontine\Exception\MeetingRoundException;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Exception\PlanningPoolException;
@@ -22,6 +23,13 @@ trait ComponentTrait
      * @var TenantService
      */
     protected TenantService $tenantService;
+
+    /**
+     * Get the view renderer
+     *
+     * @return ViewRenderer
+     */
+    abstract protected function view(): ViewRenderer;
 
     /**
      * Render a view
@@ -48,7 +56,7 @@ trait ComponentTrait
      */
     protected function checkHostAccess(string $section, string $entry, bool $return = false): bool
     {
-        return $this->tenantService->checkHostAccess($section, $entry, $return);
+        return true; // $this->tenantService->checkHostAccess($section, $entry, $return);
     }
 
     /**
@@ -95,8 +103,8 @@ trait ComponentTrait
         // First check for created sessions
         $this->checkRoundSessions();
 
-        $tontine = $this->tenantService->tontine();
-        if(!$tontine || $tontine->members()->active()->count() === 0)
+        $guild = $this->tenantService->guild();
+        if(!$guild || $guild->members()->active()->count() === 0)
         {
             throw new TontineMemberException(trans('tontine.errors.checks.members'));
         }

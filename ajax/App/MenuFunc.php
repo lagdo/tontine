@@ -2,15 +2,15 @@
 
 namespace Ajax\App;
 
-use Ajax\App\Admin\Organisation\Organisation;
+use Ajax\App\Admin\Guild\Guild;
 use Ajax\App\Page\Sidebar\AdminMenu;
 use Ajax\App\Page\Sidebar\RoundMenu;
 use Ajax\App\Page\MainTitle;
-use Ajax\App\Planning\Financial\Pool;
-use Ajax\App\Tontine\Member\Member;
+use Ajax\App\Planning\Finance\Finance;
 use Ajax\FuncComponent;
-use Siak\Tontine\Service\Planning\RoundService;
-use Siak\Tontine\Service\Tontine\TontineService;
+use Siak\Tontine\Model\Guild as GuildModel;
+use Siak\Tontine\Service\Guild\GuildService;
+use Siak\Tontine\Service\Guild\RoundService;
 
 use function Jaxon\pm;
 use function trans;
@@ -18,31 +18,39 @@ use function trans;
 class MenuFunc extends FuncComponent
 {
     /**
-     * @param TontineService $tontineService
+     * @param GuildService $guildService
      */
-    public function __construct(protected TontineService $tontineService,
+    public function __construct(protected GuildService $guildService,
         protected RoundService $roundService)
     {}
 
-    public function admin()
+    public function admin(): void
     {
-        $tontine = $this->tenantService->tontine();
+        $guild = $this->tenantService->guild();
         $this->tenantService->resetRound();
-        $this->stash()->set('menu.current.tontine', $tontine);
+        $this->stash()->set('menu.current.guild', $guild);
 
         $this->response->jq('#header-menu-home')->hide();
         $this->cl(AdminMenu::class)->render();
         $this->cl(MainTitle::class)->render();
-        $this->cl(Organisation::class)->home();
+        $this->cl(Guild::class)->home();
+
+        if(!$guild)
+        {
+            return;
+        }
+        $this->alert()->info(trans('tontine.messages.back_to_admin', [
+            'guild' => $guild->name,
+        ]));
     }
 
-    public function showOrganisations()
+    public function showGuilds(): void
     {
-        $tontine = $this->tenantService->tontine();
+        $guild = $this->tenantService->guild();
         $title = trans('tontine.titles.choose');
-        $content = $this->renderView('pages.select.tontine', [
-            'current' => $tontine?->id ?? 0,
-            'tontines' => $this->tontineService->getTontines()->pluck('name', 'id'),
+        $content = $this->renderView('pages.select.guild', [
+            'current' => $guild?->id ?? 0,
+            'guilds' => $this->guildService->getGuilds()->pluck('name', 'id'),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -51,38 +59,48 @@ class MenuFunc extends FuncComponent
         ],[
             'title' => trans('tontine.actions.choose'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveOrganisation(pm()->select('tontine_id')->toInt()),
+            'click' => $this->rq()->saveGuild(pm()->select('guild_id')->toInt()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
 
-    public function saveOrganisation(int $tontineId)
+    /**
+     * @exclude
+     * @param GuildModel $guild
+     *
+     * @return void
+     */
+    public function setCurrentGuild(GuildModel $guild): void
     {
-        if(!($tontine = $this->tontineService->getUserOrGuestTontine($tontineId)))
+        $this->bag('tenant')->set('guild.id', $guild->id);
+        $this->bag('tenant')->set('round.id', 0);
+        $this->stash()->set('menu.current.guild', $guild);
+        $this->tenantService->setGuild($guild);
+    }
+
+    public function saveGuild(int $guildId)
+    {
+        if(!($guild = $this->guildService->getUserOrGuestGuild($guildId)))
         {
             return;
         }
 
-        $this->bag('tenant')->set('tontine.id', $tontine->id);
-        $this->bag('tenant')->set('round.id', 0);
-        $this->stash()->set('menu.current.tontine', $tontine);
-        $this->tenantService->setTontine($tontine);
-        $this->tenantService->resetRound();
+        $this->setCurrentGuild($guild);
 
         $this->response->jq('#header-menu-home')->hide();
         $this->cl(MainTitle::class)->render();
         $this->cl(AdminMenu::class)->render();
-        $this->cl(Member::class)->home();
+        $this->cl(Guild::class)->home();
 
         $this->modal()->hide();
         $this->alert()->info(trans('tontine.messages.selected', [
-            'tontine' => $tontine->name,
+            'guild' => $guild->name,
         ]));
     }
 
-    public function showRounds()
+    public function showRounds(): void
     {
-        if(!($tontine = $this->tenantService->tontine()))
+        if(!($guild = $this->tenantService->guild()))
         {
             return;
         }
@@ -91,7 +109,7 @@ class MenuFunc extends FuncComponent
         $title = trans('tontine.round.titles.choose');
         $content = $this->renderView('pages.select.round', [
             'current' => $round?->id ?? 0,
-            'rounds' => $tontine->rounds->pluck('title', 'id'),
+            'rounds' => $this->roundService->getRoundList($guild),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -108,13 +126,14 @@ class MenuFunc extends FuncComponent
     /**
      * @databag planning
      */
-    public function saveRound(int $roundId)
+    public function saveRound(int $roundId): void
     {
-        if(!($tontine = $this->tenantService->tontine()))
+        if(!($guild = $this->tenantService->guild()))
         {
             return;
         }
-        if(!($round = $this->roundService->getRound($roundId)))
+        if(!($round = $this->roundService->getRound($roundId)) ||
+            $this->roundService->getSessionCount($round) === 0)
         {
             return;
         }
@@ -124,18 +143,18 @@ class MenuFunc extends FuncComponent
         }
 
         // Save the tontine and round ids in the user session.
-        $this->bag('tenant')->set('tontine.id', $round->tontine->id);
+        $this->bag('tenant')->set('guild.id', $round->guild->id);
         $this->bag('tenant')->set('round.id', $round->id);
         $this->tenantService->setRound($round);
 
         $this->response->jq('#header-menu-home')->show();
         $this->cl(RoundMenu::class)->render();
         $this->cl(MainTitle::class)->render();
-        $this->cl(Pool::class)->home();
+        $this->cl(Finance::class)->home();
 
         $this->modal()->hide();
         $this->alert()->info(trans('tontine.round.messages.selected', [
-            'tontine' => $tontine->name,
+            'guild' => $guild->name,
             'round' => $round->title,
         ]));
     }

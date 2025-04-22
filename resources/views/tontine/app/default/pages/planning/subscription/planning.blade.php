@@ -4,10 +4,11 @@
   $rqSubscription = rq(Ajax\App\Planning\Subscription\Subscription::class);
   $rqBeneficiary = rq(Ajax\App\Planning\Subscription\Beneficiary::class);
   $rqPlanning = rq(Ajax\App\Planning\Subscription\Planning::class);
+  $poolSessionIds = $pool->sessions->pluck('id', 'id');
 @endphp
             <div class="col-md-12">
               <div class="section-body">
-                <div class="row">
+                <div class="row mb-2">
                   <div class="col">
                     <h2 class="section-title">
                       {{ __('tontine.subscription.titles.planning') }}:
@@ -17,14 +18,14 @@
                   </div>
 @if ($pool->remit_planned)
                   <div class="col-auto">
-                    <div class="btn-group float-right ml-2 mb-2" role="group">
+                    <div class="btn-group float-right ml-2" role="group">
                       <button type="button" class="btn btn-primary" @jxnClick($rqBeneficiary->render())>{{
                         __('tontine.subscription.titles.beneficiaries') }}</i></button>
                     </div>
                   </div>
 @endif
                   <div class="col-auto">
-                    <div class="btn-group float-right ml-2 mb-2" role="group">
+                    <div class="btn-group float-right ml-2" role="group">
                       <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->render())><i class="fa fa-arrow-left"></i></button>
                       <button type="button" class="btn btn-primary" @jxnClick($rqPlanning->render())><i class="fa fa-sync"></i></button>
                     </div>
@@ -49,7 +50,7 @@
                       </thead>
                       <tbody>
 @foreach ($sessions as $session)
-@if($poolService->active($pool, $session))
+@if($poolSessionIds->has($session->id))
                         <tr>
                           <td><b>{{ $session->title }}</b></td>
                           <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->start, false) }}</td>

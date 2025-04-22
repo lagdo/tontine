@@ -3,7 +3,7 @@
   $rqSessionPage = rq(Ajax\App\Meeting\Session\SessionPage::class);
 @endphp
           <div class="section-body">
-            <div class="row">
+            <div class="row mb-2">
               <div class="col">
                 <h2 class="section-title">{{ __('tontine.titles.sessions') }}</h2>
               </div>

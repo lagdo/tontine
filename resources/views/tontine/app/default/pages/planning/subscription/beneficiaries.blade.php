@@ -1,13 +1,13 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('poolService', 'Siak\Tontine\Service\Planning\PoolService')
 @php
   $rqSubscription = rq(Ajax\App\Planning\Subscription\Subscription::class);
   $rqBeneficiary = rq(Ajax\App\Planning\Subscription\Beneficiary::class);
   $rqPlanning = rq(Ajax\App\Planning\Subscription\Planning::class);
+  $poolSessionIds = $pool->sessions->pluck('id', 'id');
 @endphp
             <div class="col-md-12">
               <div class="section-body">
-                <div class="row">
+                <div class="row mb-2">
                   <div class="col">
                     <h2 class="section-title">
                       {{ __('tontine.subscription.titles.beneficiaries') }}:
@@ -16,13 +16,13 @@
                     </h2>
                   </div>
                   <div class="col-auto">
-                    <div class="btn-group float-right ml-2 mb-2" role="group">
+                    <div class="btn-group float-right ml-2" role="group">
                       <button type="button" class="btn btn-primary" @jxnClick($rqPlanning->render())>{{
                         __('tontine.subscription.titles.planning') }}</i></button>
                     </div>
                   </div>
                   <div class="col-auto">
-                    <div class="btn-group float-right ml-2 mb-2" role="group">
+                    <div class="btn-group float-right ml-2" role="group">
                       <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->render())><i class="fa fa-arrow-left"></i></button>
                       <button type="button" class="btn btn-primary" @jxnClick($rqBeneficiary->render())><i class="fa fa-sync"></i></button>
                     </div>
@@ -52,7 +52,7 @@
                       </thead>
                       <tbody>
 @foreach ($sessions as $session)
-@if ($poolService->disabled($pool, $session))
+@if (!$poolSessionIds->has($session->id))
                         <tr>
                           <td>{{ $session->title }}</td>
                           <td>&nbsp;</td>

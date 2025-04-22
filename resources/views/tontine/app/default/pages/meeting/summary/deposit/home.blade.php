@@ -3,8 +3,8 @@
   $poolId = jq()->parent()->attr('data-pool-id')->toInt();
   // $this->response->jq('.btn-pool-deposits')->click($this->rq()->deposits($poolId));
 @endphp
-                  <div class="row">
-                    <div class="col-auto">
+                  <div class="row mb-2">
+                    <div class="col">
                       <div class="section-title mt-0">{!! __('meeting.titles.deposits') !!}</div>
                     </div>
                   </div>

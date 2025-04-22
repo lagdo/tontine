@@ -4,70 +4,18 @@ namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Mcamara\LaravelLocalization\LaravelLocalization;
 use Siak\Tontine\Service\BalanceCalculator;
+use Siak\Tontine\Service\DataSyncService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Meeting\Cash\DisbursementService;
-use Siak\Tontine\Service\Meeting\Charge\BillService;
-use Siak\Tontine\Service\Meeting\Charge\FixedFeeService;
-use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
-use Siak\Tontine\Service\Meeting\Charge\SettlementService;
-use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
-use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
-use Siak\Tontine\Service\Meeting\Credit\LoanService;
-use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
-use Siak\Tontine\Service\Meeting\Credit\RefundService;
-use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
-use Siak\Tontine\Service\Meeting\PaymentService;
-use Siak\Tontine\Service\Meeting\Pool\AuctionService;
-use Siak\Tontine\Service\Meeting\Pool\DepositService;
-use Siak\Tontine\Service\Meeting\Pool\PoolService as MeetingPoolService;
-use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
-use Siak\Tontine\Service\Meeting\PresenceService;
-use Siak\Tontine\Service\Meeting\Saving\ClosingService;
-use Siak\Tontine\Service\Meeting\Saving\ProfitService;
-use Siak\Tontine\Service\Meeting\Saving\SavingService;
-use Siak\Tontine\Service\Meeting\SessionService as MeetingSessionService;
-use Siak\Tontine\Service\Meeting\SummaryService as MeetingSummaryService;
-use Siak\Tontine\Service\Planning\DataSyncService;
-use Siak\Tontine\Service\Planning\PoolService as PlanningPoolService;
-use Siak\Tontine\Service\Planning\RoundService;
-use Siak\Tontine\Service\Planning\SessionService as PlanningSessionService;
-use Siak\Tontine\Service\Planning\SubscriptionService;
-use Siak\Tontine\Service\Planning\SummaryService as PlanningSummaryService;
-use Siak\Tontine\Service\Report\MemberService as MemberReportService;
-use Siak\Tontine\Service\Report\Pdf\PdfPrinterService;
-use Siak\Tontine\Service\Report\ReportService;
-use Siak\Tontine\Service\Report\RoundService as RoundReportService;
-use Siak\Tontine\Service\Report\SessionService as SessionReportService;
-use Siak\Tontine\Service\Tontine\CategoryService;
-use Siak\Tontine\Service\Tontine\ChargeService;
-use Siak\Tontine\Service\Tontine\FundService;
-use Siak\Tontine\Service\Tontine\UserService;
-use Siak\Tontine\Service\Tontine\MemberService;
-use Siak\Tontine\Service\Tontine\TontineService;
-use Siak\Tontine\Validation\Meeting\ClosingValidator;
-use Siak\Tontine\Validation\Meeting\DisbursementValidator;
-use Siak\Tontine\Validation\Meeting\DebtValidator;
-use Siak\Tontine\Validation\Meeting\LoanValidator;
-use Siak\Tontine\Validation\Meeting\RemitmentValidator;
-use Siak\Tontine\Validation\Meeting\SavingValidator;
-use Siak\Tontine\Validation\Meeting\TargetValidator;
-use Siak\Tontine\Validation\Planning\PoolValidator;
-use Siak\Tontine\Validation\Planning\PoolRoundValidator;
-use Siak\Tontine\Validation\Planning\RoundValidator;
-use Siak\Tontine\Validation\Planning\SessionValidator;
-use Siak\Tontine\Validation\Tontine\ChargeValidator;
-use Siak\Tontine\Validation\Tontine\FundValidator;
-use Siak\Tontine\Validation\Tontine\GuestInviteValidator;
-use Siak\Tontine\Validation\Tontine\HostAccessValidator;
-use Siak\Tontine\Validation\Tontine\MemberValidator;
-use Siak\Tontine\Validation\Tontine\OptionsValidator;
-use Siak\Tontine\Validation\Tontine\TontineValidator;
+use Siak\Tontine\Service\Guild;
+use Siak\Tontine\Service\Meeting;
+use Siak\Tontine\Service\Planning;
+use Siak\Tontine\Service\Report;
+use Siak\Tontine\Validation;
 use Sqids\Sqids;
 use Sqids\SqidsInterface;
 
@@ -96,6 +44,8 @@ class SiakServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton(SqidsInterface::class, fn() => new Sqids(minLength: 8));
+
         $this->app->singleton(LocaleService::class, function($app) {
             $vendorDir = base_path('vendor');
             // Read country list from the umpirsky/country-list package data.
@@ -105,59 +55,65 @@ class SiakServiceProvider extends ServiceProvider
             $localization = $app->make(LaravelLocalization::class);
             return new LocaleService($localization, $countriesDataDir, $currenciesDataDir);
         });
-        $this->app->singleton(SqidsInterface::class, function() {
-            return new Sqids(minLength: 8);
-        });
-
-        $this->app->singleton(FundService::class, FundService::class);
-        $this->app->singleton(ChargeService::class, ChargeService::class);
-        $this->app->singleton(CategoryService::class, CategoryService::class);
-        $this->app->singleton(FixedFeeService::class, FixedFeeService::class);
-        $this->app->singleton(LibreFeeService::class, LibreFeeService::class);
-        $this->app->singleton(BillService::class, BillService::class);
-        $this->app->singleton(SettlementService::class, SettlementService::class);
-        $this->app->singleton(SettlementTargetService::class, SettlementTargetService::class);
-
-        $this->app->singleton(ClosingService::class, ClosingService::class);
-        $this->app->singleton(SavingService::class, SavingService::class);
-        $this->app->singleton(DebtCalculator::class, DebtCalculator::class);
-        $this->app->singleton(LoanService::class, LoanService::class);
-        $this->app->singleton(AuctionService::class, AuctionService::class);
-        $this->app->singleton(DepositService::class, DepositService::class);
+        $this->app->singleton(TenantService::class, TenantService::class);
         $this->app->singleton(BalanceCalculator::class, BalanceCalculator::class);
-        $this->app->singleton(DisbursementService::class, DisbursementService::class);
-        $this->app->singleton(MeetingPoolService::class, MeetingPoolService::class);
-        $this->app->singleton(RefundService::class, RefundService::class);
-        $this->app->singleton(PartialRefundService::class, PartialRefundService::class);
-        $this->app->singleton(ProfitService::class, ProfitService::class);
-        $this->app->singleton(RemitmentService::class, RemitmentService::class);
-        $this->app->singleton(MeetingSummaryService::class, MeetingSummaryService::class);
-        $this->app->singleton(MeetingSessionService::class, MeetingSessionService::class);
-        $this->app->singleton(PresenceService::class, PresenceService::class);
-        $this->app->singleton(MemberReportService::class, MemberReportService::class);
-        $this->app->singleton(RoundReportService::class, RoundReportService::class);
-        $this->app->singleton(SessionReportService::class, SessionReportService::class);
-        $this->app->singleton(ReportService::class, ReportService::class);
-        $this->app->singleton(PdfPrinterService::class, PdfPrinterService::class);
-        $this->app->when(PdfPrinterService::class)
+        $this->app->singleton(DataSyncService::class, DataSyncService::class);
+
+        $this->app->singleton(Guild\FundService::class, Guild\FundService::class);
+        $this->app->singleton(Guild\ChargeService::class, Guild\ChargeService::class);
+        $this->app->singleton(Guild\AccountService::class, Guild\AccountService::class);
+        $this->app->singleton(Guild\PoolService::class, Guild\PoolService::class);
+        $this->app->singleton(Guild\RoundService::class, Guild\RoundService::class);
+        $this->app->singleton(Guild\SessionService::class, Guild\SessionService::class);
+        $this->app->singleton(Guild\UserService::class, Guild\UserService::class);
+        $this->app->singleton(Guild\MemberService::class, Guild\MemberService::class);
+        $this->app->singleton(Guild\GuildService::class, Guild\GuildService::class);
+
+        $this->app->singleton(Planning\PoolService::class, Planning\PoolService::class);
+        $this->app->singleton(Planning\FundService::class, Planning\FundService::class);
+        $this->app->singleton(Planning\SubscriptionService::class, Planning\SubscriptionService::class);
+        $this->app->singleton(Planning\SummaryService::class, Planning\SummaryService::class);
+
+        $this->app->singleton(Meeting\FundService::class, Meeting\FundService::class);
+        $this->app->singleton(Meeting\SummaryService::class, Meeting\SummaryService::class);
+        $this->app->singleton(Meeting\SessionService::class, Meeting\SessionService::class);
+        $this->app->singleton(Meeting\PresenceService::class, Meeting\PresenceService::class);
+
+        $this->app->singleton(Meeting\Pool\PoolService::class, Meeting\Pool\PoolService::class);
+        $this->app->singleton(Meeting\Pool\DepositService::class, Meeting\Pool\DepositService::class);
+        $this->app->singleton(Meeting\Pool\RemitmentService::class, Meeting\Pool\RemitmentService::class);
+        $this->app->singleton(Meeting\Pool\AuctionService::class, Meeting\Pool\AuctionService::class);
+
+        $this->app->singleton(Meeting\Charge\FixedFeeService::class, Meeting\Charge\FixedFeeService::class);
+        $this->app->singleton(Meeting\Charge\LibreFeeService::class, Meeting\Charge\LibreFeeService::class);
+        $this->app->singleton(Meeting\Charge\BillService::class, Meeting\Charge\BillService::class);
+        $this->app->singleton(Meeting\Charge\SettlementService::class, Meeting\Charge\SettlementService::class);
+        $this->app->singleton(Meeting\Charge\SettlementTargetService::class,
+            Meeting\Charge\SettlementTargetService::class);
+
+        $this->app->singleton(Meeting\Saving\SavingService::class, Meeting\Saving\SavingService::class);
+        $this->app->singleton(Meeting\Saving\ProfitService::class, Meeting\Saving\ProfitService::class);
+
+        $this->app->singleton(Meeting\Credit\DebtCalculator::class, Meeting\Credit\DebtCalculator::class);
+        $this->app->singleton(Meeting\Credit\LoanService::class, Meeting\Credit\LoanService::class);
+        $this->app->singleton(Meeting\Credit\RefundService::class, Meeting\Credit\RefundService::class);
+        $this->app->singleton(Meeting\Credit\PartialRefundService::class,
+            Meeting\Credit\PartialRefundService::class);
+
+        $this->app->singleton(Meeting\Cash\OutflowService::class, Meeting\Cash\OutflowService::class);
+
+        $this->app->singleton(Report\MemberService::class, Report\MemberService::class);
+        $this->app->singleton(Report\RoundService::class, Report\RoundService::class);
+        $this->app->singleton(Report\SessionService::class, Report\SessionService::class);
+        $this->app->singleton(Report\ReportService::class, Report\ReportService::class);
+        $this->app->singleton(Report\Pdf\PdfPrinterService::class, Report\Pdf\PdfPrinterService::class);
+        $this->app->when(Report\Pdf\PdfPrinterService::class)
             ->needs('$config')
             ->give(config('chrome.page'));
 
-        $this->app->singleton(RoundService::class, RoundService::class);
-        $this->app->singleton(PlanningSessionService::class, PlanningSessionService::class);
-        $this->app->singleton(SubscriptionService::class, SubscriptionService::class);
-        $this->app->singleton(PlanningSummaryService::class, PlanningSummaryService::class);
-        $this->app->singleton(DataSyncService::class, DataSyncService::class);
-
-        $this->app->singleton(TenantService::class, TenantService::class);
-        $this->app->singleton(PlanningPoolService::class, PlanningPoolService::class);
-        $this->app->singleton(UserService::class, UserService::class);
-        $this->app->singleton(MemberService::class, MemberService::class);
-        $this->app->singleton(TontineService::class, TontineService::class);
-
-        $this->app->singleton(PaymentService::class, PaymentService::class);
-        $this->app->singleton(PaymentServiceInterface::class, function() {
-            return new class implements PaymentServiceInterface {
+        $this->app->singleton(Meeting\PaymentService::class, Meeting\PaymentService::class);
+        $this->app->singleton(Meeting\PaymentServiceInterface::class, function() {
+            return new class implements Meeting\PaymentServiceInterface {
                 // By default, all the payment items are editable.
                 public function isEditable(Model $_): bool
                 {
@@ -166,23 +122,45 @@ class SiakServiceProvider extends ServiceProvider
             };
         });
 
-        $this->app->singleton(ChargeValidator::class, ChargeValidator::class);
-        $this->app->singleton(DebtValidator::class, DebtValidator::class);
-        $this->app->singleton(FundValidator::class, FundValidator::class);
-        $this->app->singleton(SavingValidator::class, SavingValidator::class);
-        $this->app->singleton(ClosingValidator::class, ClosingValidator::class);
-        $this->app->singleton(DisbursementValidator::class, DisbursementValidator::class);
-        $this->app->singleton(LoanValidator::class, LoanValidator::class);
-        $this->app->singleton(MemberValidator::class, MemberValidator::class);
-        $this->app->singleton(RoundValidator::class, RoundValidator::class);
-        $this->app->singleton(PoolValidator::class, PoolValidator::class);
-        $this->app->singleton(PoolRoundValidator::class, PoolRoundValidator::class);
-        $this->app->singleton(RemitmentValidator::class, RemitmentValidator::class);
-        $this->app->singleton(SessionValidator::class, SessionValidator::class);
-        $this->app->singleton(OptionsValidator::class, OptionsValidator::class);
-        $this->app->singleton(TontineValidator::class, TontineValidator::class);
-        $this->app->singleton(TargetValidator::class, TargetValidator::class);
-        $this->app->singleton(HostAccessValidator::class, HostAccessValidator::class);
-        $this->app->singleton(GuestInviteValidator::class, GuestInviteValidator::class);
+        $this->app->singleton(Validation\Guild\ChargeValidator::class,
+            Validation\Guild\ChargeValidator::class);
+        $this->app->singleton(Validation\Guild\FundValidator::class,
+            Validation\Guild\FundValidator::class);
+        $this->app->singleton(Validation\Guild\MemberValidator::class,
+            Validation\Guild\MemberValidator::class);
+        $this->app->singleton(Validation\Guild\RoundValidator::class,
+            Validation\Guild\RoundValidator::class);
+        $this->app->singleton(Validation\Guild\PoolValidator::class,
+            Validation\Guild\PoolValidator::class);
+        $this->app->singleton(Validation\Guild\SessionValidator::class,
+            Validation\Guild\SessionValidator::class);
+        $this->app->singleton(Validation\Guild\OptionsValidator::class,
+            Validation\Guild\OptionsValidator::class);
+        $this->app->singleton(Validation\Guild\GuildValidator::class,
+            Validation\Guild\GuildValidator::class);
+        $this->app->singleton(Validation\Guild\HostAccessValidator::class,
+            Validation\Guild\HostAccessValidator::class);
+        $this->app->singleton(Validation\Guild\GuestInviteValidator::class,
+            Validation\Guild\GuestInviteValidator::class);
+
+        $this->app->singleton(Validation\Meeting\DebtValidator::class,
+            Validation\Meeting\DebtValidator::class);
+        $this->app->singleton(Validation\Meeting\SavingValidator::class,
+            Validation\Meeting\SavingValidator::class);
+        $this->app->singleton(Validation\Meeting\ClosingValidator::class,
+            Validation\Meeting\ClosingValidator::class);
+        $this->app->singleton(Validation\Meeting\OutflowValidator::class,
+            Validation\Meeting\OutflowValidator::class);
+        $this->app->singleton(Validation\Meeting\LoanValidator::class,
+            Validation\Meeting\LoanValidator::class);
+        $this->app->singleton(Validation\Meeting\RemitmentValidator::class,
+            Validation\Meeting\RemitmentValidator::class);
+        $this->app->singleton(Validation\Meeting\TargetValidator::class,
+            Validation\Meeting\TargetValidator::class);
+
+        $this->app->singleton(Validation\Planning\FundSessionsValidator::class,
+            Validation\Planning\FundSessionsValidator::class);
+        $this->app->singleton(Validation\Planning\PoolSessionsValidator::class,
+            Validation\Planning\PoolSessionsValidator::class);
     }
 }

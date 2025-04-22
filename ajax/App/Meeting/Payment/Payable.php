@@ -4,9 +4,9 @@ namespace Ajax\App\Meeting\Payment;
 
 use Ajax\Component;
 use App\Events\OnPagePaymentPayables;
+use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\Meeting\PaymentService;
 use Siak\Tontine\Service\Meeting\SessionService;
-use Siak\Tontine\Service\Tontine\MemberService;
 use Stringable;
 
 use function compact;

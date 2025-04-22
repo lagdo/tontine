@@ -3,11 +3,11 @@
   $rqBillTotal = rq(Ajax\App\Report\Session\Bill\Total::class);
   $rqDeposit = rq(Ajax\App\Report\Session\Deposit::class);
   $rqRemitment = rq(Ajax\App\Report\Session\Remitment::class);
-  $rqDisbursement = rq(Ajax\App\Report\Session\Disbursement::class);
+  $rqOutflow = rq(Ajax\App\Report\Session\Outflow::class);
   $rqLoan = rq(Ajax\App\Report\Session\Loan::class);
   $rqRefund = rq(Ajax\App\Report\Session\Refund::class);
   $rqSaving = rq(Ajax\App\Report\Session\Saving::class);
-  $rqSavingFund = rq(Ajax\App\Report\Session\Saving\Fund::class);
+  $rqProfit = rq(Ajax\App\Report\Session\Saving\Profit::class);
 @endphp
             <div class="row">
               <div class="col-md-6 col-sm-12">
@@ -40,7 +40,7 @@
             <div class="row">
               <div class="col-md-6 col-sm-12">
                 <div class="card shadow mb-4">
-                  <div class="card-body" id="content-report-disbursements" @jxnBind($rqDisbursement)>
+                  <div class="card-body" id="content-report-outflows" @jxnBind($rqOutflow)>
                   </div>
                 </div>
               </div>
@@ -68,7 +68,14 @@
             <div class="row">
               <div class="col-12">
                 <div class="card shadow mb-4">
-                  <div class="card-body" id="content-report-fund-savings" @jxnBind($rqSavingFund)>
+                  <div class="card-body">
+                    <div class="row mb-2">
+                      <div class="col">
+                        <div class="section-title mt-0" id="content-report-profits-fund"></div>
+                      </div>
+                    </div>
+                    <div id="content-report-profits" @jxnBind($rqProfit)>
+                    </div>
                   </div>
                 </div>
               </div>

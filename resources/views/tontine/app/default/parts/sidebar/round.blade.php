@@ -1,7 +1,7 @@
             <ul class="sidebar-menu">
               <li class="menu-header">{{ __('tontine.menus.planning') }}</li>
-              <li><a class="nav-link" id="planning-menu-financial" role="link" tabindex="0">
-                <i class="fa fa-fw fa-coins"></i> <span>{{ __('tontine.menus.pools') }}</span>
+              <li><a class="nav-link" id="planning-menu-finance" role="link" tabindex="0">
+                <i class="fa fa-fw fa-coins"></i> <span>{{ __('tontine.menus.finance') }}</span>
               </a></li>
               <li><a class="nav-link" id="planning-menu-subscriptions" role="link" tabindex="0">
                 <i class="fa fa-fw fa-check-circle"></i> <span>{{ __('tontine.menus.subscriptions') }}</span>

@@ -2,7 +2,7 @@
   $rqSessionFunc = rq(Ajax\App\Meeting\Session\SessionFunc::class);
   $rqSessionPage = rq(Ajax\App\Meeting\Session\SessionPage::class);
   $rqSectionFunc = rq(Ajax\App\Meeting\Session\SectionFunc::class);
-  $rqSummary = rq(Ajax\App\Meeting\Summary\Summary::class);
+  // $rqSummary = rq(Ajax\App\Meeting\Summary\Summary::class);
   $sessionId = jq()->parent()->attr('data-session-id')->toInt();
 @endphp
               <div class="table-responsive" id="content-sessions-page" @jxnTarget()>
@@ -11,13 +11,13 @@
                     __('tontine.session.questions.warning')))></div>
                 <div @jxnEvent(['.btn-session-close', 'click'], $rqSessionFunc->close($sessionId)
                   ->confirm(__('tontine.session.questions.close')))></div>
-                <div @jxnEvent(['.btn-session-summary', 'click'], $rqSummary->home($sessionId))></div>
+                {{-- <div @jxnEvent(['.btn-session-summary', 'click'], $rqSummary->home($sessionId))></div> --}}
                 <div @jxnEvent(['.btn-session-pools', 'click'], $rqSectionFunc->pools($sessionId))></div>
-                <div @jxnEvent(['.btn-session-savings', 'click'], $rqSectionFunc->savings($sessionId))></div>
-                <div @jxnEvent(['.btn-session-loans', 'click'], $rqSectionFunc->loans($sessionId))></div>
-                <div @jxnEvent(['.btn-session-refunds', 'click'], $rqSectionFunc->refunds($sessionId))></div>
-                <div @jxnEvent(['.btn-session-cash', 'click'], $rqSectionFunc->cash($sessionId))></div>
                 <div @jxnEvent(['.btn-session-charges', 'click'], $rqSectionFunc->charges($sessionId))></div>
+                <div @jxnEvent(['.btn-session-savings', 'click'], $rqSectionFunc->savings($sessionId))></div>
+                <div @jxnEvent(['.btn-session-refunds', 'click'], $rqSectionFunc->refunds($sessionId))></div>
+                <div @jxnEvent(['.btn-session-profits', 'click'], $rqSectionFunc->profits($sessionId))></div>
+                <div @jxnEvent(['.btn-session-outflows', 'click'], $rqSectionFunc->outflows($sessionId))></div>
                 <div @jxnEvent(['.btn-session-reports', 'click'], $rqSectionFunc->reports($sessionId))></div>
 
                 <table class="table table-bordered responsive">
@@ -48,7 +48,7 @@
                       <td class="table-item-menu">
 @php
   $openedSessionItems = !$session->opened ? [] : [
-    null, [
+    [
       'class' => 'btn-session-pools',
       'text' => __('meeting.actions.pools'),
     ],[
@@ -58,14 +58,14 @@
       'class' => 'btn-session-savings',
       'text' => __('meeting.actions.savings'),
     ],[
-      'class' => 'btn-session-loans',
-      'text' => __('meeting.actions.loans'),
-    ],[
       'class' => 'btn-session-refunds',
       'text' => __('meeting.actions.refunds'),
     ],[
-      'class' => 'btn-session-cash',
-      'text' => __('meeting.actions.cash'),
+      'class' => 'btn-session-profits',
+      'text' => __('meeting.actions.profits'),
+    ],[
+      'class' => 'btn-session-outflows',
+      'text' => __('meeting.actions.outflows'),
     ],
     null,
   ];
@@ -73,10 +73,10 @@
 @include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-session-id',
   'dataIdValue' => $session->id,
-  'menus' => [[
+  'menus' => [/*[
     'class' => 'btn-session-summary',
     'text' => __('meeting.actions.summary'),
-  ],
+  ], null,*/
   ...$openedSessionItems,
   [
     'class' => 'btn-session-reports',

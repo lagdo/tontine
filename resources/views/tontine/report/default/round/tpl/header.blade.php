@@ -24,11 +24,11 @@
   <body>
     <header>
       <div class="first-line">
-        <span>{{ $tontine->name }}</span>
+        <span>{{ $guild->name }}</span>
         <span class="right-col">{{ __('tontine.report.titles.round') }}</span>
       </div>
       <div class="second-line">
-        <span>@if ($tontine->city){{ $tontine->city }} - @endif{{ $country }}</span>
+        <span>@if ($guild->city){{ $guild->city }} - @endif{{ $country }}</span>
         <span class="right-col">{{ $round->title }}</span>
       </div>
     </header>

@@ -122,7 +122,7 @@
 
       <div class="pagebreak"></div>
 
-      @include('tontine.report.raptor.session.disbursements', $disbursements)
+      @include('tontine.report.raptor.session.outflows', $outflows)
 
       @include('tontine.report.raptor.session.loans', $loans)
 

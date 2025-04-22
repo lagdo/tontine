@@ -12,7 +12,7 @@ class Category extends Base
     /**
      * @const
      */
-    const TYPE_DISBURSEMENT = 'disbursement';
+    const TYPE_OUTFLOW = 'outflow';
 
     /**
      * Indicates if the model should be timestamped.
@@ -40,13 +40,13 @@ class Category extends Base
     protected function name(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => !$this->tontine ? trans('meeting.category.types.' . $value) : $value,
+            get: fn($value) => !$this->guild ? trans('meeting.category.types.' . $value) : $value,
         );
     }
 
-    public function tontine()
+    public function guild()
     {
-        return $this->belongsTo(Tontine::class);
+        return $this->belongsTo(Guild::class);
     }
 
     /**
@@ -54,9 +54,9 @@ class Category extends Base
      *
      * @return Builder
      */
-    public function scopeDisbursement(Builder $query): Builder
+    public function scopeOutflow(Builder $query): Builder
     {
-        return $query->where('item_type', self::TYPE_DISBURSEMENT);
+        return $query->where('item_type', self::TYPE_OUTFLOW);
     }
 
     /**

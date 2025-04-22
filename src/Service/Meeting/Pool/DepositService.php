@@ -52,8 +52,9 @@ class DepositService
         // The jointure with the subscriptions and members tables is needed,
         // so the final records can be ordered by member name.
         return $this->getQuery($pool, $session)
-            ->addSelect(DB::raw('pools.amount, members.name as member'))
+            ->addSelect(DB::raw('pd.amount, members.name as member'))
             ->join('pools', 'pools.id', '=', 'subscriptions.pool_id')
+            ->join(DB::raw('pool_defs as pd'), 'pools.def_id', '=', 'pd.id')
             ->join('members', 'members.id', '=', 'subscriptions.member_id')
             ->with(['deposit'])
             ->page($page, $this->tenantService->getLimit())

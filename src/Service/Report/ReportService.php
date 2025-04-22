@@ -3,18 +3,16 @@
 namespace Siak\Tontine\Service\Report;
 
 use Illuminate\Support\Collection;
-use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
-use Siak\Tontine\Service\Meeting\Saving\ClosingService;
+use Siak\Tontine\Service\Meeting\FundService;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Report\RoundService;
-use Siak\Tontine\Service\Tontine\FundService;
 
 use function compact;
 
@@ -27,16 +25,15 @@ class ReportService
      * @param MemberService $memberService
      * @param RoundService $roundService
      * @param FundService $fundService
-     * @param ClosingService $closingService
      * @param SummaryService $summaryService
      * @param ProfitService $profitService
+     * @param DebtCalculator $debtCalculator
      */
     public function __construct(protected LocaleService $localeService,
         protected TenantService $tenantService, protected SessionService $sessionService,
         protected MemberService $memberService, protected RoundService $roundService,
-        protected FundService $fundService, protected ClosingService $closingService,
-        protected SummaryService $summaryService, protected ProfitService $profitService,
-        protected DebtCalculator $debtCalculator)
+        protected FundService $fundService, protected SummaryService $summaryService,
+        protected ProfitService $profitService, protected DebtCalculator $debtCalculator)
     {}
 
     /**
@@ -46,11 +43,11 @@ class ReportService
      */
     public function getSessionReport(Session $session): array
     {
-        $tontine = $this->tenantService->tontine();
-        [$country] = $this->localeService->getNameFromTontine($tontine);
+        $guild = $this->tenantService->guild();
+        [$country] = $this->localeService->getNameFromGuild($guild);
 
         return [
-            'tontine' => $tontine,
+            'guild' => $guild,
             'session' => $session,
             'country' => $country,
             'deposits' => [
@@ -81,12 +78,12 @@ class ReportService
             ],
             'savings' => [
                 'savings' => $this->memberService->getSavings($session),
-                'funds' => $this->fundService->getFundList(),
+                'funds' => $this->fundService->getSessionFundList($session),
                 'total' => $this->sessionService->getSaving($session),
             ],
-            'disbursements' => [
-                'disbursements' => $this->memberService->getDisbursements($session),
-                'total' => $this->sessionService->getDisbursement($session),
+            'outflows' => [
+                'outflows' => $this->memberService->getOutflows($session),
+                'total' => $this->sessionService->getOutflow($session),
             ],
         ];
     }
@@ -98,11 +95,11 @@ class ReportService
      */
     public function getSessionEntry(Session $session): array
     {
-        $tontine = $this->tenantService->tontine();
-        [$country] = $this->localeService->getNameFromTontine($tontine);
+        $guild = $this->tenantService->guild();
+        [$country] = $this->localeService->getNameFromGuild($guild);
 
         return [
-            'tontine' => $tontine,
+            'guild' => $guild,
             'session' => $session,
             'country' => $country,
             'deposits' => [
@@ -117,7 +114,7 @@ class ReportService
             ],
             'bills' => [
                 'bills' => $this->memberService->getBills($session),
-                'charges' => $this->tenantService->tontine()->charges()
+                'charges' => $this->tenantService->guild()->charges()
                     ->active()->fixed()->get(),
             ],
         ];
@@ -130,9 +127,7 @@ class ReportService
      */
     private function getSessionProfitAmounts(Session $session): Collection
     {
-        $closings = $this->closingService->getRoundClosings($session);
-
-        return $closings->keyBy('fund_id')->map(fn($closing) => $closing->profit);
+        return $session->funds->keyBy('id')->map(fn($fund) => $fund->profit);
     }
 
     /**
@@ -142,9 +137,9 @@ class ReportService
      */
     public function getSavingsReport(Session $session): array
     {
-        $tontine = $this->tenantService->tontine();
-        [$country] = $this->localeService->getNameFromTontine($tontine);
-        $funds = $this->fundService->getActiveFunds();
+        $guild = $this->tenantService->guild();
+        [$country] = $this->localeService->getNameFromGuild($guild);
+        $funds = $this->fundService->getSessionFunds($session);
         $profits = $this->getSessionProfitAmounts($session);
 
         $funds = $funds
@@ -155,7 +150,7 @@ class ReportService
             ])
             ->filter(fn($report) => $report['distribution']->savings->count() > 0);
 
-        return compact('tontine', 'session', 'country', 'funds');
+        return compact('guild', 'session', 'country', 'funds');
     }
 
     /**
@@ -180,12 +175,12 @@ class ReportService
     public function getCreditReport(Session $session): array
     {
         $round = $session->round;
-        $tontine = $this->tenantService->tontine();
-        [$country, $currency] = $this->localeService->getNameFromTontine($tontine);
+        $guild = $this->tenantService->guild();
+        [$country, $currency] = $this->localeService->getNameFromGuild($guild);
 
-        $funds = $this->fundService->getActiveFunds()
+        $funds = $this->fundService->getSessionFunds($session)
             ->each(function($fund) use($session) {
-                $sessionIds = $this->fundService->getFundSessionIds($session, $fund);
+                $sessionIds = $this->fundService->getFundSessionIds($fund, $session);
                 $fund->loans = Loan::select('loans.*')
                     ->join('sessions', 'loans.session_id', '=', 'sessions.id')
                     ->where(fn($query) => $query->where('fund_id', $fund->id))
@@ -195,14 +190,14 @@ class ReportService
                             $query->whereIn('session_id', $sessionIds);
                         },
                         'debts.partial_refunds.session'])
-                    ->orderBy('sessions.start_at')
+                    ->orderBy('sessions.day_date')
                     ->get()
                     ->each(fn(Loan $loan) => $this->setDebtAmount($loan, $session))
                     ->groupBy('member.id');
             })
             ->filter(fn($fund) => $fund->loans->count() > 0);
 
-        return compact('tontine', 'round', 'session', 'country', 'currency', 'funds');
+        return compact('guild', 'round', 'session', 'country', 'currency', 'funds');
     }
 
     /**
@@ -212,8 +207,8 @@ class ReportService
      */
     public function getRoundReport(Round $round): array
     {
-        $tontine = $this->tenantService->tontine();
-        [$country, $currency] = $this->localeService->getNameFromTontine($tontine);
+        $guild = $this->tenantService->guild();
+        [$country, $currency] = $this->localeService->getNameFromGuild($guild);
 
         $figures = $this->summaryService->getFigures($round);
       
@@ -225,10 +220,10 @@ class ReportService
             'loans' => $this->roundService->getLoanAmounts($sessionIds),
             'refunds' => $this->roundService->getRefundAmounts($sessionIds),
             'savings' => $this->roundService->getSavingAmounts($sessionIds),
-            'disbursements' => $this->roundService->getDisbursementAmounts($sessionIds),
+            'outflows' => $this->roundService->getOutflowAmounts($sessionIds),
             'pools' => $this->summaryService->getPoolsBalance($figures),
         ];
 
-        return compact('tontine', 'round', 'country', 'currency', 'figures', 'balance');
+        return compact('guild', 'round', 'country', 'currency', 'figures', 'balance');
     }
 }

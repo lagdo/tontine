@@ -47,13 +47,16 @@ class GuestInvite extends Base
     ];
 
     /**
-     * The attributes that should be mutated to dates.
+     * Get the attributes that should be cast.
      *
-     * @var array
+     * @return array<string, string>
      */
-    protected $casts = [
-        'expires_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'expires_at' => 'datetime',
+        ];
+    }
 
     public function host()
     {
@@ -65,13 +68,13 @@ class GuestInvite extends Base
         return $this->belongsTo(User::class, 'guest_id');
     }
 
-    public function tontines()
+    public function guilds()
     {
-        return $this->belongsToMany(Tontine::class,
-            'guest_tontine', 'invite_id', 'tontine_id')
+        return $this->belongsToMany(Guild::class,
+            'guest_tontine', 'invite_id', 'guild_id')
             ->as('permission')
             ->withPivot('access')
-            ->using(GuestTontine::class);
+            ->using(GuestGuild::class);
     }
 
     /**
@@ -167,7 +170,7 @@ class GuestInvite extends Base
      */
     public function scopeExpired(Builder $query): Builder
     {
-        return $query->whereDate('expires_at', '<', now());
+        return $query->where('expires_at', '<', now());
     }
 
     /**
@@ -177,7 +180,7 @@ class GuestInvite extends Base
      */
     public function scopePending(Builder $query): Builder
     {
-        return $query->whereDate('expires_at', '>=', now())
+        return $query->where('expires_at', '>=', now())
             ->where('status', self::STATUS_PENDING);
     }
 

@@ -8,8 +8,8 @@ use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Saving;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
+use Siak\Tontine\Service\Meeting\FundService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Tontine\FundService;
 
 use function gmp_gcd;
 
@@ -34,7 +34,7 @@ class ProfitService
     {
         // Count the number of sessions before the current one.
         return $sessions
-            ->filter(fn($session) => $session->start_at > $saving->session->start_at)
+            ->filter(fn($session) => $session->day_date > $saving->session->day_date)
             ->count();
     }
 
@@ -111,7 +111,7 @@ class ProfitService
      */
     public function getDistribution(Session $session, Fund $fund, int $profitAmount): Distribution
     {
-        $sessions = $this->fundService->getFundSessions($session, $fund);
+        $sessions = $this->fundService->getFundSessions($fund, $session);
         // Get the savings until the given session.
         $savings = $fund->savings()
             ->select('savings.*')
@@ -119,7 +119,7 @@ class ProfitService
             ->join('sessions', 'sessions.id', '=', 'savings.session_id')
             ->whereIn('sessions.id', $sessions->pluck('id'))
             ->orderBy('members.name', 'asc')
-            ->orderBy('sessions.start_at', 'asc')
+            ->orderBy('sessions.day_date', 'asc')
             ->with(['session', 'member'])
             ->get();
 
@@ -139,7 +139,7 @@ class ProfitService
     public function getSavingAmounts(Session $session, Fund $fund): array
     {
         // Get the ids of all the sessions until the current one.
-        $sessionIds = $this->fundService->getFundSessionIds($session, $fund);
+        $sessionIds = $this->fundService->getFundSessionIds($fund, $session);
         return [
             'saving' => $this->balanceCalculator->getSavingsAmount($sessionIds, $fund),
             'refund' => $this->balanceCalculator->getRefundsAmount($sessionIds, $fund) +

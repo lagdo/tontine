@@ -3,9 +3,9 @@
 namespace Ajax\App\Report\Session;
 
 use Ajax\Component;
+use Siak\Tontine\Service\Meeting\FundService;
 use Siak\Tontine\Service\Report\MemberService;
 use Siak\Tontine\Service\Report\SessionService;
-use Siak\Tontine\Service\Tontine\FundService;
 use Stringable;
 
 class Saving extends Component
@@ -31,7 +31,7 @@ class Saving extends Component
         {
             return $this->renderView('pages.report.session.session.savings', [
                 'saving' => $this->sessionService->getSaving($session),
-                'funds' => $this->fundService->getFundList(),
+                'funds' => $this->fundService->getSessionFundList($session),
             ]);
         }
         return $this->renderView('pages.report.session.member.savings', [
