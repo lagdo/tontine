@@ -23,11 +23,13 @@
     ];
   }
 @endphp
+@if(count($menus) > 0)
 @include('tontine::parts.table.menu', [
   'btnSize' => '',
   'btnIcon' => 'fa-sort fa-rotate-90',
   'menus' => $menus,
 ])
+@endif
                 </div>
                 <div class="btn-group float-right ml-1" role="group" @jxnTarget()>
                   <div @jxnEvent(['.btn-session-pools', 'click'], $rqSectionFunc->pools())></div>
@@ -38,6 +40,7 @@
                   <div @jxnEvent(['.btn-session-outflows', 'click'], $rqSectionFunc->outflows())></div>
                   <div @jxnEvent(['.btn-session-reports', 'click'], $rqSectionFunc->reports())></div>
 
+@if($session->opened)
 @php
   $menus = [[
     'class' => 'btn-session-pools',
@@ -67,6 +70,7 @@
   'btnIcon' => 'fa-stream',
   'menus' => array_filter($menus, fn($item) => $item['class'] !== "btn-session-$section"),
 ])
+@endif
                 </div>
                 <div class="btn-group float-right ml-1" role="group">
                   <button type="button" class="btn btn-primary" @jxnClick($rqSession->home())><i class="fa fa-arrow-left"></i></button>
