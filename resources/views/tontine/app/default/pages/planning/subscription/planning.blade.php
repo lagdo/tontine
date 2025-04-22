@@ -1,5 +1,4 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('poolService', 'Siak\Tontine\Service\Planning\PoolService')
 @php
   $rqSubscription = rq(Ajax\App\Planning\Subscription\Subscription::class);
   $rqBeneficiary = rq(Ajax\App\Planning\Subscription\Beneficiary::class);

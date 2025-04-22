@@ -1,12 +1,11 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('poolService', 'Siak\Tontine\Service\Planning\PoolService')
                   <div class="row mt-0">
                     <div class="col d-flex justify-content-center">
                       <h5>{{ __('meeting.titles.remitments') }}</h5>
                     </div>
                   </div>
 @foreach ($pools as $pool)
-@if ($poolService->enabled($pool, $session))
+@if ($pool->sessions->pluck('id', 'id')->has($session->id))
                   <div class="row">
                     <div class="col">
                       <h6>{{ $pool->title }}</h6>

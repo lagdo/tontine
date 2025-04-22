@@ -13,7 +13,7 @@ trait HasCurrency
     /**
      * Get the amount to display
      *
-     * @return float
+     * @return Attribute
      */
     public function amountValue(): Attribute
     {

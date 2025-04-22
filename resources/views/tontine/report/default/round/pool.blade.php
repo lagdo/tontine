@@ -1,5 +1,4 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('poolService', 'Siak\Tontine\Service\Planning\PoolService')
               <div class="row mt-0">
                 <div class="col d-flex justify-content-center">
                   <h5>{{ __('meeting.actions.pools') }} - {{ $pool->title }}</h5>
@@ -20,7 +19,7 @@
                   </thead>
                   <tbody>
 @foreach ($sessions as $session)
-@if($poolService->active($pool, $session))
+@if($pool->sessions->pluck('id', 'id')->has($session->id))
 @php
   $options = [
     'locale' => $locale,

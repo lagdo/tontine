@@ -1,5 +1,4 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('poolService', 'Siak\Tontine\Service\Planning\PoolService')
 @php
   $deposits = $pools['deposit'];
   $remitments = $pools['remitment']->keyBy('id');
@@ -18,7 +17,7 @@
                       </thead>
                       <tbody>
 @foreach($deposits as $pool)
-@if ($poolService->active($pool, $session))
+@if ($pool->sessions->pluck('id', 'id')->has($session->id))
 @php
   $rpool = $remitments[$pool->id];
 @endphp

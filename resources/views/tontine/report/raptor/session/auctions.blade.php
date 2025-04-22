@@ -1,5 +1,4 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
-@inject('poolService', 'Siak\Tontine\Service\Planning\PoolService')
                   <div class="section-title">
                     {{ __('meeting.remitment.titles.auctions') }}
                   </div>
@@ -7,7 +6,7 @@
 @php
   $total = 0;
 @endphp
-@if ($pool->remit_auction && $poolService->enabled($pool, $session))
+@if ($pool->remit_auction && $pool->sessions->pluck('id', 'id')->has($session->id))
                   <div class="table-title">
                     {{ $pool->title }} :: {{ $locale->formatMoney($pool->paid_amount, true) }}
                   </div>
