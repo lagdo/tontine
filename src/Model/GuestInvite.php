@@ -10,6 +10,8 @@ use function trans;
 
 class GuestInvite extends Base
 {
+    use Traits\DateFormatter;
+
     /**
      * @const int
      */
@@ -99,13 +101,13 @@ class GuestInvite extends Base
                 if($this->status === self::STATUS_PENDING) {
                     $label = $this->expires_at < now() ? 'expired' : 'expires';
                     return trans("tontine.invite.active.$label", [
-                        'date' => $this->expires_at->translatedFormat(trans('tontine.date.format_medium')),
+                        'date' => $this->date('expires_at', 'format_medium'),
                     ]);
                 }
                 if($this->status === self::STATUS_ACCEPTED) {
                     $label = $this->active ? 'active' : 'inactive';
                     return trans("tontine.invite.active.$label", [
-                        'date' => $this->updated_at->translatedFormat(trans('tontine.date.format_medium')),
+                        'date' => $this->date('updated_at', 'format_medium'),
                     ]);
                 }
                 return null;

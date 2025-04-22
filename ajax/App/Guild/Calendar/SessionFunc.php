@@ -108,7 +108,7 @@ class SessionFunc extends FuncComponent
     {
         $sessions = $this->sessionService->getYearSessions();
         $html = collect($sessions)
-            ->map(fn($session) => $session->title . ';' . $session->date)
+            ->map(fn($session) => $session->title . ';' . $session->date('day_date'))
             ->join("\n");
         $this->response->html('new-sessions-list', $html);
     }

@@ -5,10 +5,10 @@ namespace Siak\Tontine\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Builder;
 
-use function trans;
-
 class Session extends Base
 {
+    use Traits\DateFormatter;
+
     /**
      * @const
      */
@@ -82,13 +82,6 @@ class Session extends Base
     {
         return Attribute::make(
             get: fn($value) => $value ?? $this->day_date->format('M y'),
-        );
-    }
-
-    public function date(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->day_date->translatedFormat(trans('tontine.date.format')),
         );
     }
 

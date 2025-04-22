@@ -15,7 +15,7 @@
                         <tr>
                           <td rowspan="{{ $loan->debts->count() }}">{{ __('meeting.titles.loan') }}</td>
                           <td style="width:30%;" colspan="2" rowspan="{{ $loan->debts->count() }}">{{ $loan->session->title }}</td>
-                          <td style="width:20%;" rowspan="{{ $loan->debts->count() }}">{{ $loan->session->date }}</td>
+                          <td style="width:20%;" rowspan="{{ $loan->debts->count() }}">{{ $loan->session->date('day_date') }}</td>
                           <td style="width:15%;">{{ __('meeting.report.labels.' . $loan->p_debt->type) }}</td>
                           <td style="width:15%;text-align:right;">{{ $locale->formatMoney($loan->p_debt->amount, false) }}</td>
                         </tr>
@@ -53,7 +53,7 @@ if($interestRefunds->count() > 0)
                           <td rowspan="{{ $rowCount }}">{{ __('meeting.titles.refund') }}</td>
 @endif
                           <td colspan="2">{{ $refund->session->title }}</td>
-                          <td>{{ $refund->session->date }}</td>
+                          <td>{{ $refund->session->date('day_date') }}</td>
                           <td>{{ __('meeting.report.labels.' . $refund->debt->type) }}</td>
                           <td style="text-align:right;">{{ $locale->formatMoney($refund->amount, false) }}</td>
                         </tr>

@@ -26,8 +26,8 @@
                         <tr>
                           <td>{{ $round->title }}<br/>{{ $round->notes ?? '' }}</td>
                           <td>
-                            {{ !$round->start_date ? '' : $round->start_date->translatedFormat(__('tontine.date.format')) }}<br/>
-                            {{ !$round->end_date ? '' : $round->end_date->translatedFormat(__('tontine.date.format')) }}
+                            {{ !$round->start_date ? '' : $round->date('start_date') }}<br/>
+                            {{ !$round->end_date ? '' : $round->date('end_date') }}
                           </td>
                           <td>
                             <i class="fa fa-toggle-{{ $round->add_default_fund ? 'on' : 'off' }}"></i>

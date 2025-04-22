@@ -11,6 +11,8 @@ use function trans;
 
 class Fund extends Base
 {
+    use Traits\DateFormatter;
+
     /**
      * Indicates if the model should be timestamped.
      *
@@ -159,27 +161,6 @@ class Fund extends Base
     {
         $query->whereHas('def', fn($q) => $q->where('guild_id', $session->round->guild_id));
         return $this->filterOnDates($query, $session->day_date, $session->day_date);
-    }
-
-    public function dateStart(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->start_date->translatedFormat(trans('tontine.date.format')),
-        );
-    }
-
-    public function dateEnd(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->end_date->translatedFormat(trans('tontine.date.format')),
-        );
-    }
-
-    public function dateInterest(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->interest_date->translatedFormat(trans('tontine.date.format')),
-        );
     }
 
     public function def()

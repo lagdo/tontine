@@ -22,7 +22,7 @@
 @foreach ($pools as $pool)
                       <tr>
                         <td><b>{{ $pool->title }}<br/>{{ $pool->round->title }}</b></td>
-                        <td>{{ $pool->start_date }}<br/>{{ $pool->end_date }}</td>
+                        <td>{{ $pool->date('start_date') }}<br/>{{ $pool->date('end_date') }}</td>
                         <td class="table-item-menu">
 @php
   $menus = !$pool->remit_planned ? [[

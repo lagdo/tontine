@@ -24,7 +24,7 @@
                           <tr>
                             <td>{{ $session->title }}</td>
                             <td>{{ $statuses[$session->status] }}</td>
-                            <td>{{ $session->date }}</td>
+                            <td>{{ $session->date('day_date') }}</td>
                             <td>{{ $session->times }}</td>
                             <td class="table-item-menu">
 @include('tontine::parts.table.menu', [

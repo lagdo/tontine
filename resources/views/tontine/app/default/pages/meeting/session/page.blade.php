@@ -34,7 +34,7 @@
 @foreach ($sessions as $session)
                     <tr>
                       <td>{{ $session->title }}<br/>{{ $statuses[$session->status] }}</td>
-                      <td>{{ $session->date }}<br/>{{ $session->times }}</td>
+                      <td>{{ $session->date('day_date') }}<br/>{{ $session->times }}</td>
                       <td>{{ $session->host ? $session->host->name : '' }}</td>
                       <td class="table-item-menu">
                         <div class="btn-group btn-group-sm float-right" data-session-id="{{ $session->id }}" role="group">

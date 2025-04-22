@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
-use function trans;
-
 class Pool extends Base
 {
+    use Traits\DateFormatter;
+
     /**
      * Indicates if the model should be timestamped.
      *
@@ -148,20 +148,6 @@ class Pool extends Base
     public function scopeRemitPlanned(Builder $query): Builder
     {
         return $query->whereHas('def', fn($q) => $q->where('properties->remit->planned', true));
-    }
-
-    public function dateStart(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->start_date->translatedFormat(trans('tontine.date.format')),
-        );
-    }
-
-    public function dateEnd(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->end_date->translatedFormat(trans('tontine.date.format')),
-        );
     }
 
     public function subscriptions()

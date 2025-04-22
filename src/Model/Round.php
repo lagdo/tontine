@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Round extends Base
 {
+    use Traits\DateFormatter;
     use Traits\HasProperty;
 
     /**
