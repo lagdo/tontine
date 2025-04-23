@@ -2,6 +2,8 @@
 
 namespace Siak\Tontine\Service\Planning;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Pool;
@@ -22,15 +24,34 @@ class PoolService
     {}
 
     /**
+     * @param Round $round
+     * @param bool $filter|null
+     *
+     * @return Builder|Relation
+     */
+    public function getQuery(Round $round, ?bool $filter): Builder|Relation
+    {
+        return $this->tenantService->guild()->pools()
+            ->when($filter === true, function(Builder $query) use($round) {
+                return $query->whereHas('pools', fn($q) => $q->ofRound($round));
+            })
+            ->when($filter === false, function(Builder $query) use($round) {
+                return $query->whereDoesntHave('pools', fn($q) => $q->ofRound($round));
+            });
+    }
+
+    /**
      * Get a paginated list of pools.
      *
+     * @param Round $round
+     * @param bool $filter|null
      * @param int $page
      *
      * @return Collection
      */
-    public function getPoolDefs(Round $round, int $page = 0): Collection
+    public function getPoolDefs(Round $round, ?bool $filter, int $page = 0): Collection
     {
-        return $this->tenantService->guild()->pools()
+        return $this->getQuery($round, $filter)
             ->with([
                 'pools' => fn($query) => $query->ofRound($round),
             ])
@@ -41,11 +62,14 @@ class PoolService
     /**
      * Get the number of pools.
      *
+     * @param Round $round
+     * @param bool $filter|null
+     *
      * @return int
      */
-    public function getPoolDefCount(): int
+    public function getPoolDefCount(Round $round, ?bool $filter): int
     {
-        return $this->tenantService->guild()->pools()->count();
+        return $this->getQuery($round, $filter)->count();
     }
 
     /**

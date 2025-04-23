@@ -1,6 +1,6 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
-  $rqSubscription = rq(Ajax\App\Planning\Subscription\Subscription::class);
+  $rqFinance = rq(Ajax\App\Planning\Finance\Finance::class);
   $rqBeneficiary = rq(Ajax\App\Planning\Subscription\Beneficiary::class);
   $rqPlanning = rq(Ajax\App\Planning\Subscription\Planning::class);
   $poolSessionIds = $pool->sessions->pluck('id', 'id');
@@ -25,7 +25,7 @@
 @endif
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2" role="group">
-                      <button type="button" class="btn btn-primary" @jxnClick($rqSubscription->render())><i class="fa fa-arrow-left"></i></button>
+                      <button type="button" class="btn btn-primary" @jxnClick($rqFinance->render())><i class="fa fa-arrow-left"></i></button>
                       <button type="button" class="btn btn-primary" @jxnClick($rqPlanning->render())><i class="fa fa-sync"></i></button>
                     </div>
                   </div>

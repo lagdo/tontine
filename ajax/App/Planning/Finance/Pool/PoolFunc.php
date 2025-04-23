@@ -40,4 +40,15 @@ class PoolFunc extends FuncComponent
 
         $this->cl(PoolPage::class)->page();
     }
+
+    public function filter()
+    {
+        // Toggle the filter
+        $filter = $this->bag('pool')->get('filter', null);
+        // Switch between null, true and false
+        $filter = $filter === null ? true : ($filter === true ? false : null);
+        $this->bag('pool')->set('filter', $filter);
+
+        $this->cl(PoolPage::class)->page();
+    }
 }

@@ -26,7 +26,9 @@ class PoolPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->poolService->getPoolDefCount();
+        $round = $this->tenantService->round();
+        $filter = $this->bag('pool')->get('filter', null);
+        return $this->poolService->getPoolDefCount($round, $filter);
     }
 
     /**
@@ -35,9 +37,10 @@ class PoolPage extends PageComponent
     public function html(): Stringable
     {
         $round = $this->tenantService->round();
+        $filter = $this->bag('pool')->get('filter', null);
         return $this->renderView('pages.planning.finance.pool.page', [
             'round' => $round,
-            'defs' => $this->poolService->getPoolDefs($round, $this->currentPage()),
+            'defs' => $this->poolService->getPoolDefs($round, $filter, $this->currentPage()),
         ]);
     }
 

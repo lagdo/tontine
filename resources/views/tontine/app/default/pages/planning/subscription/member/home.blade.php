@@ -3,15 +3,15 @@
   $rqMemberFunc = rq(Ajax\App\Planning\Subscription\MemberFunc::class);
   $rqMemberPage = rq(Ajax\App\Planning\Subscription\MemberPage::class);
   $rqMemberCounter = rq(Ajax\App\Planning\Subscription\MemberCounter::class);
+  $rqPool = rq(Ajax\App\Planning\Finance\Pool\Pool::class);
 @endphp
               <div class="section-body">
                 <div class="row mb-2">
                   <div class="col">
                     <h2 class="section-title">{{ __('tontine.pool.titles.subscriptions') }} :: {{ $pool->title }}</h2>
                   </div>
-                  <div class="col-auto sm-screen-hidden">
-                    <button type="button" class="btn btn-primary" @jxnClick(js('Tontine')
-                      ->showSmScreen('content-subscription-pools', 'subscription-sm-screens'))><i class="fa fa-arrow-left"></i></button>
+                  <div class="col-auto">
+                    <button type="button" class="btn btn-primary" @jxnClick($rqPool->render())><i class="fa fa-arrow-left"></i></button>
                   </div>
                   <div class="col-auto">
                     <div class="btn-group float-right ml-2" role="group">

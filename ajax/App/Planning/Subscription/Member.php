@@ -2,6 +2,7 @@
 
 namespace Ajax\App\Planning\Subscription;
 
+use Ajax\App\Planning\Finance\Pool\Pool;
 use Ajax\Component;
 use Siak\Tontine\Service\Planning\PoolService;
 use Stringable;
@@ -17,7 +18,7 @@ class Member extends Component
     /**
      * @var string
      */
-    protected $overrides = PoolSection::class;
+    protected $overrides = Pool::class;
 
     /**
      * The constructor

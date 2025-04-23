@@ -40,8 +40,6 @@ class SubscriptionService
     }
 
     /**
-     * Get a paginated list of members.
-     *
      * @param Pool $pool
      * @param string $search
      * @param bool $filter|null

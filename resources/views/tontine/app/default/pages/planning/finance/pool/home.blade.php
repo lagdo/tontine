@@ -1,11 +1,17 @@
 @php
   $rqPool = rq(Ajax\App\Planning\Finance\Pool\Pool::class);
   $rqPoolPage = rq(Ajax\App\Planning\Finance\Pool\PoolPage::class);
+  $rqPoolFunc = rq(Ajax\App\Planning\Finance\Pool\PoolFunc::class);
 @endphp
           <div class="section-body">
             <div class="row mb-2">
               <div class="col">
                 <h2 class="section-title">{{ __('tontine.pool.titles.pools') }}</h2>
+              </div>
+              <div class="col-auto">
+                <div class="btn-group float-right" role="group">
+                  <button type="button" class="btn btn-primary" @jxnClick($rqPoolFunc->filter())><i class="fa fa-filter"></i></button>
+                </div>
               </div>
               <div class="col-auto">
                 <div class="btn-group float-right" role="group">

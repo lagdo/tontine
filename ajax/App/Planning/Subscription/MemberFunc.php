@@ -17,11 +17,6 @@ class MemberFunc extends FuncComponent
     use PoolTrait;
 
     /**
-     * @var string
-     */
-    protected $overrides = PoolSection::class;
-
-    /**
      * The constructor
      *
      * @param PoolService $poolService
