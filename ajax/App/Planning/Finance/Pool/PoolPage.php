@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Planning\PoolService;
 use Stringable;
 
 /**
- * @databag pool
+ * @databag planning.finance.pool
  */
 class PoolPage extends PageComponent
 {
@@ -27,7 +27,7 @@ class PoolPage extends PageComponent
     protected function count(): int
     {
         $round = $this->tenantService->round();
-        $filter = $this->bag('pool')->get('filter', null);
+        $filter = $this->bag('planning.finance.pool')->get('filter', null);
         return $this->poolService->getPoolDefCount($round, $filter);
     }
 
@@ -37,7 +37,7 @@ class PoolPage extends PageComponent
     public function html(): Stringable
     {
         $round = $this->tenantService->round();
-        $filter = $this->bag('pool')->get('filter', null);
+        $filter = $this->bag('planning.finance.pool')->get('filter', null);
         return $this->renderView('pages.planning.finance.pool.page', [
             'round' => $round,
             'defs' => $this->poolService->getPoolDefs($round, $filter, $this->currentPage()),

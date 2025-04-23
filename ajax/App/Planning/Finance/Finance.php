@@ -10,7 +10,8 @@ use Stringable;
 use function trans;
 
 /**
- * @databag fund
+ * @databag planning.finance.fund
+ * @databag planning.finance.pool
  */
 class Finance extends Component
 {

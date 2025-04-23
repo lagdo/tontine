@@ -2,13 +2,14 @@
 
 namespace Ajax\App\Planning\Subscription;
 
-use Ajax\App\Planning\Finance\Pool\Pool;
 use Ajax\Component;
+use Ajax\App\Planning\Finance\Pool\Pool;
+use Ajax\App\Planning\Finance\Pool\PoolTrait;
 use Siak\Tontine\Service\Planning\PoolService;
 use Stringable;
 
 /**
- * @databag subscription
+ * @databag planning.finance.pool
  * @before getPool
  */
 class Member extends Component
@@ -25,13 +26,15 @@ class Member extends Component
      *
      * @param PoolService $poolService
      */
-    public function __construct(private PoolService $poolService,)
-    {}
+    public function __construct(PoolService $poolService)
+    {
+        $this->poolService = $poolService;
+    }
 
     public function pool(int $poolId)
     {
-        $this->bag('subscription')->set('member.filter', null);
-        $this->bag('subscription')->set('member.search', '');
+        $this->bag('planning.finance.pool')->set('member.filter', null);
+        $this->bag('planning.finance.pool')->set('member.search', '');
 
         $this->render();
     }
@@ -39,7 +42,7 @@ class Member extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.subscription.member.home', [
-            'pool' => $this->stash()->get('subscription.pool'),
+            'pool' => $pool = $this->stash()->get('planning.finance.pool'),
         ]);
     }
 

@@ -9,7 +9,7 @@ use Siak\Tontine\Service\LocaleService;
 use function trans;
 
 /**
- * @databag pool
+ * @databag planning.finance.pool
  */
 class PoolFunc extends FuncComponent
 {
@@ -44,10 +44,10 @@ class PoolFunc extends FuncComponent
     public function filter()
     {
         // Toggle the filter
-        $filter = $this->bag('pool')->get('filter', null);
+        $filter = $this->bag('planning.finance.pool')->get('filter', null);
         // Switch between null, true and false
         $filter = $filter === null ? true : ($filter === true ? false : null);
-        $this->bag('pool')->set('filter', $filter);
+        $this->bag('planning.finance.pool')->set('filter', $filter);
 
         $this->cl(PoolPage::class)->page();
     }

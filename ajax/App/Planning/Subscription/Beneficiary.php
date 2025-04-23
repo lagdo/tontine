@@ -4,6 +4,7 @@ namespace Ajax\App\Planning\Subscription;
 
 use Ajax\Component;
 use Ajax\App\Page\SectionContent;
+use Ajax\App\Planning\Finance\Pool\PoolTrait;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
@@ -13,7 +14,7 @@ use Stringable;
 use function trans;
 
 /**
- * @databag subscription
+ * @databag planning.finance.pool
  * @before getPool
  */
 class Beneficiary extends Component
@@ -33,8 +34,10 @@ class Beneficiary extends Component
      * @param SummaryService $summaryService
      */
     public function __construct(private SubscriptionService $subscriptionService,
-        private PoolService $poolService, private SummaryService $summaryService)
-    {}
+        PoolService $poolService, private SummaryService $summaryService)
+    {
+        $this->poolService = $poolService;
+    }
 
     public function pool(int $poolId)
     {
@@ -46,7 +49,7 @@ class Beneficiary extends Component
      */
     protected function before()
     {
-        $pool = $this->stash()->get('subscription.pool');
+        $pool = $this->stash()->get('planning.finance.pool');
         if(!$pool->remit_planned)
         {
             throw new MessageException(trans('tontine.pool.errors.not_planned'));
@@ -58,7 +61,7 @@ class Beneficiary extends Component
      */
     public function html(): Stringable
     {
-        $pool = $this->stash()->get('subscription.pool');
+        $pool = $this->stash()->get('planning.finance.pool');
         $this->view()->shareValues($this->summaryService->getPayables($pool));
 
         return $this->renderView('pages.planning.subscription.beneficiaries', [
@@ -78,7 +81,7 @@ class Beneficiary extends Component
 
     public function save(int $sessionId, int $nextSubscriptionId, int $currSubscriptionId)
     {
-        $pool = $this->stash()->get('subscription.pool');
+        $pool = $this->stash()->get('planning.finance.pool');
         if(!$pool || !$pool->remit_planned || $pool->remit_auction)
         {
             return;

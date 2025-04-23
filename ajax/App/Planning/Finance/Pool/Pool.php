@@ -6,7 +6,7 @@ use Ajax\Component;
 use Stringable;
 
 /**
- * @databag pool
+ * @databag planning.finance.pool
  */
 class Pool extends Component
 {

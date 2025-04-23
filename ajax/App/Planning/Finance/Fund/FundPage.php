@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Planning\FundService;
 use Stringable;
 
 /**
- * @databag fund
+ * @databag planning.finance.fund
  */
 class FundPage extends PageComponent
 {
@@ -16,7 +16,7 @@ class FundPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['fund', 'page'];
+    protected array $bagOptions = ['planning.finance.fund', 'page'];
 
     public function __construct(private FundService $fundService)
     {}
