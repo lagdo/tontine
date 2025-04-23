@@ -60,10 +60,10 @@ SQL;
 
         $updateQuery = <<<SQL
 update pools p set def_id = id,
-    end_sid=(select se.id from sessions se
+    end_sid=(select min(se.id) from sessions se
         inner join v_pools vp on vp.id=p.id and vp.end_at=se.start_at
         inner join rounds r on se.round_id=r.id and r.guild_id=vp.guild_id),
-    start_sid=(select ss.id from sessions ss
+    start_sid=(select min(ss.id) from sessions ss
         inner join v_pools vp on vp.id=p.id and vp.start_at=ss.start_at
         inner join rounds r on ss.round_id=r.id and r.guild_id=vp.guild_id)
 SQL;
