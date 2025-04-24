@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service\Planning;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Round;
@@ -18,6 +19,18 @@ class FundService
     {}
 
     /**
+     * @param Round $round
+     *
+     * @return Relation
+     */
+    private function getQuery(Round $round): Relation
+    {
+        return $this->tenantService->guild()
+            ->funds()
+            ->when(!$round->add_default_fund, fn($query) => $query->user());
+    }
+
+    /**
      * Get a paginated list of funds.
      *
      * @param Round $round
@@ -27,9 +40,7 @@ class FundService
      */
     public function getFundDefs(Round $round, int $page = 0): Collection
     {
-        return $this->tenantService->guild()
-            ->funds()
-            ->user()
+        return $this->getQuery($round)
             ->with(['funds' => fn($query) => $query->ofRound($round)])
             ->page($page, $this->tenantService->getLimit())
             ->get();
@@ -38,11 +49,13 @@ class FundService
     /**
      * Get the number of funds.
      *
+     * @param Round $round
+     *
      * @return int
      */
-    public function getFundDefCount(): int
+    public function getFundDefCount(Round $round): int
     {
-        return $this->tenantService->guild()->funds()->user()->count();
+        return $this->getQuery($round)->count();
     }
 
     /**
@@ -66,6 +79,8 @@ class FundService
      */
     public function enableFund(Round $round, int $defId): void
     {
+        // Can't use the getQuery() method here because
+        // the default fund can't be enabled or disabled.
         $def = $this->tenantService->guild()
             ->funds()
             ->user()
@@ -93,6 +108,8 @@ class FundService
      */
     public function disableFund(Round $round, int $defId): void
     {
+        // Can't use the getQuery() method here because
+        // the default fund can't be enabled or disabled.
         $def = $this->tenantService->guild()
             ->funds()
             ->user()

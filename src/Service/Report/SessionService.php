@@ -189,27 +189,26 @@ class SessionService
      */
     public function getSessionCharges(Session $session): Collection
     {
-        $settlementFilter = function(Builder $query) use($session) {
-            return $query->select(DB::raw(1))
-                ->from('settlements')
-                ->where('session_id', $session->id)
-                ->whereColumn('settlements.bill_id', 'bills.id');
-        };
+        $settlementFilter = fn(Builder $query) => $query
+            ->select(DB::raw(1))
+            ->from('settlements')
+            ->where('session_id', $session->id)
+            ->whereColumn('settlements.bill_id', 'bills.id');
         $bills = $this->getBills($settlementFilter);
         $sessionIds = collect([$session->id]);
 
         $charges = $this->tenantService->guild()->charges()/*->active()*/->get();
         $outflows = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
 
-        return $charges->each(function($charge) use($bills, $outflows) {
-            $bill = $bills[$charge->id] ?? null;
-            $charge->total_count = $bill ? $bill->total_count : 0;
-            $charge->total_amount = $bill ? $bill->total_amount : 0;
-            $charge->outflow = $outflows[$charge->id] ?? null;
-        })->filter(function($charge) {
-            return $charge->total_count > 0 || ($charge->outflow !== null &&
-                $charge->outflow->total_count > 0);
-        });
+        return $charges
+            ->each(function($charge) use($bills, $outflows) {
+                $bill = $bills[$charge->id] ?? null;
+                $charge->total_count = $bill ? $bill->total_count : 0;
+                $charge->total_amount = $bill ? $bill->total_amount : 0;
+                $charge->outflow = $outflows[$charge->id] ?? null;
+            })
+            ->filter(fn($charge) => $charge->total_count > 0 ||
+                ($charge->outflow !== null && $charge->outflow->total_count > 0));
     }
 
     /**
@@ -221,12 +220,11 @@ class SessionService
     public function getTotalCharges(Session $session, ?Member $member = null): Collection
     {
         $sessionIds = $this->sessionService->getRoundSessionIds($session);
-        $settlementFilter = function(Builder $query) use($sessionIds) {
-            return $query->select(DB::raw(1))
-                ->from('settlements')
-                ->whereIn('session_id', $sessionIds)
-                ->whereColumn('settlements.bill_id', 'bills.id');
-        };
+        $settlementFilter = fn(Builder $query) => $query
+            ->select(DB::raw(1))
+            ->from('settlements')
+            ->whereIn('session_id', $sessionIds)
+            ->whereColumn('settlements.bill_id', 'bills.id');
         $bills = $this->getBills($settlementFilter, $member);
 
         $charges = $this->tenantService->guild()->charges()/*->active()*/->get();
@@ -242,15 +240,15 @@ class SessionService
             }
         }
 
-        return $charges->each(function($charge) use($bills, $outflows) {
-            $bill = $bills[$charge->id] ?? null;
-            $charge->total_count = $bill ? $bill->total_count : 0;
-            $charge->total_amount = $bill ? $bill->total_amount : 0;
-            $charge->outflow = $outflows[$charge->id] ?? null;
-        })->filter(function($charge) {
-            return $charge->total_count > 0 || ($charge->outflow !== null &&
-                $charge->outflow->total_count > 0);
-        });
+        return $charges
+            ->each(function($charge) use($bills, $outflows) {
+                $bill = $bills[$charge->id] ?? null;
+                $charge->total_count = $bill ? $bill->total_count : 0;
+                $charge->total_amount = $bill ? $bill->total_amount : 0;
+                $charge->outflow = $outflows[$charge->id] ?? null;
+            })
+            ->filter(fn($charge) => $charge->total_count > 0 ||
+                ($charge->outflow !== null && $charge->outflow->total_count > 0));
     }
 
     /**

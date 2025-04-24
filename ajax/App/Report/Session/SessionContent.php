@@ -44,5 +44,11 @@ class SessionContent extends Component
         // Render the page buttons.
         $this->cl(Action\Export::class)->render();
         $this->cl(Action\Menu::class)->render();
+
+        if(!$this->stash()->get('report.member'))
+        {
+            // Reset the member dropdown to the empty value.
+            $this->response->jq('#report-select-member')->val(0);
+        }
     }
 }

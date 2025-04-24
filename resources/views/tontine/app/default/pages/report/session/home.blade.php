@@ -1,6 +1,6 @@
 @php
-  $sessionId = pm()->select('select-session')->toInt();
-  $memberId = pm()->select('select-member')->toInt();
+  $sessionId = pm()->select('report-select-session')->toInt();
+  $memberId = pm()->select('report-select-member')->toInt();
   $rqSession = rq(Ajax\App\Report\Session\Session::class);
   $rqSessionContent = rq(Ajax\App\Report\Session\SessionContent::class);
   $rqReportTitle = rq(Ajax\App\Report\Session\ReportTitle::class);
@@ -14,7 +14,7 @@
               </div>
               <div class="col-auto">
                 <div class="input-group">
-                  {{ $html->select('session_id', $sessions, 0)->id('select-session')
+                  {{ $html->select('session_id', $sessions, 0)->id('report-select-session')
                     ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') }}
                   <div class="input-group-append">
                     <button type="button" class="btn btn-primary" @jxnClick($rqSession->showSession($sessionId))><i class="fa fa-caret-right"></i></button>
@@ -25,7 +25,7 @@
               </div>
               <div class="col-auto">
                 <div class="input-group">
-                  {{ $html->select('member_id', $members, 0)->id('select-member')
+                  {{ $html->select('member_id', $members, 0)->id('report-select-member')
                     ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') }}
                   <div class="input-group-append">
                     <button type="button" class="btn btn-primary" @jxnClick($rqSession->showMember($sessionId, $memberId))><i class="fa fa-caret-right"></i></button>

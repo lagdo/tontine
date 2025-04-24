@@ -27,9 +27,13 @@
   $toggleIcon = $count > 0 ? 'fa fa-toggle-on' : 'fa fa-toggle-off';
 @endphp
                         <tr>
-                          <td>{{ $def->title }}</td>
+                          <td>{!! $def->type_user ? $def->title : __('tontine.fund.labels.default') !!}</td>
                           <td class="table-item-toggle" data-def-id="{{ $def->id }}">
+@if ($def->type_user)
                             <a role="link" tabindex="0" class="{{ $toggleClass }}"><i class="{{ $toggleIcon }}"></i></a>
+@else
+                            <i class="{{ $toggleIcon }}"></i>
+@endif
                           </td>
                           <td class="table-item-menu">
 @if($count > 0)

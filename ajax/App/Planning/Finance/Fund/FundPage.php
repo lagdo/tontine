@@ -26,7 +26,8 @@ class FundPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->fundService->getFundDefCount();
+        $round = $this->tenantService->round();
+        return $this->fundService->getFundDefCount($round);
     }
 
     /**
