@@ -39,8 +39,13 @@ class SessionFunc extends FuncComponent
 
     public function enableSession(int $sessionId)
     {
+        if(!($session = $this->poolService->getGuildSession($sessionId)))
+        {
+            return;
+        }
+
         $pool = $this->stash()->get('planning.finance.pool');
-        $this->poolService->enableSession($pool, $sessionId);
+        $this->poolService->enableSession($pool, $session);
 
         // Reload the pool to update the start/end sessions.
         $round = $this->tenantService->round();
@@ -54,8 +59,13 @@ class SessionFunc extends FuncComponent
 
     public function disableSession(int $sessionId)
     {
+        if(!($session = $this->poolService->getGuildSession($sessionId)))
+        {
+            return;
+        }
+
         $pool = $this->stash()->get('planning.finance.pool');
-        $this->poolService->disableSession($pool, $sessionId);
+        $this->poolService->disableSession($pool, $session);
 
         // Reload the pool to update the start/end sessions.
         $round = $this->tenantService->round();

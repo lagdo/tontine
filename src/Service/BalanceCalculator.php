@@ -111,7 +111,7 @@ class BalanceCalculator
      */
     private function getRemitmentAmountSqlValue(): string
     {
-        return 'pd.amount * (vp.sessions_count - vp.disabled_sessions_count)';
+        return 'pd.amount * vp.sessions_count';
     }
 
     /**

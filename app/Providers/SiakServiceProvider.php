@@ -4,8 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 use Mcamara\LaravelLocalization\LaravelLocalization;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\DataSyncService;
@@ -30,12 +28,7 @@ class SiakServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot()
-    {
-        // Log database queries
-        // DB::listen(function($query) {
-        //     Log::info($query->sql, $query->bindings, $query->time);
-        // });
-    }
+    {}
 
     /**
      * Register any application services

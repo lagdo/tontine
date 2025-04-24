@@ -11,7 +11,7 @@
                 </div>
                 <div class="col-md-6 col-sm-12">
                   {!! __('tontine.session.labels.count', [
-                    'count' => $pool->sessions_count - $pool->disabled_sessions_count,
+                    'count' => $pool->sessions_count,
                   ]) !!}
                 </div>
               </div>

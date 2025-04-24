@@ -105,11 +105,10 @@ class Pool extends Base
         static::addGlobalScope('sessions', function (Builder $query) {
             $query->addSelect([
                 'pools.*',
-                'v.end_date',
-                'v.start_date',
-                'v.sessions_count',
-                'v.disabled_sessions_count'
-            ])->join(DB::raw('v_pools as v'), 'v.pool_id', '=', 'pools.id');
+                'vp.end_date',
+                'vp.start_date',
+                'vp.sessions_count',
+            ])->join(DB::raw('v_pools as vp'), 'vp.pool_id', '=', 'pools.id');
         });
     }
 
@@ -122,8 +121,8 @@ class Pool extends Base
      */
     private function filterOnDates(Builder $query, Carbon $startDate, Carbon $endDate): Builder
     {
-        return $query->where('v.end_date', '>=', $startDate)
-            ->where('v.start_date', '<=', $endDate);
+        return $query->where('vp.end_date', '>=', $startDate)
+            ->where('vp.start_date', '<=', $endDate);
     }
 
     /**
@@ -182,6 +181,7 @@ class Pool extends Base
 
     public function disabled_sessions()
     {
-        return $this->belongsToMany(Session::class, 'pool_session_disabled');
+        // Filter on the sessions in the pool timespan.
+        return $this->belongsToMany(Session::class, 'v_pool_session_disabled');
     }
 }

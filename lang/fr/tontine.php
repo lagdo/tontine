@@ -93,7 +93,7 @@ return [
         ],
     ],
     'questions' => [
-        'delete' => "Supprimer cette organisation ? Ses members, tours et frais seront également supprimés.",
+        'delete' => "Supprimer cette organisation ? Ses membres, tours et frais seront également supprimés.",
     ],
     'errors' => [
         'action' => "Action impossible.",

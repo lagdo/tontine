@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
+use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\DataSyncService;
 use Siak\Tontine\Service\TenantService;
 
@@ -201,11 +202,11 @@ class PoolService
      * Enable or disable a session for a pool.
      *
      * @param Pool $pool
-     * @param int $sessionId    The session id
+     * @param Session $session
      *
      * @return void
      */
-    public function enableSession(Pool $pool, int $sessionId)
+    public function enableSession(Pool $pool, Session $session)
     {
         // When the remitments are planned, don't enable or disable a session
         // if receivables already exist on the pool.
@@ -214,25 +215,27 @@ class PoolService
         // {
         //     return;
         // }
-        $session = $pool->disabled_sessions()->find($sessionId);
-        if(!$session)
-        {
-            return;
-        }
 
         // Enable the session for the pool.
-        $pool->disabled_sessions()->detach($session->id);
+        DB::transaction(function() use($pool, $session) {
+            DB::table('pool_session_disabled')
+                ->where('pool_id', $pool->id)
+                ->where('session_id', $session->id)
+                ->delete();
+
+            // $this->dataSyncService->syncPool($pool, true);
+        });
     }
 
     /**
      * Enable or disable a session for a pool.
      *
      * @param Pool $pool
-     * @param int $sessionId    The session id
+     * @param Session $session
      *
      * @return void
      */
-    public function disableSession(Pool $pool, int $sessionId)
+    public function disableSession(Pool $pool, Session $session)
     {
         // When the remitments are planned, don't enable or disable a session
         // if receivables already exist on the pool.
@@ -241,15 +244,14 @@ class PoolService
         // {
         //     return;
         // }
-        $session = $pool->sessions()->find($sessionId);
-        if(!$session)
-        {
-            return;
-        }
 
         // Disable the session for the pool.
         DB::transaction(function() use($pool, $session) {
-            $pool->disabled_sessions()->attach($session->id);
+            DB::table('pool_session_disabled')
+                ->updateOrInsert([
+                    'pool_id' => $pool->id,
+                    'session_id' => $session->id,
+                ]);
 
             // $this->dataSyncService->syncPool($pool, true);
         });
