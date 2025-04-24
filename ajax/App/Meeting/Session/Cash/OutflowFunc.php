@@ -55,7 +55,7 @@ class OutflowFunc extends FuncComponent
 
         $this->modal()->hide();
 
-        $this->cl(Outflow::class)->render();
+        $this->cl(OutflowPage::class)->page();
     }
 
     public function editOutflow(int $outflowId)
@@ -91,7 +91,7 @@ class OutflowFunc extends FuncComponent
         $this->outflowService->updateOutflow($session, $outflowId, $values);
 
         $this->modal()->hide();
-        $this->cl(Outflow::class)->render();
+        $this->cl(OutflowPage::class)->page();
     }
 
     public function deleteOutflow(int $outflowId)
@@ -99,6 +99,6 @@ class OutflowFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
         $this->outflowService->deleteOutflow($session, $outflowId);
 
-        $this->cl(Outflow::class)->render();
+        $this->cl(OutflowPage::class)->page();
     }
 }

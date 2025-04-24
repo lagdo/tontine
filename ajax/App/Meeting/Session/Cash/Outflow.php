@@ -3,27 +3,17 @@
 namespace Ajax\App\Meeting\Session\Cash;
 
 use Ajax\App\Meeting\Component;
-use Siak\Tontine\Service\Meeting\Cash\OutflowService;
 use Stringable;
 
 class Outflow extends Component
 {
     /**
-     * The constructor
-     *
-     * @param OutflowService $outflowService
+     * @inheritDoc
      */
-    public function __construct(protected OutflowService $outflowService)
-    {}
-
     public function html(): Stringable
     {
-        $session = $this->stash()->get('meeting.session');
-        $outflows = $this->outflowService->getSessionOutflows($session);
-
         return $this->renderView('pages.meeting.outflow.home', [
-            'session' => $session,
-            'outflows' => $outflows,
+            'session' => $this->stash()->get('meeting.session'),
         ]);
     }
 
@@ -32,9 +22,8 @@ class Outflow extends Component
      */
     protected function after()
     {
+        $this->cl(OutflowPage::class)->page();
         $this->cl(Balance::class)->render();
-        $this->response->js('Tontine')
-            ->makeTableResponsive('content-session-outflows');
     }
 
     /**

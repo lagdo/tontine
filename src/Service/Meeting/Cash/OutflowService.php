@@ -155,15 +155,31 @@ class OutflowService
     }
 
     /**
-     * Get the outflows for a given session.
+     * Count the outflows for a given session.
      *
      * @param Session $session
      *
+     * @return int
+     */
+    public function getSessionOutflowCount(Session $session): int
+    {
+        return $session->outflows()->count();
+    }
+
+    /**
+     * Get the outflows for a given session.
+     *
+     * @param Session $session
+     * @param int $page
+     *
      * @return Collection
      */
-    public function getSessionOutflows(Session $session): Collection
+    public function getSessionOutflows(Session $session, int $page = 0): Collection
     {
-        return $session->outflows()->with(['member', 'charge', 'category'])->get();
+        return $session->outflows()
+            ->with(['member', 'charge', 'category'])
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
     }
 
     /**
