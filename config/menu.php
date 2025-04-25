@@ -9,7 +9,7 @@ use Ajax\App\Guild\Pool\Pool;
 use Ajax\App\Meeting\Payment\Payment;
 use Ajax\App\Meeting\Presence\Presence;
 use Ajax\App\Meeting\Session\Session;
-use Ajax\App\Planning\Finance\Finance;
+use Ajax\App\Planning\Finance;
 use Ajax\App\Report\Round\Round as ReportRound;
 use Ajax\App\Report\Session\Session as ReportSession;
 

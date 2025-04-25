@@ -6,7 +6,7 @@ use Ajax\App\Admin\Guild\Guild;
 use Ajax\App\Guild\Calendar\Round;
 use Ajax\App\Guild\Member\Member;
 use Ajax\App\Meeting\Session\Session;
-use Ajax\App\Planning\Finance\Finance;
+use Ajax\App\Planning\Finance;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Jaxon\Laravel\App\Jaxon;
 use Siak\Tontine\Exception\MessageException;

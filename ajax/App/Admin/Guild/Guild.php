@@ -59,9 +59,9 @@ class Guild extends Component
     protected function after()
     {
         $this->cl(GuildPage::class)->page();
-        if($this->guildService->hasGuestGuilds())
-        {
-            $this->cl(GuestGuild::class)->render();
-        }
+        // if($this->guildService->hasGuestGuilds())
+        // {
+        //     $this->cl(GuestGuild::class)->render();
+        // }
     }
 }

@@ -6,7 +6,7 @@ use Ajax\App\Admin\Guild\Guild;
 use Ajax\App\Page\Sidebar\AdminMenu;
 use Ajax\App\Page\Sidebar\RoundMenu;
 use Ajax\App\Page\MainTitle;
-use Ajax\App\Planning\Finance\Finance;
+use Ajax\App\Planning\Finance;
 use Ajax\FuncComponent;
 use Siak\Tontine\Model\Guild as GuildModel;
 use Siak\Tontine\Service\Guild\GuildService;
