@@ -89,7 +89,8 @@ trait RefundTrait
         // Cannot refund a recurrent interest debt before the principal.
         if($debt->is_interest && $debt->loan->recurrent_interest)
         {
-            return $debt->loan->principal_debt->refund !== null;
+            $refund = $debt->loan->principal_debt->refund;
+            return $refund !== null && $refund->session->day_date < $session->day_date;
         }
 
         // Cannot refund the principal debt before the last partial refund.
@@ -145,10 +146,9 @@ trait RefundTrait
      */
     private function isEditable(Debt $debt, Session $session): bool
     {
-        return $debt->loan->session_id === $session->id ? false :
-            ($debt->refund !== null ?
-                $this->canDeleteRefund($debt, $session) :
-                $this->canCreateRefund($debt, $session));
+        return $debt->refund !== null ?
+            $this->canDeleteRefund($debt, $session) :
+            $this->canCreateRefund($debt, $session);
     }
 
     /**
