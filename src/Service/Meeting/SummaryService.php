@@ -63,16 +63,16 @@ class SummaryService
 
         $depositCount = $deposit?->count ?? 0;
         $depositAmount = $pool->deposit_fixed ?
-            $pool->amount * $depositCount : ($deposit?->amount ?? 0);
+            $pool->def->amount * $depositCount : ($deposit?->amount ?? 0);
 
         $figures->deposit->amount += $depositAmount;
         $figures->cashier->recv += $depositAmount;
         $figures->deposit->count = $depositCount;
 
-        $sessionCount = $pool->sessions->count() - $pool->disabled_sessions->count();
+        $sessionCount = $pool->sessions->count();
         $remitmentCount = $remitment?->count ?? 0;
         $remitmentAmount = $pool->deposit_fixed ?
-            $pool->amount * $sessionCount * $remitmentCount :
+            $pool->def->amount * $sessionCount * $remitmentCount :
             ($remitmentCount > 0 ? $depositAmount : 0);
 
         $figures->cashier->end = $figures->cashier->recv;
