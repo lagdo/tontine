@@ -4,15 +4,9 @@
   $debtId = jq()->parent()->attr('data-debt-id')->toInt();
   $rqRefundFunc = rq(Ajax\App\Meeting\Session\Credit\Refund\RefundFunc::class);
   $rqAmount = rq(Ajax\App\Meeting\Session\Credit\Refund\Amount::class);
-  $debtAmount = $debtCalculator->getDebtAmount($debt, $session);
-  $refundedAmount = $debtCalculator->getDebtRefundedAmount($debt);
-  $paidAmount = $debtCalculator->getDebtPaidAmount($debt, $session, false);
-  $dueAmount = $debtCalculator->getDebtDueAmount($debt, $session, false);
-  $remainingAmount = $debtCalculator->getDebtDueAmount($debt, $session, true);
-  $payableAmount = $debtCalculator->getDebtPayableAmount($debt, $session);
 @endphp
                           <td>
-                            {!! $debt->loan->member->name !!}<br/>
+                            {!! $debt->member !!}<br/>
                             {!! $debt->loan->session->title !!}
                           </td>
                           <td>
@@ -27,15 +21,15 @@
                               'amount' => $locale->formatMoney($paidAmount, false, true),
                             ]) }}<br/>
                             {{ __('meeting.refund.labels.total', [
-                              'amount' => $locale->formatMoney($refundedAmount, false, true),
+                              'amount' => $locale->formatMoney($totalPaidAmount, false, true),
                             ]) }}
                           </td>
                           <td class="currency">
                             {{ __('meeting.refund.labels.before', [
-                              'amount' => $locale->formatMoney($dueAmount, false, true),
+                              'amount' => $locale->formatMoney($amountDueBeforeSession, false, true),
                             ]) }}<br/>
                             {{ __('meeting.refund.labels.after', [
-                              'amount' => $locale->formatMoney($remainingAmount, false, true),
+                              'amount' => $locale->formatMoney($amountDueAfterSession, false, true),
                             ]) }}
                           </td>
                           <td class="currency amount" @jxnBind($rqAmount, $debt->id)>

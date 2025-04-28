@@ -3,7 +3,7 @@
 namespace Siak\Tontine\Service\Meeting\Credit;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\PartialRefund;
@@ -48,12 +48,12 @@ class PartialRefundService
             // A debt from a loan created in the current session can be refunded only
             // if it is an interest debt with fixed or unique interest.
             ->where(function(Builder $query) use($session) {
-                $query->whereHas('loan', function(Builder $query) use($session) {
-                    $query->where('session_id', '!=', $session->id);
-                })->orWhere(function(Builder $query) {
-                    $query->interest()
-                        ->whereHas('loan', fn(Builder $q) => $q->fixedInterest());
-                });
+                $query
+                    ->whereHas('loan',
+                        fn(Builder $q) => $q->where('session_id', '!=', $session->id))
+                    ->orWhere(fn(Builder $q) => $q
+                        ->interest()
+                        ->whereHas('loan', fn(Builder $ql) => $ql->fixedInterest()));
             })
             ->with([
                 'partial_refund' => fn($q) => $q->where('session_id', $session->id),
@@ -128,6 +128,7 @@ class PartialRefundService
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_update'));
         }
+
         // A partial refund must not totally refund a debt
         $maxAmount = $refund->amount +
             $this->debtCalculator->getDebtPayableAmount($refund->debt, $session);

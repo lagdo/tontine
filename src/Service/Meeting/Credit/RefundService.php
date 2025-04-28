@@ -64,11 +64,28 @@ class RefundService
         ?bool $onlyPaid, int $page = 0): Collection
     {
         return $this->getDebtsQuery($session, $fund, $onlyPaid, true)
+            ->orderBy('members.name')
+            ->orderBy('debts.id')
             ->page($page, $this->tenantService->getLimit())
             ->get()
+            ->each(fn(Debt $debt) => $this->fillDebt($debt, $session));
+    }
+
+    /**
+     * Get the debts.
+     *
+     * @param Session $session The session
+     * @param array $ids
+     *
+     * @return Collection
+     */
+    public function getDebtsByIds(Session $session, array $ids): Collection
+    {
+        return $this->getDebtsQuery($session, null, false, true)
+            ->whereIn('id', $ids)
+            ->get()
             ->each(fn(Debt $debt) => $this->fillDebt($debt, $session))
-            ->sortBy('loan.member.name', SORT_LOCALE_STRING)
-            ->values();
+            ->keyBy('id');
     }
 
     /**
@@ -99,7 +116,7 @@ class RefundService
     {
         if(!$this->canCreateRefund($debt, $session))
         {
-            throw new MessageException(trans('meeting.refund.errors.cannot_refund'));
+            throw new MessageException(trans('meeting.refund.errors.cannot_create'));
         }
 
         $refund = new Refund();
@@ -126,11 +143,8 @@ class RefundService
      */
     public function deleteRefund(Debt $debt, Session $session): void
     {
-        if(!$this->canDeleteRefund($debt, $session))
-        {
-            throw new MessageException(trans('meeting.refund.errors.cannot_refund'));
-        }
-        if(!$this->paymentService->isEditable($debt->refund))
+        if(!$this->canDeleteRefund($debt, $session) ||
+            !$this->paymentService->isEditable($debt->refund))
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_delete'));
         }

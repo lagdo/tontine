@@ -118,30 +118,6 @@ class OutflowService
     }
 
     /**
-     * Get the amount available for outflow.
-     *
-     * @param Session $session    The session
-     *
-     * @return float
-     */
-    public function getAmountAvailableValue(Session $session): float
-    {
-        return $this->localeService->getMoneyValue($this->getAmountAvailable($session));
-    }
-
-    /**
-     * Get the amount available for outflow.
-     *
-     * @param Session $session    The session
-     *
-     * @return string
-     */
-    public function getFormattedAmountAvailable(Session $session): string
-    {
-        return $this->localeService->formatMoney($this->getAmountAvailable($session));
-    }
-
-    /**
      * Get the outflows.
      *
      * @param int $page

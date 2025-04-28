@@ -1,3 +1,7 @@
+@inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $amountAvailable = $locale->getMoneyValue($amountAvailable > 0 ? $amountAvailable : 0);
+@endphp
       <div class="portlet-body form">
         <form class="form-horizontal" role="form" id="loan-form">
           <div class="module-body">

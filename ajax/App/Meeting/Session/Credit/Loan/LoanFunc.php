@@ -34,7 +34,7 @@ class LoanFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
         $title = trans('meeting.loan.titles.add');
         $content = $this->renderView('pages.meeting.loan.add', [
-            'amountAvailable' => $this->loanService->getAmountAvailableValue($session),
+            'amountAvailable' => $this->loanService->getAmountAvailable($session),
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getSessionFundList($session, false),
             'members' => $this->memberService->getMemberList(),

@@ -29,7 +29,7 @@ trait FundTrait
         $fundId = $this->bag($this->bagId)->get('fund.id', 0);
         if($fundId > 0)
         {
-            $fund = $this->fundService->getSessionFund($session, $fundId);
+            $fund = $this->fundService->getSessionFund($session, $fundId, false);
         }
         if($fund === null)
         {

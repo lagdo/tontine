@@ -45,22 +45,6 @@ class LoanService
     }
 
     /**
-     * Get the loans for a given session.
-     *
-     * @param Session $session    The session
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getLoans(Session $session, int $page = 0): Collection
-    {
-        return $session->loans()
-            ->with(['member', 'principal_debt', 'interest_debt', 'fund'])
-            ->page($page, $this->tenantService->getLimit())
-            ->get();
-    }
-
-    /**
      * Get the amount available for loan.
      *
      * @param Session $session    The session
@@ -70,30 +54,6 @@ class LoanService
     public function getAmountAvailable(Session $session): int
     {
         return $this->balanceCalculator->getBalanceForLoan($session);
-    }
-
-    /**
-     * Get the amount available for loan.
-     *
-     * @param Session $session    The session
-     *
-     * @return float
-     */
-    public function getAmountAvailableValue(Session $session): float
-    {
-        return $this->localeService->getMoneyValue($this->getAmountAvailable($session));
-    }
-
-    /**
-     * Get the amount available for loan.
-     *
-     * @param Session $session    The session
-     *
-     * @return string
-     */
-    public function getFormattedAmountAvailable(Session $session): string
-    {
-        return $this->localeService->formatMoney($this->getAmountAvailable($session));
     }
 
     /**

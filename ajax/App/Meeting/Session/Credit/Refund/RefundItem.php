@@ -3,6 +3,7 @@
 namespace Ajax\App\Meeting\Session\Credit\Refund;
 
 use Ajax\App\Meeting\Component;
+use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
 use Stringable;
 
 /**
@@ -16,14 +17,21 @@ class RefundItem extends Component
     protected string $bagId = 'meeting.refund';
 
     /**
+     * @param DebtCalculator $debtCalculator
+     */
+    public function __construct(private DebtCalculator $debtCalculator)
+    {}
+
+    /**
      * @inheritDoc
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.refund.item', [
-            'session' => $this->stash()->get('meeting.session'),
-            'debt' => $this->stash()->get('meeting.refund.debt'),
-        ]);
+        $debt = $this->stash()->get('meeting.refund.debt');
+        $session = $this->stash()->get('meeting.session');
+        $amounts = $this->debtCalculator->getAmounts($debt, $session);
+
+        return $this->renderView('pages.meeting.refund.item', $amounts);
     }
 
     /**

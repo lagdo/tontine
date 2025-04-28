@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Meeting\Credit;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Session;
@@ -27,26 +28,6 @@ trait RefundTrait
     /**
      * @param Session $session The session
      * @param Fund|null $fund
-     *
-     * @return Builder|Relation
-     */
-    private function getPrevSessionsQuery(Session $session, ?Fund $fund): Builder|Relation
-    {
-        if($fund !== null)
-        {
-            return $fund->sessions()->where('day_date', '<', $session->day_date);
-        }
-
-        $fundIds = $session->funds()->pluck('id');
-        return $this->tenantService->guild()
-            ->sessions()
-            ->where('day_date', '<', $session->day_date)
-            ->whereHas('funds', fn($query) => $query->whereIn('id', $fundIds));
-    }
-
-    /**
-     * @param Session $session The session
-     * @param Fund|null $fund
      * @param bool|null $onlyPaid
      * @param bool $with
      *
@@ -55,46 +36,37 @@ trait RefundTrait
     private function getDebtsQuery(Session $session, ?Fund $fund,
         ?bool $onlyPaid, bool $with): Builder|Relation
     {
-        $prevSessions = $this->getPrevSessionsQuery($session, $fund)->pluck('id');
-
-        return Debt::where(function(Builder $query) use($session, $prevSessions) {
-                // Take all the debts in the current session
-                $query->where(function(Builder $query) use($session) {
-                    $query->whereHas('loan', function(Builder $query) use($session) {
-                        $query->where('session_id', $session->id);
-                    });
-                });
-                if($prevSessions->count() === 0)
-                {
-                    return;
-                }
-                // The debts in the previous sessions.
-                $query->orWhere(function(Builder $query) use($session, $prevSessions) {
-                    $query->whereHas('loan', function(Builder $query) use($prevSessions) {
-                        $query->whereIn('session_id', $prevSessions);
-                    })
-                    ->where(function(Builder $query) use($session) {
-                        // The debts that are not yet refunded.
-                        $query->orWhereDoesntHave('refund');
-                        // The debts that are refunded in the current session.
-                        $query->orWhereHas('refund', function(Builder $query) use($session) {
-                            $query->where('session_id', $session->id);
-                        });
-                    });
-                });
+        return Debt::select(['debts.*', DB::raw('members.name as member')])
+            ->join('loans', 'debts.loan_id', '=', 'loans.id')
+            ->join('members', 'loans.member_id', '=', 'members.id')
+            ->whereHas('loan', function(Builder $query) use($session, $fund) {
+                $query
+                    ->when($fund !== null,
+                        fn(Builder $ql) => $ql->where('fund_id', $fund->id))
+                    ->whereIn('fund_id', DB::table('v_fund_session')
+                        ->select('fund_id')->where('session_id', $session->id))
+                    ->whereHas('session',
+                        fn(Builder $qs) => $qs->where('day_date', '<=', $session->day_date));
             })
-            ->when($fund !== null, fn(Builder $qf) => $qf
-                ->whereHas('loan', fn(Builder $ql) => $ql->where('fund_id', $fund->id)))
+            ->where(function(Builder $query) use($session) {
+                // The debts that are not yet refunded.
+                $query->orWhereDoesntHave('refund');
+                // The debts that are refunded in or after the current session.
+                $query->orWhereHas('refund', fn(Builder $q) => $q->whereHas('session',
+                    fn(Builder $qs) => $qs->where('day_date', '>=', $session->day_date)));
+            })
             ->when($onlyPaid === false, fn(Builder $q) => $q->whereDoesntHave('refund'))
             ->when($onlyPaid === true, fn(Builder $q) => $q->whereHas('refund'))
             ->when($with, function(Builder $query) use($session) {
-                $query->with([
-                    'loan.member',
-                    'loan.session',
-                    'refund.session',
-                    'partial_refunds.session',
-                    'partial_refund' => fn($q) => $q->where('session_id', $session->id),
-                ]);
+                $query
+                    ->with([
+                        'loan.session',
+                        'refund.session',
+                        'partial_refunds.session',
+                        'partial_refund' => fn($q) => $q->where('session_id', $session->id),
+                        'loan.fund.sessions' => fn($q) => $q->select(['id', 'day_date']),
+                        'loan.fund.interest',
+                    ]);
             });
     }
 
@@ -169,13 +141,25 @@ trait RefundTrait
      * @param Debt $debt
      * @param Session $session
      *
+     * @return bool
+     */
+    private function isEditable(Debt $debt, Session $session): bool
+    {
+        return $debt->loan->session_id === $session->id ? false :
+            ($debt->refund !== null ?
+                $this->canDeleteRefund($debt, $session) :
+                $this->canCreateRefund($debt, $session));
+    }
+
+    /**
+     * @param Debt $debt
+     * @param Session $session
+     *
      * @return void
      */
     private function fillDebt(Debt $debt, Session $session): void
     {
-        $debt->isEditable = $debt->refund !== null ?
-            $this->canDeleteRefund($debt, $session) :
-            $this->canCreateRefund($debt, $session);
+        $debt->isEditable = $this->isEditable($debt, $session);
         $debt->canPartiallyRefund = $this->canCreatePartialRefund($debt, $session);
     }
 

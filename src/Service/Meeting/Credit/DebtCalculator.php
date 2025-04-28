@@ -8,32 +8,25 @@ use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\PartialRefund;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\TenantService;
 
-use function min;
 use function pow;
 
 class DebtCalculator
 {
     /**
-     * @param TenantService $tenantService
-     */
-    public function __construct(protected TenantService $tenantService)
-    {}
-
-    /**
      * Count the sessions.
      *
+     * @param Debt $debt
      * @param Session $fromSession The session to start from
      * @param Session $toSession The session to end to
      *
      * @return int
      */
-    private function getSessionCount(Session $fromSession, Session $toSession): int
+    private function getSessionCount(Debt $debt, Session $fromSession, Session $toSession): int
     {
-        return $this->tenantService->guild()->sessions()
-            ->where('day_date', '>', $fromSession->day_date)
-            ->where('day_date', '<=', $toSession->day_date)
+        return $debt->loan->fund->sessions
+            ->filter(fn($session) => $session->day_date <= $toSession->day_date &&
+                $session->day_date > $fromSession->day_date)
             ->count();
     }
 
@@ -113,7 +106,7 @@ class DebtCalculator
             ->sortBy('session.day_date');
         foreach($partialRefunds as $refund)
         {
-            $sessionCount = $this->getSessionCount($startSession, $refund->session);
+            $sessionCount = $this->getSessionCount($debt, $startSession, $refund->session);
             $interestAmount += (int)($loanAmount * $interestRate * $sessionCount);
             // For the next loop
             $loanAmount -= $refund->amount;
@@ -121,7 +114,7 @@ class DebtCalculator
         }
 
         $lastSession = $this->getLastSession($principalDebt, $endSession);
-        $sessionCount = $this->getSessionCount($startSession, $lastSession);
+        $sessionCount = $this->getSessionCount($debt, $startSession, $lastSession);
 
         return $interestAmount + (int)($loanAmount * $interestRate * $sessionCount);
     }
@@ -150,7 +143,7 @@ class DebtCalculator
             ->sortBy('session.day_date');
         foreach($partialRefunds as $refund)
         {
-            $sessionCount = $this->getSessionCount($startSession, $refund->session);
+            $sessionCount = $this->getSessionCount($debt, $startSession, $refund->session);
             $interestAmount += (int)($loanAmount * (pow(1 + $interestRate, $sessionCount) - 1));
             // For the next loop
             $loanAmount -= $refund->amount - $interestAmount;
@@ -158,7 +151,7 @@ class DebtCalculator
         }
 
         $lastSession = $this->getLastSession($principalDebt, $endSession);
-        $sessionCount = $this->getSessionCount($startSession, $lastSession);
+        $sessionCount = $this->getSessionCount($debt, $startSession, $lastSession);
 
         return $interestAmount + (int)($loanAmount * (pow(1 + $interestRate, $sessionCount) - 1));
     }
@@ -168,11 +161,11 @@ class DebtCalculator
      *
      * @return bool
      */
-    public function debtAmountIsRight(Debt $debt): bool
+    private function debtAmountIsFinal(Debt $debt): bool
     {
-        // The amount in a debt model is right if it is a principal debt, it has already been
+        // The amount in a debt model is final if it is a principal debt, it has already been
         // totally refunded, it is an interest debt with fixed amount or unique interest rate.
-        return $debt->is_principal || $debt->refund || !$debt->loan->recurrent_interest;
+        return $debt->is_principal || $debt->refund !== null || !$debt->loan->recurrent_interest;
     }
 
     /**
@@ -185,55 +178,10 @@ class DebtCalculator
      */
     public function getDebtAmount(Debt $debt, Session $session): int
     {
-        return $this->debtAmountIsRight($debt) ? $debt->amount :
+        return $this->debtAmountIsFinal($debt) ? $debt->amount :
             ($debt->loan->simple_interest ?
                 $this->getSimpleInterestAmount($debt, $session) :
                 $this->getCompoundInterestAmount($debt, $session));
-    }
-
-    /**
-     * @param Debt $debt
-     * @param Session $current
-     *
-     * @return PartialRefund|null
-     */
-    private function getLastPartialRefund(Debt $debt, Session $current): ?PartialRefund
-    {
-        // We use a join instead of a subquery so we can order the results by session date.
-        return $debt->partial_refunds()
-            ->select('partial_refunds.*')
-            ->join('sessions', 'sessions.id', '=', 'partial_refunds.session_id')
-            ->where('sessions.day_date', '>', $current->day_date)
-            ->orderBy('sessions.day_date', 'desc')
-            ->first();
-    }
-
-    /**
-     * Get the max amount that can be paid for a given debt at a given session.
-     *
-     * @param Debt $debt
-     * @param Session $session
-     *
-     * @return int
-     */
-    public function getDebtPayableAmount(Debt $debt, Session $session): int
-    {
-        if($debt->refund !== null)
-        {
-            return 0;
-        }
-        if($debt->is_principal || !$debt->loan->recurrent_interest)
-        {
-            return $debt->amount - $debt->partial_refunds()->sum('amount');
-        }
-
-        // For debts with simple or compound interest, the payable amount calculation
-        // must take into account the partial refunds after the current session.
-        $lastPartialRefund = $this->getLastPartialRefund($debt, $session);
-        return $lastPartialRefund === null ?
-            $this->getDebtDueAmount($debt, $session, true) :
-            min($this->getDebtDueAmount($debt, $session, true),
-                $this->getDebtDueAmount($debt, $lastPartialRefund->session, true));
     }
 
     /**
@@ -250,21 +198,6 @@ class DebtCalculator
         $refundFilter = $this->getRefundFilter($session, $withCurrent);
         return ($debt->refund !== null && $refundFilter($debt->refund)) ? $debt->amount :
             $this->getPartialRefunds($debt, $session, $withCurrent)->sum('amount');
-    }
-
-    /**
-     * Get the unpaid amount for a given debt at a given session.
-     *
-     * @param Debt $debt
-     * @param Session $session
-     * @param bool $withCurrent Take the current session into account.
-     *
-     * @return int
-     */
-    public function getDebtUnpaidAmount(Debt $debt, Session $session, bool $withCurrent): int
-    {
-        return $this->getDebtAmount($debt, $session) -
-            $this->getDebtPaidAmount($debt, $session, $withCurrent);
     }
 
     /**
@@ -289,14 +222,78 @@ class DebtCalculator
     }
 
     /**
+     * Get the max amount that can be paid for a given debt at a given session.
+     *
+     * @param Debt $debt
+     * @param Session $session
+     *
+     * @return int
+     */
+    public function getDebtPayableAmount(Debt $debt, Session $session): int
+    {
+        return $this->getDebtDueAmount($debt, $session, false);
+    }
+
+    /**
      * Get the total refunded amount.
      *
      * @param Debt $debt
      *
      * @return int
      */
-    public function getDebtRefundedAmount(Debt $debt): int
+    public function getDebtTotalPaidAmount(Debt $debt): int
     {
-        return $debt->refund !== null ? $debt->amount : $debt->partial_refunds()->sum('amount');
+        return $debt->refund !== null ? $debt->amount : $debt->partial_refunds->sum('amount');
+    }
+
+    /**
+     * Get the amount due after the current session
+     *
+     * @param Debt $debt
+     * @param Session $session
+     * @param int $dueBefore
+     *
+     * @return int
+     */
+    private function getAmountDueAfter(Debt $debt, Session $session, int $dueBefore): int
+    {
+        $refundFilter = $this->getRefundFilter($session, true);
+        if($debt->refund !== null && $refundFilter($debt->refund))
+        {
+            return 0; // The debt was refunded before the current session.
+        }
+
+        return $dueBefore - ($debt->partial_refund?->amount ?? 0);
+    }
+
+    /**
+     * @param Debt $debt
+     * @param Session $session
+     *
+     * @return array
+     */
+    public function getAmounts(Debt $debt, Session $session): array
+    {
+        // The total debt amount.
+        $debtAmount = $this->getDebtAmount($debt, $session);
+        // The total paid amount.
+        $totalPaidAmount = $this->getDebtTotalPaidAmount($debt);
+        // The amount paid before the session.
+        $paidAmount = $this->getDebtPaidAmount($debt, $session, false);
+        // The amount due before the session;
+        $amountDueBefore = $debtAmount - $paidAmount;
+        // The amount due after the session;
+        $amountDueAfter = $this->getAmountDueAfter($debt, $session, $amountDueBefore);
+
+        return [
+            'debt' => $debt,
+            'session' => $session,
+            'debtAmount' => $debtAmount,
+            'totalPaidAmount' => $totalPaidAmount,
+            'paidAmount' => $paidAmount,
+            'amountDueBeforeSession' => $amountDueBefore,
+            'amountDueAfterSession' => $amountDueAfter,
+            'payableAmount' => $amountDueBefore,
+        ];
     }
 }
