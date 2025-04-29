@@ -39,15 +39,12 @@ trait RefundTrait
         return Debt::select(['debts.*', DB::raw('members.name as member')])
             ->join('loans', 'debts.loan_id', '=', 'loans.id')
             ->join('members', 'loans.member_id', '=', 'members.id')
-            ->whereHas('loan', function(Builder $query) use($session, $fund) {
-                $query
-                    ->when($fund !== null,
-                        fn(Builder $ql) => $ql->where('fund_id', $fund->id))
-                    ->whereIn('fund_id', DB::table('v_fund_session')
-                        ->select('fund_id')->where('session_id', $session->id))
-                    ->whereHas('session',
-                        fn(Builder $qs) => $qs->where('day_date', '<=', $session->day_date));
-            })
+            ->join('sessions', 'loans.session_id', '=', 'sessions.id')
+            ->when($fund !== null,
+                fn(Builder $ql) => $ql->where('loans.fund_id', $fund->id))
+            ->whereIn('loans.fund_id', DB::table('v_fund_session')
+                ->select('fund_id')->where('session_id', $session->id))
+            ->where('sessions.day_date', '<=', $session->day_date)
             ->where(function(Builder $query) use($session) {
                 // The debts that are not yet refunded.
                 $query->orWhereDoesntHave('refund');
@@ -81,7 +78,7 @@ trait RefundTrait
         // Already refunded
         // Cannot refund the principal debt in the same session as the loan.
         if(!$session->opened || $debt->refund !== null ||
-            $debt->is_principal && $debt->loan->session->id === $session->id)
+            ($debt->is_principal && $debt->loan->session->id === $session->id))
         {
             return false;
         }
@@ -90,10 +87,10 @@ trait RefundTrait
         if($debt->is_interest && $debt->loan->recurrent_interest)
         {
             $refund = $debt->loan->principal_debt->refund;
-            return $refund !== null && $refund->session->day_date < $session->day_date;
+            return $refund !== null && $refund->session->day_date <= $session->day_date;
         }
 
-        // Cannot refund the principal debt before the last partial refund.
+        // Cannot refund a debt before the last partial refund.
         $lastRefund = $debt->partial_refunds->sortByDesc('session.day_date')->first();
         return !$lastRefund || $lastRefund->session->day_date < $session->day_date;
     }
