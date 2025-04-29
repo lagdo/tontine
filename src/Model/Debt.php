@@ -66,6 +66,17 @@ class Debt extends Base
     }
 
     /**
+     * @return Attribute
+     */
+    protected function allRefunds(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => !$this->refund ? $this->partial_refunds :
+                $this->partial_refunds->push($this->refund),
+        );
+    }
+
+    /**
      * @param  Builder  $query
      *
      * @return Builder

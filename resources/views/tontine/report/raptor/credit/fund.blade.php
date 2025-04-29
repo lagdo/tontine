@@ -26,23 +26,24 @@
 
 @php
 [$principalRefunds, $interestRefunds] = $loan->all_refunds->partition(fn($refund) => $refund->debt->is_principal);
-$rowCount = $loan->all_refunds->count();
 $principalRefundAmount = 0;
-$principalDueAmount = 0;
+$principalDueAmount = $loan->p_debt->amount;
 $interestRefundAmount = 0;
-$interestDueAmount = 0;
+$interestDueAmount = $loan->iDebtAmount;
 if($principalRefunds->count() > 0)
 {
-  $rowCount++;
   $principalRefundAmount = $principalRefunds->sum('amount');
-  $principalDueAmount = $loan->p_debt->amount - $principalRefundAmount;
+  $principalDueAmount -= $principalRefundAmount;
 }
 if($interestRefunds->count() > 0)
 {
-  $rowCount++;
   $interestRefundAmount = $interestRefunds->sum('amount');
-  $interestDueAmount = $loan->iDebtAmount - $interestRefundAmount;
+  $interestDueAmount -= $interestRefundAmount;
 }
+
+$refundCount = $loan->all_refunds->count();
+// Two rows are added for the due amounts.
+$rowCount = $refundCount > 0 ? $refundCount + 2 : 0;
 @endphp
 
 @foreach ($loan->all_refunds as $refund)
@@ -56,7 +57,7 @@ if($interestRefunds->count() > 0)
                           <td style="text-align:right;">{{ $locale->formatMoney($refund->amount, false) }}</td>
                         </tr>
 @endforeach
-@if ($principalRefunds->count() > 0)
+@if ($refundCount > 0)
                         <tr>
                           <td>{{ __('meeting.report.labels.' . $loan->p_debt->type) }}</td>
                           <td>{{ __('meeting.report.labels.due') }}</td>
@@ -64,8 +65,6 @@ if($interestRefunds->count() > 0)
                           <td >{{ __('meeting.report.labels.paid') }}</td>
                           <td style="text-align:right;">{{ $locale->formatMoney($principalRefundAmount, false) }}</td>
                         </tr>
-@endif
-@if ($interestRefunds->count() > 0)
                         <tr>
                           <td>{{ __('meeting.report.labels.' . $loan->i_debt->type) }}</td>
                           <td>{{ __('meeting.report.labels.due') }}</td>

@@ -213,24 +213,8 @@ class Loan extends Base
     protected function allRefunds(): Attribute
     {
         return Attribute::make(
-            get: function() {
-                $debt = $this->p_debt;
-                $refunds = $debt->partial_refunds;
-                if($debt->refund != null)
-                {
-                    $refunds->push($debt->refund);
-                }
-                $debt = $this->i_debt;
-                if($debt != null)
-                {
-                    $refunds = $refunds->concat($debt->partial_refunds);
-                    if($debt->refund != null)
-                    {
-                        $refunds->push($debt->refund);
-                    }
-                }
-                return $refunds;
-            },
+            get: fn() => !$this->i_debt ? $this->p_debt->all_refunds :
+                $this->p_debt->all_refunds->concat($this->i_debt->all_refunds),
         );
     }
 }
