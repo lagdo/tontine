@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Meeting;
+namespace Ajax\App\Meeting\Session;
 
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\SessionService;

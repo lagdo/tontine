@@ -2,7 +2,6 @@
 
 namespace Ajax\App\Meeting\Session;
 
-use Ajax\App\Meeting\Component;
 use Ajax\App\Page\SectionContent;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Stringable;

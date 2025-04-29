@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Cash;
 
-use Ajax\App\Meeting\FuncComponent;
+use Ajax\App\Meeting\Session\FuncComponent;
 use Siak\Tontine\Service\Meeting\Cash\OutflowService;
 use Siak\Tontine\Validation\Meeting\OutflowValidator;
 
@@ -27,7 +27,7 @@ class OutflowFunc extends FuncComponent
     public function addOutflow()
     {
         $title = trans('meeting.outflow.titles.add');
-        $content = $this->renderView('pages.meeting.outflow.add', [
+        $content = $this->renderView('pages.meeting.session.outflow.add', [
             'categories' => $this->outflowService->getAccounts(),
             'members' => $this->outflowService->getMembers(),
             'charges' => $this->outflowService->getCharges(),
@@ -62,7 +62,7 @@ class OutflowFunc extends FuncComponent
     {
         $session = $this->stash()->get('meeting.session');
         $title = trans('meeting.outflow.titles.edit');
-        $content = $this->renderView('pages.meeting.outflow.edit', [
+        $content = $this->renderView('pages.meeting.session.outflow.edit', [
             'outflow' => $this->outflowService
                 ->getSessionOutflow($session, $outflowId),
             'categories' => $this->outflowService->getAccounts(),

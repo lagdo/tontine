@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
-use Ajax\App\Meeting\Component;
+use Ajax\App\Meeting\Session\Component;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Stringable;
 
@@ -28,7 +28,7 @@ class Payable extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.remitment.payable.home', [
+        return $this->renderView('pages.meeting.session.remitment.payable.home', [
             'pool' => $this->stash()->get('meeting.pool'),
         ]);
     }

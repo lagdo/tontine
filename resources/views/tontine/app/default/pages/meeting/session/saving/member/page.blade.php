@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $rqMemberPage = rq(Ajax\App\Meeting\Session\Saving\MemberPage::class);
   $rqAmount = rq(Ajax\App\Meeting\Session\Saving\Amount::class);

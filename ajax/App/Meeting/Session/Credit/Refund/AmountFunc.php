@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Credit\Refund;
 
-use Ajax\App\Meeting\FuncComponent;
+use Ajax\App\Meeting\Session\FuncComponent;
 use Siak\Tontine\Model\Debt as DebtModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;

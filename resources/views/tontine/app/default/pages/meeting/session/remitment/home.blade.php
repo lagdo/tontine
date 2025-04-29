@@ -38,7 +38,7 @@
 @php
   $template = $session->closed ? 'closed' : ($session->pending ? 'pending' : 'opened');
 @endphp
-                        @include('tontine::pages.meeting.pool.' . $template, [
+                        @include('tontine::pages.meeting.session.pool.' . $template, [
                           'pool' => $pool,
                           'amount' => !$pool->deposit_fixed ? __('tontine.labels.types.libre') :
                             $locale->formatMoney($pool->amount),

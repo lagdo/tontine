@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Pool\Deposit;
 
-use Ajax\App\Meeting\Component;
+use Ajax\App\Meeting\Session\Component;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
@@ -35,7 +35,7 @@ class Amount extends Component
 
         if($session->closed)
         {
-            return $this->renderView('pages.meeting.deposit.libre.closed', [
+            return $this->renderView('pages.meeting.session.deposit.libre.closed', [
                 'amount' => !$receivable->deposit ? '' :
                     $this->localeService->formatMoney($receivable->deposit->amount),
             ]);
@@ -46,7 +46,7 @@ class Amount extends Component
         $edit = $this->stash()->get('meeting.session.edit');
         if($edit || !$receivable->deposit)
         {
-            return $this->renderView('pages.meeting.deposit.libre.edit', [
+            return $this->renderView('pages.meeting.session.deposit.libre.edit', [
                 'receivableId' => $receivable->id,
                 'amount' => !$receivable->deposit ? '' :
                     $this->localeService->getMoneyValue($receivable->deposit->amount),
@@ -54,7 +54,7 @@ class Amount extends Component
             ]);
         }
 
-        return $this->renderView('pages.meeting.deposit.libre.show', [
+        return $this->renderView('pages.meeting.session.deposit.libre.show', [
             'receivableId' => $receivable->id,
             'amount' => $this->localeService->formatMoney($receivable->deposit->amount, false),
             'editable' => $this->paymentService->isEditable($receivable->deposit),

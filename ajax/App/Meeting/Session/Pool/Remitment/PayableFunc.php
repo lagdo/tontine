@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
-use Ajax\App\Meeting\FuncComponent;
+use Ajax\App\Meeting\Session\FuncComponent;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
 use Siak\Tontine\Validation\Meeting\RemitmentValidator;
@@ -58,7 +58,7 @@ class PayableFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
 
         $title = trans('meeting.remitment.titles.add');
-        $content = $this->renderView('pages.meeting.remitment.payable.add', [
+        $content = $this->renderView('pages.meeting.session.remitment.payable.add', [
             'pool' => $pool,
             'payableId' => $payableId,
             'members' => $this->remitmentService->getSubscriptions($pool, $session),

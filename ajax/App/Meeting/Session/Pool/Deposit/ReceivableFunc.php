@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Pool\Deposit;
 
-use Ajax\App\Meeting\FuncComponent;
+use Ajax\App\Meeting\Session\FuncComponent;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
 
 /**

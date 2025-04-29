@@ -17,7 +17,7 @@ class MemberTotal extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.saving.member.total', [
+        return $this->renderView('pages.meeting.session.saving.member.total', [
             'fund' => $this->getStashedFund(),
         ]);
     }

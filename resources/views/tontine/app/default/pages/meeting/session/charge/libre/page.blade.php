@@ -21,9 +21,9 @@
                       <tbody>
 @foreach ($charges as $charge)
 @if($session->pending)
-                        @include('tontine::pages.meeting.charge.pending', compact('charge', 'bills', 'settlements'))
+                        @include('tontine::pages.meeting.session.charge.pending', compact('charge', 'bills', 'settlements'))
 @else
-                        @include('tontine::pages.meeting.charge.libre.item', compact('charge', 'bills', 'settlements'))
+                        @include('tontine::pages.meeting.session.charge.libre.item', compact('charge', 'bills', 'settlements'))
 @endif
 @endforeach
                       </tbody>

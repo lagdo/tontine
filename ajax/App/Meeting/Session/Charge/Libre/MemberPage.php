@@ -39,7 +39,7 @@ class MemberPage extends PageComponent
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
 
-        return $this->renderView('pages.meeting.charge.libre.member.page', [
+        return $this->renderView('pages.meeting.session.charge.libre.member.page', [
             'session' => $session,
             'charge' => $charge,
             'members' => $this->billService

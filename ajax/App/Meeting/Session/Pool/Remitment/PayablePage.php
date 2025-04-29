@@ -27,7 +27,7 @@ class PayablePage extends Component
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
 
-        return $this->renderView('pages.meeting.remitment.payable.page', [
+        return $this->renderView('pages.meeting.session.remitment.payable.page', [
             'pool' => $pool,
             'session' => $session,
             'payables' => $this->remitmentService->getPayables($pool, $session),

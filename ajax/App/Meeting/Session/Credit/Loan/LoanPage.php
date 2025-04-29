@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Credit\Loan;
 
-use Ajax\App\Meeting\PageComponent;
+use Ajax\App\Meeting\Session\PageComponent;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Stringable;
 
@@ -46,7 +46,7 @@ class LoanPage extends PageComponent
     public function html(): Stringable
     {
         $session = $this->stash()->get('meeting.session');
-        return $this->renderView('pages.meeting.loan.page', [
+        return $this->renderView('pages.meeting.session.loan.page', [
             'session' => $session,
             'loans' => $this->loanService->getSessionLoans($session, $this->currentPage()),
         ]);

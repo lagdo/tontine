@@ -2,8 +2,6 @@
 
 namespace Ajax\App\Meeting\Session;
 
-use Ajax\App\Meeting\FuncComponent;
-
 class SectionFunc extends FuncComponent
 {
     /**

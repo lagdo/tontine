@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
-use Ajax\App\Meeting\PageComponent;
+use Ajax\App\Meeting\Session\PageComponent;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;
 use Stringable;
 
@@ -45,7 +45,7 @@ class AuctionPage extends PageComponent
         $session = $this->stash()->get('meeting.session');
         $filtered = $this->bag('auction')->get('filter', null);
 
-        return $this->renderView('pages.meeting.auction.page', [
+        return $this->renderView('pages.meeting.session.auction.page', [
             'session' => $session,
             'auctions' => $this->auctionService->getAuctions($session, $filtered, $this->currentPage()),
         ]);

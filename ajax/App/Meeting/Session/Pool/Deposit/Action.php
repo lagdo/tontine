@@ -27,11 +27,11 @@ class Action extends Component
         $session = $this->stash()->get('meeting.session');
         $pool = $this->stash()->get('meeting.pool');
 
-        return $this->renderView('pages.meeting.deposit.receivable.action', [
+        return $this->renderView('pages.meeting.session.deposit.receivable.action', [
             'session' => $session,
             'pool' => $pool,
             'depositCount' => $this->stash()->get('meeting.pool.deposit.count'),
-            'receivableCount' => $this->depositService->getReceivableCount($pool, $session),
+            'receivableCount' => $this->depositService->getReceivableCount($pool, $session, null),
         ]);
     }
 }

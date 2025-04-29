@@ -15,7 +15,7 @@ class MemberName extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.charge.libre.member.name', [
+        return $this->renderView('pages.meeting.session.charge.libre.member.name', [
             'member' => $this->stash()->get('meeting.charge.member'),
         ]);
     }

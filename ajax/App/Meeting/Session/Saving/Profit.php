@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Saving;
 
-use Ajax\App\Meeting\Component;
+use Ajax\App\Meeting\Session\Component;
 use Ajax\App\Report\Session\Saving\Profit as ProfitReport;
 use Siak\Tontine\Service\Meeting\FundService;
 use Stringable;
@@ -37,7 +37,7 @@ class Profit extends Component
     public function html(): Stringable
     {
         $session = $this->stash()->get('meeting.session');
-        return $this->renderView('pages.meeting.saving.profit.home', [
+        return $this->renderView('pages.meeting.session.saving.profit.home', [
             'session' => $session,
             'funds' => $this->fundService->getSessionFundList($session),
             'fund' => $this->fundService->getDefaultFund($session->round),

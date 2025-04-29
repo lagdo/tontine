@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
-use Ajax\App\Meeting\Component;
+use Ajax\App\Meeting\Session\Component;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
 use Stringable;
@@ -28,7 +28,7 @@ class Total extends Component
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
 
-        return $this->renderView('pages.meeting.remitment.payable.total', [
+        return $this->renderView('pages.meeting.session.remitment.payable.total', [
             'pool' => $pool,
             'amount' => $this->balanceCalculator->getPayableAmount($pool, $session),
             'total' => $this->remitmentService->getRemitmentAmount($pool, $session),

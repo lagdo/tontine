@@ -34,7 +34,7 @@ class Amount extends Component
 
         if(!$session->opened || !$charge->is_active)
         {
-            return $this->renderView('pages.meeting.charge.libre.member.closed', [
+            return $this->renderView('pages.meeting.session.charge.libre.member.closed', [
                 'amount' => !$bill ? '' : $this->localeService->formatMoney($bill->amount),
             ]);
         }
@@ -44,7 +44,7 @@ class Amount extends Component
         $edit = $this->stash()->get('meeting.charge.edit');
         if(!$edit && $bill !== null)
         {
-            return $this->renderView('pages.meeting.charge.libre.member.show', [
+            return $this->renderView('pages.meeting.session.charge.libre.member.show', [
                 'memberId' => $memberId,
                 'amount' => $this->localeService->formatMoney($bill->amount, false),
                 'rqAmountFunc' => $this->rq(AmountFunc::class),
@@ -53,7 +53,7 @@ class Amount extends Component
 
         $amountValue = jq("#member-charge-input-$memberId")->val();
         $paid = pm()->checked('check-fee-libre-paid');
-        return $this->renderView('pages.meeting.charge.libre.member.edit', [
+        return $this->renderView('pages.meeting.session.charge.libre.member.edit', [
             'memberId' => $memberId,
             'amount' => !$bill ? '' : $this->localeService->getMoneyValue($bill->amount),
             'handler' => $this->rq(AmountFunc::class)->save($memberId, $paid, $amountValue),

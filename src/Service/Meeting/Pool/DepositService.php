@@ -29,29 +29,34 @@ class DepositService
     /**
      * @param Pool $pool
      * @param Session $session
+     * @param bool|null $filter
      *
      * @return Builder|Relation
      */
-    private function getQuery(Pool $pool, Session $session): Builder|Relation
+    private function getQuery(Pool $pool, Session $session, ?bool $filter): Builder|Relation
     {
         return $session->receivables()
             ->select('receivables.*')
             ->join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
-            ->where('subscriptions.pool_id', $pool->id);
+            ->where('subscriptions.pool_id', $pool->id)
+            ->when($filter === true, fn(Builder $query) => $query->whereHas('deposit'))
+            ->when($filter === false, fn(Builder $query) => $query->whereDoesntHave('deposit'));
     }
 
     /**
      * @param Pool $pool
      * @param Session $session
+     * @param bool|null $filter
      * @param int $page
      *
      * @return Collection
      */
-    public function getReceivables(Pool $pool, Session $session, int $page = 0): Collection
+    public function getReceivables(Pool $pool, Session $session,
+        ?bool $filter, int $page = 0): Collection
     {
         // The jointure with the subscriptions and members tables is needed,
         // so the final records can be ordered by member name.
-        return $this->getQuery($pool, $session)
+        return $this->getQuery($pool, $session, $filter)
             ->addSelect(DB::raw('pd.amount, members.name as member'))
             ->join('pools', 'pools.id', '=', 'subscriptions.pool_id')
             ->join(DB::raw('pool_defs as pd'), 'pools.def_id', '=', 'pd.id')
@@ -68,12 +73,13 @@ class DepositService
      *
      * @param Pool $pool
      * @param Session $session
+     * @param bool|null $filter
      *
      * @return int
      */
-    public function getReceivableCount(Pool $pool, Session $session): int
+    public function getReceivableCount(Pool $pool, Session $session, ?bool $filter): int
     {
-        return $this->getQuery($pool, $session)->count();
+        return $this->getQuery($pool, $session, $filter)->count();
     }
 
     /**
@@ -87,7 +93,7 @@ class DepositService
      */
     public function getReceivable(Pool $pool, Session $session, int $receivableId): ?Receivable
     {
-        return $this->getQuery($pool, $session)
+        return $this->getQuery($pool, $session, null)
             ->with(['deposit'])
             ->find($receivableId);
     }
@@ -185,7 +191,7 @@ class DepositService
      */
     public function createAllDeposits(Pool $pool, Session $session): void
     {
-        $receivables = $this->getQuery($pool, $session)->whereDoesntHave('deposit')->get();
+        $receivables = $this->getQuery($pool, $session, false)->get();
         if($receivables->count() === 0)
         {
             return;
@@ -212,13 +218,10 @@ class DepositService
      */
     public function deleteAllDeposits(Pool $pool, Session $session): void
     {
-        $receivables = $this->getQuery($pool, $session)
+        $receivables = $this->getQuery($pool, $session, true)
             ->with(['deposit'])
-            ->whereHas('deposit')
             ->get()
-            ->filter(function($receivable) {
-                return $this->paymentService->isEditable($receivable->deposit);
-            });
+            ->filter(fn($receivable) => $this->paymentService->isEditable($receivable->deposit));
         if($receivables->count() === 0)
         {
             return;
@@ -239,6 +242,6 @@ class DepositService
      */
     public function countDeposits(Pool $pool, Session $session): int
     {
-        return $this->getQuery($pool, $session)->whereHas('deposit')->count();
+        return $this->getQuery($pool, $session, true)->count();
     }
 }

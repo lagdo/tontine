@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
-use Ajax\App\Meeting\Component;
+use Ajax\App\Meeting\Session\Component;
 use Stringable;
 
 /**
@@ -20,7 +20,7 @@ class Auction extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.auction.home', [
+        return $this->renderView('pages.meeting.session.auction.home', [
             'session' => $this->stash()->get('meeting.session'),
         ]);
     }

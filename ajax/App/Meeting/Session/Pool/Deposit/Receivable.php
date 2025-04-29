@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Pool\Deposit;
 
-use Ajax\App\Meeting\Component;
+use Ajax\App\Meeting\Session\Component;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Stringable;
 
@@ -36,7 +36,7 @@ class Receivable extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.deposit.receivable.home', [
+        return $this->renderView('pages.meeting.session.deposit.receivable.home', [
             'pool' => $this->stash()->get('meeting.pool'),
         ]);
     }

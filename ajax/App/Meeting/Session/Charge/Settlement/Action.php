@@ -24,7 +24,7 @@ class Action extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.charge.settlement.action', [
+        return $this->renderView('pages.meeting.session.charge.settlement.action', [
             'session' => $this->stash()->get('meeting.session'),
             'charge' => $this->stash()->get('meeting.session.charge'),
             'billCount' => $this->stash()->get('meeting.session.bill.count'),

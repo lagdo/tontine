@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Cash;
 
-use Ajax\App\Meeting\Component;
+use Ajax\App\Meeting\Session\Component;
 use Siak\Tontine\Service\BalanceCalculator;
 use Stringable;
 
@@ -22,7 +22,7 @@ class Balance extends Component
     public function html(): Stringable
     {
         $session = $this->stash()->get('meeting.session');
-        return $this->renderView('pages.meeting.outflow.balance', [
+        return $this->renderView('pages.meeting.session.outflow.balance', [
             'rqBalance' => $this->rq(),
             'amount' => $this->balanceCalculator->getTotalBalance($session),
         ]);

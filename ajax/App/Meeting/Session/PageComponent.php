@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Meeting;
+namespace Ajax\App\Meeting\Session;
 
 /**
  * @databag meeting

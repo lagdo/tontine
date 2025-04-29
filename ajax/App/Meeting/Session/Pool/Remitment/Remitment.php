@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
-use Ajax\App\Meeting\Component;
+use Ajax\App\Meeting\Session\Component;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Stringable;
 
@@ -23,7 +23,7 @@ class Remitment extends Component
     {
         $session = $this->stash()->get('meeting.session');
 
-        return $this->renderView('pages.meeting.remitment.home', [
+        return $this->renderView('pages.meeting.session.remitment.home', [
             'session' => $session,
             'pools' => $this->poolService->getPoolsWithPayables($session),
             'hasAuctions' => $this->poolService->hasPoolWithAuction($session),

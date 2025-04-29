@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Credit\Refund;
 
-use Ajax\App\Meeting\Component;
+use Ajax\App\Meeting\Session\Component;
 use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
 use Stringable;
 
@@ -31,7 +31,7 @@ class RefundItem extends Component
         $session = $this->stash()->get('meeting.session');
         $amounts = $this->debtCalculator->getAmounts($debt, $session);
 
-        return $this->renderView('pages.meeting.refund.item', $amounts);
+        return $this->renderView('pages.meeting.session.refund.item', $amounts);
     }
 
     /**

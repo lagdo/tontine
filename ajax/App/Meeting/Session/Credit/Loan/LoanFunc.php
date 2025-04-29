@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Credit\Loan;
 
-use Ajax\App\Meeting\FuncComponent;
+use Ajax\App\Meeting\Session\FuncComponent;
 use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Service\Meeting\FundService;
@@ -33,7 +33,7 @@ class LoanFunc extends FuncComponent
     {
         $session = $this->stash()->get('meeting.session');
         $title = trans('meeting.loan.titles.add');
-        $content = $this->renderView('pages.meeting.loan.add', [
+        $content = $this->renderView('pages.meeting.session.loan.add', [
             'amountAvailable' => $this->loanService->getAmountAvailable($session),
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getSessionFundList($session, false),
@@ -94,7 +94,7 @@ class LoanFunc extends FuncComponent
         }
 
         $title = trans('meeting.loan.titles.edit');
-        $content = $this->renderView('pages.meeting.loan.edit', [
+        $content = $this->renderView('pages.meeting.session.loan.edit', [
             'loan' => $loan,
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getSessionFundList($session, false),

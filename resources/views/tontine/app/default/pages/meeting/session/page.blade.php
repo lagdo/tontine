@@ -2,7 +2,7 @@
   $rqSessionFunc = rq(Ajax\App\Meeting\Session\SessionFunc::class);
   $rqSessionPage = rq(Ajax\App\Meeting\Session\SessionPage::class);
   $rqSectionFunc = rq(Ajax\App\Meeting\Session\SectionFunc::class);
-  // $rqSummary = rq(Ajax\App\Meeting\Summary\Summary::class);
+  $rqSummary = rq(Ajax\App\Meeting\Summary\Summary::class);
   $sessionId = jq()->parent()->attr('data-session-id')->toInt();
 @endphp
               <div class="table-responsive" id="content-sessions-page" @jxnTarget()>
@@ -11,7 +11,7 @@
                     __('tontine.session.questions.warning')))></div>
                 <div @jxnEvent(['.btn-session-close', 'click'], $rqSessionFunc->close($sessionId)
                   ->confirm(__('tontine.session.questions.close')))></div>
-                {{-- <div @jxnEvent(['.btn-session-summary', 'click'], $rqSummary->home($sessionId))></div> --}}
+                <div @jxnEvent(['.btn-session-summary', 'click'], $rqSummary->home($sessionId))></div>
                 <div @jxnEvent(['.btn-session-pools', 'click'], $rqSectionFunc->pools($sessionId))></div>
                 <div @jxnEvent(['.btn-session-charges', 'click'], $rqSectionFunc->charges($sessionId))></div>
                 <div @jxnEvent(['.btn-session-savings', 'click'], $rqSectionFunc->savings($sessionId))></div>
@@ -73,10 +73,10 @@
 @include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-session-id',
   'dataIdValue' => $session->id,
-  'menus' => [/*[
+  'menus' => [[
     'class' => 'btn-session-summary',
     'text' => __('meeting.actions.summary'),
-  ], null,*/
+  ], null,
   ...$openedSessionItems,
   [
     'class' => 'btn-session-reports',

@@ -58,7 +58,7 @@ class TargetFunc extends FuncComponent
 
         $session = $this->stash()->get('meeting.session');
         $title = trans('meeting.target.titles.set');
-        $content = $this->renderView('pages.meeting.charge.libre.target.add', [
+        $content = $this->renderView('pages.meeting.session.charge.libre.target.add', [
             'sessions' => $this->targetService->getDeadlineSessions($session),
         ]);
         $buttons = [[
@@ -118,7 +118,7 @@ class TargetFunc extends FuncComponent
 
         $session = $this->stash()->get('meeting.session');
         $title = trans('meeting.target.titles.set');
-        $content = $this->renderView('pages.meeting.charge.libre.target.edit', [
+        $content = $this->renderView('pages.meeting.session.charge.libre.target.edit', [
             'target' => $target,
             'sessions' => $this->targetService->getDeadlineSessions($session),
         ]);

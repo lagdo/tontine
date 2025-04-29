@@ -38,7 +38,7 @@ class Target extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.charge.libre.target.home', [
+        return $this->renderView('pages.meeting.session.charge.libre.target.home', [
             'charge' => $this->stash()->get('meeting.session.charge'),
             'target' => $this->stash()->get('meeting.session.charge.target'),
         ]);

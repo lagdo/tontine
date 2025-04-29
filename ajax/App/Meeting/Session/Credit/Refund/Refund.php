@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Credit\Refund;
 
-use Ajax\App\Meeting\Component;
+use Ajax\App\Meeting\Session\Component;
 use Stringable;
 
 /**
@@ -26,7 +26,7 @@ class Refund extends Component
         $session = $this->stash()->get('meeting.session');
         $funds = $this->fundService->getSessionFundList($session, false);
         $funds->prepend('', 0);
-        return $this->renderView('pages.meeting.refund.home', [
+        return $this->renderView('pages.meeting.session.refund.home', [
             'session' => $session,
             'funds' => $funds,
             'fund' => $this->getStashedFund(),

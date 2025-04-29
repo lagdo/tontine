@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Saving;
 
-use Ajax\App\Meeting\Component;
+use Ajax\App\Meeting\Session\Component;
 use Stringable;
 
 /**
@@ -15,7 +15,7 @@ class Saving extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.saving.home');
+        return $this->renderView('pages.meeting.session.saving.home');
     }
 
     /**

@@ -2,14 +2,14 @@
 
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
-use Ajax\App\Meeting\Component;
+use Ajax\App\Meeting\Session\Component;
 use Stringable;
 
 class Fee extends Component
 {
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.charge.libre.home', [
+        return $this->renderView('pages.meeting.session.charge.libre.home', [
             'session' => $this->stash()->get('meeting.session'),
         ]);
     }

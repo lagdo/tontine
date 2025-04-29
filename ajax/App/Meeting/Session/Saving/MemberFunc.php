@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Saving;
 
-use Ajax\App\Meeting\FuncComponent;
+use Ajax\App\Meeting\Session\FuncComponent;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 
 use function trim;
@@ -27,11 +27,6 @@ class MemberFunc extends FuncComponent
      */
     public function __construct(protected SavingService $savingService)
     {}
-
-    /**
-     * @var string
-     */
-    protected $overrides = Saving::class;
 
     public function search(string $search)
     {

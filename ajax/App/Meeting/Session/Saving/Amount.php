@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Saving;
 
-use Ajax\App\Meeting\Component;
+use Ajax\App\Meeting\Session\Component;
 use Siak\Tontine\Service\LocaleService;
 use Stringable;
 
@@ -30,7 +30,7 @@ class Amount extends Component
 
         if($session->closed)
         {
-            return $this->renderView('pages.meeting.saving.member.closed', [
+            return $this->renderView('pages.meeting.session.saving.member.closed', [
                 'amount' => !$saving ? '' :
                     $this->localeService->formatMoney($saving->amount),
             ]);
@@ -41,7 +41,7 @@ class Amount extends Component
         $edit = $this->stash()->get('meeting.saving.edit');
         if($edit || !$saving)
         {
-            return $this->renderView('pages.meeting.saving.member.edit', [
+            return $this->renderView('pages.meeting.session.saving.member.edit', [
                 'memberId' => $member->id,
                 'amount' => !$saving ? '' :
                     $this->localeService->getMoneyValue($saving->amount),
@@ -49,7 +49,7 @@ class Amount extends Component
             ]);
         }
 
-        return $this->renderView('pages.meeting.saving.member.show', [
+        return $this->renderView('pages.meeting.session.saving.member.show', [
             'memberId' => $member->id,
             'amount' => $this->localeService->formatMoney($saving->amount, false),
             'rqAmountFunc' => $this->rq(AmountFunc::class),

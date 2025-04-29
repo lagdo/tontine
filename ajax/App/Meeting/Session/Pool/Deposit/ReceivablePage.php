@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Pool\Deposit;
 
-use Ajax\App\Meeting\PageComponent;
+use Ajax\App\Meeting\Session\PageComponent;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
@@ -40,7 +40,7 @@ class ReceivablePage extends PageComponent
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
 
-        return $this->depositService->getReceivableCount($pool, $session);
+        return $this->depositService->getReceivableCount($pool, $session, null);
     }
 
     /**
@@ -51,10 +51,11 @@ class ReceivablePage extends PageComponent
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
 
-        return $this->renderView('pages.meeting.deposit.receivable.page', [
+        return $this->renderView('pages.meeting.session.deposit.receivable.page', [
             'pool' => $pool,
             'session' => $session,
-            'receivables' => $this->depositService->getReceivables($pool, $session, $this->currentPage()),
+            'receivables' => $this->depositService
+                ->getReceivables($pool, $session, null, $this->currentPage()),
         ]);
     }
 

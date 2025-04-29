@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Cash;
 
-use Ajax\App\Meeting\Component;
+use Ajax\App\Meeting\Session\Component;
 use Stringable;
 
 class Outflow extends Component
@@ -12,7 +12,7 @@ class Outflow extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.outflow.home', [
+        return $this->renderView('pages.meeting.session.outflow.home', [
             'session' => $this->stash()->get('meeting.session'),
         ]);
     }

@@ -39,7 +39,7 @@ class SettlementPage extends PageComponent
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
 
-        return $this->renderView('pages.meeting.charge.fixed.settlement.page', [
+        return $this->renderView('pages.meeting.session.charge.fixed.settlement.page', [
             'session' => $session,
             'charge' => $charge,
             'bills' => $this->billService->getBills($charge, $session, $search, $filter, $this->currentPage()),

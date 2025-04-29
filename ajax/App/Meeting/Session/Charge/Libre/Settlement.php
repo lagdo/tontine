@@ -18,7 +18,7 @@ class Settlement extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.charge.libre.settlement.home', [
+        return $this->renderView('pages.meeting.session.charge.libre.settlement.home', [
             'charge' => $this->stash()->get('meeting.session.charge'),
         ]);
     }

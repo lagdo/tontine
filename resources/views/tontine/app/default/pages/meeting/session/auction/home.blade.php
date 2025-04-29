@@ -13,14 +13,12 @@
                         <button type="button" class="btn btn-primary" @jxnClick($rqRemitment->render())>{{ __('meeting.titles.remitments') }}</button>
                       </div>
                     </div>
-@if($session->opened)
                     <div class="col-auto">
                       <div class="btn-group float-right ml-2" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqAuction->render())><i class="fa fa-sync"></i></button>
                         <button type="button" class="btn btn-primary" @jxnClick($rqAuctionFunc->toggleFilter())><i class="fa fa-filter"></i></button>
                       </div>
                     </div>
-@endif
                   </div>
                   <div @jxnBind($rqAuctionPage)>
                   </div>

@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Saving;
 
-use Ajax\App\Meeting\PageComponent;
+use Ajax\App\Meeting\Session\PageComponent;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Stringable;
 
@@ -59,7 +59,7 @@ class MemberPage extends PageComponent
         $session = $this->stash()->get('meeting.session');
         $fund = $this->getStashedFund();
 
-        return $this->renderView('pages.meeting.saving.member.page', [
+        return $this->renderView('pages.meeting.session.saving.member.page', [
             'session' => $session,
             'members' => $this->savingService
                 ->getMembers($session, $fund, $search, $filter, $this->currentPage()),

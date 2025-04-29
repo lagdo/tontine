@@ -21,7 +21,7 @@ class Member extends Component
     {
         $charge = $this->stash()->get('meeting.session.charge');
 
-        return $this->renderView('pages.meeting.charge.libre.member.home', [
+        return $this->renderView('pages.meeting.session.charge.libre.member.home', [
             'charge' => $charge,
             'paid' => $charge->is_fee,
         ]);
