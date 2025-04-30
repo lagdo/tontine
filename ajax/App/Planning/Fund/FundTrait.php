@@ -2,6 +2,9 @@
 
 namespace Ajax\App\Planning\Fund;
 
+use Jaxon\App\DataBag\DataBagContext;
+use Jaxon\App\Stash\Stash;
+use Jaxon\Request\TargetInterface;
 use Siak\Tontine\Service\Planning\FundService;
 
 trait FundTrait
@@ -11,6 +14,29 @@ trait FundTrait
      * @var FundService
      */
     protected FundService $fundService;
+
+    /**
+     * Get the Jaxon request target
+     *
+     * @return TargetInterface
+     */
+    abstract protected function target(): TargetInterface;
+
+    /**
+     * Get the temp cache
+     *
+     * @return Stash
+     */
+    abstract protected function stash(): Stash;
+
+    /**
+     * Get a data bag.
+     *
+     * @param string  $sBagName
+     *
+     * @return DataBagContext
+     */
+    abstract protected function bag(string $sBagName): DataBagContext;
 
     /**
      * @return void

@@ -2,6 +2,7 @@
 
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
+use Jaxon\App\Stash\Stash;
 use Siak\Tontine\Exception\MessageException;
 
 use function filter_var;
@@ -11,6 +12,23 @@ use function trim;
 
 trait AmountTrait
 {
+    /**
+     * Get the temp cache
+     *
+     * @return Stash
+     */
+    abstract protected function stash(): Stash;
+
+    /**
+     * Get an instance of a Jaxon class by name
+     *
+     * @template T
+     * @param class-string<T> $sClassName the class name
+     *
+     * @return T|null
+     */
+    abstract protected function cl(string $sClassName): mixed;
+
     private function showTotal()
     {
         $session = $this->stash()->get('meeting.session');
