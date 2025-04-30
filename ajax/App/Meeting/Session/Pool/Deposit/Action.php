@@ -31,7 +31,7 @@ class Action extends Component
             'session' => $session,
             'pool' => $pool,
             'depositCount' => $this->stash()->get('meeting.pool.deposit.count'),
-            'receivableCount' => $this->depositService->getReceivableCount($pool, $session, null),
+            'receivableCount' => $this->depositService->getReceivableCount($pool, $session),
         ]);
     }
 }

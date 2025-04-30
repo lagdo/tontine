@@ -39,8 +39,10 @@ class ReceivablePage extends PageComponent
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
+        $search = $this->bag('meeting')->get('deposit.search', '');
+        $filter = $this->bag('meeting')->get('deposit.filter');
 
-        return $this->depositService->getReceivableCount($pool, $session, null);
+        return $this->depositService->getReceivableCount($pool, $session, $filter, $search);
     }
 
     /**
@@ -50,12 +52,14 @@ class ReceivablePage extends PageComponent
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
+        $search = $this->bag('meeting')->get('deposit.search', '');
+        $filter = $this->bag('meeting')->get('deposit.filter');
 
         return $this->renderView('pages.meeting.session.deposit.receivable.page', [
             'pool' => $pool,
             'session' => $session,
             'receivables' => $this->depositService
-                ->getReceivables($pool, $session, null, $this->currentPage()),
+                ->getReceivables($pool, $session, $filter, $search, $this->currentPage()),
         ]);
     }
 

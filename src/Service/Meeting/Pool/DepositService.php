@@ -13,6 +13,7 @@ use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Validation\SearchSanitizer;
 
 use function trans;
 
@@ -23,40 +24,49 @@ class DepositService
      * @param PaymentServiceInterface $paymentService;
      */
     public function __construct(private TenantService $tenantService,
-        private PaymentServiceInterface $paymentService)
+        private PaymentServiceInterface $paymentService, private SearchSanitizer $searchSanitizer)
     {}
 
     /**
      * @param Pool $pool
      * @param Session $session
      * @param bool|null $filter
+     * @param string $search
      *
      * @return Builder|Relation
      */
-    private function getQuery(Pool $pool, Session $session, ?bool $filter): Builder|Relation
+    private function getQuery(Pool $pool, Session $session,
+        ?bool $filter = null, string $search = ''): Builder|Relation
     {
+        $search = $this->searchSanitizer->sanitize($search);
+
         return $session->receivables()
             ->select('receivables.*')
             ->join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
             ->where('subscriptions.pool_id', $pool->id)
             ->when($filter === true, fn(Builder $query) => $query->whereHas('deposit'))
-            ->when($filter === false, fn(Builder $query) => $query->whereDoesntHave('deposit'));
+            ->when($filter === false, fn(Builder $query) => $query->whereDoesntHave('deposit'))
+            ->when($search !== '',
+                fn(Builder $query) => $query->whereHas('subscription',
+                    fn(Builder $qs) => $qs->whereHas('member',
+                        fn(Builder $qm) => $qm->search($search))));
     }
 
     /**
      * @param Pool $pool
      * @param Session $session
      * @param bool|null $filter
+     * @param string $search
      * @param int $page
      *
      * @return Collection
      */
     public function getReceivables(Pool $pool, Session $session,
-        ?bool $filter, int $page = 0): Collection
+        ?bool $filter = null, string $search = '', int $page = 0): Collection
     {
         // The jointure with the subscriptions and members tables is needed,
         // so the final records can be ordered by member name.
-        return $this->getQuery($pool, $session, $filter)
+        return $this->getQuery($pool, $session, $filter, $search)
             ->addSelect(DB::raw('pd.amount, members.name as member'))
             ->join('pools', 'pools.id', '=', 'subscriptions.pool_id')
             ->join(DB::raw('pool_defs as pd'), 'pools.def_id', '=', 'pd.id')
@@ -74,12 +84,14 @@ class DepositService
      * @param Pool $pool
      * @param Session $session
      * @param bool|null $filter
+     * @param string $search
      *
      * @return int
      */
-    public function getReceivableCount(Pool $pool, Session $session, ?bool $filter): int
+    public function getReceivableCount(Pool $pool, Session $session,
+        ?bool $filter = null, string $search = ''): int
     {
-        return $this->getQuery($pool, $session, $filter)->count();
+        return $this->getQuery($pool, $session, $filter, $search)->count();
     }
 
     /**
@@ -93,7 +105,7 @@ class DepositService
      */
     public function getReceivable(Pool $pool, Session $session, int $receivableId): ?Receivable
     {
-        return $this->getQuery($pool, $session, null)
+        return $this->getQuery($pool, $session)
             ->with(['deposit'])
             ->find($receivableId);
     }

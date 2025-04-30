@@ -49,4 +49,23 @@ class Receivable extends Component
         $this->cl(ReceivablePage::class)->page();
         $this->showTotal();
     }
+
+    public function toggleFilter()
+    {
+        $onlyUnpaid = $this->bag('summary')->get('deposit.filter', null);
+        // Switch between null, true and false
+        $onlyUnpaid = $onlyUnpaid === null ? true : ($onlyUnpaid === true ? false : null);
+        $this->bag('summary')->set('deposit.filter', $onlyUnpaid);
+        $this->bag('summary')->set('deposit.page', 1);
+
+        $this->cl(ReceivablePage::class)->page();
+    }
+
+    public function search(string $search)
+    {
+        $this->bag('summary')->set('deposit.search', trim($search));
+        $this->bag('summary')->set('deposit.page', 1);
+
+        $this->cl(ReceivablePage::class)->page();
+    }
 }
