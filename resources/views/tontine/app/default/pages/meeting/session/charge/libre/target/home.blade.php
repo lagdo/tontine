@@ -30,7 +30,7 @@
                       <div class="input-group">
                         {!! $html->text('search', '')->class('form-control')->id('txt-fee-member-search') !!}
                         <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqTargetFunc->search($searchValue))><i class="fa fa-search"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqTarget->search($searchValue))><i class="fa fa-search"></i></button>
                         </div>
                       </div>
                     </div>

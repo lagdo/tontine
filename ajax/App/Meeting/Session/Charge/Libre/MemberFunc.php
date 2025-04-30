@@ -4,28 +4,9 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\FuncComponent;
 
-use function trim;
-
 class MemberFunc extends FuncComponent
 {
     use AmountTrait;
-
-    public function toggleFilter()
-    {
-        $filter = $this->bag('meeting')->get('fee.member.filter', null);
-        // Switch between null, true and false
-        $filter = $filter === null ? true : ($filter === true ? false : null);
-        $this->bag('meeting')->set('fee.member.filter', $filter);
-
-        $this->cl(MemberPage::class)->page();
-    }
-
-    public function search(string $search)
-    {
-        $this->bag('meeting')->set('fee.member.search', trim($search));
-
-        $this->cl(MemberPage::class)->page();
-    }
 
     /**
      * @before checkChargeEdit

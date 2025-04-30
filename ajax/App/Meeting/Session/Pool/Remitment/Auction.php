@@ -32,4 +32,15 @@ class Auction extends Component
     {
         $this->cl(AuctionPage::class)->page();
     }
+
+    public function toggleFilter()
+    {
+        $filtered = $this->bag('auction')->get('filter', null);
+        // Switch between null, true and false
+        $filtered = $filtered === null ? true : ($filtered === true ? false : null);
+        $this->bag('auction')->set('filter', $filtered);
+        $this->bag('auction')->set('page', 1);
+
+        $this->cl(AuctionPage::class)->page(1);
+    }
 }

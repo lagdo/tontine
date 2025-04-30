@@ -30,13 +30,6 @@ class MemberFunc extends FuncComponent
     public function __construct(private MemberService $memberService)
     {}
 
-    public function search(string $search)
-    {
-        $this->bag('member')->set('search', trim($search));
-
-        $this->cl(MemberPage::class)->page();
-    }
-
     public function add()
     {
         $title = trans('tontine.member.titles.add');

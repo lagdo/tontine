@@ -66,6 +66,7 @@ class Settlement extends Component
         // Switch between null, true and false
         $onlyUnpaid = $onlyUnpaid === null ? true : ($onlyUnpaid === true ? false : null);
         $this->bag('summary')->set('settlement.fixed.filter', $onlyUnpaid);
+        $this->bag('summary')->set('settlement.fixed.page', 1);
 
         $this->cl(SettlementPage::class)->page();
     }
@@ -73,6 +74,7 @@ class Settlement extends Component
     public function search(string $search)
     {
         $this->bag('summary')->set('settlement.fixed.search', trim($search));
+        $this->bag('summary')->set('settlement.fixed.page', 1);
 
         $this->cl(SettlementPage::class)->page();
     }

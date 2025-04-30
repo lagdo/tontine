@@ -1,7 +1,7 @@
 @php
   $fundId = pm()->select('refunds-fund-id')->toInt();
   $rqRefund = rq(Ajax\App\Meeting\Session\Credit\Refund\Refund::class);
-  $rqRefundFunc = rq(Ajax\App\Meeting\Session\Credit\Refund\RefundFunc::class);
+  $rqRefund = rq(Ajax\App\Meeting\Session\Credit\Refund\Refund::class);
   $rqRefundPage = rq(Ajax\App\Meeting\Session\Credit\Refund\RefundPage::class);
 @endphp
                     <div class="row mb-2">
@@ -21,7 +21,7 @@
 @endif
                       <div class="col-auto">
                         <div class="btn-group float-right ml-2" role="group">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqRefundFunc->toggleFilter())><i class="fa fa-filter"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqRefund->toggleFilter())><i class="fa fa-filter"></i></button>
                           <button type="button" class="btn btn-primary" @jxnClick($rqRefund->render())><i class="fa fa-sync"></i></button>
                         </div>
                       </div>

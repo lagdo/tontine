@@ -7,7 +7,10 @@ use Ajax\App\Meeting\Session\Charge\Settlement\Total;
 
 class SettlementFunc extends FuncComponent
 {
-    private function showTotal()
+    /**
+     * @exclude
+     */
+    public function showTotal()
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
@@ -19,16 +22,6 @@ class SettlementFunc extends FuncComponent
             $this->billService->getBillCount($charge, $session));
 
         $this->cl(Total::class)->item('libre')->render();
-    }
-
-    public function toggleFilter()
-    {
-        $onlyUnpaid = $this->bag('meeting')->get('settlement.libre.filter', null);
-        // Switch between null, true and false
-        $onlyUnpaid = $onlyUnpaid === null ? true : ($onlyUnpaid === true ? false : null);
-        $this->bag('meeting')->set('settlement.libre.filter', $onlyUnpaid);
-
-        $this->cl(SettlementPage::class)->page();
     }
 
     /**

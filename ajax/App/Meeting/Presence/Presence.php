@@ -61,4 +61,12 @@ class Presence extends Component
         $this->response->js('Tontine')
             ->showSmScreen('content-presence-left', 'presence-sm-screens');
     }
+
+    public function exchange()
+    {
+        $exchange = $this->bag('presence')->get('exchange', false);
+        $this->bag('presence')->set('exchange', !$exchange);
+
+        $this->render();
+    }
 }

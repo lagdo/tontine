@@ -35,17 +35,6 @@ class RefundFunc extends FuncComponent
     public function __construct(protected RefundService $refundService)
     {}
 
-    public function toggleFilter()
-    {
-        $filtered = $this->bag($this->bagId)->get('filter', null);
-        // Switch between null, true and false
-        $filtered = $filtered === null ? true : ($filtered === true ? false : null);
-        $this->bag($this->bagId)->set('filter', $filtered);
-        $this->bag($this->bagId)->set('page', 1);
-
-        $this->cl(RefundPage::class)->page();
-    }
-
     /**
      * @param int $debtId
      *

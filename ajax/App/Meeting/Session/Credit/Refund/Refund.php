@@ -65,4 +65,15 @@ class Refund extends Component
 
         $this->render();
     }
+
+    public function toggleFilter()
+    {
+        $filtered = $this->bag($this->bagId)->get('filter', null);
+        // Switch between null, true and false
+        $filtered = $filtered === null ? true : ($filtered === true ? false : null);
+        $this->bag($this->bagId)->set('filter', $filtered);
+        $this->bag($this->bagId)->set('page', 1);
+
+        $this->cl(RefundPage::class)->page();
+    }
 }

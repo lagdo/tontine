@@ -37,13 +37,6 @@ class TargetFunc extends FuncComponent
         $this->stash()->set('meeting.session.charge.target', $target);
     }
 
-    public function search(string $search)
-    {
-        $this->bag('meeting')->set('fee.member.search', trim($search));
-
-        $this->cl(TargetPage::class)->page();
-    }
-
     /**
      * @before checkChargeEdit
      * @return mixed

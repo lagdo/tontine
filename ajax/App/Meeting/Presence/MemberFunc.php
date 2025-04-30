@@ -6,8 +6,6 @@ use Ajax\FuncComponent;
 use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\Meeting\PresenceService;
 
-use function trim;
-
 /**
  * @databag presence
  * @before getSession
@@ -27,12 +25,6 @@ class MemberFunc extends FuncComponent
         $sessionId = $this->bag('presence')->get('session.id', 0);
         $session = $sessionId === 0 ? null : $this->presenceService->getSession($sessionId);
         $this->stash()->set('presence.session', $session);
-    }
-
-    public function search(string $search)
-    {
-        $this->bag('presence')->set('member.search', trim($search));
-        $this->cl(MemberPage::class)->page();
     }
 
     public function togglePresence(int $memberId)

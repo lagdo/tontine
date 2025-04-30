@@ -17,14 +17,6 @@ class PresenceFunc extends FuncComponent
     public function __construct(private PresenceService $presenceService)
     {}
 
-    public function exchange()
-    {
-        $exchange = $this->bag('presence')->get('exchange', false);
-        $this->bag('presence')->set('exchange', !$exchange);
-
-        $this->cl(Presence::class)->home();
-    }
-
     public function selectSession(int $sessionId)
     {
         $this->bag('presence')->set('session.id', $sessionId);

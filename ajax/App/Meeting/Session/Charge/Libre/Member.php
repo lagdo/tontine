@@ -5,6 +5,8 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 use Ajax\App\Meeting\Session\Charge\Component;
 use Stringable;
 
+use function trim;
+
 class Member extends Component
 {
     use AmountTrait;
@@ -48,5 +50,24 @@ class Member extends Component
         $this->bag('meeting')->set('fee.member.page', 1);
 
         $this->render();
+    }
+
+    public function toggleFilter()
+    {
+        $filter = $this->bag('meeting')->get('fee.member.filter', null);
+        // Switch between null, true and false
+        $filter = $filter === null ? true : ($filter === true ? false : null);
+        $this->bag('meeting')->set('fee.member.filter', $filter);
+        $this->bag('meeting')->set('fee.member.page', 1);
+
+        $this->cl(MemberPage::class)->page();
+    }
+
+    public function search(string $search)
+    {
+        $this->bag('meeting')->set('fee.member.search', trim($search));
+        $this->bag('meeting')->set('fee.member.page', 1);
+
+        $this->cl(MemberPage::class)->page();
     }
 }

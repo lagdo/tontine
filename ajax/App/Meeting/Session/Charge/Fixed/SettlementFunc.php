@@ -6,12 +6,12 @@ use Ajax\App\Meeting\Session\Charge\FuncComponent;
 use Ajax\App\Meeting\Session\Charge\Settlement\Action;
 use Ajax\App\Meeting\Session\Charge\Settlement\Total;
 
-use function trim;
-
 class SettlementFunc extends FuncComponent
 {
-
-    private function showTotal()
+    /**
+     * @exclude
+     */
+    public function showTotal()
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
@@ -24,23 +24,6 @@ class SettlementFunc extends FuncComponent
 
         $this->cl(Action::class)->item('fixed')->render();
         $this->cl(Total::class)->item('fixed')->render();
-    }
-
-    public function toggleFilter()
-    {
-        $onlyUnpaid = $this->bag('meeting')->get('settlement.fixed.filter', null);
-        // Switch between null, true and false
-        $onlyUnpaid = $onlyUnpaid === null ? true : ($onlyUnpaid === true ? false : null);
-        $this->bag('meeting')->set('settlement.fixed.filter', $onlyUnpaid);
-
-        $this->cl(SettlementPage::class)->page();
-    }
-
-    public function search(string $search)
-    {
-        $this->bag('meeting')->set('settlement.fixed.search', trim($search));
-
-        $this->cl(SettlementPage::class)->page();
     }
 
     /**

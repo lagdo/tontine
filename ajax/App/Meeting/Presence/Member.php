@@ -61,4 +61,12 @@ class Member extends Component
                 ->showSmScreen('content-presence-right', 'presence-sm-screens');
         }
     }
+
+    public function search(string $search)
+    {
+        $this->bag('presence')->set('member.search', trim($search));
+        $this->bag('presence')->set('member.page', 1);
+
+        $this->cl(MemberPage::class)->page();
+    }
 }

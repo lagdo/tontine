@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\Component;
-use Ajax\App\Meeting\Session\Charge\Settlement\Total;
 use Stringable;
 
 class Settlement extends Component
@@ -29,7 +28,7 @@ class Settlement extends Component
     protected function after()
     {
         $this->cl(SettlementPage::class)->page();
-        $this->showTotal();
+        $this->cl(SettlementFunc::class)->showTotal();
     }
 
     /**
@@ -46,17 +45,14 @@ class Settlement extends Component
         $this->render();
     }
 
-    private function showTotal()
+    public function toggleFilter()
     {
-        $session = $this->stash()->get('meeting.session');
-        $charge = $this->stash()->get('meeting.session.charge');
-        $settlement = $this->settlementService->getSettlementCount($charge, $session);
+        $onlyUnpaid = $this->bag('meeting')->get('settlement.libre.filter', null);
+        // Switch between null, true and false
+        $onlyUnpaid = $onlyUnpaid === null ? true : ($onlyUnpaid === true ? false : null);
+        $this->bag('meeting')->set('settlement.libre.filter', $onlyUnpaid);
+        $this->bag('meeting')->set('settlement.libre.page', 1);
 
-        $this->stash()->set('meeting.session.settlement.count', $settlement->total ?? 0);
-        $this->stash()->set('meeting.session.settlement.amount', $settlement->amount ?? 0);
-        $this->stash()->set('meeting.session.bill.count',
-            $this->billService->getBillCount($charge, $session));
-
-        $this->cl(Total::class)->item('libre')->render();
+        $this->cl(SettlementPage::class)->page();
     }
 }

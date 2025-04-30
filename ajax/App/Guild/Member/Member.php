@@ -8,6 +8,7 @@ use Ajax\App\Page\SectionTitle;
 use Stringable;
 
 use function trans;
+use function trim;
 
 /**
  * @databag member
@@ -50,6 +51,14 @@ class Member extends Component
      */
     protected function after()
     {
+        $this->cl(MemberPage::class)->page();
+    }
+
+    public function search(string $search)
+    {
+        $this->bag('member')->set('search', trim($search));
+        $this->bag('member')->set('page', 1);
+
         $this->cl(MemberPage::class)->page();
     }
 }

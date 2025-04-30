@@ -64,4 +64,23 @@ class Member extends Component
 
         $this->render();
     }
+
+    public function search(string $search)
+    {
+        $this->bag($this->bagId)->set('member.search', trim($search));
+        $this->bag($this->bagId)->set('member.page', 1);
+
+        $this->cl(MemberPage::class)->page();
+    }
+
+    public function toggleFilter()
+    {
+        $filter = $this->bag($this->bagId)->get('member.filter', null);
+        // Switch between null, true and false
+        $filter = $filter === null ? true : ($filter === true ? false : null);
+        $this->bag($this->bagId)->set('member.filter', $filter);
+        $this->bag($this->bagId)->set('member.page', 1);
+
+        $this->cl(MemberPage::class)->page();
+    }
 }

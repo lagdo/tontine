@@ -68,4 +68,12 @@ class Target extends Component
 
         $this->render();
     }
+
+    public function search(string $search)
+    {
+        $this->bag('meeting')->set('fee.member.search', trim($search));
+        $this->bag('meeting')->set('fee.target.page', 1);
+
+        $this->cl(TargetPage::class)->page();
+    }
 }

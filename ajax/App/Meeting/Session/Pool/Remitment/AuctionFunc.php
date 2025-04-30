@@ -12,31 +12,14 @@ use Siak\Tontine\Validation\Meeting\DebtValidator;
 class AuctionFunc extends FuncComponent
 {
     /**
-     * @var DebtValidator
-     */
-    protected DebtValidator $validator;
-
-    /**
      * The constructor
      *
      * @param AuctionService $auctionService
      */
-    public function __construct(private AuctionService $auctionService)
+    public function __construct(private DebtValidator $validator,
+        private AuctionService $auctionService)
     {}
 
-    public function toggleFilter()
-    {
-        $filtered = $this->bag('auction')->get('filter', null);
-        // Switch between null, true and false
-        $filtered = $filtered === null ? true : ($filtered === true ? false : null);
-        $this->bag('auction')->set('filter', $filtered);
-
-        $this->cl(AuctionPage::class)->page(1);
-    }
-
-    /**
-     * @di $validator
-     */
     public function togglePayment(string $auctionId)
     {
         $this->validator->validate($auctionId);

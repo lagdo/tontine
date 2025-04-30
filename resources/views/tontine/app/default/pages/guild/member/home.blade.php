@@ -26,7 +26,7 @@
                     {!! $html->text('search', '')->id('txt-member-search')->class('form-control')
                       ->attribute('style', 'height:36px; padding:5px;') !!}
                     <div class="input-group-append">
-                      <button type="button" class="btn btn-primary" @jxnClick($rqMemberFunc
+                      <button type="button" class="btn btn-primary" @jxnClick($rqMember
                         ->search(jq('#txt-member-search')->val()))><i class="fa fa-search"></i></button>
                     </div>
                   </div>

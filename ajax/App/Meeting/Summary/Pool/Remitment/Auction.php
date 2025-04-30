@@ -39,6 +39,7 @@ class Auction extends Component
         // Switch between null, true and false
         $filtered = $filtered === null ? true : ($filtered === true ? false : null);
         $this->bag('auction')->set('filter', $filtered);
+        $this->bag('auction')->set('page', 1);
 
         $this->cl(AuctionPage::class)->page(1);
     }
