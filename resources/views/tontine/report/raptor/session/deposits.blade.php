@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="section-title">
                     {{ __('meeting.titles.deposits') }}
                   </div>

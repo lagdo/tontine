@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $rqOutflow = rq(Ajax\App\Meeting\Session\Cash\Outflow::class);
   $rqOutflowPage = rq(Ajax\App\Meeting\Session\Cash\OutflowPage::class);

@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $deposits = $pools['deposit'];
   $remitments = $pools['remitment']->keyBy('id');

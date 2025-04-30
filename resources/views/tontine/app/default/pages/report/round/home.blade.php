@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('sqids', 'Sqids\SqidsInterface')
 @php
   $rqRound = rq(Ajax\App\Report\Round\Round::class);

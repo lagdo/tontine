@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $in = ['auctions', 'charges', 'deposits', 'savings', 'refunds'];
   $out = ['remitments', 'outflows', 'loans'];

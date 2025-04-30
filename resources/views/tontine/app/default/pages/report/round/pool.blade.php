@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $poolSessionIds = $pool->sessions->pluck('id', 'id');
 @endphp

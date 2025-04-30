@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @if ($charges->count() > 0)
                   <div class="section-title">{{ __('meeting.charge.titles.fees') }}</div>
 @foreach($charges as $charge)

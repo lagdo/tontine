@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
   $rqSettlement = rq(Ajax\App\Meeting\Summary\Charge\Libre\Settlement::class);

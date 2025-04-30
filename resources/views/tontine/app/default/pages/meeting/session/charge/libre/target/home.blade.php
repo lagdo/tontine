@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $searchValue = jq('#txt-fee-member-search')->val();
   $rqTarget = rq(Ajax\App\Meeting\Session\Charge\Libre\Target::class);

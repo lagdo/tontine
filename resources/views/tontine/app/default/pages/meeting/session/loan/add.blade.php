@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $amountAvailable = $locale->getMoneyValue($amountAvailable > 0 ? $amountAvailable : 0);
 @endphp

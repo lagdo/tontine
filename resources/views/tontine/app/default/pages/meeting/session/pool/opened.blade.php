@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
                         <tr>
                           <td>{{ $pool->title }}<br/>{{ $amount }}</td>
                           <td class="currency">{{ $paid }}/{{ $count < 0 ? '-' : $count

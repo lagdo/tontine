@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @extends('tontine.report.default.layout')
 
 @section('page-title', 'Siak Tontine')

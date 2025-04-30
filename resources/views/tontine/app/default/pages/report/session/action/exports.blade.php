@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @inject('sqids', 'Sqids\SqidsInterface')
 @php
   $rqOptionsFunc = rq(Ajax\App\Guild\Options\OptionsFunc::class);

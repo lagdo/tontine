@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
                           <td>
                             {!! $debt->member !!}<br/>
                             {!! $debt->loan->session->title !!}

@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $fundId = jq()->parent()->attr('data-fund-id')->toInt();
   $rqSavingPage = rq(Ajax\App\Meeting\Session\Saving\SavingPage::class);

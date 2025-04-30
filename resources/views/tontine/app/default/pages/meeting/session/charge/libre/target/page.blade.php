@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $rqTargetPage = rq(Ajax\App\Meeting\Session\Charge\Libre\TargetPage::class);
 @endphp

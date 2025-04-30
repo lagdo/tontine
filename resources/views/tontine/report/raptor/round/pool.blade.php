@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
               <div class="table-title">
                 {{ __('meeting.actions.pools') }} - {{ $pool->title }}
               </div>

@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="row mb-2">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.outflows') }}</div>

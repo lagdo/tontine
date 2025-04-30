@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
               <div class="row mt-0">
                 <div class="col d-flex justify-content-center">
                   <h5>{{ __('meeting.actions.pools') }} - {{ $pool->title }}</h5>

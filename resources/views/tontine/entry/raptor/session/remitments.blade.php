@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @if ($pools->count() > 0)
                   <div class="section-title">{{ __('meeting.titles.remitments') }}</div>
 @foreach ($pools as $pool)

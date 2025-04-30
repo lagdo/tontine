@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $memberId = jq()->parent()->attr('data-member-id')->toInt();
   $rqPresenceFunc = rq(Ajax\App\Meeting\Presence\PresenceFunc::class);

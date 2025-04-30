@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @if ($charges['session']->count() > 0)
                   <div class="section-title">
                     {{ __('meeting.charge.titles.fees') }}

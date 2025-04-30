@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
                       <div class="input-group mb-2">
                         <div class="input-group-prepend">
                           {!! $html->span(__('meeting.loan.labels.amount_available', [

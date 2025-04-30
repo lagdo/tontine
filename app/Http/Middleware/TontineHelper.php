@@ -7,7 +7,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\View;
+use Siak\Tontine\Service\LocaleService;
 
+use function app;
 use function html;
 use function Jaxon\jaxon;
 
@@ -23,6 +25,7 @@ class TontineHelper
      */
     public function handle(Request $request, Closure $next)
     {
+        View::share('locale', app()->make(LocaleService::class));
         View::share('html', html());
         View::share('stash', jaxon()->di()->getStash());
 

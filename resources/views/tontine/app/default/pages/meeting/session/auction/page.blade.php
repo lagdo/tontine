@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $auctionId = jq()->parent()->attr('data-auction-id')->toInt();
   $rqAuctionFunc = rq(Ajax\App\Meeting\Session\Pool\Remitment\AuctionFunc::class);

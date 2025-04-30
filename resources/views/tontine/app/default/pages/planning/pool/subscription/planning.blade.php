@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $rqFinance = rq(Ajax\App\Planning\Finance::class);
   $rqBeneficiary = rq(Ajax\App\Planning\Pool\Subscription\Beneficiary::class);

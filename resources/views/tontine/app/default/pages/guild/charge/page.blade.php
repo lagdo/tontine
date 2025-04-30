@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $chargeId = jq()->parent()->attr('data-charge-id')->toInt();
   $rqChargeFunc = rq(Ajax\App\Guild\Charge\ChargeFunc::class);

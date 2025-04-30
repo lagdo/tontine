@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $outflowId = jq()->parent()->attr('data-outflow-id')->toInt();
   $rqOutflowPage = rq(Ajax\App\Meeting\Session\Cash\OutflowPage::class);

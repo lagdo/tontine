@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @if ($charges['session']->count() > 0)
                   <div class="row mt-0">
                     <div class="col d-flex justify-content-center">

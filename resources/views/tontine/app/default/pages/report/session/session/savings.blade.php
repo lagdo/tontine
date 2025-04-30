@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $fundId = pm()->select('report-savings-fund-id')->toInt();
   $rqProfit = rq(Ajax\App\Report\Session\Saving\Profit::class);

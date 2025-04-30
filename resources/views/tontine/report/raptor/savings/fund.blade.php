@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
       <div class="section section-title">
         {!! $fund->title !!} :: {{ $locale->formatMoney($distribution->profitAmount, true)
           }}, {{ __('meeting.profit.distribution.parts', [

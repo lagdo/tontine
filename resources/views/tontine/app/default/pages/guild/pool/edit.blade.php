@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
       <div class="portlet-body form">
         <form class="form-horizontal" role="form" id="pool-form">
           <div class="module-body">

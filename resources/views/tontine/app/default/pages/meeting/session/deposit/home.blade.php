@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $poolId = jq()->parent()->attr('data-pool-id')->toInt();
   $rqDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Deposit::class);

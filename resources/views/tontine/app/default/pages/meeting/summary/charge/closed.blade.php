@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
                         <tr>
                           <td>{{ $charge->name }}<br/>{{ $locale->formatMoney($charge->amount) }}</td>
                           <td class="currency">

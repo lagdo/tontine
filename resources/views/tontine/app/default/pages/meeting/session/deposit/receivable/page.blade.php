@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
   $rqReceivableFunc = rq(Ajax\App\Meeting\Session\Pool\Deposit\ReceivableFunc::class);

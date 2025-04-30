@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
                   <div class="table-responsive" id="content-session-pool-remitments" @jxnTarget()>
                     <table class="table table-bordered responsive">
                       <thead>

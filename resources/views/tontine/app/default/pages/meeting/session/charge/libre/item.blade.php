@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $sessionBillTotal = $bills['total']['session'][$charge->id] ?? 0;
   $roundBillTotal = $bills['total']['round'][$charge->id] ?? 0;

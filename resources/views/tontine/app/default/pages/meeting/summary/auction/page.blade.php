@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $rqAuctionPage = rq(Ajax\App\Meeting\Summary\Pool\Remitment\AuctionPage::class);
 @endphp

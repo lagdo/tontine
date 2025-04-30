@@ -1,4 +1,3 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $poolId = jq()->parent()->attr('data-pool-id')->toInt();
   $rqPoolFunc = rq(Ajax\App\Guild\Pool\PoolFunc::class);
