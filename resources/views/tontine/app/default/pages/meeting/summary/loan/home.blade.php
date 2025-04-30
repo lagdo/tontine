@@ -1,33 +1,19 @@
-@inject('locale', 'Siak\Tontine\Service\LocaleService')
+@php
+  $rqLoan = rq(Ajax\App\Meeting\Summary\Credit\Loan\Loan::class);
+  $rqLoanPage = rq(Ajax\App\Meeting\Summary\Credit\Loan\LoanPage::class);
+  $rqBalance = rq(Ajax\App\Meeting\Summary\Credit\Loan\Balance::class);
+@endphp
                   <div class="row mb-2">
                     <div class="col">
                       <div class="section-title mt-0">{{ __('meeting.titles.loans') }}</div>
                     </div>
+                    <div class="col-auto" @jxnBind($rqBalance)>
+                    </div>
+                    <div class="col-auto">
+                      <div class="btn-group float-right ml-2" role="group">
+                        <button type="button" class="btn btn-primary" @jxnClick($rqLoan->render())><i class="fa fa-sync"></i></button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="table-responsive" id="content-summary-loans">
-                    <table class="table table-bordered responsive">
-                      <thead>
-                        <tr>
-                          <th>{!! __('meeting.labels.member') !!}</th>
-                          <th>{!! __('meeting.loan.labels.fund') !!}</th>
-                          <th class="currency">{!! __('common.labels.amount') !!}</th>
-                          <th>{!! __('meeting.loan.labels.interest') !!}</th>
-                          <th class="table-item-menu">&nbsp;</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-@foreach ($loans as $loan)
-                        <tr>
-                          <td>{{ $loan->member->name }}</td>
-                          <td>{!! $loan->fund->title !!}</td>
-                          <td class="currency">{{ $locale->formatMoney($loan->principal) }}</td>
-                          <td>
-                            {{ __('meeting.loan.interest.i' . $loan->interest_type) }}: {{ $loan->fixed_interest ?
-                              $locale->formatMoney($loan->interest) : ($loan->interest_rate / 100) . '%' }}
-                          </td>
-                          <td class="table-item-menu">&nbsp;</td>
-                        </tr>
-@endforeach
-                      </tbody>
-                    </table>
-                  </div> <!-- End table -->
+                  <div @jxnBind($rqLoanPage)>
+                  </div>

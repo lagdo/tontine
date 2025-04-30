@@ -1,11 +1,18 @@
 @php
-  $rqLibreFeePage = rq(Ajax\App\Meeting\Summary\Charge\LibreFeePage::class);
+  $rqLibreFee = rq(Ajax\App\Meeting\Summary\Charge\Libre\Fee::class);
+  $rqLibreFeePage = rq(Ajax\App\Meeting\Summary\Charge\Libre\FeePage::class);
 @endphp
                   <div class="row mb-2">
                     <div class="col">
                       <div class="section-title mt-0">{!! __('meeting.charge.titles.variable') !!}</div>
                     </div>
+@if($session->opened)
+                    <div class="col-auto">
+                      <div class="btn-group float-right ml-2" role="group">
+                        <button type="button" class="btn btn-primary" @jxnClick($rqLibreFee->render())><i class="fa fa-sync"></i></button>
+                      </div>
+                    </div>
+@endif
                   </div>
-                  <div class="table-responsive" id="content-summary-fees-libre-page" @jxnBind($rqLibreFeePage)>
-                    @jxnHtml($rqLibreFeePage)
-                  </div> <!-- End table -->
+                  <div @jxnBind($rqLibreFeePage)>
+                  </div>

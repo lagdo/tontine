@@ -2,14 +2,14 @@
   $rqSession = rq(Ajax\App\Meeting\Session\Session::class);
   $rqSummary = rq(Ajax\App\Meeting\Summary\Summary::class);
 
-  $rqDeposit = rq(Ajax\App\Meeting\Summary\Pool\Deposit::class);
-  $rqRemitment = rq(Ajax\App\Meeting\Summary\Pool\Remitment::class);
-  $rqFixedFee = rq(Ajax\App\Meeting\Summary\Charge\FixedFee::class);
-  $rqLibreFee = rq(Ajax\App\Meeting\Summary\Charge\LibreFee::class);
-  $rqLoan = rq(Ajax\App\Meeting\Summary\Credit\Loan::class);
+  $rqDeposit = rq(Ajax\App\Meeting\Summary\Pool\Deposit\Deposit::class);
+  $rqRemitment = rq(Ajax\App\Meeting\Summary\Pool\Remitment\Remitment::class);
+  $rqFixedFee = rq(Ajax\App\Meeting\Summary\Charge\Fixed\Fee::class);
+  $rqLibreFee = rq(Ajax\App\Meeting\Summary\Charge\Libre\Fee::class);
+  $rqLoan = rq(Ajax\App\Meeting\Summary\Credit\Loan\Loan::class);
+  $rqRefund = rq(Ajax\App\Meeting\Summary\Credit\Refund\Refund::class);
   $rqSaving = rq(Ajax\App\Meeting\Summary\Saving\Saving::class);
   $rqProfit = rq(Ajax\App\Meeting\Summary\Saving\Profit::class);
-  $rqRefund = rq(Ajax\App\Meeting\Summary\Refund\Partial\Refund::class);
   $rqOutflow = rq(Ajax\App\Meeting\Summary\Cash\Outflow::class);
 @endphp
           <div class="section-body">
@@ -41,10 +41,10 @@
                       <a class="nav-link" id="summary-tab-savings" data-target="#summary-savings" role="link" tabindex="0">{!! __('meeting.actions.savings') !!}</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                      <a class="nav-link" id="summary-tab-credits" data-target="#summary-credits" role="link" tabindex="0">{!! __('meeting.actions.credits') !!}</a>
+                      <a class="nav-link" id="summary-tab-refunds" data-target="#summary-refunds" role="link" tabindex="0">{!! __('meeting.actions.refunds') !!}</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                      <a class="nav-link" id="summary-tab-refunds" data-target="#summary-refunds" role="link" tabindex="0">{!! __('meeting.actions.refunds') !!}</a>
+                      <a class="nav-link" id="summary-tab-profits" data-target="#summary-profits" role="link" tabindex="0">{!! __('meeting.actions.profits') !!}</a>
                     </li>
                     <li class="nav-item" role="presentation">
                       <a class="nav-link" id="summary-tab-outflows" data-target="#summary-outflows" role="link" tabindex="0">{!! __('meeting.actions.outflows') !!}</a>
@@ -150,7 +150,7 @@
                   <div class="row">
                     <div class="col-md-12" id="content-summary-partial-refunds">
                       <div class="card shadow mb-2">
-                        <div class="card-body" @jxnBind($rqPartialRefund)>
+                        <div class="card-body" @jxnBind($rqRefund)>
                         </div>
                       </div>
                     </div>

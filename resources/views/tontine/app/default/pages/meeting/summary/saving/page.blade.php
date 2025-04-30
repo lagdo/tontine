@@ -1,8 +1,12 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
+  $fundId = jq()->parent()->attr('data-fund-id')->toInt();
   $rqSavingPage = rq(Ajax\App\Meeting\Summary\Saving\SavingPage::class);
+  $rqMember = rq(Ajax\App\Meeting\Summary\Saving\Member::class);
 @endphp
-                  <div class="table-responsive" id="content-summary-savings-page">
+                  <div class="table-responsive" id="content-session-funds-page" @jxnTarget()>
+                    <div @jxnEvent(['.btn-fund-savings', 'click'], $rqMember->fund($fundId))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -12,12 +16,15 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($savings as $saving)
+@foreach ($funds as $fund)
                         <tr>
-                          <td>{{ $saving->member }}<br/>{!! $saving->fund ?
-                            $saving->fund->title : __('tontine.fund.labels.default') !!}</td>
-                          <td class="currency">{{ $locale->formatMoney($saving->amount) }}</td>
-                          <td class="table-item-menu">&nbsp;</td>
+                          <td>{!! $fund->title !!}</td>
+                          <td class="currency">
+                            {{ $fund->s_count ?? 0 }}<br/>{{ $locale->formatMoney($fund->s_amount ?? 0) }}
+                          </td>
+                          <td class="table-item-menu" data-fund-id="{{ $fund->id }}">
+                            <button type="button" class="btn btn-primary btn-fund-savings"><i class="fa fa-arrow-circle-right"></i></button>
+                          </td>
                         </tr>
 @endforeach
                       </tbody>

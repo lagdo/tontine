@@ -1,14 +1,22 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $poolId = jq()->parent()->attr('data-pool-id')->toInt();
-  // $this->response->jq('.btn-pool-deposits')->click($this->rq()->deposits($poolId));
+  $rqDeposit = rq(Ajax\App\Meeting\Summary\Pool\Deposit\Deposit::class);
+  $rqReceivable = rq(Ajax\App\Meeting\Summary\Pool\Deposit\Receivable::class);
 @endphp
                   <div class="row mb-2">
                     <div class="col">
                       <div class="section-title mt-0">{!! __('meeting.titles.deposits') !!}</div>
                     </div>
+                    <div class="col-auto">
+                      <div class="btn-group float-right ml-2" role="group">
+                        <button type="button" class="btn btn-primary" @jxnClick($rqDeposit->render())><i class="fa fa-sync"></i></button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="table-responsive" id="content-summary-deposits">
+                  <div class="table-responsive" id="content-meeting-deposits" @jxnTarget()>
+                    <div @jxnEvent(['.btn-pool-deposits', 'click'], $rqReceivable->pool($poolId))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -19,13 +27,18 @@
                       </thead>
                       <tbody>
 @foreach($pools as $pool)
-                        <tr>
-                          <td>{{ $pool->title }}<br/>{{ $pool->deposit_fixed ?
-                            $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre') }}</td>
-                          <td class="currency">{{ $pool->recv_paid }}/{{ $pool->recv_count }}@if ($pool->amount_recv > 0)<br/>{{
-                            $locale->formatMoney($pool->amount_recv) }}@endif</td>
-                          <td class="table-item-menu">&nbsp;</td>
-                        </tr>
+@php
+    $template = $session->closed ? 'closed' : ($session->pending ? 'pending' : 'opened');
+@endphp
+                        @include('tontine::pages.meeting.summary.pool.' . $template, [
+                          'pool' => $pool,
+                          'amount' => $pool->deposit_fixed ?
+                            $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre'),
+                          'paid' => $pool->recv_paid,
+                          'count' => $pool->recv_count,
+                          'total' => $pool->amount_recv,
+                          'menuClass' => 'btn-pool-deposits',
+                        ])
 @endforeach
                       </tbody>
                     </table>

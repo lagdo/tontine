@@ -1,14 +1,30 @@
 @inject('locale', 'Siak\Tontine\Service\LocaleService')
 @php
   $poolId = jq()->parent()->attr('data-pool-id')->toInt();
-  // $this->response->jq('.btn-pool-remitments')->click($this->rq()->remitments($poolId));
+  $rqRemitment = rq(Ajax\App\Meeting\Summary\Pool\Remitment\Remitment::class);
+  $rqAuction = rq(Ajax\App\Meeting\Summary\Pool\Remitment\Auction::class);
+  $rqPayable = rq(Ajax\App\Meeting\Summary\Pool\Remitment\Payable::class);
 @endphp
                   <div class="row mb-2">
                     <div class="col">
                       <div class="section-title mt-0">{!! __('meeting.titles.remitments') !!}</div>
                     </div>
+@if ($hasAuctions)
+                    <div class="col-auto">
+                      <div class="btn-group float-right ml-2" role="group">
+                        <button type="button" class="btn btn-primary" @jxnClick($rqAuction->render())>{{ __('meeting.titles.auctions') }}</button>
+                      </div>
+                    </div>
+@endif
+                    <div class="col-auto">
+                      <div class="btn-group float-right ml-2" role="group">
+                        <button type="button" class="btn btn-primary" @jxnClick($rqRemitment->render())><i class="fa fa-sync"></i></button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="table-responsive" id="content-summary-remitments">
+                  <div class="table-responsive" id="content-session-remitments" @jxnTarget()>
+                    <div @jxnEvent(['.btn-pool-remitments', 'click'], $rqPayable->pool($poolId))></div>
+
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -19,13 +35,19 @@
                       </thead>
                       <tbody>
 @foreach($pools as $pool)
-                        <tr>
-                          <td>{{ $pool->title }}<br/>{{ $pool->deposit_fixed ?
-                            $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre') }}</td>
-                          <td class="currency">{{ $pool->pay_paid }}/{{ $pool->pay_count }}@if ($pool->amount_paid > 0)<br/>{{
-                            $locale->formatMoney($pool->amount_paid) }}@endif</td>
-                          <td class="table-item-menu">&nbsp;</td>
-                        </tr>
+@php
+  $template = $session->closed ? 'closed' : ($session->pending ? 'pending' : 'opened');
+@endphp
+                        @include('tontine::pages.meeting.summary.pool.' . $template, [
+                          'pool' => $pool,
+                          'amount' => !$pool->deposit_fixed ? __('tontine.labels.types.libre') :
+                            $locale->formatMoney($pool->amount),
+                          'paid' => $pool->pay_paid,
+                          'count' => $pool->pay_count,
+                          'total' => !$pool->remit_planned ? $pool->amount_paid : $pool->amount *
+                            ($pool->sessions->count() - $pool->disabled_sessions->count()),
+                          'menuClass' => 'btn-pool-remitments',
+                        ])
 @endforeach
                       </tbody>
                     </table>
