@@ -9,8 +9,6 @@ use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Stringable;
 
-use function trim;
-
 /**
  * @databag planning.finance.pool
  * @before getPool
@@ -44,7 +42,7 @@ class MemberPage extends PageComponent
      */
     protected function count(): int
     {
-        $search = trim($this->bag('planning.finance.pool')->get('member.search', ''));
+        $search = $this->bag('planning.finance.pool')->get('member.search', '');
         $filter = $this->bag('planning.finance.pool')->get('member.filter', null);
         $pool = $this->stash()->get('planning.finance.pool');
 
@@ -56,7 +54,7 @@ class MemberPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $search = trim($this->bag('planning.finance.pool')->get('member.search', ''));
+        $search = $this->bag('planning.finance.pool')->get('member.search', '');
         $filter = $this->bag('planning.finance.pool')->get('member.filter', null);
         $pool = $this->stash()->get('planning.finance.pool');
 

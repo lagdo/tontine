@@ -6,8 +6,6 @@ use Ajax\PageComponent;
 use Siak\Tontine\Service\Guild\MemberService;
 use Stringable;
 
-use function trim;
-
 /**
  * @databag member
  */
@@ -31,7 +29,7 @@ class MemberPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $search = trim($this->bag('member')->get('search', ''));
+        $search = $this->bag('member')->get('search', '');
 
         return $this->renderView('pages.guild.member.page', [
             'members' => $this->memberService->getMembers($search, $this->currentPage()),
@@ -51,7 +49,7 @@ class MemberPage extends PageComponent
      */
     protected function count(): int
     {
-        $search = trim($this->bag('member')->get('search', ''));
+        $search = $this->bag('member')->get('search', '');
 
         return $this->memberService->getMemberCount($search);
     }

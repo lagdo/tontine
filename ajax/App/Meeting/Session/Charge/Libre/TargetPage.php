@@ -6,8 +6,6 @@ use Ajax\App\Meeting\Session\Charge\PageComponent;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
 use Stringable;
 
-use function trim;
-
 /**
  * @before getTarget
  */
@@ -42,7 +40,7 @@ class TargetPage extends PageComponent
      */
     protected function count(): int
     {
-        $search = trim($this->bag('meeting')->get('fee.member.search', ''));
+        $search = $this->bag('meeting')->get('fee.member.search', '');
 
         return $this->targetService->getMemberCount($search);
     }
@@ -52,7 +50,7 @@ class TargetPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $search = trim($this->bag('meeting')->get('fee.member.search', ''));
+        $search = $this->bag('meeting')->get('fee.member.search', '');
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
         $target = $this->stash()->get('meeting.session.charge.target');

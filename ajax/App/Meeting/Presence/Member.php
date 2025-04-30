@@ -6,8 +6,6 @@ use Ajax\Component;
 use Siak\Tontine\Service\Meeting\PresenceService;
 use Stringable;
 
-use function trim;
-
 /**
  * @databag presence
  * @before getSession
@@ -40,7 +38,7 @@ class Member extends Component
             return '';
         }
 
-        $search = trim($this->bag('presence')->get('member.search', ''));
+        $search = $this->bag('presence')->get('member.search', '');
         return $this->renderView('pages.meeting.presence.member.home', [
             'session' => $session,
             'memberCount' => $this->presenceService->getMemberCount($search),
@@ -64,7 +62,7 @@ class Member extends Component
 
     public function search(string $search)
     {
-        $this->bag('presence')->set('member.search', trim($search));
+        $this->bag('presence')->set('member.search', $search);
         $this->bag('presence')->set('member.page', 1);
 
         $this->cl(MemberPage::class)->page();

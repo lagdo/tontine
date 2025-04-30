@@ -10,9 +10,9 @@ use Siak\Tontine\Model\Member;
 use Siak\Tontine\Service\DataSyncService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\WithTrait;
+use Siak\Tontine\Validation\SearchSanitizer;
 
 use function count;
-use function strtolower;
 use function tap;
 
 class MemberService
@@ -27,9 +27,10 @@ class MemberService
     /**
      * @param TenantService $tenantService
      * @param DataSyncService $dataSyncService
+     * @param SearchSanitizer $searchSanitizer
      */
     public function __construct(private TenantService $tenantService,
-        private DataSyncService $dataSyncService)
+        private DataSyncService $dataSyncService, private SearchSanitizer $searchSanitizer)
     {}
 
     /**
@@ -52,10 +53,7 @@ class MemberService
     {
         return $this->tenantService->guild()->members()
             ->when($this->filterActive, fn(Builder $query) => $query->active())
-            ->when($search !== '', function(Builder $query) use($search) {
-                $search = '%' . strtolower($search) . '%';
-                return $query->where(DB::raw('lower(name)'), 'like', $search);
-            });
+            ->search($this->searchSanitizer->sanitize($search));
     }
 
     /**

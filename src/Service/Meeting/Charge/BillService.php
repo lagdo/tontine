@@ -15,10 +15,9 @@ use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Validation\SearchSanitizer;
 
-use function strtolower;
 use function trans;
-use function trim;
 
 class BillService
 {
@@ -26,9 +25,11 @@ class BillService
      * @param SettlementTargetService $targetService
      * @param TenantService $tenantService
      * @param LocaleService $localeService
+     * @param SearchSanitizer $searchSanitizer
      */
     public function __construct(protected SettlementTargetService $targetService,
-        protected TenantService $tenantService, protected LocaleService $localeService)
+        protected TenantService $tenantService, protected LocaleService $localeService,
+        private SearchSanitizer $searchSanitizer)
     {}
 
     /**
@@ -42,19 +43,14 @@ class BillService
     private function getBillsQuery(Charge $charge, Session $session,
         string $search = '', ?bool $onlyPaid = null): Builder|Relation
     {
-        $search = trim($search);
-        return Bill::ofSession($session)->with('session')
+        return Bill::ofSession($session)
+            ->with('session')
             ->where('charge_id', $charge->id)
-            ->when($search !== '', function($query) use($search) {
-                $query->where(DB::raw('lower(member)'), 'like', $search);
-            })
-            ->when($onlyPaid === false, function($query) {
-                $query->unpaid();
-            })
+            ->search($this->searchSanitizer->sanitize($search))
+            ->when($onlyPaid === false, fn($query) => $query->unpaid())
             ->when($onlyPaid === true, function($query) use($session) {
-                $query->whereHas('settlement', function(Builder $query) use($session) {
-                    $query->where('session_id', $session->id);
-                });
+                $query->whereHas('settlement',
+                    fn(Builder $qs) => $qs->where('session_id', $session->id));
             });
     }
 
@@ -128,20 +124,15 @@ class BillService
     private function getMembersQuery(Charge $charge, Session $session,
         string $search = '', ?bool $filter = null): Builder|Relation
     {
-        $filterFunction = function($query) use($charge, $session) {
-            $query->where('charge_id', $charge->id)->where('session_id', $session->id);
-        };
+        $filterFunction = fn($query) => $query
+            ->where('charge_id', $charge->id)->where('session_id', $session->id);
 
         return $this->tenantService->guild()->members()->active()
-            ->when($search !== '', function($query) use($search) {
-                return $query->where(DB::raw('lower(name)'), 'like', '%' . strtolower($search) . '%');
-            })
-            ->when($filter === false, function($query) use($filterFunction) {
-                return $query->whereDoesntHave('libre_bills', $filterFunction);
-            })
-            ->when($filter === true, function($query) use($filterFunction) {
-                $query->whereHas('libre_bills', $filterFunction);
-            });
+            ->search($this->searchSanitizer->sanitize($search))
+            ->when($filter === false, fn($query) => $query
+                ->whereDoesntHave('libre_bills', $filterFunction))
+            ->when($filter === true, fn($query) => $query
+                ->whereHas('libre_bills', $filterFunction));
     }
 
     /**

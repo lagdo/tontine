@@ -5,8 +5,6 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 use Ajax\App\Meeting\Session\Charge\PageComponent;
 use Stringable;
 
-use function trim;
-
 class MemberPage extends PageComponent
 {
     /**
@@ -21,7 +19,7 @@ class MemberPage extends PageComponent
      */
     protected function count(): int
     {
-        $search = trim($this->bag('meeting')->get('fee.member.search', ''));
+        $search = $this->bag('meeting')->get('fee.member.search', '');
         $filter = $this->bag('meeting')->get('fee.member.filter', null);
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
@@ -34,7 +32,7 @@ class MemberPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $search = trim($this->bag('meeting')->get('fee.member.search', ''));
+        $search = $this->bag('meeting')->get('fee.member.search', '');
         $filter = $this->bag('meeting')->get('fee.member.filter', null);
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');

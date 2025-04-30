@@ -5,8 +5,6 @@ namespace Ajax\App\Meeting\Summary\Charge\Fixed;
 use Ajax\App\Meeting\Summary\Charge\PageComponent;
 use Stringable;
 
-use function trim;
-
 class SettlementPage extends PageComponent
 {
     /**
@@ -21,7 +19,7 @@ class SettlementPage extends PageComponent
      */
     protected function count(): int
     {
-        $search = trim($this->bag('summary')->get('settlement.fixed.search', ''));
+        $search = $this->bag('summary')->get('settlement.fixed.search', '');
         $filter = $this->bag('summary')->get('settlement.fixed.filter', null);
         $session = $this->stash()->get('summary.session');
         $charge = $this->stash()->get('summary.session.charge');
@@ -34,7 +32,7 @@ class SettlementPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $search = trim($this->bag('summary')->get('settlement.fixed.search', ''));
+        $search = $this->bag('summary')->get('settlement.fixed.search', '');
         $filter = $this->bag('summary')->get('settlement.fixed.filter', null);
         $session = $this->stash()->get('summary.session');
         $charge = $this->stash()->get('summary.session.charge');

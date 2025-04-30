@@ -258,4 +258,17 @@ class Bill extends Base
                     });
             });
     }
+
+    /**
+     * @param  Builder  $query
+     * @param  string $search
+     *
+     * @return Builder
+     */
+    public function scopeSearch(Builder $query, string $search): Builder
+    {
+        return $query
+            ->when($search !== '', fn($query) => $query
+                ->where(DB::raw('lower(member)'), 'like', "%{$search}%"));
+    }
 }

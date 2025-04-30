@@ -150,6 +150,7 @@ class SiakServiceProvider extends ServiceProvider
             Validation\Meeting\RemitmentValidator::class);
         $this->app->singleton(Validation\Meeting\TargetValidator::class,
             Validation\Meeting\TargetValidator::class);
+        $this->app->singleton(Validation\SearchSanitizer::class, Validation\SearchSanitizer::class);
 
         $this->app->singleton(Validation\Planning\FundSessionsValidator::class,
             Validation\Planning\FundSessionsValidator::class);

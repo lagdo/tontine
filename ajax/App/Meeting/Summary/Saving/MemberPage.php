@@ -6,8 +6,6 @@ use Ajax\App\Meeting\Summary\PageComponent;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Stringable;
 
-use function trim;
-
 /**
  * @databag summary.saving
  * @before getFund
@@ -41,7 +39,7 @@ class MemberPage extends PageComponent
      */
     protected function count(): int
     {
-        $search = trim($this->bag($this->bagId)->get('member.search', ''));
+        $search = $this->bag($this->bagId)->get('member.search', '');
         $session = $this->stash()->get('summary.session');
         $fund = $this->getStashedFund();
 
@@ -53,7 +51,7 @@ class MemberPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $search = trim($this->bag($this->bagId)->get('member.search', ''));
+        $search = $this->bag($this->bagId)->get('member.search', '');
         $session = $this->stash()->get('summary.session');
         $fund = $this->getStashedFund();
 

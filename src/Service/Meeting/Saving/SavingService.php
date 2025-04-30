@@ -14,6 +14,7 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Validation\SearchSanitizer;
 
 class SavingService
 {
@@ -23,7 +24,8 @@ class SavingService
      * @param FundService $fundService
      */
     public function __construct(private LocaleService $localeService,
-        private TenantService $tenantService, private FundService $fundService)
+        private TenantService $tenantService, private FundService $fundService,
+        private SearchSanitizer $searchSanitizer)
     {}
 
     /**
@@ -281,17 +283,14 @@ class SavingService
         string $search, ?bool $filter): Builder|Relation
     {
         $savingsFilter = $this->getMemberSavingsFilter($session, $fund);
-        return $this->tenantService->guild()->members()->active()
-            ->when($search !== '', function(Builder $query) use($search) {
-                $search = '%' . strtolower($search) . '%';
-                return $query->where(DB::raw('lower(name)'), 'like', $search);
-            })
-            ->when($filter === true, function(Builder $query) use($savingsFilter) {
-                $query->whereHas('savings', $savingsFilter);
-            })
-            ->when($filter === false, function(Builder $query) use($savingsFilter) {
-                $query->whereDoesntHave('savings', $savingsFilter);
-            });
+        return $this->tenantService->guild()
+            ->members()
+            ->active()
+            ->search($this->searchSanitizer->sanitize($search))
+            ->when($filter === true,
+                fn(Builder $query) => $query->whereHas('savings', $savingsFilter))
+            ->when($filter === false,
+                fn(Builder $query) => $query->whereDoesntHave('savings', $savingsFilter));
     }
 
     /**
@@ -313,9 +312,7 @@ class SavingService
             ->with('savings', $this->getMemberSavingsFilter($session, $fund))
             ->orderBy('name', 'asc')
             ->get()
-            ->each(function($member) {
-                $member->saving = $member->savings->first();
-            });
+            ->each(fn($member) => $member->saving = $member->savings->first());
     }
 
     /**

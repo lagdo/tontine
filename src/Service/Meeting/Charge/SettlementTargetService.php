@@ -11,13 +11,15 @@ use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\SettlementTarget;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Validation\SearchSanitizer;
 
 class SettlementTargetService
 {
     /**
      * @param TenantService $tenantService
      */
-    public function __construct(protected TenantService $tenantService)
+    public function __construct(protected TenantService $tenantService,
+        private SearchSanitizer $searchSanitizer)
     {}
 
     /**
@@ -35,6 +37,18 @@ class SettlementTargetService
     }
 
     /**
+     * @param Session $session
+     * @param SettlementTarget $target
+     *
+     * @return bool
+     */
+    private function filterTarget(Session $session, SettlementTarget $target): bool
+    {
+        return $session->day_date >= $target->session->day_date &&
+            $session->day_date <= $target->deadline->day_date;
+    }
+
+    /**
      * @param Charge $charge
      * @param Session $session
      *
@@ -45,10 +59,7 @@ class SettlementTargetService
         return $charge->targets()
             ->with(['session', 'deadline'])
             ->get()
-            ->filter(function($target) use($session) {
-                return $session->day_date >= $target->session->day_date &&
-                    $session->day_date <= $target->deadline->day_date;
-            })
+            ->filter(fn($target) => $this->filterTarget($session, $target))
             ->first();
     }
 
@@ -59,11 +70,10 @@ class SettlementTargetService
      */
     private function getMembersQuery(string $search = ''): Builder|Relation
     {
-        return $this->tenantService->guild()->members()->active()
-            ->when($search !== '', function($query) use($search) {
-                return $query->where(DB::raw('lower(members.name)'),
-                    'like', '%' . strtolower($search) . '%');
-            });
+        return $this->tenantService->guild()
+            ->members()
+            ->active()
+            ->search($this->searchSanitizer->sanitize($search));
     }
 
     /**
@@ -77,10 +87,7 @@ class SettlementTargetService
         Collection $members): Collection
     {
         $sessions = $this->tenantService->round()->sessions
-            ->filter(function($session) use($target) {
-                return $session->day_date >= $target->session->day_date &&
-                    $session->day_date <= $target->deadline->day_date;
-            });
+            ->filter(fn($session) => $this->filterTarget($session, $target));
         return DB::table('settlements')
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('libre_bills', 'libre_bills.bill_id', '=', 'bills.id')
@@ -105,10 +112,7 @@ class SettlementTargetService
         string $search = '', int $page = 0): Collection
     {
         $sessions = $this->tenantService->round()->sessions
-            ->filter(function($session) use($target) {
-                return $session->day_date >= $target->session->day_date &&
-                    $session->day_date <= $target->deadline->day_date;
-            });
+            ->filter(fn($session) => $this->filterTarget($session, $target));
         return $this->getMembersQuery($search)
             ->select('members.id', 'members.name')
             ->addSelect([

@@ -6,6 +6,7 @@ use Database\Factories\MemberFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class Member extends Base
 {
@@ -110,5 +111,18 @@ class Member extends Base
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('active', true);
+    }
+
+    /**
+     * @param  Builder  $query
+     * @param  string $search
+     *
+     * @return Builder
+     */
+    public function scopeSearch(Builder $query, string $search): Builder
+    {
+        return $query
+            ->when($search !== '', fn($query) => $query
+                ->where(DB::raw('lower(name)'), 'like', "%{$search}%"));
     }
 }
