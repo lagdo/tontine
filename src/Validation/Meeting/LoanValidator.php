@@ -5,17 +5,28 @@ namespace Siak\Tontine\Validation\Meeting;
 use Illuminate\Support\Facades\Validator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Validation\AbstractValidator;
+use Siak\Tontine\Validation\Traits\ValidationTrait;
 use Siak\Tontine\Validation\ValidationException;
 
 use function trans;
 
 class LoanValidator extends AbstractValidator
 {
+    use ValidationTrait;
+
     /**
      * @param LocaleService $localeService
      */
-    public function __construct(protected LocaleService $localeService)
+    public function __construct(private LocaleService $localeService)
     {}
+
+    /**
+     * @return array<string>
+     */
+    protected function amountFields(): array
+    {
+        return ['principal', 'interest'];
+    }
 
     /**
      * @param array $values
@@ -27,9 +38,9 @@ class LoanValidator extends AbstractValidator
         $validator = Validator::make($this->values($values), [
             'member' => 'required|integer|min:1',
             'fund' => 'required|integer|min:1',
-            'principal' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+            'principal' => $this->amountRule(),
             'interest_type' => 'required|in:f,u,s,c',
-            'interest' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+            'interest' => $this->amountRule(),
         ]);
         $validator->after(function($validator) use($values) {
             if((float)$values['principal'] <= 0)
@@ -46,13 +57,14 @@ class LoanValidator extends AbstractValidator
         }
 
         $validated = $validator->validated();
-        $validated['principal'] = $this->localeService->convertMoneyToInt((float)$validated['principal']);
+        $validated['principal'] = $this->localeService
+            ->convertMoneyToInt((float)$validated['principal']);
         // Interest rates must be saved as int, so the value is multiplied by 100.
         $validated['interest_rate'] = $validated['interest_type'] === 'f' ? 0 :
             (int)(100 * $validated['interest']);
         $validated['interest'] = $validated['interest_type'] === 'f' ?
             $this->localeService->convertMoneyToInt((float)$validated['interest']) :
-            ($validated['principal'] * ((int)$validated['interest'] / 100));
+            (int)($validated['principal'] * ((float)$validated['interest'] / 100));
 
         return $validated;
     }

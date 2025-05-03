@@ -140,8 +140,6 @@ class SiakServiceProvider extends ServiceProvider
             Validation\Meeting\DebtValidator::class);
         $this->app->singleton(Validation\Meeting\SavingValidator::class,
             Validation\Meeting\SavingValidator::class);
-        $this->app->singleton(Validation\Meeting\ClosingValidator::class,
-            Validation\Meeting\ClosingValidator::class);
         $this->app->singleton(Validation\Meeting\OutflowValidator::class,
             Validation\Meeting\OutflowValidator::class);
         $this->app->singleton(Validation\Meeting\LoanValidator::class,
@@ -150,7 +148,8 @@ class SiakServiceProvider extends ServiceProvider
             Validation\Meeting\RemitmentValidator::class);
         $this->app->singleton(Validation\Meeting\TargetValidator::class,
             Validation\Meeting\TargetValidator::class);
-        $this->app->singleton(Validation\SearchSanitizer::class, Validation\SearchSanitizer::class);
+        $this->app->singleton(Validation\SearchSanitizer::class,
+            Validation\SearchSanitizer::class);
 
         $this->app->singleton(Validation\Planning\FundSessionsValidator::class,
             Validation\Planning\FundSessionsValidator::class);

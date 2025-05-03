@@ -5,17 +5,28 @@ namespace Siak\Tontine\Validation\Guild;
 use Illuminate\Support\Facades\Validator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Validation\AbstractValidator;
+use Siak\Tontine\Validation\Traits\ValidationTrait;
 use Siak\Tontine\Validation\ValidationException;
 
 use function trans;
 
 class PoolValidator extends AbstractValidator
 {
+    use ValidationTrait;
+
     /**
      * @param LocaleService $localeService
      */
     public function __construct(private LocaleService $localeService)
     {}
+
+    /**
+     * @return array<string>
+     */
+    protected function amountFields(): array
+    {
+        return ['amount'];
+    }
 
     /**
      * @param array $values
@@ -26,7 +37,7 @@ class PoolValidator extends AbstractValidator
     {
         $validator = Validator::make($this->values($values), [
             'title' => 'required|string|min:5',
-            'amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+            'amount' => $this->amountRule(),
             'notes' => 'nullable|string',
             'properties' => 'required|array:deposit,remit',
             'properties.deposit' => 'required|array:fixed,lendable',

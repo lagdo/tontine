@@ -12,17 +12,10 @@ use function strtoupper;
 class MemberValidator extends AbstractValidator
 {
     /**
-     * @var TenantService
-     */
-    private $tenantService;
-
-    /**
      * @param TenantService $tenantService
      */
-    public function __construct(TenantService $tenantService)
-    {
-        $this->tenantService = $tenantService;
-    }
+    public function __construct(private TenantService $tenantService)
+    {}
 
     /**
      * @param array $values

@@ -6,21 +6,25 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Validation\AbstractValidator;
+use Siak\Tontine\Validation\Traits\ValidationTrait;
 use Siak\Tontine\Validation\ValidationException;
 
 class ChargeValidator extends AbstractValidator
 {
-    /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
+    use ValidationTrait;
 
     /**
      * @param LocaleService $localeService
      */
-    public function __construct(LocaleService $localeService)
+    public function __construct(private LocaleService $localeService)
+    {}
+
+    /**
+     * @return array<string>
+     */
+    protected function amountFields(): array
     {
-        $this->localeService = $localeService;
+        return ['amount'];
     }
 
     /**
@@ -39,7 +43,7 @@ class ChargeValidator extends AbstractValidator
                 'in:1',
                 'exclude',
             ],
-            'amount' => 'required_if:fixed,1|regex:/^\d+(\.\d{1,2})?$/',
+            'amount' => $this->amountIfRule('fixed'),
         ]);
         if($validator->fails())
         {

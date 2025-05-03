@@ -5,21 +5,25 @@ namespace Siak\Tontine\Validation\Meeting;
 use Illuminate\Support\Facades\Validator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Validation\AbstractValidator;
+use Siak\Tontine\Validation\Traits\ValidationTrait;
 use Siak\Tontine\Validation\ValidationException;
 
 class SavingValidator extends AbstractValidator
 {
-    /**
-     * @var LocaleService
-     */
-    protected LocaleService $localeService;
+    use ValidationTrait;
 
     /**
      * @param LocaleService $localeService
      */
-    public function __construct(LocaleService $localeService)
+    public function __construct(private LocaleService $localeService)
+    {}
+
+    /**
+     * @return array<string>
+     */
+    protected function amountFields(): array
     {
-        $this->localeService = $localeService;
+        return ['amount'];
     }
 
     /**
@@ -31,7 +35,7 @@ class SavingValidator extends AbstractValidator
     {
         $validator = Validator::make($this->values($values), [
             'member' => 'required|integer|min:1',
-            'amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+            'amount' => $this->amountRule(),
             'fund' => 'required|integer|min:0',
         ]);
         if($validator->fails())
