@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Planning\Pool;
 
-use Ajax\PageComponent;
+use Ajax\App\Planning\PageComponent;
 use Siak\Tontine\Service\Planning\PoolService;
 use Stringable;
 

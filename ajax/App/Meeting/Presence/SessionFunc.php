@@ -8,6 +8,7 @@ use Siak\Tontine\Service\Meeting\SessionService;
 
 /**
  * @databag presence
+ * @before checkHostAccess ["meeting", "presences"]
  * @before getMember
  */
 class SessionFunc extends FuncComponent

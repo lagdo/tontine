@@ -8,6 +8,10 @@ use Stringable;
 
 use function trans;
 
+/**
+ * @before checkHostAccess ["report", "round"]
+ * @before checkOpenedSessions
+ */
 class Pool extends Component
 {
     /**

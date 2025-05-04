@@ -8,6 +8,8 @@ use Siak\Tontine\Service\Report\RoundService;
 use Stringable;
 
 /**
+ * @before checkHostAccess ["report", "round"]
+ * @before checkOpenedSessions
  * @before getPools
  */
 class Balance extends Component

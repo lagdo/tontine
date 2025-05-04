@@ -9,6 +9,9 @@ use Stringable;
 
 use function trans;
 
+/**
+ * @before checkHostAccess ["report", "session"]
+ */
 class Session extends Component
 {
     /**

@@ -21,6 +21,7 @@ use function trim;
 
 /**
  * @databag planning.calendar
+ * @before checkHostAccess ["guild", "calendar"]
  * @before getRound
  */
 class SessionFunc extends FuncComponent

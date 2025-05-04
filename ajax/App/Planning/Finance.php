@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Planning;
 
-use Ajax\Component;
+use Ajax\App\Planning\Component;
 use Ajax\Page\SectionContent;
 use Ajax\Page\SectionTitle;
 use Stringable;
@@ -21,7 +21,6 @@ class Finance extends Component
     protected $overrides = SectionContent::class;
 
     /**
-     * @before checkHostAccess ["planning", "finance"]
      * @after hideMenuOnMobile
      */
     public function home()

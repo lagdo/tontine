@@ -9,6 +9,9 @@ use Stringable;
 
 use function trans;
 
+/**
+ * @before checkHostAccess ["finance", "accounts"]
+ */
 class Account extends Component
 {
     /**
@@ -17,7 +20,6 @@ class Account extends Component
     protected $overrides = SectionContent::class;
 
     /**
-     * @before checkHostAccess ["tontine", "accounts"]
      * @databag charge
      * @after hideMenuOnMobile
      */

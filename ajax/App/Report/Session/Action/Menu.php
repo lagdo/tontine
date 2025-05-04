@@ -5,6 +5,9 @@ namespace Ajax\App\Report\Session\Action;
 use Ajax\Component;
 use Stringable;
 
+/**
+ * @exclude
+ */
 class Menu extends Component
 {
     /**

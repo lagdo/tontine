@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Planning\Pool;
 
-use Ajax\FuncComponent;
+use Ajax\App\Planning\FuncComponent;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\LocaleService;
 

@@ -9,6 +9,7 @@ use Stringable;
 
 /**
  * @databag presence
+ * @before checkHostAccess ["meeting", "presences"]
  * @before getMember
  */
 class SessionPage extends PageComponent

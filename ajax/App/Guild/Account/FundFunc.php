@@ -11,6 +11,7 @@ use function trans;
 
 /**
  * @databag tontine
+ * @before checkHostAccess ["finance", "accounts"]
  */
 class FundFunc extends FuncComponent
 {

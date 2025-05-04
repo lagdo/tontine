@@ -3,7 +3,7 @@
 namespace Ajax\App\Planning\Pool\Subscription;
 
 use Ajax\App\Planning\Pool\PoolTrait;
-use Ajax\Component;
+use Ajax\App\Planning\Component;
 use Ajax\Page\SectionContent;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Planning\PoolService;

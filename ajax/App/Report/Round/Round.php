@@ -9,6 +9,8 @@ use Stringable;
 
 /**
  * @databag meeting
+ * @before checkHostAccess ["report", "round"]
+ * @before checkOpenedSessions
  */
 class Round extends Component
 {
@@ -24,8 +26,6 @@ class Round extends Component
     {}
 
     /**
-     * @before checkHostAccess ["report", "round"]
-     * @before checkOpenedSessions
      * @after hideMenuOnMobile
      */
     public function home()

@@ -13,6 +13,7 @@ use function trans;
 
 /**
  * @databag pool
+ * @before checkHostAccess ["finance", "pools"]
  */
 class PoolFunc extends FuncComponent
 {

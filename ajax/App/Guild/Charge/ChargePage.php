@@ -8,6 +8,7 @@ use Stringable;
 
 /**
  * @databag charge
+ * @before checkHostAccess ["finance", "charges"]
  */
 class ChargePage extends PageComponent
 {

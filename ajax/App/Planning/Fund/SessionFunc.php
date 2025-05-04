@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Planning\Fund;
 
-use Ajax\FuncComponent;
+use Ajax\App\Planning\FuncComponent;
 use Siak\Tontine\Validation\Planning\FundSessionsValidator;
 
 /**

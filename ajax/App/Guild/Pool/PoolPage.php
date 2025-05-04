@@ -8,6 +8,7 @@ use Stringable;
 
 /**
  * @databag pool
+ * @before checkHostAccess ["finance", "pools"]
  */
 class PoolPage extends PageComponent
 {

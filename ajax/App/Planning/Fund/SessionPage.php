@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Planning\Fund;
 
-use Ajax\PageComponent;
+use Ajax\App\Planning\PageComponent;
 use Stringable;
 
 /**

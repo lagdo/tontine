@@ -8,6 +8,7 @@ use Stringable;
 
 /**
  * @databag member
+ * @before checkHostAccess ["guild", "members"]
  */
 class MemberPage extends PageComponent
 {

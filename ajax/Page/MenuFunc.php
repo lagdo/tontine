@@ -137,10 +137,8 @@ class MenuFunc extends FuncComponent
         {
             return;
         }
-        if(!$this->checkHostAccess('planning', 'sessions', true))
-        {
-            return;
-        }
+        // Throws an exception.
+        $this->checkHostAccess('planning', 'finance');
 
         // Save the tontine and round ids in the user session.
         $this->bag('tenant')->set('guild.id', $round->guild->id);

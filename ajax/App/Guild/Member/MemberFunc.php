@@ -19,6 +19,7 @@ use function trim;
 
 /**
  * @databag member
+ * @before checkHostAccess ["guild", "members"]
  */
 class MemberFunc extends FuncComponent
 {

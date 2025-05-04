@@ -9,6 +9,7 @@ use Stringable;
 
 /**
  * @databag planning.calendar
+ * @before checkHostAccess ["guild", "calendar"]
  * @before getRound
  */
 class Session extends Component

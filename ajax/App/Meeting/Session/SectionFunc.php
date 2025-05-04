@@ -2,6 +2,9 @@
 
 namespace Ajax\App\Meeting\Session;
 
+/**
+ * @before checkHostAccess ["meeting", "sessions"]
+ */
 class SectionFunc extends FuncComponent
 {
     /**

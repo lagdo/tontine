@@ -56,7 +56,7 @@ trait ComponentTrait
      */
     protected function checkHostAccess(string $section, string $entry, bool $return = false): bool
     {
-        return true; // $this->tenantService->checkHostAccess($section, $entry, $return);
+        return $this->tenantService->checkHostAccess($section, $entry, $return);
     }
 
     /**

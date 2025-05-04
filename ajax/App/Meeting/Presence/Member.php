@@ -8,6 +8,7 @@ use Stringable;
 
 /**
  * @databag presence
+ * @before checkHostAccess ["meeting", "presences"]
  * @before getSession
  */
 class Member extends Component

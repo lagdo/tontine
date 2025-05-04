@@ -12,6 +12,7 @@ use function trim;
 
 /**
  * @databag member
+ * @before checkHostAccess ["guild", "members"]
  */
 class Member extends Component
 {
@@ -21,7 +22,6 @@ class Member extends Component
     protected $overrides = SectionContent::class;
 
     /**
-     * @before checkHostAccess ["tontine", "members"]
      * @after hideMenuOnMobile
      */
     public function home()

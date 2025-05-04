@@ -11,6 +11,7 @@ use function trans;
 
 /**
  * @databag planning.calendar
+ * @before checkHostAccess ["guild", "calendar"]
  */
 class RoundFunc extends FuncComponent
 {

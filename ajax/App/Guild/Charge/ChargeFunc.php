@@ -13,6 +13,7 @@ use function trans;
 
 /**
  * @databag charge
+ * @before checkHostAccess ["finance", "charges"]
  */
 class ChargeFunc extends FuncComponent
 {

@@ -11,6 +11,7 @@ use function trans;
 
 /**
  * @databag planning.calendar
+ * @before checkHostAccess ["guild", "calendar"]
  */
 class Round extends Component
 {
@@ -20,7 +21,6 @@ class Round extends Component
     protected $overrides = SectionContent::class;
 
     /**
-     * @before checkHostAccess ["planning", "sessions"]
      * @after hideMenuOnMobile
      */
     public function home()

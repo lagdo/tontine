@@ -8,6 +8,7 @@ use Stringable;
 
 /**
  * @databag planning.calendar
+ * @before checkHostAccess ["guild", "calendar"]
  */
 class RoundPage extends PageComponent
 {

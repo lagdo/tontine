@@ -11,6 +11,8 @@ use Stringable;
 
 /**
  * @databag report
+ * @before checkHostAccess ["report", "session"]
+ * @before checkOpenedSessions
  */
 class Session extends Component
 {
@@ -28,8 +30,6 @@ class Session extends Component
     {}
 
     /**
-     * @before checkHostAccess ["report", "session"]
-     * @before checkOpenedSessions
      * @after hideMenuOnMobile
      */
     public function home()

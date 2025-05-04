@@ -8,6 +8,7 @@ use Stringable;
 
 /**
  * @databag tontine
+ * @before checkHostAccess ["finance", "accounts"]
  */
 class FundPage extends PageComponent
 {

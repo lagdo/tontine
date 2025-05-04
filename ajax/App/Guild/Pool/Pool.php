@@ -11,6 +11,7 @@ use function trans;
 
 /**
  * @databag pool
+ * @before checkHostAccess ["finance", "pools"]
  */
 class Pool extends Component
 {
@@ -20,7 +21,6 @@ class Pool extends Component
     protected $overrides = SectionContent::class;
 
     /**
-     * @before checkHostAccess ["tontine", "pools"]
      * @after hideMenuOnMobile
      */
     public function home()

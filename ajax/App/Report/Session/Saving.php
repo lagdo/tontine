@@ -8,6 +8,9 @@ use Siak\Tontine\Service\Report\MemberService;
 use Siak\Tontine\Service\Report\SessionService;
 use Stringable;
 
+/**
+ * @before checkHostAccess ["report", "session"]
+ */
 class Saving extends Component
 {
     /**

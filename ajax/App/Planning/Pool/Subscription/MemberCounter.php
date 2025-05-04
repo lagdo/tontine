@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Planning\Pool\Subscription;
 
-use Ajax\Component;
+use Ajax\App\Planning\Component;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 
 class MemberCounter extends Component

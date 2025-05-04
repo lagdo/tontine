@@ -7,6 +7,7 @@ use Stringable;
 
 /**
  * @databag tontine
+ * @before checkHostAccess ["finance", "accounts"]
  */
 class Outflow extends Component
 {
