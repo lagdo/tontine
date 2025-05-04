@@ -16,13 +16,17 @@ class HostAccessValidator extends AbstractValidator
     public function validateItem(array $values): array
     {
         $validator = Validator::make($this->values($values), [
-            'guild' => 'sometimes|required|array',
-            'guild.members' => 'sometimes|required|in:1',
-            'guild.categories' => 'sometimes|required|in:1',
+            'admin' => 'sometimes|required|array',
+            'admin.guilds' => 'sometimes|required|in:1',
+            'finance' => 'sometimes|required|array',
+            'finance.charges' => 'sometimes|required|in:1',
+            'finance.accounts' => 'sometimes|required|in:1',
+            'finance.pools' => 'sometimes|required|in:1',
+            'tontine' => 'sometimes|required|array',
+            'tontine.members' => 'sometimes|required|in:1',
+            'tontine.calendar' => 'sometimes|required|in:1',
             'planning' => 'sometimes|required|array',
-            'planning.sessions' => 'sometimes|required|in:1',
-            'planning.pools' => 'sometimes|required|in:1',
-            'planning.subscriptions' => 'sometimes|required|in:1',
+            'planning.finance' => 'sometimes|required|in:1',
             'meeting' => 'sometimes|required|array',
             'meeting.sessions' => 'sometimes|required|in:1',
             'meeting.payments' => 'sometimes|required|in:1',

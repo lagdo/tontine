@@ -3,6 +3,7 @@
 return [
     'titles' => [
         'profile' => "User profile",
+        'users' => "Users",
     ],
     'profile' => [
         'actions' => [

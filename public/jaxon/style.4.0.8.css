@@ -11,6 +11,12 @@
   height: 12px;
 }
 
+.dropdown-item.has-icon i {
+  margin-top: 0px;
+  padding-top: 3px;
+  padding-left: 1px;
+}
+
 a.highlight {
   color: #6777ef !important;
 }

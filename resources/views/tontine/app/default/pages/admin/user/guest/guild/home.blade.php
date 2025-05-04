@@ -1,6 +1,6 @@
 @php
-  $rqGuild = rq(Ajax\App\Admin\User\Guest\Guild::class);
-  $rqGuildPage = rq(Ajax\App\Admin\User\Guest\GuildPage::class);
+  $rqGuild = rq(Ajax\User\Guest\Guild::class);
+  $rqGuildPage = rq(Ajax\User\Guest\GuildPage::class);
 @endphp
             <div class="section-body">
               <div class="row mb-2">

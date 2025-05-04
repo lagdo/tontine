@@ -29,19 +29,27 @@ class TontineJaxon
             'path' => base_path('ajax/Page'),
             'namespace' => '\\Ajax\\Page',
         ];
+        $userDir = [
+            'path' => base_path('ajax/User'),
+            'namespace' => '\\Ajax\\User',
+        ];
 
         return match(true) {
             // Register all the directories on the Ajax page
             $request->routeIs('jaxon') => [
-                'jaxon.app.directories' => [$pageDir, $appDir],
+                'jaxon.app.directories' => [$pageDir, $appDir, $userDir],
             ],
             $request->routeIs('tontine.home') => [
                 'jaxon.app.directories' => [$pageDir, $appDir],
                 'jaxon.lib.js.app.file' => env('JAXON_JS_APP_FILE', 'js-4.0.9'),
             ],
+            $request->routeIs('user.invites') => [
+                'jaxon.app.directories' => [$pageDir, $userDir],
+                'jaxon.lib.js.app.file' => 'users-4.0.0',
+            ],
             $request->routeIs('user.profile') => [
                 'jaxon.app.directories' => [$pageDir],
-                'jaxon.lib.js.app.file' => 'profile-4.0.0',
+                // 'jaxon.lib.js.app.file' => 'profile-4.0.0',
             ],
             // For the other pages
             default => [], // No Jaxon here

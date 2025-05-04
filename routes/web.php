@@ -36,6 +36,12 @@ Route::middleware(['auth', 'tontine'])
             ->name('user.profile')
             ->middleware(['annotations', 'jaxon.config']);
 
+        // Users management page
+        //----------------------------------
+        Route::get('/users', [IndexController::class, 'users'])
+            ->name('user.invites')
+            ->middleware(['annotations', 'jaxon.config']);
+
         // Report pages
         //----------------------------------
         Route::get('/pdf/report/session/{sessionId}', [ReportController::class, 'session'])

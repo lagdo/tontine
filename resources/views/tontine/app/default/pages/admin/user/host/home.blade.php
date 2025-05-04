@@ -1,7 +1,7 @@
 @php
-  $rqHostUser = rq(Ajax\App\Admin\User\Host\Host::class);
-  $rqHostUserFunc = rq(Ajax\App\Admin\User\Host\HostFunc::class);
-  $rqHostUserPage = rq(Ajax\App\Admin\User\Host\HostPage::class);
+  $rqHostUser = rq(Ajax\User\Host\Host::class);
+  $rqHostUserFunc = rq(Ajax\User\Host\HostFunc::class);
+  $rqHostUserPage = rq(Ajax\User\Host\HostPage::class);
 @endphp
               <div class="section-body">
                 <div class="row mb-2">
