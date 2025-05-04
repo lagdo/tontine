@@ -1,11 +1,6 @@
-@inject('tenant', Siak\Tontine\Service\TenantService::class)
 @inject('locale', Siak\Tontine\Service\LocaleService::class)
 @php
   $rqMenuFunc = rq(Ajax\Page\MenuFunc::class);
-  $guild = $tenant->guild();
-  $round = $tenant->round();
-  $guildCount = $tenant->user()->guilds()->count();
-  $roundCount = $guild?->rounds()->count() ?? 0;
 @endphp
             <div class="row">
               <div class="col-auto">

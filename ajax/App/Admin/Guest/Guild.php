@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\User\Guest;
+namespace Ajax\App\Admin\Guest;
 
 use Ajax\Component;
 use Stringable;

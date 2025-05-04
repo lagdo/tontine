@@ -3,7 +3,7 @@
 namespace Ajax\App\Admin\Guild;
 
 use Ajax\Component;
-use Ajax\App\Admin\User\Guest\Guild as GuestGuild;
+use Ajax\App\Admin\Guest\Guild as GuestGuild;
 use Ajax\Page\SectionContent;
 use Ajax\Page\SectionTitle;
 use Siak\Tontine\Service\Guild\GuildService;
@@ -59,9 +59,9 @@ class Guild extends Component
     protected function after()
     {
         $this->cl(GuildPage::class)->page();
-        // if($this->guildService->hasGuestGuilds())
-        // {
-        //     $this->cl(GuestGuild::class)->render();
-        // }
+        if($this->guildService->hasGuestGuilds())
+        {
+            $this->cl(GuestGuild::class)->render();
+        }
     }
 }
