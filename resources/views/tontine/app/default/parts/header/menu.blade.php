@@ -1,5 +1,5 @@
 @php
-  $rqMenuFunc = rq(Ajax\App\MenuFunc::class);
+  $rqMenuFunc = rq(Ajax\Page\MenuFunc::class);
 @endphp
         <form class="form-inline mr-auto">
           <ul class="navbar-nav mr-1">

@@ -2,10 +2,10 @@
 
 namespace Ajax\App\Admin\Guild;
 
-use Ajax\App\MenuFunc;
-use Ajax\App\Page\MainTitle;
-use Ajax\App\Page\Sidebar\AdminMenu;
 use Ajax\FuncComponent;
+use Ajax\Page\MainTitle;
+use Ajax\Page\MenuFunc;
+use Ajax\Page\Sidebar\AdminMenu;
 use Siak\Tontine\Model\Guild as GuildModel;
 use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\LocaleService;

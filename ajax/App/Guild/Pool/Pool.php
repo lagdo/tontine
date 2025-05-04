@@ -3,8 +3,8 @@
 namespace Ajax\App\Guild\Pool;
 
 use Ajax\Component;
-use Ajax\App\Page\SectionContent;
-use Ajax\App\Page\SectionTitle;
+use Ajax\Page\SectionContent;
+use Ajax\Page\SectionTitle;
 use Stringable;
 
 use function trans;

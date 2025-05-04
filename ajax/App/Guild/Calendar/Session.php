@@ -2,8 +2,8 @@
 
 namespace Ajax\App\Guild\Calendar;
 
-use Ajax\App\Page\SectionContent;
 use Ajax\Component;
+use Ajax\Page\SectionContent;
 use Siak\Tontine\Service\Guild\RoundService;
 use Stringable;
 

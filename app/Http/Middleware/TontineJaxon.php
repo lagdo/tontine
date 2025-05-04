@@ -1,0 +1,66 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Closure;
+
+use function base_path;
+use function config;
+use function count;
+use function env;
+
+class TontineJaxon
+{
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
+    private function getOptions(Request $request): array
+    {
+        $appDir = [
+            'path' => base_path('ajax/App'),
+            'namespace' => '\\Ajax\\App',
+        ];
+        $pageDir = [
+            'path' => base_path('ajax/Page'),
+            'namespace' => '\\Ajax\\Page',
+        ];
+
+        return match(true) {
+            // Register all the directories on the Ajax page
+            $request->routeIs('jaxon') => [
+                'jaxon.app.directories' => [$pageDir, $appDir],
+            ],
+            $request->routeIs('tontine.home') => [
+                'jaxon.app.directories' => [$pageDir, $appDir],
+                'jaxon.lib.js.app.file' => env('JAXON_JS_APP_FILE', 'js-4.0.9'),
+            ],
+            $request->routeIs('user.profile') => [
+                'jaxon.app.directories' => [$pageDir],
+                'jaxon.lib.js.app.file' => 'profile-4.0.0',
+            ],
+            // For the other pages
+            default => [], // No Jaxon here
+        };
+    }
+
+    /**
+     * Handle an incoming request.
+     *
+     * @param  Request  $request
+     * @param  Closure(Request): (Response|RedirectResponse)  $next
+     *
+     * @return Response|RedirectResponse
+     */
+    public function handle(Request $request, Closure $next)
+    {
+        $options = $this->getOptions($request);
+        count($options) > 0 && config($options);
+
+        return $next($request);
+    }
+}

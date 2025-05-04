@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Page\Sidebar;
+namespace Ajax\Page\Sidebar;
 
 use Ajax\Component;
 use Stringable;

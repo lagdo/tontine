@@ -3,8 +3,8 @@
 namespace Ajax\App\Report\Session;
 
 use Ajax\Component;
-use Ajax\App\Page\SectionContent;
-use Ajax\App\Page\SectionTitle;
+use Ajax\Page\SectionContent;
+use Ajax\Page\SectionTitle;
 use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Stringable;

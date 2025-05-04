@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Page;
+namespace Ajax\Page;
 
 use Jaxon\App\Component;
 

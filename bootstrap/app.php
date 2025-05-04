@@ -3,6 +3,7 @@
 use App\Http\Middleware\EnsureEmailIsVerified;
 use App\Http\Middleware\TontineAnnotations;
 use App\Http\Middleware\TontineHelper;
+use App\Http\Middleware\TontineJaxon;
 use App\Http\Middleware\TontineLocale;
 use App\Http\Middleware\TontineTemplate;
 use App\Http\Middleware\TontineTenant;
@@ -36,6 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
             TontineTenant::class,
             TontineLocale::class,
             TontineTemplate::class,
+            TontineJaxon::class,
             TontineHelper::class,
         ]);
     })

@@ -3,8 +3,8 @@
 namespace Ajax\App\Meeting\Payment;
 
 use Ajax\Component;
-use Ajax\App\Page\SectionContent;
-use Ajax\App\Page\SectionTitle;
+use Ajax\Page\SectionContent;
+use Ajax\Page\SectionTitle;
 use App\Events\OnPagePaymentHome;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Service\Meeting\SessionService;

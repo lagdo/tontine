@@ -3,7 +3,7 @@
 namespace Ajax\App\Report\Round;
 
 use Ajax\Component;
-use Ajax\App\Page\SectionContent;
+use Ajax\Page\SectionContent;
 use Siak\Tontine\Service\Meeting\SummaryService;
 use Stringable;
 

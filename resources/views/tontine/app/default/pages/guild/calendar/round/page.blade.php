@@ -1,8 +1,8 @@
 @php
   $roundId = jq()->parent()->attr('data-round-id')->toInt();
+  $rqMenuFunc = rq(Ajax\Page\MenuFunc::class);
   $rqRoundFunc = rq(Ajax\App\Guild\Calendar\RoundFunc::class);
   $rqRoundPage = rq(Ajax\App\Guild\Calendar\RoundPage::class);
-  $rqMenuFunc = rq(Ajax\App\MenuFunc::class);
   $rqSession = rq(Ajax\App\Guild\Calendar\Session::class);
 @endphp
                   <div class="table-responsive" id="content-planning-rounds-page" @jxnTarget()>

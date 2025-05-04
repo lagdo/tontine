@@ -4,8 +4,8 @@ namespace Ajax\App\Admin\Guild;
 
 use Ajax\Component;
 use Ajax\App\Admin\User\Guest\Guild as GuestGuild;
-use Ajax\App\Page\SectionContent;
-use Ajax\App\Page\SectionTitle;
+use Ajax\Page\SectionContent;
+use Ajax\Page\SectionTitle;
 use Siak\Tontine\Service\Guild\GuildService;
 use Stringable;
 

@@ -20,21 +20,18 @@
       <!-- Main Content -->
       <div class="main-content">
         <section class="section">
+          @section('page-header')
           <!-- Page heading -->
-          <div class="section-header" @jxnBind(rq(Ajax\App\Page\MainTitle::class))>
-            @jxnHtml(rq(Ajax\App\Page\MainTitle::class))
+          <div class="section-header">
+            <h2>@yield('section-title')</h2>
           </div>
+          @show
 
-          <div>
-@include('tontine::parts.header.message')
-          </div>
+          @include('tontine::parts.header.message')
 
-          <div id="content-home" @jxnBind(rq(Ajax\App\Page\SectionContent::class))>
-@yield('content')
-          </div>
+          @yield('content')
         </section>
       </div>
-
     </div>
   </div>
 

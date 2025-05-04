@@ -2,9 +2,9 @@
 
 namespace Ajax\App\Planning\Pool\Subscription;
 
-use Ajax\Component;
-use Ajax\App\Page\SectionContent;
 use Ajax\App\Planning\Pool\PoolTrait;
+use Ajax\Component;
+use Ajax\Page\SectionContent;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;

@@ -1,7 +1,7 @@
 @inject('tenant', Siak\Tontine\Service\TenantService::class)
 @inject('locale', Siak\Tontine\Service\LocaleService::class)
 @php
-  $rqMenuFunc = rq(Ajax\App\MenuFunc::class);
+  $rqMenuFunc = rq(Ajax\Page\MenuFunc::class);
   $guild = $tenant->guild();
   $round = $tenant->round();
   $guildCount = $tenant->user()->guilds()->count();
@@ -30,6 +30,6 @@
                 </h2>
               </div>
               <div class="col section-header-title d-flex align-items-end">
-                <h3 class="ml-auto" @jxnBind(rq(Ajax\App\Page\SectionTitle::class))>@yield('section-title')</h3>
+                <h3 class="ml-auto" @jxnBind(rq(Ajax\Page\SectionTitle::class))>@yield('section-title')</h3>
               </div>
             </div>

@@ -1,8 +1,8 @@
 @php
   $guildId = jq()->parent()->attr('data-guild-id')->toInt();
+  $rqMenuFunc = rq(Ajax\Page\MenuFunc::class);
   $rqGuildFunc = rq(Ajax\App\Admin\Guild\GuildFunc::class);
   $rqGuildPage = rq(Ajax\App\Admin\Guild\GuildPage::class);
-  $rqMenuFunc = rq(Ajax\App\MenuFunc::class);
 @endphp
                 <div class="table-responsive" id="content-organisation-page" @jxnTarget()>
                   <div @jxnEvent(['.btn-guild-edit', 'click'], $rqGuildFunc->edit($guildId))></div>

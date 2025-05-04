@@ -1,5 +1,5 @@
 @php
-  $rqMenu = rq(Ajax\App\Page\Sidebar\Menu::class);
+  $rqMenu = rq(Ajax\Page\Sidebar\Menu::class);
 @endphp
 <div class="main-sidebar">
   <aside id="sidebar-wrapper">

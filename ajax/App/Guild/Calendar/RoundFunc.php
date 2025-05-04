@@ -2,8 +2,8 @@
 
 namespace Ajax\App\Guild\Calendar;
 
-use Ajax\App\Page\MainTitle;
 use Ajax\FuncComponent;
+use Ajax\Page\MainTitle;
 use Siak\Tontine\Service\Guild\RoundService;
 
 use function Jaxon\pm;

@@ -2,6 +2,15 @@
 
 @section('page-title', 'Siak Tontine')
 
+@section('page-header')
+@php
+$rqMainTitle = rq(Ajax\Page\MainTitle::class);
+@endphp
+          <div class="section-header" @jxnBind($rqMainTitle)>
+            @jxnHtml($rqMainTitle)
+          </div>
+@endsection
+
 @section('section-title', __('tontine.menus.tontine'))
 
 @section('styles')
@@ -13,7 +22,9 @@
 @endsection
 
 @section('content')
-          @include('tontine::pages.admin.guild.home')
+          <div id="content-home" @jxnBind(rq(Ajax\Page\SectionContent::class))>
+            @include('tontine::pages.admin.guild.home')
+          </div>
 @endsection
 
 @section('script')
