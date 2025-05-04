@@ -10,8 +10,8 @@ return [
     'access' => [
         'admin' => [
             'admin' => ['guilds'],
-            'finance' => ['charges', 'accounts', 'pools'],
-            'tontine' => ['members', 'calendar'],
+            'finance' => ['pools', 'charges', 'accounts'],
+            'guild' => ['members', 'calendar'],
         ],
         'round' => [
             'planning' => ['finance'],
@@ -22,12 +22,12 @@ return [
             'admin' => 'tontine.menus.admin',
             'admin_guilds' => 'tontine.menus.guilds',
             'finance' => 'tontine.menus.finance',
+            'finance_pools' => 'tontine.menus.pools',
             'finance_charges' => 'tontine.menus.charges',
             'finance_accounts' => 'tontine.menus.accounts',
-            'finance_pools' => 'tontine.menus.pools',
-            'tontine' => 'tontine.menus.tontine',
-            'tontine_members' => 'tontine.menus.members',
-            'tontine_calendar' => 'tontine.menus.calendar',
+            'guild' => 'tontine.menus.guild',
+            'guild_members' => 'tontine.menus.members',
+            'guild_calendar' => 'tontine.menus.calendar',
             'planning' => 'tontine.menus.planning',
             'planning_finance' => 'tontine.menus.finance',
             'meeting' => 'tontine.menus.meeting',

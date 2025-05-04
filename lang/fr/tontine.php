@@ -9,6 +9,7 @@ return [
     'menus' => [
         'admin' => "Administration",
         'guilds' => "Organisations",
+        'guild' => "Organisation",
         'tontine' => "Tontine",
         'users' => "Utilisateurs",
         'planning' => "Planning",

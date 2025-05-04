@@ -23,8 +23,8 @@ return [
         '#finance-menu-charges' => Charge::class,
     ],
     'tontine' => [
-        '#tontine-menu-members' => Member::class,
-        '#tontine-menu-calendar' => Calendar::class,
+        '#guild-menu-members' => Member::class,
+        '#guild-menu-calendar' => Calendar::class,
     ],
     'round' => [
         '#planning-menu-finance' => Finance::class,
