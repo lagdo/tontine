@@ -111,9 +111,9 @@ class Guild extends Base
     public function invites()
     {
         return $this->belongsToMany(GuestInvite::class,
-            'guest_tontine', 'guild_id', 'invite_id')
-            ->as('permission')
+            'guest_options', 'guild_id', 'invite_id')
+            ->as('options')
             ->withPivot('access')
-            ->using(GuestGuild::class);
+            ->using(GuestOptions::class);
     }
 }

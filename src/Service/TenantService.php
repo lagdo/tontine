@@ -171,7 +171,7 @@ class TenantService
             return [];
         }
 
-        return $userInvite->permission->access;
+        return $userInvite->options->access;
     }
 
     /**

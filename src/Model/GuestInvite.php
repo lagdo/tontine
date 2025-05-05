@@ -73,10 +73,10 @@ class GuestInvite extends Base
     public function guilds()
     {
         return $this->belongsToMany(Guild::class,
-            'guest_tontine', 'invite_id', 'guild_id')
-            ->as('permission')
+            'guest_options', 'invite_id', 'guild_id')
+            ->as('options')
             ->withPivot('access')
-            ->using(GuestGuild::class);
+            ->using(GuestOptions::class);
     }
 
     /**
@@ -225,6 +225,7 @@ class GuestInvite extends Base
     public function scopeOfUser(Builder $query, User $user): Builder
     {
         return $query->where(fn(Builder $_query) =>
-            $_query->orWhere('host_id', $user->id)->orWhere('guest_id', $user->id));
+            $_query->orWhere('host_id', $user->id)
+                ->orWhere('guest_id', $user->id));
     }
 }

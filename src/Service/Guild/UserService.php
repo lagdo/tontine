@@ -210,7 +210,7 @@ class UserService
     private function deleteInvite(GuestInvite $invite)
     {
         DB::transaction(function() use($invite) {
-            DB::table('guest_tontine')->where('invite_id', $invite->id)->delete();
+            DB::table('guest_options')->where('invite_id', $invite->id)->delete();
             $invite->delete();
         });
     }
@@ -246,7 +246,7 @@ class UserService
             throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
         }
 
-        $inviteIsDeleted = DB::table('guest_tontine')
+        $inviteIsDeleted = DB::table('guest_options')
             ->where('invite_id', $invite->id)
             ->where('guild_id', $this->tenantService->guild()->id)
             ->exists();
@@ -267,7 +267,7 @@ class UserService
     public function getHostGuildAccess(GuestInvite $invite, Guild $guild): array
     {
         $inviteTontine = $invite->guilds()->find($guild->id);
-        return !$inviteTontine ? [] : $inviteTontine->permission->access;
+        return !$inviteTontine ? [] : $inviteTontine->options->access;
     }
 
     /**
