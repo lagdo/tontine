@@ -9,7 +9,7 @@
 
 <body>
   <div id="app">
-    <div class="main-wrapper" id="main-wrapper">
+    <div class="main-wrapper">
       <div class="navbar-bg"></div>
       <nav class="navbar navbar-expand-lg main-navbar">
 @include('tontine::parts.header.menu')
@@ -19,7 +19,7 @@
 
       <!-- Main Content -->
       <div class="main-content">
-        <section class="section">
+        <section class="section" id="main-section">
           @section('page-header')
           <!-- Page heading -->
           <div class="section-header">

@@ -2,14 +2,14 @@ jaxon.dom.ready(function() {
     Tontine.home();
 
     const spin = {
-        spinner: new Spin.Spinner({ top: '40%' }),
+        spinner: new Spin.Spinner({ top: '50%' }),
         count: 0, // To make sure that the spinner is started once.
     };
     jaxon.ajax.callback.tontine = {
         onRequest: function() {
             if(spin.count++ === 0)
             {
-                spin.spinner.spin(document.getElementById('main-wrapper'));
+                spin.spinner.spin(document.getElementById('main-section'));
             }
         },
         onComplete: function() {
