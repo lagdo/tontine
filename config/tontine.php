@@ -38,5 +38,5 @@ return [
             'report_session' => 'tontine.menus.session',
             'report_round' => 'tontine.menus.round',
         ],
-    ]
+    ],
 ];
