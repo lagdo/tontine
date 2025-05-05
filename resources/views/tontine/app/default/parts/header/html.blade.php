@@ -13,4 +13,5 @@
 <!-- Template CSS -->
 <link rel="stylesheet" href="/tpl/assets/css/style.css">
 <link rel="stylesheet" href="/tpl/assets/css/components-v1.4.css">
+<link rel="stylesheet" href="/vendor/spinner/spin.css">
 <link rel="stylesheet" href="/jaxon/style.4.0.8.css">
