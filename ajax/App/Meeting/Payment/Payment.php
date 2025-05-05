@@ -16,7 +16,6 @@ use function trans;
  * @databag payment
  * @before checkHostAccess ["meeting", "payments"]
  * @before getOpenedSessions
- * @after hideMenuOnMobile
  */
 class Payment extends Component
 {
@@ -45,7 +44,7 @@ class Payment extends Component
 
     /**
      * @before getOpenedSessions
-     * @after hideMenuOnMobile
+     * @callback jaxon.ajax.callback.hideMenuOnMobile
      */
     public function home()
     {

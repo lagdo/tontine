@@ -62,16 +62,6 @@ trait ComponentTrait
     /**
      * @return void
      */
-    protected function hideMenuOnMobile()
-    {
-        // The current template main menu doesn't hide automatically
-        // after a click on mobile devices. We need to do that manually.
-        $this->response->jq('body')->trigger('touchend');
-    }
-
-    /**
-     * @return void
-     */
     protected function checkRoundSessions()
     {
         $round = $this->tenantService->round();

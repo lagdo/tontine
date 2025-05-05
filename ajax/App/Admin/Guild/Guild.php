@@ -28,7 +28,7 @@ class Guild extends Component
     {}
 
     /**
-     * @after hideMenuOnMobile
+     * @callback jaxon.ajax.callback.hideMenuOnMobile
      */
     public function home()
     {

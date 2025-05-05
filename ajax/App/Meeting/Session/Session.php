@@ -22,7 +22,7 @@ class Session extends Component
 
     /**
      * @before checkRoundSessions
-     * @after hideMenuOnMobile
+     * @callback jaxon.ajax.callback.hideMenuOnMobile
      */
     public function home()
     {

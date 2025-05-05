@@ -27,9 +27,20 @@ jaxon.dom.ready(function() {
     };
 
     jaxon.ajax.callback.selectCurrency = {
-        onRequest: function() {
-            // Empty the currency list while fetching the new currencies.
+        ...jaxon.ajax.callback.tontine,
+        // Empty the currency list while fetching the new currencies.
+        onRequest: () => {
+            jaxon.ajax.callback.tontine.onRequest();
             $('#select_currency_container select').html('');
+        },
+    };
+
+    jaxon.ajax.callback.hideMenuOnMobile = {
+        ...jaxon.ajax.callback.tontine,
+        // Hide the sidebar menu on mobile devices
+        onRequest: () => {
+            jaxon.ajax.callback.tontine.onRequest();
+            $('body').trigger('touchend');
         },
     };
 });

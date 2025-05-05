@@ -21,7 +21,7 @@ class Account extends Component
 
     /**
      * @databag charge
-     * @after hideMenuOnMobile
+     * @callback jaxon.ajax.callback.hideMenuOnMobile
      */
     public function home()
     {

@@ -22,7 +22,7 @@ class Member extends Component
     protected $overrides = SectionContent::class;
 
     /**
-     * @after hideMenuOnMobile
+     * @callback jaxon.ajax.callback.hideMenuOnMobile
      */
     public function home()
     {
