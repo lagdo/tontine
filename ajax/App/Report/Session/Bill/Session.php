@@ -10,7 +10,7 @@ use Stringable;
 use function trans;
 
 /**
- * @before checkHostAccess ["report", "session"]
+ * @exclude
  */
 class Session extends Component
 {

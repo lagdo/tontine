@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Meeting\SessionService;
 use Stringable;
 
 /**
- * @databag session
+ * @databag meeting
  * @before checkHostAccess ["meeting", "sessions"]
  */
 class SessionPage extends PageComponent
@@ -17,7 +17,7 @@ class SessionPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['session', 'page'];
+    protected array $bagOptions = ['meeting', 'session.page'];
 
     /**
      * @param SessionService $sessionService

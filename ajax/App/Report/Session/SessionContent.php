@@ -7,7 +7,6 @@ use Stringable;
 
 /**
  * @exclude
- * @databag report
  */
 class SessionContent extends Component
 {

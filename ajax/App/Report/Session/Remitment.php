@@ -8,7 +8,7 @@ use Siak\Tontine\Service\Report\SessionService;
 use Stringable;
 
 /**
- * @before checkHostAccess ["report", "session"]
+ * @exclude
  */
 class Remitment extends Component
 {

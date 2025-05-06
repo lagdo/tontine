@@ -20,7 +20,7 @@ class Account extends Component
     protected $overrides = SectionContent::class;
 
     /**
-     * @databag charge
+     * @databag tontine
      * @callback jaxon.ajax.callback.hideMenuOnMobile
      */
     public function home()

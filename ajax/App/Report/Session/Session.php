@@ -5,6 +5,8 @@ namespace Ajax\App\Report\Session;
 use Ajax\Component;
 use Ajax\Page\SectionContent;
 use Ajax\Page\SectionTitle;
+use Siak\Tontine\Model\Member as MemberModel;
+use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\Meeting\SessionService;
 use Stringable;
@@ -69,12 +71,23 @@ class Session extends Component
             ->filter(fn($session) => ($session->opened || $session->closed));
         if($sessions->count() > 0)
         {
-            $session = $sessions->first();
-            $this->bag('report')->set('session.id', $session->id);
-            $this->stash()->set('report.session', $session);
-            $this->stash()->set('report.member', null);
-            $this->cl(SessionContent::class)->render();
+            $this->renderContent($sessions->first());
         }
+    }
+
+    /**
+     * @param SessionModel $session
+     * @param MemberModel|null $member
+     *
+     * @return void
+     */
+    private function renderContent(SessionModel $session, ?MemberModel $member = null): void
+    {
+        $this->bag('report')->set('session.id', $session->id);
+        $this->stash()->set('report.session', $session);
+        $this->stash()->set('report.member', $member);
+
+        $this->cl(SessionContent::class)->render();
     }
 
     public function showSession(int $sessionId)
@@ -84,11 +97,7 @@ class Session extends Component
             return;
         }
 
-        $this->bag('report')->set('session.id', $session->id);
-        $this->stash()->set('report.session', $session);
-        $this->stash()->set('report.member', null);
-
-        $this->cl(SessionContent::class)->render();
+        $this->renderContent($session);
     }
 
     public function showMember(int $sessionId, int $memberId)
@@ -100,10 +109,6 @@ class Session extends Component
             return;
         }
 
-        $this->bag('report')->set('session.id', $session->id);
-        $this->stash()->set('report.session', $session);
-        $this->stash()->set('report.member', $member);
-
-        $this->cl(SessionContent::class)->render();
+        $this->renderContent($session, $member);
     }
 }

@@ -148,7 +148,6 @@ class ChargeFunc extends FuncComponent
 
     /**
      * @di $validator
-     * @databag charge
      */
     public function update(int $chargeId, array $formValues)
     {
@@ -171,9 +170,6 @@ class ChargeFunc extends FuncComponent
         $this->cl(ChargePage::class)->page();
     }
 
-    /**
-     * @databag charge
-     */
     public function toggle(int $chargeId)
     {
         $charge = $this->chargeService->getCharge($chargeId);

@@ -6,6 +6,10 @@ use Jaxon\App\PageComponent as BaseComponent;
 use Jaxon\App\PageDatabagTrait;
 use Jaxon\Response\AjaxResponse;
 
+/**
+ * @databag tenant
+ * @callback jaxon.ajax.callback.tontine
+ */
 abstract class PageComponent extends BaseComponent
 {
     use ComponentTrait;

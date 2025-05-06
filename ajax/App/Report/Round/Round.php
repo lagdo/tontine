@@ -8,7 +8,7 @@ use Siak\Tontine\Service\Meeting\SummaryService;
 use Stringable;
 
 /**
- * @databag meeting
+ * @databag report
  * @before checkHostAccess ["report", "round"]
  * @before checkOpenedSessions
  */
