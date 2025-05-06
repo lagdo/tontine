@@ -2,7 +2,7 @@ jaxon.dom.ready(function() {
     Tontine.home();
 
     const spin = {
-        spinner: new Spin.Spinner({ top: '50%' }),
+        spinner: new Spin.Spinner({ position: 'fixed' }),
         count: 0, // To make sure that the spinner is started once.
     };
     jaxon.ajax.callback.tontine = {
