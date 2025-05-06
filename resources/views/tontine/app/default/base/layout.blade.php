@@ -19,7 +19,7 @@
 
       <!-- Main Content -->
       <div class="main-content">
-        <section class="section" id="main-section">
+        <section class="section">
           @section('page-header')
           <!-- Page heading -->
           <div class="section-header">

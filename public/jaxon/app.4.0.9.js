@@ -9,7 +9,7 @@ jaxon.dom.ready(function() {
         onRequest: function() {
             if(spin.count++ === 0)
             {
-                spin.spinner.spin(document.getElementById('main-section'));
+                spin.spinner.spin(document.body);
             }
         },
         onComplete: function() {
