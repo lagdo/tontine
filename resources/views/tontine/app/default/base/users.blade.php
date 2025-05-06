@@ -21,11 +21,14 @@
 @jxnJs()
 @jxnScript()
 
+<script src="/jaxon/app.4.0.9.js"></script>
 <script>
-jaxon.dom.ready(function() {
-  {!! $rqHostUser->render() !!};
-  {!! $rqGuestUser->render() !!};
-});
+(function(self) {
+    self.home = () => {
+        {!! $rqHostUser->render() !!};
+        {!! $rqGuestUser->render() !!};
+    };
+})(Tontine);
 </script>
 @endsection
 
