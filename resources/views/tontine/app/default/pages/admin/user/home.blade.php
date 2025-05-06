@@ -14,7 +14,8 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+
+            <div class="row" id="invites-content">
               <div @jxnBind($rqHostUser) class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-host-invites-home">
               </div>
               <div @jxnBind($rqGuestUser) class="col-md-6 col-sm-12 sm-screen" id="content-guest-invites-home">

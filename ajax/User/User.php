@@ -26,6 +26,7 @@ class User extends Component
         $this->cl(Host\Host::class)->render();
         $this->cl(Guest\Guest::class)->render();
 
-        $this->response->js('Tontine')->setSmScreenHandler('invites-sm-screens');
+        $this->response->js('Tontine')
+            ->setSmScreenHandler('invites-sm-screens', 'invites-content');
     }
 }
