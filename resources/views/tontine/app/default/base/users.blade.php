@@ -20,7 +20,7 @@
 @jxnJs()
 @jxnScript()
 
-<script src="/jaxon/app.4.0.9.js"></script>
+<script src="/jaxon/app.4.0.10.js"></script>
 <script>
 (function(self) {
     self.home = () => {!! $rqUser->render() !!};
