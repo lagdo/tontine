@@ -61,6 +61,7 @@ return [
         'quantity' => "Quantity",
         'date' => "Date",
         'amount' => "Amount",
+        'count' => "Count",
         'discount' => "Discount",
         'country' => "Country",
         'city' => "City",

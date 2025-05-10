@@ -23,7 +23,7 @@ trait HasProperty
     protected function properties(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->property ? $this->property->content : [],
+            get: fn() => $this->property?->content ?? [],
         );
     }
 

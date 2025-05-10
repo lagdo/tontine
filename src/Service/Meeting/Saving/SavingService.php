@@ -358,4 +358,46 @@ class SavingService
     {
         return $this->tenantService->guild()->members()->active()->find($id);
     }
+
+    /**
+     * @param Fund $fund
+     * @param int $amount
+     *
+     * @return void
+     */
+    public function saveFundStartAmount(Fund $fund, int $amount): void
+    {
+        $options = $fund->options;
+        $options['amount']['start'] = $amount;
+        $fund->options = $options;
+        $fund->save();
+    }
+
+    /**
+     * @param Fund $fund
+     * @param int $amount
+     *
+     * @return void
+     */
+    public function saveFundEndAmount(Fund $fund, int $amount): void
+    {
+        $options = $fund->options;
+        $options['amount']['end'] = $amount;
+        $fund->options = $options;
+        $fund->save();
+    }
+
+    /**
+     * @param Fund $fund
+     * @param int $amount
+     *
+     * @return void
+     */
+    public function saveFundProfitAmount(Fund $fund, int $amount): void
+    {
+        $options = $fund->options;
+        $options['amount']['profit'] = $amount;
+        $fund->options = $options;
+        $fund->save();
+    }
 }

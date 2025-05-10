@@ -75,6 +75,7 @@ return [
         'phone' => "T&eacute;l&eacute;phone",
         'website' => "Site web",
         'amount' => "Montant",
+        'count' => "Nombre",
         'comment' => "Commentaire",
         'user' => "Utilisateur",
         'reference' => "Référence",

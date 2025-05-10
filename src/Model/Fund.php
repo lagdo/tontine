@@ -86,20 +86,38 @@ class Fund extends Base
     }
 
     /**
+     * Get the start amount.
+     *
+     * @return Attribute
+     */
+    public function startAmount(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->options['amount']['start'] ?? 0,
+        );
+    }
+
+    /**
+     * Get the end amount.
+     *
+     * @return Attribute
+     */
+    public function endAmount(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->options['amount']['end'] ?? 0,
+        );
+    }
+
+    /**
      * Get the profit amount.
      *
      * @return Attribute
      */
-    protected function profit(): Attribute
+    protected function profitAmount(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->options['profit']['amount'] ?? 0,
-            set: function(int $amount) {
-                $options = $this->options;
-                $options['profit']['amount'] = $amount;
-                // Return the fields to be set on the model.
-                return ['options' => json_encode($options)];
-            },
+            get: fn() => $this->options['amount']['profit'] ?? 0,
         );
     }
 

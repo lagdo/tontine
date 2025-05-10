@@ -154,6 +154,7 @@ return [
         'titles' => [
             'add' => "Add a saving",
             'edit' => "Edit a saving",
+            'options' => "Edit fund options",
         ],
         'actions' => [
             'close' => "Close",
@@ -161,6 +162,8 @@ return [
             'interest' => "Interest",
         ],
         'labels' => [
+            'start_amount' => "Start amount",
+            'end_amount' => "End amount",
         ],
         'questions' => [
             'delete' => "Delete this saving?",
@@ -170,6 +173,7 @@ return [
         ],
         'messages' => [
             'select_fund' => "Please select a fund from the list.",
+            'amount_saved' => "The amount has been saved.",
         ],
     ],
     'profit' => [

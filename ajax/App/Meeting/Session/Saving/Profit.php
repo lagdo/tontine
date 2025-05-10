@@ -3,18 +3,28 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\Session\Component;
-use Ajax\App\Report\Session\Saving\Profit as ProfitReport;
+use Ajax\App\Meeting\Session\Profit\Fund;
+use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\FundService;
+use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Stringable;
 
+/**
+ * @databag meeting.saving
+ */
 class Profit extends Component
 {
+    use FundTrait;
+
     /**
      * The constructor
      *
+     * @param LocaleService $localeService
      * @param FundService $fundService
+     * @param SavingService $savingService
      */
-    public function __construct(protected FundService $fundService)
+    public function __construct(private LocaleService $localeService,
+        protected FundService $fundService, protected SavingService $savingService)
     {}
 
     /**
@@ -23,12 +33,14 @@ class Profit extends Component
     protected function before()
     {
         $session = $this->stash()->get('meeting.session');
-        $fund = $this->fundService->getDefaultFund($session->round);
+        $fund = $this->stash()->get('profit.fund');
+        // Save the session for the profit components.
+        $this->stash()->set('profit.session', $session);
 
-        // Save data for the report.
-        $this->stash()->set('report.session', $session);
-        $this->stash()->set('report.fund', $fund);
-        $this->bag('report')->set('session.id', $session->id);
+        $this->view()->shareValues([
+            'withSave' => $fund->end_sid === $session->id,
+            'rqProfit' => $this->rq(),
+        ]);
     }
 
     /**
@@ -37,10 +49,10 @@ class Profit extends Component
     public function html(): Stringable
     {
         $session = $this->stash()->get('meeting.session');
-        return $this->renderView('pages.meeting.session.saving.profit.home', [
+        return $this->renderView('pages.meeting.session.profit.home', [
             'session' => $session,
+            'fund' => $this->stash()->get('profit.fund'),
             'funds' => $this->fundService->getSessionFundList($session),
-            'fund' => $this->fundService->getDefaultFund($session->round),
         ]);
     }
 
@@ -49,9 +61,7 @@ class Profit extends Component
      */
     protected function after()
     {
-        $this->cl(ProfitReport::class)->render();
-
-        $this->response->js('Tontine')->makeTableResponsive('content-session-profits');
+        $this->cl(Fund::class)->render();
     }
 
     /**
@@ -59,6 +69,50 @@ class Profit extends Component
      */
     public function show()
     {
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->fundService->getDefaultFund($session->round);
+        $profitAmount = $fund->end_sid === $session->id ? $fund->profit_amount : 0;
+
+        $this->bag('meeting.saving')->set('fund.id', $fund->id);
+        // Save data for the profit components.
+        $this->stash()->set('profit.fund', $fund);
+        $this->stash()->set('profit.amount', $profitAmount);
+
+        $this->render();
+    }
+
+    /**
+     * @before getFund
+     */
+    public function fund(int $fundId)
+    {
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->stash()->get('meeting.saving.fund');
+        $profitAmount = $fund->end_sid === $session->id ? $fund->profit_amount : 0;
+
+        // Save data for the profit components.
+        $this->stash()->set('profit.fund', $fund);
+        $this->stash()->set('profit.amount', $profitAmount);
+
+        $this->render();
+    }
+
+    /**
+     * @before getFund
+     */
+    public function amount(int $profitAmount)
+    {
+        if($profitAmount < 0)
+        {
+            return;
+        }
+
+        $profitAmount = $this->localeService->convertMoneyToInt($profitAmount);
+        $fund = $this->stash()->get('meeting.saving.fund');
+        // Save data for the profit components.
+        $this->stash()->set('profit.fund', $fund);
+        $this->stash()->set('profit.amount', $profitAmount);
+
         $this->render();
     }
 }

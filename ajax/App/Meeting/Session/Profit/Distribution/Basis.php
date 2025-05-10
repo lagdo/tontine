@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Report\Session\Saving\Distribution;
+namespace Ajax\App\Meeting\Session\Profit\Distribution;
 
 use Ajax\Component;
 use Siak\Tontine\Service\LocaleService;
@@ -23,7 +23,7 @@ class Basis extends Component
      */
     public function html(): string
     {
-        $distribution = $this->stash()->get('report.savings.distribution');
+        $distribution = $this->stash()->get('profit.savings.distribution');
         return $distribution->rewarded->count() < 2 ? '':
             trans('meeting.profit.distribution.basis', [
                 'unit' => $this->localeService->formatMoney($distribution->partAmount),

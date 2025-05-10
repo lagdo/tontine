@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Report\Session\Saving\Distribution;
+namespace Ajax\App\Meeting\Session\Profit\Distribution;
 
 use Ajax\Component;
 use Siak\Tontine\Service\LocaleService;
@@ -26,8 +26,8 @@ class Total extends Component
      */
     public function html(): string
     {
-        $session = $this->stash()->get('report.session');
-        $fund = $this->stash()->get('report.fund');
+        $session = $this->stash()->get('profit.session');
+        $fund = $this->stash()->get('profit.fund');
         $amounts = $this->profitService->getSavingAmounts($session, $fund);
 
         return trans('meeting.profit.distribution.total', [

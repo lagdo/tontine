@@ -1,9 +1,9 @@
 @php
-  $rqDistribution = rq(Ajax\App\Report\Session\Saving\Distribution::class);
-  $rqAmount = rq(Ajax\App\Report\Session\Saving\Amount::class);
-  $rqTotal = rq(Ajax\App\Report\Session\Saving\Distribution\Total::class);
-  $rqParts = rq(Ajax\App\Report\Session\Saving\Distribution\Parts::class);
-  $rqBasis = rq(Ajax\App\Report\Session\Saving\Distribution\Basis::class);
+  $rqDistribution = rq(Ajax\App\Meeting\Session\Profit\Distribution::class);
+  $rqAmount = rq(Ajax\App\Meeting\Session\Profit\Amount::class);
+  $rqTotal = rq(Ajax\App\Meeting\Session\Profit\Distribution\Total::class);
+  $rqParts = rq(Ajax\App\Meeting\Session\Profit\Distribution\Parts::class);
+  $rqBasis = rq(Ajax\App\Meeting\Session\Profit\Distribution\Basis::class);
 @endphp
                   <div class="row">
                     <div class="col py-2 font-weight-bold" @jxnBind($rqTotal)>
@@ -19,6 +19,6 @@
                       @jxnHtml($rqAmount)
                     </div>
                   </div>
-                  <div class="table-responsive mt-2" id="content-report-profit-distribution" @jxnBind($rqDistribution)>
+                  <div class="table-responsive mt-2" id="content-profit-distribution" @jxnBind($rqDistribution)>
                     @jxnHtml($rqDistribution)
                   </div>

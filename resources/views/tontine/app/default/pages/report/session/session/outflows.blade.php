@@ -7,12 +7,14 @@
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
-                          <th class="currency">{{ __('common.labels.total') }}</th>
+                          <th>&nbsp;</th>
+                          <th class="currency">{{ __('common.labels.count') }}</th>
                           <th class="currency">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
+                          <td>{{ __('common.labels.total') }}</td>
                           <td class="currency">{{ $outflow->total_count }}</td>
                           <td class="currency">{{ $locale->formatMoney($outflow->total_amount) }}</td>
                         </tr>

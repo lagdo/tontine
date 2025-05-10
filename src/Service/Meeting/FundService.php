@@ -48,6 +48,28 @@ class FundService
     }
 
     /**
+     * @param Session $session
+     *
+     * @return Collection
+     */
+    public function getStartingFunds(Session $session): Collection
+    {
+        return $this->getSessionFunds($session, true)
+            ->filter(fn($fund) => $fund->start_sid === $session->id && $fund->start_amount > 0);
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return Collection
+     */
+    public function getEndingFunds(Session $session): Collection
+    {
+        return $this->getSessionFunds($session, true)
+            ->filter(fn($fund) => $fund->end_sid === $session->id && $fund->end_amount > 0);
+    }
+
+    /**
      * Get a list of funds for the dropdown select component.
      *
      * @param Session $session

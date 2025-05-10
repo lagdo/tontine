@@ -30,15 +30,17 @@ class Saving extends Component
         $session = $this->stash()->get('report.session');
         $member = $this->stash()->get('report.member');
 
-        if(!$member)
+        if($member !== null)
         {
-            return $this->renderView('pages.report.session.session.savings', [
-                'saving' => $this->sessionService->getSaving($session),
-                'funds' => $this->fundService->getSessionFundList($session),
+            return $this->renderView('pages.report.session.member.savings', [
+                'savings' => $this->memberService->getSavings($session, $member),
             ]);
         }
-        return $this->renderView('pages.report.session.member.savings', [
-            'savings' => $this->memberService->getSavings($session, $member),
+        return $this->renderView('pages.report.session.session.savings', [
+            'saving' => $this->sessionService->getSaving($session),
+            'funds' => $this->fundService->getSessionFundList($session),
+            'startingFunds' => $this->fundService->getStartingFunds($session),
+            'endingFunds' => $this->fundService->getEndingFunds($session),
         ]);
     }
 

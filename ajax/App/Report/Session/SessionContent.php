@@ -38,7 +38,6 @@ class SessionContent extends Component
         $this->cl(Refund::class)->render();
         $this->cl(Remitment::class)->render();
         $this->cl(Saving::class)->render();
-        $this->cl(Saving\Profit::class)->clear();
 
         // Render the page buttons.
         $this->cl(Action\Export::class)->render();

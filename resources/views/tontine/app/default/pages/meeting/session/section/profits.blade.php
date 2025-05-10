@@ -16,7 +16,7 @@
           <div class="card shadow mb-2">
             <div class="card-body">
               <div class="row">
-                <div class="col-md-12" id="content-session-profits" @jxnBind($rqProfit)>
+                <div class="col-md-12" @jxnBind($rqProfit)>
                 </div>
               </div>
             </div>

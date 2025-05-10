@@ -7,7 +7,6 @@
   $rqLoan = rq(Ajax\App\Report\Session\Loan::class);
   $rqRefund = rq(Ajax\App\Report\Session\Refund::class);
   $rqSaving = rq(Ajax\App\Report\Session\Saving::class);
-  $rqProfit = rq(Ajax\App\Report\Session\Saving\Profit::class);
 @endphp
             <div class="row">
               <div class="col-md-6 col-sm-12">
@@ -46,36 +45,21 @@
               </div>
               <div class="col-md-6 col-sm-12">
                 <div class="card shadow mb-4">
-                  <div class="card-body" id="content-report-loans" @jxnBind($rqLoan)>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6 col-sm-12">
-                <div class="card shadow mb-4">
-                  <div class="card-body" id="content-report-refunds" @jxnBind($rqRefund)>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6 col-sm-12">
-                <div class="card shadow mb-4">
                   <div class="card-body" id="content-report-savings" @jxnBind($rqSaving)>
                   </div>
                 </div>
               </div>
             </div>
             <div class="row">
-              <div class="col-12">
+              <div class="col-md-6 col-sm-12">
                 <div class="card shadow mb-4">
-                  <div class="card-body">
-                    <div class="row mb-2">
-                      <div class="col">
-                        <div class="section-title mt-0" id="content-report-profits-fund"></div>
-                      </div>
-                    </div>
-                    <div id="content-report-profits" @jxnBind($rqProfit)>
-                    </div>
+                  <div class="card-body" id="content-report-loans" @jxnBind($rqLoan)>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-12">
+                <div class="card shadow mb-4">
+                  <div class="card-body" id="content-report-refunds" @jxnBind($rqRefund)>
                   </div>
                 </div>
               </div>

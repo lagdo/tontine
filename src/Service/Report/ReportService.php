@@ -2,7 +2,6 @@
 
 namespace Siak\Tontine\Service\Report;
 
-use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
@@ -123,16 +122,6 @@ class ReportService
     /**
      * @param Session $session
      *
-     * @return Collection
-     */
-    private function getSessionProfitAmounts(Session $session): Collection
-    {
-        return $session->funds->keyBy('id')->map(fn($fund) => $fund->profit);
-    }
-
-    /**
-     * @param Session $session
-     *
      * @return array
      */
     public function getSavingsReport(Session $session): array
@@ -140,7 +129,7 @@ class ReportService
         $guild = $this->tenantService->guild();
         [$country] = $this->localeService->getNameFromGuild($guild);
         $funds = $this->fundService->getSessionFunds($session);
-        $profits = $this->getSessionProfitAmounts($session);
+        $profits = $session->funds->keyBy('id')->map(fn($fund) => $fund->profit_amount);
 
         $funds = $funds
             ->map(fn($fund) => [

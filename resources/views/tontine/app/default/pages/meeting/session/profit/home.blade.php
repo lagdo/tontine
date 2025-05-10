@@ -1,6 +1,6 @@
 @php
   $selectFundId = pm()->select('profits-fund-id')->toInt();
-  $rqProfit = rq(Ajax\App\Report\Session\Saving\Profit::class);
+  $rqFund = rq(Ajax\App\Meeting\Session\Profit\Fund::class);
 @endphp
                   <div class="row mb-2">
                     <div class="col">
@@ -17,5 +17,5 @@
                       </div>
                     </div>
                   </div>
-                  <div @jxnBind($rqProfit)>
+                  <div @jxnBind($rqFund)>
                   </div>

@@ -3,6 +3,7 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\Session\FuncComponent;
+use Siak\Tontine\Model\Member as MemberModel;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Validation\Meeting\SavingValidator;
 
@@ -17,11 +18,6 @@ use function trim;
 class AmountFunc extends FuncComponent
 {
     use FundTrait;
-
-    /**
-     * @var string
-     */
-    protected string $bagId = 'meeting.saving';
 
     /**
      * @var SavingValidator
@@ -60,17 +56,16 @@ class AmountFunc extends FuncComponent
     }
 
     /**
+     * @param MemberModel $member
      * @param string $amount
      *
      * @return void
      */
-    private function saveAmount(string $amount): void
+    private function saveAmount(MemberModel $member, string $amount): void
     {
         $session = $this->stash()->get('meeting.session');
-        $member = $this->stash()->get('meeting.saving.member');
         $fund = $this->getStashedFund();
         $amount = str_replace(',', '.', trim($amount));
-
         if($amount === '' || $amount === '0')
         {
             $this->savingService->deleteMemberSaving($session, $fund, $member);
@@ -108,7 +103,7 @@ class AmountFunc extends FuncComponent
 
         $this->stash()->set('meeting.saving.member', $member);
 
-        $this->saveAmount($amount);
+        $this->saveAmount($member, $amount);
 
         $session = $this->stash()->get('meeting.session');
 
@@ -119,5 +114,80 @@ class AmountFunc extends FuncComponent
 
         $this->cl(MemberTotal::class)->render();
         $this->cl(Amount::class)->item($member->id)->render();
+    }
+
+    /**
+     * @di $validator
+     *
+     * @param string $amount
+     *
+     * @return void
+     */
+    public function saveStartAmount(string $amount)
+    {
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->getStashedFund();
+        // The start amount can be set only on the start session.
+        if($fund->start_sid !== $session->id)
+        {
+            return;
+        }
+
+        $values = $this->validator->validateOptions(['amount' => $amount]);
+        $this->savingService->saveFundStartAmount($fund, $values['amount']);
+
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
+            ->success(trans('meeting.saving.messages.amount_saved'));
+    }
+
+    /**
+     * @di $validator
+     *
+     * @param string $amount
+     *
+     * @return void
+     */
+    public function saveEndAmount(string $amount)
+    {
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->getStashedFund();
+        // The end amount can be set only on the end session.
+        if($fund->end_sid !== $session->id)
+        {
+            return;
+        }
+
+        $values = $this->validator->validateOptions(['amount' => $amount]);
+        $this->savingService->saveFundEndAmount($fund, $values['amount']);
+
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
+            ->success(trans('meeting.saving.messages.amount_saved'));
+    }
+
+    /**
+     * @di $validator
+     *
+      * @param string $amount
+     *
+     * @return void
+     */
+    public function saveProfitAmount(string $amount)
+    {
+        $session = $this->stash()->get('meeting.session');
+        $fund = $this->getStashedFund();
+        // The profit amount can be set only on the end session.
+        if($fund->end_sid !== $session->id)
+        {
+            return;
+        }
+
+        $values = $this->validator->validateOptions(['amount' => $amount]);
+        $this->savingService->saveFundProfitAmount($fund, $values['amount']);
+
+        $this->modal()->hide();
+        $this->alert()->title(trans('common.titles.success'))
+            ->success(trans('meeting.saving.messages.amount_saved'));
     }
 }

@@ -154,6 +154,7 @@ return [
         'titles' => [
             'add' => "Ajouter une épargne",
             'edit' => "Modifier une épargne",
+            'options' => "Modifier les options du fonds",
         ],
         'actions' => [
             'close' => "Clotûrer",
@@ -161,6 +162,8 @@ return [
             'interest' => "Intérêts",
         ],
         'labels' => [
+            'start_amount' => "Montant de départ",
+            'end_amount' => "Montant à la fin",
         ],
         'questions' => [
             'delete' => "Supprimer cette épargne ?",
@@ -169,7 +172,8 @@ return [
             'not_found' => "Impossible de trouver l'épargne correspondante.",
         ],
         'messages' => [
-            'select_fund' => "Vauillez sélectionner un fond dans la liste.",
+            'select_fund' => "Veuillez sélectionner un fond dans la liste.",
+            'amount_saved' => "Le montant a été enregistré.",
         ],
     ],
     'profit' => [

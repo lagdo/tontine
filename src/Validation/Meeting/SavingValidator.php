@@ -47,4 +47,24 @@ class SavingValidator extends AbstractValidator
         $validated['amount'] = $this->localeService->convertMoneyToInt((float)$validated['amount']);
         return $validated;
     }
+
+    /**
+     * @param array $values
+     *
+     * @return array
+     */
+    public function validateOptions(array $values): array
+    {
+        $validator = Validator::make($this->values($values), [
+            'amount' => $this->amountRule(),
+        ]);
+        if($validator->fails())
+        {
+            throw new ValidationException($validator);
+        }
+
+        $validated = $validator->validated();
+        $validated['amount'] = $this->localeService->convertMoneyToInt((float)$validated['amount']);
+        return $validated;
+    }
 }

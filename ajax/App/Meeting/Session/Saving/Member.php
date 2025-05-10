@@ -39,6 +39,7 @@ class Member extends Component
     {
         return $this->renderView('pages.meeting.session.saving.member.home', [
             'fund' => $this->getStashedFund(),
+            'session' => $this->stash()->get('meeting.session'),
         ]);
     }
 
