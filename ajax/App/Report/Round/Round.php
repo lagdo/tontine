@@ -11,9 +11,12 @@ use Stringable;
  * @databag report
  * @before checkHostAccess ["report", "round"]
  * @before checkOpenedSessions
+ * @before getPools
  */
 class Round extends Component
 {
+    use PoolTrait;
+
     /**
      * @var string
      */
@@ -38,14 +41,8 @@ class Round extends Component
      */
     public function html(): Stringable
     {
-        $round = $this->tenantService->round();
-        $figures = $this->summaryService->getFigures($round); 
-        $pools = $this->summaryService->getPoolsBalance($figures);
-        $this->view()->share('figures', $figures);
-        $this->view()->share('pools', $pools);
-
         return $this->renderView('pages.report.round.home', [
-            'round' => $round,
+            'round' => $this->tenantService->round(),
         ]);
     }
 
