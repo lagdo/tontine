@@ -19,9 +19,9 @@ trait FundTrait
     /**
      * Get the Jaxon request target
      *
-     * @return TargetInterface
+     * @return TargetInterface|null
      */
-    abstract protected function target(): TargetInterface;
+    abstract protected function target(): ?TargetInterface;
 
     /**
      * Get the temp cache
