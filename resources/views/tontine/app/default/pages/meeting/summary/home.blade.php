@@ -11,14 +11,42 @@
   $rqSaving = rq(Ajax\App\Meeting\Summary\Saving\Saving::class);
   $rqProfit = rq(Ajax\App\Meeting\Summary\Saving\Profit::class);
   $rqOutflow = rq(Ajax\App\Meeting\Summary\Cash\Outflow::class);
+
+  $menus = [];
+  if($prevSession !== null)
+  {
+    $menus[] = [
+      'class' => 'btn-session-prev',
+      'text' => __('meeting.session.actions.prev'),
+    ];
+  }
+  if($nextSession !== null)
+  {
+    $menus[] = [
+      'class' => 'btn-session-next',
+      'text' => __('meeting.session.actions.next'),
+    ];
+  }
 @endphp
           <div class="section-body">
-            <div class="row mb-2 align-items-center">
-              <div class="col">
+            <div class="row mb-2">
+              <div class="col-auto">
                 <h2 class="section-title">{{ $session->title }}</h2>
               </div>
-              <div class="col-auto">
-                <div class="btn-group float-right ml-1" role="group">
+              <div class="col-auto ml-auto">
+@if(count($menus) > 0)
+                <div class="btn-group" role="group" @jxnTarget()>
+                  <div @jxnEvent(['.btn-session-prev', 'click'], $rqSummary->home($prevSession?->id ?? 0))></div>
+                  <div @jxnEvent(['.btn-session-next', 'click'], $rqSummary->home($nextSession?->id ?? 0))></div>
+
+@include('tontine::parts.table.menu', [
+  'btnSize' => '',
+  'btnIcon' => 'fa-sort fa-rotate-90',
+  'menus' => $menus,
+])
+                </div>
+@endif
+                <div class="btn-group ml-3" role="group">
                   <button type="button" class="btn btn-primary" @jxnClick($rqSession->home())><i class="fa fa-arrow-left"></i></button>
                   <button type="button" class="btn btn-primary" @jxnClick($rqSummary->home($session->id))><i class="fa fa-sync"></i></button>
                 </div>

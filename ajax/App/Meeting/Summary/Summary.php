@@ -51,8 +51,11 @@ class Summary extends Component
      */
     public function html(): Stringable
     {
+        $session = $this->stash()->get('summary.session');
         return $this->renderView('pages.meeting.summary.home', [
-            'session' => $this->stash()->get('summary.session'),
+            'session' => $session,
+            'prevSession' => $this->sessionService->getPrevSession($session),
+            'nextSession' => $this->sessionService->getNextSession($session),
         ]);
     }
 
