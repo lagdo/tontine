@@ -56,7 +56,7 @@ class Session extends Component
             ->filter(fn($session) => ($session->opened || $session->closed));
 
         return $this->renderView('pages.report.session.home', [
-            'sessionId' => $sessions->count() > 0 ? $sessions->first()->id : 0,
+            'session' => $sessions->first(),
             'sessions' => $sessions->pluck('title', 'id'),
             'members' => $this->memberService->getMemberList()->prepend('', 0),
         ]);

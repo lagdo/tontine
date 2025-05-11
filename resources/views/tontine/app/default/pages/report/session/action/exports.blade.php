@@ -2,7 +2,7 @@
 @php
   $rqOptionsFunc = rq(Ajax\App\Guild\Options\OptionsFunc::class);
 @endphp
-              <div class="btn-group float-right ml-1">
+              <div class="btn-group ml-1">
                 <button type="button" class="btn btn-primary" @jxnClick($rqOptionsFunc->editOptions())><i class="fa fa-cog"></i></button>
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="fa fa-file-pdf"></i>

@@ -39,10 +39,6 @@ class SessionContent extends Component
         $this->cl(Remitment::class)->render();
         $this->cl(Saving::class)->render();
 
-        // Render the page buttons.
-        $this->cl(Action\Export::class)->render();
-        $this->cl(Action\Menu::class)->render();
-
         if(!$this->stash()->get('report.member'))
         {
             // Reset the member dropdown to the empty value.

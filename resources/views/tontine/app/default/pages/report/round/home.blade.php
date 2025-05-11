@@ -7,16 +7,11 @@
 @endphp
           <div class="section-body">
             <div class="row mb-2">
-              <div class="col">
+              <div class="col-auto">
                 <h2 class="section-title">{{ __('figures.titles.amounts') }}</h2>
               </div>
-              <div class="col-auto">
-                <div class="btn-group float-right ml-1" role="group">
-                  <button type="button" class="btn btn-primary" @jxnClick($rqRound->home())><i class="fa fa-sync"></i></button>
-                </div>
-              </div>
-              <div class="col-auto">
-                <div class="btn-group float-right ml-1">
+              <div class="col-auto ml-auto">
+                <div class="btn-group">
                   <button type="button" class="btn btn-primary" @jxnClick($rqOptionsFunc->editOptions())><i class="fa fa-cog"></i></button>
                   <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-file-pdf"></i>
@@ -26,9 +21,7 @@
                       ['roundId' => $sqids->encode([$round->id])]) }}">{{ __('tontine.report.actions.round') }}</a>
                   </div>
                 </div>
-              </div>
-              <div class="col-auto">
-                <div class="btn-group float-right ml-1">
+                <div class="btn-group ml-3">
                   <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-file-alt"></i>
                   </button>
@@ -38,6 +31,9 @@
                     <a class="dropdown-item" target="_blank" href="{{ $locale->route('entry.form',
                       ['form' => 'transactions']) }}">{{ __('meeting.entry.actions.transactions') }}</a>
                   </div>
+                </div>
+                <div class="btn-group ml-3" role="group">
+                  <button type="button" class="btn btn-primary" @jxnClick($rqRound->home())><i class="fa fa-sync"></i></button>
                 </div>
               </div>
             </div>
@@ -55,8 +51,8 @@
                 <div class="col">
                   <div class="section-title mt-0">{{ __('meeting.actions.pools') }} - {{ $pool->title }}</div>
                 </div>
-                <div class="col-auto">
-                  <div class="btn-group float-right ml-1" role="group">
+                <div class="col-auto ml-1">
+                  <div class="btn-group" role="group">
                     <button type="button" class="btn btn-primary" @jxnClick($rqRoundPool->refresh($pool->id))><i class="fa fa-sync"></i></button>
                   </div>
                 </div>
@@ -79,8 +75,8 @@
                 <div class="col">
                   <div class="section-title mt-0">{!! __('meeting.titles.amounts') !!}</div>
                 </div>
-                <div class="col-auto">
-                  <div class="btn-group float-right ml-1" role="group">
+                <div class="col-auto ml-auto">
+                  <div class="btn-group" role="group">
                     <button type="button" class="btn btn-primary" @jxnClick($rqRoundBalance->render())><i class="fa fa-sync"></i></button>
                   </div>
                 </div>

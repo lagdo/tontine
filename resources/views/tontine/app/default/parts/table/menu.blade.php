@@ -3,7 +3,7 @@
                             }}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa {{ $btnIcon ?? 'fa-bars' }}"></i>
                           </button>
-                          <div @isset($dataIdKey) {{ $dataIdKey }}="{{ $dataIdValue }}" @endif class="dropdown-menu">
+                          <div @isset($dataIdKey) {{ $dataIdKey }}="{{ $dataIdValue }}" @endif class="dropdown-menu dropdown-menu-right">
 @foreach ($menus ?? [] as $menu)
 @if(!$menu)
                             <div class="dropdown-divider"></div>

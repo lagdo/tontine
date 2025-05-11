@@ -4,13 +4,9 @@
 @endphp
           <div class="section-body">
             <div class="row mb-2">
-              <div class="col">
-                <h2 class="section-title">{{ $session->title }}: {!! __("meeting.actions.savings") !!}</h2>
-              </div>
-              <div class="col-auto ml-auto">
-@include('tontine::pages.report.session.action.exports', ['sessionId' => $session->id])
-@include('tontine::pages.meeting.session.section.action')
-              </div>
+@include('tontine::pages.meeting.session.section.action', [
+  'sectionTitle' => __('meeting.actions.savings'),
+])
             </div>
           </div>
 
@@ -26,6 +22,7 @@
               </div>
             </div>
           </div>
+
           <div class="row">
             <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-session-loans">
               <div class="card shadow mb-2">

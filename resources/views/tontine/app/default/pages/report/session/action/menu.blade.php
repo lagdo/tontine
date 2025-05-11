@@ -1,5 +1,5 @@
 @inject('sqids', 'Sqids\SqidsInterface')
-                <div class="btn-group float-right ml-1">
+                <div class="btn-group ml-2">
                   <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-file-alt"></i>
                   </button>

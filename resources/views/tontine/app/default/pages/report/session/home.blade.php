@@ -4,16 +4,14 @@
   $rqSession = rq(Ajax\App\Report\Session\Session::class);
   $rqSessionContent = rq(Ajax\App\Report\Session\SessionContent::class);
   $rqReportTitle = rq(Ajax\App\Report\Session\ReportTitle::class);
-  $rqActionExport = rq(Ajax\App\Report\Session\Action\Export::class);
-  $rqActionMenu = rq(Ajax\App\Report\Session\Action\Menu::class);
 @endphp
           <div class="section-body">
-            <div class="row mb-2">
-              <div class="col">
+            <div class="row">
+              <div class="col-auto mb-2">
                 <h2 class="section-title" @jxnBind($rqReportTitle)></h2>
               </div>
-              <div class="col-auto">
-                <div class="input-group">
+              <div class="col-auto mb-2 pr-0 mr-0">
+                <div class="input-group float-left">
                   {{ $html->select('session_id', $sessions, 0)->id('report-select-session')
                     ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') }}
                   <div class="input-group-append">
@@ -21,10 +19,13 @@
                   </div>
                 </div>
               </div>
-              <div class="col-auto" @jxnBind($rqActionExport)>
+              <div class="col-auto mb-2 pl-0 ml-auto">
+@isset($session->id)
+@include('tontine::pages.report.session.action.exports', ['sessionId' => $session->id])
+@endisset
               </div>
-              <div class="col-auto">
-                <div class="input-group">
+              <div class="col-auto mb-2 pr-0 mr-0">
+                <div class="input-group float-left">
                   {{ $html->select('member_id', $members, 0)->id('report-select-member')
                     ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') }}
                   <div class="input-group-append">
@@ -32,7 +33,10 @@
                   </div>
                 </div>
               </div>
-              <div class="col-auto" @jxnBind($rqActionMenu)>
+              <div class="col-auto mb-2 pl-0 ml-auto">
+@isset($session->id)
+@include('tontine::pages.report.session.action.menu', ['sessionId' => $session->id])
+@endisset
               </div>
             </div>
           </div>
