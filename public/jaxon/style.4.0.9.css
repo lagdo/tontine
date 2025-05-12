@@ -147,7 +147,7 @@ form .form-group .col-form-label {
   .sm-screen-hidden,
   .sm-screen-selector,
   .sm-screen.sm-screen-active {
-    display: block;
+    display: inline;
   }
   .sm-screen {
     display: none;
