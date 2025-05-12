@@ -6,11 +6,11 @@
   $rqSaving = rq(Ajax\App\Meeting\Session\Saving\Saving::class);
 @endphp
                   <div class="row mb-2">
-                    <div class="col">
+                    <div class="col-auto">
                       <div class="section-title mt-0">{!! $fund->title !!}</div>
                     </div>
-                    <div class="col-auto">
-                      <div class="btn-group float-right ml-2" role="group">
+                    <div class="col-auto ml-auto">
+                      <div class="btn-group" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqSaving->render())><i class="fa fa-arrow-left"></i></button>
                         <button type="button" class="btn btn-primary" @jxnClick($rqMember->toggleFilter())><i class="fa fa-filter"></i></button>
                       </div>

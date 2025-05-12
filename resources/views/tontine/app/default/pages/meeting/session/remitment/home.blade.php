@@ -5,20 +5,18 @@
   $rqPayable = rq(Ajax\App\Meeting\Session\Pool\Remitment\Payable::class);
 @endphp
                   <div class="row mb-2">
-                    <div class="col">
+                    <div class="col-auto">
                       <div class="section-title mt-0">{!! __('meeting.titles.remitments') !!}</div>
                     </div>
-@if ($hasAuctions)
-                    <div class="col-auto">
-                      <div class="btn-group float-right ml-2" role="group">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqAuction->render())>{{ __('meeting.titles.auctions') }}</button>
-                      </div>
-                    </div>
-@endif
-                    <div class="col-auto">
-                      <div class="btn-group float-right ml-2" role="group">
+                    <div class="col-auto ml-auto">
+                      <div class="btn-group" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqRemitment->render())><i class="fa fa-sync"></i></button>
                       </div>
+@if ($hasAuctions)
+                      <div class="btn-group ml-3" role="group">
+                        <button type="button" class="btn btn-primary" @jxnClick($rqAuction->render())>{{ __('meeting.titles.auctions') }}</button>
+                      </div>
+@endif
                     </div>
                   </div>
                   <div class="table-responsive" id="content-session-remitments" @jxnTarget()>

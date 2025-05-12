@@ -29,11 +29,11 @@
               <div class="card shadow">
                 <div class="card-body">
                   <div class="row">
-                    <div class="col">
+                    <div class="col-auto">
                       <div class="section-title mt-0">{!! __('meeting.titles.agenda') !!}</div>
                     </div>
-                    <div class="col-auto">
-                      <div class="btn-group float-right" role="group">
+                    <div class="col-auto ml-auto">
+                      <div class="btn-group" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqSessionFunc->saveAgenda($agendaText))><i class="fa fa-save"></i></button>
                       </div>
                     </div>
@@ -52,11 +52,11 @@
               <div class="card shadow">
                 <div class="card-body">
                   <div class="row mb-2">
-                    <div class="col">
+                    <div class="col-auto">
                       <div class="section-title mt-0">{!! __('meeting.titles.report') !!}</div>
                     </div>
-                    <div class="col-auto">
-                      <div class="btn-group float-right" role="group">
+                    <div class="col-auto ml-auto">
+                      <div class="btn-group" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqSessionFunc->saveReport($reportText))><i class="fa fa-save"></i></button>
                       </div>
                     </div>

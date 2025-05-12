@@ -3,10 +3,10 @@
   $rqFund = rq(Ajax\App\Meeting\Session\Profit\Fund::class);
 @endphp
                   <div class="row mb-2">
-                    <div class="col">
+                    <div class="col-auto">
                       <div class="section-title mt-0">{!! __('meeting.titles.profits') !!}</div>
                     </div>
-                    <div class="col-auto">
+                    <div class="col-auto ml-auto">
                       <div class="input-group">
                         {!! $html->select('fund', $funds, $fund?->id ?? 0)->id('profits-fund-id')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}

@@ -7,21 +7,19 @@
             <div class="col-md-12">
               <div class="section-body">
                 <div class="row mb-2">
-                  <div class="col">
+                  <div class="col-auto">
                     <h2 class="section-title">
                       {{ __('tontine.subscription.titles.beneficiaries') }}:
                       {{ $pool->title . ' - ' . ($pool->deposit_fixed ?
                         $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre')) }}
                     </h2>
                   </div>
-                  <div class="col-auto">
-                    <div class="btn-group float-right ml-2" role="group">
+                  <div class="col-auto ml-auto">
+                    <div class="btn-group" role="group">
                       <button type="button" class="btn btn-primary" @jxnClick($rqPlanning->render())>{{
                         __('tontine.subscription.titles.planning') }}</i></button>
                     </div>
-                  </div>
-                  <div class="col-auto">
-                    <div class="btn-group float-right ml-2" role="group">
+                    <div class="btn-group ml-3" role="group">
                       <button type="button" class="btn btn-primary" @jxnClick($rqFinance->render())><i class="fa fa-arrow-left"></i></button>
                       <button type="button" class="btn btn-primary" @jxnClick($rqBeneficiary->render())><i class="fa fa-sync"></i></button>
                     </div>

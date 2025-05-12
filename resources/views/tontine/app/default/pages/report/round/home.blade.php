@@ -48,10 +48,10 @@
           <div class="card shadow mb-4">
             <div class="card-body">
               <div class="row mb-2">
-                <div class="col">
+                <div class="col-auto">
                   <div class="section-title mt-0">{{ __('meeting.actions.pools') }} - {{ $pool->title }}</div>
                 </div>
-                <div class="col-auto ml-1">
+                <div class="col-auto ml-auto">
                   <div class="btn-group" role="group">
                     <button type="button" class="btn btn-primary" @jxnClick($rqRoundPool->refresh($pool->id))><i class="fa fa-sync"></i></button>
                   </div>
@@ -72,7 +72,7 @@
           <div class="card shadow mb-4">
             <div class="card-body">
               <div class="row mb-2">
-                <div class="col">
+                <div class="col-auto">
                   <div class="section-title mt-0">{!! __('meeting.titles.amounts') !!}</div>
                 </div>
                 <div class="col-auto ml-auto">

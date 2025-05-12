@@ -7,18 +7,18 @@
   $rqTotal = rq(Ajax\App\Meeting\Session\Pool\Deposit\Total::class);
 @endphp
                   <div class="row mb-2">
-                    <div class="col">
+                    <div class="col-auto">
                       <div class="section-title mt-0">{{ $pool->title }} - {{ __('meeting.titles.deposits') }}</div>
                     </div>
-                    <div class="col-auto">
-                      <div class="btn-group float-right ml-2" role="group">
+                    <div class="col-auto ml-auto">
+                      <div class="btn-group" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqDeposit->render())><i class="fa fa-arrow-left"></i></button>
                         <button type="button" class="btn btn-primary" @jxnClick($rqReceivable->toggleFilter())><i class="fa fa-filter"></i></button>
                       </div>
                     </div>
                   </div>
                   <div class="row mb-2 font-weight-bold">
-                    <div class="col">
+                    <div class="col-auto">
                       <div class="input-group">
                         {!! $html->text('search', '')->id('txt-pool-deposits-search')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
@@ -27,11 +27,9 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-auto pt-2">
+                    <div class="col-auto ml-auto pt-2">
                       <span @jxnBind($rqTotal)></span>
-                    </div>
-                    <div class="col-auto pt-2">
-                      <span style="display:inline-block;width:60px;"@if ($pool->deposit_fixed) @jxnBind($rqAction)@endif></span>
+                      <div style="float:right;margin-left:20px;width:60px;" @if ($pool->deposit_fixed) @jxnBind($rqAction)@endif></div>
                     </div>
                   </div>
 

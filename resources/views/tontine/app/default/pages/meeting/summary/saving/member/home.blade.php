@@ -6,17 +6,17 @@
   $rqSaving = rq(Ajax\App\Meeting\Summary\Saving\Saving::class);
 @endphp
                   <div class="row mb-2">
-                    <div class="col">
+                    <div class="col-auto">
                       <div class="section-title mt-0">{!! $fund->title !!}</div>
                     </div>
-                    <div class="col-auto">
-                      <div class="btn-group float-right ml-2" role="group">
+                    <div class="col-auto ml-auto">
+                      <div class="btn-group" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqSaving->render())><i class="fa fa-arrow-left"></i></button>
                       </div>
                     </div>
                   </div>
                   <div class="row mb-2">
-                    <div class="col-md-8">
+                    <div class="col-8">
                       <div class="input-group">
                         {!! $html->text('search', '')->id('txt-fee-member-search')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
@@ -25,7 +25,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-4" @jxnBind($rqMemberTotal)>
+                    <div class="col-4" @jxnBind($rqMemberTotal)>
                     </div>
                   </div>
                   <div @jxnBind($rqMemberPage)>

@@ -1,13 +1,11 @@
               <div class="section-body" id="payment-section-payables">
                 <div class="row mb-2">
-                  <div class="col">
+                  <div class="col-auto">
                     <h2 class="section-title">{{ $session->title }} - {{ $member->name }}</h2>
                   </div>
-                  <div class="col-auto sm-screen-hidden">
+                  <div class="col-auto ml-auto sm-screen-hidden">
                     <button type="button" class="btn btn-primary" @jxnClick(js('Tontine')
                       ->showSmScreen('payment-members-home', 'payment-sm-screens'))><i class="fa fa-arrow-left"></i></button>
-                  </div>
-                  <div class="col-auto">
                   </div>
                 </div>
               </div>

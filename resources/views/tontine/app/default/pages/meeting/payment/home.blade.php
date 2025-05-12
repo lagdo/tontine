@@ -7,16 +7,14 @@
             <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="payment-members-home">
               <div class="section-body" id="payment-section-home">
                 <div class="row mb-2">
-                  <div class="col">
+                  <div class="col-auto">
                     <h2 class="section-title">{{ __('tontine.menus.payments') }}</h2>
                   </div>
-                  <div class="col-auto">
-                  </div>
-                  <div class="col-auto">
 @if ($sessions->count() > 0)
+                  <div class="col-auto ml-auto">
                     {{ $html->select('session_id', $sessions, 0)->class('form-control')->id('select-session') }}
-@endif
                   </div>
+@endif
                 </div>
               </div>
 

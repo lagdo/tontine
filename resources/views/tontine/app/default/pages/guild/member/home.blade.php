@@ -5,11 +5,11 @@
 @endphp
           <div class="section-body">
             <div class="row mb-2">
-              <div class="col">
+              <div class="col-auto">
                 <h2 class="section-title">{{ __('tontine.menus.members') }}</h2>
               </div>
-              <div class="col-auto">
-                <div class="btn-group float-right" role="group">
+              <div class="col-auto ml-auto">
+                <div class="btn-group" role="group">
                   <button type="button" class="btn btn-primary" @jxnClick($rqMember->home())><i class="fa fa-sync"></i></button>
                   <button type="button" class="btn btn-primary" @jxnClick($rqMemberFunc->add())><i class="fa fa-plus"></i></button>
                   <button type="button" class="btn btn-primary" @jxnClick($rqMemberFunc->addList())><i class="fa fa-list"></i></button>
