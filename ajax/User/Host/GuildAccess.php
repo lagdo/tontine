@@ -9,7 +9,7 @@ use Stringable;
 /**
  * @exclude
  */
-class AccessContent extends Component
+class GuildAccess extends Component
 {
     /**
      * @param UserService $userService
@@ -22,8 +22,8 @@ class AccessContent extends Component
      */
     public function html(): Stringable
     {
-        $invite = $this->stash()->get('user.invite');
-        $guild = $this->stash()->get('user.guild');
+        $invite = $this->stash()->get('user.access.invite');
+        $guild = $this->stash()->get('user.access.guild');
 
         return $this->renderView('pages.admin.user.host.access.guild', [
             'guild' => $guild,

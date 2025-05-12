@@ -9,7 +9,7 @@ use Siak\Tontine\Service\Planning\PoolService;
 use Stringable;
 
 /**
- * @databag planning.finance.pool
+ * @databag planning.pool
  * @before getPool
  */
 class Member extends Component
@@ -33,9 +33,9 @@ class Member extends Component
 
     public function pool(int $poolId)
     {
-        $this->bag('planning.finance.pool')->set('member.filter', null);
-        $this->bag('planning.finance.pool')->set('member.search', '');
-        $this->bag('planning.finance.pool')->set('member.page', 1);
+        $this->bag('planning.pool')->set('member.filter', null);
+        $this->bag('planning.pool')->set('member.search', '');
+        $this->bag('planning.pool')->set('member.page', 1);
 
         $this->render();
     }
@@ -43,7 +43,7 @@ class Member extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.pool.subscription.member.home', [
-            'pool' => $pool = $this->stash()->get('planning.finance.pool'),
+            'pool' => $pool = $this->stash()->get('planning.pool'),
         ]);
     }
 
@@ -61,11 +61,11 @@ class Member extends Component
     public function toggleFilter()
     {
         // Toggle the filter
-        $filter = $this->bag('planning.finance.pool')->get('member.filter', null);
+        $filter = $this->bag('planning.pool')->get('member.filter', null);
         // Switch between null, true and false
         $filter = $filter === null ? true : ($filter === true ? false : null);
-        $this->bag('planning.finance.pool')->set('member.filter', $filter);
-        $this->bag('planning.finance.pool')->set('member.page', 1);
+        $this->bag('planning.pool')->set('member.filter', $filter);
+        $this->bag('planning.pool')->set('member.page', 1);
 
         // Show the first page
         $this->cl(MemberPage::class)->page();
@@ -73,8 +73,8 @@ class Member extends Component
 
     public function search(string $search)
     {
-        $this->bag('planning.finance.pool')->set('member.search', trim($search));
-        $this->bag('planning.finance.pool')->set('member.page', 1);
+        $this->bag('planning.pool')->set('member.search', trim($search));
+        $this->bag('planning.pool')->set('member.page', 1);
 
         $this->cl(MemberPage::class)->page();
     }

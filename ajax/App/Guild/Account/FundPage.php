@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Guild\FundService;
 use Stringable;
 
 /**
- * @databag tontine
+ * @databag guild.account
  * @before checkHostAccess ["finance", "accounts"]
  */
 class FundPage extends PageComponent
@@ -17,7 +17,7 @@ class FundPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['tontine', 'fund.page'];
+    protected array $bagOptions = ['guild.account', 'fund.page'];
 
     /**
      * @param FundService $fundService

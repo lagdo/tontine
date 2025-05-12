@@ -48,7 +48,7 @@ class Refund extends Component
      */
     public function fund(int $fundId)
     {
-        $this->bag($this->bagId)->set('page', 1);
+        $this->bag($this->bagId)->set('fund.page', 1);
 
         $this->render();
     }
@@ -60,7 +60,7 @@ class Refund extends Component
     {
         // We need to explicitely get the default fund here.
         $this->bag($this->bagId)->set('fund.id', 0);
-        $this->bag($this->bagId)->set('page', 1);
+        $this->bag($this->bagId)->set('fund.page', 1);
         $this->stash()->set("{$this->bagId}.fund", null);
 
         $this->render();
@@ -68,11 +68,11 @@ class Refund extends Component
 
     public function toggleFilter()
     {
-        $filtered = $this->bag($this->bagId)->get('filter', null);
+        $filtered = $this->bag($this->bagId)->get('fund.filter', null);
         // Switch between null, true and false
         $filtered = $filtered === null ? true : ($filtered === true ? false : null);
-        $this->bag($this->bagId)->set('filter', $filtered);
-        $this->bag($this->bagId)->set('page', 1);
+        $this->bag($this->bagId)->set('fund.filter', $filtered);
+        $this->bag($this->bagId)->set('fund.page', 1);
 
         $this->cl(RefundPage::class)->page();
     }

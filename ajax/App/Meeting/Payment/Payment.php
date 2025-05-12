@@ -13,7 +13,7 @@ use Stringable;
 use function trans;
 
 /**
- * @databag payment
+ * @databag meeting.payment
  * @before checkHostAccess ["meeting", "payments"]
  * @before getOpenedSessions
  */

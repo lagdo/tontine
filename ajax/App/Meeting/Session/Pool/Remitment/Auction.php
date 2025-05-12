@@ -6,7 +6,7 @@ use Ajax\App\Meeting\Session\Component;
 use Stringable;
 
 /**
- * @databag auction
+ * @databag meeting.auction
  */
 class Auction extends Component
 {
@@ -35,11 +35,11 @@ class Auction extends Component
 
     public function toggleFilter()
     {
-        $filtered = $this->bag('auction')->get('filter', null);
+        $filtered = $this->bag('meeting.auction')->get('filter', null);
         // Switch between null, true and false
         $filtered = $filtered === null ? true : ($filtered === true ? false : null);
-        $this->bag('auction')->set('filter', $filtered);
-        $this->bag('auction')->set('page', 1);
+        $this->bag('meeting.auction')->set('filter', $filtered);
+        $this->bag('meeting.auction')->set('page', 1);
 
         $this->cl(AuctionPage::class)->page(1);
     }

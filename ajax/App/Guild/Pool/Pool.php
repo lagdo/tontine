@@ -10,7 +10,7 @@ use Stringable;
 use function trans;
 
 /**
- * @databag pool
+ * @databag guild.pool
  * @before checkHostAccess ["finance", "pools"]
  */
 class Pool extends Component

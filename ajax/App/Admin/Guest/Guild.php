@@ -6,7 +6,7 @@ use Ajax\Component;
 use Stringable;
 
 /**
- * @databag user
+ * @databag admin
  */
 class Guild extends Component
 {

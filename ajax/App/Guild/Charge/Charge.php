@@ -10,7 +10,7 @@ use Stringable;
 use function trans;
 
 /**
- * @databag charge
+ * @databag guild.charge
  * @before checkHostAccess ["finance", "charges"]
  */
 class Charge extends Component

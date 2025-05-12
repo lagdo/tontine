@@ -1,7 +1,7 @@
 @php
   $guildId = pm()->select('select-invite-guild');
   $rqHostAccessFunc = rq(Ajax\User\Host\AccessFunc::class);
-  $rqHostAccessContent = rq(Ajax\User\Host\AccessContent::class);
+  $rqHostGuildAccess = rq(Ajax\User\Host\GuildAccess::class);
   $rqHost = rq(Ajax\User\Host\Host::class);
 @endphp
               <div class="section-body">
@@ -33,5 +33,5 @@
                 </div>
               </div>
 
-              <div @jxnBind($rqHostAccessContent) id="content-host-invite-access">
+              <div @jxnBind($rqHostGuildAccess) id="content-host-invite-access">
               </div>

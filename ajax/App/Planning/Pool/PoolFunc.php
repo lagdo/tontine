@@ -9,7 +9,7 @@ use Siak\Tontine\Service\LocaleService;
 use function trans;
 
 /**
- * @databag planning.finance.pool
+ * @databag planning.pool
  */
 class PoolFunc extends FuncComponent
 {

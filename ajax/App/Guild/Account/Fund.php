@@ -6,7 +6,7 @@ use Ajax\Component;
 use Stringable;
 
 /**
- * @databag tontine
+ * @databag guild.account
  * @before checkHostAccess ["finance", "accounts"]
  */
 class Fund extends Component

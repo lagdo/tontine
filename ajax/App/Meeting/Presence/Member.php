@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Meeting\PresenceService;
 use Stringable;
 
 /**
- * @databag presence
+ * @databag meeting.presence
  * @before checkHostAccess ["meeting", "presences"]
  * @before getSession
  */
@@ -21,7 +21,7 @@ class Member extends Component
 
     protected function getSession()
     {
-        $sessionId = $this->bag('presence')->get('session.id', 0);
+        $sessionId = $this->bag('meeting.presence')->get('session.id', 0);
         $session = $sessionId === 0 ? null : $this->presenceService->getSession($sessionId);
         $this->stash()->set('presence.session', $session);
     }
@@ -31,7 +31,7 @@ class Member extends Component
      */
     public function html(): Stringable|string
     {
-        $exchange = $this->bag('presence')->get('exchange', false);
+        $exchange = $this->bag('meeting.presence')->get('exchange', false);
         // Is null when showing presences by members.
         $session = $this->stash()->get('presence.session');
         if(!$exchange && !$session)
@@ -39,7 +39,7 @@ class Member extends Component
             return '';
         }
 
-        $search = $this->bag('presence')->get('member.search', '');
+        $search = $this->bag('meeting.presence')->get('member.search', '');
         return $this->renderView('pages.meeting.presence.member.home', [
             'session' => $session,
             'memberCount' => $this->presenceService->getMemberCount($search),
@@ -63,8 +63,8 @@ class Member extends Component
 
     public function search(string $search)
     {
-        $this->bag('presence')->set('member.search', $search);
-        $this->bag('presence')->set('member.page', 1);
+        $this->bag('meeting.presence')->set('member.search', $search);
+        $this->bag('meeting.presence')->set('member.page', 1);
 
         $this->cl(MemberPage::class)->page();
     }

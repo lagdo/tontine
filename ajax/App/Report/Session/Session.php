@@ -12,7 +12,6 @@ use Siak\Tontine\Service\Meeting\SessionService;
 use Stringable;
 
 /**
- * @databag report
  * @before checkHostAccess ["report", "session"]
  * @before checkOpenedSessions
  */
@@ -54,7 +53,6 @@ class Session extends Component
     {
         $sessions = $this->sessionService->getRoundSessions(orderAsc: false)
             ->filter(fn($session) => ($session->opened || $session->closed));
-
         return $this->renderView('pages.report.session.home', [
             'session' => $sessions->first(),
             'sessions' => $sessions->pluck('title', 'id'),
@@ -83,7 +81,6 @@ class Session extends Component
      */
     private function renderContent(SessionModel $session, ?MemberModel $member = null): void
     {
-        $this->bag('report')->set('session.id', $session->id);
         $this->stash()->set('report.session', $session);
         $this->stash()->set('report.member', $member);
 
@@ -96,7 +93,6 @@ class Session extends Component
         {
             return;
         }
-
         $this->renderContent($session);
     }
 
@@ -108,7 +104,6 @@ class Session extends Component
         {
             return;
         }
-
         $this->renderContent($session, $member);
     }
 }

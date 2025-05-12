@@ -6,7 +6,7 @@ use Ajax\App\Planning\Component;
 use Stringable;
 
 /**
- * @databag planning.finance.pool
+ * @databag planning.pool
  */
 class Pool extends Component
 {
@@ -31,11 +31,11 @@ class Pool extends Component
     public function toggleFilter()
     {
         // Toggle the filter
-        $filter = $this->bag('planning.finance.pool')->get('filter', null);
+        $filter = $this->bag('planning.pool')->get('pool.filter', null);
         // Switch between null, true and false
         $filter = $filter === null ? true : ($filter === true ? false : null);
-        $this->bag('planning.finance.pool')->set('filter', $filter);
-        $this->bag('planning.finance.pool')->set('page', 1);
+        $this->bag('planning.pool')->set('pool.filter', $filter);
+        $this->bag('planning.pool')->set('pool.page', 1);
 
         $this->cl(PoolPage::class)->page();
     }

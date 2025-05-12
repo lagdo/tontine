@@ -15,7 +15,7 @@ class MemberCounter extends Component
 
     public function html(): string
     {
-        $pool = $this->stash()->get('planning.finance.pool');
+        $pool = $this->stash()->get('planning.pool');
 
         return (string)$this->subscriptionService->getSubscriptionCount($pool);
     }

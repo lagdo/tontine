@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Guild\AccountService;
 use Stringable;
 
 /**
- * @databag tontine
+ * @databag guild.account
  * @before checkHostAccess ["finance", "accounts"]
  */
 class OutflowPage extends PageComponent
@@ -17,7 +17,7 @@ class OutflowPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['tontine', 'outflow.page'];
+    protected array $bagOptions = ['guild.account', 'outflow.page'];
 
     /**
      * @param AccountService $accountService

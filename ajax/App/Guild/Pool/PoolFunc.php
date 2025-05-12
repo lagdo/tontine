@@ -12,7 +12,7 @@ use function Jaxon\pm;
 use function trans;
 
 /**
- * @databag pool
+ * @databag guild.pool
  * @before checkHostAccess ["finance", "pools"]
  */
 class PoolFunc extends FuncComponent
@@ -46,7 +46,7 @@ class PoolFunc extends FuncComponent
             'click' => $this->rq()->showDepositFixed(),
         ]];
         $this->modal()->show($title, $content, $buttons);
-        $this->bag('pool')->set('add', []);
+        $this->bag('guild.pool')->set('add', []);
     }
 
     public function showDepositFixed()
@@ -54,7 +54,7 @@ class PoolFunc extends FuncComponent
         $this->modal()->hide();
 
         $title = trans('tontine.pool.titles.deposits');
-        $properties = $this->bag('pool')->get('add', []);
+        $properties = $this->bag('guild.pool')->get('add', []);
         $content = $this->renderView('pages.guild.pool.deposit_fixed', [
             'fixed' => $properties['deposit']['fixed'] ?? true,
         ]);
@@ -72,11 +72,11 @@ class PoolFunc extends FuncComponent
 
     public function saveDepositFixed(bool $fixed)
     {
-        $properties = $this->bag('pool')->get('add', []);
+        $properties = $this->bag('guild.pool')->get('add', []);
         $properties['deposit']['fixed'] = $fixed;
         if($fixed)
         {
-            $this->bag('pool')->set('add', $properties);
+            $this->bag('guild.pool')->set('add', $properties);
             $this->showDepositLendable();
             return;
         }
@@ -85,7 +85,7 @@ class PoolFunc extends FuncComponent
         $properties['deposit']['lendable'] = false;
         $properties['remit']['planned'] = true;
         $properties['remit']['auction'] = false;
-        $this->bag('pool')->set('add', $properties);
+        $this->bag('guild.pool')->set('add', $properties);
         $this->add();
     }
 
@@ -93,7 +93,7 @@ class PoolFunc extends FuncComponent
     {
         $this->modal()->hide();
 
-        $properties = $this->bag('pool')->get('add', []);
+        $properties = $this->bag('guild.pool')->get('add', []);
         $title = trans('tontine.pool.titles.deposits');
         $content = $this->renderView('pages.guild.pool.deposit_lendable', [
             'lendable' => $properties['deposit']['lendable'] ?? false,
@@ -116,9 +116,9 @@ class PoolFunc extends FuncComponent
 
     public function saveDepositLendable(bool $lendable)
     {
-        $properties = $this->bag('pool')->get('add', []);
+        $properties = $this->bag('guild.pool')->get('add', []);
         $properties['deposit']['lendable'] = $lendable;
-        $this->bag('pool')->set('add', $properties);
+        $this->bag('guild.pool')->set('add', $properties);
 
         $this->showRemitPlanned();
     }
@@ -128,7 +128,7 @@ class PoolFunc extends FuncComponent
         $this->modal()->hide();
 
         $title = trans('tontine.pool.titles.remitments');
-        $properties = $this->bag('pool')->get('add', []);
+        $properties = $this->bag('guild.pool')->get('add', []);
         $fixed = $properties['deposit']['fixed'] ?? true;
 
         $content = $this->renderView('pages.guild.pool.remit_planned', [
@@ -152,9 +152,9 @@ class PoolFunc extends FuncComponent
 
     public function saveRemitPlanned(bool $planned)
     {
-        $properties = $this->bag('pool')->get('add', []);
+        $properties = $this->bag('guild.pool')->get('add', []);
         $properties['remit']['planned'] = $planned;
-        $this->bag('pool')->set('add', $properties);
+        $this->bag('guild.pool')->set('add', $properties);
 
         $this->showRemitAuction();
     }
@@ -163,7 +163,7 @@ class PoolFunc extends FuncComponent
     {
         $this->modal()->hide();
 
-        $properties = $this->bag('pool')->get('add', []);
+        $properties = $this->bag('guild.pool')->get('add', []);
 
         $title = trans('tontine.pool.titles.remitments');
         $content = $this->renderView('pages.guild.pool.remit_auction', [
@@ -187,9 +187,9 @@ class PoolFunc extends FuncComponent
 
     public function saveRemitAuction(bool $auction)
     {
-        $properties = $this->bag('pool')->get('add', []);
+        $properties = $this->bag('guild.pool')->get('add', []);
         $properties['remit']['auction'] = $auction;
-        $this->bag('pool')->set('add', $properties);
+        $this->bag('guild.pool')->set('add', $properties);
 
         $this->add();
     }
@@ -200,7 +200,7 @@ class PoolFunc extends FuncComponent
 
         $title = trans('tontine.pool.titles.add');
         $content = $this->renderView('pages.guild.pool.add', [
-            'properties' => $this->bag('pool')->get('add', []),
+            'properties' => $this->bag('guild.pool')->get('add', []),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -219,7 +219,7 @@ class PoolFunc extends FuncComponent
      */
     public function create(array $formValues)
     {
-        $formValues['properties'] = $this->bag('pool')->get('add', []);
+        $formValues['properties'] = $this->bag('guild.pool')->get('add', []);
         $values = $this->validator->validateItem($formValues);
         $this->poolService->createPool($values);
 

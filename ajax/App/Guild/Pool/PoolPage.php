@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Guild\PoolService;
 use Stringable;
 
 /**
- * @databag pool
+ * @databag guild.pool
  * @before checkHostAccess ["finance", "pools"]
  */
 class PoolPage extends PageComponent
@@ -17,8 +17,13 @@ class PoolPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['pool', 'page'];
+    protected array $bagOptions = ['guild.pool', 'page'];
 
+    /**
+     * The constructor
+     *
+     * @param PoolService $poolService
+     */
     public function __construct(private PoolService $poolService)
     {}
 

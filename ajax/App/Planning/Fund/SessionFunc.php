@@ -6,7 +6,7 @@ use Ajax\App\Planning\FuncComponent;
 use Siak\Tontine\Validation\Planning\FundSessionsValidator;
 
 /**
- * @databag planning.finance.fund
+ * @databag planning.fund
  * @before getFund
  */
 class SessionFunc extends FuncComponent
@@ -23,14 +23,14 @@ class SessionFunc extends FuncComponent
      */
     public function save(array $formValues)
     {
-        $fund = $this->stash()->get('planning.finance.fund');
+        $fund = $this->stash()->get('planning.fund');
         $values = $this->validator->validateItem($formValues);
         $this->fundService->saveSessions($fund, $values);
 
         // Reload the fund to update the start/end sessions.
         $round = $this->tenantService->round();
         $fund = $this->fundService->getFund($round, $fund->id);
-        $this->stash()->set('planning.finance.fund', $fund);
+        $this->stash()->set('planning.fund', $fund);
 
         $this->cl(SessionHeader::class)->render();
         $this->cl(SessionPage::class)->page();

@@ -24,7 +24,7 @@ class RefundPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['summary.refund', 'page'];
+    protected array $bagOptions = ['summary.refund', 'fund.page'];
 
     /**
      * The constructor
@@ -41,7 +41,7 @@ class RefundPage extends PageComponent
     {
         $session = $this->stash()->get('summary.session');
         $fund = $this->getStashedFund();
-        $filtered = $this->bag($this->bagId)->get('filter', null);
+        $filtered = $this->bag($this->bagId)->get('fund.filter', null);
 
         return $this->refundService->getDebtCount($session, $fund, $filtered);
     }
@@ -53,7 +53,7 @@ class RefundPage extends PageComponent
     {
         $session = $this->stash()->get('summary.session');
         $fund = $this->getStashedFund();
-        $filtered = $this->bag($this->bagId)->get('filter', null);
+        $filtered = $this->bag($this->bagId)->get('fund.filter', null);
         $debts = $this->refundService
             ->getDebts($session, $fund, $filtered, $this->currentPage());
 

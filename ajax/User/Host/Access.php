@@ -3,19 +3,19 @@
 namespace Ajax\User\Host;
 
 use Ajax\Component;
-use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\Guild\UserService;
 use Stringable;
 
 use function trans;
 
 /**
- * @databag user
+ * @databag user.access
  * @before getInvite
  */
 class Access extends Component
 {
+    use AccessTrait;
+
     /**
      * @var string
      */
@@ -23,42 +23,16 @@ class Access extends Component
 
     /**
      * @param UserService $userService
-     * @param GuildService $guildService
      */
-    public function __construct(private UserService $userService,
-        private GuildService $guildService)
+    public function __construct(private UserService $userService)
     {}
-
-    protected function getInvite()
-    {
-        if($this->target()->method() === 'home')
-        {
-            $this->bag('user')->set('invite.id', $this->target()->args()[0]);
-        }
-        $inviteId = $this->bag('user')->get('invite.id');
-        if(!($invite = $this->userService->getHostInvite($inviteId)))
-        {
-            throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
-        }
-        $this->stash()->set('user.invite', $invite);
-
-        // Do not find the invite on the home page.
-        if($this->target()->method() === 'home')
-        {
-            return;
-        }
-
-        $guildId = $this->bag('user')->get('guild.id');
-        $this->stash()->set('user.guild', $this->guildService->getGuild($guildId));
-    }
 
     /**
      * @inheritDoc
      */
     public function html(): Stringable
     {
-        $invite = $this->stash()->get('user.invite');
-
+        $invite = $this->stash()->get('user.access.invite');
         return $this->renderView('pages.admin.user.host.access.home', [
             'guest' => $invite->guest,
             'guilds' => $this->tenantService->user()->guilds->pluck('name', 'id'),
@@ -70,23 +44,22 @@ class Access extends Component
      */
     protected function after()
     {
-        $this->cl(AccessContent::class)->render();
+        $guild = $this->tenantService->user()->guilds->first();
+        $this->bag('user.access')->set('guild.id', $guild->id);
+        $this->stash()->set('user.access.guild', $guild);
+
+        $this->cl(GuildAccess::class)->render();
     }
 
     public function home(int $inviteId)
     {
-        $guilds = $this->tenantService->user()->guilds;
-        if($guilds->count() === 0)
+        if($this->tenantService->user()->guilds->count() > 0)
         {
-            $this->alert()->title(trans('common.titles.warning'))
-                ->warning(trans('tontine.invite.errors.no_guild'));
+            $this->render();
             return;
         }
 
-        $guild = $guilds->first();
-        $this->bag('user')->set('guild.id', $guild->id);
-        $this->stash()->set('user.guild', $guild);
-
-        $this->render();
+        $this->alert()->title(trans('common.titles.warning'))
+            ->warning(trans('tontine.invite.errors.no_guild'));
     }
 }

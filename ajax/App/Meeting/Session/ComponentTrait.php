@@ -59,10 +59,6 @@ trait ComponentTrait
         {
             throw new MessageException(trans('meeting.errors.session.not_found'));
         }
-        if($this->target()->method() !== 'reports' && !$session->opened)
-        {
-            throw new MessageException(trans('meeting.errors.session.not_opened'));
-        }
         $this->stash()->set('meeting.session', $session);
     }
 }

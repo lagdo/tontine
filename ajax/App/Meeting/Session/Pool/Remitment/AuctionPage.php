@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Meeting\Pool\AuctionService;
 use Stringable;
 
 /**
- * @databag auction
+ * @databag meeting.auction
  */
 class AuctionPage extends PageComponent
 {
@@ -16,7 +16,7 @@ class AuctionPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['auction', 'page'];
+    protected array $bagOptions = ['meeting.auction', 'page'];
 
     /**
      * The constructor
@@ -32,7 +32,7 @@ class AuctionPage extends PageComponent
     protected function count(): int
     {
         $session = $this->stash()->get('meeting.session');
-        $filtered = $this->bag('auction')->get('filter', null);
+        $filtered = $this->bag('meeting.auction')->get('filter', null);
 
         return $this->auctionService->getAuctionCount($session, $filtered);
     }
@@ -43,11 +43,12 @@ class AuctionPage extends PageComponent
     public function html(): Stringable
     {
         $session = $this->stash()->get('meeting.session');
-        $filtered = $this->bag('auction')->get('filter', null);
+        $filtered = $this->bag('meeting.auction')->get('filter', null);
 
         return $this->renderView('pages.meeting.session.auction.page', [
             'session' => $session,
-            'auctions' => $this->auctionService->getAuctions($session, $filtered, $this->currentPage()),
+            'auctions' => $this->auctionService
+                ->getAuctions($session, $filtered, $this->currentPage()),
         ]);
     }
 

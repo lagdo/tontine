@@ -9,7 +9,7 @@ use Siak\Tontine\Service\Planning\FundService;
 use function trans;
 
 /**
- * @databag planning.finance.fund
+ * @databag planning.fund
  */
 class FundFunc extends FuncComponent
 {

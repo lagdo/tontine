@@ -6,7 +6,7 @@ use Ajax\App\Planning\PageComponent;
 use Stringable;
 
 /**
- * @databag planning.finance.fund
+ * @databag planning.fund
  * @before getFund
  */
 class SessionPage extends PageComponent
@@ -18,7 +18,7 @@ class SessionPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['planning.finance.fund', 'session.page'];
+    protected array $bagOptions = ['planning.fund', 'session.page'];
 
     /**
      * @inheritDoc
@@ -34,7 +34,7 @@ class SessionPage extends PageComponent
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.fund.session.page', [
-            'fund' => $this->stash()->get('planning.finance.fund'),
+            'fund' => $this->stash()->get('planning.fund'),
             'sessions' => $this->fundService
                 ->getGuildSessions($this->currentPage(), orderAsc: false),
         ]);
@@ -59,7 +59,7 @@ class SessionPage extends PageComponent
      */
     public function start()
     {
-        $fund = $this->stash()->get('planning.finance.fund');
+        $fund = $this->stash()->get('planning.fund');
         $this->page($this->getSessionPageNumber($fund->start));
     }
 
@@ -68,7 +68,7 @@ class SessionPage extends PageComponent
      */
     public function end()
     {
-        $fund = $this->stash()->get('planning.finance.fund');
+        $fund = $this->stash()->get('planning.fund');
         $this->page($this->getSessionPageNumber($fund->end));
     }
 }

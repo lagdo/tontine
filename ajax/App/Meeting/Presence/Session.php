@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Meeting\PresenceService;
 use Stringable;
 
 /**
- * @databag presence
+ * @databag meeting.presence
  * @before checkHostAccess ["meeting", "presences"]
  * @before getMember
  */
@@ -21,7 +21,7 @@ class Session extends Component
 
     protected function getMember()
     {
-        $memberId = $this->bag('presence')->get('member.id', 0);
+        $memberId = $this->bag('meeting.presence')->get('member.id', 0);
         $member = $memberId === 0 ? null : $this->presenceService->getMember($memberId);
         $this->stash()->set('presence.member', $member);
     }
@@ -31,7 +31,7 @@ class Session extends Component
      */
     public function html(): Stringable|string
     {
-        $exchange = $this->bag('presence')->get('exchange', false);
+        $exchange = $this->bag('meeting.presence')->get('exchange', false);
         $member = $this->stash()->get('presence.member'); // Is null when showing presences by sessions.
         if($exchange && !$member)
         {

@@ -9,7 +9,7 @@ use Siak\Tontine\Service\Meeting\SessionService;
 use Stringable;
 
 /**
- * @databag payment
+ * @databag meeting.payment
  * @before checkHostAccess ["meeting", "payments"]
  */
 class PaymentPage extends PageComponent
@@ -19,7 +19,7 @@ class PaymentPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['payment', 'page'];
+    protected array $bagOptions = ['meeting.payment', 'page'];
 
     /**
      * @param MemberService $memberService

@@ -46,12 +46,12 @@ trait PoolTrait
         if($this->target()->method() === 'pool')
         {
             $poolId = $this->target()->args()[0];
-            $this->bag('planning.finance.pool')->set('pool.id', $poolId);
+            $this->bag('planning.pool')->set('pool.id', $poolId);
         }
 
         $round = $this->tenantService->round();
-        $poolId = (int)$this->bag('planning.finance.pool')->get('pool.id');
+        $poolId = (int)$this->bag('planning.pool')->get('pool.id');
         $pool = $this->poolService->getPool($round, $poolId);
-        $this->stash()->set('planning.finance.pool', $pool);
+        $this->stash()->set('planning.pool', $pool);
     }
 }

@@ -18,7 +18,7 @@ use function trans;
 use function trim;
 
 /**
- * @databag member
+ * @databag guild.member
  * @before checkHostAccess ["guild", "members"]
  */
 class MemberFunc extends FuncComponent

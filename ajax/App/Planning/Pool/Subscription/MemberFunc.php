@@ -8,7 +8,7 @@ use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 
 /**
- * @databag planning.finance.pool
+ * @databag planning.pool
  * @before getPool
  */
 class MemberFunc extends FuncComponent
@@ -29,7 +29,7 @@ class MemberFunc extends FuncComponent
 
     public function create(int $memberId)
     {
-        $pool = $this->stash()->get('planning.finance.pool');
+        $pool = $this->stash()->get('planning.pool');
         $this->subscriptionService->createSubscription($pool, $memberId);
 
         // Refresh the current page
@@ -39,7 +39,7 @@ class MemberFunc extends FuncComponent
 
     public function delete(int $memberId)
     {
-        $pool = $this->stash()->get('planning.finance.pool');
+        $pool = $this->stash()->get('planning.pool');
         $this->subscriptionService->deleteSubscription($pool, $memberId);
 
         // Refresh the current page

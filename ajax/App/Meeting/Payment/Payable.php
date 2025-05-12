@@ -12,7 +12,7 @@ use Stringable;
 use function compact;
 
 /**
- * @databag payment
+ * @databag meeting.payment
  * @before checkHostAccess ["meeting", "payments"]
  */
 class Payable extends Component

@@ -11,7 +11,7 @@ use Siak\Tontine\Service\Planning\SummaryService;
 use Stringable;
 
 /**
- * @databag planning.finance.pool
+ * @databag planning.pool
  * @before getPool
  */
 class Planning extends Component
@@ -45,7 +45,7 @@ class Planning extends Component
      */
     protected function before()
     {
-        $pool = $this->stash()->get('planning.finance.pool');
+        $pool = $this->stash()->get('planning.pool');
         if(!$pool->remit_planned)
         {
             throw new MessageException(trans('tontine.pool.errors.not_planned'));
@@ -57,7 +57,7 @@ class Planning extends Component
      */
     public function html(): Stringable
     {
-        $pool = $this->stash()->get('planning.finance.pool');
+        $pool = $this->stash()->get('planning.pool');
         $this->view()->shareValues($this->summaryService->getReceivables($pool));
 
         return $this->renderView('pages.planning.pool.subscription.planning', [

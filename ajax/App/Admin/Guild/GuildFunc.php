@@ -16,7 +16,7 @@ use function collect;
 use function trans;
 
 /**
- * @databag tontine
+ * @databag admin
  */
 class GuildFunc extends FuncComponent
 {

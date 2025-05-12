@@ -2,7 +2,6 @@
   $rqPresenceFunc = rq(Ajax\App\Meeting\Presence\PresenceFunc::class);
   $rqSession = rq(Ajax\App\Meeting\Presence\Session::class);
   $rqSessionPage = rq(Ajax\App\Meeting\Presence\SessionPage::class);
-  $jsBackHandler = js('Tontine')->showSmScreen('content-presence-left', 'presence-sm-screens');
 @endphp
               <div class="section-body">
                 <div class="row mb-2">
@@ -22,7 +21,8 @@
                   </div>
 @else
                   <div class="col-auto sm-screen-hidden">
-                    <button type="button" class="btn btn-primary" @jxnClick($jsBackHandler)><i class="fa fa-arrow-left"></i></button>
+                    <button type="button" class="btn btn-primary" @jxnClick(js('Tontine')
+                      ->showSmScreen('content-presence-left', 'presence-sm-screens'))><i class="fa fa-arrow-left"></i></button>
                   </div>
 @endif
                   <div class="col-auto">

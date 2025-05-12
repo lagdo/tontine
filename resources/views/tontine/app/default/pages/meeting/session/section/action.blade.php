@@ -8,35 +8,6 @@
               <div class="col-auto ml-auto">
 @include('tontine::pages.report.session.action.exports', ['sessionId' => $session->id])
                 <div class="btn-group ml-2" role="group" @jxnTarget()>
-                  <div @jxnEvent(['.btn-session-prev', 'click'], $rqSectionFunc->$section($prevSession?->id ?? 0))></div>
-                  <div @jxnEvent(['.btn-session-next', 'click'], $rqSectionFunc->$section($nextSession?->id ?? 0))></div>
-
-@php
-  $menus = [];
-  if($prevSession !== null)
-  {
-    $menus[] = [
-      'class' => 'btn-session-prev',
-      'text' => __('meeting.session.actions.prev'),
-    ];
-  }
-  if($nextSession !== null)
-  {
-    $menus[] = [
-      'class' => 'btn-session-next',
-      'text' => __('meeting.session.actions.next'),
-    ];
-  }
-@endphp
-@if(count($menus) > 0)
-@include('tontine::parts.table.menu', [
-  'btnSize' => '',
-  'btnIcon' => 'fa-sort fa-rotate-90',
-  'menus' => $menus,
-])
-@endif
-                </div>
-                <div class="btn-group ml-2" role="group" @jxnTarget()>
                   <div @jxnEvent(['.btn-session-pools', 'click'], $rqSectionFunc->pools())></div>
                   <div @jxnEvent(['.btn-session-charges', 'click'], $rqSectionFunc->charges())></div>
                   <div @jxnEvent(['.btn-session-savings', 'click'], $rqSectionFunc->savings())></div>
@@ -74,6 +45,35 @@
   'btnSize' => '',
   'btnIcon' => 'fa-stream',
   'menus' => array_filter($menus, fn($item) => $item['class'] !== "btn-session-$section"),
+])
+@endif
+                </div>
+                <div class="btn-group ml-2" role="group" @jxnTarget()>
+                  <div @jxnEvent(['.btn-session-prev', 'click'], $rqSectionFunc->$section($prevSession?->id ?? 0))></div>
+                  <div @jxnEvent(['.btn-session-next', 'click'], $rqSectionFunc->$section($nextSession?->id ?? 0))></div>
+
+@php
+  $menus = [];
+  if($prevSession !== null)
+  {
+    $menus[] = [
+      'class' => 'btn-session-prev',
+      'text' => __('meeting.session.actions.prev'),
+    ];
+  }
+  if($nextSession !== null)
+  {
+    $menus[] = [
+      'class' => 'btn-session-next',
+      'text' => __('meeting.session.actions.next'),
+    ];
+  }
+@endphp
+@if(count($menus) > 0)
+@include('tontine::parts.table.menu', [
+  'btnSize' => '',
+  'btnIcon' => 'fa-sort fa-rotate-90',
+  'menus' => $menus,
 ])
 @endif
                 </div>

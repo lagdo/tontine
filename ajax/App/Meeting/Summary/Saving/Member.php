@@ -6,6 +6,8 @@ use Ajax\App\Meeting\Summary\Component;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Stringable;
 
+use function trim;
+
 /**
  * @databag summary.saving
  * @before getFund
@@ -13,11 +15,6 @@ use Stringable;
 class Member extends Component
 {
     use FundTrait;
-
-    /**
-     * @var string
-     */
-    protected string $bagId = 'summary.saving';
 
     /**
      * @var string
@@ -54,20 +51,25 @@ class Member extends Component
     /**
      * @param int $fundId
      *
-     * @return mixed
+     * @return void
      */
-    public function fund(int $fundId)
+    public function fund(int $fundId): void
     {
-        $this->bag($this->bagId)->set('member.search', '');
-        $this->bag($this->bagId)->set('member.page', 1);
+        $this->bag('summary.saving')->set('member.search', '');
+        $this->bag('summary.saving')->set('member.page', 1);
 
         $this->render();
     }
 
-    public function search(string $search)
+    /**
+     * @param string $search
+     *
+     * @return void
+     */
+    public function search(string $search): void
     {
-        $this->bag($this->bagId)->set('member.search', trim($search));
-        $this->bag($this->bagId)->set('member.page', 1);
+        $this->bag('summary.saving')->set('member.search', trim($search));
+        $this->bag('summary.saving')->set('member.page', 1);
 
         $this->cl(MemberPage::class)->page();
     }

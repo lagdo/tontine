@@ -6,22 +6,14 @@ use Ajax\App\Meeting\Summary\PageComponent;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Stringable;
 
-/**
- * @databag summary.loan
- */
 class LoanPage extends PageComponent
 {
-    /**
-     * @var string
-     */
-    protected string $bagId = 'summary.loan';
-
     /**
      * The pagination databag options
      *
      * @var array
      */
-    protected array $bagOptions = ['summary.loan', 'page'];
+    protected array $bagOptions = ['summary', 'loan.page'];
 
     /**
      * The constructor

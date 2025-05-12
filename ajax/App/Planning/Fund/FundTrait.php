@@ -46,12 +46,12 @@ trait FundTrait
         if($this->target()->method() === 'fund')
         {
             $fundId = $this->target()->args()[0];
-            $this->bag('planning.finance.fund')->set('fund.id', $fundId);
+            $this->bag('planning.fund')->set('fund.id', $fundId);
         }
 
         $round = $this->tenantService->round();
-        $fundId = (int)$this->bag('planning.finance.fund')->get('fund.id');
+        $fundId = (int)$this->bag('planning.fund')->get('fund.id');
         $fund = $this->fundService->getFund($round, $fundId);
-        $this->stash()->set('planning.finance.fund', $fund);
+        $this->stash()->set('planning.fund', $fund);
     }
 }

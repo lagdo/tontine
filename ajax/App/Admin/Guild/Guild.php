@@ -12,7 +12,7 @@ use Stringable;
 use function trans;
 
 /**
- * @databag tontine
+ * @databag admin
  */
 class Guild extends Component
 {

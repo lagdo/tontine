@@ -10,6 +10,7 @@ use Stringable;
 use function trans;
 
 /**
+ * @databag guild.account
  * @before checkHostAccess ["finance", "accounts"]
  */
 class Account extends Component
@@ -20,7 +21,6 @@ class Account extends Component
     protected $overrides = SectionContent::class;
 
     /**
-     * @databag tontine
      * @callback jaxon.ajax.callback.hideMenuOnMobile
      */
     public function home()

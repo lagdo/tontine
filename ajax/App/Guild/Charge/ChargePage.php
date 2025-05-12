@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Guild\ChargeService;
 use Stringable;
 
 /**
- * @databag charge
+ * @databag guild.charge
  * @before checkHostAccess ["finance", "charges"]
  */
 class ChargePage extends PageComponent
@@ -19,7 +19,7 @@ class ChargePage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['charge', 'page'];
+    protected array $bagOptions = ['guild.charge', 'page'];
 
     /**
      * @param ChargeService $chargeService

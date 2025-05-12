@@ -8,7 +8,7 @@ use Siak\Tontine\Service\Guild\SessionService;
 use Stringable;
 
 /**
- * @databag planning.calendar
+ * @databag guild.calendar
  * @before checkHostAccess ["guild", "calendar"]
  * @before getRound
  */
@@ -27,8 +27,8 @@ class SessionPage extends PageComponent
 
     protected function getRound()
     {
-        $roundId = $this->bag('planning.calendar')->get('round.id');
-        $this->stash()->set('planning.calendar.round', $this->roundService->getRound($roundId));
+        $roundId = $this->bag('guild.calendar')->get('round.id');
+        $this->stash()->set('guild.calendar.round', $this->roundService->getRound($roundId));
     }
 
     /**
@@ -36,7 +36,7 @@ class SessionPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->stash()->get('planning.calendar.round');
+        $round = $this->stash()->get('guild.calendar.round');
         return $this->roundService->getSessionCount($round);
     }
 
@@ -45,7 +45,7 @@ class SessionPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $round = $this->stash()->get('planning.calendar.round');
+        $round = $this->stash()->get('guild.calendar.round');
 
         return $this->renderView('pages.guild.calendar.session.page', [
             'sessions' => $round === null ? []:

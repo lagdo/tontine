@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Meeting\Pool\AuctionService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 /**
- * @databag auction
+ * @databag meeting.auction
  */
 class AuctionFunc extends FuncComponent
 {

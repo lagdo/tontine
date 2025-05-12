@@ -12,7 +12,7 @@ use function Jaxon\pm;
 use function trans;
 
 /**
- * @databag charge
+ * @databag guild.charge
  * @before checkHostAccess ["finance", "charges"]
  */
 class ChargeFunc extends FuncComponent

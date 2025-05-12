@@ -10,7 +10,7 @@ use Stringable;
 use function trans;
 
 /**
- * @databag presence
+ * @databag meeting.presence
  * @before checkHostAccess ["meeting", "presences"]
  */
 class Presence extends Component
@@ -35,8 +35,8 @@ class Presence extends Component
     protected function before()
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.presences'));
-        $this->bag('presence')->set('session.id', 0);
-        $this->bag('presence')->set('member.id', 0);
+        $this->bag('meeting.presence')->set('session.id', 0);
+        $this->bag('meeting.presence')->set('member.id', 0);
     }
 
     /**
@@ -45,7 +45,7 @@ class Presence extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.meeting.presence.home', [
-            'exchange' => $this->bag('presence')->get('exchange', false),
+            'exchange' => $this->bag('meeting.presence')->get('exchange', false),
         ]);
     }
 
@@ -54,19 +54,11 @@ class Presence extends Component
      */
     protected function after()
     {
-        $exchange = $this->bag('presence')->get('exchange', false);
+        $exchange = $this->bag('meeting.presence')->get('exchange', false);
         !$exchange ?
             $this->cl(Session::class)->render() :
             $this->cl(Member::class)->render();
         $this->response->js('Tontine')
             ->showSmScreen('content-presence-left', 'presence-sm-screens');
-    }
-
-    public function exchange()
-    {
-        $exchange = $this->bag('presence')->get('exchange', false);
-        $this->bag('presence')->set('exchange', !$exchange);
-
-        $this->render();
     }
 }

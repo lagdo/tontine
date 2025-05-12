@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Guild\RoundService;
 use Stringable;
 
 /**
- * @databag planning.calendar
+ * @databag guild.calendar
  * @before checkHostAccess ["guild", "calendar"]
  */
 class RoundPage extends PageComponent
@@ -17,7 +17,7 @@ class RoundPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['planning', 'round.page'];
+    protected array $bagOptions = ['guild.calendar', 'round.page'];
 
     /**
      * @param RoundService $roundService

@@ -12,11 +12,6 @@ use Stringable;
 class RefundItem extends Component
 {
     /**
-     * @var string
-     */
-    protected string $bagId = 'summary.refund';
-
-    /**
      * @param DebtCalculator $debtCalculator
      */
     public function __construct(private DebtCalculator $debtCalculator)

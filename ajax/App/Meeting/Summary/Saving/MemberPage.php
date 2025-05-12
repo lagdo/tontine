@@ -15,11 +15,6 @@ class MemberPage extends PageComponent
     use FundTrait;
 
     /**
-     * @var string
-     */
-    protected string $bagId = 'summary.saving';
-
-    /**
      * The pagination databag options
      *
      * @var array
@@ -39,7 +34,7 @@ class MemberPage extends PageComponent
      */
     protected function count(): int
     {
-        $search = $this->bag($this->bagId)->get('member.search', '');
+        $search = $this->bag('summary.saving')->get('member.search', '');
         $session = $this->stash()->get('summary.session');
         $fund = $this->getStashedFund();
 
@@ -51,7 +46,7 @@ class MemberPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $search = $this->bag($this->bagId)->get('member.search', '');
+        $search = $this->bag('summary.saving')->get('member.search', '');
         $session = $this->stash()->get('summary.session');
         $fund = $this->getStashedFund();
 

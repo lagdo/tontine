@@ -8,8 +8,7 @@ use Siak\Tontine\Service\LocaleService;
 use Stringable;
 
 /**
- * @databag tontine
- * @databag pool
+ * @databag admin
  */
 class GuildPage extends PageComponent
 {
@@ -18,7 +17,7 @@ class GuildPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['tontine', 'page'];
+    protected array $bagOptions = ['admin', 'guild.page'];
 
     /**
      * @param LocaleService $localeService
@@ -43,7 +42,6 @@ class GuildPage extends PageComponent
     {
         $guilds = $this->guildService->getGuilds($this->currentPage());
         [$countries, $currencies] = $this->localeService->getNamesFromGuilds($guilds);
-
         return $this->renderView('pages.admin.guild.page', [
             'guilds' => $guilds,
             'countries' => $countries,

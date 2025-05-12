@@ -16,7 +16,7 @@ class SessionHeader extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.pool.session.header', [
-            'pool' => $this->stash()->get('planning.finance.pool'),
+            'pool' => $this->stash()->get('planning.pool'),
         ]);
     }
 }

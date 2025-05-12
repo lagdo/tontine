@@ -10,7 +10,7 @@ use Siak\Tontine\Service\Planning\SubscriptionService;
 use Stringable;
 
 /**
- * @databag planning.finance.pool
+ * @databag planning.pool
  * @before getPool
  */
 class MemberPage extends PageComponent
@@ -22,7 +22,7 @@ class MemberPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['planning.finance.pool', 'member.page'];
+    protected array $bagOptions = ['planning.pool', 'member.page'];
 
     /**
      * The constructor
@@ -42,9 +42,9 @@ class MemberPage extends PageComponent
      */
     protected function count(): int
     {
-        $search = $this->bag('planning.finance.pool')->get('member.search', '');
-        $filter = $this->bag('planning.finance.pool')->get('member.filter', null);
-        $pool = $this->stash()->get('planning.finance.pool');
+        $search = $this->bag('planning.pool')->get('member.search', '');
+        $filter = $this->bag('planning.pool')->get('member.filter', null);
+        $pool = $this->stash()->get('planning.pool');
 
         return $this->subscriptionService->getMemberCount($pool, $search, $filter);
     }
@@ -54,9 +54,9 @@ class MemberPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $search = $this->bag('planning.finance.pool')->get('member.search', '');
-        $filter = $this->bag('planning.finance.pool')->get('member.filter', null);
-        $pool = $this->stash()->get('planning.finance.pool');
+        $search = $this->bag('planning.pool')->get('member.search', '');
+        $filter = $this->bag('planning.pool')->get('member.filter', null);
+        $pool = $this->stash()->get('planning.pool');
 
         return $this->renderView('pages.planning.pool.subscription.member.page', [
             'members' => $this->subscriptionService

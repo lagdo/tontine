@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Guild\MemberService;
 use Stringable;
 
 /**
- * @databag member
+ * @databag guild.member
  * @before checkHostAccess ["guild", "members"]
  */
 class MemberPage extends PageComponent
@@ -17,7 +17,7 @@ class MemberPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['member', 'page'];
+    protected array $bagOptions = ['guild.member', 'page'];
 
     /**
      * @param MemberService $memberService

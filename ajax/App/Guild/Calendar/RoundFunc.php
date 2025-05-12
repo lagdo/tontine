@@ -10,7 +10,7 @@ use function Jaxon\pm;
 use function trans;
 
 /**
- * @databag planning.calendar
+ * @databag guild.calendar
  * @before checkHostAccess ["guild", "calendar"]
  */
 class RoundFunc extends FuncComponent

@@ -10,7 +10,7 @@ use Stringable;
 use function trans;
 
 /**
- * @databag planning.calendar
+ * @databag guild.calendar
  * @before checkHostAccess ["guild", "calendar"]
  */
 class Round extends Component

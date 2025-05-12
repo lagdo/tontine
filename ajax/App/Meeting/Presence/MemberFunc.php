@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\Meeting\PresenceService;
 
 /**
- * @databag presence
+ * @databag meeting.presence
  * @before checkHostAccess ["meeting", "presences"]
  * @before getSession
  */
@@ -23,7 +23,7 @@ class MemberFunc extends FuncComponent
 
     protected function getSession()
     {
-        $sessionId = $this->bag('presence')->get('session.id', 0);
+        $sessionId = $this->bag('meeting.presence')->get('session.id', 0);
         $session = $sessionId === 0 ? null : $this->presenceService->getSession($sessionId);
         $this->stash()->set('presence.session', $session);
     }

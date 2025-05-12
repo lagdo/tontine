@@ -6,7 +6,7 @@ use Ajax\App\Planning\Component;
 use Stringable;
 
 /**
- * @databag planning.finance.pool
+ * @databag planning.pool
  * @before getPool
  */
 class Session extends Component
@@ -26,7 +26,7 @@ class Session extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.pool.session.home', [
-            'pool' => $this->stash()->get('planning.finance.pool'),
+            'pool' => $this->stash()->get('planning.pool'),
         ]);
     }
 

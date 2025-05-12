@@ -28,11 +28,6 @@ class Summary extends Component
 
     public function home(int $sessionId)
     {
-        $this->bag('summary')->set('session.id', $sessionId);
-        // Sending an Ajax request to the Saving class needs to set
-        // the session id in the report databag.
-        $this->bag('report')->set('session.id', $sessionId);
-
         $session = $this->sessionService->getSession($sessionId);
         if(!$session)
         {
@@ -41,6 +36,7 @@ class Summary extends Component
             return;
         }
 
+        $this->bag('summary')->set('session.id', $sessionId);
         $this->stash()->set('summary.session', $session);
 
         $this->render();

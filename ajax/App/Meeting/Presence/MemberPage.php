@@ -7,7 +7,7 @@ use Siak\Tontine\Service\Meeting\PresenceService;
 use Stringable;
 
 /**
- * @databag presence
+ * @databag meeting.presence
  * @before checkHostAccess ["meeting", "presences"]
  * @before getSession
  */
@@ -18,7 +18,7 @@ class MemberPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['presence', 'member.page'];
+    protected array $bagOptions = ['meeting.presence', 'member.page'];
 
     /**
      * @param PresenceService $presenceService
@@ -28,7 +28,7 @@ class MemberPage extends PageComponent
 
     protected function getSession()
     {
-        $sessionId = $this->bag('presence')->get('session.id', 0);
+        $sessionId = $this->bag('meeting.presence')->get('session.id', 0);
         $session = $sessionId === 0 ? null : $this->presenceService->getSession($sessionId);
         $this->stash()->set('presence.session', $session);
     }
@@ -38,8 +38,7 @@ class MemberPage extends PageComponent
      */
     protected function count(): int
     {
-        $search = $this->bag('presence')->get('member.search', '');
-
+        $search = $this->bag('meeting.presence')->get('member.search', '');
         return $this->presenceService->getMemberCount($search);
     }
 
@@ -49,8 +48,7 @@ class MemberPage extends PageComponent
     public function html(): Stringable
     {
         $session = $this->stash()->get('presence.session'); // Is null when showing presences by members.
-        $search = $this->bag('presence')->get('member.search', '');
-
+        $search = $this->bag('meeting.presence')->get('member.search', '');
         return $this->renderView('pages.meeting.presence.member.page', [
             'session' => $session,
             'search' => $search,

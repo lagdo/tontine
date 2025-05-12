@@ -12,11 +12,6 @@ use Stringable;
 class LoanPage extends PageComponent
 {
     /**
-     * @var string
-     */
-    protected string $bagId = 'meeting.loan';
-
-    /**
      * The pagination databag options
      *
      * @var array
