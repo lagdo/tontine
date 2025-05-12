@@ -9,7 +9,7 @@
 @endsection
 
 @section('styles')
-@jxnCss()
+@jxnCss
 @endsection
 
 @php
@@ -17,8 +17,9 @@
 @endphp
 
 @section('script')
-@jxnJs()
-@jxnScript()
+@jxnJs
+
+@jxnScript
 
 <script src="/jaxon/app.4.0.10.js"></script>
 <script>
