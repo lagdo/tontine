@@ -17,6 +17,7 @@ return [
         'report' => "Rapport",
         'members' => "Membres",
         'finance' => "Finance",
+        'participation' => "Participation",
         'accounts' => "Caisses",
         'charges' => "Charges",
         'calendar' => "Calendrier",
@@ -200,6 +201,7 @@ return [
             'example' => "Par example,<br/>Jean Amadou<br/>ou<br/>Jean Amadou;jean.amadou@gmail.com;237670000000",
         ],
         'titles' => [
+            'members' => "Membres",
             'add' => "Ajouter des membres",
             'edit' => "Modifier un membre",
         ],
@@ -213,6 +215,7 @@ return [
         ],
         'errors' => [
             'not_found' => "Impossible de trouver le membre correspondant.",
+            'cannot_delete' => "Impossible de supprimer ce membre.",
         ],
     ],
     'charge' => [

@@ -27,4 +27,16 @@ class Fund extends Component
     {
         $this->cl(FundPage::class)->page();
     }
+
+    public function toggleFilter()
+    {
+        // Toggle the filter
+        $filter = $this->bag('planning.fund')->get('filter', null);
+        // Switch between null, true and false
+        $filter = $filter === null ? true : ($filter === true ? false : null);
+        $this->bag('planning.fund')->set('filter', $filter);
+        $this->bag('planning.fund')->set('page', 1);
+
+        $this->cl(FundPage::class)->page();
+    }
 }

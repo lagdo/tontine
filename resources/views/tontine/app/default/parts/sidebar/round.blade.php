@@ -3,6 +3,9 @@
               <li><a class="nav-link" id="planning-menu-finance" role="link" tabindex="0">
                 <i class="fa fa-fw fa-coins"></i> <span>{{ __('tontine.menus.finance') }}</span>
               </a></li>
+              <li><a class="nav-link" id="planning-menu-selection" role="link" tabindex="0">
+                <i class="fa fa-fw fa-coins"></i> <span>{{ __('tontine.menus.selection') }}</span>
+              </a></li>
             </ul>
 
             <ul class="sidebar-menu">

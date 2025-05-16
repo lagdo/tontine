@@ -16,6 +16,9 @@
                   </button>
                 </div>
                 <div class="btn-group ml-3" role="group">
+                  <button type="button" class="btn btn-primary" @jxnClick($rqFund->toggleFilter())><i class="fa fa-filter"></i></button>
+                </div>
+                <div class="btn-group ml-3" role="group">
                   <button type="button" class="btn btn-primary" @jxnClick($rqFund->render())><i class="fa fa-sync"></i></button>
                 </div>
               </div>

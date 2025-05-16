@@ -10,10 +10,10 @@ use Stringable;
 use function trans;
 
 /**
- * @databag planning.fund
- * @databag planning.pool
+ * @databag planning.member
+ * @databag planning.charge
  */
-class Finance extends Component
+class Participation extends Component
 {
     /**
      * @var string
@@ -41,7 +41,7 @@ class Finance extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.planning.finance', [
+        return $this->renderView('pages.planning.participation', [
             'guild' => $this->tenantService->guild(),
         ]);
     }
@@ -53,7 +53,7 @@ class Finance extends Component
     {
         $this->response->js('Tontine')->setSmScreenHandler('finance-sm-screens');
 
-        $this->cl(Fund\Fund::class)->render();
-        $this->cl(Pool\Pool::class)->render();
+        $this->cl(Member\Member::class)->render();
+        $this->cl(Charge\Charge::class)->render();
     }
 }

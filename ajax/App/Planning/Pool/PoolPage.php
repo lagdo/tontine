@@ -16,7 +16,7 @@ class PoolPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['planning.pool', 'pool.page'];
+    protected array $bagOptions = ['planning.pool', 'page'];
 
     public function __construct(private PoolService $poolService)
     {}
@@ -27,7 +27,7 @@ class PoolPage extends PageComponent
     protected function count(): int
     {
         $round = $this->tenantService->round();
-        $filter = $this->bag('planning.pool')->get('pool.filter', null);
+        $filter = $this->bag('planning.pool')->get('filter', null);
         return $this->poolService->getPoolDefCount($round, $filter);
     }
 
@@ -37,7 +37,7 @@ class PoolPage extends PageComponent
     public function html(): Stringable
     {
         $round = $this->tenantService->round();
-        $filter = $this->bag('planning.pool')->get('pool.filter', null);
+        $filter = $this->bag('planning.pool')->get('filter', null);
         return $this->renderView('pages.planning.pool.page', [
             'round' => $round,
             'defs' => $this->poolService->getPoolDefs($round, $filter, $this->currentPage()),
