@@ -28,12 +28,27 @@ class MemberPage extends PageComponent
     /**
      * @inheritDoc
      */
+    protected function count(): int
+    {
+        $guild = $this->tenantService->guild();
+        $search = $this->bag('guild.member')->get('search', '');
+        $filter = $this->bag('guild.member')->get('filter', null);
+
+        return $this->memberService->getMemberCount($guild, $search, $filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function html(): Stringable
     {
-        $search = $this->bag('member')->get('search', '');
+        $guild = $this->tenantService->guild();
+        $search = $this->bag('guild.member')->get('search', '');
+        $filter = $this->bag('guild.member')->get('filter', null);
 
         return $this->renderView('pages.guild.member.page', [
-            'members' => $this->memberService->getMembers($search, $this->currentPage()),
+            'members' => $this->memberService
+                ->getMembers($guild, $search, $filter, $this->currentPage()),
         ]);
     }
 
@@ -43,15 +58,5 @@ class MemberPage extends PageComponent
     protected function after()
     {
         $this->response->js('Tontine')->makeTableResponsive('content-member-page');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function count(): int
-    {
-        $search = $this->bag('member')->get('search', '');
-
-        return $this->memberService->getMemberCount($search);
     }
 }

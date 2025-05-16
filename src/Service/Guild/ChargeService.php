@@ -2,36 +2,35 @@
 
 namespace Siak\Tontine\Service\Guild;
 
-use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Model\Bill;
-use Siak\Tontine\Model\Charge;
-use Siak\Tontine\Service\DataSyncService;
+use Siak\Tontine\Model\ChargeDef;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Service\TenantService;
+use Exception;
 
 class ChargeService
 {
     /**
      * @param TenantService $tenantService
-     * @param DataSyncService $dataSyncService
      */
-    public function __construct(private TenantService $tenantService,
-        private DataSyncService $dataSyncService)
+    public function __construct(private TenantService $tenantService)
     {}
 
     /**
      * Get a paginated list of charges.
      *
+     * @param Guild $guild
+     * @param bool|null $filter
      * @param int $page
      *
      * @return Collection
      */
-    public function getCharges(int $page = 0): Collection
+    public function getCharges(Guild $guild, bool $filter = null, int $page = 0): Collection
     {
-        return $this->tenantService->guild()->charges()
-            // ->withCount(['oneoff_bills', 'round_bills', 'session_bills', 'libre_bills'])
+        return $guild->charges()
+            ->when($filter !== null, fn(Builder $query) => $query->active($filter))
             ->page($page, $this->tenantService->getLimit())
             ->orderBy('type', 'asc')
             ->orderBy('period', 'desc')
@@ -42,54 +41,54 @@ class ChargeService
     /**
      * Get the number of charges.
      *
+     * @param Guild $guild
+     * @param bool|null $filter
+     *
      * @return int
      */
-    public function getChargeCount(): int
+    public function getChargeCount(Guild $guild, bool $filter = null): int
     {
-        return $this->tenantService->guild()->charges()->count();
+        return $guild->charges()
+            ->when($filter !== null, fn(Builder $query) => $query->active($filter))
+            ->count();
     }
 
     /**
      * Get a single charge.
      *
+     * @param Guild $guild
      * @param int $chargeId    The charge id
      *
-     * @return Charge|null
+     * @return ChargeDef|null
      */
-    public function getCharge(int $chargeId): ?Charge
+    public function getCharge(Guild $guild, int $chargeId): ?ChargeDef
     {
-        return $this->tenantService->guild()->charges()
-            // ->withCount(['oneoff_bills', 'round_bills', 'session_bills', 'libre_bills'])
-            ->find($chargeId);
+        return $guild->charges()->find($chargeId);
     }
 
     /**
      * Add new charge.
      *
+     * @param Guild $guild
      * @param array $values
      *
      * @return bool
      */
-    public function createCharge(array $values): bool
+    public function createCharge(Guild $guild, array $values): bool
     {
-        DB::transaction(function() use($values) {
-            $guild = $this->tenantService->guild();
-            $charge = $guild->charges()->create($values);
-            // Create charges bills
-            $this->dataSyncService->chargeCreated($guild, $charge);
-        });
+        $guild->charges()->create($values);
         return true;
     }
 
     /**
      * Update a charge.
      *
-     * @param Charge $charge
+     * @param ChargeDef $charge
      * @param array $values
      *
      * @return bool
      */
-    public function updateCharge(Charge $charge, array $values): bool
+    public function updateCharge(ChargeDef $charge, array $values): bool
     {
         return $charge->update($values);
     }
@@ -97,11 +96,11 @@ class ChargeService
     /**
      * Toggle a charge.
      *
-     * @param Charge $charge
+     * @param ChargeDef $charge
      *
      * @return void
      */
-    public function toggleCharge(Charge $charge)
+    public function toggleCharge(ChargeDef $charge)
     {
         $charge->update(['active' => !$charge->active]);
     }
@@ -109,25 +108,15 @@ class ChargeService
     /**
      * Delete a charge.
      *
-     * @param Charge $charge
+     * @param ChargeDef $charge
      *
      * @return void
      */
-    public function deleteCharge(Charge $charge)
+    public function deleteCharge(ChargeDef $charge)
     {
-        // Delete the charge and the related bills.
-        // Will fail if a settlement exists for any of those bills.
         try
         {
-            DB::transaction(function() use($charge) {
-                $billIds = Bill::ofCharge($charge, true)->pluck('id');
-                $charge->oneoff_bills()->delete();
-                $charge->round_bills()->delete();
-                $charge->session_bills()->delete();
-                $charge->libre_bills()->delete();
-                Bill::whereIn('id', $billIds)->delete();
-                $charge->delete();
-            });
+            $charge->delete();
         }
         catch(Exception)
         {

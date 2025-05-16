@@ -53,7 +53,9 @@ class MemberFunc extends FuncComponent
     public function create(array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
-        $this->memberService->createMember($values);
+        $guild = $this->tenantService->guild();
+
+        $this->memberService->createMember($guild, $values);
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.member.messages.created'));
@@ -131,8 +133,9 @@ class MemberFunc extends FuncComponent
     public function createList(array $formValues)
     {
         $values = $this->parseMemberList($formValues['members'] ?? '');
+        $guild = $this->tenantService->guild();
 
-        $this->memberService->createMembers($values);
+        $this->memberService->createMembers($guild, $values);
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.member.messages.created'));
@@ -142,7 +145,8 @@ class MemberFunc extends FuncComponent
 
     public function edit(int $memberId)
     {
-        $member = $this->memberService->getMember($memberId);
+        $guild = $this->tenantService->guild();
+        $member = $this->memberService->getMember($guild, $memberId);
 
         $title = trans('tontine.member.titles.edit');
         $content = $this->renderView('pages.guild.member.edit')
@@ -164,7 +168,8 @@ class MemberFunc extends FuncComponent
      */
     public function update(int $memberId, array $formValues)
     {
-        $member = $this->memberService->getMember($memberId);
+        $guild = $this->tenantService->guild();
+        $member = $this->memberService->getMember($guild, $memberId);
         $values = $this->validator->validateItem($formValues);
 
         $this->memberService->updateMember($member, $values);
@@ -177,7 +182,8 @@ class MemberFunc extends FuncComponent
 
     public function toggle(int $memberId)
     {
-        $member = $this->memberService->getMember($memberId);
+        $guild = $this->tenantService->guild();
+        $member = $this->memberService->getMember($guild, $memberId);
         $this->memberService->toggleMember($member);
 
         $this->cl(MemberPage::class)->page();
@@ -185,7 +191,8 @@ class MemberFunc extends FuncComponent
 
     public function delete(int $memberId)
     {
-        $member = $this->memberService->getMember($memberId);
+        $guild = $this->tenantService->guild();
+        $member = $this->memberService->getMember($guild, $memberId);
         $this->memberService->deleteMember($member);
 
         $this->cl(MemberPage::class)->page();

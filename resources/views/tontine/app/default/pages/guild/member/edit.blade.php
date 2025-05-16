@@ -8,12 +8,6 @@
               </div>
             </div>
             <div class="form-group row">
-              {!! $html->label(__('common.labels.birthday'), 'birthday')->class('col-sm-3 col-form-label') !!}
-              <div class="col-md-6">
-                {!! $html->date('birthday', $member->birthday)->class('form-control') !!}
-              </div>
-            </div>
-            <div class="form-group row">
               {!! $html->label(__('common.labels.email'), 'email')->class('col-sm-3 col-form-label') !!}
               <div class="col-md-8">
                 {!! $html->text('email', $member->email)->class('form-control') !!}
