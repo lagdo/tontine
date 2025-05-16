@@ -65,7 +65,7 @@ class Guild extends Base
 
     public function members()
     {
-        return $this->hasMany(Member::class)->orderBy('name', 'asc');
+        return $this->hasMany(MemberDef::class)->orderBy('name', 'asc');
     }
 
     public function rounds()
@@ -100,7 +100,7 @@ class Guild extends Base
 
     public function charges()
     {
-        return $this->hasMany(Charge::class);
+        return $this->hasMany(ChargeDef::class);
     }
 
     public function categories()
