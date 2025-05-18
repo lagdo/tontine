@@ -1,4 +1,4 @@
-@inject('paymentService', 'Siak\Tontine\Service\Meeting\PaymentServiceInterface')
+@inject('paymentService', 'Siak\Tontine\Service\Payment\PaymentServiceInterface')
 @php
   $rqAmountFunc = rq(Ajax\App\Meeting\Session\Credit\Refund\AmountFunc::class);
 @endphp

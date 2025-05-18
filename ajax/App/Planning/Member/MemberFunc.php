@@ -23,7 +23,7 @@ class MemberFunc extends FuncComponent
 
     public function enable(int $defId)
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $this->memberService->enableMember($round, $defId);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.member.messages.enabled'));
@@ -33,7 +33,7 @@ class MemberFunc extends FuncComponent
 
     public function disable(int $defId)
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $this->memberService->disableMember($round, $defId);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.member.messages.disabled'));

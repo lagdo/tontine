@@ -1,4 +1,4 @@
-@if ($charge->is_active && !$charge->is_variable)
+@if (!$charge->is_variable)
 @php
   $rqSettlementFunc = rq(Ajax\App\Meeting\Session\Charge\Fixed\SettlementFunc::class);
 @endphp

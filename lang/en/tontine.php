@@ -209,6 +209,8 @@ return [
             'created' => "The members was successfully created.",
             'updated' => "The member was successfully updated.",
             'deleted' => "The member was successfully deleted.",
+            'enabled' => "The member was added to the current round.",
+            'disabled' => "The member was removed from the current round.",
         ],
         'questions' => [
             'delete' => "Delete this member?",
@@ -232,6 +234,8 @@ return [
             'created' => "The fee was successfully created.",
             'updated' => "The fee was successfully updated.",
             'deleted' => "The fee was successfully deleted.",
+            'enabled' => "The fee was added to the current round.",
+            'disabled' => "The fee was removed from the current round.",
         ],
         'questions' => [
             'delete' => "Delete this fee?",

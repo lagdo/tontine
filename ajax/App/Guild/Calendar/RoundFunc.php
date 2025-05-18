@@ -39,7 +39,8 @@ class RoundFunc extends FuncComponent
 
     public function create(array $formValues)
     {
-        $this->roundService->createRound($formValues);
+        $guild = $this->stash()->get('tenant.guild');
+        $this->roundService->createRound($guild, $formValues);
 
         $this->cl(RoundPage::class)->page(); // Back to current page
         $this->modal()->hide();
@@ -51,7 +52,8 @@ class RoundFunc extends FuncComponent
 
     public function edit(int $roundId)
     {
-        $round = $this->roundService->getRound($roundId);
+        $guild = $this->stash()->get('tenant.guild');
+        $round = $this->roundService->getRound($guild, $roundId);
 
         $title = trans('tontine.round.titles.edit');
         $content = $this->renderView('pages.guild.calendar.round.edit')->with('round', $round);
@@ -69,7 +71,8 @@ class RoundFunc extends FuncComponent
 
     public function update(int $roundId, array $formValues)
     {
-        $this->roundService->updateRound($roundId, $formValues);
+        $guild = $this->stash()->get('tenant.guild');
+        $this->roundService->updateRound($guild, $roundId, $formValues);
 
         $this->cl(RoundPage::class)->page(); // Back to current page
         $this->modal()->hide();
@@ -79,7 +82,8 @@ class RoundFunc extends FuncComponent
 
     public function delete(int $roundId)
     {
-        $this->roundService->deleteRound($roundId);
+        $guild = $this->stash()->get('tenant.guild');
+        $this->roundService->deleteRound($guild, $roundId);
 
         $this->cl(RoundPage::class)->page(); // Back to current page
         $this->alert()->title(trans('common.titles.success'))

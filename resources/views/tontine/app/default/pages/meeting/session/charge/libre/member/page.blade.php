@@ -27,7 +27,7 @@
                           <td @jxnBind($rqMemberName, $member->id)>@jxnHtml($rqMemberName)</td>
 @if ($charge->has_amount)
                           <td class="currency" id="member-{{ $member->id }}" data-member-id="{{ $member->id }}">
-@if (!$session->opened || !$charge->is_active)
+@if (!$session->opened)
                             @if ($member->bill !== null)<i class="fa fa-toggle-on"></i>@else<i class="fa fa-toggle-off">@endif
 @elseif ($member->bill !== null)
                             <a role="link" tabindex="0" class="btn-del-bill"><i class="fa fa-toggle-on"></i></a>

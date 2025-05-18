@@ -242,20 +242,16 @@ class Bill extends Base
     {
         return $query->addSelect(['bills.*'])
             ->where(function($query) use($charge, $withLibre) {
-                $query->orWhereHas('oneoff_bill', function($query) use($charge) {
-                        $query->where('charge_id', $charge->id);
-                    })
-                    ->orWhereHas('round_bill', function($query) use($charge) {
-                        $query->where('charge_id', $charge->id);
-                    })
-                    ->orWhereHas('session_bill', function($query) use($charge) {
-                        $query->where('charge_id', $charge->id);
-                    })
-                    ->when($withLibre, function($query) use($charge) {
-                        $query->orWhereHas('libre_bill', function($query) use($charge) {
-                            $query->where('charge_id', $charge->id);
-                        });
-                    });
+                $query
+                    ->orWhereHas('oneoff_bill', fn(Builder $qb) =>
+                        $qb->where('charge_id', $charge->id))
+                    ->orWhereHas('round_bill', fn(Builder $qb) =>
+                        $qb->where('charge_id', $charge->id))
+                    ->orWhereHas('session_bill', fn(Builder $qb) =>
+                        $qb->where('charge_id', $charge->id))
+                    ->when($withLibre, fn($qw) =>
+                        $qw->orWhereHas('libre_bill', fn(Builder $qb) =>
+                            $qb->where('charge_id', $charge->id)));
             });
     }
 
@@ -267,8 +263,18 @@ class Bill extends Base
      */
     public function scopeSearch(Builder $query, string $search): Builder
     {
-        return $query
-            ->when($search !== '', fn($query) => $query
-                ->where(DB::raw('lower(member)'), 'like', "%{$search}%"));
+        return $query->when($search !== '', fn($qs) => $qs
+            ->where(DB::raw('lower(member)'), 'like', "%{$search}%"));
+    }
+
+    /**
+     * @param  Builder  $query
+     * @param  bool  $lendable
+     *
+     * @return Builder
+     */
+    public function scopeLendable(Builder $query, bool $lendable): Builder
+    {
+        return $query->where('lendable', $lendable);
     }
 }

@@ -3,6 +3,7 @@
 namespace Ajax\App\Planning\Pool;
 
 use Ajax\App\Planning\PageComponent;
+use Siak\Tontine\Model\Session as SessionModel;
 use Stringable;
 
 /**
@@ -25,7 +26,8 @@ class SessionPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->poolService->getGuildSessionCount();
+        $guild = $this->stash()->get('tenant.guild');
+        return $this->poolService->getGuildSessionCount($guild);
     }
 
     /**
@@ -33,10 +35,11 @@ class SessionPage extends PageComponent
      */
     public function html(): Stringable
     {
+        $guild = $this->stash()->get('tenant.guild');
         return $this->renderView('pages.planning.pool.session.page', [
             'pool' => $this->stash()->get('planning.pool'),
             'sessions' => $this->poolService
-                ->getGuildSessions($this->currentPage(), orderAsc: false),
+                ->getGuildSessions($guild, $this->currentPage(), orderAsc: false),
         ]);
     }
 
@@ -48,9 +51,15 @@ class SessionPage extends PageComponent
         $this->response->js('Tontine')->makeTableResponsive('content-planning-sessions-page');
     }
 
-    private function getSessionPageNumber($session): int
+    /**
+     * @param SessionModel $session
+     *
+     * @return int
+     */
+    private function getSessionPageNumber(SessionModel $session): int
     {
-        $sessionCount = $this->poolService->getSessionCount($session, true, false);
+        $guild = $this->stash()->get('tenant.guild');
+        $sessionCount = $this->poolService->getSessionCount($guild, $session, true, false);
         return (int)($sessionCount / $this->tenantService->getLimit()) + 1;
     }
 

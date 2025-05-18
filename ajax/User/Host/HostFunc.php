@@ -48,7 +48,8 @@ class HostFunc extends FuncComponent
     public function create(array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
-        $this->userService->createInvite($values['email']);
+        $user = $this->tenantService->user();
+        $this->userService->createInvite($user, $values['email']);
 
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
@@ -59,7 +60,8 @@ class HostFunc extends FuncComponent
 
     public function cancel(int $inviteId)
     {
-        $this->userService->cancelInvite($inviteId);
+        $user = $this->tenantService->user();
+        $this->userService->cancelInvite($user, $inviteId);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.cancelled'));
 
@@ -68,7 +70,8 @@ class HostFunc extends FuncComponent
 
     public function delete(int $inviteId)
     {
-        $this->userService->deleteHostInvite($inviteId);
+        $user = $this->tenantService->user();
+        $this->userService->deleteHostInvite($user, $inviteId);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.deleted'));
 

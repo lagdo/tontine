@@ -11,8 +11,8 @@ use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Refund;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Meeting\FundService;
-use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
+use Siak\Tontine\Service\Meeting\Saving\FundService;
+use Siak\Tontine\Service\Payment\PaymentServiceInterface;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
@@ -64,7 +64,7 @@ class RefundService
         ?bool $onlyPaid, int $page = 0): Collection
     {
         return $this->getDebtsQuery($session, $fund, $onlyPaid, true)
-            ->orderBy('members.name')
+            ->orderBy('member_defs.name')
             ->orderBy('debts.id')
             ->page($page, $this->tenantService->getLimit())
             ->get()

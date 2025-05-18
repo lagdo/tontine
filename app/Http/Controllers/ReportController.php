@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Siak\Tontine\Service\Guild\RoundService;
-use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Siak\Tontine\Service\Report\Pdf\PdfPrinterService;
 use Siak\Tontine\Service\Report\ReportService;
 use Sqids\SqidsInterface;

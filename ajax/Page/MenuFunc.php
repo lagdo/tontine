@@ -46,11 +46,12 @@ class MenuFunc extends FuncComponent
 
     public function showGuilds(): void
     {
+        $user = $this->tenantService->user();
         $guild = $this->tenantService->guild();
         $title = trans('tontine.titles.choose');
         $content = $this->renderView('pages.select.guild', [
             'current' => $guild?->id ?? 0,
-            'guilds' => $this->guildService->getGuilds()->pluck('name', 'id'),
+            'guilds' => $this->guildService->getGuilds($user)->pluck('name', 'id'),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -80,7 +81,8 @@ class MenuFunc extends FuncComponent
 
     public function saveGuild(int $guildId)
     {
-        if(!($guild = $this->guildService->getUserOrGuestGuild($guildId)))
+        $user = $this->tenantService->user();
+        if(!($guild = $this->guildService->getUserOrGuestGuild($user, $guildId)))
         {
             return;
         }
@@ -132,7 +134,7 @@ class MenuFunc extends FuncComponent
         {
             return;
         }
-        if(!($round = $this->roundService->getRound($roundId)) ||
+        if(!($round = $this->roundService->getRound($guild, $roundId)) ||
             $this->roundService->getSessionCount($round) === 0)
         {
             return;

@@ -1,21 +1,31 @@
 <?php
 
-namespace Siak\Tontine\Service\Meeting;
+namespace Siak\Tontine\Service\Meeting\Session;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Bill;
-use Siak\Tontine\Model\Pool;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\DataSyncService;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Traits\WithTrait;
 
+use function tap;
 use function trans;
 
 class SessionService
 {
-    use SessionTrait;
+    use WithTrait;
+
+    /**
+     * @var bool
+     */
+    private bool $filterActive = false;
 
     /**
      * @param TenantService $tenantService
@@ -26,13 +36,123 @@ class SessionService
     {}
 
     /**
+     * Get the session statuses
+     *
+     * @return array
+     */
+    public function getSessionStatuses(): array
+    {
+        return [
+            Session::STATUS_PENDING => trans('tontine.session.status.pending'),
+            Session::STATUS_OPENED => trans('tontine.session.status.opened'),
+            Session::STATUS_CLOSED => trans('tontine.session.status.closed'),
+        ];;
+    }
+
+    /**
+     * @param bool $filter
+     *
+     * @return self
+     */
+    public function active(bool $filter = true): self
+    {
+        $this->filterActive = $filter;
+        return $this;
+    }
+
+    /**
+     * @param Round $round
+     *
+     * @return Relation
+     */
+    private function getSessionsQuery(Round $round): Relation
+    {
+        return $round->sessions()->when($this->filterActive,
+            fn(Builder $query) => $query->active());
+    }
+
+    /**
+     * Find a session.
+     *
+     * @param Round $round
+     * @param int $sessionId    The session id
+     *
+     * @return Session|null
+     */
+    public function getSession(Round $round, int $sessionId): ?Session
+    {
+        return tap($this->getSessionsQuery($round), fn($query) => $this->addWith($query))
+            ->find($sessionId);
+    }
+
+    /**
+     * Get the number of sessions in the selected round.
+     *
+     * @param Round $round
+     *
+     * @return int
+     */
+    public function getSessionCount(Round $round): int
+    {
+        return $this->getSessionsQuery($round)->count();
+    }
+
+    /**
+     * Get a paginated list of sessions in the selected round.
+     *
+     * @param Round $round
+     * @param int $page
+     * @param bool $orderAsc
+     *
+     * @return Collection
+     */
+    public function getSessions(Round $round, int $page = 0, bool $orderAsc = true): Collection
+    {
+        return tap($this->getSessionsQuery($round), fn($query) => $this->addWith($query))
+            ->orderBy('day_date', $orderAsc ? 'asc' : 'desc')
+            ->page($page, $this->tenantService->getLimit())
+            ->get();
+    }
+
+    /**
+     * Find a session.
+     *
+     * @param Guild $guild
+     * @param int $sessionId
+     *
+     * @return Session|null
+     */
+    public function getGuildSession(Guild $guild, int $sessionId): ?Session
+    {
+        return $guild->sessions()
+            ->when($this->filterActive, fn(Builder $query) => $query->active())
+            ->find($sessionId);
+    }
+
+    /**
+     * @param Round $round
+     * @param Session $session
+     * @param bool $withCurr Keep the provided session in the list
+     *
+     * @return Collection
+     */
+    public function getSessionIds(Round $round, Session $session, bool $withCurr = true): Collection
+    {
+        return $this->getSessionsQuery($round)
+            ->where('day_date', $withCurr ? '<=' : '<', $session->day_date)
+            ->pluck('sessions.id');
+    }
+
+    /**
      * Check if some pools still have no subscriptions.
+     *
+     * @param Round $round
      *
      * @return void
      */
-    public function checkPoolsSubscriptions()
+    public function checkPoolsSubscriptions(Round $round)
     {
-        if($this->tenantService->round()->pools()->whereDoesntHave('subscriptions')->count() > 0)
+        if($round->pools()->whereDoesntHave('subscriptions')->count() > 0)
         {
             throw new MessageException(trans('tontine.errors.action') .
                 '<br/>' . trans('tontine.pool.errors.no_subscription'));
@@ -40,66 +160,44 @@ class SessionService
     }
 
     /**
-     * Open a round.
-     *
-     * @param Round $round
-     *
-     * @return void
-     */
-    private function openRound(Round $round)
-    {
-        $round->update(['status' => Round::STATUS_OPENED]);
-    }
-
-    /**
-     * Close a round.
-     *
-     * @param Round $round
-     *
-     * @return void
-     */
-    public function closeRound(Round $round)
-    {
-        $round->update(['status' => Round::STATUS_CLOSED]);
-    }
-
-    /**
      * Sync a session with new members or new subscriptions.
      *
+     * @param Round $round
      * @param Session $session
      *
      * @return void
      */
-    private function syncSession(Session $session)
+    private function syncSession(Round $round, Session $session)
     {
-        DB::transaction(function() use($session) {
+        DB::transaction(function() use($round, $session) {
             // Don't sync a round if there are pools with no subscription.
-            // $this->checkPoolsSubscriptions();
+            // $this->checkPoolsSubscriptions($round);
 
             // Sync the round.
-            $session->round->update(['status' => Round::STATUS_OPENED]);
-            $this->dataSyncService->roundSynced($this->tenantService->guild(), $session->round);
+            $round->update(['status' => Round::STATUS_OPENED]);
+            $this->dataSyncService->roundSynced($round->guild, $session->round);
 
             // Sync the session
             $session->update(['status' => Session::STATUS_OPENED]);
-            $this->dataSyncService->sessionSynced($this->tenantService->guild(), $session);
+            $this->dataSyncService->sessionSynced($round->guild, $session);
         });
     }
 
     /**
      * Open a session.
      *
+     * @param Round $round
      * @param Session $session
      *
      * @return void
      */
-    public function openSession(Session $session)
+    public function openSession(Round $round, Session $session)
     {
         if($session->pending)
         {
             // If the session is getting opened for the first time, then
             // its also needs to get synced with charges and subscriptions.
-            $this->syncSession($session);
+            $this->syncSession($round, $session);
             return;
         }
         if(!$session->opened)
@@ -124,24 +222,24 @@ class SessionService
     /**
      * Resync all the already opened sessions.
      *
+     * @param Round $round
+     *
      * @return void
      */
-    public function resyncSessions()
+    public function resyncSessions(Round $round): void
     {
-        DB::transaction(function() {
+        DB::transaction(function() use($round) {
             // Don't sync a round if there are pools with no subscription.
-            // $this->checkPoolsSubscriptions();
+            // $this->checkPoolsSubscriptions($round);
 
             // Sync the round.
-            $round = $this->tenantService->round();
             $round->update(['status' => Round::STATUS_OPENED]);
-            $this->dataSyncService->roundSynced($this->tenantService->guild(), $round);
+            $this->dataSyncService->roundSynced($round->guild, $round);
 
             // Sync the sessions.
             $round->sessions()->opened()->get()
-                ->each(function($session) {
-                    $this->dataSyncService->sessionSynced($this->tenantService->guild(), $session);
-                });
+                ->each(fn($session) => $this->dataSyncService
+                    ->sessionSynced($round->guild, $session));
 
             // Update the bills amounts.
             /*
@@ -186,13 +284,14 @@ and "v_bills"."session_id" in (?, ?, ?, ?, ?)))
     /**
      * Find the prev session.
      *
+     * @param Round $round
      * @param Session $session
      *
      * @return Session|null
      */
-    public function getPrevSession(Session $session): ?Session
+    public function getPrevSession(Round $round, Session $session): ?Session
     {
-        return $this->tenantService->round()->sessions()->active()
+        return $round->sessions()->active()
             ->where('day_date', '<', $session->day_date)
             ->orderBy('day_date', 'desc')
             ->first();
@@ -201,13 +300,14 @@ and "v_bills"."session_id" in (?, ?, ?, ?, ?)))
     /**
      * Find the next session.
      *
+     * @param Round $round
      * @param Session $session
      *
      * @return Session|null
      */
-    public function getNextSession(Session $session): ?Session
+    public function getNextSession(Round $round, Session $session): ?Session
     {
-        return $this->tenantService->round()->sessions()->active()
+        return $round->sessions()->active()
             ->where('day_date', '>', $session->day_date)
             ->orderBy('day_date', 'asc')
             ->first();
@@ -237,23 +337,5 @@ and "v_bills"."session_id" in (?, ?, ?, ?, ?)))
     public function saveReport(Session $session, string $report): void
     {
         $session->update(['report' => $report]);
-    }
-
-    /**
-     * Find the unique receivable for a pool and a session.
-     *
-     * @param Pool $pool The pool
-     * @param Session $session The session
-     * @param int $receivableId
-     * @param string $notes
-     *
-     * @return int
-     */
-    public function saveReceivableNotes(Pool $pool, Session $session, int $receivableId, string $notes): int
-    {
-        return $session->receivables()
-            ->where('id', $receivableId)
-            ->whereIn('subscription_id', $pool->subscriptions()->pluck('id'))
-            ->update(['notes' => $notes]);
     }
 }

@@ -63,16 +63,6 @@ class ChargeDef extends Base
         'lendable',
     ];
 
-    public function guild()
-    {
-        return $this->belongsTo(Guild::class);
-    }
-
-    public function charges()
-    {
-        return $this->hasMany(Charge::class, 'def_id');
-    }
-
     public function isFee(): Attribute
     {
         return Attribute::make(
@@ -129,11 +119,14 @@ class ChargeDef extends Base
         );
     }
 
-    public function isActive(): Attribute
+    public function guild()
     {
-        return Attribute::make(
-            get: fn() => $this->active == true,
-        );
+        return $this->belongsTo(Guild::class);
+    }
+
+    public function charges()
+    {
+        return $this->hasMany(Charge::class, 'def_id');
     }
 
     /**

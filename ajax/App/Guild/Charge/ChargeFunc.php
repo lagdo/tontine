@@ -62,7 +62,7 @@ class ChargeFunc extends FuncComponent
     {
         $this->modal()->hide();
 
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
         [, $currency] = $this->localeService->getNameFromGuild($guild);
 
         $title = trans('tontine.charge.titles.add');
@@ -107,8 +107,8 @@ class ChargeFunc extends FuncComponent
                 $formValues['amount'] = 0;
             }
         }
+        $guild = $this->stash()->get('tenant.guild');
         $values = $this->validator->validateItem($formValues);
-        $guild = $this->tenantService->guild();
 
         $this->chargeService->createCharge($guild, $values);
         $this->alert()->title(trans('common.titles.success'))
@@ -123,7 +123,7 @@ class ChargeFunc extends FuncComponent
      */
     public function edit(int $chargeId)
     {
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
         $charge = $this->chargeService->getCharge($guild, $chargeId);
 
         [, $currency] = $this->localeService->getNameFromGuild($guild);
@@ -152,7 +152,7 @@ class ChargeFunc extends FuncComponent
      */
     public function update(int $chargeId, array $formValues)
     {
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
         $charge = $this->chargeService->getCharge($guild, $chargeId);
 
         // These fields cannot be changed
@@ -175,7 +175,7 @@ class ChargeFunc extends FuncComponent
 
     public function toggle(int $chargeId)
     {
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
         $charge = $this->chargeService->getCharge($guild, $chargeId);
         $this->chargeService->toggleCharge($charge);
 
@@ -184,7 +184,7 @@ class ChargeFunc extends FuncComponent
 
     public function delete(int $chargeId)
     {
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
         $charge = $this->chargeService->getCharge($guild, $chargeId);
         $this->chargeService->deleteCharge($charge);
 

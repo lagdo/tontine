@@ -3,7 +3,7 @@
 namespace Ajax\App\Report\Round;
 
 use Ajax\Component;
-use Siak\Tontine\Service\Meeting\SummaryService;
+use Siak\Tontine\Service\Meeting\Session\SummaryService;
 use Stringable;
 
 use function trans;
@@ -34,7 +34,7 @@ class Pool extends Component
      */
     public function refresh(int $poolId)
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $pool = $round->pools()
             ->withCount('subscriptions')
             ->find($poolId);

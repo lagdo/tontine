@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Service\Guild;
 
 use Illuminate\Support\Collection;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\PoolDef;
 use Siak\Tontine\Service\TenantService;
 
@@ -17,13 +18,14 @@ class PoolService
     /**
      * Get a paginated list of pools.
      *
+     * @param Guild $guild
      * @param int $page
      *
      * @return Collection
      */
-    public function getPools(int $page = 0): Collection
+    public function getPools(Guild $guild, int $page = 0): Collection
     {
-        return $this->tenantService->guild()->pools()
+        return $guild->pools()
             ->orderBy('id')
             ->page($page, $this->tenantService->getLimit())
             ->get();
@@ -32,35 +34,39 @@ class PoolService
     /**
      * Get the number of pools.
      *
+     * @param Guild $guild
+     *
      * @return int
      */
-    public function getPoolCount(): int
+    public function getPoolCount(Guild $guild): int
     {
-        return $this->tenantService->guild()->pools()->count();
+        return $guild->pools()->count();
     }
 
     /**
      * Get a single pool.
      *
-     * @param int $poolId    The pool id
+     * @param Guild $guild
+     * @param int $poolId
      *
      * @return PoolDef|null
      */
-    public function getPool(int $poolId): ?PoolDef
+    public function getPool(Guild $guild, int $poolId): ?PoolDef
     {
-        return $this->tenantService->guild()->pools()->withCount('pools')->find($poolId);
+        return $guild->pools()->withCount('pools')->find($poolId);
     }
 
     /**
      * Add a new pool.
      *
+     * @param Guild $guild
      * @param array $values
      *
      * @return bool
      */
-    public function createPool(array $values): bool
+    public function createPool(Guild $guild, array $values): bool
     {
-        $this->tenantService->guild()->pools()->create($values);
+        $guild->pools()->create($values);
         return true;
     }
 
@@ -102,14 +108,13 @@ class PoolService
     }
 
     /**
+     * @param Guild $guild
      * @param int $count
      *
      * @return Collection
      */
-    public function getFakePools(int $count): Collection
+    public function getFakePools(Guild $guild, int $count): Collection
     {
-        return PoolDef::factory()->count($count)->make([
-            'guild_id' => $this->tenantService->guild(),
-        ]);
+        return PoolDef::factory()->count($count)->make(['guild_id' => $guild]);
     }
 }

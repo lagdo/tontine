@@ -9,7 +9,7 @@
                     <div class="col-auto ml-auto">
                       <div class="input-group">
                         {!! $html->select('fund', $funds, $fund?->id ?? 0)->id('profits-fund-id')
-                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
+                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" @jxnClick($rqProfit
                             ->fund($selectFundId))><i class="fa fa-caret-right"></i></button>

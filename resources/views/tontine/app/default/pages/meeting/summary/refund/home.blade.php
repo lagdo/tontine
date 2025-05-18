@@ -11,7 +11,7 @@
 @if($funds->count() > 1)
                         <div class="input-group">
                           {!! $html->select('fund_id', $funds, $fund?->id ?? 0)->id('refunds-fund-id')
-                            ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
+                            ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') !!}
                           <div class="input-group-append">
                             <button type="button" class="btn btn-primary" @jxnClick($rqRefund->fund($fundId))><i class="fa fa-caret-right"></i></button>
                           </div>

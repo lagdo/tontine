@@ -13,7 +13,7 @@
               <div class="col-auto mb-2 pr-0 mr-0">
                 <div class="input-group float-left">
                   {{ $html->select('session_id', $sessions, 0)->id('report-select-session')
-                    ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') }}
+                    ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') }}
                   <div class="input-group-append">
                     <button type="button" class="btn btn-primary" @jxnClick($rqSession->showSession($sessionId))><i class="fa fa-caret-right"></i></button>
                   </div>
@@ -27,7 +27,7 @@
               <div class="col-auto mb-2 pr-0 mr-0">
                 <div class="input-group float-left">
                   {{ $html->select('member_id', $members, 0)->id('report-select-member')
-                    ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') }}
+                    ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') }}
                   <div class="input-group-append">
                     <button type="button" class="btn btn-primary" @jxnClick($rqSession->showMember($sessionId, $memberId))><i class="fa fa-caret-right"></i></button>
                   </div>

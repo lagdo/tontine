@@ -6,7 +6,7 @@
   $sessionSettlementAmount = $settlements['amount']['session'][$charge->id] ?? 0;
 @endphp
                         <tr>
-                          <td @if (!$charge->is_active) style="text-decoration:line-through" @endif>
+                          <td>
                             {{ $charge->name }}<br/>{{ $locale->formatMoney($charge->amount) }}
                           </td>
                           <td class="currency">

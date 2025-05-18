@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Presence;
 
 use Ajax\FuncComponent;
-use Siak\Tontine\Service\Meeting\PresenceService;
+use Siak\Tontine\Service\Presence\PresenceService;
 
 /**
  * @databag meeting.presence
@@ -23,7 +23,9 @@ class PresenceFunc extends FuncComponent
         $this->bag('meeting.presence')->set('member.id', 0);
         $this->bag('meeting.presence')->set('member.page', 1);
 
-        $this->stash()->set('presence.session', $this->presenceService->getSession($sessionId));
+        $round = $this->stash()->get('tenant.round');
+        $session = $this->presenceService->getSession($round, $sessionId);
+        $this->stash()->set('presence.session', $session);
 
         $this->cl(Member::class)->render();
     }
@@ -34,7 +36,9 @@ class PresenceFunc extends FuncComponent
         $this->bag('meeting.presence')->set('session.id', 0);
         $this->bag('meeting.presence')->set('session.page', 1);
 
-        $this->stash()->set('presence.member', $this->presenceService->getMember($memberId));
+        $round = $this->stash()->get('tenant.round');
+        $member = $this->presenceService->getMember($round, $memberId);
+        $this->stash()->set('presence.member', $member);
 
         $this->cl(Session::class)->render();
     }

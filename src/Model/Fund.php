@@ -44,6 +44,34 @@ class Fund extends Base
     ];
 
     /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = [
+        'def',
+    ];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        // Scope for fund sessions. Always applied by default.
+        static::addGlobalScope('sessions', function (Builder $query) {
+            $query->addSelect([
+                'funds.*',
+                'v.end_date',
+                'v.start_date',
+                'v.interest_date',
+                'v.sessions_count',
+            ])->join(DB::raw('v_funds as v'), 'v.fund_id', '=', 'funds.id');
+        });
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -57,15 +85,6 @@ class Fund extends Base
             'interest_date' => 'datetime:Y-m-d',
         ];
     }
-
-    /**
-     * The relationships that should always be loaded.
-     *
-     * @var array
-     */
-    protected $with = [
-        'def',
-    ];
 
     public function title(): Attribute
     {
@@ -119,25 +138,6 @@ class Fund extends Base
         return Attribute::make(
             get: fn() => $this->options['amount']['profit'] ?? 0,
         );
-    }
-
-    /**
-     * The "booted" method of the model.
-     *
-     * @return void
-     */
-    protected static function booted()
-    {
-        // Scope for fund sessions. Always applied by default.
-        static::addGlobalScope('sessions', function (Builder $query) {
-            $query->addSelect([
-                'funds.*',
-                'v.end_date',
-                'v.start_date',
-                'v.interest_date',
-                'v.sessions_count',
-            ])->join(DB::raw('v_funds as v'), 'v.fund_id', '=', 'funds.id');
-        });
     }
 
     /**

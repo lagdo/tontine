@@ -26,7 +26,7 @@ class FundPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.fund')->get('filter', null);
         return $this->fundService->getFundDefCount($round, $filter);
     }
@@ -36,7 +36,7 @@ class FundPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.fund')->get('filter', null);
         return $this->renderView('pages.planning.fund.page', [
             'round' => $round,

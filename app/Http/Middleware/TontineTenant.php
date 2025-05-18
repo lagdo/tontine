@@ -42,8 +42,11 @@ class TontineTenant
         // First try to get the current guild id from the databag.
         $guild = null;
         $guildId = $tenantDatabag->get('guild.id', 0);
-        if($guildId > 0 &&
-            ($guild = $this->guildService->getUserOrGuestGuild($guildId)) !== null)
+        if($guildId > 0)
+        {
+            $guild = $this->guildService->getUserOrGuestGuild($user, $guildId);
+        }
+        if($guild !== null)
         {
             $this->tenantService->setGuild($guild);
             return $guild;
@@ -52,11 +55,11 @@ class TontineTenant
         // Try to get the latest guild the user worked on.
         if(($guildId = $user->properties['latest']['guild'] ?? 0) > 0)
         {
-            $guild = $this->guildService->getUserOrGuestGuild($guildId);
+            $guild = $this->guildService->getUserOrGuestGuild($user, $guildId);
         }
         if(!$guild)
         {
-            $guild = $this->guildService->getFirstGuild();
+            $guild = $this->guildService->getFirstGuild($user);
         }
         if($guild !== null)
         {
@@ -120,11 +123,14 @@ class TontineTenant
         $user = auth()->user();
         $this->tenantService->setUser($user);
 
-        if(($guild = $this->setLatestGuild($user)) !== null)
-        {
-            $this->setLatestRound($guild);
-        }
+        $guild = $this->setLatestGuild($user);
+        $round = $guild === null ? null : $this->setLatestRound($guild);;
+
         view()->share('guild', $guild);
+
+        $stash = jaxon()->di()->getStash();
+        $stash->set('tenant.guild', $guild);
+        $stash->set('tenant.round', $round);
 
         return $next($request);
     }

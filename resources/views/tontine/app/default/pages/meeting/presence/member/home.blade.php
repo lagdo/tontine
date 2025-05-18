@@ -11,7 +11,7 @@
                       {{ __('tontine.menus.presences') }}: {{ __('tontine.titles.members') }}
 @else
                       {{ __('tontine.titles.presences', ['of' => $session->title]) }} ({{
-                        $memberCount - ($session->absents_count ?? 0) }}/{{ $memberCount }})
+                        $memberCount - ($session->absences_count ?? 0) }}/{{ $memberCount }})
 @endif
                     </h2>
                   </div>
@@ -40,7 +40,7 @@
                     <div class="col-auto">
                       <div class="input-group">
                         {!! $html->text('search', '')->id('txt-presence-members-search')
-                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
+                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" @jxnClick($rqMember
                             ->search(jq('#txt-presence-members-search')->val()))><i class="fa fa-search"></i></button>

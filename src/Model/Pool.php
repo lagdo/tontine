@@ -39,6 +39,24 @@ class Pool extends Base
     ];
 
     /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        // Scope for pool sessions. Always applied by default.
+        static::addGlobalScope('sessions', function (Builder $query) {
+            $query->addSelect([
+                'pools.*',
+                'vp.end_date',
+                'vp.start_date',
+                'vp.sessions_count',
+            ])->join(DB::raw('v_pools as vp'), 'vp.pool_id', '=', 'pools.id');
+        });
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -92,24 +110,6 @@ class Pool extends Base
         return Attribute::make(
             get: fn() => ($this->def->properties['remit']['auction'] ?? false) === true,
         );
-    }
-
-    /**
-     * The "booted" method of the model.
-     *
-     * @return void
-     */
-    protected static function booted()
-    {
-        // Scope for pool sessions. Always applied by default.
-        static::addGlobalScope('sessions', function (Builder $query) {
-            $query->addSelect([
-                'pools.*',
-                'vp.end_date',
-                'vp.start_date',
-                'vp.sessions_count',
-            ])->join(DB::raw('v_pools as vp'), 'vp.pool_id', '=', 'pools.id');
-        });
     }
 
     /**

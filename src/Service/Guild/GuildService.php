@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\FundDef;
 use Siak\Tontine\Model\Guild;
+use Siak\Tontine\Model\User;
 use Siak\Tontine\Service\TenantService;
 
 use function config;
@@ -24,13 +25,14 @@ class GuildService
     /**
      * Get a paginated list of guilds in the selected round.
      *
+     * @param User $user
      * @param int $page
      *
      * @return Collection
      */
-    public function getGuilds(int $page = 0): Collection
+    public function getGuilds(User $user, int $page = 0): Collection
     {
-        return $this->tenantService->user()->guilds()
+        return $user->guilds()
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -38,55 +40,62 @@ class GuildService
     /**
      * Get the number of guilds in the selected round.
      *
+     * @param User $user
+     *
      * @return int
      */
-    public function getGuildCount(): int
+    public function getGuildCount(User $user): int
     {
-        return $this->tenantService->user()->guilds()->count();
+        return $user->guilds()->count();
     }
 
     /**
      * Get a single guild.
      *
+     * @param User $user
      * @param int $guildId    The guild id
      *
      * @return Guild|null
      */
-    public function getGuild(int $guildId): ?Guild
+    public function getGuild(User $user, int $guildId): ?Guild
     {
-        return $this->tenantService->user()->guilds()->find($guildId);
+        return $user->guilds()->find($guildId);
     }
 
     /**
+     * @param User $user
+     *
      * @return Builder|Relation
      */
-    public function getGuestGuildsQuery(): Builder|Relation
+    public function getGuestGuildsQuery(User $user): Builder|Relation
     {
-        return Guild::whereHas('invites', function(Builder $query) {
-            $query->where('guest_id', $this->tenantService->user()->id);
-        });
+        return Guild::whereHas('invites', fn(Builder $query) =>
+            $query->where('guest_id', $user->id));
     }
 
     /**
      * Check if the user has guest guilds
      *
+     * @param User $user
+     *
      * @return bool
      */
-    public function hasGuestGuilds(): bool
+    public function hasGuestGuilds(User $user): bool
     {
-        return $this->getGuestGuildsQuery()->exists();
+        return $this->getGuestGuildsQuery($user)->exists();
     }
 
     /**
      * Get a paginated list of guest guilds.
      *
+     * @param User $user
      * @param int $page
      *
      * @return Collection
      */
-    public function getGuestGuilds(int $page = 0): Collection
+    public function getGuestGuilds(User $user, int $page = 0): Collection
     {
-        return $this->getGuestGuildsQuery()
+        return $this->getGuestGuildsQuery($user)
             ->with(['user'])
             ->orderBy('guilds.id')
             ->page($page, $this->tenantService->getLimit())
@@ -97,23 +106,26 @@ class GuildService
     /**
      * Get the number of guest guilds.
      *
+     * @param User $user
+     *
      * @return int
      */
-    public function getGuestGuildCount(): int
+    public function getGuestGuildCount(User $user): int
     {
-        return $this->getGuestGuildsQuery()->count();
+        return $this->getGuestGuildsQuery($user)->count();
     }
 
     /**
      * Get a single guild.
      *
+     * @param User $user
      * @param int $guildId    The guild id
      *
      * @return Guild|null
      */
-    public function getGuestGuild(int $guildId): ?Guild
+    public function getGuestGuild(User $user, int $guildId): ?Guild
     {
-        return tap($this->getGuestGuildsQuery()->find($guildId), function($guild) {
+        return tap($this->getGuestGuildsQuery($user)->find($guildId), function($guild) {
             if($guild !== null)
             {
                 $guild->isGuest = true;
@@ -124,34 +136,39 @@ class GuildService
     /**
      * Get a single guild.
      *
+     * @param User $user
      * @param int $guildId    The guild id
      *
      * @return Guild|null
      */
-    public function getUserOrGuestGuild(int $guildId): ?Guild
+    public function getUserOrGuestGuild(User $user, int $guildId): ?Guild
     {
-        return $this->getGuild($guildId) ?? $this->getGuestGuild($guildId);
+        return $this->getGuild($user, $guildId) ??
+            $this->getGuestGuild($user, $guildId);
     }
 
     /**
+     * @param User $user
+     *
      * @return Guild|null
      */
-    public function getFirstGuild(): ?Guild
+    public function getFirstGuild(User $user): ?Guild
     {
-        return $this->getGuilds()->first() ?? $this->getGuestGuilds()->first();
+        return $this->getGuilds($user)->first() ?? $this->getGuestGuilds($user)->first();
     }
 
     /**
      * Add a new guild.
      *
+     * @param User $user
      * @param array $values
      *
      * @return Guild|null
      */
-    public function createGuild(array $values): ?Guild
+    public function createGuild(User $user, array $values): ?Guild
     {
-        return DB::transaction(function() use($values) {
-            $guild = $this->tenantService->user()->guilds()->create($values);
+        return DB::transaction(function() use($user, $values) {
+            $guild = $user->guilds()->create($values);
             // Also create the default savings fund for the new guild.
             $fund = $guild->funds()->create(['title' => '', 'active' => true]);
             $this->setDefaultFund($guild, $fund);
@@ -162,26 +179,28 @@ class GuildService
     /**
      * Update a guild.
      *
-     * @param int $id
+     * @param User $user
+     * @param int $guildId
      * @param array $values
      *
      * @return bool
      */
-    public function updateGuild(int $id, array $values): bool
+    public function updateGuild(User $user, int $guildId, array $values): bool
     {
-        return $this->tenantService->user()->guilds()->where('id', $id)->update($values);
+        return $user->guilds()->where('id', $guildId)->update($values);
     }
 
     /**
      * Delete a guild.
      *
-     * @param int $id
+     * @param User $user
+     * @param int $guildId
      *
      * @return void
      */
-    public function deleteGuild(int $id)
+    public function deleteGuild(User $user, int $guildId)
     {
-        $guild = $this->tenantService->user()->guilds()->find($id);
+        $guild = $user->guilds()->find($guildId);
         if(!$guild)
         {
             return;
@@ -200,11 +219,13 @@ class GuildService
     /**
      * Get the guild options
      *
+     * @param Guild $guild
+     *
      * @return array
      */
-    public function getGuildOptions(): array
+    public function getGuildOptions(Guild $guild): array
     {
-        return $this->tenantService->guild()->properties;
+        return $guild->properties;
     }
 
     /**
@@ -212,9 +233,9 @@ class GuildService
      *
      * @return string
      */
-    public function getReportTemplate(): string
+    public function getReportTemplate(Guild $guild): string
     {
-        $options = $this->getGuildOptions();
+        $options = $this->getGuildOptions($guild);
         return $options['reports']['template'] ??
             config('tontine.templates.report', 'default');
     }
@@ -222,13 +243,13 @@ class GuildService
     /**
      * Save the guild options
      *
+     * @param Guild $guild
      * @param array $options
      *
      * @return void
      */
-    public function saveGuildOptions(array $options)
+    public function saveGuildOptions(Guild $guild, array $options)
     {
-        $guild = $this->tenantService->guild();
         $properties = $guild->properties;
         $properties['reports'] = $options['reports'];
         $guild->saveProperties($properties);

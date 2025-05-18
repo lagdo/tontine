@@ -209,6 +209,8 @@ return [
             'created' => "Les membres ont été ajoutés.",
             'updated' => "Le membre a été modifié.",
             'deleted' => "Le membre a été supprimé.",
+            'enabled' => "Le membre a été ajouté au tour courant.",
+            'disabled' => "Le membre a été enlevé du tour courant.",
         ],
         'questions' => [
             'delete' => "Supprimer ce membre ?",
@@ -232,6 +234,8 @@ return [
             'created' => "Le frais a été ajouté.",
             'updated' => "Le frais a été modifié.",
             'deleted' => "Le frais a été supprimé.",
+            'enabled' => "Le frais a été ajouté au tour courant.",
+            'disabled' => "Le frais a été enlevé du tour courant.",
         ],
         'questions' => [
             'delete' => "Supprimer ce frais ?",

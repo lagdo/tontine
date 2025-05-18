@@ -8,7 +8,7 @@ use Ajax\Page\SectionTitle;
 use Siak\Tontine\Model\Member as MemberModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Guild\MemberService;
-use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
 /**
@@ -51,7 +51,7 @@ class Session extends Component
      */
     public function html(): Stringable
     {
-        $sessions = $this->sessionService->getRoundSessions(orderAsc: false)
+        $sessions = $this->sessionService->getSessions(orderAsc: false)
             ->filter(fn($session) => ($session->opened || $session->closed));
         return $this->renderView('pages.report.session.home', [
             'session' => $sessions->first(),
@@ -65,7 +65,7 @@ class Session extends Component
      */
     protected function after()
     {
-        $sessions = $this->sessionService->getRoundSessions(orderAsc: false)
+        $sessions = $this->sessionService->getSessions(orderAsc: false)
             ->filter(fn($session) => ($session->opened || $session->closed));
         if($sessions->count() > 0)
         {

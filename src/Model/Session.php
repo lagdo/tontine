@@ -188,7 +188,7 @@ class Session extends Base
         return $this->belongsToMany(Pool::class, 'pool_session_disabled');
     }
 
-    public function absents()
+    public function absences()
     {
         return $this->belongsToMany(Member::class, 'absences');
     }

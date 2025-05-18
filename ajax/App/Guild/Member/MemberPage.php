@@ -30,7 +30,7 @@ class MemberPage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
         $search = $this->bag('guild.member')->get('search', '');
         $filter = $this->bag('guild.member')->get('filter', null);
 
@@ -42,7 +42,7 @@ class MemberPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
         $search = $this->bag('guild.member')->get('search', '');
         $filter = $this->bag('guild.member')->get('filter', null);
 

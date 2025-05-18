@@ -27,8 +27,10 @@ class SessionPage extends PageComponent
 
     protected function getRound()
     {
+        $guild = $this->stash()->get('tenant.guild');
         $roundId = $this->bag('guild.calendar')->get('round.id');
-        $this->stash()->set('guild.calendar.round', $this->roundService->getRound($roundId));
+        $round = $this->roundService->getRound($guild, $roundId);
+        $this->stash()->set('guild.calendar.round', $round);
     }
 
     /**

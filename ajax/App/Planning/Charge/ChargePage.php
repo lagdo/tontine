@@ -26,7 +26,7 @@ class ChargePage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.charge')->get('filter', null);
         return $this->chargeService->getChargeDefCount($round, $filter);
     }
@@ -36,7 +36,7 @@ class ChargePage extends PageComponent
      */
     public function html(): Stringable
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.charge')->get('filter', null);
         return $this->renderView('pages.planning.charge.page', [
             'round' => $round,

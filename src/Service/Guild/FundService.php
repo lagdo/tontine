@@ -5,6 +5,7 @@ namespace Siak\Tontine\Service\Guild;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\FundDef;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Service\TenantService;
 
 class FundService
@@ -18,13 +19,14 @@ class FundService
     /**
      * Get a paginated list of funds.
      *
+     * @param Guild $guild
      * @param int $page
      *
      * @return Collection
      */
-    public function getFunds(int $page = 0): Collection
+    public function getFunds(Guild $guild, int $page = 0): Collection
     {
-        return $this->tenantService->guild()->funds()->user()
+        return $guild->funds()->user()
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -32,47 +34,52 @@ class FundService
     /**
      * Get the number of funds.
      *
+     * @param Guild $guild
+     *
      * @return int
      */
-    public function getFundCount(): int
+    public function getFundCount(Guild $guild): int
     {
-        return $this->tenantService->guild()->funds()->user()->count();
+        return $guild->funds()->user()->count();
     }
 
     /**
      * Get a single fund.
      *
+     * @param Guild $guild
      * @param int $fundId    The fund id
      * @param bool $onlyActive
      * @param bool $withDefault
      *
      * @return FundDef|null
      */
-    public function getFund(int $fundId, bool $onlyActive = false, bool $withDefault = false): ?FundDef
+    public function getFund(Guild $guild, int $fundId,
+        bool $onlyActive = false, bool $withDefault = false): ?FundDef
     {
         if($withDefault && $fundId === 0)
         {
-            return $this->tenantService->guild()->default_fund;
+            return $guild->default_fund;
         }
 
-        $fund = $this->tenantService->guild()->funds()
+        $fund = $guild->funds()
             ->when($onlyActive, fn(Builder $query) => $query->active())
             ->withCount('funds')
             ->find($fundId);
-        return $fund ?? ($withDefault ? $this->tenantService->guild()->default_fund : null);
+        return $fund ?? ($withDefault ? $guild->default_fund : null);
     }
 
     /**
      * Add new fund.
      *
+     * @param Guild $guild
      * @param array $values
      *
      * @return bool
      */
-    public function createFund(array $values): bool
+    public function createFund(Guild $guild, array $values): bool
     {
         $values['type'] = FundDef::TYPE_USER;
-        $this->tenantService->guild()->funds()->create($values);
+        $guild->funds()->create($values);
 
         return true;
     }
@@ -107,13 +114,14 @@ class FundService
     /**
      * Delete a fund.
      *
+     * @param Guild $guild
      * @param FundDef $fund
      *
      * @return void
      */
-    public function deleteFund(FundDef $fund)
+    public function deleteFund(Guild $guild, FundDef $fund)
     {
-        if($fund->id === $this->tenantService->guild()->default_fund->id)
+        if($fund->id === $guild->default_fund->id)
         {
             // Cannot delete the default fund.
             return;

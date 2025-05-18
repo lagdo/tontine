@@ -8,7 +8,7 @@ use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Saving;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
-use Siak\Tontine\Service\Meeting\FundService;
+use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\TenantService;
 
 use function gmp_gcd;
@@ -116,9 +116,10 @@ class ProfitService
         $savings = $fund->savings()
             ->select('savings.*')
             ->join('members', 'members.id', '=', 'savings.member_id')
+            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
             ->join('sessions', 'sessions.id', '=', 'savings.session_id')
             ->whereIn('sessions.id', $sessions->pluck('id'))
-            ->orderBy('members.name', 'asc')
+            ->orderBy('member_defs.name', 'asc')
             ->orderBy('sessions.day_date', 'asc')
             ->with(['session', 'member'])
             ->get();

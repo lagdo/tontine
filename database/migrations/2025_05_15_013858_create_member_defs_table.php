@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // The v_bills view depends on members data and must be updated.
         $sql = <<<SQL
 drop view if exists v_bills
 SQL;
@@ -47,9 +48,7 @@ SQL;
             $table->unsignedBigInteger('def_id')->nullable();
             $table->foreign('def_id')->references('id')->on('member_defs');
             $table->unique(['round_id', 'def_id']);
-        });
-
-        Schema::table('members', function(Blueprint $table) {
+            // Delete the duplicated columns
             $table->dropColumn(['name', 'email', 'phone', 'address',
                 'city', 'registered_at', 'birthday', 'active', 'guild_id']);
         });
@@ -57,39 +56,37 @@ SQL;
         // Create a temp view
         $createViewQuery = <<<SQL
 create view tmp_v_round_member as
-    select distinct rb.member_id, rb.round_id
-        from round_bills rb
-    union select distinct sb.member_id, s.round_id
-        from session_bills sb
-        inner join sessions s on s.id=sb.session_id
-    union select distinct ob.member_id, min(r.id) as round_id
-        from oneoff_bills ob
-        inner join members m on m.id=ob.member_id
-        inner join member_defs md on m.def_id = md.id
-        inner join rounds r on r.guild_id=md.guild_id
-        group by ob.member_id
-    union select distinct lb.member_id, s.round_id
-        from libre_bills lb
-        inner join sessions s on s.id=lb.session_id
-    union select distinct l.member_id, s.round_id
+    select distinct l.member_id, s.round_id
         from loans l
-        inner join sessions s on s.id=l.session_id
+        inner join sessions s on s.id = l.session_id
     union select distinct v.member_id, s.round_id
         from savings v
-        inner join sessions s on s.id=v.session_id
+        inner join sessions s on s.id = v.session_id
     union select distinct o.member_id, s.round_id
         from outflows o
-        inner join sessions s on s.id=o.session_id
+        inner join sessions s on s.id = o.session_id
         where o.member_id is not null
     union select distinct a.member_id, s.round_id
         from absences a
-        inner join sessions s on s.id=a.session_id
+        inner join sessions s on s.id = a.session_id
     union select distinct s.member_id, p.round_id
         from subscriptions s
-        inner join pools p on p.id=s.pool_id
+        inner join pools p on p.id = s.pool_id
     union select distinct s.host_id as member_id, s.round_id
-        from sessions s
-        where s.host_id is not null
+        from sessions s where s.host_id is not null
+    union select distinct lb.member_id, s.round_id
+        from libre_bills lb
+        inner join sessions s on s.id = lb.session_id
+    union select distinct sb.member_id, s.round_id
+        from session_bills sb
+        inner join sessions s on s.id = sb.session_id
+    union select distinct rb.member_id, rb.round_id
+        from round_bills rb
+    union select distinct ob.member_id, min(r.id) as round_id
+        from oneoff_bills ob
+        inner join member_defs md on md.id = ob.member_id
+        inner join rounds r on r.guild_id = md.guild_id
+        group by ob.member_id
 SQL;
         DB::statement($createViewQuery);
 
@@ -98,27 +95,79 @@ SQL;
             DB::statement("select setval('members_id_seq', (select MAX(id) FROM members))");
         }
 
-        // Create new entries for members
-        $tables = ['round_bills', 'session_bills', 'oneoff_bills', 'libre_bills',
-            'subscriptions', 'loans', 'savings', 'outflows', 'absences'];
-        DB::table('tmp_v_round_member')
-            ->distinct()
-            ->cursor()
-            ->each(function($rm) use($tables) {
-                $memberId = DB::table('members')->insertGetId([
-                    'round_id' => $rm->round_id,
-                    'def_id' => $rm->member_id
-                ]);
-                foreach($tables as $table)
-                {
-                    DB::table($table)
-                        ->where(['member_id' => $rm->member_id])
-                        ->update(['member_id' => $memberId]);
-                }
-                DB::table('sessions')
-                    ->where(['host_id' => $rm->member_id])
-                    ->update(['host_id' => $memberId]);
-            });
+        // Add new entries to the members table
+        $insertQuery = <<<SQL
+insert into members(round_id,def_id)
+    select distinct round_id,member_id from tmp_v_round_member
+SQL;
+        DB::statement($insertQuery);
+
+        // Drop the temp view
+        $dropViewQuery = <<<SQL
+drop view if exists tmp_v_round_member
+SQL;
+        DB::statement($dropViewQuery);
+
+        // Update the foreign keys with the new members ids
+        $updateQuery = <<<SQL
+update loans lo set member_id = (select id from members m
+    where m.def_id = lo.member_id and m.round_id is not null and
+        m.round_id = (select round_id from sessions se where se.id = lo.session_id));
+SQL;
+        DB::statement($updateQuery);
+        $updateQuery = <<<SQL
+update savings sa set member_id = (select id from members m
+    where m.def_id = sa.member_id and m.round_id is not null and
+        m.round_id = (select round_id from sessions se where se.id = sa.session_id));
+SQL;
+        DB::statement($updateQuery);
+        $updateQuery = <<<SQL
+update outflows ou set member_id = (select id from members m
+    where m.def_id = ou.member_id and m.round_id is not null and
+        m.round_id = (select round_id from sessions se where se.id = ou.session_id));
+SQL;
+        DB::statement($updateQuery);
+        $updateQuery = <<<SQL
+update absences ab set member_id = (select id from members m
+    where m.def_id = ab.member_id and m.round_id is not null and
+        m.round_id = (select round_id from sessions se where se.id = ab.session_id));
+SQL;
+        DB::statement($updateQuery);
+        $updateQuery = <<<SQL
+update subscriptions su set member_id = (select id from members m
+    where m.def_id = su.member_id and m.round_id is not null and
+        m.round_id = (select round_id from pools po where po.id = su.pool_id));
+SQL;
+        DB::statement($updateQuery);
+        $updateQuery = <<<SQL
+update sessions se set host_id = (select id from members m
+    where m.def_id = se.host_id and m.round_id is not null and m.round_id = se.round_id);
+SQL;
+        DB::statement($updateQuery);
+        $updateQuery = <<<SQL
+update libre_bills lb set member_id = (select id from members m
+    where m.def_id = lb.member_id and m.round_id is not null and
+        m.round_id = (select round_id from sessions se where se.id = lb.session_id));
+SQL;
+        DB::statement($updateQuery);
+        $updateQuery = <<<SQL
+update session_bills sb set member_id = (select id from members m
+    where m.def_id = sb.member_id and m.round_id is not null and
+        m.round_id = (select round_id from sessions se where se.id = sb.session_id));
+SQL;
+        DB::statement($updateQuery);
+        $updateQuery = <<<SQL
+update round_bills rb set member_id = (select id from members m
+    where m.def_id = rb.member_id and m.round_id is not null and m.round_id = rb.round_id);
+SQL;
+        DB::statement($updateQuery);
+        $updateQuery = <<<SQL
+update oneoff_bills ob set member_id = (select id from members m
+    where m.def_id = ob.member_id and m.round_id is not null and
+        m.round_id = (select min(r.id) from rounds r where r.guild_id =
+            (select md.guild_id from member_defs md where md.id = m.def_id)));
+SQL;
+        DB::statement($updateQuery);
 
         // Delete the obsolete entries
         DB::table('members')->whereNull('round_id')->delete();
@@ -128,17 +177,12 @@ SQL;
             DB::statement("select setval('members_id_seq', (select MAX(id) FROM members))");
         }
 
-        // Drop the temp view
-        $dropViewQuery = <<<SQL
-drop view if exists tmp_v_round_member
-SQL;
-        DB::statement($dropViewQuery);
-
         Schema::table('members', function(Blueprint $table) {
             $table->unsignedBigInteger('round_id')->nullable(false)->change();
             $table->unsignedBigInteger('def_id')->nullable(false)->change();
         });
 
+        // The v_bills view depends on members data and must be updated.
         $sql = <<<SQL
 create view v_bills as
     select b.bill_id, 0 as bill_type, md.name as member,

@@ -40,9 +40,10 @@ class TargetPage extends PageComponent
      */
     protected function count(): int
     {
+        $round = $this->stash()->get('tenant.round');
         $search = $this->bag('meeting')->get('fee.member.search', '');
 
-        return $this->targetService->getMemberCount($search);
+        return $this->targetService->getMemberCount($round, $search);
     }
 
     /**
@@ -51,6 +52,7 @@ class TargetPage extends PageComponent
     public function html(): Stringable
     {
         $search = $this->bag('meeting')->get('fee.member.search', '');
+        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
         $target = $this->stash()->get('meeting.session.charge.target');
@@ -59,8 +61,8 @@ class TargetPage extends PageComponent
             'session' => $session,
             'target' => $target,
             'charge' => $charge,
-            'members' => $this->targetService
-                ->getMembersWithSettlements($charge, $target, $search, $this->currentPage()),
+            'members' => $this->targetService->getMembersWithSettlements($round,
+                $charge, $target, $search, $this->currentPage()),
         ]);
     }
 

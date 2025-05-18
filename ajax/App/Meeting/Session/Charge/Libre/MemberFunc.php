@@ -18,9 +18,10 @@ class MemberFunc extends FuncComponent
      */
     public function addBill(int $memberId, bool $paid)
     {
+        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
-        $this->billService->createBill($charge, $session, $memberId, $paid);
+        $this->billService->createBill($round, $charge, $session, $memberId, $paid);
 
         $this->showTotal();
         $this->cl(MemberPage::class)->page();
@@ -35,9 +36,10 @@ class MemberFunc extends FuncComponent
      */
     public function delBill(int $memberId)
     {
+        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
-        $this->billService->deleteBill($charge, $session, $memberId);
+        $this->billService->deleteBill($round, $charge, $session, $memberId);
 
         $this->showTotal();
         $this->cl(MemberPage::class)->page();

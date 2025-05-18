@@ -83,14 +83,14 @@ class RefundFunc extends FuncComponent
      */
     public function create(string $debtId)
     {
-        $debt = $this->refundService->getDebt($debtId);
+        $session = $this->stash()->get('meeting.session');
+        $debt = $this->refundService->getDebt($session, $debtId);
         if(!$debt)
         {
             $this->alert()->warning(trans('meeting.loan.errors.not_found'));
             return;
         }
 
-        $session = $this->stash()->get('meeting.session');
         $this->refundService->createRefund($debt, $session);
 
         $this->alert()->success(trans('meeting.refund.messages.created'));
@@ -99,14 +99,14 @@ class RefundFunc extends FuncComponent
 
     public function delete(int $debtId)
     {
-        $debt = $this->refundService->getDebt($debtId);
+        $session = $this->stash()->get('meeting.session');
+        $debt = $this->refundService->getDebt($session, $debtId);
         if(!$debt)
         {
             $this->alert()->warning(trans('meeting.loan.errors.not_found'));
             return;
         }
 
-        $session = $this->stash()->get('meeting.session');
         $this->refundService->deleteRefund($debt, $session);
 
         $this->alert()->success(trans('meeting.refund.messages.deleted'));

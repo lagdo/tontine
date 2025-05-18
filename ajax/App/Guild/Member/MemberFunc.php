@@ -53,7 +53,7 @@ class MemberFunc extends FuncComponent
     public function create(array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
 
         $this->memberService->createMember($guild, $values);
         $this->modal()->hide();
@@ -133,7 +133,7 @@ class MemberFunc extends FuncComponent
     public function createList(array $formValues)
     {
         $values = $this->parseMemberList($formValues['members'] ?? '');
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
 
         $this->memberService->createMembers($guild, $values);
         $this->modal()->hide();
@@ -145,7 +145,7 @@ class MemberFunc extends FuncComponent
 
     public function edit(int $memberId)
     {
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
         $member = $this->memberService->getMember($guild, $memberId);
 
         $title = trans('tontine.member.titles.edit');
@@ -168,7 +168,7 @@ class MemberFunc extends FuncComponent
      */
     public function update(int $memberId, array $formValues)
     {
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
         $member = $this->memberService->getMember($guild, $memberId);
         $values = $this->validator->validateItem($formValues);
 
@@ -182,7 +182,7 @@ class MemberFunc extends FuncComponent
 
     public function toggle(int $memberId)
     {
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
         $member = $this->memberService->getMember($guild, $memberId);
         $this->memberService->toggleMember($member);
 
@@ -191,7 +191,7 @@ class MemberFunc extends FuncComponent
 
     public function delete(int $memberId)
     {
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
         $member = $this->memberService->getMember($guild, $memberId);
         $this->memberService->deleteMember($member);
 

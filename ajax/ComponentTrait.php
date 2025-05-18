@@ -76,6 +76,7 @@ trait ComponentTrait
      */
     protected function checkRoundPools()
     {
+        // First check for created sessions
         $this->checkRoundSessions();
 
         $round = $this->tenantService->round();
@@ -93,14 +94,13 @@ trait ComponentTrait
         // First check for created sessions
         $this->checkRoundSessions();
 
-        $guild = $this->tenantService->guild();
-        if(!$guild || $guild->members()->active()->count() === 0)
+        $round = $this->tenantService->round();
+        if(!$round || $round->members()->count() === 0)
         {
             throw new TontineMemberException(trans('tontine.errors.checks.members'));
         }
 
-        $round = $this->tenantService->round();
-        if(!$round || $round->sessions->filter(fn($session) =>
+        if($round->sessions->filter(fn($session) =>
             ($session->opened || $session->closed))->count() === 0)
         {
             throw new MeetingRoundException(trans('tontine.errors.checks.opened_sessions'));

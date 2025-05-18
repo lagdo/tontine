@@ -65,12 +65,12 @@ class Guild extends Base
 
     public function members()
     {
-        return $this->hasMany(MemberDef::class)->orderBy('name', 'asc');
+        return $this->hasMany(MemberDef::class);
     }
 
     public function rounds()
     {
-        return $this->hasMany(Round::class)->orderBy('rounds.id', 'desc');
+        return $this->hasMany(Round::class);
     }
 
     public function sessions()

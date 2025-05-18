@@ -23,7 +23,7 @@
                             $bill->session->title }} @endif</td>
                           <td class="currency">{{ $locale->formatMoney($bill->amount) }}</td>
                           <td class="table-item-menu" data-bill-id="{{ $bill->id }}">
-                            {!! paymentLink($bill->settlement, 'settlement', !$session->opened || !$charge->is_active) !!}
+                            {!! paymentLink($bill->settlement, 'settlement', !$session->opened) !!}
                           </td>
                         </tr>
 @endforeach

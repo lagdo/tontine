@@ -3,8 +3,8 @@
 namespace Ajax\App\Meeting\Presence;
 
 use Ajax\FuncComponent;
-use Siak\Tontine\Service\Guild\MemberService;
-use Siak\Tontine\Service\Meeting\PresenceService;
+use Siak\Tontine\Service\Meeting\Member\MemberService;
+use Siak\Tontine\Service\Presence\PresenceService;
 
 /**
  * @databag meeting.presence
@@ -23,14 +23,17 @@ class MemberFunc extends FuncComponent
 
     protected function getSession()
     {
+        $round = $this->stash()->get('tenant.round');
         $sessionId = $this->bag('meeting.presence')->get('session.id', 0);
-        $session = $sessionId === 0 ? null : $this->presenceService->getSession($sessionId);
+        $session = $sessionId === 0 ? null :
+            $this->presenceService->getSession($round, $sessionId);
         $this->stash()->set('presence.session', $session);
     }
 
     public function togglePresence(int $memberId)
     {
-        $member = $this->memberService->getMember($memberId);
+        $round = $this->stash()->get('tenant.round');
+        $member = $this->memberService->getMember($round, $memberId);
         $session = $this->stash()->get('presence.session');
         if(!$member || !$session)
         {

@@ -14,8 +14,9 @@ trait AccessTrait
         {
             $this->bag('user.access')->set('invite.id', $this->target()->args()[0]);
         }
+        $user = $this->tenantService->user();
         $inviteId = $this->bag('user.access')->get('invite.id');
-        if(!($invite = $this->userService->getHostInvite($inviteId)))
+        if(!($invite = $this->userService->getHostInvite($user, $inviteId)))
         {
             throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
         }
@@ -28,9 +29,9 @@ trait AccessTrait
         {
             $this->bag('user.access')->set('guild.id', $this->target()->args()[0]);
         }
-
+        $user = $this->tenantService->user();
         $guildId = $this->bag('user.access')->get('guild.id');
-        if(!($guild = $this->guildService->getGuild($guildId)))
+        if(!($guild = $this->guildService->getGuild($user, $guildId)))
         {
             throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
         }

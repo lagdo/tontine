@@ -221,7 +221,8 @@ class PoolFunc extends FuncComponent
     {
         $formValues['properties'] = $this->bag('guild.pool')->get('add', []);
         $values = $this->validator->validateItem($formValues);
-        $this->poolService->createPool($values);
+        $guild = $this->stash()->get('tenant.guild');
+        $this->poolService->createPool($guild, $values);
 
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
@@ -232,7 +233,8 @@ class PoolFunc extends FuncComponent
 
     public function edit(int $poolId)
     {
-        $pool = $this->poolService->getPool($poolId);
+        $guild = $this->stash()->get('tenant.guild');
+        $pool = $this->poolService->getPool($guild, $poolId);
         $title = trans('tontine.pool.titles.edit');
         $content = $this->renderView('pages.guild.pool.edit', [
             'pool' => $pool,
@@ -256,7 +258,8 @@ class PoolFunc extends FuncComponent
      */
     public function update(int $poolId, array $formValues)
     {
-        $pool = $this->poolService->getPool($poolId);
+        $guild = $this->stash()->get('tenant.guild');
+        $pool = $this->poolService->getPool($guild, $poolId);
         // The properties field cannot be changed.
         $formValues['properties'] = $pool->properties;
         if($pool->pools_count > 0)
@@ -276,7 +279,8 @@ class PoolFunc extends FuncComponent
 
     public function delete(int $poolId)
     {
-        $pool = $this->poolService->getPool($poolId);
+        $guild = $this->stash()->get('tenant.guild');
+        $pool = $this->poolService->getPool($guild, $poolId);
         if($pool->pools_count > 0)
         {
             // A pool that is already in use cannot be deleted.

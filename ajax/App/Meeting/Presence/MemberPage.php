@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Presence;
 
 use Ajax\PageComponent;
-use Siak\Tontine\Service\Meeting\PresenceService;
+use Siak\Tontine\Service\Presence\PresenceService;
 use Stringable;
 
 /**
@@ -28,8 +28,10 @@ class MemberPage extends PageComponent
 
     protected function getSession()
     {
+        $round = $this->stash()->get('tenant.round');
         $sessionId = $this->bag('meeting.presence')->get('session.id', 0);
-        $session = $sessionId === 0 ? null : $this->presenceService->getSession($sessionId);
+        $session = $sessionId === 0 ? null :
+            $this->presenceService->getSession($round, $sessionId);
         $this->stash()->set('presence.session', $session);
     }
 
@@ -38,8 +40,9 @@ class MemberPage extends PageComponent
      */
     protected function count(): int
     {
+        $round = $this->stash()->get('tenant.round');
         $search = $this->bag('meeting.presence')->get('member.search', '');
-        return $this->presenceService->getMemberCount($search);
+        return $this->presenceService->getMemberCount($round, $search);
     }
 
     /**
@@ -47,15 +50,17 @@ class MemberPage extends PageComponent
      */
     public function html(): Stringable
     {
+        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('presence.session'); // Is null when showing presences by members.
         $search = $this->bag('meeting.presence')->get('member.search', '');
         return $this->renderView('pages.meeting.presence.member.page', [
             'session' => $session,
             'search' => $search,
-            'members' => $this->presenceService->getMembers($search, $this->currentPage()),
+            'members' => $this->presenceService
+                ->getMembers($round, $search, $this->currentPage()),
             'absences' => !$session ? null :
                 $this->presenceService->getSessionAbsences($session),
-            'sessionCount' => $this->presenceService->getSessionCount(),
+            'sessionCount' => $this->presenceService->getSessionCount($round),
         ]);
     }
 

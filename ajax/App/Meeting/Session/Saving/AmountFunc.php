@@ -39,7 +39,8 @@ class AmountFunc extends FuncComponent
      */
     public function edit(int $memberId)
     {
-        if(!($member = $this->savingService->getMember($memberId)))
+        $round = $this->stash()->get('tenant.round');
+        if(!($member = $this->savingService->getMember($round, $memberId)))
         {
             $this->alert()->warning(trans('tontine.member.errors.not_found'));
             return;
@@ -95,7 +96,8 @@ class AmountFunc extends FuncComponent
      */
     public function save(int $memberId, string $amount)
     {
-        if(!($member = $this->savingService->getMember($memberId)))
+        $round = $this->stash()->get('tenant.round');
+        if(!($member = $this->savingService->getMember($round, $memberId)))
         {
             $this->alert()->warning(trans('tontine.member.errors.not_found'));
             return;

@@ -33,16 +33,13 @@ class RoundService
     /**
      * Get a paginated list of rounds in the selected guild.
      *
+     * @param Guild $guild
      * @param int $page
      *
      * @return Collection
      */
-    public function getRounds(int $page = 0): Collection
+    public function getRounds(Guild $guild, int $page = 0): Collection
     {
-        if(!($guild = $this->tenantService->guild()))
-        {
-            return collect([]);
-        }
         return $guild->rounds()
             ->page($page, $this->tenantService->getLimit())
             ->get();
@@ -69,39 +66,41 @@ class RoundService
     /**
      * Get the number of rounds in the selected guild.
      *
+     * @param Guild $guild
+     *
      * @return int
      */
-    public function getRoundCount(): int
+    public function getRoundCount(Guild $guild): int
     {
-        $guild = $this->tenantService->guild();
-        return !$guild ? 0 : $guild->rounds()->count();
+        return $guild->rounds()->count();
     }
 
     /**
      * Get a single round.
      *
-     * @param int $roundId    The round id
+     * @param Guild $guild
+     * @param int $roundId
      *
      * @return Round|null
      */
-    public function getRound(int $roundId): ?Round
+    public function getRound(Guild $guild, int $roundId): ?Round
     {
-        return $this->tenantService->guild()->rounds()->find($roundId);
+        return $guild->rounds()->find($roundId);
     }
 
     /**
      * Add a new round.
      *
+     * @param Guild $guild
      * @param array $values
      *
      * @return bool
      */
-    public function createRound(array $values): bool
+    public function createRound(Guild $guild, array $values): bool
     {
         $values = $this->validator->validateItem($values);
-        DB::transaction(function() use($values) {
-            $round = $this->tenantService->guild()->rounds()
-                ->create(Arr::except($values, 'savings'));
+        DB::transaction(function() use($guild, $values) {
+            $round = $guild->rounds()->create(Arr::except($values, 'savings'));
             $properties = $round->properties;
             $properties['savings']['fund']['default'] = $values['savings'];
             $round->saveProperties($properties);
@@ -112,16 +111,17 @@ class RoundService
     /**
      * Update a round.
      *
+     * @param Guild $guild
      * @param int $roundId
      * @param array $values
      *
      * @return int
      */
-    public function updateRound(int $roundId, array $values): int
+    public function updateRound(Guild $guild, int $roundId, array $values): int
     {
         $values = $this->validator->validateItem($values);
-        return DB::transaction(function() use($roundId, $values) {
-            $round = $this->tenantService->guild()->rounds()->find($roundId);
+        $round = $guild->rounds()->find($roundId);
+        return DB::transaction(function() use($round, $values) {
             $properties = $round->properties;
             $properties['savings']['fund']['default'] = $values['savings'];
             $round->saveProperties($properties);
@@ -136,18 +136,18 @@ class RoundService
     /**
      * Delete a round.
      *
+     * @param Guild $guild
      * @param int $roundId
      *
      * @return void
      */
-    public function deleteRound(int $roundId)
+    public function deleteRound(Guild $guild, int $roundId)
     {
         // Delete the session. Will fail if there's still some data attached.
         try
         {
-            DB::transaction(function() use($roundId) {
+            DB::transaction(function() use($guild, $roundId) {
                 // Delete the round and all the related sessions.
-                $guild = $this->tenantService->guild();
                 $guild->sessions()->where('round_id', $roundId)->delete();
                 $guild->rounds()->where('id', $roundId)->delete();
                 $guild->default_fund->funds()->where('round_id', $roundId)->delete();

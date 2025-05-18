@@ -23,7 +23,7 @@ class ChargeFunc extends FuncComponent
 
     public function enable(int $defId)
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $this->chargeService->enableCharge($round, $defId);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.charge.messages.enabled'));
@@ -33,7 +33,7 @@ class ChargeFunc extends FuncComponent
 
     public function disable(int $defId)
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $this->chargeService->disableCharge($round, $defId);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.charge.messages.disabled'));

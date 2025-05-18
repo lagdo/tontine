@@ -32,7 +32,7 @@ class Amount extends Component
         $member = $this->stash()->get('meeting.charge.member');
         $memberId = $member->id;
 
-        if(!$session->opened || !$charge->is_active)
+        if(!$session->opened)
         {
             return $this->renderView('pages.meeting.session.charge.libre.member.closed', [
                 'amount' => !$bill ? '' : $this->localeService->formatMoney($bill->amount),

@@ -32,7 +32,7 @@ class ChargePage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
         $filter = $this->bag('guild.charge')->get('filter', null);
 
         return $this->chargeService->getChargeCount($guild, $filter);
@@ -43,7 +43,7 @@ class ChargePage extends PageComponent
      */
     public function html(): Stringable
     {
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
         $filter = $this->bag('guild.charge')->get('filter', null);
 
         return $this->renderView('pages.guild.charge.page', [

@@ -61,12 +61,13 @@ class Beneficiary extends Component
      */
     public function html(): Stringable
     {
+        $round = $this->stash()->get('tenant.round');
         $pool = $this->stash()->get('planning.pool');
         $this->view()->shareValues($this->summaryService->getPayables($pool));
 
         return $this->renderView('pages.planning.pool.subscription.beneficiaries', [
             'pool' => $pool,
-            'pools' => $this->subscriptionService->getPools(),
+            'pools' => $this->subscriptionService->getPools($round),
         ]);
     }
 

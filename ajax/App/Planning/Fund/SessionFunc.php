@@ -28,7 +28,7 @@ class SessionFunc extends FuncComponent
         $this->fundService->saveSessions($fund, $values);
 
         // Reload the fund to update the start/end sessions.
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $fund = $this->fundService->getFund($round, $fund->id);
         $this->stash()->set('planning.fund', $fund);
 

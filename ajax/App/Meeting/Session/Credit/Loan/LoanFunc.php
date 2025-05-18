@@ -3,9 +3,9 @@
 namespace Ajax\App\Meeting\Session\Credit\Loan;
 
 use Ajax\App\Meeting\Session\FuncComponent;
-use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
-use Siak\Tontine\Service\Meeting\FundService;
+use Siak\Tontine\Service\Meeting\Saving\FundService;
+use Siak\Tontine\Service\Meeting\Member\MemberService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 
 use function Jaxon\pm;
@@ -31,13 +31,14 @@ class LoanFunc extends FuncComponent
 
     public function add()
     {
+        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');
         $title = trans('meeting.loan.titles.add');
         $content = $this->renderView('pages.meeting.session.loan.add', [
             'amountAvailable' => $this->loanService->getAmountAvailable($session),
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getSessionFundList($session, false),
-            'members' => $this->memberService->getMemberList(),
+            'members' => $this->memberService->getMemberList($round),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -57,8 +58,9 @@ class LoanFunc extends FuncComponent
      */
     public function create(array $formValues)
     {
+        $round = $this->stash()->get('tenant.round');
         $values = $this->validator->validateItem($formValues);
-        if(!($member = $this->memberService->getMember($values['member'])))
+        if(!($member = $this->memberService->getMember($round, $values['member'])))
         {
             $this->alert()->warning(trans('tontine.member.errors.not_found'));
             return;
@@ -93,12 +95,13 @@ class LoanFunc extends FuncComponent
             return;
         }
 
+        $round = $this->stash()->get('tenant.round');
         $title = trans('meeting.loan.titles.edit');
         $content = $this->renderView('pages.meeting.session.loan.edit', [
             'loan' => $loan,
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getSessionFundList($session, false),
-            'members' => $this->memberService->getMemberList(),
+            'members' => $this->memberService->getMemberList($round),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -132,8 +135,9 @@ class LoanFunc extends FuncComponent
             return;
         }
 
+        $round = $this->stash()->get('tenant.round');
         $values = $this->validator->validateItem($formValues);
-        if(!($member = $this->memberService->getMember($values['member'])))
+        if(!($member = $this->memberService->getMember($round, $values['member'])))
         {
             $this->alert()->warning(trans('tontine.member.errors.not_found'));
             return;

@@ -24,8 +24,9 @@
   $sessionSettlementAmount = $settlements['amount']['session'][$charge->id] ?? 0;
 @endphp
                         <tr>
-                          <td @if (!$charge->is_active) style="text-decoration:line-through" @endif>
-                            {{ $charge->name }}<br/>{{ $locale->formatMoney($charge->amount) }}
+                          <td>
+                            {{ $charge->name }}<br/>{{ $charge->has_amount ?
+                              $locale->formatMoney($charge->amount) : __('tontine.labels.fees.variable') }}
                           </td>
                           <td class="currency">
                             {{ $sessionSettlementTotal }}/{{ $sessionBillTotal }} @if ($roundBillTotal > 0) - {{

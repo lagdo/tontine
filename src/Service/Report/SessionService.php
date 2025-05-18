@@ -11,7 +11,7 @@ use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\Guild\MemberService;
-use Siak\Tontine\Service\Meeting\SessionService as MeetingSessionService;
+use Siak\Tontine\Service\Meeting\Session\SessionService as MeetingSessionService;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\TenantService;
 
@@ -197,7 +197,7 @@ class SessionService
         $bills = $this->getBills($settlementFilter);
         $sessionIds = collect([$session->id]);
 
-        $charges = $this->tenantService->guild()->charges()/*->active()*/->get();
+        $charges = $session->round->charges;
         $outflows = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
 
         return $charges
@@ -219,7 +219,7 @@ class SessionService
      */
     public function getTotalCharges(Session $session, ?Member $member = null): Collection
     {
-        $sessionIds = $this->sessionService->getRoundSessionIds($session);
+        $sessionIds = $this->sessionService->getSessionIds($session->round, $session);
         $settlementFilter = fn(Builder $query) => $query
             ->select(DB::raw(1))
             ->from('settlements')
@@ -227,13 +227,13 @@ class SessionService
             ->whereColumn('settlements.bill_id', 'bills.id');
         $bills = $this->getBills($settlementFilter, $member);
 
-        $charges = $this->tenantService->guild()->charges()/*->active()*/->get();
+        $charges = $session->round->charges;
         $outflows = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
         if($member !== null)
         {
             // The outflow part of each member id calculated by dividing each amount
             // by the number of members.
-            $memberCount = $this->memberService->countActiveMembers();
+            $memberCount = $session->members->count();
             foreach($outflows as $outflow)
             {
                 $outflow->total_amount /= $memberCount;
@@ -306,7 +306,8 @@ class SessionService
     public function getSaving(Session $session): object
     {
         $saving = DB::table('savings')
-            ->select(DB::raw('sum(amount) as total_amount'), DB::raw('count(id) as total_count'))
+            ->select(DB::raw('sum(amount) as total_amount'),
+                DB::raw('count(id) as total_count'))
             ->where('session_id', $session->id)
             ->first();
         if(!$saving->total_amount)
@@ -329,7 +330,8 @@ class SessionService
     public function getOutflow(Session $session): object
     {
         $outflow = DB::table('outflows')
-            ->select(DB::raw('sum(amount) as total_amount'), DB::raw('count(id) as total_count'))
+            ->select(DB::raw('sum(amount) as total_amount'),
+                DB::raw('count(id) as total_count'))
             ->where('session_id', $session->id)
             ->first();
         if(!$outflow->total_amount)

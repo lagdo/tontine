@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service\Meeting;
+namespace Siak\Tontine\Service\Payment;
 
 use Illuminate\Database\Eloquent\Model;
 

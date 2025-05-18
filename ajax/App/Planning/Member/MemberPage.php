@@ -26,7 +26,7 @@ class MemberPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $search = $this->bag('planning.member')->get('search', '');
         $filter = $this->bag('planning.member')->get('filter', null);
         return $this->memberService->getMemberDefCount($round, $search, $filter);
@@ -37,7 +37,7 @@ class MemberPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $search = $this->bag('planning.member')->get('search', '');
         $filter = $this->bag('planning.member')->get('filter', null);
         return $this->renderView('pages.planning.member.page', [

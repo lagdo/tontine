@@ -22,7 +22,7 @@
                     <div class="col-auto">
                       <div class="input-group">
                         {!! $html->text('search', '')->id('txt-fee-settlements-search')
-                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
+                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" @jxnClick($rqSettlement->search($searchValue))><i class="fa fa-search"></i></button>
                         </div>

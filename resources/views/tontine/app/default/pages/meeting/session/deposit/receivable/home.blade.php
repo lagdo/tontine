@@ -21,7 +21,7 @@
                     <div class="col-auto">
                       <div class="input-group">
                         {!! $html->text('search', '')->id('txt-pool-deposits-search')
-                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
+                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" @jxnClick($rqReceivable->search($searchValue))><i class="fa fa-search"></i></button>
                         </div>

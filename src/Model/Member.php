@@ -3,7 +3,6 @@
 namespace Siak\Tontine\Model;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\DB;
 
 class Member extends Base
@@ -25,19 +24,16 @@ class Member extends Base
     ];
 
     /**
-     * The relationships that should always be loaded.
+     * The "booted" method of the model.
      *
-     * @var array
+     * @return void
      */
-    protected $with = [
-        'def',
-    ];
-
-    public function name(): Attribute
+    protected static function booted()
     {
-        return Attribute::make(
-            get: fn() => $this->def->name,
-        );
+        // Also select fields from the member_defs table.
+        static::addGlobalScope('def', fn(Builder $query) => $query
+            ->addSelect(['members.*', 'd.name'])
+            ->join(DB::raw('member_defs as d'), 'd.id', '=', 'members.def_id'));
     }
 
     public function def()

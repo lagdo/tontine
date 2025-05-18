@@ -8,9 +8,9 @@ use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
-use Siak\Tontine\Service\Meeting\FundService;
+use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
-use Siak\Tontine\Service\Meeting\SummaryService;
+use Siak\Tontine\Service\Meeting\Session\SummaryService;
 use Siak\Tontine\Service\Report\RoundService;
 
 use function compact;
@@ -42,7 +42,7 @@ class ReportService
      */
     public function getSessionReport(Session $session): array
     {
-        $guild = $this->tenantService->guild();
+        $guild = $session->round->guild;
         [$country] = $this->localeService->getNameFromGuild($guild);
 
         return [
@@ -94,7 +94,7 @@ class ReportService
      */
     public function getSessionEntry(Session $session): array
     {
-        $guild = $this->tenantService->guild();
+        $guild = $session->round->guild;
         [$country] = $this->localeService->getNameFromGuild($guild);
 
         return [
@@ -113,8 +113,7 @@ class ReportService
             ],
             'bills' => [
                 'bills' => $this->memberService->getBills($session),
-                'charges' => $this->tenantService->guild()->charges()
-                    ->active()->fixed()->get(),
+                'charges' => $session->round->charges()->fixed()->get(),
             ],
         ];
     }
@@ -126,7 +125,7 @@ class ReportService
      */
     public function getSavingsReport(Session $session): array
     {
-        $guild = $this->tenantService->guild();
+        $guild = $session->round->guild;
         [$country] = $this->localeService->getNameFromGuild($guild);
         $funds = $this->fundService->getSessionFunds($session);
         $profits = $session->funds->keyBy('id')->map(fn($fund) => $fund->profit_amount);
@@ -164,7 +163,7 @@ class ReportService
     public function getCreditReport(Session $session): array
     {
         $round = $session->round;
-        $guild = $this->tenantService->guild();
+        $guild = $round->guild;
         [$country, $currency] = $this->localeService->getNameFromGuild($guild);
 
         $funds = $this->fundService->getSessionFunds($session)
@@ -196,8 +195,7 @@ class ReportService
      */
     public function getRoundReport(Round $round): array
     {
-        $guild = $this->tenantService->guild();
-        [$country, $currency] = $this->localeService->getNameFromGuild($guild);
+        [$country, $currency] = $this->localeService->getNameFromGuild($round->guild);
 
         $figures = $this->summaryService->getFigures($round);
       

@@ -66,7 +66,9 @@ class GuildFunc extends FuncComponent
      */
     private function guildCreated(GuildModel $guild): void
     {
-        if(!$this->tenantService->guild() || $this->guildService->getGuildCount() === 0)
+        $user = $this->tenantService->user();
+        if(!$this->tenantService->guild() ||
+            $this->guildService->getGuildCount($user) === 0)
         {
             $this->cl(MenuFunc::class)->setCurrentGuild($guild);
         }
@@ -78,7 +80,8 @@ class GuildFunc extends FuncComponent
     public function create(array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
-        $guild = $this->guildService->createGuild($values);
+        $user = $this->tenantService->user();
+        $guild = $this->guildService->createGuild($user, $values);
 
         $this->guildCreated($guild);
         $this->cl(MainTitle::class)->render();
@@ -95,7 +98,8 @@ class GuildFunc extends FuncComponent
      */
     public function edit(int $guildId)
     {
-        $guild = $this->guildService->getGuild($guildId);
+        $user = $this->tenantService->user();
+        $guild = $this->guildService->getGuild($user, $guildId);
 
         $title = trans('tontine.titles.edit');
         [, $currencies] = $this->localeService->getNamesFromGuilds(collect([$guild]));
@@ -123,7 +127,8 @@ class GuildFunc extends FuncComponent
     public function update(int $guildId, array $formValues)
     {
         $values = $this->validator->validateItem($formValues);
-        $this->guildService->updateGuild($guildId, $values);
+        $user = $this->tenantService->user();
+        $this->guildService->updateGuild($user, $guildId, $values);
 
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
@@ -136,9 +141,10 @@ class GuildFunc extends FuncComponent
      */
     private function guildDeleted(int $guildId): void
     {
+        $user = $this->tenantService->user();
         $currentGuild = $this->tenantService->guild();
         if($currentGuild !== null && $currentGuild->id === $guildId &&
-            ($firstGuild = $this->guildService->getFirstGuild()) !== null)
+            ($firstGuild = $this->guildService->getFirstGuild($user)) !== null)
         {
             $this->cl(MenuFunc::class)->setCurrentGuild($firstGuild);
         }
@@ -146,7 +152,8 @@ class GuildFunc extends FuncComponent
 
     public function delete(int $guildId)
     {
-        $this->guildService->deleteGuild($guildId);
+        $user = $this->tenantService->user();
+        $this->guildService->deleteGuild($user, $guildId);
 
         $this->guildDeleted($guildId);
         $this->cl(MainTitle::class)->render();

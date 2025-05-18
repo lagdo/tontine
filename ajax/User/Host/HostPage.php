@@ -29,7 +29,8 @@ class HostPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->userService->getHostInviteCount();
+        $user = $this->tenantService->user();
+        return $this->userService->getHostInviteCount($user);
     }
 
     /**
@@ -37,8 +38,9 @@ class HostPage extends PageComponent
      */
     public function html(): Stringable
     {
+        $user = $this->tenantService->user();
         return $this->renderView('pages.admin.user.host.page', [
-            'invites' => $this->userService->getHostInvites($this->currentPage()),
+            'invites' => $this->userService->getHostInvites($user, $this->currentPage()),
         ]);
     }
 

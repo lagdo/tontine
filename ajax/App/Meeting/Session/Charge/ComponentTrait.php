@@ -6,8 +6,8 @@ use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
 use Jaxon\Request\TargetInterface;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Service\Guild\ChargeService;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
+use Siak\Tontine\Service\Meeting\Charge\ChargeService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementService;
 
 use function trans;
@@ -65,8 +65,10 @@ trait ComponentTrait
         {
             $this->bag('meeting')->set('charge.id', $this->target()->args()[0]);
         }
+        $round = $this->stash()->get('tenant.round');
         $chargeId = $this->bag('meeting')->get('charge.id');
-        $this->stash()->set('meeting.session.charge', $this->chargeService->getCharge($chargeId));
+        $charge = $this->chargeService->getCharge($round, $chargeId);
+        $this->stash()->set('meeting.session.charge', $charge);
     }
   
     /**
@@ -80,7 +82,7 @@ trait ComponentTrait
             throw new MessageException(trans('meeting.warnings.session.closed'), false);
         }
         $charge = $this->stash()->get('meeting.session.charge');
-        if(!$charge || !$charge->active)
+        if(!$charge)
         {
             throw new MessageException(trans('meeting.warnings.charge.disabled'), false);
         }

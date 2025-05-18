@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Siak\Tontine\Model\Charge;
+use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\SettlementTarget;
 use Siak\Tontine\Service\TenantService;
@@ -21,20 +21,6 @@ class SettlementTargetService
     public function __construct(protected TenantService $tenantService,
         private SearchSanitizer $searchSanitizer)
     {}
-
-    /**
-     * Get the sessions after the current.
-     *
-     * @param Session $currentSession
-     *
-     * @return Collection
-     */
-    public function getDeadlineSessions(Session $currentSession): Collection
-    {
-        return $this->tenantService->guild()->sessions()
-            ->where('day_date', '>', $currentSession->day_date)
-            ->pluck('title', 'id');
-    }
 
     /**
      * @param Session $session
@@ -64,36 +50,34 @@ class SettlementTargetService
     }
 
     /**
+     * @param Round $round
      * @param string $search
      *
      * @return Builder|Relation
      */
-    private function getMembersQuery(string $search = ''): Builder|Relation
+    private function getMembersQuery(Round $round, string $search = ''): Builder|Relation
     {
-        return $this->tenantService->guild()
-            ->members()
-            ->active()
+        return $round->members()
             ->search($this->searchSanitizer->sanitize($search));
     }
 
     /**
+     * @param Collection $members
      * @param Charge $charge
      * @param SettlementTarget $target
-     * @param Collection $members
      *
      * @return Collection
      */
-    public function getMembersSettlements(Charge $charge, SettlementTarget $target,
-        Collection $members): Collection
+    public function getMembersSettlements(Collection $members, Charge $charge, SettlementTarget $target): Collection
     {
-        $sessions = $this->tenantService->round()->sessions
-            ->filter(fn($session) => $this->filterTarget($session, $target));
         return DB::table('settlements')
+            ->join('sessions', 'sessions.id', '=', 'settlements.session_id')
             ->join('bills', 'settlements.bill_id', '=', 'bills.id')
             ->join('libre_bills', 'libre_bills.bill_id', '=', 'bills.id')
+            ->where('sessions.day_date', '>=', $target->session->day_date)
+            ->where('sessions.day_date', '<=', $target->deadline->day_date)
             ->whereIn('libre_bills.member_id', $members->pluck('id'))
             ->where('libre_bills.charge_id', $charge->id)
-            ->whereIn('settlements.session_id', $sessions->pluck('id'))
             ->select('libre_bills.member_id', DB::raw('sum(bills.amount) as amount'))
             ->groupBy('libre_bills.member_id')
             ->get()
@@ -101,6 +85,7 @@ class SettlementTargetService
     }
 
     /**
+     * @param Round $round
      * @param Charge $charge
      * @param SettlementTarget $target
      * @param string $search
@@ -108,55 +93,82 @@ class SettlementTargetService
      *
      * @return Collection
      */
-    public function getMembersWithSettlements(Charge $charge, SettlementTarget $target,
-        string $search = '', int $page = 0): Collection
+    public function getMembersWithSettlements(Round $round, Charge $charge,
+        SettlementTarget $target, string $search = '', int $page = 0): Collection
     {
-        $sessions = $this->tenantService->round()->sessions
-            ->filter(fn($session) => $this->filterTarget($session, $target));
-        return $this->getMembersQuery($search)
-            ->select('members.id', 'members.name')
+        return $this->getMembersQuery($round, $search)
             ->addSelect([
                 'paid' => DB::table('settlements')
-                    ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+                    ->join('sessions', 'sessions.id', '=', 'settlements.session_id')
+                    ->join('bills', 'bills.id', '=', 'settlements.bill_id')
                     ->join('libre_bills', 'libre_bills.bill_id', '=', 'bills.id')
                     ->whereColumn('libre_bills.member_id', 'members.id')
+                    ->where('sessions.day_date', '>=', $target->session->day_date)
+                    ->where('sessions.day_date', '<=', $target->deadline->day_date)
                     ->where('libre_bills.charge_id', $charge->id)
-                    ->whereIn('settlements.session_id', $sessions->pluck('id'))
                     ->select(DB::raw('sum(bills.amount)'))
             ])
             ->page($page, $this->tenantService->getLimit())
-            ->orderBy('members.name', 'asc')
+            ->orderBy('name', 'asc')
             ->get();
     }
 
     /**
-     * @param Charge $charge
-     * @param Session $session
+     * @param Round $round
      * @param string $search
-     * @param bool $filter|null
      *
      * @return int
      */
-    public function getMemberCount(string $search = ''): int
+    public function getMemberCount(Round $round, string $search = ''): int
     {
-        return $this->getMembersQuery($search)->count();
+        return $this->getMembersQuery($round, $search)->count();
+    }
+
+    /**
+     * @param Session $currentSession
+     *
+     * @return Collection
+     */
+    public function getDeadlineSessions(Session $currentSession): Collection
+    {
+        return $currentSession->round->sessions()
+            ->where('day_date', '>', $currentSession->day_date)
+            ->orderByDesc('day_date')
+            ->pluck('title', 'id');
+    }
+
+    /**
+     * @param Session $currentSession
+     * @param int $sessionId
+     *
+     * @return Session|null
+     */
+    private function getDeadlineSession(Session $currentSession, int $sessionId): ?Session
+    {
+        return $currentSession->round->sessions()
+            ->where('day_date', '>', $currentSession->day_date)
+            ->find($sessionId);
     }
 
     /**
      * @param Charge $charge
      * @param Session $session
-     * @param Session $deadline
-     * @param float $amount
-     * @param bool $global
+     * @param array $values
      *
      * @return void
      */
-    public function createTarget(Charge $charge, Session $session,
-        Session $deadline, float $amount, bool $global): void
+    public function createTarget(Charge $charge, Session $session, array $values): void
     {
+        $deadline = $this->getDeadlineSession($session, $values['deadline']);
+        if(!$deadline)
+        {
+            // Todo: throw an exception.
+            return;
+        }
+
         $target = new SettlementTarget();
-        $target->amount = $amount;
-        $target->global = $global;
+        $target->amount = $values['amount'];
+        $target->global = $values['global'];
         $target->charge()->associate($charge);
         $target->session()->associate($session);
         $target->deadline()->associate($deadline);
@@ -166,17 +178,21 @@ class SettlementTargetService
     /**
      * @param SettlementTarget $target
      * @param Session $session
-     * @param Session $deadline
-     * @param float $amount
-     * @param bool $global
+     * @param array $values
      *
      * @return void
      */
-    public function updateTarget(SettlementTarget $target, Session $session,
-        Session $deadline, float $amount, bool $global): void
+    public function updateTarget(SettlementTarget $target, Session $session, array $values): void
     {
-        $target->amount = $amount;
-        $target->global = $global;
+        $deadline = $this->getDeadlineSession($session, $values['deadline']);
+        if(!$deadline)
+        {
+            // Todo: throw an exception.
+            return;
+        }
+
+        $target->amount = $values['amount'];
+        $target->global = $values['global'];
         $target->session()->associate($session);
         $target->deadline()->associate($deadline);
         $target->save();

@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Guild;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\DataSyncService;
@@ -83,14 +84,14 @@ class SessionService
     /**
      * Update a session.
      *
+     * @param Guild $guild
      * @param Session $session
      * @param array $values
      *
      * @return bool
      */
-    public function updateSession(Session $session, array $values): bool
+    public function updateSession(Guild $guild, Session $session, array $values): bool
     {
-        $guild = $this->tenantService->guild();
         $this->dataSyncService->onUpdateSession($guild, $session, $values);
 
         // Make sure the host belongs to the same guild
@@ -98,7 +99,7 @@ class SessionService
         $values['host_id'] = null;
         if($hostId > 0)
         {
-            $values['host_id'] = $guild->members()->find($hostId)?->id ?? null;
+            $values['host_id'] = $session->round->members()->find($hostId)?->id ?? null;
         }
         return $session->update($values);
     }

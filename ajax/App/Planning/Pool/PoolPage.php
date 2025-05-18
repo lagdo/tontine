@@ -26,7 +26,7 @@ class PoolPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.pool')->get('filter', null);
         return $this->poolService->getPoolDefCount($round, $filter);
     }
@@ -36,7 +36,7 @@ class PoolPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.pool')->get('filter', null);
         return $this->renderView('pages.planning.pool.page', [
             'round' => $round,

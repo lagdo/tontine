@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Session;
 
 use Ajax\Page\SectionContent;
-use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
 /**
@@ -31,13 +31,14 @@ class Section extends Component
      */
     public function html(): Stringable
     {
+        $round = $this->stash()->get('tenant.round');
         $section = $this->stash()->get('section');
         $session = $this->stash()->get('meeting.session');
 
         return $this->renderView("pages.meeting.session.section.$section", [
             'session' => $session,
-            'prevSession' => $this->sessionService->getPrevSession($session),
-            'nextSession' => $this->sessionService->getNextSession($session),
+            'prevSession' => $this->sessionService->getPrevSession($round, $session),
+            'nextSession' => $this->sessionService->getNextSession($round, $session),
         ]);
     }
 }

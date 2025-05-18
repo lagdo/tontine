@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Pool;
+use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Validation\SearchSanitizer;
 
 use function strtolower;
 use function trans;
@@ -20,35 +23,40 @@ class SubscriptionService
     /**
      * @param TenantService $tenantService
      * @param PoolService $poolService
+     * @param SearchSanitizer $searchSanitizer
      */
     public function __construct(protected TenantService $tenantService,
-        protected PoolService $poolService)
+        protected PoolService $poolService, private SearchSanitizer $searchSanitizer)
     {}
 
     /**
      * Get pools for the dropdown list.
      *
+     * @param Round $round
      * @param bool $pluck
      *
      * @return Collection
      */
-    public function getPools(bool $pluck = true): Collection
+    public function getPools(Round $round, bool $pluck = true): Collection
     {
-        $query = $this->tenantService->round()->pools()
-            ->with(['round.guild'])->whereHas('subscriptions');
+        $query = $round->pools()
+            ->with(['round.guild'])
+            ->whereHas('subscriptions');
         return $pluck ? $query->get()->pluck('title', 'id') : $query->get();
     }
 
     /**
+     * @param Guild $guild
      * @param Pool $pool
      * @param string $search
      * @param bool $filter|null
      *
      * @return Builder|Relation
      */
-    public function getQuery(Pool $pool, string $search, ?bool $filter): Builder|Relation
+    private function getQuery(Pool $pool, string $search, ?bool $filter): Builder|Relation
     {
-        return $this->tenantService->guild()->members()->active()
+        return $pool->round->members()
+            ->search($this->searchSanitizer->sanitize($search))
             ->when($filter === true, function(Builder $query) use($pool) {
                 // Return only members with subscription in this pool
                 return $query->whereHas('subscriptions', function(Builder $query) use($pool) {
@@ -60,10 +68,6 @@ class SubscriptionService
                 return $query->whereDoesntHave('subscriptions', function(Builder $query) use($pool) {
                     $query->where('subscriptions.pool_id', $pool->id);
                 });
-            })
-            ->when($search !== '', function($query) use($search) {
-                $search = '%' . strtolower($search) . '%';
-                return $query->where(DB::raw('lower(name)'), 'like', $search);
             });
     }
 
@@ -86,7 +90,8 @@ class SubscriptionService
                     $query->where('pool_id', $pool->id);
                 },
             ])
-            ->orderBy('name', 'asc')
+            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
+            ->orderBy('member_defs.name', 'asc')
             ->get();
     }
 
@@ -120,7 +125,7 @@ class SubscriptionService
         //     throw new MessageException(trans('tontine.subscription.errors.create'));
         // }
 
-        $member = $this->tenantService->guild()->members()->find($memberId);
+        $member = $pool->round->members()->find($memberId);
         $subscription = new Subscription();
         $subscription->title = '';
         $subscription->pool()->associate($pool);

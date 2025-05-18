@@ -11,7 +11,7 @@ use Siak\Tontine\Model\Deposit;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
+use Siak\Tontine\Service\Payment\PaymentServiceInterface;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\SearchSanitizer;
 
@@ -67,13 +67,14 @@ class DepositService
         // The jointure with the subscriptions and members tables is needed,
         // so the final records can be ordered by member name.
         return $this->getQuery($pool, $session, $filter, $search)
-            ->addSelect(DB::raw('pd.amount, members.name as member'))
+            ->addSelect(DB::raw('pd.amount, member_defs.name as member'))
             ->join('pools', 'pools.id', '=', 'subscriptions.pool_id')
             ->join(DB::raw('pool_defs as pd'), 'pools.def_id', '=', 'pd.id')
             ->join('members', 'members.id', '=', 'subscriptions.member_id')
+            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
             ->with(['deposit'])
             ->page($page, $this->tenantService->getLimit())
-            ->orderBy('members.name', 'asc')
+            ->orderBy('member_defs.name', 'asc')
             ->orderBy('subscriptions.id', 'asc')
             ->get();
     }

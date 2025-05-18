@@ -33,7 +33,6 @@ class AuctionPage extends PageComponent
     {
         $session = $this->stash()->get('summary.session');
         $filtered = $this->bag('summary.auction')->get('filter', null);
-
         return $this->auctionService->getAuctionCount($session, $filtered);
     }
 
@@ -44,10 +43,10 @@ class AuctionPage extends PageComponent
     {
         $session = $this->stash()->get('summary.session');
         $filtered = $this->bag('summary.auction')->get('filter', null);
-
         return $this->renderView('pages.meeting.summary.auction.page', [
             'session' => $session,
-            'auctions' => $this->auctionService->getAuctions($session, $filtered, $this->currentPage()),
+            'auctions' => $this->auctionService
+                ->getAuctions($session, $filtered, $this->currentPage()),
         ]);
     }
 

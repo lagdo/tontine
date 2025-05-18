@@ -28,7 +28,8 @@ class FeePage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->feeService->getFeeCount();
+        $round = $this->stash()->get('tenant.round');
+        return $this->feeService->getFeeCount($round);
     }
 
     /**
@@ -36,11 +37,12 @@ class FeePage extends PageComponent
      */
     public function html(): Stringable
     {
+        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');
 
         return $this->renderView('pages.meeting.session.charge.libre.page', [
             'session' => $session,
-            'charges' => $this->feeService->getFees($this->currentPage()),
+            'charges' => $this->feeService->getFees($round, $this->currentPage()),
             'bills' => $this->feeService->getBills($session),
             'settlements' => $this->feeService->getSettlements($session),
         ]);
