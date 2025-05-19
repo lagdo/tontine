@@ -10,7 +10,7 @@ use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\ChargeDef;
 use Siak\Tontine\Model\Round;
-use Siak\Tontine\Service\DataSyncService;
+use Siak\Tontine\Service\Planning\DataSyncService;
 use Siak\Tontine\Service\TenantService;
 use Exception;
 

@@ -5,8 +5,6 @@ namespace App\Providers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Mcamara\LaravelLocalization\LaravelLocalization;
-use Siak\Tontine\Service\BalanceCalculator;
-use Siak\Tontine\Service\DataSyncService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Guild;
@@ -44,15 +42,13 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(LocaleService::class, function($app) {
             $vendorDir = base_path('vendor');
             // Read country list from the umpirsky/country-list package data.
-            $countriesDataDir = $vendorDir . '/umpirsky/country-list/data';
+            $countriesDataDir = "$vendorDir/umpirsky/country-list/data";
             // Read currency list from the umpirsky/currency-list package data.
-            $currenciesDataDir = $vendorDir . '/umpirsky/currency-list/data';
+            $currenciesDataDir = "$vendorDir/umpirsky/currency-list/data";
             $localization = $app->make(LaravelLocalization::class);
             return new LocaleService($localization, $countriesDataDir, $currenciesDataDir);
         });
         $this->app->singleton(TenantService::class, TenantService::class);
-        $this->app->singleton(BalanceCalculator::class, BalanceCalculator::class);
-        $this->app->singleton(DataSyncService::class, DataSyncService::class);
 
         $this->app->singleton(Guild\FundService::class, Guild\FundService::class);
         $this->app->singleton(Guild\ChargeService::class, Guild\ChargeService::class);
@@ -64,6 +60,7 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(Guild\MemberService::class, Guild\MemberService::class);
         $this->app->singleton(Guild\GuildService::class, Guild\GuildService::class);
 
+        $this->app->singleton(Planning\DataSyncService::class, Planning\DataSyncService::class);
         $this->app->singleton(Planning\PoolService::class, Planning\PoolService::class);
         $this->app->singleton(Planning\FundService::class, Planning\FundService::class);
         $this->app->singleton(Planning\MemberService::class, Planning\MemberService::class);
@@ -112,6 +109,7 @@ class SiakServiceProvider extends ServiceProvider
             ->needs('$config')
             ->give(config('chrome.page'));
 
+        $this->app->singleton(Payment\BalanceCalculator::class, Payment\BalanceCalculator::class);
         $this->app->singleton(Payment\PaymentService::class, Payment\PaymentService::class);
         $this->app->singleton(Payment\PaymentServiceInterface::class, function() {
             return new class implements Payment\PaymentServiceInterface {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service;
+namespace Siak\Tontine\Service\Planning;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -461,5 +461,192 @@ class DataSyncService
             throw new MessageException(trans('tontine.errors.action') .
                 '<br/>' . trans('tontine.session.errors.sorting'));
         }
+    }
+
+    /**
+     * Delete a session.
+     *
+     * @param Session $session
+     *
+     * @return void
+     */
+    public function deleteSession(Session $session)
+    {
+        DB::transaction(function() use($session) {
+            $this->dataSyncService->onDeleteSession($session);
+            $round = $session->round;
+            $sessionCount = $round->sessions()->count();
+
+            $fundDef = $round->guild->default_fund;
+            $defaultFund = $fundDef->funds()->where('round_id', $round->id)->first();
+            // Delete the default fund if it is related to the session
+            if($defaultFund->start_sid === $session->id || $defaultFund->end_sid === $session->id)
+            {
+                $defaultFund->delete();
+            }
+
+            $session->delete();
+            // Update the default savings fund, only if this wasn't the last session in the round.
+            if($sessionCount > 1)
+            {
+                $this->dataSyncService->saveDefaultFund($round);
+            }
+        });
+    }
+
+
+
+
+    /**
+     * Check if some pools still have no subscriptions.
+     *
+     * @param Round $round
+     *
+     * @return void
+     */
+    public function checkPoolsSubscriptions(Round $round)
+    {
+        if($round->pools()->whereDoesntHave('subscriptions')->count() > 0)
+        {
+            throw new MessageException(trans('tontine.errors.action') .
+                '<br/>' . trans('tontine.pool.errors.no_subscription'));
+        }
+    }
+
+    /**
+     * Resync all the already opened sessions.
+     *
+     * @param Round $round
+     *
+     * @return void
+     */
+    public function resyncSessions(Round $round): void
+    {
+        DB::transaction(function() use($round) {
+            // Don't sync a round if there are pools with no subscription.
+            // $this->checkPoolsSubscriptions($round);
+
+            // Sync the round.
+            $round->update(['status' => Round::STATUS_OPENED]);
+            $this->dataSyncService->roundSynced($round->guild, $round);
+
+            // Sync the sessions.
+            $round->sessions()->opened()->get()
+                ->each(fn($session) => $this->dataSyncService
+                    ->sessionSynced($round->guild, $session));
+
+            // Update the bills amounts.
+            /*
+            *** Strange Database error. ***
+ERROR:  bind message supplies 6 parameters, but prepared statement "pdo_stmt_00000053" requires 12
+(SQL: update "bills" set "amount" = (select "amount" from "charges"
+inner join "v_bills" on "v_bills"."charge_id" = "charges"."id" where "v_bills"."bill_type" != 0
+and "v_bills"."session_id" in (51, 53, 52, 50, 49) and "bills"."id" = "v_bills"."bill_id")
+where "ctid" in (select "bills"."ctid" from "bills" inner join "v_bills" on "v_bills"."bill_id" = "bills"."id"
+inner join "charges" on "v_bills"."charge_id" = "charges"."id" where "v_bills"."bill_type" != ?
+and "v_bills"."session_id" in (?, ?, ?, ?, ?)))
+             */
+            // $amountQuery = DB::table('charges')
+            //     ->join('v_bills', 'v_bills.charge_id', '=', 'charges.id')
+            //     ->where('v_bills.bill_type', '!=', Bill::TYPE_LIBRE)
+            //     ->whereIn('v_bills.session_id', $round->sessions()->opened()->pluck('id'))
+            //     ->whereColumn('bills.id', 'v_bills.bill_id')
+            //     ->select('amount');
+            // DB::table('bills')
+            //     ->join('v_bills', 'v_bills.bill_id', '=', 'bills.id')
+            //     ->join('charges', 'v_bills.charge_id', '=', 'charges.id')
+            //     ->where('v_bills.bill_type', '!=', Bill::TYPE_LIBRE)
+            //     ->whereIn('v_bills.session_id', $round->sessions()->opened()->pluck('id'))
+            //     ->update([
+            //         'amount' => DB::raw('(' . $amountQuery->toSql() . ')'),
+            //     ]);
+
+            // TODO: Fix the SQL update query.
+            // Temporary fix: issue an update query for each bill amount to be changed.
+            DB::table('bills')
+                ->select('bills.id', 'charges.amount')
+                ->join('v_bills', 'v_bills.bill_id', '=', 'bills.id')
+                ->join('charges', 'v_bills.charge_id', '=', 'charges.id')
+                ->where('v_bills.bill_type', '!=', Bill::TYPE_LIBRE)
+                ->whereIn('v_bills.session_id', $round->sessions()->opened()->pluck('id'))
+                ->get()
+                ->each(fn($row) => DB::table('bills')->where('id', $row->id)
+                    ->update(['amount' => $row->amount]));
+        });
+    }
+
+    /**
+     * Sync a session with new members or new subscriptions.
+     *
+     * @param Round $round
+     * @param Session $session
+     *
+     * @return void
+     */
+    private function syncSession(Round $round, Session $session)
+    {
+        DB::transaction(function() use($round, $session) {
+            // Don't sync a round if there are pools with no subscription.
+            // $this->checkPoolsSubscriptions($round);
+
+            // Sync the round.
+            $round->update(['status' => Round::STATUS_OPENED]);
+            $this->dataSyncService->roundSynced($round->guild, $session->round);
+
+            // Sync the session
+            $session->update(['status' => Session::STATUS_OPENED]);
+            $this->dataSyncService->sessionSynced($round->guild, $session);
+        });
+    }
+
+
+
+
+
+
+
+    /**
+     * Add a new session.
+     *
+     * @param Round $round
+     * @param array $values
+     *
+     * @return bool
+     */
+    public function createSessions(Round $round, array $values): bool
+    {
+        DB::transaction(function() use($round, $values) {
+            $sessions = $round->sessions()->createMany($values);
+            foreach($sessions as $session)
+            {
+                $this->dataSyncService->onNewSession($session);
+            }
+            // Update the default savings fund
+            $this->dataSyncService->saveDefaultFund($round);
+        });
+        return true;
+    }
+
+    /**
+     * Update a session.
+     *
+     * @param Guild $guild
+     * @param Session $session
+     * @param array $values
+     *
+     * @return bool
+     */
+    public function updateSession(Guild $guild, Session $session, array $values): bool
+    {
+        $this->dataSyncService->onUpdateSession($guild, $session, $values);
+
+        // Make sure the host belongs to the same guild
+        $hostId = intval($values['host_id']);
+        $values['host_id'] = null;
+        if($hostId > 0)
+        {
+            $values['host_id'] = $session->round->members()->find($hostId)?->id ?? null;
+        }
+        return $session->update($values);
     }
 }

@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\DataSyncService;
 use Siak\Tontine\Service\TenantService;
 
 class PoolService

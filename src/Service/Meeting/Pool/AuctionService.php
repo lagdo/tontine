@@ -30,26 +30,18 @@ class AuctionService
      */
     private function getQuery(Session $session, ?bool $onlyPaid = null): Builder|Relation
     {
-        $prevSessions = $this->sessionService
-            ->getSessionIds($session->round, $session, withCurr: false);
-
         return Auction::when($onlyPaid !== null, fn(Builder $qp) =>
                 $qp->where('paid', $onlyPaid))
-            ->where(function(Builder $query) use($session, $prevSessions) {
+            ->where(function(Builder $query) use($session) {
                 // Take all the auctions in the current session
                 $query->whereHas('remitment', fn(Builder $qr) =>
                     $qr->whereHas('payable', fn(Builder $qp) =>
                         $qp->where('session_id', $session->id)));
-                if($prevSessions->count() === 0)
-                {
-                    return;
-                }
-
                 // The auctions in the previous sessions.
                 $query->orWhere(fn(Builder $qa) => $qa
                     ->whereHas('remitment', fn(Builder $qr) =>
                         $qr->whereHas('payable', fn(Builder $qp) =>
-                            $qp->whereIn('session_id', $prevSessions)))
+                            $qp->whereHas('session', fn($qs) => $qs->precedes($session, true))))
                     ->where(function(Builder $query) use($session) {
                         // The auctions that are not yet paid.
                         $query->orWhere('paid', false);

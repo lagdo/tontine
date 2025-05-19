@@ -212,4 +212,18 @@ class Session extends Base
     {
         return $query->where('status', '=', self::STATUS_OPENED);
     }
+
+    /**
+     * @param  Builder  $query
+     * @param  Session  $session
+     * @param  bool $strictly
+     *
+     * @return Builder
+     */
+    public function scopePrecedes(Builder $query, Session $session, bool $strictly = false): Builder
+    {
+        return $query
+            ->where('round_id', $session->round_id)
+            ->where('day_date', $strictly ? '<' : '<=', $session->day_date);
+    }
 }

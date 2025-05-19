@@ -8,14 +8,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\Outflow;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\BalanceCalculator;
-use Siak\Tontine\Service\Guild\MemberService;
-use Siak\Tontine\Service\Meeting\Session\SessionService as MeetingSessionService;
-use Siak\Tontine\Service\Planning\PoolService;
-use Siak\Tontine\Service\TenantService;
-
-use function collect;
+use Siak\Tontine\Service\Payment\BalanceCalculator;
 
 class SessionService
 {
@@ -23,14 +18,8 @@ class SessionService
 
     /**
      * @param BalanceCalculator $balanceCalculator
-     * @param TenantService $tenantService
-     * @param MemberService $memberService
-     * @param PoolService $poolService
-     * @param MeetingSessionService $sessionService
      */
-    public function __construct(private BalanceCalculator $balanceCalculator,
-        private TenantService $tenantService, private MemberService $memberService,
-        private PoolService $poolService, private MeetingSessionService $sessionService)
+    public function __construct(private BalanceCalculator $balanceCalculator)
     {}
 
     /**
@@ -69,6 +58,7 @@ class SessionService
     {
         return $session->pools()
             ->withCount([
+                'sessions',
                 'subscriptions as total_count' => function($query) use($session) {
                     $query->whereHas('payable', function($query) use($session) {
                         $query->where('session_id', $session->id);
@@ -82,8 +72,7 @@ class SessionService
             ])
             ->get()
             ->each(function($pool) use($session) {
-                $sessionCount = $this->poolService->getActiveSessionCount($pool);
-                $pool->total_amount = $pool->amount * $pool->total_count * $sessionCount;
+                $pool->total_amount = $pool->amount * $pool->total_count * $pool->sessions_count;
                 $pool->paid_amount = $this->balanceCalculator->getPoolRemitmentAmount($pool, $session);
             });
     }
@@ -107,29 +96,6 @@ class SessionService
     }
 
     /**
-     * @param Collection $chargeIds
-     * @param Collection $sessionIds
-     *
-     * @return Collection
-     */
-    public function getDisbursedAmounts(Collection $chargeIds, Collection $sessionIds): Collection
-    {
-        if($chargeIds->count() === 0)
-        {
-            return collect();
-        }
-
-        return DB::table('outflows')
-            ->select(DB::raw('sum(amount) as total_amount'),
-                DB::raw('count(*) as total_count'), 'charge_id')
-            ->groupBy('charge_id')
-            ->whereIn('charge_id', $chargeIds)
-            ->whereIn('session_id', $sessionIds)
-            ->get()
-            ->keyBy('charge_id');
-    }
-
-    /**
      * @param Closure $settlementFilter
      * @param Member $member|null
      *
@@ -138,46 +104,61 @@ class SessionService
     private function getBills(Closure $settlementFilter, ?Member $member = null): Collection
     {
         $onetimeBillsQuery = DB::table('bills')
-            ->join('onetime_bills', 'bills.id', '=', 'onetime_bills.bill_id')
+            ->join(DB::raw('onetime_bills as ob'), 'bills.id', '=', 'ob.bill_id')
             ->select(DB::raw('sum(bills.amount) as total_amount'),
-                DB::raw('count(bills.id) as total_count'), 'onetime_bills.charge_id')
-            ->groupBy('onetime_bills.charge_id')
+                DB::raw('count(bills.id) as total_count'), 'ob.charge_id')
+            ->groupBy('ob.charge_id')
             ->whereExists($settlementFilter)
-            ->when($member !== null, function($query) use($member) {
-                return $query->where('onetime_bills.member_id', $member->id);
-            });
+            ->when($member !== null, fn($qm) =>
+                $qm->where('ob.member_id', $member->id));
         $roundBillsQuery = DB::table('bills')
-            ->join('round_bills', 'bills.id', '=', 'round_bills.bill_id')
+            ->join(DB::raw('round_bills as rb'), 'bills.id', '=', 'rb.bill_id')
             ->select(DB::raw('sum(bills.amount) as total_amount'),
-                DB::raw('count(bills.id) as total_count'), 'round_bills.charge_id')
-            ->groupBy('round_bills.charge_id')
+                DB::raw('count(bills.id) as total_count'), 'rb.charge_id')
+            ->groupBy('rb.charge_id')
             ->whereExists($settlementFilter)
-            ->when($member !== null, function($query) use($member) {
-                return $query->where('round_bills.member_id', $member->id);
-            });
+            ->when($member !== null, fn($qm) =>
+                $qm->where('rb.member_id', $member->id));
         $sessionBillsQuery = DB::table('bills')
-            ->join('session_bills', 'bills.id', '=', 'session_bills.bill_id')
+            ->join(DB::raw('session_bills as sb'), 'bills.id', '=', 'sb.bill_id')
             ->select(DB::raw('sum(bills.amount) as total_amount'),
-                DB::raw('count(bills.id) as total_count'), 'session_bills.charge_id')
-            ->groupBy('session_bills.charge_id')
+                DB::raw('count(bills.id) as total_count'), 'sb.charge_id')
+            ->groupBy('sb.charge_id')
             ->whereExists($settlementFilter)
-            ->when($member !== null, function($query) use($member) {
-                return $query->where('session_bills.member_id', $member->id);
-            });
+            ->when($member !== null, fn($qm) =>
+                $qm->where('sb.member_id', $member->id));
         $libreBillsQuery = DB::table('bills')
-            ->join('libre_bills', 'bills.id', '=', 'libre_bills.bill_id')
+            ->join(DB::raw('libre_bills as lb'), 'bills.id', '=', 'lb.bill_id')
             ->select(DB::raw('sum(bills.amount) as total_amount'),
-                DB::raw('count(bills.id) as total_count'), 'libre_bills.charge_id')
-            ->groupBy('libre_bills.charge_id')
+                DB::raw('count(bills.id) as total_count'), 'lb.charge_id')
+            ->groupBy('lb.charge_id')
             ->whereExists($settlementFilter)
-            ->when($member !== null, function($query) use($member) {
-                return $query->where('libre_bills.member_id', $member->id);
-            });
+            ->when($member !== null, fn($qm) =>
+                $qm->where('lb.member_id', $member->id));
 
         return $onetimeBillsQuery
             ->union($roundBillsQuery)
             ->union($sessionBillsQuery)
             ->union($libreBillsQuery)
+            ->get()
+            ->keyBy('charge_id');
+    }
+
+    /**
+     * @param Session $session
+     * @param bool $onlyCurrent
+     *
+     * @return Collection
+     */
+    private function getDisbursedAmounts(Session $session, bool $onlyCurrent): Collection
+    {
+        return Outflow::select(DB::raw('sum(amount) as total_amount'),
+                DB::raw('count(*) as total_count'), 'charge_id')
+            ->groupBy('charge_id')
+            ->whereHas('charge', fn($qc) => $qc->where('round_id', $session->round_id))
+            ->when($onlyCurrent, fn($qo) => $qo->where('session_id', $session->id))
+            ->when(!$onlyCurrent, fn($qo) =>
+                $qo->whereHas('session', fn($qs) => $qs->precedes($session)))
             ->get()
             ->keyBy('charge_id');
     }
@@ -191,16 +172,13 @@ class SessionService
     {
         $settlementFilter = fn(Builder $query) => $query
             ->select(DB::raw(1))
-            ->from('settlements')
+            ->from(DB::raw('settlements as st'))
             ->where('session_id', $session->id)
-            ->whereColumn('settlements.bill_id', 'bills.id');
+            ->whereColumn('st.bill_id', 'bills.id');
         $bills = $this->getBills($settlementFilter);
-        $sessionIds = collect([$session->id]);
+        $outflows = $this->getDisbursedAmounts($session, true);
 
-        $charges = $session->round->charges;
-        $outflows = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
-
-        return $charges
+        return $session->round->charges
             ->each(function($charge) use($bills, $outflows) {
                 $bill = $bills[$charge->id] ?? null;
                 $charge->total_count = $bill ? $bill->total_count : 0;
@@ -219,16 +197,19 @@ class SessionService
      */
     public function getTotalCharges(Session $session, ?Member $member = null): Collection
     {
-        $sessionIds = $this->sessionService->getSessionIds($session->round, $session);
+        $sessionFilter = fn(Builder $query) => $query
+            ->select(DB::raw(1))
+            ->from(DB::raw('sessions as se'))
+            ->whereColumn('se.id', 'st.session_id')
+            ->where('se.round_id', $session->round_id)
+            ->where('se.day_date', '<=', $session->day_date);
         $settlementFilter = fn(Builder $query) => $query
             ->select(DB::raw(1))
-            ->from('settlements')
-            ->whereIn('session_id', $sessionIds)
-            ->whereColumn('settlements.bill_id', 'bills.id');
+            ->from(DB::raw('settlements as st'))
+            ->whereExists($sessionFilter)
+            ->whereColumn('st.bill_id', 'bills.id');
         $bills = $this->getBills($settlementFilter, $member);
-
-        $charges = $session->round->charges;
-        $outflows = $this->getDisbursedAmounts($charges->pluck('id'), $sessionIds);
+        $outflows = $this->getDisbursedAmounts($session, false);
         if($member !== null)
         {
             // The outflow part of each member id calculated by dividing each amount
@@ -240,7 +221,7 @@ class SessionService
             }
         }
 
-        return $charges
+        return $session->round->charges
             ->each(function($charge) use($bills, $outflows) {
                 $bill = $bills[$charge->id] ?? null;
                 $charge->total_count = $bill ? $bill->total_count : 0;

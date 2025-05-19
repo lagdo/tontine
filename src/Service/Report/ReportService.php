@@ -6,7 +6,6 @@ use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
 use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
@@ -19,7 +18,6 @@ class ReportService
 {
     /**
      * @param LocaleService $localeService
-     * @param TenantService $tenantService
      * @param SessionService $sessionService
      * @param MemberService $memberService
      * @param RoundService $roundService
@@ -29,7 +27,7 @@ class ReportService
      * @param DebtCalculator $debtCalculator
      */
     public function __construct(protected LocaleService $localeService,
-        protected TenantService $tenantService, protected SessionService $sessionService,
+        protected SessionService $sessionService,
         protected MemberService $memberService, protected RoundService $roundService,
         protected FundService $fundService, protected SummaryService $summaryService,
         protected ProfitService $profitService, protected DebtCalculator $debtCalculator)

@@ -9,19 +9,14 @@ use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\BalanceCalculator;
-use Siak\Tontine\Service\Meeting\Session\SessionService;
-use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Payment\BalanceCalculator;
 
 class MemberService
 {
     /**
      * @param BalanceCalculator $balanceCalculator
-     * @param TenantService $tenantService
-     * @param SessionService $sessionService
      */
-    public function __construct(private BalanceCalculator $balanceCalculator,
-        private TenantService $tenantService, private SessionService $sessionService)
+    public function __construct(private BalanceCalculator $balanceCalculator)
     {}
 
     /**
@@ -194,25 +189,19 @@ class MemberService
      */
     public function getDebts(Session $session, Member $member): Collection
     {
-        $prevSessions = $this->sessionService->getSessionIds($session->round, $session);
         return Debt::with(['loan.session', 'refund'])
             // Member debts
             ->whereHas('loan', fn(Builder $qm) =>
                 $qm->where('member_id', $member->id))
-            ->where(function($query) use($session, $prevSessions) {
+            ->where(function($query) use($session) {
                 // Take all the debts in the current session
                 $query->where(fn($ql) =>
                     $ql->whereHas('loan', fn(Builder $qs) =>
                         $qs->where('session_id', $session->id)));
-                if($prevSessions->count() === 0)
-                {
-                    return;
-                }
-
                 // The debts in the previous sessions.
-                $query->orWhere(function($query) use($session, $prevSessions) {
+                $query->orWhere(function($query) use($session) {
                     $query->whereHas('loan', fn(Builder $qs) =>
-                        $qs->whereIn('session_id', $prevSessions))
+                        $qs->whereHas('session', fn($qs) => $qs->precedes($session)))
                     ->where(function($query) use($session) {
                         // The debts that are not yet refunded.
                         $query->orWhereDoesntHave('refund');

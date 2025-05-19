@@ -10,11 +10,10 @@ use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\DataSyncService;
+use Siak\Tontine\Service\Planning\DataSyncService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\Guild\RoundValidator;
 
-use function collect;
 use function trans;
 
 class RoundService

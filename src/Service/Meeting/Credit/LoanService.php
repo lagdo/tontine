@@ -9,7 +9,7 @@ use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\BalanceCalculator;
+use Siak\Tontine\Service\Payment\BalanceCalculator;
 use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Service\LocaleService;

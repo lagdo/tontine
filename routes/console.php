@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Round;
-use Siak\Tontine\Service\DataSyncService;
+use Siak\Tontine\Service\Planning\DataSyncService;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());

@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\MemberDef;
 use Siak\Tontine\Model\Round;
-use Siak\Tontine\Service\DataSyncService;
+use Siak\Tontine\Service\Planning\DataSyncService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\WithTrait;
 use Siak\Tontine\Validation\SearchSanitizer;
