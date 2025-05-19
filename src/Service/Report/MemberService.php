@@ -125,7 +125,7 @@ class MemberService
     {
         return $this->sortByMemberName(Bill::with(['settlement',
                 'libre_bill.session', 'libre_bill.member', 'round_bill.member',
-                'oneoff_bill.member', 'session_bill.member', 'session_bill.session'])
+                'onetime_bill.member', 'session_bill.member', 'session_bill.session'])
             ->where(fn($query) => $query
                 // Unsettled bills.
                 ->orWhereDoesntHave('settlement')
@@ -133,8 +133,8 @@ class MemberService
                 ->orWhereHas('settlement', fn(Builder $qs) =>
                     $qs->where('session_id', $session->id)))
             ->where(fn($query) => $query
-                // Oneoff bills.
-                ->orWhereHas('oneoff_bill', fn(Builder $qb) =>
+                // Onetime bills.
+                ->orWhereHas('onetime_bill', fn(Builder $qb) =>
                     $qb->when($member !== null, fn($qm) =>
                             $qm->where('member_id', $member->id))
                         ->when($member === null, fn($qw) =>
@@ -162,7 +162,7 @@ class MemberService
             ->each(function($bill) {
                 // Take the only value which is not null
                 $_bill = $bill->session_bill ?? $bill->round_bill ??
-                    $bill->oneoff_bill ?? $bill->libre_bill;
+                    $bill->onetime_bill ?? $bill->libre_bill;
 
                 $bill->paid = $bill->settlement !== null;
                 $bill->session = $bill->libre_bill ? $_bill->session : null;

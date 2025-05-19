@@ -11,7 +11,7 @@ use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Member;
-use Siak\Tontine\Model\OneoffBill;
+use Siak\Tontine\Model\OnetimeBill;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\RoundBill;
@@ -48,14 +48,14 @@ class DataSyncService
      *
      * @return void
      */
-    private function createOneoffBill(Charge $charge, Member $member, DateTime $today): void
+    private function createOnetimeBill(Charge $charge, Member $member, DateTime $today): void
     {
         $bill = $this->createBill($charge, $today);
-        $oneoffBill = new OneoffBill();
-        $oneoffBill->bill()->associate($bill);
-        $oneoffBill->charge()->associate($charge);
-        $oneoffBill->member()->associate($member);
-        $oneoffBill->save();
+        $onetimeBill = new OnetimeBill();
+        $onetimeBill->bill()->associate($bill);
+        $onetimeBill->charge()->associate($charge);
+        $onetimeBill->member()->associate($member);
+        $onetimeBill->save();
     }
 
     /**
@@ -112,7 +112,7 @@ class DataSyncService
         // Create a one off bill for each member
         foreach($guild->members()->get() as $member)
         {
-            $this->createOneoffBill($charge, $member, $today);
+            $this->createOnetimeBill($charge, $member, $today);
         }
     }
 
@@ -128,7 +128,7 @@ class DataSyncService
         // Create a one off bill for each charge
         foreach($guild->charges()->active()->once()->get() as $charge)
         {
-            $this->createOneoffBill($charge, $member, $today);
+            $this->createOnetimeBill($charge, $member, $today);
         }
     }
 
@@ -144,7 +144,7 @@ class DataSyncService
         $members = $guild
             ->members()
             ->with([
-                'oneoff_bills',
+                'onetime_bills',
                 'round_bills' => fn($query) => $query->where('round_id', $round->id),
             ])
             ->get();
@@ -169,12 +169,12 @@ class DataSyncService
         {
             foreach($guildCharges as $charge)
             {
-                $count = $member->oneoff_bills
+                $count = $member->onetime_bills
                     ->filter(fn($bill) => $bill->charge_id === $charge->id)
                     ->count();
                 if($count === 0)
                 {
-                    $this->createOneoffBill($charge, $member, $today);
+                    $this->createOnetimeBill($charge, $member, $today);
                 }
             }
         }

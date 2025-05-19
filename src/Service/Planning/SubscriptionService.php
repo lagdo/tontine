@@ -90,8 +90,7 @@ class SubscriptionService
                     $query->where('pool_id', $pool->id);
                 },
             ])
-            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
-            ->orderBy('member_defs.name', 'asc')
+            ->orderBy('name', 'asc')
             ->get();
     }
 

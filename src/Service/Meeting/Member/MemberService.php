@@ -51,8 +51,7 @@ class MemberService
         return tap($this->getQuery($round, $search),
                 fn($query) => $this->addWith($query))
             ->page($page, $this->tenantService->getLimit())
-            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
-            ->orderBy('member_defs.name', 'asc')
+            ->orderBy('name', 'asc')
             ->get();
     }
 
@@ -79,9 +78,7 @@ class MemberService
     public function getMemberList(Round $round): Collection
     {
         return $round->members()
-            ->without('def')
-            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
-            ->orderBy('member_defs.name', 'asc')
+            ->orderBy('name', 'asc')
             ->get()
             ->pluck('name', 'id');
     }

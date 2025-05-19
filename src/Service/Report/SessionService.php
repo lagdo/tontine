@@ -137,14 +137,14 @@ class SessionService
      */
     private function getBills(Closure $settlementFilter, ?Member $member = null): Collection
     {
-        $oneoffBillsQuery = DB::table('bills')
-            ->join('oneoff_bills', 'bills.id', '=', 'oneoff_bills.bill_id')
+        $onetimeBillsQuery = DB::table('bills')
+            ->join('onetime_bills', 'bills.id', '=', 'onetime_bills.bill_id')
             ->select(DB::raw('sum(bills.amount) as total_amount'),
-                DB::raw('count(bills.id) as total_count'), 'oneoff_bills.charge_id')
-            ->groupBy('oneoff_bills.charge_id')
+                DB::raw('count(bills.id) as total_count'), 'onetime_bills.charge_id')
+            ->groupBy('onetime_bills.charge_id')
             ->whereExists($settlementFilter)
             ->when($member !== null, function($query) use($member) {
-                return $query->where('oneoff_bills.member_id', $member->id);
+                return $query->where('onetime_bills.member_id', $member->id);
             });
         $roundBillsQuery = DB::table('bills')
             ->join('round_bills', 'bills.id', '=', 'round_bills.bill_id')
@@ -174,7 +174,7 @@ class SessionService
                 return $query->where('libre_bills.member_id', $member->id);
             });
 
-        return $oneoffBillsQuery
+        return $onetimeBillsQuery
             ->union($roundBillsQuery)
             ->union($sessionBillsQuery)
             ->union($libreBillsQuery)

@@ -71,9 +71,9 @@ class Member extends Base
         return $this->hasMany(RoundBill::class);
     }
 
-    public function oneoff_bills()
+    public function onetime_bills()
     {
-        return $this->hasMany(OneoffBill::class);
+        return $this->hasMany(OnetimeBill::class);
     }
 
     public function savings()

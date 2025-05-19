@@ -202,8 +202,7 @@ class SavingService
         return $this->getMembersQuery($session, $fund, $search, $filter)
             ->page($page, $this->tenantService->getLimit())
             ->with('savings', $this->getMemberSavingsFilter($session, $fund))
-            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
-            ->orderBy('member_defs.name', 'asc')
+            ->orderBy('name', 'asc')
             ->get()
             ->each(fn($member) => $member->saving = $member->savings->first());
     }

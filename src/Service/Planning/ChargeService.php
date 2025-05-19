@@ -129,7 +129,7 @@ class ChargeService
         {
             DB::transaction(function() use($charge) {
                 $billIds = Bill::ofCharge($charge, true)->pluck('id');
-                $charge->oneoff_bills()->delete();
+                $charge->onetime_bills()->delete();
                 $charge->round_bills()->delete();
                 $charge->session_bills()->delete();
                 $charge->libre_bills()->delete();
