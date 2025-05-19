@@ -6,10 +6,22 @@
   $rqReportTitle = rq(Ajax\App\Report\Session\ReportTitle::class);
 @endphp
           <div class="section-body">
-            <div class="row">
-              <div class="col-auto mb-2">
+            <div class="row mb-2">
+              <div class="col-auto">
                 <h2 class="section-title" @jxnBind($rqReportTitle)></h2>
               </div>
+              <div class="col-auto pl-0 ml-auto">
+@isset($session->id)
+@include('tontine::pages.report.session.action.exports', ['sessionId' => $session->id])
+@endisset
+              </div>
+              <div class="col-auto pl-0">
+@isset($session->id)
+@include('tontine::pages.report.session.action.menu', ['sessionId' => $session->id])
+@endisset
+              </div>
+            </div>
+            <div class="row">
               <div class="col-auto mb-2 pr-0 mr-0">
                 <div class="input-group float-left">
                   {{ $html->select('session_id', $sessions, 0)->id('report-select-session')
@@ -19,11 +31,6 @@
                   </div>
                 </div>
               </div>
-              <div class="col-auto mb-2 pl-0 ml-auto">
-@isset($session->id)
-@include('tontine::pages.report.session.action.exports', ['sessionId' => $session->id])
-@endisset
-              </div>
               <div class="col-auto mb-2 pr-0 mr-0">
                 <div class="input-group float-left">
                   {{ $html->select('member_id', $members, 0)->id('report-select-member')
@@ -32,11 +39,6 @@
                     <button type="button" class="btn btn-primary" @jxnClick($rqSession->showMember($sessionId, $memberId))><i class="fa fa-caret-right"></i></button>
                   </div>
                 </div>
-              </div>
-              <div class="col-auto mb-2 pl-0 ml-auto">
-@isset($session->id)
-@include('tontine::pages.report.session.action.menu', ['sessionId' => $session->id])
-@endisset
               </div>
             </div>
           </div>

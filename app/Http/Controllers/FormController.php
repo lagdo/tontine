@@ -65,8 +65,9 @@ class FormController extends Controller
     public function session(Request $request, ReportService $reportService,
         SqidsInterface $sqids, string $sessionSqid)
     {
+        $round = $this->tenantService->round();
         [$sessionId] = $sqids->decode($sessionSqid);
-        $session = $this->sessionService->getSession($sessionId);
+        $session = $this->sessionService->getSession($round, $sessionId);
         view()->share($reportService->getSessionEntry($session));
 
         return $this->form($request, 'session');
@@ -89,8 +90,9 @@ class FormController extends Controller
         $session = null;
         if($sessionSqid !== '')
         {
+            $round = $this->tenantService->round();
             [$sessionId] = $sqids->decode($sessionSqid);
-            $session = $this->sessionService->getSession($sessionId);
+            $session = $this->sessionService->getSession($round, $sessionId);
         }
         view()->share(compact('guild', 'country', 'session'));
 

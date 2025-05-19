@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Meeting\Session;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
@@ -249,6 +250,20 @@ class SummaryService
             }
         }
         return $pools;
+    }
+
+    /**
+     * Get the funds.
+     *
+     * @param Round $round
+     *
+     * @return Collection
+     */
+    public function getFunds(Round $round): Collection
+    {
+        return Fund::ofRound($round)->get()
+            ->filter(fn($fund) => $fund->start_amount > 0 ||
+                $fund->end_amount > 0 || $fund->profit_amount > 0);
     }
 
     /**

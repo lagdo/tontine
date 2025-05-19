@@ -40,6 +40,19 @@ class SessionService
     }
 
     /**
+     * Get a session.
+     *
+     * @param Guild $guild
+     * @param int $sessionId
+     *
+     * @return Session|null
+     */
+    public function getSession(Guild $guild, int $sessionId): ?Session
+    {
+        return $guild->sessions()->find($sessionId);
+    }
+
+    /**
      * Add a new session.
      *
      * @param Round $round

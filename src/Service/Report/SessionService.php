@@ -233,7 +233,7 @@ class SessionService
         {
             // The outflow part of each member id calculated by dividing each amount
             // by the number of members.
-            $memberCount = $session->members->count();
+            $memberCount = $session->round->members->count();
             foreach($outflows as $outflow)
             {
                 $outflow->total_amount /= $memberCount;
