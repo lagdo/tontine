@@ -265,6 +265,11 @@ return [
         'questions' => [
             'delete' => "Supprimer ce décaissement ?",
         ],
+        'messages' => [
+            'created' => "Le décaissement a été créé.",
+            'updated' => "Le décaissement a été modifié.",
+            'deleted' => "Le décaissement a été supprimé.",
+        ],
         'errors' => [
             'not_found' => "Impossible de trouver le décaissement.",
         ],

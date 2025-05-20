@@ -265,6 +265,11 @@ return [
         'questions' => [
             'delete' => "Delete this cash outflow?",
         ],
+        'messages' => [
+            'created' => "The cash outflow has been created.",
+            'updated' => "The cash outflow has been updated.",
+            'deleted' => "The cash outflow has been deleted.",
+        ],
         'errors' => [
             'not_found' => "Cannot find the cash outflow.",
         ],

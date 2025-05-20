@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service\Meeting\Cash;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Category;
@@ -92,21 +93,31 @@ class OutflowService
      *
      * @param Guild $guild
      *
+     * @return Builder
+     */
+    private function getAccountQuery(Guild $guild): Builder
+    {
+        return Category::outflow()->active()
+            ->where(fn($query) => $query->global()->orWhere('guild_id', $guild->id));
+    }
+
+    /**
+     * Get the outflow categories for the dropdown select component.
+     *
+     * @param Guild $guild
+     *
      * @return Collection
      */
     public function getAccounts(Guild $guild): Collection
     {
         // It is important to call get() before pluck() so the name field is translated.
-        $globalCategories = Category::outflow()->global()->get();
+        $categories = $this->getAccountQuery($guild)->orderBy('id')->get();
         // We need to move the "other" category to the end of the list.
         // getAttributes()['name'] returns the name field, without calling the getter.
-        [$otherCategory, $globalCategories] = $globalCategories
+        [$otherCategory, $categories] = $categories
             ->partition(fn($category) => $category->is_other);
 
-        $guildCategories = $guild->categories()->outflow()
-            ->active()->get();
-        return $globalCategories->concat($guildCategories)->concat($otherCategory)
-            ->pluck('name', 'id');
+        return $categories->concat($otherCategory)->pluck('name', 'id');
     }
 
     /**
@@ -119,7 +130,7 @@ class OutflowService
      */
     public function getAccount(Guild $guild, int $categoryId): ?Category
     {
-        return $guild->categories()->outflow()->find($categoryId);
+        return $this->getAccountQuery($guild)->find($categoryId);
     }
 
     /**

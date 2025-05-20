@@ -57,6 +57,7 @@ class OutflowFunc extends FuncComponent
         $this->outflowService->createOutflow($guild, $session, $values);
 
         $this->modal()->hide();
+        $this->alert()->success(trans('meeting.outflow.messages.created'));
 
         $this->cl(OutflowPage::class)->page();
     }
@@ -97,6 +98,8 @@ class OutflowFunc extends FuncComponent
         $this->outflowService->updateOutflow($guild, $session, $outflowId, $values);
 
         $this->modal()->hide();
+        $this->alert()->success(trans('meeting.outflow.messages.updated'));
+
         $this->cl(OutflowPage::class)->page();
     }
 
@@ -104,6 +107,8 @@ class OutflowFunc extends FuncComponent
     {
         $session = $this->stash()->get('meeting.session');
         $this->outflowService->deleteOutflow($session, $outflowId);
+
+        $this->alert()->success(trans('meeting.outflow.messages.deleted'));
 
         $this->cl(OutflowPage::class)->page();
     }
