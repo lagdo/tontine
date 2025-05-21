@@ -11,13 +11,81 @@ use Siak\Tontine\Model\OnetimeBill;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\RoundBill;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Model\SessionBill;
 use DateTime;
 
+use function collect;
+use function count;
 use function now;
 
 class BillSyncService
 {
+    /**
+     * @var array
+     */
+    private array $existingBills;
+
+    /**
+     * @var array
+     */
+    private array $newBills;
+
+    /**
+     * @param Collection $charges
+     * @param Collection $members
+     *
+     * @return void
+     */
+    private function initBills(Collection $charges, Collection $members): void
+    {
+        $this->newBills = [
+            'onetime_bills' => [],
+            'round_bills' => [],
+            'session_bills' => [],
+        ];
+
+        // Avoid duplicates creation.
+        $this->existingBills = [
+            'onetime_bills' => OnetimeBill::select([
+                    DB::raw('charges.def_id as charge_def_id'),
+                    DB::raw('members.def_id as member_def_id'),
+                ])
+                ->where(fn($qw) => $qw
+                    ->orWhere(fn($qwb) => $qwb
+                        ->whereIn('charge_id', $charges->pluck('id'))
+                        ->whereIn('member_id', $members->pluck('id')))
+                    ->orWhere(fn($qwd) => $qwd
+                        ->whereHas('charge', fn($qc) =>
+                            $qc->whereIn('def_id', $charges->pluck('def_id')))
+                        ->whereHas('member', fn($qm) =>
+                            $qm->whereIn('def_id', $members->pluck('def_id')))
+                        ->whereHas('bill', fn($qb) =>
+                            $qb->whereHas('settlement')))
+                )
+                ->join('charges', 'charges.id', '=', 'onetime_bills.charge_id')
+                ->join('members', 'members.id', '=', 'onetime_bills.member_id')
+                ->distinct()
+                ->get(),
+            'round_bills' => RoundBill::select(['charge_id', 'member_id'])
+                ->whereIn('charge_id', $charges->pluck('id'))
+                ->whereIn('member_id', $members->pluck('id'))
+                ->get(),
+        ];
+    }
+
+    /**
+     * @return void
+     */
+    private function saveBills(): void
+    {
+        foreach(['onetime_bills', 'round_bills', 'session_bills'] as $table)
+        {
+            if(count($this->newBills[$table]) > 0)
+            {
+                DB::table($table)->insert($this->newBills[$table]);
+            }
+        }
+    }
+
     /**
      * @param Charge $charge
      * @param DateTime $today
@@ -43,27 +111,20 @@ class BillSyncService
      */
     private function createOnetimeBill(Charge $charge, Member $member, DateTime $today): void
     {
-        // Create new bills only for members that have not already paid.
-        $existQuery = OnetimeBill::orWhere(fn($qw) => $qw
-                ->where('member_id', $member->id)
-                ->where('charge_id', $charge->id))
-            ->orWhere(fn($qw) => $qw
-                ->whereHas('member', fn($qm) =>
-                    $qm->where('def_id', $member->def_id))
-                ->whereHas('charge', fn($qc) =>
-                    $qc->where('def_id', $charge->def_id))
-                ->whereHas('bill', fn($qb) => $qb->whereHas('settlement')));
-        if($existQuery->exists())
+        if($this->existingBills['onetime_bills']
+            ->contains(fn(OnetimeBill $bill) =>
+                $bill->charge_def_id === $charge->def_id &&
+                $bill->member_def_id === $member->def_id))
         {
             return;
         }
 
         $bill = $this->createBill($charge, $today);
-        $onetimeBill = new OnetimeBill();
-        $onetimeBill->bill()->associate($bill);
-        $onetimeBill->charge()->associate($charge);
-        $onetimeBill->member()->associate($member);
-        $onetimeBill->save();
+        $this->newBills['onetime_bills'][] = [
+            'bill_id' => $bill->id,
+            'charge_id' => $charge->id,
+            'member_id' => $member->id,
+        ];
     }
 
     /**
@@ -76,21 +137,21 @@ class BillSyncService
      */
     private function createRoundBill(Charge $charge, Member $member, Round $round, DateTime $today): void
     {
-        $existQuery = RoundBill::whereNotNull('id')
-            ->where('member_id', $member->id)
-            ->where('charge_id', $charge->id);
-        if($existQuery->exists())
+        if($this->existingBills['round_bills']
+            ->contains(fn(RoundBill $bill) =>
+                $bill->charge_id === $charge->id &&
+                $bill->member_id === $member->id))
         {
             return;
         }
 
         $bill = $this->createBill($charge, $today);
-        $roundBill = new RoundBill();
-        $roundBill->bill()->associate($bill);
-        $roundBill->charge()->associate($charge);
-        $roundBill->member()->associate($member);
-        $roundBill->round()->associate($round);
-        $roundBill->save();
+        $this->newBills['round_bills'][] = [
+            'bill_id' => $bill->id,
+            'charge_id' => $charge->id,
+            'member_id' => $member->id,
+            'round_id' => $round->id,
+        ];
     }
 
     /**
@@ -104,12 +165,12 @@ class BillSyncService
     private function createSessionBill(Charge $charge, Member $member, Session $session, DateTime $today): void
     {
         $bill = $this->createBill($charge, $today);
-        $sessionBill = new SessionBill();
-        $sessionBill->bill()->associate($bill);
-        $sessionBill->charge()->associate($charge);
-        $sessionBill->member()->associate($member);
-        $sessionBill->session()->associate($session);
-        $sessionBill->save();
+        $this->newBills['session_bills'][] = [
+            'bill_id' => $bill->id,
+            'charge_id' => $charge->id,
+            'member_id' => $member->id,
+            'session_id' => $session->id,
+        ];
     }
 
     /**
@@ -173,10 +234,12 @@ class BillSyncService
     public function chargeEnabled(Round $round, Charge $charge): void
     {
         $today = now();
+        $this->initBills(collect([$charge]), $round->members);
         foreach($round->members as $member)
         {
             $this->createBills($charge, $member, $round, $round->sessions, $today);
         }
+        $this->saveBills();
     }
 
     /**
@@ -199,10 +262,12 @@ class BillSyncService
     public function memberEnabled(Round $round, Member $member): void
     {
         $today = now();
+        $this->initBills($round->charges, collect([$member]));
         foreach($round->charges as $charge)
         {
             $this->createBills($charge, $member, $round, $round->sessions, $today);
         }
+        $this->saveBills();
     }
 
     /**
@@ -225,6 +290,7 @@ class BillSyncService
     public function sessionsCreated(Round $round, Collection|array $sessions): void
     {
         $today = now();
+        $this->initBills($round->charges, $round->members);
         foreach($round->charges as $charge)
         {
             foreach($round->members as $member)
@@ -232,6 +298,7 @@ class BillSyncService
                 $this->createBills($charge, $member, $round, $sessions, $today);
             }
         }
+        $this->saveBills();
     }
 
     /**
