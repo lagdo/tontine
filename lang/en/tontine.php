@@ -210,10 +210,11 @@ return [
             'updated' => "The member was successfully updated.",
             'deleted' => "The member was successfully deleted.",
             'enabled' => "The member was added to the current round.",
-            'disabled' => "The member was removed from the current round.",
+            'removed' => "The member was removed from the current round.",
         ],
         'questions' => [
             'delete' => "Delete this member?",
+            'disable' => "Disable this member?",
         ],
         'errors' => [
             'not_found' => "Cannot find the corresponding member.",
@@ -235,13 +236,15 @@ return [
             'updated' => "The fee was successfully updated.",
             'deleted' => "The fee was successfully deleted.",
             'enabled' => "The fee was added to the current round.",
-            'disabled' => "The fee was removed from the current round.",
+            'removed' => "The fee was removed from the current round.",
         ],
         'questions' => [
             'delete' => "Delete this fee?",
+            'disable' => "Disable this fee?",
         ],
         'errors' => [
             'cannot_delete' => "Cannot delete this fee.",
+            'cannot_remove' => "Cannot remove this fee.",
         ],
         'types' => [
             'fee' => "Fee",
@@ -345,13 +348,11 @@ return [
         'actions' => [
             'host' => "Host",
             'venue' => "Venue",
-            'resync' => "Resynchronize",
         ],
         'messages' => [
             'created' => "The session was successfully created.",
             'updated' => "The session was successfully updated.",
             'deleted' => "The session was successfully deleted.",
-            'resynced' => "The sessions were successfully resynced.",
             'fund' => [
                 'saved' => "The sessions of the savings fund was successfully saved.",
             ],
@@ -366,7 +367,6 @@ return [
             'close' => "Close this session?",
             'delete' => "Delete this session?",
             'disable' => "Disable this session?<br/>If the session was already opened, this may also delete related data.",
-            'resync' => "Resynchronize the sessions data?<br/>You need to do this if you have changed the members, the sessions, the charges, or the subscriptions after a session was opened.",
         ],
         'errors' => [
             'not_found' => "Unable to find the session.",

@@ -15,18 +15,17 @@ use Siak\Tontine\Model\Subscription;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\SearchSanitizer;
 
-use function strtolower;
 use function trans;
 
 class SubscriptionService
 {
     /**
      * @param TenantService $tenantService
-     * @param PoolService $poolService
+     * @param PoolSyncService $poolSyncService
      * @param SearchSanitizer $searchSanitizer
      */
-    public function __construct(protected TenantService $tenantService,
-        protected PoolService $poolService, private SearchSanitizer $searchSanitizer)
+    public function __construct(private TenantService $tenantService,
+        private PoolSyncService $poolSyncService, private SearchSanitizer $searchSanitizer)
     {}
 
     /**
@@ -131,10 +130,9 @@ class SubscriptionService
         $subscription->member()->associate($member);
 
         DB::transaction(function() use($subscription) {
-            // Create the subscription
             $subscription->save();
-            // Create the payable
-            $subscription->payable()->create([]);
+
+            $this->poolSyncService->subscriptionCreated($subscription);
         });
     }
 
@@ -167,11 +165,8 @@ class SubscriptionService
         // will be deleted in priority.
         $subscription = $subscriptions->first();
         DB::transaction(function() use($subscription) {
-            // Delete the receivables
-            $subscription->receivables()->delete();
-            // Delete the payable
-            $subscription->payable()->delete();
-            // Delete the subscription
+            $this->poolSyncService->subscriptionDeleted($subscription);
+
             $subscription->delete();
         });
     }

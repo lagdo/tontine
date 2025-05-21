@@ -17,10 +17,10 @@ class PoolService
 
     /**
      * @param TenantService $tenantService
-     * @param DataSyncService $dataSyncService
+     * @param PoolSyncService $poolSyncService
      */
     public function __construct(protected TenantService $tenantService,
-        private DataSyncService $dataSyncService)
+        private PoolSyncService $poolSyncService)
     {}
 
     /**
@@ -199,7 +199,7 @@ class PoolService
         DB::transaction(function() use($pool, $values) {
             $pool->update($values);
 
-            // $this->dataSyncService->syncPool($pool, true);
+            $this->poolSyncService->sessionsChanged($pool);
         });
     }
 
@@ -228,7 +228,7 @@ class PoolService
                 ->where('session_id', $session->id)
                 ->delete();
 
-            // $this->dataSyncService->syncPool($pool, true);
+            $this->poolSyncService->sessionEnabled($pool, $session);
         });
     }
 
@@ -258,7 +258,7 @@ class PoolService
                     'session_id' => $session->id,
                 ]);
 
-            // $this->dataSyncService->syncPool($pool, true);
+            $this->poolSyncService->sessionDisabled($pool, $session);
         });
     }
 }

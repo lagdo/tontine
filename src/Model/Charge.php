@@ -23,6 +23,7 @@ class Charge extends Base
      * @var array
      */
     protected $fillable = [
+        'def_id',
         'round_id',
     ];
 

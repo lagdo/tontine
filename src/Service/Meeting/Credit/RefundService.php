@@ -64,6 +64,7 @@ class RefundService
         ?bool $onlyPaid, int $page = 0): Collection
     {
         return $this->getDebtsQuery($session, $fund, $onlyPaid, true)
+            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
             ->orderBy('member_defs.name')
             ->orderBy('debts.id')
             ->page($page, $this->tenantService->getLimit())

@@ -19,15 +19,6 @@ class SessionFunc extends FuncComponent
     public function __construct(protected SessionService $sessionService)
     {}
 
-    public function resync()
-    {
-        $round = $this->stash()->get('tenant.round');
-        $this->sessionService->resyncSessions($round);
-
-        $this->alert()->title(trans('common.titles.success'))
-            ->success(trans('tontine.session.messages.resynced'));
-    }
-
     public function open(int $sessionId)
     {
         $round = $this->stash()->get('tenant.round');
@@ -40,7 +31,7 @@ class SessionFunc extends FuncComponent
             return;
         }
 
-        $this->sessionService->openSession($round, $session);
+        $this->sessionService->openSession($session);
 
         $this->cl(SessionPage::class)->page();
     }

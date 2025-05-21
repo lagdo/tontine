@@ -10,7 +10,7 @@ use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Planning\DataSyncService;
+use Siak\Tontine\Service\Planning\FundSyncService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\Guild\RoundValidator;
 
@@ -22,11 +22,11 @@ class RoundService
      * @param TenantService $tenantService
      * @param PoolService $poolService
      * @param RoundValidator $validator
-     * @param DataSyncService $dataSyncService
+     * @param FundSyncService $fundSyncService
      */
     public function __construct(protected TenantService $tenantService,
         protected PoolService $poolService, protected RoundValidator $validator,
-        private DataSyncService $dataSyncService)
+        private FundSyncService $fundSyncService)
     {}
 
     /**
@@ -103,6 +103,15 @@ class RoundService
             $properties = $round->properties;
             $properties['savings']['fund']['default'] = $values['savings'];
             $round->saveProperties($properties);
+
+            // Add all active members to the new round.
+            $members = $guild->members()->active()->get()
+                ->map(fn($member) => ['def_id' => $member->id]);
+            $round->members()->createMany($members);
+            // Add all active charges to the new round.
+            $charges = $guild->charges()->active()->get()
+                ->map(fn($charge) => ['def_id' => $charge->id]);
+            $round->charges()->createMany($charges);
         });
         return true;
     }
@@ -125,9 +134,6 @@ class RoundService
             $properties['savings']['fund']['default'] = $values['savings'];
             $round->saveProperties($properties);
 
-            // Create the default savings fund.
-            $this->dataSyncService->saveDefaultFund($round);
-
             return $round->update(Arr::except($values, 'savings'));
         });
     }
@@ -143,13 +149,19 @@ class RoundService
     public function deleteRound(Guild $guild, int $roundId)
     {
         // Delete the session. Will fail if there's still some data attached.
+        $round = $guild->rounds()->find($roundId);
         try
         {
-            DB::transaction(function() use($guild, $roundId) {
-                // Delete the round and all the related sessions.
-                $guild->sessions()->where('round_id', $roundId)->delete();
-                $guild->rounds()->where('id', $roundId)->delete();
-                $guild->default_fund->funds()->where('round_id', $roundId)->delete();
+            DB::transaction(function() use($round) {
+                $this->fundSyncService->roundDeleted($round);
+
+                // Delete the associated members.
+                $round->members()->delete();
+                // Delete the associated charges.
+                $round->charges()->delete();
+
+                // Delete the round.
+                $round->delete();
             });
         }
         catch(Exception $e)

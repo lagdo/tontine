@@ -154,7 +154,8 @@ class GuildService
      */
     public function getFirstGuild(User $user): ?Guild
     {
-        return $this->getGuilds($user)->first() ?? $this->getGuestGuilds($user)->first();
+        return $this->getGuilds($user)->first() ??
+            $this->getGuestGuilds($user)->first();
     }
 
     /**

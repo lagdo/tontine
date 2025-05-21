@@ -5,6 +5,7 @@ namespace Siak\Tontine\Service\Planning;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Guild;
+use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 
 trait SessionTrait
@@ -80,5 +81,37 @@ trait SessionTrait
         $operator = $getAfter ? ($withCurr ? '>=' : '>') : ($withCurr ? '<=' : '<');
         return $guild->sessions()
             ->where('day_date', $operator, $currSession->day_date)->count();
+    }
+
+    /**
+     * Find the prev session.
+     *
+     * @param Round $round
+     * @param Session $session
+     *
+     * @return Session|null
+     */
+    private function getPrevSession(Round $round, Session $session): ?Session
+    {
+        return $round->sessions()
+            ->where('day_date', '<', $session->day_date)
+            ->orderBy('day_date', 'desc')
+            ->first();
+    }
+
+    /**
+     * Find the next session.
+     *
+     * @param Round $round
+     * @param Session $session
+     *
+     * @return Session|null
+     */
+    private function getNextSession(Round $round, Session $session): ?Session
+    {
+        return $round->sessions()
+            ->where('day_date', '>', $session->day_date)
+            ->orderBy('day_date', 'asc')
+            ->first();
     }
 }

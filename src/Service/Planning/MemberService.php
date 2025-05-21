@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\MemberDef;
 use Siak\Tontine\Model\Round;
-use Siak\Tontine\Service\Planning\DataSyncService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\WithTrait;
 use Siak\Tontine\Validation\SearchSanitizer;
@@ -19,11 +19,11 @@ class MemberService
 
     /**
      * @param TenantService $tenantService
-     * @param DataSyncService $dataSyncService
+     * @param BillSyncService $billSyncService
      * @param SearchSanitizer $searchSanitizer
      */
     public function __construct(private TenantService $tenantService,
-        private DataSyncService $dataSyncService, private SearchSanitizer $searchSanitizer)
+        private BillSyncService $billSyncService, private SearchSanitizer $searchSanitizer)
     {}
 
     /**
@@ -108,8 +108,8 @@ class MemberService
 
         DB::transaction(function() use($round, $def) {
             $member = $def->members()->create(['round_id' => $round->id]);
-            // Create members bills
-            $this->dataSyncService->memberCreated($round->guild, $member);
+
+            $this->billSyncService->memberEnabled($round, $member);
         });
     }
 
@@ -130,18 +130,17 @@ class MemberService
         }
 
         $member = $def->members->first();
-        // Will fail if any bill is already paid.
-        $billIds = $member->onetime_bills()->pluck('bill_id')
-            ->concat($member->round_bills()->pluck('bill_id'))
-            ->concat($member->session_bills()->pluck('bill_id'))
-            ->concat($member->libre_bills()->pluck('bill_id'));
-        DB::transaction(function() use($member, $billIds) {
-            $member->onetime_bills()->delete();
-            $member->round_bills()->delete();
-            $member->session_bills()->delete();
-            $member->libre_bills()->delete();
-            DB::table('bills')->whereIn('id', $billIds)->delete();
-            $member->delete();
-        });
+        try
+        {
+            DB::transaction(function() use($round, $member) {
+                $this->billSyncService->memberRemoved($round, $member);
+
+                $member->delete();
+            });
+        }
+        catch(Exception)
+        {
+            throw new MessageException(trans('tontine.member.errors.cannot_remove'));
+        }
     }
 }

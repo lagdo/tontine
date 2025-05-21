@@ -60,7 +60,9 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(Guild\MemberService::class, Guild\MemberService::class);
         $this->app->singleton(Guild\GuildService::class, Guild\GuildService::class);
 
-        $this->app->singleton(Planning\DataSyncService::class, Planning\DataSyncService::class);
+        $this->app->singleton(Planning\BillSyncService::class, Planning\BillSyncService::class);
+        $this->app->singleton(Planning\FundSyncService::class, Planning\FundSyncService::class);
+        $this->app->singleton(Planning\PoolSyncService::class, Planning\PoolSyncService::class);
         $this->app->singleton(Planning\PoolService::class, Planning\PoolService::class);
         $this->app->singleton(Planning\FundService::class, Planning\FundService::class);
         $this->app->singleton(Planning\MemberService::class, Planning\MemberService::class);

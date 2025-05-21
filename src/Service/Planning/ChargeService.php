@@ -7,10 +7,8 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\ChargeDef;
 use Siak\Tontine\Model\Round;
-use Siak\Tontine\Service\Planning\DataSyncService;
 use Siak\Tontine\Service\TenantService;
 use Exception;
 
@@ -18,10 +16,10 @@ class ChargeService
 {
     /**
      * @param TenantService $tenantService
-     * @param DataSyncService $dataSyncService
+     * @param BillSyncService $billSyncService
      */
     public function __construct(private TenantService $tenantService,
-        private DataSyncService $dataSyncService)
+        private BillSyncService $billSyncService)
     {}
 
     /**
@@ -102,8 +100,8 @@ class ChargeService
 
         DB::transaction(function() use($round, $def) {
             $charge = $def->charges()->create(['round_id' => $round->id]);
-            // Create charges bills
-            $this->dataSyncService->chargeCreated($round->guild, $charge);
+
+            $this->billSyncService->chargeEnabled($round, $charge);
         });
     }
 
@@ -124,22 +122,17 @@ class ChargeService
         }
 
         $charge = $def->charges->first();
-        // Will fail if a settlement exists for any of those bills.
         try
         {
-            DB::transaction(function() use($charge) {
-                $billIds = Bill::ofCharge($charge, true)->pluck('id');
-                $charge->onetime_bills()->delete();
-                $charge->round_bills()->delete();
-                $charge->session_bills()->delete();
-                $charge->libre_bills()->delete();
-                Bill::whereIn('id', $billIds)->delete();
+            DB::transaction(function() use($round, $charge) {
+                $this->billSyncService->chargeRemoved($round, $charge);
+
                 $charge->delete();
             });
         }
         catch(Exception)
         {
-            throw new MessageException(trans('tontine.charge.errors.cannot_delete'));
+            throw new MessageException(trans('tontine.charge.errors.cannot_remove'));
         }
     }
 }

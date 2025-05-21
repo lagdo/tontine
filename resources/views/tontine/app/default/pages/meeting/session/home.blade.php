@@ -8,12 +8,6 @@
                 <h2 class="section-title">{{ __('tontine.titles.sessions') }}</h2>
               </div>
               <div class="col-auto ml-auto">
-                <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-primary" @jxnClick($rqSessionFunc->resync()
-                    ->confirm(__('tontine.session.questions.resync')))>
-                    <i class="fa fa-redo"></i> {{ __('tontine.session.actions.resync') }}
-                  </button>
-                </div>
                 <div class="btn-group ml-3" role="group">
                   <button type="button" class="btn btn-primary" @jxnClick($rqSessionPage->page())><i class="fa fa-sync"></i></button>
                 </div>

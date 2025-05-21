@@ -27,7 +27,9 @@ class PoolSessionsValidator extends AbstractValidator
     private function validateDates(RealValidator $validator, array $errors): void
     {
         $stash = jaxon()->di()->getStash();
-        $pool = $stash->get('planning.finance.pool');
+        $guild = $stash->get('tenant.guild');
+        $pool = $stash->get('planning.pool');
+
         $sessions = [
             'start_sid' => $pool->start,
             'end_sid' => $pool->end,
@@ -41,7 +43,8 @@ class PoolSessionsValidator extends AbstractValidator
             {
                 continue;
             }
-            $sessions[$key] = $this->poolService->getGuildSession((int)$values[$key]);
+            $sessions[$key] = $this->poolService
+                ->getGuildSession($guild, (int)$values[$key]);
             if(!$sessions[$key])
             {
                 $allSessionsFound = false;

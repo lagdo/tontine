@@ -36,7 +36,7 @@ class MemberFunc extends FuncComponent
         $round = $this->stash()->get('tenant.round');
         $this->memberService->disableMember($round, $defId);
         $this->alert()->title(trans('common.titles.success'))
-            ->success(trans('tontine.member.messages.disabled'));
+            ->success(trans('tontine.member.messages.removed'));
 
         $this->cl(MemberPage::class)->page();
     }

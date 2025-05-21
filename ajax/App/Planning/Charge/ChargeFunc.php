@@ -36,7 +36,7 @@ class ChargeFunc extends FuncComponent
         $round = $this->stash()->get('tenant.round');
         $this->chargeService->disableCharge($round, $defId);
         $this->alert()->title(trans('common.titles.success'))
-            ->success(trans('tontine.charge.messages.disabled'));
+            ->success(trans('tontine.charge.messages.removed'));
 
         $this->cl(ChargePage::class)->page();
     }
