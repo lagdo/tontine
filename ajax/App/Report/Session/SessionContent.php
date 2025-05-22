@@ -13,15 +13,6 @@ class SessionContent extends Component
     /**
      * @inheritDoc
      */
-    protected function before(): void
-    {
-        // Render the page title.
-        $this->cl(ReportTitle::class)->render();
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function html(): Stringable
     {
         return $this->renderView('pages.report.session.session');

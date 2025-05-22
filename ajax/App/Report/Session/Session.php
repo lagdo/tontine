@@ -86,6 +86,9 @@ class Session extends Component
         $this->stash()->set('report.session', $session);
         $this->stash()->set('report.member', $member);
 
+        // Render the page header.
+        $this->cl(ReportHeader::class)->render();
+
         $this->cl(SessionContent::class)->render();
     }
 

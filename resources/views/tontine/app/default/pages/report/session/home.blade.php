@@ -3,23 +3,10 @@
   $memberId = pm()->select('report-select-member')->toInt();
   $rqSession = rq(Ajax\App\Report\Session\Session::class);
   $rqSessionContent = rq(Ajax\App\Report\Session\SessionContent::class);
-  $rqReportTitle = rq(Ajax\App\Report\Session\ReportTitle::class);
+  $rqReportHeader = rq(Ajax\App\Report\Session\ReportHeader::class);
 @endphp
           <div class="section-body">
-            <div class="row mb-2">
-              <div class="col-auto">
-                <h2 class="section-title" @jxnBind($rqReportTitle)></h2>
-              </div>
-              <div class="col-auto pl-0 ml-auto">
-@isset($session->id)
-@include('tontine::pages.report.session.action.exports', ['sessionId' => $session->id])
-@endisset
-              </div>
-              <div class="col-auto pl-0">
-@isset($session->id)
-@include('tontine::pages.report.session.action.menu', ['sessionId' => $session->id])
-@endisset
-              </div>
+            <div class="row mb-2" @jxnBind($rqReportHeader)>
             </div>
             <div class="row">
               <div class="col-auto mb-2 pr-0 mr-0">
