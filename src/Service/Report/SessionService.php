@@ -184,9 +184,7 @@ class SessionService
                 $charge->total_count = $bill ? $bill->total_count : 0;
                 $charge->total_amount = $bill ? $bill->total_amount : 0;
                 $charge->outflow = $outflows[$charge->id] ?? null;
-            })
-            ->filter(fn($charge) => $charge->total_count > 0 ||
-                ($charge->outflow !== null && $charge->outflow->total_count > 0));
+            });
     }
 
     /**
@@ -227,9 +225,7 @@ class SessionService
                 $charge->total_count = $bill ? $bill->total_count : 0;
                 $charge->total_amount = $bill ? $bill->total_amount : 0;
                 $charge->outflow = $outflows[$charge->id] ?? null;
-            })
-            ->filter(fn($charge) => $charge->total_count > 0 ||
-                ($charge->outflow !== null && $charge->outflow->total_count > 0));
+            });
     }
 
     /**
