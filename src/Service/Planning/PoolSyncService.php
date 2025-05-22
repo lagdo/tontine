@@ -65,7 +65,11 @@ class PoolSyncService
         // Detach the payables and delete the receivables.
         $session->payables()->update(['session_id' => null]);
         $session->receivables()->delete();
-        $session->disabled_pools()->detach();
+
+        // Delete the disabled sessions rows.
+        DB::table('pool_session_disabled as psd')
+            ->where('session_id', $session->id)
+            ->delete();
 
         $round = $session->round;
         if($round->sessions()->count() === 1)
@@ -103,6 +107,17 @@ class PoolSyncService
     {
         // The relations need to be reloaded.
         $pool->refresh();
+
+        // Delete the disabled sessions removed from the pool.
+        DB::table(DB::raw('pool_session_disabled as psd'))
+            ->where('pool_id', $pool->id)
+            ->whereExists(fn($query) => $query->select(DB::raw(1))
+                ->from(DB::raw('sessions s'))
+                ->whereColumn('s.id', '=', 'psd.session_id')
+                ->where(fn($qw) => $qw->where(fn($qs) => $qs
+                    ->orWhere('day_date', '<', $pool->start->day_date)
+                    ->orWhere('day_date', '>', $pool->end->day_date))))
+            ->delete();
 
         // Delete the receivables for the sessions removed from the pool.
         Receivable::whereHas('subscription', fn($qs) =>
