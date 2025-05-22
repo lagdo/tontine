@@ -84,11 +84,9 @@ trait ReportTrait
      */
     private function getActiveSessions(Pool $pool, array $with = []): Collection
     {
-        $with['payables'] = function($query) use($pool) {
-            // Keep only the subscriptions of the current pool.
-            $query->join('subscriptions', 'payables.subscription_id', '=', 'subscriptions.id')
-                ->where('subscriptions.pool_id', $pool->id);
-        };
+        // Keep only the subscriptions of the current pool.
+        $with['payables'] = fn($qp) => $qp
+            ->whereHas('subscription', fn($qs) => $qs->where('pool_id', $pool->id));
         return $this->poolService->getActiveSessions($pool)->load($with);
     }
 

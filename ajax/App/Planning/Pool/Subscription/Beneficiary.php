@@ -27,14 +27,17 @@ class Beneficiary extends Component
     protected $overrides = SectionContent::class;
 
     /**
+     * @var SubscriptionService
+     */
+    protected SubscriptionService $subscriptionService;
+
+    /**
      * The constructor
      *
-     * @param SubscriptionService $subscriptionService
      * @param PoolService $poolService
      * @param SummaryService $summaryService
      */
-    public function __construct(private SubscriptionService $subscriptionService,
-        PoolService $poolService, private SummaryService $summaryService)
+    public function __construct(PoolService $poolService, private SummaryService $summaryService)
     {
         $this->poolService = $poolService;
     }
@@ -61,14 +64,10 @@ class Beneficiary extends Component
      */
     public function html(): Stringable
     {
-        $round = $this->stash()->get('tenant.round');
         $pool = $this->stash()->get('planning.pool');
         $this->view()->shareValues($this->summaryService->getPayables($pool));
 
-        return $this->renderView('pages.planning.pool.subscription.beneficiaries', [
-            'pool' => $pool,
-            'pools' => $this->subscriptionService->getPools($round),
-        ]);
+        return $this->renderView('pages.planning.pool.subscription.beneficiaries');
     }
 
     /**
@@ -80,6 +79,15 @@ class Beneficiary extends Component
             ->makeTableResponsive('content-subscription-beneficiaries');
     }
 
+    /**
+     * @di $subscriptionService
+     *
+     * @param int $sessionId
+     * @param int $nextSubscriptionId
+     * @param int $currSubscriptionId
+     *
+     * @return void
+     */
     public function save(int $sessionId, int $nextSubscriptionId, int $currSubscriptionId)
     {
         $pool = $this->stash()->get('planning.pool');

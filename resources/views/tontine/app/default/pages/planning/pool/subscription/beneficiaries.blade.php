@@ -2,7 +2,6 @@
   $rqFinance = rq(Ajax\App\Planning\Finance::class);
   $rqBeneficiary = rq(Ajax\App\Planning\Pool\Subscription\Beneficiary::class);
   $rqPlanning = rq(Ajax\App\Planning\Pool\Subscription\Planning::class);
-  $poolSessionIds = $pool->sessions->pluck('id', 'id');
 @endphp
             <div class="col-md-12">
               <div class="section-body">
@@ -49,35 +48,43 @@
                       </thead>
                       <tbody>
 @foreach ($sessions as $session)
-@if (!$poolSessionIds->has($session->id))
-                        <tr>
-                          <td>{{ $session->title }}</td>
-                          <td>&nbsp;</td>
-                          <td>&nbsp;</td>
-                          <td>&nbsp;</td>
-                          <td>&nbsp;</td>
-                        </tr>
-@else
+@php
+  $payables = $session->payables->keyBy('subscription_id');
+@endphp
                         <tr>
                           <td>{{ $session->title }}</td>
                           <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv) }}</td>
                           <td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>
                           <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount) }}</td>
                           <td style="flex-direction:column"><div style="width:97%;">
-@foreach ($session->beneficiaries as $subscription)
+@foreach ($session->beneficiaries as $subscriptionId)
+@if (!($payables[$subscriptionId]?->remitment ?? null))
 @php
   $items = $subscriptions;
-  if($subscription > 0 && isset($beneficiaries[$subscription]))
+  if($subscriptionId > 0 && isset($beneficiaries[$subscriptionId]))
   {
-    $items = collect($subscriptions->all())->put($subscription, $beneficiaries[$subscription]);
+    $items = collect($subscriptions->all())
+      ->put($subscriptionId, $beneficiaries[$subscriptionId]);
   }
 @endphp
-                            {!! $html->select('', $items, $subscription)->class('form-control my-2 select-beneficiary')
-                              ->attributes(['data-session-id' => $session->id, 'data-subscription-id' => $subscription]) !!}
+                            {!! $html->select('', $items, $subscriptionId)
+                              ->class('form-control my-2 select-beneficiary')
+                              ->attribute('data-session-id', $session->id)
+                              ->attribute('data-subscription-id', $subscriptionId)
+                              ->attribute('style', 'height:36px; padding:5px 5px;') !!}
+@else
+                            <div class="input-group my-2">
+                              {!! $html->text('', $beneficiaries[$subscriptionId])
+                                ->class('form-control')->attribute('readonly', 'readonly')
+                                ->attribute('style', 'height:36px; padding:5px 5px;') !!}
+                              <div class="input-group-append">
+                                <span class="input-group-text" style="height:36px; padding:10px;"><i class="fa fa-check"></i></span>
+                              </div>
+                            </div>
+@endif
 @endforeach
                           </div></td>
                         </tr>
-@endif
 @endforeach
                       </tbody>
                     </table>

@@ -54,7 +54,10 @@ class SummaryService
      */
     public function getPayables(Pool $pool): array
     {
-        $sessions = $this->getActiveSessions($pool, ['payables.subscription']);
+        $sessions = $this->getActiveSessions($pool, [
+            'payables.remitment',
+            'payables.subscription',
+        ]);
         $subscriptions = $pool->subscriptions()
             ->with(['payable', 'payable.session', 'member'])
             ->get();
@@ -78,23 +81,13 @@ class SummaryService
         });
 
         // Separate subscriptions that already have a beneficiary assigned from the others.
-        $poolSessionIds = $pool->sessions->pluck('id', 'id');
         [$beneficiaries, $subscriptions] = $subscriptions
-            ->partition(function($subscription) use($poolSessionIds) {
-                $session = $subscription->payable?->session ?? null;
-                return $session !== null && $poolSessionIds->has($session->id);
-            });
+            ->partition(fn($subscription) =>
+                ($subscription->payable?->session ?? null) !== null);
         $beneficiaries = $beneficiaries->pluck('member.name', 'id');
         // Do not show the list of subscriptions for pools with auctions
-        if($pool->remit_auction)
-        {
-            $subscriptions = collect([]);
-        }
-        else
-        {
-            $subscriptions = $subscriptions->pluck('member.name', 'id')->sort();
-            $subscriptions->prepend('', 0);
-        }
+        $subscriptions = $pool->remit_auction ? collect([]) :
+            $subscriptions->pluck('member.name', 'id')->sort()->prepend('', 0);
 
         return compact('pool', 'sessions', 'subscriptions', 'beneficiaries', 'figures');
     }
