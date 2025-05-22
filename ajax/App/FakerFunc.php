@@ -20,10 +20,11 @@ class FakerFunc extends FuncComponent
 
     public function members()
     {
+        $guild = $this->stash()->get('tenant.guild');
         $count = intval($this->bag('faker')->get('member.count', 10));
         $html = $this->memberService
-            ->getFakeMembers($count)
-            ->map(fn($member) => $member->name . ';' . $member->email)
+            ->getFakeMembers($guild, $count)
+            ->map(fn($member) => "{$member->name};{$member->email}")
             ->join("\n");
         $this->response->html('new-members-list', $html);
     }
