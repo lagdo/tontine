@@ -2,12 +2,15 @@
 
 namespace Siak\Tontine\Service\Planning;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Subscription;
+
+use function count;
 
 class PoolSyncService
 {
@@ -22,6 +25,7 @@ class PoolSyncService
     public function sessionsCreated(Round $round, Collection|array $sessions): void
     {
         // Create the receivables.
+        $receivables = [];
         $poolFilter = fn($query, $session) => $query->ofRound($round)
             ->whereHas('start', fn($qs) => $qs->where('day_date', '<', $session->day_date))
             ->whereHas('end', fn($qe) => $qe->where('day_date', '>', $session->day_date));
@@ -33,8 +37,15 @@ class PoolSyncService
                     $poolFilter($query, $session));
             foreach($subscriptions->get() as $subscription)
             {
-                $subscription->receivables()->create(['session_id' => $session->id]);
+                $receivables[] = [
+                    'subscription_id' => $subscription->id,
+                    'session_id' => $session->id,
+                ];
             }
+        }
+        if(count($receivables) > 0)
+        {
+            DB::table('receivables')->insert($receivables);
         }
 
         // Update the start and end sessions.
@@ -90,18 +101,20 @@ class PoolSyncService
      */
     public function sessionsChanged(Pool $pool): void
     {
+        // The relations need to be reloaded.
+        $pool->refresh();
+
         // Delete the receivables for the sessions removed from the pool.
-        Receivable::whereNotNull('id')
-            ->whereHas('subscription', fn($qs) =>
+        Receivable::whereHas('subscription', fn($qs) =>
                 $qs->where('pool_id', $pool->id))
             ->whereHas('session', fn($qw) =>
                 $qw->where(fn($qs) => $qs
-                    ->orWhereHas('start', fn($qs) =>
-                        $qs->where('day_date', '<', $pool->start->day_date))
-                    ->orWhereHas('end', fn($qe) =>
-                        $qe->where('day_date', '>', $pool->end->day_date))))
+                    ->orWhere('day_date', '<', $pool->start->day_date)
+                    ->orWhere('day_date', '>', $pool->end->day_date)))
             ->delete();
+
         // Create the receivables for the sessions added to the pool.
+        $receivables = [];
         foreach($pool->sessions as $session)
         {
             $subscriptions = $pool->subscriptions()
@@ -109,8 +122,15 @@ class PoolSyncService
                     $qr->where('session_id', $session->id));
             foreach($subscriptions->get() as $subscription)
             {
-                $subscription->receivables()->create(['session_id' => $session->id]);
+                $receivables[] = [
+                    'subscription_id' => $subscription->id,
+                    'session_id' => $session->id,
+                ];
             }
+        }
+        if(count($receivables) > 0)
+        {
+            DB::table('receivables')->insert($receivables);
         }
     }
 
@@ -122,9 +142,18 @@ class PoolSyncService
      */
     public function sessionEnabled(Pool $pool, Session $session): void
     {
+        // Create the receivables for the pool subscriptions.
+        $receivables = [];
         foreach($pool->subscriptions as $subscription)
         {
-            $subscription->receivables()->create(['session_id' => $session->id]);
+            $receivables[] = [
+                'subscription_id' => $subscription->id,
+                'session_id' => $session->id,
+            ];
+        }
+        if(count($receivables) > 0)
+        {
+            DB::table('receivables')->insert($receivables);
         }
     }
 
@@ -136,10 +165,13 @@ class PoolSyncService
      */
     public function sessionDisabled(Pool $pool, Session $session): void
     {
+        // Detach the payables.
         $session->payables()
             ->whereHas('subscription', fn($qs) =>
                 $qs->where('pool_id', $pool->id))
             ->update(['session_id' => null]);
+
+        // Delete the receivables
         $session->receivables()
             ->whereHas('subscription', fn($qs) =>
                 $qs->where('pool_id', $pool->id))
@@ -155,10 +187,19 @@ class PoolSyncService
     {
         // Create the payable
         $subscription->payable()->create([]);
-        // Create the receivables
+
+        // Create the receivables for the pool sessions.
+        $receivables = [];
         foreach($subscription->pool->sessions as $session)
         {
-            $subscription->receivables()->create(['session_id' => $session->id]);
+            $receivables[] = [
+                'subscription_id' => $subscription->id,
+                'session_id' => $session->id,
+            ];
+        }
+        if(count($receivables) > 0)
+        {
+            DB::table('receivables')->insert($receivables);
         }
     }
 
@@ -169,9 +210,10 @@ class PoolSyncService
      */
     public function subscriptionDeleted(Subscription $subscription)
     {
-        // Delete the receivables
-        $subscription->receivables()->delete();
         // Delete the payable
         $subscription->payable()->delete();
+
+        // Delete the receivables
+        $subscription->receivables()->delete();
     }
 }
