@@ -2,6 +2,15 @@
   $rqFinance = rq(Ajax\App\Planning\Finance::class);
   $rqBeneficiary = rq(Ajax\App\Planning\Pool\Subscription\Beneficiary::class);
   $rqPlanning = rq(Ajax\App\Planning\Pool\Subscription\Planning::class);
+
+  // Separate subscriptions that already have a beneficiary assigned from the others.
+  [$beneficiaries, $subscriptions] = $subscriptions->partition(
+    fn($subscription) => $subscription->payable->session !== null);
+  // Prepare the collections for the dropdown select lists.
+  $beneficiaries = $beneficiaries->pluck('member.name', 'id');
+  // Do not show the list of subscriptions for pools with auctions
+  $candidates = $pool->remit_auction ? collect([]) :
+    $subscriptions->pluck('member.name', 'id')->sort()->prepend('', 0);
 @endphp
             <div class="col-md-12">
               <div class="section-body">
@@ -49,38 +58,40 @@
                       <tbody>
 @foreach ($sessions as $session)
 @php
-  $payables = $session->payables->keyBy('subscription_id');
+  $remitmentCount = $figures->expected[$session->id]->remitment->count;
+  // Set the subscriptions that need to be paid at each session.
+  $sessionCandidates = $session->payables
+    ->keyBy('subscription_id')
+    ->map(fn($payable) => $payable->remitment !== null ?
+      // If the remitment exists, then return the beneficiary name.
+      $beneficiaries[$payable->subscription_id] :
+      $candidates->union($beneficiaries->only([$payable->subscription_id])));
+  $sessionPayables = $session->payables
+    ->map(fn($payable) => $payable->subscription_id)
+    ->pad($remitmentCount, 0);
 @endphp
                         <tr>
                           <td>{{ $session->title }}</td>
                           <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv) }}</td>
-                          <td class="currency">{{ $figures->expected[$session->id]->remitment->count }}</td>
+                          <td class="currency">{{ $remitmentCount }} </td>
                           <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount) }}</td>
                           <td style="flex-direction:column"><div style="width:97%;">
-@foreach ($session->beneficiaries as $subscriptionId)
-@if (!($payables[$subscriptionId]?->remitment ?? null))
-@php
-  $items = $subscriptions;
-  if($subscriptionId > 0 && isset($beneficiaries[$subscriptionId]))
-  {
-    $items = collect($subscriptions->all())
-      ->put($subscriptionId, $beneficiaries[$subscriptionId]);
-  }
-@endphp
-                            {!! $html->select('', $items, $subscriptionId)
-                              ->class('form-control my-2 select-beneficiary')
-                              ->attribute('data-session-id', $session->id)
-                              ->attribute('data-subscription-id', $subscriptionId)
-                              ->attribute('style', 'height:36px; padding:5px 5px;') !!}
-@else
+@foreach ($sessionPayables as $subscriptionId)
+@if (isset($sessionCandidates[$subscriptionId]) && is_string($sessionCandidates[$subscriptionId]))
                             <div class="input-group my-2">
-                              {!! $html->text('', $beneficiaries[$subscriptionId])
+                              {!! $html->text('', $sessionCandidates[$subscriptionId])
                                 ->class('form-control')->attribute('readonly', 'readonly')
                                 ->attribute('style', 'height:36px; padding:5px 5px;') !!}
                               <div class="input-group-append">
                                 <span class="input-group-text" style="height:36px; padding:10px;"><i class="fa fa-check"></i></span>
                               </div>
                             </div>
+@else
+                            {!! $html->select('', $sessionCandidates[$subscriptionId] ?? $candidates, $subscriptionId)
+                              ->class('form-control my-2 select-beneficiary')
+                              ->attribute('data-session-id', $session->id)
+                              ->attribute('data-subscription-id', $subscriptionId)
+                              ->attribute('style', 'height:36px; padding:5px 5px;') !!}
 @endif
 @endforeach
                           </div></td>
