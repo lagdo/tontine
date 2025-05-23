@@ -209,6 +209,6 @@ class ReportService
             'pools' => $this->summaryService->getPoolsBalance($figures),
         ];
 
-        return compact('guild', 'round', 'country', 'currency', 'figures', 'balance');
+        return compact('round', 'country', 'currency', 'figures', 'balance');
     }
 }
