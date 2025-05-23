@@ -155,15 +155,20 @@ return [
             'add' => "Ajouter une épargne",
             'edit' => "Modifier une épargne",
             'options' => "Modifier les options du fonds",
+            'start_amount' => "Modifier le montant de départ",
+            'end_amount' => "Modifier le montant à la fin",
         ],
         'actions' => [
             'close' => "Clotûrer",
             'saving' => "&Eacute;pargne",
             'interest' => "Intérêts",
-        ],
-        'labels' => [
+            'deposits' => "Versements",
             'start_amount' => "Montant de départ",
             'end_amount' => "Montant à la fin",
+        ],
+        'labels' => [
+            'start_amount' => "Montant de départ : :amount",
+            'end_amount' => "Montant à la fin : :amount",
         ],
         'questions' => [
             'delete' => "Supprimer cette épargne ?",

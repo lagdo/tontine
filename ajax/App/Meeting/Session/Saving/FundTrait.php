@@ -7,6 +7,8 @@ use Jaxon\App\Stash\Stash;
 use Jaxon\Request\TargetInterface;
 use Siak\Tontine\Model\Fund;
 
+use function in_array;
+
 trait FundTrait
 {
     /**
@@ -37,7 +39,8 @@ trait FundTrait
      */
     protected function getFund(): void
     {
-        if($this->target()->method() === 'fund')
+        if(in_array($this->target()->method(),
+            ['fund', 'editStartAmount', 'editEndAmount']))
         {
             $fundId = $this->target()->args()[0];
             $this->bag('meeting.saving')->set('fund.id', $fundId);
