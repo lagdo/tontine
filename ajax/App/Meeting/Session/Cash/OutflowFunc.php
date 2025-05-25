@@ -60,6 +60,7 @@ class OutflowFunc extends FuncComponent
         $this->alert()->success(trans('meeting.outflow.messages.created'));
 
         $this->cl(OutflowPage::class)->page();
+        $this->cl(Balance::class)->render();
     }
 
     public function editOutflow(int $outflowId)
@@ -101,6 +102,7 @@ class OutflowFunc extends FuncComponent
         $this->alert()->success(trans('meeting.outflow.messages.updated'));
 
         $this->cl(OutflowPage::class)->page();
+        $this->cl(Balance::class)->render();
     }
 
     public function deleteOutflow(int $outflowId)
@@ -111,5 +113,6 @@ class OutflowFunc extends FuncComponent
         $this->alert()->success(trans('meeting.outflow.messages.deleted'));
 
         $this->cl(OutflowPage::class)->page();
+        $this->cl(Balance::class)->render();
     }
 }

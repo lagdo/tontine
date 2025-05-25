@@ -76,7 +76,9 @@ class LoanFunc extends FuncComponent
 
         $this->modal()->hide();
         $this->alert()->success(trans('meeting.loan.messages.created'));
-        $this->cl(Loan::class)->render();
+
+        $this->cl(LoanPage::class)->page();
+        $this->cl(Balance::class)->render();
     }
 
     public function edit(int $loanId)
@@ -152,7 +154,9 @@ class LoanFunc extends FuncComponent
 
         $this->modal()->hide();
         $this->alert()->success(trans('meeting.loan.messages.updated'));
-        $this->cl(Loan::class)->render();
+
+        $this->cl(LoanPage::class)->page();
+        $this->cl(Balance::class)->render();
     }
 
     public function delete(int $loanId)
@@ -174,6 +178,8 @@ class LoanFunc extends FuncComponent
         $this->loanService->deleteLoan($session, $loanId);
 
         $this->alert()->success(trans('meeting.loan.messages.deleted'));
-        $this->cl(Loan::class)->render();
+
+        $this->cl(LoanPage::class)->page();
+        $this->cl(Balance::class)->render();
     }
 }
