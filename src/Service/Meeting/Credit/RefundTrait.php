@@ -39,6 +39,7 @@ trait RefundTrait
         return Debt::select(['debts.*', DB::raw('member_defs.name as member')])
             ->join('loans', 'debts.loan_id', '=', 'loans.id')
             ->join('members', 'loans.member_id', '=', 'members.id')
+            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
             ->join('sessions', 'loans.session_id', '=', 'sessions.id')
             ->when($fund !== null,
                 fn(Builder $ql) => $ql->where('loans.fund_id', $fund->id))

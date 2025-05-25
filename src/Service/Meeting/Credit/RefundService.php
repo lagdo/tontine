@@ -4,7 +4,6 @@ namespace Siak\Tontine\Service\Meeting\Credit;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Fund;
@@ -64,7 +63,6 @@ class RefundService
         ?bool $onlyPaid, int $page = 0): Collection
     {
         return $this->getDebtsQuery($session, $fund, $onlyPaid, true)
-            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
             ->orderBy('member_defs.name')
             ->orderBy('debts.id')
             ->page($page, $this->tenantService->getLimit())
@@ -149,6 +147,7 @@ class RefundService
         {
             throw new MessageException(trans('meeting.refund.errors.cannot_delete'));
         }
+
         $debt->refund->delete();
     }
 }

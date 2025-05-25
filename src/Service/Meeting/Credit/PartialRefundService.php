@@ -3,7 +3,6 @@
 namespace Siak\Tontine\Service\Meeting\Credit;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\PartialRefund;
@@ -49,8 +48,8 @@ class PartialRefundService
             // if it is an interest debt with fixed or unique interest.
             ->where(function(Builder $query) use($session) {
                 $query
-                    ->whereHas('loan',
-                        fn(Builder $q) => $q->where('session_id', '!=', $session->id))
+                    ->whereHas('loan', fn(Builder $q) =>
+                        $q->where('session_id', '!=', $session->id))
                     ->orWhere(fn(Builder $q) => $q
                         ->interest()
                         ->whereHas('loan', fn(Builder $ql) => $ql->fixedInterest()));
