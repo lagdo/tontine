@@ -182,20 +182,20 @@ class BillSyncService
     /**
      * @param Charge $charge
      * @param Member $member
-     * @param Round|null $round
+     * @param Round $round
      * @param Collection|array $sessions
      *
      * @return void
      */
     private function createBills(Charge $charge, Member $member,
-        Round|null $round, Collection|array $sessions): void
+        Round $round, Collection|array $sessions): void
     {
-        if($round !== null && $charge->def->period_once)
+        if($charge->def->period_once)
         {
             $this->createOnetimeBill($charge, $member);
             return;
         }
-        if($round !== null && $charge->def->period_round)
+        if($charge->def->period_round)
         {
             $this->createRoundBill($charge, $member, $round);
             return;
@@ -227,6 +227,11 @@ class BillSyncService
                 ->where($foreignKey, $owner->id)
                 ->select('bill_id'))
             ->pluck('bill_id');
+        if($billIds->count() === 0)
+        {
+            return;
+        }
+
         // Will fail if a settlement exists for any of those bills.
         $owner->onetime_bills()->delete();
         $owner->round_bills()->delete();
@@ -283,7 +288,7 @@ class BillSyncService
         }
 
         $this->initBills($charges, collect([$member]));
-        foreach($round->charges as $charge)
+        foreach($charges as $charge)
         {
             $this->createBills($charge, $member, $round, $round->sessions);
         }
@@ -317,7 +322,7 @@ class BillSyncService
         }
 
         $this->initBills($charges, $round->members);
-        foreach($round->charges as $charge)
+        foreach($charges as $charge)
         {
             foreach($round->members as $member)
             {
