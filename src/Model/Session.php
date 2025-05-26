@@ -188,7 +188,7 @@ class Session extends Base
         return $this->belongsToMany(Pool::class, 'pool_session_disabled');
     }
 
-    public function absents()
+    public function absences()
     {
         return $this->belongsToMany(Member::class, 'absences');
     }
@@ -211,5 +211,19 @@ class Session extends Base
     public function scopeOpened(Builder $query): Builder
     {
         return $query->where('status', '=', self::STATUS_OPENED);
+    }
+
+    /**
+     * @param  Builder  $query
+     * @param  Session  $session
+     * @param  bool $strictly
+     *
+     * @return Builder
+     */
+    public function scopePrecedes(Builder $query, Session $session, bool $strictly = false): Builder
+    {
+        return $query
+            ->where('round_id', $session->round_id)
+            ->where('day_date', $strictly ? '<' : '<=', $session->day_date);
     }
 }

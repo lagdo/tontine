@@ -6,9 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Siak\Tontine\Service\Guild\RoundService;
-use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Guild\SessionService;
 use Siak\Tontine\Service\Report\Pdf\PdfPrinterService;
 use Siak\Tontine\Service\Report\ReportService;
+use Siak\Tontine\Service\TenantService;
 use Sqids\SqidsInterface;
 
 use function base64_decode;
@@ -19,14 +20,15 @@ use function view;
 class ReportController extends Controller
 {
     /**
+     * @param TenantService $tenantService
      * @param SessionService $sessionService
      * @param RoundService $roundService
      * @param ReportService $reportService
      * @param PdfPrinterService $printerService
      */
-    public function __construct(private SessionService $sessionService,
-        private RoundService $roundService, private ReportService $reportService,
-        private PdfPrinterService $printerService)
+    public function __construct(private TenantService $tenantService,
+        private SessionService $sessionService, private RoundService $roundService,
+        private ReportService $reportService, private PdfPrinterService $printerService)
     {}
 
     /**
@@ -56,16 +58,17 @@ class ReportController extends Controller
      */
     public function sessionById(Request $request, int $sessionId)
     {
-        $session = $this->sessionService->getSession($sessionId);
+        $guild = $this->tenantService->guild();
+        $session = $this->sessionService->getSession($guild, $sessionId);
         view()->share($this->reportService->getSessionReport($session));
         // Show the html page
         if($request->has('html'))
         {
-            return view($this->printerService->getSessionReportPath());
+            return view($this->printerService->getSessionReportPath($guild));
         }
 
         // Print the pdf
-        return $this->pdfContent($this->printerService->getSessionReport(),
+        return $this->pdfContent($this->printerService->getSessionReport($guild),
             $this->printerService->getSessionReportFilename($session),
             trans('tontine.report.titles.session'));
     }
@@ -93,17 +96,19 @@ class ReportController extends Controller
      */
     public function savings(Request $request, SqidsInterface $sqids, string $sessionSqid)
     {
+        $guild = $this->tenantService->guild();
         [$sessionId] = $sqids->decode($sessionSqid);
-        $session = $this->sessionService->getSession($sessionId);
+        $session = $this->sessionService->getSession($guild, $sessionId);
         view()->share($this->reportService->getSavingsReport($session));
+
         // Show the html page
         if($request->has('html'))
         {
-            return view($this->printerService->getSavingsReportPath());
+            return view($this->printerService->getSavingsReportPath($guild));
         }
 
         // Print the pdf
-        return $this->pdfContent($this->printerService->getSavingsReport(),
+        return $this->pdfContent($this->printerService->getSavingsReport($guild),
             $this->printerService->getSavingsReportFilename($session),
             trans('tontine.report.titles.savings'));
     }
@@ -117,17 +122,19 @@ class ReportController extends Controller
      */
     public function credit(Request $request, SqidsInterface $sqids, string $sessionSqid)
     {
+        $guild = $this->tenantService->guild();
         [$sessionId] = $sqids->decode($sessionSqid);
-        $session = $this->sessionService->getSession($sessionId);
+        $session = $this->sessionService->getSession($guild, $sessionId);
         view()->share($this->reportService->getCreditReport($session));
+
         // Show the html page
         if($request->has('html'))
         {
-            return view($this->printerService->getCreditReportPath());
+            return view($this->printerService->getCreditReportPath($guild));
         }
 
         // Print the pdf
-        return $this->pdfContent($this->printerService->getCreditReport(),
+        return $this->pdfContent($this->printerService->getCreditReport($guild),
             $this->printerService->getCreditReportFilename($session),
             trans('tontine.report.titles.credit'));
     }
@@ -140,16 +147,18 @@ class ReportController extends Controller
      */
     public function roundById(Request $request, int $roundId)
     {
-        $round = $this->roundService->getRound($roundId);
+        $guild = $this->tenantService->guild();
+        $round = $this->roundService->getRound($guild, $roundId);
         view()->share($this->reportService->getRoundReport($round));
+
         // Show the html page
         if($request->has('html'))
         {
-            return view($this->printerService->getRoundReportPath());
+            return view($this->printerService->getRoundReportPath($guild));
         }
 
         // Print the pdf
-        return $this->pdfContent($this->printerService->getRoundReport(),
+        return $this->pdfContent($this->printerService->getRoundReport($guild),
             $this->printerService->getRoundReportFilename($round),
             trans('tontine.report.titles.round'));
     }

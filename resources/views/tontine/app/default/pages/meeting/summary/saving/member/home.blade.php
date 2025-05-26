@@ -19,7 +19,7 @@
                     <div class="col-8">
                       <div class="input-group">
                         {!! $html->text('search', '')->id('txt-fee-member-search')
-                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 15px;') !!}
+                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" @jxnClick($rqMember->search($searchValue))><i class="fa fa-search"></i></button>
                         </div>

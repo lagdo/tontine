@@ -3,9 +3,6 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use Siak\Tontine\Model\Fund;
-use Siak\Tontine\Model\Round;
-use Siak\Tontine\Service\DataSyncService;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -114,24 +111,59 @@ Artisan::command('closing:copy-to-attrs', function () {
 
 Artisan::command('round:update-funds', function () {
     DB::transaction(function() {
-        Fund::unguard();
-        foreach(Round::cursor() as $round)
+        $query = DB::table('rounds')
+            ->select([
+                'rounds.*',
+                'p.content',
+                'default_fund_id' => DB::table('fund_defs')
+                    ->join('funds', 'funds.def_id', '=', 'fund_defs.id')
+                    ->selectRaw('max(fund_defs.id)')
+                    ->whereColumn('fund_defs.guild_id', '=', 'rounds.guild_id')
+                    ->where('title', ''),
+            ])
+            ->join(DB::raw('properties as p'), 'p.owner_id', '=', 'rounds.guild_id')
+            ->where('p.owner_type', 'Siak\\Tontine\\Model\\Guild');
+        foreach($query->cursor() as $round)
         {
+            $properties = json_decode($round->content, true);
             // Set the default fund option value.
-            $hasDefault = Fund::where('round_id', $round->id)
-                ->where('def_id', $round->guild->default_fund->id)
+            $hasDefault = DB::table('funds')
+                ->where('round_id', $round->id)
+                ->where('def_id', $round->default_fund_id)
                 ->exists();
-            $properties = $round->properties;
             $properties['savings']['fund']['default'] = $hasDefault;
-            $round->saveProperties($properties);
+            DB::table('properties')
+                ->where('owner_id', $round->guild_id)
+                ->where('owner_type', 'Siak\\Tontine\\Model\\Guild')
+                ->update(['content' => json_encode($properties)]);
 
-            $syncService = app()->make(DataSyncService::class);
+            // Find the first and last sessions.
+            $sessions = DB::table('sessions')
+                ->where('round_id', $round->id)
+                ->orderBy('start_at', 'asc')
+                ->get();
+            $startSessionId = $sessions->first()->id;
+            $endSessionId = $sessions->last()->id;
             // Create the funds for pools with deposits lendable.
-            $round->pools()
-                ->whereHas('def', fn($q) => $q->depositLendable())
+            DB::table('pools')
+                ->where('round_id', $round->id)
+                ->whereExists(function($query) {
+                    $query->select(DB::raw(1))
+                        ->from(DB::raw('pool_defs as pd'))
+                        ->whereColumn('pd.id', '=', 'pools.def_id')
+                        ->where('pd.properties->deposit->lendable');
+                })
                 ->get()
-                ->each(fn($pool) => $syncService->savePoolFund($round, $pool));
+                ->each(fn($pool) =>
+                    DB::table('funds')->updateOrCreate([
+                        'pool_id' => $pool->id,
+                    ], [
+                        'def_id' => $round->default_fund_id,
+                        'round_id' => $round->id,
+                        'start_sid' => $startSessionId,
+                        'end_sid' => $endSessionId,
+                        'interest_sid' => $endSessionId,
+                    ]));
         }
-        Fund::reguard();
     });
 })->purpose('Save the default fund id in the round properties');

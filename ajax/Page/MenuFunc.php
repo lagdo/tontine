@@ -3,7 +3,7 @@
 namespace Ajax\Page;
 
 use Ajax\App\Admin\Guild\Guild;
-use Ajax\App\Planning\Finance;
+use Ajax\App\Planning\Participation;
 use Ajax\FuncComponent;
 use Ajax\Page\Sidebar\AdminMenu;
 use Ajax\Page\Sidebar\RoundMenu;
@@ -46,11 +46,12 @@ class MenuFunc extends FuncComponent
 
     public function showGuilds(): void
     {
+        $user = $this->tenantService->user();
         $guild = $this->tenantService->guild();
         $title = trans('tontine.titles.choose');
         $content = $this->renderView('pages.select.guild', [
             'current' => $guild?->id ?? 0,
-            'guilds' => $this->guildService->getGuilds()->pluck('name', 'id'),
+            'guilds' => $this->guildService->getGuilds($user)->pluck('name', 'id'),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -74,13 +75,19 @@ class MenuFunc extends FuncComponent
     {
         $this->bag('tenant')->set('guild.id', $guild->id);
         $this->bag('tenant')->set('round.id', 0);
+        $this->stash()->set('tenant.guild', $guild);
+        $this->stash()->set('tenant.round', null);
+
+        // This one is used to set the sidebar menu content.
         $this->stash()->set('menu.current.guild', $guild);
+
         $this->tenantService->setGuild($guild);
     }
 
     public function saveGuild(int $guildId)
     {
-        if(!($guild = $this->guildService->getUserOrGuestGuild($guildId)))
+        $user = $this->tenantService->user();
+        if(!($guild = $this->guildService->getUserOrGuestGuild($user, $guildId)))
         {
             return;
         }
@@ -132,7 +139,7 @@ class MenuFunc extends FuncComponent
         {
             return;
         }
-        if(!($round = $this->roundService->getRound($roundId)) ||
+        if(!($round = $this->roundService->getRound($guild, $roundId)) ||
             $this->roundService->getSessionCount($round) === 0)
         {
             return;
@@ -143,12 +150,15 @@ class MenuFunc extends FuncComponent
         // Save the tontine and round ids in the user session.
         $this->bag('tenant')->set('guild.id', $round->guild->id);
         $this->bag('tenant')->set('round.id', $round->id);
+        $this->stash()->set('tenant.guild', $guild);
+        $this->stash()->set('tenant.round', $round);
+
         $this->tenantService->setRound($round);
 
         $this->response->jq('#header-menu-home')->show();
         $this->cl(RoundMenu::class)->render();
         $this->cl(MainTitle::class)->render();
-        $this->cl(Finance::class)->home();
+        $this->cl(Participation::class)->home();
 
         $this->modal()->hide();
         $this->alert()->info(trans('tontine.round.messages.selected', [

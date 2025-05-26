@@ -149,25 +149,25 @@
                   <div class="row sm-screen-selector mt-2 mb-1" id="summary-savings-sm-screens">
                     <div class="col-12">
                       <div class="btn-group btn-group-sm btn-block" role="group" aria-label="">
-                        <button data-target="content-summary-savings" type="button" class="btn btn-primary">
-                          {!! __('meeting.titles.savings') !!}
-                        </button>
-                        <button data-target="content-summary-loans" type="button" class="btn btn-outline-primary">
+                        <button data-target="content-summary-loans" type="button" class="btn btn-primary">
                           {!! __('meeting.titles.loans') !!}
+                        </button>
+                        <button data-target="content-summary-savings" type="button" class="btn btn-outline-primary">
+                          {!! __('meeting.titles.savings') !!}
                         </button>
                       </div>
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-summary-savings">
+                    <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="content-summary-loans">
                       <div class="card shadow mb-2">
-                        <div class="card-body" @jxnBind($rqSaving)>
+                        <div class="card-body" @jxnBind($rqLoan)>
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-6 col-sm-12 sm-screen" id="content-summary-loans">
+                    <div class="col-md-6 col-sm-12 sm-screen" id="content-summary-savings">
                       <div class="card shadow mb-2">
-                        <div class="card-body" @jxnBind($rqLoan)>
+                        <div class="card-body" @jxnBind($rqSaving)>
                         </div>
                       </div>
                     </div>

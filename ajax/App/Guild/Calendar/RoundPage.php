@@ -30,7 +30,8 @@ class RoundPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->roundService->getRoundCount();
+        $guild = $this->stash()->get('tenant.guild');
+        return $this->roundService->getRoundCount($guild);
     }
 
     /**
@@ -38,8 +39,9 @@ class RoundPage extends PageComponent
      */
     public function html(): Stringable
     {
+        $guild = $this->stash()->get('tenant.guild');
         return $this->renderView('pages.guild.calendar.round.page', [
-            'rounds' => $this->roundService->getRounds($this->currentPage()),
+            'rounds' => $this->roundService->getRounds($guild, $this->currentPage()),
         ]);
     }
 

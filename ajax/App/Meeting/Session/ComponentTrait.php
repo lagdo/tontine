@@ -6,7 +6,7 @@ use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
 use Jaxon\Request\TargetInterface;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Meeting\Session\SessionService;
 
 use function trans;
 
@@ -54,7 +54,8 @@ trait ComponentTrait
      */
     protected function getSession()
     {
-        $session = $this->sessionService->getSession($this->getSessionId());
+        $round = $this->stash()->get('tenant.round');
+        $session = $this->sessionService->getSession($round, $this->getSessionId());
         if($session === null)
         {
             throw new MessageException(trans('meeting.errors.session.not_found'));

@@ -2,6 +2,7 @@
 
 namespace Siak\Tontine\Service\Planning;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Fund;
@@ -20,13 +21,17 @@ class FundService
 
     /**
      * @param Round $round
+     * @param bool $filter|null
      *
      * @return Relation
      */
-    private function getQuery(Round $round): Relation
+    private function getQuery(Round $round, ?bool $filter): Relation
     {
-        return $this->tenantService->guild()
-            ->funds()
+        return $round->guild->funds()
+            ->when($filter === true, fn(Builder $query) => $query
+                ->whereHas('funds', fn($q) => $q->ofRound($round)))
+            ->when($filter === false, fn(Builder $query) => $query
+                ->whereDoesntHave('funds', fn($q) => $q->ofRound($round)))
             ->when(!$round->add_default_fund, fn($query) => $query->user());
     }
 
@@ -34,13 +39,14 @@ class FundService
      * Get a paginated list of funds.
      *
      * @param Round $round
+     * @param bool $filter|null
      * @param int $page
      *
      * @return Collection
      */
-    public function getFundDefs(Round $round, int $page = 0): Collection
+    public function getFundDefs(Round $round, ?bool $filter, int $page = 0): Collection
     {
-        return $this->getQuery($round)
+        return $this->getQuery($round, $filter)
             ->with(['funds' => fn($query) => $query->ofRound($round)])
             ->page($page, $this->tenantService->getLimit())
             ->get();
@@ -50,12 +56,13 @@ class FundService
      * Get the number of funds.
      *
      * @param Round $round
+     * @param bool $filter|null
      *
      * @return int
      */
-    public function getFundDefCount(Round $round): int
+    public function getFundDefCount(Round $round, ?bool $filter): int
     {
-        return $this->getQuery($round)->count();
+        return $this->getQuery($round, $filter)->count();
     }
 
     /**
@@ -79,9 +86,7 @@ class FundService
      */
     public function enableFund(Round $round, int $defId): void
     {
-        // Can't use the getQuery() method here because
-        // the default fund can't be enabled or disabled.
-        $def = $this->tenantService->guild()
+        $def = $round->guild
             ->funds()
             ->user()
             ->withCount(['funds' => fn($query) => $query->ofRound($round)])
@@ -108,9 +113,7 @@ class FundService
      */
     public function disableFund(Round $round, int $defId): void
     {
-        // Can't use the getQuery() method here because
-        // the default fund can't be enabled or disabled.
-        $def = $this->tenantService->guild()
+        $def = $round->guild
             ->funds()
             ->user()
             ->withCount(['funds' => fn($query) => $query->ofRound($round)])

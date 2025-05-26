@@ -4,7 +4,7 @@ namespace Ajax\App\Meeting\Summary;
 
 use Ajax\Component;
 use Ajax\Page\SectionContent;
-use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
 use function trans;
@@ -28,7 +28,8 @@ class Summary extends Component
 
     public function home(int $sessionId)
     {
-        $session = $this->sessionService->getSession($sessionId);
+        $round = $this->stash()->get('tenant.round');
+        $session = $this->sessionService->getSession($round, $sessionId);
         if(!$session)
         {
             $this->alert()->title(trans('common.titles.error'))
@@ -47,11 +48,12 @@ class Summary extends Component
      */
     public function html(): Stringable
     {
+        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('summary.session');
         return $this->renderView('pages.meeting.summary.home', [
             'session' => $session,
-            'prevSession' => $this->sessionService->getPrevSession($session),
-            'nextSession' => $this->sessionService->getNextSession($session),
+            'prevSession' => $this->sessionService->getPrevSession($round, $session),
+            'nextSession' => $this->sessionService->getNextSession($round, $session),
         ]);
     }
 

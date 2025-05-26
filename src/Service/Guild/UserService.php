@@ -24,13 +24,14 @@ class UserService
     /**
      * Get a paginated list of invites sent.
      *
+     * @param User $user
      * @param int $page
      *
      * @return Collection
      */
-    public function getHostInvites(int $page = 0): Collection
+    public function getHostInvites(User $user, int $page = 0): Collection
     {
-        return $this->tenantService->user()->host_invites()
+        return $user->host_invites()
             ->page($page, $this->tenantService->getLimit())
             ->orderByDesc('created_at')
             ->get();
@@ -39,23 +40,26 @@ class UserService
     /**
      * Get the number of members.
      *
+     * @param User $user
+     *
      * @return int
      */
-    public function getHostInviteCount(): int
+    public function getHostInviteCount(User $user): int
     {
-        return $this->tenantService->user()->host_invites()->count();
+        return $user->host_invites()->count();
     }
 
     /**
      * Get a paginated list of invites received.
      *
+     * @param User $user
      * @param int $page
      *
      * @return Collection
      */
-    public function getGuestInvites(int $page = 0): Collection
+    public function getGuestInvites(User $user, int $page = 0): Collection
     {
-        return $this->tenantService->user()->guest_invites()
+        return $user->guest_invites()
             ->page($page, $this->tenantService->getLimit())
             ->orderByDesc('created_at')
             ->get();
@@ -64,48 +68,52 @@ class UserService
     /**
      * Get the number of invites.
      *
+     * @param User $user
+     *
      * @return int
      */
-    public function getGuestInviteCount(): int
+    public function getGuestInviteCount(User $user): int
     {
-        return $this->tenantService->user()->guest_invites()->count();
+        return $user->guest_invites()->count();
     }
 
     /**
      * Find an invite.
      *
-     * @param int $inviteId       The invite id
+     * @param User $user
+     * @param int $inviteId
      *
      * @return GuestInvite|null
      */
-    public function getHostInvite(int $inviteId): ?GuestInvite
+    public function getHostInvite(User $user, int $inviteId): ?GuestInvite
     {
-        return $this->tenantService->user()->host_invites()->find($inviteId);
+        return $user->host_invites()->find($inviteId);
     }
 
     /**
      * Find an invite.
      *
-     * @param int $inviteId       The invite id
+     * @param User $user
+     * @param int $inviteId
      *
      * @return GuestInvite|null
      */
-    public function getGuestInvite(int $inviteId): ?GuestInvite
+    public function getGuestInvite(User $user, int $inviteId): ?GuestInvite
     {
-        return $this->tenantService->user()->guest_invites()->find($inviteId);
+        return $user->guest_invites()->find($inviteId);
     }
 
     /**
      * Create an invite.
      *
+     * @param User $host
      * @param string $guestEmail
      *
      * @return void
      */
-    public function createInvite(string $guestEmail)
+    public function createInvite(User $host, string $guestEmail)
     {
         // The current user is the host.
-        $host = $this->tenantService->user();
         $guest = User::where('email', $guestEmail)
             ->with('guest_invites', fn($query) => $query->where('host_id', $host->id))
             ->first();
@@ -131,13 +139,14 @@ class UserService
     /**
      * Accept an invite.
      *
+     * @param User $user
      * @param int $inviteId
      *
      * @return void
      */
-    public function acceptInvite(int $inviteId)
+    public function acceptInvite(User $user, int $inviteId)
     {
-        if(!($invite = $this->getGuestInvite($inviteId)))
+        if(!($invite = $this->getGuestInvite($user, $inviteId)))
         {
             throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
         }
@@ -155,13 +164,14 @@ class UserService
     /**
      * Refuse an invite.
      *
+     * @param User $user
      * @param int $inviteId
      *
      * @return void
      */
-    public function refuseInvite(int $inviteId)
+    public function refuseInvite(User $user, int $inviteId)
     {
-        if(!($invite = $this->getGuestInvite($inviteId)))
+        if(!($invite = $this->getGuestInvite($user, $inviteId)))
         {
             throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
         }
@@ -179,13 +189,14 @@ class UserService
     /**
      * Cancel an invite.
      *
+     * @param User $user
      * @param int $inviteId
      *
      * @return void
      */
-    public function cancelInvite(int $inviteId)
+    public function cancelInvite(User $user, int $inviteId)
     {
-        if(!($invite = $this->getHostInvite($inviteId)))
+        if(!($invite = $this->getHostInvite($user, $inviteId)))
         {
             throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
         }
@@ -218,13 +229,14 @@ class UserService
     /**
      * Delete an invite.
      *
+     * @param User $user
      * @param int $inviteId
      *
      * @return void
      */
-    public function deleteHostInvite(int $inviteId)
+    public function deleteHostInvite(User $user, int $inviteId)
     {
-        if(!($invite = $this->getHostInvite($inviteId)))
+        if(!($invite = $this->getHostInvite($user, $inviteId)))
         {
             throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
         }
@@ -235,22 +247,22 @@ class UserService
     /**
      * Delete an invite.
      *
+     * @param Guild $guild
      * @param int $inviteId
      *
      * @return bool
      */
-    public function deleteGuestInvite(int $inviteId): bool
+    public function deleteGuestInvite(Guild $guild, int $inviteId): bool
     {
-        if(!($invite = $this->getGuestInvite($inviteId)))
+        if(!($invite = $this->getGuestInvite($guild->user, $inviteId)))
         {
             throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
         }
 
         $inviteIsDeleted = DB::table('guest_options')
             ->where('invite_id', $invite->id)
-            ->where('guild_id', $this->tenantService->guild()->id)
+            ->where('guild_id', $guild->id)
             ->exists();
-
         $this->deleteInvite($invite);
 
         return $inviteIsDeleted;

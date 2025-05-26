@@ -4,7 +4,7 @@ namespace Ajax\App\Report\Round;
 
 use Ajax\Component;
 use Ajax\Page\SectionContent;
-use Siak\Tontine\Service\Meeting\SummaryService;
+use Siak\Tontine\Service\Meeting\Session\SummaryService;
 use Stringable;
 
 /**

@@ -3,7 +3,7 @@
 namespace Ajax\App\Report\Round;
 
 use Ajax\Component;
-use Siak\Tontine\Service\Meeting\SummaryService;
+use Siak\Tontine\Service\Meeting\Session\SummaryService;
 use Siak\Tontine\Service\Report\RoundService;
 use Stringable;
 
@@ -29,7 +29,7 @@ class Balance extends Component
      */
     public function html(): Stringable
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $sessions = $this->roundService->getRoundSessions($round);
         $sessionIds = $sessions->pluck('id');
 

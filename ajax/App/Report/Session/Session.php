@@ -7,8 +7,8 @@ use Ajax\Page\SectionContent;
 use Ajax\Page\SectionTitle;
 use Siak\Tontine\Model\Member as MemberModel;
 use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Service\Guild\MemberService;
-use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Meeting\Member\MemberService;
+use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
 /**
@@ -51,12 +51,13 @@ class Session extends Component
      */
     public function html(): Stringable
     {
-        $sessions = $this->sessionService->getRoundSessions(orderAsc: false)
+        $round = $this->stash()->get('tenant.round');
+        $sessions = $this->sessionService->getSessions($round, orderAsc: false)
             ->filter(fn($session) => ($session->opened || $session->closed));
         return $this->renderView('pages.report.session.home', [
             'session' => $sessions->first(),
             'sessions' => $sessions->pluck('title', 'id'),
-            'members' => $this->memberService->getMemberList()->prepend('', 0),
+            'members' => $this->memberService->getMemberList($round)->prepend('', 0),
         ]);
     }
 
@@ -65,7 +66,8 @@ class Session extends Component
      */
     protected function after()
     {
-        $sessions = $this->sessionService->getRoundSessions(orderAsc: false)
+        $round = $this->stash()->get('tenant.round');
+        $sessions = $this->sessionService->getSessions($round, orderAsc: false)
             ->filter(fn($session) => ($session->opened || $session->closed));
         if($sessions->count() > 0)
         {
@@ -84,12 +86,17 @@ class Session extends Component
         $this->stash()->set('report.session', $session);
         $this->stash()->set('report.member', $member);
 
+        // Render the page header.
+        $this->cl(ReportHeader::class)->render();
+
         $this->cl(SessionContent::class)->render();
     }
 
     public function showSession(int $sessionId)
     {
-        if($sessionId <= 0 || !($session = $this->sessionService->getSession($sessionId)))
+        $round = $this->stash()->get('tenant.round');
+        if($sessionId <= 0 ||
+            !($session = $this->sessionService->getSession($round, $sessionId)))
         {
             return;
         }
@@ -98,9 +105,10 @@ class Session extends Component
 
     public function showMember(int $sessionId, int $memberId)
     {
+        $round = $this->stash()->get('tenant.round');
         if($sessionId <= 0 || $memberId <= 0 ||
-            !($session = $this->sessionService->getSession($sessionId)) ||
-            !($member = $this->memberService->getMember($memberId)))
+            !($session = $this->sessionService->getSession($round, $sessionId)) ||
+            !($member = $this->memberService->getMember($round, $memberId)))
         {
             return;
         }

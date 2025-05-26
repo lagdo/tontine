@@ -32,7 +32,8 @@ class PoolPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->poolService->getPoolCount();
+        $guild = $this->stash()->get('tenant.guild');
+        return $this->poolService->getPoolCount($guild);
     }
 
     /**
@@ -40,9 +41,10 @@ class PoolPage extends PageComponent
      */
     public function html(): Stringable
     {
+        $guild = $this->stash()->get('tenant.guild');
         return $this->renderView('pages.guild.pool.page', [
             'round' => $this->tenantService->round(),
-            'pools' => $this->poolService->getPools($this->currentPage()),
+            'pools' => $this->poolService->getPools($guild, $this->currentPage()),
         ]);
     }
 

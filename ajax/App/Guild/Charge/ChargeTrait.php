@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Charge;
 
-use Siak\Tontine\Model\Charge as ChargeModel;
+use Siak\Tontine\Model\ChargeDef as ChargeModel;
 
 use function trans;
 

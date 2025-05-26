@@ -20,7 +20,7 @@
 @foreach ($sessions as $session)
                         <tr>
                           <td>{{ $session->title }}<br/>{{ $statuses[$session->status] }}</td>
-                          <td class="table-item-toggle">{{ $memberCount - ($session->absents_count ?? 0) }}/{{ $memberCount }}</td>
+                          <td class="table-item-toggle">{{ $memberCount - ($session->absences_count ?? 0) }}/{{ $memberCount }}</td>
                           <td class="table-item-menu" data-session-id="{{ $session->id }}">
 @if (!$member)
                             <button type="button" class="btn btn-primary btn-show-session-presences"><i class="fa fa-arrow-circle-right"></i></button>

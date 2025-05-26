@@ -4,7 +4,7 @@
                       <div class="input-group">
                         {!! $html->text('fund-profit-amount', $locale->getMoneyValue($profitAmount))
                           ->class('form-control')->id('fund-profit-amount')
-                          ->attribute('style', 'height:36px; padding:5px 15px;') !!}
+                          ->attribute('style', 'height:36px; padding:5px 5px;') !!}
                         <div class="input-group-append">
                           <button @jxnClick($rqProfit->amount($amountValue)) type="button" class="btn btn-primary"><i class="fa fa-sync"></i></button>
 @if($withSave ?? false)

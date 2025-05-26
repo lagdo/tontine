@@ -154,16 +154,21 @@ return [
         'titles' => [
             'add' => "Add a saving",
             'edit' => "Edit a saving",
-            'options' => "Edit fund options",
+            'options' => "Edit the fund options",
+            'start_amount' => "Edit the start amount",
+            'end_amount' => "Edit the end amount",
         ],
         'actions' => [
             'close' => "Close",
             'saving' => "Saving",
             'interest' => "Interest",
-        ],
-        'labels' => [
+            'deposits' => "Deposits",
             'start_amount' => "Start amount",
             'end_amount' => "End amount",
+        ],
+        'labels' => [
+            'start_amount' => "Start amount: :amount",
+            'end_amount' => "End amount: :amount",
         ],
         'questions' => [
             'delete' => "Delete this saving?",
@@ -264,6 +269,11 @@ return [
         ],
         'questions' => [
             'delete' => "Delete this cash outflow?",
+        ],
+        'messages' => [
+            'created' => "The cash outflow has been created.",
+            'updated' => "The cash outflow has been updated.",
+            'deleted' => "The cash outflow has been deleted.",
         ],
         'errors' => [
             'not_found' => "Cannot find the cash outflow.",

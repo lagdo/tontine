@@ -2,9 +2,12 @@
   $fundId = jq()->parent()->attr('data-fund-id')->toInt();
   $rqSavingPage = rq(Ajax\App\Meeting\Session\Saving\SavingPage::class);
   $rqMember = rq(Ajax\App\Meeting\Session\Saving\Member::class);
+  $rqAmountFunc = rq(Ajax\App\Meeting\Session\Saving\AmountFunc::class);
 @endphp
                   <div class="table-responsive" id="content-session-funds-page" @jxnTarget()>
                     <div @jxnEvent(['.btn-fund-savings', 'click'], $rqMember->fund($fundId))></div>
+                    <div @jxnEvent(['.btn-fund-start-amount', 'click'], $rqAmountFunc->editStartAmount($fundId))></div>
+                    <div @jxnEvent(['.btn-fund-end-amount', 'click'], $rqAmountFunc->editEndAmount($fundId))></div>
 
                     <table class="table table-bordered responsive">
                       <thead>
@@ -16,13 +19,49 @@
                       </thead>
                       <tbody>
 @foreach ($funds as $fund)
+@php
+  $menus = [[
+    'class' => 'btn-fund-savings',
+    'text' => __('meeting.saving.actions.deposits'),
+  ]];
+  if($session->id === $fund->start_sid)
+  {
+    $menus[] = [
+      'class' => 'btn-fund-start-amount',
+      'text' => __('meeting.saving.actions.start_amount'),
+    ];
+  }
+  if($session->id === $fund->end_sid)
+  {
+    $menus[] = [
+      'class' => 'btn-fund-end-amount',
+      'text' => __('meeting.saving.actions.end_amount'),
+    ];
+  }
+@endphp
                         <tr>
-                          <td>{!! $fund->title !!}</td>
+                          <td>
+                            {!! $fund->title !!}
+@if($session->id === $fund->start_sid && $fund->start_amount > 0)
+                            <br/>{{ __('meeting.saving.labels.start_amount', [
+                              'amount' => $locale->formatMoney($fund->start_amount ?? 0),
+                            ]) }}
+@endif
+@if($session->id === $fund->end_sid && $fund->end_amount > 0)
+                            <br/>{{ __('meeting.saving.labels.end_amount', [
+                              'amount' => $locale->formatMoney($fund->end_amount ?? 0),
+                            ]) }}
+@endif
+                          </td>
                           <td class="currency">
                             {{ $fund->s_count ?? 0 }}<br/>{{ $locale->formatMoney($fund->s_amount ?? 0) }}
                           </td>
-                          <td class="table-item-menu" data-fund-id="{{ $fund->id }}">
-                            <button type="button" class="btn btn-primary btn-fund-savings"><i class="fa fa-arrow-circle-right"></i></button>
+                          <td class="table-item-menu">
+@include('tontine::parts.table.menu', [
+  'dataIdKey' => 'data-fund-id',
+  'dataIdValue' => $fund->id,
+  'menus' => $menus,
+])
                           </td>
                         </tr>
 @endforeach

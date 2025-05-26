@@ -30,7 +30,8 @@ class OutflowPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->accountService->getCategoryCount();
+        $guild = $this->stash()->get('tenant.guild');
+        return $this->accountService->getCategoryCount($guild);
     }
 
     /**
@@ -38,8 +39,9 @@ class OutflowPage extends PageComponent
      */
     public function html(): Stringable
     {
+        $guild = $this->stash()->get('tenant.guild');
         return $this->renderView('pages.guild.account.outflow.page', [
-            'accounts' => $this->accountService->getAccounts($this->currentPage()),
+            'accounts' => $this->accountService->getAccounts($guild, $this->currentPage()),
         ]);
     }
 

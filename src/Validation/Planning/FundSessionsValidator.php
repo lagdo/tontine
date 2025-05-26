@@ -28,7 +28,9 @@ class FundSessionsValidator extends AbstractValidator
     private function validateDates(RealValidator $validator, array $errors): void
     {
         $stash = jaxon()->di()->getStash();
-        $fund = $stash->get('planning.finance.fund');
+        $guild = $stash->get('tenant.guild');
+        $fund = $stash->get('planning.fund');
+
         $sessions = [
             'start_sid' => $fund->start,
             'end_sid' => $fund->end,
@@ -43,7 +45,8 @@ class FundSessionsValidator extends AbstractValidator
             {
                 continue;
             }
-            $sessions[$key] = $this->fundService->getGuildSession((int)$values[$key]);
+            $sessions[$key] = $this->fundService
+                ->getGuildSession($guild, (int)$values[$key]);
             if(!$sessions[$key])
             {
                 $allSessionsFound = false;

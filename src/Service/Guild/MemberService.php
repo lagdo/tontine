@@ -5,68 +5,50 @@ namespace Siak\Tontine\Service\Guild;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Siak\Tontine\Model\Member;
-use Siak\Tontine\Service\DataSyncService;
+use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Guild;
+use Siak\Tontine\Model\MemberDef;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Traits\WithTrait;
 use Siak\Tontine\Validation\SearchSanitizer;
-
-use function count;
-use function tap;
 
 class MemberService
 {
-    use WithTrait;
-
-    /**
-     * @var bool
-     */
-    private bool $filterActive = false;
-
     /**
      * @param TenantService $tenantService
-     * @param DataSyncService $dataSyncService
      * @param SearchSanitizer $searchSanitizer
      */
     public function __construct(private TenantService $tenantService,
-        private DataSyncService $dataSyncService, private SearchSanitizer $searchSanitizer)
+        private SearchSanitizer $searchSanitizer)
     {}
 
     /**
-     * @param bool $filter
-     *
-     * @return self
-     */
-    public function active(bool $filter = true): self
-    {
-        $this->filterActive = $filter;
-        return $this;
-    }
-
-    /**
+     * @param Guild $guild
      * @param string $search
+     * @param bool|null $filter
      *
      * @return Builder|Relation
      */
-    private function getQuery(string $search = ''): Builder|Relation
+    private function getQuery(Guild $guild, string $search, ?bool $filter): Builder|Relation
     {
-        return $this->tenantService->guild()->members()
-            ->when($this->filterActive, fn(Builder $query) => $query->active())
+        return $guild->members()
+            ->when($filter !== null, fn(Builder $query) => $query->active($filter))
             ->search($this->searchSanitizer->sanitize($search));
     }
 
     /**
      * Get a paginated list of members.
      *
+     * @param Guild $guild
      * @param string $search
+     * @param bool|null $filter
      * @param int $page
      *
      * @return Collection
      */
-    public function getMembers(string $search, int $page = 0): Collection
+    public function getMembers(Guild $guild, string $search = '',
+        ?bool $filter = null, int $page = 0): Collection
     {
-        return tap($this->getQuery($search), fn($query) => $this->addWith($query))
+        return $this->getQuery($guild, $search, $filter)
             ->page($page, $this->tenantService->getLimit())
             ->orderBy('name', 'asc')
             ->get();
@@ -75,128 +57,67 @@ class MemberService
     /**
      * Get the number of members.
      *
+     * @param Guild $guild
      * @param string $search
+     * @param bool|null $filter
      *
      * @return int
      */
-    public function getMemberCount(string $search): int
+    public function getMemberCount(Guild $guild, string $search = '', ?bool $filter = null): int
     {
-        return $this->getQuery($search)->count();
+        return $this->getQuery($guild, $search, $filter)->count();
     }
 
     /**
      * Get a single member.
      *
-     * @param int $id       The member id
+     * @param Guild $guild
+     * @param int $memberId
      *
-     * @return Member|null
+     * @return MemberDef|null
      */
-    public function getMember(int $id): ?Member
+    public function getMember(Guild $guild, int $memberId): ?MemberDef
     {
-        return tap($this->getQuery(), fn($query) => $this->addWith($query))
-            ->find($id);
-    }
-
-    /**
-     * Get a list of members for dropdown.
-     *
-     * @return Collection
-     */
-    public function getMemberList(): Collection
-    {
-        return $this->tenantService->guild()->members()->active()
-            ->orderBy('name', 'asc')->pluck('name', 'id');
-    }
-
-    /**
-     * Save active members ids for the round
-     *
-     * @return void
-     */
-    private function saveActiveMembers()
-    {
-        if(!($guild = $this->tenantService->guild()) ||
-            !($round = $this->tenantService->round()))
-        {
-            return;
-        }
-        $properties = $round->properties;
-        $properties['members'] = $guild->members()->active()->pluck('id')->all();
-        $round->saveProperties($properties);
-    }
-
-    /**
-     * Get the number of active members for the current round
-     *
-     * @return int
-     */
-    public function countActiveMembers(): int
-    {
-        // The number of active members is saved in the round, so its current
-        // value can be retrieved forever, even when the membership will change.
-        $round = $this->tenantService->round();
-        if(!isset($round->properties['members']))
-        {
-            // Create and save the property with the content
-            $this->saveActiveMembers();
-            $round->refresh();
-        }
-
-        return count($round->properties['members']);
+        return $this->getQuery($guild, '', null)->find($memberId);
     }
 
     /**
      * Add a new member.
      *
+     * @param Guild $guild
      * @param array $values
      *
      * @return bool
      */
-    public function createMember(array $values): bool
+    public function createMember(Guild $guild, array $values): bool
     {
-        DB::transaction(function() use($values) {
-            $guild = $this->tenantService->guild();
-            $member = $guild->members()->create($values);
-            // Create members bills
-            $this->dataSyncService->memberCreated($guild, $member);
-            $this->saveActiveMembers();
-        });
-
+        $guild->members()->create($values);
         return true;
     }
 
     /**
      * Add new members.
      *
+     * @param Guild $guild
      * @param array $values
      *
      * @return bool
      */
-    public function createMembers(array $values): bool
+    public function createMembers(Guild $guild, array $values): bool
     {
-        DB::transaction(function() use($values) {
-            $guild = $this->tenantService->guild();
-            $members = $guild->members()->createMany($values);
-            // Create members bills
-            foreach($members as $member)
-            {
-                $this->dataSyncService->memberCreated($guild, $member);
-            }
-            $this->saveActiveMembers();
-        });
-
+        $guild->members()->createMany($values);
         return true;
     }
 
     /**
      * Update a member.
      *
-     * @param Member $member
+     * @param MemberDef $member
      * @param array $values    The member data
      *
      * @return bool
      */
-    public function updateMember(Member $member, array $values): bool
+    public function updateMember(MemberDef $member, array $values): bool
     {
         return $member->update($values);
     }
@@ -204,50 +125,45 @@ class MemberService
     /**
      * Toggle a member.
      *
-     * @param Member $member
+     * @param Guild $guild
+     * @param MemberDef $member
      *
      * @return void
      */
-    public function toggleMember(Member $member)
+    public function toggleMember(MemberDef $member)
     {
         $member->update(['active' => !$member->active]);
-        $this->saveActiveMembers();
     }
 
     /**
      * Delete a member.
      *
-     * @param Member $member
+     * @param MemberDef $member
      *
      * @return void
      */
-    public function deleteMember(Member $member)
+    public function deleteMember(MemberDef $member)
     {
-        // Will fail if any bill is already paid.
-        $billIds = $member->oneoff_bills()->pluck('bill_id')
-            ->concat($member->round_bills()->pluck('bill_id'))
-            ->concat($member->session_bills()->pluck('bill_id'))
-            ->concat($member->libre_bills()->pluck('bill_id'));
-        DB::transaction(function() use($member, $billIds) {
-            $member->oneoff_bills()->delete();
-            $member->round_bills()->delete();
-            $member->session_bills()->delete();
-            $member->libre_bills()->delete();
-            DB::table('bills')->whereIn('id', $billIds)->delete();
+        try
+        {
             $member->delete();
-            $this->saveActiveMembers();
-        });
+        }
+        catch(Exception)
+        {
+            throw new MessageException(trans('tontine.member.errors.cannot_delete'));
+        }
     }
 
     /**
+     * @param Guild $guild
      * @param int $count
      *
      * @return Collection
      */
-    public function getFakeMembers(int $count): Collection
+    public function getFakeMembers(Guild $guild, int $count): Collection
     {
-        return Member::factory()->count($count)->make([
-            'guild_id' => $this->tenantService->guild(),
+        return MemberDef::factory()->count($count)->make([
+            'guild_id' => $guild,
         ]);
     }
 }

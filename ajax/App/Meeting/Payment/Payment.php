@@ -7,7 +7,7 @@ use Ajax\Page\SectionContent;
 use Ajax\Page\SectionTitle;
 use App\Events\OnPagePaymentHome;
 use Illuminate\Support\Collection;
-use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
 use function trans;
@@ -37,7 +37,8 @@ class Payment extends Component
 
     protected function getOpenedSessions()
     {
-        $this->sessions = $this->sessionService->getRoundSessions(orderAsc: false)
+        $round = $this->stash()->get('tenant.round');
+        $this->sessions = $this->sessionService->getSessions($round, orderAsc: false)
             ->filter(fn($session) => $session->opened)
             ->pluck('title', 'id');
     }

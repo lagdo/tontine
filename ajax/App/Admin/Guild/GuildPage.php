@@ -32,7 +32,8 @@ class GuildPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->guildService->getGuildCount();
+        $user = $this->tenantService->user();
+        return $this->guildService->getGuildCount($user);
     }
 
     /**
@@ -40,7 +41,8 @@ class GuildPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $guilds = $this->guildService->getGuilds($this->currentPage());
+        $user = $this->tenantService->user();
+        $guilds = $this->guildService->getGuilds($user, $this->currentPage());
         [$countries, $currencies] = $this->localeService->getNamesFromGuilds($guilds);
         return $this->renderView('pages.admin.guild.page', [
             'guilds' => $guilds,

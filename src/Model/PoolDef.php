@@ -2,10 +2,8 @@
 
 namespace Siak\Tontine\Model;
 
-use Database\Factories\PoolFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PoolDef extends Base
 {
@@ -48,16 +46,6 @@ class PoolDef extends Base
         return [
             'properties' => 'array',
         ];
-    }
-
-    /**
-     * Create a new factory instance for the model.
-     *
-     * @return Factory
-     */
-    protected static function newFactory()
-    {
-        return PoolFactory::new();
     }
 
     public function depositFixed(): Attribute

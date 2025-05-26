@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Service\Report\Pdf;
 
 use Illuminate\Support\Str;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Guild\GuildService;
@@ -20,13 +21,14 @@ class PdfPrinterService
     {}
 
     /**
+     * @param Guild $guild
      * @param string $report
      *
      * @return string
      */
-    private function getViewPath(string $report): string
+    private function getViewPath(Guild $guild, string $report): string
     {
-        $template = $this->guildService->getReportTemplate();
+        $template = $this->guildService->getReportTemplate($guild);
         return "tontine.report.$template.$report";
     }
 
@@ -48,11 +50,13 @@ class PdfPrinterService
     }
 
     /**
+     * @param Guild $guild
+     *
      * @return string
      */
-    public function getSessionReportPath(): string
+    public function getSessionReportPath(Guild $guild): string
     {
-        return $this->getViewPath('session');
+        return $this->getViewPath($guild, 'session');
     }
 
     /**
@@ -67,19 +71,23 @@ class PdfPrinterService
     }
 
     /**
+     * @param Guild $guild
+     *
      * @return string
      */
-    public function getSessionReport(): string
+    public function getSessionReport(Guild $guild): string
     {
-        return $this->getPdf($this->getViewPath('session'));
+        return $this->getPdf($this->getViewPath($guild, 'session'));
     }
 
     /**
+     * @param Guild $guild
+     *
      * @return string
      */
-    public function getSavingsReportPath(): string
+    public function getSavingsReportPath(Guild $guild): string
     {
-        return $this->getViewPath('savings');
+        return $this->getViewPath($guild, 'savings');
     }
 
     /**
@@ -94,19 +102,23 @@ class PdfPrinterService
     }
 
     /**
+     * @param Guild $guild
+     *
      * @return string
      */
-    public function getSavingsReport(): string
+    public function getSavingsReport(Guild $guild): string
     {
-        return $this->getPdf($this->getViewPath('savings'));
+        return $this->getPdf($this->getViewPath($guild, 'savings'));
     }
 
     /**
+     * @param Guild $guild
+     *
      * @return string
      */
-    public function getCreditReportPath(): string
+    public function getCreditReportPath(Guild $guild): string
     {
-        return $this->getViewPath('credit');
+        return $this->getViewPath($guild, 'credit');
     }
 
     /**
@@ -121,19 +133,23 @@ class PdfPrinterService
     }
 
     /**
+     * @param Guild $guild
+     *
      * @return string
      */
-    public function getCreditReport(): string
+    public function getCreditReport(Guild $guild): string
     {
-        return $this->getPdf($this->getViewPath('credit'));
+        return $this->getPdf($this->getViewPath($guild, 'credit'));
     }
 
     /**
+     * @param Guild $guild
+     *
      * @return string
      */
-    public function getRoundReportPath(): string
+    public function getRoundReportPath(Guild $guild): string
     {
-        return $this->getViewPath('round');
+        return $this->getViewPath($guild, 'round');
     }
 
     /**
@@ -148,11 +164,13 @@ class PdfPrinterService
     }
 
     /**
+     * @param Guild $guild
+     *
      * @return string
      */
-    public function getRoundReport(): string
+    public function getRoundReport(Guild $guild): string
     {
-        return $this->getPdf($this->getViewPath('round'));
+        return $this->getPdf($this->getViewPath($guild, 'round'));
     }
 
     /**

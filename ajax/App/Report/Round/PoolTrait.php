@@ -6,7 +6,7 @@ trait PoolTrait
 {
     protected function getPools(): void
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $figures = $this->summaryService->getFigures($round); 
         $pools = $this->summaryService->getPoolsBalance($figures);
         $funds = $this->summaryService->getFunds($round); 

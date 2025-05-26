@@ -33,8 +33,6 @@ class Category extends Base
     ];
 
     /**
-     * Get the name.
-     *
      * @return Attribute
      */
     protected function name(): Attribute
@@ -44,9 +42,29 @@ class Category extends Base
         );
     }
 
+    /**
+     * @return Attribute
+     */
+    protected function isOther(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->attributes['name'] === 'other',
+        );
+    }
+
     public function guild()
     {
         return $this->belongsTo(Guild::class);
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeGlobal(Builder $query): Builder
+    {
+        return $query->whereNull('guild_id');
     }
 
     /**

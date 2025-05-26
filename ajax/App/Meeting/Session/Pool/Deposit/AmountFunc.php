@@ -5,7 +5,7 @@ namespace Ajax\App\Meeting\Session\Pool\Deposit;
 use Ajax\App\Meeting\Session\FuncComponent;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
+use Siak\Tontine\Service\Payment\PaymentServiceInterface;
 
 use function filter_var;
 use function str_replace;

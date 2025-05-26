@@ -27,12 +27,13 @@ class MainTitle extends Component
      */
     public function html(): Stringable
     {
+        $user = $this->tenantService->user();
         $guild = $this->tenantService->guild();
         return $this->renderView('parts.header.title', [
             'guild' => $guild,
             'round' => $this->tenantService->round(),
-            'guildCount' => $this->guildService->getGuildCount() +
-                $this->guildService->getGuestGuildCount(),
+            'guildCount' => $this->guildService->getGuildCount($user) +
+                $this->guildService->getGuestGuildCount($user),
             'roundCount' => $guild?->rounds()->count() ?? 0,
         ]);
     }

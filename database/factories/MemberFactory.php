@@ -30,7 +30,6 @@ class MemberFactory extends Factory
             'phone' => '', // $this->faker->phoneNumber(),
             'address' => $this->faker->address(),
             'city' => $this->faker->city(),
-            'birthday' => $this->faker->date(),
             'guild_id' => Guild::get()->random(),
         ];
     }

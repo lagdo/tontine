@@ -11,10 +11,10 @@ use Siak\Tontine\Model\Auction;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Payable;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\Meeting\Session\SummaryService;
+use Siak\Tontine\Service\Payment\BalanceCalculator;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Service\Meeting\SummaryService;
 use Siak\Tontine\Service\Planning\PoolService;
 
 use function trans;
@@ -103,8 +103,9 @@ class RemitmentService
         $amount = $this->balanceCalculator->getPayableAmount($pool, $session);
         $payables = $this->getQuery($pool, $session)
             ->select('payables.*')
-            ->addSelect(DB::raw('members.name as member'))
+            ->addSelect(DB::raw('member_defs.name as member'))
             ->join('members', 'members.id', '=', 'subscriptions.member_id')
+            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
             ->with(['remitment', 'remitment.auction'])
             ->page($page, $this->tenantService->getLimit())
             ->get()
@@ -277,7 +278,8 @@ class RemitmentService
     {
         $subscriptions = $pool->subscriptions()
             ->join('members', 'subscriptions.member_id', '=', 'members.id')
-            ->orderBy('members.name', 'asc')
+            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
+            ->orderBy('member_defs.name', 'asc')
             ->orderBy('subscriptions.id', 'asc')
             ->with(['payable', 'member'])
             ->whereHas('payable', fn($query) => $query->whereDoesntHave('remitment'))

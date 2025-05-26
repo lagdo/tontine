@@ -51,4 +51,15 @@ class Charge extends Component
     {
         $this->cl(ChargePage::class)->page();
     }
+
+    public function toggleFilter()
+    {
+        $filter = $this->bag('guild.charge')->get('filter', null);
+        // Switch between null, true and false
+        $filter = $filter === null ? true : ($filter === true ? false : null);
+        $this->bag('guild.charge')->set('filter', $filter);
+        $this->bag('guild.charge')->set('page', 1);
+
+        $this->cl(ChargePage::class)->page();
+    }
 }

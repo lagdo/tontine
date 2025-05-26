@@ -17,6 +17,7 @@ return [
         'report' => "Rapport",
         'members' => "Membres",
         'finance' => "Finance",
+        'participation' => "Participation",
         'accounts' => "Caisses",
         'charges' => "Charges",
         'calendar' => "Calendrier",
@@ -200,6 +201,7 @@ return [
             'example' => "Par example,<br/>Jean Amadou<br/>ou<br/>Jean Amadou;jean.amadou@gmail.com;237670000000",
         ],
         'titles' => [
+            'members' => "Membres",
             'add' => "Ajouter des membres",
             'edit' => "Modifier un membre",
         ],
@@ -207,12 +209,16 @@ return [
             'created' => "Les membres ont été ajoutés.",
             'updated' => "Le membre a été modifié.",
             'deleted' => "Le membre a été supprimé.",
+            'enabled' => "Le membre a été ajouté au tour courant.",
+            'removed' => "Le membre a été enlevé du tour courant.",
         ],
         'questions' => [
             'delete' => "Supprimer ce membre ?",
+            'disable' => "Enlever ce membre ?",
         ],
         'errors' => [
             'not_found' => "Impossible de trouver le membre correspondant.",
+            'cannot_delete' => "Impossible de supprimer ce membre.",
         ],
     ],
     'charge' => [
@@ -229,12 +235,16 @@ return [
             'created' => "Le frais a été ajouté.",
             'updated' => "Le frais a été modifié.",
             'deleted' => "Le frais a été supprimé.",
+            'enabled' => "Le frais a été ajouté au tour courant.",
+            'removed' => "Le frais a été enlevé du tour courant.",
         ],
         'questions' => [
             'delete' => "Supprimer ce frais ?",
+            'disable' => "Enlever ce frais ?",
         ],
         'errors' => [
             'cannot_delete' => "Impossible de supprimer ce frais.",
+            'cannot_remove' => "Impossible d'enlever ce frais.",
         ],
         'types' => [
             'fee' => "Frais",
@@ -265,7 +275,7 @@ return [
         ],
         'questions' => [
             'delete' => "Supprimer ce fonds d'épargne ?",
-            'disable' => "Supprimer ce fonds d'épargne ?",
+            'disable' => "Enlever ce fonds d'épargne ?",
         ],
         'messages' => [
             'created' => "Le fonds d'épargne a été ajouté.",
@@ -338,13 +348,11 @@ return [
         'actions' => [
             'host' => "Hôte",
             'venue' => "Lieu",
-            'resync' => "Resynchroniser",
         ],
         'messages' => [
             'created' => "La séance a été ajoutée.",
             'updated' => "La séance a été modifiée.",
             'deleted' => "La séance a été supprimée.",
-            'resynced' => "Les séances ont été resynchronisées.",
             'fund' => [
                 'saved' => "Les séances du fonds d'épargne ont été enregistrées.",
             ],
@@ -359,7 +367,6 @@ return [
             'close' => "Fermer cette séance ?",
             'delete' => "Supprimer cette séance ?",
             'disable' => "Désactiver cette séance ?<br/>Si elle avait déjà été ouverte, ceci pourrait supprimer des données relatives.",
-            'resync' => "Resynchroniser les données des séances ?<br/>Vous devez le faire si vous avez changé les membres, les séances, les frais, ou les souscriptions après avoir ouvert une séance.",
         ],
         'errors' => [
             'not_found' => "Impossible de trouver la séance.",

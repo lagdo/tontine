@@ -52,7 +52,7 @@ trait PoolTrait
         }
         $session = $this->stash()->get('meeting.session');
         $poolId = (int)$this->bag('meeting')->get('pool.id');
-        $pool = $this->poolService->getPool($poolId, $session);
+        $pool = $this->poolService->getPool($session, $poolId);
         if(!$pool)
         {
             throw new MessageException(trans('tontine.session.errors.disabled'));

@@ -8,7 +8,7 @@ use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Settlement;
-use Siak\Tontine\Service\Meeting\PaymentServiceInterface;
+use Siak\Tontine\Service\Payment\PaymentServiceInterface;
 use Siak\Tontine\Service\TenantService;
 
 use function trans;
@@ -109,9 +109,7 @@ class SettlementService
     public function deleteAllSettlements(Charge $charge, Session $session): void
     {
         $bills = $this->billService->getBills($charge, $session, '', true)
-            ->filter(function($bill) {
-                return $this->paymentService->isEditable($bill->settlement);
-            });
+            ->filter(fn($bill) => $this->paymentService->isEditable($bill->settlement));
         if($bills->count() === 0)
         {
             return;

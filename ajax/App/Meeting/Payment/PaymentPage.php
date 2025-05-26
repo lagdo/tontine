@@ -4,8 +4,8 @@ namespace Ajax\App\Meeting\Payment;
 
 use Ajax\PageComponent;
 use Illuminate\Support\Collection;
-use Siak\Tontine\Service\Guild\MemberService;
-use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Meeting\Member\MemberService;
+use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
 /**
@@ -31,7 +31,8 @@ class PaymentPage extends PageComponent
 
     private function getOpenedSessions(): Collection
     {
-        return $this->sessionService->getRoundSessions(orderAsc: false)
+        $round = $this->stash()->get('tenant.round');
+        return $this->sessionService->getSessions($round, orderAsc: false)
             ->filter(fn($session) => $session->opened)
             ->pluck('title', 'id');
     }
@@ -41,7 +42,8 @@ class PaymentPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->memberService->getMemberCount('');
+        $round = $this->stash()->get('tenant.round');
+        return $this->memberService->getMemberCount($round);
     }
 
     /**
@@ -49,9 +51,10 @@ class PaymentPage extends PageComponent
      */
     public function html(): Stringable
     {
+        $round = $this->stash()->get('tenant.round');
         return $this->renderView('pages.meeting.payment.page', [
             'sessions' => $this->getOpenedSessions(),
-            'members' => $this->memberService->getMembers('', $this->currentPage()),
+            'members' => $this->memberService->getMembers($round, page: $this->currentPage()),
         ]);
     }
 

@@ -21,7 +21,8 @@ class OptionsFunc extends FuncComponent
 
     public function editOptions()
     {
-        $options = $this->guildService->getGuildOptions();
+        $guild = $this->stash()->get('tenant.guild');
+        $options = $this->guildService->getGuildOptions($guild);
         $template = $options['reports']['template'] ?? 'default';
         $title = trans('tontine.options.titles.edit');
         $content = $this->renderView('pages.guild.options.edit', [
@@ -50,8 +51,9 @@ class OptionsFunc extends FuncComponent
     public function saveOptions(array $formValues)
     {
         // Validation
+        $guild = $this->stash()->get('tenant.guild');
         $options = $this->validator->validateItem($formValues);
-        $this->guildService->saveGuildOptions($options);
+        $this->guildService->saveGuildOptions($guild, $options);
 
         $this->modal()->hide();
         $this->alert()->success(trans('tontine.options.messages.saved'));

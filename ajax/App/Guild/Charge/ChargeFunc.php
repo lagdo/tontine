@@ -62,7 +62,7 @@ class ChargeFunc extends FuncComponent
     {
         $this->modal()->hide();
 
-        $guild = $this->tenantService->guild();
+        $guild = $this->stash()->get('tenant.guild');
         [, $currency] = $this->localeService->getNameFromGuild($guild);
 
         $title = trans('tontine.charge.titles.add');
@@ -107,9 +107,10 @@ class ChargeFunc extends FuncComponent
                 $formValues['amount'] = 0;
             }
         }
+        $guild = $this->stash()->get('tenant.guild');
         $values = $this->validator->validateItem($formValues);
 
-        $this->chargeService->createCharge($values);
+        $this->chargeService->createCharge($guild, $values);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.charge.messages.created'));
         $this->modal()->hide();
@@ -122,9 +123,9 @@ class ChargeFunc extends FuncComponent
      */
     public function edit(int $chargeId)
     {
-        $charge = $this->chargeService->getCharge($chargeId);
+        $guild = $this->stash()->get('tenant.guild');
+        $charge = $this->chargeService->getCharge($guild, $chargeId);
 
-        $guild = $this->tenantService->guild();
         [, $currency] = $this->localeService->getNameFromGuild($guild);
 
         $title = trans('tontine.charge.titles.edit');
@@ -151,7 +152,9 @@ class ChargeFunc extends FuncComponent
      */
     public function update(int $chargeId, array $formValues)
     {
-        $charge = $this->chargeService->getCharge($chargeId);
+        $guild = $this->stash()->get('tenant.guild');
+        $charge = $this->chargeService->getCharge($guild, $chargeId);
+
         // These fields cannot be changed
         $formValues['type'] = $charge->type;
         $formValues['period'] = $charge->period;
@@ -172,7 +175,8 @@ class ChargeFunc extends FuncComponent
 
     public function toggle(int $chargeId)
     {
-        $charge = $this->chargeService->getCharge($chargeId);
+        $guild = $this->stash()->get('tenant.guild');
+        $charge = $this->chargeService->getCharge($guild, $chargeId);
         $this->chargeService->toggleCharge($charge);
 
         $this->cl(ChargePage::class)->page();
@@ -180,7 +184,8 @@ class ChargeFunc extends FuncComponent
 
     public function delete(int $chargeId)
     {
-        $charge = $this->chargeService->getCharge($chargeId);
+        $guild = $this->stash()->get('tenant.guild');
+        $charge = $this->chargeService->getCharge($guild, $chargeId);
         $this->chargeService->deleteCharge($charge);
 
         $this->cl(ChargePage::class)->page();

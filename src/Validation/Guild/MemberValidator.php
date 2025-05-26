@@ -32,7 +32,6 @@ class MemberValidator extends AbstractValidator
             'city' => 'nullable|string',
             'address' => 'nullable|string',
             'registered_at' => 'nullable|date_format:Y-m-d',
-            'birthday' => 'nullable|date_format:Y-m-d',
         ]);
         if($validator->fails())
         {

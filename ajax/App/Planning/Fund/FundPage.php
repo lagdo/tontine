@@ -16,7 +16,7 @@ class FundPage extends PageComponent
      *
      * @var array
      */
-    protected array $bagOptions = ['planning.fund', 'page'];
+    protected array $bagOptions = ['planning.fund', 'fund.page'];
 
     public function __construct(private FundService $fundService)
     {}
@@ -26,8 +26,9 @@ class FundPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->tenantService->round();
-        return $this->fundService->getFundDefCount($round);
+        $round = $this->stash()->get('tenant.round');
+        $filter = $this->bag('planning.fund')->get('filter', null);
+        return $this->fundService->getFundDefCount($round, $filter);
     }
 
     /**
@@ -35,10 +36,11 @@ class FundPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
+        $filter = $this->bag('planning.fund')->get('filter', null);
         return $this->renderView('pages.planning.fund.page', [
             'round' => $round,
-            'defs' => $this->fundService->getFundDefs($round, $this->currentPage()),
+            'defs' => $this->fundService->getFundDefs($round, $filter, $this->currentPage()),
         ]);
     }
 

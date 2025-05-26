@@ -23,7 +23,7 @@ class FundFunc extends FuncComponent
 
     public function enable(int $defId)
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $this->fundService->enableFund($round, $defId);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.fund.messages.enabled'));
@@ -33,7 +33,7 @@ class FundFunc extends FuncComponent
 
     public function disable(int $defId)
     {
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $this->fundService->disableFund($round, $defId);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.fund.messages.disabled'));

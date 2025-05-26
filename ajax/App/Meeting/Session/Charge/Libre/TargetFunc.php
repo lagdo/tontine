@@ -8,7 +8,6 @@ use Siak\Tontine\Validation\Meeting\TargetValidator;
 
 use function Jaxon\pm;
 use function trans;
-use function trim;
 
 /**
  * @before getTarget
@@ -86,10 +85,8 @@ class TargetFunc extends FuncComponent
         $charge = $this->stash()->get('meeting.session.charge');
         $formValues['global'] = isset($formValues['global']);
         $values = $this->validator->validateItem($formValues);
-        $deadlineSession = $this->sessionService->getTontineSession($values['deadline']);
+        $this->targetService->createTarget($charge, $session, $values);
 
-        $this->targetService->createTarget($charge, $session,
-            $deadlineSession, $values['amount'], $values['global']);
         $this->modal()->hide();
 
         $this->stash()->set('meeting.session.charge.target',
@@ -148,10 +145,8 @@ class TargetFunc extends FuncComponent
         $charge = $this->stash()->get('meeting.session.charge');
         $formValues['global'] = isset($formValues['global']);
         $values = $this->validator->validateItem($formValues);
-        $deadlineSession = $this->sessionService->getTontineSession($values['deadline']);
+        $this->targetService->updateTarget($target, $session, $values);
 
-        $this->targetService->updateTarget($target, $session,
-            $deadlineSession, $values['amount'], $values['global']);
         $this->modal()->hide();
 
         $this->stash()->set('meeting.session.charge.target',

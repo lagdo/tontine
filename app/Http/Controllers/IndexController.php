@@ -21,12 +21,13 @@ class IndexController extends Controller
      */
     public function index(GuildService $guildService): View
     {
+        $user = auth()->user();
         view()->share([
-            'user' => auth()->user(),
+            'user' => $user,
             'locales' => LaravelLocalization::getSupportedLocales(),
             'locale' => LaravelLocalization::getCurrentLocale(),
             'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
-            'hasGuestGuilds' => $guildService->hasGuestGuilds()
+            'hasGuestGuilds' => $guildService->hasGuestGuilds($user)
         ]);
 
         return view("tontine::base.home");

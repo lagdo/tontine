@@ -4,19 +4,14 @@
   $sessionSettlementTotal = $settlements['total']['session'][$charge->id] ?? 0;
   $roundSettlementTotal = $settlements['total']['round'][$charge->id] ?? 0;
   $sessionSettlementAmount = $settlements['amount']['session'][$charge->id] ?? 0;
-  $menus = [];
-  if($charge->is_active)
-  {
-    $menus[] = [
-      'class' => 'btn-fee-libre-add',
-      'text' => __('common.actions.add'),
-    ];
-  }
-  $menus[] = [
+  $menus = [[
+    'class' => 'btn-fee-libre-add',
+    'text' => __('common.actions.add'),
+  ], [
     'class' => 'btn-fee-libre-settlements',
     'text' => __('meeting.actions.settlements'),
-  ];
-  if($charge->is_fee)
+  ]];
+  if($charge->is_fee && !$charge->has_amount)
   {
     $menus[] = [
       'class' => 'btn-fee-libre-target',
@@ -25,7 +20,7 @@
   }
 @endphp
                         <tr>
-                          <td @if (!$charge->is_active) style="text-decoration:line-through" @endif>
+                          <td>
                             {{ $charge->name }}<br/>{{ $charge->has_amount ?
                               $locale->formatMoney($charge->amount) : __('tontine.labels.fees.variable') }}
                           </td>

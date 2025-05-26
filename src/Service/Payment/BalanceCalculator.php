@@ -1,11 +1,10 @@
 <?php
 
-namespace Siak\Tontine\Service;
+namespace Siak\Tontine\Service\Payment;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Siak\Tontine\Model\Auction;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Debt;
@@ -15,19 +14,14 @@ use Siak\Tontine\Model\PartialRefund;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Meeting\FundService;
-use Siak\Tontine\Service\Meeting\SessionService;
-use Siak\Tontine\Service\Planning\PoolService;
+use Siak\Tontine\Service\Meeting\Saving\FundService;
 
 class BalanceCalculator
 {
     /**
-     * @param SessionService $sessionService
-     * @param PoolService $poolService
      * @param FundService $fundService
      */
-    public function __construct(private SessionService $sessionService,
-        private PoolService $poolService, private FundService $fundService)
+    public function __construct(private FundService $fundService)
     {}
 
     /**
@@ -85,7 +79,6 @@ class BalanceCalculator
         $query = $this->getDepositQuery(false)
             ->where('receivables.session_id', $session->id)
             ->where('subscriptions.pool_id', $pool->id);
-
         return !$pool->deposit_fixed ? $query->sum('deposits.amount') :
             $pool->amount * $query->count();
     }
@@ -103,7 +96,7 @@ class BalanceCalculator
             // Sum the amounts for all deposits
             return $this->getPoolDepositAmount($pool, $session);
         }
-        return $pool->amount * $this->poolService->getActiveSessionCount($pool);
+        return $pool->amount * $pool->sessions()->count();
     }
 
     /**
@@ -204,10 +197,8 @@ class BalanceCalculator
      */
     private function getSettlementsAmount(Collection $sessionIds, bool $lendable)
     {
-        return Bill::whereHas('settlement', function($query) use($sessionIds) {
-                $query->whereIn('session_id', $sessionIds);
-            })
-            ->when($lendable, fn($query) => $query->where('lendable', true))
+        return Bill::whereHas('settlement', fn($qs) => $qs->whereIn('session_id', $sessionIds))
+            ->when($lendable, fn($qb) => $qb->lendable(true))
             ->sum('amount');
     }
 
@@ -223,9 +214,7 @@ class BalanceCalculator
             ->when($lendable, function($query) {
                 $query->where(function($query) {
                     $query->whereDoesntHave('charge')
-                        ->orWhereHas('charge', function($query) {
-                            $query->where('lendable', true);
-                        });
+                        ->orWhereHas('charge', fn($qb) => $qb->lendable(true));
                 });
             })
             ->sum('amount');
@@ -285,7 +274,7 @@ class BalanceCalculator
     private function getLoansAmount(Collection $sessionIds, Fund $fund)
     {
         return Debt::principal()
-            ->whereHas('loan', fn($query) => $query->where('fund_id', $fund->id)
+            ->whereHas('loan', fn($ql) => $ql->where('fund_id', $fund->id)
                 ->whereIn('session_id', $sessionIds))
             ->sum('amount');
     }
@@ -320,7 +309,7 @@ class BalanceCalculator
     public function getBalanceForLoan(Session $session): int
     {
         // Get the ids of all the sessions until the current one.
-        $sessionIds = $this->sessionService->getRoundSessionIds($session);
+        $sessionIds = Session::precedes($session)->pluck('id');
 
         return $this->getAuctionsAmount($sessionIds)
             + $this->getSettlementsAmount($sessionIds, true)
@@ -340,7 +329,7 @@ class BalanceCalculator
     public function getTotalBalance(Session $session): int
     {
         // Get the ids of all the sessions until the current one.
-        $sessionIds = $this->sessionService->getRoundSessionIds($session);
+        $sessionIds = Session::precedes($session)->pluck('id');
 
         return $this->getAuctionsAmount($sessionIds)
             + $this->getSettlementsAmount($sessionIds, false)
@@ -373,7 +362,7 @@ class BalanceCalculator
             }, ['savings' => 0, 'loans' => 0, 'refunds' => 0]);
 
         // Get the ids of all the sessions until the current one.
-        $sessionIds = $this->sessionService->getRoundSessionIds($session);
+        $sessionIds = Session::precedes($session)->pluck('id');
         return [
             'auctions' => $this->getAuctionsAmount($sessionIds),
             'charges' => $this->getSettlementsAmount($sessionIds, $lendable),

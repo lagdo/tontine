@@ -15,13 +15,13 @@
                     </h2>
                   </div>
                   <div class="col-auto ml-auto">
-@if ($pool->remit_planned)
                     <div class="btn-group" role="group">
+@if ($pool->remit_planned)
                       <button type="button" class="btn btn-primary" @jxnClick($rqBeneficiary->render())>{{
                         __('tontine.subscription.titles.beneficiaries') }}</i></button>
                     </div>
+                    <div class="btn-group ml-3" role="group">
 @endif
-                    <div class="btn-group" role="group">
                       <button type="button" class="btn btn-primary" @jxnClick($rqFinance->render())><i class="fa fa-arrow-left"></i></button>
                       <button type="button" class="btn btn-primary" @jxnClick($rqPlanning->render())><i class="fa fa-sync"></i></button>
                     </div>

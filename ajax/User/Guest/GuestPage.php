@@ -29,7 +29,8 @@ class GuestPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->userService->getGuestInviteCount();
+        $user = $this->tenantService->user();
+        return $this->userService->getGuestInviteCount($user);
     }
 
     /**
@@ -37,8 +38,9 @@ class GuestPage extends PageComponent
      */
     public function html(): Stringable
     {
+        $user = $this->tenantService->user();
         return $this->renderView('pages.admin.user.guest.page', [
-            'invites' => $this->userService->getGuestInvites($this->currentPage()),
+            'invites' => $this->userService->getGuestInvites($user, $this->currentPage()),
         ]);
     }
 

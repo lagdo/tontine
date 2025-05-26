@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Meeting\SummaryService;
-use Siak\Tontine\Service\BalanceCalculator;
+use Siak\Tontine\Service\Meeting\Session\SummaryService;
+use Siak\Tontine\Service\Payment\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
@@ -25,12 +25,12 @@ class PoolService
     {}
 
     /**
-     * @param int $poolId    The pool id
      * @param Session $session
+     * @param int $poolId    The pool id
      *
      * @return Pool|null
      */
-    public function getPool(int $poolId, Session $session): ?Pool
+    public function getPool(Session $session, int $poolId): ?Pool
     {
         return $session->pools()
             ->withCount(['sessions', 'disabled_sessions'])

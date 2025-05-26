@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Presence;
 
 use Ajax\Component;
-use Siak\Tontine\Service\Meeting\PresenceService;
+use Siak\Tontine\Service\Presence\PresenceService;
 use Stringable;
 
 /**
@@ -21,8 +21,10 @@ class Session extends Component
 
     protected function getMember()
     {
+        $round = $this->stash()->get('tenant.round');
         $memberId = $this->bag('meeting.presence')->get('member.id', 0);
-        $member = $memberId === 0 ? null : $this->presenceService->getMember($memberId);
+        $member = $memberId === 0 ? null :
+            $this->presenceService->getMember($round, $memberId);
         $this->stash()->set('presence.member', $member);
     }
 
@@ -38,9 +40,10 @@ class Session extends Component
             return '';
         }
 
+        $round = $this->stash()->get('tenant.round');
         return $this->renderView('pages.meeting.presence.session.home', [
             'member' => $member,
-            'sessionCount' => $this->presenceService->getSessionCount(),
+            'sessionCount' => $this->presenceService->getSessionCount($round),
         ]);
     }
 

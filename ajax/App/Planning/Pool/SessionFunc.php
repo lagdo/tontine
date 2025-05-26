@@ -28,7 +28,7 @@ class SessionFunc extends FuncComponent
         $this->poolService->saveSessions($pool, $values);
 
         // Reload the pool to update the start/end sessions.
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $pool = $this->poolService->getPool($round, $pool->id);
         $this->stash()->set('planning.pool', $pool);
 
@@ -39,7 +39,8 @@ class SessionFunc extends FuncComponent
 
     public function enableSession(int $sessionId)
     {
-        if(!($session = $this->poolService->getGuildSession($sessionId)))
+        $guild = $this->stash()->get('tenant.guild');
+        if(!($session = $this->poolService->getGuildSession($guild, $sessionId)))
         {
             return;
         }
@@ -48,7 +49,7 @@ class SessionFunc extends FuncComponent
         $this->poolService->enableSession($pool, $session);
 
         // Reload the pool to update the start/end sessions.
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $pool = $this->poolService->getPool($round, $pool->id);
         $this->stash()->set('planning.pool', $pool);
 
@@ -59,7 +60,8 @@ class SessionFunc extends FuncComponent
 
     public function disableSession(int $sessionId)
     {
-        if(!($session = $this->poolService->getGuildSession($sessionId)))
+        $guild = $this->stash()->get('tenant.guild');
+        if(!($session = $this->poolService->getGuildSession($guild, $sessionId)))
         {
             return;
         }
@@ -68,7 +70,7 @@ class SessionFunc extends FuncComponent
         $this->poolService->disableSession($pool, $session);
 
         // Reload the pool to update the start/end sessions.
-        $round = $this->tenantService->round();
+        $round = $this->stash()->get('tenant.round');
         $pool = $this->poolService->getPool($round, $pool->id);
         $this->stash()->set('planning.pool', $pool);
 

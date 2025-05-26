@@ -52,8 +52,8 @@ class MemberPage extends PageComponent
 
         return $this->renderView('pages.meeting.summary.saving.member.page', [
             'session' => $session,
-            'members' => $this->savingService
-                ->getMembers($session, $fund, $search, true, $this->currentPage()),
+            'members' => $this->savingService->getMembers($session,
+                $fund, $search, true, $this->currentPage()),
         ]);
     }
 

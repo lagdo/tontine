@@ -17,55 +17,12 @@
                     </div>
                   </div>
 
-@if ($session->id === $fund->start_sid)
-@php
-  $savingAmount = jq('#txt-saving-amount')->val();
-  $rqAmountFunc = rq(Ajax\App\Meeting\Session\Saving\AmountFunc::class);
-@endphp
-                  <div class="row mb-2">
-                    <div class="col-md-6">
-                      <div class="float-right py-2 font-weight-bold">{{ __('meeting.saving.labels.start_amount') }}</div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="input-group">
-                        {!! $html->text('amount', $locale->getMoneyValue($fund->start_amount))
-                          ->id('txt-saving-amount')->class('form-control')
-                          ->attribute('style', 'height:36px; padding:5px 15px;') !!}
-                        <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqAmountFunc->saveStartAmount($savingAmount))><i class="fa fa-save"></i></button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-@endif
-@if ($session->id === $fund->end_sid)
-@php
-  $savingAmount = jq('#txt-saving-amount')->val();
-  $rqAmountFunc = rq(Ajax\App\Meeting\Session\Saving\AmountFunc::class);
-@endphp
-                  <div class="row mb-2">
-                    <div class="col-md-6">
-                      <div class="float-right py-2 font-weight-bold">{{ __('meeting.saving.labels.end_amount') }}</div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="input-group">
-                        {!! $html->text('amount', $locale->getMoneyValue($fund->end_amount))
-                          ->id('txt-saving-amount')->class('form-control')
-                          ->attribute('style', 'height:36px; padding:5px 15px;') !!}
-                        <div class="input-group-append">
-                          <button type="button" class="btn btn-primary" @jxnClick($rqAmountFunc->saveEndAmount($savingAmount))><i class="fa fa-save"></i></button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-@endif
-
                   <div class="row mb-2">
                     <div class="col-md-8">
                       <div class="input-group">
                         {!! $html->text('search', '')
                           ->id('txt-saving-member-search')->class('form-control')
-                          ->attribute('style', 'height:36px; padding:5px 15px;') !!}
+                          ->attribute('style', 'height:36px; padding:5px 5px;') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" @jxnClick($rqMember->search($searchValue))><i class="fa fa-search"></i></button>
                         </div>

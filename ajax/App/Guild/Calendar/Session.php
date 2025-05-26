@@ -37,8 +37,10 @@ class Session extends Component
             // Save the round id in the databag.
             $this->bag('guild.calendar')->set('round.id', $this->target()->args()[0]);
         }
+        $guild = $this->stash()->get('tenant.guild');
         $roundId = $this->bag('guild.calendar')->get('round.id');
-        $this->stash()->set('guild.calendar.round', $this->roundService->getRound($roundId));
+        $round = $this->roundService->getRound($guild, $roundId);
+        $this->stash()->set('guild.calendar.round', $round);
     }
 
     public function round(int $roundId)

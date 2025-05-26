@@ -8,5 +8,7 @@
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" @jxnClick($rqBalance
                             ->details())><i class="fa fa-caret-right"></i></button>
+                          <button type="button" class="btn btn-primary" @jxnClick($rqBalance
+                            ->render())><i class="fa fa-sync"></i></button>
                         </div>
                       </div>

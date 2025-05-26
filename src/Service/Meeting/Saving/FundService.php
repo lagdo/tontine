@@ -1,6 +1,6 @@
 <?php
 
-namespace Siak\Tontine\Service\Meeting;
+namespace Siak\Tontine\Service\Meeting\Saving;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -96,7 +96,7 @@ class FundService
      */
     public function getDefaultFund(Round $round): ?Fund
     {
-        return $this->tenantService->guild()->default_fund
+        return $round->guild->default_fund
             ->funds()->real()->where('round_id', $round->id)->first();
     }
 

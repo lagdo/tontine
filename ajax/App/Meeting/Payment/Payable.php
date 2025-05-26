@@ -4,9 +4,9 @@ namespace Ajax\App\Meeting\Payment;
 
 use Ajax\Component;
 use App\Events\OnPagePaymentPayables;
-use Siak\Tontine\Service\Guild\MemberService;
-use Siak\Tontine\Service\Meeting\PaymentService;
-use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Meeting\Member\MemberService;
+use Siak\Tontine\Service\Payment\PaymentService;
+use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
 use function compact;
@@ -33,7 +33,8 @@ class Payable extends Component
     {
         $member = $this->stash()->get('payable.member');
         $session = $this->stash()->get('payable.session');
-        [$receivables, $bills, $debts] = $this->paymentService->getPayables($member, $session);
+        [$receivables, $bills, $debts] = $this->paymentService
+            ->getPayables($member, $session);
         $this->stash()->set('payable.data', [$member, $session, $receivables, $bills, $debts]);
 
         return $this->renderView('pages.meeting.payment.payables',
@@ -54,11 +55,12 @@ class Payable extends Component
 
     public function show(int $memberId, int $sessionId)
     {
-        if(!($member = $this->memberService->getMember($memberId)))
+        $round = $this->stash()->get('tenant.round');
+        if(!($member = $this->memberService->getMember($round, $memberId)))
         {
             return;
         }
-        if(!($session = $this->sessionService->getSession($sessionId)))
+        if(!($session = $this->sessionService->getSession($round, $sessionId)))
         {
             return;
         }

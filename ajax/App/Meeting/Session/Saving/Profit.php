@@ -5,7 +5,7 @@ namespace Ajax\App\Meeting\Session\Saving;
 use Ajax\App\Meeting\Session\Component;
 use Ajax\App\Meeting\Session\Profit\Fund;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Meeting\FundService;
+use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Stringable;
 

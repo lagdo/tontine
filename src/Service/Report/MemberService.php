@@ -9,20 +9,39 @@ use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\BalanceCalculator;
-use Siak\Tontine\Service\Meeting\SessionService;
-use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Payment\BalanceCalculator;
 
 class MemberService
 {
     /**
      * @param BalanceCalculator $balanceCalculator
-     * @param TenantService $tenantService
-     * @param SessionService $sessionService
      */
-    public function __construct(private BalanceCalculator $balanceCalculator,
-        private TenantService $tenantService, private SessionService $sessionService)
+    public function __construct(private BalanceCalculator $balanceCalculator)
     {}
+
+    /**
+     * @param Collection $collection
+     * @param Member|null $member
+     *
+     * @return Collection
+     */
+    private function sortByMemberName(Collection $collection, ?Member $member): Collection
+    {
+        return $member !== null ? $collection :
+            $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
+    }
+
+    /**
+     * @param Builder $query
+     * @param Member $member
+     *
+     * @return Builder
+     */
+    private function hasSubscription(Builder $query, Member $member): Builder
+    {
+        return $query->whereHas('subscription', fn(Builder $qm) =>
+            $qm->where('member_id', $member->id));
+    }
 
     /**
      * @param Session $session
@@ -32,24 +51,17 @@ class MemberService
      */
     public function getReceivables(Session $session, ?Member $member = null): Collection
     {
-        return $session->receivables()
-            ->when($member !== null, function($query) use($member) {
-                return $query->whereHas('subscription', function(Builder $query) use($member) {
-                    $query->where('member_id', $member->id);
-                });
-            })
+        return $this->sortByMemberName($session->receivables()
+            ->when($member !== null, fn($qw) =>
+                $this->hasSubscription($qw, $member))
             ->with(['deposit', 'subscription.pool', 'subscription.member'])
             ->get()
             ->each(function($receivable) {
                 $receivable->pool = $receivable->subscription->pool;
                 $receivable->member = $receivable->subscription->member;
-                $receivable->paid = ($receivable->deposit !== null);
+                $receivable->paid = $receivable->deposit !== null;
                 $receivable->amount = $this->balanceCalculator->getReceivableAmount($receivable);
-            })
-            // Sort by member name
-            ->when($member === null, function($collection) {
-                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
-            });
+            }), $member);
     }
 
     /**
@@ -60,25 +72,18 @@ class MemberService
      */
     public function getPayables(Session $session, ?Member $member = null): Collection
     {
-        return $session->payables()
-            ->when($member !== null, function($query) use($member) {
-                return $query->whereHas('subscription', function(Builder $query) use($member) {
-                    $query->where('member_id', $member->id);
-                });
-            })
+        return $this->sortByMemberName($session->payables()
+            ->when($member !== null, fn($qw) =>
+                $this->hasSubscription($qw, $member))
             ->with(['remitment', 'subscription.pool', 'subscription.member'])
             ->get()
             ->each(function($payable) use($session) {
                 $pool = $payable->subscription->pool;
                 $payable->pool = $pool;
                 $payable->member = $payable->subscription->member;
-                $payable->paid = ($payable->remitment !== null);
+                $payable->paid = $payable->remitment !== null;
                 $payable->amount = $this->balanceCalculator->getPayableAmount($pool, $session);
-            })
-            // Sort by member name
-            ->when($member === null, function($collection) {
-                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
-            });
+            }), $member);
     }
 
     /**
@@ -89,16 +94,11 @@ class MemberService
      */
     public function getAuctions(Session $session, ?Member $member = null): Collection
     {
-        return $session->auctions()
-            ->when($member !== null, function($query) use($member) {
-                return $query->whereHas('remitment', function($query) use($member) {
-                    $query->whereHas('payable', function($query) use($member) {
-                        $query->whereHas('subscription', function($query) use($member) {
-                            $query->where('member_id', $member->id);
-                        });
-                    });
-                });
-            })
+        return $this->sortByMemberName($session->auctions()
+            ->when($member !== null, fn($qm) =>
+                $qm->whereHas('remitment', fn($qr) =>
+                    $qr->whereHas('payable', fn($qp) =>
+                        $this->hasSubscription($qp, $member))))
             ->with(['remitment.payable.subscription.pool',
                 'remitment.payable.subscription.member'])
             ->get()
@@ -107,11 +107,7 @@ class MemberService
                 $auction->member = $subscription->member;
                 $auction->pool = $subscription->pool;
             })
-            ->keyBy('remitment.payable.id')
-            // Sort by member name
-            ->when($member === null, function($collection) {
-                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
-            });
+            ->keyBy('remitment.payable.id'), $member);
     }
 
     /**
@@ -122,69 +118,52 @@ class MemberService
      */
     public function getBills(Session $session, ?Member $member = null): Collection
     {
-        return Bill::with(['settlement', 'libre_bill.session', 'libre_bill.member', 'round_bill.member',
-                'oneoff_bill.member', 'session_bill.member', 'session_bill.session'])
-            ->where(function($query) use($session) {
-                return $query
-                    // Unsettled bills.
-                    ->orWhereDoesntHave('settlement')
-                    // Bills settled on this session.
-                    ->orWhereHas('settlement', function(Builder $query) use($session) {
-                        $query->where('session_id', $session->id);
-                    });
-            })
-            ->where(function($query) use($session, $member) {
-                return $query
-                    // Tontine bills.
-                    ->orWhereHas('oneoff_bill', function(Builder $query) use($member) {
-                        return $query->when($member !== null, function($query) use($member) {
-                                return $query->where('member_id', $member->id);
-                            })
-                            ->when($member === null, function($query) {
-                                return $query->whereHas('member', function($query) {
-                                    $guild = $this->tenantService->guild();
-                                    return $query->where('guild_id', $guild->id);
-                                });
-                            });
-                    })
-                    // Round bills.
-                    ->orWhereHas('round_bill', function(Builder $query) use($session, $member) {
-                        return $query->where('round_id', $session->round_id)
-                            ->when($member !== null, function($query) use($member) {
-                                return $query->where('member_id', $member->id);
-                            });
-                    })
-                    // Session bills.
-                    ->orWhereHas('session_bill', function(Builder $query) use($session, $member) {
-                        return $query->where('session_id', $session->id)
-                            ->when($member !== null, function($query) use($member) {
-                                return $query->where('member_id', $member->id);
-                            });
-                    })
-                    // Libre bills, all up to this session.
-                    ->orWhereHas('libre_bill', function(Builder $query) use($session, $member) {
-                        $sessionIds = $this->sessionService->getRoundSessionIds($session);
-                        return $query->whereIn('session_id', $sessionIds)
-                            ->when($member !== null, function($query) use($member) {
-                                return $query->where('member_id', $member->id);
-                            });
-                    });
-            })
+        return $this->sortByMemberName(Bill::with(['settlement',
+                'libre_bill.session', 'libre_bill.member', 'round_bill.member',
+                'onetime_bill.member', 'session_bill.member', 'session_bill.session'])
+            ->where(fn($query) => $query
+                // Unsettled bills.
+                ->orWhereDoesntHave('settlement')
+                // Bills settled on this session.
+                ->orWhereHas('settlement', fn(Builder $qs) =>
+                    $qs->where('session_id', $session->id)))
+            ->where(fn($query) => $query
+                // Onetime bills.
+                ->orWhereHas('onetime_bill', fn(Builder $qb) =>
+                    $qb->when($member !== null, fn($qm) =>
+                            $qm->where('member_id', $member->id))
+                        ->when($member === null, fn($qw) =>
+                            $qw->whereHas('member', fn($qm) =>
+                                $qm->where('round_id', $session->round_id))))
+                // Round bills.
+                ->orWhereHas('round_bill', fn(Builder $qb) =>
+                    $qb->where('round_id', $session->round_id)
+                        ->when($member !== null, fn($qm) =>
+                            $qm->where('member_id', $member->id)))
+                // Session bills.
+                ->orWhereHas('session_bill', fn(Builder $qb) =>
+                    $qb->where('session_id', $session->id)
+                        ->when($member !== null, fn($qm) =>
+                            $qm->where('member_id', $member->id)))
+                // Libre bills, all up to this session.
+                ->orWhereHas('libre_bill', fn(Builder $qb) =>
+                    $qb->whereHas('session', fn($qs) =>
+                            $qs->where('round_id', $session->round_id)
+                                ->where('day_date', '<=', $session->day_date))
+                        ->when($member !== null, fn($qm) =>
+                            $qm->where('member_id', $member->id)))
+            )
             ->get()
             ->each(function($bill) {
                 // Take the only value which is not null
                 $_bill = $bill->session_bill ?? $bill->round_bill ??
-                    $bill->oneoff_bill ?? $bill->libre_bill;
+                    $bill->onetime_bill ?? $bill->libre_bill;
 
                 $bill->paid = $bill->settlement !== null;
                 $bill->session = $bill->libre_bill ? $_bill->session : null;
                 $bill->member = $_bill->member;
                 $bill->charge_id = $_bill->charge_id;
-            })
-            // Sort by member name
-            ->when($member === null, function($collection) {
-                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
-            });
+            }), $member);
     }
 
     /**
@@ -195,16 +174,11 @@ class MemberService
      */
     public function getLoans(Session $session, ?Member $member = null): Collection
     {
-        return $session->loans()
-            ->when($member !== null, function($query) use($member) {
-                return $query->where('member_id', $member->id);
-            })
+        return $this->sortByMemberName($session->loans()
+            ->when($member !== null, fn($qm) =>
+                $qm->where('member_id', $member->id))
             ->with(['member', 'principal_debt.refund', 'interest_debt.refund'])
-            ->get()
-            // Sort by member name
-            ->when($member === null, function($collection) {
-                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
-            });
+            ->get(), $member);
     }
 
     /**
@@ -215,36 +189,25 @@ class MemberService
      */
     public function getDebts(Session $session, Member $member): Collection
     {
-        $prevSessions = $this->tenantService->round()->sessions()
-            ->where('day_date', '<', $session->day_date)->pluck('id');
         return Debt::with(['loan.session', 'refund'])
             // Member debts
-            ->whereHas('loan', function(Builder $query) use($member) {
-                $query->where('member_id', $member->id);
-            })
-            ->where(function($query) use($session, $prevSessions) {
+            ->whereHas('loan', fn(Builder $qm) =>
+                $qm->where('member_id', $member->id))
+            ->where(function($query) use($session) {
                 // Take all the debts in the current session
-                $query->where(function($query) use($session) {
-                    $query->whereHas('loan', function(Builder $query) use($session) {
-                        $query->where('session_id', $session->id);
-                    });
-                });
-                if($prevSessions->count() === 0)
-                {
-                    return;
-                }
+                $query->where(fn($ql) =>
+                    $ql->whereHas('loan', fn(Builder $qs) =>
+                        $qs->where('session_id', $session->id)));
                 // The debts in the previous sessions.
-                $query->orWhere(function($query) use($session, $prevSessions) {
-                    $query->whereHas('loan', function(Builder $query) use($prevSessions) {
-                        $query->whereIn('session_id', $prevSessions);
-                    })
+                $query->orWhere(function($query) use($session) {
+                    $query->whereHas('loan', fn(Builder $qs) =>
+                        $qs->whereHas('session', fn($qs) => $qs->precedes($session)))
                     ->where(function($query) use($session) {
                         // The debts that are not yet refunded.
                         $query->orWhereDoesntHave('refund');
                         // The debts that are refunded in the current session.
-                        $query->orWhereHas('refund', function(Builder $query) use($session) {
-                            $query->where('session_id', $session->id);
-                        });
+                        $query->orWhereHas('refund', fn(Builder $qs) =>
+                            $qs->where('session_id', $session->id));
                     });
                 });
             })
@@ -263,43 +226,34 @@ class MemberService
      */
     public function getRefunds(Session $session, ?Member $member = null): Collection
     {
-        $refunds = $session->refunds()->select('refunds.*')
+        $refunds = $this->sortByMemberName($session->refunds()->select('refunds.*')
             ->with(['debt.loan.session', 'debt.loan.member'])
             // Member refunds
-            ->when($member !== null, function(Builder $query) use($member) {
-                return $query->join('debts', 'refunds.debt_id', '=', 'debts.id')
-                    ->join('loans', 'debts.loan_id', '=', 'loans.id')
-                    ->where('loans.member_id', $member->id);
-            })
+            ->when($member !== null, fn(Builder $query) => $query
+                ->join('debts', 'refunds.debt_id', '=', 'debts.id')
+                ->join('loans', 'debts.loan_id', '=', 'loans.id')
+                ->where('loans.member_id', $member->id))
             ->get()
             ->each(function($refund) {
                 $refund->amount = $refund->debt->amount;
                 $refund->debt->session = $refund->debt->loan->session;
                 $refund->member = $refund->debt->loan->member;
                 $refund->is_partial = false;
-            })
-            // Sort by member name
-            ->when($member === null, function($collection) {
-                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
-            });
-        $partialRefunds = $session->partial_refunds()->select('partial_refunds.*')
+            }), $member);
+        $partialRefunds = $this->sortByMemberName($session->partial_refunds()
+            ->select('partial_refunds.*')
             ->with(['debt.loan.session', 'debt.loan.member'])
             // Member refunds
-            ->when($member !== null, function(Builder $query) use($member) {
-                return $query->join('debts', 'partial_refunds.debt_id', '=', 'debts.id')
-                    ->join('loans', 'debts.loan_id', '=', 'loans.id')
-                    ->where('loans.member_id', $member->id);
-            })
+            ->when($member !== null, fn(Builder $query) => $query
+                ->join('debts', 'partial_refunds.debt_id', '=', 'debts.id')
+                ->join('loans', 'debts.loan_id', '=', 'loans.id')
+                ->where('loans.member_id', $member->id))
             ->get()
             ->each(function($refund) {
                 $refund->debt->session = $refund->debt->loan->session;
                 $refund->member = $refund->debt->loan->member;
                 $refund->is_partial = true;
-            })
-            // Sort by member name
-            ->when($member === null, function($collection) {
-                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
-            });
+            }), $member);
 
         return $refunds->concat($partialRefunds);
     }
@@ -312,15 +266,10 @@ class MemberService
      */
     public function getSavings(Session $session, ?Member $member = null): Collection
     {
-        return $session->savings()->with(['member'])
-            ->when($member !== null, function($query) use($member) {
-                return $query->where('member_id', $member->id);
-            })
-            ->get()
-            // Sort by member name
-            ->when($member === null, function($collection) {
-                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
-            });
+        return $this->sortByMemberName($session->savings()
+            ->with(['member'])
+            ->when($member !== null, fn($query) => $query->where('member_id', $member->id))
+            ->get(), $member);
     }
 
     /**
@@ -331,14 +280,9 @@ class MemberService
      */
     public function getOutflows(Session $session, ?Member $member = null): Collection
     {
-        return $session->outflows()->with(['member', 'category'])
-            ->when($member !== null, function($query) use($member) {
-                return $query->where('member_id', $member->id);
-            })
-            ->get()
-            // Sort by member name
-            ->when($member === null, function($collection) {
-                return $collection->sortBy('member.name', SORT_LOCALE_STRING)->values();
-            });
+        return $this->sortByMemberName($session->outflows()
+            ->with(['member', 'category'])
+            ->when($member !== null, fn($query) => $query->where('member_id', $member->id))
+            ->get(), $member);
     }
 }

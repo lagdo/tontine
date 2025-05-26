@@ -32,7 +32,10 @@ class ChargePage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->chargeService->getChargeCount();
+        $guild = $this->stash()->get('tenant.guild');
+        $filter = $this->bag('guild.charge')->get('filter', null);
+
+        return $this->chargeService->getChargeCount($guild, $filter);
     }
 
     /**
@@ -40,10 +43,14 @@ class ChargePage extends PageComponent
      */
     public function html(): Stringable
     {
+        $guild = $this->stash()->get('tenant.guild');
+        $filter = $this->bag('guild.charge')->get('filter', null);
+
         return $this->renderView('pages.guild.charge.page', [
             'types' => $this->getChargeTypes(),
             'periods' => $this->getChargePeriods(),
-            'charges' => $this->chargeService->getCharges($this->currentPage()),
+            'charges' => $this->chargeService
+                ->getCharges($guild, $filter, $this->currentPage()),
         ]);
     }
 

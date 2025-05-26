@@ -10,8 +10,9 @@ use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\LibreBill;
-use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\Round;
+use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
@@ -114,6 +115,7 @@ class BillService
     }
 
     /**
+     * @param Round $round
      * @param Charge $charge
      * @param Session $session
      * @param string $search
@@ -121,13 +123,13 @@ class BillService
      *
      * @return Builder|Relation
      */
-    private function getMembersQuery(Charge $charge, Session $session,
+    private function getMembersQuery(Round $round, Charge $charge, Session $session,
         string $search = '', ?bool $filter = null): Builder|Relation
     {
         $filterFunction = fn($query) => $query
             ->where('charge_id', $charge->id)->where('session_id', $session->id);
 
-        return $this->tenantService->guild()->members()->active()
+        return $round->members()
             ->search($this->searchSanitizer->sanitize($search))
             ->when($filter === false, fn($query) => $query
                 ->whereDoesntHave('libre_bills', $filterFunction))
@@ -136,6 +138,7 @@ class BillService
     }
 
     /**
+     * @param Round $round
      * @param Charge $charge
      * @param Session $session
      * @param string $search
@@ -144,10 +147,10 @@ class BillService
      *
      * @return Collection
      */
-    public function getMembers(Charge $charge, Session $session,
+    public function getMembers(Round $round, Charge $charge, Session $session,
         string $search = '', ?bool $filter = null, int $page = 0): Collection
     {
-        $members = $this->getMembersQuery($charge, $session, $search, $filter)
+        $members = $this->getMembersQuery($round, $charge, $session, $search, $filter)
             ->page($page, $this->tenantService->getLimit())
             ->with([
                 'libre_bills' => fn($query) => $query
@@ -165,7 +168,7 @@ class BillService
             return $members;
         }
 
-        $settlements = $this->targetService->getMembersSettlements($charge, $target, $members);
+        $settlements = $this->targetService->getMembersSettlements($members, $charge, $target);
 
         return $members->each(function($member) use($target, $settlements) {
             $member->target = $target->amount;
@@ -175,6 +178,7 @@ class BillService
     }
 
     /**
+     * @param Round $round
      * @param Charge $charge
      * @param Session $session
      * @param string $search
@@ -182,23 +186,24 @@ class BillService
      *
      * @return int
      */
-    public function getMemberCount(Charge $charge, Session $session,
+    public function getMemberCount(Round $round, Charge $charge, Session $session,
         string $search = '', ?bool $filter = null): int
     {
-        return $this->getMembersQuery($charge, $session, $search, $filter)->count();
+        return $this->getMembersQuery($round, $charge, $session, $search, $filter)->count();
     }
 
     /**
+     * @param Round $round
      * @param Charge $charge
      * @param Session $session
      * @param int $memberId
      *
      * @return Member|null
      */
-    public function getMember(Charge $charge, Session $session, int $memberId): ?Member
+    public function getMember(Round $round, Charge $charge, Session $session, int $memberId): ?Member
     {
-        $members = $this->getMembersQuery($charge, $session)
-            ->where('id', $memberId)
+        $members = $this->getMembersQuery($round, $charge, $session)
+            ->where('members.id', $memberId)
             ->with([
                 'libre_bills.bill',
                 'libre_bills' => fn($query) => $query
@@ -216,7 +221,7 @@ class BillService
         // Check if there is a settlement target.
         if(($target = $this->targetService->getTarget($charge, $session)) !== null)
         {
-            $settlements = $this->targetService->getMembersSettlements($charge, $target, $members);
+            $settlements = $this->targetService->getMembersSettlements($members, $charge, $target);
             $paid = $settlements[$member->id] ?? 0;
             $member->remaining = $target->amount > $paid ? $target->amount - $paid : 0;
         }
@@ -224,6 +229,7 @@ class BillService
     }
 
     /**
+     * @param Round $round
      * @param Charge $charge
      * @param Session $session
      * @param int $memberId
@@ -232,10 +238,10 @@ class BillService
      *
      * @return void
      */
-    public function createBill(Charge $charge, Session $session,
+    public function createBill(Round $round, Charge $charge, Session $session,
         int $memberId, bool $paid, float $amount = 0): void
     {
-        $member = $this->tenantService->guild()->members()->find($memberId);
+        $member = $round->members()->find($memberId);
         if(!$member)
         {
             throw new MessageException(trans('tontine.member.errors.not_found'));
@@ -269,15 +275,16 @@ class BillService
     }
 
     /**
+     * @param Round $round
      * @param Charge $charge
      * @param Session $session
      * @param int $memberId
      *
      * @return LibreBill|null
      */
-    public function getMemberBill(Charge $charge, Session $session, int $memberId): ?LibreBill
+    public function getMemberBill(Round $round, Charge $charge, Session $session, int $memberId): ?LibreBill
     {
-        if(!($member = $this->tenantService->guild()->members()->find($memberId)))
+        if(!($member = $round->members()->find($memberId)))
         {
             throw new MessageException(trans('tontine.member.errors.not_found'));
         }
@@ -290,6 +297,7 @@ class BillService
     }
 
     /**
+     * @param Round $round
      * @param Charge $charge
      * @param Session $session
      * @param int $memberId
@@ -297,9 +305,9 @@ class BillService
      *
      * @return void
      */
-    public function updateBill(Charge $charge, Session $session, int $memberId, float $amount): void
+    public function updateBill(Round $round, Charge $charge, Session $session, int $memberId, float $amount): void
     {
-        if(!($libreBill = $this->getMemberBill($charge, $session, $memberId)))
+        if(!($libreBill = $this->getMemberBill($round, $charge, $session, $memberId)))
         {
             return; // throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
@@ -310,15 +318,16 @@ class BillService
     }
 
     /**
+     * @param Round $round
      * @param Charge $charge
      * @param Session $session
      * @param int $memberId
      *
      * @return void
      */
-    public function deleteBill(Charge $charge, Session $session, int $memberId): void
+    public function deleteBill(Round $round, Charge $charge, Session $session, int $memberId): void
     {
-        if(!($libreBill = $this->getMemberBill($charge, $session, $memberId)))
+        if(!($libreBill = $this->getMemberBill($round, $charge, $session, $memberId)))
         {
             return; // throw new MessageException(trans('tontine.bill.errors.not_found'));
         }

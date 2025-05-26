@@ -30,7 +30,8 @@ class FundPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->fundService->getFundCount();
+        $guild = $this->stash()->get('tenant.guild');
+        return $this->fundService->getFundCount($guild);
     }
 
     /**
@@ -38,8 +39,9 @@ class FundPage extends PageComponent
      */
     public function html(): Stringable
     {
+        $guild = $this->stash()->get('tenant.guild');
         return $this->renderView('pages.guild.account.fund.page', [
-            'funds' => $this->fundService->getFunds($this->currentPage()),
+            'funds' => $this->fundService->getFunds($guild, $this->currentPage()),
         ]);
     }
 

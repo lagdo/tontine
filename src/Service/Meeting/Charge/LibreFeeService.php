@@ -5,9 +5,10 @@ namespace Siak\Tontine\Service\Meeting\Charge;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Bill;
+use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Siak\Tontine\Service\TenantService;
 
 class LibreFeeService
@@ -24,14 +25,15 @@ class LibreFeeService
     /**
      * Get a paginated list of fees.
      *
+     * @param Round $round
      * @param int $page
      *
      * @return Collection
      */
-    public function getFees(int $page = 0): Collection
+    public function getFees(Round $round, int $page = 0): Collection
     {
-        return $this->tenantService->guild()->charges()
-            ->variable()->orderBy('id', 'desc')
+        return $round->charges()->variable()
+            ->orderBy('id', 'desc')
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -39,11 +41,13 @@ class LibreFeeService
     /**
      * Get the number of fees.
      *
+     * @param Round $round
+     *
      * @return int
      */
-    public function getFeeCount(): int
+    public function getFeeCount(Round $round): int
     {
-        return $this->tenantService->guild()->charges()->variable()->count();
+        return $round->charges()->variable()->count();
     }
 
     /**

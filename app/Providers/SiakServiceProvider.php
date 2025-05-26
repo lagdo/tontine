@@ -5,13 +5,13 @@ namespace App\Providers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Mcamara\LaravelLocalization\LaravelLocalization;
-use Siak\Tontine\Service\BalanceCalculator;
-use Siak\Tontine\Service\DataSyncService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Guild;
 use Siak\Tontine\Service\Meeting;
+use Siak\Tontine\Service\Payment;
 use Siak\Tontine\Service\Planning;
+use Siak\Tontine\Service\Presence;
 use Siak\Tontine\Service\Report;
 use Siak\Tontine\Validation;
 use Sqids\Sqids;
@@ -42,15 +42,13 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(LocaleService::class, function($app) {
             $vendorDir = base_path('vendor');
             // Read country list from the umpirsky/country-list package data.
-            $countriesDataDir = $vendorDir . '/umpirsky/country-list/data';
+            $countriesDataDir = "$vendorDir/umpirsky/country-list/data";
             // Read currency list from the umpirsky/currency-list package data.
-            $currenciesDataDir = $vendorDir . '/umpirsky/currency-list/data';
+            $currenciesDataDir = "$vendorDir/umpirsky/currency-list/data";
             $localization = $app->make(LaravelLocalization::class);
             return new LocaleService($localization, $countriesDataDir, $currenciesDataDir);
         });
         $this->app->singleton(TenantService::class, TenantService::class);
-        $this->app->singleton(BalanceCalculator::class, BalanceCalculator::class);
-        $this->app->singleton(DataSyncService::class, DataSyncService::class);
 
         $this->app->singleton(Guild\FundService::class, Guild\FundService::class);
         $this->app->singleton(Guild\ChargeService::class, Guild\ChargeService::class);
@@ -62,21 +60,25 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(Guild\MemberService::class, Guild\MemberService::class);
         $this->app->singleton(Guild\GuildService::class, Guild\GuildService::class);
 
+        $this->app->singleton(Planning\BillSyncService::class, Planning\BillSyncService::class);
+        $this->app->singleton(Planning\FundSyncService::class, Planning\FundSyncService::class);
+        $this->app->singleton(Planning\PoolSyncService::class, Planning\PoolSyncService::class);
         $this->app->singleton(Planning\PoolService::class, Planning\PoolService::class);
         $this->app->singleton(Planning\FundService::class, Planning\FundService::class);
+        $this->app->singleton(Planning\MemberService::class, Planning\MemberService::class);
+        $this->app->singleton(Planning\ChargeService::class, Planning\ChargeService::class);
         $this->app->singleton(Planning\SubscriptionService::class, Planning\SubscriptionService::class);
         $this->app->singleton(Planning\SummaryService::class, Planning\SummaryService::class);
 
-        $this->app->singleton(Meeting\FundService::class, Meeting\FundService::class);
-        $this->app->singleton(Meeting\SummaryService::class, Meeting\SummaryService::class);
-        $this->app->singleton(Meeting\SessionService::class, Meeting\SessionService::class);
-        $this->app->singleton(Meeting\PresenceService::class, Meeting\PresenceService::class);
+        $this->app->singleton(Meeting\Session\SummaryService::class, Meeting\Session\SummaryService::class);
+        $this->app->singleton(Meeting\Session\SessionService::class, Meeting\Session\SessionService::class);
 
         $this->app->singleton(Meeting\Pool\PoolService::class, Meeting\Pool\PoolService::class);
         $this->app->singleton(Meeting\Pool\DepositService::class, Meeting\Pool\DepositService::class);
         $this->app->singleton(Meeting\Pool\RemitmentService::class, Meeting\Pool\RemitmentService::class);
         $this->app->singleton(Meeting\Pool\AuctionService::class, Meeting\Pool\AuctionService::class);
 
+        $this->app->singleton(Meeting\Charge\ChargeService::class, Meeting\Charge\ChargeService::class);
         $this->app->singleton(Meeting\Charge\FixedFeeService::class, Meeting\Charge\FixedFeeService::class);
         $this->app->singleton(Meeting\Charge\LibreFeeService::class, Meeting\Charge\LibreFeeService::class);
         $this->app->singleton(Meeting\Charge\BillService::class, Meeting\Charge\BillService::class);
@@ -84,6 +86,9 @@ class SiakServiceProvider extends ServiceProvider
         $this->app->singleton(Meeting\Charge\SettlementTargetService::class,
             Meeting\Charge\SettlementTargetService::class);
 
+        $this->app->singleton(Meeting\Member\MemberService::class, Meeting\Member\MemberService::class);
+
+        $this->app->singleton(Meeting\Saving\FundService::class, Meeting\Saving\FundService::class);
         $this->app->singleton(Meeting\Saving\SavingService::class, Meeting\Saving\SavingService::class);
         $this->app->singleton(Meeting\Saving\ProfitService::class, Meeting\Saving\ProfitService::class);
 
@@ -95,6 +100,8 @@ class SiakServiceProvider extends ServiceProvider
 
         $this->app->singleton(Meeting\Cash\OutflowService::class, Meeting\Cash\OutflowService::class);
 
+        $this->app->singleton(Presence\PresenceService::class, Presence\PresenceService::class);
+
         $this->app->singleton(Report\MemberService::class, Report\MemberService::class);
         $this->app->singleton(Report\RoundService::class, Report\RoundService::class);
         $this->app->singleton(Report\SessionService::class, Report\SessionService::class);
@@ -104,9 +111,10 @@ class SiakServiceProvider extends ServiceProvider
             ->needs('$config')
             ->give(config('chrome.page'));
 
-        $this->app->singleton(Meeting\PaymentService::class, Meeting\PaymentService::class);
-        $this->app->singleton(Meeting\PaymentServiceInterface::class, function() {
-            return new class implements Meeting\PaymentServiceInterface {
+        $this->app->singleton(Payment\BalanceCalculator::class, Payment\BalanceCalculator::class);
+        $this->app->singleton(Payment\PaymentService::class, Payment\PaymentService::class);
+        $this->app->singleton(Payment\PaymentServiceInterface::class, function() {
+            return new class implements Payment\PaymentServiceInterface {
                 // By default, all the payment items are editable.
                 public function isEditable(Model $_): bool
                 {

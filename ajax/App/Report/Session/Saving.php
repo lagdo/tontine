@@ -3,7 +3,7 @@
 namespace Ajax\App\Report\Session;
 
 use Ajax\Component;
-use Siak\Tontine\Service\Meeting\FundService;
+use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\Report\MemberService;
 use Siak\Tontine\Service\Report\SessionService;
 use Stringable;

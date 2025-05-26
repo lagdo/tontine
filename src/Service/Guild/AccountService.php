@@ -4,6 +4,7 @@ namespace Siak\Tontine\Service\Guild;
 
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Category;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Service\TenantService;
 
 class AccountService
@@ -17,14 +18,14 @@ class AccountService
     /**
      * Get a paginated list of categories.
      *
+     * @param Guild $guild
      * @param int $page
      *
      * @return Collection
      */
-    public function getAccounts(int $page = 0): Collection
+    public function getAccounts(Guild $guild, int $page = 0): Collection
     {
-        return $this->tenantService->guild()
-            ->categories()
+        return $guild->categories()
             ->outflow()
             ->page($page, $this->tenantService->getLimit())
             ->get();
@@ -33,35 +34,39 @@ class AccountService
     /**
      * Get the number of categories.
      *
+     * @param Guild $guild
+     *
      * @return int
      */
-    public function getCategoryCount(): int
+    public function getCategoryCount(Guild $guild): int
     {
-        return $this->tenantService->guild()->categories()->outflow()->count();
+        return $guild->categories()->outflow()->count();
     }
 
     /**
      * Get a single category.
      *
-     * @param int $categoryId    The category id
+     * @param Guild $guild
+     * @param int $categoryId
      *
      * @return Category|null
      */
-    public function getAccount(int $categoryId): ?Category
+    public function getAccount(Guild $guild, int $categoryId): ?Category
     {
-        return $this->tenantService->guild()->categories()->outflow()->find($categoryId);
+        return $guild->categories()->outflow()->find($categoryId);
     }
 
     /**
      * Add new category.
      *
+     * @param Guild $guild
      * @param array $values
      *
      * @return bool
      */
-    public function createAccount(array $values): bool
+    public function createAccount(Guild $guild, array $values): bool
     {
-        $this->tenantService->guild()->categories()->create($values);
+        $guild->categories()->create($values);
         return true;
     }
 

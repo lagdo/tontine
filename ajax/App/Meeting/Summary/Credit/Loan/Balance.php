@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Summary\Credit\Loan;
 
 use Ajax\App\Meeting\Summary\Component;
-use Siak\Tontine\Service\BalanceCalculator;
+use Siak\Tontine\Service\Payment\BalanceCalculator;
 use Stringable;
 
 use function trans;

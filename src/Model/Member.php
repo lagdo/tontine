@@ -2,16 +2,11 @@
 
 namespace Siak\Tontine\Model;
 
-use Database\Factories\MemberFactory;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class Member extends Base
 {
-    use HasFactory;
-
     /**
      * Indicates if the model should be timestamped.
      *
@@ -25,42 +20,31 @@ class Member extends Base
      * @var array
      */
     protected $fillable = [
-        'name',
-        'email',
-        'phone',
-        'address',
-        'city',
-        'registered_at',
-        'birthday',
-        'active',
+        'def_id',
+        'round_id',
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The "booted" method of the model.
      *
-     * @return array<string, string>
+     * @return void
      */
-    protected function casts(): array
+    protected static function booted()
     {
-        return [
-            'registered_at' => 'datetime',
-            'birthday' => 'datetime',
-        ];
+        // Also select fields from the member_defs table.
+        static::addGlobalScope('def', fn(Builder $query) => $query
+            ->addSelect(['members.*', 'd.name'])
+            ->join(DB::raw('member_defs as d'), 'd.id', '=', 'members.def_id'));
     }
 
-    /**
-     * Create a new factory instance for the model.
-     *
-     * @return Factory
-     */
-    protected static function newFactory()
+    public function def()
     {
-        return MemberFactory::new();
+        return $this->belongsTo(MemberDef::class, 'def_id');
     }
 
-    public function guild()
+    public function round()
     {
-        return $this->belongsTo(Guild::class);
+        return $this->belongsTo(Round::class);
     }
 
     public function subscriptions()
@@ -88,9 +72,9 @@ class Member extends Base
         return $this->hasMany(RoundBill::class);
     }
 
-    public function oneoff_bills()
+    public function onetime_bills()
     {
-        return $this->hasMany(OneoffBill::class);
+        return $this->hasMany(OnetimeBill::class);
     }
 
     public function savings()
@@ -105,16 +89,6 @@ class Member extends Base
 
     /**
      * @param  Builder  $query
-     *
-     * @return Builder
-     */
-    public function scopeActive(Builder $query): Builder
-    {
-        return $query->where('active', true);
-    }
-
-    /**
-     * @param  Builder  $query
      * @param  string $search
      *
      * @return Builder
@@ -122,7 +96,8 @@ class Member extends Base
     public function scopeSearch(Builder $query, string $search): Builder
     {
         return $query
-            ->when($search !== '', fn($query) => $query
-                ->where(DB::raw('lower(name)'), 'like', "%{$search}%"));
+            ->when($search !== '', fn($qm) => $qm
+                ->whereHas('def', fn($qd) => $qd
+                    ->where(DB::raw('lower(name)'), 'like', "%{$search}%")));
     }
 }

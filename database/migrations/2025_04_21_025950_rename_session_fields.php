@@ -69,7 +69,7 @@ drop view if exists v_pools
 SQL;
         DB::statement($sql);
 
-$sql = <<<SQL
+        $sql = <<<SQL
 create view v_pools as
     select p.id as pool_id, ss.day_date as start_date, se.day_date as end_date,
         (select count(s.id) from sessions s
@@ -93,7 +93,7 @@ drop view if exists v_pool_session
 SQL;
         DB::statement($sql);
 
-$sql = <<<SQL
+        $sql = <<<SQL
 create view v_pool_session as
     select distinct p.id as pool_id, s.id as session_id
         from pools p
@@ -213,7 +213,7 @@ drop view if exists v_pools
 SQL;
         DB::statement($sql);
 
-$sql = <<<SQL
+        $sql = <<<SQL
 create view v_pools as
     select p.id as pool_id, ss.start_at, se.start_at as end_at,
         (select count(s.id) from sessions s
@@ -237,7 +237,7 @@ drop view if exists v_pool_session
 SQL;
         DB::statement($sql);
 
-$sql = <<<SQL
+        $sql = <<<SQL
 create view v_pool_session as
     select distinct p.id as pool_id, s.id as session_id
         from pools p

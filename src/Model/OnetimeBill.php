@@ -2,7 +2,7 @@
 
 namespace Siak\Tontine\Model;
 
-class OneoffBill extends Base
+class OnetimeBill extends Base
 {
     /**
      * Indicates if the model should be timestamped.

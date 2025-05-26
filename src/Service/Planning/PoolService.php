@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\DataSyncService;
 use Siak\Tontine\Service\TenantService;
 
 class PoolService
@@ -18,10 +17,10 @@ class PoolService
 
     /**
      * @param TenantService $tenantService
-     * @param DataSyncService $dataSyncService
+     * @param PoolSyncService $poolSyncService
      */
     public function __construct(protected TenantService $tenantService,
-        private DataSyncService $dataSyncService)
+        private PoolSyncService $poolSyncService)
     {}
 
     /**
@@ -32,13 +31,11 @@ class PoolService
      */
     public function getQuery(Round $round, ?bool $filter): Builder|Relation
     {
-        return $this->tenantService->guild()->pools()
-            ->when($filter === true, function(Builder $query) use($round) {
-                return $query->whereHas('pools', fn($q) => $q->ofRound($round));
-            })
-            ->when($filter === false, function(Builder $query) use($round) {
-                return $query->whereDoesntHave('pools', fn($q) => $q->ofRound($round));
-            });
+        return $round->guild->pools()
+            ->when($filter === true, fn(Builder $query) => $query
+                ->whereHas('pools', fn($q) => $q->ofRound($round)))
+            ->when($filter === false, fn(Builder $query) => $query
+                ->whereDoesntHave('pools', fn($q) => $q->ofRound($round)));
     }
 
     /**
@@ -74,13 +71,14 @@ class PoolService
     }
 
     /**
+     * @param Round $round
      * @param int $defId
      *
      * @return void
      */
     public function enablePool(Round $round, int $defId): void
     {
-        $def = $this->tenantService->guild()->pools()
+        $def = $round->guild->pools()
             ->withCount([
                 'pools' => fn($query) => $query->ofRound($round),
             ])
@@ -99,13 +97,14 @@ class PoolService
     }
 
     /**
+     * @param Round $round
      * @param int $defId
      *
      * @return void
      */
     public function disablePool(Round $round, int $defId): void
     {
-        $def = $this->tenantService->guild()->pools()
+        $def = $round->guild->pools()
             ->withCount([
                 'pools' => fn($query) => $query->ofRound($round),
             ])
@@ -124,6 +123,7 @@ class PoolService
     /**
      * Get a paginated list of pools.
      *
+     * @param Round $round
      * @param int $page
      *
      * @return Collection
@@ -138,6 +138,8 @@ class PoolService
     /**
      * Get the number of pools.
      *
+     * @param Round $round
+     *
      * @return int
      */
     public function getPoolCount(Round $round): int
@@ -147,6 +149,9 @@ class PoolService
 
     /**
      * Get a pool.
+     *
+     * @param Round $round
+     * @param int $poolId
      *
      * @return Pool|null
      */
@@ -194,7 +199,7 @@ class PoolService
         DB::transaction(function() use($pool, $values) {
             $pool->update($values);
 
-            // $this->dataSyncService->syncPool($pool, true);
+            $this->poolSyncService->sessionsChanged($pool);
         });
     }
 
@@ -223,7 +228,7 @@ class PoolService
                 ->where('session_id', $session->id)
                 ->delete();
 
-            // $this->dataSyncService->syncPool($pool, true);
+            $this->poolSyncService->sessionEnabled($pool, $session);
         });
     }
 
@@ -253,7 +258,7 @@ class PoolService
                     'session_id' => $session->id,
                 ]);
 
-            // $this->dataSyncService->syncPool($pool, true);
+            $this->poolSyncService->sessionDisabled($pool, $session);
         });
     }
 }

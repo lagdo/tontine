@@ -3,12 +3,9 @@
 namespace Siak\Tontine\Service\Planning;
 
 use Siak\Tontine\Model\Pool;
-use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\ReportTrait;
 use stdClass;
 
-use function collect;
 use function compact;
 
 class SummaryService
@@ -16,12 +13,9 @@ class SummaryService
     use ReportTrait;
 
     /**
-     * @param LocaleService $localeService
-     * @param TenantService $tenantService
      * @param PoolService $poolService
      */
-    public function __construct(protected LocaleService $localeService,
-        protected TenantService $tenantService, PoolService $poolService)
+    public function __construct(PoolService $poolService)
     {
         $this->poolService = $poolService;
     }
@@ -54,48 +48,22 @@ class SummaryService
      */
     public function getPayables(Pool $pool): array
     {
-        $sessions = $this->getActiveSessions($pool, ['payables.subscription']);
+        $sessions = $this->getActiveSessions($pool, [
+            'payables.remitment',
+            'payables.subscription',
+        ]);
         $subscriptions = $pool->subscriptions()
+            ->whereHas('payable') // Always true, normally.
             ->with(['payable', 'payable.session', 'member'])
             ->get();
 
         $figures = new stdClass();
         // Expected figures only for pools with fixed deposit amount
-        if($pool->remit_planned /*$pool->deposit_fixed*/)
+        if($pool->remit_planned)
         {
             $figures->expected = $this->getExpectedFigures($pool, $sessions);
         }
 
-        // Set the subscriptions that will be pay at each session.
-        // Pad with 0's when the beneficiaries are not yet set.
-        $sessions->each(function($session) use($figures, $pool) {
-            // Pick the subscriptions ids, and fill with 0's to the max available.
-            $remitmentCount = !$pool->deposit_fixed ? 1 :
-                $figures->expected[$session->id]->remitment->count;
-            $session->beneficiaries = $session->payables
-                ->map(fn($payable) => $payable->subscription_id)
-                ->pad($remitmentCount, 0);
-        });
-
-        // Separate subscriptions that already have a beneficiary assigned from the others.
-        $poolSessionIds = $pool->sessions->pluck('id', 'id');
-        [$beneficiaries, $subscriptions] = $subscriptions
-            ->partition(function($subscription) use($poolSessionIds) {
-                $session = $subscription->payable?->session ?? null;
-                return $session !== null && $poolSessionIds->has($session->id);
-            });
-        $beneficiaries = $beneficiaries->pluck('member.name', 'id');
-        // Do not show the list of subscriptions for pools with auctions
-        if($pool->remit_auction)
-        {
-            $subscriptions = collect([]);
-        }
-        else
-        {
-            $subscriptions = $subscriptions->pluck('member.name', 'id')->sort();
-            $subscriptions->prepend('', 0);
-        }
-
-        return compact('pool', 'sessions', 'subscriptions', 'beneficiaries', 'figures');
+        return compact('pool', 'sessions', 'subscriptions', 'figures');
     }
 }

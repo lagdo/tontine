@@ -35,7 +35,6 @@ class Member extends Component
     protected function before()
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.tontine'));
-        $this->bag('member')->set('search', '');
     }
 
     /**
@@ -54,10 +53,21 @@ class Member extends Component
         $this->cl(MemberPage::class)->page();
     }
 
+    public function toggleFilter()
+    {
+        $filter = $this->bag('guild.member')->get('filter', null);
+        // Switch between null, true and false
+        $filter = $filter === null ? true : ($filter === true ? false : null);
+        $this->bag('guild.member')->set('filter', $filter);
+        $this->bag('guild.member')->set('page', 1);
+
+        $this->cl(MemberPage::class)->page();
+    }
+
     public function search(string $search)
     {
-        $this->bag('member')->set('search', trim($search));
-        $this->bag('member')->set('page', 1);
+        $this->bag('guild.member')->set('search', trim($search));
+        $this->bag('guild.member')->set('page', 1);
 
         $this->cl(MemberPage::class)->page();
     }

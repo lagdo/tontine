@@ -5,11 +5,10 @@ namespace Siak\Tontine\Service\Meeting\Pool;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Siak\Tontine\Model\Auction;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Siak\Tontine\Service\TenantService;
 
 class AuctionService
@@ -31,39 +30,26 @@ class AuctionService
      */
     private function getQuery(Session $session, ?bool $onlyPaid = null): Builder|Relation
     {
-        $sessionId = $session->id;
-        $prevSessions = $this->sessionService->getRoundSessionIds($session, withCurr: false);
-
-        return Auction::when($onlyPaid !== null, function(Builder $query) use($onlyPaid) {
-                return $query->where('paid', $onlyPaid);
-            })
-            ->where(function(Builder $query) use($sessionId, $prevSessions) {
+        return Auction::when($onlyPaid !== null, fn(Builder $qp) =>
+                $qp->where('paid', $onlyPaid))
+            ->where(function(Builder $query) use($session) {
                 // Take all the auctions in the current session
-                $query->whereHas('remitment', function(Builder $query) use($sessionId) {
-                    $query->whereHas('payable', function(Builder $query) use($sessionId) {
-                        $query->where('session_id', $sessionId);
-                    });
-                });
-                if($prevSessions->count() === 0)
-                {
-                    return;
-                }
+                $query->whereHas('remitment', fn(Builder $qr) =>
+                    $qr->whereHas('payable', fn(Builder $qp) =>
+                        $qp->where('session_id', $session->id)));
                 // The auctions in the previous sessions.
-                $query->orWhere(function(Builder $query) use($sessionId, $prevSessions) {
-                    $query->whereHas('remitment', function(Builder $query) use($prevSessions) {
-                        $query->whereHas('payable', function(Builder $query) use($prevSessions) {
-                            $query->whereIn('session_id', $prevSessions);
-                        });
-                    })
-                    ->where(function(Builder $query) use($sessionId) {
+                $query->orWhere(fn(Builder $qa) => $qa
+                    ->whereHas('remitment', fn(Builder $qr) =>
+                        $qr->whereHas('payable', fn(Builder $qp) =>
+                            $qp->whereHas('session', fn($qs) => $qs->precedes($session, true))))
+                    ->where(function(Builder $query) use($session) {
                         // The auctions that are not yet paid.
                         $query->orWhere('paid', false);
                         // The auctions that are paid in the current session.
-                        $query->orWhere(function(Builder $query) use($sessionId) {
-                            $query->where('paid', true)->where('session_id', $sessionId);
-                        });
-                    });
-                });
+                        $query->orWhere(fn(Builder $qs) => $qs
+                            ->where('paid', true)
+                            ->where('session_id', $session->id));
+                    }));
             });
     }
 
@@ -75,7 +61,7 @@ class AuctionService
      *
      * @return int
      */
-    public function getAuctionCount(Session $session, ?bool $onlyPaid = null): int
+    public function getAuctionCount(Session $session, ?bool $onlyPaid): int
     {
         return $this->getQuery($session, $onlyPaid)->count();
     }
@@ -95,9 +81,8 @@ class AuctionService
             ->page($page, $this->tenantService->getLimit())
             ->with(['remitment.payable.session', 'remitment.payable.subscription.member'])
             ->get()
-            ->each(function(Auction $auction) {
-                $auction->member = $auction->remitment->payable->subscription->member;
-            })
+            ->each(fn(Auction $auction) =>
+                $auction->member = $auction->remitment->payable->subscription->member)
             ->sortBy('member.name', SORT_LOCALE_STRING)
             ->values();
     }

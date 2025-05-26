@@ -61,10 +61,15 @@ class SessionValidator extends AbstractValidator
         }
 
         $validated = $validator->validated();
-        if(!$validated['host_id'])
+        // Make sure the host belongs to the same guild
+        $hostId = (int)$validated['host_id'];
+        $validated['host_id'] = null;
+        if($hostId > 0)
         {
-            $validated['host_id'] = null;
+            $validated['host_id'] = $this->tenantService->round()
+                ->members()->find($hostId)?->id ?? null;
         }
+
         return $validated;
     }
 

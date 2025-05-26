@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Meeting\FundService;
+use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\TenantService;
 
 use function tap;
@@ -26,7 +26,7 @@ trait RefundTrait
     private FundService $fundService;
 
     /**
-     * @param Session $session The session
+     * @param Session $session
      * @param Fund|null $fund
      * @param bool|null $onlyPaid
      * @param bool $with
@@ -36,9 +36,10 @@ trait RefundTrait
     private function getDebtsQuery(Session $session, ?Fund $fund,
         ?bool $onlyPaid, bool $with): Builder|Relation
     {
-        return Debt::select(['debts.*', DB::raw('members.name as member')])
+        return Debt::select(['debts.*', DB::raw('member_defs.name as member')])
             ->join('loans', 'debts.loan_id', '=', 'loans.id')
             ->join('members', 'loans.member_id', '=', 'members.id')
+            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
             ->join('sessions', 'loans.session_id', '=', 'sessions.id')
             ->when($fund !== null,
                 fn(Builder $ql) => $ql->where('loans.fund_id', $fund->id))
@@ -161,21 +162,20 @@ trait RefundTrait
     }
 
     /**
+     * @param Session $session
      * @param int $debtId
      *
      * @return Debt|null
      */
-    public function getDebt(int $debtId): ?Debt
+    public function getDebt(Session $session, int $debtId): ?Debt
     {
-        return Debt::whereHas('loan',
-            fn(Builder|Relation $loanQuery) => $loanQuery->whereHas('member',
-                fn(Builder|Relation $memberQuery) => $memberQuery->where('guild_id',
-                    $this->tenantService->guild()->id)))
+        return Debt::whereHas('loan', fn($ql) =>
+                $ql->whereIn('fund_id', $session->funds()->pluck('id')))
             ->find($debtId);
     }
 
     /**
-     * @param Session $session The session
+     * @param Session $session
      * @param Fund|null $fund
      * @param int $debtId
      *

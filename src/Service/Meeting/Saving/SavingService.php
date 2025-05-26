@@ -2,30 +2,29 @@
 
 namespace Siak\Tontine\Service\Meeting\Saving;
 
-use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Saving;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\SearchSanitizer;
+use Closure;
 
 class SavingService
 {
     /**
      * @param LocaleService $localeService
      * @param TenantService $tenantService
-     * @param FundService $fundService
+     * @param SearchSanitizer $searchSanitizer
      */
     public function __construct(private LocaleService $localeService,
-        private TenantService $tenantService, private FundService $fundService,
-        private SearchSanitizer $searchSanitizer)
+        private TenantService $tenantService, private SearchSanitizer $searchSanitizer)
     {}
 
     /**
@@ -45,7 +44,7 @@ class SavingService
      *
      * @return Relation
      */
-    public function getFundQuery(Session $session): Relation
+    private function getFundQuery(Session $session): Relation
     {
         $sqlFrom = "savings s where s.fund_id=funds.id and s.session_id={$session->id}";
         return $session->funds()->real()
@@ -94,67 +93,8 @@ class SavingService
      */
     private function getSavingQuery(Session $session, ?Fund $fund): Builder|Relation
     {
-        return $session->savings()
-            ->when($fund !== null, fn(Builder $query) => $query->where('fund_id', $fund->id));
-    }
-
-    /**
-     * Count the savings for a given session.
-     *
-     * @param Session $session
-     * @param Fund|null $fund
-     *
-     * @return int
-     */
-    public function getSavingCount(Session $session, ?Fund $fund): int
-    {
-        return $this->getSavingQuery($session, $fund)->count();
-    }
-
-    /**
-     * Get the savings sum for a given session.
-     *
-     * @param Session $session
-     * @param Fund|null $fund
-     *
-     * @return int
-     */
-    public function getSavingTotal(Session $session, ?Fund $fund): int
-    {
-        return $this->getSavingQuery($session, $fund)->sum('amount');
-    }
-
-    /**
-     * Get the savings for a given session.
-     *
-     * @param Session $session
-     * @param Fund|null $fund
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getSavings(Session $session, ?Fund $fund, int $page = 0): Collection
-    {
-        return $this->getSavingQuery($session, $fund)
-            ->select(DB::raw('savings.*, members.name as member'))
-            ->join('members', 'members.id', '=', 'savings.member_id')
-            ->with(['fund'])
-            ->page($page, $this->tenantService->getLimit())
-            ->orderBy('members.name')
-            ->get();
-    }
-
-    /**
-     * Get a saving for a given session.
-     *
-     * @param Session $session
-     * @param int $savingId
-     *
-     * @return Saving|null
-     */
-    public function getSaving(Session $session, int $savingId): ?Saving
-    {
-        return $session->savings()->with(['fund'])->find($savingId);
+        return $session->savings()->when($fund !== null,
+            fn(Builder $query) => $query->where('fund_id', $fund->id));
     }
 
     /**
@@ -193,39 +133,6 @@ class SavingService
     }
 
     /**
-     * Create a saving.
-     *
-     * @param Session $session The session
-     * @param Fund $fund
-     * @param Member $member
-     * @param int $amount
-     *
-     * @return void
-     */
-    public function createSaving(Session $session, Fund $fund, Member $member, int $amount): void
-    {
-        $saving = new Saving();
-        $this->persistSaving($session, $fund, $member, $saving, $amount);
-    }
-
-    /**
-     * Update a saving.
-     *
-     * @param Session $session The session
-     * @param Fund $fund
-     * @param Member $member
-     * @param Saving $saving
-     * @param int $amount
-     *
-     * @return void
-     */
-    public function updateSaving(Session $session, Fund $fund, Member $member,
-        Saving $saving, int $amount): void
-    {
-        $this->persistSaving($session, $fund, $member, $saving, $amount);
-    }
-
-    /**
      * Create or update a saving.
      *
      * @param Session $session The session
@@ -244,19 +151,6 @@ class SavingService
         }
 
         $this->persistSaving($session, $fund, $member, $saving, $amount);
-    }
-
-    /**
-     * Delete a saving.
-     *
-     * @param Session $session The session
-     * @param int $savingId
-     *
-     * @return void
-     */
-    public function deleteSaving(Session $session, int $savingId): void
-    {
-        $session->savings()->where('id', $savingId)->delete();
     }
 
     /**
@@ -283,14 +177,12 @@ class SavingService
         string $search, ?bool $filter): Builder|Relation
     {
         $savingsFilter = $this->getMemberSavingsFilter($session, $fund);
-        return $this->tenantService->guild()
-            ->members()
-            ->active()
+        return $session->round->members()
             ->search($this->searchSanitizer->sanitize($search))
-            ->when($filter === true,
-                fn(Builder $query) => $query->whereHas('savings', $savingsFilter))
-            ->when($filter === false,
-                fn(Builder $query) => $query->whereDoesntHave('savings', $savingsFilter));
+            ->when($filter === true, fn(Builder $query) =>
+                $query->whereHas('savings', $savingsFilter))
+            ->when($filter === false, fn(Builder $query) =>
+                $query->whereDoesntHave('savings', $savingsFilter));
     }
 
     /**
@@ -350,13 +242,14 @@ class SavingService
     /**
      * Get a single member.
      *
-     * @param int $id       The member id
+     * @param Round $round
+     * @param int $memberId
      *
      * @return Member|null
      */
-    public function getMember(int $id): ?Member
+    public function getMember(Round $round, int $memberId): ?Member
     {
-        return $this->tenantService->guild()->members()->active()->find($id);
+        return $round->members()->find($memberId);
     }
 
     /**

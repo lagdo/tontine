@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Session\Pool\Deposit;
 
 use Ajax\Component;
-use Siak\Tontine\Service\BalanceCalculator;
+use Siak\Tontine\Service\Payment\BalanceCalculator;
 use Stringable;
 
 /**

@@ -18,7 +18,8 @@ class GuestFunc extends FuncComponent
 
     public function accept(int $inviteId)
     {
-        $this->userService->acceptInvite($inviteId);
+        $user = $this->tenantService->user();
+        $this->userService->acceptInvite($user, $inviteId);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.accepted'));
 
@@ -27,7 +28,8 @@ class GuestFunc extends FuncComponent
 
     public function refuse(int $inviteId)
     {
-        $this->userService->refuseInvite($inviteId);
+        $user = $this->tenantService->user();
+        $this->userService->refuseInvite($user, $inviteId);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.refused'));
 
@@ -36,7 +38,8 @@ class GuestFunc extends FuncComponent
 
     public function delete(int $inviteId)
     {
-        if($this->userService->deleteGuestInvite($inviteId))
+        $guild = $this->tenantService->guild();
+        if($this->userService->deleteGuestInvite($guild, $inviteId))
         {
             // The active tontine invite is deleted. Reload the page.
             $this->response->redirect('/');

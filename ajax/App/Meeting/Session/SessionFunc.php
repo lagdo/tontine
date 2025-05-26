@@ -3,7 +3,7 @@
 namespace Ajax\App\Meeting\Session;
 
 use Ajax\FuncComponent;
-use Siak\Tontine\Service\Meeting\SessionService;
+use Siak\Tontine\Service\Meeting\Session\SessionService;
 
 use function trans;
 
@@ -19,17 +19,11 @@ class SessionFunc extends FuncComponent
     public function __construct(protected SessionService $sessionService)
     {}
 
-    public function resync()
-    {
-        $this->sessionService->resyncSessions();
-
-        $this->alert()->title(trans('common.titles.success'))
-            ->success(trans('tontine.session.messages.resynced'));
-    }
-
     public function open(int $sessionId)
     {
-        if(!($session = $this->sessionService->getSession($sessionId)) || $session->opened)
+        $round = $this->stash()->get('tenant.round');
+        $session = $this->sessionService->getSession($round, $sessionId);
+        if(!$session || $session->opened)
         {
             $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.opened'));
@@ -44,7 +38,9 @@ class SessionFunc extends FuncComponent
 
     public function close(int $sessionId)
     {
-        if(!($session = $this->sessionService->getSession($sessionId)) || !$session->opened)
+        $round = $this->stash()->get('tenant.round');
+        $session = $this->sessionService->getSession($round, $sessionId);
+        if(!$session || !$session->opened)
         {
             $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.not_opened'));
@@ -59,8 +55,10 @@ class SessionFunc extends FuncComponent
 
     public function saveAgenda(string $text)
     {
+        $round = $this->stash()->get('tenant.round');
         $sessionId = $this->bag('meeting')->get('session.id', 0);
-        if(!($session = $this->sessionService->getSession($sessionId)))
+        $session = $this->sessionService->getSession($round, $sessionId);
+        if(!$session)
         {
             $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.not_found'));
@@ -74,8 +72,10 @@ class SessionFunc extends FuncComponent
 
     public function saveReport(string $text)
     {
+        $round = $this->stash()->get('tenant.round');
         $sessionId = $this->bag('meeting')->get('session.id', 0);
-        if(!($session = $this->sessionService->getSession($sessionId)))
+        $session = $this->sessionService->getSession($round, $sessionId);
+        if(!$session)
         {
             $this->alert()->title(trans('common.titles.error'))
                 ->error(trans('tontine.session.errors.not_found'));

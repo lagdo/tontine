@@ -6,7 +6,7 @@ use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
 use Jaxon\Request\TargetInterface;
 use Siak\Tontine\Model\Fund;
-use Siak\Tontine\Service\Meeting\FundService;
+use Siak\Tontine\Service\Meeting\Saving\FundService;
 
 trait FundTrait
 {

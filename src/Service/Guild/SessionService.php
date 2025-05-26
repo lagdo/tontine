@@ -4,24 +4,27 @@ namespace Siak\Tontine\Service\Guild;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\DataSyncService;
-use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Service\Planning\BillSyncService;
+use Siak\Tontine\Service\Planning\FundSyncService;
+use Siak\Tontine\Service\Planning\PoolSyncService;
 use stdClass;
 
-use function intval;
 use function now;
 use function trans;
 
 class SessionService
 {
     /**
-     * @param TenantService $tenantService
-     * @param DataSyncService $dataSyncService
+     * @param BillSyncService $billSyncService
+     * @param PoolSyncService $poolSyncService
+     * @param FundSyncService $fundSyncService
      */
-    public function __construct(protected TenantService $tenantService,
-        private DataSyncService $dataSyncService)
+    public function __construct(private BillSyncService $billSyncService,
+        private PoolSyncService $poolSyncService, private FundSyncService $fundSyncService)
     {}
 
     /**
@@ -35,7 +38,20 @@ class SessionService
             Session::STATUS_PENDING => trans('tontine.session.status.pending'),
             Session::STATUS_OPENED => trans('tontine.session.status.opened'),
             Session::STATUS_CLOSED => trans('tontine.session.status.closed'),
-        ];;
+        ];
+    }
+
+    /**
+     * Get a session.
+     *
+     * @param Guild $guild
+     * @param int $sessionId
+     *
+     * @return Session|null
+     */
+    public function getSession(Guild $guild, int $sessionId): ?Session
+    {
+        return $guild->sessions()->find($sessionId);
     }
 
     /**
@@ -51,9 +67,10 @@ class SessionService
         DB::transaction(function() use($round, $values) {
             /** @var Session */
             $session = $round->sessions()->create($values);
-            $this->dataSyncService->onNewSession($session);
-            // Update the default savings fund
-            $this->dataSyncService->saveDefaultFund($round);
+
+            $this->billSyncService->sessionsCreated($round, [$session]);
+            $this->poolSyncService->sessionsCreated($round, [$session]);
+            $this->fundSyncService->sessionCreated($round, [$session]);
         });
         return true;
     }
@@ -70,37 +87,88 @@ class SessionService
     {
         DB::transaction(function() use($round, $values) {
             $sessions = $round->sessions()->createMany($values);
-            foreach($sessions as $session)
-            {
-                $this->dataSyncService->onNewSession($session);
-            }
-            // Update the default savings fund
-            $this->dataSyncService->saveDefaultFund($round);
+
+            $this->billSyncService->sessionsCreated($round, $sessions);
+            $this->poolSyncService->sessionsCreated($round, $sessions);
+            $this->fundSyncService->sessionCreated($round, $sessions);
         });
         return true;
     }
 
     /**
-     * Update a session.
+     * Find the prev session.
      *
+     * @param Guild $guild
+     * @param Session $session
+     *
+     * @return Session|null
+     */
+    private function getPrevSession(Guild $guild, Session $session): ?Session
+    {
+        return $guild->sessions()
+            ->where('day_date', '<', $session->day_date)
+            ->orderBy('day_date', 'desc')
+            ->first();
+    }
+
+    /**
+     * Find the next session.
+     *
+     * @param Guild $guild
+     * @param Session $session
+     *
+     * @return Session|null
+     */
+    private function getNextSession(Guild $guild, Session $session): ?Session
+    {
+        return $guild->sessions()
+            ->where('day_date', '>', $session->day_date)
+            ->orderBy('day_date', 'asc')
+            ->first();
+    }
+
+    /**
+     * Called before a session is updated
+     *
+     * @param Guild $guild
      * @param Session $session
      * @param array $values
      *
-     * @return bool
+     * @return void
      */
-    public function updateSession(Session $session, array $values): bool
+    private function chechSessionDates(Guild $guild, Session $session, array $values): void
     {
-        $guild = $this->tenantService->guild();
-        $this->dataSyncService->onUpdateSession($guild, $session, $values);
-
-        // Make sure the host belongs to the same guild
-        $hostId = intval($values['host_id']);
-        $values['host_id'] = null;
-        if($hostId > 0)
+        // Check that the sessions date sorting is not modified.
+        $date = Carbon::createFromFormat('Y-m-d', $values['day_date']);
+        $prevSession = $this->getPrevSession($guild, $session);
+        $nextSession = $this->getNextSession($guild, $session);
+        if(($prevSession !== null && $prevSession->day_date->gte($date)) ||
+            ($nextSession !== null && $nextSession->day_date->lte($date)))
         {
-            $values['host_id'] = $guild->members()->find($hostId)?->id ?? null;
+            throw new MessageException(trans('tontine.errors.action') .
+                '<br/>' . trans('tontine.session.errors.sorting'));
         }
-        return $session->update($values);
+    }
+
+    /**
+     * Update a session.
+     *
+     * @param Guild $guild
+     * @param Session $session
+     * @param array $values
+     *
+     * @return void
+     */
+    public function updateSession(Guild $guild, Session $session, array $values): void
+    {
+        $this->chechSessionDates($guild, $session, $values);
+
+        DB::transaction(function() use($session, $values) {
+            $session->update($values);
+
+            // Not necessary
+            // $this->fundSyncService->sessionUpdated($session->round);
+        });
     }
 
     /**
@@ -126,24 +194,11 @@ class SessionService
     public function deleteSession(Session $session)
     {
         DB::transaction(function() use($session) {
-            $this->dataSyncService->onDeleteSession($session);
-            $round = $session->round;
-            $sessionCount = $round->sessions()->count();
-
-            $fundDef = $round->guild->default_fund;
-            $defaultFund = $fundDef->funds()->where('round_id', $round->id)->first();
-            // Delete the default fund if it is related to the session
-            if($defaultFund->start_sid === $session->id || $defaultFund->end_sid === $session->id)
-            {
-                $defaultFund->delete();
-            }
+            $this->billSyncService->sessionDeleted($session);
+            $this->poolSyncService->sessionDeleted($session);
+            $this->fundSyncService->sessionDeleted($session);
 
             $session->delete();
-            // Update the default savings fund, only if this wasn't the last session in the round.
-            if($sessionCount > 1)
-            {
-                $this->dataSyncService->saveDefaultFund($round);
-            }
         });
     }
 

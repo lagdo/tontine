@@ -108,6 +108,16 @@ class Round extends Base
         return $this->hasMany(Fund::class);
     }
 
+    public function charges()
+    {
+        return $this->hasMany(Charge::class);
+    }
+
+    public function members()
+    {
+        return $this->hasMany(Member::class);
+    }
+
     public function pools()
     {
         return $this->hasMany(Pool::class);

@@ -2,14 +2,17 @@
 
 namespace Siak\Tontine\Service\Meeting\Cash;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Category;
 use Siak\Tontine\Model\Charge;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Outflow;
 use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
-use Siak\Tontine\Service\BalanceCalculator;
+use Siak\Tontine\Service\Payment\BalanceCalculator;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 
@@ -30,79 +33,104 @@ class OutflowService
     /**
      * Get a list of members for the dropdown select component.
      *
+     * @param Round $round
+     *
      * @return Collection
      */
-    public function getMembers(): Collection
+    public function getMembers(Round $round): Collection
     {
-        return $this->tenantService->guild()->members()->active()
-            ->orderBy('name', 'asc')->pluck('name', 'id')->prepend('', 0);
+        return $round->members()
+            ->orderBy('name', 'asc')
+            ->get()
+            ->pluck('name', 'id')
+            ->prepend('', 0);
     }
 
     /**
      * Find a member.
      *
+     * @param Round $round
      * @param int $memberId
      *
      * @return Member|null
      */
-    public function getMember(int $memberId): ?Member
+    public function getMember(Round $round, int $memberId): ?Member
     {
-        return $this->tenantService->guild()->members()->active()->find($memberId);
+        return $round->members()->find($memberId);
     }
 
     /**
      * Get a list of charges for the dropdown select component.
      *
+     * @param Round $round
+     *
      * @return Collection
      */
-    public function getCharges(): Collection
+    public function getCharges(Round $round): Collection
     {
-        return $this->tenantService->guild()->charges()->fee()->active()
-            ->orderBy('name', 'asc')->pluck('name', 'id')->prepend('', 0);
+        return $round->charges()->fee()
+            ->orderBy('name', 'asc')
+            ->get()
+            ->pluck('name', 'id')
+            ->prepend('', 0);
     }
 
     /**
      * Find a charge.
      *
+     * @param Round $round
      * @param int $chargeId
      *
      * @return Charge|null
      */
-    public function getCharge(int $chargeId): ?Charge
+    public function getCharge(Round $round, int $chargeId): ?Charge
     {
-        return $this->tenantService->guild()->charges()->fee()->find($chargeId);
+        return $round->charges()->fee()->find($chargeId);
     }
 
     /**
      * Get the outflow categories for the dropdown select component.
      *
+     * @param Guild $guild
+     *
+     * @return Builder
+     */
+    private function getAccountQuery(Guild $guild): Builder
+    {
+        return Category::outflow()->active()
+            ->where(fn($query) => $query->global()->orWhere('guild_id', $guild->id));
+    }
+
+    /**
+     * Get the outflow categories for the dropdown select component.
+     *
+     * @param Guild $guild
+     *
      * @return Collection
      */
-    public function getAccounts(): Collection
+    public function getAccounts(Guild $guild): Collection
     {
         // It is important to call get() before pluck() so the name field is translated.
-        $globalCategories = Category::outflow()->get();
+        $categories = $this->getAccountQuery($guild)->orderBy('id')->get();
         // We need to move the "other" category to the end of the list.
         // getAttributes()['name'] returns the name field, without calling the getter.
-        [$otherCategory, $globalCategories] = $globalCategories->partition(fn($category) =>
-            $category->getAttributes()['name'] === 'other');
+        [$otherCategory, $categories] = $categories
+            ->partition(fn($category) => $category->is_other);
 
-        $guildCategories = $this->tenantService->guild()->categories()->outflow()
-            ->active()->get();
-        return $globalCategories->concat($guildCategories)->concat($otherCategory)
-            ->pluck('name', 'id');
+        return $categories->concat($otherCategory)->pluck('name', 'id');
     }
 
     /**
      * Find a cash outflow category.
      *
+     * @param Guild $guild
      * @param int $categoryId
      *
      * @return Category|null
      */
-    public function getAccount(int $categoryId): ?Category
+    public function getAccount(Guild $guild, int $categoryId): ?Category
     {
-        return Category::outflow()->find($categoryId);
+        return $this->getAccountQuery($guild)->find($categoryId);
     }
 
     /**
@@ -115,19 +143,6 @@ class OutflowService
     public function getAmountAvailable(Session $session): int
     {
         return $this->balanceCalculator->getTotalBalance($session);
-    }
-
-    /**
-     * Get the outflows.
-     *
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getOutflows(int $page = 0): Collection
-    {
-        return Outflow::with(['member', 'charge', 'category', 'session'])
-            ->page($page, $this->tenantService->getLimit())->get();
     }
 
     /**
@@ -174,16 +189,17 @@ class OutflowService
     /**
      * Create a cash outflow.
      *
+     * @param Guild $guild
      * @param Session $session The session
      * @param array $values
      *
      * @return void
      */
-    public function createOutflow(Session $session, array $values): void
+    public function createOutflow(Guild $guild, Session $session, array $values): void
     {
-        $member = $this->getMember($values['member']);
-        $charge = $this->getCharge($values['charge']);
-        $category = $this->getAccount($values['category']);
+        $member = $this->getMember($session->round, $values['member']);
+        $charge = $this->getCharge($session->round, $values['charge']);
+        $category = $this->getAccount($guild, $values['category']);
         if(!$category)
         {
             throw new MessageException(trans('meeting.category.errors.not_found'));
@@ -213,17 +229,18 @@ class OutflowService
     /**
      * Update a cash outflow.
      *
+     * @param Guild $guild
      * @param Session $session The session
      * @param int $outflowId
      * @param array $values
      *
      * @return void
      */
-    public function updateOutflow(Session $session, int $outflowId, array $values): void
+    public function updateOutflow(Guild $guild, Session $session, int $outflowId, array $values): void
     {
-        $member = $this->getMember($values['member']);
-        $charge = $this->getCharge($values['charge']);
-        $category = $this->getAccount($values['category']);
+        $member = $this->getMember($session->round, $values['member']);
+        $charge = $this->getCharge($session->round, $values['charge']);
+        $category = $this->getAccount($guild, $values['category']);
         if(!$category)
         {
             throw new MessageException(trans('meeting.category.errors.not_found'));

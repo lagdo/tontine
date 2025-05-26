@@ -41,7 +41,7 @@ class Finance extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.planning.home', [
+        return $this->renderView('pages.planning.finance', [
             'guild' => $this->tenantService->guild(),
         ]);
     }
