@@ -31,14 +31,13 @@ class Payable extends Component
      */
     public function html(): Stringable
     {
-        $member = $this->stash()->get('payable.member');
         $session = $this->stash()->get('payable.session');
-        [$receivables, $bills, $debts] = $this->paymentService
-            ->getPayables($member, $session);
-        $this->stash()->set('payable.data', [$member, $session, $receivables, $bills, $debts]);
+        $member = $this->stash()->get('payable.member');
+        // Get receivables, bills and debts.
+        $payables = $this->paymentService->getPayables($session, $member);
+        $this->stash()->set('payable.data', $payables);
 
-        return $this->renderView('pages.meeting.payment.payables',
-            compact('member', 'session', 'receivables', 'debts', 'bills'));
+        return $this->renderView('pages.meeting.payment.payables', $payables);
     }
 
     /**
@@ -49,8 +48,8 @@ class Payable extends Component
         $this->response->js('Tontine')->makeTableResponsive('payment-payables-home');
         $this->response->js('Tontine')->showSmScreen('payment-payables-home', 'payment-sm-screens');
 
-        [$member, $session, $receivables, $bills, $debts] = $this->stash()->get('payable.data');
-        OnPagePaymentPayables::dispatch($member, $session, $receivables, $bills, $debts);
+        $payables = $this->stash()->get('payable.data');
+        OnPagePaymentPayables::dispatch($payables);
     }
 
     public function show(int $memberId, int $sessionId)

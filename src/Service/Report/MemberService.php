@@ -118,6 +118,7 @@ class MemberService
      */
     public function getBills(Session $session, ?Member $member = null): Collection
     {
+        $memberCallback = fn($qm) => $qm->where('member_id', $member->id);
         return $this->sortByMemberName(Bill::with(['settlement',
                 'libre_bill.session', 'libre_bill.member', 'round_bill.member',
                 'onetime_bill.member', 'session_bill.member', 'session_bill.session'])
@@ -130,28 +131,24 @@ class MemberService
             ->where(fn($query) => $query
                 // Onetime bills.
                 ->orWhereHas('onetime_bill', fn(Builder $qb) =>
-                    $qb->when($member !== null, fn($qm) =>
-                            $qm->where('member_id', $member->id))
+                    $qb->when($member !== null, $memberCallback)
                         ->when($member === null, fn($qw) =>
                             $qw->whereHas('member', fn($qm) =>
                                 $qm->where('round_id', $session->round_id))))
                 // Round bills.
                 ->orWhereHas('round_bill', fn(Builder $qb) =>
                     $qb->where('round_id', $session->round_id)
-                        ->when($member !== null, fn($qm) =>
-                            $qm->where('member_id', $member->id)))
+                        ->when($member !== null, $memberCallback))
                 // Session bills.
                 ->orWhereHas('session_bill', fn(Builder $qb) =>
                     $qb->where('session_id', $session->id)
-                        ->when($member !== null, fn($qm) =>
-                            $qm->where('member_id', $member->id)))
+                        ->when($member !== null, $memberCallback))
                 // Libre bills, all up to this session.
                 ->orWhereHas('libre_bill', fn(Builder $qb) =>
                     $qb->whereHas('session', fn($qs) =>
                             $qs->where('round_id', $session->round_id)
                                 ->where('day_date', '<=', $session->day_date))
-                        ->when($member !== null, fn($qm) =>
-                            $qm->where('member_id', $member->id)))
+                        ->when($member !== null, $memberCallback))
             )
             ->get()
             ->each(function($bill) {

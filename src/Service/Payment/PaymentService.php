@@ -16,17 +16,19 @@ class PaymentService
     {}
 
     /**
-     * @param Member $member
      * @param Session $session
+     * @param Member $member
      *
      * @return array<Collection>
      */
-    public function getPayables(Member $member, Session $session): array
+    public function getPayables(Session $session, Member $member): array
     {
-        $receivables = $this->memberService->getReceivables($session, $member);
-        $debts = $this->memberService->getDebts($session, $member);
-        $bills = $this->memberService->getBills($session, $member);
-
-        return [$receivables, $bills, $debts];
+        return [
+            'session' => $session,
+            'member' => $member,
+            'receivables' => $this->memberService->getReceivables($session, $member),
+            'bills' => $this->memberService->getBills($session, $member),
+            'debts' => $this->memberService->getDebts($session, $member),
+        ];
     }
 }
