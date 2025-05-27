@@ -16,6 +16,7 @@
         "jaxon-php/jaxon-core": "dev-main",
         "jaxon-php/jaxon-dialogs": "dev-main",
         "jaxon-php/jaxon-laravel": "dev-main",
+        "lagdo/laravel-facades": "^1.0",
         "laravel/fortify": "^1.25",
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.0",

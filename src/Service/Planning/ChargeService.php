@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Lagdo\Facades\Logger;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\ChargeDef;
 use Siak\Tontine\Model\Round;
@@ -133,7 +133,7 @@ class ChargeService
         }
         catch(Exception $e)
         {
-            Log::error('Error while disabling a charge.', [
+            Logger::error('Error while disabling a charge.', [
                 'message' => $e->getMessage(),
             ]);
             throw new MessageException(trans('tontine.charge.errors.cannot_remove'));

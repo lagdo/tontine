@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8d05ab404d6e81f3959b6a76d31d720e",
+    "content-hash": "1222031870ce04d59c2f9a214f6f4d19",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -1857,6 +1857,117 @@
                 "source": "https://github.com/jaxon-php/jaxon-utils"
             },
             "time": "2025-05-25T08:40:47+00:00"
+        },
+        {
+            "name": "lagdo/facades",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lagdo/facades.git",
+                "reference": "d647c392d5c2395ec7cfcbff4b78414cabcbb6c1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lagdo/facades/zipball/d647c392d5c2395ec7cfcbff4b78414cabcbb6c1",
+                "reference": "d647c392d5c2395ec7cfcbff4b78414cabcbb6c1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.0",
+                "psr/container": ">=1.0.0 <3.0.0"
+            },
+            "require-dev": {
+                "league/container": "^5.0",
+                "php-coveralls/php-coveralls": "^2.4",
+                "phpunit/phpcov": "^8.2",
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Lagdo\\Facades\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Thierry Feuzeu"
+                }
+            ],
+            "description": "Base classes to implement service facades.",
+            "homepage": "https://github.com/lagdo/facades",
+            "keywords": [
+                "Service Facades",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/lagdo/facades/issues",
+                "source": "https://github.com/lagdo/facades"
+            },
+            "time": "2025-03-31T13:34:31+00:00"
+        },
+        {
+            "name": "lagdo/laravel-facades",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lagdo/laravel-facades.git",
+                "reference": "9d19b7717a6fa54c461dc86dc0fa8d86365da805"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lagdo/laravel-facades/zipball/9d19b7717a6fa54c461dc86dc0fa8d86365da805",
+                "reference": "9d19b7717a6fa54c461dc86dc0fa8d86365da805",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "7.*|8.*|9.*|10.*|11.*|12.*",
+                "lagdo/facades": "^1.0"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.4",
+                "phpunit/phpcov": "^8.2",
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Lagdo\\Laravel\\Facades\\FacadesServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Lagdo\\Laravel\\Facades\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Thierry Feuzeu"
+                }
+            ],
+            "description": "Call Laravel services using facades.",
+            "homepage": "https://github.com/lagdo/laravel-facades",
+            "keywords": [
+                "facades",
+                "framework",
+                "laravel",
+                "php",
+                "services"
+            ],
+            "support": {
+                "issues": "https://github.com/lagdo/laravel-facades/issues",
+                "source": "https://github.com/lagdo/laravel-facades"
+            },
+            "time": "2025-03-31T19:48:08+00:00"
         },
         {
             "name": "laravel/fortify",
