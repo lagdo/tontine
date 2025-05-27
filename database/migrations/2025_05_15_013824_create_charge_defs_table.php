@@ -28,6 +28,14 @@ return new class extends Migration
             DB::statement("select setval('charges_id_seq', (select MAX(id) FROM charges))");
         }
 
+        // Delete the one time bills in guilds with no round created.
+        $deleteQuery = <<<SQL
+delete from oneoff_bills ob where not exists
+    (select r.id from rounds r where r.guild_id =
+        (select cd.guild_id from charges cd where cd.id = ob.charge_id))
+SQL;
+        DB::statement($deleteQuery);
+
         // Fill the charge_defs table
         $insertQuery = <<<SQL
 insert into charge_defs(id,name,type,period,amount,lendable,active,guild_id)
