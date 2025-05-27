@@ -63,14 +63,14 @@ class BillSyncService
                 ->orWhere(fn($qwb) => $qwb
                     ->whereIn('charge_id', $charges->pluck('id'))
                     ->whereIn('member_id', $members->pluck('id')))
-                // Take the bills already paid, included in other rounds.
+                // Take the onetime bills already paid, including in other rounds.
                 ->orWhere(fn($qwd) => $qwd
                     ->whereHas('charge', fn($qc) =>
-                        $qc->whereIn('def_id', $charges->pluck('def_id')))
+                        $qc->once()
+                            ->whereIn('def_id', $charges->pluck('def_id')))
                     ->whereHas('member', fn($qm) =>
                         $qm->whereIn('def_id', $members->pluck('def_id')))
-                    ->whereHas('bill', fn($qb) =>
-                        $qb->whereHas('settlement')))
+                    ->whereHas('bill', fn($qb) => $qb->whereHas('settlement')))
             )
             ->join('charges', 'charges.id', '=', 'onetime_bills.charge_id')
             ->join('members', 'members.id', '=', 'onetime_bills.member_id')

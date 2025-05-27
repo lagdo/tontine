@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Charge;
 
-use Siak\Tontine\Model\ChargeDef as ChargeModel;
+use Siak\Tontine\Model\ChargeDef as ChargeDefModel;
 
 use function trans;
 
@@ -32,17 +32,17 @@ trait ChargeTrait
         {
             // All possible values
             return [
-                ChargeModel::TYPE_FEE => trans('tontine.charge.types.fee'),
-                ChargeModel::TYPE_FINE => trans('tontine.charge.types.fine'),
+                ChargeDefModel::TYPE_FEE => trans('tontine.charge.types.fee'),
+                ChargeDefModel::TYPE_FINE => trans('tontine.charge.types.fine'),
             ];
         }
         return $group === self::$GROUP_FIXED ? [
             // Values for fixed charges
-            ChargeModel::TYPE_FEE => trans('tontine.charge.types.fee'),
+            ChargeDefModel::TYPE_FEE => trans('tontine.charge.types.fee'),
         ] : [
             // Values for variable charges
-            ChargeModel::TYPE_FEE => trans('tontine.charge.types.fee'),
-            ChargeModel::TYPE_FINE => trans('tontine.charge.types.fine'),
+            ChargeDefModel::TYPE_FEE => trans('tontine.charge.types.fee'),
+            ChargeDefModel::TYPE_FINE => trans('tontine.charge.types.fine'),
         ];
     }
 
@@ -52,20 +52,20 @@ trait ChargeTrait
         {
             // All possible values
             return [
-                ChargeModel::PERIOD_NONE => trans('tontine.charge.periods.none'),
-                ChargeModel::PERIOD_ONCE => trans('tontine.charge.periods.unique'),
-                ChargeModel::PERIOD_ROUND => trans('tontine.charge.periods.round'),
-                ChargeModel::PERIOD_SESSION => trans('tontine.charge.periods.session'),
+                ChargeDefModel::PERIOD_NONE => trans('tontine.charge.periods.none'),
+                ChargeDefModel::PERIOD_ONCE => trans('tontine.charge.periods.unique'),
+                ChargeDefModel::PERIOD_ROUND => trans('tontine.charge.periods.round'),
+                ChargeDefModel::PERIOD_SESSION => trans('tontine.charge.periods.session'),
             ];
         }
         return $group === self::$GROUP_FIXED ? [
             // Values for fixed charges
-            ChargeModel::PERIOD_ONCE => trans('tontine.charge.periods.unique'),
-            ChargeModel::PERIOD_ROUND => trans('tontine.charge.periods.round'),
-            ChargeModel::PERIOD_SESSION => trans('tontine.charge.periods.session'),
+            ChargeDefModel::PERIOD_ONCE => trans('tontine.charge.periods.unique'),
+            ChargeDefModel::PERIOD_ROUND => trans('tontine.charge.periods.round'),
+            ChargeDefModel::PERIOD_SESSION => trans('tontine.charge.periods.session'),
         ] : [
             // Values for variable charges
-            ChargeModel::PERIOD_NONE => trans('tontine.charge.periods.none'),
+            ChargeDefModel::PERIOD_NONE => trans('tontine.charge.periods.none'),
         ];
     }
 }

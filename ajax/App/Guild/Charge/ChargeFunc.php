@@ -3,7 +3,7 @@
 namespace Ajax\App\Guild\Charge;
 
 use Ajax\FuncComponent;
-use Siak\Tontine\Model\Charge as ChargeModel;
+use Siak\Tontine\Model\ChargeDef as ChargeDefModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Guild\ChargeService;
 use Siak\Tontine\Validation\Guild\ChargeValidator;
@@ -97,11 +97,11 @@ class ChargeFunc extends FuncComponent
         // Set the missing field in each item of the charge array.
         if($group === self::$GROUP_FIXED) // Fixed charge
         {
-            $formValues['type'] = ChargeModel::TYPE_FEE;
+            $formValues['type'] = ChargeDefModel::TYPE_FEE;
         }
         if($group === self::$GROUP_VARIABLE) // Variable charge
         {
-            $formValues['period'] = ChargeModel::PERIOD_NONE;
+            $formValues['period'] = ChargeDefModel::PERIOD_NONE;
             if(empty($formValues['fixed']))
             {
                 $formValues['amount'] = 0;
