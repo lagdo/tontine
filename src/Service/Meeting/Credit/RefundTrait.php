@@ -41,31 +41,26 @@ trait RefundTrait
             ->join('members', 'loans.member_id', '=', 'members.id')
             ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
             ->join('sessions', 'loans.session_id', '=', 'sessions.id')
-            ->when($fund !== null,
-                fn(Builder $ql) => $ql->where('loans.fund_id', $fund->id))
+            ->when($fund !== null, fn(Builder $ql) => $ql->where('loans.fund_id', $fund->id))
             ->whereIn('loans.fund_id', DB::table('v_fund_session')
                 ->select('fund_id')->where('session_id', $session->id))
             ->where('sessions.day_date', '<=', $session->day_date)
-            ->where(function(Builder $query) use($session) {
+            ->where(fn(Builder $query) => $query
                 // The debts that are not yet refunded.
-                $query->orWhereDoesntHave('refund');
+                ->orWhereDoesntHave('refund')
                 // The debts that are refunded in or after the current session.
-                $query->orWhereHas('refund', fn(Builder $q) => $q->whereHas('session',
-                    fn(Builder $qs) => $qs->where('day_date', '>=', $session->day_date)));
-            })
+                ->orWhereHas('refund', fn(Builder $q) => $q->whereHas('session',
+                    fn(Builder $qs) => $qs->where('day_date', '>=', $session->day_date))))
             ->when($onlyPaid === false, fn(Builder $q) => $q->whereDoesntHave('refund'))
             ->when($onlyPaid === true, fn(Builder $q) => $q->whereHas('refund'))
-            ->when($with, function(Builder $query) use($session) {
-                $query
-                    ->with([
-                        'loan.session',
-                        'refund.session',
-                        'partial_refunds.session',
-                        'partial_refund' => fn($q) => $q->where('session_id', $session->id),
-                        'loan.fund.sessions' => fn($q) => $q->select(['id', 'day_date']),
-                        'loan.fund.interest',
-                    ]);
-            });
+            ->when($with, fn(Builder $query) => $query->with([
+                'loan.session',
+                'refund.session',
+                'partial_refunds.session',
+                'partial_refund' => fn($q) => $q->where('session_id', $session->id),
+                'loan.fund.sessions' => fn($q) => $q->select(['id', 'day_date']),
+                'loan.fund.interest',
+            ]));
     }
 
     /**

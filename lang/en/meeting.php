@@ -239,7 +239,7 @@ return [
             'loan' => ":member: :amount",
             'debt' => ":session: :type",
             'total' => "Total: :amount",
-            'before' => "Be. session: :amount",
+            'before' => "Bf. session: :amount",
             'after' => "Af. session: :amount",
         ],
         'questions' => [
