@@ -91,6 +91,11 @@ class MenuFunc extends FuncComponent
         {
             return;
         }
+        if($guild->id === $this->tenantService->guild()->id)
+        {
+            $this->modal()->hide();
+            return; // No change.
+        }
 
         $this->setCurrentGuild($guild);
 

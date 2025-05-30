@@ -6,6 +6,7 @@ use Illuminate\View\View;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\LocaleService;
+use Siak\Tontine\Service\TenantService;
 
 use function auth;
 use function view;
@@ -16,11 +17,15 @@ class IndexController extends Controller
      * Show the home page.
      *
      * @param GuildService $guildService
+     * @param TenantService $tenantService
      *
      * @return View
      */
-    public function index(GuildService $guildService): View
+    public function index(GuildService $guildService, TenantService $tenantService): View
     {
+        // Do not select a round on the home page.
+        $tenantService->resetRound();
+
         $user = auth()->user();
         view()->share([
             'user' => $user,
