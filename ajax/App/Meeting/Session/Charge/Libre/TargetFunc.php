@@ -6,7 +6,7 @@ use Ajax\App\Meeting\Session\Charge\FuncComponent;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
 use Siak\Tontine\Validation\Meeting\TargetValidator;
 
-use function Jaxon\pm;
+use function je;
 use function trans;
 
 /**
@@ -60,7 +60,7 @@ class TargetFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(pm()->form('target-form')),
+            'click' => $this->rq()->create(je('target-form')->rd()->form()),
         ]];
 
         $this->modal()->show($title, $content, $buttons);
@@ -119,7 +119,7 @@ class TargetFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update(pm()->form('target-form')),
+            'click' => $this->rq()->update(je('target-form')->rd()->form()),
         ]];
 
         $this->modal()->show($title, $content, $buttons);

@@ -75,7 +75,7 @@ class Beneficiary extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')
+        $this->response->jo('Tontine')
             ->makeTableResponsive('content-subscription-beneficiaries');
     }
 

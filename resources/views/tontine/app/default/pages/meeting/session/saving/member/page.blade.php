@@ -2,7 +2,7 @@
   $rqMemberPage = rq(Ajax\App\Meeting\Session\Saving\MemberPage::class);
   $rqAmount = rq(Ajax\App\Meeting\Session\Saving\Amount::class);
 @endphp
-                  <div class="table-responsive" id="content-session-saving-members" @jxnTarget()>
+                  <div class="table-responsive" id="content-session-saving-members">
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

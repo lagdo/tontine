@@ -2,11 +2,11 @@
   $payableId = jq()->parent()->attr('data-payable-id')->toInt();
   $rqPayableFunc = rq(Ajax\App\Meeting\Session\Pool\Remitment\PayableFunc::class);
 @endphp
-                  <div class="table-responsive" id="content-session-pool-remitments" @jxnTarget()>
-                    <div @jxnEvent(['.btn-add-remitment', 'click'], $rqPayableFunc->addRemitment($payableId))></div>
-                    <div @jxnEvent(['.btn-save-remitment', 'click'], $rqPayableFunc->createRemitment($payableId))></div>
-                    <div @jxnEvent(['.btn-del-remitment', 'click'], $rqPayableFunc->deleteRemitment($payableId)
-                      ->confirm(__('meeting.remitment.questions.delete')))></div>
+                  <div class="table-responsive" id="content-session-pool-remitments" @jxnEvent([
+                    ['.btn-add-remitment', 'click', $rqPayableFunc->addRemitment($payableId)],
+                    ['.btn-save-remitment', 'click', $rqPayableFunc->createRemitment($payableId)],
+                    ['.btn-del-remitment', 'click', $rqPayableFunc->deleteRemitment($payableId)
+                      ->confirm(__('meeting.remitment.questions.delete'))]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

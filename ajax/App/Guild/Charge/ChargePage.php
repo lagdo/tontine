@@ -59,6 +59,6 @@ class ChargePage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-charge-page');
+        $this->response->jo('Tontine')->makeTableResponsive('content-charge-page');
     }
 }

@@ -5,20 +5,20 @@
   $rqSummary = rq(Ajax\App\Meeting\Summary\Summary::class);
   $sessionId = jq()->parent()->attr('data-session-id')->toInt();
 @endphp
-              <div class="table-responsive" id="content-sessions-page" @jxnTarget()>
-                <div @jxnEvent(['.btn-session-open', 'click'], $rqSessionFunc->open($sessionId)
+              <div class="table-responsive" id="content-sessions-page" @jxnEvent([
+                ['.btn-session-open', 'click', $rqSessionFunc->open($sessionId)
                   ->confirm(__('tontine.session.questions.open') . '<br/>' .
-                    __('tontine.session.questions.warning')))></div>
-                <div @jxnEvent(['.btn-session-close', 'click'], $rqSessionFunc->close($sessionId)
-                  ->confirm(__('tontine.session.questions.close')))></div>
-                <div @jxnEvent(['.btn-session-summary', 'click'], $rqSummary->home($sessionId))></div>
-                <div @jxnEvent(['.btn-session-pools', 'click'], $rqSectionFunc->pools($sessionId))></div>
-                <div @jxnEvent(['.btn-session-charges', 'click'], $rqSectionFunc->charges($sessionId))></div>
-                <div @jxnEvent(['.btn-session-savings', 'click'], $rqSectionFunc->savings($sessionId))></div>
-                <div @jxnEvent(['.btn-session-refunds', 'click'], $rqSectionFunc->refunds($sessionId))></div>
-                <div @jxnEvent(['.btn-session-profits', 'click'], $rqSectionFunc->profits($sessionId))></div>
-                <div @jxnEvent(['.btn-session-outflows', 'click'], $rqSectionFunc->outflows($sessionId))></div>
-                <div @jxnEvent(['.btn-session-reports', 'click'], $rqSectionFunc->reports($sessionId))></div>
+                    __('tontine.session.questions.warning'))],
+                ['.btn-session-close', 'click', $rqSessionFunc->close($sessionId)
+                  ->confirm(__('tontine.session.questions.close'))],
+                ['.btn-session-summary', 'click', $rqSummary->home($sessionId)],
+                ['.btn-session-pools', 'click', $rqSectionFunc->pools($sessionId)],
+                ['.btn-session-charges', 'click', $rqSectionFunc->charges($sessionId)],
+                ['.btn-session-savings', 'click', $rqSectionFunc->savings($sessionId)],
+                ['.btn-session-refunds', 'click', $rqSectionFunc->refunds($sessionId)],
+                ['.btn-session-profits', 'click', $rqSectionFunc->profits($sessionId)],
+                ['.btn-session-outflows', 'click', $rqSectionFunc->outflows($sessionId)],
+                ['.btn-session-reports', 'click', $rqSectionFunc->reports($sessionId)]])>
 
                 <table class="table table-bordered responsive">
                   <thead>

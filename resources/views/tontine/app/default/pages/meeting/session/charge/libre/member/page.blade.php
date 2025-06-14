@@ -1,14 +1,14 @@
 @php
   $memberId = jq()->parent()->attr('data-member-id')->toInt();
-  $paid = pm()->checked('check-fee-libre-paid');
+  $paid = je('check-fee-libre-paid')->rd()->checked();
   $rqMemberFunc = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberFunc::class);
   $rqMemberPage = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberPage::class);
   $rqMemberName = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberName::class);
   $rqAmount = rq(Ajax\App\Meeting\Session\Charge\Libre\Amount::class);
 @endphp
-                  <div class="table-responsive" id="content-session-fee-libre-members" @jxnTarget()>
-                    <div @jxnEvent(['.btn-add-bill', 'click'], $rqMemberFunc->addBill($memberId, $paid))></div>
-                    <div @jxnEvent(['.btn-del-bill', 'click'], $rqMemberFunc->delBill($memberId))></div>
+                  <div class="table-responsive" id="content-session-fee-libre-members" @jxnEvent([
+                    ['.btn-add-bill', 'click', $rqMemberFunc->addBill($memberId, $paid)],
+                    ['.btn-del-bill', 'click', $rqMemberFunc->delBill($memberId)]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

@@ -3,8 +3,8 @@
   $rqSavingPage = rq(Ajax\App\Meeting\Summary\Saving\SavingPage::class);
   $rqMember = rq(Ajax\App\Meeting\Summary\Saving\Member::class);
 @endphp
-                  <div class="table-responsive" id="content-session-funds-page" @jxnTarget()>
-                    <div @jxnEvent(['.btn-fund-savings', 'click'], $rqMember->fund($fundId))></div>
+                  <div class="table-responsive" id="content-session-funds-page" @jxnEvent([
+                    ['.btn-fund-savings', 'click', $rqMember->fund($fundId)]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

@@ -50,6 +50,6 @@ class Round extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-home');
+        $this->response->jo('Tontine')->makeTableResponsive('content-home');
     }
 }

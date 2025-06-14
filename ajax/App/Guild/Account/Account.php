@@ -49,7 +49,7 @@ class Account extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')->setSmScreenHandler('account-sm-screens');
+        $this->response->jo('Tontine')->setSmScreenHandler('account-sm-screens');
 
         $this->cl(Fund::class)->render();
         $this->cl(Outflow::class)->render();

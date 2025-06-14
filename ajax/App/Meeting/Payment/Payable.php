@@ -45,8 +45,8 @@ class Payable extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('payment-payables-home');
-        $this->response->js('Tontine')->showSmScreen('payment-payables-home', 'payment-sm-screens');
+        $this->response->jo('Tontine')->makeTableResponsive('payment-payables-home');
+        $this->response->jo('Tontine')->showSmScreen('payment-payables-home', 'payment-sm-screens');
 
         $payables = $this->stash()->get('payable.data');
         OnPagePaymentPayables::dispatch($payables);

@@ -4,9 +4,9 @@
   $rqMemberFunc = rq(Ajax\App\Meeting\Presence\MemberFunc::class);
   $rqMemberPage = rq(Ajax\App\Meeting\Presence\MemberPage::class);
 @endphp
-                  <div class="table-responsive" id="content-presence-members" @jxnTarget()>
-                    <div @jxnEvent(['.btn-toggle-member-presence', 'click'], $rqMemberFunc->togglePresence($memberId))></div>
-                    <div @jxnEvent(['.btn-show-member-presences', 'click'], $rqPresenceFunc->selectMember($memberId))></div>
+                  <div class="table-responsive" id="content-presence-members" @jxnEvent([
+                    ['.btn-toggle-member-presence', 'click', $rqMemberFunc->togglePresence($memberId)],
+                    ['.btn-show-member-presences', 'click', $rqPresenceFunc->selectMember($memberId)]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

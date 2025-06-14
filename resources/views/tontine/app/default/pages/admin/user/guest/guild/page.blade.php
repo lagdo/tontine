@@ -2,8 +2,8 @@
   $guildId = jq()->parent()->attr('data-guild-id')->toInt();
   $rqMenuFunc = rq(Ajax\Page\MenuFunc::class);
 @endphp
-                  <div class="table-responsive" @jxnTarget()>
-                    <div @jxnEvent(['.btn-guest-guild-choose', 'click'], $rqMenuFunc->saveGuild($guildId))></div>
+                  <div class="table-responsive" @jxnEvent([
+                    ['.btn-guest-guild-choose', 'click', $rqMenuFunc->saveGuild($guildId)]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

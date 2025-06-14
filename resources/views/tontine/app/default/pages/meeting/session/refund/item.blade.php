@@ -34,9 +34,9 @@
                             @if($debt->canPartiallyRefund && $payableAmount > 0) @jxnHtml($rqAmount) @endif
                           </td>
                           <td class="table-item-menu">
-                            <div data-debt-id="{{ $debt->id }}" @jxnTarget()>
-                              <div @jxnEvent(['.btn-add-refund', 'click'], $rqRefundFunc->create($debtId))></div>
-                              <div @jxnEvent(['.btn-del-refund', 'click'], $rqRefundFunc->delete($debtId))></div>
+                            <div data-debt-id="{{ $debt->id }}" @jxnEvent([
+                              ['.btn-add-refund', 'click', $rqRefundFunc->create($debtId)],
+                              ['.btn-del-refund', 'click', $rqRefundFunc->delete($debtId)]])>
 
                               {!! paymentLink($debt->refund, 'refund', !$debt->isEditable) !!}
                             </div>

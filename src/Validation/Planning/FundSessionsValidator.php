@@ -9,7 +9,7 @@ use Siak\Tontine\Validation\AbstractValidator;
 use Siak\Tontine\Validation\ValidationException;
 
 use function array_map;
-use function Jaxon\jaxon;
+use function jaxon;
 
 class FundSessionsValidator extends AbstractValidator
 {

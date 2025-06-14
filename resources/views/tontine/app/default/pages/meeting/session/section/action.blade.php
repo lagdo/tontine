@@ -7,14 +7,14 @@
               </div>
               <div class="col-auto ml-auto">
 @include('tontine::pages.report.session.action.exports', ['sessionId' => $session->id])
-                <div class="btn-group ml-2" role="group" @jxnTarget()>
-                  <div @jxnEvent(['.btn-session-pools', 'click'], $rqSectionFunc->pools())></div>
-                  <div @jxnEvent(['.btn-session-charges', 'click'], $rqSectionFunc->charges())></div>
-                  <div @jxnEvent(['.btn-session-savings', 'click'], $rqSectionFunc->savings())></div>
-                  <div @jxnEvent(['.btn-session-refunds', 'click'], $rqSectionFunc->refunds())></div>
-                  <div @jxnEvent(['.btn-session-profits', 'click'], $rqSectionFunc->profits())></div>
-                  <div @jxnEvent(['.btn-session-outflows', 'click'], $rqSectionFunc->outflows())></div>
-                  <div @jxnEvent(['.btn-session-reports', 'click'], $rqSectionFunc->reports())></div>
+                <div class="btn-group ml-2" role="group" @jxnEvent([
+                  ['.btn-session-pools', 'click', $rqSectionFunc->pools()],
+                  ['.btn-session-charges', 'click', $rqSectionFunc->charges()],
+                  ['.btn-session-savings', 'click', $rqSectionFunc->savings()],
+                  ['.btn-session-refunds', 'click', $rqSectionFunc->refunds()],
+                  ['.btn-session-profits', 'click', $rqSectionFunc->profits()],
+                  ['.btn-session-outflows', 'click', $rqSectionFunc->outflows()],
+                  ['.btn-session-reports', 'click', $rqSectionFunc->reports()]])>
 
 @if($session->opened)
 @php
@@ -48,9 +48,9 @@
 ])
 @endif
                 </div>
-                <div class="btn-group ml-2" role="group" @jxnTarget()>
-                  <div @jxnEvent(['.btn-session-prev', 'click'], $rqSectionFunc->$section($prevSession?->id ?? 0))></div>
-                  <div @jxnEvent(['.btn-session-next', 'click'], $rqSectionFunc->$section($nextSession?->id ?? 0))></div>
+                <div class="btn-group ml-2" role="group" @jxnEvent([
+                  ['.btn-session-prev', 'click', $rqSectionFunc->$section($prevSession?->id ?? 0)],
+                  ['.btn-session-next', 'click', $rqSectionFunc->$section($nextSession?->id ?? 0)]])>
 
 @php
   $menus = [];

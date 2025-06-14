@@ -3,10 +3,10 @@
   $rqSettlementFunc = rq(Ajax\App\Meeting\Session\Charge\Fixed\SettlementFunc::class);
   $rqSettlementPage = rq(Ajax\App\Meeting\Session\Charge\Fixed\SettlementPage::class);
 @endphp
-                  <div class="table-responsive" id="content-session-fee-fixed-bills" @jxnTarget()>
-                    <div @jxnEvent(['.btn-add-settlement', 'click'], $rqSettlementFunc->addSettlement($billId))></div>
-                    <div @jxnEvent(['.btn-del-settlement', 'click'], $rqSettlementFunc->delSettlement($billId))></div>
-                    <div @jxnEvent(['.btn-edit-notes', 'click'], $rqSettlementFunc->editNotes($billId))></div>
+                  <div class="table-responsive" id="content-session-fee-fixed-bills" @jxnEvent([
+                    ['.btn-add-settlement', 'click', $rqSettlementFunc->addSettlement($billId)],
+                    ['.btn-del-settlement', 'click', $rqSettlementFunc->delSettlement($billId)],
+                    ['.btn-edit-notes', 'click', $rqSettlementFunc->editNotes($billId)]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

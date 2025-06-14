@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 use function app;
-use function Jaxon\cl;
+use function cl;
 use function route;
 use function trans;
 

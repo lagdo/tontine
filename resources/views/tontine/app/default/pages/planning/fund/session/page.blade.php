@@ -4,10 +4,10 @@
   $rqSessionPage = rq(Ajax\App\Planning\Fund\SessionPage::class);
   $fundSessionIds = $fund->sessions->pluck('id', 'id');
 @endphp
-                      <div class="table-responsive" id="content-planning-sessions-page" @jxnTarget()>
-                        <div @jxnEvent(['.fund-session-enable', 'click'], $rqSessionFunc->enableSession($sessionId))></div>
-                        <div @jxnEvent(['.fund-session-disable', 'click'], $rqSessionFunc->disableSession($sessionId)
-                          ->confirm(__('tontine.session.questions.disable')))></div>
+                      <div class="table-responsive" id="content-planning-sessions-page" @jxnEvent([
+                        ['.fund-session-enable', 'click', $rqSessionFunc->enableSession($sessionId)],
+                        ['.fund-session-disable', 'click', $rqSessionFunc->disableSession($sessionId)
+                          ->confirm(__('tontine.session.questions.disable'))]])>
 
                         <form id="fund-session-form">
                           <table class="table table-bordered responsive">

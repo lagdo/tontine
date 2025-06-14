@@ -4,10 +4,10 @@
   $rqLoanFunc = rq(Ajax\App\Meeting\Session\Credit\Loan\LoanFunc::class);
   $rqBalance = rq(Ajax\App\Meeting\Session\Credit\Loan\Balance::class);
 @endphp
-                    <div class="table-responsive" id="content-session-loans-page" @jxnTarget()>
-                      <div @jxnEvent(['.btn-loan-edit', 'click'], $rqLoanFunc->edit($loanId))></div>
-                      <div @jxnEvent(['.btn-loan-delete', 'click'], $rqLoanFunc->delete($loanId)
-                        ->confirm(__('meeting.loan.questions.delete')))></div>
+                    <div class="table-responsive" id="content-session-loans-page" @jxnEvent([
+                      ['.btn-loan-edit', 'click', $rqLoanFunc->edit($loanId)],
+                      ['.btn-loan-delete', 'click', $rqLoanFunc->delete($loanId)
+                        ->confirm(__('meeting.loan.questions.delete'))]])>
 
                       <table class="table table-bordered responsive">
                         <thead>

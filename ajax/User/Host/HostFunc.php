@@ -6,7 +6,7 @@ use Ajax\FuncComponent;
 use Siak\Tontine\Service\Guild\UserService;
 use Siak\Tontine\Validation\Guild\GuestInviteValidator;
 
-use function Jaxon\pm;
+use function je;
 
 /**
  * @databag user
@@ -35,7 +35,7 @@ class HostFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(pm()->form('invite-form')),
+            'click' => $this->rq()->create(je('invite-form')->rd()->form()),
         ]];
 
         $this->modal()->hide();

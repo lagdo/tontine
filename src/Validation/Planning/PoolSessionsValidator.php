@@ -8,7 +8,7 @@ use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Validation\AbstractValidator;
 use Siak\Tontine\Validation\ValidationException;
 
-use function Jaxon\jaxon;
+use function jaxon;
 
 class PoolSessionsValidator extends AbstractValidator
 {

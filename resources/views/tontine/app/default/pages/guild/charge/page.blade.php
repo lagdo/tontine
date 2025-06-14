@@ -3,11 +3,11 @@
   $rqChargeFunc = rq(Ajax\App\Guild\Charge\ChargeFunc::class);
   $rqChargePage = rq(Ajax\App\Guild\Charge\ChargePage::class);
 @endphp
-              <div class="table-responsive" id="content-charge-page" @jxnTarget()>
-                <div @jxnEvent(['.btn-charge-edit', 'click'], $rqChargeFunc->edit($chargeId))></div>
-                <div @jxnEvent(['.btn-charge-toggle', 'click'], $rqChargeFunc->toggle($chargeId))></div>
-                <div @jxnEvent(['.btn-charge-delete', 'click'], $rqChargeFunc->delete($chargeId)
-                  ->confirm(__('tontine.charge.questions.delete')))></div>
+              <div class="table-responsive" id="content-charge-page" @jxnEvent([
+                ['.btn-charge-edit', 'click', $rqChargeFunc->edit($chargeId)],
+                ['.btn-charge-toggle', 'click', $rqChargeFunc->toggle($chargeId)],
+                ['.btn-charge-delete', 'click', $rqChargeFunc->delete($chargeId)
+                  ->confirm(__('tontine.charge.questions.delete'))]])>
 
                 <table class="table table-bordered responsive">
                   <thead>

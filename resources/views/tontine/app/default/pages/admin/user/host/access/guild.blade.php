@@ -1,5 +1,5 @@
 @php
-  $formValues = pm()->form('guest-guild-access-form');
+  $formValues = je('guest-guild-access-form')->rd()->form();
   $rqHostAccessFunc = rq(Ajax\User\Host\AccessFunc::class);
 @endphp
                 <div class="section-body">

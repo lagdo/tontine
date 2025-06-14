@@ -3,8 +3,8 @@
   $rqAuctionFunc = rq(Ajax\App\Meeting\Session\Pool\Remitment\AuctionFunc::class);
   $rqAuctionPage = rq(Ajax\App\Meeting\Session\Pool\Remitment\AuctionPage::class);
 @endphp
-                  <div class="table-responsive" id="content-session-auctions-page" @jxnTarget()>
-                    <div @jxnEvent(['.btn-toggle-payment', 'click'], $rqAuctionFunc->togglePayment($auctionId))></div>
+                  <div class="table-responsive" id="content-session-auctions-page" @jxnEvent([
+                    ['.btn-toggle-payment', 'click', $rqAuctionFunc->togglePayment($auctionId)]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

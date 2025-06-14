@@ -1,5 +1,5 @@
 @php
-  $fundId = pm()->select('refunds-fund-id')->toInt();
+  $fundId = je('refunds-fund-id')->rd()->select()->toInt();
   $rqRefund = rq(Ajax\App\Meeting\Summary\Credit\Refund\Refund::class);
   $rqRefundPage = rq(Ajax\App\Meeting\Summary\Credit\Refund\RefundPage::class);
 @endphp

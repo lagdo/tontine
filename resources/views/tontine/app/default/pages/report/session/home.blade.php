@@ -1,6 +1,6 @@
 @php
-  $sessionId = pm()->select('report-select-session')->toInt();
-  $memberId = pm()->select('report-select-member')->toInt();
+  $sessionId = je('report-select-session')->rd()->select()->toInt();
+  $memberId = je('report-select-member')->rd()->select()->toInt();
   $rqSession = rq(Ajax\App\Report\Session\Session::class);
   $rqSessionContent = rq(Ajax\App\Report\Session\SessionContent::class);
   $rqReportHeader = rq(Ajax\App\Report\Session\ReportHeader::class);

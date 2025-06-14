@@ -3,10 +3,10 @@
   $rqPoolFunc = rq(Ajax\App\Guild\Pool\PoolFunc::class);
   $rqPoolPage = rq(Ajax\App\Guild\Pool\PoolPage::class);
 @endphp
-                <div class="table-responsive" id="content-planning-pool-page" @jxnTarget()>
-                  <div @jxnEvent(['.btn-pool-edit', 'click'], $rqPoolFunc->edit($poolId))></div>
-                  <div @jxnEvent(['.btn-pool-delete', 'click'], $rqPoolFunc->delete($poolId)
-                    ->confirm(__('tontine.pool.questions.delete')))></div>
+                <div class="table-responsive" id="content-planning-pool-page" @jxnEvent([
+                  ['.btn-pool-edit', 'click', $rqPoolFunc->edit($poolId)],
+                  ['.btn-pool-delete', 'click', $rqPoolFunc->delete($poolId)
+                    ->confirm(__('tontine.pool.questions.delete'))]])>
 
                   <table class="table table-bordered responsive">
                     <thead>

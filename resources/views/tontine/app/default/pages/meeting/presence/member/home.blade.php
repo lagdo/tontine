@@ -22,7 +22,7 @@
                     </div>
 @else
                     <div class="btn-group sm-screen-hidden" role="group">
-                      <button type="button" class="btn btn-primary" @jxnClick(js('Tontine')
+                      <button type="button" class="btn btn-primary" @jxnClick(jo('Tontine')
                         ->showSmScreen('content-presence-left', 'presence-sm-screens'))><i class="fa fa-arrow-left"></i></button>
                     </div>
 @endif

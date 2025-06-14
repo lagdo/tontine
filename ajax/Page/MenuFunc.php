@@ -12,7 +12,7 @@ use Siak\Tontine\Model\Guild as GuildModel;
 use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\Guild\RoundService;
 
-use function Jaxon\pm;
+use function je;
 use function trans;
 
 class MenuFunc extends FuncComponent
@@ -60,7 +60,7 @@ class MenuFunc extends FuncComponent
         ],[
             'title' => trans('tontine.actions.choose'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveGuild(pm()->select('guild_id')->toInt()),
+            'click' => $this->rq()->saveGuild(je('guild_id')->rd()->select()->toInt()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -130,7 +130,7 @@ class MenuFunc extends FuncComponent
         ],[
             'title' => trans('tontine.actions.choose'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveRound(pm()->select('round_id')->toInt()),
+            'click' => $this->rq()->saveRound(je('round_id')->rd()->select()->toInt()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

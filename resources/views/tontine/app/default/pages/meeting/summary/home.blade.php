@@ -35,9 +35,9 @@
               </div>
               <div class="col-auto ml-auto">
 @if(count($menus) > 0)
-                <div class="btn-group" role="group" @jxnTarget()>
-                  <div @jxnEvent(['.btn-session-prev', 'click'], $rqSummary->home($prevSession?->id ?? 0))></div>
-                  <div @jxnEvent(['.btn-session-next', 'click'], $rqSummary->home($nextSession?->id ?? 0))></div>
+                <div class="btn-group" role="group" @jxnEvent([
+                  ['.btn-session-prev', 'click', $rqSummary->home($prevSession?->id ?? 0)],
+                  ['.btn-session-next', 'click', $rqSummary->home($nextSession?->id ?? 0)]])>
 
 @include('tontine::parts.table.menu', [
   'btnSize' => '',
@@ -58,7 +58,7 @@
             <div class="card-body">
               <div class="row mb-2">
                 <div class="col">
-                  <ul class="nav nav-pills nav-fill" id="summary-tabs" @jxnOn(['a', 'click'], jq()->tab('show'))>
+                  <ul class="nav nav-pills nav-fill" id="summary-tabs" @jxnEvent(['a', 'click', jq()->tab('show')])>
                     <li class="nav-item" role="presentation">
                       <a class="nav-link active" id="summary-tab-pools" data-target="#summary-pools" role="link" tabindex="0">{!! __('meeting.actions.pools') !!}</a>
                     </li>

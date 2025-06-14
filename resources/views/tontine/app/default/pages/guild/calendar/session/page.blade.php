@@ -3,11 +3,11 @@
   $rqSessionFunc = rq(Ajax\App\Guild\Calendar\SessionFunc::class);
   $rqSessionPage = rq(Ajax\App\Guild\Calendar\SessionPage::class);
 @endphp
-                    <div class="table-responsive" id="content-planning-sessions-page" @jxnTarget()>
-                      <div @jxnEvent(['.btn-session-edit', 'click'], $rqSessionFunc->edit($sessionId))></div>
-                      <div @jxnEvent(['.btn-session-venue', 'click'], $rqSessionFunc->editVenue($sessionId))></div>
-                      <div @jxnEvent(['.btn-session-delete', 'click'], $rqSessionFunc->delete($sessionId)
-                        ->confirm(__('tontine.session.questions.delete')))></div>
+                    <div class="table-responsive" id="content-planning-sessions-page" @jxnEvent([
+                      ['.btn-session-edit', 'click', $rqSessionFunc->edit($sessionId)],
+                      ['.btn-session-venue', 'click', $rqSessionFunc->editVenue($sessionId)],
+                      ['.btn-session-delete', 'click', $rqSessionFunc->delete($sessionId)
+                        ->confirm(__('tontine.session.questions.delete'))]])>
 
                       <table class="table table-bordered responsive">
                         <thead>

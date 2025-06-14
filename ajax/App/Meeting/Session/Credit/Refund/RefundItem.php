@@ -39,6 +39,6 @@ class RefundItem extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-session-refunds-page');
+        $this->response->jo('Tontine')->makeTableResponsive('content-session-refunds-page');
     }
 }

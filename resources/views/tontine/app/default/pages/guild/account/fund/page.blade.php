@@ -3,11 +3,11 @@
   $rqFundFunc = rq(Ajax\App\Guild\Account\FundFunc::class);
   $rqFundPage = rq(Ajax\App\Guild\Account\FundPage::class);
 @endphp
-                  <div class="table-responsive" id="content-fund-page" @jxnTarget()>
-                    <div @jxnEvent(['.btn-fund-edit', 'click'], $rqFundFunc->edit($fundId))></div>
-                    <div @jxnEvent(['.btn-fund-toggle', 'click'], $rqFundFunc->toggle($fundId))></div>
-                    <div @jxnEvent(['.btn-fund-delete', 'click'], $rqFundFunc->delete($fundId)
-                      ->confirm(__('tontine.fund.questions.delete')))></div>
+                  <div class="table-responsive" id="content-fund-page" @jxnEvent([
+                    ['.btn-fund-edit', 'click', $rqFundFunc->edit($fundId)],
+                    ['.btn-fund-toggle', 'click', $rqFundFunc->toggle($fundId)],
+                    ['.btn-fund-delete', 'click', $rqFundFunc->delete($fundId)
+                      ->confirm(__('tontine.fund.questions.delete'))]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

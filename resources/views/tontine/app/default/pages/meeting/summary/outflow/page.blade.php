@@ -1,7 +1,7 @@
 @php
   $rqOutflowPage = rq(Ajax\App\Meeting\Summary\Cash\OutflowPage::class);
 @endphp
-                    <div class="table-responsive" id="content-session-outflows" @jxnTarget()>
+                    <div class="table-responsive" id="content-session-outflows">
                       <table class="table table-bordered responsive">
                         <thead>
                           <tr>

@@ -8,14 +8,14 @@
   $rqPlanning = rq(Ajax\App\Planning\Pool\Subscription\Planning::class);
   $rqBeneficiary = rq(Ajax\App\Planning\Pool\Subscription\Beneficiary::class);
 @endphp
-                <div class="table-responsive" id="content-planning-pool-page" @jxnTarget()>
-                  <div @jxnEvent(['.btn-pool-enable', 'click'], $rqPoolFunc->enable($defId))></div>
-                  <div @jxnEvent(['.btn-pool-disable', 'click'], $rqPoolFunc->disable($defId)
-                    ->confirm(__('tontine.pool.questions.disable')))></div>
-                  <div @jxnEvent(['.btn-pool-sessions', 'click'], $rqSession->pool($poolId))></div>
-                  <div @jxnEvent(['.btn-pool-subscription', 'click'], $rqMember->pool($poolId))></div>
-                  <div @jxnEvent(['.btn-pool-planning', 'click'], $rqPlanning->pool($poolId))></div>
-                  <div @jxnEvent(['.btn-pool-beneficiary', 'click'], $rqBeneficiary->pool($poolId))></div>
+                <div class="table-responsive" id="content-planning-pool-page" @jxnEvent([
+                  ['.btn-pool-enable', 'click', $rqPoolFunc->enable($defId)],
+                  ['.btn-pool-disable', 'click', $rqPoolFunc->disable($defId)
+                    ->confirm(__('tontine.pool.questions.disable'))],
+                  ['.btn-pool-sessions', 'click', $rqSession->pool($poolId)],
+                  ['.btn-pool-subscription', 'click', $rqMember->pool($poolId)],
+                  ['.btn-pool-planning', 'click', $rqPlanning->pool($poolId)],
+                  ['.btn-pool-beneficiary', 'click', $rqBeneficiary->pool($poolId)]])>
 
                   <table class="table table-bordered responsive">
                     <thead>

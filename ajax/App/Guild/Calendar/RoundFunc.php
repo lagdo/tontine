@@ -6,7 +6,7 @@ use Ajax\FuncComponent;
 use Ajax\Page\MainTitle;
 use Siak\Tontine\Service\Guild\RoundService;
 
-use function Jaxon\pm;
+use function je;
 use function trans;
 
 /**
@@ -32,7 +32,7 @@ class RoundFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(pm()->form('round-form')),
+            'click' => $this->rq()->create(je('round-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -64,7 +64,7 @@ class RoundFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($round->id, pm()->form('round-form')),
+            'click' => $this->rq()->update($round->id, je('round-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

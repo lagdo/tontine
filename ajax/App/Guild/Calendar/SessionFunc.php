@@ -9,7 +9,7 @@ use Siak\Tontine\Service\Guild\SessionService;
 use Siak\Tontine\Service\Meeting\Member\MemberService;
 use Siak\Tontine\Validation\Guild\SessionValidator;
 
-use function Jaxon\pm;
+use function je;
 use function array_filter;
 use function array_map;
 use function array_unique;
@@ -68,7 +68,7 @@ class SessionFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(pm()->form('session-form')),
+            'click' => $this->rq()->create(je('session-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -103,7 +103,7 @@ class SessionFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->createList(pm()->form('session-list')),
+            'click' => $this->rq()->createList(je('session-list')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -192,7 +192,7 @@ class SessionFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($session->id, pm()->form('session-form')),
+            'click' => $this->rq()->update($session->id, je('session-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -233,7 +233,7 @@ class SessionFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveVenue($session->id, pm()->form('session-form')),
+            'click' => $this->rq()->saveVenue($session->id, je('session-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

@@ -1,7 +1,7 @@
 @php
   $rqReceivablePage = rq(Ajax\App\Meeting\Summary\Pool\Deposit\ReceivablePage::class);
 @endphp
-                  <div class="table-responsive" id="content-meeting-receivables" @jxnTarget()>
+                  <div class="table-responsive" id="content-meeting-receivables">
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

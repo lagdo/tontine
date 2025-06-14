@@ -19,8 +19,8 @@
 @endif
                     </div>
                   </div>
-                  <div class="table-responsive" id="content-session-remitments" @jxnTarget()>
-                    <div @jxnEvent(['.btn-pool-remitments', 'click'], $rqPayable->pool($poolId))></div>
+                  <div class="table-responsive" id="content-session-remitments" @jxnEvent([
+                    ['.btn-pool-remitments', 'click', $rqPayable->pool($poolId)]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

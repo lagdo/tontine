@@ -39,7 +39,7 @@ class Fund extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-profit-distribution');
+        $this->response->jo('Tontine')->makeTableResponsive('content-profit-distribution');
     }
 
     public function html(): Stringable

@@ -7,7 +7,7 @@ use Ajax\App\FakerFunc;
 use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Validation\Guild\MemberValidator;
 
-use function Jaxon\pm;
+use function je;
 use function array_filter;
 use function array_map;
 use function config;
@@ -42,7 +42,7 @@ class MemberFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(pm()->form('member-form')),
+            'click' => $this->rq()->create(je('member-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -84,7 +84,7 @@ class MemberFunc extends FuncComponent
         $buttons[] = [
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->createList(pm()->form('member-list')),
+            'click' => $this->rq()->createList(je('member-list')->rd()->form()),
         ];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -158,7 +158,7 @@ class MemberFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($member->id, pm()->form('member-form')),
+            'click' => $this->rq()->update($member->id, je('member-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

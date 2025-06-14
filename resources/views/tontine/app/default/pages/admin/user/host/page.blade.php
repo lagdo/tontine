@@ -4,12 +4,12 @@
   $rqHostUserPage = rq(Ajax\User\Host\HostPage::class);
   $rqHostAccess = rq(Ajax\User\Host\Access::class);
 @endphp
-                  <div class="table-responsive" id="content-host-invites-page" @jxnTarget()>
-                    <div @jxnEvent(['.btn-host-invite-access', 'click'], $rqHostAccess->home($inviteId))></div>
-                    <div @jxnEvent(['.btn-host-invite-cancel', 'click'], $rqHostUserFunc->cancel($inviteId)
-                      ->confirm(trans('tontine.invite.questions.cancel')))></div>
-                    <div @jxnEvent(['.btn-host-invite-delete', 'click'], $rqHostUserFunc->delete($inviteId)
-                      ->confirm(trans('tontine.invite.questions.delete')))></div>
+                  <div class="table-responsive" id="content-host-invites-page" @jxnEvent([
+                    ['.btn-host-invite-access', 'click', $rqHostAccess->home($inviteId)],
+                    ['.btn-host-invite-cancel', 'click', $rqHostUserFunc->cancel($inviteId)
+                      ->confirm(trans('tontine.invite.questions.cancel'))],
+                    ['.btn-host-invite-delete', 'click', $rqHostUserFunc->delete($inviteId)
+                      ->confirm(trans('tontine.invite.questions.delete'))]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

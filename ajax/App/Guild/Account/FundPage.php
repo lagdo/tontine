@@ -50,6 +50,6 @@ class FundPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-fund-page');
+        $this->response->jo('Tontine')->makeTableResponsive('content-fund-page');
     }
 }

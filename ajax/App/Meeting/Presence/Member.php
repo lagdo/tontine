@@ -59,7 +59,7 @@ class Member extends Component
         $session = $this->stash()->get('presence.session');
         if($session !== null)
         {
-            $this->response->js('Tontine')
+            $this->response->jo('Tontine')
                 ->showSmScreen('content-presence-right', 'presence-sm-screens');
         }
     }

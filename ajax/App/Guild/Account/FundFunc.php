@@ -6,7 +6,7 @@ use Ajax\FuncComponent;
 use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Validation\Guild\FundValidator;
 
-use function Jaxon\pm;
+use function je;
 use function trans;
 
 /**
@@ -37,7 +37,7 @@ class FundFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(pm()->form('fund-form')),
+            'click' => $this->rq()->create(je('fund-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -72,7 +72,7 @@ class FundFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($fund->id, pm()->form('fund-form')),
+            'click' => $this->rq()->update($fund->id, je('fund-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

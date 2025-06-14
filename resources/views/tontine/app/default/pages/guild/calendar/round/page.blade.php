@@ -5,12 +5,12 @@
   $rqRoundPage = rq(Ajax\App\Guild\Calendar\RoundPage::class);
   $rqSession = rq(Ajax\App\Guild\Calendar\Session::class);
 @endphp
-                  <div class="table-responsive" id="content-planning-rounds-page" @jxnTarget()>
-                    <div @jxnEvent(['.btn-round-edit', 'click'], $rqRoundFunc->edit($roundId))></div>
-                    <div @jxnEvent(['.btn-round-sessions', 'click'], $rqSession->round($roundId))></div>
-                    <div @jxnEvent(['.btn-round-select', 'click'], $rqMenuFunc->saveRound($roundId))></div>
-                    <div @jxnEvent(['.btn-round-delete', 'click'], $rqRoundFunc->delete($roundId)
-                      ->confirm(__('tontine.round.questions.delete')))></div>
+                  <div class="table-responsive" id="content-planning-rounds-page" @jxnEvent([
+                    ['.btn-round-edit', 'click', $rqRoundFunc->edit($roundId)],
+                    ['.btn-round-sessions', 'click', $rqSession->round($roundId)],
+                    ['.btn-round-select', 'click', $rqMenuFunc->saveRound($roundId)],
+                    ['.btn-round-delete', 'click', $rqRoundFunc->delete($roundId)
+                      ->confirm(__('tontine.round.questions.delete'))]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

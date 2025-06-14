@@ -51,7 +51,7 @@ class Participation extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')->setSmScreenHandler('finance-sm-screens');
+        $this->response->jo('Tontine')->setSmScreenHandler('finance-sm-screens');
 
         $this->cl(Member\Member::class)->render();
         $this->cl(Charge\Charge::class)->render();

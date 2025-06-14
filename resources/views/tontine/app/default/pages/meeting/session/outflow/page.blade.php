@@ -3,10 +3,10 @@
   $rqOutflowPage = rq(Ajax\App\Meeting\Session\Cash\OutflowPage::class);
   $rqOutflowFunc = rq(Ajax\App\Meeting\Session\Cash\OutflowFunc::class);
 @endphp
-                    <div class="table-responsive" id="content-session-outflows" @jxnTarget()>
-                      <div @jxnEvent(['.btn-outflow-edit', 'click'], $rqOutflowFunc->editOutflow($outflowId))></div>
-                      <div @jxnEvent(['.btn-outflow-delete', 'click'], $rqOutflowFunc->deleteOutflow($outflowId)
-                        ->confirm(__('meeting.outflow.questions.delete')))></div>
+                    <div class="table-responsive" id="content-session-outflows" @jxnEvent([
+                      ['.btn-outflow-edit', 'click', $rqOutflowFunc->editOutflow($outflowId)],
+                      ['.btn-outflow-delete', 'click', $rqOutflowFunc->deleteOutflow($outflowId)
+                        ->confirm(__('meeting.outflow.questions.delete'))]])>
 
                       <table class="table table-bordered responsive">
                         <thead>

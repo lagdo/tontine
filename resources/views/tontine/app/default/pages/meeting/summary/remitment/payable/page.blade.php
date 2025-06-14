@@ -1,4 +1,4 @@
-                  <div class="table-responsive" id="content-session-pool-remitments" @jxnTarget()>
+                  <div class="table-responsive" id="content-session-pool-remitments">
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

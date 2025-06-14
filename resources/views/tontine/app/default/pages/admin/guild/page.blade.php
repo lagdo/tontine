@@ -4,13 +4,13 @@
   $rqGuildFunc = rq(Ajax\App\Admin\Guild\GuildFunc::class);
   $rqGuildPage = rq(Ajax\App\Admin\Guild\GuildPage::class);
 @endphp
-                <div class="table-responsive" id="content-organisation-page" @jxnTarget()>
-                  <div @jxnEvent(['.btn-guild-edit', 'click'], $rqGuildFunc->edit($guildId))></div>
-                  <div @jxnEvent(['.btn-guild-choose', 'click'], $rqMenuFunc->saveGuild($guildId))></div>
-                  <div @jxnEvent(['.btn-guild-delete', 'click'], $rqGuildFunc->delete($guildId)
-                    ->confirm(__('tontine.questions.delete')))></div>
+                <div class="table-responsive" id="content-organisation-page" @jxnEvent([
+                  ['.btn-guild-edit', 'click', $rqGuildFunc->edit($guildId)],
+                  ['.btn-guild-choose', 'click', $rqMenuFunc->saveGuild($guildId)],
+                  ['.btn-guild-delete', 'click', $rqGuildFunc->delete($guildId)
+                    ->confirm(__('tontine.questions.delete'))]])>
 
-                  <table class="table table-bordered responsive" @jxnTarget()>
+                  <table class="table table-bordered responsive">
                     <thead>
                       <tr>
                         <th>{!! __('common.labels.name') !!}</th>

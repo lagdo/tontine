@@ -70,6 +70,6 @@ class SessionPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-presence-sessions');
+        $this->response->jo('Tontine')->makeTableResponsive('content-presence-sessions');
     }
 }

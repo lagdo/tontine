@@ -3,11 +3,11 @@
   $rqMemberFunc = rq(Ajax\App\Guild\Member\MemberFunc::class);
   $rqMemberPage = rq(Ajax\App\Guild\Member\MemberPage::class);
 @endphp
-                <div class="table-responsive" id="content-member-page" @jxnTarget()>
-                  <div @jxnEvent(['.btn-member-edit', 'click'], $rqMemberFunc->edit($memberId))></div>
-                  <div @jxnEvent(['.btn-member-toggle', 'click'], $rqMemberFunc->toggle($memberId))></div>
-                  <div @jxnEvent(['.btn-member-delete', 'click'], $rqMemberFunc->delete($memberId)
-                    ->confirm(__('tontine.questions.delete')))></div>
+                <div class="table-responsive" id="content-member-page" @jxnEvent([
+                  ['.btn-member-edit', 'click', $rqMemberFunc->edit($memberId)],
+                  ['.btn-member-toggle', 'click', $rqMemberFunc->toggle($memberId)],
+                  ['.btn-member-delete', 'click', $rqMemberFunc->delete($memberId)
+                    ->confirm(__('tontine.questions.delete'))]])>
 
                   <table class="table table-bordered responsive">
                     <thead>

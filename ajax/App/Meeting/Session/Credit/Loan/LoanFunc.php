@@ -8,7 +8,7 @@ use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\Meeting\Member\MemberService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 
-use function Jaxon\pm;
+use function je;
 use function trans;
 
 class LoanFunc extends FuncComponent
@@ -47,10 +47,10 @@ class LoanFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(pm()->form('loan-form')),
+            'click' => $this->rq()->create(je('loan-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
-        $this->response->js('Tontine')->setLoanInterestLabel();
+        $this->response->jo('Tontine')->setLoanInterestLabel();
     }
 
     /**
@@ -112,10 +112,10 @@ class LoanFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($loanId, pm()->form('loan-form')),
+            'click' => $this->rq()->update($loanId, je('loan-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
-        $this->response->js('Tontine')->setLoanInterestLabel();
+        $this->response->jo('Tontine')->setLoanInterestLabel();
     }
 
     /**

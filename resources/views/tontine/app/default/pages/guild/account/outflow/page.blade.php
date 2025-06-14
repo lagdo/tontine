@@ -3,11 +3,11 @@
   $rqOutflowFunc = rq(Ajax\App\Guild\Account\OutflowFunc::class);
   $rqOutflowPage = rq(Ajax\App\Guild\Account\OutflowPage::class);
 @endphp
-                  <div class="table-responsive" id="content-account-page" @jxnTarget()>
-                    <div @jxnEvent(['.btn-account-edit', 'click'], $rqOutflowFunc->edit($accountId))></div>
-                    <div @jxnEvent(['.btn-account-toggle', 'click'], $rqOutflowFunc->toggle($accountId))></div>
-                    <div @jxnEvent(['.btn-account-delete', 'click'], $rqOutflowFunc->delete($accountId)
-                      ->confirm(__('tontine.account.questions.delete')))></div>
+                  <div class="table-responsive" id="content-account-page" @jxnEvent([
+                    ['.btn-account-edit', 'click', $rqOutflowFunc->edit($accountId)],
+                    ['.btn-account-toggle', 'click', $rqOutflowFunc->toggle($accountId)],
+                    ['.btn-account-delete', 'click', $rqOutflowFunc->delete($accountId)
+                      ->confirm(__('tontine.account.questions.delete'))]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

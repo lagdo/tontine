@@ -56,7 +56,7 @@ class Session extends Component
         $member = $this->stash()->get('presence.member'); // Is null when showing presences by sessions.
         if($member !== null)
         {
-            $this->response->js('Tontine')->showSmScreen('content-presence-right', 'presence-sm-screens');
+            $this->response->jo('Tontine')->showSmScreen('content-presence-right', 'presence-sm-screens');
         }
     }
 }

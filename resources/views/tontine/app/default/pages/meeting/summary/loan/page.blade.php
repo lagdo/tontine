@@ -3,7 +3,7 @@
   $rqLoanPage = rq(Ajax\App\Meeting\Summary\Credit\Loan\LoanPage::class);
   $rqBalance = rq(Ajax\App\Meeting\Summary\Credit\Loan\Balance::class);
 @endphp
-                    <div class="table-responsive" id="content-session-loans-page" @jxnTarget()>
+                    <div class="table-responsive" id="content-session-loans-page">
                       <table class="table table-bordered responsive">
                         <thead>
                           <tr>

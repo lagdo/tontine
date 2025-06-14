@@ -3,10 +3,10 @@
   $rqMemberFunc = rq(Ajax\App\Planning\Member\MemberFunc::class);
   $rqMemberPage = rq(Ajax\App\Planning\Member\MemberPage::class);
 @endphp
-                  <div class="table-responsive" id="content-member-page" @jxnTarget()>
-                    <div @jxnEvent(['.btn-member-enable', 'click'], $rqMemberFunc->enable($defId))></div>
-                    <div @jxnEvent(['.btn-member-disable', 'click'], $rqMemberFunc->disable($defId)
-                      ->confirm(__('tontine.member.questions.disable')))></div>
+                  <div class="table-responsive" id="content-member-page" @jxnEvent([
+                    ['.btn-member-enable', 'click', $rqMemberFunc->enable($defId)],
+                    ['.btn-member-disable', 'click', $rqMemberFunc->disable($defId)
+                      ->confirm(__('tontine.member.questions.disable'))]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

@@ -1,7 +1,7 @@
 @php
   $rqSettlementPage = rq(Ajax\App\Meeting\Summary\Charge\Fixed\SettlementPage::class);
 @endphp
-                  <div class="table-responsive" id="content-session-fee-fixed-bills" @jxnTarget()>
+                  <div class="table-responsive" id="content-session-fee-fixed-bills">
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

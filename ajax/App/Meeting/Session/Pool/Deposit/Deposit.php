@@ -33,7 +33,7 @@ class Deposit extends Component
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-meeting-deposits');
+        $this->response->jo('Tontine')->makeTableResponsive('content-meeting-deposits');
     }
 
     /**

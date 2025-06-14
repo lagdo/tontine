@@ -6,7 +6,7 @@ use Ajax\App\Meeting\Session\FuncComponent;
 use Siak\Tontine\Service\Meeting\Cash\OutflowService;
 use Siak\Tontine\Validation\Meeting\OutflowValidator;
 
-use function Jaxon\pm;
+use function je;
 use function trans;
 
 class OutflowFunc extends FuncComponent
@@ -41,7 +41,7 @@ class OutflowFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->createOutflow(pm()->form('outflow-form')),
+            'click' => $this->rq()->createOutflow(je('outflow-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -83,7 +83,7 @@ class OutflowFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->updateOutflow($outflowId, pm()->form('outflow-form')),
+            'click' => $this->rq()->updateOutflow($outflowId, je('outflow-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

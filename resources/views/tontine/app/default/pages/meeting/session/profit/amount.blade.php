@@ -1,5 +1,5 @@
 @php
-  $amountValue = pm()->input('fund-profit-amount')->toInt();
+  $amountValue = je('fund-profit-amount')->rd()->input()->toInt();
 @endphp
                       <div class="input-group">
                         {!! $html->text('fund-profit-amount', $locale->getMoneyValue($profitAmount))

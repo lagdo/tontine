@@ -30,7 +30,7 @@
                               ->formatMoney($debt->partial_refund->amount, false, true) }}@endif
                           </td>
                           <td class="table-item-menu">
-                            <div data-debt-id="{{ $debt->id }}" @jxnTarget()>
+                            <div data-debt-id="{{ $debt->id }}">
                               {!! paymentLink($debt->refund, 'refund', !$debt->isEditable) !!}
                             </div>
                           </td>

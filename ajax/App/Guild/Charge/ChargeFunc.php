@@ -8,7 +8,7 @@ use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Guild\ChargeService;
 use Siak\Tontine\Validation\Guild\ChargeValidator;
 
-use function Jaxon\pm;
+use function je;
 use function trans;
 
 /**
@@ -41,7 +41,7 @@ class ChargeFunc extends FuncComponent
         $content = $this->renderView('pages.guild.charge.select', [
             'groups' => $this->getChargeGroups()
         ]);
-        $group = pm()->input('charge-group')->toInt();
+        $group = je('charge-group')->rd()->input()->toInt();
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -80,7 +80,7 @@ class ChargeFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create($group, pm()->form('charge-form')),
+            'click' => $this->rq()->create($group, je('charge-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -142,7 +142,7 @@ class ChargeFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($charge->id, pm()->form('charge-form')),
+            'click' => $this->rq()->update($charge->id, je('charge-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

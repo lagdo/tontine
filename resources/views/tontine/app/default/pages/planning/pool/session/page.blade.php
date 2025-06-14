@@ -5,10 +5,10 @@
   $poolSessionIds = $pool->sessions->pluck('id', 'id');
   $poolDisabledSessionIds = $pool->disabled_sessions->pluck('id', 'id');
 @endphp
-                      <div class="table-responsive" id="content-planning-sessions-page" @jxnTarget()>
-                        <div @jxnEvent(['.pool-session-enable', 'click'], $rqSessionFunc->enableSession($sessionId))></div>
-                        <div @jxnEvent(['.pool-session-disable', 'click'], $rqSessionFunc->disableSession($sessionId)
-                          ->confirm(__('tontine.session.questions.disable')))></div>
+                      <div class="table-responsive" id="content-planning-sessions-page" @jxnEvent([
+                        ['.pool-session-enable', 'click', $rqSessionFunc->enableSession($sessionId)],
+                        ['.pool-session-disable', 'click', $rqSessionFunc->disableSession($sessionId)
+                          ->confirm(__('tontine.session.questions.disable'))]])>
 
                         <form id="pool-session-form">
                           <table class="table table-bordered responsive">

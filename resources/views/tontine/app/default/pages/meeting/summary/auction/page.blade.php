@@ -1,7 +1,7 @@
 @php
   $rqAuctionPage = rq(Ajax\App\Meeting\Summary\Pool\Remitment\AuctionPage::class);
 @endphp
-                  <div class="table-responsive" id="content-session-auctions-page" @jxnTarget()>
+                  <div class="table-responsive" id="content-session-auctions-page">
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>

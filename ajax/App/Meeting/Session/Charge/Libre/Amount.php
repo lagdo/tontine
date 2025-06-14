@@ -6,8 +6,8 @@ use Ajax\App\Meeting\Session\Charge\Component;
 use Siak\Tontine\Service\LocaleService;
 use Stringable;
 
-use function Jaxon\jq;
-use function Jaxon\pm;
+use function je;
+use function jq;
 
 class Amount extends Component
 {
@@ -52,7 +52,7 @@ class Amount extends Component
         }
 
         $amountValue = jq("#member-charge-input-$memberId")->val();
-        $paid = pm()->checked('check-fee-libre-paid');
+        $paid = je('check-fee-libre-paid')->rd()->checked();
         return $this->renderView('pages.meeting.session.charge.libre.member.edit', [
             'memberId' => $memberId,
             'amount' => !$bill ? '' : $this->localeService->getMoneyValue($bill->amount),

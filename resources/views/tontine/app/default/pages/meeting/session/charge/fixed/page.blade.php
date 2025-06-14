@@ -3,8 +3,8 @@
   $rqSettlement = rq(Ajax\App\Meeting\Session\Charge\Fixed\Settlement::class);
   $rqFixedFeePage = rq(Ajax\App\Meeting\Session\Charge\Fixed\FeePage::class);
 @endphp
-                  <div class="table-responsive" id="content-session-fees-fixed-page" @jxnTarget()>
-                    <div @jxnEvent(['.btn-fee-fixed-settlements', 'click'], $rqSettlement->charge($chargeId))></div>
+                  <div class="table-responsive" id="content-session-fees-fixed-page" @jxnEvent([
+                    ['.btn-fee-fixed-settlements', 'click', $rqSettlement->charge($chargeId)]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

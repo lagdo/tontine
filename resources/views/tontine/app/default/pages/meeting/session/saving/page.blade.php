@@ -4,10 +4,10 @@
   $rqMember = rq(Ajax\App\Meeting\Session\Saving\Member::class);
   $rqAmountFunc = rq(Ajax\App\Meeting\Session\Saving\AmountFunc::class);
 @endphp
-                  <div class="table-responsive" id="content-session-funds-page" @jxnTarget()>
-                    <div @jxnEvent(['.btn-fund-savings', 'click'], $rqMember->fund($fundId))></div>
-                    <div @jxnEvent(['.btn-fund-start-amount', 'click'], $rqAmountFunc->editStartAmount($fundId))></div>
-                    <div @jxnEvent(['.btn-fund-end-amount', 'click'], $rqAmountFunc->editEndAmount($fundId))></div>
+                  <div class="table-responsive" id="content-session-funds-page" @jxnEvent([
+                    ['.btn-fund-savings', 'click', $rqMember->fund($fundId)],
+                    ['.btn-fund-start-amount', 'click', $rqAmountFunc->editStartAmount($fundId)],
+                    ['.btn-fund-end-amount', 'click', $rqAmountFunc->editEndAmount($fundId)]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

@@ -53,6 +53,6 @@ class FeePage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-session-fees-fixed-page');
+        $this->response->jo('Tontine')->makeTableResponsive('content-session-fees-fixed-page');
     }
 }

@@ -3,10 +3,10 @@
   $rqChargeFunc = rq(Ajax\App\Planning\Charge\ChargeFunc::class);
   $rqChargePage = rq(Ajax\App\Planning\Charge\ChargePage::class);
 @endphp
-                  <div class="table-responsive" id="content-charge-page" @jxnTarget()>
-                    <div @jxnEvent(['.btn-charge-enable', 'click'], $rqChargeFunc->enable($defId))></div>
-                    <div @jxnEvent(['.btn-charge-disable', 'click'], $rqChargeFunc->disable($defId)
-                      ->confirm(__('tontine.charge.questions.disable')))></div>
+                  <div class="table-responsive" id="content-charge-page" @jxnEvent([
+                    ['.btn-charge-enable', 'click', $rqChargeFunc->enable($defId)],
+                    ['.btn-charge-disable', 'click', $rqChargeFunc->disable($defId)
+                      ->confirm(__('tontine.charge.questions.disable'))]])>
 
                     <table class="table table-bordered responsive">
                       <thead>

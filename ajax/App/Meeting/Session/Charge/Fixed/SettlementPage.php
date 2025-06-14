@@ -49,6 +49,6 @@ class SettlementPage extends PageComponent
      */
     protected function after()
     {
-        $this->response->js('Tontine')->makeTableResponsive('content-session-fee-fixed-bills');
+        $this->response->jo('Tontine')->makeTableResponsive('content-session-fee-fixed-bills');
     }
 }

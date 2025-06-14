@@ -1,5 +1,5 @@
 @php
-  $formValues = pm()->form('pool-session-form');
+  $formValues = je('pool-session-form')->rd()->form();
   $rqSession = rq(Ajax\App\Planning\Pool\Session::class);
   $rqSessionPage = rq(Ajax\App\Planning\Pool\SessionPage::class);
   $rqSessionFunc = rq(Ajax\App\Planning\Pool\SessionFunc::class);

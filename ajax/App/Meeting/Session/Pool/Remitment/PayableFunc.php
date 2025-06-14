@@ -7,7 +7,7 @@ use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
 use Siak\Tontine\Validation\Meeting\RemitmentValidator;
 
-use function Jaxon\pm;
+use function je;
 use function trans;
 
 /**
@@ -70,7 +70,7 @@ class PayableFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveRemitment(pm()->form('remitment-form')),
+            'click' => $this->rq()->saveRemitment(je('remitment-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
