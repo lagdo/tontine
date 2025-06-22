@@ -121,7 +121,8 @@ class Pool extends Base
      */
     private function filterOnDates(Builder $query, Carbon $startDate, Carbon $endDate): Builder
     {
-        return $query->where('vp.end_date', '>=', $startDate)
+        return $query->distinct()
+            ->where('vp.end_date', '>=', $startDate)
             ->where('vp.start_date', '<=', $endDate);
     }
 
@@ -183,5 +184,10 @@ class Pool extends Base
     {
         // Filter on the sessions in the pool timespan.
         return $this->belongsToMany(Session::class, 'v_pool_session_disabled');
+    }
+
+    public function fund()
+    {
+        return $this->hasOne(Fund::class);
     }
 }

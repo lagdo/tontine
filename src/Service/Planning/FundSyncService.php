@@ -18,7 +18,7 @@ class FundSyncService
      *
      * @return void
      */
-    public function savePoolFund(Round $round, Pool $pool): void
+    private function savePoolFund(Round $round, Pool $pool): void
     {
         Fund::updateOrCreate([
             'pool_id' => $pool->id,
@@ -67,8 +67,8 @@ class FundSyncService
             return;
         }
 
-        // Create the fund that will be used to lend the money in the pools.
-        Pool::ofRound($round)
+        // Create the fund to be used to lend the money in the pools.
+        $round->pools()
             ->whereHas('def', fn($q) => $q->depositLendable())
             ->get()
             ->each(fn($pool) => $this->savePoolFund($round, $pool));
@@ -141,6 +141,36 @@ class FundSyncService
             $round->funds()
                 ->where('interest_sid', $session->id)
                 ->update(['interest_sid' => $prevSession->id]);
+        }
+    }
+
+    /**
+     * @param Round $round
+     * @param Pool $pool
+     *
+     * @return void
+     */
+    public function poolEnabled(Round $round, Pool $pool): void
+    {
+        if($pool->deposit_lendable)
+        {
+            // Create the fund to be used to lend the money in the pool.
+            $this->savePoolFund($round, $pool);
+        }
+    }
+
+    /**
+     * @param Round $round
+     * @param Pool $pool
+     *
+     * @return void
+     */
+    public function poolDisabled(Round $round, Pool $pool): void
+    {
+        if($pool->deposit_lendable)
+        {
+            // Delete the fund to be used to lend the money in the pool.
+            $pool->fund()->where('round_id', $round->id)->delete();
         }
     }
 

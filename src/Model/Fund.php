@@ -32,6 +32,7 @@ class Fund extends Base
         'start_sid',
         'end_sid',
         'interest_sid',
+        'pool_id',
     ];
 
     /**
