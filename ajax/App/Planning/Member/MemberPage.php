@@ -18,6 +18,11 @@ class MemberPage extends PageComponent
      */
     protected array $bagOptions = ['planning.member', 'page'];
 
+    /**
+     * The constructor
+     *
+     * @param MemberService $memberService
+     */
     public function __construct(private MemberService $memberService)
     {}
 

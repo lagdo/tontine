@@ -230,4 +230,14 @@ class Fund extends Base
     {
         return $query->whereNull('pool_id');
     }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeUser(Builder $query): Builder
+    {
+        return $query->whereHas('def', fn($def) => $def->user());
+    }
 }

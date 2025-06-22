@@ -31,13 +31,12 @@ class ChargeService
      */
     private function getQuery(Round $round, ?bool $filter): Relation
     {
-        $chargeCallback = fn($q) => $q->where('round_id', $round->id);
+        $onRoundFilter = fn(Builder $q) => $q->where('round_id', $round->id);
         return $round->guild->charges()
-            ->with(['charges' => $chargeCallback])
             ->when($filter === true, fn(Builder $query) => $query
-                ->whereHas('charges', $chargeCallback))
+                ->whereHas('charges', $onRoundFilter))
             ->when($filter === false, fn(Builder $query) => $query
-                ->whereDoesntHave('charges', $chargeCallback));
+                ->whereDoesntHave('charges', $onRoundFilter));
     }
 
     /**
@@ -51,6 +50,9 @@ class ChargeService
     public function getChargeDefs(Round $round, ?bool $filter, int $page = 0): Collection
     {
         return $this->getQuery($round, $filter)
+            ->withCount([
+                'charges' => fn(Builder $q) => $q->where('round_id', $round->id),
+            ])
             ->page($page, $this->tenantService->getLimit())
             ->orderBy('type', 'asc')
             ->orderBy('period', 'desc')
@@ -138,5 +140,17 @@ class ChargeService
             ]);
             throw new MessageException(trans('tontine.charge.errors.cannot_remove'));
         }
+    }
+
+    /**
+     * Get the number of active charges in the round.
+     *
+     * @param Round $round
+     *
+     * @return int
+     */
+    public function getChargeCount(Round $round): int
+    {
+        return $round->charges()->count();
     }
 }

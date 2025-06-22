@@ -18,6 +18,11 @@ class PoolPage extends PageComponent
      */
     protected array $bagOptions = ['planning.pool', 'page'];
 
+    /**
+     * The constructor
+     *
+     * @param PoolService $poolService
+     */
     public function __construct(private PoolService $poolService)
     {}
 

@@ -22,9 +22,8 @@
                       <tbody>
 @foreach ($defs as $def)
 @php
-  $count = $def->funds->count();
-  $toggleClass = $count > 0 ? 'btn-fund-disable' : 'btn-fund-enable';
-  $toggleIcon = $count > 0 ? 'fa fa-toggle-on' : 'fa fa-toggle-off';
+  $toggleClass = $def->funds_count > 0 ? 'btn-fund-disable' : 'btn-fund-enable';
+  $toggleIcon = $def->funds_count > 0 ? 'fa fa-toggle-on' : 'fa fa-toggle-off';
 @endphp
                         <tr>
                           <td>{!! $def->type_user ? $def->title : __('tontine.fund.labels.default') !!}</td>
@@ -34,9 +33,12 @@
 @else
                             <i class="{{ $toggleIcon }}"></i>
 @endif
+@if ($def->funds_in_round_count > $def->funds_count)
+                            <i class="fa fa-compress-alt fa-rotate-by rotate-by-45deg"></i>
+@endif
                           </td>
                           <td class="table-item-menu">
-@if($count > 0)
+@if($def->funds_count > 0)
 @include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-fund-id',
   'dataIdValue' => $def->funds->first()->id,

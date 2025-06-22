@@ -35,14 +35,13 @@ class MemberService
      */
     private function getQuery(Round $round, string $search, ?bool $filter): Relation
     {
-        $memberCallback = fn($q) => $q->where('round_id', $round->id);
+        $onRoundFilter = fn(Builder $q) => $q->where('round_id', $round->id);
         return $round->guild->members()
-            ->with(['members' => $memberCallback])
             ->search($this->searchSanitizer->sanitize($search))
             ->when($filter === true, fn(Builder $query) => $query
-                ->whereHas('members', $memberCallback))
+                ->whereHas('members', $onRoundFilter))
             ->when($filter === false, fn(Builder $query) => $query
-                ->whereDoesntHave('members', $memberCallback));
+                ->whereDoesntHave('members', $onRoundFilter));
     }
 
     /**
@@ -58,6 +57,9 @@ class MemberService
     public function getMemberDefs(Round $round, string $search, ?bool $filter, int $page = 0): Collection
     {
         return $this->getQuery($round, $search, $filter)
+            ->withCount([
+                'members' => fn(Builder $q) => $q->where('round_id', $round->id),
+            ])
             ->page($page, $this->tenantService->getLimit())
             ->orderBy('name', 'asc')
             ->get();
@@ -142,5 +144,17 @@ class MemberService
         {
             throw new MessageException(trans('tontine.member.errors.cannot_remove'));
         }
+    }
+
+    /**
+     * Get the number of active members in the round.
+     *
+     * @param Round $round
+     *
+     * @return int
+     */
+    public function getMemberCount(Round $round): int
+    {
+        return $round->members()->count();
     }
 }

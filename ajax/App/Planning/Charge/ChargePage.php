@@ -18,6 +18,11 @@ class ChargePage extends PageComponent
      */
     protected array $bagOptions = ['planning.charge', 'page'];
 
+    /**
+     * The constructor
+     *
+     * @param ChargeService $chargeService
+     */
     public function __construct(private ChargeService $chargeService)
     {}
 

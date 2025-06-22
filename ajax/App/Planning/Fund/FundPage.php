@@ -18,6 +18,11 @@ class FundPage extends PageComponent
      */
     protected array $bagOptions = ['planning.fund', 'fund.page'];
 
+    /**
+     * The constructor
+     *
+     * @param FundService $fundService
+     */
     public function __construct(private FundService $fundService)
     {}
 

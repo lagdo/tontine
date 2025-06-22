@@ -25,6 +25,12 @@ a[role="link"]:hover {
   cursor: pointer;
 }
 
+i.rotate-by-45deg {
+  --fa-rotate-angle: 45deg;
+  margin-left:5px;
+  color:#6777ef;
+}
+
 .btn-social-icon {
   color: #212529 !important;
 }

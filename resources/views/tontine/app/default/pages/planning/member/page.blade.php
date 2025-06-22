@@ -18,9 +18,8 @@
                       <tbody>
 @foreach ($defs as $def)
 @php
-  $count = $def->members->count();
-  $toggleClass = $count > 0 ? 'btn-member-disable' : 'btn-member-enable';
-  $toggleIcon = $count > 0 ? 'fa fa-toggle-on' : 'fa fa-toggle-off';
+  $toggleClass = $def->members_count > 0 ? 'btn-member-disable' : 'btn-member-enable';
+  $toggleIcon = $def->members_count > 0 ? 'fa fa-toggle-on' : 'fa fa-toggle-off';
 @endphp
                         <tr>
                           <td>{!! $def->name !!}</td>

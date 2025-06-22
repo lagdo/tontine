@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Pool;
+use Siak\Tontine\Model\PoolDef;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
@@ -18,9 +19,10 @@ class PoolService
     /**
      * @param TenantService $tenantService
      * @param PoolSyncService $poolSyncService
+     * @param FundSyncService $fundSyncService
      */
     public function __construct(protected TenantService $tenantService,
-        private PoolSyncService $poolSyncService)
+        private PoolSyncService $poolSyncService, private FundSyncService $fundSyncService)
     {}
 
     /**
@@ -31,11 +33,12 @@ class PoolService
      */
     public function getQuery(Round $round, ?bool $filter): Builder|Relation
     {
+        $onRoundFilter = fn(Builder|Relation $q) => $q->ofRound($round);
         return $round->guild->pools()
-            ->when($filter === true, fn(Builder $query) => $query
-                ->whereHas('pools', fn($q) => $q->ofRound($round)))
-            ->when($filter === false, fn(Builder $query) => $query
-                ->whereDoesntHave('pools', fn($q) => $q->ofRound($round)));
+            ->when($filter === true, fn(Builder|Relation $query) => $query
+                ->whereHas('pools', $onRoundFilter))
+            ->when($filter === false, fn(Builder|Relation $query) => $query
+                ->whereDoesntHave('pools', $onRoundFilter));
     }
 
     /**
@@ -50,8 +53,11 @@ class PoolService
     public function getPoolDefs(Round $round, ?bool $filter, int $page = 0): Collection
     {
         return $this->getQuery($round, $filter)
-            ->with([
-                'pools' => fn($query) => $query->ofRound($round),
+            ->withCount([
+                'pools' => fn(Builder|Relation $q) => $q->where('round_id', $round->id),
+            ])
+            ->withCount([
+                'pools as pools_in_round_count' => fn(Builder|Relation $q) => $q->ofRound($round),
             ])
             ->page($page, $this->tenantService->getLimit())
             ->get();
@@ -74,26 +80,41 @@ class PoolService
      * @param Round $round
      * @param int $defId
      *
+     * @return PoolDef|null
+     */
+    public function getPoolDef(Round $round, int $defId): ?PoolDef
+    {
+        return $round->guild->pools()
+            ->with([
+                'pools' => fn(Builder|Relation $q) => $q->where('round_id', $round->id),
+            ])
+            ->find($defId);
+    }
+
+    /**
+     * @param Round $round
+     * @param int $defId
+     *
      * @return void
      */
     public function enablePool(Round $round, int $defId): void
     {
-        $def = $round->guild->pools()
-            ->withCount([
-                'pools' => fn($query) => $query->ofRound($round),
-            ])
-            ->find($defId);
-        if(!$def || $def->pools_count > 0)
+        $def = $this->getPoolDef($round, $defId);
+        if(!$def || $def->pools->count() > 0)
         {
             return;
         }
 
         // Create the pool
-        $def->pools()->create([
-            'round_id' => $round->id,
-            'start_sid' => $round->start->id,
-            'end_sid' => $round->end->id,
-        ]);
+        DB::transaction(function() use($def, $round) {
+            $pool = $def->pools()->create([
+                'round_id' => $round->id,
+                'start_sid' => $round->start->id,
+                'end_sid' => $round->end->id,
+            ]);
+
+            $this->fundSyncService->poolEnabled($round, $pool);
+        });
     }
 
     /**
@@ -104,20 +125,22 @@ class PoolService
      */
     public function disablePool(Round $round, int $defId): void
     {
-        $def = $round->guild->pools()
-            ->withCount([
-                'pools' => fn($query) => $query->ofRound($round),
-            ])
-            ->find($defId);
-        if(!$def || $def->pools_count === 0)
+        $def = $this->getPoolDef($round, $defId);
+        if(!$def || $def->pools->count() === 0)
         {
             return;
         }
 
         // Delete the pool
-        $poolIds = $def->pools()->ofRound($round)->pluck('id');
-        DB::table('pool_session_disabled')->whereIn('pool_id', $poolIds)->delete();
-        Pool::whereIn('id', $poolIds)->delete();
+        DB::transaction(function() use($def, $round) {
+            $pool = $def->pools->first();
+            $this->fundSyncService->poolDisabled($round, $pool);
+
+            DB::table('pool_session_disabled')
+                ->where('pool_id', $pool->id)
+                ->delete();
+            $pool->delete();
+        });
     }
 
     /**
@@ -133,18 +156,6 @@ class PoolService
         return Pool::ofRound($round)
             ->page($page, $this->tenantService->getLimit())
             ->get();
-    }
-
-    /**
-     * Get the number of pools.
-     *
-     * @param Round $round
-     *
-     * @return int
-     */
-    public function getPoolCount(Round $round): int
-    {
-        return Pool::ofRound($round)->count();
     }
 
     /**
@@ -213,14 +224,6 @@ class PoolService
      */
     public function enableSession(Pool $pool, Session $session)
     {
-        // When the remitments are planned, don't enable or disable a session
-        // if receivables already exist on the pool.
-        // if($pool->remit_planned &&
-        //     $pool->subscriptions()->whereHas('receivables')->count() > 0)
-        // {
-        //     return;
-        // }
-
         // Enable the session for the pool.
         DB::transaction(function() use($pool, $session) {
             DB::table('pool_session_disabled')
@@ -242,14 +245,6 @@ class PoolService
      */
     public function disableSession(Pool $pool, Session $session)
     {
-        // When the remitments are planned, don't enable or disable a session
-        // if receivables already exist on the pool.
-        // if($pool->remit_planned &&
-        //     $pool->subscriptions()->whereHas('receivables')->count() > 0)
-        // {
-        //     return;
-        // }
-
         // Disable the session for the pool.
         DB::transaction(function() use($pool, $session) {
             DB::table('pool_session_disabled')
@@ -260,5 +255,17 @@ class PoolService
 
             $this->poolSyncService->sessionDisabled($pool, $session);
         });
+    }
+
+    /**
+     * Get the number of active pools in the round.
+     *
+     * @param Round $round
+     *
+     * @return int
+     */
+    public function getPoolCount(Round $round): int
+    {
+        return $round->pools()->count();
     }
 }

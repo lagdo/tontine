@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\FundDef;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Service\TenantService;
 
@@ -27,11 +28,12 @@ class FundService
      */
     private function getQuery(Round $round, ?bool $filter): Relation
     {
+        $onRoundFilter = fn(Builder|Relation $q) => $q->ofRound($round);
         return $round->guild->funds()
-            ->when($filter === true, fn(Builder $query) => $query
-                ->whereHas('funds', fn($q) => $q->ofRound($round)))
-            ->when($filter === false, fn(Builder $query) => $query
-                ->whereDoesntHave('funds', fn($q) => $q->ofRound($round)))
+            ->when($filter === true, fn(Builder|Relation $query) => $query
+                ->whereHas('funds', $onRoundFilter))
+            ->when($filter === false, fn(Builder|Relation $query) => $query
+                ->whereDoesntHave('funds', $onRoundFilter))
             ->when(!$round->add_default_fund, fn($query) => $query->user());
     }
 
@@ -47,7 +49,12 @@ class FundService
     public function getFundDefs(Round $round, ?bool $filter, int $page = 0): Collection
     {
         return $this->getQuery($round, $filter)
-            ->with(['funds' => fn($query) => $query->ofRound($round)])
+            ->withCount([
+                'funds' => fn(Builder|Relation $q) => $q->where('round_id', $round->id),
+            ])
+            ->withCount([
+                'funds as funds_in_round_count' => fn(Builder|Relation $q) => $q->ofRound($round),
+            ])
             ->page($page, $this->tenantService->getLimit())
             ->get();
     }
@@ -82,15 +89,28 @@ class FundService
      * @param Round $round
      * @param int $defId
      *
+     * @return FundDef|null
+     */
+    public function getFundDef(Round $round, int $defId): ?FundDef
+    {
+        return $round->guild
+            ->funds()
+            ->user()
+            ->withCount([
+                'funds' => fn(Builder|Relation $q) => $q->where('round_id', $round->id),
+            ])
+            ->find($defId);
+    }
+
+    /**
+     * @param Round $round
+     * @param int $defId
+     *
      * @return void
      */
     public function enableFund(Round $round, int $defId): void
     {
-        $def = $round->guild
-            ->funds()
-            ->user()
-            ->withCount(['funds' => fn($query) => $query->ofRound($round)])
-            ->find($defId);
+        $def = $this->getFundDef($round, $defId);
         if(!$def || $def->funds_count > 0)
         {
             return;
@@ -113,18 +133,14 @@ class FundService
      */
     public function disableFund(Round $round, int $defId): void
     {
-        $def = $round->guild
-            ->funds()
-            ->user()
-            ->withCount(['funds' => fn($query) => $query->ofRound($round)])
-            ->find($defId);
+        $def = $this->getFundDef($round, $defId);
         if(!$def || $def->funds_count === 0)
         {
             return;
         }
 
         // Delete the fund
-        $def->funds()->ofRound($round)->delete();
+        $def->funds()->where('round_id', $round->id)->delete();
     }
 
     /**
@@ -138,5 +154,17 @@ class FundService
     public function saveSessions(Fund $fund, array $values)
     {
         $fund->update($values);
+    }
+
+    /**
+     * Get the number of active funds in the round.
+     *
+     * @param Round $round
+     *
+     * @return int
+     */
+    public function getFundCount(Round $round): int
+    {
+        return $round->funds()->real()->user()->count();
     }
 }
