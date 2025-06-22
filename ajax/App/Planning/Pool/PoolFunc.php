@@ -29,6 +29,7 @@ class PoolFunc extends FuncComponent
             ->success(trans('tontine.pool.messages.enabled'));
 
         $this->cl(PoolPage::class)->page();
+        $this->cl(PoolCount::class)->render();
     }
 
     public function disable(int $defId)
@@ -39,5 +40,6 @@ class PoolFunc extends FuncComponent
             ->success(trans('tontine.pool.messages.disabled'));
 
         $this->cl(PoolPage::class)->page();
+        $this->cl(PoolCount::class)->render();
     }
 }

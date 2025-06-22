@@ -29,6 +29,7 @@ class MemberFunc extends FuncComponent
             ->success(trans('tontine.member.messages.enabled'));
 
         $this->cl(MemberPage::class)->page();
+        $this->cl(MemberCount::class)->render();
     }
 
     public function disable(int $defId)
@@ -39,5 +40,6 @@ class MemberFunc extends FuncComponent
             ->success(trans('tontine.member.messages.removed'));
 
         $this->cl(MemberPage::class)->page();
+        $this->cl(MemberCount::class)->render();
     }
 }

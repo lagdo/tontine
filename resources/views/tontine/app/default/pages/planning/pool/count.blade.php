@@ -1,0 +1,1 @@
+<div class="font-weight-bold right" style="width:30px;">{{ $count > 0 ? $count : '&nbsp;' }}</div>

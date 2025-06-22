@@ -29,6 +29,7 @@ class ChargeFunc extends FuncComponent
             ->success(trans('tontine.charge.messages.enabled'));
 
         $this->cl(ChargePage::class)->page();
+        $this->cl(ChargeCount::class)->render();
     }
 
     public function disable(int $defId)
@@ -39,5 +40,6 @@ class ChargeFunc extends FuncComponent
             ->success(trans('tontine.charge.messages.removed'));
 
         $this->cl(ChargePage::class)->page();
+        $this->cl(ChargeCount::class)->render();
     }
 }

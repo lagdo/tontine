@@ -2,6 +2,7 @@
   $rqFund = rq(Ajax\App\Planning\Fund\Fund::class);
   $rqFundPage = rq(Ajax\App\Planning\Fund\FundPage::class);
   $rqSessionFunc = rq(Ajax\App\Meeting\Session\SessionFunc::class);
+  $rqFundCount = rq(Ajax\App\Planning\Fund\FundCount::class);
 @endphp
           <div class="section-body">
             <div class="row mb-2">
@@ -21,6 +22,13 @@
 
           <!-- Data tables -->
           <div class="card shadow mb-4">
+            <div class="card-header">
+              <div class="row w-100">
+                <div class="col-auto ml-auto pt-1" @jxnBind($rqFundCount)>
+                   @jxnHtml($rqFundCount)
+                </div>
+              </div>
+            </div>
             <div class="card-body" @jxnBind($rqFundPage)>
             </div>
           </div>

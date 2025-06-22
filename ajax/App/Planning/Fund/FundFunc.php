@@ -29,6 +29,7 @@ class FundFunc extends FuncComponent
             ->success(trans('tontine.fund.messages.enabled'));
 
         $this->cl(FundPage::class)->page();
+        $this->cl(FundCount::class)->render();
     }
 
     public function disable(int $defId)
@@ -39,5 +40,6 @@ class FundFunc extends FuncComponent
             ->success(trans('tontine.fund.messages.disabled'));
 
         $this->cl(FundPage::class)->page();
+        $this->cl(FundCount::class)->render();
     }
 }

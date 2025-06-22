@@ -1,6 +1,7 @@
 @php
   $rqMember = rq(Ajax\App\Planning\Member\Member::class);
   $rqMemberPage = rq(Ajax\App\Planning\Member\MemberPage::class);
+  $rqMemberCount = rq(Ajax\App\Planning\Member\MemberCount::class);
 @endphp
           <div class="section-body">
             <div class="row mb-2">
@@ -28,8 +29,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-auto" style="width:100px;">
-                  &nbsp;
+                <div class="col-auto ml-auto pt-1" @jxnBind($rqMemberCount)>
+                   @jxnHtml($rqMemberCount)
                 </div>
               </div>
             </div>
