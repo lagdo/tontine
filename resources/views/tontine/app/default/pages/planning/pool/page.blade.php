@@ -28,19 +28,20 @@
                     <tbody>
 @foreach ($defs as $def)
 @php
-  $toggleClass = $def->pools_count > 0 ? 'btn-pool-disable' : 'btn-pool-enable';
-  $toggleIcon = $def->pools_count > 0 ? 'fa fa-toggle-on' : 'fa fa-toggle-off';
+  $count = $def->pools->count();
+  $toggleClass = $count > 0 ? 'btn-pool-disable' : 'btn-pool-enable';
+  $toggleIcon = $count > 0 ? 'fa fa-toggle-on' : 'fa fa-toggle-off';
 @endphp
                       <tr>
                         <td><b>{{ $def->title }}</b></td>
                         <td class="table-item-toggle" data-def-id="{{ $def->id }}">
                           <a role="link" tabindex="0" class="{{ $toggleClass }}"><i class="{{ $toggleIcon }}"></i></a>
-@if ($def->pools_in_round_count > $def->pools_count)
+@if ($def->pools_in_round_count > $count)
                           <i class="fa fa-compress-alt fa-rotate-by rotate-by-45deg"></i>
 @endif
                         </td>
                         <td class="table-item-menu">
-@if($def->pools_count > 0)
+@if($count > 0)
 @php
   $menus = !$def->remit_planned ? [] : [null, [
       'class' => 'btn-pool-planning',

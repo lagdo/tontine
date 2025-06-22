@@ -121,8 +121,7 @@ class Pool extends Base
      */
     private function filterOnDates(Builder $query, Carbon $startDate, Carbon $endDate): Builder
     {
-        return $query->distinct()
-            ->where('vp.end_date', '>=', $startDate)
+        return $query->where('vp.end_date', '>=', $startDate)
             ->where('vp.start_date', '<=', $endDate);
     }
 

@@ -49,7 +49,7 @@ class FundService
     public function getFundDefs(Round $round, ?bool $filter, int $page = 0): Collection
     {
         return $this->getQuery($round, $filter)
-            ->withCount([
+            ->with([
                 'funds' => fn(Builder|Relation $q) => $q->where('round_id', $round->id),
             ])
             ->withCount([
@@ -113,15 +113,23 @@ class FundService
         $def = $this->getFundDef($round, $defId);
         if(!$def || $def->funds_count > 0)
         {
-            return;
+            return; // Todo: throw an exception
+        }
+
+        $itemQuery = Fund::withoutGlobalScopes()->where('def_id', $defId);
+        $startSession = $this->getStartSession($round, $itemQuery);
+        $endSession = $this->getEndSession($round, $itemQuery);
+        if($endSession->day_date <= $startSession->day_date)
+        {
+            return; // Todo: throw an exception
         }
 
         // Create the fund
         $def->funds()->create([
             'round_id' => $round->id,
-            'start_sid' => $round->start->id,
-            'end_sid' => $round->end->id,
-            'interest_sid' => $round->end->id,
+            'start_sid' => $startSession->id,
+            'end_sid' => $endSession->id,
+            'interest_sid' => $endSession->id,
         ]);
     }
 

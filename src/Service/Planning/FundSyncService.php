@@ -25,9 +25,9 @@ class FundSyncService
         ], [
             'def_id' => $round->guild->default_fund->id,
             'round_id' => $round->id,
-            'start_sid' => $round->start->id,
-            'end_sid' => $round->end->id,
-            'interest_sid' => $round->end->id,
+            'start_sid' => $pool->start_sid,
+            'end_sid' => $pool->end_sid,
+            'interest_sid' => $pool->end_sid,
         ]);
     }
 

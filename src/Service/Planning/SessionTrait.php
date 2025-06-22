@@ -114,4 +114,62 @@ trait SessionTrait
             ->orderBy('day_date', 'asc')
             ->first();
     }
+
+    /**
+     * Find the first session for a new pool or fund.
+     *
+     * @param Round $round
+     * @param Builder $itemQuery
+     *
+     * @return Session
+     */
+    private function getStartSession(Round $round, Builder $itemQuery): Session
+    {
+        $prevEndSession = Session::select(['id', 'day_date'])
+            ->whereIn('id', $itemQuery->select(['end_sid']))
+            ->where('day_date', '<', $round->end->day_date)
+            ->orderBy('day_date', 'desc')
+            ->first();
+        if(!$prevEndSession)
+        {
+            return $round->start;
+        }
+
+        $firstSession = $round->sessions()
+            ->where('day_date', '>', $prevEndSession->day_date)
+            ->orderBy('day_date', 'asc')
+            ->first();
+        return $firstSession !== null &&
+            $firstSession->day_date > $round->start->day_date ?
+            $firstSession : $round->start;
+    }
+
+    /**
+     * Find the last session for a new pool or fund.
+     *
+     * @param Round $round
+     * @param Builder $itemQuery
+     *
+     * @return Session
+     */
+    private function getEndSession(Round $round, Builder $itemQuery): Session
+    {
+        $nextStartSession = Session::select(['id', 'day_date'])
+            ->whereIn('id', $itemQuery->select(['start_sid']))
+            ->where('day_date', '>', $round->start->day_date)
+            ->orderBy('day_date', 'asc')
+            ->first();
+        if(!$nextStartSession)
+        {
+            return $round->end;
+        }
+
+        $lastSession = $round->sessions()
+            ->where('day_date', '<', $nextStartSession->day_date)
+            ->orderBy('day_date', 'desc')
+            ->first();
+        return $lastSession !== null &&
+            $lastSession->day_date < $round->end->day_date ?
+            $lastSession : $round->end;
+    }
 }

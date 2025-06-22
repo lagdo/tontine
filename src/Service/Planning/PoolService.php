@@ -53,7 +53,7 @@ class PoolService
     public function getPoolDefs(Round $round, ?bool $filter, int $page = 0): Collection
     {
         return $this->getQuery($round, $filter)
-            ->withCount([
+            ->with([
                 'pools' => fn(Builder|Relation $q) => $q->where('round_id', $round->id),
             ])
             ->withCount([
@@ -102,15 +102,23 @@ class PoolService
         $def = $this->getPoolDef($round, $defId);
         if(!$def || $def->pools->count() > 0)
         {
-            return;
+            return; // Todo: throw an exception
+        }
+
+        $itemQuery = Pool::withoutGlobalScopes()->where('def_id', $defId);
+        $startSession = $this->getStartSession($round, $itemQuery);
+        $endSession = $this->getEndSession($round, $itemQuery);
+        if($endSession->day_date <= $startSession->day_date)
+        {
+            return; // Todo: throw an exception
         }
 
         // Create the pool
-        DB::transaction(function() use($def, $round) {
+        DB::transaction(function() use($def, $round, $startSession, $endSession) {
             $pool = $def->pools()->create([
                 'round_id' => $round->id,
-                'start_sid' => $round->start->id,
-                'end_sid' => $round->end->id,
+                'start_sid' => $startSession->id,
+                'end_sid' => $endSession->id,
             ]);
 
             $this->fundSyncService->poolEnabled($round, $pool);
