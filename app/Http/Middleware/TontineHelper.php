@@ -11,7 +11,7 @@ use Siak\Tontine\Service\LocaleService;
 
 use function app;
 use function html;
-use function Jaxon\jaxon;
+use function jaxon;
 
 class TontineHelper
 {

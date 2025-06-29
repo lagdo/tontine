@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Closure;
 
-use function Jaxon\jaxon;
+use function jaxon;
 use function storage_path;
 
 class TontineAnnotations

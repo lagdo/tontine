@@ -14,7 +14,7 @@ use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\TenantService;
 
 use function auth;
-use function Jaxon\jaxon;
+use function jaxon;
 use function view;
 
 class TontineTenant

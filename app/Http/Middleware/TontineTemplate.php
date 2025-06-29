@@ -9,7 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\View;
 
 use function config;
-use function Jaxon\jaxon;
+use function jaxon;
 use function resource_path;
 
 class TontineTemplate

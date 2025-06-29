@@ -12,7 +12,7 @@ use Closure;
 
 use function auth;
 use function setlocale;
-use function Jaxon\jaxon;
+use function jaxon;
 
 class TontineLocale
 {
