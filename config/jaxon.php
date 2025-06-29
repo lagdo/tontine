@@ -6,7 +6,7 @@ return [
         'faker' => env('APP_FAKER', false),
         'helpers' => true,
         'request' => [
-            'route' => 'ajax',
+            'route' => 'jaxon.ajax',
             'middlewares' => [
                 'web',
                 'tontine',
@@ -15,8 +15,7 @@ return [
                 'jaxon.ajax',
             ],
         ],
-        // 'directories' => [
-        // ],
+        // 'directories' => [],
         'views' => [
             // 'pagination' => [], // Is set by the TontineTemplate middleware
         ],

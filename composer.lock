@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1222031870ce04d59c2f9a214f6f4d19",
+    "content-hash": "a23f2f86b75c73bd38e0ea93bcbb516f",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -1495,21 +1495,21 @@
         },
         {
             "name": "jaxon-php/jaxon-annotations",
-            "version": "dev-main",
+            "version": "v3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-annotations.git",
-                "reference": "e051dc3ea52d2229337050cc6bd5ab0e7b5fc70a"
+                "reference": "dc1e3a698ff81504a4ffc0ea4004a5cd3c82c289"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-annotations/zipball/e051dc3ea52d2229337050cc6bd5ab0e7b5fc70a",
-                "reference": "e051dc3ea52d2229337050cc6bd5ab0e7b5fc70a",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-annotations/zipball/dc1e3a698ff81504a4ffc0ea4004a5cd3c82c289",
+                "reference": "dc1e3a698ff81504a4ffc0ea4004a5cd3c82c289",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "jaxon-php/jaxon-core": "dev-main",
+                "jaxon-php/jaxon-core": "^5.0",
                 "mindplay/annotations": "^1.3",
                 "php": ">=8.0"
             },
@@ -1518,7 +1518,6 @@
                 "phpunit/phpcov": "^8.2",
                 "phpunit/phpunit": "^9.5"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -1549,11 +1548,11 @@
                 "issues": "https://github.com/jaxon-php/jaxon-annotations/issues",
                 "source": "https://github.com/jaxon-php/jaxon-annotations"
             },
-            "time": "2025-05-08T22:39:39+00:00"
+            "time": "2025-06-24T01:23:42+00:00"
         },
         {
             "name": "jaxon-php/jaxon-config",
-            "version": "dev-main",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-config.git",
@@ -1574,7 +1573,6 @@
                 "phpunit/phpcov": "^8.2",
                 "phpunit/phpunit": "^9.5"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -1605,22 +1603,22 @@
         },
         {
             "name": "jaxon-php/jaxon-core",
-            "version": "dev-main",
+            "version": "v5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-core.git",
-                "reference": "b233e5a84b4dd079ccc8be81faad17a63fcb31b0"
+                "reference": "58358e087f25375b2f605a78ea53f37124813c86"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/b233e5a84b4dd079ccc8be81faad17a63fcb31b0",
-                "reference": "b233e5a84b4dd079ccc8be81faad17a63fcb31b0",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/58358e087f25375b2f605a78ea53f37124813c86",
+                "reference": "58358e087f25375b2f605a78ea53f37124813c86",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "jaxon-php/jaxon-config": "dev-main",
-                "jaxon-php/jaxon-utils": "dev-main",
+                "jaxon-php/jaxon-config": "^1.0",
+                "jaxon-php/jaxon-utils": "^2.0",
                 "nyholm/psr7": "^1.8",
                 "nyholm/psr7-server": "^1.1",
                 "php": ">=8.0",
@@ -1632,18 +1630,17 @@
                 "psr/log": "^1.0|^2.0|^3.0"
             },
             "require-dev": {
-                "jaxon-php/jaxon-dialogs": "dev-main",
-                "jaxon-php/jaxon-upload": "dev-main",
-                "lagdo/twitter-feed": "dev-test",
+                "jaxon-php/jaxon-dialogs": "^5.0",
+                "jaxon-php/jaxon-upload": "^2.0",
                 "php-coveralls/php-coveralls": "^2.5",
                 "phpunit/phpcov": "^8.2",
                 "phpunit/phpunit": "^9.5"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
-                    "src/functions.php"
+                    "src/jaxon_ns.php",
+                    "src/jaxon_fn.php"
                 ],
                 "psr-4": {
                     "Jaxon\\": "src/"
@@ -1683,24 +1680,24 @@
                 "issues": "https://github.com/jaxon-php/jaxon-core/issues",
                 "source": "https://github.com/jaxon-php/jaxon-core"
             },
-            "time": "2025-06-14T14:36:04+00:00"
+            "time": "2025-06-24T00:37:41+00:00"
         },
         {
             "name": "jaxon-php/jaxon-dialogs",
-            "version": "dev-main",
+            "version": "v5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-dialogs.git",
-                "reference": "edde0ac85a2bca42f51b783e417c1b42e812efcc"
+                "reference": "864b9f1a8718a8178f736d2a7b2d21e2daeec7b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-dialogs/zipball/edde0ac85a2bca42f51b783e417c1b42e812efcc",
-                "reference": "edde0ac85a2bca42f51b783e417c1b42e812efcc",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-dialogs/zipball/864b9f1a8718a8178f736d2a7b2d21e2daeec7b8",
+                "reference": "864b9f1a8718a8178f736d2a7b2d21e2daeec7b8",
                 "shasum": ""
             },
             "require": {
-                "jaxon-php/jaxon-core": "dev-main",
+                "jaxon-php/jaxon-core": "^5.0",
                 "php": ">=8.0"
             },
             "require-dev": {
@@ -1708,7 +1705,6 @@
                 "phpunit/phpcov": "^8.2",
                 "phpunit/phpunit": "^9.5"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -1744,30 +1740,29 @@
                 "issues": "https://github.com/jaxon-php/jaxon-dialogs/issues",
                 "source": "https://github.com/jaxon-php/jaxon-dialogs"
             },
-            "time": "2025-06-13T21:21:59+00:00"
+            "time": "2025-06-24T00:37:41+00:00"
         },
         {
             "name": "jaxon-php/jaxon-laravel",
-            "version": "dev-main",
+            "version": "v5.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-laravel.git",
-                "reference": "395d190705041522ba97cf3e6f14b93378b74cbc"
+                "reference": "45c33400f10d20e24d38996e75cc72fbed147b67"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-laravel/zipball/395d190705041522ba97cf3e6f14b93378b74cbc",
-                "reference": "395d190705041522ba97cf3e6f14b93378b74cbc",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-laravel/zipball/45c33400f10d20e24d38996e75cc72fbed147b67",
+                "reference": "45c33400f10d20e24d38996e75cc72fbed147b67",
                 "shasum": ""
             },
             "require": {
                 "illuminate/support": "7.*|8.*|9.*|10.*|11.*|12.*",
-                "jaxon-php/jaxon-core": "dev-main"
+                "jaxon-php/jaxon-core": "^5.0"
             },
             "provide": {
-                "jaxon-php/jaxon-view-blade": "dev-main"
+                "jaxon-php/jaxon-view-blade": "^5.0"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -1803,13 +1798,13 @@
             ],
             "support": {
                 "issues": "https://github.com/jaxon-php/jaxon-laravel/issues",
-                "source": "https://github.com/jaxon-php/jaxon-laravel/tree/main"
+                "source": "https://github.com/jaxon-php/jaxon-laravel/tree/v5.0.2"
             },
-            "time": "2025-06-14T00:11:56+00:00"
+            "time": "2025-06-29T01:58:59+00:00"
         },
         {
             "name": "jaxon-php/jaxon-utils",
-            "version": "dev-main",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-utils.git",
@@ -1830,7 +1825,6 @@
                 "phpunit/phpcov": "^8.2",
                 "phpunit/phpunit": "^9.5"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -11602,12 +11596,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "jaxon-php/jaxon-annotations": 20,
-        "jaxon-php/jaxon-core": 20,
-        "jaxon-php/jaxon-dialogs": 20,
-        "jaxon-php/jaxon-laravel": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -11616,6 +11605,6 @@
         "ext-intl": "*",
         "ext-json": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
