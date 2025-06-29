@@ -1744,16 +1744,16 @@
         },
         {
             "name": "jaxon-php/jaxon-laravel",
-            "version": "v5.0.2",
+            "version": "v5.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-laravel.git",
-                "reference": "45c33400f10d20e24d38996e75cc72fbed147b67"
+                "reference": "048d1ffcd0696810abd4695411197e816b1e4387"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-laravel/zipball/45c33400f10d20e24d38996e75cc72fbed147b67",
-                "reference": "45c33400f10d20e24d38996e75cc72fbed147b67",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-laravel/zipball/048d1ffcd0696810abd4695411197e816b1e4387",
+                "reference": "048d1ffcd0696810abd4695411197e816b1e4387",
                 "shasum": ""
             },
             "require": {
@@ -1798,9 +1798,9 @@
             ],
             "support": {
                 "issues": "https://github.com/jaxon-php/jaxon-laravel/issues",
-                "source": "https://github.com/jaxon-php/jaxon-laravel/tree/v5.0.2"
+                "source": "https://github.com/jaxon-php/jaxon-laravel/tree/v5.0.3"
             },
-            "time": "2025-06-29T01:58:59+00:00"
+            "time": "2025-06-29T19:55:36+00:00"
         },
         {
             "name": "jaxon-php/jaxon-utils",
