@@ -11,6 +11,7 @@ use Siak\Tontine\Model\User;
 use Closure;
 
 use function auth;
+use function config;
 use function setlocale;
 use function jaxon;
 
@@ -24,6 +25,7 @@ class TontineLocale
     private function getLocale(Request $request): string
     {
         $locale = LaravelLocalization::getCurrentLocale();
+        $jaxonRouteName = config('jaxon.app.request.route', 'jaxon.ajax');
         /** @var User */
         $user = auth()->user();
         // The Jaxon request processing path is not localized. So we need to save the current
@@ -38,7 +40,7 @@ class TontineLocale
                 $user->saveProperties($properties);
             }
         }
-        elseif($request->routeIs('jaxon'))
+        elseif($request->routeIs($jaxonRouteName))
         {
             // For Jaxon requests, try to get the current locale from the database.
             $locale = $user->properties['locale'] ?? LaravelLocalization::getCurrentLocale();
