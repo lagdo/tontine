@@ -28,7 +28,7 @@ class Loan extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(LoanPage::class)->page();
         $this->cl(Balance::class)->render();
@@ -37,7 +37,7 @@ class Loan extends Component
     /**
      * @exclude
      */
-    public function show()
+    public function show(): void
     {
         $this->render();
     }

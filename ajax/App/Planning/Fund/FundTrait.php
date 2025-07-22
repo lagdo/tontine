@@ -41,7 +41,7 @@ trait FundTrait
     /**
      * @return void
      */
-    protected function getFund()
+    protected function getFund(): void
     {
         if($this->target()->method() === 'fund')
         {

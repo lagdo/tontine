@@ -21,7 +21,7 @@ class SessionFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function save(array $formValues)
+    public function save(array $formValues): void
     {
         $pool = $this->stash()->get('planning.pool');
         $values = $this->validator->validateItem($formValues);
@@ -37,7 +37,7 @@ class SessionFunc extends FuncComponent
         $this->alert()->success(trans('tontine.session.messages.pool.saved'));
     }
 
-    public function enableSession(int $sessionId)
+    public function enableSession(int $sessionId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         if(!($session = $this->poolService->getGuildSession($guild, $sessionId)))
@@ -58,7 +58,7 @@ class SessionFunc extends FuncComponent
         $this->alert()->success(trans('tontine.session.messages.pool.saved'));
     }
 
-    public function disableSession(int $sessionId)
+    public function disableSession(int $sessionId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         if(!($session = $this->poolService->getGuildSession($guild, $sessionId)))

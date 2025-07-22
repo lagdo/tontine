@@ -23,7 +23,7 @@ class Account extends Component
     /**
      * @callback jaxon.ajax.callback.hideMenuOnMobile
      */
-    public function home()
+    public function home(): void
     {
         $this->render();
     }
@@ -31,7 +31,7 @@ class Account extends Component
     /**
      * @inheritDoc
      */
-    protected function before()
+    protected function before(): void
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.finance'));
     }
@@ -47,7 +47,7 @@ class Account extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->response->jo('Tontine')->setSmScreenHandler('account-sm-screens');
 

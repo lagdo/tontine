@@ -45,7 +45,7 @@ class FundFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function create(array $formValues)
+    public function create(array $formValues): void
     {
         $values = $this->validator->validateItem($formValues);
 
@@ -58,7 +58,7 @@ class FundFunc extends FuncComponent
             ->success(trans('tontine.fund.messages.created'));
     }
 
-    public function edit(int $fundId)
+    public function edit(int $fundId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $fund = $this->fundService->getFund($guild, $fundId);
@@ -80,7 +80,7 @@ class FundFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function update(int $fundId, array $formValues)
+    public function update(int $fundId, array $formValues): void
     {
         $values = $this->validator->validateItem($formValues);
 
@@ -94,7 +94,7 @@ class FundFunc extends FuncComponent
             ->success(trans('tontine.fund.messages.updated'));
     }
 
-    public function toggle(int $fundId)
+    public function toggle(int $fundId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $fund = $this->fundService->getFund($guild, $fundId);
@@ -103,7 +103,7 @@ class FundFunc extends FuncComponent
         $this->cl(FundPage::class)->page();
     }
 
-    public function delete(int $fundId)
+    public function delete(int $fundId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $fund = $this->fundService->getFund($guild, $fundId);

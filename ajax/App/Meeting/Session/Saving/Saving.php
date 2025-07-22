@@ -21,7 +21,7 @@ class Saving extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(SavingPage::class)->page();
     }
@@ -29,7 +29,7 @@ class Saving extends Component
     /**
      * @exclude
      */
-    public function show()
+    public function show(): void
     {
         $this->render();
     }

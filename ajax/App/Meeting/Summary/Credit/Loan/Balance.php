@@ -28,7 +28,7 @@ class Balance extends Component
         ]);
     }
 
-    public function details()
+    public function details(): void
     {
         $session = $this->stash()->get('summary.session');
         $balances = $this->balanceCalculator->getBalances($session, true);

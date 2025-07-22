@@ -18,7 +18,7 @@ class ReceivableFunc extends FuncComponent
      *
      * @return mixed
      */
-    public function addDeposit(int $receivableId)
+    public function addDeposit(int $receivableId): void
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
@@ -33,7 +33,7 @@ class ReceivableFunc extends FuncComponent
      *
      * @return mixed
      */
-    public function delDeposit(int $receivableId)
+    public function delDeposit(int $receivableId): void
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
@@ -46,7 +46,7 @@ class ReceivableFunc extends FuncComponent
     /**
      * @return mixed
      */
-    public function addAllDeposits()
+    public function addAllDeposits(): void
     {
         $pool = $this->stash()->get('meeting.pool');
         if(!$pool->deposit_fixed)
@@ -64,7 +64,7 @@ class ReceivableFunc extends FuncComponent
     /**
      * @return mixed
      */
-    public function delAllDeposits()
+    public function delAllDeposits(): void
     {
         $pool = $this->stash()->get('meeting.pool');
         if(!$pool->deposit_fixed)

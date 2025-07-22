@@ -32,7 +32,7 @@ class Member extends Component
     /**
      * @inheritDoc
      */
-    protected function before()
+    protected function before(): void
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.tontine'));
     }
@@ -48,7 +48,7 @@ class Member extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(MemberPage::class)->page();
     }

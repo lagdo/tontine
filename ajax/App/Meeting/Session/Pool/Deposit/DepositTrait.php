@@ -30,7 +30,7 @@ trait DepositTrait
      */
     protected DepositService $depositService;
 
-    private function showTotal()
+    private function showTotal(): void
     {
         $session = $this->stash()->get('meeting.session');
         $pool = $this->stash()->get('meeting.pool');

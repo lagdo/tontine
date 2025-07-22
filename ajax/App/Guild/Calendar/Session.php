@@ -61,7 +61,7 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(SessionPage::class)->page();
     }

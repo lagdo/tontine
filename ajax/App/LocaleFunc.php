@@ -16,7 +16,7 @@ class LocaleFunc extends FuncComponent
     /**
      * @callback jaxon.ajax.callback.selectCurrency
      */
-    public function selectCurrency(string $countryCode)
+    public function selectCurrency(string $countryCode): void
     {
         $html = $this->renderView('pages.admin.guild.currency', [
             'currencies' => !$countryCode ? [] :

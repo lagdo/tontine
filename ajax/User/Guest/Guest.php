@@ -21,7 +21,7 @@ class Guest extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(GuestPage::class)->page();
     }

@@ -31,7 +31,7 @@ class MemberFunc extends FuncComponent
     public function __construct(private MemberService $memberService)
     {}
 
-    public function add()
+    public function add(): void
     {
         $title = trans('tontine.member.titles.add');
         $content = $this->renderView('pages.guild.member.add');
@@ -50,7 +50,7 @@ class MemberFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function create(array $formValues)
+    public function create(array $formValues): void
     {
         $values = $this->validator->validateItem($formValues);
         $guild = $this->stash()->get('tenant.guild');
@@ -63,7 +63,7 @@ class MemberFunc extends FuncComponent
         $this->cl(MemberPage::class)->page();
     }
 
-    public function addList()
+    public function addList(): void
     {
         $title = trans('tontine.member.titles.add');
         $content = $this->renderView('pages.guild.member.list');
@@ -130,7 +130,7 @@ class MemberFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function createList(array $formValues)
+    public function createList(array $formValues): void
     {
         $values = $this->parseMemberList($formValues['members'] ?? '');
         $guild = $this->stash()->get('tenant.guild');
@@ -143,7 +143,7 @@ class MemberFunc extends FuncComponent
         $this->cl(MemberPage::class)->page();
     }
 
-    public function edit(int $memberId)
+    public function edit(int $memberId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $member = $this->memberService->getMember($guild, $memberId);
@@ -166,7 +166,7 @@ class MemberFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function update(int $memberId, array $formValues)
+    public function update(int $memberId, array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $member = $this->memberService->getMember($guild, $memberId);
@@ -180,7 +180,7 @@ class MemberFunc extends FuncComponent
         $this->cl(MemberPage::class)->page();
     }
 
-    public function toggle(int $memberId)
+    public function toggle(int $memberId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $member = $this->memberService->getMember($guild, $memberId);
@@ -189,7 +189,7 @@ class MemberFunc extends FuncComponent
         $this->cl(MemberPage::class)->page();
     }
 
-    public function delete(int $memberId)
+    public function delete(int $memberId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $member = $this->memberService->getMember($guild, $memberId);

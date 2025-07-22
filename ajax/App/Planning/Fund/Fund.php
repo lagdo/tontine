@@ -23,7 +23,7 @@ class Fund extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(FundPage::class)->page();
     }

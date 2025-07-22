@@ -39,7 +39,7 @@ class GuildFunc extends FuncComponent
     /**
      * @di $localeService
      */
-    public function add()
+    public function add(): void
     {
         $title = trans('tontine.titles.add');
         $content = $this->renderView('pages.admin.guild.add', [
@@ -77,7 +77,7 @@ class GuildFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function create(array $formValues)
+    public function create(array $formValues): void
     {
         $values = $this->validator->validateItem($formValues);
         $user = $this->tenantService->user();
@@ -96,7 +96,7 @@ class GuildFunc extends FuncComponent
     /**
      * @di $localeService
      */
-    public function edit(int $guildId)
+    public function edit(int $guildId): void
     {
         $user = $this->tenantService->user();
         $guild = $this->guildService->getGuild($user, $guildId);
@@ -124,7 +124,7 @@ class GuildFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function update(int $guildId, array $formValues)
+    public function update(int $guildId, array $formValues): void
     {
         $values = $this->validator->validateItem($formValues);
         $user = $this->tenantService->user();
@@ -150,7 +150,7 @@ class GuildFunc extends FuncComponent
         }
     }
 
-    public function delete(int $guildId)
+    public function delete(int $guildId): void
     {
         $user = $this->tenantService->user();
         $this->guildService->deleteGuild($user, $guildId);

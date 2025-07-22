@@ -84,7 +84,7 @@ class MenuFunc extends FuncComponent
         $this->tenantService->setGuild($guild);
     }
 
-    public function saveGuild(int $guildId)
+    public function saveGuild(int $guildId): void
     {
         $user = $this->tenantService->user();
         if(!($guild = $this->guildService->getUserOrGuestGuild($user, $guildId)))

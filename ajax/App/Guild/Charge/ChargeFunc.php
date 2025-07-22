@@ -35,7 +35,7 @@ class ChargeFunc extends FuncComponent
     public function __construct(protected ChargeService $chargeService)
     {}
 
-    public function select()
+    public function select(): void
     {
         $title = '';
         $content = $this->renderView('pages.guild.charge.select', [
@@ -58,7 +58,7 @@ class ChargeFunc extends FuncComponent
      * @di $localeService
      * @databag faker
      */
-    public function add(int $group)
+    public function add(int $group): void
     {
         $this->modal()->hide();
 
@@ -88,7 +88,7 @@ class ChargeFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function create(int $group, array $formValues)
+    public function create(int $group, array $formValues): void
     {
         if($group !== self::$GROUP_FIXED && $group !== self::$GROUP_VARIABLE)
         {
@@ -121,7 +121,7 @@ class ChargeFunc extends FuncComponent
     /**
      * @di $localeService
      */
-    public function edit(int $chargeId)
+    public function edit(int $chargeId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $charge = $this->chargeService->getCharge($guild, $chargeId);
@@ -150,7 +150,7 @@ class ChargeFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function update(int $chargeId, array $formValues)
+    public function update(int $chargeId, array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $charge = $this->chargeService->getCharge($guild, $chargeId);
@@ -173,7 +173,7 @@ class ChargeFunc extends FuncComponent
         $this->cl(ChargePage::class)->page();
     }
 
-    public function toggle(int $chargeId)
+    public function toggle(int $chargeId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $charge = $this->chargeService->getCharge($guild, $chargeId);
@@ -182,7 +182,7 @@ class ChargeFunc extends FuncComponent
         $this->cl(ChargePage::class)->page();
     }
 
-    public function delete(int $chargeId)
+    public function delete(int $chargeId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $charge = $this->chargeService->getCharge($guild, $chargeId);

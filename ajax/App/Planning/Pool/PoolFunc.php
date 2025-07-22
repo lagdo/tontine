@@ -21,7 +21,7 @@ class PoolFunc extends FuncComponent
     public function __construct(private PoolService $poolService)
     {}
 
-    public function enable(int $defId)
+    public function enable(int $defId): void
     {
         $round = $this->stash()->get('tenant.round');
         $this->poolService->enablePool($round, $defId);
@@ -32,7 +32,7 @@ class PoolFunc extends FuncComponent
         $this->cl(PoolCount::class)->render();
     }
 
-    public function disable(int $defId)
+    public function disable(int $defId): void
     {
         $round = $this->stash()->get('tenant.round');
         $this->poolService->disablePool($round, $defId);

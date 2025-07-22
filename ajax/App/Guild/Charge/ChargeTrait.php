@@ -26,7 +26,7 @@ trait ChargeTrait
         ];
     }
 
-    private function getChargeTypes(int $group = -1)
+    private function getChargeTypes(int $group = -1): array
     {
         if($group < 0)
         {
@@ -46,7 +46,7 @@ trait ChargeTrait
         ];
     }
 
-    private function getChargePeriods(int $group = -1)
+    private function getChargePeriods(int $group = -1): array
     {
         if($group < 0)
         {

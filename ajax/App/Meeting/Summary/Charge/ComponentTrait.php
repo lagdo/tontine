@@ -59,7 +59,7 @@ trait ComponentTrait
      * @return void
      */
 
-    protected function getCharge()
+    protected function getCharge(): void
     {
         if($this->target()->method() === 'charge')
         {
@@ -74,7 +74,7 @@ trait ComponentTrait
     /**
      * @return void
      */
-    protected function checkChargeEdit()
+    protected function checkChargeEdit(): void
     {
         $session = $this->stash()->get('summary.session');
         if(!$session || $session->closed)

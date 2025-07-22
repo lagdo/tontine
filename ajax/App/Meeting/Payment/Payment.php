@@ -47,7 +47,7 @@ class Payment extends Component
      * @before getOpenedSessions
      * @callback jaxon.ajax.callback.hideMenuOnMobile
      */
-    public function home()
+    public function home(): void
     {
         $this->render();
     }
@@ -55,7 +55,7 @@ class Payment extends Component
     /**
      * @inheritDoc
      */
-    protected function before()
+    protected function before(): void
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.meeting'));
     }
@@ -73,7 +73,7 @@ class Payment extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(PaymentPage::class)->page();
 

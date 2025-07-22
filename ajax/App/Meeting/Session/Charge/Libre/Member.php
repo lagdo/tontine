@@ -32,7 +32,7 @@ class Member extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(MemberPage::class)->page();
         $this->showTotal();
@@ -43,7 +43,7 @@ class Member extends Component
      *
      * @return mixed
      */
-    public function charge(int $chargeId)
+    public function charge(int $chargeId): void
     {
         $this->bag('meeting')->set('fee.member.filter', null);
         $this->bag('meeting')->set('fee.member.search', '');
@@ -52,7 +52,7 @@ class Member extends Component
         $this->render();
     }
 
-    public function toggleFilter()
+    public function toggleFilter(): void
     {
         $filter = $this->bag('meeting')->get('fee.member.filter', null);
         // Switch between null, true and false
@@ -63,7 +63,7 @@ class Member extends Component
         $this->cl(MemberPage::class)->page();
     }
 
-    public function search(string $search)
+    public function search(string $search): void
     {
         $this->bag('meeting')->set('fee.member.search', trim($search));
         $this->bag('meeting')->set('fee.member.page', 1);

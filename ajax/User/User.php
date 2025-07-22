@@ -21,7 +21,7 @@ class User extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(Host\Host::class)->render();
         $this->cl(Guest\Guest::class)->render();

@@ -42,7 +42,7 @@ class Access extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $guild = $this->tenantService->user()->guilds->first();
         $this->bag('user.access')->set('guild.id', $guild->id);
@@ -51,7 +51,7 @@ class Access extends Component
         $this->cl(GuildAccess::class)->render();
     }
 
-    public function home(int $inviteId)
+    public function home(int $inviteId): void
     {
         if($this->tenantService->user()->guilds->count() > 0)
         {

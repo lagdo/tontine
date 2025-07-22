@@ -21,7 +21,7 @@ class FundFunc extends FuncComponent
     public function __construct(private FundService $fundService)
     {}
 
-    public function enable(int $defId)
+    public function enable(int $defId): void
     {
         $round = $this->stash()->get('tenant.round');
         $this->fundService->enableFund($round, $defId);
@@ -32,7 +32,7 @@ class FundFunc extends FuncComponent
         $this->cl(FundCount::class)->render();
     }
 
-    public function disable(int $defId)
+    public function disable(int $defId): void
     {
         $round = $this->stash()->get('tenant.round');
         $this->fundService->disableFund($round, $defId);

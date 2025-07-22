@@ -18,7 +18,7 @@ class FakerFunc extends FuncComponent
     public function __construct(private MemberService $memberService)
     {}
 
-    public function members()
+    public function members(): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $count = intval($this->bag('faker')->get('member.count', 10));

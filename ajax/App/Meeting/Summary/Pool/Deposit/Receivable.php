@@ -24,7 +24,7 @@ class Receivable extends Component
      *
      * @return mixed
      */
-    public function pool(int $poolId)
+    public function pool(int $poolId): void
     {
         $this->bag('summary')->set('receivable.page', 1);
 
@@ -44,13 +44,13 @@ class Receivable extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(ReceivablePage::class)->page();
         $this->showTotal();
     }
 
-    public function toggleFilter()
+    public function toggleFilter(): void
     {
         $onlyUnpaid = $this->bag('summary')->get('receivable.filter', null);
         // Switch between null, true and false
@@ -61,7 +61,7 @@ class Receivable extends Component
         $this->cl(ReceivablePage::class)->page();
     }
 
-    public function search(string $search)
+    public function search(string $search): void
     {
         $this->bag('summary')->set('receivable.search', trim($search));
         $this->bag('summary')->set('receivable.page', 1);

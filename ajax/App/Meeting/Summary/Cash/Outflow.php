@@ -20,7 +20,7 @@ class Outflow extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(OutflowPage::class)->page();
         $this->cl(Balance::class)->render();
@@ -29,7 +29,7 @@ class Outflow extends Component
     /**
      * @exclude
      */
-    public function show()
+    public function show(): void
     {
         $this->render();
     }

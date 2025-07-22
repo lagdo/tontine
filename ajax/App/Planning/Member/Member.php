@@ -25,7 +25,7 @@ class Member extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(MemberPage::class)->page();
     }

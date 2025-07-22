@@ -17,7 +17,7 @@ class Fee extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(FeePage::class)->page(1);
     }
@@ -25,7 +25,7 @@ class Fee extends Component
     /**
      * @exclude
      */
-    public function show()
+    public function show(): void
     {
         $this->render();
     }

@@ -33,7 +33,7 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(SessionHeader::class)->render();
         $this->cl(SessionPage::class)->end();

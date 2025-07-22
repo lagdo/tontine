@@ -19,7 +19,7 @@ class OptionsFunc extends FuncComponent
     public function __construct(private GuildService $guildService)
     {}
 
-    public function editOptions()
+    public function editOptions(): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $options = $this->guildService->getGuildOptions($guild);
@@ -48,7 +48,7 @@ class OptionsFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function saveOptions(array $formValues)
+    public function saveOptions(array $formValues): void
     {
         // Validation
         $guild = $this->stash()->get('tenant.guild');

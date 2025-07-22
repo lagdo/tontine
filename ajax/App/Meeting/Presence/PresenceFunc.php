@@ -17,7 +17,7 @@ class PresenceFunc extends FuncComponent
     public function __construct(private PresenceService $presenceService)
     {}
 
-    public function selectSession(int $sessionId)
+    public function selectSession(int $sessionId): void
     {
         $this->bag('meeting.presence')->set('session.id', $sessionId);
         $this->bag('meeting.presence')->set('member.id', 0);
@@ -30,7 +30,7 @@ class PresenceFunc extends FuncComponent
         $this->cl(Member::class)->render();
     }
 
-    public function selectMember(int $memberId)
+    public function selectMember(int $memberId): void
     {
         $this->bag('meeting.presence')->set('member.id', $memberId);
         $this->bag('meeting.presence')->set('session.id', 0);
@@ -43,7 +43,7 @@ class PresenceFunc extends FuncComponent
         $this->cl(Session::class)->render();
     }
 
-    public function exchange()
+    public function exchange(): void
     {
         $exchange = $this->bag('meeting.presence')->get('exchange', false);
         $this->bag('meeting.presence')->set('exchange', !$exchange);

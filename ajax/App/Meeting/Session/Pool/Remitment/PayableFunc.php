@@ -30,7 +30,7 @@ class PayableFunc extends FuncComponent
     public function __construct(protected RemitmentService $remitmentService)
     {}
 
-    public function createRemitment(int $payableId)
+    public function createRemitment(int $payableId): void
     {
         $pool = $this->stash()->get('meeting.pool');
         if(!$pool->remit_planned || $pool->remit_auction)
@@ -46,7 +46,7 @@ class PayableFunc extends FuncComponent
         $this->cl(PayablePage::class)->render();
     }
 
-    public function addRemitment(int $payableId)
+    public function addRemitment(int $payableId): void
     {
         // if($pool->remit_planned && !$pool->remit_auction)
         // {
@@ -78,7 +78,7 @@ class PayableFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function saveRemitment(array $formValues)
+    public function saveRemitment(array $formValues): void
     {
         $pool = $this->stash()->get('meeting.pool');
         // if($pool->remit_planned && !$pool->remit_auction)
@@ -104,7 +104,7 @@ class PayableFunc extends FuncComponent
     /**
      * @param int $payableId
      */
-    public function deleteRemitment(int $payableId)
+    public function deleteRemitment(int $payableId): void
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');

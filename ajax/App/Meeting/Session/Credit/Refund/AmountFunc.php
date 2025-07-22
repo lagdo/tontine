@@ -36,7 +36,7 @@ class AmountFunc extends FuncComponent
     public function __construct(protected PartialRefundService $refundService)
     {}
 
-    public function edit(int $debtId)
+    public function edit(int $debtId): void
     {
         $session = $this->stash()->get('meeting.session');
         $debt = $this->refundService->getUnpaidDebt($session, $debtId);
@@ -79,7 +79,7 @@ class AmountFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function save(int $debtId, string $amount)
+    public function save(int $debtId, string $amount): void
     {
         // Validation
         $values = $this->validator->validateItem([

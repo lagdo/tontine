@@ -18,7 +18,7 @@ class Payable extends Component
      */
     protected $overrides = Remitment::class;
 
-    public function pool(int $poolId)
+    public function pool(int $poolId): void
     {
         $this->render();
     }
@@ -36,7 +36,7 @@ class Payable extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(Total::class)->render();
         $this->cl(PayablePage::class)->render();

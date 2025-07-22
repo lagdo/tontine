@@ -42,7 +42,7 @@ class Refund extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->response->jo('Tontine')->makeTableResponsive('content-report-refunds');
     }

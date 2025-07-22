@@ -24,7 +24,7 @@ class Presence extends Component
      * @before checkRoundSessions
      * @callback jaxon.ajax.callback.hideMenuOnMobile
      */
-    public function home()
+    public function home(): void
     {
         $this->render();
     }
@@ -32,7 +32,7 @@ class Presence extends Component
     /**
      * @inheritDoc
      */
-    protected function before()
+    protected function before(): void
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.presences'));
         $this->bag('meeting.presence')->set('session.id', 0);
@@ -52,7 +52,7 @@ class Presence extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $exchange = $this->bag('meeting.presence')->get('exchange', false);
         !$exchange ?

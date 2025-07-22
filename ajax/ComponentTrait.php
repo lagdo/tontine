@@ -62,7 +62,7 @@ trait ComponentTrait
     /**
      * @return void
      */
-    protected function checkRoundSessions()
+    protected function checkRoundSessions(): void
     {
         $round = $this->tenantService->round();
         if(!$round || $round->sessions->count() === 0)
@@ -74,7 +74,7 @@ trait ComponentTrait
     /**
      * @return void
      */
-    protected function checkRoundPools()
+    protected function checkRoundPools(): void
     {
         // First check for created sessions
         $this->checkRoundSessions();
@@ -89,7 +89,7 @@ trait ComponentTrait
     /**
      * @return void
      */
-    protected function checkOpenedSessions()
+    protected function checkOpenedSessions(): void
     {
         // First check for created sessions
         $this->checkRoundSessions();

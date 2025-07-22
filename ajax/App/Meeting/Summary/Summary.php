@@ -60,7 +60,7 @@ class Summary extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->pools();
         $this->charges();
@@ -70,7 +70,7 @@ class Summary extends Component
         $this->outflows();
     }
 
-    private function pools()
+    private function pools(): void
     {
         $this->cl(Pool\Deposit\Deposit::class)->show();
         $this->cl(Pool\Remitment\Remitment::class)->show();
@@ -79,7 +79,7 @@ class Summary extends Component
             ->setSmScreenHandler('summary-pools-sm-screens', 'summary-pools');
     }
 
-    private function charges()
+    private function charges(): void
     {
         $this->cl(Charge\Fixed\Fee::class)->show();
         $this->cl(Charge\Libre\Fee::class)->show();
@@ -88,7 +88,7 @@ class Summary extends Component
             ->setSmScreenHandler('summary-charges-sm-screens', 'summary-charges');
     }
 
-    private function savings()
+    private function savings(): void
     {
         $this->cl(Credit\Loan\Loan::class)->show();
         $this->cl(Saving\Saving::class)->show();
@@ -97,17 +97,17 @@ class Summary extends Component
             ->setSmScreenHandler('summary-savings-sm-screens', 'summary-savings');
     }
 
-    private function refunds()
+    private function refunds(): void
     {
         $this->cl(Credit\Refund\Refund::class)->show();
     }
 
-    private function profits()
+    private function profits(): void
     {
         $this->cl(Saving\Profit::class)->show();
     }
 
-    private function outflows()
+    private function outflows(): void
     {
         $this->cl(Cash\Outflow::class)->show();
     }

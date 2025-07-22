@@ -81,7 +81,7 @@ class RefundFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function create(string $debtId)
+    public function create(string $debtId): void
     {
         $session = $this->stash()->get('meeting.session');
         $debt = $this->refundService->getDebt($session, $debtId);
@@ -97,7 +97,7 @@ class RefundFunc extends FuncComponent
         $this->refreshDebts($debtId);
     }
 
-    public function delete(int $debtId)
+    public function delete(int $debtId): void
     {
         $session = $this->stash()->get('meeting.session');
         $debt = $this->refundService->getDebt($session, $debtId);

@@ -24,7 +24,7 @@ class HostFunc extends FuncComponent
     public function __construct(private UserService $userService)
     {}
 
-    public function add()
+    public function add(): void
     {
         $title = trans('tontine.invite.titles.add');
         $content = $this->renderView('pages.admin.user.host.add');
@@ -45,7 +45,7 @@ class HostFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function create(array $formValues)
+    public function create(array $formValues): void
     {
         $values = $this->validator->validateItem($formValues);
         $user = $this->tenantService->user();
@@ -58,7 +58,7 @@ class HostFunc extends FuncComponent
         $this->cl(HostPage::class)->page();
     }
 
-    public function cancel(int $inviteId)
+    public function cancel(int $inviteId): void
     {
         $user = $this->tenantService->user();
         $this->userService->cancelInvite($user, $inviteId);
@@ -68,7 +68,7 @@ class HostFunc extends FuncComponent
         $this->cl(HostPage::class)->page();
     }
 
-    public function delete(int $inviteId)
+    public function delete(int $inviteId): void
     {
         $user = $this->tenantService->user();
         $this->userService->deleteHostInvite($user, $inviteId);

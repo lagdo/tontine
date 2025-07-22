@@ -28,12 +28,12 @@ class Auction extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(AuctionPage::class)->page();
     }
 
-    public function toggleFilter()
+    public function toggleFilter(): void
     {
         $filtered = $this->bag('meeting.auction')->get('filter', null);
         // Switch between null, true and false

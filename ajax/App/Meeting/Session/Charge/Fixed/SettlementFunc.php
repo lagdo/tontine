@@ -11,7 +11,7 @@ class SettlementFunc extends FuncComponent
     /**
      * @exclude
      */
-    public function showTotal()
+    public function showTotal(): void
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
@@ -32,7 +32,7 @@ class SettlementFunc extends FuncComponent
      *
      * @return mixed
      */
-    public function addSettlement(int $billId)
+    public function addSettlement(int $billId): void
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
@@ -48,7 +48,7 @@ class SettlementFunc extends FuncComponent
      *
      * @return mixed
      */
-    public function delSettlement(int $billId)
+    public function delSettlement(int $billId): void
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
@@ -62,7 +62,7 @@ class SettlementFunc extends FuncComponent
      * @before checkChargeEdit
      * @return mixed
      */
-    public function addAllSettlements()
+    public function addAllSettlements(): void
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
@@ -76,7 +76,7 @@ class SettlementFunc extends FuncComponent
      * @before checkChargeEdit
      * @return mixed
      */
-    public function delAllSettlements()
+    public function delAllSettlements(): void
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');

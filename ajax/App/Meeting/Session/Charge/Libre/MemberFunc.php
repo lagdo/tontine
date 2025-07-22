@@ -16,7 +16,7 @@ class MemberFunc extends FuncComponent
      *
      * @return mixed
      */
-    public function addBill(int $memberId, bool $paid)
+    public function addBill(int $memberId, bool $paid): void
     {
         $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');
@@ -34,7 +34,7 @@ class MemberFunc extends FuncComponent
      *
      * @return mixed
      */
-    public function delBill(int $memberId)
+    public function delBill(int $memberId): void
     {
         $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');

@@ -18,7 +18,7 @@ class Guild extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(GuildPage::class)->page();
     }

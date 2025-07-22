@@ -47,7 +47,7 @@ class GuestPage extends PageComponent
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->response->jo('Tontine')->makeTableResponsive('content-guest-invites-page');
     }

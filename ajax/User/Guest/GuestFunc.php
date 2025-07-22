@@ -16,7 +16,7 @@ class GuestFunc extends FuncComponent
     public function __construct(private UserService $userService)
     {}
 
-    public function accept(int $inviteId)
+    public function accept(int $inviteId): void
     {
         $user = $this->tenantService->user();
         $this->userService->acceptInvite($user, $inviteId);
@@ -26,7 +26,7 @@ class GuestFunc extends FuncComponent
         $this->cl(GuestPage::class)->page();
     }
 
-    public function refuse(int $inviteId)
+    public function refuse(int $inviteId): void
     {
         $user = $this->tenantService->user();
         $this->userService->refuseInvite($user, $inviteId);
@@ -36,7 +36,7 @@ class GuestFunc extends FuncComponent
         $this->cl(GuestPage::class)->page();
     }
 
-    public function delete(int $inviteId)
+    public function delete(int $inviteId): void
     {
         $guild = $this->tenantService->guild();
         if($this->userService->deleteGuestInvite($guild, $inviteId))

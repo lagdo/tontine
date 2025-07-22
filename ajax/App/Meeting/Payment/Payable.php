@@ -43,7 +43,7 @@ class Payable extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->response->jo('Tontine')->makeTableResponsive('payment-payables-home');
         $this->response->jo('Tontine')->showSmScreen('payment-payables-home', 'payment-sm-screens');
@@ -52,7 +52,7 @@ class Payable extends Component
         OnPagePaymentPayables::dispatch($payables);
     }
 
-    public function show(int $memberId, int $sessionId)
+    public function show(int $memberId, int $sessionId): void
     {
         $round = $this->stash()->get('tenant.round');
         if(!($member = $this->memberService->getMember($round, $memberId)))

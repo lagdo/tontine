@@ -44,7 +44,7 @@ trait PoolTrait
     /**
      * @return void
      */
-    protected function getPool()
+    protected function getPool(): void
     {
         if($this->target()->method() === 'pool')
         {

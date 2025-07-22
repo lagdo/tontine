@@ -31,7 +31,7 @@ class Participation extends Component
     /**
      * @inheritDoc
      */
-    protected function before()
+    protected function before(): void
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.planning'));
     }
@@ -49,7 +49,7 @@ class Participation extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->response->jo('Tontine')->setSmScreenHandler('finance-sm-screens');
 

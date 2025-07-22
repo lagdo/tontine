@@ -31,7 +31,7 @@ class Charge extends Component
     /**
      * @inheritDoc
      */
-    protected function before()
+    protected function before(): void
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.finance'));
     }
@@ -47,7 +47,7 @@ class Charge extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(ChargePage::class)->page();
     }

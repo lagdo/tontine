@@ -38,7 +38,7 @@ class AmountFunc extends FuncComponent
      *
      * @return void
      */
-    public function edit(int $memberId)
+    public function edit(int $memberId): void
     {
         $round = $this->stash()->get('tenant.round');
         if(!($member = $this->savingService->getMember($round, $memberId)))
@@ -95,7 +95,7 @@ class AmountFunc extends FuncComponent
      *
      * @return void
      */
-    public function save(int $memberId, string $amount)
+    public function save(int $memberId, string $amount): void
     {
         $round = $this->stash()->get('tenant.round');
         if(!($member = $this->savingService->getMember($round, $memberId)))
@@ -124,7 +124,7 @@ class AmountFunc extends FuncComponent
      *
      * @return void
      */
-    public function editStartAmount(int $fundId)
+    public function editStartAmount(int $fundId): void
     {
         $session = $this->stash()->get('meeting.session');
         $fund = $this->getStashedFund();
@@ -157,7 +157,7 @@ class AmountFunc extends FuncComponent
      *
      * @return void
      */
-    public function saveStartAmount(array $formValues)
+    public function saveStartAmount(array $formValues): void
     {
         $session = $this->stash()->get('meeting.session');
         $fund = $this->getStashedFund();
@@ -181,7 +181,7 @@ class AmountFunc extends FuncComponent
      *
      * @return void
      */
-    public function editEndAmount(int $fundId)
+    public function editEndAmount(int $fundId): void
     {
         $session = $this->stash()->get('meeting.session');
         $fund = $this->getStashedFund();
@@ -214,7 +214,7 @@ class AmountFunc extends FuncComponent
      *
      * @return void
      */
-    public function saveEndAmount(array $formValues)
+    public function saveEndAmount(array $formValues): void
     {
         $session = $this->stash()->get('meeting.session');
         $fund = $this->getStashedFund();
@@ -240,7 +240,7 @@ class AmountFunc extends FuncComponent
      *
      * @return void
      */
-    public function saveProfitAmount(string $amount)
+    public function saveProfitAmount(string $amount): void
     {
         $session = $this->stash()->get('meeting.session');
         $fund = $this->getStashedFund();

@@ -22,7 +22,7 @@ class AmountFunc extends FuncComponent
      *
      * @return void
      */
-    private function refresh(int $memberId)
+    private function refresh(int $memberId): void
     {
         $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');
@@ -42,7 +42,7 @@ class AmountFunc extends FuncComponent
      *
      * @return void
      */
-    public function edit(int $memberId)
+    public function edit(int $memberId): void
     {
         $this->stash()->set('meeting.charge.edit', true);
 
@@ -91,7 +91,7 @@ class AmountFunc extends FuncComponent
      *
      * @return void
      */
-    public function save(int $memberId, bool $paid, string $amount)
+    public function save(int $memberId, bool $paid, string $amount): void
     {
         $this->saveAmount($memberId, $paid, $amount);
         $this->showTotal();

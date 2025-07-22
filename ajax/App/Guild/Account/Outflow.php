@@ -19,7 +19,7 @@ class Outflow extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(OutflowPage::class)->page();
     }

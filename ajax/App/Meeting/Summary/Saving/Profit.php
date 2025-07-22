@@ -30,7 +30,7 @@ class Profit extends Component
     /**
      * @inheritDoc
      */
-    protected function before()
+    protected function before(): void
     {
         $session = $this->stash()->get('summary.session');
         // Save the session for the profit components.
@@ -58,7 +58,7 @@ class Profit extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(Fund::class)->render();
     }
@@ -66,7 +66,7 @@ class Profit extends Component
     /**
      * @exclude
      */
-    public function show()
+    public function show(): void
     {
         $session = $this->stash()->get('summary.session');
         $fund = $this->fundService->getDefaultFund($session->round);
@@ -83,7 +83,7 @@ class Profit extends Component
     /**
      * @before getFund
      */
-    public function fund(int $fundId)
+    public function fund(int $fundId): void
     {
         $session = $this->stash()->get('summary.session');
         $fund = $this->stash()->get('summary.saving.fund');
@@ -99,7 +99,7 @@ class Profit extends Component
     /**
      * @before getFund
      */
-    public function amount(int $profitAmount)
+    public function amount(int $profitAmount): void
     {
         if($profitAmount < 0)
         {

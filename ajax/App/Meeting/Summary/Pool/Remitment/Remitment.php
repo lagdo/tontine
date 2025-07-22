@@ -33,7 +33,7 @@ class Remitment extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->response->jo('Tontine')->makeTableResponsive('content-session-remitments');
     }
@@ -41,7 +41,7 @@ class Remitment extends Component
     /**
      * @exclude
      */
-    public function show()
+    public function show(): void
     {
         $this->render();
     }

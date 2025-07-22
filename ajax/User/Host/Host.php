@@ -21,7 +21,7 @@ class Host extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(HostPage::class)->page();
     }

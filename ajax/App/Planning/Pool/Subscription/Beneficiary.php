@@ -50,7 +50,7 @@ class Beneficiary extends Component
     /**
      * @inheritDoc
      */
-    protected function before()
+    protected function before(): void
     {
         $pool = $this->stash()->get('planning.pool');
         if(!$pool->remit_planned)
@@ -73,7 +73,7 @@ class Beneficiary extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->response->jo('Tontine')
             ->makeTableResponsive('content-subscription-beneficiaries');

@@ -21,7 +21,7 @@ class ChargeFunc extends FuncComponent
     public function __construct(private ChargeService $chargeService)
     {}
 
-    public function enable(int $defId)
+    public function enable(int $defId): void
     {
         $round = $this->stash()->get('tenant.round');
         $this->chargeService->enableCharge($round, $defId);
@@ -32,7 +32,7 @@ class ChargeFunc extends FuncComponent
         $this->cl(ChargeCount::class)->render();
     }
 
-    public function disable(int $defId)
+    public function disable(int $defId): void
     {
         $round = $this->stash()->get('tenant.round');
         $this->chargeService->disableCharge($round, $defId);

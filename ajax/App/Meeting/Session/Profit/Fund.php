@@ -22,7 +22,7 @@ class Fund extends Component
     /**
      * @inheritDoc
      */
-    protected function before()
+    protected function before(): void
     {
         $session = $this->stash()->get('profit.session');
         $fund = $this->stash()->get('profit.fund');
@@ -37,7 +37,7 @@ class Fund extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->response->jo('Tontine')->makeTableResponsive('content-profit-distribution');
     }

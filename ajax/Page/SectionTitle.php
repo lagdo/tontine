@@ -27,7 +27,7 @@ class SectionTitle extends Component
      *
      * @return void
      */
-    public function show(string $title)
+    public function show(string $title): void
     {
         $this->title = $title;
 

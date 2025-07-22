@@ -31,7 +31,7 @@ class Pool extends Component
     /**
      * @inheritDoc
      */
-    protected function before()
+    protected function before(): void
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.finance'));
     }
@@ -47,7 +47,7 @@ class Pool extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(PoolPage::class)->page();
     }

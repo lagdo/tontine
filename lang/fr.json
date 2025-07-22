@@ -53,7 +53,7 @@
     "IM Used": "IM utilisé",
     "Insufficient Storage": "Espace insuffisant",
     "Internal Server Error": "Erreur interne du serveur",
-    "Invalid filename.": "Invalid filename.",
+    "Invalid filename.": "Nom de fichier incorrect.",
     "Invalid JSON was returned from the route.": "Un JSON non valide a été renvoyé par la route.",
     "Invalid SSL Certificate": "Certificat SSL invalide",
     "length": "length",

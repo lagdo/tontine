@@ -19,7 +19,7 @@ class SessionFunc extends FuncComponent
     public function __construct(protected SessionService $sessionService)
     {}
 
-    public function open(int $sessionId)
+    public function open(int $sessionId): void
     {
         $round = $this->stash()->get('tenant.round');
         $session = $this->sessionService->getSession($round, $sessionId);
@@ -36,7 +36,7 @@ class SessionFunc extends FuncComponent
         $this->cl(SessionPage::class)->page();
     }
 
-    public function close(int $sessionId)
+    public function close(int $sessionId): void
     {
         $round = $this->stash()->get('tenant.round');
         $session = $this->sessionService->getSession($round, $sessionId);
@@ -53,7 +53,7 @@ class SessionFunc extends FuncComponent
         $this->cl(SessionPage::class)->page();
     }
 
-    public function saveAgenda(string $text)
+    public function saveAgenda(string $text): void
     {
         $round = $this->stash()->get('tenant.round');
         $sessionId = $this->bag('meeting')->get('session.id', 0);
@@ -70,7 +70,7 @@ class SessionFunc extends FuncComponent
             ->success(trans('meeting.messages.agenda.updated'));
     }
 
-    public function saveReport(string $text)
+    public function saveReport(string $text): void
     {
         $round = $this->stash()->get('tenant.round');
         $sessionId = $this->bag('meeting')->get('session.id', 0);

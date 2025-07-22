@@ -32,7 +32,7 @@ class Pool extends Component
      *
      * @return void
      */
-    public function refresh(int $poolId)
+    public function refresh(int $poolId): void
     {
         $round = $this->stash()->get('tenant.round');
         $pool = $round->pools()

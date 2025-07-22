@@ -21,7 +21,7 @@ class OutflowFunc extends FuncComponent
     public function __construct(protected AccountService $accountService)
     {}
 
-    public function add()
+    public function add(): void
     {
         $types = [
             CategoryModel::TYPE_OUTFLOW => trans('tontine.account.types.outflow'),
@@ -42,7 +42,7 @@ class OutflowFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    public function create(array $formValues)
+    public function create(array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $this->accountService->createAccount($guild, $formValues);
@@ -53,7 +53,7 @@ class OutflowFunc extends FuncComponent
             ->success(trans('tontine.account.messages.created'));
     }
 
-    public function edit(int $accountId)
+    public function edit(int $accountId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $account = $this->accountService->getAccount($guild, $accountId);
@@ -78,7 +78,7 @@ class OutflowFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    public function update(int $accountId, array $formValues)
+    public function update(int $accountId, array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $account = $this->accountService->getAccount($guild, $accountId);
@@ -90,7 +90,7 @@ class OutflowFunc extends FuncComponent
             ->success(trans('tontine.account.messages.updated'));
     }
 
-    public function toggle(int $accountId)
+    public function toggle(int $accountId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $account = $this->accountService->getAccount($guild, $accountId);
@@ -99,7 +99,7 @@ class OutflowFunc extends FuncComponent
         $this->cl(OutflowPage::class)->page();
     }
 
-    public function delete(int $accountId)
+    public function delete(int $accountId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $account = $this->accountService->getAccount($guild, $accountId);

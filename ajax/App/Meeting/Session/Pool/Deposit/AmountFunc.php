@@ -35,7 +35,7 @@ class AmountFunc extends FuncComponent
      *
      * @return void
      */
-    public function edit(int $receivableId)
+    public function edit(int $receivableId): void
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
@@ -58,7 +58,7 @@ class AmountFunc extends FuncComponent
      *
      * @return void
      */
-    public function save(int $receivableId, string $amount)
+    public function save(int $receivableId, string $amount): void
     {
         $amount = str_replace(',', '.', trim($amount));
         if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)

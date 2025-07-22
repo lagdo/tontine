@@ -24,7 +24,7 @@ class Target extends Component
     public function __construct(protected SettlementTargetService $targetService)
     {}
 
-    protected function getTarget()
+    protected function getTarget(): void
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
@@ -47,7 +47,7 @@ class Target extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         // The member list is displayed only if a target is already defined.
         if($this->stash()->get('meeting.session.charge.target') !== null)
@@ -61,7 +61,7 @@ class Target extends Component
      *
      * @return mixed
      */
-    public function charge(int $chargeId)
+    public function charge(int $chargeId): void
     {
         $this->bag('meeting')->set('fee.member.search', '');
         $this->bag('meeting')->set('fee.target.page', 1);
@@ -69,7 +69,7 @@ class Target extends Component
         $this->render();
     }
 
-    public function search(string $search)
+    public function search(string $search): void
     {
         $this->bag('meeting')->set('fee.member.search', trim($search));
         $this->bag('meeting')->set('fee.target.page', 1);

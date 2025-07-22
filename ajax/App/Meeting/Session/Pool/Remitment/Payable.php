@@ -36,7 +36,7 @@ class Payable extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(Total::class)->render();
         $this->cl(PayablePage::class)->render();

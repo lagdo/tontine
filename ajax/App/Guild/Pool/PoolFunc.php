@@ -30,7 +30,7 @@ class PoolFunc extends FuncComponent
     public function __construct(private PoolService $poolService)
     {}
 
-    public function showIntro()
+    public function showIntro(): void
     {
         $title = trans('tontine.pool.titles.add');
         $content = $this->renderView('pages.guild.pool.add_intro', [
@@ -49,7 +49,7 @@ class PoolFunc extends FuncComponent
         $this->bag('guild.pool')->set('add', []);
     }
 
-    public function showDepositFixed()
+    public function showDepositFixed(): void
     {
         $this->modal()->hide();
 
@@ -70,7 +70,7 @@ class PoolFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    public function saveDepositFixed(bool $fixed)
+    public function saveDepositFixed(bool $fixed): void
     {
         $properties = $this->bag('guild.pool')->get('add', []);
         $properties['deposit']['fixed'] = $fixed;
@@ -89,7 +89,7 @@ class PoolFunc extends FuncComponent
         $this->add();
     }
 
-    public function showDepositLendable()
+    public function showDepositLendable(): void
     {
         $this->modal()->hide();
 
@@ -114,7 +114,7 @@ class PoolFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    public function saveDepositLendable(bool $lendable)
+    public function saveDepositLendable(bool $lendable): void
     {
         $properties = $this->bag('guild.pool')->get('add', []);
         $properties['deposit']['lendable'] = $lendable;
@@ -123,7 +123,7 @@ class PoolFunc extends FuncComponent
         $this->showRemitPlanned();
     }
 
-    public function showRemitPlanned()
+    public function showRemitPlanned(): void
     {
         $this->modal()->hide();
 
@@ -150,7 +150,7 @@ class PoolFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    public function saveRemitPlanned(bool $planned)
+    public function saveRemitPlanned(bool $planned): void
     {
         $properties = $this->bag('guild.pool')->get('add', []);
         $properties['remit']['planned'] = $planned;
@@ -159,7 +159,7 @@ class PoolFunc extends FuncComponent
         $this->showRemitAuction();
     }
 
-    public function showRemitAuction()
+    public function showRemitAuction(): void
     {
         $this->modal()->hide();
 
@@ -185,7 +185,7 @@ class PoolFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    public function saveRemitAuction(bool $auction)
+    public function saveRemitAuction(bool $auction): void
     {
         $properties = $this->bag('guild.pool')->get('add', []);
         $properties['remit']['auction'] = $auction;
@@ -194,7 +194,7 @@ class PoolFunc extends FuncComponent
         $this->add();
     }
 
-    public function add()
+    public function add(): void
     {
         $this->modal()->hide();
 
@@ -217,7 +217,7 @@ class PoolFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function create(array $formValues)
+    public function create(array $formValues): void
     {
         $formValues['properties'] = $this->bag('guild.pool')->get('add', []);
         $values = $this->validator->validateItem($formValues);
@@ -231,7 +231,7 @@ class PoolFunc extends FuncComponent
         $this->cl(PoolPage::class)->page();
     }
 
-    public function edit(int $poolId)
+    public function edit(int $poolId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $pool = $this->poolService->getPool($guild, $poolId);
@@ -256,7 +256,7 @@ class PoolFunc extends FuncComponent
      * @di $localeService
      * @di $validator
      */
-    public function update(int $poolId, array $formValues)
+    public function update(int $poolId, array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $pool = $this->poolService->getPool($guild, $poolId);
@@ -277,7 +277,7 @@ class PoolFunc extends FuncComponent
         $this->cl(PoolPage::class)->page();
     }
 
-    public function delete(int $poolId)
+    public function delete(int $poolId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $pool = $this->poolService->getPool($guild, $poolId);

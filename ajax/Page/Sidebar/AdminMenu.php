@@ -28,7 +28,7 @@ class AdminMenu extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->node()->jq('#admin-menu a')->css('color', config('menu.color.active'));
         foreach(config('menu.admin') as $menuId => $menuClass)

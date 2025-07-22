@@ -23,7 +23,7 @@ class Charge extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(ChargePage::class)->page();
     }

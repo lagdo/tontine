@@ -54,7 +54,7 @@ class SessionFunc extends FuncComponent
     /**
      * @di $memberService
      */
-    public function add()
+    public function add(): void
     {
         $round = $this->stash()->get('guild.calendar.round');
         $title = trans('tontine.session.titles.add');
@@ -76,7 +76,7 @@ class SessionFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function create(array $formValues)
+    public function create(array $formValues): void
     {
         $round = $this->stash()->get('guild.calendar.round');
         $values = $this->validator->validateItem($formValues);
@@ -88,7 +88,7 @@ class SessionFunc extends FuncComponent
         $this->cl(SessionPage::class)->page();
     }
 
-    public function addList()
+    public function addList(): void
     {
         $title = trans('tontine.session.titles.add-list');
         $content = $this->renderView('pages.guild.calendar.session.list');
@@ -108,7 +108,7 @@ class SessionFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    public function years()
+    public function years(): void
     {
         $sessions = $this->sessionService->getYearSessions();
         $html = collect($sessions)
@@ -160,7 +160,7 @@ class SessionFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function createList(array $formValues)
+    public function createList(array $formValues): void
     {
         $round = $this->stash()->get('guild.calendar.round');
         $values = $this->parseSessionList($formValues['sessions'] ?? '');
@@ -176,7 +176,7 @@ class SessionFunc extends FuncComponent
     /**
      * @di $memberService
      */
-    public function edit(int $sessionId)
+    public function edit(int $sessionId): void
     {
         $round = $this->stash()->get('guild.calendar.round');
         $session = $this->roundService->getSession($round, $sessionId);
@@ -200,7 +200,7 @@ class SessionFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function update(int $sessionId, array $formValues)
+    public function update(int $sessionId, array $formValues): void
     {
         $round = $this->stash()->get('guild.calendar.round');
         $formValues['id'] = $sessionId;
@@ -216,7 +216,7 @@ class SessionFunc extends FuncComponent
         $this->cl(SessionPage::class)->page();
     }
 
-    public function editVenue(int $sessionId)
+    public function editVenue(int $sessionId): void
     {
         $round = $this->stash()->get('guild.calendar.round');
         $session = $this->roundService->getSession($round, $sessionId);
@@ -241,7 +241,7 @@ class SessionFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function saveVenue(int $sessionId, array $formValues)
+    public function saveVenue(int $sessionId, array $formValues): void
     {
         $round = $this->stash()->get('guild.calendar.round');
         $values = $this->validator->validateVenue($formValues);
@@ -255,7 +255,7 @@ class SessionFunc extends FuncComponent
         $this->cl(SessionPage::class)->page();
     }
 
-    public function delete(int $sessionId)
+    public function delete(int $sessionId): void
     {
         $round = $this->stash()->get('guild.calendar.round');
         $session = $this->roundService->getSession($round, $sessionId);

@@ -27,7 +27,7 @@ class TargetFunc extends FuncComponent
     public function __construct(protected SettlementTargetService $targetService)
     {}
 
-    protected function getTarget()
+    protected function getTarget(): void
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
@@ -40,7 +40,7 @@ class TargetFunc extends FuncComponent
      * @before checkChargeEdit
      * @return mixed
      */
-    public function add()
+    public function add(): void
     {
         $target = $this->stash()->get('meeting.session.charge.target');
         if($target !== null)
@@ -73,7 +73,7 @@ class TargetFunc extends FuncComponent
      *
      * @return mixed
      */
-    public function create(array $formValues)
+    public function create(array $formValues): void
     {
         $target = $this->stash()->get('meeting.session.charge.target');
         if($target !== null)
@@ -98,7 +98,7 @@ class TargetFunc extends FuncComponent
      * @before checkChargeEdit
      * @return mixed
      */
-    public function edit()
+    public function edit(): void
     {
         $target = $this->stash()->get('meeting.session.charge.target');
         if($target === null)
@@ -133,7 +133,7 @@ class TargetFunc extends FuncComponent
      *
      * @return mixed
      */
-    public function update(array $formValues)
+    public function update(array $formValues): void
     {
         $target = $this->stash()->get('meeting.session.charge.target');
         if($target === null)
@@ -158,7 +158,7 @@ class TargetFunc extends FuncComponent
      * @before checkChargeEdit
      * @return mixed
      */
-    public function remove()
+    public function remove(): void
     {
         $target = $this->stash()->get('meeting.session.charge.target');
         if($target === null)

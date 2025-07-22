@@ -36,7 +36,7 @@ class Refund extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(RefundPage::class)->page();
     }
@@ -46,7 +46,7 @@ class Refund extends Component
      *
      * @return void
      */
-    public function fund(int $fundId)
+    public function fund(int $fundId): void
     {
         $this->bag($this->bagId)->set('debt.page', 1);
 
@@ -56,7 +56,7 @@ class Refund extends Component
     /**
      * @exclude
      */
-    public function show()
+    public function show(): void
     {
         // We need to explicitely get the default fund here.
         $this->bag($this->bagId)->set('fund.id', 0);
@@ -66,7 +66,7 @@ class Refund extends Component
         $this->render();
     }
 
-    public function toggleFilter()
+    public function toggleFilter(): void
     {
         $filtered = $this->bag($this->bagId)->get('debt.filter', null);
         // Switch between null, true and false

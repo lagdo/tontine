@@ -52,7 +52,7 @@ trait ComponentTrait
     /**
      * @return void
      */
-    protected function getSession()
+    protected function getSession(): void
     {
         $round = $this->stash()->get('tenant.round');
         $session = $this->sessionService->getSession($round, $this->getSessionId());

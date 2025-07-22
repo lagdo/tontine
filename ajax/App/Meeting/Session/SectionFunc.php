@@ -33,7 +33,7 @@ class SectionFunc extends FuncComponent
         $this->cl(Section::class)->render();
     }
 
-    public function pools(int $sessionId = 0)
+    public function pools(int $sessionId = 0): void
     {
         $this->renderSection('pools');
 
@@ -44,7 +44,7 @@ class SectionFunc extends FuncComponent
             ->setSmScreenHandler('session-pools-sm-screens', 'content-home');
     }
 
-    public function charges(int $sessionId = 0)
+    public function charges(int $sessionId = 0): void
     {
         $this->renderSection('charges');
 
@@ -55,7 +55,7 @@ class SectionFunc extends FuncComponent
             ->setSmScreenHandler('session-charges-sm-screens', 'content-home');
     }
 
-    public function savings(int $sessionId = 0)
+    public function savings(int $sessionId = 0): void
     {
         $this->renderSection('savings');
 
@@ -66,28 +66,28 @@ class SectionFunc extends FuncComponent
             ->setSmScreenHandler('session-savings-sm-screens', 'content-home');
     }
 
-    public function refunds(int $sessionId = 0)
+    public function refunds(int $sessionId = 0): void
     {
         $this->renderSection('refunds');
 
         $this->cl(Credit\Refund\Refund::class)->show();
     }
 
-    public function profits(int $sessionId = 0)
+    public function profits(int $sessionId = 0): void
     {
         $this->renderSection('profits');
 
         $this->cl(Saving\Profit::class)->show();
     }
 
-    public function outflows(int $sessionId = 0)
+    public function outflows(int $sessionId = 0): void
     {
         $this->renderSection('outflows');
 
         $this->cl(Cash\Outflow::class)->show();
     }
 
-    public function reports(int $sessionId = 0)
+    public function reports(int $sessionId = 0): void
     {
         $this->renderSection('reports');
 

@@ -41,7 +41,7 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    protected function before()
+    protected function before(): void
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.report'));
     }
@@ -64,7 +64,7 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $round = $this->stash()->get('tenant.round');
         $sessions = $this->sessionService->getSessions($round, orderAsc: false)

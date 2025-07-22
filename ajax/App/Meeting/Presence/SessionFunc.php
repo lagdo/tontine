@@ -21,7 +21,7 @@ class SessionFunc extends FuncComponent
         private PresenceService $presenceService)
     {}
 
-    protected function getMember()
+    protected function getMember(): void
     {
         $round = $this->stash()->get('tenant.round');
         $memberId = $this->bag('meeting.presence')->get('member.id', 0);
@@ -30,7 +30,7 @@ class SessionFunc extends FuncComponent
         $this->stash()->set('presence.member', $member);
     }
 
-    public function togglePresence(int $sessionId)
+    public function togglePresence(int $sessionId): void
     {
         $round = $this->stash()->get('tenant.round');
         $session = $this->sessionService->getSession($round, $sessionId);

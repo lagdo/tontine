@@ -29,7 +29,7 @@ class LoanFunc extends FuncComponent
         protected FundService $fundService, protected MemberService $memberService)
     {}
 
-    public function add()
+    public function add(): void
     {
         $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');
@@ -56,7 +56,7 @@ class LoanFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function create(array $formValues)
+    public function create(array $formValues): void
     {
         $round = $this->stash()->get('tenant.round');
         $values = $this->validator->validateItem($formValues);
@@ -81,7 +81,7 @@ class LoanFunc extends FuncComponent
         $this->cl(Balance::class)->render();
     }
 
-    public function edit(int $loanId)
+    public function edit(int $loanId): void
     {
         $session = $this->stash()->get('meeting.session');
         $loan = $this->loanService->getSessionLoan($session, $loanId);
@@ -121,7 +121,7 @@ class LoanFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function update(int $loanId, array $formValues)
+    public function update(int $loanId, array $formValues): void
     {
         $session = $this->stash()->get('meeting.session');
         $loan = $this->loanService->getSessionLoan($session, $loanId);
@@ -159,7 +159,7 @@ class LoanFunc extends FuncComponent
         $this->cl(Balance::class)->render();
     }
 
-    public function delete(int $loanId)
+    public function delete(int $loanId): void
     {
         $session = $this->stash()->get('meeting.session');
         $loan = $this->loanService->getSessionLoan($session, $loanId);

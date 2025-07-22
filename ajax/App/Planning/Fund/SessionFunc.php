@@ -21,7 +21,7 @@ class SessionFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function save(array $formValues)
+    public function save(array $formValues): void
     {
         $fund = $this->stash()->get('planning.fund');
         $values = $this->validator->validateItem($formValues);

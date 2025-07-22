@@ -21,7 +21,7 @@ class RoundFunc extends FuncComponent
     public function __construct(protected RoundService $roundService)
     {}
 
-    public function add()
+    public function add(): void
     {
         $title = trans('tontine.round.titles.add');
         $content = $this->renderView('pages.guild.calendar.round.add');
@@ -37,7 +37,7 @@ class RoundFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    public function create(array $formValues)
+    public function create(array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $this->roundService->createRound($guild, $formValues);
@@ -50,7 +50,7 @@ class RoundFunc extends FuncComponent
         $this->cl(MainTitle::class)->render();
     }
 
-    public function edit(int $roundId)
+    public function edit(int $roundId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $round = $this->roundService->getRound($guild, $roundId);
@@ -69,7 +69,7 @@ class RoundFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    public function update(int $roundId, array $formValues)
+    public function update(int $roundId, array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $this->roundService->updateRound($guild, $roundId, $formValues);
@@ -80,7 +80,7 @@ class RoundFunc extends FuncComponent
             ->success(trans('tontine.round.messages.updated'));
     }
 
-    public function delete(int $roundId)
+    public function delete(int $roundId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $this->roundService->deleteRound($guild, $roundId);

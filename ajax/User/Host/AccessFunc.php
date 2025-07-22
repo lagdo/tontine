@@ -36,7 +36,7 @@ class AccessFunc extends FuncComponent
      *
      * @return void
      */
-    public function guild(int $guildId)
+    public function guild(int $guildId): void
     {
         $this->cl(GuildAccess::class)->render();
     }
@@ -44,7 +44,7 @@ class AccessFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function saveAccess(array $formValues)
+    public function saveAccess(array $formValues): void
     {
         $invite = $this->stash()->get('user.access.invite');
         $guild = $this->stash()->get('user.access.guild');

@@ -20,7 +20,7 @@ class AuctionFunc extends FuncComponent
         private AuctionService $auctionService)
     {}
 
-    public function togglePayment(string $auctionId)
+    public function togglePayment(string $auctionId): void
     {
         $this->validator->validate($auctionId);
 

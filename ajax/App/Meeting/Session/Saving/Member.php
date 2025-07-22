@@ -46,7 +46,7 @@ class Member extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(MemberTotal::class)->render();
         $this->cl(MemberPage::class)->page();
@@ -57,7 +57,7 @@ class Member extends Component
      *
      * @return mixed
      */
-    public function fund(int $fundId)
+    public function fund(int $fundId): void
     {
         $this->bag($this->bagId)->set('member.filter', null);
         $this->bag($this->bagId)->set('member.search', '');
@@ -66,7 +66,7 @@ class Member extends Component
         $this->render();
     }
 
-    public function search(string $search)
+    public function search(string $search): void
     {
         $this->bag($this->bagId)->set('member.search', trim($search));
         $this->bag($this->bagId)->set('member.page', 1);
@@ -74,7 +74,7 @@ class Member extends Component
         $this->cl(MemberPage::class)->page();
     }
 
-    public function toggleFilter()
+    public function toggleFilter(): void
     {
         $filter = $this->bag($this->bagId)->get('member.filter', null);
         // Switch between null, true and false

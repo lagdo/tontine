@@ -50,7 +50,7 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(SessionPage::class)->page();
         $member = $this->stash()->get('presence.member'); // Is null when showing presences by sessions.

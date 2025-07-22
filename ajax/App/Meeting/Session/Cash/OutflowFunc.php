@@ -24,7 +24,7 @@ class OutflowFunc extends FuncComponent
     public function __construct(protected OutflowService $outflowService)
     {}
 
-    public function addOutflow()
+    public function addOutflow(): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $round = $this->stash()->get('tenant.round');
@@ -49,7 +49,7 @@ class OutflowFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function createOutflow(array $formValues)
+    public function createOutflow(array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $session = $this->stash()->get('meeting.session');
@@ -63,7 +63,7 @@ class OutflowFunc extends FuncComponent
         $this->cl(Balance::class)->render();
     }
 
-    public function editOutflow(int $outflowId)
+    public function editOutflow(int $outflowId): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $round = $this->stash()->get('tenant.round');
@@ -91,7 +91,7 @@ class OutflowFunc extends FuncComponent
     /**
      * @di $validator
      */
-    public function updateOutflow(int $outflowId, array $formValues)
+    public function updateOutflow(int $outflowId, array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');
         $session = $this->stash()->get('meeting.session');
@@ -105,7 +105,7 @@ class OutflowFunc extends FuncComponent
         $this->cl(Balance::class)->render();
     }
 
-    public function deleteOutflow(int $outflowId)
+    public function deleteOutflow(int $outflowId): void
     {
         $session = $this->stash()->get('meeting.session');
         $this->outflowService->deleteOutflow($session, $outflowId);

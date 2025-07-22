@@ -26,7 +26,7 @@ class Settlement extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(SettlementPage::class)->page();
         $this->showTotal();
@@ -37,7 +37,7 @@ class Settlement extends Component
      *
      * @return mixed
      */
-    public function charge(int $chargeId)
+    public function charge(int $chargeId): void
     {
         $this->bag('summary')->set('settlement.libre.search', '');
         $this->bag('summary')->set('settlement.libre.filter', null);
@@ -46,7 +46,7 @@ class Settlement extends Component
         $this->render();
     }
 
-    private function showTotal()
+    private function showTotal(): void
     {
         $session = $this->stash()->get('summary.session');
         $charge = $this->stash()->get('summary.session.charge');
@@ -60,7 +60,7 @@ class Settlement extends Component
         $this->cl(Total::class)->item('libre')->render();
     }
 
-    public function toggleFilter()
+    public function toggleFilter(): void
     {
         $onlyUnpaid = $this->bag('summary')->get('settlement.libre.filter', null);
         // Switch between null, true and false

@@ -19,7 +19,7 @@ class Member extends Component
     public function __construct(private PresenceService $presenceService)
     {}
 
-    protected function getSession()
+    protected function getSession(): void
     {
         $round = $this->stash()->get('tenant.round');
         $sessionId = $this->bag('meeting.presence')->get('session.id', 0);
@@ -52,7 +52,7 @@ class Member extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $this->cl(MemberPage::class)->page();
         // Is null when showing presences by members.
@@ -64,7 +64,7 @@ class Member extends Component
         }
     }
 
-    public function search(string $search)
+    public function search(string $search): void
     {
         $this->bag('meeting.presence')->set('member.search', $search);
         $this->bag('meeting.presence')->set('member.page', 1);

@@ -38,7 +38,7 @@ class Guild extends Component
     /**
      * @inheritDoc
      */
-    protected function before()
+    protected function before(): void
     {
         $this->cl(SectionTitle::class)->show(trans('tontine.menus.admin'));
     }
@@ -57,7 +57,7 @@ class Guild extends Component
     /**
      * @inheritDoc
      */
-    protected function after()
+    protected function after(): void
     {
         $user = $this->tenantService->user();
         $this->cl(GuildPage::class)->page();
