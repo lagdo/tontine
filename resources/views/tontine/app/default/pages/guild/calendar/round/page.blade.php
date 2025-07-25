@@ -16,23 +16,19 @@
                       <thead>
                         <tr>
                           <th>{!! __('common.labels.title') !!}</th>
-                          <th>{!! __('common.labels.dates') !!}</th>
-                          <th>{!! __('common.labels.options') !!}</th>
+                          <th>{!! __('common.labels.start') !!}</th>
+                          <th>{!! __('common.labels.end') !!}</th>
+                          <th>&nbsp;</th>
                           <th class="table-menu"></th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach ($rounds as $round)
                         <tr>
-                          <td>{{ $round->title }}<br/>{{ $round->notes ?? '' }}</td>
-                          <td>
-                            {{ !$round->start_date ? '' : $round->date('start_date') }}<br/>
-                            {{ !$round->end_date ? '' : $round->date('end_date') }}
-                          </td>
-                          <td>
-                            <i class="fa fa-toggle-{{ $round->add_default_fund ? 'on' : 'off' }}"></i>
-                            {{ __('tontine.round.labels.savings') }}
-                          </td>
+                          <td>{{ $round->title }}</td>
+                          <td>{{ !$round->start_date ? '' : $round->date('start_date') }}</td>
+                          <td>{{ !$round->end_date ? '' : $round->date('end_date') }}</td>
+                          <td>{{ $round->notes ?? '' }}</td>
                           <td class="table-item-menu">
 @include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-round-id',
