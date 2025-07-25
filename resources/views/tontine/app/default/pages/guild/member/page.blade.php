@@ -7,7 +7,7 @@
                   ['.btn-member-edit', 'click', $rqMemberFunc->edit($memberId)],
                   ['.btn-member-toggle', 'click', $rqMemberFunc->toggle($memberId)],
                   ['.btn-member-delete', 'click', $rqMemberFunc->delete($memberId)
-                    ->confirm(__('tontine.questions.delete'))]])>
+                    ->confirm(__('tontine.member.questions.delete'))]])>
 
                   <table class="table table-bordered responsive">
                     <thead>
