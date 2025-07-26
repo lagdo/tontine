@@ -219,6 +219,7 @@ return [
         'errors' => [
             'not_found' => "Cannot find the corresponding member.",
             'cannot_delete' => "Cannot delete this member.",
+            'cannot_remove' => "Cannot remove this member.",
         ],
     ],
     'charge' => [
