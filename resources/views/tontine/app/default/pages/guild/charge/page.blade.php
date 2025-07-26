@@ -12,9 +12,9 @@
                 <table class="table table-bordered responsive">
                   <thead>
                     <tr>
+                      <th>{!! __('common.labels.name') !!}</th>
                       <th>{!! __('common.labels.type') !!}</th>
                       <th>{!! __('common.labels.period') !!}</th>
-                      <th>{!! __('common.labels.name') !!}</th>
                       <th class="currency">{!! __('common.labels.amount') !!}</th>
                       <th>{!! __('tontine.charge.labels.lend') !!}</th>
                       <th>{!! __('common.labels.active') !!}</th>
@@ -24,9 +24,9 @@
                   <tbody>
 @foreach ($charges as $charge)
                     <tr>
+                      <td>{{ $charge->name }}</td>
                       <td>{{ $types[$charge->type] ?? '' }}</td>
                       <td>{{ $periods[$charge->period] ?? '' }}</td>
-                      <td>{{ $charge->name }}</td>
                       <td class="currency">{{ $charge->has_amount ?
                         $locale->formatMoney($charge->amount) : __('tontine.labels.fees.variable') }}</td>
                       <td class="table-item-toggle">
