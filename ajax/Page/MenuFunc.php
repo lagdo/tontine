@@ -3,11 +3,11 @@
 namespace Ajax\Page;
 
 use Ajax\App\Admin\Guild\Guild;
-use Ajax\App\Planning\Participation;
+use Ajax\App\Planning\Enrollment;
 use Ajax\FuncComponent;
+use Ajax\Page\MainTitle;
 use Ajax\Page\Sidebar\AdminMenu;
 use Ajax\Page\Sidebar\RoundMenu;
-use Ajax\Page\MainTitle;
 use Siak\Tontine\Model\Guild as GuildModel;
 use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\Guild\RoundService;
@@ -163,7 +163,7 @@ class MenuFunc extends FuncComponent
         $this->response->jq('#header-menu-home')->show();
         $this->cl(RoundMenu::class)->render();
         $this->cl(MainTitle::class)->render();
-        $this->cl(Participation::class)->home();
+        $this->cl(Enrollment::class)->home();
 
         $this->modal()->hide();
         $this->alert()->info(trans('tontine.round.messages.selected', [

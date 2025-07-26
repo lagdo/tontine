@@ -17,7 +17,7 @@ return [
         'report' => "Rapport",
         'members' => "Membres",
         'finance' => "Finance",
-        'participation' => "Participation",
+        'enrollment' => "Enrôlement",
         'accounts' => "Caisses",
         'charges' => "Charges",
         'calendar' => "Calendrier",

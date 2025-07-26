@@ -13,7 +13,7 @@ use function trans;
  * @databag planning.member
  * @databag planning.charge
  */
-class Participation extends Component
+class Enrollment extends Component
 {
     /**
      * @var string

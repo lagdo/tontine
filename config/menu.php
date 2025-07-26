@@ -9,8 +9,8 @@ use Ajax\App\Guild\Pool\Pool;
 use Ajax\App\Meeting\Payment\Payment;
 use Ajax\App\Meeting\Presence\Presence;
 use Ajax\App\Meeting\Session\Session;
+use Ajax\App\Planning\Enrollment;
 use Ajax\App\Planning\Finance;
-use Ajax\App\Planning\Participation;
 use Ajax\App\Report\Round\Round as ReportRound;
 use Ajax\App\Report\Session\Session as ReportSession;
 
@@ -28,8 +28,8 @@ return [
         '#guild-menu-calendar' => Calendar::class,
     ],
     'round' => [
+        '#planning-menu-enrollment' => Enrollment::class,
         '#planning-menu-finance' => Finance::class,
-        '#planning-menu-participation' => Participation::class,
         '#meeting-menu-sessions' => Session::class,
         '#meeting-menu-payments' => Payment::class,
         '#meeting-menu-presences' => Presence::class,
