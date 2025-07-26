@@ -6,12 +6,16 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Lagdo\Facades\Logger;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\MemberDef;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Service\Traits\WithTrait;
 use Siak\Tontine\Validation\SearchSanitizer;
+use Exception;
+
+use function trans;
 
 class MemberService
 {
@@ -89,7 +93,12 @@ class MemberService
      */
     public function getMemberDef(Round $round, int $memberId): ?MemberDef
     {
-        return $this->getQuery($round, '', null)->find($memberId);
+        return $this->getQuery($round, '', null)
+            // It's important to fetch the relations and filter on the round here.
+            ->with([
+                'members' => fn(Relation $q) => $q->where('round_id', $round->id),
+            ])
+            ->find($memberId);
     }
 
     /**
@@ -140,8 +149,11 @@ class MemberService
                 $member->delete();
             });
         }
-        catch(Exception)
+        catch(Exception $e)
         {
+            Logger::error('Error while removing a member.', [
+                'message' => $e->getMessage(),
+            ]);
             throw new MessageException(trans('tontine.member.errors.cannot_remove'));
         }
     }

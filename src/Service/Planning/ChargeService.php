@@ -13,6 +13,8 @@ use Siak\Tontine\Model\Round;
 use Siak\Tontine\Service\TenantService;
 use Exception;
 
+use function trans;
+
 class ChargeService
 {
     /**
@@ -82,7 +84,12 @@ class ChargeService
      */
     public function getChargeDef(Round $round, int $chargeId): ?ChargeDef
     {
-        return $this->getQuery($round, null)->find($chargeId);
+        return $this->getQuery($round, null)
+            // It's important to fetch the relations and filter on the round here.
+            ->with([
+                'charges' => fn(Relation $q) => $q->where('round_id', $round->id),
+            ])
+            ->find($chargeId);
     }
 
     /**
@@ -135,7 +142,7 @@ class ChargeService
         }
         catch(Exception $e)
         {
-            Logger::error('Error while disabling a charge.', [
+            Logger::error('Error while removing a charge.', [
                 'message' => $e->getMessage(),
             ]);
             throw new MessageException(trans('tontine.charge.errors.cannot_remove'));
