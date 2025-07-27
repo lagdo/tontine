@@ -56,15 +56,14 @@
   'dataIdValue' => $def->pools->first()->id,
   'menus' => [
     [
+      'class' => 'btn-pool-sessions',
+      'text' => __('tontine.actions.sessions'),
+    ],
+    [
       'class' => 'btn-pool-subscription',
       'text' => __('tontine.subscription.actions.subscriptions'),
     ],
     ...$menus,
-    null,
-    [
-      'class' => 'btn-pool-sessions',
-      'text' => __('tontine.actions.sessions'),
-    ],
   ],
 ])
 @endif
