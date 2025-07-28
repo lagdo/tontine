@@ -33,6 +33,7 @@ return [
     ],
     'titles' => [
         'guilds' => "Organisations",
+        'guild' => "Organisation",
         'tontine' => "Tontine",
         'members' => "Membres",
         'rounds' => "Tours",

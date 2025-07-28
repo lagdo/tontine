@@ -20,7 +20,7 @@
               <div class="card shadow">
                 <div class="card-body">
                   <div class="row">
-                    <div class="col-12">{{ __('tontine.titles.tontine') }}</div>
+                    <div class="col-12">{{ __('tontine.titles.guild') }}</div>
                     <div class="col-12">
                       <div class="input-group">
                         {{ $html->select('guild_id', $guilds, 0)->class('form-control')->id('select-invite-guild') }}
