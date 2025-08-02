@@ -161,11 +161,11 @@ class DebtCalculator
      *
      * @return bool
      */
-    private function debtAmountIsFinal(Debt $debt): bool
+    private function debtAmountIsFixed(Debt $debt): bool
     {
-        // The amount in a debt model is final if it is a principal debt, it has already been
-        // totally refunded, it is an interest debt with fixed amount or unique interest rate.
-        return $debt->is_principal || $debt->refund !== null || !$debt->loan->recurrent_interest;
+        // The amount in a debt model is fixed if it is a principal debt,
+        // or it is an interest debt with fixed amount or unique interest rate.
+        return $debt->is_principal || !$debt->loan->recurrent_interest;
     }
 
     /**
@@ -178,7 +178,7 @@ class DebtCalculator
      */
     public function getDebtAmount(Debt $debt, Session $session): int
     {
-        return $this->debtAmountIsFinal($debt) ? $debt->amount :
+        return $this->debtAmountIsFixed($debt) ? $debt->amount :
             ($debt->loan->simple_interest ?
                 $this->getSimpleInterestAmount($debt, $session) :
                 $this->getCompoundInterestAmount($debt, $session));
