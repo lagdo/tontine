@@ -28,7 +28,7 @@
             <div class="col-md-6 col-sm-12 sm-screen sm-screen-active" id="session-reports-agenda">
               <div class="card shadow">
                 <div class="card-body">
-                  <div class="row">
+                  <div class="row mb-2">
                     <div class="col-auto">
                       <div class="section-title mt-0">{!! __('meeting.titles.agenda') !!}</div>
                     </div>
