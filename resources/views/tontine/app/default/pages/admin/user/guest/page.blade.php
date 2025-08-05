@@ -31,7 +31,7 @@
   ]];
 @endphp
                         <tr>
-                          <td>{{ $invite->host->name }}<br/>{{ $invite->guest->email }}</td>
+                          <td>{{ $invite->host->name }}<br/>{{ $invite->host->email }}</td>
                           <td>{{ $invite->status_label }}@if (($invite->active_label))<br/>{!! $invite->active_label !!}@endif</td>
                           <td class="table-item-menu">
 @include('tontine::parts.table.menu', [
