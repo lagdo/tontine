@@ -39,9 +39,14 @@ class GuestFunc extends FuncComponent
     public function delete(int $inviteId): void
     {
         $guild = $this->tenantService->guild();
-        if($this->userService->deleteGuestInvite($guild, $inviteId))
+        $reloadPage = $this->userService->guildBelongsToInvite($guild, $inviteId);
+
+        $user = $this->tenantService->user();
+        $this->userService->deleteGuestInvite($user, $inviteId);
+
+        if($reloadPage)
         {
-            // The active tontine invite is deleted. Reload the page.
+            // The active guild invite is deleted. Reload the page.
             $this->response->redirect('/');
             return;
         }
@@ -49,6 +54,6 @@ class GuestFunc extends FuncComponent
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.invite.messages.deleted'));
 
-       $this->cl(GuestPage::class)->page();
+        $this->cl(GuestPage::class)->page();
     }
 }

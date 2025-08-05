@@ -247,25 +247,35 @@ class UserService
     /**
      * Delete an invite.
      *
+     * @param User $user
+     * @param int $inviteId
+     *
+     * @return void
+     */
+    public function deleteGuestInvite(User $user, int $inviteId)
+    {
+        if(!($invite = $this->getGuestInvite($user, $inviteId)))
+        {
+            throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
+        }
+
+        $this->deleteInvite($invite);
+    }
+
+    /**
+     * Delete an invite.
+     *
      * @param Guild $guild
      * @param int $inviteId
      *
      * @return bool
      */
-    public function deleteGuestInvite(Guild $guild, int $inviteId): bool
+    public function guildBelongsToInvite(Guild $guild, int $inviteId): bool
     {
-        if(!($invite = $this->getGuestInvite($guild->user, $inviteId)))
-        {
-            throw new MessageException(trans('tontine.invite.errors.invite_not_found'));
-        }
-
-        $inviteIsDeleted = DB::table('guest_options')
-            ->where('invite_id', $invite->id)
+        return DB::table('guest_options')
             ->where('guild_id', $guild->id)
+            ->where('invite_id', $inviteId)
             ->exists();
-        $this->deleteInvite($invite);
-
-        return $inviteIsDeleted;
     }
 
     /**
