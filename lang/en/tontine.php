@@ -92,7 +92,8 @@ return [
             'orientation' => "If you are using a mobile device, we advise you to place it in landscape mode, for a better display.",
         ],
         'learning' => [
-            'intro' => "Learn about Siak Tontine's features in this introductory video <a class=\"highlight\" href=\":url\" target=\"_blank\">:url</a> (in french).",
+            'intro' => "Learn about Siak Tontine's features in <a class=\"highlight\" href=\":url\" target=\"_blank\">this introductory video</a> (in french).",
+            'tutos' => "Learn how to use Siak Tontine on <a class=\"highlight\" href=\":page\" target=\"_blank\">the tutorials page</a>, or with <a class=\"highlight\" href=\":playlist\" target=\"_blank\">this video series</a> (in french).",
         ],
     ],
     'questions' => [

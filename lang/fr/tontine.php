@@ -92,7 +92,8 @@ return [
             'orientation' => "Si vous utilisez un appareil mobile, nous vous conseillons de le placer en mode paysage, pour un meilleur affichage.",
         ],
         'learning' => [
-            'intro' => "Découvrez les fonctionnalités de Siak Tontine dans cette vidéo d'introduction <a class=\"highlight\" href=\":url\" target=\"_blank\">:url</a> (en français).",
+            'intro' => "Découvrez les fonctionnalités de Siak Tontine dans <a class=\"highlight\" href=\":url\" target=\"_blank\">cette vidéo d'introduction</a> (en français).",
+            'tutos' => "Apprenez à utiliser Siak Tontine sur <a class=\"highlight\" href=\":page\" target=\"_blank\">la page des tutoriels</a>, ou avec <a class=\"highlight\" href=\":playlist\" target=\"_blank\">cette série de vidéos</a> (en français).",
         ],
     ],
     'questions' => [

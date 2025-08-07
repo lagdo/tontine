@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
@@ -16,6 +16,12 @@
 
   <!-- Template CSS -->
   <link rel="stylesheet" href="/tpl/assets/css/style.css">
+
+  <style>
+    a.highlight {
+      color: #6777ef !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -26,6 +32,8 @@
           <div class="@yield('content-class')">
             <div class="login-brand">
             </div>
+
+@include('tontine.app.default.parts.header.learn')
 
 @include('tontine.app.auth.messages.session')
 

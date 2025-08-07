@@ -1,0 +1,16 @@
+.user-form form .form-group {
+    margin-top: 15px;
+}
+
+.user-form form label {
+    margin-bottom: 0;
+    display: inline-block;
+}
+
+.user-form form .float-right {
+    float: right;
+}
+
+.user-form form .float-left {
+    float: left;
+}

@@ -62,20 +62,33 @@ Route::middleware(['auth', 'tontine'])
             ->where('form', 'report|transactions');
     });
 
-// Redefine Fortify routes with different HTTP verbs
-//--------------------------------------------------------
-// Profile Information...
-$middleware = config('fortify.auth_middleware', 'auth') . ':' . config('fortify.guard');
+Route::prefix(LaravelLocalization::setLocale())
+    ->group(function() {
+        // Redefine Fortify routes with different HTTP verbs
+        //--------------------------------------------------------
+        // Profile Information...
+        $middleware = config('fortify.auth_middleware', 'auth') . ':' . config('fortify.guard');
 
-$path = RoutePath::for('user-profile-information.update', '/user/profile-information');
-Route::post($path, [ProfileInformationController::class, 'update'])
-    ->middleware([$middleware]);
+        $path = RoutePath::for('user-profile-information.update', '/user/profile-information');
+        Route::post($path, [ProfileInformationController::class, 'update'])
+            ->middleware([$middleware]);
 
-// Passwords...
-$path = RoutePath::for('user-password.update', '/user/password');
-Route::post($path, [PasswordController::class, 'update'])
-    ->middleware([$middleware]);
+        // Passwords...
+        $path = RoutePath::for('user-password.update', '/user/password');
+        Route::post($path, [PasswordController::class, 'update'])
+            ->middleware([$middleware]);
 
-// Logout
-Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])
-    ->name('logout.get');
+        // Logout
+        Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])
+            ->name('logout.get');
+
+        // Learn
+        Route::get('/learn', function() {
+            view()->share([
+                'playlist' => config('tontine.videos.playlist'),
+                'videos' => config('tontine.videos.parts'),
+            ]);
+            return view('tontine.web.learn');
+        })
+        ->name('learn.page');
+    });

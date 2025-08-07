@@ -27,7 +27,7 @@
           </div>
           @show
 
-          @include('tontine::parts.header.message')
+          @include('tontine::parts.header.learn')
 
           @yield('content')
         </section>
