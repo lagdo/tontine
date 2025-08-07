@@ -93,7 +93,7 @@ return [
         ],
         'learning' => [
             'intro' => "Découvrez les fonctionnalités de Siak Tontine dans <a class=\"highlight\" href=\":url\" target=\"_blank\">cette vidéo d'introduction</a> (en français).",
-            'tutos' => "Apprenez à utiliser Siak Tontine sur <a class=\"highlight\" href=\":page\" target=\"_blank\">la page des tutoriels</a>, ou avec <a class=\"highlight\" href=\":playlist\" target=\"_blank\">cette série de vidéos</a> (en français).",
+            'tutos' => "Apprenez à utiliser Siak Tontine sur <a class=\"highlight\" href=\":page\">la page des tutoriels</a>, ou avec <a class=\"highlight\" href=\":playlist\" target=\"_blank\">cette série de vidéos</a> (en français).",
         ],
     ],
     'questions' => [

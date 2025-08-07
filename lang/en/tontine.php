@@ -93,7 +93,7 @@ return [
         ],
         'learning' => [
             'intro' => "Learn about Siak Tontine's features in <a class=\"highlight\" href=\":url\" target=\"_blank\">this introductory video</a> (in french).",
-            'tutos' => "Learn how to use Siak Tontine on <a class=\"highlight\" href=\":page\" target=\"_blank\">the tutorials page</a>, or with <a class=\"highlight\" href=\":playlist\" target=\"_blank\">this video series</a> (in french).",
+            'tutos' => "Learn how to use Siak Tontine on <a class=\"highlight\" href=\":page\">the tutorials page</a>, or with <a class=\"highlight\" href=\":playlist\" target=\"_blank\">this video series</a> (in french).",
         ],
     ],
     'questions' => [
