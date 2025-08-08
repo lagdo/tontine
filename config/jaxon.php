@@ -11,6 +11,7 @@ return [
                 'web',
                 'tontine',
                 'annotations',
+                'analytics',
                 'jaxon.config',
                 'jaxon.ajax',
             ],

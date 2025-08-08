@@ -3,9 +3,15 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Siak\Tontine\Model\User;
+
+use function env;
+use function explode;
+use function in_array;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,10 +36,14 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(190);
 
         // Force redirect to HTTPS.
-        $url = $this->app['url'];
         if($this->app->environment('production'))
         {
-            $url->forceScheme('https');
+            $this->app['url']->forceScheme('https');
         }
+
+        // Access on analytics pages
+        Gate::define('analytics', function(User $user) {
+            return in_array($user->email, explode(',', env('ANALYTICS_USERS', '')));
+        });
     }
 }

@@ -21,7 +21,7 @@ use Laravel\Fortify\RoutePath;
 |
 */
 
-Route::middleware(['auth', 'tontine'])
+Route::middleware(['auth', 'tontine', 'analytics'])
     ->prefix(LaravelLocalization::setLocale())
     ->group(function() {
         // Home page
@@ -63,6 +63,7 @@ Route::middleware(['auth', 'tontine'])
     });
 
 Route::prefix(LaravelLocalization::setLocale())
+    ->middleware('analytics')
     ->group(function() {
         // Redefine Fortify routes with different HTTP verbs
         //--------------------------------------------------------
