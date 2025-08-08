@@ -11,22 +11,22 @@ class Bill extends Base
     /**
      * @const
      */
-    const TYPE_LIBRE = 0;
+    public const TYPE_LIBRE = 0;
 
     /**
      * @const
      */
-    const TYPE_SESSION = 1;
+    public const TYPE_SESSION = 1;
 
     /**
      * @const
      */
-    const TYPE_ROUND = 2;
+    public const TYPE_ROUND = 2;
 
     /**
      * @const
      */
-    const TYPE_TONTINE = 3;
+    public const TYPE_TONTINE = 3;
 
     /**
      * Indicates if the model should be timestamped.
