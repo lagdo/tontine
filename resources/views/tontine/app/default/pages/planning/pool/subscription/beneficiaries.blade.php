@@ -2,15 +2,6 @@
   $rqFinance = rq(Ajax\App\Planning\Finance::class);
   $rqBeneficiary = rq(Ajax\App\Planning\Pool\Subscription\Beneficiary::class);
   $rqPlanning = rq(Ajax\App\Planning\Pool\Subscription\Planning::class);
-
-  // Separate subscriptions that already have a beneficiary assigned from the others.
-  [$beneficiaries, $subscriptions] = $subscriptions->partition(
-    fn($subscription) => $subscription->payable->session !== null);
-  // Prepare the collections for the dropdown select lists.
-  $beneficiaries = $beneficiaries->pluck('member.name', 'id');
-  // Do not show the list of subscriptions for pools with auctions
-  $candidates = $pool->remit_auction ? collect([]) :
-    $subscriptions->pluck('member.name', 'id')->sort()->prepend('', 0);
 @endphp
             <div class="col-md-12">
               <div class="section-body">
@@ -38,13 +29,7 @@
               <!-- Data tables -->
               <div class="card shadow mb-4">
                 <div class="card-body">
-                  <div class="table-responsive" id="content-subscription-beneficiaries" @jxnEvent([
-                    ['.select-beneficiary', 'change', $rqBeneficiary->save(
-                        jq()->attr('data-session-id')->toInt(),
-                        jq()->val()->toInt(),
-                        jq()->attr('data-subscription-id')->toInt()
-                      )]])>
-
+                  <div class="table-responsive" id="content-subscription-beneficiaries">
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -57,44 +42,33 @@
                       </thead>
                       <tbody>
 @foreach ($sessions as $session)
-@php
-  $remitmentCount = $figures->expected[$session->id]->remitment->count;
-  // Set the subscriptions that need to be paid at each session.
-  $sessionCandidates = $session->payables
-    ->keyBy('subscription_id')
-    ->map(fn($payable) => $payable->remitment !== null ?
-      // If the remitment exists, then return the beneficiary name.
-      $beneficiaries[$payable->subscription_id] :
-      $candidates->union($beneficiaries->only([$payable->subscription_id])));
-  $sessionPayables = $session->payables
-    ->map(fn($payable) => $payable->subscription_id)
-    ->pad($remitmentCount, 0);
-@endphp
                         <tr>
-                          <td>{{ $session->title }}</td>
-                          <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->cashier->recv) }}</td>
-                          <td class="currency">{{ $remitmentCount }} </td>
-                          <td class="currency">{{ $locale->formatMoney($figures->expected[$session->id]->remitment->amount) }}</td>
-                          <td style="flex-direction:column"><div style="width:97%;">
-@foreach ($sessionPayables as $subscriptionId)
-@if (isset($sessionCandidates[$subscriptionId]) && is_string($sessionCandidates[$subscriptionId]))
-                            <div class="input-group my-2">
-                              {!! $html->text('', $sessionCandidates[$subscriptionId])
-                                ->class('form-control')->attribute('readonly', 'readonly')
-                                ->attribute('style', 'height:36px; padding:5px 5px;') !!}
-                              <div class="input-group-append">
-                                <span class="input-group-text" style="height:36px; padding:10px;"><i class="fa fa-check"></i></span>
+                          <td>{{ $session['title'] }}</td>
+                          <td class="currency">{{ $locale->formatMoney($session['figures']->cashier->recv) }}</td>
+                          <td class="currency">{{ $session['figures']->remitment->count }} </td>
+                          <td class="currency">{{ $locale->formatMoney($session['figures']->remitment->amount) }}</td>
+                          <td style="flex-direction:column">
+                            <div style="width:97%;" data-session-id="{{ $session['id'] }}">
+@foreach ($session['payables'] as $subscriptionId)
+@if ($subscriptionId === 0)
+                              <div class="session-subscription-candidate" data-subscription-id="{{ $subscriptionId }}">
                               </div>
-                            </div>
+@elseif (!isset($session['beneficiaries'][$subscriptionId]))
+                              <div id="session-subscription-candidate-{{ $subscriptionId }}" data-subscription-id="{{ $subscriptionId }}">
+                              </div>
 @else
-                            {!! $html->select('', $sessionCandidates[$subscriptionId] ?? $candidates, $subscriptionId)
-                              ->class('form-control my-2 select-beneficiary')
-                              ->attribute('data-session-id', $session->id)
-                              ->attribute('data-subscription-id', $subscriptionId)
-                              ->attribute('style', 'height:36px; padding:5px 5px;') !!}
+                              <div class="input-group my-2">
+                                {!! $html->text('', $session['beneficiaries'][$subscriptionId])
+                                  ->class('form-control')->attribute('readonly', 'readonly')
+                                  ->attribute('style', 'height:36px; padding:5px 5px;') !!}
+                                <div class="input-group-append">
+                                  <span class="input-group-text" style="height:36px; padding:10px;"><i class="fa fa-check"></i></span>
+                                </div>
+                              </div>
 @endif
 @endforeach
-                          </div></td>
+                            </div>
+                          </td>
                         </tr>
 @endforeach
                       </tbody>

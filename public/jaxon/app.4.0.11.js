@@ -126,4 +126,34 @@ var Tontine = {};
             $(this).addClass('btn-primary');
         });
     };
+
+    /**
+     * Create the select dropdown for a subscription
+     *
+     * @param {int} beneficiaryId 
+     * @param {array} candidates 
+     * @returns {string}
+     */
+    const getSubscriptionSelect = (beneficiaryId, candidates) => `
+<select class="form-control my-2 select-beneficiary" style="height:36px; padding:5px 5px;">`
+    + candidates.reduce((options, { id, name }) => options + `
+    <option value="${id}"` + (id !== 0 && id === beneficiaryId ?
+        ' selected="selected"' : '') + `>${name}</option>`, '') + `
+</select>`;
+
+    /**
+     * @param {array} candidates 
+     * @param {array} beneficiaries
+     * @returns {void}
+     */
+    self.setSubscriptionCandidates = (candidates, beneficiaries) => {
+        const wrapper = $('#content-subscription-beneficiaries');
+        $('.session-subscription-candidate', wrapper)
+            .html(getSubscriptionSelect(0, candidates));
+
+        beneficiaries.forEach(({ id, name }) => {
+            $(`#session-subscription-candidate-${id}`, wrapper)
+                .html(getSubscriptionSelect(id, [ ...candidates, { id, name } ]));
+        });
+    };
 })(Tontine);
