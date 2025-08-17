@@ -21,10 +21,12 @@ class DepositService
 {
     /**
      * @param TenantService $tenantService
-     * @param PaymentServiceInterface $paymentService;
+     * @param PaymentServiceInterface $paymentService
+     * @param SearchSanitizer $searchSanitizer
      */
     public function __construct(private TenantService $tenantService,
-        private PaymentServiceInterface $paymentService, private SearchSanitizer $searchSanitizer)
+        private PaymentServiceInterface $paymentService,
+        private SearchSanitizer $searchSanitizer)
     {}
 
     /**
@@ -38,18 +40,19 @@ class DepositService
     private function getQuery(Pool $pool, Session $session,
         ?bool $filter = null, string $search = ''): Builder|Relation
     {
+        $filterQuery = match($filter) {
+            true => fn(Builder $query) => $query->paid(),
+            false => fn(Builder $query) => $query->unpaid(),
+            default => null,
+        };
         $search = $this->searchSanitizer->sanitize($search);
 
         return $session->receivables()
             ->select('receivables.*')
             ->join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
             ->where('subscriptions.pool_id', $pool->id)
-            ->when($filter === true, fn(Builder $query) => $query->whereHas('deposit'))
-            ->when($filter === false, fn(Builder $query) => $query->whereDoesntHave('deposit'))
-            ->when($search !== '',
-                fn(Builder $query) => $query->whereHas('subscription',
-                    fn(Builder $qs) => $qs->whereHas('member',
-                        fn(Builder $qm) => $qm->search($search))));
+            ->when($filterQuery !== null, $filterQuery)
+            ->when($search !== '', fn(Builder $query) => $query->search($search));
     }
 
     /**
@@ -114,24 +117,58 @@ class DepositService
     /**
      * Create a deposit.
      *
-     * @param Pool $pool The pool
+     * @param Receivable $receivable
      * @param Session $session The session
-     * @param int $receivableId
+     * @param int $amount
      *
      * @return void
      */
-    public function createDeposit(Pool $pool, Session $session, int $receivableId): void
+    private function saveDeposit(Receivable $receivable, Session $session, int $amount = 0): void
     {
-        $receivable = $this->getReceivable($pool, $session, $receivableId);
-        if(!$receivable || $receivable->deposit || !$pool->deposit_fixed)
+        if($receivable->deposit !== null)
         {
-            throw new MessageException(trans('tontine.subscription.errors.not_found'));
+            // The deposit exists. It is then modified.
+            $receivable->deposit->amount = $amount;
+            $receivable->deposit->save();
+            return;
         }
 
         $deposit = new Deposit();
+        $deposit->amount = $amount;
         $deposit->receivable()->associate($receivable);
         $deposit->session()->associate($session);
         $deposit->save();
+    }
+
+    /**
+     * @param Pool $pool The pool
+     * @param Receivable|null $receivable
+     * @param int $amount
+     *
+     * @return void
+     */
+    private function checkDepositCreation(Pool $pool, ?Receivable $receivable, int $amount = 0): void
+    {
+        if(!$receivable)
+        {
+            throw new MessageException(trans('tontine.subscription.errors.not_found'));
+        }
+        if($pool->deposit_fixed && $receivable->deposit !== null)
+        {
+            throw new MessageException(trans('tontine.subscription.errors.not_found'));
+        }
+        if(!$pool->deposit_fixed)
+        {
+            if($amount <= 0)
+            {
+                throw new MessageException(trans('tontine.subscription.errors.amount'));
+            }
+            if($receivable->deposit !== null &&
+                !$this->paymentService->isEditable($receivable->deposit))
+            {
+                throw new MessageException(trans('tontine.errors.editable'));
+            }
+        }
     }
 
     /**
@@ -144,31 +181,33 @@ class DepositService
      *
      * @return void
      */
-    public function saveDepositAmount(Pool $pool, Session $session, int $receivableId, int $amount): void
+    public function createDeposit(Pool $pool, Session $session,
+        int $receivableId, int $amount = 0): void
     {
         $receivable = $this->getReceivable($pool, $session, $receivableId);
-        if(!$receivable || $pool->deposit_fixed)
+        $this->checkDepositCreation($pool, $receivable, $amount);
+
+        $this->saveDeposit($receivable, $session, $amount);
+    }
+
+    /**
+     * Delete a deposit.
+     *
+     * @param Receivable|null $receivable
+     *
+     * @return void
+     */
+    private function _deleteDeposit(?Receivable $receivable): void
+    {
+        if(!$receivable || !$receivable->deposit)
         {
             throw new MessageException(trans('tontine.subscription.errors.not_found'));
         }
-
-        if($receivable->deposit !== null)
+        if(!$this->paymentService->isEditable($receivable->deposit))
         {
-            if(!$this->paymentService->isEditable($receivable->deposit))
-            {
-                throw new MessageException(trans('tontine.errors.editable'));
-            }
-
-            $receivable->deposit->amount = $amount;
-            $receivable->deposit->save();
-            return;
+            throw new MessageException(trans('tontine.errors.editable'));
         }
-
-        $deposit = new Deposit();
-        $deposit->amount = $amount;
-        $deposit->receivable()->associate($receivable);
-        $deposit->session()->associate($session);
-        $deposit->save();
+        $receivable->deposit()->delete();
     }
 
     /**
@@ -183,15 +222,7 @@ class DepositService
     public function deleteDeposit(Pool $pool, Session $session, int $receivableId): void
     {
         $receivable = $this->getReceivable($pool, $session, $receivableId);
-        if(!$receivable || !$receivable->deposit)
-        {
-            throw new MessageException(trans('tontine.subscription.errors.not_found'));
-        }
-        if(!$this->paymentService->isEditable($receivable->deposit))
-        {
-            throw new MessageException(trans('tontine.errors.editable'));
-        }
-        $receivable->deposit()->delete();
+        $this->_deleteDeposit($receivable);
     }
 
     /**
@@ -246,15 +277,135 @@ class DepositService
     }
 
     /**
-     * Delete all deposits for a pool.
-     *
      * @param Pool $pool The pool
      * @param Session $session The session
      *
      * @return int
      */
-    public function countDeposits(Pool $pool, Session $session): int
+    public function getPoolDepositCount(Pool $pool, Session $session): int
     {
         return $this->getQuery($pool, $session, true)->count();
+    }
+
+    /**
+     * @param Pool $pool
+     * @param Session $session
+     * @param bool|null $filter
+     * @param string $search
+     *
+     * @return Builder|Relation
+     */
+    private function getLateReceivableQuery(Pool $pool, Session $session,
+        ?bool $filter = null): Builder|Relation
+    {
+        $filterQuery = match($filter) {
+            true => fn(Builder $query) => $query->paid(),
+            false => fn(Builder $query) => $query->unpaid(),
+            default => null,
+        };
+
+        return $session->round->receivables()
+            ->join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
+            ->where('subscriptions.pool_id', $pool->id)
+            ->late($session)
+            ->when($filterQuery !== null, $filterQuery);
+    }
+
+    /**
+     * @param Pool $pool The pool
+     * @param Session $session The session
+     * @param bool|null $filter
+     *
+     * @return int
+     */
+    public function getLateReceivableCount(Pool $pool, Session $session,
+        ?bool $filter = null): int
+    {
+        return $this->getLateReceivableQuery($pool, $session, $filter)->count();
+    }
+
+    /**
+     * @param Pool $pool The pool
+     * @param Session $session The session
+     * @param bool|null $filter
+     * @param int $page
+     *
+     * @return Collection
+     */
+    public function getLateReceivables(Pool $pool, Session $session,
+        ?bool $filter = null, int $page = 0): Collection
+    {
+        return $this->getLateReceivableQuery($pool, $session, $filter)
+            ->select('receivables.*', DB::raw('pd.amount, member_defs.name as member'))
+            ->join('pools', 'pools.id', '=', 'subscriptions.pool_id')
+            ->join(DB::raw('pool_defs as pd'), 'pools.def_id', '=', 'pd.id')
+            ->join('members', 'members.id', '=', 'subscriptions.member_id')
+            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
+            ->with(['deposit'])
+            ->page($page, $this->tenantService->getLimit())
+            ->orderBy('member_defs.name', 'asc')
+            ->orderBy('subscriptions.id', 'asc')
+            ->get();
+    }
+
+    /**
+     * @param Pool $pool The pool
+     * @param Session $session The session
+     *
+     * @return int
+     */
+    public function getPoolLateDepositCount(Pool $pool, Session $session): int
+    {
+        return $this->getLateReceivableQuery($pool, $session, true)->count();
+    }
+
+    /**
+     * Find the unique receivable for a pool and a session.
+     *
+     * @param Pool $pool The pool
+     * @param Session $session The session
+     * @param int $receivableId
+     *
+     * @return Receivable|null
+     */
+    public function getLateReceivable(Pool $pool, Session $session, int $receivableId): ?Receivable
+    {
+        return $this->getLateReceivableQuery($pool, $session)
+            ->with(['deposit'])
+            ->find($receivableId);
+    }
+
+    /**
+     * Create a deposit.
+     *
+     * @param Pool $pool The pool
+     * @param Session $session The session
+     * @param int $receivableId
+     * @param int $amount
+     *
+     * @return void
+     */
+    public function createLateDeposit(Pool $pool, Session $session,
+        int $receivableId, int $amount = 0): void
+    {
+        $receivable = $this->getLateReceivable($pool, $session, $receivableId);
+        $this->checkDepositCreation($pool, $receivable, $amount);
+
+        $this->saveDeposit($receivable, $session, $amount);
+    }
+
+    /**
+     * Delete a deposit.
+     *
+     * @param Pool $pool The pool
+     * @param Session $session The session
+     * @param int $receivableId
+     *
+     * @return void
+     */
+    public function deleteLateDeposit(Pool $pool, Session $session, int $receivableId): void
+    {
+        $receivable = $this->getLateReceivable($pool, $session, $receivableId);
+        $this->_deleteDeposit($receivable);
     }
 }

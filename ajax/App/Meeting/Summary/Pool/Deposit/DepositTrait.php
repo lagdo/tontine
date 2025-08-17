@@ -35,7 +35,7 @@ trait DepositTrait
         $session = $this->stash()->get('summary.session');
         $pool = $this->stash()->get('summary.pool');
         $this->stash()->set('summary.pool.deposit.count',
-            $this->depositService->countDeposits($pool, $session));
+            $this->depositService->getPoolDepositCount($pool, $session));
 
         $this->cl(Total::class)->render();
     }

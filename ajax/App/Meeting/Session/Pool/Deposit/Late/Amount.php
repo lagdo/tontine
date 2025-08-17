@@ -1,0 +1,11 @@
+<?php
+
+namespace Ajax\App\Meeting\Session\Pool\Deposit\Late;
+
+class Amount extends \Ajax\App\Meeting\Session\Pool\Deposit\Amount
+{
+    /**
+     * @var string
+     */
+    protected string $amountFuncClass = AmountFunc::class;
+}

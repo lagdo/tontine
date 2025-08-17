@@ -38,7 +38,7 @@ class PoolService
     }
 
     /**
-     * Get a paginated list of pools with receivables.
+     * Get a list of pools with receivables.
      *
      * @param Session $session
      *
@@ -58,12 +58,13 @@ class PoolService
             ->get()
             ->each(function(Pool $pool) use($session) {
                 // Amount paid
-                $pool->amount_recv = $this->balanceCalculator->getPoolDepositAmount($pool, $session);
+                $pool->amount_recv = $this->balanceCalculator
+                    ->getPoolDepositAmount($pool, $session);
             });
     }
 
     /**
-     * Get a paginated list of pools with payables.
+     * Get a list of pools with payables.
      *
      * @param Session $session
      *
@@ -100,5 +101,29 @@ class PoolService
     public function hasPoolWithAuction(Session $session): bool
     {
         return $session->pools->contains(fn($pool) => $pool->remit_auction);
+    }
+
+    /**
+     * Get a list of pools with late deposits.
+     *
+     * @param Session $session
+     *
+     * @return Collection
+     */
+    public function getPoolsWithLateDeposits(Session $session): Collection
+    {
+        return $session->pools()
+            ->withCount([
+                'receivables as late_count' => fn(Builder $query) =>
+                    $query->late($session),
+                'receivables as late_paid' => fn(Builder $query) =>
+                    $query->late($session)->paid(),
+            ])
+            ->get()
+            ->each(function(Pool $pool) use($session) {
+                // Amount paid
+                $pool->amount_recv = 0; /*$this->balanceCalculator
+                    ->getPoolDepositAmount($pool, $session);*/
+            });
     }
 }

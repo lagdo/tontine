@@ -132,4 +132,9 @@ class Round extends Base
     {
         return $this->hasMany(RoundBill::class);
     }
+
+    public function receivables()
+    {
+        return $this->hasManyThrough(Receivable::class, Session::class);
+    }
 }

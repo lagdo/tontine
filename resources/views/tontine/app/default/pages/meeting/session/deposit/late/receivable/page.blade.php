@@ -1,8 +1,8 @@
 @php
   $receivableId = jq()->parent()->attr('data-receivable-id')->toInt();
-  $rqReceivableFunc = rq(Ajax\App\Meeting\Session\Pool\Deposit\ReceivableFunc::class);
-  $rqReceivablePage = rq(Ajax\App\Meeting\Session\Pool\Deposit\ReceivablePage::class);
-  $rqAmount = rq(Ajax\App\Meeting\Session\Pool\Deposit\Amount::class);
+  $rqReceivableFunc = rq(Ajax\App\Meeting\Session\Pool\Deposit\Late\ReceivableFunc::class);
+  $rqReceivablePage = rq(Ajax\App\Meeting\Session\Pool\Deposit\Late\ReceivablePage::class);
+  $rqAmount = rq(Ajax\App\Meeting\Session\Pool\Deposit\Late\Amount::class);
 @endphp
                   <div class="table-responsive" id="content-meeting-receivables" @jxnEvent([
                     ['.btn-add-deposit', 'click', $rqReceivableFunc->addDeposit($receivableId)],
@@ -20,30 +20,20 @@
                       </thead>
                       <tbody>
 @foreach ($receivables as $receivable)
-@php
-  $paidLate = $receivable->deposit !== null &&
-    $receivable->deposit->session_id !== $receivable->session_id;
-@endphp
                         <tr>
-                          <td>{{ $receivable->member }}@if ($paidLate)<br/>{{ $receivable->deposit->session->title }}@endif</td>
+                          <td>{{ $receivable->member }}</td>
 @if ($pool->deposit_fixed)
                           <td class="currency">{{ $locale->formatMoney($receivable->amount) }}</td>
                           <td class="table-item-menu" id="receivable-{{ $receivable->id }}" data-receivable-id="{{ $receivable->id }}">
-                            {!! paymentLink($receivable->deposit, 'deposit', $paidLate) !!}
+                            {!! paymentLink($receivable->deposit, 'deposit', !$session->opened) !!}
                           </td>
 @else
 @php
   $stash->set('meeting.session.receivable', $receivable);
 @endphp
-@if ($paidLate)
-                          <td class="currency">
-                            {{ $locale->formatMoney($receivable->deposit->amount) }}
-                          </td>
-@else
                           <td class="currency amount" @jxnBind($rqAmount, $receivable->id)>
                             @jxnHtml($rqAmount)
                           </td>
-@endif
 @endif
                         </tr>
 @endforeach

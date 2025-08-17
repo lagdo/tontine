@@ -154,6 +154,11 @@ class Pool extends Base
         return $this->hasMany(Subscription::class);
     }
 
+    public function receivables()
+    {
+        return $this->hasManyThrough(Receivable::class, Subscription::class);
+    }
+
     public function def()
     {
         return $this->belongsTo(PoolDef::class, 'def_id');
