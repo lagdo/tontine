@@ -8,7 +8,7 @@ use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Stringable;
 
 /**
- * @before getPool
+ * @before getPool [false]
  */
 class Receivable extends Component
 {

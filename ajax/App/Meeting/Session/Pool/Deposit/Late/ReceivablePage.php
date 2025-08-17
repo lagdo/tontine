@@ -10,7 +10,7 @@ use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
 /**
- * @before getPool
+ * @before getPool [false]
  */
 class ReceivablePage extends PageComponent
 {

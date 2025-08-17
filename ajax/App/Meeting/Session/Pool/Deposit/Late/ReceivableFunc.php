@@ -6,7 +6,7 @@ use Ajax\App\Meeting\Session\FuncComponent;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
 
 /**
- * @before getPool
+ * @before getPool [false]
  */
 class ReceivableFunc extends FuncComponent
 {

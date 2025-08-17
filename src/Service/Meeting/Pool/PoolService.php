@@ -118,6 +118,19 @@ class PoolService
     }
 
     /**
+     * @param Session $session
+     * @param int $poolId    The pool id
+     *
+     * @return Pool|null
+     */
+    public function getRoundPool(Session $session, int $poolId): ?Pool
+    {
+        return $session->round->pools()
+            ->withCount(['sessions', 'disabled_sessions'])
+            ->find($poolId);
+    }
+
+    /**
      * Get a list of pools with late deposits.
      *
      * @param Session $session
@@ -126,7 +139,8 @@ class PoolService
      */
     public function getPoolsWithLateDeposits(Session $session): Collection
     {
-        return $session->pools()
+        // All the round pools are returned here.
+        return $session->round->pools()
             ->addSelect([
                 'pools.*',
                 'amount_recv' => Deposit::select(DB::raw('sum(amount)'))
