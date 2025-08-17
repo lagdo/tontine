@@ -2,14 +2,14 @@
 
 namespace Siak\Tontine\Model;
 
-class Deposit extends Base
+class DepositReal extends Base
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'v_deposits';
+    protected $table = 'deposits';
 
     /**
      * Indicates if the model should be timestamped.
@@ -17,6 +17,15 @@ class Deposit extends Base
      * @var bool
      */
     public $timestamps = false;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'amount',
+    ];
 
     public function session()
     {

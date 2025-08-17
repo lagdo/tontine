@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Model\Deposit;
+use Siak\Tontine\Model\DepositReal;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
 use Siak\Tontine\Model\Session;
@@ -128,12 +128,12 @@ class DepositService
         if($receivable->deposit !== null)
         {
             // The deposit exists. It is then modified.
-            $receivable->deposit->amount = $amount;
-            $receivable->deposit->save();
+            DepositReal::where(['id' => $receivable->deposit->id])
+                ->update(['amount' => $amount]);
             return;
         }
 
-        $deposit = new Deposit();
+        $deposit = new DepositReal();
         $deposit->amount = $amount;
         $deposit->receivable()->associate($receivable);
         $deposit->session()->associate($session);
@@ -207,7 +207,7 @@ class DepositService
         {
             throw new MessageException(trans('tontine.errors.editable'));
         }
-        $receivable->deposit()->delete();
+        $receivable->deposit_real()->delete();
     }
 
     /**
@@ -244,7 +244,7 @@ class DepositService
         DB::transaction(function() use($session, $receivables) {
             foreach($receivables as $receivable)
             {
-                $deposit = new Deposit();
+                $deposit = new DepositReal();
                 $deposit->receivable()->associate($receivable);
                 $deposit->session()->associate($session);
                 $deposit->save();
@@ -265,13 +265,14 @@ class DepositService
         $receivables = $this->getQuery($pool, $session, true)
             ->with(['deposit'])
             ->get()
-            ->filter(fn($receivable) => $this->paymentService->isEditable($receivable->deposit));
+            ->filter(fn($receivable) =>
+                $this->paymentService->isEditable($receivable->deposit));
         if($receivables->count() === 0)
         {
             return;
         }
 
-        Deposit::whereIn('receivable_id', $receivables->pluck('id'))
+        DepositReal::whereIn('receivable_id', $receivables->pluck('id'))
             ->where('session_id', $session->id)
             ->delete();
     }

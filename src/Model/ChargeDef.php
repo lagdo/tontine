@@ -156,7 +156,8 @@ class ChargeDef extends Base
      */
     public function scopeOnce(Builder $query): Builder
     {
-        return $query->where('type', self::TYPE_FEE)->where('period', self::PERIOD_ONCE);
+        return $query->where('type', self::TYPE_FEE)
+            ->where('period', self::PERIOD_ONCE);
     }
 
     /**
@@ -166,7 +167,8 @@ class ChargeDef extends Base
      */
     public function scopeRound(Builder $query): Builder
     {
-        return $query->where('type', self::TYPE_FEE)->where('period', self::PERIOD_ROUND);
+        return $query->where('type', self::TYPE_FEE)
+            ->where('period', self::PERIOD_ROUND);
     }
 
     /**
@@ -176,7 +178,8 @@ class ChargeDef extends Base
      */
     public function scopeSession(Builder $query): Builder
     {
-        return $query->where('type', self::TYPE_FEE)->where('period', self::PERIOD_SESSION);
+        return $query->where('type', self::TYPE_FEE)
+            ->where('period', self::PERIOD_SESSION);
     }
 
     /**

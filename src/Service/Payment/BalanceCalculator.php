@@ -78,7 +78,7 @@ class BalanceCalculator
     {
         $query = $this->getDepositQuery(false)
             ->where('subscriptions.pool_id', $pool->id)
-            ->where('deposits.session_id', $session->id)
+            // ->where('deposits.session_id', $session->id)
             ->where('receivables.session_id', $session->id);
         return $pool->deposit_fixed ? $pool->amount * $query->count() :
             $query->sum('deposits.amount');

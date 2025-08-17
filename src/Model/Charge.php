@@ -4,7 +4,6 @@ namespace Siak\Tontine\Model;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 
 use function intval;
 
@@ -23,22 +22,14 @@ class Charge extends Base
      * @var array
      */
     protected $fillable = [
+        'name',
+        'type',
+        'period',
+        'amount',
+        'lendable',
         'def_id',
         'round_id',
     ];
-
-    /**
-     * The "booted" method of the model.
-     *
-     * @return void
-     */
-    protected static function booted()
-    {
-        // Also select fields from the charge_defs table.
-        static::addGlobalScope('def', fn(Builder $query) => $query
-            ->addSelect(['charges.*', 'd.name', 'd.type', 'd.period', 'd.amount', 'd.lendable'])
-            ->join(DB::raw('charge_defs as d'), 'd.id', '=', 'charges.def_id'));
-    }
 
     public function isFee(): Attribute
     {
@@ -138,7 +129,7 @@ class Charge extends Base
      */
     public function scopeFixed(Builder $query): Builder
     {
-        return $query->whereHas('def', fn(Builder $qd) => $qd->fixed());
+        return $query->where('period', '!=', ChargeDef::PERIOD_NONE);
     }
 
     /**
@@ -148,7 +139,7 @@ class Charge extends Base
      */
     public function scopeVariable(Builder $query): Builder
     {
-        return $query->whereHas('def', fn(Builder $qd) => $qd->variable());
+        return $query->where('period', ChargeDef::PERIOD_NONE);
     }
 
     /**
@@ -159,8 +150,7 @@ class Charge extends Base
      */
     public function scopeLendable(Builder $query, bool $lendable): Builder
     {
-        return $query->whereHas('def', fn(Builder $qd) =>
-            $qd->where('lendable', $lendable));
+        return $query->where('lendable', $lendable);
     }
 
     /**
@@ -170,7 +160,7 @@ class Charge extends Base
      */
     public function scopeFee(Builder $query): Builder
     {
-        return $query->whereHas('def', fn(Builder $qd) => $qd->fee());
+        return $query->where('type', ChargeDef::TYPE_FEE);
     }
 
     /**
@@ -180,7 +170,7 @@ class Charge extends Base
      */
     public function scopeFine(Builder $query): Builder
     {
-        return $query->whereHas('def', fn(Builder $qd) => $qd->fine());
+        return $query->where('type', ChargeDef::TYPE_FINE);
     }
 
     /**
@@ -190,7 +180,8 @@ class Charge extends Base
      */
     public function scopeOnce(Builder $query): Builder
     {
-        return $query->whereHas('def', fn(Builder $qd) => $qd->once());
+        return $query->where('type', ChargeDef::TYPE_FEE)
+            ->where('period', ChargeDef::PERIOD_ONCE);
     }
 
     /**
@@ -200,7 +191,8 @@ class Charge extends Base
      */
     public function scopeRound(Builder $query): Builder
     {
-        return $query->whereHas('def', fn(Builder $qd) => $qd->round());
+        return $query->where('type', ChargeDef::TYPE_FEE)
+            ->where('period', ChargeDef::PERIOD_ROUND);
     }
 
     /**
@@ -210,6 +202,7 @@ class Charge extends Base
      */
     public function scopeSession(Builder $query): Builder
     {
-        return $query->whereHas('def', fn(Builder $qd) => $qd->session());
+        return $query->where('type', ChargeDef::TYPE_FEE)
+            ->where('period', ChargeDef::PERIOD_SESSION);
     }
 }

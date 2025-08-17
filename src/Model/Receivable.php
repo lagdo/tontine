@@ -38,6 +38,11 @@ class Receivable extends Base
         return $this->hasOne(Deposit::class);
     }
 
+    public function deposit_real()
+    {
+        return $this->hasOne(DepositReal::class);
+    }
+
     /**
      * @param  Builder  $query
      *

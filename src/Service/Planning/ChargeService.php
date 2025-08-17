@@ -109,7 +109,14 @@ class ChargeService
         }
 
         DB::transaction(function() use($round, $def) {
-            $charge = $def->charges()->create(['round_id' => $round->id]);
+            $charge = $def->charges()->create([
+                'name' => $def->name,
+                'type' => $def->type,
+                'period' => $def->period,
+                'amount' => $def->amount,
+                'lendable' => $def->lendable,
+                'round_id' => $round->id,
+            ]);
 
             $this->billSyncService->chargeEnabled($round, $charge);
         });
