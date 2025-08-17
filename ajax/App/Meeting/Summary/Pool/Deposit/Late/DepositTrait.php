@@ -1,7 +1,8 @@
 <?php
 
-namespace Ajax\App\Meeting\Summary\Pool\Deposit;
+namespace Ajax\App\Meeting\Summary\Pool\Deposit\Late;
 
+use Ajax\App\Meeting\Summary\Pool\Deposit\Total;
 use Jaxon\App\Stash\Stash;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Payment\BalanceCalculator;
@@ -37,14 +38,17 @@ trait DepositTrait
      */
     protected BalanceCalculator $balanceCalculator;
 
-    private function showTotal(): void
+    /**
+     * @return void
+     */
+    protected function showTotal(): void
     {
         $session = $this->stash()->get('summary.session');
         $pool = $this->stash()->get('summary.pool');
         $this->stash()->set('summary.pool.deposit.count',
-            $this->depositService->getPoolDepositCount($pool, $session));
+            $this->depositService->getPoolLateDepositCount($pool, $session));
         $this->stash()->set('summary.pool.deposit.amount',
-            $this->balanceCalculator->getPoolDepositAmount($pool, $session));
+            $this->balanceCalculator->getPoolLateDepositAmount($pool, $session));
 
         $this->cl(Total::class)->render();
     }
