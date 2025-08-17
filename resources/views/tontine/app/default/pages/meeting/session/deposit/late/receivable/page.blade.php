@@ -21,7 +21,7 @@
                       <tbody>
 @foreach ($receivables as $receivable)
                         <tr>
-                          <td>{{ $receivable->member }}<br>{{ $receivable->session->title }}</td>
+                          <td>{{ $receivable->member }}<br>{{ $receivable->session->title }} ({{ $sessionStatuses[$session->status] }})</td>
 @if ($pool->deposit_fixed)
                           <td class="currency">{{ $locale->formatMoney($receivable->amount) }}</td>
                           <td class="table-item-menu" id="receivable-{{ $receivable->id }}" data-receivable-id="{{ $receivable->id }}">

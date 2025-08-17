@@ -6,6 +6,7 @@ use Ajax\App\Meeting\Session\PageComponent;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
+use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
 /**
@@ -27,9 +28,10 @@ class ReceivablePage extends PageComponent
      *
      * @param PoolService $poolService
      * @param DepositService $depositService
+     * @param SessionService $sessionService
      */
     public function __construct(protected PoolService $poolService,
-        protected DepositService $depositService)
+        protected DepositService $depositService, protected SessionService $sessionService)
     {}
 
     /**
@@ -56,6 +58,7 @@ class ReceivablePage extends PageComponent
         return $this->renderView('pages.meeting.session.deposit.late.receivable.page', [
             'pool' => $pool,
             'session' => $session,
+            'sessionStatuses' => $this->sessionService->getSessionStatuses(),
             'receivables' => $this->depositService
                 ->getLateReceivables($pool, $session, $filter, $this->currentPage()),
         ]);
