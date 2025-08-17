@@ -32,14 +32,19 @@
                             {!! paymentLink($receivable->deposit, 'deposit', $paidLate) !!}
                           </td>
 @else
+@if ($paidLate)
+                          <td class="currency">
+                            <div class="input-group">
+                              <input class="form-control" type="text" value="{{ $locale->formatMoney($receivable->deposit->amount) }}" readonly="readonly" style="height:36px; text-align:right">
+                              <div class="input-group-append">
+                                <button type="button" disabled="disabled" class="btn btn-secondary"><i class="fa fa-check"></i></button>
+                              </div>
+                            </div>
+                          </td>
+@else
 @php
   $stash->set('meeting.session.receivable', $receivable);
 @endphp
-@if ($paidLate)
-                          <td class="currency">
-                            {{ $locale->formatMoney($receivable->deposit->amount) }}
-                          </td>
-@else
                           <td class="currency amount" @jxnBind($rqAmount, $receivable->id)>
                             @jxnHtml($rqAmount)
                           </td>

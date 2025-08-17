@@ -38,6 +38,7 @@
                           'amount' => $pool->deposit_fixed ?
                             $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre'),
                           'paid' => $pool->recv_paid,
+                          'late' => $pool->recv_late,
                           'count' => $pool->recv_count,
                           'total' => $pool->amount_recv,
                           'menuClass' => 'btn-pool-deposits',
