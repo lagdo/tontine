@@ -21,8 +21,7 @@
                       <tbody>
 @foreach ($receivables as $receivable)
 @php
-  $paidLate = $receivable->deposit !== null &&
-    $receivable->deposit->session_id !== $receivable->session_id;
+  $paidLate = $receivable->paid_late;
 @endphp
                         <tr>
                           <td>{{ $receivable->member }}@if ($paidLate)<br/>{{ $receivable->deposit->session->title }}@endif</td>

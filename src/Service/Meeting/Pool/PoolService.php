@@ -51,7 +51,6 @@ class PoolService
     {
         return $session->pools()
             ->addSelect([
-                'pools.*',
                 'amount_recv' => Deposit::select(DB::raw('sum(amount)'))
                     ->whereColumn('pool_id', 'pools.id')
                     ->whereHas('receivable', fn(Builder $qr) =>

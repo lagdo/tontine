@@ -141,6 +141,9 @@ return [
             'late-deposits' => "Late deposits",
             'lates' => "Lates",
         ],
+        'labels' => [
+            'late' => "Late",
+        ]
     ],
     'remitment' => [
         'titles' => [

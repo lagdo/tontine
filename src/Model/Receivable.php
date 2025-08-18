@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Model;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Receivable extends Base
 {
@@ -22,6 +23,14 @@ class Receivable extends Base
         'notes',
         'session_id',
     ];
+
+    public function paidLate(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->deposit !== null &&
+                $this->deposit->session_id !== $this->session_id,
+        );
+    }
 
     public function session()
     {

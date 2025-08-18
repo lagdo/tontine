@@ -28,14 +28,18 @@
 @if ($receivable->pool->id === $pool->id)
                         <tr>
                           <td>{{ $receivable->member->name }}</td>
-                          <td style="text-align:right;">{{ $receivable->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
-                          <td style="text-align:right;">{{ $receivable->paid ? $locale->formatMoney($receivable->amount, true) : '-' }}</td>
+                          <td style="text-align:right;">{{ !$receivable->paid ?
+                            __('common.labels.no') : (!$receivable->paid_late ?
+                              __('common.labels.yes') : __('meeting.deposit.labels.late')) }}</td>
+                          <td style="text-align:right;">{{ !$receivable->paid ? '-' :
+                            $locale->formatMoney($receivable->amount, true) }}</td>
                         </tr>
 @endif
 @endforeach
                         <tr>
                           <th>{{ __('common.labels.total') }}</th>
-                          <th style="text-align:right;">{{ $pool->paid_count }}/{{ $pool->total_count }}</th>
+                          <th style="text-align:right;">{{ $pool->paid_count }}@if ($pool->late_count > 0)+{{
+                            $pool->late_count }}@endif/{{ $pool->total_count }}</th>
                           <th style="text-align:right;">{{ $locale->formatMoney($pool->paid_amount, true) }}</th>
                         </tr>
                       </tbody>
