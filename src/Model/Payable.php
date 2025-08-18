@@ -39,6 +39,17 @@ class Payable extends Base
 
     /**
      * @param  Builder  $query
+     * @param  Session $session
+     *
+     * @return Builder
+     */
+    public function scopeWhereSession(Builder $query, Session $session): Builder
+    {
+        return $query->where('session_id', $session->id);
+    }
+
+    /**
+     * @param  Builder  $query
      *
      * @return Builder
      */

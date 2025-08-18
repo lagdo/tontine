@@ -142,7 +142,7 @@ class SessionService
      */
     public function getPrevSession(Round $round, Session $session): ?Session
     {
-        return $round->sessions()->active()
+        return $round->sessions()->opened()
             ->where('day_date', '<', $session->day_date)
             ->orderBy('day_date', 'desc')
             ->first();
@@ -158,7 +158,7 @@ class SessionService
      */
     public function getNextSession(Round $round, Session $session): ?Session
     {
-        return $round->sessions()->active()
+        return $round->sessions()->opened()
             ->where('day_date', '>', $session->day_date)
             ->orderBy('day_date', 'asc')
             ->first();

@@ -16,6 +16,11 @@ class Amount extends Component
     use PoolTrait;
 
     /**
+     * @var string
+     */
+    protected string $amountFuncClass = AmountFunc::class;
+
+    /**
      * The constructor
      *
      * @param LocaleService $localeService
@@ -50,7 +55,7 @@ class Amount extends Component
                 'receivableId' => $receivable->id,
                 'amount' => !$receivable->deposit ? '' :
                     $this->localeService->getMoneyValue($receivable->deposit->amount),
-                'rqAmountFunc' => $this->rq(AmountFunc::class),
+                'rqAmountFunc' => $this->rq($this->amountFuncClass),
             ]);
         }
 
@@ -58,7 +63,7 @@ class Amount extends Component
             'receivableId' => $receivable->id,
             'amount' => $this->localeService->formatMoney($receivable->deposit->amount, false),
             'editable' => $this->paymentService->isEditable($receivable->deposit),
-            'rqAmountFunc' => $this->rq(AmountFunc::class),
+            'rqAmountFunc' => $this->rq($this->amountFuncClass),
         ]);
     }
 }

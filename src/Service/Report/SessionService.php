@@ -3,10 +3,12 @@
 namespace Siak\Tontine\Service\Report;
 
 use Closure;
+use Illuminate\Database\Eloquent\Builder as ElBuilder;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
+use Siak\Tontine\Model\Deposit;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Outflow;
 use Siak\Tontine\Model\Session;
@@ -30,22 +32,24 @@ class SessionService
     public function getReceivables(Session $session): Collection
     {
         return $session->pools()
+            ->addSelect([
+                'paid_amount' => Deposit::select(DB::raw('sum(amount)'))
+                    ->whereColumn('pool_id', 'pools.id')
+                    ->whereHas('receivable', fn(ElBuilder $qr) =>
+                        $qr->whereSession($session)),
+            ])
             ->withCount([
-                'subscriptions as total_count' => function($query) use($session) {
-                    $query->whereHas('receivables', function($query) use($session) {
-                        $query->where('session_id', $session->id);
-                    });
-                },
-                'subscriptions as paid_count' => function($query) use($session) {
-                    $query->whereHas('receivables', function($query) use($session) {
-                        $query->where('session_id', $session->id)->whereHas('deposit');
-                    });
-                },
+                'receivables as total_count' => fn(ElBuilder $query) =>
+                    $query->whereSession($session),
+                'receivables as paid_count' => fn(ElBuilder $query) =>
+                    $query->whereSession($session)->paid($session, true),
+                'receivables as late_count' => fn(ElBuilder $query) =>
+                    $query->whereSession($session)->paid($session, false),
             ])
             ->get()
-            ->each(function($pool) use($session) {
+            ->each(function($pool) {
+                $pool->paid_amount ??= 0;
                 $pool->total_amount = $pool->amount * $pool->total_count;
-                $pool->paid_amount = $this->balanceCalculator->getPoolDepositAmount($pool, $session);
             });
     }
 
@@ -59,16 +63,10 @@ class SessionService
         return $session->pools()
             ->withCount([
                 'sessions',
-                'subscriptions as total_count' => function($query) use($session) {
-                    $query->whereHas('payable', function($query) use($session) {
-                        $query->where('session_id', $session->id);
-                    });
-                },
-                'subscriptions as paid_count' => function($query) use($session) {
-                    $query->whereHas('payable', function($query) use($session) {
-                        $query->where('session_id', $session->id)->whereHas('remitment');
-                    });
-                },
+                'payables as total_count' => fn(ElBuilder $query) =>
+                    $query->whereSession($session),
+                'payables as paid_count' => fn(ElBuilder $query) =>
+                    $query->whereSession($session)->whereHas('remitment'),
             ])
             ->get()
             ->each(function($pool) use($session) {

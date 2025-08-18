@@ -136,6 +136,15 @@ return [
             'next' => "Séance suiv.",
         ],
     ],
+    'deposit' => [
+        'titles' => [
+            'late-deposits' => "Versements en retard",
+            'lates' => "Retards",
+        ],
+        'labels' => [
+            'late' => "Retard",
+        ]
+    ],
     'remitment' => [
         'titles' => [
             'add' => "Ajouter une remise",

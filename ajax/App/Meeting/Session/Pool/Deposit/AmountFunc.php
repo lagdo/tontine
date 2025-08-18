@@ -2,84 +2,40 @@
 
 namespace Ajax\App\Meeting\Session\Pool\Deposit;
 
-use Ajax\App\Meeting\Session\FuncComponent;
-use Ajax\App\Meeting\Session\Pool\PoolTrait;
-use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Payment\PaymentServiceInterface;
+use Siak\Tontine\Model\Receivable as ReceivableModel;
 
-use function filter_var;
-use function str_replace;
-use function trans;
-use function trim;
-
-/**
- * @before getPool
- */
-class AmountFunc extends FuncComponent
+class AmountFunc extends AmountBase
 {
-    use PoolTrait;
     use DepositTrait;
-
-    /**
-     * The constructor
-     *
-     * @param LocaleService $localeService
-     * @param PaymentServiceInterface $paymentService
-     */
-    public function __construct(private LocaleService $localeService,
-        private PaymentServiceInterface $paymentService)
-    {}
 
     /**
      * @param int $receivableId
      *
-     * @return void
+     * @return ReceivableModel|null
      */
-    public function edit(int $receivableId): void
+    protected function getReceivable(int $receivableId): ?ReceivableModel
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
-        $receivable = $this->depositService->getReceivable($pool, $session, $receivableId);
-        if(!$receivable || !$receivable->deposit)
-        {
-            $this->cl(ReceivablePage::class)->page();
-            return;
-        }
-
-        $this->stash()->set('meeting.session.edit', true);
-        $this->stash()->set('meeting.session.receivable', $receivable);
-
-        $this->cl(Amount::class)->item($receivable->id)->render();
+        return $this->depositService->getReceivable($pool, $session, $receivableId);
     }
 
     /**
      * @param int $receivableId
-     * @param string $amount
+     * @param int $amount
      *
      * @return void
      */
-    public function save(int $receivableId, string $amount): void
+    protected function saveDeposit(int $receivableId, int $amount): void
     {
-        $amount = str_replace(',', '.', trim($amount));
-        if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
+        $pool = $this->stash()->get('meeting.pool');
+        $session = $this->stash()->get('meeting.session');
+        if($amount <= 0)
         {
-            $error = trans('meeting.errors.amount.invalid', ['amount' => $amount]);
-            $this->alert()->title(trans('common.titles.error'))->error($error);
-
+            $this->depositService->deleteDeposit($pool, $session, $receivableId);
             return;
         }
 
-        $pool = $this->stash()->get('meeting.pool');
-        $session = $this->stash()->get('meeting.session');
-        $amount = $amount === '' ? 0 : $this->localeService->convertMoneyToInt((float)$amount);
-        $amount > 0 ?
-            $this->depositService->saveDepositAmount($pool, $session, $receivableId, $amount):
-            $this->depositService->deleteDeposit($pool, $session, $receivableId);
-
-        $this->stash()->set('meeting.session.receivable',
-            $this->depositService->getReceivable($pool, $session, $receivableId));
-
-        $this->showTotal();
-        $this->cl(Amount::class)->item($receivableId)->render();
+        $this->depositService->createDeposit($pool, $session, $receivableId, $amount);
     }
 }

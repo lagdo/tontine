@@ -6,8 +6,8 @@
 @endphp
                   <div class="table-responsive" id="content-meeting-receivables" @jxnEvent([
                     ['.btn-add-deposit', 'click', $rqReceivableFunc->addDeposit($receivableId)],
-                    ['.btn-del-deposit', 'click', $rqReceivableFunc->delDeposit($receivableId)]])>
-
+                    ['.btn-del-deposit', 'click', $rqReceivableFunc->delDeposit($receivableId)],
+                  ])>
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -20,12 +20,25 @@
                       </thead>
                       <tbody>
 @foreach ($receivables as $receivable)
+@php
+  $paidLate = $receivable->paid_late;
+@endphp
                         <tr>
-                          <td>{{ $receivable->member }}</td>
+                          <td>{{ $receivable->member }}@if ($paidLate)<br/>{{ $receivable->deposit->session->title }}@endif</td>
 @if ($pool->deposit_fixed)
                           <td class="currency">{{ $locale->formatMoney($receivable->amount) }}</td>
                           <td class="table-item-menu" id="receivable-{{ $receivable->id }}" data-receivable-id="{{ $receivable->id }}">
-                            {!! paymentLink($receivable->deposit, 'deposit', !$session->opened) !!}
+                            {!! paymentLink($receivable->deposit, 'deposit', $paidLate) !!}
+                          </td>
+@else
+@if ($paidLate)
+                          <td class="currency">
+                            <div class="input-group">
+                              <input class="form-control" type="text" value="{{ $locale->formatMoney($receivable->deposit->amount) }}" readonly="readonly" style="height:36px; text-align:right">
+                              <div class="input-group-append">
+                                <button type="button" disabled="disabled" class="btn btn-secondary"><i class="fa fa-check"></i></button>
+                              </div>
+                            </div>
                           </td>
 @else
 @php
@@ -34,6 +47,7 @@
                           <td class="currency amount" @jxnBind($rqAmount, $receivable->id)>
                             @jxnHtml($rqAmount)
                           </td>
+@endif
 @endif
                         </tr>
 @endforeach

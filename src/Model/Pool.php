@@ -24,6 +24,12 @@ class Pool extends Base
      * @var array
      */
     protected $fillable = [
+        'title',
+        'amount',
+        'deposit_fixed',
+        'deposit_lendable',
+        'remit_planned',
+        'remit_auction',
         'round_id',
         'start_sid',
         'end_sid',
@@ -69,47 +75,9 @@ class Pool extends Base
         ];
     }
 
-    public function title(): Attribute
-    {
-        return Attribute::make(get: fn() => $this->def->title);
-    }
-
-    public function amount(): Attribute
-    {
-        return Attribute::make(get: fn() => $this->def->amount);
-    }
-
     public function notes(): Attribute
     {
         return Attribute::make(get: fn() => $this->def->notes);
-    }
-
-    public function depositFixed(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => ($this->def->properties['deposit']['fixed'] ?? true) === true,
-        );
-    }
-
-    public function depositLendable(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => ($this->def->properties['deposit']['lendable'] ?? false) === true,
-        );
-    }
-
-    public function remitPlanned(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => ($this->def->properties['remit']['planned'] ?? true) === true,
-        );
-    }
-
-    public function remitAuction(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => ($this->def->properties['remit']['auction'] ?? false) === true,
-        );
     }
 
     /**
@@ -121,7 +89,8 @@ class Pool extends Base
      */
     private function filterOnDates(Builder $query, Carbon $startDate, Carbon $endDate): Builder
     {
-        return $query->where('vp.end_date', '>=', $startDate)
+        return $query
+            ->where('vp.end_date', '>=', $startDate)
             ->where('vp.start_date', '<=', $endDate);
     }
 
@@ -135,7 +104,8 @@ class Pool extends Base
      */
     public function scopeOfRound(Builder $query, Round $round): Builder
     {
-        $query->whereHas('def', fn($q) => $q->where('guild_id', $round->guild_id));
+        $query->whereHas('def', fn($q) =>
+            $q->where('guild_id', $round->guild_id));
         return $this->filterOnDates($query, $round->start_date, $round->end_date);
     }
 
@@ -146,12 +116,22 @@ class Pool extends Base
      */
     public function scopeRemitPlanned(Builder $query): Builder
     {
-        return $query->whereHas('def', fn($q) => $q->where('properties->remit->planned', true));
+        return $query->where('remit_planned', true);
     }
 
     public function subscriptions()
     {
         return $this->hasMany(Subscription::class);
+    }
+
+    public function receivables()
+    {
+        return $this->hasManyThrough(Receivable::class, Subscription::class);
+    }
+
+    public function payables()
+    {
+        return $this->hasManyThrough(Payable::class, Subscription::class);
     }
 
     public function def()

@@ -136,6 +136,15 @@ return [
             'next' => "Next session",
         ],
     ],
+    'deposit' => [
+        'titles' => [
+            'late-deposits' => "Late deposits",
+            'lates' => "Lates",
+        ],
+        'labels' => [
+            'late' => "Late",
+        ]
+    ],
     'remitment' => [
         'titles' => [
             'add' => "Add a remitment",

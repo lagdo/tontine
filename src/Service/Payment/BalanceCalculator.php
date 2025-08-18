@@ -77,10 +77,27 @@ class BalanceCalculator
     public function getPoolDepositAmount(Pool $pool, Session $session): int
     {
         $query = $this->getDepositQuery(false)
-            ->where('receivables.session_id', $session->id)
-            ->where('subscriptions.pool_id', $pool->id);
-        return !$pool->deposit_fixed ? $query->sum('deposits.amount') :
-            $pool->amount * $query->count();
+            ->where('subscriptions.pool_id', $pool->id)
+            // ->where('deposits.session_id', $session->id)
+            ->where('receivables.session_id', $session->id);
+        return $pool->deposit_fixed ? $pool->amount * $query->count() :
+            $query->sum('deposits.amount');
+    }
+
+    /**
+     * @param Pool $pool
+     * @param Session $session
+     *
+     * @return int
+     */
+    public function getPoolLateDepositAmount(Pool $pool, Session $session): int
+    {
+        $query = $this->getDepositQuery(false)
+            ->where('subscriptions.pool_id', $pool->id)
+            ->where('deposits.session_id', $session->id)
+            ->where('receivables.session_id', '!=', $session->id);
+        return $pool->deposit_fixed ? $pool->amount * $query->count() :
+            $query->sum('deposits.amount');
     }
 
     /**

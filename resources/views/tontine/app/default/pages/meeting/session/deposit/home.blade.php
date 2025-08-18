@@ -1,6 +1,7 @@
 @php
   $poolId = jq()->parent()->attr('data-pool-id')->toInt();
   $rqDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Deposit::class);
+  $rqLateDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Late\Deposit::class);
   $rqReceivable = rq(Ajax\App\Meeting\Session\Pool\Deposit\Receivable::class);
 @endphp
                   <div class="row mb-2">
@@ -10,6 +11,9 @@
                     <div class="col-auto ml-auto">
                       <div class="btn-group" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqDeposit->render())><i class="fa fa-sync"></i></button>
+                      </div>
+                      <div class="btn-group ml-3" role="group">
+                        <button type="button" class="btn btn-primary" @jxnClick($rqLateDeposit->render())>{{ __('meeting.deposit.titles.lates') }}</button>
                       </div>
                     </div>
                   </div>
@@ -34,6 +38,7 @@
                           'amount' => $pool->deposit_fixed ?
                             $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre'),
                           'paid' => $pool->recv_paid,
+                          'late' => $pool->recv_late,
                           'count' => $pool->recv_count,
                           'total' => $pool->amount_recv,
                           'menuClass' => 'btn-pool-deposits',

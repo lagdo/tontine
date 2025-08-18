@@ -42,9 +42,11 @@ trait PoolTrait
     abstract protected function bag(string $sBagName): DataBagContext;
 
     /**
+     * @param bool $ofSession
+     *
      * @return void
      */
-    protected function getPool(): void
+    protected function getPool(bool $ofSession = true): void
     {
         if($this->target()->method() === 'pool')
         {
@@ -52,7 +54,9 @@ trait PoolTrait
         }
         $session = $this->stash()->get('meeting.session');
         $poolId = (int)$this->bag('meeting')->get('pool.id');
-        $pool = $this->poolService->getPool($session, $poolId);
+        $pool = $ofSession ?
+            $this->poolService->getPool($session, $poolId) :
+            $this->poolService->getRoundPool($session, $poolId);
         if(!$pool)
         {
             throw new MessageException(trans('tontine.session.errors.disabled'));

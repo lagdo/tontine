@@ -116,6 +116,12 @@ class PoolService
         // Create the pool
         DB::transaction(function() use($def, $round, $startSession, $endSession) {
             $pool = $def->pools()->create([
+                'title' => $def->title,
+                'amount' => $def->amount,
+                'deposit_fixed' => $def->deposit_fixed,
+                'deposit_lendable' => $def->deposit_lendable,
+                'remit_planned' => $def->remit_planned,
+                'remit_auction' => $def->remit_auction,
                 'round_id' => $round->id,
                 'start_sid' => $startSession->id,
                 'end_sid' => $endSession->id,

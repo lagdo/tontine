@@ -4,6 +4,8 @@ namespace Siak\Tontine\Service\Meeting\Pool;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Model\Deposit;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Meeting\Session\SummaryService;
@@ -20,7 +22,8 @@ class PoolService
      * @param BalanceCalculator $balanceCalculator
      */
     public function __construct(protected LocaleService $localeService,
-        protected TenantService $tenantService, protected SummaryService $summaryService,
+        protected TenantService $tenantService,
+        protected SummaryService $summaryService,
         protected BalanceCalculator $balanceCalculator)
     {}
 
@@ -38,7 +41,7 @@ class PoolService
     }
 
     /**
-     * Get a paginated list of pools with receivables.
+     * Get a list of pools with receivables.
      *
      * @param Session $session
      *
@@ -47,23 +50,26 @@ class PoolService
     public function getPoolsWithReceivables(Session $session): Collection
     {
         return $session->pools()
+            ->addSelect([
+                'amount_recv' => Deposit::select(DB::raw('sum(amount)'))
+                    ->whereColumn('pool_id', 'pools.id')
+                    ->whereHas('receivable', fn(Builder $qr) =>
+                        $qr->whereSession($session)),
+            ])
             ->withCount([
-                'subscriptions as recv_count',
-                'subscriptions as recv_paid' => function(Builder $query) use($session) {
-                    $query->whereHas('receivables', function(Builder $query) use($session) {
-                        $query->where('session_id', $session->id)->whereHas('deposit');
-                    });
-                },
+                'receivables as recv_count' => fn(Builder $query) =>
+                    $query->whereSession($session),
+                'receivables as recv_paid' => fn(Builder $query) =>
+                    $query->whereSession($session)->paid($session, true),
+                'receivables as recv_late' => fn(Builder $query) =>
+                    $query->whereSession($session)->paid($session, false),
             ])
             ->get()
-            ->each(function(Pool $pool) use($session) {
-                // Amount paid
-                $pool->amount_recv = $this->balanceCalculator->getPoolDepositAmount($pool, $session);
-            });
+            ->each(fn(Pool $pool) => $pool->amount_recv ??= 0);
     }
 
     /**
-     * Get a paginated list of pools with payables.
+     * Get a list of pools with payables.
      *
      * @param Session $session
      *
@@ -75,11 +81,8 @@ class PoolService
             ->withCount([
                 'sessions',
                 'disabled_sessions',
-                'subscriptions as pay_paid' => function(Builder $query) use($session) {
-                    $query->whereHas('payable', function(Builder $query) use($session) {
-                        $query->where('session_id', $session->id)->whereHas('remitment');
-                    });
-                },
+                'payables as pay_paid' => fn(Builder $query) =>
+                    $query->whereSession($session)->whereHas('remitment'),
             ])
             ->get()
             ->each(function(Pool $pool) use($session) {
@@ -100,5 +103,46 @@ class PoolService
     public function hasPoolWithAuction(Session $session): bool
     {
         return $session->pools->contains(fn($pool) => $pool->remit_auction);
+    }
+
+    /**
+     * @param Session $session
+     * @param int $poolId    The pool id
+     *
+     * @return Pool|null
+     */
+    public function getRoundPool(Session $session, int $poolId): ?Pool
+    {
+        return $session->round->pools()
+            ->withCount(['sessions', 'disabled_sessions'])
+            ->find($poolId);
+    }
+
+    /**
+     * Get a list of pools with late deposits.
+     *
+     * @param Session $session
+     *
+     * @return Collection
+     */
+    public function getPoolsWithLateDeposits(Session $session): Collection
+    {
+        // All the round pools are returned here.
+        return $session->round->pools()
+            ->addSelect([
+                'amount_recv' => Deposit::select(DB::raw('sum(amount)'))
+                    ->whereColumn('pool_id', 'pools.id')
+                    ->where('session_id', $session->id)
+                    ->whereHas('receivable', fn(Builder $qr) =>
+                        $qr->where('session_id', '!=', $session->id)),
+            ])
+            ->withCount([
+                'receivables as late_count' => fn(Builder $query) =>
+                    $query->late($session),
+                'receivables as late_paid' => fn(Builder $query) =>
+                    $query->late($session)->paid(),
+            ])
+            ->get()
+            ->each(fn(Pool $pool) => $pool->amount_recv ??= 0);
     }
 }
