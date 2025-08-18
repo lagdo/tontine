@@ -54,12 +54,29 @@ class Receivable extends Base
 
     /**
      * @param  Builder  $query
+     * @param  Session $session
      *
      * @return Builder
      */
-    public function scopePaid(Builder $query): Builder
+    public function scopeWhereSession(Builder $query, Session $session): Builder
     {
-        return $query->whereHas('deposit');
+        return $query->where('session_id', $session->id);
+    }
+
+    /**
+     * @param  Builder  $query
+     * @param  Session|null $session
+     * @param  bool $inSession
+     *
+     * @return Builder
+     */
+    public function scopePaid(Builder $query, ?Session $session = null,
+        bool $inSession = true): Builder
+    {
+        $operator = $inSession ? '=' : '!=';
+        return !$session ? $query->whereHas('deposit') :
+            $query->whereHas('deposit', fn(Builder $qd) =>
+                $qd->where('session_id', $operator, $session->id));
     }
 
     /**

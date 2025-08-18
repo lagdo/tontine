@@ -36,28 +36,15 @@ class SessionService
                 'paid_amount' => Deposit::select(DB::raw('sum(amount)'))
                     ->whereColumn('pool_id', 'pools.id')
                     ->whereHas('receivable', fn(ElBuilder $qr) =>
-                        $qr->where('session_id', $session->id)),
+                        $qr->whereSession($session)),
             ])
             ->withCount([
-                'subscriptions as total_count' => function($query) use($session) {
-                    $query->whereHas('receivables', function($query) use($session) {
-                        $query->where('session_id', $session->id);
-                    });
-                },
-                'subscriptions as paid_count' => function($query) use($session) {
-                    $query->whereHas('receivables', function($query) use($session) {
-                        $query->where('session_id', $session->id)
-                            ->whereHas('deposit', fn(ElBuilder $qd) =>
-                                $qd->where('session_id', $session->id));
-                    });
-                },
-                'subscriptions as late_count' => function(ElBuilder $query) use($session) {
-                    $query->whereHas('receivables', function(ElBuilder $query) use($session) {
-                        $query->where('session_id', $session->id)
-                            ->whereHas('deposit', fn(ElBuilder $qd) =>
-                                $qd->where('session_id', '!=', $session->id));
-                    });
-                },
+                'receivables as total_count' => fn(ElBuilder $query) =>
+                    $query->whereSession($session),
+                'receivables as paid_count' => fn(ElBuilder $query) =>
+                    $query->whereSession($session)->paid($session, true),
+                'receivables as late_count' => fn(ElBuilder $query) =>
+                    $query->whereSession($session)->paid($session, false),
             ])
             ->get()
             ->each(function($pool) {
@@ -76,16 +63,10 @@ class SessionService
         return $session->pools()
             ->withCount([
                 'sessions',
-                'subscriptions as total_count' => function($query) use($session) {
-                    $query->whereHas('payable', function($query) use($session) {
-                        $query->where('session_id', $session->id);
-                    });
-                },
-                'subscriptions as paid_count' => function($query) use($session) {
-                    $query->whereHas('payable', function($query) use($session) {
-                        $query->where('session_id', $session->id)->whereHas('remitment');
-                    });
-                },
+                'payables as total_count' => fn(ElBuilder $query) =>
+                    $query->whereSession($session),
+                'payables as paid_count' => fn(ElBuilder $query) =>
+                    $query->whereSession($session)->whereHas('remitment'),
             ])
             ->get()
             ->each(function($pool) use($session) {
