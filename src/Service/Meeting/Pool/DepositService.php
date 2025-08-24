@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
-use Siak\Tontine\Exception\MessageException;
+use Siak\Tontine\Model\Deposit;
 use Siak\Tontine\Model\DepositReal;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\Receivable;
@@ -15,18 +15,18 @@ use Siak\Tontine\Service\Payment\PaymentServiceInterface;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\SearchSanitizer;
 
-use function trans;
-
 class DepositService
 {
+    use DepositServiceTrait;
+
     /**
      * @param TenantService $tenantService
      * @param PaymentServiceInterface $paymentService
      * @param SearchSanitizer $searchSanitizer
      */
-    public function __construct(private TenantService $tenantService,
-        private PaymentServiceInterface $paymentService,
-        private SearchSanitizer $searchSanitizer)
+    public function __construct(protected TenantService $tenantService,
+        protected PaymentServiceInterface $paymentService,
+        protected SearchSanitizer $searchSanitizer)
     {}
 
     /**
@@ -69,17 +69,8 @@ class DepositService
     {
         // The jointure with the subscriptions and members tables is needed,
         // so the final records can be ordered by member name.
-        return $this->getQuery($pool, $session, $filter, $search)
-            ->addSelect(DB::raw('pd.amount, member_defs.name as member'))
-            ->join('pools', 'pools.id', '=', 'subscriptions.pool_id')
-            ->join(DB::raw('pool_defs as pd'), 'pools.def_id', '=', 'pd.id')
-            ->join('members', 'members.id', '=', 'subscriptions.member_id')
-            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
-            ->with(['deposit'])
-            ->page($page, $this->tenantService->getLimit())
-            ->orderBy('member_defs.name', 'asc')
-            ->orderBy('subscriptions.id', 'asc')
-            ->get();
+        $query = $this->getQuery($pool, $session, $filter, $search);
+        return $this->getReceivableDetailsQuery($query, $page)->get();
     }
 
     /**
@@ -117,63 +108,6 @@ class DepositService
     /**
      * Create a deposit.
      *
-     * @param Receivable $receivable
-     * @param Session $session The session
-     * @param int $amount
-     *
-     * @return void
-     */
-    private function saveDeposit(Receivable $receivable, Session $session, int $amount = 0): void
-    {
-        if($receivable->deposit !== null)
-        {
-            // The deposit exists. It is then modified.
-            DepositReal::where(['id' => $receivable->deposit->id])
-                ->update(['amount' => $amount]);
-            return;
-        }
-
-        $deposit = new DepositReal();
-        $deposit->amount = $amount;
-        $deposit->receivable()->associate($receivable);
-        $deposit->session()->associate($session);
-        $deposit->save();
-    }
-
-    /**
-     * @param Pool $pool The pool
-     * @param Receivable|null $receivable
-     * @param int $amount
-     *
-     * @return void
-     */
-    private function checkDepositCreation(Pool $pool, ?Receivable $receivable, int $amount = 0): void
-    {
-        if(!$receivable)
-        {
-            throw new MessageException(trans('tontine.subscription.errors.not_found'));
-        }
-        if($pool->deposit_fixed && $receivable->deposit !== null)
-        {
-            throw new MessageException(trans('tontine.subscription.errors.not_found'));
-        }
-        if(!$pool->deposit_fixed)
-        {
-            if($amount <= 0)
-            {
-                throw new MessageException(trans('tontine.subscription.errors.amount'));
-            }
-            if($receivable->deposit !== null &&
-                !$this->paymentService->isEditable($receivable->deposit))
-            {
-                throw new MessageException(trans('tontine.errors.editable'));
-            }
-        }
-    }
-
-    /**
-     * Create a deposit.
-     *
      * @param Pool $pool The pool
      * @param Session $session The session
      * @param int $receivableId
@@ -188,26 +122,6 @@ class DepositService
         $this->checkDepositCreation($pool, $receivable, $amount);
 
         $this->saveDeposit($receivable, $session, $amount);
-    }
-
-    /**
-     * Delete a deposit.
-     *
-     * @param Receivable|null $receivable
-     *
-     * @return void
-     */
-    private function _deleteDeposit(?Receivable $receivable): void
-    {
-        if(!$receivable || !$receivable->deposit)
-        {
-            throw new MessageException(trans('tontine.subscription.errors.not_found'));
-        }
-        if(!$this->paymentService->isEditable($receivable->deposit))
-        {
-            throw new MessageException(trans('tontine.errors.editable'));
-        }
-        $receivable->deposit_real()->delete();
     }
 
     /**
@@ -289,124 +203,35 @@ class DepositService
     }
 
     /**
-     * @param Pool $pool
-     * @param Session $session
-     * @param bool|null $filter
-     * @param string $search
-     *
-     * @return Builder|Relation
-     */
-    private function getLateReceivableQuery(Pool $pool, Session $session,
-        ?bool $filter = null): Builder|Relation
-    {
-        $filterQuery = match($filter) {
-            true => fn(Builder $query) => $query->paid(),
-            false => fn(Builder $query) => $query->unpaid(),
-            default => null,
-        };
-
-        return $session->round->receivables()
-            ->join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
-            ->where('subscriptions.pool_id', $pool->id)
-            ->late($session)
-            ->when($filterQuery !== null, $filterQuery);
-    }
-
-    /**
-     * @param Pool $pool The pool
-     * @param Session $session The session
-     * @param bool|null $filter
-     *
-     * @return int
-     */
-    public function getLateReceivableCount(Pool $pool, Session $session,
-        ?bool $filter = null): int
-    {
-        return $this->getLateReceivableQuery($pool, $session, $filter)->count();
-    }
-
-    /**
-     * @param Pool $pool The pool
-     * @param Session $session The session
-     * @param bool|null $filter
-     * @param int $page
-     *
-     * @return Collection
-     */
-    public function getLateReceivables(Pool $pool, Session $session,
-        ?bool $filter = null, int $page = 0): Collection
-    {
-        return $this->getLateReceivableQuery($pool, $session, $filter)
-            ->select('receivables.*', DB::raw('pd.amount, member_defs.name as member'))
-            ->join('pools', 'pools.id', '=', 'subscriptions.pool_id')
-            ->join(DB::raw('pool_defs as pd'), 'pools.def_id', '=', 'pd.id')
-            ->join('members', 'members.id', '=', 'subscriptions.member_id')
-            ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
-            ->with(['deposit'])
-            ->page($page, $this->tenantService->getLimit())
-            ->orderBy('member_defs.name', 'asc')
-            ->orderBy('subscriptions.id', 'asc')
-            ->get();
-    }
-
-    /**
      * @param Pool $pool The pool
      * @param Session $session The session
      *
-     * @return int
+     * @return array
      */
-    public function getPoolLateDepositCount(Pool $pool, Session $session): int
+    public function getPoolDepositNumbers(Pool $pool, Session $session): array
     {
-        return $this->getLateReceivableQuery($pool, $session, true)->count();
-    }
-
-    /**
-     * Find the unique receivable for a pool and a session.
-     *
-     * @param Pool $pool The pool
-     * @param Session $session The session
-     * @param int $receivableId
-     *
-     * @return Receivable|null
-     */
-    public function getLateReceivable(Pool $pool, Session $session, int $receivableId): ?Receivable
-    {
-        return $this->getLateReceivableQuery($pool, $session)
-            ->with(['deposit'])
-            ->find($receivableId);
-    }
-
-    /**
-     * Create a deposit.
-     *
-     * @param Pool $pool The pool
-     * @param Session $session The session
-     * @param int $receivableId
-     * @param int $amount
-     *
-     * @return void
-     */
-    public function createLateDeposit(Pool $pool, Session $session,
-        int $receivableId, int $amount = 0): void
-    {
-        $receivable = $this->getLateReceivable($pool, $session, $receivableId);
-        $this->checkDepositCreation($pool, $receivable, $amount);
-
-        $this->saveDeposit($receivable, $session, $amount);
-    }
-
-    /**
-     * Delete a deposit.
-     *
-     * @param Pool $pool The pool
-     * @param Session $session The session
-     * @param int $receivableId
-     *
-     * @return void
-     */
-    public function deleteLateDeposit(Pool $pool, Session $session, int $receivableId): void
-    {
-        $receivable = $this->getLateReceivable($pool, $session, $receivableId);
-        $this->_deleteDeposit($receivable);
+        $pool = Pool::where('id', $pool->id)
+            ->select([
+                'recv_amount' => Deposit::select(DB::raw('sum(amount)'))
+                    ->whereColumn('pool_id', 'pools.id')
+                    ->whereHas('receivable', fn(Builder $qr) =>
+                        $qr->whereSession($session)->paidHere($session)),
+            ])
+            ->withCount([
+                'receivables as recv_count' => fn(Builder $query) =>
+                    $query->whereSession($session),
+                'receivables as paid_here' => fn(Builder $query) =>
+                    $query->whereSession($session)->paidHere($session),
+                'receivables as paid_late' => fn(Builder $query) =>
+                    $query->whereSession($session)->paidLater($session),
+                'receivables as paid_early' => fn(Builder $query) =>
+                    $query->whereSession($session)->paidEarlier($session),
+            ])
+            ->first();
+        return !$pool ? [0, 0, 0] : [
+            $pool->recv_amount ??= 0, // The amount paid in the session
+            $pool->paid_here, // The number of recv paid in the session
+            $pool->recv_count - $pool->paid_late - $pool->paid_early, // The total expected count
+        ];
     }
 }

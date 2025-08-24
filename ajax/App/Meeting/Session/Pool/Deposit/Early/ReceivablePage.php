@@ -1,37 +1,40 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Pool\Deposit\Late;
+namespace Ajax\App\Meeting\Session\Pool\Deposit\Early;
 
 use Ajax\App\Meeting\Session\PageComponent;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
-use Siak\Tontine\Service\Meeting\Pool\LateDepositService;
+use Siak\Tontine\Service\Meeting\Pool\EarlyDepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
 /**
  * @before getPool [false]
+ * @before getNextSession
  */
 class ReceivablePage extends PageComponent
 {
     use PoolTrait;
+    use DepositTrait;
 
     /**
      * The pagination databag options
      *
      * @var array
      */
-    protected array $bagOptions = ['meeting', 'receivable.late.page'];
+    protected array $bagOptions = ['meeting', 'session.early.page'];
 
     /**
      * The constructor
      *
      * @param PoolService $poolService
-     * @param LateDepositService $depositService
+     * @param EarlyDepositService $depositService
      * @param SessionService $sessionService
      */
     public function __construct(protected PoolService $poolService,
-        protected LateDepositService $depositService, protected SessionService $sessionService)
+        protected EarlyDepositService $depositService,
+        protected SessionService $sessionService)
     {}
 
     /**
@@ -41,9 +44,11 @@ class ReceivablePage extends PageComponent
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
-        $filter = $this->bag('meeting')->get('receivable.late.filter');
+        $nextSession = $this->stash()->get('meeting.early.session');
+        $filter = $this->bag('meeting')->get('session.early.filter');
 
-        return $this->depositService->getReceivableCount($pool, $session, $filter);
+        return $this->depositService->getReceivableCount($pool,
+            $session, $nextSession, $filter);
     }
 
     /**
@@ -53,14 +58,15 @@ class ReceivablePage extends PageComponent
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
-        $filter = $this->bag('meeting')->get('receivable.late.filter');
+        $nextSession = $this->stash()->get('meeting.early.session');
+        $filter = $this->bag('meeting')->get('session.early.filter');
 
-        return $this->renderView('pages.meeting.session.deposit.late.receivable.page', [
+        return $this->renderView('pages.meeting.session.deposit.early.receivable.page', [
             'pool' => $pool,
             'session' => $session,
             'sessionStatuses' => $this->sessionService->getSessionStatuses(),
             'receivables' => $this->depositService->getReceivables($pool,
-                $session, $filter, $this->currentPage()),
+                $session, $nextSession, $filter, $this->currentPage()),
         ]);
     }
 

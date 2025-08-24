@@ -40,8 +40,9 @@
                           'amount' => !$pool->deposit_fixed ? __('tontine.labels.types.libre') :
                             $locale->formatMoney($pool->amount),
                           'paid' => $pool->pay_paid,
-                          'late' => 0,
                           'count' => $pool->pay_count,
+                          'late' => 0,
+                          'early' => 0,
                           'total' => !$pool->remit_planned ? $pool->amount_paid : $pool->amount *
                             ($pool->sessions->count() - $pool->disabled_sessions->count()),
                           'menuClass' => 'btn-pool-remitments',

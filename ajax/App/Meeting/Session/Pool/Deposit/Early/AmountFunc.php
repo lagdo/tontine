@@ -1,10 +1,13 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Pool\Deposit\Late;
+namespace Ajax\App\Meeting\Session\Pool\Deposit\Early;
 
 use Ajax\App\Meeting\Session\Pool\Deposit\AmountBase;
 use Siak\Tontine\Model\Receivable as ReceivableModel;
 
+/**
+ * @before getNextSession
+ */
 class AmountFunc extends AmountBase
 {
     use DepositTrait;
@@ -28,7 +31,9 @@ class AmountFunc extends AmountBase
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
-        return $this->depositService->getReceivable($pool, $session, $receivableId);
+        $nextSession = $this->stash()->get('meeting.early.session');
+        return $this->depositService->getReceivable($pool,
+            $session, $nextSession, $receivableId);
     }
 
     /**
@@ -41,12 +46,15 @@ class AmountFunc extends AmountBase
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
+        $nextSession = $this->stash()->get('meeting.early.session');
         if($amount <= 0)
         {
-            $this->depositService->deleteDeposit($pool, $session, $receivableId);
+            $this->depositService->deleteDeposit($pool,
+                $session, $nextSession, $receivableId);
             return;
         }
 
-        $this->depositService->createDeposit($pool, $session, $receivableId, $amount);
+        $this->depositService->createDeposit($pool,
+            $session, $nextSession, $receivableId, $amount);
     }
 }

@@ -226,4 +226,18 @@ class Session extends Base
             ->where('round_id', $session->round_id)
             ->where('day_date', $strictly ? '<' : '<=', $session->day_date);
     }
+
+    /**
+     * @param  Builder  $query
+     * @param  Session  $session
+     * @param  bool $strictly
+     *
+     * @return Builder
+     */
+    public function scopeSucceedes(Builder $query, Session $session, bool $strictly = false): Builder
+    {
+        return $query
+            ->where('round_id', $session->round_id)
+            ->where('day_date', $strictly ? '>' : '>=', $session->day_date);
+    }
 }

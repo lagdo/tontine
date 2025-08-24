@@ -59,7 +59,7 @@ trait PoolTrait
             $this->poolService->getRoundPool($session, $poolId);
         if(!$pool)
         {
-            throw new MessageException(trans('tontine.session.errors.disabled'));
+            throw new MessageException(trans('tontine.pool.errors.not_found'));
         }
 
         $this->stash()->set('meeting.pool', $pool);

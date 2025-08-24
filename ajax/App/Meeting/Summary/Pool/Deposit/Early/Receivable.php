@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Meeting\Summary\Pool\Deposit\Late;
+namespace Ajax\App\Meeting\Summary\Pool\Deposit\Early;
 
 use Ajax\App\Meeting\Summary\Component;
 use Ajax\App\Meeting\Summary\Pool\Deposit\Deposit;
@@ -9,6 +9,7 @@ use Stringable;
 
 /**
  * @before getPool [false]
+ * @before getNextSession
  */
 class Receivable extends Component
 {
@@ -22,12 +23,13 @@ class Receivable extends Component
 
     /**
      * @param int $poolId
+     * @param int $sessionId
      *
      * @return mixed
      */
-    public function pool(int $poolId): void
+    public function pool(int $poolId, int $sessionId): void
     {
-        $this->bag('summary')->set('receivable.late.page', 1);
+        $this->bag('summary')->set('summary.early.page', 1);
 
         $this->render();
     }
@@ -37,8 +39,9 @@ class Receivable extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.summary.deposit.late.receivable.home', [
+        return $this->renderView('pages.meeting.summary.deposit.early.receivable.home', [
             'pool' => $this->stash()->get('summary.pool'),
+            'session' => $this->stash()->get('summary.early.session'),
         ]);
     }
 
@@ -53,11 +56,11 @@ class Receivable extends Component
 
     public function toggleFilter(): void
     {
-        $onlyUnpaid = $this->bag('summary')->get('receivable.late.filter', null);
+        $onlyUnpaid = $this->bag('summary')->get('summary.early.filter', null);
         // Switch between null, true and false
         $onlyUnpaid = $onlyUnpaid === null ? true : ($onlyUnpaid === true ? false : null);
-        $this->bag('summary')->set('receivable.late.filter', $onlyUnpaid);
-        $this->bag('summary')->set('receivable.late.page', 1);
+        $this->bag('summary')->set('summary.early.filter', $onlyUnpaid);
+        $this->bag('summary')->set('summary.early.page', 1);
 
         $this->cl(ReceivablePage::class)->page();
     }

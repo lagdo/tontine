@@ -75,6 +75,8 @@ class SiakServiceProvider extends ServiceProvider
 
         $this->app->singleton(Meeting\Pool\PoolService::class, Meeting\Pool\PoolService::class);
         $this->app->singleton(Meeting\Pool\DepositService::class, Meeting\Pool\DepositService::class);
+        $this->app->singleton(Meeting\Pool\LateDepositService::class, Meeting\Pool\LateDepositService::class);
+        $this->app->singleton(Meeting\Pool\EarlyDepositService::class, Meeting\Pool\EarlyDepositService::class);
         $this->app->singleton(Meeting\Pool\RemitmentService::class, Meeting\Pool\RemitmentService::class);
         $this->app->singleton(Meeting\Pool\AuctionService::class, Meeting\Pool\AuctionService::class);
 

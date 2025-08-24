@@ -13,7 +13,7 @@
                         <button type="button" class="btn btn-primary" @jxnClick($rqDeposit->render())><i class="fa fa-sync"></i></button>
                       </div>
                       <div class="btn-group ml-3" role="group">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqLateDeposit->render())>{{ __('meeting.deposit.titles.lates') }}</button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqLateDeposit->render())>{{ __('meeting.deposit.titles.late-deposits') }}</button>
                       </div>
                     </div>
                   </div>
@@ -38,8 +38,9 @@
                           'amount' => $pool->deposit_fixed ?
                             $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre'),
                           'paid' => $pool->recv_paid,
-                          'late' => $pool->recv_late,
                           'count' => $pool->recv_count,
+                          'late' => $pool->recv_late,
+                          'early' => $pool->recv_early,
                           'total' => $pool->amount_recv,
                           'menuClass' => 'btn-pool-deposits',
                         ])

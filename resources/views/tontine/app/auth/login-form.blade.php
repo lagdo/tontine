@@ -7,7 +7,7 @@
 
                   <div class="form-group">
                     <label for="email">{{ __('Email') }}</label>
-                    <input id="email" type="email" class="form-control @error('name')is-invalid @enderror" name="email" value="admin@company.com" tabindex="1" required autofocus>
+                    <input id="email" type="email" class="form-control @error('email')is-invalid @enderror" name="email" value="admin@company.com" tabindex="1" required autofocus>
                     <div class="invalid-feedback">{{ $errors->first('email') }}</div>
                   </div>
 
@@ -19,7 +19,7 @@
                       </div>
                     </div>
                     <div class="input-group">
-                      <input id="password" type="password" class="form-control @error('name')is-invalid @enderror" name="password" value="password" tabindex="2" required>
+                      <input id="password" type="password" class="form-control @error('password')is-invalid @enderror" name="password" value="password" tabindex="2" required>
                       <div class="input-group-append">
                         <span class="input-group-text toggle-password"><a role="link"><i class="fa fa-eye"></i></a></span>
                       </div>

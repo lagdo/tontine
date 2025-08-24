@@ -1,12 +1,13 @@
 <?php
 
-namespace Ajax\App\Meeting\Session\Pool\Deposit\Late;
+namespace Ajax\App\Meeting\Session\Pool\Deposit\Early;
 
 use Ajax\App\Meeting\Session\FuncComponent;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
 
 /**
  * @before getPool [false]
+ * @before getNextSession
  */
 class ReceivableFunc extends FuncComponent
 {
@@ -22,7 +23,8 @@ class ReceivableFunc extends FuncComponent
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
-        $this->depositService->createDeposit($pool, $session, $receivableId);
+        $nextSession = $this->stash()->get('meeting.early.session');
+        $this->depositService->createDeposit($pool, $session, $nextSession, $receivableId);
 
         $this->showTotal();
         $this->cl(ReceivablePage::class)->page();
@@ -37,7 +39,8 @@ class ReceivableFunc extends FuncComponent
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
-        $this->depositService->deleteDeposit($pool, $session, $receivableId);
+        $nextSession = $this->stash()->get('meeting.early.session');
+        $this->depositService->deleteDeposit($pool, $session, $nextSession, $receivableId);
 
         $this->showTotal();
         $this->cl(ReceivablePage::class)->page();

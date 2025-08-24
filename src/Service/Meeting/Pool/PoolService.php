@@ -51,7 +51,7 @@ class PoolService
     {
         return $session->pools()
             ->addSelect([
-                'amount_recv' => Deposit::select(DB::raw('sum(amount)'))
+                'recv_amount' => Deposit::select(DB::raw('sum(amount)'))
                     ->whereColumn('pool_id', 'pools.id')
                     ->whereHas('receivable', fn(Builder $qr) =>
                         $qr->whereSession($session)),
@@ -59,13 +59,21 @@ class PoolService
             ->withCount([
                 'receivables as recv_count' => fn(Builder $query) =>
                     $query->whereSession($session),
-                'receivables as recv_paid' => fn(Builder $query) =>
-                    $query->whereSession($session)->paid($session, true),
-                'receivables as recv_late' => fn(Builder $query) =>
-                    $query->whereSession($session)->paid($session, false),
+                'receivables as paid_count' => fn(Builder $query) =>
+                    $query->whereSession($session)->paid(),
+                'receivables as paid_here' => fn(Builder $query) =>
+                    $query->whereSession($session)->paidHere($session),
+                'receivables as paid_late' => fn(Builder $query) =>
+                    $query->whereSession($session)->paidLater($session),
+                'receivables as prev_late' => fn(Builder $query) =>
+                    $query->precedes($session)->paidHere($session),
+                'receivables as paid_early' => fn(Builder $query) =>
+                    $query->whereSession($session)->paidEarlier($session),
+                'receivables as next_early' => fn(Builder $query) =>
+                    $query->succeedes($session)->paidHere($session),
             ])
             ->get()
-            ->each(fn(Pool $pool) => $pool->amount_recv ??= 0);
+            ->each(fn(Pool $pool) => $pool->recv_amount ??= 0);
     }
 
     /**
@@ -132,17 +140,69 @@ class PoolService
             ->addSelect([
                 'amount_recv' => Deposit::select(DB::raw('sum(amount)'))
                     ->whereColumn('pool_id', 'pools.id')
-                    ->where('session_id', $session->id)
-                    ->whereHas('receivable', fn(Builder $qr) =>
-                        $qr->where('session_id', '!=', $session->id)),
+                    ->whereSession($session)
+                    ->whereHas('receivable', fn(Builder $rq) => $rq->precedes($session)),
             ])
             ->withCount([
                 'receivables as late_count' => fn(Builder $query) =>
                     $query->late($session),
                 'receivables as late_paid' => fn(Builder $query) =>
-                    $query->late($session)->paid(),
+                    $query->precedes($session)->paidHere($session),
             ])
             ->get()
             ->each(fn(Pool $pool) => $pool->amount_recv ??= 0);
+    }
+
+    /**
+     * Get a list of pools with early deposits.
+     *
+     * @param Session $session
+     *
+     * @return Collection
+     */
+    public function getPoolsWithEarlyDeposits(Session $session): Collection
+    {
+        // All the round pools are returned here.
+        return $session->round->pools()
+            ->addSelect([
+                'amount_recv' => Deposit::select(DB::raw('sum(amount)'))
+                    ->whereColumn('pool_id', 'pools.id')
+                    ->whereSession($session)
+                    ->whereHas('receivable', fn(Builder $rq) => $rq->succeedes($session)),
+            ])
+            ->withCount([
+                'receivables as early_count' => fn(Builder $query) =>
+                    $query->succeedes($session)->paidHere($session),
+            ])
+            ->get()
+            ->each(fn(Pool $pool) => $pool->amount_recv ??= 0);
+    }
+
+    /**
+     * @param Session $session
+     * @param  bool $strictly
+     *
+     * @return Collection
+     */
+    public function getNextSessions(Session $session, bool $strictly = true): Collection
+    {
+        return $session->round->sessions()
+            ->opened()
+            ->succeedes($session, $strictly)
+            ->orderBy('day_date', 'asc')
+            ->pluck('title', 'id');
+    }
+
+    /**
+     * @param Session $session
+     * @param int $nextSessionId
+     *
+     * @return Session|null
+     */
+    public function getNextSession(Session $session, int $nextSessionId): ?Session
+    {
+        return $session->round->sessions()->opened()
+            ->where('day_date', '>', $session->day_date)
+            ->find($nextSessionId);
     }
 }

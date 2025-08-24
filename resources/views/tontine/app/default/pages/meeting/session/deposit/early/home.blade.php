@@ -1,21 +1,22 @@
 @php
   $poolId = jq()->parent()->attr('data-pool-id')->toInt();
+  $sessionId = je('early-deposits-session')->rd()->select()->toInt();
   $rqDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Deposit::class);
   $rqLateDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Late\Deposit::class);
   $rqEarlyDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Early\Deposit::class);
-  $rqReceivable = rq(Ajax\App\Meeting\Session\Pool\Deposit\Late\Receivable::class);
+  $rqReceivable = rq(Ajax\App\Meeting\Session\Pool\Deposit\Early\Receivable::class);
 @endphp
                   <div class="row mb-2">
                     <div class="col-auto">
-                      <div class="section-title mt-0">{!! __('meeting.deposit.titles.late-deposits') !!}</div>
+                      <div class="section-title mt-0">{!! __('meeting.deposit.titles.early-deposits') !!}</div>
                     </div>
                     <div class="col-auto ml-auto">
                       <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqLateDeposit->render())><i class="fa fa-sync"></i></button>
+                        <button type="button" class="btn btn-primary" @jxnClick($rqEarlyDeposit->render())><i class="fa fa-sync"></i></button>
                       </div>
                       <div class="btn-group ml-3" role="group" @jxnEvent([
                         ['.btn-session-deposits', 'click', $rqDeposit->render()],
-                        ['.btn-session-early-deposits', 'click', $rqEarlyDeposit->render()],
+                        ['.btn-session-late-deposits', 'click', $rqLateDeposit->render()],
                       ])>
 @include('tontine::parts.table.menu', [
   'btnSize' => '',
@@ -23,15 +24,23 @@
     'class' => 'btn-session-deposits',
     'text' => __('meeting.titles.deposits'),
   ],[
-    'class' => 'btn-session-early-deposits',
-    'text' => __('meeting.deposit.titles.early-deposits'),
+    'class' => 'btn-session-late-deposits',
+    'text' => __('meeting.deposit.titles.late-deposits'),
   ]],
 ])
                       </div>
                     </div>
                   </div>
+                  <div class="row mb-2 font-weight-bold">
+                    <div class="col-auto">
+                      {{ $html->select('session_id', $sessions, 0)
+                        ->id('early-deposits-session')->class('form-control')
+                        ->attribute('style', 'height:36px; padding:5px 5px;') }}
+                    </div>
+                  </div>
+
                   <div class="table-responsive" id="content-meeting-deposits" @jxnEvent(
-                    ['.btn-pool-deposits', 'click', $rqReceivable->pool($poolId)])>
+                    ['.btn-pool-deposits', 'click', $rqReceivable->pool($poolId, $sessionId)])>
 
                     <table class="table table-bordered responsive">
                       <thead>
@@ -49,9 +58,10 @@
                         @include('tontine::pages.meeting.session.pool.' . $template, [
                           'pool' => $pool,
                           'amount' => $pool->deposit_fixed ?
-                            $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre'),
-                          'paid' => $pool->late_paid,
-                          'count' => $pool->late_count,
+                            $locale->formatMoney($pool->amount) :
+                            __('tontine.labels.types.libre'),
+                          'paid' => $pool->early_count,
+                          'count' => -1,
                           'late' => 0,
                           'early' => 0,
                           'total' => $pool->amount_recv,

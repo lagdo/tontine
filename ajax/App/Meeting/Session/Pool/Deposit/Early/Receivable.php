@@ -1,14 +1,15 @@
 <?php
 
-namespace Ajax\App\Meeting\Summary\Pool\Deposit\Late;
+namespace Ajax\App\Meeting\Session\Pool\Deposit\Early;
 
-use Ajax\App\Meeting\Summary\Component;
-use Ajax\App\Meeting\Summary\Pool\Deposit\Deposit;
-use Ajax\App\Meeting\Summary\Pool\PoolTrait;
+use Ajax\App\Meeting\Session\Component;
+use Ajax\App\Meeting\Session\Pool\Deposit\Deposit;
+use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Stringable;
 
 /**
  * @before getPool [false]
+ * @before getNextSession
  */
 class Receivable extends Component
 {
@@ -22,12 +23,13 @@ class Receivable extends Component
 
     /**
      * @param int $poolId
+     * @param int $sessionId
      *
      * @return mixed
      */
-    public function pool(int $poolId): void
+    public function pool(int $poolId, int $sessionId): void
     {
-        $this->bag('summary')->set('receivable.late.page', 1);
+        $this->bag('meeting')->set('session.early.page', 1);
 
         $this->render();
     }
@@ -37,8 +39,9 @@ class Receivable extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('pages.meeting.summary.deposit.late.receivable.home', [
-            'pool' => $this->stash()->get('summary.pool'),
+        return $this->renderView('pages.meeting.session.deposit.early.receivable.home', [
+            'pool' => $this->stash()->get('meeting.pool'),
+            'session' => $this->stash()->get('meeting.early.session'),
         ]);
     }
 
@@ -53,11 +56,11 @@ class Receivable extends Component
 
     public function toggleFilter(): void
     {
-        $onlyUnpaid = $this->bag('summary')->get('receivable.late.filter', null);
+        $onlyUnpaid = $this->bag('meeting')->get('session.early.filter', null);
         // Switch between null, true and false
         $onlyUnpaid = $onlyUnpaid === null ? true : ($onlyUnpaid === true ? false : null);
-        $this->bag('summary')->set('receivable.late.filter', $onlyUnpaid);
-        $this->bag('summary')->set('receivable.late.page', 1);
+        $this->bag('meeting')->set('session.early.filter', $onlyUnpaid);
+        $this->bag('meeting')->set('session.early.page', 1);
 
         $this->cl(ReceivablePage::class)->page();
     }
