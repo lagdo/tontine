@@ -144,12 +144,13 @@ class DepositService
      *
      * @param Pool $pool The pool
      * @param Session $session The session
+     * @param string $search
      *
      * @return void
      */
-    public function createAllDeposits(Pool $pool, Session $session): void
+    public function createAllDeposits(Pool $pool, Session $session, string $search): void
     {
-        $receivables = $this->getQuery($pool, $session, false)->get();
+        $receivables = $this->getQuery($pool, $session, false, $search)->get();
         if($receivables->count() === 0)
         {
             return;
@@ -171,12 +172,13 @@ class DepositService
      *
      * @param Pool $pool The pool
      * @param Session $session The session
+     * @param string $search
      *
      * @return void
      */
-    public function deleteAllDeposits(Pool $pool, Session $session): void
+    public function deleteAllDeposits(Pool $pool, Session $session, string $search): void
     {
-        $receivables = $this->getQuery($pool, $session, true)
+        $receivables = $this->getQuery($pool, $session, true, $search)
             ->with(['deposit'])
             ->get()
             ->filter(fn($receivable) =>
