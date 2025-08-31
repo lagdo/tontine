@@ -58,8 +58,8 @@ class ReceivablePage extends PageComponent
         return $this->renderView('pages.meeting.summary.deposit.receivable.page', [
             'pool' => $pool,
             'session' => $session,
-            'receivables' => $this->depositService->getReceivables($pool,
-                $session, $filter, $search, $this->currentPage()),
+            'receivables' => $this->depositService
+                ->getReceivables($pool, $session, $filter, $search, $this->currentPage()),
         ]);
     }
 

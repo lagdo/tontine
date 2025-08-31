@@ -28,13 +28,13 @@ class EarlyDepositService
     /**
      * @param Pool $pool
      * @param Session $session
-     * @param Session $nextSession
+     * @param Session|null $nextSession
      * @param bool|null $filter
      *
      * @return Builder|Relation
      */
     private function getReceivableQuery(Pool $pool, Session $session,
-        Session $nextSession, ?bool $filter = null): Builder|Relation
+        ?Session $nextSession, ?bool $filter = null): Builder|Relation
     {
         $filterQuery = match($filter) {
             true => fn(Builder $query) => $query->paid(),
@@ -46,20 +46,21 @@ class EarlyDepositService
             ->join('subscriptions', 'subscriptions.id', '=', 'receivables.subscription_id')
             ->where('subscriptions.pool_id', $pool->id)
             ->early($session)
-            ->whereSession($nextSession)
+            ->when($nextSession !== null,
+                fn(Builder $query) => $query->whereSession($nextSession))
             ->when($filterQuery !== null, $filterQuery);
     }
 
     /**
      * @param Pool $pool The pool
      * @param Session $session The session
-     * @param Session $nextSession
+     * @param Session|null $nextSession
      * @param bool|null $filter
      *
      * @return int
      */
     public function getReceivableCount(Pool $pool, Session $session,
-        Session $nextSession, ?bool $filter = null): int
+        ?Session $nextSession, ?bool $filter = null): int
     {
         return $this->getReceivableQuery($pool, $session, $nextSession, $filter)->count();
     }
@@ -67,17 +68,37 @@ class EarlyDepositService
     /**
      * @param Pool $pool The pool
      * @param Session $session The session
-     * @param Session $nextSession
+     * @param Session|null $nextSession
      * @param bool|null $filter
      * @param int $page
      *
      * @return Collection
      */
     public function getReceivables(Pool $pool, Session $session,
-        Session $nextSession, ?bool $filter = null, int $page = 0): Collection
+        ?Session $nextSession, ?bool $filter = null, int $page = 0): Collection
     {
         $query = $this->getReceivableQuery($pool, $session, $nextSession, $filter);
         return $this->getReceivableDetailsQuery($query, $page)->get();
+    }
+
+    /**
+     * @param Pool $pool The pool
+     * @param Session $session The session
+     * @param Session|null $nextSession
+     *
+     * @return array
+     */
+    public function getPoolDepositNumbers(Pool $pool, Session $session, ?Session $nextSession): array
+    {
+        $deposit = Deposit::where('pool_id', $pool->id)
+            ->where('session_id', $session->id)
+            ->whereHas('receivable', fn(Builder $qr) => $qr
+                ->early($session)->when($nextSession !== null,
+                    fn(Builder $query) => $query->whereSession($nextSession)))
+            ->select(DB::raw('count(*) as count'),
+                DB::raw('sum(amount) as amount'))
+            ->first();
+        return [$deposit?->amount ?? 0, $deposit?->count ?? 0];
     }
 
     /**
@@ -133,24 +154,5 @@ class EarlyDepositService
     {
         $receivable = $this->getReceivable($pool, $session, $nextSession, $receivableId);
         $this->_deleteDeposit($receivable);
-    }
-
-    /**
-     * @param Pool $pool The pool
-     * @param Session $session The session
-     * @param Session $nextSession
-     *
-     * @return array
-     */
-    public function getPoolDepositNumbers(Pool $pool, Session $session, Session $nextSession): array
-    {
-        $deposit = Deposit::where('pool_id', $pool->id)
-            ->where('session_id', $session->id)
-            ->whereHas('receivable', fn(Builder $qr) => $qr
-                ->early($session)->whereSession($nextSession))
-            ->select(DB::raw('count(*) as count'),
-                DB::raw('sum(amount) as amount'))
-            ->first();
-        return [$deposit?->amount ?? 0, $deposit?->count ?? 0];
     }
 }

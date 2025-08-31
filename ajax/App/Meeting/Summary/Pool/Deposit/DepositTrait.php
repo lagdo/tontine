@@ -30,14 +30,18 @@ trait DepositTrait
      */
     protected DepositService $depositService;
 
-    private function showTotal(): void
+    /**
+     * @return void
+     */
+    protected function showTotal(): void
     {
         $session = $this->stash()->get('summary.session');
         $pool = $this->stash()->get('summary.pool');
-        [$amount, $count] = $this->depositService->getPoolDepositNumbers($pool, $session);
+        [$amount, $count, $total] = $this->depositService->getPoolDepositNumbers($pool, $session);
 
         $this->stash()->set('summary.pool.deposit.count', $count);
         $this->stash()->set('summary.pool.deposit.amount', $amount);
+        $this->stash()->set('summary.pool.deposit.total', $total);
 
         $this->cl(Total::class)->render();
     }

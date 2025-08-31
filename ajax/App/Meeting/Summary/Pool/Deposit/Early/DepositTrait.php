@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Summary\Pool\Deposit\Early;
 
 use Ajax\App\Meeting\Summary\Pool\Deposit\Total;
 use Jaxon\App\Stash\Stash;
-use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\Pool\EarlyDepositService;
 
 trait DepositTrait
@@ -47,26 +46,5 @@ trait DepositTrait
         $this->stash()->set('summary.pool.deposit.amount', $amount);
 
         $this->cl(Total::class)->render();
-    }
-
-    /**
-     * @return void
-     */
-    protected function getNextSession(): void
-    {
-        if($this->target()->method() === 'pool')
-        {
-            $this->bag('summary')->set('summary.early.session',
-                $this->target()->args()[1]);
-        }
-        $session = $this->stash()->get('summary.session');
-        $nextSessionId = (int)$this->bag('summary')->get('summary.early.session');
-        $nextSession = $this->poolService->getNextSession($session, $nextSessionId);
-        if(!$nextSession)
-        {
-            throw new MessageException(trans('tontine.session.errors.not_found'));
-        }
-
-        $this->stash()->set('summary.early.session', $nextSession);
     }
 }

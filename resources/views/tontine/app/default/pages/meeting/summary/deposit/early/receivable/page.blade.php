@@ -1,5 +1,5 @@
 @php
-  $rqReceivablePage = rq(Ajax\App\Meeting\Summary\Pool\Deposit\Late\ReceivablePage::class);
+  $rqReceivablePage = rq(Ajax\App\Meeting\Summary\Pool\Deposit\Early\ReceivablePage::class);
 @endphp
                   <div class="table-responsive" id="content-meeting-receivables">
                     <table class="table table-bordered responsive">

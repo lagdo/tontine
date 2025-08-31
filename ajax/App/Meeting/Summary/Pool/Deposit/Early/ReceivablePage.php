@@ -11,7 +11,6 @@ use Stringable;
 
 /**
  * @before getPool [false]
- * @before getNextSession
  */
 class ReceivablePage extends PageComponent
 {
@@ -44,11 +43,9 @@ class ReceivablePage extends PageComponent
     {
         $pool = $this->stash()->get('summary.pool');
         $session = $this->stash()->get('summary.session');
-        $nextSession = $this->stash()->get('summary.early.session');
-        $filter = $this->bag('summary')->get('summary.early.filter');
 
         return $this->depositService->getReceivableCount($pool,
-            $session, $nextSession, $filter);
+            $session, null, true);
     }
 
     /**
@@ -58,15 +55,13 @@ class ReceivablePage extends PageComponent
     {
         $pool = $this->stash()->get('summary.pool');
         $session = $this->stash()->get('summary.session');
-        $nextSession = $this->stash()->get('summary.early.session');
-        $filter = $this->bag('summary')->get('summary.early.filter');
 
         return $this->renderView('pages.meeting.summary.deposit.early.receivable.page', [
             'pool' => $pool,
             'session' => $session,
             'sessionStatuses' => $this->sessionService->getSessionStatuses(),
             'receivables' => $this->depositService->getReceivables($pool,
-                $session, $nextSession, $filter, $this->currentPage()),
+                $session, null, true, $this->currentPage()),
         ]);
     }
 
