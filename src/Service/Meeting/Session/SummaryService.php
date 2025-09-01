@@ -63,8 +63,7 @@ class SummaryService
         $figures->cashier->recv = $cashier;
 
         $depositCount = $deposit?->count ?? 0;
-        $depositAmount = $pool->deposit_fixed ?
-            $pool->def->amount * $depositCount : ($deposit?->amount ?? 0);
+        $depositAmount = $deposit?->amount ?? 0;
 
         $figures->deposit->amount += $depositAmount;
         $figures->cashier->recv += $depositAmount;
@@ -119,15 +118,15 @@ class SummaryService
      */
     private function getDeposits(Round $round, Collection $poolIds): void
     {
-        $this->deposits = DB::table('deposits')
-            ->select('subscriptions.pool_id', 'receivables.session_id',
-                DB::raw('count(*) as count'), DB::raw('sum(deposits.amount) as amount'))
-            ->join('receivables', 'receivables.id', '=', 'deposits.receivable_id')
+        $this->deposits = DB::table('v_deposits')
+            ->select('subscriptions.pool_id', 'v_deposits.session_id',
+                DB::raw('count(*) as count'), DB::raw('sum(v_deposits.amount) as amount'))
+            ->join('sessions', 'v_deposits.session_id', '=', 'sessions.id')
+            ->join('receivables', 'receivables.id', '=', 'v_deposits.receivable_id')
             ->join('subscriptions', 'receivables.subscription_id', '=', 'subscriptions.id')
-            ->join('sessions', 'receivables.session_id', '=', 'sessions.id')
             ->whereIn('subscriptions.pool_id', $poolIds)
             ->where('sessions.round_id', $round->id)
-            ->groupBy(['subscriptions.pool_id', 'receivables.session_id'])
+            ->groupBy(['subscriptions.pool_id', 'v_deposits.session_id'])
             ->get()
             // Group the data by pool id and session id.
             ->groupBy('pool_id')
