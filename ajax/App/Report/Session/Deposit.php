@@ -3,8 +3,8 @@
 namespace Ajax\App\Report\Session;
 
 use Ajax\Component;
+use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Service\Report\MemberService;
-use Siak\Tontine\Service\Report\SessionService;
 use Stringable;
 
 /**
@@ -13,11 +13,11 @@ use Stringable;
 class Deposit extends Component
 {
     /**
+     * @param PoolService $poolService
      * @param MemberService $memberService
-     * @param SessionService $sessionService
      */
-    public function __construct(protected MemberService $memberService,
-        protected SessionService $sessionService)
+    public function __construct(protected PoolService $poolService,
+        protected MemberService $memberService)
     {}
 
     /**
@@ -31,7 +31,7 @@ class Deposit extends Component
         if(!$member)
         {
             return $this->renderView('pages.report.session.session.deposits', [
-                'pools' => $this->sessionService->getReceivables($session),
+                'pools' => $this->poolService->getPoolsWithReceivables($session),
             ]);
         }
         return $this->renderView('pages.report.session.member.deposits', [

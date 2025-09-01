@@ -214,14 +214,14 @@ form .form-group .col-form-label {
   }
 }
 
-#content-meeting-deposits .deposit-here {
+#content-meeting-deposits .deposit-here, #content-report-deposits .deposit-here {
   font-weight: bold;
 }
-#content-meeting-deposits .deposit-early {
+#content-meeting-deposits .deposit-early, #content-report-deposits .deposit-early {
   font-weight: bold;
   color: green;
 }
-#content-meeting-deposits .deposit-late {
+#content-meeting-deposits .deposit-late, #content-report-deposits .deposit-late {
   font-weight: bold;
   color: red;
 }

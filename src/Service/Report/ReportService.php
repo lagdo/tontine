@@ -7,6 +7,7 @@ use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
+use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Siak\Tontine\Service\Meeting\Session\SummaryService;
@@ -18,6 +19,7 @@ class ReportService
 {
     /**
      * @param LocaleService $localeService
+     * @param PoolService $poolService
      * @param SessionService $sessionService
      * @param MemberService $memberService
      * @param RoundService $roundService
@@ -27,7 +29,7 @@ class ReportService
      * @param DebtCalculator $debtCalculator
      */
     public function __construct(protected LocaleService $localeService,
-        protected SessionService $sessionService,
+        protected PoolService $poolService, protected SessionService $sessionService,
         protected MemberService $memberService, protected RoundService $roundService,
         protected FundService $fundService, protected SummaryService $summaryService,
         protected ProfitService $profitService, protected DebtCalculator $debtCalculator)
@@ -49,13 +51,14 @@ class ReportService
             'country' => $country,
             'deposits' => [
                 'session' => $session,
+                'pools' => $this->poolService->getPoolsWithReceivables($session),
                 'receivables' => $this->memberService->getReceivables($session),
-                'pools' => $this->sessionService->getReceivables($session),
+                'extras' => $this->memberService->getExtraDeposits($session),
             ],
             'remitments' => [
                 'session' => $session,
-                'payables' => $this->memberService->getPayables($session),
                 'pools' => $this->sessionService->getPayables($session),
+                'payables' => $this->memberService->getPayables($session),
                 'auctions' => $this->memberService->getAuctions($session),
             ],
             'bills' => [

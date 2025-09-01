@@ -142,9 +142,14 @@ return [
             'early-deposits' => "Early deposits",
         ],
         'labels' => [
-            // 'late' => "Late",
-            // 'early' => "Early",
-        ]
+            'late' => "Late",
+            'early' => "Early",
+        ],
+        'counts' => [
+            'ontime' => "On time: :count",
+            'late' => "Late: :count",
+            'early' => "Early: :count",
+        ],
     ],
     'remitment' => [
         'titles' => [

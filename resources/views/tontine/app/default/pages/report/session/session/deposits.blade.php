@@ -17,9 +17,15 @@
                         <tr>
                           <td>{{ $pool->title }}<br/>{{ $pool->deposit_fixed ?
                             $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre') }}</td>
-                          <td class="currency">{{ $pool->paid_count }}@if ($pool->late_count > 0)+{{
-                            $pool->late_count }}@endif/{{ $pool->total_count }}</td>
-                          <td class="currency">{{ $locale->formatMoney($pool->paid_amount) }}</td>
+                          <td class="currency">
+                            @include('tontine::pages.report.session.session.deposit', [
+                              'pool' => $pool,
+                            ])
+                          </td>
+                          <td class="currency">
+                            {{ $locale->formatMoney($pool->recv_amount) }}
+                            @if ($pool->prev_late > 0 || $pool->next_early > 0)<br/>&nbsp;@endif
+                          </td>
                         </tr>
 @endforeach
                       </tbody>

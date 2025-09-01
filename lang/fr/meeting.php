@@ -142,8 +142,13 @@ return [
             'early-deposits' => "Versements en avance",
         ],
         'labels' => [
-            // 'late' => "Retard",
-            // 'early' => "Avance",
+            'late' => "Retard",
+            'early' => "Avance",
+        ],
+        'counts' => [
+            'ontime' => "A temps : :count",
+            'late' => "Retard : :count",
+            'early' => "Avance : :count",
         ],
     ],
     'remitment' => [

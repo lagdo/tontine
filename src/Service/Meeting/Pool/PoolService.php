@@ -55,6 +55,11 @@ class PoolService
                     ->whereColumn('pool_id', 'pools.id')
                     ->whereHas('receivable', fn(Builder $qr) =>
                         $qr->whereSession($session)),
+                'extra_amount' => Deposit::select(DB::raw('sum(amount)'))
+                    ->whereColumn('pool_id', 'pools.id')
+                    ->whereSession($session)
+                    ->whereHas('receivable', fn(Builder $qr) =>
+                        $qr->where('session_id', '!=', $session->id)),
             ])
             ->withCount([
                 'receivables as recv_count' => fn(Builder $query) =>

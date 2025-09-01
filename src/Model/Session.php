@@ -133,6 +133,11 @@ class Session extends Base
         return $this->hasMany(Receivable::class);
     }
 
+    public function deposits()
+    {
+        return $this->hasMany(Deposit::class);
+    }
+
     public function session_bills()
     {
         return $this->hasMany(SessionBill::class);

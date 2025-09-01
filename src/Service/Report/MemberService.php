@@ -65,6 +65,30 @@ class MemberService
     }
 
     /**
+     * Get the deposits in the current session for receivables of different sessions.
+     *
+     * @param Session $session
+     * @param Member $member|null
+     *
+     * @return Collection
+     */
+    public function getExtraDeposits(Session $session, ?Member $member = null): Collection
+    {
+        return $this->sortByMemberName($session->deposits()
+            ->whereHas('receivable', fn($qr) => $qr
+                ->where('session_id', '!=', $session->id)
+                ->when($member !== null, fn($qm) =>
+                    $this->hasSubscription($qm, $member)))
+            ->with(['receivable.session', 'receivable.subscription.pool',
+                'receivable.subscription.member'])
+            ->get()
+            ->each(function($deposit) {
+                $deposit->pool = $deposit->receivable->subscription->pool;
+                $deposit->member = $deposit->receivable->subscription->member;
+            }), $member);
+    }
+
+    /**
      * @param Session $session
      * @param Member $member|null
      *
