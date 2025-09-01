@@ -43,19 +43,11 @@
                       </thead>
                       <tbody>
 @foreach($pools as $pool)
-@php
-  // Early or late payments made in the current session.
-  $extraPayment = $pool->prev_late + $pool->next_early;
-@endphp
                         <tr>
                           <td>{{ $pool->title }}<br/>{{ $pool->deposit_fixed ?
                             $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre') }}</td>
                           <td class="currency">
-                            @if ($pool->paid_early > 0){{ $pool->paid_early }}+@endif<b>{{
-                              $pool->paid_here }}</b>@if ($pool->paid_late > 0)+{{
-                                $pool->paid_late }}@endif/<b>{{ $pool->recv_count }}</b>
-                            @if ($extraPayment > 0)+{{ $extraPayment }}@endif
-                            @if ($pool->recv_amount > 0)<br/>{{ $locale->formatMoney($pool->recv_amount) }}@endif
+                            @include('tontine::pages.meeting.pool.deposit', ['pool' => $pool])
                           </td>
                           <td class="table-item-menu" data-pool-id="{{ $pool->id }}">
                             <button type="button" class="btn btn-primary btn-pool-deposits"><i class="fa fa-arrow-circle-right"></i></button>

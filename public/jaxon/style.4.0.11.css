@@ -214,6 +214,18 @@ form .form-group .col-form-label {
   }
 }
 
+#content-meeting-deposits .deposit-here {
+  font-weight: bold;
+}
+#content-meeting-deposits .deposit-early {
+  font-weight: bold;
+  color: green;
+}
+#content-meeting-deposits .deposit-late {
+  font-weight: bold;
+  color: red;
+}
+
 /* Make the Kustomer component appear on top of the page elements */
 .kustomer-feedback-component {
   z-index: 100;
