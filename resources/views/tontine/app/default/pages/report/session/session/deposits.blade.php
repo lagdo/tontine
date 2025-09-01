@@ -24,7 +24,9 @@
                           </td>
                           <td class="currency">
                             {{ $locale->formatMoney($pool->recv_amount) }}
-                            @if ($pool->prev_late > 0 || $pool->next_early > 0)<br/>&nbsp;@endif
+@if ($pool->prev_late > 0 || $pool->next_early > 0)
+                            <br/>{{ $locale->formatMoney($pool->extra_amount) }}
+@endif
                           </td>
                         </tr>
 @endforeach
