@@ -22,7 +22,7 @@ class ReceivableFunc extends FuncComponent
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
-        $this->depositService->createLateDeposit($pool, $session, $receivableId);
+        $this->depositService->createDeposit($pool, $session, $receivableId);
 
         $this->showTotal();
         $this->cl(ReceivablePage::class)->page();
@@ -37,7 +37,7 @@ class ReceivableFunc extends FuncComponent
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
-        $this->depositService->deleteLateDeposit($pool, $session, $receivableId);
+        $this->depositService->deleteDeposit($pool, $session, $receivableId);
 
         $this->showTotal();
         $this->cl(ReceivablePage::class)->page();

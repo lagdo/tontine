@@ -2,6 +2,7 @@
   $poolId = jq()->parent()->attr('data-pool-id')->toInt();
   $rqDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Deposit::class);
   $rqLateDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Late\Deposit::class);
+  $rqEarlyDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Early\Deposit::class);
   $rqReceivable = rq(Ajax\App\Meeting\Session\Pool\Deposit\Late\Receivable::class);
 @endphp
                   <div class="row mb-2">
@@ -12,8 +13,20 @@
                       <div class="btn-group" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqLateDeposit->render())><i class="fa fa-sync"></i></button>
                       </div>
-                      <div class="btn-group ml-3" role="group">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqDeposit->render())>{!! __('meeting.titles.deposits') !!}</button>
+                      <div class="btn-group ml-3" role="group" @jxnEvent([
+                        ['.btn-session-deposits', 'click', $rqDeposit->render()],
+                        ['.btn-session-early-deposits', 'click', $rqEarlyDeposit->render()],
+                      ])>
+@include('tontine::parts.table.menu', [
+  'btnSize' => '',
+  'menus' => [[
+    'class' => 'btn-session-deposits',
+    'text' => __('meeting.titles.deposits'),
+  ],[
+    'class' => 'btn-session-early-deposits',
+    'text' => __('meeting.deposit.titles.early-deposits'),
+  ]],
+])
                       </div>
                     </div>
                   </div>
@@ -38,8 +51,9 @@
                           'amount' => $pool->deposit_fixed ?
                             $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre'),
                           'paid' => $pool->late_paid,
-                          'late' => 0,
                           'count' => $pool->late_count,
+                          'late' => 0,
+                          'early' => 0,
                           'total' => $pool->amount_recv,
                           'menuClass' => 'btn-pool-deposits',
                         ])

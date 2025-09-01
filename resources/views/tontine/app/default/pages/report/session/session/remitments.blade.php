@@ -19,7 +19,7 @@
                             $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre') }}</td>
                           <td class="currency">{{ $pool->paid_count }}@if ($pool->remit_planned && !$pool->remit_auction) / {{ $pool->total_count }}@endif</td>
                           <td class="currency">
-                            {{ $locale->formatMoney($pool->paid_amount) }}
+                            {{ $locale->formatMoney($pool->paid_count > 0 ? $pool->paid_amount : 0) }}
 @isset($auctions[$pool->id])
                             <br/>{{ __('meeting.remitment.labels.auction') }}: {{ $locale->formatMoney($auctions[$pool->id]) }}
 @endisset

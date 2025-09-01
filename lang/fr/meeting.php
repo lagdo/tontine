@@ -139,11 +139,17 @@ return [
     'deposit' => [
         'titles' => [
             'late-deposits' => "Versements en retard",
-            'lates' => "Retards",
+            'early-deposits' => "Versements en avance",
         ],
         'labels' => [
             'late' => "Retard",
-        ]
+            'early' => "Avance",
+        ],
+        'counts' => [
+            'ontime' => "A temps : :count",
+            'late' => "Retard : :count",
+            'early' => "Avance : :count",
+        ],
     ],
     'remitment' => [
         'titles' => [

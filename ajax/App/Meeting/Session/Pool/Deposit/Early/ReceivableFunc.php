@@ -1,0 +1,48 @@
+<?php
+
+namespace Ajax\App\Meeting\Session\Pool\Deposit\Early;
+
+use Ajax\App\Meeting\Session\FuncComponent;
+use Ajax\App\Meeting\Session\Pool\PoolTrait;
+
+/**
+ * @before getPool [false]
+ * @before getNextSession
+ */
+class ReceivableFunc extends FuncComponent
+{
+    use PoolTrait;
+    use DepositTrait;
+
+    /**
+     * @param int $receivableId
+     *
+     * @return mixed
+     */
+    public function addDeposit(int $receivableId): void
+    {
+        $pool = $this->stash()->get('meeting.pool');
+        $session = $this->stash()->get('meeting.session');
+        $nextSession = $this->stash()->get('meeting.early.session');
+        $this->depositService->createDeposit($pool, $session, $nextSession, $receivableId);
+
+        $this->showTotal();
+        $this->cl(ReceivablePage::class)->page();
+    }
+
+    /**
+     * @param int $receivableId
+     *
+     * @return mixed
+     */
+    public function delDeposit(int $receivableId): void
+    {
+        $pool = $this->stash()->get('meeting.pool');
+        $session = $this->stash()->get('meeting.session');
+        $nextSession = $this->stash()->get('meeting.early.session');
+        $this->depositService->deleteDeposit($pool, $session, $nextSession, $receivableId);
+
+        $this->showTotal();
+        $this->cl(ReceivablePage::class)->page();
+    }
+}

@@ -42,9 +42,9 @@ class SessionService
                 'receivables as total_count' => fn(ElBuilder $query) =>
                     $query->whereSession($session),
                 'receivables as paid_count' => fn(ElBuilder $query) =>
-                    $query->whereSession($session)->paid($session, true),
+                    $query->whereSession($session)->paidHere($session),
                 'receivables as late_count' => fn(ElBuilder $query) =>
-                    $query->whereSession($session)->paid($session, false),
+                    $query->whereSession($session)->paidLater($session),
             ])
             ->get()
             ->each(function($pool) {

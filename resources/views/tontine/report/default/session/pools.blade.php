@@ -26,7 +26,7 @@
                           <td>{{ $pool->title }}</td>
                           <td style="width:10%;text-align:right;">@if ($pool->paid_count > 0){{ $pool->paid_count }}@else &nbsp; @endif</td>
                           <td style="width:20%;text-align:right;">@if ($pool->paid_count > 0){{
-                            $locale->formatMoney($pool->paid_amount, true) }}@else &nbsp; @endif</td>
+                            $locale->formatMoney($pool->recv_amount, true) }}@else &nbsp; @endif</td>
                           <td style="width:10%;text-align:right;">@if ($rpool !== null && $rpool->paid_count > 0){{
                             $rpool->paid_count }}@else &nbsp; @endif</td>
                           <td style="width:20%;text-align:right;">@if ($rpool !== null && $rpool->paid_count > 0){{

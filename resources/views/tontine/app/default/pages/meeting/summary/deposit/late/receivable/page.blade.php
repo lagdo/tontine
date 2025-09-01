@@ -13,7 +13,7 @@
                       <tbody>
 @foreach ($receivables as $receivable)
                         <tr>
-                          <td>{{ $receivable->member }}<br>{{ $receivable->session->title }}</td>
+                          <td>{{ $receivable->member }}<br>{{ $receivable->session->title }} ({{ $sessionStatuses[$session->status] }})</td>
                           <td class="currency">
                             {{ !$receivable->deposit ? '' : $locale->formatMoney(!$pool->deposit_fixed ?
                               $receivable->deposit->amount : $receivable->amount) }}

@@ -2,6 +2,7 @@
   $poolId = jq()->parent()->attr('data-pool-id')->toInt();
   $rqDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Deposit::class);
   $rqLateDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Late\Deposit::class);
+  $rqEarlyDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Early\Deposit::class);
   $rqReceivable = rq(Ajax\App\Meeting\Session\Pool\Deposit\Receivable::class);
 @endphp
                   <div class="row mb-2">
@@ -12,8 +13,20 @@
                       <div class="btn-group" role="group">
                         <button type="button" class="btn btn-primary" @jxnClick($rqDeposit->render())><i class="fa fa-sync"></i></button>
                       </div>
-                      <div class="btn-group ml-3" role="group">
-                        <button type="button" class="btn btn-primary" @jxnClick($rqLateDeposit->render())>{{ __('meeting.deposit.titles.lates') }}</button>
+                      <div class="btn-group ml-3" role="group" @jxnEvent([
+                        ['.btn-session-late-deposits', 'click', $rqLateDeposit->render()],
+                        ['.btn-session-early-deposits', 'click', $rqEarlyDeposit->render()],
+                      ])>
+@include('tontine::parts.table.menu', [
+  'btnSize' => '',
+  'menus' => [[
+    'class' => 'btn-session-late-deposits',
+    'text' => __('meeting.deposit.titles.late-deposits'),
+  ],[
+    'class' => 'btn-session-early-deposits',
+    'text' => __('meeting.deposit.titles.early-deposits'),
+  ]],
+])
                       </div>
                     </div>
                   </div>
@@ -30,19 +43,16 @@
                       </thead>
                       <tbody>
 @foreach($pools as $pool)
-@php
-    $template = $session->closed ? 'closed' : ($session->pending ? 'pending' : 'opened');
-@endphp
-                        @include('tontine::pages.meeting.session.pool.' . $template, [
-                          'pool' => $pool,
-                          'amount' => $pool->deposit_fixed ?
-                            $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre'),
-                          'paid' => $pool->recv_paid,
-                          'late' => $pool->recv_late,
-                          'count' => $pool->recv_count,
-                          'total' => $pool->amount_recv,
-                          'menuClass' => 'btn-pool-deposits',
-                        ])
+                        <tr>
+                          <td>{{ $pool->title }}<br/>{{ $pool->deposit_fixed ?
+                            $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre') }}</td>
+                          <td class="currency">
+                            @include('tontine::pages.meeting.pool.deposit', ['pool' => $pool])
+                          </td>
+                          <td class="table-item-menu" data-pool-id="{{ $pool->id }}">
+                            <button type="button" class="btn btn-primary btn-pool-deposits"><i class="fa fa-arrow-circle-right"></i></button>
+                          </td>
+                        </tr>
 @endforeach
                       </tbody>
                     </table>

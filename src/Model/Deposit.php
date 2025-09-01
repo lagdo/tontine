@@ -2,6 +2,8 @@
 
 namespace Siak\Tontine\Model;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class Deposit extends Base
 {
     /**
@@ -26,5 +28,16 @@ class Deposit extends Base
     public function receivable()
     {
         return $this->belongsTo(Receivable::class);
+    }
+
+    /**
+     * @param  Builder  $query
+     * @param  Session $session
+     *
+     * @return Builder
+     */
+    public function scopeWhereSession(Builder $query, Session $session): Builder
+    {
+        return $query->where('session_id', $session->id);
     }
 }

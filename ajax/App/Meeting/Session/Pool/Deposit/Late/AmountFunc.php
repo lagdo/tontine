@@ -28,7 +28,7 @@ class AmountFunc extends AmountBase
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
-        return $this->depositService->getLateReceivable($pool, $session, $receivableId);
+        return $this->depositService->getReceivable($pool, $session, $receivableId);
     }
 
     /**
@@ -43,10 +43,10 @@ class AmountFunc extends AmountBase
         $session = $this->stash()->get('meeting.session');
         if($amount <= 0)
         {
-            $this->depositService->deleteLateDeposit($pool, $session, $receivableId);
+            $this->depositService->deleteDeposit($pool, $session, $receivableId);
             return;
         }
 
-        $this->depositService->createLateDeposit($pool, $session, $receivableId, $amount);
+        $this->depositService->createDeposit($pool, $session, $receivableId, $amount);
     }
 }

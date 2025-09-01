@@ -65,18 +65,62 @@ class Receivable extends Base
 
     /**
      * @param  Builder  $query
-     * @param  Session|null $session
-     * @param  bool $inSession
+     * @param  string $search
      *
      * @return Builder
      */
-    public function scopePaid(Builder $query, ?Session $session = null,
-        bool $inSession = true): Builder
+    public function scopeSearch(Builder $query, string $search): Builder
     {
-        $operator = $inSession ? '=' : '!=';
-        return !$session ? $query->whereHas('deposit') :
-            $query->whereHas('deposit', fn(Builder $qd) =>
-                $qd->where('session_id', $operator, $session->id));
+        return $query->whereHas('subscription', fn(Builder $qs) => $qs
+            ->whereHas('member', fn(Builder $qm) => $qm->search($search)));
+    }
+
+    /**
+     * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopePaid(Builder $query): Builder
+    {
+        return $query->whereHas('deposit');
+    }
+
+    /**
+     * @param  Builder  $query
+     * @param  Session $session
+     *
+     * @return Builder
+     */
+    public function scopePaidHere(Builder $query, Session $session): Builder
+    {
+        return $query->whereHas('deposit', fn(Builder $qd) =>
+            $qd->whereSession($session));
+    }
+
+    /**
+     * @param  Builder  $query
+     * @param  Session  $session
+     *
+     * @return Builder
+     */
+    public function scopePaidEarlier(Builder $query, Session $session): Builder
+    {
+        return $query->whereHas('deposit', fn(Builder $dq) =>
+            $dq->whereHas('session', fn(Builder $sq) =>
+                $sq->precedes($session, true)));
+    }
+
+    /**
+     * @param  Builder  $query
+     * @param  Session  $session
+     *
+     * @return Builder
+     */
+    public function scopePaidLater(Builder $query, Session $session): Builder
+    {
+        return $query->whereHas('deposit', fn(Builder $dq) =>
+            $dq->whereHas('session', fn(Builder $sq) =>
+                $sq->succeedes($session, true)));
     }
 
     /**
@@ -95,26 +139,51 @@ class Receivable extends Base
      *
      * @return Builder
      */
-    public function scopeLate(Builder $query, Session $session): Builder
+    public function scopePrecedes(Builder $query, Session $session): Builder
     {
         return $query
             ->whereHas('session', fn(Builder $sq) =>
-                $sq->precedes($session, true))
-            ->where(fn(Builder $lq) => $lq
-                ->orWhereDoesntHave('deposit')
-                ->orWhereHas('deposit', fn(Builder $dq) => $dq
-                    ->where('session_id', $session->id)));
+                $sq->precedes($session, true));
     }
 
     /**
      * @param  Builder  $query
-     * @param  string $search
+     * @param  Session $session
      *
      * @return Builder
      */
-    public function scopeSearch(Builder $query, string $search): Builder
+    public function scopeSucceedes(Builder $query, Session $session): Builder
     {
-        return $query->whereHas('subscription', fn(Builder $qs) => $qs
-            ->whereHas('member', fn(Builder $qm) => $qm->search($search)));
+        return $query
+            ->whereHas('session', fn(Builder $sq) =>
+                $sq->succeedes($session, true));
+    }
+
+    /**
+     * @param  Builder  $query
+     * @param  Session $session
+     *
+     * @return Builder
+     */
+    public function scopeLate(Builder $query, Session $session): Builder
+    {
+        return $query->precedes($session)
+            ->where(fn(Builder $oq) => $oq
+                ->orWhere(fn(Builder $uq) => $uq->unpaid())
+                ->orWhere(fn(Builder $pq) => $pq->paidHere($session)));
+    }
+
+    /**
+     * @param  Builder  $query
+     * @param  Session $session
+     *
+     * @return Builder
+     */
+    public function scopeEarly(Builder $query, Session $session): Builder
+    {
+        return $query->succeedes($session)
+            ->where(fn(Builder $oq) => $oq
+                ->orWhere(fn(Builder $uq) => $uq->unpaid())
+                ->orWhere(fn(Builder $pq) => $pq->paidHere($session)));
     }
 }

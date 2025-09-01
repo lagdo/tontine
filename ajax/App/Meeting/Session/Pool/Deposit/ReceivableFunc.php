@@ -55,7 +55,8 @@ class ReceivableFunc extends FuncComponent
         }
 
         $session = $this->stash()->get('meeting.session');
-        $this->depositService->createAllDeposits($pool, $session);
+        $search = $this->bag('meeting')->get('receivable.search', '');
+        $this->depositService->createAllDeposits($pool, $session, $search);
 
         $this->showTotal();
         $this->cl(ReceivablePage::class)->page();
@@ -73,7 +74,8 @@ class ReceivableFunc extends FuncComponent
         }
 
         $session = $this->stash()->get('meeting.session');
-        $this->depositService->deleteAllDeposits($pool, $session);
+        $search = $this->bag('meeting')->get('receivable.search', '');
+        $this->depositService->deleteAllDeposits($pool, $session, $search);
 
         $this->showTotal();
         $this->cl(ReceivablePage::class)->page();
