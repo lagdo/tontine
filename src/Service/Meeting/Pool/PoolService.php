@@ -63,14 +63,14 @@ class PoolService
                     $query->whereSession($session)->paid(),
                 'receivables as paid_here' => fn(Builder $query) =>
                     $query->whereSession($session)->paidHere($session),
-                'receivables as paid_late' => fn(Builder $query) =>
-                    $query->whereSession($session)->paidLater($session),
-                'receivables as prev_late' => fn(Builder $query) =>
-                    $query->precedes($session)->paidHere($session),
                 'receivables as paid_early' => fn(Builder $query) =>
                     $query->whereSession($session)->paidEarlier($session),
+                'receivables as paid_late' => fn(Builder $query) =>
+                    $query->whereSession($session)->paidLater($session),
                 'receivables as next_early' => fn(Builder $query) =>
                     $query->succeedes($session)->paidHere($session),
+                'receivables as prev_late' => fn(Builder $query) =>
+                    $query->precedes($session)->paidHere($session),
             ])
             ->get()
             ->each(fn(Pool $pool) => $pool->recv_amount ??= 0);

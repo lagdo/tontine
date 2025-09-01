@@ -93,7 +93,8 @@ class EarlyDepositService
         $deposit = Deposit::where('pool_id', $pool->id)
             ->where('session_id', $session->id)
             ->whereHas('receivable', fn(Builder $qr) => $qr
-                ->early($session)->when($nextSession !== null,
+                ->early($session)
+                ->when($nextSession !== null,
                     fn(Builder $query) => $query->whereSession($nextSession)))
             ->select(DB::raw('count(*) as count'),
                 DB::raw('sum(amount) as amount'))

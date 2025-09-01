@@ -107,7 +107,7 @@ class Receivable extends Base
     {
         return $query->whereHas('deposit', fn(Builder $dq) =>
             $dq->whereHas('session', fn(Builder $sq) =>
-                $sq->succeedes($session, true)));
+                $sq->precedes($session, true)));
     }
 
     /**
@@ -120,7 +120,7 @@ class Receivable extends Base
     {
         return $query->whereHas('deposit', fn(Builder $dq) =>
             $dq->whereHas('session', fn(Builder $sq) =>
-                $sq->precedes($session, true)));
+                $sq->succeedes($session, true)));
     }
 
     /**
