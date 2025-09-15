@@ -73,6 +73,7 @@ class Profit extends Component
         $fund = $this->fundService->getFirstFund($session);
         if(!$fund)
         {
+            $this->alert()->warning(trans('meeting.warnings.fund.none'));
             return;
         }
 
