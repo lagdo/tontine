@@ -70,7 +70,7 @@ class Profit extends Component
     public function show(): void
     {
         $session = $this->stash()->get('meeting.session');
-        $fund = $this->fundService->getDefaultFund($session->round);
+        $fund = $this->fundService->getFirstFund($session);
         $profitAmount = $fund->end_sid === $session->id ? $fund->profit_amount : 0;
 
         $this->bag('meeting.saving')->set('fund.id', $fund->id);

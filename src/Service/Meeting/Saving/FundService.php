@@ -22,9 +22,9 @@ class FundService
      * @param Session $session
      * @param bool $onlyReal
      *
-     * @return Relation
+     * @return Relation|Builder
      */
-    public function getSessionQuery(Session $session, bool $onlyReal): Relation
+    private function getSessionQuery(Session $session, bool $onlyReal): Relation|Builder
     {
         return $session->funds()
             ->join('fund_defs', 'fund_defs.id', '=', 'funds.def_id')
@@ -98,6 +98,17 @@ class FundService
     {
         return $round->guild->default_fund
             ->funds()->real()->where('round_id', $round->id)->first();
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return Fund|null
+     */
+    public function getFirstFund(Session $session): ?Fund
+    {
+        return $this->getDefaultFund($session->round) ?:
+            $this->getSessionQuery($session, onlyReal: true)->first();
     }
 
     /**
