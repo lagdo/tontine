@@ -1673,16 +1673,16 @@
         },
         {
             "name": "jaxon-php/jaxon-core",
-            "version": "v5.0.5",
+            "version": "v5.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-core.git",
-                "reference": "4fc1ff268c3884f79a72c7caf2da581003501a82"
+                "reference": "fd5d5a54cfd55adb10358ae38394e7be1999f8a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/4fc1ff268c3884f79a72c7caf2da581003501a82",
-                "reference": "4fc1ff268c3884f79a72c7caf2da581003501a82",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/fd5d5a54cfd55adb10358ae38394e7be1999f8a3",
+                "reference": "fd5d5a54cfd55adb10358ae38394e7be1999f8a3",
                 "shasum": ""
             },
             "require": {
@@ -1750,7 +1750,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-core/issues",
                 "source": "https://github.com/jaxon-php/jaxon-core"
             },
-            "time": "2025-07-30T14:23:06+00:00"
+            "time": "2025-09-07T18:47:34+00:00"
         },
         {
             "name": "jaxon-php/jaxon-dialogs",
@@ -1874,16 +1874,16 @@
         },
         {
             "name": "jaxon-php/jaxon-utils",
-            "version": "v2.0.0",
+            "version": "v2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-utils.git",
-                "reference": "3a877f2e7dae410377b65a252c50cf04fe2091f0"
+                "reference": "23ffd83bceefee4106f4f5e7a6d285d6dc704bc5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-utils/zipball/3a877f2e7dae410377b65a252c50cf04fe2091f0",
-                "reference": "3a877f2e7dae410377b65a252c50cf04fe2091f0",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-utils/zipball/23ffd83bceefee4106f4f5e7a6d285d6dc704bc5",
+                "reference": "23ffd83bceefee4106f4f5e7a6d285d6dc704bc5",
                 "shasum": ""
             },
             "require": {
@@ -1923,7 +1923,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-utils/issues",
                 "source": "https://github.com/jaxon-php/jaxon-utils"
             },
-            "time": "2025-05-25T08:40:47+00:00"
+            "time": "2025-09-07T19:57:59+00:00"
         },
         {
             "name": "jaybizzle/crawler-detect",
@@ -11841,7 +11841,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -11850,6 +11850,6 @@
         "ext-intl": "*",
         "ext-json": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }

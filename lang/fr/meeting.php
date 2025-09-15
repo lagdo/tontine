@@ -75,6 +75,9 @@ return [
         ],
     ],
     'warnings' => [
+        'fund' => [
+            'none' => "Aucun fonds d'épargne n'a été ajouté à ce tour.",
+        ],
         'session' => [
             'closed' => "Cette opération n'est pas permise parce que la séance est fermée.",
         ],

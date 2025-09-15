@@ -75,6 +75,9 @@ return [
         ],
     ],
     'warnings' => [
+        'fund' => [
+            'none' => "No saving fund was added to this round.",
+        ],
         'session' => [
             'closed' => "This operation is not allowed because the session is closed.",
         ],
