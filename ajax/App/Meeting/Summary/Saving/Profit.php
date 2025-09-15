@@ -70,11 +70,15 @@ class Profit extends Component
     {
         $session = $this->stash()->get('summary.session');
         $fund = $this->fundService->getFirstFund($session);
-        $profitAmount = $fund->end_sid === $session->id ? $fund->profit_amount : 0;
+        if(!$fund)
+        {
+            return;
+        }
 
         $this->bag('summary.saving')->set('fund.id', $fund->id);
         // Save data for the profit components.
         $this->stash()->set('profit.fund', $fund);
+        $profitAmount = $fund->end_sid === $session->id ? $fund->profit_amount : 0;
         $this->stash()->set('profit.amount', $profitAmount);
 
         $this->render();
