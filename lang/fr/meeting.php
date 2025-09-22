@@ -211,6 +211,10 @@ return [
         'titles' => [
             'add' => "Ajouter un emprunt",
             'edit' => "Modifier un emprunt",
+            'deadline' => "Modifier une date limite",
+        ],
+        'actions' => [
+            'deadline' => "Date limite",
         ],
         'labels' => [
             'p' => "Principal",
@@ -220,6 +224,8 @@ return [
             'percentage' => "Pourcentage",
             'amount_available' => "Disponible : :amount",
             'fund' => "Origine",
+            'deadline' => "Date limite : :deadline",
+            'passed' => "passée",
         ],
         'interest' => [
             'f' => "Fixe",
@@ -230,6 +236,10 @@ return [
             'iu' => "Intérêt unique",
             'is' => "Intérêt simple",
             'ic' => "Intérêt composé",
+        ],
+        'deadline' => [
+            'session' => "Séance : :date",
+            'date' => "Date : :date",
         ],
         'questions' => [
             'delete' => "Supprimer cet emprunt ?",
@@ -243,6 +253,7 @@ return [
             'not_found' => "Impossible de trouver l'emprunt.",
             'update' => "Cet emprunt ne peut pas être modifié.",
             'delete' => "Cet emprunt ne peut pas être supprimé.",
+            'deadline' => "La date limite doit être après la séance.",
         ],
     ],
     'refund' => [

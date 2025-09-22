@@ -6,6 +6,7 @@
 @endphp
                     <div class="table-responsive" id="content-session-loans-page" @jxnEvent([
                       ['.btn-loan-edit', 'click', $rqLoanFunc->edit($loanId)],
+                      ['.btn-loan-deadline', 'click', $rqLoanFunc->editDeadline($loanId)],
                       ['.btn-loan-delete', 'click', $rqLoanFunc->delete($loanId)
                         ->confirm(__('meeting.loan.questions.delete'))]])>
 
@@ -19,8 +20,18 @@
                         </thead>
                         <tbody>
 @foreach ($loans as $loan)
+@php
+  $deadline = $loan->deadline;
+  if($deadline !== '' && $loan->deadline_passed)
+  {
+    $deadline = "<s>$deadline</s>";
+  }
+@endphp
                           <tr>
-                            <td>{{ $loan->member->name }}<br/>{!! $loan->fund->title !!}</td>
+                            <td>
+                              {{ $loan->member->name }}<br/>{!! $loan->fund->title
+                                !!}@if ($deadline !== '') ({!! $deadline !!})@endif
+                            </td>
                             <td class="currency">
                               {{ $locale->formatMoney($loan->principal, false, true) }}<br/>
                               {{ __('meeting.loan.interest.i' . $loan->interest_type) }}: {{ $loan->fixed_interest ?
@@ -36,6 +47,9 @@
   'menus' => [[
     'class' => 'btn-loan-edit',
     'text' => __('common.actions.edit'),
+  ],[
+    'class' => 'btn-loan-deadline',
+    'text' => __('meeting.loan.actions.deadline'),
   ],[
     'class' => 'btn-loan-delete',
     'text' => __('common.actions.delete'),

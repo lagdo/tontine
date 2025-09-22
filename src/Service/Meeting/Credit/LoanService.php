@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Loan;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
@@ -81,6 +82,7 @@ class LoanService
         return $session->loans()
             ->with(['member', 'fund'])
             ->page($page, $this->tenantService->getLimit())
+            ->orderBy('id')
             ->get();
     }
 
@@ -184,5 +186,40 @@ class LoanService
                 $loan->delete();
             });
         }
+    }
+
+    /**
+     * @param Guild $guild
+     * @param Loan $loan
+     * @param string $deadline
+     *
+     * @return void
+     */
+    public function updateDeadline(Guild $guild, Loan $loan, string $deadline): void
+    {
+        $loan->deadline_date = null;
+        $loan->deadline_session_id = null;
+        $session = $guild->sessions()->where('day_date', $deadline)->first();
+        if($session !== null)
+        {
+            $loan->deadline_session()->associate($session);
+        }
+        else
+        {
+            $loan->deadline_date = $deadline;
+        }
+        $loan->save();
+    }
+
+    /**
+     * @param Loan $loan
+     *
+     * @return void
+     */
+    public function deleteDeadline(Loan $loan): void
+    {
+        $loan->deadline_date = null;
+        $loan->deadline_session_id = null;
+        $loan->save();
     }
 }

@@ -2,9 +2,12 @@
 
 namespace Siak\Tontine\Model;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
+
+use function trans;
 
 /**
  * @property string $interest_type
@@ -25,6 +28,8 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class Loan extends Base
 {
+    use Traits\DateFormatter;
+
     /**
      * @const
      */
@@ -63,6 +68,18 @@ class Loan extends Base
         'member_id',
         'session_id',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'deadline_date' => 'datetime:Y-m-d',
+        ];
+    }
 
     /**
      * @return Attribute
@@ -185,6 +202,11 @@ class Loan extends Base
         return $this->hasOne(Debt::class)->where('type', Debt::TYPE_INTEREST);
     }
 
+    public function deadline_session()
+    {
+        return $this->belongsTo(Session::class, 'deadline_session_id');
+    }
+
     /**
      * @return Attribute
      */
@@ -215,6 +237,53 @@ class Loan extends Base
         return Attribute::make(
             get: fn() => !$this->i_debt ? $this->p_debt->all_refunds :
                 $this->p_debt->all_refunds->concat($this->i_debt->all_refunds),
+        );
+    }
+
+    /**
+     * @return Attribute
+     */
+    protected function deadline(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->deadline_session !== null ?
+                trans('meeting.loan.deadline.session', [
+                    'date' => $this->deadline_session->date('day_date', 'format_medium'),
+                ]) :
+                ($this->deadline_date !== null ?
+                    trans('meeting.loan.deadline.date', [
+                        'date' => $this->date('deadline_date', 'format_medium'),
+                    ]) : '')
+        );
+    }
+
+    /**
+     * @return Attribute
+     */
+    protected function noDeadline(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => !$this->deadline_session && !$this->deadline_date,
+        );
+    }
+
+
+    /**
+     * @return Attribute
+     */
+    protected function deadlinePassed(): Attribute
+    {
+        return Attribute::make(
+            get: function() {
+                if($this->no_deadline)
+                {
+                    return false;
+                }
+
+                $date = $this->deadline_session !== null ?
+                    $this->deadline_session->day_date : $this->deadline_date;
+                return $date < Carbon::today();
+            }
         );
     }
 }

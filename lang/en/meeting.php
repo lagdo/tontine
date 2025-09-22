@@ -211,6 +211,10 @@ return [
         'titles' => [
             'add' => "Add a loan",
             'edit' => "Edit a loan",
+            'deadline' => "Edit deadline",
+        ],
+        'actions' => [
+            'deadline' => "Deadline",
         ],
         'labels' => [
             'p' => "Principal",
@@ -220,6 +224,8 @@ return [
             'percentage' => "Percentage",
             'amount_available' => "Available: :amount",
             'fund' => "Fund",
+            'deadline' => "Deadline: :deadline",
+            'passed' => "passed",
         ],
         'interest' => [
             'f' => "Fixed",
@@ -230,6 +236,10 @@ return [
             'iu' => "Unique interest",
             'is' => "Simple interest",
             'ic' => "Compound interest",
+        ],
+        'deadline' => [
+            'session' => "Session: :date",
+            'date' => "Date: :date",
         ],
         'questions' => [
             'delete' => "Delete this loan?",
@@ -243,6 +253,7 @@ return [
             'not_found' => "Cannot find the loan.",
             'update' => "This loan cannot be updated.",
             'delete' => "This loan cannot be deleted.",
+            'deadline' => "The deadline must be after the session.",
         ],
     ],
     'refund' => [

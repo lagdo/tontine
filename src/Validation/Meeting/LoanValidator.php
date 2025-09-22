@@ -68,4 +68,28 @@ class LoanValidator extends AbstractValidator
 
         return $validated;
     }
+
+    /**
+     * @param array $values
+     *
+     * @return array
+     */
+    public function validateDate(array $values): array
+    {
+        $validator = Validator::make($this->values($values), [
+            'deadline' => 'required|date:Y-m-d',
+        ]);
+        $validator->after(function($validator) use($values) {
+            if($values['deadline'] <= $values['session'])
+            {
+                $validator->errors()->add('deadline', trans('meeting.loan.errors.deadline'));
+            }
+        });
+        if($validator->fails())
+        {
+            throw new ValidationException($validator);
+        }
+
+        return $validator->validated();
+    }
 }

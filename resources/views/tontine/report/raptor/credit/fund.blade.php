@@ -9,10 +9,13 @@
                           <th colspan="5">{{ $loans[0]->member->name }}</th>
                         </tr>
 @foreach ($loans as $loan)
+@php
+  $rowspan = $loan->debts->count() + (!$loan->no_deadline ? 1 : 0);
+@endphp
                         <tr>
-                          <td rowspan="{{ $loan->debts->count() }}">{{ __('meeting.titles.loan') }}</td>
-                          <td style="width:30%;" colspan="2" rowspan="{{ $loan->debts->count() }}">{{ $loan->session->title }}</td>
-                          <td style="width:20%;" rowspan="{{ $loan->debts->count() }}">{{ $loan->session->date('day_date') }}</td>
+                          <td rowspan="{{ $rowspan }}">{{ __('meeting.titles.loan') }}</td>
+                          <td style="width:30%;" colspan="2" rowspan="{{ $rowspan }}">{{ $loan->session->title }}</td>
+                          <td style="width:20%;" rowspan="{{ $rowspan }}">{{ $loan->session->date('day_date') }}</td>
                           <td style="width:15%;">{{ __('meeting.report.labels.' . $loan->p_debt->type) }}</td>
                           <td style="width:15%;text-align:right;">{{ $locale->formatMoney($loan->p_debt->amount, false) }}</td>
                         </tr>
@@ -20,6 +23,16 @@
                         <tr>
                           <td>{{ __('meeting.report.labels.' . $loan->i_debt->type) }}</td>
                           <td style="text-align:right;">{{ $locale->formatMoney($loan->iDebtAmount, false) }}</td>
+                        </tr>
+@endif
+@if (!$loan->no_deadline)
+                        <tr style="border-top: none;">
+                          <td style="width:30%;" colspan="2">
+                            {{ __('meeting.loan.labels.deadline', [
+                              'deadline' => $loan->deadline_session !== null ?
+                                $loan->deadline_session->title : $loan->date('deadline_date'),
+                            ]) }}@if ($loan->deadline_passed) ({{ __('meeting.loan.labels.passed') }})@endif
+                          </td>
                         </tr>
 @endif
 
