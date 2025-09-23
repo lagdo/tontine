@@ -148,11 +148,12 @@ class SessionService
                 $settlement = $settlements[$charge->id] ?? null;
                 // We need to clone the model, or else the getTotalCharges()
                 // method will modify and return the same object and values.
-                $charge = $charge->replicate();
-                $charge->total_count = $settlement?->total_count ?? 0;
-                $charge->total_amount = $settlement?->total_amount ?? 0;
-                $charge->outflow = $outflows[$charge->id] ?? null;
-                return $charge;
+                $clone = $charge->replicateQuietly();
+                $clone->id = $charge->id; // The replicate() function doesn't copy the id.
+                $clone->total_count = $settlement?->total_count ?? 0;
+                $clone->total_amount = $settlement?->total_amount ?? 0;
+                $clone->outflow = $outflows[$charge->id] ?? null;
+                return $clone;
             });
     }
 
@@ -187,11 +188,12 @@ class SessionService
                 $settlement = $settlements[$charge->id] ?? null;
                 // We need to clone the model, or else the getSessionCharges()
                 // method will modify and return the same object and values.
-                $charge = $charge->replicate();
-                $charge->total_count = $settlement?->total_count ?? 0;
-                $charge->total_amount = $settlement?->total_amount ?? 0;
-                $charge->outflow = $outflows[$charge->id] ?? null;
-                return $charge;
+                $clone = $charge->replicateQuietly();
+                $clone->id = $charge->id; // The replicate() function doesn't copy the id.
+                $clone->total_count = $settlement?->total_count ?? 0;
+                $clone->total_amount = $settlement?->total_amount ?? 0;
+                $clone->outflow = $outflows[$charge->id] ?? null;
+                return $clone;
             });
     }
 

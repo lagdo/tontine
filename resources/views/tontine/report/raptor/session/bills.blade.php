@@ -28,8 +28,18 @@
                           <td style="text-align:right;">{{ $bill->paid ? $locale->formatMoney($bill->amount, true) : '-' }}</td>
                         </tr>
 @endforeach
+@php
+  $unpaidBills = $chargeBills->filter(fn($bill) => !$bill->paid);
+@endphp
+@if ($unpaidBills->count() > 0)
                         <tr class="total">
-                          <td>{{ __('common.labels.total') }}</td>
+                          <td>{{ __('common.labels.unpaid') }}</td>
+                          <td>{{ $unpaidBills->count() }}</td>
+                          <td>{{ $locale->formatMoney($unpaidBills->sum('amount'), true) }}</td>
+                        </tr>
+@endif
+                        <tr class="total">
+                          <td>{{ __('common.labels.paid') }}</td>
                           <td>{{ $charge->total_count }}</td>
                           <td>{{ $locale->formatMoney($charge->total_amount, true) }}</td>
                         </tr>

@@ -96,6 +96,7 @@ return [
         'mandatory' => "Obligatoire",
         'notes' => "Notes",
         'paid' => "Payé",
+        'unpaid' => "Impayé",
         'period' => "Récurrence",
         'start' => "Début",
         'end' => "Fin",
