@@ -270,6 +270,7 @@ return [
             'total' => "Total : :amount",
             'before' => "Av. séance : :amount",
             'after' => "Ap. séance : :amount",
+            'partial' => "Partiel",
         ],
         'questions' => [
             'delete' => "Supprimer ce remboursement ?",

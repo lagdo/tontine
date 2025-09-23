@@ -99,45 +99,15 @@ class SessionService
      *
      * @return Collection
      */
-    private function getBills(Closure $settlementFilter, ?Member $member = null): Collection
+    private function getSettlements(Closure $settlementFilter, ?Member $member = null): Collection
     {
-        $onetimeBillsQuery = DB::table('bills')
-            ->join(DB::raw('onetime_bills as ob'), 'bills.id', '=', 'ob.bill_id')
-            ->select(DB::raw('sum(bills.amount) as total_amount'),
-                DB::raw('count(bills.id) as total_count'), 'ob.charge_id')
-            ->groupBy('ob.charge_id')
-            ->whereExists($settlementFilter)
+        return DB::table('v_settlements')
+            ->select(DB::raw('sum(amount) as total_amount'),
+                DB::raw('count(*) as total_count'), 'charge_id')
+            ->groupBy('charge_id')
+            ->where($settlementFilter)
             ->when($member !== null, fn($qm) =>
-                $qm->where('ob.member_id', $member->id));
-        $roundBillsQuery = DB::table('bills')
-            ->join(DB::raw('round_bills as rb'), 'bills.id', '=', 'rb.bill_id')
-            ->select(DB::raw('sum(bills.amount) as total_amount'),
-                DB::raw('count(bills.id) as total_count'), 'rb.charge_id')
-            ->groupBy('rb.charge_id')
-            ->whereExists($settlementFilter)
-            ->when($member !== null, fn($qm) =>
-                $qm->where('rb.member_id', $member->id));
-        $sessionBillsQuery = DB::table('bills')
-            ->join(DB::raw('session_bills as sb'), 'bills.id', '=', 'sb.bill_id')
-            ->select(DB::raw('sum(bills.amount) as total_amount'),
-                DB::raw('count(bills.id) as total_count'), 'sb.charge_id')
-            ->groupBy('sb.charge_id')
-            ->whereExists($settlementFilter)
-            ->when($member !== null, fn($qm) =>
-                $qm->where('sb.member_id', $member->id));
-        $libreBillsQuery = DB::table('bills')
-            ->join(DB::raw('libre_bills as lb'), 'bills.id', '=', 'lb.bill_id')
-            ->select(DB::raw('sum(bills.amount) as total_amount'),
-                DB::raw('count(bills.id) as total_count'), 'lb.charge_id')
-            ->groupBy('lb.charge_id')
-            ->whereExists($settlementFilter)
-            ->when($member !== null, fn($qm) =>
-                $qm->where('lb.member_id', $member->id));
-
-        return $onetimeBillsQuery
-            ->union($roundBillsQuery)
-            ->union($sessionBillsQuery)
-            ->union($libreBillsQuery)
+                $qm->where('member_id', $member->id))
             ->get()
             ->keyBy('charge_id');
     }
@@ -168,20 +138,21 @@ class SessionService
      */
     public function getSessionCharges(Session $session): Collection
     {
-        $settlementFilter = fn(Builder $query) => $query
-            ->select(DB::raw(1))
-            ->from(DB::raw('settlements as st'))
-            ->where('session_id', $session->id)
-            ->whereColumn('st.bill_id', 'bills.id');
-        $bills = $this->getBills($settlementFilter);
+        $settlementFilter = fn(Builder $qs) =>
+            $qs->where('session_id', $session->id);
+        $settlements = $this->getSettlements($settlementFilter);
         $outflows = $this->getDisbursedAmounts($session, true);
 
         return $session->round->charges
-            ->each(function($charge) use($bills, $outflows) {
-                $bill = $bills[$charge->id] ?? null;
-                $charge->total_count = $bill ? $bill->total_count : 0;
-                $charge->total_amount = $bill ? $bill->total_amount : 0;
+            ->map(function($charge) use($settlements, $outflows) {
+                $settlement = $settlements[$charge->id] ?? null;
+                // We need to clone the model, or else the getTotalCharges()
+                // method will modify and return the same object and values.
+                $charge = $charge->replicate();
+                $charge->total_count = $settlement?->total_count ?? 0;
+                $charge->total_amount = $settlement?->total_amount ?? 0;
                 $charge->outflow = $outflows[$charge->id] ?? null;
+                return $charge;
             });
     }
 
@@ -193,18 +164,12 @@ class SessionService
      */
     public function getTotalCharges(Session $session, ?Member $member = null): Collection
     {
-        $sessionFilter = fn(Builder $query) => $query
-            ->select(DB::raw(1))
-            ->from(DB::raw('sessions as se'))
-            ->whereColumn('se.id', 'st.session_id')
-            ->where('se.round_id', $session->round_id)
-            ->where('se.day_date', '<=', $session->day_date);
-        $settlementFilter = fn(Builder $query) => $query
-            ->select(DB::raw(1))
-            ->from(DB::raw('settlements as st'))
-            ->whereExists($sessionFilter)
-            ->whereColumn('st.bill_id', 'bills.id');
-        $bills = $this->getBills($settlementFilter, $member);
+        $settlementFilter = fn(Builder $qs) =>
+            $qs->whereIn('session_id', DB::table('sessions')
+                ->select('id')
+                ->where('round_id', $session->round_id)
+                ->where('day_date', '<=', $session->day_date));
+        $settlements = $this->getSettlements($settlementFilter, $member);
         $outflows = $this->getDisbursedAmounts($session, false);
         if($member !== null)
         {
@@ -218,11 +183,15 @@ class SessionService
         }
 
         return $session->round->charges
-            ->each(function($charge) use($bills, $outflows) {
-                $bill = $bills[$charge->id] ?? null;
-                $charge->total_count = $bill ? $bill->total_count : 0;
-                $charge->total_amount = $bill ? $bill->total_amount : 0;
+            ->map(function($charge) use($settlements, $outflows) {
+                $settlement = $settlements[$charge->id] ?? null;
+                // We need to clone the model, or else the getSessionCharges()
+                // method will modify and return the same object and values.
+                $charge = $charge->replicate();
+                $charge->total_count = $settlement?->total_count ?? 0;
+                $charge->total_amount = $settlement?->total_amount ?? 0;
                 $charge->outflow = $outflows[$charge->id] ?? null;
+                return $charge;
             });
     }
 

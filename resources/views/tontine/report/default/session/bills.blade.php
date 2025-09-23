@@ -6,9 +6,7 @@
                   </div>
 @foreach($charges['session'] as $charge)
 @php
-  $chargeBills = $bills->filter(function($bill) use($charge) {
-    return $bill->charge_id === $charge->id;
-  });
+  $chargeBills = $bills->filter(fn($bill) => $bill->charge_id === $charge->id);
 @endphp
 @if ($chargeBills->count() > 0)
                   <div class="row">
@@ -32,7 +30,7 @@
                       <tbody>
 @foreach ($chargeBills as $bill)
                         <tr>
-                          <td>{{ $bill->member->name }}@if (($bill->session)) - {{ $bill->session->title }}@endif</td>
+                          <td>{{ $bill->member->name }}@if ($bill->in_round) - {{ $bill->session->title }}@endif</td>
                           <td style="text-align:right;">{{ $bill->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
                           <td style="text-align:right;">{{ $bill->paid ? $locale->formatMoney($bill->amount, true) : '-' }}</td>
                         </tr>

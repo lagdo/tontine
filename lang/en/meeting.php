@@ -270,6 +270,7 @@ return [
             'total' => "Total: :amount",
             'before' => "Bf. session: :amount",
             'after' => "Af. session: :amount",
+            'partial' => "Partial",
         ],
         'questions' => [
             'delete' => "Delete this refund?",

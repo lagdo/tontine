@@ -5,7 +5,7 @@ namespace Siak\Tontine\Service\Report;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Auction;
-use Siak\Tontine\Model\Bill;
+use Siak\Tontine\Model\BillView;
 use Siak\Tontine\Model\Debt;
 use Siak\Tontine\Model\Member;
 use Siak\Tontine\Model\Session;
@@ -142,48 +142,17 @@ class MemberService
      */
     public function getBills(Session $session, ?Member $member = null): Collection
     {
-        $memberCallback = fn($qm) => $qm->where('member_id', $member->id);
-        return $this->sortByMemberName(Bill::with(['settlement',
-                'libre_bill.session', 'libre_bill.member', 'round_bill.member',
-                'onetime_bill.member', 'session_bill.member', 'session_bill.session'])
-            ->where(fn($query) => $query
-                // Unsettled bills.
-                ->orWhereDoesntHave('settlement')
-                // Bills settled on this session.
-                ->orWhereHas('settlement', fn(Builder $qs) =>
-                    $qs->where('session_id', $session->id)))
-            ->where(fn($query) => $query
-                // Onetime bills.
-                ->orWhereHas('onetime_bill', fn(Builder $qb) =>
-                    $qb->when($member !== null, $memberCallback)
-                        ->when($member === null, fn($qw) =>
-                            $qw->whereHas('member', fn($qm) =>
-                                $qm->where('round_id', $session->round_id))))
-                // Round bills.
-                ->orWhereHas('round_bill', fn(Builder $qb) =>
-                    $qb->where('round_id', $session->round_id)
-                        ->when($member !== null, $memberCallback))
-                // Session bills.
-                ->orWhereHas('session_bill', fn(Builder $qb) =>
-                    $qb->where('session_id', $session->id)
-                        ->when($member !== null, $memberCallback))
-                // Libre bills, all up to this session.
-                ->orWhereHas('libre_bill', fn(Builder $qb) =>
-                    $qb->whereHas('session', fn($qs) =>
-                            $qs->where('round_id', $session->round_id)
-                                ->where('day_date', '<=', $session->day_date))
-                        ->when($member !== null, $memberCallback))
-            )
+        return $this->sortByMemberName(BillView::with(['round',
+                'session', 'member', 'charge', 'bill', 'bill.settlement'])
+            ->when($member !== null, fn(Builder $query) =>
+                $query->where('member_id', $member->id))
+            ->where(fn(Builder $query) => $query
+                ->orWhere(fn(Builder $q1) => $q1->ofTypeSession($session))
+                ->orWhere(fn(Builder $q2) => $q2->ofTypeNotSession($session)))
             ->get()
             ->each(function($bill) {
-                // Take the only value which is not null
-                $_bill = $bill->session_bill ?? $bill->round_bill ??
-                    $bill->onetime_bill ?? $bill->libre_bill;
-
-                $bill->paid = $bill->settlement !== null;
-                $bill->session = $bill->libre_bill ? $_bill->session : null;
-                $bill->member = $_bill->member;
-                $bill->charge_id = $_bill->charge_id;
+                $bill->paid = $bill->bill->settlement !== null;
+                $bill->amount = $bill->bill->amount;
             }), $member);
     }
 

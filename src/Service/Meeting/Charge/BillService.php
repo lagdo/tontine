@@ -44,7 +44,7 @@ class BillService
     private function getBillsQuery(Charge $charge, Session $session,
         string $search = '', ?bool $onlyPaid = null): Builder|Relation
     {
-        return Bill::ofSession($session)
+        return Bill::forSession($session)
             ->with('session')
             ->where('charge_id', $charge->id)
             ->search($this->searchSanitizer->sanitize($search))

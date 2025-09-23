@@ -49,10 +49,11 @@ class BillSyncService
     /**
      * @param Collection $charges
      * @param Collection $members
+     * @param Round $round
      *
      * @return void
      */
-    private function initBills(Collection $charges, Collection $members): void
+    private function initBills(Collection $charges, Collection $members, Round $round): void
     {
         $this->today = now();
         $this->bulkId = Str::ulid();
@@ -66,28 +67,23 @@ class BillSyncService
         ];
         // Avoid duplicates creation.
         $this->existingBills = [
-            'onetime_bills' => OnetimeBill::select([
-                    DB::raw('charges.def_id as charge_def_id'),
-                    DB::raw('members.def_id as member_def_id'),
+            // Take the onetime bills paid in other rounds/
+            'onetime_bills' => DB::table(DB::raw('v_paid_onetime_bills as b'))
+                ->join(DB::raw('charges as c'), 'c.def_id', '=', 'b.charge_def_id')
+                ->join(DB::raw('members as m'), 'm.def_id', '=', 'b.member_def_id')
+                ->select([
+                    DB::raw('c.id as charge_id'),
+                    DB::raw('m.id as member_id'),
                 ])
-                ->where(fn($qw) => $qw
-                    // Take the bills in the current round.
-                    ->orWhere(fn($qwb) => $qwb
-                        ->whereIn('charge_id', $charges->pluck('id'))
-                        ->whereIn('member_id', $members->pluck('id')))
-                    // Take the onetime bills already paid, including in other rounds.
-                    ->orWhere(fn($qwd) => $qwd
-                        ->whereHas('charge', fn($qc) =>
-                            $qc->once()
-                                ->whereIn('def_id', $charges->pluck('def_id')))
-                        ->whereHas('member', fn($qm) =>
-                            $qm->whereIn('def_id', $members->pluck('def_id')))
-                        ->whereHas('bill', fn($qb) => $qb->whereHas('settlement')))
-                )
-                ->join('charges', 'charges.id', '=', 'onetime_bills.charge_id')
-                ->join('members', 'members.id', '=', 'onetime_bills.member_id')
-                ->distinct()
-                ->get(),
+                ->whereIn('c.id', $charges->pluck('id'))
+                ->whereIn('m.id', $members->pluck('id'))
+                ->where('b.round_id', '!=', $round->id)
+                ->get()
+                // And those in the current round.
+                ->concat(OnetimeBill::select(['charge_id', 'member_id'])
+                    ->whereIn('charge_id', $charges->pluck('id'))
+                    ->whereIn('member_id', $members->pluck('id'))
+                    ->get()),
             'round_bills' => RoundBill::select(['charge_id', 'member_id'])
                 ->whereIn('charge_id', $charges->pluck('id'))
                 ->whereIn('member_id', $members->pluck('id'))
@@ -147,14 +143,15 @@ class BillSyncService
     /**
      * @param Charge $charge
      * @param Member $member
+     * @param Round $round
      *
      * @return void
      */
-    private function createOnetimeBill(Charge $charge, Member $member): void
+    private function createOnetimeBill(Charge $charge, Member $member, Round $round): void
     {
-        if($this->existingBills['onetime_bills']->contains(fn(OnetimeBill $bill) =>
-            $bill->charge_def_id === $charge->def_id &&
-            $bill->member_def_id === $member->def_id))
+        if($this->existingBills['onetime_bills']->contains(fn($bill) =>
+            $bill->charge_id === $charge->id &&
+            $bill->member_id === $member->id))
         {
             return;
         }
@@ -162,6 +159,7 @@ class BillSyncService
         $this->createBill($charge, 'onetime_bills', [
             'charge_id' => $charge->id,
             'member_id' => $member->id,
+            'round_id' => $round->id,
         ]);
     }
 
@@ -174,7 +172,7 @@ class BillSyncService
      */
     private function createRoundBill(Charge $charge, Member $member, Round $round): void
     {
-        if($this->existingBills['round_bills']->contains(fn(RoundBill $bill) =>
+        if($this->existingBills['round_bills']->contains(fn($bill) =>
             $bill->charge_id === $charge->id &&
             $bill->member_id === $member->id))
         {
@@ -217,7 +215,7 @@ class BillSyncService
     {
         if($charge->def->period_once)
         {
-            $this->createOnetimeBill($charge, $member);
+            $this->createOnetimeBill($charge, $member, $round);
             return;
         }
         if($charge->def->period_round)
@@ -278,7 +276,7 @@ class BillSyncService
             return;
         }
 
-        $this->initBills(collect([$charge]), $round->members);
+        $this->initBills(collect([$charge]), $round->members, $round);
         foreach($round->members as $member)
         {
             $this->createBills($charge, $member, $round, $round->sessions);
@@ -312,7 +310,7 @@ class BillSyncService
             return;
         }
 
-        $this->initBills($charges, collect([$member]));
+        $this->initBills($charges, collect([$member]), $round);
         foreach($charges as $charge)
         {
             $this->createBills($charge, $member, $round, $round->sessions);
@@ -346,7 +344,7 @@ class BillSyncService
             return;
         }
 
-        $this->initBills($charges, $round->members);
+        $this->initBills($charges, $round->members, $round);
         foreach($charges as $charge)
         {
             foreach($round->members as $member)
