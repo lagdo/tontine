@@ -7,6 +7,7 @@
                   </div>
                   <div class="table">
                     <table>
+@if ($deposits->count() > 0)
                       <thead>
                         <tr>
                           <th>{{ __('common.labels.title') }}</th>
@@ -14,6 +15,7 @@
                           <th style="text-align:right;" colspan="2">{{ __('meeting.titles.remitments') }}</th>
                         </tr>
                       </thead>
+@endif
                       <tbody>
 @foreach($deposits as $pool)
 @if ($pool->sessions->pluck('id', 'id')->has($session->id))

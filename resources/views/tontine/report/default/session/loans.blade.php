@@ -5,6 +5,7 @@
                   </div>
                   <div class="table-responsive">
                     <table class="table table-bordered">
+@if ($loans->count() > 0)
                       <thead>
                         <tr>
                           <th>{{ __('meeting.labels.member') }}</th>
@@ -12,6 +13,7 @@
                           <th style="width:20%;text-align:right;">{{ __('meeting.loan.labels.principal') }}</th>
                         </tr>
                       </thead>
+@endif
                       <tbody>
 @foreach ($loans as $loan)
                         <tr>

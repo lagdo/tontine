@@ -16,6 +16,7 @@
                   </div>
                   <div class="table-responsive">
                     <table class="table table-bordered">
+@if ($receivables->count() > 0)
                       <thead>
                         <tr>
                           <th>{{ __('meeting.labels.member') }}</th>
@@ -23,6 +24,7 @@
                           <th style="width:25%;text-align:right;">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
+@endif
                       <tbody>
 @foreach ($receivables as $receivable)
 @if ($receivable->pool->id === $pool->id)

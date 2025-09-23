@@ -4,10 +4,11 @@
                     </div>
                   </div>
 @foreach ($pools as $pool)
+@if ($pool->remit_auction && $pool->sessions->pluck('id', 'id')->has($session->id))
 @php
   $total = 0;
+  $poolAuctions = $auctions->filter(fn($auction) => $auction->pool->id === $pool->id);
 @endphp
-@if ($pool->remit_auction && $pool->sessions->pluck('id', 'id')->has($session->id))
                   <div class="row">
                     <div class="col">
                       <h6>{{ $pool->title }}</h6>
@@ -18,6 +19,7 @@
                   </div>
                   <div class="table-responsive">
                     <table class="table table-bordered">
+@if ($poolAuctions->count() > 0)
                       <thead>
                         <tr>
                           <th>{{ __('meeting.labels.member') }}</th>
@@ -25,9 +27,9 @@
                           <th style="width:25%;text-align:right;">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
+@endif
                       <tbody>
-@foreach ($auctions as $auction)
-@if ($auction->pool->id === $pool->id)
+@foreach ($poolAuctions as $auction)
 @php
   $total += $auction->amount;
 @endphp
@@ -36,7 +38,6 @@
                           <td style="text-align:right;">{{ $auction->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
                           <td style="text-align:right;">{{ $locale->formatMoney($auction->amount, true) }}</td>
                         </tr>
-@endif
 @endforeach
                         <tr>
                           <th>{{ __('common.labels.total') }}</th>

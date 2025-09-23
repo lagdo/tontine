@@ -5,6 +5,7 @@
                   </div>
                   <div class="table-responsive">
                     <table class="table table-bordered">
+@if ($refunds->count() > 0)
                       <thead>
                         <tr>
                           <th>{{ __('meeting.labels.member') }}</th>
@@ -12,6 +13,7 @@
                           <th style="width:20%;text-align:right;">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
+@endif
                       <tbody>
 @foreach ($refunds as $refund)
                         <tr>
