@@ -22,7 +22,7 @@
 @foreach ($loans as $loan)
 @php
   $deadline = $loan->deadline;
-  if($deadline !== '' && $loan->deadline_passed)
+  if($deadline !== '' && $loan->deadline_exceeded)
   {
     $deadline = "<s>$deadline</s>";
   }

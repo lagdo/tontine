@@ -225,7 +225,7 @@ return [
             'amount_available' => "Disponible : :amount",
             'fund' => "Origine",
             'deadline' => "Date limite : :deadline",
-            'passed' => "passée",
+            'exceeded' => "passée",
         ],
         'interest' => [
             'f' => "Fixe",

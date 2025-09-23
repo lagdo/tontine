@@ -225,7 +225,7 @@ return [
             'amount_available' => "Available: :amount",
             'fund' => "Fund",
             'deadline' => "Deadline: :deadline",
-            'passed' => "passed",
+            'exceeded' => "exceeded",
         ],
         'interest' => [
             'f' => "Fixed",

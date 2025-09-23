@@ -33,7 +33,7 @@
                             {{ __('meeting.loan.labels.deadline', [
                               'deadline' => $loan->deadline_session !== null ?
                                 $loan->deadline_session->title : $loan->date('deadline_date'),
-                            ]) }}@if ($loan->deadline_passed) ({{ __('meeting.loan.labels.passed') }})@endif
+                            ]) }}@if ($loan->deadline_exceeded) ({{ __('meeting.loan.labels.exceeded') }})@endif
                           </td>
                         </tr>
 @endif

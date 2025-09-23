@@ -271,7 +271,7 @@ class Loan extends Base
     /**
      * @return Attribute
      */
-    protected function deadlinePassed(): Attribute
+    protected function deadlineExceeded(): Attribute
     {
         return Attribute::make(
             get: function() {
