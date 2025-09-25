@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Pool;
 use Siak\Tontine\Model\PoolDef;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\TenantService;
+use Exception;
 
 class PoolService
 {
@@ -259,16 +261,23 @@ class PoolService
      */
     public function disableSession(Pool $pool, Session $session)
     {
-        // Disable the session for the pool.
-        DB::transaction(function() use($pool, $session) {
-            DB::table('pool_session_disabled')
-                ->updateOrInsert([
-                    'pool_id' => $pool->id,
-                    'session_id' => $session->id,
-                ]);
+        try
+        {
+            // Disable the session for the pool.
+            DB::transaction(function() use($pool, $session) {
+                DB::table('pool_session_disabled')
+                    ->updateOrInsert([
+                        'pool_id' => $pool->id,
+                        'session_id' => $session->id,
+                    ]);
 
-            $this->poolSyncService->sessionDisabled($pool, $session);
-        });
+                $this->poolSyncService->sessionDisabled($pool, $session);
+            });
+        }
+        catch(Exception $e)
+        {
+            throw new MessageException(trans('tontine.pool.errors.cannot_remove'));
+        }
     }
 
     /**

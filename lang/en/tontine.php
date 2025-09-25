@@ -291,6 +291,8 @@ return [
         ],
         'errors' => [
             'not_found' => "Cannot find the corresponding fund.",
+            'cannot_delete' => "Cannot delete this fund.",
+            'cannot_remove' => "Cannot remove this fund.",
         ],
     ],
     'account' => [
@@ -449,6 +451,8 @@ return [
             'no_subscription' => "There are tontines with no subscription.",
             'payments' => "All deposits and remitments must be deleted prior to deleting or disabling a tontine fund.",
             'not_planned' => "Cannot show the planning or beneficiaries of a tontine with remitments not planned.",
+            'cannot_delete' => "Cannot delete this pool.",
+            'cannot_remove' => "Cannot remove this pool.",
         ],
     ],
     'subscription' => [

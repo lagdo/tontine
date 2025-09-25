@@ -291,6 +291,8 @@ return [
         ],
         'errors' => [
             'not_found' => "Impossible de trouver le fonds correspondant.",
+            'cannot_delete' => "Impossible de supprimer ce fonds.",
+            'cannot_remove' => "Impossible d'enlever ce fonds.",
         ],
     ],
     'account' => [
@@ -449,6 +451,8 @@ return [
             'no_subscription' => "Il y a encore des fonds sans souscription.",
             'payments' => "Tous les versements et remises doivent être supprimés avant de supprimer ou désactiver un fonds de tontine.",
             'not_planned' => "Impossible d'afficher le planning ou les bénéficiaires d'une tontine dont les remises ne sont pas planifiées.",
+            'cannot_delete' => "Impossible de supprimer ce fonds.",
+            'cannot_remove' => "Impossible d'enlever ce fonds.",
         ],
     ],
     'subscription' => [

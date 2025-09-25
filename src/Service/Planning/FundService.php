@@ -5,10 +5,12 @@ namespace Siak\Tontine\Service\Planning;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
+use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Model\FundDef;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Service\TenantService;
+use Exception;
 
 class FundService
 {
@@ -148,8 +150,15 @@ class FundService
             return;
         }
 
-        // Delete the fund
-        $def->funds()->where('round_id', $round->id)->delete();
+        try
+        {
+            // Delete the fund
+            $def->funds()->where('round_id', $round->id)->delete();
+        }
+        catch(Exception $e)
+        {
+            throw new MessageException(trans('tontine.fund.errors.cannot_remove'));
+        }
     }
 
     /**
