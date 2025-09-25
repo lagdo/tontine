@@ -3,16 +3,16 @@
 namespace Siak\Tontine\Service\Guild;
 
 use Exception;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Lagdo\Facades\Logger;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
+use Siak\Tontine\Service\Planning\BillSyncService;
 use Siak\Tontine\Service\Planning\FundSyncService;
 use Siak\Tontine\Service\TenantService;
-use Siak\Tontine\Validation\Guild\RoundValidator;
 
 use function trans;
 
@@ -21,12 +21,12 @@ class RoundService
     /**
      * @param TenantService $tenantService
      * @param PoolService $poolService
-     * @param RoundValidator $validator
      * @param FundSyncService $fundSyncService
+     * @param BillSyncService $billSyncService
      */
-    public function __construct(protected TenantService $tenantService,
-        protected PoolService $poolService, protected RoundValidator $validator,
-        private FundSyncService $fundSyncService)
+    public function __construct(private TenantService $tenantService,
+        private PoolService $poolService, private FundSyncService $fundSyncService,
+        private BillSyncService $billSyncService)
     {}
 
     /**
@@ -92,26 +92,44 @@ class RoundService
      *
      * @param Guild $guild
      * @param array $values
+     * @param array $options
      *
      * @return bool
      */
-    public function createRound(Guild $guild, array $values): bool
+    public function createRound(Guild $guild, array $values, array $options): bool
     {
-        $values = $this->validator->validateItem($values);
-        DB::transaction(function() use($guild, $values) {
-            $round = $guild->rounds()->create(Arr::except($values, 'savings'));
+        DB::transaction(function() use($guild, $values, $options) {
+            // Without the sessions, the default fund cannot yet be added.
+            // We then save the information, so we can do it later.
+            $round = $guild->rounds()->create($values);
             $properties = $round->properties;
-            $properties['savings']['fund']['default'] = $values['savings'];
+            $properties['savings']['fund']['default'] = $options['savings'];
             $round->saveProperties($properties);
 
             // Add all active members to the new round.
-            $members = $guild->members()->active()->get()
-                ->map(fn($member) => ['def_id' => $member->id]);
-            $round->members()->createMany($members);
+            if($options['members'])
+            {
+                $members = $guild->members()->active()->get()
+                    ->map(fn($member) => ['def_id' => $member->id]);
+                $members = $round->members()->createMany($members);
+                $this->billSyncService->membersEnabled($round, $members);
+            }
+
             // Add all active charges to the new round.
-            $charges = $guild->charges()->active()->get()
-                ->map(fn($charge) => ['def_id' => $charge->id]);
-            $round->charges()->createMany($charges);
+            if($options['charges'])
+            {
+                $charges = $guild->charges()->active()->get()
+                    ->map(fn($charge) => [
+                        'name' => $charge->name,
+                        'type' => $charge->type,
+                        'period' => $charge->period,
+                        'amount' => $charge->amount,
+                        'lendable' => $charge->lendable,
+                        'def_id' => $charge->id,
+                    ]);
+                $charges = $round->charges()->createMany($charges);
+                $this->billSyncService->chargesEnabled($round, $charges);
+            }
         });
         return true;
     }
@@ -127,15 +145,7 @@ class RoundService
      */
     public function updateRound(Guild $guild, int $roundId, array $values): int
     {
-        $values = $this->validator->validateItem($values);
-        $round = $guild->rounds()->find($roundId);
-        return DB::transaction(function() use($round, $values) {
-            $properties = $round->properties;
-            $properties['savings']['fund']['default'] = $values['savings'];
-            $round->saveProperties($properties);
-
-            return $round->update(Arr::except($values, 'savings'));
-        });
+        return $guild->rounds()->where('id', $roundId)->update($values);
     }
 
     /**
@@ -153,7 +163,9 @@ class RoundService
         try
         {
             DB::transaction(function() use($round) {
+                // Delete related funds and bills.
                 $this->fundSyncService->roundDeleted($round);
+                $this->billSyncService->roundDeleted($round);
 
                 // Delete the associated members.
                 $round->members()->delete();
@@ -166,6 +178,9 @@ class RoundService
         }
         catch(Exception $e)
         {
+            Logger::debug('Unable to delete a round.', [
+                'error' => $e->getMessage(),
+            ]);
             throw new MessageException(trans('tontine.round.errors.delete'));
         }
     }

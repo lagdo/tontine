@@ -16,6 +16,20 @@
             <div class="form-group row">
               {!! $html->label('&nbsp;')->class('col-sm-3 col-form-label') !!}
               <div class="col-sm-8">
+                {!! $html->checkbox('members', true, '1') !!}
+                {!! $html->label(__('tontine.round.labels.members'), 'members')->class('form-check-label') !!}
+              </div>
+            </div>
+            <div class="form-group row">
+              {!! $html->label('&nbsp;')->class('col-sm-3 col-form-label') !!}
+              <div class="col-sm-8">
+                {!! $html->checkbox('charges', false, '1') !!}
+                {!! $html->label(__('tontine.round.labels.charges'), 'charges')->class('form-check-label') !!}
+              </div>
+            </div>
+            <div class="form-group row">
+              {!! $html->label('&nbsp;')->class('col-sm-3 col-form-label') !!}
+              <div class="col-sm-8">
                 {!! $html->checkbox('savings', false, '1') !!}
                 {!! $html->label(__('tontine.round.labels.savings'), 'savings')->class('form-check-label') !!}
               </div>

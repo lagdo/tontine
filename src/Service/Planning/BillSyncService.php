@@ -150,8 +150,7 @@ class BillSyncService
     private function createOnetimeBill(Charge $charge, Member $member, Round $round): void
     {
         if($this->existingBills['onetime_bills']->contains(fn($bill) =>
-            $bill->charge_id === $charge->id &&
-            $bill->member_id === $member->id))
+            $bill->charge_id === $charge->id && $bill->member_id === $member->id))
         {
             return;
         }
@@ -173,8 +172,7 @@ class BillSyncService
     private function createRoundBill(Charge $charge, Member $member, Round $round): void
     {
         if($this->existingBills['round_bills']->contains(fn($bill) =>
-            $bill->charge_id === $charge->id &&
-            $bill->member_id === $member->id))
+            $bill->charge_id === $charge->id && $bill->member_id === $member->id))
         {
             return;
         }
@@ -210,7 +208,7 @@ class BillSyncService
      *
      * @return void
      */
-    private function createBills(Charge $charge, Member $member,
+    private function _createBills(Charge $charge, Member $member,
         Round $round, Collection|array $sessions): void
     {
         if($charge->def->period_once)
@@ -227,6 +225,28 @@ class BillSyncService
         {
             $this->createSessionBill($charge, $member, $session);
         }
+    }
+
+    /**
+     * @param Collection $charges
+     * @param Collection $members
+     * @param Round $round
+     * @param Collection|array $sessions
+     *
+     * @return void
+     */
+    private function createBills(Collection $charges, Collection $members,
+        Round $round, Collection|array $sessions): void
+    {
+        $this->initBills($charges, $members, $round);
+        foreach($charges as $charge)
+        {
+            foreach($members as $member)
+            {
+                $this->_createBills($charge, $member, $round, $sessions);
+            }
+        }
+        $this->saveBills();
     }
 
     /**
@@ -264,6 +284,38 @@ class BillSyncService
     }
 
     /**
+     * Charges for which bills must be created here.
+     *
+     * @param Charge $charge
+     *
+     * @return bool
+     */
+    private function chargeIsBillable(Charge $charge): bool
+    {
+        return $charge->def->is_fee && $charge->def->is_fixed;
+    }
+
+    /**
+     * @param Round $round
+     * @param Collection $charges
+     *
+     * @return void
+     */
+    public function chargesEnabled(Round $round, Collection $charges): void
+    {
+        $members = $round->members;
+        $charges = $charges->filter(fn($charge) =>
+            $this->chargeIsBillable($charge));
+        if($charges->count() === 0 || $members->count() === 0)
+        {
+            return;
+        }
+
+        $sessions = $round->sessions;
+        $this->createBills($charges, $members, $round, $sessions);
+    }
+
+    /**
      * @param Round $round
      * @param Charge $charge
      *
@@ -271,17 +323,15 @@ class BillSyncService
      */
     public function chargeEnabled(Round $round, Charge $charge): void
     {
-        if($charge->def->is_fine || $charge->def->is_variable || $round->members->count() === 0)
+        $members = $round->members;
+        if(!$this->chargeIsBillable($charge) || $members->count() === 0)
         {
             return;
         }
 
-        $this->initBills(collect([$charge]), $round->members, $round);
-        foreach($round->members as $member)
-        {
-            $this->createBills($charge, $member, $round, $round->sessions);
-        }
-        $this->saveBills();
+        $charges = collect([$charge]);
+        $sessions = $round->sessions;
+        $this->createBills($charges, $members, $round, $sessions);
     }
 
     /**
@@ -297,25 +347,32 @@ class BillSyncService
 
     /**
      * @param Round $round
+     * @param Collection $members
+     *
+     * @return void
+     */
+    public function membersEnabled(Round $round, Collection $members): void
+    {
+        $charges = $round->charges->filter(fn($charge) =>
+            $this->chargeIsBillable($charge));
+        if($members->count() === 0 || $charges->count() === 0)
+        {
+            return;
+        }
+
+        $sessions = $round->sessions;
+        $this->createBills($charges, $members, $round, $sessions);
+    }
+
+    /**
+     * @param Round $round
      * @param Member $member
      *
      * @return void
      */
     public function memberEnabled(Round $round, Member $member): void
     {
-        $charges = $round->charges->filter(fn($charge) =>
-            $charge->def->is_fee && $charge->def->is_fixed);
-        if($charges->count() === 0)
-        {
-            return;
-        }
-
-        $this->initBills($charges, collect([$member]), $round);
-        foreach($charges as $charge)
-        {
-            $this->createBills($charge, $member, $round, $round->sessions);
-        }
-        $this->saveBills();
+        $this->membersEnabled($round, collect([$member]));
     }
 
     /**
@@ -338,21 +395,14 @@ class BillSyncService
     public function sessionsCreated(Round $round, Collection|array $sessions): void
     {
         $charges = $round->charges->filter(fn($charge) =>
-            $charge->def->is_fee && $charge->def->is_fixed);
+            $this->chargeIsBillable($charge));
         if($charges->count() === 0 || $round->members->count() === 0)
         {
             return;
         }
 
-        $this->initBills($charges, $round->members, $round);
-        foreach($charges as $charge)
-        {
-            foreach($round->members as $member)
-            {
-                $this->createBills($charge, $member, $round, $sessions);
-            }
-        }
-        $this->saveBills();
+        $members = $round->members;
+        $this->createBills($charges, $members, $round, $sessions);
     }
 
     /**
@@ -362,16 +412,38 @@ class BillSyncService
      */
     public function sessionDeleted(Session $session)
     {
-        $billIds = DB::table('session_bills')
-            ->where('session_id', $session->id)
-            ->select('bill_id')
-            ->union(DB::table('libre_bills')
-                ->where('session_id', $session->id)
-                ->select('bill_id'))
+        // Closures allow to have different objects for select and delete queries.
+        $sessionBillsQuery = fn() => DB::table('session_bills')
+            ->where('session_id', $session->id);
+        $libreBillsQuery = fn() => DB::table('libre_bills')
+            ->where('session_id', $session->id);
+        $billIds = $sessionBillsQuery()->select('bill_id')
+            ->union($libreBillsQuery()->select('bill_id'))
             ->pluck('bill_id');
         // Will fail if a settlement exists for any of those bills.
-        $session->session_bills()->delete();
-        $session->libre_bills()->delete();
+        $sessionBillsQuery()->delete();
+        $libreBillsQuery()->delete();
+        DB::table('bills')->whereIn('id', $billIds)->delete();
+    }
+
+    /**
+     * @param Round $round
+     *
+     * @return void
+     */
+    public function roundDeleted(Round $round): void
+    {
+        // Closures allow to have different objects for select and delete queries.
+        $roundBillsQuery = fn() => DB::table('round_bills')
+            ->where('round_id', $round->id);
+        $onetimeBillsQuery = fn() => DB::table('onetime_bills')
+            ->where('round_id', $round->id);
+        $billIds = $roundBillsQuery()->select('bill_id')
+            ->union($onetimeBillsQuery()->select('bill_id'))
+            ->pluck('bill_id');
+        // Will fail if a settlement exists for any of those bills.
+        $roundBillsQuery()->delete();
+        $onetimeBillsQuery()->delete();
         DB::table('bills')->whereIn('id', $billIds)->delete();
     }
 }

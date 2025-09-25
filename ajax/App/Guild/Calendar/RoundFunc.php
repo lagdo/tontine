@@ -5,6 +5,7 @@ namespace Ajax\App\Guild\Calendar;
 use Ajax\FuncComponent;
 use Ajax\Page\MainTitle;
 use Siak\Tontine\Service\Guild\RoundService;
+use Siak\Tontine\Validation\Guild\RoundValidator;
 
 use function je;
 use function trans;
@@ -15,6 +16,11 @@ use function trans;
  */
 class RoundFunc extends FuncComponent
 {
+    /**
+     * @var RoundValidator
+     */
+    protected RoundValidator $validator;
+
     /**
      * @param RoundService $roundService
      */
@@ -37,10 +43,19 @@ class RoundFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
+    /**
+     * @di $validator
+     */
     public function create(array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');
-        $this->roundService->createRound($guild, $formValues);
+        $values = $this->validator->validateItem($formValues);
+        $options = [
+            'members' => isset($formValues['members']),
+            'charges' => isset($formValues['charges']),
+            'savings' => isset($formValues['savings']),
+        ];
+        $this->roundService->createRound($guild, $values, $options);
 
         $this->cl(RoundPage::class)->page(); // Back to current page
         $this->modal()->hide();
@@ -56,7 +71,9 @@ class RoundFunc extends FuncComponent
         $round = $this->roundService->getRound($guild, $roundId);
 
         $title = trans('tontine.round.titles.edit');
-        $content = $this->renderView('pages.guild.calendar.round.edit')->with('round', $round);
+        $content = $this->renderView('pages.guild.calendar.round.edit', [
+            'round' => $round,
+        ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -69,10 +86,14 @@ class RoundFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
+    /**
+     * @di $validator
+     */
     public function update(int $roundId, array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');
-        $this->roundService->updateRound($guild, $roundId, $formValues);
+        $values = $this->validator->validateItem($formValues);
+        $this->roundService->updateRound($guild, $roundId, $values);
 
         $this->cl(RoundPage::class)->page(); // Back to current page
         $this->modal()->hide();

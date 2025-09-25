@@ -176,7 +176,9 @@ return [
             'choose' => "Choisir un tour",
         ],
         'labels' => [
-            'savings' => "Ajouter un premier fonds d'épargne",
+            'members' => "Enrôler les membres actifs ?",
+            'charges' => "Enrôler les charges actives ?",
+            'savings' => "Ajouter un premier fonds d'épargne ?",
         ],
         'messages' => [
             'created' => "le tour a été ajouté.",

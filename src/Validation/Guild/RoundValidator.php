@@ -15,14 +15,9 @@ class RoundValidator extends AbstractValidator
      */
     public function validateItem(array $values): array
     {
-        if(!isset($values['savings']))
-        {
-            $values['savings'] = false;
-        }
         $validator = Validator::make($this->values($values), [
             'title' => 'required|string|min:5',
             'notes' => 'nullable|string',
-            'savings' => 'required|boolean',
         ]);
         if($validator->fails())
         {

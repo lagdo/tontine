@@ -176,7 +176,9 @@ return [
             'choose' => "Select a round",
         ],
         'labels' => [
-            'savings' => "Add a default savings fund",
+            'members' => "Enroll the active members?",
+            'charges' => "Enroll the active charges?",
+            'savings' => "Add a default savings fund?",
         ],
         'messages' => [
             'created' => "The round was successfully created.",
