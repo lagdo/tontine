@@ -36,19 +36,18 @@ class FundSyncService
      *
      * @return void
      */
-    private function updateDefaultFund(Round $round): void
+    private function createDefaultFund(Round $round): void
     {
-        $fundDef = $round->guild->default_fund;
-        if(!$round->add_default_fund)
+        $defaultFund = $round->guild->default_fund;
+        if(!$defaultFund || !$round->add_default_fund ||
+            $defaultFund->funds()->where('round_id', $round->id)->exists())
         {
-            $fundDef->funds()->real()->where('round_id', $round->id)->delete();
             return;
         }
 
-        Fund::updateOrCreate([
-            'def_id' => $fundDef->id,
+        Fund::create([
+            'def_id' => $defaultFund->id,
             'round_id' => $round->id,
-        ], [
             'start_sid' => $round->start->id,
             'end_sid' => $round->end->id,
             'interest_sid' => $round->end->id,
@@ -74,7 +73,7 @@ class FundSyncService
             ->each(fn($pool) => $this->savePoolFund($round, $pool));
 
         // Create the default savings fund.
-        $this->updateDefaultFund($round);
+        $this->createDefaultFund($round);
     }
 
     /**

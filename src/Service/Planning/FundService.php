@@ -33,8 +33,7 @@ class FundService
             ->when($filter === true, fn(Builder|Relation $query) => $query
                 ->whereHas('funds', $onRoundFilter))
             ->when($filter === false, fn(Builder|Relation $query) => $query
-                ->whereDoesntHave('funds', $onRoundFilter))
-            ->when(!$round->add_default_fund, fn($query) => $query->user());
+                ->whereDoesntHave('funds', $onRoundFilter));
     }
 
     /**
@@ -50,10 +49,12 @@ class FundService
     {
         return $this->getQuery($round, $filter)
             ->with([
-                'funds' => fn(Builder|Relation $q) => $q->where('round_id', $round->id),
+                'funds' => fn(Builder|Relation $q) =>
+                    $q->where('round_id', $round->id),
             ])
             ->withCount([
-                'funds as funds_in_round_count' => fn(Builder|Relation $q) => $q->ofRound($round),
+                'funds as funds_in_round_count' =>
+                    fn(Builder|Relation $q) => $q->ofRound($round),
             ])
             ->page($page, $this->tenantService->getLimit())
             ->get();
@@ -93,11 +94,11 @@ class FundService
      */
     public function getFundDef(Round $round, int $defId): ?FundDef
     {
-        return $round->guild
-            ->funds()
-            ->user()
+        return $round->guild->funds()
+            // ->user()
             ->withCount([
-                'funds' => fn(Builder|Relation $q) => $q->where('round_id', $round->id),
+                'funds' => fn(Builder|Relation $q) =>
+                    $q->where('round_id', $round->id),
             ])
             ->find($defId);
     }
@@ -173,6 +174,6 @@ class FundService
      */
     public function getFundCount(Round $round): int
     {
-        return $round->funds()->real()->user()->count();
+        return $round->funds()->real()/*->user()*/->count();
     }
 }

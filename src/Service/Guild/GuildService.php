@@ -125,12 +125,8 @@ class GuildService
      */
     public function getGuestGuild(User $user, int $guildId): ?Guild
     {
-        return tap($this->getGuestGuildsQuery($user)->find($guildId), function($guild) {
-            if($guild !== null)
-            {
-                $guild->isGuest = true;
-            }
-        });
+        return tap($this->getGuestGuildsQuery($user)->find($guildId),
+            fn($guild) => $guild !== null && $guild->isGuest = true);
     }
 
     /**
@@ -170,9 +166,14 @@ class GuildService
     {
         return DB::transaction(function() use($user, $values) {
             $guild = $user->guilds()->create($values);
+
             // Also create the default savings fund for the new guild.
-            $fund = $guild->funds()->create(['title' => '', 'active' => true]);
-            $this->setDefaultFund($guild, $fund);
+            $guild->funds()->create([
+                'type' => FundDef::TYPE_AUTO,
+                'title' => '',
+                'active' => true,
+            ]);
+
             return $guild;
         });
     }
@@ -201,11 +202,11 @@ class GuildService
      */
     public function deleteGuild(User $user, int $guildId)
     {
-        $guild = $user->guilds()->find($guildId);
-        if(!$guild)
+        if(!($guild = $user->guilds()->find($guildId)))
         {
             return;
         }
+
         DB::transaction(function() use($guild) {
             $guild->funds()->delete();
             $guild->members()->delete();
@@ -253,21 +254,6 @@ class GuildService
     {
         $properties = $guild->properties;
         $properties['reports'] = $options['reports'];
-        $guild->saveProperties($properties);
-    }
-
-    /**
-     * Set the default fund
-     *
-     * @param Guild $guild
-     * @param FundDef $fund
-     *
-     * @return void
-     */
-    public function setDefaultFund(Guild $guild, FundDef $fund): void
-    {
-        $properties = $guild->properties;
-        $properties['savings']['fund']['default'] = $fund->id;
         $guild->saveProperties($properties);
     }
 }

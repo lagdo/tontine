@@ -29,11 +29,7 @@
                         <tr>
                           <td>{!! $def->type_user ? $def->title : __('tontine.fund.labels.default') !!}</td>
                           <td class="table-item-toggle" data-def-id="{{ $def->id }}">
-@if ($def->type_user)
                             <a role="link" tabindex="0" class="{{ $toggleClass }}"><i class="{{ $toggleIcon }}"></i></a>
-@else
-                            <i class="{{ $toggleIcon }}"></i>
-@endif
 @if ($def->funds_in_round_count > $count)
                             <i class="fa fa-compress-alt fa-rotate-by rotate-by-45deg"></i>
 @endif
