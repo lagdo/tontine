@@ -147,16 +147,23 @@ class PoolService
             return;
         }
 
-        // Delete the pool
-        DB::transaction(function() use($def, $round) {
-            $pool = $def->pools->first();
-            $this->fundSyncService->poolDisabled($round, $pool);
+        try
+        {
+            // Delete the pool
+            DB::transaction(function() use($def, $round) {
+                $pool = $def->pools->first();
+                $this->fundSyncService->poolDisabled($round, $pool);
 
-            DB::table('pool_session_disabled')
-                ->where('pool_id', $pool->id)
-                ->delete();
-            $pool->delete();
-        });
+                DB::table('pool_session_disabled')
+                    ->where('pool_id', $pool->id)
+                    ->delete();
+                $pool->delete();
+            });
+        }
+        catch(Exception $e)
+        {
+            throw new MessageException(trans('tontine.pool.errors.cannot_remove'));
+        }
     }
 
     /**
@@ -276,7 +283,7 @@ class PoolService
         }
         catch(Exception $e)
         {
-            throw new MessageException(trans('tontine.pool.errors.cannot_remove'));
+            throw new MessageException(trans('tontine.session.errors.cannot_disable'));
         }
     }
 

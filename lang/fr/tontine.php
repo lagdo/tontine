@@ -389,6 +389,7 @@ return [
                 'end' => "La séance de début doit préceder la séance de fin.",
                 'int' => "La séance de fin des intérêts doit être entre les séances de début et de fin.",
             ],
+            'cannot_disable' => "La séance ne peut pas être désactivée.",
         ],
     ],
     'pool' => [

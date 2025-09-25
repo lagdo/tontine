@@ -389,6 +389,7 @@ return [
                 'end' => "The start session must precede the end session.",
                 'int' => "The interest end session must be between the start and the end sessions.",
             ],
+            'cannot_disable' => "The session cannot be disabled.",
         ],
     ],
     'pool' => [
