@@ -4,6 +4,7 @@ namespace Ajax\App\Report\Round;
 
 use Ajax\Component;
 use Ajax\Page\SectionContent;
+use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Siak\Tontine\Service\Meeting\Session\SummaryService;
 use Stringable;
 
@@ -22,26 +23,25 @@ class Round extends Component
     protected $overrides = SectionContent::class;
 
     /**
+     * @param SessionService $sessionService
      * @param SummaryService $summaryService
      */
-    public function __construct(private SummaryService $summaryService)
+    public function __construct(private SessionService $sessionService,
+        private SummaryService $summaryService)
     {}
-
-    /**
-     * @callback jaxon.ajax.callback.hideMenuOnMobile
-     */
-    public function home()
-    {
-        $this->render();
-    }
 
     /**
      * @inheritDoc
      */
     public function html(): Stringable
     {
+        $round = $this->tenantService->round();
+        $sessions = $this->sessionService->getSessions($round, orderAsc: false)
+            ->filter(fn($session) => ($session->opened || $session->closed));
+        $this->view()->share('lastSession', $this->stash()->get('tenant.session'));
         return $this->renderView('pages.report.round.home', [
-            'round' => $this->tenantService->round(),
+            'round' => $round,
+            'sessions' => $sessions->pluck('title', 'id'),
         ]);
     }
 
@@ -51,5 +51,25 @@ class Round extends Component
     protected function after(): void
     {
         $this->response->jo('Tontine')->makeTableResponsive('content-home');
+    }
+
+    /**
+     * @callback jaxon.ajax.callback.hideMenuOnMobile
+     *
+     * @return void
+     */
+    public function home(): void
+    {
+        $this->render();
+    }
+
+    /**
+     * @param int $sessionId
+     *
+     * @return void
+     */
+    public function select(int $sessionId): void
+    {
+        $this->render();
     }
 }

@@ -21,6 +21,7 @@
     'locale' => $locale,
     'pool' => $pool,
     'session' => $session,
+    'selected' => !$session->pending && $session->day_date <= $lastSession->day_date,
     'expected' => $figures->expected[$session->id] ?? null,
     'collected' => $figures->collected[$session->id],
     'auction' => $figures->auctions[$session->id] ?? null,

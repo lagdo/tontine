@@ -85,6 +85,7 @@ class SummaryService
 
     /**
      * @param Pool $pool
+     * @param Session|null $session
      * @param Collection $sessions
      *
      * @return array
@@ -116,7 +117,7 @@ class SummaryService
      *
      * @return void
      */
-    private function getDeposits(Round $round, Collection $poolIds): void
+    private function getDeposits(Round $round, Session|null $session, Collection $poolIds): void
     {
         $this->deposits = DB::table('v_deposits')
             ->select('subscriptions.pool_id', 'v_deposits.session_id',
@@ -126,6 +127,8 @@ class SummaryService
             ->join('subscriptions', 'receivables.subscription_id', '=', 'subscriptions.id')
             ->whereIn('subscriptions.pool_id', $poolIds)
             ->where('sessions.round_id', $round->id)
+            ->when($session !== null, fn($qs) =>
+                $qs->where('sessions.day_date', '<=', $session->day_date))
             ->groupBy(['subscriptions.pool_id', 'v_deposits.session_id'])
             ->get()
             // Group the data by pool id and session id.
@@ -136,11 +139,12 @@ class SummaryService
 
     /**
      * @param Round $round
+     * @param Session|null $session
      * @param Collection $poolIds
      *
      * @return void
      */
-    private function getRemitments(Round $round, Collection $poolIds): void
+    private function getRemitments(Round $round, Session|null $session, Collection $poolIds): void
     {
         $this->remitments = DB::table('remitments')
             ->select('subscriptions.pool_id', 'payables.session_id', DB::raw('count(*) as count'))
@@ -149,6 +153,8 @@ class SummaryService
             ->join('sessions', 'payables.session_id', '=', 'sessions.id')
             ->whereIn('subscriptions.pool_id', $poolIds)
             ->where('sessions.round_id', $round->id)
+            ->when($session !== null, fn($qs) =>
+                $qs->where('sessions.day_date', '<=', $session->day_date))
             ->groupBy(['subscriptions.pool_id', 'payables.session_id'])
             ->get()
             // Group the data by pool id and session id.
@@ -159,11 +165,12 @@ class SummaryService
 
     /**
      * @param Round $round
+     * @param Session|null $session
      * @param Collection $poolIds
      *
      * @return void
      */
-    private function getAuctions(Round $round, Collection $poolIds): void
+    private function getAuctions(Round $round, Session|null $session, Collection $poolIds): void
     {
         $this->auctions = DB::table('auctions')
             ->select('subscriptions.pool_id', 'auctions.session_id',
@@ -175,6 +182,8 @@ class SummaryService
             ->where('paid', true)
             ->whereIn('subscriptions.pool_id', $poolIds)
             ->where('sessions.round_id', $round->id)
+            ->when($session !== null, fn($qs) =>
+                $qs->where('sessions.day_date', '<=', $session->day_date))
             ->groupBy(['subscriptions.pool_id', 'auctions.session_id'])
             ->get()
             // Group the data by pool id and session id.
@@ -209,11 +218,13 @@ class SummaryService
      * Get the receivables of a given pool.
      *
      * @param Round $round
+     * @param Session|null $session
      * @param int $poolId
      *
      * @return Collection
      */
-    public function getFigures(Round $round, int $poolId = 0): Collection
+    public function getFigures(Round $round, Session|null $session = null,
+        int $poolId = 0): Collection
     {
         $pools = $round->pools()
             ->with(['round.guild', 'sessions'])
@@ -226,9 +237,9 @@ class SummaryService
         }
 
         $poolIds = $pools->pluck('id');
-        $this->getDeposits($round, $poolIds);
-        $this->getRemitments($round, $poolIds);
-        $this->getAuctions($round, $poolIds);
+        $this->getDeposits($round, $session, $poolIds);
+        $this->getRemitments($round, $session, $poolIds);
+        $this->getAuctions($round, $session, $poolIds);
 
         return $pools->map(fn(Pool $pool) => $this->getPoolFigures($pool));
     }

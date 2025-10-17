@@ -1,5 +1,6 @@
 @inject('sqids', 'Sqids\SqidsInterface')
 @php
+  $sessionId = je('report-select-session')->rd()->select();
   $rqRound = rq(Ajax\App\Report\Round\Round::class);
   $rqRoundBalance = rq(Ajax\App\Report\Round\Balance::class);
   $rqRoundPool = rq(Ajax\App\Report\Round\Pool::class);
@@ -9,6 +10,16 @@
             <div class="row mb-2">
               <div class="col-auto">
                 <h2 class="section-title">{{ __('figures.titles.amounts') }}</h2>
+              </div>
+              <div class="col-auto">
+                <div class="input-group float-left">
+                  {{ $html->select('session_id', $sessions, $lastSession?->id ?? 0)
+                    ->id('report-select-session')->class('form-control')
+                    ->attribute('style', 'height:36px; padding:5px 5px;') }}
+                  <div class="input-group-append">
+                    <button type="button" class="btn btn-primary" @jxnClick($rqRound->select($sessionId))><i class="fa fa-caret-right"></i></button>
+                  </div>
+                </div>
               </div>
               <div class="col-auto ml-auto">
                 <div class="btn-group">
@@ -32,9 +43,6 @@
                       ['form' => 'transactions']) }}">{{ __('meeting.entry.actions.transactions') }}</a>
                   </div>
                 </div>
-                <div class="btn-group ml-3" role="group">
-                  <button type="button" class="btn btn-primary" @jxnClick($rqRound->home())><i class="fa fa-sync"></i></button>
-                </div>
               </div>
             </div>
           </div>
@@ -53,7 +61,8 @@
                 </div>
                 <div class="col-auto ml-auto">
                   <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-primary" @jxnClick($rqRoundPool->refresh($pool->id))><i class="fa fa-sync"></i></button>
+                    <button type="button" class="btn btn-primary" @jxnClick($rqRoundPool
+                      ->refresh($pool->id, $lastSession?->id ?? 0))><i class="fa fa-sync"></i></button>
                   </div>
                 </div>
               </div>
@@ -77,7 +86,7 @@
                 </div>
                 <div class="col-auto ml-auto">
                   <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-primary" @jxnClick($rqRoundBalance->render())><i class="fa fa-sync"></i></button>
+                    <button type="button" class="btn btn-primary" @jxnClick($rqRoundBalance->select($lastSession?->id ?? 0))><i class="fa fa-sync"></i></button>
                   </div>
                 </div>
               </div>

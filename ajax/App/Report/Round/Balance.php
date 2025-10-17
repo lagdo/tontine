@@ -30,7 +30,13 @@ class Balance extends Component
     public function html(): Stringable
     {
         $round = $this->stash()->get('tenant.round');
+        $session = $this->stash()->get('tenant.session');
         $sessions = $this->roundService->getRoundSessions($round);
+        if($session !== null)
+        {
+            $sessions = $sessions->filter(fn($_session) =>
+                $_session->day_date <= $session->day_date);
+        }
         $sessionIds = $sessions->pluck('id');
 
         return $this->renderView('pages.report.round.balance', [
@@ -41,5 +47,15 @@ class Balance extends Component
             'savings' => $this->roundService->getSavingAmounts($sessionIds),
             'outflows' => $this->roundService->getOutflowAmounts($sessionIds),
         ]);
+    }
+
+    /**
+     * @param int $sessionId
+     *
+     * @return void
+     */
+    public function select(int $sessionId): void
+    {
+        $this->render();
     }
 }
