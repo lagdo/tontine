@@ -8,10 +8,10 @@ trait PoolTrait
     {
         $round = $this->stash()->get('tenant.round');
         $session = $this->target()->method() !== 'select' ? null :
-            $round->sessions()->opened()->find($this->target()->args()[0]);
+            $round->sessions()->active()->find($this->target()->args()[0]);
         if(!$session)
         {
-            $session = $round->sessions()->opened()
+            $session = $round->sessions()->active()
                 ->orderBy('day_date', 'desc')
                 ->first();
         }

@@ -35,10 +35,12 @@ class Round extends Component
      */
     public function html(): Stringable
     {
-        $round = $this->tenantService->round();
-        $sessions = $this->sessionService->getSessions($round, orderAsc: false)
-            ->filter(fn($session) => ($session->opened || $session->closed));
         $this->view()->share('lastSession', $this->stash()->get('tenant.session'));
+
+        $round = $this->tenantService->round();
+        $sessions = $this->sessionService
+            ->getSessions($round, orderAsc: false)
+            ->filter(fn($session) => $session->active);
         return $this->renderView('pages.report.round.home', [
             'round' => $round,
             'sessions' => $sessions->pluck('title', 'id'),

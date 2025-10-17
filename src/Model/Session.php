@@ -113,6 +113,13 @@ class Session extends Base
         );
     }
 
+    public function active(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->status !== self::STATUS_PENDING,
+        );
+    }
+
     public function round()
     {
         return $this->belongsTo(Round::class);
