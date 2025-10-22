@@ -2,23 +2,31 @@
 
 return [
     'app' => [
-        'metadata' => 'annotations',
+        'metadata' => [
+            'format' => 'annotations',
+            'cache' => [
+                'enabled' => !env('APP_DEBUG', true),
+                'dir' => storage_path('attributes'),
+            ]
+        ],
         'faker' => env('APP_FAKER', false),
         'helpers' => true,
         'request' => [
             'route' => 'jaxon.ajax',
             'middlewares' => [
                 'web',
-                'tontine',
                 'annotations',
+                'tontine',
                 'analytics',
                 'jaxon.config',
                 'jaxon.ajax',
             ],
         ],
+        // The "directories" options are set by the TontineJaxon middleware.
         // 'directories' => [],
         'views' => [
-            // 'pagination' => [], // Is set by the TontineTemplate middleware
+            // The "pagination" options are set by the TontineTemplate middleware.
+            // 'pagination' => [],
         ],
         'packages' => [
         ],
@@ -56,6 +64,7 @@ return [
             'app' => [
                 'uri' => env('JAXON_JS_APP_URI', '/jaxon'),
                 'dir' => env('JAXON_JS_APP_DIR', public_path('/jaxon')),
+                // The "file" option is set by the TontineJaxon middleware.
                 // 'file' => env('JAXON_JS_APP_FILE', 'js-4.0.9'),
                 'export' => env('JAXON_JS_APP_EXPORT', !env('APP_DEBUG')),
                 'minify' => env('JAXON_JS_APP_MINIFY', !env('APP_DEBUG')),

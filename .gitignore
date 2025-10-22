@@ -22,5 +22,6 @@ yarn-error.log
 /.vscode
 /.zed
 
+/storage/attributes
 /storage/annotations/*php
 /public/jaxon/js
