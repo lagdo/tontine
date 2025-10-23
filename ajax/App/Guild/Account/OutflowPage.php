@@ -3,13 +3,13 @@
 namespace Ajax\App\Guild\Account;
 
 use Ajax\PageComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\AccountService;
 use Stringable;
 
-/**
- * @databag guild.account
- * @before checkHostAccess ["finance", "accounts"]
- */
+#[Before('checkHostAccess', ["finance", "accounts"])]
+#[Databag('guild.account')]
 class OutflowPage extends PageComponent
 {
     /**

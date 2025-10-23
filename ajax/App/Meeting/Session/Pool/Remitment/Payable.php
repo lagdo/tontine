@@ -4,11 +4,10 @@ namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
 use Ajax\App\Meeting\Session\Component;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
+use Jaxon\Attributes\Attribute\Before;
 use Stringable;
 
-/**
- * @before getPool
- */
+#[Before('getPool')]
 class Payable extends Component
 {
     use PoolTrait;

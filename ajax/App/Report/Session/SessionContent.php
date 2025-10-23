@@ -3,11 +3,10 @@
 namespace Ajax\App\Report\Session;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Stringable;
 
-/**
- * @exclude
- */
+#[Exclude]
 class SessionContent extends Component
 {
     /**

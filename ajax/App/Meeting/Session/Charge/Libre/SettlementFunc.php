@@ -4,12 +4,12 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\FuncComponent;
 use Ajax\App\Meeting\Session\Charge\Settlement\Total;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Exclude;
 
 class SettlementFunc extends FuncComponent
 {
-    /**
-     * @exclude
-     */
+    #[Exclude]
     public function showTotal(): void
     {
         $session = $this->stash()->get('meeting.session');
@@ -25,11 +25,11 @@ class SettlementFunc extends FuncComponent
     }
 
     /**
-     * @before checkChargeEdit
      * @param int $billId
      *
      * @return mixed
      */
+    #[Before('checkChargeEdit')]
     public function addSettlement(int $billId): void
     {
         $session = $this->stash()->get('meeting.session');
@@ -41,11 +41,11 @@ class SettlementFunc extends FuncComponent
     }
 
     /**
-     * @before checkChargeEdit
      * @param int $billId
      *
      * @return mixed
      */
+    #[Before('checkChargeEdit')]
     public function delSettlement(int $billId): void
     {
         $session = $this->stash()->get('meeting.session');

@@ -5,15 +5,16 @@ namespace Ajax\App\Guild\Member;
 use Ajax\Component;
 use Ajax\Page\SectionContent;
 use Ajax\Page\SectionTitle;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Callback;
+use Jaxon\Attributes\Attribute\Databag;
 use Stringable;
 
 use function trans;
 use function trim;
 
-/**
- * @databag guild.member
- * @before checkHostAccess ["guild", "members"]
- */
+#[Before('checkHostAccess', ["guild", "members"])]
+#[Databag('guild.member')]
 class Member extends Component
 {
     /**
@@ -21,9 +22,7 @@ class Member extends Component
      */
     protected $overrides = SectionContent::class;
 
-    /**
-     * @callback jaxon.ajax.callback.hideMenuOnMobile
-     */
+    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
     public function home()
     {
         $this->render();

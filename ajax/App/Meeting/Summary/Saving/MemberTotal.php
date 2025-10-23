@@ -3,11 +3,10 @@
 namespace Ajax\App\Meeting\Summary\Saving;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Stringable;
 
-/**
- * @exclude
- */
+#[Exclude]
 class MemberTotal extends Component
 {
     use FundTrait;

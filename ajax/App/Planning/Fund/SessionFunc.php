@@ -3,12 +3,13 @@
 namespace Ajax\App\Planning\Fund;
 
 use Ajax\App\Planning\FuncComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Validation\Planning\FundSessionsValidator;
 
-/**
- * @databag planning.fund
- * @before getFund
- */
+#[Before('getFund')]
+#[Databag('planning.fund')]
 class SessionFunc extends FuncComponent
 {
     use FundTrait;
@@ -18,9 +19,7 @@ class SessionFunc extends FuncComponent
      */
     protected FundSessionsValidator $validator;
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function save(array $formValues): void
     {
         $fund = $this->stash()->get('planning.fund');

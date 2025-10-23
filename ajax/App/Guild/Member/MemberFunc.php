@@ -4,6 +4,9 @@ namespace Ajax\App\Guild\Member;
 
 use Ajax\FuncComponent;
 use Ajax\App\FakerFunc;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Validation\Guild\MemberValidator;
 
@@ -17,10 +20,8 @@ use function strpos;
 use function trans;
 use function trim;
 
-/**
- * @databag guild.member
- * @before checkHostAccess ["guild", "members"]
- */
+#[Before('checkHostAccess', ["guild", "members"])]
+#[Databag('guild.member')]
 class MemberFunc extends FuncComponent
 {
     /**
@@ -47,9 +48,7 @@ class MemberFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function create(array $formValues): void
     {
         $values = $this->validator->validateItem($formValues);
@@ -127,9 +126,7 @@ class MemberFunc extends FuncComponent
         return $this->validator->validateList($members);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function createList(array $formValues): void
     {
         $values = $this->parseMemberList($formValues['members'] ?? '');
@@ -163,9 +160,7 @@ class MemberFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function update(int $memberId, array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');

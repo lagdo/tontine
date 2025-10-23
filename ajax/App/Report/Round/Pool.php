@@ -3,21 +3,21 @@
 namespace Ajax\App\Report\Round;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Meeting\Session\SummaryService;
 use Stringable;
 
 use function trans;
 
-/**
- * @before checkHostAccess ["report", "round"]
- * @before checkOpenedSessions
- */
+#[Before('checkHostAccess', ["report", "round"])]
+#[Before('checkOpenedSessions')]
 class Pool extends Component
 {
     /**
      * @var SummaryService
      */
-    protected $summaryService;
+    protected SummaryService $summaryService;
 
     public function html(): Stringable
     {
@@ -26,13 +26,12 @@ class Pool extends Component
     }
 
     /**
-     * @di $summaryService
-     *
      * @param int $poolId
      * @param int $sessionId
      *
      * @return void
      */
+    #[Inject(attr: 'summaryService')]
     public function refresh(int $poolId, int $sessionId): void
     {
         $round = $this->stash()->get('tenant.round');

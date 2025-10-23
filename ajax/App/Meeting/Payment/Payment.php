@@ -7,16 +7,17 @@ use Ajax\Page\SectionContent;
 use Ajax\Page\SectionTitle;
 use App\Events\OnPagePaymentHome;
 use Illuminate\Support\Collection;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Callback;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
 use function trans;
 
-/**
- * @databag meeting.payment
- * @before checkHostAccess ["meeting", "payments"]
- * @before getOpenedSessions
- */
+#[Before('checkHostAccess', ["meeting", "payments"])]
+#[Before('getOpenedSessions')]
+#[Databag('meeting.payment')]
 class Payment extends Component
 {
     /**
@@ -43,10 +44,8 @@ class Payment extends Component
             ->pluck('title', 'id');
     }
 
-    /**
-     * @before getOpenedSessions
-     * @callback jaxon.ajax.callback.hideMenuOnMobile
-     */
+    #[Before('getOpenedSessions')]
+    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
     public function home(): void
     {
         $this->render();

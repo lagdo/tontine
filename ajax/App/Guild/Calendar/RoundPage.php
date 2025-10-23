@@ -3,13 +3,13 @@
 namespace Ajax\App\Guild\Calendar;
 
 use Ajax\PageComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\RoundService;
 use Stringable;
 
-/**
- * @databag guild.calendar
- * @before checkHostAccess ["guild", "calendar"]
- */
+#[Before('checkHostAccess', ["guild", "calendar"])]
+#[Databag('guild.calendar')]
 class RoundPage extends PageComponent
 {
     /**

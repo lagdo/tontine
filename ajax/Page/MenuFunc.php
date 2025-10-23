@@ -8,6 +8,8 @@ use Ajax\FuncComponent;
 use Ajax\Page\MainTitle;
 use Ajax\Page\Sidebar\AdminMenu;
 use Ajax\Page\Sidebar\RoundMenu;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Model\Guild as GuildModel;
 use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\Guild\RoundService;
@@ -66,11 +68,11 @@ class MenuFunc extends FuncComponent
     }
 
     /**
-     * @exclude
      * @param GuildModel $guild
      *
      * @return void
      */
+    #[Exclude]
     public function setCurrentGuild(GuildModel $guild): void
     {
         $this->bag('tenant')->set('guild.id', $guild->id);
@@ -135,9 +137,7 @@ class MenuFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @databag planning
-     */
+    #[Databag('planning')]
     public function saveRound(int $roundId): void
     {
         if(!($guild = $this->tenantService->guild()))

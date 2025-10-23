@@ -3,6 +3,9 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\Session\FuncComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Model\Member as MemberModel;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Validation\Meeting\SavingValidator;
@@ -12,10 +15,8 @@ use function je;
 use function trans;
 use function trim;
 
-/**
- * @databag meeting.saving
- * @before getFund
- */
+#[Before('getFund')]
+#[Databag('meeting.saving')]
 class AmountFunc extends FuncComponent
 {
     use FundTrait;
@@ -88,13 +89,12 @@ class AmountFunc extends FuncComponent
     }
 
     /**
-     * @di $validator
-     *
      * @param int $memberId
      * @param string $amount
      *
      * @return void
      */
+    #[Inject(attr: 'validator')]
     public function save(int $memberId, string $amount): void
     {
         $round = $this->stash()->get('tenant.round');
@@ -151,12 +151,11 @@ class AmountFunc extends FuncComponent
     }
 
     /**
-     * @di $validator
-     *
      * @param array $formValues
      *
      * @return void
      */
+    #[Inject(attr: 'validator')]
     public function saveStartAmount(array $formValues): void
     {
         $session = $this->stash()->get('meeting.session');
@@ -208,12 +207,11 @@ class AmountFunc extends FuncComponent
     }
 
     /**
-     * @di $validator
-     *
      * @param array $formValues
      *
      * @return void
      */
+    #[Inject(attr: 'validator')]
     public function saveEndAmount(array $formValues): void
     {
         $session = $this->stash()->get('meeting.session');
@@ -234,12 +232,11 @@ class AmountFunc extends FuncComponent
     }
 
     /**
-     * @di $validator
-     *
-      * @param array $formValues
+     * @param array $formValues
      *
      * @return void
      */
+    #[Inject(attr: 'validator')]
     public function saveProfitAmount(string $amount): void
     {
         $session = $this->stash()->get('meeting.session');

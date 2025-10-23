@@ -3,13 +3,12 @@
 namespace Ajax\App\Planning\Member;
 
 use Ajax\App\Planning\Component;
+use Jaxon\Attributes\Attribute\Databag;
 use Stringable;
 
 use function trim;
 
-/**
- * @databag planning.member
- */
+#[Databag('planning.member')]
 class Member extends Component
 {
     /**

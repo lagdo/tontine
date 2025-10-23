@@ -28,19 +28,19 @@ Route::middleware(['auth', 'tontine', 'analytics'])
         //----------------------------------
         Route::get('/', [IndexController::class, 'index'])
             ->name('tontine.home')
-            ->middleware(['annotations', 'jaxon.config']);
+            ->middleware(['jaxon.config']);
 
         // User profile page
         //----------------------------------
         Route::get('/profile', [IndexController::class, 'profile'])
             ->name('user.profile')
-            ->middleware(['annotations', 'jaxon.config']);
+            ->middleware(['jaxon.config']);
 
         // Users management page
         //----------------------------------
         Route::get('/users', [IndexController::class, 'users'])
             ->name('user.invites')
-            ->middleware(['annotations', 'jaxon.config']);
+            ->middleware(['jaxon.config']);
 
         // Report pages
         //----------------------------------

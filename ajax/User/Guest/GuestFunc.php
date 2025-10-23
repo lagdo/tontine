@@ -3,11 +3,10 @@
 namespace Ajax\User\Guest;
 
 use Ajax\FuncComponent;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\UserService;
 
-/**
- * @databag user
- */
+#[Databag('user')]
 class GuestFunc extends FuncComponent
 {
     /**

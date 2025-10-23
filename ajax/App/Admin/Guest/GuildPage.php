@@ -3,13 +3,12 @@
 namespace Ajax\App\Admin\Guest;
 
 use Ajax\PageComponent;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\LocaleService;
 use Stringable;
 
-/**
- * @databag admin
- */
+#[Databag('admin')]
 class GuildPage extends PageComponent
 {
     /**

@@ -3,14 +3,13 @@
 namespace Ajax\App\Planning\Pool;
 
 use Ajax\App\Planning\FuncComponent;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\LocaleService;
 
 use function trans;
 
-/**
- * @databag planning.pool
- */
+#[Databag('planning.pool')]
 class PoolFunc extends FuncComponent
 {
     /**

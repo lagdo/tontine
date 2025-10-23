@@ -3,12 +3,11 @@
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\Component;
+use Jaxon\Attributes\Attribute\Before;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
 use Stringable;
 
-/**
- * @before getTarget
- */
+#[Before('getTarget')]
 class Target extends Component
 {
     /**

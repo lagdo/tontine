@@ -4,14 +4,12 @@ namespace Ajax\App\Meeting\Summary\Pool\Deposit\Early;
 
 use Ajax\App\Meeting\Summary\PageComponent;
 use Ajax\App\Meeting\Summary\Pool\PoolTrait;
+use Jaxon\Attributes\Attribute\Before;
 use Siak\Tontine\Service\Meeting\Pool\EarlyDepositService;
-use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
-/**
- * @before getPool [false]
- */
+#[Before('getPool', [false])]
 class ReceivablePage extends PageComponent
 {
     use PoolTrait;
@@ -27,13 +25,11 @@ class ReceivablePage extends PageComponent
     /**
      * The constructor
      *
-     * @param PoolService $poolService
-     * @param EarlyDepositService $depositService
      * @param SessionService $sessionService
+     * @param EarlyDepositService $depositService
      */
-    public function __construct(protected PoolService $poolService,
-        protected EarlyDepositService $depositService,
-        protected SessionService $sessionService)
+    public function __construct(protected SessionService $sessionService,
+        protected EarlyDepositService $depositService)
     {}
 
     /**

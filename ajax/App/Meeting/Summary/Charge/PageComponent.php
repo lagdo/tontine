@@ -2,9 +2,9 @@
 
 namespace Ajax\App\Meeting\Summary\Charge;
 
-/**
- * @before getCharge
- */
+use Jaxon\Attributes\Attribute\Before;
+
+#[Before('getCharge')]
 abstract class PageComponent extends \Ajax\App\Meeting\Summary\PageComponent
 {
     use ComponentTrait;

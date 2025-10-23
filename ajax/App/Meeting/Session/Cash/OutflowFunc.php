@@ -3,6 +3,7 @@
 namespace Ajax\App\Meeting\Session\Cash;
 
 use Ajax\App\Meeting\Session\FuncComponent;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Meeting\Cash\OutflowService;
 use Siak\Tontine\Validation\Meeting\OutflowValidator;
 
@@ -46,9 +47,7 @@ class OutflowFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function createOutflow(array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');
@@ -88,9 +87,7 @@ class OutflowFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function updateOutflow(int $outflowId, array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');

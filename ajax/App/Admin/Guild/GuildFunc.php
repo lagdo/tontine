@@ -6,6 +6,8 @@ use Ajax\FuncComponent;
 use Ajax\Page\MainTitle;
 use Ajax\Page\MenuFunc;
 use Ajax\Page\Sidebar\AdminMenu;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Model\Guild as GuildModel;
 use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\LocaleService;
@@ -15,9 +17,7 @@ use function je;
 use function collect;
 use function trans;
 
-/**
- * @databag admin
- */
+#[Databag('admin')]
 class GuildFunc extends FuncComponent
 {
     /**
@@ -36,9 +36,7 @@ class GuildFunc extends FuncComponent
     public function __construct(private GuildService $guildService)
     {}
 
-    /**
-     * @di $localeService
-     */
+    #[Inject(attr: 'localeService')]
     public function add(): void
     {
         $title = trans('tontine.titles.add');
@@ -74,9 +72,7 @@ class GuildFunc extends FuncComponent
         }
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function create(array $formValues): void
     {
         $values = $this->validator->validateItem($formValues);
@@ -93,9 +89,7 @@ class GuildFunc extends FuncComponent
         $this->cl(GuildPage::class)->page(); // Back to current page
     }
 
-    /**
-     * @di $localeService
-     */
+    #[Inject(attr: 'localeService')]
     public function edit(int $guildId): void
     {
         $user = $this->tenantService->user();
@@ -121,9 +115,7 @@ class GuildFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function update(int $guildId, array $formValues): void
     {
         $values = $this->validator->validateItem($formValues);

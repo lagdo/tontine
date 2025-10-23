@@ -3,12 +3,11 @@
 namespace Ajax\App\Meeting\Session;
 
 use Ajax\Page\SectionContent;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
-/**
- * @exclude
- */
+#[Exclude]
 class Section extends Component
 {
     /**

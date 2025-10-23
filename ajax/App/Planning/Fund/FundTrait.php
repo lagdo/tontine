@@ -4,15 +4,16 @@ namespace Ajax\App\Planning\Fund;
 
 use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
+use Jaxon\Attributes\Attribute\Inject;
 use Jaxon\Request\TargetInterface;
 use Siak\Tontine\Service\Planning\FundService;
 
 trait FundTrait
 {
     /**
-     * @di
      * @var FundService
      */
+    #[Inject]
     protected FundService $fundService;
 
     /**

@@ -3,13 +3,13 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\Session\Component;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Stringable;
 
-/**
- * @databag meeting.saving
- * @before getFund
- */
+#[Before('getFund')]
+#[Databag('meeting.saving')]
 class Member extends Component
 {
     use FundTrait;

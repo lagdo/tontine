@@ -3,6 +3,9 @@
 namespace Ajax\App\Guild\Charge;
 
 use Ajax\FuncComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Model\ChargeDef as ChargeDefModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Guild\ChargeService;
@@ -11,10 +14,8 @@ use Siak\Tontine\Validation\Guild\ChargeValidator;
 use function je;
 use function trans;
 
-/**
- * @databag guild.charge
- * @before checkHostAccess ["finance", "charges"]
- */
+#[Before('checkHostAccess', ["finance", "charges"])]
+#[Databag('guild.charge')]
 class ChargeFunc extends FuncComponent
 {
     use ChargeTrait;
@@ -54,10 +55,8 @@ class ChargeFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $localeService
-     * @databag faker
-     */
+    #[Databag('faker')]
+    #[Inject(attr: 'localeService')]
     public function add(int $group): void
     {
         $this->modal()->hide();
@@ -85,9 +84,7 @@ class ChargeFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function create(int $group, array $formValues): void
     {
         if($group !== self::$GROUP_FIXED && $group !== self::$GROUP_VARIABLE)
@@ -118,9 +115,7 @@ class ChargeFunc extends FuncComponent
         $this->cl(ChargePage::class)->page();
     }
 
-    /**
-     * @di $localeService
-     */
+    #[Inject(attr: 'localeService')]
     public function edit(int $chargeId): void
     {
         $guild = $this->stash()->get('tenant.guild');
@@ -147,9 +142,7 @@ class ChargeFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function update(int $chargeId, array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');

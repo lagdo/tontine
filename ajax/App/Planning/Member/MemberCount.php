@@ -3,11 +3,10 @@
 namespace Ajax\App\Planning\Member;
 
 use Ajax\App\Planning\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Planning\MemberService;
 
-/**
- * @exclude
- */
+#[Exclude]
 class MemberCount extends Component
 {
     public function __construct(private MemberService $memberService)

@@ -3,6 +3,7 @@
 namespace Ajax\App\Meeting\Session\Credit\Loan;
 
 use Ajax\App\Meeting\Session\FuncComponent;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Model\Loan as LoanModel;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Siak\Tontine\Service\Meeting\Saving\FundService;
@@ -54,9 +55,7 @@ class LoanFunc extends FuncComponent
         $this->response->jo('Tontine')->setLoanInterestLabel();
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function create(array $formValues): void
     {
         $round = $this->stash()->get('tenant.round');
@@ -129,9 +128,7 @@ class LoanFunc extends FuncComponent
         $this->response->jo('Tontine')->setLoanInterestLabel();
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function update(int $loanId, array $formValues): void
     {
         if(!($loan = $this->getSessionLoan($loanId)))
@@ -205,9 +202,7 @@ class LoanFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function updateDeadline(int $loanId, array $formValues): void
     {
         if(!($loan = $this->getSessionLoan($loanId)))

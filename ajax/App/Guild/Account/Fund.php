@@ -3,12 +3,12 @@
 namespace Ajax\App\Guild\Account;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Stringable;
 
-/**
- * @databag guild.account
- * @before checkHostAccess ["finance", "accounts"]
- */
+#[Before('checkHostAccess', ["finance", "accounts"])]
+#[Databag('guild.account')]
 class Fund extends Component
 {
     public function html(): Stringable

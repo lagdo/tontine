@@ -3,14 +3,14 @@
 namespace Ajax\App\Meeting\Session;
 
 use Ajax\FuncComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
 
 use function trans;
 
-/**
- * @databag meeting
- * @before checkHostAccess ["meeting", "sessions"]
- */
+#[Before('checkHostAccess', ["meeting", "sessions"])]
+#[Databag('meeting')]
 class SessionFunc extends FuncComponent
 {
     /**

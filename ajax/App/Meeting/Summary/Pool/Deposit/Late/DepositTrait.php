@@ -3,6 +3,7 @@
 namespace Ajax\App\Meeting\Summary\Pool\Deposit\Late;
 
 use Ajax\App\Meeting\Summary\Pool\Deposit\Total;
+use Jaxon\Attributes\Attribute\Inject;
 use Jaxon\App\Stash\Stash;
 use Siak\Tontine\Service\Meeting\Pool\LateDepositService;
 
@@ -26,9 +27,9 @@ trait DepositTrait
     abstract protected function cl(string $sClassName): mixed;
 
     /**
-     * @di
      * @var LateDepositService
      */
+    #[Inject]
     protected LateDepositService $depositService;
 
     /**

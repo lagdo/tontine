@@ -2,11 +2,12 @@
 
 namespace Ajax\App\Meeting\Session;
 
-/**
- * @databag meeting
- * @before checkHostAccess ["meeting", "sessions"]
- * @before getSession
- */
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+
+#[Before('checkHostAccess', ["meeting", "sessions"])]
+#[Before('getSession')]
+#[Databag('meeting')]
 abstract class FuncComponent extends \Ajax\FuncComponent
 {
     use ComponentTrait;

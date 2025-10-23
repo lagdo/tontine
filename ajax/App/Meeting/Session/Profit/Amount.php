@@ -3,11 +3,10 @@
 namespace Ajax\App\Meeting\Session\Profit;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Stringable;
 
-/**
- * @exclude
- */
+#[Exclude]
 class Amount extends Component
 {
     /**

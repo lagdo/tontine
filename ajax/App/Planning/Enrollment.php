@@ -5,14 +5,14 @@ namespace Ajax\App\Planning;
 use Ajax\App\Planning\Component;
 use Ajax\Page\SectionContent;
 use Ajax\Page\SectionTitle;
+use Jaxon\Attributes\Attribute\Callback;
+use Jaxon\Attributes\Attribute\Databag;
 use Stringable;
 
 use function trans;
 
-/**
- * @databag planning.member
- * @databag planning.charge
- */
+#[Databag('planning.member')]
+#[Databag('planning.charge')]
 class Enrollment extends Component
 {
     /**
@@ -20,9 +20,7 @@ class Enrollment extends Component
      */
     protected $overrides = SectionContent::class;
 
-    /**
-     * @callback jaxon.ajax.callback.hideMenuOnMobile
-     */
+    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
     public function home()
     {
         $this->render();

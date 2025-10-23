@@ -3,6 +3,7 @@
 namespace Ajax\App\Meeting\Session\Cash;
 
 use Ajax\App\Meeting\Session\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Stringable;
 
 class Outflow extends Component
@@ -26,9 +27,7 @@ class Outflow extends Component
         $this->cl(Balance::class)->render();
     }
 
-    /**
-     * @exclude
-     */
+    #[Exclude]
     public function show(): void
     {
         $this->render();

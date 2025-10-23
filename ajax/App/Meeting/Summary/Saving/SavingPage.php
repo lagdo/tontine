@@ -3,12 +3,11 @@
 namespace Ajax\App\Meeting\Summary\Saving;
 
 use Ajax\App\Meeting\Summary\PageComponent;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Stringable;
 
-/**
- * @databag summary.saving
- */
+#[Databag('summary.saving')]
 class SavingPage extends PageComponent
 {
     /**

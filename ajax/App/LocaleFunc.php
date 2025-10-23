@@ -2,20 +2,20 @@
 
 namespace Ajax\App;
 
-use Siak\Tontine\Service\LocaleService;
 use Ajax\FuncComponent;
+use Jaxon\Attributes\Attribute\Callback;
+use Jaxon\Attributes\Attribute\Inject;
+use Siak\Tontine\Service\LocaleService;
 
 class LocaleFunc extends FuncComponent
 {
     /**
-     * @di
      * @var LocaleService
      */
+    #[Inject]
     protected LocaleService $localeService;
 
-    /**
-     * @callback jaxon.ajax.callback.selectCurrency
-     */
+    #[Callback('jaxon.ajax.callback.selectCurrency')]
     public function selectCurrency(string $countryCode): void
     {
         $html = $this->renderView('pages.admin.guild.currency', [

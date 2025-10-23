@@ -3,11 +3,11 @@
 namespace Ajax\App\Meeting\Summary\Saving;
 
 use Ajax\App\Meeting\Summary\Component;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Exclude;
 use Stringable;
 
-/**
- * @databag summary.saving
- */
+#[Databag('summary.saving')]
 class Saving extends Component
 {
     /**
@@ -26,9 +26,7 @@ class Saving extends Component
         $this->cl(SavingPage::class)->page();
     }
 
-    /**
-     * @exclude
-     */
+    #[Exclude]
     public function show(): void
     {
         $this->render();

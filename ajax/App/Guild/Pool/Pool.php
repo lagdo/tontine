@@ -5,14 +5,15 @@ namespace Ajax\App\Guild\Pool;
 use Ajax\Component;
 use Ajax\Page\SectionContent;
 use Ajax\Page\SectionTitle;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Callback;
+use Jaxon\Attributes\Attribute\Databag;
 use Stringable;
 
 use function trans;
 
-/**
- * @databag guild.pool
- * @before checkHostAccess ["finance", "pools"]
- */
+#[Before('checkHostAccess', ["finance", "pools"])]
+#[Databag('guild.pool')]
 class Pool extends Component
 {
     /**
@@ -20,9 +21,7 @@ class Pool extends Component
      */
     protected $overrides = SectionContent::class;
 
-    /**
-     * @callback jaxon.ajax.callback.hideMenuOnMobile
-     */
+    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
     public function home()
     {
         $this->render();

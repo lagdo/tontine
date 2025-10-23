@@ -3,14 +3,13 @@
 namespace Ajax\App\Report\Session\Bill;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Report\SessionService;
 use Stringable;
 
 use function trans;
 
-/**
- * @exclude
- */
+#[Exclude]
 class Total extends Component
 {
     /**

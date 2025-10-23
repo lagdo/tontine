@@ -3,11 +3,10 @@
 namespace Ajax\App\Planning\Pool;
 
 use Ajax\App\Planning\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Planning\PoolService;
 
-/**
- * @exclude
- */
+#[Exclude]
 class PoolCount extends Component
 {
     public function __construct(private PoolService $poolService)

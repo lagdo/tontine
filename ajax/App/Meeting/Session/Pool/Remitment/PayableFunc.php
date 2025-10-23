@@ -4,15 +4,15 @@ namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
 use Ajax\App\Meeting\Session\FuncComponent;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
 use Siak\Tontine\Validation\Meeting\RemitmentValidator;
 
 use function je;
 use function trans;
 
-/**
- * @before getPool
- */
+#[Before('getPool')]
 class PayableFunc extends FuncComponent
 {
     use PoolTrait;
@@ -75,9 +75,7 @@ class PayableFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function saveRemitment(array $formValues): void
     {
         $pool = $this->stash()->get('meeting.pool');

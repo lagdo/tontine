@@ -3,12 +3,11 @@
 namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
 use Ajax\App\Meeting\Session\FuncComponent;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
-/**
- * @databag meeting.auction
- */
+#[Databag('meeting.auction')]
 class AuctionFunc extends FuncComponent
 {
     /**

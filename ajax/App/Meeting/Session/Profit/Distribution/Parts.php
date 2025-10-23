@@ -3,13 +3,12 @@
 namespace Ajax\App\Meeting\Session\Profit\Distribution;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\LocaleService;
 
 use function trans;
 
-/**
- * @exclude
- */
+#[Exclude]
 class Parts extends Component
 {
     /**

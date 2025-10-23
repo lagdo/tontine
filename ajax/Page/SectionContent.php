@@ -3,10 +3,9 @@
 namespace Ajax\Page;
 
 use Jaxon\App\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 
-/**
- * @exclude
- */
+#[Exclude]
 class SectionContent extends Component
 {
     /**

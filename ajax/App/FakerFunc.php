@@ -2,14 +2,13 @@
 
 namespace Ajax\App;
 
-use Siak\Tontine\Service\Guild\MemberService;
 use Ajax\FuncComponent;
+use Jaxon\Attributes\Attribute\Databag;
+use Siak\Tontine\Service\Guild\MemberService;
 
 use function intval;
 
-/**
- * @databag faker
- */
+#[Databag('faker')]
 class FakerFunc extends FuncComponent
 {
     /**

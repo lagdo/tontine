@@ -3,17 +3,18 @@
 namespace Ajax\User\Host;
 
 use Ajax\FuncComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\Guild\UserService;
 use Siak\Tontine\Validation\Guild\HostAccessValidator;
 
 use function trans;
 
-/**
- * @databag user.access
- * @before getInvite
- * @before getGuild
- */
+#[Before('getInvite')]
+#[Before('getGuild')]
+#[Databag('user.access')]
 class AccessFunc extends FuncComponent
 {
     use AccessTrait;
@@ -41,9 +42,7 @@ class AccessFunc extends FuncComponent
         $this->cl(GuildAccess::class)->render();
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function saveAccess(array $formValues): void
     {
         $invite = $this->stash()->get('user.access.invite');

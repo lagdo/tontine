@@ -3,16 +3,17 @@
 namespace Ajax\App\Guild\Account;
 
 use Ajax\FuncComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Validation\Guild\FundValidator;
 
 use function je;
 use function trans;
 
-/**
- * @databag guild.account
- * @before checkHostAccess ["finance", "accounts"]
- */
+#[Before('checkHostAccess', ["finance", "accounts"])]
+#[Databag('guild.account')]
 class FundFunc extends FuncComponent
 {
     /**
@@ -42,9 +43,7 @@ class FundFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function create(array $formValues): void
     {
         $values = $this->validator->validateItem($formValues);
@@ -77,9 +76,7 @@ class FundFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function update(int $fundId, array $formValues): void
     {
         $values = $this->validator->validateItem($formValues);

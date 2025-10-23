@@ -3,12 +3,13 @@
 namespace Ajax\App\Planning\Pool;
 
 use Ajax\App\Planning\FuncComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Validation\Planning\PoolSessionsValidator;
 
-/**
- * @databag planning.pool
- * @before getPool
- */
+#[Before('getPool')]
+#[Databag('planning.pool')]
 class SessionFunc extends FuncComponent
 {
     use PoolTrait;
@@ -18,9 +19,7 @@ class SessionFunc extends FuncComponent
      */
     protected PoolSessionsValidator $validator;
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function save(array $formValues): void
     {
         $pool = $this->stash()->get('planning.pool');

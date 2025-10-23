@@ -3,13 +3,12 @@
 namespace Ajax\App\Meeting\Summary\Pool\Remitment;
 
 use Ajax\App\Meeting\Summary\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Payment\BalanceCalculator;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
 use Stringable;
 
-/**
- * @exclude
- */
+#[Exclude]
 class Total extends Component
 {
     /**

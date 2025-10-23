@@ -4,14 +4,15 @@ namespace Ajax\App\Meeting\Summary\Saving;
 
 use Ajax\App\Meeting\Session\Profit\Fund;
 use Ajax\App\Meeting\Summary\Component;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Stringable;
 
-/**
- * @databag summary.saving
- */
+#[Databag('summary.saving')]
 class Profit extends Component
 {
     use FundTrait;
@@ -63,9 +64,7 @@ class Profit extends Component
         $this->cl(Fund::class)->render();
     }
 
-    /**
-     * @exclude
-     */
+    #[Exclude]
     public function show(): void
     {
         $session = $this->stash()->get('summary.session');
@@ -85,9 +84,7 @@ class Profit extends Component
         $this->render();
     }
 
-    /**
-     * @before getFund
-     */
+    #[Before('getFund')]
     public function fund(int $fundId): void
     {
         $session = $this->stash()->get('summary.session');
@@ -101,9 +98,7 @@ class Profit extends Component
         $this->render();
     }
 
-    /**
-     * @before getFund
-     */
+    #[Before('getFund')]
     public function amount(int $profitAmount): void
     {
         if($profitAmount < 0)

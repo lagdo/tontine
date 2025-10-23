@@ -3,15 +3,14 @@
 namespace Ajax\App\Report\Round;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Before;
 use Siak\Tontine\Service\Meeting\Session\SummaryService;
 use Siak\Tontine\Service\Report\RoundService;
 use Stringable;
 
-/**
- * @before checkHostAccess ["report", "round"]
- * @before checkOpenedSessions
- * @before getPools
- */
+#[Before('checkHostAccess', ["report", "round"])]
+#[Before('checkOpenedSessions')]
+#[Before('getPools')]
 class Balance extends Component
 {
     use PoolTrait;

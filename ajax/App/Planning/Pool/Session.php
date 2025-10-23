@@ -3,12 +3,12 @@
 namespace Ajax\App\Planning\Pool;
 
 use Ajax\App\Planning\Component;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Stringable;
 
-/**
- * @databag planning.pool
- * @before getPool
- */
+#[Before('getPool')]
+#[Databag('planning.pool')]
 class Session extends Component
 {
     use PoolTrait;

@@ -3,11 +3,10 @@
 namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
 use Ajax\App\Meeting\Session\Component;
+use Jaxon\Attributes\Attribute\Databag;
 use Stringable;
 
-/**
- * @databag meeting.auction
- */
+#[Databag('meeting.auction')]
 class Auction extends Component
 {
     /**

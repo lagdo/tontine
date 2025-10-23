@@ -4,15 +4,15 @@ namespace Ajax\App\Report\Round;
 
 use Ajax\Component;
 use Ajax\Page\SectionContent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Callback;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Siak\Tontine\Service\Meeting\Session\SummaryService;
 use Stringable;
 
-/**
- * @before checkHostAccess ["report", "round"]
- * @before checkOpenedSessions
- * @before getPools
- */
+#[Before('checkHostAccess', ["report", "round"])]
+#[Before('checkOpenedSessions')]
+#[Before('getPools')]
 class Round extends Component
 {
     use PoolTrait;
@@ -56,10 +56,9 @@ class Round extends Component
     }
 
     /**
-     * @callback jaxon.ajax.callback.hideMenuOnMobile
-     *
      * @return void
      */
+    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
     public function home(): void
     {
         $this->render();

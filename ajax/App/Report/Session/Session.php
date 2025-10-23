@@ -5,16 +5,16 @@ namespace Ajax\App\Report\Session;
 use Ajax\Component;
 use Ajax\Page\SectionContent;
 use Ajax\Page\SectionTitle;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Callback;
 use Siak\Tontine\Model\Member as MemberModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Member\MemberService;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
-/**
- * @before checkHostAccess ["report", "session"]
- * @before checkOpenedSessions
- */
+#[Before('checkHostAccess', ["report", "session"])]
+#[Before('checkOpenedSessions')]
 class Session extends Component
 {
     /**
@@ -30,9 +30,7 @@ class Session extends Component
         protected SessionService $sessionService)
     {}
 
-    /**
-     * @callback jaxon.ajax.callback.hideMenuOnMobile
-     */
+    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
     public function home()
     {
         $this->render();

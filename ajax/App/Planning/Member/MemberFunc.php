@@ -3,14 +3,13 @@
 namespace Ajax\App\Planning\Member;
 
 use Ajax\App\Planning\FuncComponent;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Planning\MemberService;
 use Siak\Tontine\Service\LocaleService;
 
 use function trans;
 
-/**
- * @databag planning.member
- */
+#[Databag('planning.member')]
 class MemberFunc extends FuncComponent
 {
     /**

@@ -3,12 +3,11 @@
 namespace Ajax\App\Planning\Member;
 
 use Ajax\App\Planning\PageComponent;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Planning\MemberService;
 use Stringable;
 
-/**
- * @databag planning.member
- */
+#[Databag('planning.member')]
 class MemberPage extends PageComponent
 {
     /**

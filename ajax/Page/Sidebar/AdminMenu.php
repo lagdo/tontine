@@ -3,13 +3,12 @@
 namespace Ajax\Page\Sidebar;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Stringable;
 
 use function config;
 
-/**
- * @exclude
- */
+#[Exclude]
 class AdminMenu extends Component
 {
     /**

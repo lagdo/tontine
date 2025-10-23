@@ -3,13 +3,13 @@
 namespace Ajax\App\Guild\Member;
 
 use Ajax\PageComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\MemberService;
 use Stringable;
 
-/**
- * @databag guild.member
- * @before checkHostAccess ["guild", "members"]
- */
+#[Before('checkHostAccess', ["guild", "members"])]
+#[Databag('guild.member')]
 class MemberPage extends PageComponent
 {
     /**

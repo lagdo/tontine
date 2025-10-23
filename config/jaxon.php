@@ -3,9 +3,9 @@
 return [
     'app' => [
         'metadata' => [
-            'format' => 'annotations',
+            'format' => 'attributes',
             'cache' => [
-                'enabled' => !env('APP_DEBUG', true),
+                'enabled' => env('APP_DEBUG', true),
                 'dir' => storage_path('attributes'),
             ]
         ],
@@ -15,7 +15,6 @@ return [
             'route' => 'jaxon.ajax',
             'middlewares' => [
                 'web',
-                'annotations',
                 'tontine',
                 'analytics',
                 'jaxon.config',

@@ -5,15 +5,15 @@ namespace Ajax\App\Planning\Pool\Subscription;
 use Ajax\App\Planning\Pool\PoolTrait;
 use Ajax\App\Planning\Component;
 use Ajax\Page\SectionContent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SummaryService;
 use Stringable;
 
-/**
- * @databag planning.pool
- * @before getPool
- */
+#[Before('getPool')]
+#[Databag('planning.pool')]
 class Planning extends Component
 {
     use PoolTrait;

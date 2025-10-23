@@ -3,15 +3,15 @@
 namespace Ajax\User\Host;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\UserService;
 use Stringable;
 
 use function trans;
 
-/**
- * @databag user.access
- * @before getInvite
- */
+#[Before('getInvite')]
+#[Databag('user.access')]
 class Access extends Component
 {
     use AccessTrait;

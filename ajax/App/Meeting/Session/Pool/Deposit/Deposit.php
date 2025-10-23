@@ -3,6 +3,7 @@
 namespace Ajax\App\Meeting\Session\Pool\Deposit;
 
 use Ajax\App\Meeting\Session\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Stringable;
 
@@ -36,9 +37,7 @@ class Deposit extends Component
         $this->response->jo('Tontine')->makeTableResponsive('content-meeting-deposits');
     }
 
-    /**
-     * @exclude
-     */
+    #[Exclude]
     public function show(): void
     {
         $this->render();

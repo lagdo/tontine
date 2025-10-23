@@ -3,12 +3,11 @@
 namespace Ajax\App\Meeting\Session\Credit\Loan;
 
 use Ajax\App\Meeting\Session\PageComponent;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Stringable;
 
-/**
- * @databag meeting.loan
- */
+#[Databag('meeting.loan')]
 class LoanPage extends PageComponent
 {
     /**

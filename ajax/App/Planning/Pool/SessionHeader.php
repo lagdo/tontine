@@ -3,11 +3,10 @@
 namespace Ajax\App\Planning\Pool;
 
 use Ajax\App\Planning\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Stringable;
 
-/**
- * @exclude
- */
+#[Exclude]
 class SessionHeader extends Component
 {
     /**

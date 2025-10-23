@@ -6,14 +6,14 @@ use Ajax\Component;
 use Ajax\App\Admin\Guest\Guild as GuestGuild;
 use Ajax\Page\SectionContent;
 use Ajax\Page\SectionTitle;
+use Jaxon\Attributes\Attribute\Callback;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\GuildService;
 use Stringable;
 
 use function trans;
 
-/**
- * @databag admin
- */
+#[Databag('admin')]
 class Guild extends Component
 {
     /**
@@ -27,9 +27,7 @@ class Guild extends Component
     public function __construct(private GuildService $guildService)
     {}
 
-    /**
-     * @callback jaxon.ajax.callback.hideMenuOnMobile
-     */
+    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
     public function home()
     {
         $this->render();

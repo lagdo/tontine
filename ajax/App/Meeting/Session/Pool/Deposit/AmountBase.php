@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Session\Pool\Deposit;
 
 use Ajax\App\Meeting\Session\FuncComponent;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
+use Jaxon\Attributes\Attribute\Before;
 use Siak\Tontine\Model\Receivable as ReceivableModel;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Payment\PaymentServiceInterface;
@@ -13,9 +14,7 @@ use function str_replace;
 use function trans;
 use function trim;
 
-/**
- * @before getPool
- */
+#[Before('getPool')]
 abstract class AmountBase extends FuncComponent
 {
     use PoolTrait;

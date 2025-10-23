@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Session\Pool\Deposit\Early;
 
 use Ajax\App\Meeting\Session\Pool\Deposit\Total;
 use Jaxon\App\Stash\Stash;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\Pool\EarlyDepositService;
 
@@ -27,9 +28,9 @@ trait DepositTrait
     abstract protected function cl(string $sClassName): mixed;
 
     /**
-     * @di
      * @var EarlyDepositService
      */
+    #[Inject]
     protected EarlyDepositService $depositService;
 
     /**
