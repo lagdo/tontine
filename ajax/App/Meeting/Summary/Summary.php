@@ -4,15 +4,15 @@ namespace Ajax\App\Meeting\Summary;
 
 use Ajax\Component;
 use Ajax\Page\SectionContent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
 use function trans;
 
-/**
- * @databag summary
- * @before checkHostAccess ["meeting", "sessions"]
- */
+#[Before('checkHostAccess', ["meeting", "sessions"])]
+#[Databag('summary')]
 class Summary extends Component
 {
     /**

@@ -3,13 +3,12 @@
 namespace Ajax\Page;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\TenantService;
 use Stringable;
 
-/**
- * @exclude
- */
+#[Exclude]
 class MainTitle extends Component
 {
     /**

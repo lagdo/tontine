@@ -3,15 +3,15 @@
 namespace Ajax\App\Guild\Calendar;
 
 use Ajax\PageComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\RoundService;
 use Siak\Tontine\Service\Guild\SessionService;
 use Stringable;
 
-/**
- * @databag guild.calendar
- * @before checkHostAccess ["guild", "calendar"]
- * @before getRound
- */
+#[Before('checkHostAccess', ["guild", "calendar"])]
+#[Before('getRound')]
+#[Databag('guild.calendar')]
 class SessionPage extends PageComponent
 {
     /**

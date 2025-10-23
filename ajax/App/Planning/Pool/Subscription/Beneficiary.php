@@ -6,9 +6,11 @@ use Ajax\App\Planning\Pool\PoolTrait;
 use Ajax\App\Planning\Component;
 use Ajax\Page\SectionContent;
 use Illuminate\Support\Collection;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Session as SessionModel;
-use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Planning\SummaryService;
 use Stringable;
@@ -19,10 +21,8 @@ use function compact;
 use function Jaxon\jq;
 use function trans;
 
-/**
- * @databag planning.pool
- * @before getPool
- */
+#[Before('getPool')]
+#[Databag('planning.pool')]
 class Beneficiary extends Component
 {
     use PoolTrait;
@@ -55,11 +55,9 @@ class Beneficiary extends Component
     /**
      * The constructor
      *
-     * @param PoolService $poolService
      * @param SummaryService $summaryService
      */
-    public function __construct(protected PoolService $poolService,
-        private SummaryService $summaryService)
+    public function __construct(private SummaryService $summaryService)
     {}
 
     public function pool(int $poolId)
@@ -167,14 +165,13 @@ class Beneficiary extends Component
     }
 
     /**
-     * @di $subscriptionService
-     *
      * @param int $sessionId
      * @param int $nextSubscriptionId
      * @param int $currSubscriptionId
      *
      * @return void
      */
+    #[Inject(attr: 'subscriptionService')]
     public function save(int $sessionId, int $nextSubscriptionId, int $currSubscriptionId)
     {
         $pool = $this->stash()->get('planning.pool');

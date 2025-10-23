@@ -3,13 +3,13 @@
 namespace Ajax\App\Guild\Charge;
 
 use Ajax\PageComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\ChargeService;
 use Stringable;
 
-/**
- * @databag guild.charge
- * @before checkHostAccess ["finance", "charges"]
- */
+#[Before('checkHostAccess', ["finance", "charges"])]
+#[Databag('guild.charge')]
 class ChargePage extends PageComponent
 {
     use ChargeTrait;

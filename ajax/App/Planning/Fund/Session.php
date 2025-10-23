@@ -3,12 +3,12 @@
 namespace Ajax\App\Planning\Fund;
 
 use Ajax\App\Planning\Component;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Stringable;
 
-/**
- * @databag planning.fund
- * @before getFund
- */
+#[Before('getFund')]
+#[Databag('planning.fund')]
 class Session extends Component
 {
     use FundTrait;

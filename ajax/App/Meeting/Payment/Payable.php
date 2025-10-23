@@ -4,17 +4,15 @@ namespace Ajax\App\Meeting\Payment;
 
 use Ajax\Component;
 use App\Events\OnPagePaymentPayables;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Member\MemberService;
 use Siak\Tontine\Service\Payment\PaymentService;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
-use function compact;
-
-/**
- * @databag meeting.payment
- * @before checkHostAccess ["meeting", "payments"]
- */
+#[Before('checkHostAccess', ["meeting", "payments"])]
+#[Databag('meeting.payment')]
 class Payable extends Component
 {
     /**

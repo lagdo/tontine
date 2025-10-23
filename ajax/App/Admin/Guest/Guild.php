@@ -3,11 +3,10 @@
 namespace Ajax\App\Admin\Guest;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Databag;
 use Stringable;
 
-/**
- * @databag admin
- */
+#[Databag('admin')]
 class Guild extends Component
 {
     public function html(): Stringable|string

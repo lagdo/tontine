@@ -3,16 +3,16 @@
 namespace Ajax\App\Guild\Account;
 
 use Ajax\FuncComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Model\Category as CategoryModel;
 use Siak\Tontine\Service\Guild\AccountService;
 
 use function je;
 use function trans;
 
-/**
- * @databag guild.account
- * @before checkHostAccess ["finance", "accounts"]
- */
+#[Before('checkHostAccess', ["finance", "accounts"])]
+#[Databag('guild.account')]
 class OutflowFunc extends FuncComponent
 {
     /**

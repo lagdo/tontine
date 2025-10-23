@@ -3,6 +3,9 @@
 namespace Ajax\App\Guild\Calendar;
 
 use Ajax\FuncComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Guild\RoundService;
 use Siak\Tontine\Service\Guild\SessionService;
@@ -19,11 +22,9 @@ use function explode;
 use function trans;
 use function trim;
 
-/**
- * @databag guild.calendar
- * @before checkHostAccess ["guild", "calendar"]
- * @before getRound
- */
+#[Before('checkHostAccess', ["guild", "calendar"])]
+#[Before('getRound')]
+#[Databag('guild.calendar')]
 class SessionFunc extends FuncComponent
 {
     /**
@@ -51,9 +52,7 @@ class SessionFunc extends FuncComponent
         $this->stash()->set('guild.calendar.round', $round);
     }
 
-    /**
-     * @di $memberService
-     */
+    #[Inject(attr: 'memberService')]
     public function add(): void
     {
         $round = $this->stash()->get('guild.calendar.round');
@@ -73,9 +72,7 @@ class SessionFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function create(array $formValues): void
     {
         $round = $this->stash()->get('guild.calendar.round');
@@ -157,9 +154,7 @@ class SessionFunc extends FuncComponent
         return $this->validator->validateList($sessions);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function createList(array $formValues): void
     {
         $round = $this->stash()->get('guild.calendar.round');
@@ -173,9 +168,7 @@ class SessionFunc extends FuncComponent
         $this->cl(SessionPage::class)->page();
     }
 
-    /**
-     * @di $memberService
-     */
+    #[Inject(attr: 'memberService')]
     public function edit(int $sessionId): void
     {
         $round = $this->stash()->get('guild.calendar.round');
@@ -197,9 +190,7 @@ class SessionFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function update(int $sessionId, array $formValues): void
     {
         $round = $this->stash()->get('guild.calendar.round');
@@ -238,9 +229,7 @@ class SessionFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function saveVenue(int $sessionId, array $formValues): void
     {
         $round = $this->stash()->get('guild.calendar.round');

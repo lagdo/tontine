@@ -5,6 +5,7 @@ namespace Ajax;
 use Jaxon\App\Dialog\DialogTrait;
 use Jaxon\App\View\Store;
 use Jaxon\App\View\ViewRenderer;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Exception\MeetingRoundException;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Exception\PlanningPoolException;
@@ -19,9 +20,9 @@ trait ComponentTrait
     use DialogTrait;
 
     /**
-     * @di
      * @var TenantService
      */
+    #[Inject]
     protected TenantService $tenantService;
 
     /**

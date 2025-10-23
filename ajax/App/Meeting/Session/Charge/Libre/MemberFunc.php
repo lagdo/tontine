@@ -3,19 +3,19 @@
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\FuncComponent;
+use Jaxon\Attributes\Attribute\Before;
 
 class MemberFunc extends FuncComponent
 {
     use AmountTrait;
 
     /**
-     * @before checkChargeEdit
-     *
      * @param int $memberId
      * @param bool $paid
      *
      * @return mixed
      */
+    #[Before('checkChargeEdit')]
     public function addBill(int $memberId, bool $paid): void
     {
         $round = $this->stash()->get('tenant.round');
@@ -28,12 +28,11 @@ class MemberFunc extends FuncComponent
     }
 
     /**
-     * @before checkChargeEdit
-     *
      * @param int $memberId
      *
      * @return mixed
      */
+    #[Before('checkChargeEdit')]
     public function delBill(int $memberId): void
     {
         $round = $this->stash()->get('tenant.round');

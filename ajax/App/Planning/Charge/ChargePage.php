@@ -3,12 +3,11 @@
 namespace Ajax\App\Planning\Charge;
 
 use Ajax\App\Planning\PageComponent;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Planning\ChargeService;
 use Stringable;
 
-/**
- * @databag planning.charge
- */
+#[Databag('planning.charge')]
 class ChargePage extends PageComponent
 {
     /**

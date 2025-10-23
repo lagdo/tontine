@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Session\Pool;
 
 use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
+use Jaxon\Attributes\Attribute\Inject;
 use Jaxon\Request\TargetInterface;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
@@ -13,9 +14,9 @@ use function trans;
 trait PoolTrait
 {
     /**
-     * @di
      * @var PoolService
      */
+    #[Inject]
     protected PoolService $poolService;
 
     /**

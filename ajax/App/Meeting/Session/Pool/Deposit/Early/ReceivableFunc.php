@@ -4,11 +4,10 @@ namespace Ajax\App\Meeting\Session\Pool\Deposit\Early;
 
 use Ajax\App\Meeting\Session\FuncComponent;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
+use Jaxon\Attributes\Attribute\Before;
 
-/**
- * @before getPool [false]
- * @before getNextSession
- */
+#[Before('getPool', [false])]
+#[Before('getNextSession')]
 class ReceivableFunc extends FuncComponent
 {
     use PoolTrait;

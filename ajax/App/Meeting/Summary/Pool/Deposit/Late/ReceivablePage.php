@@ -4,14 +4,12 @@ namespace Ajax\App\Meeting\Summary\Pool\Deposit\Late;
 
 use Ajax\App\Meeting\Summary\PageComponent;
 use Ajax\App\Meeting\Summary\Pool\PoolTrait;
+use Jaxon\Attributes\Attribute\Before;
 use Siak\Tontine\Service\Meeting\Pool\LateDepositService;
-use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
-/**
- * @before getPool [false]
- */
+#[Before('getPool', [false])]
 class ReceivablePage extends PageComponent
 {
     use PoolTrait;
@@ -26,12 +24,11 @@ class ReceivablePage extends PageComponent
     /**
      * The constructor
      *
-     * @param PoolService $poolService
-     * @param LateDepositService $depositService
      * @param SessionService $sessionService
+     * @param LateDepositService $depositService
      */
-    public function __construct(protected PoolService $poolService,
-        protected LateDepositService $depositService, protected SessionService $sessionService)
+    public function __construct(protected SessionService $sessionService,
+        protected LateDepositService $depositService)
     {}
 
     /**

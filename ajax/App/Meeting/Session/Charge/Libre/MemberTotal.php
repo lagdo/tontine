@@ -3,12 +3,11 @@
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Payment\BalanceCalculator;
 use Stringable;
 
-/**
- * @exclude
- */
+#[Exclude]
 class MemberTotal extends Component
 {
     /**

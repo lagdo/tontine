@@ -3,15 +3,15 @@
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\FuncComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
 use Siak\Tontine\Validation\Meeting\TargetValidator;
 
 use function je;
 use function trans;
 
-/**
- * @before getTarget
- */
+#[Before('getTarget')]
 class TargetFunc extends FuncComponent
 {
     /**
@@ -37,9 +37,9 @@ class TargetFunc extends FuncComponent
     }
 
     /**
-     * @before checkChargeEdit
      * @return mixed
      */
+    #[Before('checkChargeEdit')]
     public function add(): void
     {
         $target = $this->stash()->get('meeting.session.charge.target');
@@ -67,12 +67,12 @@ class TargetFunc extends FuncComponent
     }
 
     /**
-     * @di $validator
-     * @before checkChargeEdit
      * @param array $formValues
      *
      * @return mixed
      */
+    #[Before('checkChargeEdit')]
+    #[Inject(attr: 'validator')]
     public function create(array $formValues): void
     {
         $target = $this->stash()->get('meeting.session.charge.target');
@@ -95,9 +95,9 @@ class TargetFunc extends FuncComponent
     }
 
     /**
-     * @before checkChargeEdit
      * @return mixed
      */
+    #[Before('checkChargeEdit')]
     public function edit(): void
     {
         $target = $this->stash()->get('meeting.session.charge.target');
@@ -126,13 +126,13 @@ class TargetFunc extends FuncComponent
     }
 
     /**
-     * @di $validator
-     * @before checkChargeEdit
      * @param int $memberId
      * @param string $amount
      *
      * @return mixed
      */
+    #[Before('checkChargeEdit')]
+    #[Inject(attr: 'validator')]
     public function update(array $formValues): void
     {
         $target = $this->stash()->get('meeting.session.charge.target');
@@ -155,9 +155,9 @@ class TargetFunc extends FuncComponent
     }
 
     /**
-     * @before checkChargeEdit
      * @return mixed
      */
+    #[Before('checkChargeEdit')]
     public function remove(): void
     {
         $target = $this->stash()->get('meeting.session.charge.target');

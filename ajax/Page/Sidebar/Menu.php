@@ -3,10 +3,9 @@
 namespace Ajax\Page\Sidebar;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 
-/**
- * @exclude
- */
+#[Exclude]
 class Menu extends Component
 {
     /**

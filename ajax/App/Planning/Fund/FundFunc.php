@@ -3,14 +3,13 @@
 namespace Ajax\App\Planning\Fund;
 
 use Ajax\App\Planning\FuncComponent;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Planning\FundService;
 
 use function trans;
 
-/**
- * @databag planning.fund
- */
+#[Databag('planning.fund')]
 class FundFunc extends FuncComponent
 {
     /**

@@ -3,6 +3,7 @@
 namespace Ajax\App\Meeting\Summary\Charge\Fixed;
 
 use Ajax\App\Meeting\Summary\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Stringable;
 
 class Fee extends Component
@@ -22,9 +23,7 @@ class Fee extends Component
         $this->cl(FeePage::class)->page(1);
     }
 
-    /**
-     * @exclude
-     */
+    #[Exclude]
     public function show(): void
     {
         $this->render();

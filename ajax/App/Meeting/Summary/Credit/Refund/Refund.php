@@ -3,12 +3,13 @@
 namespace Ajax\App\Meeting\Summary\Credit\Refund;
 
 use Ajax\App\Meeting\Summary\Component;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Exclude;
 use Stringable;
 
-/**
- * @databag summary.refund
- * @before getFund
- */
+#[Before('getFund')]
+#[Databag('summary.refund')]
 class Refund extends Component
 {
     use FundTrait;
@@ -53,9 +54,7 @@ class Refund extends Component
         $this->render();
     }
 
-    /**
-     * @exclude
-     */
+    #[Exclude]
     public function show(): void
     {
         // We need to explicitely get the default fund here.

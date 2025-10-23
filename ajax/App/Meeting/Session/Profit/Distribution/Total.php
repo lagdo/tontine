@@ -3,14 +3,13 @@
 namespace Ajax\App\Meeting\Session\Profit\Distribution;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 
 use function trans;
 
-/**
- * @exclude
- */
+#[Exclude]
 class Total extends Component
 {
     /**

@@ -3,11 +3,10 @@
 namespace Ajax\User\Guest;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Databag;
 use Stringable;
 
-/**
- * @databag user
- */
+#[Databag('user')]
 class Guest extends Component
 {
     /**

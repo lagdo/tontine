@@ -3,11 +3,10 @@
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Stringable;
 
-/**
- * @exclude
- */
+#[Exclude]
 class MemberName extends Component
 {
     /**

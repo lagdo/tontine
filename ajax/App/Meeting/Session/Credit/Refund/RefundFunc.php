@@ -3,16 +3,17 @@
 namespace Ajax\App\Meeting\Session\Credit\Refund;
 
 use Ajax\App\Meeting\Session\FuncComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Model\Debt as DebtModel;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 use function trans;
 
-/**
- * @databag meeting.refund
- * @before getFund
- */
+#[Before('getFund')]
+#[Databag('meeting.refund')]
 class RefundFunc extends FuncComponent
 {
     use FundTrait;
@@ -78,9 +79,7 @@ class RefundFunc extends FuncComponent
         }
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function create(string $debtId): void
     {
         $session = $this->stash()->get('meeting.session');

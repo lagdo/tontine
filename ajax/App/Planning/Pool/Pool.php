@@ -3,11 +3,10 @@
 namespace Ajax\App\Planning\Pool;
 
 use Ajax\App\Planning\Component;
+use Jaxon\Attributes\Attribute\Databag;
 use Stringable;
 
-/**
- * @databag planning.pool
- */
+#[Databag('planning.pool')]
 class Pool extends Component
 {
     /**

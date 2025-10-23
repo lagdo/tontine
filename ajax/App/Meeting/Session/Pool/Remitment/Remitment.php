@@ -3,6 +3,7 @@
 namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
 use Ajax\App\Meeting\Session\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Stringable;
 
@@ -38,9 +39,7 @@ class Remitment extends Component
         $this->response->jo('Tontine')->makeTableResponsive('content-session-remitments');
     }
 
-    /**
-     * @exclude
-     */
+    #[Exclude]
     public function show(): void
     {
         $this->render();

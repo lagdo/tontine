@@ -4,13 +4,13 @@ namespace Ajax\App\Planning\Pool\Subscription;
 
 use Ajax\App\Planning\FuncComponent;
 use Ajax\App\Planning\Pool\PoolTrait;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 
-/**
- * @databag planning.pool
- * @before getPool
- */
+#[Before('getPool')]
+#[Databag('planning.pool')]
 class MemberFunc extends FuncComponent
 {
     use PoolTrait;

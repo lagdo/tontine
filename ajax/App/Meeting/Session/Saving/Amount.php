@@ -3,12 +3,11 @@
 namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\App\Meeting\Session\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\LocaleService;
 use Stringable;
 
-/**
- * @exclude
- */
+#[Exclude]
 class Amount extends Component
 {
     /**

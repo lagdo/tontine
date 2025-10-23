@@ -5,14 +5,15 @@ namespace Ajax\App\Meeting\Session;
 use Ajax\Component;
 use Ajax\Page\SectionContent;
 use Ajax\Page\SectionTitle;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Callback;
+use Jaxon\Attributes\Attribute\Databag;
 use Stringable;
 
 use function trans;
 
-/**
- * @databag meeting
- * @before checkHostAccess ["meeting", "sessions"]
- */
+#[Before('checkHostAccess', ["meeting", "sessions"])]
+#[Databag('meeting')]
 class Session extends Component
 {
     /**
@@ -20,10 +21,8 @@ class Session extends Component
      */
     protected $overrides = SectionContent::class;
 
-    /**
-     * @before checkRoundSessions
-     * @callback jaxon.ajax.callback.hideMenuOnMobile
-     */
+    #[Before('checkRoundSessions')]
+    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
     public function home()
     {
         $this->render();

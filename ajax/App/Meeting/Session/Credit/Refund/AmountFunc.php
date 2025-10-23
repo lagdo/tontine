@@ -3,6 +3,9 @@
 namespace Ajax\App\Meeting\Session\Credit\Refund;
 
 use Ajax\App\Meeting\Session\FuncComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Model\Debt as DebtModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Credit\PartialRefundService;
@@ -10,10 +13,8 @@ use Siak\Tontine\Validation\Meeting\DebtValidator;
 
 use function trans;
 
-/**
- * @databag meeting.refund
- * @before getFund
- */
+#[Before('getFund')]
+#[Databag('meeting.refund')]
 class AmountFunc extends FuncComponent
 {
     use FundTrait;
@@ -76,9 +77,7 @@ class AmountFunc extends FuncComponent
         $this->alert()->success(trans('meeting.refund.messages.updated'));
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function save(int $debtId, string $amount): void
     {
         // Validation

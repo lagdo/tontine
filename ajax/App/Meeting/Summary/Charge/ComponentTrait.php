@@ -4,6 +4,7 @@ namespace Ajax\App\Meeting\Summary\Charge;
 
 use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
+use Jaxon\Attributes\Attribute\Inject;
 use Jaxon\Request\TargetInterface;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
@@ -15,21 +16,21 @@ use function trans;
 trait ComponentTrait
 {
     /**
-     * @di
      * @var ChargeService
      */
+    #[Inject]
     protected ChargeService $chargeService;
 
     /**
-     * @di
      * @var SettlementService
      */
+    #[Inject]
     protected SettlementService $settlementService;
 
     /**
-     * @di
      * @var BillService
      */
+    #[Inject]
     protected BillService $billService;
 
     /**

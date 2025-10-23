@@ -2,9 +2,9 @@
 
 namespace Ajax\App\Meeting\Session;
 
-/**
- * @before checkHostAccess ["meeting", "sessions"]
- */
+use Jaxon\Attributes\Attribute\Before;
+
+#[Before('checkHostAccess', ["meeting", "sessions"])]
 class SectionFunc extends FuncComponent
 {
     /**

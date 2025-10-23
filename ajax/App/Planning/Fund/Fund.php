@@ -3,11 +3,10 @@
 namespace Ajax\App\Planning\Fund;
 
 use Ajax\App\Planning\Component;
+use Jaxon\Attributes\Attribute\Databag;
 use Stringable;
 
-/**
- * @databag planning.fund
- */
+#[Databag('planning.fund')]
 class Fund extends Component
 {
     /**

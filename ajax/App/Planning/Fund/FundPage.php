@@ -3,12 +3,11 @@
 namespace Ajax\App\Planning\Fund;
 
 use Ajax\App\Planning\PageComponent;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Planning\FundService;
 use Stringable;
 
-/**
- * @databag planning.fund
- */
+#[Databag('planning.fund')]
 class FundPage extends PageComponent
 {
     /**

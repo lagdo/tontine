@@ -3,13 +3,13 @@
 namespace Ajax\App\Guild\Pool;
 
 use Ajax\PageComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\PoolService;
 use Stringable;
 
-/**
- * @databag guild.pool
- * @before checkHostAccess ["finance", "pools"]
- */
+#[Before('checkHostAccess', ["finance", "pools"])]
+#[Databag('guild.pool')]
 class PoolPage extends PageComponent
 {
     /**

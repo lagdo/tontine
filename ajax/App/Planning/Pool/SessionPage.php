@@ -3,13 +3,13 @@
 namespace Ajax\App\Planning\Pool;
 
 use Ajax\App\Planning\PageComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Model\Session as SessionModel;
 use Stringable;
 
-/**
- * @databag planning.pool
- * @before getPool
- */
+#[Before('getPool')]
+#[Databag('planning.pool')]
 class SessionPage extends PageComponent
 {
     use PoolTrait;

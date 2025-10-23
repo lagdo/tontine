@@ -3,11 +3,10 @@
 namespace Ajax\App\Planning\Charge;
 
 use Ajax\App\Planning\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Planning\ChargeService;
 
-/**
- * @exclude
- */
+#[Exclude]
 class ChargeCount extends Component
 {
     public function __construct(private ChargeService $chargeService)

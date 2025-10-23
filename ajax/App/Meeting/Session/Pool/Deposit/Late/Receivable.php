@@ -5,11 +5,10 @@ namespace Ajax\App\Meeting\Session\Pool\Deposit\Late;
 use Ajax\App\Meeting\Session\Component;
 use Ajax\App\Meeting\Session\Pool\Deposit\Deposit;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
+use Jaxon\Attributes\Attribute\Before;
 use Stringable;
 
-/**
- * @before getPool [false]
- */
+#[Before('getPool', [false])]
 class Receivable extends Component
 {
     use PoolTrait;

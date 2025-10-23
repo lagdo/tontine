@@ -3,11 +3,10 @@
 namespace Ajax\App\Meeting\Session\Pool\Deposit\Early;
 
 use Ajax\App\Meeting\Session\Pool\Deposit\AmountBase;
+use Jaxon\Attributes\Attribute\Before;
 use Siak\Tontine\Model\Receivable as ReceivableModel;
 
-/**
- * @before getNextSession
- */
+#[Before('getNextSession')]
 class AmountFunc extends AmountBase
 {
     use DepositTrait;

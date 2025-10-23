@@ -3,14 +3,14 @@
 namespace Ajax\User\Host;
 
 use Ajax\FuncComponent;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\UserService;
 use Siak\Tontine\Validation\Guild\GuestInviteValidator;
 
 use function je;
 
-/**
- * @databag user
- */
+#[Databag('user')]
 class HostFunc extends FuncComponent
 {
     /**
@@ -42,9 +42,7 @@ class HostFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function create(array $formValues): void
     {
         $values = $this->validator->validateItem($formValues);

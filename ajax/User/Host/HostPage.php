@@ -3,12 +3,11 @@
 namespace Ajax\User\Host;
 
 use Ajax\PageComponent;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\UserService;
 use Stringable;
 
-/**
- * @databag user
- */
+#[Databag('user')]
 class HostPage extends PageComponent
 {
     /**

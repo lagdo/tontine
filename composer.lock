@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b3139b614c83b902990803861286f257",
+    "content-hash": "55331b4a729252e6a6485095c7cb2857",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -1873,6 +1873,62 @@
                 "source": "https://github.com/jaxon-php/jaxon-annotations"
             },
             "time": "2025-10-21T00:14:01+00:00"
+        },
+        {
+            "name": "jaxon-php/jaxon-attributes",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jaxon-php/jaxon-attributes.git",
+                "reference": "5a0ee7a5a6d5cfb9a3478c321612c0a0804a44a5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-attributes/zipball/5a0ee7a5a6d5cfb9a3478c321612c0a0804a44a5",
+                "reference": "5a0ee7a5a6d5cfb9a3478c321612c0a0804a44a5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "jaxon-php/jaxon-core": "^5.1",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.5",
+                "phpunit/phpcov": "^8.2",
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/register.php"
+                ],
+                "psr-4": {
+                    "Jaxon\\Attributes\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Thierry Feuzeu"
+                }
+            ],
+            "description": "Attributes support for the Jaxon ajax PHP library",
+            "homepage": "https://www.jaxon-php.org",
+            "keywords": [
+                "Jaxon",
+                "ajax",
+                "attributes",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/jaxon-php/jaxon-attributes/issues",
+                "source": "https://github.com/jaxon-php/jaxon-attributes"
+            },
+            "time": "2025-10-21T00:43:38+00:00"
         },
         {
             "name": "jaxon-php/jaxon-config",
@@ -12316,7 +12372,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -12325,6 +12381,6 @@
         "ext-intl": "*",
         "ext-json": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }

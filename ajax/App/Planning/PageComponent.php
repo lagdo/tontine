@@ -2,8 +2,8 @@
 
 namespace Ajax\App\Planning;
 
-/**
- * @before checkHostAccess ["planning", "finance"]
- */
+use Jaxon\Attributes\Attribute\Before;
+
+#[Before('checkHostAccess', ["planning", "finance"])]
 abstract class PageComponent extends \Ajax\PageComponent
 {}

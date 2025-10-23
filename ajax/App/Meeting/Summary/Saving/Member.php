@@ -3,15 +3,15 @@
 namespace Ajax\App\Meeting\Summary\Saving;
 
 use Ajax\App\Meeting\Summary\Component;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Stringable;
 
 use function trim;
 
-/**
- * @databag summary.saving
- * @before getFund
- */
+#[Before('getFund')]
+#[Databag('summary.saving')]
 class Member extends Component
 {
     use FundTrait;

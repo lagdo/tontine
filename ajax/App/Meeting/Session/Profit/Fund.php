@@ -3,12 +3,11 @@
 namespace Ajax\App\Meeting\Session\Profit;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
 use Stringable;
 
-/**
- * @exclude
- */
+#[Exclude]
 class Fund extends Component
 {
     /**

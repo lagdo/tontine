@@ -3,14 +3,13 @@
 namespace Ajax\App\Report\Session;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\Report\MemberService;
 use Siak\Tontine\Service\Report\SessionService;
 use Stringable;
 
-/**
- * @exclude
- */
+#[Exclude]
 class Saving extends Component
 {
     /**

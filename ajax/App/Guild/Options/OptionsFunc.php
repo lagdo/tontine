@@ -3,6 +3,7 @@
 namespace Ajax\App\Guild\Options;
 
 use Ajax\FuncComponent;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Validation\Guild\OptionsValidator;
 
@@ -45,9 +46,7 @@ class OptionsFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function saveOptions(array $formValues): void
     {
         // Validation

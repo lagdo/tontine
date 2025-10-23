@@ -3,6 +3,9 @@
 namespace Ajax\App\Guild\Pool;
 
 use Ajax\FuncComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Inject;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Service\Guild\PoolService;
 use Siak\Tontine\Service\LocaleService;
@@ -11,10 +14,8 @@ use Siak\Tontine\Validation\Guild\PoolValidator;
 use function je;
 use function trans;
 
-/**
- * @databag guild.pool
- * @before checkHostAccess ["finance", "pools"]
- */
+#[Before('checkHostAccess', ["finance", "pools"])]
+#[Databag('guild.pool')]
 class PoolFunc extends FuncComponent
 {
     /**
@@ -214,9 +215,7 @@ class PoolFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function create(array $formValues): void
     {
         $formValues['properties'] = $this->bag('guild.pool')->get('add', []);
@@ -252,10 +251,8 @@ class PoolFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $localeService
-     * @di $validator
-     */
+    #[Inject(attr: 'localeService')]
+    #[Inject(attr: 'validator')]
     public function update(int $poolId, array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');

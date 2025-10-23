@@ -3,12 +3,11 @@
 namespace Ajax\User\Host;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Guild\UserService;
 use Stringable;
 
-/**
- * @exclude
- */
+#[Exclude]
 class GuildAccess extends Component
 {
     /**

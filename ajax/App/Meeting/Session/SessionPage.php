@@ -3,13 +3,13 @@
 namespace Ajax\App\Meeting\Session;
 
 use Ajax\PageComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
 
-/**
- * @databag meeting
- * @before checkHostAccess ["meeting", "sessions"]
- */
+#[Before('checkHostAccess', ["meeting", "sessions"])]
+#[Databag('meeting')]
 class SessionPage extends PageComponent
 {
     /**

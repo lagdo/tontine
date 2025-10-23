@@ -3,12 +3,11 @@
 namespace Ajax\App\Meeting\Summary\Credit\Refund;
 
 use Ajax\App\Meeting\Summary\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Credit\DebtCalculator;
 use Stringable;
 
-/**
- * @exclude
- */
+#[Exclude]
 class RefundItem extends Component
 {
     /**

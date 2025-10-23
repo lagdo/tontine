@@ -3,13 +3,13 @@
 namespace Ajax\App\Meeting\Session\Credit\Refund;
 
 use Ajax\App\Meeting\Session\PageComponent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
 use Stringable;
 
-/**
- * @databag meeting.refund
- * @before getFund
- */
+#[Before('getFund')]
+#[Databag('meeting.refund')]
 class RefundPage extends PageComponent
 {
     use FundTrait;

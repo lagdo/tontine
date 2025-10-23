@@ -3,6 +3,7 @@
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\FuncComponent;
+use Jaxon\Attributes\Attribute\Before;
 use Siak\Tontine\Service\LocaleService;
 
 class AmountFunc extends FuncComponent
@@ -37,11 +38,11 @@ class AmountFunc extends FuncComponent
     }
 
     /**
-     * @before checkChargeEdit
      * @param int $memberId
      *
      * @return void
      */
+    #[Before('checkChargeEdit')]
     public function edit(int $memberId): void
     {
         $this->stash()->set('meeting.charge.edit', true);
@@ -83,14 +84,13 @@ class AmountFunc extends FuncComponent
     }
 
     /**
-     * @before checkChargeEdit
-     *
      * @param int $memberId
      * @param bool $paid
      * @param string $amount
      *
      * @return void
      */
+    #[Before('checkChargeEdit')]
     public function save(int $memberId, bool $paid, string $amount): void
     {
         $this->saveAmount($memberId, $paid, $amount);

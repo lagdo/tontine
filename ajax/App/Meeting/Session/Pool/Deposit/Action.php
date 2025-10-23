@@ -3,11 +3,10 @@
 namespace Ajax\App\Meeting\Session\Pool\Deposit;
 
 use Ajax\Component;
+use Jaxon\Attributes\Attribute\Exclude;
 use Stringable;
 
-/**
- * @exclude
- */
+#[Exclude]
 class Action extends Component
 {
     /**

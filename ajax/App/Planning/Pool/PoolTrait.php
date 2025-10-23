@@ -4,15 +4,16 @@ namespace Ajax\App\Planning\Pool;
 
 use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
+use Jaxon\Attributes\Attribute\Inject;
 use Jaxon\Request\TargetInterface;
 use Siak\Tontine\Service\Planning\PoolService;
 
 trait PoolTrait
 {
     /**
-     * @di
      * @var PoolService
      */
+    #[Inject]
     protected PoolService $poolService;
 
     /**

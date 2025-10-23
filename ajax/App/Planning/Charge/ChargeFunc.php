@@ -3,14 +3,13 @@
 namespace Ajax\App\Planning\Charge;
 
 use Ajax\App\Planning\FuncComponent;
+use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Planning\ChargeService;
 
 use function trans;
 
-/**
- * @databag planning.charge
- */
+#[Databag('planning.charge')]
 class ChargeFunc extends FuncComponent
 {
     /**

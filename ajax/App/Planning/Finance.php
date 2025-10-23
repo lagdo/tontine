@@ -3,16 +3,16 @@
 namespace Ajax\App\Planning;
 
 use Ajax\App\Planning\Component;
+use Jaxon\Attributes\Attribute\Callback;
+use Jaxon\Attributes\Attribute\Databag;
 use Ajax\Page\SectionContent;
 use Ajax\Page\SectionTitle;
 use Stringable;
 
 use function trans;
 
-/**
- * @databag planning.fund
- * @databag planning.pool
- */
+#[Databag('planning.fund')]
+#[Databag('planning.pool')]
 class Finance extends Component
 {
     /**
@@ -20,9 +20,7 @@ class Finance extends Component
      */
     protected $overrides = SectionContent::class;
 
-    /**
-     * @callback jaxon.ajax.callback.hideMenuOnMobile
-     */
+    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
     public function home()
     {
         $this->render();

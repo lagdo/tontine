@@ -4,16 +4,17 @@ namespace Ajax\App\Guild\Calendar;
 
 use Ajax\FuncComponent;
 use Ajax\Page\MainTitle;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\RoundService;
 use Siak\Tontine\Validation\Guild\RoundValidator;
 
 use function je;
 use function trans;
 
-/**
- * @databag guild.calendar
- * @before checkHostAccess ["guild", "calendar"]
- */
+#[Before('checkHostAccess', ["guild", "calendar"])]
+#[Databag('guild.calendar')]
 class RoundFunc extends FuncComponent
 {
     /**
@@ -43,9 +44,7 @@ class RoundFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function create(array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');
@@ -86,9 +85,7 @@ class RoundFunc extends FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
-    /**
-     * @di $validator
-     */
+    #[Inject(attr: 'validator')]
     public function update(int $roundId, array $formValues): void
     {
         $guild = $this->stash()->get('tenant.guild');
