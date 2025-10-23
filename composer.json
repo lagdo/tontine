@@ -13,7 +13,6 @@
         "akaunting/laravel-money": "^5.2",
         "andreaselia/analytics": "^2.0",
         "chrome-php/chrome": "^1.12",
-        "jaxon-php/jaxon-annotations": "^3.1",
         "jaxon-php/jaxon-attributes": "^1.0",
         "jaxon-php/jaxon-core": "^5.1",
         "jaxon-php/jaxon-dialogs": "^5.0",

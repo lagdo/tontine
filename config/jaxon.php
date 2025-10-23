@@ -15,7 +15,6 @@ return [
             'route' => 'jaxon.ajax',
             'middlewares' => [
                 'web',
-                'annotations',
                 'tontine',
                 'analytics',
                 'jaxon.config',

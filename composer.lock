@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "55331b4a729252e6a6485095c7cb2857",
+    "content-hash": "03870c39c24d70056fb47a2e54f07902",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -1816,63 +1816,6 @@
                 }
             ],
             "time": "2025-08-22T14:27:06+00:00"
-        },
-        {
-            "name": "jaxon-php/jaxon-annotations",
-            "version": "v3.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jaxon-php/jaxon-annotations.git",
-                "reference": "89b529b073db65c3f4e0261b61b57b3fd9c4f8ca"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-annotations/zipball/89b529b073db65c3f4e0261b61b57b3fd9c4f8ca",
-                "reference": "89b529b073db65c3f4e0261b61b57b3fd9c4f8ca",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "jaxon-php/jaxon-core": "^5.1",
-                "mindplay/annotations": "^1.3",
-                "php": ">=8.0"
-            },
-            "require-dev": {
-                "php-coveralls/php-coveralls": "^2.5",
-                "phpunit/phpcov": "^8.2",
-                "phpunit/phpunit": "^9.5"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/register.php"
-                ],
-                "psr-4": {
-                    "Jaxon\\Annotations\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Thierry Feuzeu"
-                }
-            ],
-            "description": "Annotations support for the Jaxon ajax PHP library",
-            "homepage": "https://www.jaxon-php.org",
-            "keywords": [
-                "Jaxon",
-                "ajax",
-                "annotations",
-                "php"
-            ],
-            "support": {
-                "issues": "https://github.com/jaxon-php/jaxon-annotations/issues",
-                "source": "https://github.com/jaxon-php/jaxon-annotations"
-            },
-            "time": "2025-10-21T00:14:01+00:00"
         },
         {
             "name": "jaxon-php/jaxon-attributes",
@@ -3704,60 +3647,6 @@
                 }
             ],
             "time": "2025-02-26T06:38:01+00:00"
-        },
-        {
-            "name": "mindplay/annotations",
-            "version": "1.3.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-annotations/php-annotations.git",
-                "reference": "6d5bfc47218cb013b0b3026374c6ffb0b1cad989"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-annotations/php-annotations/zipball/6d5bfc47218cb013b0b3026374c6ffb0b1cad989",
-                "reference": "6d5bfc47218cb013b0b3026374c6ffb0b1cad989",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "phpunit/php-code-coverage": "~1.2.1",
-                "phpunit/php-file-iterator": ">=1.3.0@stable <2.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.3.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "mindplay\\annotations\\": "src\\annotations"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-3.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Rasmus Schultz",
-                    "email": "rasmus@mindplay.dk"
-                }
-            ],
-            "description": "Industrial-strength annotations for PHP",
-            "homepage": "http://blog.mindplay.dk/",
-            "keywords": [
-                "annotations",
-                "framework"
-            ],
-            "support": {
-                "issues": "https://github.com/php-annotations/php-annotations/issues",
-                "source": "https://github.com/php-annotations/php-annotations/tree/1.3.4"
-            },
-            "time": "2024-02-17T16:21:25+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",
@@ -12372,7 +12261,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -12381,6 +12270,6 @@
         "ext-intl": "*",
         "ext-json": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

@@ -28,8 +28,6 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'verified' => EnsureEmailIsVerified::class,
-            // Tontine middlewares
-            'annotations' => TontineAnnotations::class,
         ]);
 
         // Tontine middlewares

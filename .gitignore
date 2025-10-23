@@ -23,5 +23,4 @@ yarn-error.log
 /.zed
 
 /storage/attributes
-/storage/annotations/*php
 /public/jaxon/js
