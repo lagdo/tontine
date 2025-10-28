@@ -8,12 +8,14 @@ use Ajax\Page\SectionTitle;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Export;
 use Stringable;
 
 use function trans;
 
 #[Before('checkHostAccess', ["guild", "calendar"])]
 #[Databag('guild.calendar')]
+#[Export(base: ['render'])]
 class Round extends Component
 {
     /**

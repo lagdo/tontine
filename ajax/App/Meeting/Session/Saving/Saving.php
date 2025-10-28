@@ -5,9 +5,11 @@ namespace Ajax\App\Meeting\Session\Saving;
 use Ajax\App\Meeting\Session\Component;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Exclude;
+use Jaxon\Attributes\Attribute\Export;
 use Stringable;
 
 #[Databag('meeting.saving')]
+#[Export(base: ['render'])]
 class Saving extends Component
 {
     /**

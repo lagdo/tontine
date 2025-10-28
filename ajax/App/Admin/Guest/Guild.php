@@ -4,9 +4,11 @@ namespace Ajax\App\Admin\Guest;
 
 use Ajax\Component;
 use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Export;
 use Stringable;
 
 #[Databag('admin')]
+#[Export(base: ['render'])]
 class Guild extends Component
 {
     public function html(): Stringable|string

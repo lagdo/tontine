@@ -7,6 +7,7 @@ use Ajax\App\Planning\Component;
 use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SummaryService;
@@ -14,6 +15,7 @@ use Stringable;
 
 #[Before('getPool')]
 #[Databag('planning.pool')]
+#[Export(base: ['render'])]
 class Planning extends Component
 {
     use PoolTrait;

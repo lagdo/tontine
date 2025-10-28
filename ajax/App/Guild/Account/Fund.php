@@ -5,10 +5,12 @@ namespace Ajax\App\Guild\Account;
 use Ajax\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Export;
 use Stringable;
 
 #[Before('checkHostAccess', ["finance", "accounts"])]
 #[Databag('guild.account')]
+#[Export(base: ['render'])]
 class Fund extends Component
 {
     public function html(): Stringable

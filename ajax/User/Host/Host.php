@@ -4,9 +4,11 @@ namespace Ajax\User\Host;
 
 use Ajax\Component;
 use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Export;
 use Stringable;
 
 #[Databag('user')]
+#[Export(base: ['render'])]
 class Host extends Component
 {
     /**

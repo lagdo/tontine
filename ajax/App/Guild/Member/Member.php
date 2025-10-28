@@ -8,6 +8,7 @@ use Ajax\Page\SectionTitle;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Export;
 use Stringable;
 
 use function trans;
@@ -15,6 +16,7 @@ use function trim;
 
 #[Before('checkHostAccess', ["guild", "members"])]
 #[Databag('guild.member')]
+#[Export(base: ['render'])]
 class Member extends Component
 {
     /**

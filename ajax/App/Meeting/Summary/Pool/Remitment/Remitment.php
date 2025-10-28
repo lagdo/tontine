@@ -3,10 +3,11 @@
 namespace Ajax\App\Meeting\Summary\Pool\Remitment;
 
 use Ajax\App\Meeting\Summary\Component;
-use Jaxon\Attributes\Attribute\Exclude;
+use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Stringable;
 
+#[Export(base: ['render'], except: ['show'])]
 class Remitment extends Component
 {
     /**
@@ -39,7 +40,6 @@ class Remitment extends Component
         $this->response->jo('Tontine')->makeTableResponsive('content-session-remitments');
     }
 
-    #[Exclude]
     public function show(): void
     {
         $this->render();

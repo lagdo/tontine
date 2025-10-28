@@ -5,12 +5,14 @@ namespace Ajax\App\Meeting\Presence;
 use Ajax\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Presence\PresenceService;
 use Stringable;
 
 #[Before('checkHostAccess', ["meeting", "presences"])]
 #[Before('getSession')]
 #[Databag('meeting.presence')]
+#[Export(base: ['render'])]
 class Member extends Component
 {
     /**

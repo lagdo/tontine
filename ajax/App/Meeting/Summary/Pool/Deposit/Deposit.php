@@ -3,10 +3,11 @@
 namespace Ajax\App\Meeting\Summary\Pool\Deposit;
 
 use Ajax\App\Meeting\Summary\Component;
-use Jaxon\Attributes\Attribute\Exclude;
+use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Stringable;
 
+#[Export(base: ['render'], except: ['show'])]
 class Deposit extends Component
 {
     /**
@@ -37,7 +38,6 @@ class Deposit extends Component
         $this->response->jo('Tontine')->makeTableResponsive('content-meeting-deposits');
     }
 
-    #[Exclude]
     public function show(): void
     {
         $this->render();

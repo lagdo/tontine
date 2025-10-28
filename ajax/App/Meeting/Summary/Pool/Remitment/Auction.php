@@ -4,9 +4,11 @@ namespace Ajax\App\Meeting\Summary\Pool\Remitment;
 
 use Ajax\App\Meeting\Summary\Component;
 use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Export;
 use Stringable;
 
 #[Databag('summary.auction')]
+#[Export(base: ['render'])]
 class Auction extends Component
 {
     /**

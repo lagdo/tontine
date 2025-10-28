@@ -5,10 +5,12 @@ namespace Ajax\App\Planning\Fund;
 use Ajax\App\Planning\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Export;
 use Stringable;
 
 #[Before('getFund')]
 #[Databag('planning.fund')]
+#[Export(base: ['render'])]
 class Session extends Component
 {
     use FundTrait;

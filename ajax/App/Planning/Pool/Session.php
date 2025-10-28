@@ -5,10 +5,12 @@ namespace Ajax\App\Planning\Pool;
 use Ajax\App\Planning\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Export;
 use Stringable;
 
 #[Before('getPool')]
 #[Databag('planning.pool')]
+#[Export(base: ['render'])]
 class Session extends Component
 {
     use PoolTrait;

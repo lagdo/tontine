@@ -7,11 +7,13 @@ use Ajax\App\Planning\Pool\Pool;
 use Ajax\App\Planning\Pool\PoolTrait;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Planning\PoolService;
 use Stringable;
 
 #[Before('getPool')]
 #[Databag('planning.pool')]
+#[Export(base: ['render'])]
 class Member extends Component
 {
     use PoolTrait;

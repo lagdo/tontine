@@ -3,11 +3,13 @@
 namespace Ajax\App\Meeting\Session\Credit\Loan;
 
 use Ajax\App\Meeting\Session\Component;
+use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Payment\BalanceCalculator;
 use Stringable;
 
 use function trans;
 
+#[Export(base: ['render'])]
 class Balance extends Component
 {
     /**

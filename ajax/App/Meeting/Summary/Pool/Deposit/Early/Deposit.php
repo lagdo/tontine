@@ -4,9 +4,11 @@ namespace Ajax\App\Meeting\Summary\Pool\Deposit\Early;
 
 use Ajax\App\Meeting\Summary\Component;
 use Ajax\App\Meeting\Summary\Pool\Deposit\Deposit as SessionDeposit;
+use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Stringable;
 
+#[Export(base: ['render'])]
 class Deposit extends Component
 {
     /**

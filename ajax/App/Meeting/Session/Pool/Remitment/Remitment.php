@@ -4,9 +4,11 @@ namespace Ajax\App\Meeting\Session\Pool\Remitment;
 
 use Ajax\App\Meeting\Session\Component;
 use Jaxon\Attributes\Attribute\Exclude;
+use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Stringable;
 
+#[Export(base: ['render'])]
 class Remitment extends Component
 {
     /**

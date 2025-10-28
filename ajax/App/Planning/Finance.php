@@ -5,6 +5,7 @@ namespace Ajax\App\Planning;
 use Ajax\App\Planning\Component;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Export;
 use Ajax\Page\SectionContent;
 use Ajax\Page\SectionTitle;
 use Stringable;
@@ -13,6 +14,7 @@ use function trans;
 
 #[Databag('planning.fund')]
 #[Databag('planning.pool')]
+#[Export(base: ['render'])]
 class Finance extends Component
 {
     /**

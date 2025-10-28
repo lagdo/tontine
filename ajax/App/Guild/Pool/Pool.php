@@ -8,12 +8,14 @@ use Ajax\Page\SectionTitle;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Export;
 use Stringable;
 
 use function trans;
 
 #[Before('checkHostAccess', ["finance", "pools"])]
 #[Databag('guild.pool')]
+#[Export(base: ['render'])]
 class Pool extends Component
 {
     /**

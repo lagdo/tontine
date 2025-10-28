@@ -3,10 +3,11 @@
 namespace Ajax\App\Meeting\Summary\Credit\Loan;
 
 use Ajax\App\Meeting\Summary\Component;
-use Jaxon\Attributes\Attribute\Exclude;
+use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
 use Stringable;
 
+#[Export(base: ['render'], except: ['show'])]
 class Loan extends Component
 {
     /**
@@ -35,7 +36,6 @@ class Loan extends Component
         $this->cl(Balance::class)->render();
     }
 
-    #[Exclude]
     public function show(): void
     {
         $this->render();

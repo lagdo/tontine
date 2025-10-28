@@ -6,12 +6,14 @@ use Ajax\Component;
 use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Guild\RoundService;
 use Stringable;
 
 #[Before('checkHostAccess', ["guild", "calendar"])]
 #[Before('getRound')]
 #[Databag('guild.calendar')]
+#[Export(base: ['render'])]
 class Session extends Component
 {
     /**

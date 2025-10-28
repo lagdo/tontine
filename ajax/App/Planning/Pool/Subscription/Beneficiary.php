@@ -8,6 +8,7 @@ use Ajax\Page\SectionContent;
 use Illuminate\Support\Collection;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
+use Jaxon\Attributes\Attribute\Export;
 use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Session as SessionModel;
@@ -23,6 +24,7 @@ use function trans;
 
 #[Before('getPool')]
 #[Databag('planning.pool')]
+#[Export(base: ['render'])]
 class Beneficiary extends Component
 {
     use PoolTrait;
