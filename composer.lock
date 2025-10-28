@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "03870c39c24d70056fb47a2e54f07902",
+    "content-hash": "49f7762a889bcf103799cbb1334ef98a",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -1819,21 +1819,21 @@
         },
         {
             "name": "jaxon-php/jaxon-attributes",
-            "version": "v1.0.0",
+            "version": "v1.1.0-beta.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-attributes.git",
-                "reference": "5a0ee7a5a6d5cfb9a3478c321612c0a0804a44a5"
+                "reference": "0d3381b6b51de8065b756106e3294df16473c74f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-attributes/zipball/5a0ee7a5a6d5cfb9a3478c321612c0a0804a44a5",
-                "reference": "5a0ee7a5a6d5cfb9a3478c321612c0a0804a44a5",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-attributes/zipball/0d3381b6b51de8065b756106e3294df16473c74f",
+                "reference": "0d3381b6b51de8065b756106e3294df16473c74f",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "jaxon-php/jaxon-core": "^5.1",
+                "jaxon-php/jaxon-core": "^5.2",
                 "php": ">=8.0"
             },
             "require-dev": {
@@ -1871,7 +1871,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-attributes/issues",
                 "source": "https://github.com/jaxon-php/jaxon-attributes"
             },
-            "time": "2025-10-21T00:43:38+00:00"
+            "time": "2025-10-28T07:37:21+00:00"
         },
         {
             "name": "jaxon-php/jaxon-config",
@@ -1926,16 +1926,16 @@
         },
         {
             "name": "jaxon-php/jaxon-core",
-            "version": "v5.1.0",
+            "version": "v5.2.0-beta.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-core.git",
-                "reference": "f83d14cd428791ffcc78b3df3c72c27db6ec63bb"
+                "reference": "c70a84367a34446d2bb39cecf97931d0ddc38dc1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/f83d14cd428791ffcc78b3df3c72c27db6ec63bb",
-                "reference": "f83d14cd428791ffcc78b3df3c72c27db6ec63bb",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/c70a84367a34446d2bb39cecf97931d0ddc38dc1",
+                "reference": "c70a84367a34446d2bb39cecf97931d0ddc38dc1",
                 "shasum": ""
             },
             "require": {
@@ -2003,7 +2003,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-core/issues",
                 "source": "https://github.com/jaxon-php/jaxon-core"
             },
-            "time": "2025-10-21T00:10:17+00:00"
+            "time": "2025-10-28T04:44:10+00:00"
         },
         {
             "name": "jaxon-php/jaxon-dialogs",

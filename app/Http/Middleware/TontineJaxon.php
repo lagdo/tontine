@@ -42,11 +42,11 @@ class TontineJaxon
             ],
             $request->routeIs('tontine.home') => [
                 'jaxon.app.directories' => [$pageDir, $appDir],
-                'jaxon.lib.js.app.file' => env('JAXON_JS_APP_FILE', 'app-4.0.9'),
+                'jaxon.lib.js.app.file' => env('JAXON_JS_APP_FILE', 'app-4.0.10-beta.1'),
             ],
             $request->routeIs('user.invites') => [
                 'jaxon.app.directories' => [$pageDir, $userDir],
-                'jaxon.lib.js.app.file' => env('JAXON_JS_USERS_FILE', 'users-4.0.0'),
+                'jaxon.lib.js.app.file' => env('JAXON_JS_USERS_FILE', 'users-4.0.1-beta.1'),
             ],
             $request->routeIs('user.profile') => [
                 'jaxon.app.directories' => [$pageDir],
