@@ -95,14 +95,16 @@ class SectionFunc extends FuncComponent
         $options = [
             'height' => 300,
             'toolbar' => [
-                // [groupName, [list of button]],
                 ['style', ['bold', 'italic', 'underline', 'clear']],
                 ['font', ['strikethrough', 'superscript', 'subscript']],
                 ['fontsize', ['fontsize']],
                 ['color', ['color']],
                 ['para', ['ul', 'ol', 'paragraph']],
                 // ['height', ['height']],
+                ['insert', ['link']],
+                ['table', ['table']],
             ],
+            'dialogsInBody' => true,
         ];
         $this->response->jq('#session-agenda')->summernote($options);
         $this->response->jq('#session-report')->summernote($options);
