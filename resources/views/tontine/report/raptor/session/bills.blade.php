@@ -16,33 +16,36 @@
                       <thead>
                         <tr>
                           <th>{{ __('meeting.labels.member') }}</th>
-                          <th style="width:15%;text-align:right;">{{ __('common.labels.paid') }}</th>
                           <th style="width:25%;text-align:right;">{{ __('common.labels.amount') }}</th>
+                          <th style="width:15%;text-align:right;">{{ __('common.labels.paid') }}</th>
                         </tr>
                       </thead>
                       <tbody>
 @foreach ($chargeBills as $bill)
+@php
+  $amount = $locale->formatMoney($bill->amount, true);
+@endphp
                         <tr>
                           <td>{{ $bill->member->name }}@if ($bill->in_round) - {{ $bill->session->title }}@endif</td>
-                          <td style="text-align:right;">{{ $bill->paid ? __('common.labels.yes') : __('common.labels.no') }}</td>
-                          <td style="text-align:right;">{{ $bill->paid ? $locale->formatMoney($bill->amount, true) : '-' }}</td>
+                          <td style="text-align:right;">{{ $amount }}</td>
+                          <td style="text-align:right;">{{ $bill->paid ? $amount : '-' }}</td>
                         </tr>
 @endforeach
 @php
   $unpaidBills = $chargeBills->filter(fn($bill) => !$bill->paid);
 @endphp
+                        <tr class="total">
+                          <td>{{ __('common.labels.paid') }}</td>
+                          <td>{{ $charge->total_count }}/{{ $chargeBills->count() }}</td>
+                          <td>{{ $locale->formatMoney($charge->total_amount, true) }}</td>
+                        </tr>
 @if ($unpaidBills->count() > 0)
                         <tr class="total">
                           <td>{{ __('common.labels.unpaid') }}</td>
-                          <td>{{ $unpaidBills->count() }}</td>
+                          <td>{{ $unpaidBills->count() }}/{{ $chargeBills->count() }}</td>
                           <td>{{ $locale->formatMoney($unpaidBills->sum('amount'), true) }}</td>
                         </tr>
 @endif
-                        <tr class="total">
-                          <td>{{ __('common.labels.paid') }}</td>
-                          <td>{{ $charge->total_count }}</td>
-                          <td>{{ $locale->formatMoney($charge->total_amount, true) }}</td>
-                        </tr>
                       </tbody>
                     </table>
                   </div> <!-- End table -->
