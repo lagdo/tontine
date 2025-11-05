@@ -5,6 +5,7 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 use Ajax\App\Meeting\Session\Charge\FuncComponent;
 use Jaxon\Attributes\Attribute\Before;
 
+#[Before('checkChargeEdit')]
 class MemberFunc extends FuncComponent
 {
     use AmountTrait;
@@ -15,13 +16,11 @@ class MemberFunc extends FuncComponent
      *
      * @return mixed
      */
-    #[Before('checkChargeEdit')]
     public function addBill(int $memberId, bool $paid): void
     {
-        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
-        $this->billService->createBill($round, $charge, $session, $memberId, $paid);
+        $this->billService->createBill($charge, $session, $memberId, $paid);
 
         $this->showTotal();
         $this->cl(MemberPage::class)->page();
@@ -32,13 +31,11 @@ class MemberFunc extends FuncComponent
      *
      * @return mixed
      */
-    #[Before('checkChargeEdit')]
     public function delBill(int $memberId): void
     {
-        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
-        $this->billService->deleteBill($round, $charge, $session, $memberId);
+        $this->billService->deleteBill($charge, $session, $memberId);
 
         $this->showTotal();
         $this->cl(MemberPage::class)->page();

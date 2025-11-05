@@ -4,7 +4,7 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\Component;
 use Jaxon\Attributes\Attribute\Exclude;
-use Siak\Tontine\Service\Payment\BalanceCalculator;
+use Siak\Tontine\Service\Meeting\Charge\BillService;
 use Stringable;
 
 #[Exclude]
@@ -13,9 +13,9 @@ class MemberTotal extends Component
     /**
      * The constructor
      *
-     * @param BalanceCalculator $balanceCalculator
+     * @param BillService $billService
      */
-    public function __construct(private BalanceCalculator $balanceCalculator)
+    public function __construct(private BillService $billService)
     {}
 
     /**
@@ -23,9 +23,14 @@ class MemberTotal extends Component
      */
     public function html(): Stringable
     {
+        $session = $this->stash()->get('meeting.session');
+        $charge = $this->stash()->get('meeting.session.charge');
+        [$count, $amount] = $this->billService->getBillTotal($charge, $session);
+
         return $this->renderView('pages.meeting.session.charge.libre.member.total', [
-            'settlementCount' => $this->stash()->get('meeting.session.settlement.count'),
-            'settlementAmount' => $this->stash()->get('meeting.session.settlement.amount'),
+            'billCount' => $count,
+            'billAmount' => $amount,
+            'memberCount' => $this->billService->getMemberCount($charge, $session),
         ]);
     }
 }

@@ -87,6 +87,7 @@ class SettlementService
             return;
         }
 
+        // Todo: use one insert query
         DB::transaction(function() use($bills, $session) {
             foreach($bills as $bill)
             {
@@ -128,6 +129,6 @@ class SettlementService
      */
     public function getSettlementCount(Charge $charge, Session $session): Bill
     {
-        return $this->billService->getSettlementCount($charge, $session);
+        return $this->billService->getSettlementAmount($charge, $session);
     }
 }

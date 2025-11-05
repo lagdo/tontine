@@ -25,10 +25,9 @@ class AmountFunc extends FuncComponent
      */
     private function refresh(int $memberId): void
     {
-        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
-        $member = $this->billService->getMember($round, $charge, $session, $memberId);
+        $member = $this->billService->getMember($charge, $session, $memberId);
 
         $this->stash()->set('meeting.charge.member', $member);
         $this->stash()->set('meeting.charge.bill', $member?->bill);
@@ -63,24 +62,23 @@ class AmountFunc extends FuncComponent
         $charge = $this->stash()->get('meeting.session.charge');
         $amount = $this->convertAmount($amount);
 
-        $round = $this->stash()->get('tenant.round');
         if(!$amount)
         {
             // No amount provided => the bill is deleted.
-            $this->billService->deleteBill($round, $charge, $session, $memberId);
+            $this->billService->deleteBill($charge, $session, $memberId);
             return;
         }
 
-        $bill = $this->billService->getMemberBill($round, $charge, $session, $memberId);
+        $bill = $this->billService->getMemberBill($charge, $session, $memberId);
         if($bill !== null)
         {
             // The bill exists => it is updated.
-            $this->billService->updateBill($round, $charge, $session, $memberId, $amount);
+            $this->billService->updateBill($charge, $session, $memberId, $amount);
             return;
         }
 
         // The bill is created.
-        $this->billService->createBill($round, $charge, $session, $memberId, $paid, $amount);
+        $this->billService->createBill($charge, $session, $memberId, $paid, $amount);
     }
 
     /**

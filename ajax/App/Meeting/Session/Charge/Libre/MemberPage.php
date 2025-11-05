@@ -21,11 +21,10 @@ class MemberPage extends PageComponent
     {
         $search = $this->bag('meeting')->get('fee.member.search', '');
         $filter = $this->bag('meeting')->get('fee.member.filter', null);
-        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
 
-        return $this->billService->getMemberCount($round, $charge, $session, $search, $filter);
+        return $this->billService->getMemberCount($charge, $session, $search, $filter);
     }
 
     /**
@@ -35,14 +34,13 @@ class MemberPage extends PageComponent
     {
         $search = $this->bag('meeting')->get('fee.member.search', '');
         $filter = $this->bag('meeting')->get('fee.member.filter', null);
-        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
 
         return $this->renderView('pages.meeting.session.charge.libre.member.page', [
             'session' => $session,
             'charge' => $charge,
-            'members' => $this->billService->getMembers($round, $charge,
+            'members' => $this->billService->getMembers($charge,
                 $session, $search, $filter, $this->currentPage()),
         ]);
     }

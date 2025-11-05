@@ -29,18 +29,22 @@ trait AmountTrait
      */
     abstract protected function cl(string $sClassName): mixed;
 
+    /**
+     * @return void
+     */
     private function showTotal()
     {
-        $session = $this->stash()->get('meeting.session');
-        $charge = $this->stash()->get('meeting.session.charge');
-        $settlement = $this->settlementService->getSettlementCount($charge, $session);
-
-        $this->stash()->set('meeting.session.settlement.count', $settlement->total ?? 0);
-        $this->stash()->set('meeting.session.settlement.amount', $settlement->amount ?? 0);
-
         $this->cl(MemberTotal::class)->render();
+        $this->cl(MemberAll::class)->render();
     }
 
+    /**
+     * @param string $amount
+     * @param bool $required
+     *
+     * @throws MessageException
+     * @return float|int
+     */
     private function convertAmount(string $amount): float
     {
         $amount = str_replace(',', '.', trim($amount));

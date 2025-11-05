@@ -130,6 +130,11 @@ class Session extends Base
         return $this->belongsTo(Member::class);
     }
 
+    public function members()
+    {
+        return $this->round->members();
+    }
+
     public function payables()
     {
         return $this->hasMany(Payable::class)->orderBy('payables.id', 'asc');
@@ -143,16 +148,6 @@ class Session extends Base
     public function deposits()
     {
         return $this->hasMany(Deposit::class);
-    }
-
-    public function session_bills()
-    {
-        return $this->hasMany(SessionBill::class);
-    }
-
-    public function libre_bills()
-    {
-        return $this->hasMany(LibreBill::class);
     }
 
     public function loans()
