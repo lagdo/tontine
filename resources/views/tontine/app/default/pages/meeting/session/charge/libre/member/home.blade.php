@@ -2,12 +2,15 @@
   $searchValue = jq('#txt-fee-member-search')->val();
   $rqMember = rq(Ajax\App\Meeting\Session\Charge\Libre\Member::class);
   $rqMemberPage = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberPage::class);
+  $rqMemberAll = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberAll::class);
   $rqMemberTotal = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberTotal::class);
   $rqCharge = rq(Ajax\App\Meeting\Session\Charge\Libre\Fee::class);
 @endphp
                   <div class="row mb-2">
-                    <div class="col-auto">
+                    <div class="col">
                       <div class="section-title mt-0">{{ $charge->name }}</div>
+                    </div>
+                    <div class="col-auto ml-auto" @jxnBind($rqMemberAll)>
                     </div>
                     <div class="col-auto ml-auto">
                       <div class="btn-group" role="group">
@@ -17,7 +20,7 @@
                     </div>
                   </div>
                   <div class="row mb-1">
-                    <div class="col-auto">
+                    <div class="col">
                       <div class="input-group">
                         {!! $html->text('search', '')->id('txt-fee-member-search')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') !!}
@@ -26,7 +29,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-auto ml-auto" @jxnBind($rqMemberTotal) style="padding: 7px 5px;">
+                    <div class="col-auto ml-auto" @jxnBind($rqMemberTotal)>
                     </div>
                     <div class="col-auto ml-auto">
                       <div class="input-group input-group-sm float-right mb-1 mr-0 pr-0">

@@ -43,9 +43,9 @@ trait AmountTrait
      * @param bool $required
      *
      * @throws MessageException
-     * @return float|int
+     * @return float
      */
-    private function convertAmount(string $amount): float
+    private function convertAmount(string $amount, bool $required = false): float
     {
         $amount = str_replace(',', '.', trim($amount));
         if($amount !== '' && filter_var($amount, FILTER_VALIDATE_FLOAT) === false)
@@ -54,7 +54,14 @@ trait AmountTrait
                 'amount' => $amount,
             ]));
         }
+        $amountValue = $amount === '' ? 0 : (float)$amount;
+        if($required && $amountValue === 0)
+        {
+            throw new MessageException(trans('meeting.errors.amount.invalid', [
+                'amount' => $amount,
+            ]));
+        }
 
-        return $amount === '' ? 0 : (float)$amount;
+        return $amountValue;
     }
 }

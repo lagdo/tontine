@@ -1,7 +1,7 @@
                         <div class="dropdown float-right">
                           <button class="btn btn-primary dropdown-toggle {{ $btnSize ?? 'btn-sm'
                             }}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa {{ $btnIcon ?? 'fa-bars' }}"></i>
+                            @isset($btnText) {{ $btnText }} @else <i class="fa {{ $btnIcon ?? 'fa-bars' }}"></i> @endisset
                           </button>
                           <div @isset($dataIdKey) {{ $dataIdKey }}="{{ $dataIdValue }}" @endif class="dropdown-menu dropdown-menu-right">
 @foreach ($menus ?? [] as $menu)

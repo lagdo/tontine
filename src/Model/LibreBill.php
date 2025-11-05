@@ -3,6 +3,7 @@
 namespace Siak\Tontine\Model;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class LibreBill extends Base
 {
@@ -53,5 +54,16 @@ class LibreBill extends Base
     public function scopeWhereCharge(Builder $query, Charge $charge): Builder
     {
         return $query->where('charge_id', $charge->id);
+    }
+
+    /**
+     * @param  Builder  $query
+     * @param  Collection  $members
+     *
+     * @return Builder
+     */
+    public function scopeWhereMembers(Builder $query, Collection $members): Builder
+    {
+        return $query->whereIn('member_id', $members);
     }
 }

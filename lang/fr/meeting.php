@@ -101,6 +101,14 @@ return [
             'variable' => "Frais variables",
         ],
     ],
+    'bill' => [
+        'titles' => [
+            'all' => 'Ajouter à :count membres',
+        ],
+        'questions' => [
+            'delete-all' => "Supprimer toutes les :items ?",
+        ],
+    ],
     'target' => [
         'actions' => [
             'deadline' => "Date limite",

@@ -101,6 +101,14 @@ return [
             'variable' => "Variable fees",
         ],
     ],
+    'bill' => [
+        'titles' => [
+            'all' => 'Add for :count members',
+        ],
+        'questions' => [
+            'delete-all' => "Delete all the :items?",
+        ],
+    ],
     'target' => [
         'actions' => [
             'deadline' => "Deadline",

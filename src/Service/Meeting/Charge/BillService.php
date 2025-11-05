@@ -305,22 +305,90 @@ class BillService
     /**
      * @param Charge $charge
      * @param Session $session
+     * @param string $search
+     * @param bool $paid
+     * @param float $amount
+     *
+     * @return void
+     */
+    public function createBills(Charge $charge, Session $session, string $search,
+        bool $paid, float $amount): void
+    {
+        $members = $this->getMembersQuery($charge, $session, $search,
+            false)->get();
+        DB::transaction(function() use($charge, $session, $members, $paid, $amount) {
+            // Todo: use one insert query
+            foreach($members as $member)
+            {
+                $this->_createBill($charge, $session, $member, $paid, $amount);
+            }
+        });
+    }
+
+    /**
+     * @param Session $session
+     * @param Collection $billIds
+     *
+     * @return void
+     */
+    public function _deleteBills(Session $session, Collection $billIds): void
+    {
+        DB::transaction(function() use($session, $billIds) {
+            LibreBill::query()->whereIn('bill_id', $billIds)->delete();
+            // Delete a settlement only if it is on the same session
+            Settlement::query()
+                ->whereSession($session)
+                ->whereIn('bill_id', $billIds)
+                ->delete();
+            Bill::query()->whereIn('id', $billIds)->delete();
+        });
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Session $session
+     * @param string $search
+     *
+     * @return void
+     */
+    public function deleteBills(Charge $charge, Session $session, string $search): void
+    {
+        $members = $this->getMembersQuery($charge, $session, $search)
+            ->pluck('id');
+        $billIds = LibreBill::query()
+            ->whereSession($session)
+            ->whereCharge($charge)
+            ->whereMembers($members)
+            ->pluck('bill_id');
+        $this->_deleteBills($session, $billIds);
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Session $session
+     * @param int $memberId
+     *
+     * @return Builder|Relation
+     */
+    private function getMemberBillQuery(Charge $charge, Session $session,
+        int $memberId): Builder|Relation
+    {
+        return LibreBill::query()
+            ->whereSession($session)
+            ->whereCharge($charge)
+            ->where('member_id', $memberId);
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Session $session
      * @param int $memberId
      *
      * @return LibreBill|null
      */
     public function getMemberBill(Charge $charge, Session $session, int $memberId): ?LibreBill
     {
-        if(!($member = $session->members()->find($memberId)))
-        {
-            throw new MessageException(trans('tontine.member.errors.not_found'));
-        }
-
-        return LibreBill::with(['bill.settlement'])
-            ->where('charge_id', $charge->id)
-            ->where('session_id', $session->id)
-            ->where('member_id', $member->id)
-            ->first();
+        return $this->getMemberBillQuery($charge, $session, $memberId)->first();
     }
 
     /**
@@ -333,7 +401,8 @@ class BillService
      */
     public function updateBill(Charge $charge, Session $session, int $memberId, float $amount): void
     {
-        if(!($libreBill = $this->getMemberBill($charge, $session, $memberId)))
+        $libreBill = $this->getMemberBill($charge, $session, $memberId);
+        if(!$libreBill)
         {
             return; // throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
@@ -352,23 +421,12 @@ class BillService
      */
     public function deleteBill(Charge $charge, Session $session, int $memberId): void
     {
-        if(!($libreBill = $this->getMemberBill($charge, $session, $memberId)))
+        $billIds = $this->getMemberBillQuery($charge, $session, $memberId)
+            ->pluck('bill_id');
+        if($billIds->count() === 0)
         {
             return; // throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
 
-        DB::transaction(function() use($libreBill, $session) {
-            $bill = $libreBill->bill;
-            $libreBill->delete();
-            if($bill !== null)
-            {
-                // Delete the settlement only if it is on the same session
-                if($bill->settlement !== null && $bill->settlement->session_id === $session->id)
-                {
-                    $bill->settlement->delete();
-                }
-                $bill->delete();
-            }
-        });
-    }
+        $this->_deleteBills($session, $billIds);    }
 }

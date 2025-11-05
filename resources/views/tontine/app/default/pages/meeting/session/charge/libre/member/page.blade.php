@@ -7,8 +7,8 @@
   $rqAmount = rq(Ajax\App\Meeting\Session\Charge\Libre\Amount::class);
 @endphp
                   <div class="table-responsive" id="content-session-fee-libre-members" @jxnEvent([
-                    ['.btn-add-bill', 'click', $rqMemberFunc->addBill($memberId, $paid)],
-                    ['.btn-del-bill', 'click', $rqMemberFunc->delBill($memberId)]])>
+                    ['.btn-add-bill', 'click', $rqMemberFunc->createBill($memberId, $paid)],
+                    ['.btn-del-bill', 'click', $rqMemberFunc->deleteBill($memberId)]])>
 
                     <table class="table table-bordered responsive">
                       <thead>
