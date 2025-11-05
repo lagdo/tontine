@@ -16,6 +16,7 @@ use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\SearchSanitizer;
+use Exception;
 
 use function trans;
 
@@ -333,15 +334,22 @@ class BillService
      */
     public function _deleteBills(Session $session, Collection $billIds): void
     {
-        DB::transaction(function() use($session, $billIds) {
-            LibreBill::query()->whereIn('bill_id', $billIds)->delete();
-            // Delete a settlement only if it is on the same session
-            Settlement::query()
-                ->whereSession($session)
-                ->whereIn('bill_id', $billIds)
-                ->delete();
-            Bill::query()->whereIn('id', $billIds)->delete();
-        });
+        try
+        {
+            DB::transaction(function() use($session, $billIds) {
+                LibreBill::query()->whereIn('bill_id', $billIds)->delete();
+                // Delete a settlement only if it is on the same session
+                Settlement::query()
+                    ->whereSession($session)
+                    ->whereIn('bill_id', $billIds)
+                    ->delete();
+                Bill::query()->whereIn('id', $billIds)->delete();
+            });
+        }
+        catch(Exception $ex)
+        {
+            throw new MessageException(trans('meeting.bill.errors.delete'));
+        }
     }
 
     /**

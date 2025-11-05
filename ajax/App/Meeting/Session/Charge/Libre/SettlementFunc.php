@@ -3,27 +3,12 @@
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\FuncComponent;
-use Ajax\App\Meeting\Session\Charge\Settlement\Total;
 use Jaxon\Attributes\Attribute\Before;
-use Jaxon\Attributes\Attribute\Exclude;
 
 #[Before('checkChargeEdit')]
 class SettlementFunc extends FuncComponent
 {
-    #[Exclude]
-    public function showTotal(): void
-    {
-        $session = $this->stash()->get('meeting.session');
-        $charge = $this->stash()->get('meeting.session.charge');
-        $settlement = $this->settlementService->getSettlementCount($charge, $session);
-
-        $this->stash()->set('meeting.session.settlement.count', $settlement->total);
-        $this->stash()->set('meeting.session.settlement.amount', $settlement->amount);
-        $this->stash()->set('meeting.session.bill.count',
-            $this->billService->getBillCount($charge, $session));
-
-        $this->cl(Total::class)->item('libre')->render();
-    }
+    use SettlementTrait;
 
     /**
      * @param int $billId
@@ -50,6 +35,32 @@ class SettlementFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
         $this->settlementService->deleteSettlement($charge, $session, $billId);
+
+        $this->showTotal();
+        $this->cl(SettlementPage::class)->page();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function addSettlements(): void
+    {
+        $session = $this->stash()->get('meeting.session');
+        $charge = $this->stash()->get('meeting.session.charge');
+        $this->settlementService->createAllSettlements($charge, $session);
+
+        $this->showTotal();
+        $this->cl(SettlementPage::class)->page();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function delSettlements(): void
+    {
+        $session = $this->stash()->get('meeting.session');
+        $charge = $this->stash()->get('meeting.session.charge');
+        $this->settlementService->deleteAllSettlements($charge, $session);
 
         $this->showTotal();
         $this->cl(SettlementPage::class)->page();

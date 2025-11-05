@@ -3,10 +3,14 @@
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\Component;
+use Jaxon\Attributes\Attribute\Before;
 use Stringable;
 
+#[Before('checkChargeEdit')]
 class Settlement extends Component
 {
+    use SettlementTrait;
+
     /**
      * @var string
      */
@@ -27,8 +31,8 @@ class Settlement extends Component
      */
     protected function after(): void
     {
+        $this->showTotal();
         $this->cl(SettlementPage::class)->page();
-        $this->cl(SettlementFunc::class)->showTotal();
     }
 
     /**
@@ -53,6 +57,7 @@ class Settlement extends Component
         $this->bag('meeting')->set('settlement.libre.filter', $onlyUnpaid);
         $this->bag('meeting')->set('settlement.libre.page', 1);
 
+        $this->setSettlement();
         $this->cl(SettlementPage::class)->page();
     }
 }

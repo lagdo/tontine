@@ -108,6 +108,15 @@ return [
         'questions' => [
             'delete-all' => "Delete all the :items?",
         ],
+        'errors' => [
+            'delete' => "Error while deleting. Make sure there's no settlement.",
+        ],
+    ],
+    'settlement' => [
+        'questions' => [
+            'create-all' => "Add the :count settlements?",
+            'delete-all' => "Delete the :count settlements?",
+        ],
     ],
     'target' => [
         'actions' => [

@@ -108,6 +108,15 @@ return [
         'questions' => [
             'delete-all' => "Supprimer toutes les :items ?",
         ],
+        'errors' => [
+            'delete' => "Erreur lors de la suppression. Vérifiez qu'il n'y a pas de règlement.",
+        ],
+    ],
+    'settlement' => [
+        'questions' => [
+            'create-all' => "Ajouter les :count règlements ?",
+            'delete-all' => "Supprimer les :count règlements ?",
+        ],
     ],
     'target' => [
         'actions' => [
