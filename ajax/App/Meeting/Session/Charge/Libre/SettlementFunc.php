@@ -8,7 +8,6 @@ use Jaxon\Attributes\Attribute\Before;
 #[Before('checkChargeEdit')]
 class SettlementFunc extends FuncComponent
 {
-    use SettlementTrait;
     use ChargeTrait;
 
     /**
@@ -22,7 +21,7 @@ class SettlementFunc extends FuncComponent
         $charge = $this->stash()->get('meeting.session.charge');
         $this->settlementService->createSettlement($charge, $session, $billId);
 
-        $this->showTotal();
+        $this->showSettlementTotal();
         $this->cl(SettlementPage::class)->page();
     }
 
@@ -37,7 +36,7 @@ class SettlementFunc extends FuncComponent
         $charge = $this->stash()->get('meeting.session.charge');
         $this->settlementService->deleteSettlement($charge, $session, $billId);
 
-        $this->showTotal();
+        $this->showSettlementTotal();
         $this->cl(SettlementPage::class)->page();
     }
 
@@ -48,9 +47,10 @@ class SettlementFunc extends FuncComponent
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
-        $this->settlementService->createAllSettlements($charge, $session);
+        $search = $this->bag('meeting')->get('settlement.libre.search', '');
+        $this->settlementService->createAllSettlements($charge, $session, $search);
 
-        $this->showTotal();
+        $this->showSettlementTotal();
         $this->cl(SettlementPage::class)->page();
     }
 
@@ -61,9 +61,10 @@ class SettlementFunc extends FuncComponent
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
-        $this->settlementService->deleteAllSettlements($charge, $session);
+        $search = $this->bag('meeting')->get('settlement.libre.search', '');
+        $this->settlementService->deleteAllSettlements($charge, $session, $search);
 
-        $this->showTotal();
+        $this->showSettlementTotal();
         $this->cl(SettlementPage::class)->page();
     }
 }

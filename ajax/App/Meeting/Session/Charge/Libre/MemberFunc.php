@@ -23,7 +23,7 @@ class MemberFunc extends FuncComponent
         $charge = $this->stash()->get('meeting.session.charge');
         $this->billService->createBill($charge, $session, $memberId, $paid);
 
-        $this->showTotal();
+        $this->showBillTotal();
         $this->cl(MemberPage::class)->page();
     }
 
@@ -38,7 +38,7 @@ class MemberFunc extends FuncComponent
         $charge = $this->stash()->get('meeting.session.charge');
         $this->billService->deleteBill($charge, $session, $memberId);
 
-        $this->showTotal();
+        $this->showBillTotal();
         $this->cl(MemberPage::class)->page();
     }
 
@@ -96,7 +96,8 @@ class MemberFunc extends FuncComponent
             $search, $paid, $amount);
 
         $this->modal()->hide();
-        $this->showTotal();
+
+        $this->showBillTotal();
         $this->cl(MemberPage::class)->page();
     }
 
@@ -110,7 +111,7 @@ class MemberFunc extends FuncComponent
         $search = $this->bag('meeting')->get('fee.member.search', '');
         $this->billService->deleteBills($charge, $session, $search);
 
-        $this->showTotal();
+        $this->showBillTotal();
         $this->cl(MemberPage::class)->page();
     }
 }

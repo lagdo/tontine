@@ -7,10 +7,8 @@ use Jaxon\Attributes\Attribute\Before;
 use Stringable;
 
 #[Before('checkChargeEdit')]
-#[Before('setSettlement')]
 class SettlementPage extends PageComponent
 {
-    use SettlementTrait;
     use ChargeTrait;
 
     /**
@@ -25,7 +23,12 @@ class SettlementPage extends PageComponent
      */
     protected function count(): int
     {
-        return $this->stash()->get('meeting.session.bill.count');
+        $search = $this->bag('meeting')->get('settlement.libre.search');
+        $filter = $this->bag('meeting')->get('settlement.libre.filter', null);
+        $session = $this->stash()->get('meeting.session');
+        $charge = $this->stash()->get('meeting.session.charge');
+
+        return $this->billService->getBillCount($charge, $session, $search, $filter);
     }
 
     /**
@@ -33,7 +36,7 @@ class SettlementPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $search = '';
+        $search = $this->bag('meeting')->get('settlement.libre.search');
         $filter = $this->bag('meeting')->get('settlement.libre.filter', null);
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');

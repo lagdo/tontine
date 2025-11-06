@@ -1,8 +1,8 @@
 @php
+  $searchValue = jq('#txt-fee-settlement-search')->val();
   $rqCharge = rq(Ajax\App\Meeting\Session\Charge\Libre\Fee::class);
   $rqSettlement = rq(Ajax\App\Meeting\Session\Charge\Libre\Settlement::class);
   $rqSettlementPage = rq(Ajax\App\Meeting\Session\Charge\Libre\SettlementPage::class);
-  $rqSettlementFunc = rq(Ajax\App\Meeting\Session\Charge\Libre\SettlementFunc::class);
   $rqSettlementAll = rq(Ajax\App\Meeting\Session\Charge\Libre\SettlementAll::class);
   $rqSettlementTotal = rq(Ajax\App\Meeting\Session\Charge\Libre\SettlementTotal::class);
 @endphp
@@ -22,6 +22,13 @@
                   </div>
                   <div class="row mb-2">
                     <div class="col-7">
+                      <div class="input-group">
+                        {!! $html->text('search', '')->id('txt-fee-settlement-search')
+                          ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') !!}
+                        <div class="input-group-append">
+                          <button type="button" class="btn btn-primary" @jxnClick($rqSettlement->search($searchValue))><i class="fa fa-search"></i></button>
+                        </div>
+                      </div>
                     </div>
                     <div class="col-3" @jxnBind($rqSettlementTotal)>
                     </div>

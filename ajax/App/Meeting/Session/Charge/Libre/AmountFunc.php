@@ -93,7 +93,7 @@ class AmountFunc extends FuncComponent
     public function save(int $memberId, bool $paid, string $amount): void
     {
         $this->saveAmount($memberId, $paid, $amount);
-        $this->showTotal();
+        $this->showBillTotal();
 
         $this->refresh($memberId);
     }

@@ -31,8 +31,8 @@ class Settlement extends Component
      */
     protected function after(): void
     {
+        $this->showSettlementTotal();
         $this->cl(SettlementPage::class)->page();
-        $this->cl(SettlementFunc::class)->showTotal();
     }
 
     /**
@@ -65,6 +65,7 @@ class Settlement extends Component
         $this->bag('meeting')->set('settlement.fixed.search', trim($search));
         $this->bag('meeting')->set('settlement.fixed.page', 1);
 
+        $this->showSettlementTotal();
         $this->cl(SettlementPage::class)->page();
     }
 }

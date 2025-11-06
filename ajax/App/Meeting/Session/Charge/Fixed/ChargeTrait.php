@@ -11,4 +11,13 @@ trait ChargeTrait
     {
         return 'charge.fixed.id';
     }
+
+    /**
+     * @return void
+     */
+    protected function showSettlementTotal(): void
+    {
+        $this->cl(SettlementTotal::class)->render();
+        $this->cl(SettlementAll::class)->render();
+    }
 }

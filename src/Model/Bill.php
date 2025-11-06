@@ -183,6 +183,18 @@ class Bill extends Base
 
     /**
      * @param  Builder  $query
+     *
+     * @return Builder
+     */
+    public function scopeJoinMembers(Builder $query): Builder
+    {
+        return $query->join(DB::raw('v_bills as v'), 'v.bill_id', '=', 'bills.id')
+            ->join(DB::raw('members as m'), 'v.member_id', '=', 'm.id')
+            ->join(DB::raw('member_defs as md'), 'm.def_id', '=', 'md.id');
+    }
+
+    /**
+     * @param  Builder  $query
      * @param Session $session
      *
      * @return Builder
@@ -253,6 +265,17 @@ class Bill extends Base
     public function scopeWhereSession(Builder $query, Session $session): Builder
     {
         return $query->where('session_id', $session->id);
+    }
+
+    /**
+     * @param  Builder  $query
+     * @param  Charge  $charge
+     *
+     * @return Builder
+     */
+    public function scopeWhereCharge(Builder $query, Charge $charge): Builder
+    {
+        return $query->where('v.charge_id', $charge->id);
     }
 
     /**

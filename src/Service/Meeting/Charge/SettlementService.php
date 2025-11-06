@@ -2,14 +2,15 @@
 
 namespace Siak\Tontine\Service\Meeting\Charge;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Model\Bill;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Service\Payment\PaymentServiceInterface;
 use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Validation\SearchSanitizer;
 
 use function trans;
 
@@ -17,11 +18,13 @@ class SettlementService
 {
     /**
      * @param TenantService $tenantService
+     * @param SearchSanitizer $searchSanitizer
      * @param BillService $billService
      * @param PaymentServiceInterface $paymentService;
      */
     public function __construct(private TenantService $tenantService,
-        private BillService $billService, private PaymentServiceInterface $paymentService)
+        private SearchSanitizer $searchSanitizer, private BillService $billService,
+        private PaymentServiceInterface $paymentService)
     {}
 
     /**
@@ -76,12 +79,13 @@ class SettlementService
      *
      * @param Charge $charge
      * @param Session $session
+     * @param string $search
      *
      * @return void
      */
-    public function createAllSettlements(Charge $charge, Session $session): void
+    public function createAllSettlements(Charge $charge, Session $session, string $search): void
     {
-        $bills = $this->billService->getBills($charge, $session, '', false);
+        $bills = $this->billService->getBills($charge, $session, $search, false);
         if($bills->count() === 0)
         {
             return;
@@ -104,12 +108,13 @@ class SettlementService
      *
      * @param Charge $charge
      * @param Session $session
+     * @param string $search
      *
      * @return void
      */
-    public function deleteAllSettlements(Charge $charge, Session $session): void
+    public function deleteAllSettlements(Charge $charge, Session $session, string $search): void
     {
-        $bills = $this->billService->getBills($charge, $session, '', true)
+        $bills = $this->billService->getBills($charge, $session, $search, true)
             ->filter(fn($bill) => $this->paymentService->isEditable($bill->settlement));
         if($bills->count() === 0)
         {
@@ -129,17 +134,13 @@ class SettlementService
      */
     public function getSettlementTotal(Charge $charge, Session $session): array
     {
-        return $this->billService->getSettlementTotal($charge, $session);
-    }
-
-    /**
-     * @param Charge $charge
-     * @param Session $session
-     *
-     * @return Bill
-     */
-    public function getSettlementCount(Charge $charge, Session $session): Bill
-    {
-        return $this->billService->getSettlementAmount($charge, $session);
+        $total = Settlement::query()
+            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->join(DB::raw('v_bills as v'), 'v.bill_id', '=', 'bills.id')
+            ->where('settlements.session_id', $session->id)
+            ->where('v.charge_id', $charge->id)
+            ->select(DB::raw('count(*) as count'), DB::raw('sum(bills.amount) as amount'))
+            ->first();
+        return [$total->count ?? 0, $total->amount ?? 0];
     }
 }

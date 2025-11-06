@@ -4,27 +4,10 @@ namespace Ajax\App\Meeting\Session\Charge\Fixed;
 
 use Ajax\App\Meeting\Session\Charge\FuncComponent;
 use Jaxon\Attributes\Attribute\Before;
-use Jaxon\Attributes\Attribute\Exclude;
 
 class SettlementFunc extends FuncComponent
 {
     use ChargeTrait;
-
-    #[Exclude]
-    public function showTotal(): void
-    {
-        $session = $this->stash()->get('meeting.session');
-        $charge = $this->stash()->get('meeting.session.charge');
-        $settlement = $this->settlementService->getSettlementCount($charge, $session);
-
-        $this->stash()->set('meeting.session.settlement.count', $settlement->total ?? 0);
-        $this->stash()->set('meeting.session.settlement.amount', $settlement->amount ?? 0);
-        $this->stash()->set('meeting.session.bill.count',
-            $this->billService->getBillCount($charge, $session));
-
-        $this->cl(SettlementAll::class)->render();
-        $this->cl(SettlementTotal::class)->render();
-    }
 
     /**
      * @param int $billId
@@ -38,7 +21,7 @@ class SettlementFunc extends FuncComponent
         $charge = $this->stash()->get('meeting.session.charge');
         $this->settlementService->createSettlement($charge, $session, $billId);
 
-        $this->showTotal();
+        $this->showSettlementTotal();
         $this->cl(SettlementPage::class)->page();
     }
 
@@ -54,7 +37,7 @@ class SettlementFunc extends FuncComponent
         $charge = $this->stash()->get('meeting.session.charge');
         $this->settlementService->deleteSettlement($charge, $session, $billId);
 
-        $this->showTotal();
+        $this->showSettlementTotal();
         $this->cl(SettlementPage::class)->page();
     }
 
@@ -66,9 +49,10 @@ class SettlementFunc extends FuncComponent
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
-        $this->settlementService->createAllSettlements($charge, $session);
+        $search = $this->bag('meeting')->get('settlement.fixed.search', '');
+        $this->settlementService->createAllSettlements($charge, $session, $search);
 
-        $this->showTotal();
+        $this->showSettlementTotal();
         $this->cl(SettlementPage::class)->page();
     }
 
@@ -80,9 +64,10 @@ class SettlementFunc extends FuncComponent
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
-        $this->settlementService->deleteAllSettlements($charge, $session);
+        $search = $this->bag('meeting')->get('settlement.fixed.search', '');
+        $this->settlementService->deleteAllSettlements($charge, $session, $search);
 
-        $this->showTotal();
+        $this->showSettlementTotal();
         $this->cl(SettlementPage::class)->page();
     }
 }

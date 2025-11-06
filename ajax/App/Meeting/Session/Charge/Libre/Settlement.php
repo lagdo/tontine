@@ -9,7 +9,6 @@ use Stringable;
 #[Before('checkChargeEdit')]
 class Settlement extends Component
 {
-    use SettlementTrait;
     use ChargeTrait;
 
     /**
@@ -32,7 +31,7 @@ class Settlement extends Component
      */
     protected function after(): void
     {
-        $this->showTotal();
+        $this->showSettlementTotal();
         $this->cl(SettlementPage::class)->page();
     }
 
@@ -58,7 +57,15 @@ class Settlement extends Component
         $this->bag('meeting')->set('settlement.libre.filter', $onlyUnpaid);
         $this->bag('meeting')->set('settlement.libre.page', 1);
 
-        $this->setSettlement();
+        $this->cl(SettlementPage::class)->page();
+    }
+
+    public function search(string $search): void
+    {
+        $this->bag('meeting')->set('settlement.libre.search', trim($search));
+        $this->bag('meeting')->set('settlement.libre.page', 1);
+
+        $this->showSettlementTotal();
         $this->cl(SettlementPage::class)->page();
     }
 }

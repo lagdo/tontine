@@ -35,8 +35,8 @@ class Member extends Component
      */
     protected function after(): void
     {
+        $this->showBillTotal();
         $this->cl(MemberPage::class)->page();
-        $this->showTotal();
     }
 
     /**
@@ -69,6 +69,7 @@ class Member extends Component
         $this->bag('meeting')->set('fee.member.search', trim($search));
         $this->bag('meeting')->set('fee.member.page', 1);
 
+        $this->showBillTotal();
         $this->cl(MemberPage::class)->page();
     }
 }

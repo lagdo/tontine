@@ -45,8 +45,8 @@ class BillService
         string $search = '', ?bool $onlyPaid = null): Builder|Relation
     {
         return Bill::forSession($session)
+            ->whereCharge($charge)
             ->with('session')
-            ->where('charge_id', $charge->id)
             ->search($this->searchSanitizer->sanitize($search))
             ->when($onlyPaid === false, fn($query) => $query->unpaid())
             ->when($onlyPaid === true, function($query) use($session) {
@@ -104,47 +104,24 @@ class BillService
     /**
      * @param Charge $charge
      * @param Session $session
+     * @param bool $onlyPaid|null
      *
      * @return array<int>
      */
-    public function getBillTotal(Charge $charge, Session $session): array
+    public function getBillTotal(Charge $charge, Session $session, ?bool $onlyPaid = null): array
     {
         $total = LibreBill::query()
             ->join('bills', 'bills.id', '=', 'libre_bills.bill_id')
             ->whereCharge($charge, true)->whereSession($session)
+            ->when($onlyPaid === false, fn($query) => $query->whereHas('bill',
+                fn(Builder $qb) => $qb->whereDoesntHave('settlement',
+                    fn(Builder $qs) => $qs->whereSession($session))))
+            ->when($onlyPaid === true, fn($query) => $query->whereHas('bill',
+                fn(Builder $qb) => $qb->whereHas('settlement',
+                    fn(Builder $qs) => $qs->whereSession($session))))
             ->select(DB::raw('count(*) as count'), DB::raw('sum(bills.amount) as amount'))
             ->first();
         return [$total->count ?? 0, $total->amount ?? 0];
-    }
-
-    /**
-     * @param Charge $charge
-     * @param Session $session
-     *
-     * @return array<int>
-     */
-    public function getSettlementTotal(Charge $charge, Session $session): array
-    {
-        $total = $this->getBillsQuery($charge, $session, '', true)
-            ->select(DB::raw('count(*) as count'), DB::raw('sum(bills.amount) as amount'))
-            ->first();
-        return [$total->count ?? 0, $total->amount ?? 0];
-    }
-
-    /**
-     * @param Charge $charge
-     * @param Session $session
-     *
-     * @return Bill
-     */
-    public function getSettlementAmount(Charge $charge, Session $session): Bill
-    {
-        $bill = $this->getBillsQuery($charge, $session, '', true)
-            ->select(DB::raw('count(*) as total'), DB::raw('sum(bills.amount) as amount'))
-            ->first();
-        $bill->total = $bill->total ?? 0;
-        $bill->amount = $bill->amount ?? 0;
-        return $bill;
     }
 
     /**

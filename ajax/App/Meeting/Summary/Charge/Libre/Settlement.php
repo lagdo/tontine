@@ -50,10 +50,8 @@ class Settlement extends Component
     {
         $session = $this->stash()->get('summary.session');
         $charge = $this->stash()->get('summary.session.charge');
-        $settlement = $this->settlementService->getSettlementCount($charge, $session);
-
-        $this->stash()->set('summary.session.settlement.count', $settlement->total ?? 0);
-        $this->stash()->set('summary.session.settlement.amount', $settlement->amount ?? 0);
+        $this->stash()->set('summary.session.settlement.count',
+            $this->settlementService->getSettlementCount($charge, $session));
         $this->stash()->set('summary.session.bill.count',
             $this->billService->getBillCount($charge, $session));
 

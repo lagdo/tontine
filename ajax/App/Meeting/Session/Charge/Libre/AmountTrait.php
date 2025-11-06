@@ -32,7 +32,7 @@ trait AmountTrait
     /**
      * @return void
      */
-    private function showTotal()
+    private function showBillTotal()
     {
         $this->cl(MemberTotal::class)->render();
         $this->cl(MemberAll::class)->render();
