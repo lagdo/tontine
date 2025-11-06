@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Session\Charge\Fixed;
 
 use Ajax\App\Meeting\Session\Charge\FuncComponent;
 use Ajax\App\Meeting\Session\Charge\Settlement\Action;
-use Ajax\App\Meeting\Session\Charge\Settlement\Total;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Exclude;
 
@@ -23,7 +22,7 @@ class SettlementFunc extends FuncComponent
             $this->billService->getBillCount($charge, $session));
 
         $this->cl(Action::class)->item('fixed')->render();
-        $this->cl(Total::class)->item('fixed')->render();
+        $this->cl(SettlementTotal::class)->render();
     }
 
     /**

@@ -2,8 +2,6 @@
 
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
-use Ajax\App\Meeting\Session\Charge\Settlement\Total;
-
 trait SettlementTrait
 {
     protected function setSettlement(): void
@@ -21,7 +19,7 @@ trait SettlementTrait
     protected function showTotal(): void
     {
         $this->setSettlement();
-        $this->cl(Total::class)->item('libre')->render();
+        $this->cl(SettlementTotal::class)->render();
         $this->cl(SettlementAll::class)->render();
     }
 }

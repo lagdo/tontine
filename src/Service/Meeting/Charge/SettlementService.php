@@ -125,6 +125,17 @@ class SettlementService
      * @param Charge $charge
      * @param Session $session
      *
+     * @return array<int>
+     */
+    public function getSettlementTotal(Charge $charge, Session $session): array
+    {
+        return $this->billService->getSettlementTotal($charge, $session);
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Session $session
+     *
      * @return Bill
      */
     public function getSettlementCount(Charge $charge, Session $session): Bill

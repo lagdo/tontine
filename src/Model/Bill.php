@@ -192,8 +192,8 @@ class Bill extends Base
         return $this->scopeOfSession($query, $session)
             ->join(DB::raw('members as m'), 'v.member_id', '=', 'm.id')
             ->join(DB::raw('member_defs as md'), 'm.def_id', '=', 'md.id')
-            ->select(['bills.*', 'v.*',
-                DB::raw('md.name as member'), DB::raw('s.day_date as bill_date')]);
+            ->select(['bills.*', 'v.*', DB::raw('md.name as member'),
+                DB::raw('s.day_date as bill_date')]);
     }
 
     /**
@@ -264,7 +264,7 @@ class Bill extends Base
     public function scopeSearch(Builder $query, string $search): Builder
     {
         return $query->when($search !== '', fn($qs) => $qs
-            ->where(DB::raw('lower(member)'), 'like', "%{$search}%"));
+            ->where(DB::raw('lower(md.name)'), 'like', "%{$search}%"));
     }
 
     /**

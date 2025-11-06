@@ -121,6 +121,20 @@ class BillService
      * @param Charge $charge
      * @param Session $session
      *
+     * @return array<int>
+     */
+    public function getSettlementTotal(Charge $charge, Session $session): array
+    {
+        $total = $this->getBillsQuery($charge, $session, '', true)
+            ->select(DB::raw('count(*) as count'), DB::raw('sum(bills.amount) as amount'))
+            ->first();
+        return [$total->count ?? 0, $total->amount ?? 0];
+    }
+
+    /**
+     * @param Charge $charge
+     * @param Session $session
+     *
      * @return Bill
      */
     public function getSettlementAmount(Charge $charge, Session $session): Bill

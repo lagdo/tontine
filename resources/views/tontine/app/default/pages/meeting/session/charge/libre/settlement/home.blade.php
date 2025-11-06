@@ -4,7 +4,7 @@
   $rqSettlementPage = rq(Ajax\App\Meeting\Session\Charge\Libre\SettlementPage::class);
   $rqSettlementFunc = rq(Ajax\App\Meeting\Session\Charge\Libre\SettlementFunc::class);
   $rqSettlementAll = rq(Ajax\App\Meeting\Session\Charge\Libre\SettlementAll::class);
-  $rqTotal = rq(Ajax\App\Meeting\Session\Charge\Settlement\Total::class);
+  $rqSettlementTotal = rq(Ajax\App\Meeting\Session\Charge\Libre\SettlementTotal::class);
 @endphp
                   <div class="row mb-2">
                     <div class="col">
@@ -20,10 +20,10 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row mb-2" style="padding: 7px 15px 7px 5px;">
-                    <div class="col-auto">
+                  <div class="row mb-2">
+                    <div class="col-7">
                     </div>
-                    <div class="col-auto ml-auto" @jxnBind($rqTotal, 'libre')>
+                    <div class="col-3" @jxnBind($rqSettlementTotal)>
                     </div>
                   </div>
                   <div @jxnBind($rqSettlementPage)>

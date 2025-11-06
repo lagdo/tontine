@@ -20,7 +20,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row mb-1">
+                  <div class="row mb-2">
                     <div class="col-7">
                       <div class="input-group">
                         {!! $html->text('search', '')->id('txt-fee-member-search')
@@ -30,10 +30,8 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-auto ml-auto" @jxnBind($rqMemberTotal)>
-                    </div>
                     <div class="col-auto ml-auto">
-                      <div class="input-group input-group-sm float-right mb-1 mr-0 pr-0">
+                      <div class="input-group input-group-sm float-right mr-0 pr-0">
                         <div class="input-group-prepend">
                           <div class="input-group-text" style="height:36px;">
                             {!! $html->checkbox('', $paid, '1')->id('check-fee-libre-paid') !!}
@@ -42,6 +40,8 @@
                         {!! $html->label(__('common.labels.paid'), '')->class('form-control')
                           ->attribute('style', 'height:36px; padding:5px 15px;') !!}
                       </div>
+                    </div>
+                    <div class="col-auto ml-auto" @jxnBind($rqMemberTotal)>
                     </div>
                   </div>
                   <div @jxnBind($rqMemberPage)>

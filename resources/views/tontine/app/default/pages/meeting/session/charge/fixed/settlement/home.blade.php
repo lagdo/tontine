@@ -3,7 +3,7 @@
   $rqCharge = rq(Ajax\App\Meeting\Session\Charge\Fixed\Fee::class);
   $rqSettlement = rq(Ajax\App\Meeting\Session\Charge\Fixed\Settlement::class);
   $rqSettlementPage = rq(Ajax\App\Meeting\Session\Charge\Fixed\SettlementPage::class);
-  $rqTotal = rq(Ajax\App\Meeting\Session\Charge\Settlement\Total::class);
+  $rqSettlementTotal = rq(Ajax\App\Meeting\Session\Charge\Fixed\SettlementTotal::class);
   $rqAction = rq(Ajax\App\Meeting\Session\Charge\Settlement\Action::class);
 @endphp
                   <div class="row mb-2">
@@ -28,7 +28,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-auto ml-auto" @jxnBind($rqTotal, 'fixed') style="padding: 7px 15px 7px 5px;">
+                    <div class="col-3" @jxnBind($rqSettlementTotal)>
                     </div>
                     <div class="col-auto ml-auto" @jxnBind($rqAction, 'fixed') style="padding: 7px 15px 7px 5px;">
                     </div>
