@@ -10,6 +10,7 @@ use Stringable;
 class Settlement extends Component
 {
     use SettlementTrait;
+    use ChargeTrait;
 
     /**
      * @var string

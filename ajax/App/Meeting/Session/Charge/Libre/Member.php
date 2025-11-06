@@ -10,6 +10,7 @@ use function trim;
 class Member extends Component
 {
     use AmountTrait;
+    use ChargeTrait;
 
     /**
      * @var string

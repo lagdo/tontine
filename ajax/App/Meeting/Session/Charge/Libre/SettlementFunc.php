@@ -9,6 +9,7 @@ use Jaxon\Attributes\Attribute\Before;
 class SettlementFunc extends FuncComponent
 {
     use SettlementTrait;
+    use ChargeTrait;
 
     /**
      * @param int $billId

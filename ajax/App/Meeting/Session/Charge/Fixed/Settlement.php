@@ -9,6 +9,8 @@ use function trim;
 
 class Settlement extends Component
 {
+    use ChargeTrait;
+
     /**
      * @var string
      */

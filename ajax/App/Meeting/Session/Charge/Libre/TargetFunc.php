@@ -14,6 +14,8 @@ use function trans;
 #[Before('getTarget')]
 class TargetFunc extends FuncComponent
 {
+    use ChargeTrait;
+
     /**
      * @var TargetValidator
      */

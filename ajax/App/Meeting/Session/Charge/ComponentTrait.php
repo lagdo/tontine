@@ -57,17 +57,23 @@ trait ComponentTrait
     abstract protected function bag(string $sBagName): DataBagContext;
 
     /**
+     * @return string
+     */
+    abstract protected function chargeBagId(): string;
+
+    /**
      * @return void
      */
 
     protected function getCharge(): void
     {
+        $chargeBagId = $this->chargeBagId();
         if($this->target()->method() === 'charge')
         {
-            $this->bag('meeting')->set('charge.id', $this->target()->args()[0]);
+            $this->bag('meeting')->set($chargeBagId, $this->target()->args()[0]);
         }
         $round = $this->stash()->get('tenant.round');
-        $chargeId = $this->bag('meeting')->get('charge.id');
+        $chargeId = $this->bag('meeting')->get($chargeBagId);
         $charge = $this->chargeService->getCharge($round, $chargeId);
         $this->stash()->set('meeting.session.charge', $charge);
     }

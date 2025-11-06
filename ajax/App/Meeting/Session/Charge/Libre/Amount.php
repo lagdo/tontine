@@ -12,6 +12,7 @@ use function jq;
 class Amount extends Component
 {
     use AmountTrait;
+    use ChargeTrait;
 
     /**
      * The constructor

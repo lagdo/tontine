@@ -8,6 +8,8 @@ use Jaxon\Attributes\Attribute\Exclude;
 
 class SettlementFunc extends FuncComponent
 {
+    use ChargeTrait;
+
     #[Exclude]
     public function showTotal(): void
     {

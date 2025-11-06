@@ -9,6 +9,7 @@ use Siak\Tontine\Service\LocaleService;
 class AmountFunc extends FuncComponent
 {
     use AmountTrait;
+    use ChargeTrait;
 
     /**
      * The constructor

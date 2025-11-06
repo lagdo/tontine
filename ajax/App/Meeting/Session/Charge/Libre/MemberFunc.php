@@ -9,6 +9,7 @@ use Jaxon\Attributes\Attribute\Before;
 class MemberFunc extends FuncComponent
 {
     use AmountTrait;
+    use ChargeTrait;
 
     /**
      * @param int $memberId

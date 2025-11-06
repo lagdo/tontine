@@ -11,6 +11,7 @@ use Stringable;
 class SettlementPage extends PageComponent
 {
     use SettlementTrait;
+    use ChargeTrait;
 
     /**
      * The pagination databag options

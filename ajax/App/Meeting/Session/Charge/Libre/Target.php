@@ -10,6 +10,8 @@ use Stringable;
 #[Before('getTarget')]
 class Target extends Component
 {
+    use ChargeTrait;
+
     /**
      * @var string
      */

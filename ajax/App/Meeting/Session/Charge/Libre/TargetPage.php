@@ -10,6 +10,8 @@ use Stringable;
 #[Before('getTarget')]
 class TargetPage extends PageComponent
 {
+    use ChargeTrait;
+
     /**
      * The constructor
      *
