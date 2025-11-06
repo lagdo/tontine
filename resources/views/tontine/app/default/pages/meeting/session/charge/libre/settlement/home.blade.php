@@ -8,9 +8,8 @@
 @endphp
                   <div class="row mb-2">
                     <div class="col">
-                      <div class="section-title mt-0">
-                        {{ __('meeting.titles.settlements') }}
-                      </div>
+                      <div class="section-title mt-0 mb-0">{{ __('meeting.titles.settlements') }}</div>
+                      <div class="section-subtitle">{{ $charge->name }}</div>
                     </div>
                     <div class="col-auto ml-auto" @jxnBind($rqSettlementAll)>
                     </div>
@@ -23,7 +22,6 @@
                   </div>
                   <div class="row mb-2" style="padding: 7px 15px 7px 5px;">
                     <div class="col-auto">
-                      {{ $charge->name }}
                     </div>
                     <div class="col-auto ml-auto" @jxnBind($rqTotal, 'libre')>
                     </div>

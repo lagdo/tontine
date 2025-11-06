@@ -1,3 +1,4 @@
+@if ($memberCount > 0)
 @php
   $rqMemberFunc = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberFunc::class);
   $chargeType = $charge->is_fee ? 'fees' : 'fines';
@@ -17,7 +18,6 @@
     ];
   }
 @endphp
-@if ($memberCount > 0)
                 <div class="btn-group ml-2" role="group" @jxnEvent([
                   ['.btn-bill-all-create', 'click', $rqMemberFunc->confirmAll()],
                   ['.btn-bill-all-delete', 'click', $rqMemberFunc->deleteBills()

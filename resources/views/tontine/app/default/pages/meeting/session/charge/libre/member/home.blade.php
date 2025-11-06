@@ -8,7 +8,8 @@
 @endphp
                   <div class="row mb-2">
                     <div class="col">
-                      <div class="section-title mt-0">{{ $charge->name }}</div>
+                      <div class="section-title mt-0 mb-0">{{ __('common.actions.add') }}</div>
+                      <div class="section-subtitle">{{ $charge->name }}</div>
                     </div>
                     <div class="col-auto ml-auto" @jxnBind($rqMemberAll)>
                     </div>
@@ -20,7 +21,7 @@
                     </div>
                   </div>
                   <div class="row mb-1">
-                    <div class="col">
+                    <div class="col-7">
                       <div class="input-group">
                         {!! $html->text('search', '')->id('txt-fee-member-search')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') !!}

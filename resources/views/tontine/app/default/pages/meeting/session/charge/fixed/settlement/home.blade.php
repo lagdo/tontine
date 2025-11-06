@@ -8,9 +8,8 @@
 @endphp
                   <div class="row mb-2">
                     <div class="col-auto">
-                      <div class="section-title mt-0">
-                        {{ $charge->name }} - {{ __('meeting.titles.settlements') }}
-                      </div>
+                      <div class="section-title mt-0 mb-0">{{ __('meeting.titles.settlements') }}</div>
+                      <div class="section-subtitle">{{ $charge->name }}</div>
                     </div>
                     <div class="col-auto ml-auto">
                       <div class="btn-group" role="group">
@@ -20,7 +19,7 @@
                     </div>
                   </div>
                   <div class="row mb-2">
-                    <div class="col-auto">
+                    <div class="col-7">
                       <div class="input-group">
                         {!! $html->text('search', '')->id('txt-fee-settlements-search')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') !!}

@@ -75,6 +75,10 @@ i.rotate-by-45deg {
 .main-sidebar .sidebar-menu li a#admin-menu-guilds {
   color: #6777ef;
 }
+.section-subtitle {
+  margin-top: 0;
+  margin-left: 45px;
+}
 .table td.table-item-menu, .table th.table-item-menu {
   width: 70px;
 }

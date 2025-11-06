@@ -1,3 +1,4 @@
+@if ($billCount > 0)
 @php
   $rqSettlementFunc = rq(Ajax\App\Meeting\Session\Charge\Libre\SettlementFunc::class);
   $menus = [];
@@ -16,7 +17,6 @@
     ];
   }
 @endphp
-@if ($billCount > 0)
                 <div class="btn-group ml-2" role="group" @jxnEvent([
                   ['.btn-settlement-all-create', 'click', $rqSettlementFunc->addSettlements()
                     ->confirm(__('meeting.settlement.questions.create-all', [
