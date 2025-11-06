@@ -22,7 +22,7 @@
                   ['.btn-bill-all-create', 'click', $rqMemberFunc->confirmAll()],
                   ['.btn-bill-all-delete', 'click', $rqMemberFunc->deleteBills()
                     ->confirm(__('meeting.bill.questions.delete-all', [
-                      'items' => strtolower(__("meeting.titles.$chargeType"))
+                      'count' => $memberCount - $noBillCount
                     ]))],
                 ])>
 @include('tontine::parts.table.menu', [

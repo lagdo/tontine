@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Charge\Fixed;
 
 use Ajax\App\Meeting\Session\Charge\FuncComponent;
-use Ajax\App\Meeting\Session\Charge\Settlement\Action;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Exclude;
 
@@ -21,7 +20,7 @@ class SettlementFunc extends FuncComponent
         $this->stash()->set('meeting.session.bill.count',
             $this->billService->getBillCount($charge, $session));
 
-        $this->cl(Action::class)->item('fixed')->render();
+        $this->cl(SettlementAll::class)->render();
         $this->cl(SettlementTotal::class)->render();
     }
 
@@ -61,7 +60,7 @@ class SettlementFunc extends FuncComponent
      * @return mixed
      */
     #[Before('checkChargeEdit')]
-    public function addAllSettlements(): void
+    public function addSettlements(): void
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
@@ -75,7 +74,7 @@ class SettlementFunc extends FuncComponent
      * @return mixed
      */
     #[Before('checkChargeEdit')]
-    public function delAllSettlements(): void
+    public function delSettlements(): void
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');

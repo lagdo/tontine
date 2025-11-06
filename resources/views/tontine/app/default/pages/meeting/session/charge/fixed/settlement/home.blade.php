@@ -3,13 +3,15 @@
   $rqCharge = rq(Ajax\App\Meeting\Session\Charge\Fixed\Fee::class);
   $rqSettlement = rq(Ajax\App\Meeting\Session\Charge\Fixed\Settlement::class);
   $rqSettlementPage = rq(Ajax\App\Meeting\Session\Charge\Fixed\SettlementPage::class);
+  $rqSettlementAll = rq(Ajax\App\Meeting\Session\Charge\Fixed\SettlementAll::class);
   $rqSettlementTotal = rq(Ajax\App\Meeting\Session\Charge\Fixed\SettlementTotal::class);
-  $rqAction = rq(Ajax\App\Meeting\Session\Charge\Settlement\Action::class);
 @endphp
                   <div class="row mb-2">
-                    <div class="col-auto">
+                    <div class="col">
                       <div class="section-title mt-0 mb-0">{{ __('meeting.titles.settlements') }}</div>
                       <div class="section-subtitle">{{ $charge->name }}</div>
+                    </div>
+                    <div class="col-auto ml-auto" @jxnBind($rqSettlementAll)>
                     </div>
                     <div class="col-auto ml-auto">
                       <div class="btn-group" role="group">
@@ -29,8 +31,6 @@
                       </div>
                     </div>
                     <div class="col-3" @jxnBind($rqSettlementTotal)>
-                    </div>
-                    <div class="col-auto ml-auto" @jxnBind($rqAction, 'fixed') style="padding: 7px 15px 7px 5px;">
                     </div>
                   </div>
                   <div @jxnBind($rqSettlementPage)>

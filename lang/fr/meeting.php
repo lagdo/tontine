@@ -106,7 +106,7 @@ return [
             'all' => 'Ajouter à :count membres',
         ],
         'questions' => [
-            'delete-all' => "Supprimer toutes les :items ?",
+            'delete-all' => "Supprimer pour :count membres ?",
         ],
         'errors' => [
             'delete' => "Erreur lors de la suppression. Vérifiez qu'il n'y a pas de règlement.",

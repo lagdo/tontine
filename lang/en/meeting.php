@@ -106,7 +106,7 @@ return [
             'all' => 'Add for :count members',
         ],
         'questions' => [
-            'delete-all' => "Delete all the :items?",
+            'delete-all' => "Delete for :count members?",
         ],
         'errors' => [
             'delete' => "Error while deleting. Make sure there's no settlement.",
