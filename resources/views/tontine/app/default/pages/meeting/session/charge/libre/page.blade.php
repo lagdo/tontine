@@ -3,12 +3,15 @@
   $rqLibreFeePage = rq(Ajax\App\Meeting\Session\Charge\Libre\FeePage::class);
   $rqMember = rq(Ajax\App\Meeting\Session\Charge\Libre\Member::class);
   $rqSettlement = rq(Ajax\App\Meeting\Session\Charge\Libre\Settlement::class);
+  $rqSaving = rq(Ajax\App\Meeting\Session\Charge\Libre\Saving::class);
   $rqTarget = rq(Ajax\App\Meeting\Session\Charge\Libre\Target::class);
 @endphp
                   <div class="table-responsive" id="content-session-fees-libre-page" @jxnEvent([
                     ['.btn-fee-libre-add', 'click', $rqMember->charge($chargeId)],
                     ['.btn-fee-libre-settlements', 'click', $rqSettlement->charge($chargeId)],
-                    ['.btn-fee-libre-target', 'click', $rqTarget->charge($chargeId)]])>
+                    ['.btn-fee-libre-savings', 'click', $rqSaving->charge($chargeId)],
+                    ['.btn-fee-libre-target', 'click', $rqTarget->charge($chargeId)],
+                  ])>
 
                     <table class="table table-bordered responsive">
                       <thead>

@@ -1,12 +1,13 @@
 @php
   $billId = jq()->parent()->attr('data-bill-id')->toInt();
-  $rqSettlementFunc = rq(Ajax\App\Meeting\Session\Charge\Libre\SettlementFunc::class);
-  $rqSettlementPage = rq(Ajax\App\Meeting\Session\Charge\Libre\SettlementPage::class);
+  $fundId = je('settlement-saving-fund')->rd()->select()->toInt();
+  $rqSavingFunc = rq(Ajax\App\Meeting\Session\Charge\Libre\SavingFunc::class);
+  $rqSavingPage = rq(Ajax\App\Meeting\Session\Charge\Libre\SavingPage::class);
 @endphp
                   <div class="table-responsive" id="content-session-fee-libre-bills" @jxnEvent([
-                    ['.btn-add-settlement', 'click', $rqSettlementFunc->addSettlement($billId)],
-                    ['.btn-del-settlement', 'click', $rqSettlementFunc->delSettlement($billId)],
-                    ['.btn-edit-notes', 'click', $rqSettlementFunc->editNotes($billId)]])>
+                    ['.btn-add-settlement', 'click', $rqSavingFunc->addSettlement($billId, $fundId)],
+                    ['.btn-del-settlement', 'click', $rqSavingFunc->delSettlement($billId)],
+                  ])>
 
                     <table class="table table-bordered responsive">
                       <thead>
@@ -34,6 +35,6 @@
 @endforeach
                       </tbody>
                     </table>
-                    <nav @jxnPagination($rqSettlementPage)>
+                    <nav @jxnPagination($rqSavingPage)>
                     </nav>
                   </div> <!-- End table -->

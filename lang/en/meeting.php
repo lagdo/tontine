@@ -113,6 +113,9 @@ return [
         ],
     ],
     'settlement' => [
+        'actions' => [
+            'savings' => "Savings",
+        ],
         'questions' => [
             'create-all' => "Add the :count settlements?",
             'delete-all' => "Delete the :count settlements?",

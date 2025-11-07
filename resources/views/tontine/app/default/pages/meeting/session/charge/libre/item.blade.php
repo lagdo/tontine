@@ -10,6 +10,9 @@
   ], [
     'class' => 'btn-fee-libre-settlements',
     'text' => __('meeting.actions.settlements'),
+  ], [
+    'class' => 'btn-fee-libre-savings',
+    'text' => __('meeting.settlement.actions.savings'),
   ]];
   if($charge->is_fee && !$charge->has_amount)
   {

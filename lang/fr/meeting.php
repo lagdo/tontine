@@ -113,6 +113,9 @@ return [
         ],
     ],
     'settlement' => [
+        'actions' => [
+            'savings' => "&Eacute;pargne",
+        ],
         'questions' => [
             'create-all' => "Ajouter les :count règlements ?",
             'delete-all' => "Supprimer les :count règlements ?",

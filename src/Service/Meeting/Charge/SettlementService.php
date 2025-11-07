@@ -2,10 +2,12 @@
 
 namespace Siak\Tontine\Service\Meeting\Charge;
 
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Charge;
+use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Settlement;
 use Siak\Tontine\Service\Payment\PaymentServiceInterface;
@@ -28,15 +30,43 @@ class SettlementService
     {}
 
     /**
+     * @param Round $round
+     *
+     * @return Collection
+     */
+    public function getFunds(Round $round): Collection
+    {
+        return $round->funds()->real()
+            ->join('fund_defs', 'fund_defs.id', '=', 'funds.def_id')
+            ->orderBy('fund_defs.type') // The default fund is first in the list.
+            ->orderBy('funds.id')
+            ->get()
+            ->pluck('title', 'id');
+    }
+
+    /**
+     * @param Round $round
+     * @param int $fundId
+     *
+     * @return Fund|null
+     */
+    public function getFund(Round $round, int $fundId): Fund|null
+    {
+        return $round->funds()->real()->find($fundId);
+    }
+
+    /**
      * Create a settlement
      *
      * @param Charge $charge
      * @param Session $session
-     * @param int $Id
+     * @param int $billId
+     * @param Fund|null $fund
      *
      * @return void
      */
-    public function createSettlement(Charge $charge, Session $session, int $billId): void
+    public function createSettlement(Charge $charge, Session $session,
+        int $billId, Fund|null $fund = null): void
     {
         $bill = $this->billService->getBill($charge, $session, $billId);
         // Return if the bill is not found or the bill is already settled.
@@ -47,6 +77,10 @@ class SettlementService
         $settlement = new Settlement();
         $settlement->bill()->associate($bill);
         $settlement->session()->associate($session);
+        if($fund !== null)
+        {
+            $settlement->fund()->associate($fund);
+        }
         $settlement->save();
     }
 
@@ -80,27 +114,39 @@ class SettlementService
      * @param Charge $charge
      * @param Session $session
      * @param string $search
+     * @param Fund|null $fund
      *
      * @return void
      */
-    public function createAllSettlements(Charge $charge, Session $session, string $search): void
+    public function createAllSettlements(Charge $charge, Session $session,
+        string $search, Fund|null $fund = null): void
     {
         $bills = $this->billService->getBills($charge, $session, $search, false);
         if($bills->count() === 0)
         {
+            // Reset the fund
+            $this->fund = null;
+
             return;
         }
 
         // Todo: use one insert query
-        DB::transaction(function() use($bills, $session) {
+        DB::transaction(function() use($bills, $session, $fund) {
             foreach($bills as $bill)
             {
                 $settlement = new Settlement();
                 $settlement->bill()->associate($bill);
                 $settlement->session()->associate($session);
+                if($fund !== null)
+                {
+                    $settlement->fund()->associate($fund);
+                }
                 $settlement->save();
             }
         });
+
+        // Reset the fund
+        $this->fund = null;
     }
 
     /**
@@ -134,12 +180,10 @@ class SettlementService
      */
     public function getSettlementTotal(Charge $charge, Session $session): array
     {
-        $total = Settlement::query()
-            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
-            ->join(DB::raw('v_bills as v'), 'v.bill_id', '=', 'bills.id')
-            ->where('settlements.session_id', $session->id)
-            ->where('v.charge_id', $charge->id)
-            ->select(DB::raw('count(*) as count'), DB::raw('sum(bills.amount) as amount'))
+        $total = DB::table('v_settlements')
+            ->where('session_id', $session->id)
+            ->where('charge_id', $charge->id)
+            ->select(DB::raw('count(*) as count'), DB::raw('sum(amount) as amount'))
             ->first();
         return [$total->count ?? 0, $total->amount ?? 0];
     }

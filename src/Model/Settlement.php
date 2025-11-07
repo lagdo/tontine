@@ -23,6 +23,11 @@ class Settlement extends Base
         return $this->belongsTo(Session::class);
     }
 
+    public function fund()
+    {
+        return $this->belongsTo(Fund::class);
+    }
+
     /**
      * @param  Builder  $query
      * @param  Session  $session

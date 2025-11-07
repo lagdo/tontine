@@ -46,7 +46,6 @@ class BillService
     {
         return Bill::forSession($session)
             ->whereCharge($charge)
-            ->with('session')
             ->search($this->searchSanitizer->sanitize($search))
             ->when($onlyPaid === false, fn($query) => $query->unpaid())
             ->when($onlyPaid === true, function($query) use($session) {
@@ -82,7 +81,7 @@ class BillService
         string $search = '', ?bool $onlyPaid = null, int $page = 0): Collection
     {
         return $this->getBillsQuery($charge, $session, $search, $onlyPaid)
-            ->with('settlement')
+            ->with(['session', 'settlement', 'settlement.fund'])
             ->page($page, $this->tenantService->getLimit())
             ->orderBy('member', 'asc')
             ->orderBy('bill_date', 'asc')
@@ -98,7 +97,8 @@ class BillService
      */
     public function getBill(Charge $charge, Session $session, int $billId): ?Bill
     {
-        return $this->getBillsQuery($charge, $session)->find($billId);
+        return $this->getBillsQuery($charge, $session)
+            ->find($billId);
     }
 
     /**
