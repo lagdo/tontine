@@ -214,7 +214,9 @@ class BalanceCalculator
      */
     private function getSettlementsAmount(Collection $sessionIds, bool $lendable)
     {
-        return Bill::whereHas('settlement', fn($qs) => $qs->whereIn('session_id', $sessionIds))
+        // Don't take transfers from savings funds to settlements into account.
+        return Bill::whereHas('settlement', fn($qs) =>
+                $qs->whereNull('fund_id')->whereIn('session_id', $sessionIds))
             ->when($lendable, fn($qb) => $qb->lendable(true))
             ->sum('amount');
     }
