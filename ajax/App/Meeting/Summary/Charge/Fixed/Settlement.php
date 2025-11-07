@@ -3,11 +3,12 @@
 namespace Ajax\App\Meeting\Summary\Charge\Fixed;
 
 use Ajax\App\Meeting\Summary\Charge\Component;
-use Ajax\App\Meeting\Summary\Charge\Settlement\Total;
 use Stringable;
 
 class Settlement extends Component
 {
+    use ChargeTrait;
+
     /**
      * @var string
      */
@@ -28,8 +29,8 @@ class Settlement extends Component
      */
     protected function after(): void
     {
+        $this->cl(SettlementTotal::class)->render();
         $this->cl(SettlementPage::class)->page();
-        $this->showTotal();
     }
 
     /**
@@ -44,18 +45,6 @@ class Settlement extends Component
         $this->bag('summary')->set('settlement.fixed.page', 1);
 
         $this->render();
-    }
-
-    private function showTotal(): void
-    {
-        $session = $this->stash()->get('summary.session');
-        $charge = $this->stash()->get('summary.session.charge');
-        $this->stash()->set('summary.session.settlement.count',
-            $this->settlementService->getSettlementCount($charge, $session));
-        $this->stash()->set('summary.session.bill.count',
-            $this->billService->getBillCount($charge, $session));
-
-        $this->cl(Total::class)->item('fixed')->render();
     }
 
     public function toggleFilter(): void
@@ -74,6 +63,7 @@ class Settlement extends Component
         $this->bag('summary')->set('settlement.fixed.search', trim($search));
         $this->bag('summary')->set('settlement.fixed.page', 1);
 
+        $this->cl(SettlementTotal::class)->render();
         $this->cl(SettlementPage::class)->page();
     }
 }

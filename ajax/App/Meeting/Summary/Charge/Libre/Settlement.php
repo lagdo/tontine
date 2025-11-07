@@ -3,11 +3,12 @@
 namespace Ajax\App\Meeting\Summary\Charge\Libre;
 
 use Ajax\App\Meeting\Summary\Charge\Component;
-use Ajax\App\Meeting\Summary\Charge\Settlement\Total;
 use Stringable;
 
 class Settlement extends Component
 {
+    use ChargeTrait;
+
     /**
      * @var string
      */
@@ -28,8 +29,8 @@ class Settlement extends Component
      */
     protected function after(): void
     {
+        $this->cl(SettlementTotal::class)->render();
         $this->cl(SettlementPage::class)->page();
-        $this->showTotal();
     }
 
     /**
@@ -46,18 +47,6 @@ class Settlement extends Component
         $this->render();
     }
 
-    private function showTotal(): void
-    {
-        $session = $this->stash()->get('summary.session');
-        $charge = $this->stash()->get('summary.session.charge');
-        $this->stash()->set('summary.session.settlement.count',
-            $this->settlementService->getSettlementCount($charge, $session));
-        $this->stash()->set('summary.session.bill.count',
-            $this->billService->getBillCount($charge, $session));
-
-        $this->cl(Total::class)->item('libre')->render();
-    }
-
     public function toggleFilter(): void
     {
         $onlyUnpaid = $this->bag('summary')->get('settlement.libre.filter', null);
@@ -66,6 +55,15 @@ class Settlement extends Component
         $this->bag('summary')->set('settlement.libre.filter', $onlyUnpaid);
         $this->bag('summary')->set('settlement.libre.page', 1);
 
+        $this->cl(SettlementPage::class)->page();
+    }
+
+    public function search(string $search): void
+    {
+        $this->bag('summary')->set('settlement.libre.search', trim($search));
+        $this->bag('summary')->set('settlement.libre.page', 1);
+
+        $this->cl(SettlementTotal::class)->render();
         $this->cl(SettlementPage::class)->page();
     }
 }

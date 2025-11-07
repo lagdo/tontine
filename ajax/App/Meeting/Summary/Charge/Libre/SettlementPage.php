@@ -7,6 +7,8 @@ use Stringable;
 
 class SettlementPage extends PageComponent
 {
+    use ChargeTrait;
+
     /**
      * The pagination databag options
      *
@@ -19,7 +21,7 @@ class SettlementPage extends PageComponent
      */
     protected function count(): int
     {
-        $search = '';
+        $search = $this->bag('summary')->get('settlement.libre.search', '');
         $filter = $this->bag('summary')->get('settlement.libre.filter', null);
         $session = $this->stash()->get('summary.session');
         $charge = $this->stash()->get('summary.session.charge');
@@ -32,7 +34,7 @@ class SettlementPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $search = '';
+        $search = $this->bag('summary')->get('settlement.libre.search', '');
         $filter = $this->bag('summary')->get('settlement.libre.filter', null);
         $session = $this->stash()->get('summary.session');
         $charge = $this->stash()->get('summary.session.charge');

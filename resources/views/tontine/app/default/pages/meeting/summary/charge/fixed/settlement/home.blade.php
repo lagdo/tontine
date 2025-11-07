@@ -1,15 +1,14 @@
 @php
-  $searchValue = jq('#txt-fee-settlements-search')->val();
+  $searchValue = jq('#txt-fixed-settlements-search')->val();
   $rqCharge = rq(Ajax\App\Meeting\Summary\Charge\Fixed\Fee::class);
   $rqSettlement = rq(Ajax\App\Meeting\Summary\Charge\Fixed\Settlement::class);
   $rqSettlementPage = rq(Ajax\App\Meeting\Summary\Charge\Fixed\SettlementPage::class);
-  $rqTotal = rq(Ajax\App\Meeting\Summary\Charge\Settlement\Total::class);
+  $rqSettlementTotal = rq(Ajax\App\Meeting\Summary\Charge\Fixed\SettlementTotal::class);
 @endphp
                   <div class="row mb-2">
-                    <div class="col-auto">
-                      <div class="section-title mt-0">
-                        {{ $charge->name }} - {{ __('meeting.titles.settlements') }}
-                      </div>
+                    <div class="col">
+                      <div class="section-title mt-0 mb-0">{{ __('meeting.titles.settlements') }}</div>
+                      <div class="section-subtitle">{{ $charge->name }}</div>
                     </div>
                     <div class="col-auto ml-auto">
                       <div class="btn-group" role="group">
@@ -19,16 +18,16 @@
                     </div>
                   </div>
                   <div class="row mb-2">
-                    <div class="col-auto">
+                    <div class="col-7">
                       <div class="input-group">
-                        {!! $html->text('search', '')->id('txt-fee-settlements-search')
+                        {!! $html->text('search', '')->id('txt-fixed-settlements-search')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" @jxnClick($rqSettlement->search($searchValue))><i class="fa fa-search"></i></button>
                         </div>
                       </div>
                     </div>
-                    <div class="col-auto ml-auto" @jxnBind($rqTotal, 'fixed') style="padding: 7px 15px 7px 5px;">
+                    <div class="col-3" @jxnBind($rqSettlementTotal)>
                     </div>
                   </div>
                   <div @jxnBind($rqSettlementPage)>

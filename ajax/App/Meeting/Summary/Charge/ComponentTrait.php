@@ -6,12 +6,9 @@ use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
 use Jaxon\Attributes\Attribute\Inject;
 use Jaxon\Request\TargetInterface;
-use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
 use Siak\Tontine\Service\Meeting\Charge\ChargeService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementService;
-
-use function trans;
 
 trait ComponentTrait
 {
@@ -60,32 +57,25 @@ trait ComponentTrait
      * @return void
      */
 
-    protected function getCharge(): void
-    {
-        if($this->target()->method() === 'charge')
-        {
-            $this->bag('summary')->set('charge.id', $this->target()->args()[0]);
-        }
-        $round = $this->stash()->get('tenant.round');
-        $chargeId = $this->bag('summary')->get('charge.id');
-        $charge = $this->chargeService->getCharge($round, $chargeId);
-        $this->stash()->set('summary.session.charge', $charge);
-    }
-  
+    /**
+     * @return string
+     */
+    abstract protected function chargeBagId(): string;
+
     /**
      * @return void
      */
-    protected function checkChargeEdit(): void
+
+    protected function getCharge(): void
     {
-        $session = $this->stash()->get('summary.session');
-        if(!$session || $session->closed)
+        $chargeBagId = $this->chargeBagId();
+        if($this->target()->method() === 'charge')
         {
-            throw new MessageException(trans('meeting.warnings.session.closed'), false);
+            $this->bag('summary')->set($chargeBagId, $this->target()->args()[0]);
         }
-        $charge = $this->stash()->get('summary.session.charge');
-        if(!$charge || !$charge->active)
-        {
-            throw new MessageException(trans('meeting.warnings.charge.disabled'), false);
-        }
+        $round = $this->stash()->get('tenant.round');
+        $chargeId = $this->bag('summary')->get($chargeBagId);
+        $charge = $this->chargeService->getCharge($round, $chargeId);
+        $this->stash()->set('summary.session.charge', $charge);
     }
 }

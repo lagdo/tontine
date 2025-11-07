@@ -1,5 +1,5 @@
 @php
-  $searchValue = jq('#txt-fee-settlements-search')->val();
+  $searchValue = jq('#txt-fixed-settlements-search')->val();
   $rqCharge = rq(Ajax\App\Meeting\Session\Charge\Fixed\Fee::class);
   $rqSettlement = rq(Ajax\App\Meeting\Session\Charge\Fixed\Settlement::class);
   $rqSettlementPage = rq(Ajax\App\Meeting\Session\Charge\Fixed\SettlementPage::class);
@@ -23,7 +23,7 @@
                   <div class="row mb-2">
                     <div class="col-7">
                       <div class="input-group">
-                        {!! $html->text('search', '')->id('txt-fee-settlements-search')
+                        {!! $html->text('search', '')->id('txt-fixed-settlements-search')
                           ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') !!}
                         <div class="input-group-append">
                           <button type="button" class="btn btn-primary" @jxnClick($rqSettlement->search($searchValue))><i class="fa fa-search"></i></button>
