@@ -22,16 +22,24 @@
   $sessionSettlementTotal = $settlements['total']['session'][$charge->id] ?? 0;
   $roundSettlementTotal = $settlements['total']['round'][$charge->id] ?? 0;
   $sessionSettlementAmount = $settlements['amount']['session'][$charge->id] ?? 0;
+  $chargeAmount = $charge->has_amount ? $locale->formatMoney($charge->amount) :
+    __('tontine.labels.fees.variable');
 @endphp
                         <tr>
                           <td>
-                            {{ $charge->name }}<br/>{{ $charge->has_amount ?
-                              $locale->formatMoney($charge->amount) : __('tontine.labels.fees.variable') }}
+                            <div>{{ $charge->name }}</div>
+                            <div>
+                              <div style="float:left">{{ $chargeAmount }}</div>
+@if ($roundBillTotal > 0)
+                              <div style="float:right">{{ $roundSettlementTotal }}/{{ $roundBillTotal }}</div>
+@endif
+                            </div>
                           </td>
                           <td class="currency">
-                            {{ $sessionSettlementTotal }}/{{ $sessionBillTotal }} @if ($roundBillTotal > 0) - {{
-                              $roundSettlementTotal }}/{{ $roundBillTotal }}@endif @if ($sessionSettlementAmount > 0)<br/>{{
-                              $locale->formatMoney($sessionSettlementAmount) }}@endif
+                            <div>{{ $sessionSettlementTotal }}/{{ $sessionBillTotal }}</div>
+@if ($sessionSettlementTotal > 0)
+                            <div>{{ $locale->formatMoney($sessionSettlementAmount) }}</div>
+@endif
                           </td>
                           <td class="table-item-menu" data-charge-id="{{ $charge->id }}">
                             <button type="button" class="btn btn-primary btn-fee-libre-settlements"><i class="fa fa-arrow-circle-right"></i></button>

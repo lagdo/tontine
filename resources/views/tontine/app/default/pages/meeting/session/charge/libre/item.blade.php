@@ -18,16 +18,24 @@
       'text' => __('meeting.target.actions.deadline'),
     ];
   }
+  $chargeAmount = $charge->has_amount ? $locale->formatMoney($charge->amount) :
+    __('tontine.labels.fees.variable');
 @endphp
                         <tr>
                           <td>
-                            {{ $charge->name }}<br/>{{ $charge->has_amount ?
-                              $locale->formatMoney($charge->amount) : __('tontine.labels.fees.variable') }}
+                            <div>{{ $charge->name }}</div>
+                            <div>
+                              <div style="float:left">{{ $chargeAmount }}</div>
+@if ($roundBillTotal > 0)
+                              <div style="float:right">{{ $roundSettlementTotal }}/{{ $roundBillTotal }}</div>
+@endif
+                            </div>
                           </td>
                           <td class="currency">
-                            {{ $sessionSettlementTotal }}/{{ $sessionBillTotal }} @if ($roundBillTotal > 0) - {{
-                              $roundSettlementTotal }}/{{ $roundBillTotal }}@endif @if ($sessionSettlementAmount > 0)<br/>{{
-                              $locale->formatMoney($sessionSettlementAmount) }}@endif
+                            <div>{{ $sessionSettlementTotal }}/{{ $sessionBillTotal }}</div>
+@if ($sessionSettlementTotal > 0)
+                            <div>{{ $locale->formatMoney($sessionSettlementAmount) }}</div>
+@endif
                           </td>
                           <td class="table-item-menu">
 @include('tontine::parts.table.menu', [

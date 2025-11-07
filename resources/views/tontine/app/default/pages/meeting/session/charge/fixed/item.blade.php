@@ -7,12 +7,19 @@
 @endphp
                         <tr>
                           <td>
-                            {{ $charge->name }}<br/>{{ $locale->formatMoney($charge->amount) }}
+                            <div>{{ $charge->name }}</div>
+                            <div>
+                              <div style="float:left">{{ $locale->formatMoney($charge->amount) }}</div>
+@if ($roundBillTotal > 0)
+                              <div style="float:right">{{ $roundSettlementTotal }}/{{ $roundBillTotal }}</div>
+@endif
+                            </div>
                           </td>
                           <td class="currency">
-                            {{ $sessionSettlementTotal }}/{{ $sessionBillTotal }} @if ($roundBillTotal > 0) - {{
-                              $roundSettlementTotal }}/{{ $roundBillTotal }}@endif @if ($sessionSettlementAmount > 0)<br/>{{
-                              $locale->formatMoney($sessionSettlementAmount) }}@endif
+                            <div>{{ $sessionSettlementTotal }}/{{ $sessionBillTotal }}</div>
+@if ($sessionSettlementTotal > 0)
+                            <div>{{ $locale->formatMoney($sessionSettlementAmount) }}</div>
+@endif
                           </td>
                           <td class="table-item-menu" data-charge-id="{{ $charge->id }}">
                             <button type="button" class="btn btn-primary btn-fee-fixed-settlements"><i class="fa fa-arrow-circle-right"></i></button>
