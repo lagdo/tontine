@@ -137,7 +137,7 @@ class ReportService
                 'distribution' => $this->profitService->getDistribution($session,
                     $fund, $profits[$fund->id] ?? 0),
             ])
-            ->filter(fn($report) => $report['distribution']->savings->count() > 0);
+            ->filter(fn($report) => $report['distribution']->transfers->count() > 0);
 
         return compact('guild', 'session', 'country', 'funds');
     }

@@ -1,7 +1,7 @@
       <div class="section section-title">
         {!! $fund->title !!} :: {{ $locale->formatMoney($distribution->profitAmount, true)
           }}, {{ __('meeting.profit.distribution.parts', [
-            'parts' => $distribution->savings->sum('parts'),
+            'parts' => $distribution->transfers->sum('parts'),
           ]) }}
       </div>
 @if ($distribution->rewarded->count() > 1)
@@ -16,42 +16,52 @@
           <thead>
             <tr>
               <th>{!! __('meeting.labels.member') !!}</th>
-              <th>{!! __('meeting.labels.saving') !!}</th>
-              <th style="text-align:right;">{!! __('meeting.labels.duration') !!}</th>
-              <th style="text-align:right;">{!! __('meeting.labels.saving') !!}</th>
+              <th>{!! __('meeting.labels.operation') !!}</th>
+              <th style="text-align:right;">{!! __('common.labels.amount') !!}</th>
               <th style="text-align:right;">{!! __('meeting.labels.distribution') !!}</th>
               <th style="text-align:right;">{!! __('meeting.labels.profit') !!}</th>
             </tr>
           </thead>
           <tbody>
-@foreach ($distribution->savings->groupBy('member_id') as $savings)
+@php
+  $profitSum = $distribution->transfers->sum('profit');
+  $profitAmount = $distribution->profitAmount;
+@endphp
+@foreach ($distribution->transfers->groupBy('member_id') as $transfers)
+@php
+  $memberProfit = $transfers->sum('profit');
+  $memberPercent = $memberProfit / $profitSum;
+@endphp
             <tr>
-              <td rowspan="{{ $savings->count() + 1 }}">{{ $savings[0]->member->name }}</td>
+              <td rowspan="{{ $transfers->count() + 1 }}">
+                <b>{{ $transfers[0]->member->name }}</b>
+              </td>
               <td class="report-savings-session">&nbsp;</td>
-              <td class="report-savings-count">&nbsp;</td>
               <td class="report-savings-amount">
-                <b>{{ $locale->formatMoney($savings->sum('amount'), true) }}</b>
+                <b>{{ $locale->formatMoney($transfers->sum('amount'), true) }}</b>
               </td>
               <td class="report-savings-amount">
-                <b>{{ $savings->sum('parts') }} ({{ sprintf('%.2f', $savings->sum('percent')) }}%)</b>
+                <b>{{ $transfers->sum('parts') }} ({{ sprintf('%.2f', $memberPercent * 100) }}%)</b>
               </td>
               <td class="report-savings-amount">
-                <b>{{ $locale->formatMoney($savings->sum('profit'), true) }}</b>
+                <b>{{ $locale->formatMoney((int)($profitAmount * $memberPercent), true) }}</b>
               </td>
             </tr>
-@foreach ($savings as $saving)
+@foreach ($transfers as $transfer)
             <tr>
-              <td class="report-savings-session">{{ $saving->session->title }}</td>
-              <td class="report-savings-count">{{ $saving->duration }}</td>
-              <td class="report-savings-amount">
-                {{ $locale->formatMoney($saving->amount, true) }}
+              <td class="report-savings-session">
+                <div>{{ __($transfer->coef > 0 ? 'meeting.labels.saving' : 'meeting.labels.settlement') }}</div>
+                <div>{{ $transfer->session->title }}</div>
               </td>
               <td class="report-savings-amount">
-                {{ $saving->parts }} ({{ sprintf('%.2f', $saving->percent) }}%)
+                <div>{{ $locale->formatMoney($transfer->amount * $transfer->coef, true) }}</div>
+                <div>{{ $transfer->duration }}</div>
               </td>
               <td class="report-savings-amount">
-                {{ $locale->formatMoney($saving->profit, true) }}
+                <div>{{ $transfer->amount / $distribution->partAmount }}*{{ $transfer->duration }}</div>
+                <div>={{ $transfer->parts }}</div>
               </td>
+              <td>&nbsp;</td>
             </tr>
 @endforeach
 @endforeach

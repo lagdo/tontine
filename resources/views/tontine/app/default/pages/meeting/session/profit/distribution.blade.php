@@ -23,16 +23,21 @@
 @php
   $memberProfit = $transfers->sum('profit');
   $memberPercent = $memberProfit / $profitSum;
-  $memberAmount = (int)($profitAmount * $memberPercent);
 @endphp
                         <tr>
                           <td rowspan="{{ $transfers->count() + 1 }}" style="vertical-align:top;padding-top:20px;">
                             <b>{{ $transfers[0]->member->name }}</b>
                           </td>
                           <td>&nbsp;</td>
-                          <td class="currency"><b>{{ $locale->formatMoney($transfers->sum('amount')) }}</b></td>
-                          <td class="currency"><b>{{ $transfers->sum('parts') }} ({{ sprintf('%.2f', $memberPercent * 100) }}%)</b></td>
-                          <td class="currency"><b>{{ $locale->formatMoney($memberAmount) }}</b></td>
+                          <td class="currency">
+                            <b>{{ $locale->formatMoney($transfers->sum('amount')) }}</b>
+                          </td>
+                          <td class="currency">
+                            <b>{{ $transfers->sum('parts') }} ({{ sprintf('%.2f', $memberPercent * 100) }}%)</b>
+                          </td>
+                          <td class="currency">
+                            <b>{{ $locale->formatMoney((int)($profitAmount * $memberPercent)) }}</b>
+                          </td>
                         </tr>
 @foreach ($transfers as $transfer)
                         <tr>
