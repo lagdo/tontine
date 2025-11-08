@@ -523,6 +523,7 @@ return [
         ],
         'labels' => [
             'default' => 'Défaut',
+            'legacy' => 'Legacy',
             'report' => [
                 'template' => "Template des rapports",
             ],

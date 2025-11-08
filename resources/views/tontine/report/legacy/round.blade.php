@@ -1,15 +1,12 @@
-@extends('tontine.report.default.layout')
+@extends('tontine.report.legacy.layout')
 
 @section('page-title', 'Siak Tontine')
 
 @section('css')
   <style>
     @page {
-      size: A4 portrait;
+      size: A4 landscape;
       /*margin: 0;*/
-    }
-    tbody {
-      border-bottom: solid lightgray 1px;
     }
     .table:not(.table-sm):not(.table-md):not(.dataTable) th {
       font-size: 15px;
@@ -43,16 +40,11 @@
 @endsection
 
 @section('content')
-          <div class="row mt-4">
-            <div class="col d-flex justify-content-center">
-              <h5>{{ __('tontine.report.titles.credit') }} ({{ $currency }})</h5>
-            </div>
-          </div>
+@foreach ($figures as $poolFigures)
+          @include('tontine.report.legacy.round.pool', $poolFigures)
 
-@foreach ($funds as $fund)
-          @include('tontine.report.default.credit.fund', $fund)
-@if (!$loop->last)
           <div class="pagebreak"></div>
-@endif
 @endforeach
+
+          @include('tontine.report.legacy.round.balance', $balance)
 @endsection

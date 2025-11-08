@@ -1,4 +1,4 @@
-@extends('tontine.report.default.layout')
+@extends('tontine.report.legacy.layout')
 
 @section('page-title', 'Siak Tontine')
 
@@ -46,28 +46,28 @@
 
           <div class="pagebreak"></div>
 
-          @include('tontine.report.default.session.deposits', $deposits)
+          @include('tontine.report.legacy.session.deposits', $deposits)
 
-          @include('tontine.report.default.session.remitments', $remitments)
+          @include('tontine.report.legacy.session.remitments', $remitments)
 
 @if ($remitments['pools']->filter(function($pool) { return $pool->remit_auction; })->count() > 0)
-          @include('tontine.report.default.session.auctions', $remitments)
+          @include('tontine.report.legacy.session.auctions', $remitments)
 @endif
 
-          @include('tontine.report.default.session.pools', ['session' => $session,
+          @include('tontine.report.legacy.session.pools', ['session' => $session,
             'pools' => ['deposit' => $deposits['pools'], 'remitment' => $remitments['pools']]])
 
           <div class="pagebreak"></div>
 
-          @include('tontine.report.default.session.bills', $bills)
+          @include('tontine.report.legacy.session.bills', $bills)
 
           <div class="pagebreak"></div>
 
-          @include('tontine.report.default.session.outflows', $outflows)
+          @include('tontine.report.legacy.session.outflows', $outflows)
 
-          @include('tontine.report.default.session.loans', $loans)
+          @include('tontine.report.legacy.session.loans', $loans)
 
-          @include('tontine.report.default.session.refunds', $refunds)
+          @include('tontine.report.legacy.session.refunds', $refunds)
 
-          @include('tontine.report.default.session.savings', $savings)
+          @include('tontine.report.legacy.session.savings', $savings)
 @endsection

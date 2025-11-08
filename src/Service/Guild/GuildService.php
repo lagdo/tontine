@@ -11,7 +11,7 @@ use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\User;
 use Siak\Tontine\Service\TenantService;
 
-use function config;
+use function in_array;
 use function tap;
 
 class GuildService
@@ -238,8 +238,8 @@ class GuildService
     public function getReportTemplate(Guild $guild): string
     {
         $options = $this->getGuildOptions($guild);
-        return $options['reports']['template'] ??
-            config('tontine.templates.report', 'default');
+        $template = $options['reports']['template'] ?? 'raptor';
+        return in_array($template, ['raptor', 'legacy']) ? $template : 'raptor';
     }
 
     /**

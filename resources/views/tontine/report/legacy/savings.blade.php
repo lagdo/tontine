@@ -1,4 +1,4 @@
-@extends('tontine.report.default.layout')
+@extends('tontine.report.legacy.layout')
 
 @section('page-title', 'Siak Tontine')
 
@@ -32,7 +32,7 @@
 
 @section('content')
 @foreach ($funds as $fund)
-          @include('tontine.report.default.savings.fund', $fund)
+          @include('tontine.report.legacy.savings.fund', $fund)
 @if (!$loop->last)
 
           <div class="pagebreak"></div>

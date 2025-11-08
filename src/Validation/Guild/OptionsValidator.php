@@ -17,7 +17,7 @@ class OptionsValidator extends AbstractValidator
     {
         $validator = Validator::make($this->values($values), [
             'reports' => 'required|array',
-            'reports.template' => 'required|string|in:default,raptor',
+            'reports.template' => 'required|string|in:raptor,legacy',
         ]);
 
         if($validator->fails())

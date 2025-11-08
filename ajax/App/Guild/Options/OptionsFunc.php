@@ -24,13 +24,13 @@ class OptionsFunc extends FuncComponent
     {
         $guild = $this->stash()->get('tenant.guild');
         $options = $this->guildService->getGuildOptions($guild);
-        $template = $options['reports']['template'] ?? 'default';
+        $template = $options['reports']['template'] ?? 'raptor';
         $title = trans('tontine.options.titles.edit');
         $content = $this->renderView('pages.guild.options.edit', [
             'template' => $template,
             'templates' => [
-                'default' => trans('tontine.options.labels.default'),
                 'raptor' => 'Raptor',
+                'legacy' => trans('tontine.options.labels.legacy'),
             ],
         ]);
         $buttons = [[
