@@ -142,18 +142,26 @@ class MemberService
      */
     public function getBills(Session $session, ?Member $member = null): Collection
     {
-        return $this->sortByMemberName(BillView::with(['round',
-                'session', 'member', 'charge', 'bill', 'bill.settlement'])
+        // Order the bills by session date desc, then by member name asc.
+        return BillView::query()
+            ->select('v_bills.*')
+            ->join('sessions', 'v_bills.session_id', '=', 'sessions.id')
+            ->orderByDesc('sessions.day_date')
             ->when($member !== null, fn(Builder $query) =>
                 $query->where('member_id', $member->id))
+            ->when($member === null, fn(Builder $query) =>
+                $query->join('members', 'v_bills.member_id', '=', 'members.id'))
+                    ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
+                    ->orderBy('member_defs.name')
             ->where(fn(Builder $query) => $query
                 ->orWhere(fn(Builder $q1) => $q1->ofTypeSession($session))
                 ->orWhere(fn(Builder $q2) => $q2->ofTypeNotSession($session)))
+            ->with(['round', 'session', 'member', 'charge', 'bill', 'bill.settlement'])
             ->get()
             ->each(function($bill) {
                 $bill->paid = $bill->bill->settlement !== null;
                 $bill->amount = $bill->bill->amount;
-            }), $member);
+            });
     }
 
     /**

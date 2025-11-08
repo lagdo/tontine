@@ -21,28 +21,6 @@ class BillView extends Base
      */
     public $timestamps = false;
 
-    /**
-     * @return Attribute
-     */
-    protected function inSession(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->bill_type === Bill::TYPE_LIBRE ||
-                $this->bill_type === Bill::TYPE_SESSION,
-        );
-    }
-
-    /**
-     * @return Attribute
-     */
-    protected function inRound(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->bill_type === Bill::TYPE_ROUND ||
-                $this->bill_type === Bill::TYPE_ONETIME,
-        );
-    }
-
     public function round()
     {
         return $this->belongsTo(Round::class);
@@ -76,8 +54,8 @@ class BillView extends Base
      */
     public function scopeOfTypeSession(Builder $query, Session $session): Builder
     {
-        return $query->where('bill_type', Bill::TYPE_SESSION)
-            ->where('session_id', $session->id);
+        return $query->where('v_bills.bill_type', Bill::TYPE_SESSION)
+            ->where('v_bills.session_id', $session->id);
     }
 
     /**
@@ -88,8 +66,8 @@ class BillView extends Base
      */
     public function scopeOfTypeNotSession(Builder $query, Session $session): Builder
     {
-        return $query->where('bill_type', '!=', Bill::TYPE_SESSION)
-            ->where('round_id', $session->round_id)
+        return $query->where('v_bills.bill_type', '!=', Bill::TYPE_SESSION)
+            ->where('v_bills.round_id', $session->round_id)
             ->whereHas('session', fn(Builder $qs) =>
                 $qs->where('day_date', '<=', $session->day_date))
             ->whereHas('bill', fn(Builder $qb) =>

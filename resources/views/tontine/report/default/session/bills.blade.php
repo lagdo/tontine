@@ -4,11 +4,15 @@
                       <h5>{{ __('meeting.charge.titles.fees') }}</h5>
                     </div>
                   </div>
+@php
+  $groupedBills = $bills->groupBy('charge_id');
+@endphp
+
 @foreach($charges['session'] as $charge)
 @php
-  $chargeBills = $bills->filter(fn($bill) => $bill->charge_id === $charge->id);
+  $chargeBills = $groupedBills[$charge->id] ?? null;
 @endphp
-@if ($chargeBills->count() > 0)
+@if ($chargeBills !== null && $chargeBills->count() > 0)
                   <div class="row">
                     <div class="col">
                       <h6>{{ $charge->name }}</h6>
@@ -28,12 +32,25 @@
                         </tr>
                       </thead>
                       <tbody>
+@php
+  $lastSessionId = 0;
+@endphp
+
 @foreach ($chargeBills as $bill)
 @php
   $amount = $locale->formatMoney($bill->amount, true);
 @endphp
+
+@if ($charge->is_variable && $lastSessionId !== $bill->session_id)
+@php
+  $lastSessionId = $bill->session_id;
+@endphp
                         <tr>
-                          <td>{{ $bill->member->name }}@if ($bill->in_round) - {{ $bill->session->title }}@endif</td>
+                          <td colspan="3"><b>{{ $bill->session->title }}</b></td>
+                        </tr>
+@endif
+                        <tr>
+                          <td>{{ $bill->member->name }}</td>
                           <td style="text-align:right;">{{ $amount }}</td>
                           <td style="text-align:right;">{{ $bill->paid ? $amount : '-' }}</td>
                         </tr>
