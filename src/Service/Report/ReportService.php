@@ -198,6 +198,7 @@ class ReportService
     {
         [$country, $currency] = $this->localeService->getNameFromGuild($round->guild);
 
+        $funds = $this->summaryService->getFunds($round);
         $figures = $this->summaryService->getFigures($round);
       
         $sessions = $this->roundService->getRoundSessions($round);
@@ -208,10 +209,11 @@ class ReportService
             'loans' => $this->roundService->getLoanAmounts($sessionIds),
             'refunds' => $this->roundService->getRefundAmounts($sessionIds),
             'savings' => $this->roundService->getSavingAmounts($sessionIds),
+            'transfers' => $this->roundService->getTransferAmounts($sessionIds),
             'outflows' => $this->roundService->getOutflowAmounts($sessionIds),
             'pools' => $this->summaryService->getPoolsBalance($figures),
         ];
 
-        return compact('round', 'country', 'currency', 'figures', 'balance');
+        return compact('round', 'country', 'currency', 'funds', 'figures', 'balance');
     }
 }

@@ -44,6 +44,7 @@ class Balance extends Component
             'loans' => $this->roundService->getLoanAmounts($sessionIds),
             'refunds' => $this->roundService->getRefundAmounts($sessionIds),
             'savings' => $this->roundService->getSavingAmounts($sessionIds),
+            'transfers' => $this->roundService->getTransferAmounts($sessionIds),
             'outflows' => $this->roundService->getOutflowAmounts($sessionIds),
         ]);
     }

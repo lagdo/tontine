@@ -112,6 +112,22 @@ class RoundService
      *
      * @return Collection
      */
+    public function getTransferAmounts(Collection $sessionIds): Collection
+    {
+        return DB::table('settlements')
+            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->select(DB::raw('sum(bills.amount) as total_amount'), 'settlements.session_id')
+            ->whereIn('settlements.session_id', $sessionIds)
+            ->whereNotNull('fund_id')
+            ->groupBy('settlements.session_id')
+            ->pluck('total_amount', 'session_id');
+    }
+
+    /**
+     * @param Collection $sessionIds
+     *
+     * @return Collection
+     */
     public function getOutflowAmounts(Collection $sessionIds): Collection
     {
         return DB::table('outflows')
