@@ -77,9 +77,9 @@ class ReportService
                 'total' => $this->sessionService->getRefund($session),
             ],
             'savings' => [
-                'savings' => $this->memberService->getSavings($session),
+                'transfers' => $this->memberService->getTransfers($session),
                 'funds' => $this->fundService->getSessionFundList($session),
-                'total' => $this->sessionService->getSaving($session),
+                // 'total' => $this->sessionService->getSaving($session),
             ],
             'outflows' => [
                 'outflows' => $this->memberService->getOutflows($session),

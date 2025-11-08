@@ -3,6 +3,9 @@
 namespace Siak\Tontine\Model;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
+use function trans;
 
 class ProfitTransfer extends Base
 {
@@ -33,6 +36,14 @@ class ProfitTransfer extends Base
     public function member()
     {
         return $this->belongsTo(Member::class);
+    }
+
+    public function type(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => trans($this->coef > 0 ?
+                'meeting.labels.saving' : 'meeting.labels.settlement'),
+        );
     }
 
     /**

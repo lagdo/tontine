@@ -175,6 +175,11 @@ class Session extends Base
         return $this->hasMany(Saving::class);
     }
 
+    public function transfers()
+    {
+        return $this->hasMany(ProfitTransfer::class);
+    }
+
     public function outflows()
     {
         return $this->hasMany(Outflow::class);

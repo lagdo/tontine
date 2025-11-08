@@ -254,10 +254,10 @@ class MemberService
      *
      * @return Collection
      */
-    public function getSavings(Session $session, ?Member $member = null): Collection
+    public function getTransfers(Session $session, ?Member $member = null): Collection
     {
-        return $this->sortByMemberName($session->savings()
-            ->with(['member'])
+        return $this->sortByMemberName($session->transfers()
+            ->with(['member', 'session'])
             ->when($member !== null, fn($query) => $query->where('member_id', $member->id))
             ->get(), $member);
     }

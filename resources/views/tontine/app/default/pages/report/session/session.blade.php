@@ -39,20 +39,6 @@
             <div class="row">
               <div class="col-md-6 col-sm-12">
                 <div class="card shadow mb-4">
-                  <div class="card-body" id="content-report-outflows" @jxnBind($rqOutflow)>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6 col-sm-12">
-                <div class="card shadow mb-4">
-                  <div class="card-body" id="content-report-savings" @jxnBind($rqSaving)>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6 col-sm-12">
-                <div class="card shadow mb-4">
                   <div class="card-body" id="content-report-loans" @jxnBind($rqLoan)>
                   </div>
                 </div>
@@ -60,6 +46,20 @@
               <div class="col-md-6 col-sm-12">
                 <div class="card shadow mb-4">
                   <div class="card-body" id="content-report-refunds" @jxnBind($rqRefund)>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 col-sm-12">
+                <div class="card shadow mb-4">
+                  <div class="card-body" id="content-report-savings" @jxnBind($rqSaving)>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-12">
+                <div class="card shadow mb-4">
+                  <div class="card-body" id="content-report-outflows" @jxnBind($rqOutflow)>
                   </div>
                 </div>
               </div>

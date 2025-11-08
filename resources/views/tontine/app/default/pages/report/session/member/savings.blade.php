@@ -12,10 +12,13 @@
                         </tr>
                       </thead>
                       <tbody>
-@foreach($savings as $saving)
+@foreach($transfers as $transfer)
                         <tr>
-                          <td>{{ $saving->session->title }}</td>
-                          <td class="currency">{{ $locale->formatMoney($saving->amount) }}</td>
+                          <td>
+                            <div>{!! $transfer->type !!}</div>
+                            <div>{{ $transfer->session->title }}</div>
+                          </td>
+                          <td class="currency">{{ $locale->formatMoney($transfer->amount) }}</td>
                         </tr>
 @endforeach
                       </tbody>

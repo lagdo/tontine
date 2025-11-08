@@ -14,7 +14,12 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <td>{{ __('common.labels.total') }}</td>
+                          <td>{{ __('meeting.labels.settlement') }}</td>
+                          <td class="currency">{{ $transfer->total_count }}</td>
+                          <td class="currency">{{ $locale->formatMoney($transfer->total_amount) }}</td>
+                        </tr>
+                        <tr>
+                          <td>{{ __('meeting.labels.saving') }}</td>
                           <td class="currency">{{ $saving->total_count }}</td>
                           <td class="currency">{{ $locale->formatMoney($saving->total_amount) }}</td>
                         </tr>

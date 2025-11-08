@@ -32,12 +32,12 @@ class Saving extends Component
         if($member !== null)
         {
             return $this->renderView('pages.report.session.member.savings', [
-                'savings' => $this->memberService->getSavings($session, $member),
+                'transfers' => $this->memberService->getTransfers($session, $member),
             ]);
         }
         return $this->renderView('pages.report.session.session.savings', [
             'saving' => $this->sessionService->getSaving($session),
-            'funds' => $this->fundService->getSessionFundList($session),
+            'transfer' => $this->sessionService->getTransfer($session),
             'startingFunds' => $this->fundService->getStartingFunds($session),
             'endingFunds' => $this->fundService->getEndingFunds($session),
         ]);

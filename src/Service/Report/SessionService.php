@@ -273,6 +273,32 @@ class SessionService
      *
      * @return object
      */
+    public function getTransfer(Session $session): object
+    {
+        $transfer = DB::table('settlements')
+            ->join('bills', 'settlements.bill_id', '=', 'bills.id')
+            ->select(DB::raw('sum(bills.amount) as total_amount'),
+                DB::raw('count(settlements.id) as total_count'))
+            ->where('settlements.session_id', $session->id)
+            ->whereNotNull('settlements.fund_id')
+            ->first();
+        if(!$transfer->total_amount)
+        {
+            $transfer->total_amount = 0;
+        }
+        if(!$transfer->total_count)
+        {
+            $transfer->total_count = 0;
+        }
+
+        return $transfer;
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return object
+     */
     public function getOutflow(Session $session): object
     {
         $outflow = DB::table('outflows')

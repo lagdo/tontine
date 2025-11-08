@@ -5,27 +5,40 @@
                   </div>
                   <div class="table-responsive">
                     <table class="table table-bordered">
-@if ($savings->count() > 0)
+@if ($transfers->count() > 0)
                       <thead>
                         <tr>
                           <th>{{ __('meeting.labels.member') }}</th>
                           <th style="width:30%;">{{ __('tontine.fund.labels.fund') }}</th>
+                          <th style="width:10%;">&nbsp;</th>
                           <th style="width:20%;text-align:right;">{{ __('common.labels.amount') }}</th>
                         </tr>
                       </thead>
 @endif
                       <tbody>
-@foreach ($savings as $saving)
+@foreach ($transfers as $transfer)
                         <tr>
-                          <td>{{ $saving->member->name }}</td>
-                          <td>{!! $saving->fund ? $saving->fund->title : __('tontine.fund.labels.default') !!}</td>
-                          <td style="text-align:right;">{{ $locale->formatMoney($saving->amount, true) }}</td>
+                          <td>{{ $transfer->member->name }}</td>
+                          <td>{!! $transfer->fund->title !!}</td>
+                          <td style="width:10%;">{!! $transfer->type !!}</td>
+                          <td style="text-align:right;">{{ $locale->formatMoney($transfer->amount, true) }}</td>
                         </tr>
 @endforeach
+@php
+  $savings = $transfers->filter(fn($transfer) => $transfer->coef > 0);
+  $settlements = $transfers->filter(fn($transfer) => $transfer->coef < 0);
+@endphp
                         <tr>
-                          <th>{{ __('common.labels.total') }}</th>
-                          <th style="width:30%;text-align:right;">{{ $total->total_count }}</th>
-                          <th style="width:20%;text-align:right;">{{ $locale->formatMoney($total->total_amount, true) }}</th>
+                          <th>&nbsp;</th>
+                          <th>{{ __('meeting.titles.savings') }}</th>
+                          <th style="width:30%;text-align:right;">{{ $savings->count() }}</th>
+                          <th style="width:20%;text-align:right;">{{ $locale->formatMoney($savings->sum('amount'), true) }}</th>
+                        </tr>
+                        <tr>
+                          <th>&nbsp;</th>
+                          <th>{{ __('meeting.titles.settlements') }}</th>
+                          <th style="width:30%;text-align:right;">{{ $settlements->count() }}</th>
+                          <th style="width:20%;text-align:right;">{{ $locale->formatMoney($settlements->sum('amount'), true) }}</th>
                         </tr>
                       </tbody>
                     </table>
