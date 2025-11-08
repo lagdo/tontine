@@ -74,10 +74,10 @@
                       </td>
                       <td class="currency">
                         <div><b>{!! $locale->formatMoney($balance, false, false) !!}</b></div>
-                        <div><b>{!! $locale->formatMoney($cash, false, false) !!}</b></div>
+                        <div>{!! $locale->formatMoney($cash, false, false) !!}</div>
                       </td>
                       <td class="currency">
-                        <div><b>{!! $locale->formatMoney($pool, false, false) !!}</b></div>
+                        <div>{!! $locale->formatMoney($pool, false, false) !!}</div>
                         <div><b>{!! $locale->formatMoney($cash + $pool, false, false) !!}</b></div>
                       </td>
 @endif

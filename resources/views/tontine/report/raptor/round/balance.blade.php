@@ -78,10 +78,10 @@
                       </td>
                       <td class="report-round-cash-amount">
                         <div><b>{!! $locale->formatMoney($balance, false) !!}</b></div>
-                        <div><b>{!! $locale->formatMoney($cash, false) !!}</b></div>
+                        <div>{!! $locale->formatMoney($cash, false) !!}</div>
                       </td>
                       <td class="report-round-cash-amount">
-                        <div><b>{!! $locale->formatMoney($pool, false) !!}</b></div>
+                        <div>{!! $locale->formatMoney($pool, false) !!}</div>
                         <div><b>{!! $locale->formatMoney($cash + $pool, false) !!}</b></div>
                       </td>
 @endif

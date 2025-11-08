@@ -30,7 +30,7 @@
 @endphp
                         <tr>
                           <th>&nbsp;</th>
-                          <th>{{ __('meeting.titles.savings') }}</th>
+                          <th>{!! __('meeting.titles.savings') !!}</th>
                           <th style="width:30%;text-align:right;">{{ $savings->count() }}</th>
                           <th style="width:20%;text-align:right;">{{ $locale->formatMoney($savings->sum('amount'), true) }}</th>
                         </tr>

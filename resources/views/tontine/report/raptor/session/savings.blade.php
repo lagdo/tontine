@@ -28,7 +28,7 @@
 @endphp
                         <tr class="total">
                           <th>&nbsp;</th>
-                          <td>{{ __('meeting.titles.savings') }}</td>
+                          <td>{!! __('meeting.titles.savings') !!}</td>
                           <td style="width:30%;">{{ $savings->count() }}</td>
                           <td style="width:20%;">{{ $locale->formatMoney($savings->sum('amount'), true) }}</td>
                         </tr>
