@@ -16,7 +16,7 @@
 @foreach($bills as $bill)
                         <tr>
                           <td>
-                            <div>{{ $bill->charge }}</div>
+                            <div>{{ $bill->charge->name }}</div>
 @isset($bill->session)
                             <div>{{ $bill->session->title }}</div>
 @endisset

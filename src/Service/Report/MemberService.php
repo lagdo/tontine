@@ -148,11 +148,11 @@ class MemberService
             ->join('sessions', 'v_bills.session_id', '=', 'sessions.id')
             ->orderByDesc('sessions.day_date')
             ->when($member !== null, fn(Builder $query) =>
-                $query->where('member_id', $member->id))
+                $query->where('v_bills.member_id', $member->id))
             ->when($member === null, fn(Builder $query) =>
-                $query->join('members', 'v_bills.member_id', '=', 'members.id'))
+                $query->join('members', 'v_bills.member_id', '=', 'members.id')
                     ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
-                    ->orderBy('member_defs.name')
+                    ->orderBy('member_defs.name'))
             ->where(fn(Builder $query) => $query
                 ->orWhere(fn(Builder $q1) => $q1->ofTypeSession($session))
                 ->orWhere(fn(Builder $q2) => $q2->ofTypeNotSession($session)))
