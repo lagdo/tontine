@@ -16,6 +16,40 @@ return new class extends Migration
             $table->foreign('fund_id')->references('id')->on('funds');
         });
 
+        // Drop the v_profit_transfers view.
+        $sql = <<<SQL
+drop view if exists v_profit_transfers
+SQL;
+        DB::statement($sql);
+
+        // Create the v_profit_transfers view.
+        $sql = <<<SQL
+create view v_profit_transfers as
+    select sv.fund_id, sv.session_id, sv.member_id, sv.amount, 1 as coef
+        from savings sv
+    union select st.fund_id, st.session_id, lb.member_id, b.amount, -1 as coef
+        from settlements st
+            inner join bills b on st.bill_id = b.id
+            inner join libre_bills lb on lb.bill_id = b.id
+            where st.fund_id is not null
+    union select st.fund_id, st.session_id, sb.member_id, b.amount, -1 as coef
+        from settlements st
+            inner join bills b on st.bill_id = b.id
+            inner join session_bills sb on sb.bill_id = b.id
+            where st.fund_id is not null
+    union select st.fund_id, st.session_id, rb.member_id, b.amount, -1 as coef
+        from settlements st
+            inner join bills b on st.bill_id = b.id
+            inner join round_bills rb on rb.bill_id = b.id
+            where st.fund_id is not null
+    union select st.fund_id, st.session_id, ob.member_id, b.amount, -1 as coef
+        from settlements st
+            inner join bills b on st.bill_id = b.id
+            inner join onetime_bills ob on ob.bill_id = b.id
+            where st.fund_id is not null;
+SQL;
+        DB::statement($sql);
+
         // Re-create the v_settlements view.
         $sql = <<<SQL
 drop view if exists v_settlements
@@ -49,6 +83,12 @@ SQL;
      */
     public function down(): void
     {
+        // Drop the v_profit_transfers view.
+        $sql = <<<SQL
+drop view if exists v_profit_transfers
+SQL;
+        DB::statement($sql);
+
         // First drop the v_settlements view.
         $sql = <<<SQL
 drop view if exists v_settlements

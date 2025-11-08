@@ -120,6 +120,10 @@ return [
             'create-all' => "Add the :count settlements?",
             'delete-all' => "Delete the :count settlements?",
         ],
+        'warnings' => [
+            'cancelled' => "The settlement was cancelled due to low balance in the member fund.",
+            'cancelled-some' => "Some settlements were cancelled due to low balance in the member fund.",
+        ],
     ],
     'target' => [
         'actions' => [

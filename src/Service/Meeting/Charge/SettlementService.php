@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Charge;
 use Siak\Tontine\Model\Fund;
+use Siak\Tontine\Model\ProfitTransfer;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\Settlement;
@@ -14,6 +15,7 @@ use Siak\Tontine\Service\Payment\PaymentServiceInterface;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\SearchSanitizer;
 
+use function collect;
 use function trans;
 
 class SettlementService
@@ -56,6 +58,51 @@ class SettlementService
     }
 
     /**
+     * @param Collection $bills
+     * @param Session $session
+     * @param Fund|null $fund
+     *
+     * @return int
+     */
+    private function _createSettlements(Collection $bills, Session $session, Fund|null $fund): int
+    {
+        // Todo: use one insert query
+        return DB::transaction(function() use($bills, $session, $fund) {
+            $balances = $fund === null ? null:
+                ProfitTransfer::query()
+                    ->whereFund($fund)
+                    ->whereIn('member_id', $bills->pluck('member_id'))
+                    ->select('member_id', DB::raw('sum(amount*coef) as value'))
+                    ->groupBy('member_id')
+                    ->get()
+                    ->pluck('value', 'member_id');
+            $cancelled = 0;
+
+            foreach($bills as $bill)
+            {
+                $settlement = new Settlement();
+                $settlement->bill()->associate($bill);
+                $settlement->session()->associate($session);
+                if($fund !== null)
+                {
+                    // When the settlement amount is transfered from a fund,
+                    // skip the bill if the fund doesn't have enough balance.
+                    if($bill->amount > ($balances[$bill->member_id] ?? 0))
+                    {
+                        $cancelled++;
+                        continue;
+                    }
+
+                    $settlement->fund()->associate($fund);
+                }
+                $settlement->save();
+            }
+
+            return $cancelled;
+        });
+    }
+
+    /**
      * Create a settlement
      *
      * @param Charge $charge
@@ -63,10 +110,10 @@ class SettlementService
      * @param int $billId
      * @param Fund|null $fund
      *
-     * @return void
+     * @return int
      */
     public function createSettlement(Charge $charge, Session $session,
-        int $billId, Fund|null $fund = null): void
+        int $billId, Fund|null $fund = null): int
     {
         $bill = $this->billService->getBill($charge, $session, $billId);
         // Return if the bill is not found or the bill is already settled.
@@ -74,14 +121,8 @@ class SettlementService
         {
             throw new MessageException(trans('tontine.bill.errors.not_found'));
         }
-        $settlement = new Settlement();
-        $settlement->bill()->associate($bill);
-        $settlement->session()->associate($session);
-        if($fund !== null)
-        {
-            $settlement->fund()->associate($fund);
-        }
-        $settlement->save();
+
+        return $this->_createSettlements(collect([$bill]), $session, $fund);
     }
 
     /**
@@ -116,37 +157,14 @@ class SettlementService
      * @param string $search
      * @param Fund|null $fund
      *
-     * @return void
+     * @return int
      */
     public function createAllSettlements(Charge $charge, Session $session,
-        string $search, Fund|null $fund = null): void
+        string $search, Fund|null $fund = null): int
     {
         $bills = $this->billService->getBills($charge, $session, $search, false);
-        if($bills->count() === 0)
-        {
-            // Reset the fund
-            $this->fund = null;
-
-            return;
-        }
-
-        // Todo: use one insert query
-        DB::transaction(function() use($bills, $session, $fund) {
-            foreach($bills as $bill)
-            {
-                $settlement = new Settlement();
-                $settlement->bill()->associate($bill);
-                $settlement->session()->associate($session);
-                if($fund !== null)
-                {
-                    $settlement->fund()->associate($fund);
-                }
-                $settlement->save();
-            }
-        });
-
-        // Reset the fund
-        $this->fund = null;
+        return $bills->count() === 0 ? 0 :
+            $this->_createSettlements($bills, $session, $fund);
     }
 
     /**
@@ -162,14 +180,12 @@ class SettlementService
     {
         $bills = $this->billService->getBills($charge, $session, $search, true)
             ->filter(fn($bill) => $this->paymentService->isEditable($bill->settlement));
-        if($bills->count() === 0)
+        if($bills->count() > 0)
         {
-            return;
+            Settlement::whereIn('bill_id', $bills->pluck('id'))
+                ->where('session_id', $session->id)
+                ->delete();
         }
-
-        Settlement::whereIn('bill_id', $bills->pluck('id'))
-            ->where('session_id', $session->id)
-            ->delete();
     }
 
     /**

@@ -120,6 +120,10 @@ return [
             'create-all' => "Ajouter les :count règlements ?",
             'delete-all' => "Supprimer les :count règlements ?",
         ],
+        'warnings' => [
+            'cancelled' => "Le règlement a été annulé car le solde sur le fonds du membre est insuffisant.",
+            'cancelled-some' => "Des règlements ont été annulés car le solde sur le fonds du membre est insuffisant.",
+        ],
     ],
     'target' => [
         'actions' => [

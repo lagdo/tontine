@@ -30,7 +30,12 @@ class SavingFunc extends FuncComponent
 
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
-        $this->settlementService->createSettlement($charge, $session, $billId, $fund);
+        $cancelled = $this->settlementService->createSettlement($charge,
+            $session, $billId, $fund);
+        if($cancelled > 0)
+        {
+            $this->alert()->warning(trans('meeting.settlement.warnings.cancelled'));
+        }
 
         $this->cl(SavingAll::class)->render();
         $this->cl(SavingPage::class)->page();
@@ -68,7 +73,12 @@ class SavingFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
         $search = $this->bag('meeting')->get('settlement.libre.search', '');
-        $this->settlementService->createAllSettlements($charge, $session, $search, $fund);
+        $cancelled = $this->settlementService->createAllSettlements($charge,
+            $session, $search, $fund);
+        if($cancelled > 0)
+        {
+            $this->alert()->warning(trans('meeting.settlement.warnings.cancelled-some'));
+        }
 
         $this->cl(SavingAll::class)->render();
         $this->cl(SavingPage::class)->page();
