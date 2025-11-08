@@ -25,13 +25,15 @@ class Total extends Component
      */
     public function html(): string
     {
+        $distribution = $this->stash()->get('profit.savings.distribution');
+        $saving = $distribution->transfers->sum('amount');
         $session = $this->stash()->get('profit.session');
         $fund = $this->stash()->get('profit.fund');
-        $amounts = $this->profitService->getSavingAmounts($session, $fund);
+        $refund = $this->profitService->getRefundsAmount($session, $fund);
 
         return trans('meeting.profit.distribution.total', [
-            'saving' => $this->localeService->formatMoney($amounts['saving']),
-            'refund' => $this->localeService->formatMoney($amounts['refund']),
+            'saving' => $this->localeService->formatMoney($saving),
+            'refund' => $this->localeService->formatMoney($refund),
         ]);
     }
 }

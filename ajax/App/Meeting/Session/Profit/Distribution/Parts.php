@@ -30,7 +30,7 @@ class Parts extends Component
         if($distribution->rewarded->count() > 0)
         {
             $html .= ' ' . trans('meeting.profit.distribution.parts', [
-                'parts' => $distribution->savings->sum('parts'),
+                'parts' => $distribution->transfers->sum('parts'),
             ]);
         }
         return $html;

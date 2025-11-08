@@ -4,7 +4,7 @@ namespace Siak\Tontine\Service\Meeting\Saving;
 
 use Illuminate\Support\Collection;
 use Siak\Tontine\Model\Fund;
-use Siak\Tontine\Model\Saving;
+use Siak\Tontine\Model\ProfitTransfer as Transfer;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\Payment\BalanceCalculator;
@@ -25,15 +25,15 @@ class ProfitService
 
     /**
      * @param Collection $sessions
-     * @param Saving $saving
+     * @param Transfer $transfer
      *
      * @return int
      */
-    private function getSavingDuration(Collection $sessions, Saving $saving): int
+    private function getTransferDuration(Collection $sessions, Transfer $transfer): int
     {
         // Count the number of sessions before the current one.
         return $sessions
-            ->filter(fn($session) => $session->day_date > $saving->session->day_date)
+            ->filter(fn($session) => $session->day_date > $transfer->session->day_date)
             ->count();
     }
 
@@ -60,47 +60,41 @@ class ProfitService
     private function setDistributions(Distribution $distribution): Distribution
     {
         $sessions = $distribution->sessions;
-        $savings = $distribution->savings;
-        // Set savings durations and distributions
-        foreach($savings as $saving)
+        $transfers = $distribution->transfers;
+        // Set transfers durations and distributions
+        foreach($transfers as $transfer)
         {
-            $saving->duration = $this->getSavingDuration($sessions, $saving);
-            // The number of parts is determined by the saving amount and duration.
-            $saving->parts = $saving->amount * $saving->duration;
-            $saving->profit = 0;
-            $saving->percent = 0;
+            $transfer->duration = $this->getTransferDuration($sessions, $transfer);
+            // The number of parts is determined by the transfer amount and duration.
+            $transfer->parts = $transfer->amount * $transfer->duration;
+            $transfer->profit = 0;
+            $transfer->percent = 0;
         }
 
-        $distribution->rewarded = $savings->filter(fn($saving) => $saving->duration > 0);
-        // The value of the unit part is the gcd of the saving amounts.
-        // The distribution values is optimized by using the saving parts value instead
+        $distribution->rewarded = $transfers->filter(fn($transfer) => $transfer->duration > 0);
+        // The value of the unit part is the gcd of the transfer amounts.
+        // The distribution values is optimized by using the transfer parts value instead
         // of the amount, but the resulting part amount might be confusing when displayed
-        // to the users since it can be greater than some saving amounts in certain cases.
+        // to the users since it can be greater than some transfer amounts in certain cases.
         $partsGcd = $this->gcd($distribution->rewarded->pluck('parts'));
-        if($partsGcd > 0)
+        if($partsGcd === 0)
         {
-            $amountGcd = $this->gcd($distribution->rewarded->pluck('amount'));
-            $distribution->partAmount = $amountGcd;
-
-            $savings->each(function($saving) use($partsGcd, $amountGcd) {
-                $saving->profit = $saving->parts / $partsGcd;
-                $saving->parts /= $amountGcd;
-            });
-
-            $profitSum = $savings->sum('profit');
-            $profitAmount = $distribution->profitAmount;
-
-            $savings->each(function($saving) use($profitSum, $profitAmount) {
-                $percent = $saving->profit / $profitSum;
-                $saving->percent = $percent * 100;
-                $saving->profit = (int)($profitAmount * $percent);
-            });
+            return $distribution;
         }
+
+        $amountGcd = $this->gcd($distribution->rewarded->pluck('amount'));
+        $distribution->partAmount = $amountGcd;
+
+        $transfers->each(function($transfer) use($partsGcd, $amountGcd) {
+            $transfer->profit = $transfer->parts * $transfer->coef / $partsGcd;
+            $transfer->parts /= $amountGcd * $transfer->coef;
+            $transfer->amount *= $transfer->coef;
+        });
         return $distribution;
     }
 
     /**
-     * Get the profit distribution for savings.
+     * Get the profit distribution for transfers.
      *
      * @param Session $session
      * @param Fund $fund
@@ -111,39 +105,37 @@ class ProfitService
     public function getDistribution(Session $session, Fund $fund, int $profitAmount): Distribution
     {
         $sessions = $this->fundService->getFundSessions($fund, $session);
-        // Get the savings until the given session.
-        $savings = $fund->savings()
-            ->select('savings.*')
-            ->join('members', 'members.id', '=', 'savings.member_id')
+        // Get the transfers until the given session.
+        $transfers = Transfer::query()
+            ->select('v_profit_transfers.*')
+            ->join('members', 'members.id', '=', 'v_profit_transfers.member_id')
             ->join('member_defs', 'members.def_id', '=', 'member_defs.id')
-            ->join('sessions', 'sessions.id', '=', 'savings.session_id')
+            ->join('sessions', 'sessions.id', '=', 'v_profit_transfers.session_id')
+            ->whereFund($fund)
             ->whereIn('sessions.id', $sessions->pluck('id'))
             ->orderBy('member_defs.name', 'asc')
             ->orderBy('sessions.day_date', 'asc')
             ->with(['session', 'member'])
             ->get();
 
-        $distribution = new Distribution($sessions, $savings, $profitAmount);
-        return $savings->count() === 0 ?  $distribution:
+        $distribution = new Distribution($sessions, $transfers, $profitAmount);
+        return $transfers->count() === 0 ?  $distribution:
             $this->setDistributions($distribution);
     }
 
     /**
-     * Get the total saving and profit amounts.
+     * Get the refunds amount.
      *
      * @param Session $session
      * @param Fund $fund
      *
-     * @return array<int>
+     * @return int
      */
-    public function getSavingAmounts(Session $session, Fund $fund): array
+    public function getRefundsAmount(Session $session, Fund $fund): int
     {
         // Get the ids of all the sessions until the current one.
         $sessionIds = $this->fundService->getFundSessionIds($fund, $session);
-        return [
-            'saving' => $this->balanceCalculator->getSavingsAmount($sessionIds, $fund),
-            'refund' => $this->balanceCalculator->getRefundsAmount($sessionIds, $fund) +
-                $this->balanceCalculator->getPartialRefundsAmount($sessionIds, $fund),
-        ];
+        return $this->balanceCalculator->getRefundsAmount($sessionIds, $fund) +
+            $this->balanceCalculator->getPartialRefundsAmount($sessionIds, $fund);
     }
 }

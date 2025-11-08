@@ -2,46 +2,55 @@
                       <thead>
                         <tr>
                           <th>{!! __('meeting.labels.member') !!}</th>
-                          <th>{!! __('meeting.labels.saving') !!}</th>
-                          <th>{!! __('meeting.labels.session') !!}</th>
-                          <th>{!! __('meeting.labels.duration') !!}</th>
-                          <th>{!! __('meeting.labels.distribution') !!}</th>
-                          <th>{!! __('meeting.labels.profit') !!}</th>
+                          <th>
+                            <div>{!! __('meeting.labels.operation') !!}</div>
+                            <div>{!! __('meeting.labels.session') !!}</div>
+                          </th>
+                          <th class="currency">
+                            <div>{!! __('common.labels.amount') !!}</div>
+                            <div>{!! __('meeting.labels.duration') !!}</div>
+                          </th>
+                          <th class="currency">{!! __('meeting.labels.distribution') !!}</th>
+                          <th class="currency">{!! __('meeting.labels.profit') !!}</th>
                         </tr>
                       </thead>
                       <tbody>
-@foreach ($distribution->savings->groupBy('member_id') as $savings)
-@if ($savings->count() === 1)
 @php
-  $saving = $savings[0];
+  $profitSum = $distribution->transfers->sum('profit');
+  $profitAmount = $distribution->profitAmount;
+@endphp
+@foreach ($distribution->transfers->groupBy('member_id') as $transfers)
+@php
+  $memberProfit = $transfers->sum('profit');
+  $memberPercent = $memberProfit / $profitSum;
+  $memberAmount = (int)($profitAmount * $memberPercent);
 @endphp
                         <tr>
-                          <td>{{ $saving->member->name }}</td>
-                          <td><b>{{ $locale->formatMoney($saving->amount) }}</b></td>
-                          <td>{{ $saving->session->title }}</td>
-                          <td>{{ $saving->duration }}</td>
-                          <td><b>{{ $saving->parts }} ({{ sprintf('%.2f', $saving->percent) }}%)</b></td>
-                          <td><b>{{ $locale->formatMoney($saving->profit) }}</b></td>
-                        </tr>
-@elseif ($savings->count() > 1)
-                        <tr>
-                          <td rowspan="{{ $savings->count() + 1 }}">{{ $savings[0]->member->name }}</td>
-                          <td><b>{{ $locale->formatMoney($savings->sum('amount')) }}</b></td>
+                          <td rowspan="{{ $transfers->count() + 1 }}" style="vertical-align:top;padding-top:20px;">
+                            <b>{{ $transfers[0]->member->name }}</b>
+                          </td>
                           <td>&nbsp;</td>
-                          <td>&nbsp;</td>
-                          <td><b>{{ $savings->sum('parts') }} ({{ sprintf('%.2f', $savings->sum('percent')) }}%)</b></td>
-                          <td><b>{{ $locale->formatMoney($savings->sum('profit')) }}</b></td>
+                          <td class="currency"><b>{{ $locale->formatMoney($transfers->sum('amount')) }}</b></td>
+                          <td class="currency"><b>{{ $transfers->sum('parts') }} ({{ sprintf('%.2f', $memberPercent * 100) }}%)</b></td>
+                          <td class="currency"><b>{{ $locale->formatMoney($memberAmount) }}</b></td>
                         </tr>
-@foreach ($savings as $saving)
+@foreach ($transfers as $transfer)
                         <tr>
-                          <td>{{ $locale->formatMoney($saving->amount) }}</td>
-                          <td>{{ $saving->session->title }}</td>
-                          <td>{{ $saving->duration }}</td>
-                          <td>{{ $saving->parts }} ({{ sprintf('%.2f', $saving->percent) }}%)</td>
-                          <td>{{ $locale->formatMoney($saving->profit) }}</td>
+                          <td>
+                            <div>{{ __($transfer->coef > 0 ? 'meeting.labels.saving' : 'meeting.labels.settlement') }}</div>
+                            <div>{{ $transfer->session->title }}</div>
+                          </td>
+                          <td class="currency">
+                            <div>{{ $locale->formatMoney($transfer->amount * $transfer->coef) }}</div>
+                            <div>{{ $transfer->duration }}</div>
+                          </td>
+                          <td class="currency">
+                            <div>{{ $transfer->amount / $distribution->partAmount }}*{{ $transfer->duration }}</div>
+                            <div>={{ $transfer->parts }}</div>
+                          </td>
+                          <td>&nbsp;</td>
                         </tr>
 @endforeach
-@endif
 @endforeach
                       </tbody>
                     </table>
