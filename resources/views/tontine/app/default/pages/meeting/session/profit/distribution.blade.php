@@ -42,7 +42,7 @@
 @foreach ($transfers as $transfer)
                         <tr>
                           <td>
-                            <div>{{ __($transfer->coef > 0 ? 'meeting.labels.saving' : 'meeting.labels.settlement') }}</div>
+                            <div>{!! __($transfer->coef > 0 ? 'meeting.labels.saving' : 'meeting.labels.settlement') !!}</div>
                             <div>{{ $transfer->session->title }}</div>
                           </td>
                           <td class="currency">
