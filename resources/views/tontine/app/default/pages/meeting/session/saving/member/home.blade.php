@@ -7,7 +7,8 @@
 @endphp
                   <div class="row mb-2">
                     <div class="col-auto">
-                      <div class="section-title mt-0">{!! $fund->title !!}</div>
+                      <div class="section-title mt-0 mb-0">{!! __('meeting.titles.savings') !!}</div>
+                      <div class="section-subtitle">{!! $fund->title !!}</div>
                     </div>
                     <div class="col-auto ml-auto">
                       <div class="btn-group" role="group">
@@ -16,7 +17,6 @@
                       </div>
                     </div>
                   </div>
-
                   <div class="row mb-2">
                     <div class="col-md-8">
                       <div class="input-group">

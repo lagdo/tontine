@@ -6,7 +6,8 @@
 @endphp
                   <div class="row mb-2">
                     <div class="col-auto">
-                      <div class="section-title mt-0">{{ __('meeting.titles.remitments') }}</div>
+                      <div class="section-title mt-0 mb-0">{{ __('meeting.titles.remitments') }}</div>
+                      <div class="section-subtitle">{{ $pool->title }}</div>
                     </div>
                     <div class="col-auto ml-auto">
                       <div class="btn-group" role="group">
@@ -18,9 +19,7 @@
                     </div>
                   </div>
                   <div class="row p-2 font-weight-bold">
-                    <div class="col-auto">
-                      <div>{{ $pool->title }}</div>
-                    </div>
+                    <div class="col-auto">&nbsp;</div>
                     <div class="col-auto ml-auto" @jxnBind($rqTotal)>
                     </div>
                   </div>
