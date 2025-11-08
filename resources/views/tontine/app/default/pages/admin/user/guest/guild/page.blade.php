@@ -18,7 +18,10 @@
                       <tbody>
 @foreach ($guilds as $guild)
                         <tr>
-                          <td>{{ $guild->name }}<br/><b>{{ $guild->user->name }}</b></td>
+                          <td>
+                            <div>{{ $guild->name }}</div>
+                            <div><b>{{ $guild->user->name }}</b></div>
+                          </td>
                           <td>{{ $guild->city }}</td>
                           <td>{{ $countries[$guild->country_code] }}</td>
                           <td>{{ $currencies[$guild->currency_code] }}</td>

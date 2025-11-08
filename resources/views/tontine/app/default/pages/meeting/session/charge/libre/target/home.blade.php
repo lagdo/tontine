@@ -34,10 +34,10 @@
                       </div>
                     </div>
                     <div class="col-auto ml-auto">
-                      {{ __('meeting.target.labels.target', [
+                      <div>{{ __('meeting.target.labels.target', [
                         'amount' => $locale->formatMoney($target->amount),
-                      ]) }}<br/>
-                      {{ $target->deadline->title }}
+                      ]) }}</div>
+                      <div>{{ $target->deadline->title }}</div>
                     </div>
                   </div>
 @endif

@@ -15,11 +15,14 @@
                         <tbody>
 @foreach ($loans as $loan)
                           <tr>
-                            <td>{{ $loan->member->name }}<br/>{!! $loan->fund->title !!}</td>
+                            <td>
+                              <div>{{ $loan->member->name }}</div>
+                              <div>{!! $loan->fund->title !!}</div>
+                            </td>
                             <td class="currency">
-                              {{ $locale->formatMoney($loan->principal, false, true) }}<br/>
-                              {{ __('meeting.loan.interest.i' . $loan->interest_type) }}: {{ $loan->fixed_interest ?
-                                $locale->formatMoney($loan->interest, false, true) : ($loan->interest_rate / 100) . '%' }}
+                              <div>{{ $locale->formatMoney($loan->principal, false, true) }}</div>
+                              <div>{{ __('meeting.loan.interest.i' . $loan->interest_type) }}: {{ $loan->fixed_interest ?
+                                $locale->formatMoney($loan->interest, false, true) : ($loan->interest_rate / 100) . '%' }}</div>
                             </td>
                             <td class="table-item-menu">&nbsp;</td>
                           </tr>

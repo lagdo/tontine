@@ -16,8 +16,13 @@
   $remaining = $target->amount > $paid ? $target->amount - $paid : 0;
 @endphp
                         <tr>
-                          <td>{{ $member->name }}@if ($remaining > 0)<br/>{{ __('meeting.target.labels.remaining',
-                            ['amount' => $locale->formatMoney($remaining)]) }}@endif</td>
+                          <td>
+                            <div>{{ $member->name }}</div>
+@if ($remaining > 0)
+                            <div>{{ __('meeting.target.labels.remaining',
+                              ['amount' => $locale->formatMoney($remaining)]) }}</div>
+@endif
+                          </td>
                           <td class="currency">{{ $locale->formatMoney($paid) }}</td>
                         </tr>
 @endforeach

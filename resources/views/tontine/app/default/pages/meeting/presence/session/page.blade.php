@@ -19,7 +19,10 @@
                       <tbody>
 @foreach ($sessions as $session)
                         <tr>
-                          <td>{{ $session->title }}<br/>{{ $statuses[$session->status] }}</td>
+                          <td>
+                            <div>{{ $session->title }}</div>
+                            <div>{{ $statuses[$session->status] }}</div>
+                          </td>
                           <td class="table-item-toggle">{{ $memberCount - ($session->absences_count ?? 0) }}/{{ $memberCount }}</td>
                           <td class="table-item-menu" data-session-id="{{ $session->id }}">
 @if (!$member)

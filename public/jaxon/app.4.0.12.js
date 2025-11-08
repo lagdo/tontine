@@ -55,10 +55,9 @@ var Tontine = {};
         Array.from(tableHeaders).forEach((header) => {
             const colSpan = parseInt(header.getAttribute('colspan') ?? '1');
             // The label can be duplicated depending on the colspan attribute.
-            const colLabel = header.innerHTML.replace('-<br>', '')
-                .replace('<br>', ' ').replace('&nbsp;', ' ');
             for (let i = 0; i < colSpan; i++) {
-                labels.push(colLabel);
+                // Convert the label to text using jQuery.
+                labels.push($(`<span>${header.innerHTML}</span>`).text());
             }
         });
         return labels;

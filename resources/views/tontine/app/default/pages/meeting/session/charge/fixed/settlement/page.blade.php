@@ -6,8 +6,8 @@
                   <div class="table-responsive" id="content-session-fee-fixed-bills" @jxnEvent([
                     ['.btn-add-settlement', 'click', $rqSettlementFunc->addSettlement($billId)],
                     ['.btn-del-settlement', 'click', $rqSettlementFunc->delSettlement($billId)],
-                    ['.btn-edit-notes', 'click', $rqSettlementFunc->editNotes($billId)]])>
-
+                    ['.btn-edit-notes', 'click', $rqSettlementFunc->editNotes($billId)],
+                  ])>
                     <table class="table table-bordered responsive">
                       <thead>
                         <tr>
@@ -19,8 +19,12 @@
                       <tbody>
 @foreach ($bills as $bill)
                         <tr>
-                          <td>{{ $bill->member }}@if ($bill->libre && $bill->session->id !== $session->id) <br/>{{
-                            $bill->session->title }} @endif</td>
+                          <td>
+                            <div>{{ $bill->member }}</div>
+@if ($bill->libre && $bill->session->id !== $session->id)
+                            <div>{{ $bill->session->title }}</div>
+@endif
+                          </td>
                           <td class="currency">{{ $locale->formatMoney($bill->amount) }}</td>
                           <td class="table-item-menu" data-bill-id="{{ $bill->id }}">
                             {!! paymentLink($bill->settlement, 'settlement', !$session->opened) !!}

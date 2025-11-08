@@ -16,8 +16,11 @@
 @foreach ($refunds as $refund)
                         <tr>
                           <td>{{ $refund->member->name }}</td>
-                          <td>{{ __('meeting.loan.labels.' . $refund->debt->type_str) }}@if ($refund->is_partial) ({{
-                            __('meeting.refund.labels.partial') }})@endif<br/>{{ $refund->debt->session->title }}</td>
+                          <td>
+                            <div>{{ __('meeting.loan.labels.' . $refund->debt->type_str)
+                              }}@if ($refund->is_partial) ({{ __('meeting.refund.labels.partial') }})@endif</div>
+                            <div>{{ $refund->debt->session->title }}</div>
+                          </td>
                           <td style="text-align:right;">{{ $locale->formatMoney($refund->amount, true) }}</td>
                         </tr>
 @endforeach

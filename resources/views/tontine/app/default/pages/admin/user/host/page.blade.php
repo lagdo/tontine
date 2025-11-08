@@ -35,8 +35,11 @@
   }
 @endphp
                         <tr>
-                          <td>{{ $invite->guest->name }}<br/>{{ $invite->guest->email }}</td>
-                          <td>{{ $invite->status_label }}@if (($invite->active_label))<br/>{!! $invite->active_label !!}@endif</td>
+                          <td>
+                            <div>{{ $invite->guest->name }}</div>
+                            <div>{{ $invite->guest->email }}</div>
+                          </td>
+                          <td><div>{{ $invite->status_label }}@if (($invite->active_label))</div><div>{!! $invite->active_label !!}@endif</div></td>
                           <td class="table-item-menu">
 @include('tontine::parts.table.menu', [
   'dataIdKey' => 'data-invite-id',

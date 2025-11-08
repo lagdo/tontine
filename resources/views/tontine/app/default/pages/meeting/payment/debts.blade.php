@@ -19,7 +19,10 @@
   $debtAmount = $debtCalculator->getDebtPayableAmount($debt, $session);
 @endphp
                         <tr>
-                          <td>{{ __('meeting.loan.labels.' . $debt->type_str) }}<br/>{{ $debt->session->title }}</td>
+                          <td>
+                            <div>{{ __('meeting.loan.labels.' . $debt->type_str) }}</div>
+                            <div>{{ $debt->session->title }}</div>
+                          </td>
                           <td class="currency">{{ $locale->formatMoney($debtAmount) }}</td>
                           <td class="table-item-menu"><i class="fa fa-toggle-{{ $debt->paid ? 'on' : 'off' }}"></i></td>
                         </tr>

@@ -21,10 +21,10 @@
                         <tr>
                           <td>{{ $payable->member }}</td>
                           <td class="currency">
-                            {{ $locale->formatMoney($payable->amount) }}
+                            <div>{{ $locale->formatMoney($payable->amount) }}</div>
 @if ($payable->remitment && $payable->remitment->auction)
-                            <br/>{{ __('meeting.remitment.labels.auction') }}: {{
-                              $locale->formatMoney($payable->remitment->auction->amount) }}
+                            <div>{{ __('meeting.remitment.labels.auction') }}: {{
+                              $locale->formatMoney($payable->remitment->auction->amount) }}</div>
 @endif
                           </td>
                           <td class="table-item-menu" data-payable-id="{{ $payable->id }}">

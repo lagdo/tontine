@@ -25,16 +25,16 @@
                           <b>{{ $pool->title }}</b>
                         </td>
                         <td>
-                          {!! __('common.labels.amount') !!}: {{ $pool->deposit_fixed ?
-                            $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre') }}<br/>
-                          {!! __('tontine.pool.labels.lendable') !!}: {{ __('common.labels.' .
-                            ($pool->deposit_lendable ? 'yes' : 'no')) }}
+                          <div>{!! __('common.labels.amount') !!}: {{ $pool->deposit_fixed ?
+                            $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre') }}</div>
+                          <div>{!! __('tontine.pool.labels.lendable') !!}: {{ __('common.labels.' .
+                            ($pool->deposit_lendable ? 'yes' : 'no')) }}</div>
                         </td>
                         <td>
-                          {!! __('tontine.pool.labels.planned') !!}: {{ __('common.labels.' .
-                            ($pool->remit_planned ? 'yes' : 'no')) }}<br/>
-                          {!! __('tontine.pool.labels.auction') !!}: {{ __('common.labels.' .
-                            ($pool->remit_auction ? 'yes' : 'no')) }}
+                          <div>{!! __('tontine.pool.labels.planned') !!}: {{ __('common.labels.' .
+                            ($pool->remit_planned ? 'yes' : 'no')) }}</div>
+                          <div>{!! __('tontine.pool.labels.auction') !!}: {{ __('common.labels.' .
+                            ($pool->remit_auction ? 'yes' : 'no')) }}</div>
                         </td>
                         <td class="table-item-toggle" data-pool-id="{{ $pool->id }}">
                           <a role="link" tabindex="0" class="btn-pool-toggle"><i class="fa fa-toggle-{{ $pool->active ? 'on' : 'off' }}"></i></a>

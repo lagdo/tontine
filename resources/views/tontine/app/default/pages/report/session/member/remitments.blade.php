@@ -17,15 +17,16 @@
                         <tr>
                           <td>{{ $payable->pool->title }}</td>
                           <td class="currency">
-                            {{ $locale->formatMoney($payable->amount) }}
+                            <div>{{ $locale->formatMoney($payable->amount) }}</div>
 @isset ($auctions[$payable->id])
-                            <br/>{{ __('meeting.remitment.labels.auction') }}: {{ $locale->formatMoney($auctions[$payable->id]->amount) }}
+                            <div>{{ __('meeting.remitment.labels.auction') }}: {{
+                              $locale->formatMoney($auctions[$payable->id]->amount) }}</div>
 @endisset
                           </td>
                           <td class="table-item-menu">
-                            <i class="fa fa-toggle-{{ $payable->paid ? 'on' : 'off' }}"></i>
+                            <div><i class="fa fa-toggle-{{ $payable->paid ? 'on' : 'off' }}"></i></div>
 @isset ($auctions[$payable->id])
-                            <br/><i class="fa fa-toggle-{{ $auctions[$payable->id]->paid ? 'on' : 'off' }}"></i>
+                            <div><i class="fa fa-toggle-{{ $auctions[$payable->id]->paid ? 'on' : 'off' }}"></i></div>
 @endisset
                           </td>
                         </tr>

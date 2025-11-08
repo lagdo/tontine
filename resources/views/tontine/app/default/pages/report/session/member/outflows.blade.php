@@ -14,7 +14,10 @@
                       <tbody>
 @foreach($outflows as $outflow)
                         <tr>
-                          <td>{{ $outflow->category->name }}<br/>{{ $outflow->session->title }}</td>
+                          <td>
+                            <div>{{ $outflow->category->name }}</div>
+                            <div>{{ $outflow->session->title }}</div>
+                          </td>
                           <td class="currency">{{ $locale->formatMoney($outflow->amount) }}</td>
                         </tr>
 @endforeach

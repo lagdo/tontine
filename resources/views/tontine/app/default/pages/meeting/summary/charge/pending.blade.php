@@ -1,8 +1,11 @@
                         <tr>
-                          <td>{{ $charge->name }}<br/>{{ $locale->formatMoney($charge->amount) }}</td>
+                          <td>
+                            <div>{{ $charge->name }}</div>
+                            <div>{{ $locale->formatMoney($charge->amount) }}</div>
+                          </td>
                           <td class="currency">
-                            {{ $settlements['total']['current'][$charge->id] ?? 0 }}/{{ $charge->currentBillCount }}<br/>
-                            {{ $settlements['total']['previous'][$charge->id] ?? 0 }}/{{ $charge->previousBillCount }}
+                            <div>{{ $settlements['total']['current'][$charge->id] ?? 0 }}/{{ $charge->currentBillCount }}</div>
+                            <div>{{ $settlements['total']['previous'][$charge->id] ?? 0 }}/{{ $charge->previousBillCount }}</div>
                           </td>
                           <td>&nbsp;</td>
                         </tr>

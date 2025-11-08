@@ -179,12 +179,16 @@ form .form-group .col-form-label {
     display: none;
   }
   .table.responsive td {
-    display: flex;
-    align-items: center;
-    padding: 0 15px 0 130px !important;
+    vertical-align: middle;
+    padding: 8px 10px 8px 130px !important;
     position: relative;
     height: auto !important;
-    min-height: 60px;
+    min-height: 40px;
+  }
+  .table.responsive td.table-item-menu {
+    display: flex;
+    padding-top: 0;
+    min-height: 50px;
   }
   .table.responsive td::before {
     padding: 10px;

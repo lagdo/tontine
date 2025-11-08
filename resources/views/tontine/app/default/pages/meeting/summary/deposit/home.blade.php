@@ -44,8 +44,11 @@
                       <tbody>
 @foreach($pools as $pool)
                         <tr>
-                          <td>{{ $pool->title }}<br/>{{ $pool->deposit_fixed ?
-                            $locale->formatMoney($pool->amount) : __('tontine.labels.types.libre') }}</td>
+                          <td>
+                            <div>{{ $pool->title }}</div>
+                            <div>{{ $pool->deposit_fixed ? $locale->formatMoney($pool->amount) :
+                              __('tontine.labels.types.libre') }}</div>
+                          </td>
                           <td class="currency">
                             @include('tontine::pages.meeting.pool.deposit', ['pool' => $pool])
                           </td>

@@ -23,7 +23,10 @@
                             <tbody>
 @foreach ($sessions as $session)
                               <tr>
-                                <td>{{ $session->title }}<br/>{{ $session->date('day_date') }}</td>
+                                <td>
+                                  <div>{{ $session->title }}</div>
+                                  <div>{{ $session->date('day_date') }}</div>
+                                </td>
                                 <td class="table-item-menu">
                                   {!! $html->radio('start_sid', $session->id === $pool->start_sid, $session->id) !!}
                                 </td>

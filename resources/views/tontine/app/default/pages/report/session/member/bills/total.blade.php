@@ -15,14 +15,27 @@
                       <tbody>
 @foreach($charges->filter(fn($charge) => $charge->total_count > 0) as $charge)
                         <tr>
-                          <td>{{ $charge->name }}<br/>{{ $charge->has_amount ?
-                            $locale->formatMoney($charge->amount) : __('tontine.labels.fees.variable') }}</td>
-                          <td class="currency">@if ($charge->total_count > 0){{
-                            $locale->formatMoney($charge->total_amount) }}<br/>{{
-                            $charge->total_count }}@else &nbsp; @endif</td>
-                          <td class="currency">@if ($charge->outflow !== null){{
-                            $locale->formatMoney($charge->outflow->total_amount) }}<br/>{{
-                            $charge->outflow->total_count }}@else &nbsp; @endif</td>
+                          <td>
+                            <div>{{ $charge->name }}</div>
+                            <div>{{ $charge->has_amount ? $locale->formatMoney($charge->amount) :
+                              __('tontine.labels.fees.variable') }}</div>
+                          </td>
+                          <td class="currency">
+@if ($charge->total_count > 0)
+                            <div>{{ $locale->formatMoney($charge->total_amount) }}</div>
+                            <div>{{ $charge->total_count }}</div>
+@else
+                            &nbsp;
+@endif
+                          </td>
+                          <td class="currency">
+@if ($charge->outflow !== null)
+                            <div>{{ $locale->formatMoney($charge->outflow->total_amount) }}</div>
+                            <div>{{ $charge->outflow->total_count }}</div>
+@else
+                            &nbsp;
+@endif
+                          </td>
                         </tr>
 @endforeach
                       </tbody>

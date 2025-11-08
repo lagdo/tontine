@@ -15,8 +15,12 @@
                         <tbody>
 @foreach ($outflows as $outflow)
                           <tr>
-                            <td>{{ $outflow->category->name }}@if (($outflow->comment)) <br/>{{
-                              $outflow->comment }}@endif</td>
+                            <td>
+                              <div>{{ $outflow->category->name }}</div>
+@if ($outflow->comment)
+                              <div>{{ $outflow->comment }}</div>
+@endif
+                            </td>
                             <td>{{ $outflow->member?->name ?? '' }}</td>
                             <td>{{ $outflow->charge?->name ?? '' }}</td>
                             <td class="currency">{{ $locale->formatMoney($outflow->amount) }}</td>

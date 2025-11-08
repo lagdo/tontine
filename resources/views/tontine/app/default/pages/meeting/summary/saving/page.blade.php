@@ -19,7 +19,8 @@
                         <tr>
                           <td>{!! $fund->title !!}</td>
                           <td class="currency">
-                            {{ $fund->s_count ?? 0 }}<br/>{{ $locale->formatMoney($fund->s_amount ?? 0) }}
+                            <div>{{ $fund->s_count ?? 0 }}</div>
+                            <div>{{ $locale->formatMoney($fund->s_amount ?? 0) }}</div>
                           </td>
                           <td class="table-item-menu" data-fund-id="{{ $fund->id }}">
                             <button type="button" class="btn btn-primary btn-fund-savings"><i class="fa fa-arrow-circle-right"></i></button>

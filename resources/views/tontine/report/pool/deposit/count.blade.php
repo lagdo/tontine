@@ -1,2 +1,6 @@
-<div><b>@if(!$selected)-@else{!! $collected->deposit->count !!}@endif</b>
-@if($pool->deposit_fixed)<br/>{{ $expected?->deposit->count ?? 0 }}@endif</div>
+<div>
+  <div><b>@if(!$selected)-@else{!! $collected->deposit->count !!}@endif</b></div>
+@if($pool->deposit_fixed)
+  <div>{{ $expected?->deposit->count ?? 0 }}</div>
+@endif
+</div>

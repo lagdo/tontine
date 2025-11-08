@@ -41,20 +41,21 @@
 @endphp
                         <tr>
                           <td>
-                            {!! $fund->title !!}
+                            <div>{!! $fund->title !!}</div>
 @if($session->id === $fund->start_sid && $fund->start_amount > 0)
-                            <br/>{{ __('meeting.saving.labels.start_amount', [
+                            <div>{{ __('meeting.saving.labels.start_amount', [
                               'amount' => $locale->formatMoney($fund->start_amount ?? 0),
-                            ]) }}
+                            ]) }}</div>
 @endif
 @if($session->id === $fund->end_sid && $fund->end_amount > 0)
-                            <br/>{{ __('meeting.saving.labels.end_amount', [
+                            <div>{{ __('meeting.saving.labels.end_amount', [
                               'amount' => $locale->formatMoney($fund->end_amount ?? 0),
-                            ]) }}
+                            ]) }}</div>
 @endif
                           </td>
                           <td class="currency">
-                            {{ $fund->s_count ?? 0 }}<br/>{{ $locale->formatMoney($fund->s_amount ?? 0) }}
+                            <div>{{ $fund->s_count ?? 0 }}</div>
+                            <div>{{ $locale->formatMoney($fund->s_amount ?? 0) }}</div>
                           </td>
                           <td class="table-item-menu">
 @include('tontine::parts.table.menu', [

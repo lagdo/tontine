@@ -1,11 +1,14 @@
                         <tr>
-                          <td>{{ $charge->name }}<br/>{{ $locale->formatMoney($charge->amount) }}</td>
-                          <td class="currency">
-                            {{ $settlements['total']['current'][$charge->id] ?? 0 }}/{{ $charge->currentBillCount }}<br/>
-                            {{ $settlements['total']['previous'][$charge->id] ?? 0 }}/{{ $charge->previousBillCount }}
+                          <td>
+                            <div>{{ $charge->name }}</div>
+                            <div>{{ $locale->formatMoney($charge->amount) }}</div>
                           </td>
                           <td class="currency">
-                            {{ $locale->formatMoney($settlements['amount']['current'][$charge->id] ?? 0, false) }}<br/>
-                            {{ $locale->formatMoney($settlements['amount']['previous'][$charge->id] ?? 0, false) }}
+                            <div>{{ $settlements['total']['current'][$charge->id] ?? 0 }}/{{ $charge->currentBillCount }}</div>
+                            <div>{{ $settlements['total']['previous'][$charge->id] ?? 0 }}/{{ $charge->previousBillCount }}</div>
+                          </td>
+                          <td class="currency">
+                            <div>{{ $locale->formatMoney($settlements['amount']['current'][$charge->id] ?? 0, false) }}</div>
+                            <div>{{ $locale->formatMoney($settlements['amount']['previous'][$charge->id] ?? 0, false) }}</div>
                           </td>
                         </tr>

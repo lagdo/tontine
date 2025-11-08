@@ -15,7 +15,12 @@
                       <tbody>
 @foreach($bills as $bill)
                         <tr>
-                          <td>{{ $bill->charge->name }}@if (($bill->session))<br/>{{ $bill->session->title }}@endif</td>
+                          <td>
+                            <div>{{ $bill->charge->name }}</div>
+@if (($bill->session))
+                            <div>{{ $bill->session->title }}</div>
+@endif
+                          </td>
                           <td class="currency">{{ $locale->formatMoney($bill->amount) }}</td>
                           <td class="table-item-menu"><i class="fa fa-toggle-{{ $bill->paid ? 'on' : 'off' }}"></i></td>
                         </tr>

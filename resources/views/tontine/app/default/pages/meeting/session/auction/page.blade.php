@@ -18,10 +18,14 @@
 @foreach($auctions as $auction)
                         <tr>
                           <td>
-                            {{ $auction->member->name }}@if ($auction->paid)<br/>{{ $auction->session->title }}@endif
+                            <div>{{ $auction->member->name }}</div>
+@if ($auction->paid)
+                            <div>{{ $auction->session->title }}</div>
+@endif
                           </td>
                           <td class="currency">
-                            {{ $locale->formatMoney($auction->amount) }}<br/>{{ __('meeting.remitment.labels.auction') }}
+                            <div>{{ $locale->formatMoney($auction->amount) }}</div>
+                            <div>{{ __('meeting.remitment.labels.auction') }}</div>
                           </td>
                           <td class="table-item-menu" data-auction-id="{{ $auction->id }}">
 @if ($session->opened)

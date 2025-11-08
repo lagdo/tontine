@@ -24,7 +24,12 @@
   $paidLate = $receivable->paid_late;
 @endphp
                         <tr>
-                          <td>{{ $receivable->member }}@if ($paidLate)<br/>{{ $receivable->deposit->session->title }}@endif</td>
+                          <td>
+                            <div>{{ $receivable->member }}</div>
+@if ($paidLate)
+                            <div>{{ $receivable->deposit->session->title }}</div>
+@endif
+                          </td>
 @if ($pool->deposit_fixed)
                           <td class="currency">{{ $locale->formatMoney($receivable->amount) }}</td>
                           <td class="table-item-menu" id="receivable-{{ $receivable->id }}" data-receivable-id="{{ $receivable->id }}">
