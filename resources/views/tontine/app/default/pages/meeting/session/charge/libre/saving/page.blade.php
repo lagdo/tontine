@@ -29,7 +29,7 @@
                           <td class="currency">
                             <div>{{ $locale->formatMoney($bill->amount) }}</div>
 @if ($bill->settlement?->fund !== null)
-                            <div>{{ $bill->settlement->fund->title }}</div>
+                            <div>{!! $bill->settlement->fund->title !!}</div>
 @endif
                           </td>
                           <td class="table-item-menu" data-bill-id="{{ $bill->id }}">
