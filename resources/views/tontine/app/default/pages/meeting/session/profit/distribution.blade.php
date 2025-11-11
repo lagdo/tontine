@@ -28,8 +28,8 @@
                           <td rowspan="{{ $transfers->count() + 1 }}" style="vertical-align:top;padding-top:20px;">
                             <b>{{ $transfers[0]->member->name }}</b>
                           </td>
-                          <td>&nbsp;</td>
-                          <td class="currency">
+                          <td data-label="&nbsp;">&nbsp;</td>
+                          <td class="currency" data-label="{!! __('common.labels.amount') !!}">
                             <b>{{ $locale->formatMoney($transfers->sum('amount')) }}</b>
                           </td>
                           <td class="currency">

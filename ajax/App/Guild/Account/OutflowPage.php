@@ -50,6 +50,6 @@ class OutflowPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('Tontine')->makeTableResponsive('content-category-page');
+        $this->response->jo('Tontine')->makeTableResponsive('content-outflow-page');
     }
 }

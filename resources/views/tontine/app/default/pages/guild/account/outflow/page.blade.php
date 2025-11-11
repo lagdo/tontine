@@ -3,7 +3,7 @@
   $rqOutflowFunc = rq(Ajax\App\Guild\Account\OutflowFunc::class);
   $rqOutflowPage = rq(Ajax\App\Guild\Account\OutflowPage::class);
 @endphp
-                  <div class="table-responsive" id="content-account-page" @jxnEvent([
+                  <div class="table-responsive" id="content-outflow-page" @jxnEvent([
                     ['.btn-account-edit', 'click', $rqOutflowFunc->edit($accountId)],
                     ['.btn-account-toggle', 'click', $rqOutflowFunc->toggle($accountId)],
                     ['.btn-account-delete', 'click', $rqOutflowFunc->delete($accountId)

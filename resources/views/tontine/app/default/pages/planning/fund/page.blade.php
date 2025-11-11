@@ -5,7 +5,7 @@
   $rqFundPage = rq(Ajax\App\Planning\Fund\FundPage::class);
   $rqSession = rq(Ajax\App\Planning\Fund\Session::class);
 @endphp
-                  <div class="table-responsive" id="content-fund-page" @jxnEvent([
+                  <div class="table-responsive" id="content-planning-fund-page" @jxnEvent([
                     ['.btn-fund-sessions', 'click', $rqSession->fund($fundId)],
                     ['.btn-fund-enable', 'click', $rqFundFunc->enable($defId)],
                     ['.btn-fund-disable', 'click', $rqFundFunc->disable($defId)

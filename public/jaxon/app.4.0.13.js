@@ -57,7 +57,8 @@ var Tontine = {};
             // The label can be duplicated depending on the colspan attribute.
             for (let i = 0; i < colSpan; i++) {
                 // Convert the label to text using jQuery.
-                labels.push($(`<span>${header.innerHTML}</span>`).text());
+                labels.push($(`<span>${header.innerHTML}</span>`).text()
+                    .trim().replace("\n", " "));
             }
         });
         return labels;
@@ -94,7 +95,10 @@ var Tontine = {};
                     }
                 }
 
-                td.setAttribute('data-label', labels[rowIndex]);
+                // Don't overwrite existing labels.
+                if (!td.hasAttribute('data-label')) {
+                    td.setAttribute('data-label', labels[rowIndex]);
+                }
             });
         });
     };
