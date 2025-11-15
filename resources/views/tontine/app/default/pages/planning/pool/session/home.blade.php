@@ -9,7 +9,8 @@
           <div class="section-body">
             <div class="row mb-2">
               <div class="col-auto">
-                <h2 class="section-title">{{ $pool->title }} :: {{ __('tontine.titles.sessions') }}</h2>
+                <div class="section-title mt-0 mb-0">{{ __('tontine.titles.sessions') }}</div>
+                <div class="section-subtitle">{!! $pool->title !!}</div>
               </div>
               <div class="col-auto ml-auto">
                 <div class="btn-group" role="group">
