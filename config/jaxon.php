@@ -36,6 +36,11 @@ return [
                 'confirm' => 'noty',
             ],
         ],
+        'options' => [
+            'logging' => [
+                'enabled' => true,
+            ],
+        ],
     ],
     'lib' => [
         'core' => [

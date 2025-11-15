@@ -11,6 +11,7 @@ use function base_path;
 use function config;
 use function count;
 use function env;
+use function jaxon;
 
 class TontineJaxon
 {
@@ -68,6 +69,8 @@ class TontineJaxon
     {
         $options = $this->getOptions($request);
         count($options) > 0 && config($options);
+
+        jaxon()->config()->globals();
 
         return $next($request);
     }
