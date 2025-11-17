@@ -201,6 +201,7 @@ return [
             'options' => "Edit the fund options",
             'start_amount' => "Edit the start amount",
             'end_amount' => "Edit the end amount",
+            'deposits' => "Deposits",
         ],
         'actions' => [
             'close' => "Close",

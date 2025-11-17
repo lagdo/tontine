@@ -201,6 +201,7 @@ return [
             'options' => "Modifier les options du fonds",
             'start_amount' => "Modifier le montant de départ",
             'end_amount' => "Modifier le montant à la fin",
+            'deposits' => "Versements",
         ],
         'actions' => [
             'close' => "Clotûrer",

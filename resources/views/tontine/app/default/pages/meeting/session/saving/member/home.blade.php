@@ -6,8 +6,8 @@
   $rqSaving = rq(Ajax\App\Meeting\Session\Saving\Saving::class);
 @endphp
                   <div class="row mb-2">
-                    <div class="col-auto">
-                      <div class="section-title mt-0 mb-0">{!! __('meeting.titles.savings') !!}</div>
+                    <div class="col">
+                      <div class="section-title mt-0 mb-0">{!! __('meeting.saving.titles.deposits') !!}</div>
                       <div class="section-subtitle">{!! $fund->title !!}</div>
                     </div>
                     <div class="col-auto ml-auto">
