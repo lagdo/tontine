@@ -6,13 +6,20 @@ jaxon.dom.ready(function() {
 
 var tontine = {};
 (function(self) {
+    // Spinner data.
     const spinner = {
         exec: null,
         count: 0, // To make sure that the spinner is started once.
+        cursor: null, // The default Jaxon cursor callbask.
     };
 
     // Create the spinner.
-    self.createSpinner = () => spinner.exec = new Spin.Spinner({ position: 'fixed' });
+    self.createSpinner = () => {
+        spinner.exec = new Spin.Spinner({ position: 'fixed' });
+        // Replace the default Jaxon defined cursor with our custom spinner.
+        spinner.cursor = jaxon.config.cursor.update;
+        jaxon.config.cursor.update = self.spin;
+    };
 
     // Callback to show our custom spinner.
     self.spin = {
@@ -20,18 +27,21 @@ var tontine = {};
             if(spinner.count++ === 0)
             {
                 spinner.exec.spin(document.body);
+                spinner.cursor.onRequest();
             }
         },
         onComplete: function() {
             if(--spinner.count === 0)
             {
                 spinner.exec.stop();
+                spinner.cursor.onComplete();
             }
         },
         onFailure: function() {
             if(--spinner.count === 0)
             {
                 spinner.exec.stop();
+                spinner.cursor.onFailure && spinner.cursor.onFailure();
             }
         },
     };

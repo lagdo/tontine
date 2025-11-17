@@ -12,5 +12,5 @@
     };
 
     self.home = () => {!! rq(Ajax\Page\MenuFunc::class)->admin() !!};
-})(Tontine);
+})(tontine);
 </script>

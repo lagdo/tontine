@@ -4,12 +4,10 @@ namespace Ajax;
 
 use Jaxon\App\PageComponent as BaseComponent;
 use Jaxon\App\PageDatabagTrait;
-use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Response\AjaxResponse;
 
 #[Databag('tenant')]
-#[Callback('tontine.spin')]
 abstract class PageComponent extends BaseComponent
 {
     use ComponentTrait;
