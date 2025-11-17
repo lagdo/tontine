@@ -3,8 +3,9 @@
   $rqFund = rq(Ajax\App\Meeting\Session\Profit\Fund::class);
 @endphp
                   <div class="row mb-2">
-                    <div class="col-auto">
-                      <div class="section-title mt-0">{!! __('meeting.titles.profits') !!}</div>
+                    <div class="col">
+                      <div class="section-title mt-0 mb-0">{!! __('meeting.titles.profits') !!}</div>
+                      <div class="section-subtitle" id="content-report-profits-fund"></div>
                     </div>
                     <div class="col-auto ml-auto">
                       <div class="input-group">

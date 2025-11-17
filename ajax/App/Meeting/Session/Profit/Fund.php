@@ -26,8 +26,8 @@ class Fund extends Component
         $session = $this->stash()->get('profit.session');
         $fund = $this->stash()->get('profit.fund');
         $profit = $this->stash()->get('profit.amount');
-        $this->stash()->set('profit.savings.distribution',
-            $this->profitService->getDistribution($session, $fund, $profit));
+        $this->stash()->set('profit.savings.distribution', $this->profitService
+            ->getDistribution($session, $fund, $profit));
 
         // Show the fund title
         $this->response->html('content-report-profits-fund', $fund->title);
