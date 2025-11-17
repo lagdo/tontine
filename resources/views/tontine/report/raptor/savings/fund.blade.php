@@ -30,10 +30,11 @@
 @foreach ($distribution->transfers->groupBy('member_id') as $transfers)
 @php
   $memberProfit = $transfers->sum('profit');
-  $memberPercent = $memberProfit / $profitSum;
+  $memberPercent = $profitSum === 0 ? 0 : $memberProfit / $profitSum;
+  $rowSpan = $transfers->count() + 1;
 @endphp
             <tr>
-              <td rowspan="{{ $transfers->count() + 1 }}">
+              <td rowspan="{{ $rowSpan }}">
                 <b>{{ $transfers[0]->member->name }}</b>
               </td>
               <td class="report-savings-session">&nbsp;</td>
@@ -43,11 +44,14 @@
               <td class="report-savings-amount">
                 <b>{{ $transfers->sum('parts') }} ({{ sprintf('%.2f', $memberPercent * 100) }}%)</b>
               </td>
-              <td class="report-savings-amount">
+              <td class="report-savings-amount" rowspan="{{ $rowSpan }}">
                 <b>{{ $locale->formatMoney((int)($profitAmount * $memberPercent), true) }}</b>
               </td>
             </tr>
 @foreach ($transfers as $transfer)
+@php
+  $transferParts = $distribution->partAmount === 0 ? 0 : $transfer->amount / $distribution->partAmount;
+@endphp
             <tr>
               <td class="report-savings-session">
                 <div>{!! $transfer->type !!}</div>
@@ -58,10 +62,9 @@
                 <div>{{ $transfer->duration }}</div>
               </td>
               <td class="report-savings-amount">
-                <div>{{ $transfer->amount / $distribution->partAmount }}*{{ $transfer->duration }}</div>
+                <div>{{ $transferParts }}*{{ $transfer->duration }}</div>
                 <div>={{ $transfer->parts }}</div>
               </td>
-              <td>&nbsp;</td>
             </tr>
 @endforeach
 @endforeach

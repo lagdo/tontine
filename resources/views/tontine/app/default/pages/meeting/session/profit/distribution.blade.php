@@ -22,10 +22,11 @@
 @foreach ($distribution->transfers->groupBy('member_id') as $transfers)
 @php
   $memberProfit = $transfers->sum('profit');
-  $memberPercent = $memberProfit / $profitSum;
+  $memberPercent = $profitSum === 0 ? 0 : $memberProfit / $profitSum;
+  $rowSpan = $transfers->count() + 1;
 @endphp
                         <tr>
-                          <td rowspan="{{ $transfers->count() + 1 }}" style="vertical-align:top;padding-top:20px;">
+                          <td class="align-top" rowspan="{{ $rowSpan }}">
                             <b>{{ $transfers[0]->member->name }}</b>
                           </td>
                           <td data-label="&nbsp;">&nbsp;</td>
@@ -35,11 +36,14 @@
                           <td class="currency">
                             <b>{{ $transfers->sum('parts') }} ({{ sprintf('%.2f', $memberPercent * 100) }}%)</b>
                           </td>
-                          <td class="currency">
+                          <td class="currency align-top" rowspan="{{ $rowSpan }}">
                             <b>{{ $locale->formatMoney((int)($profitAmount * $memberPercent)) }}</b>
                           </td>
                         </tr>
 @foreach ($transfers as $transfer)
+@php
+  $transferParts = $distribution->partAmount === 0 ? 0 : $transfer->amount / $distribution->partAmount;
+@endphp
                         <tr>
                           <td>
                             <div>{!! $transfer->type !!}</div>
@@ -50,10 +54,9 @@
                             <div>{{ $transfer->duration }}</div>
                           </td>
                           <td class="currency">
-                            <div>{{ $transfer->amount / $distribution->partAmount }}*{{ $transfer->duration }}</div>
+                            <div>{{ $transferParts }}*{{ $transfer->duration }}</div>
                             <div>={{ $transfer->parts }}</div>
                           </td>
-                          <td>&nbsp;</td>
                         </tr>
 @endforeach
 @endforeach
