@@ -96,6 +96,10 @@ th.currency, td.currency {
 .table:not(.table-sm):not(.table-md):not(.dataTable) td {
   padding: 0 12px;
 }
+.table:not(.table-sm):not(.table-md):not(.dataTable) td.align-top {
+  vertical-align: top;
+  padding-top: 20px;
+}
 .table.table-bordered th:not(:first-child) {
   border-left-color: white;
   border-left-width: 1px;
@@ -180,7 +184,7 @@ form .form-group .col-form-label {
   }
   .table.responsive td {
     vertical-align: middle;
-    padding: 8px 10px 8px 130px !important;
+    padding: 8px 10px 8px 120px !important;
     position: relative;
     height: auto !important;
     min-height: 40px;
@@ -191,12 +195,13 @@ form .form-group .col-form-label {
     min-height: 50px;
   }
   .table.responsive td::before {
-    padding: 10px;
+    padding: 8px 10px;
     content: attr(data-label);
+    white-space: pre-line; /* This is required for the new lines to be printed properly .*/
     position: absolute;
     top: 0;
     left: 0;
-    width: 120px;
+    width: 110px;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.04);
     color: #666;

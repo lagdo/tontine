@@ -21,7 +21,7 @@
 
 @jxnScript
 
-<script src="/jaxon/app.4.0.13.js"></script>
+<script src="/jaxon/app.4.0.14.js"></script>
 <script>
 (function(self) {
     self.home = () => {!! $rqUser->render() !!};

@@ -49,25 +49,36 @@ var Tontine = {};
         });
     };
 
+    // Convert HTML code to text.
+    const convertHtmlToText = (html) => {
+        const element = document.createElement("div");
+        element.innerHTML = html;
+        const text = element.textContent || element.innerText || "";
+        return text.trim()/*.replace("\n", " ")*/;
+    };
+
     // Get the labels for tables cells, taking the colspan attr into account.
     const headerLabels = (tableHeaders) => {
         const labels = [];
         Array.from(tableHeaders).forEach((header) => {
             const colSpan = parseInt(header.getAttribute('colspan') ?? '1');
+            // Convert the label to text using jQuery.
+            const label = convertHtmlToText(`<span>${header.innerHTML}</span>`);
             // The label can be duplicated depending on the colspan attribute.
             for (let i = 0; i < colSpan; i++) {
-                // Convert the label to text using jQuery.
-                labels.push($(`<span>${header.innerHTML}</span>`).text()
-                    .trim().replace("\n", " "));
+                labels.push(label);
             }
         });
         return labels;
     };
 
+    // Add labels to table cells.
     const makeTableResponsive = (table) => {
+        // Due to colspan and rowspan attributes, some offset might need to be applied to labels.
         const spanOffsets = [];
         const setOffset = (row, col, span) => {
-            spanOffsets[`${row}-${col}`] = span + (spanOffsets[`${row}-${col}`] ?? 0);
+            const offsetKey = `${row}-${col}`;
+            spanOffsets[offsetKey] = span + (spanOffsets[offsetKey] ?? 0);
         };
 
         const labels = headerLabels(table.querySelectorAll('th'));
@@ -119,6 +130,7 @@ var Tontine = {};
             if(!targetId) {
                 return;
             }
+
             // Show the target screen.
             self.showSmScreen(targetId, screensWrapperId);
             // Activate the button the user has clicked on.
