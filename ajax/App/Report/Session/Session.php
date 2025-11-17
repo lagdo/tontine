@@ -30,7 +30,7 @@ class Session extends Component
         protected SessionService $sessionService)
     {}
 
-    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
+    #[Callback('tontine.hideMenu')]
     public function home()
     {
         $this->render();

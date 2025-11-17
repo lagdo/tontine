@@ -22,7 +22,7 @@ class Finance extends Component
      */
     protected $overrides = SectionContent::class;
 
-    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
+    #[Callback('tontine.hideMenu')]
     public function home()
     {
         $this->render();
@@ -51,7 +51,7 @@ class Finance extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('Tontine')->setSmScreenHandler('finance-sm-screens');
+        $this->response->jo('tontine')->setSmScreenHandler('finance-sm-screens');
 
         $this->cl(Fund\Fund::class)->render();
         $this->cl(Pool\Pool::class)->render();

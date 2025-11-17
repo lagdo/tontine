@@ -1,46 +1,51 @@
 jaxon.dom.ready(function() {
-    const spin = {
-        spinner: new Spin.Spinner({ position: 'fixed' }),
+    tontine.createSpinner();
+    // The function must be called after the callbacks are defined.
+    tontine.home();
+});
+
+var tontine = {};
+(function(self) {
+    const spinner = {
+        exec: null,
         count: 0, // To make sure that the spinner is started once.
     };
 
-    jaxon.ajax.callback.tontine = {
+    // Create the spinner.
+    self.createSpinner = () => spinner.exec = new Spin.Spinner({ position: 'fixed' });
+
+    // Callback to show our custom spinner.
+    self.spin = {
         onRequest: function() {
-            if(spin.count++ === 0)
+            if(spinner.count++ === 0)
             {
-                spin.spinner.spin(document.body);
+                spinner.exec.spin(document.body);
             }
         },
         onComplete: function() {
-            if(--spin.count === 0)
+            if(--spinner.count === 0)
             {
-                spin.spinner.stop();
+                spinner.exec.stop();
             }
         },
         onFailure: function() {
-            if(--spin.count === 0)
+            if(--spinner.count === 0)
             {
-                spin.spinner.stop();
+                spinner.exec.stop();
             }
         },
     };
 
-    jaxon.ajax.callback.selectCurrency = {
-        // Empty the currency list while fetching the new currencies.
+    // Callback to empty the currency list while fetching the new currencies.
+    self.currency = {
         onRequest: () => $('#select_currency_container select').html(''),
     };
 
-    jaxon.ajax.callback.hideMenuOnMobile = {
-        // Hide the sidebar menu on mobile devices
+    // Callback to hide the sidebar menu on mobile devices
+    self.hideMenu = {
         onRequest: () => $('body').trigger('touchend'),
     };
 
-    // The function must be called after the callbacks are defined.
-    Tontine.home();
-});
-
-var Tontine = {};
-(function(self) {
     self.setLoanInterestLabel = () => {
         $('#loan-interest-type').change(() => {
             const type = $('#loan-interest-type').val();
@@ -171,4 +176,4 @@ var Tontine = {};
                 .html(getSubscriptionSelect(id, [ ...candidates, { id, name } ]));
         });
     };
-})(Tontine);
+})(tontine);

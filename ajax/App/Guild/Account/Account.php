@@ -21,7 +21,7 @@ class Account extends Component
      */
     protected $overrides = SectionContent::class;
 
-    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
+    #[Callback('tontine.hideMenu')]
     public function home(): void
     {
         $this->render();
@@ -48,7 +48,7 @@ class Account extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('Tontine')->setSmScreenHandler('account-sm-screens');
+        $this->response->jo('tontine')->setSmScreenHandler('account-sm-screens');
 
         $this->cl(Fund::class)->render();
         $this->cl(Outflow::class)->render();

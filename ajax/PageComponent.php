@@ -9,7 +9,7 @@ use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Response\AjaxResponse;
 
 #[Databag('tenant')]
-#[Callback('jaxon.ajax.callback.tontine')]
+#[Callback('tontine.spin')]
 abstract class PageComponent extends BaseComponent
 {
     use ComponentTrait;

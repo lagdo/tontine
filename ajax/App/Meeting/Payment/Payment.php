@@ -45,7 +45,7 @@ class Payment extends Component
     }
 
     #[Before('getOpenedSessions')]
-    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
+    #[Callback('tontine.hideMenu')]
     public function home(): void
     {
         $this->render();

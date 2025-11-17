@@ -27,7 +27,7 @@ class Guild extends Component
     public function __construct(private GuildService $guildService)
     {}
 
-    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
+    #[Callback('tontine.hideMenu')]
     public function home()
     {
         $this->render();

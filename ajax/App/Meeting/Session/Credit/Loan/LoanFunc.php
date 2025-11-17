@@ -52,7 +52,7 @@ class LoanFunc extends FuncComponent
             'click' => $this->rq()->create(je('loan-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
-        $this->response->jo('Tontine')->setLoanInterestLabel();
+        $this->response->jo('tontine')->setLoanInterestLabel();
     }
 
     #[Inject(attr: 'validator')]
@@ -125,7 +125,7 @@ class LoanFunc extends FuncComponent
             'click' => $this->rq()->update($loanId, je('loan-form')->rd()->form()),
         ]];
         $this->modal()->show($title, $content, $buttons);
-        $this->response->jo('Tontine')->setLoanInterestLabel();
+        $this->response->jo('tontine')->setLoanInterestLabel();
     }
 
     #[Inject(attr: 'validator')]

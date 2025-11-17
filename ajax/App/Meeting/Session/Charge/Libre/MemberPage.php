@@ -52,6 +52,6 @@ class MemberPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('Tontine')->makeTableResponsive('content-session-fee-libre-members');
+        $this->response->jo('tontine')->makeTableResponsive('content-session-fee-libre-members');
     }
 }

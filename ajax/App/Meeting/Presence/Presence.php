@@ -22,7 +22,7 @@ class Presence extends Component
     protected $overrides = SectionContent::class;
 
     #[Before('checkRoundSessions')]
-    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
+    #[Callback('tontine.hideMenu')]
     public function home(): void
     {
         $this->render();
@@ -57,7 +57,7 @@ class Presence extends Component
         !$exchange ?
             $this->cl(Session::class)->render() :
             $this->cl(Member::class)->render();
-        $this->response->jo('Tontine')
+        $this->response->jo('tontine')
             ->showSmScreen('content-presence-left', 'presence-sm-screens');
     }
 }

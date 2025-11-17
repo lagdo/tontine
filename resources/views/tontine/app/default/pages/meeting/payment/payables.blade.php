@@ -4,7 +4,7 @@
                     <h2 class="section-title">{{ $session->title }} - {{ $member->name }}</h2>
                   </div>
                   <div class="col-auto ml-auto sm-screen-hidden">
-                    <button type="button" class="btn btn-primary" @jxnClick(jo('Tontine')
+                    <button type="button" class="btn btn-primary" @jxnClick(jo('tontine')
                       ->showSmScreen('payment-members-home', 'payment-sm-screens'))><i class="fa fa-arrow-left"></i></button>
                   </div>
                 </div>

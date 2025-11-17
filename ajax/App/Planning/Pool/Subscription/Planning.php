@@ -72,6 +72,6 @@ class Planning extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('Tontine')->makeTableResponsive('content-subscription-planning');
+        $this->response->jo('tontine')->makeTableResponsive('content-subscription-planning');
     }
 }

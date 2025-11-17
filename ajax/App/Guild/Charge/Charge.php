@@ -23,7 +23,7 @@ class Charge extends Component
      */
     protected $overrides = SectionContent::class;
 
-    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
+    #[Callback('tontine.hideMenu')]
     public function home()
     {
         $this->render();

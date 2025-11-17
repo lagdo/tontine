@@ -7,7 +7,7 @@ use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 
 #[Databag('tenant')]
-#[Callback('jaxon.ajax.callback.tontine')]
+#[Callback('tontine.spin')]
 class FuncComponent extends BaseComponent
 {
     use ComponentTrait;

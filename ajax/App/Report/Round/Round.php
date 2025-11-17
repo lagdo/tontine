@@ -52,13 +52,13 @@ class Round extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('Tontine')->makeTableResponsive('content-home');
+        $this->response->jo('tontine')->makeTableResponsive('content-home');
     }
 
     /**
      * @return void
      */
-    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
+    #[Callback('tontine.hideMenu')]
     public function home(): void
     {
         $this->render();

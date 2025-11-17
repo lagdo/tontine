@@ -22,7 +22,7 @@ class Session extends Component
     protected $overrides = SectionContent::class;
 
     #[Before('checkRoundSessions')]
-    #[Callback('jaxon.ajax.callback.hideMenuOnMobile')]
+    #[Callback('tontine.hideMenu')]
     public function home()
     {
         $this->render();

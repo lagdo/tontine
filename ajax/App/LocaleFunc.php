@@ -15,7 +15,7 @@ class LocaleFunc extends FuncComponent
     #[Inject]
     protected LocaleService $localeService;
 
-    #[Callback('jaxon.ajax.callback.selectCurrency')]
+    #[Callback('tontine.currency')]
     public function selectCurrency(string $countryCode): void
     {
         $html = $this->renderView('pages.admin.guild.currency', [

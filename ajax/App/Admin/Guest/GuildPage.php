@@ -55,6 +55,6 @@ class GuildPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('Tontine')->makeTableResponsive('content-page');
+        $this->response->jo('tontine')->makeTableResponsive('content-page');
     }
 }

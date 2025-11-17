@@ -151,7 +151,7 @@ class Beneficiary extends Component
         $callback = fn(string $name, int $id) => compact('id', 'name');
         $candidates = array_values($this->candidates->map($callback)->all());
         $beneficiaries = array_values($this->beneficiaries->map($callback)->all());
-        $this->response->jo('Tontine')
+        $this->response->jo('tontine')
             ->setSubscriptionCandidates($candidates, $beneficiaries);
 
         $sessionId = jq()->parent()->parent()->attr('data-session-id')->toInt();
@@ -162,7 +162,7 @@ class Beneficiary extends Component
             ->on('change', $this->rq()->save($sessionId,
                 $nextSubscriptionId, $currSubscriptionId));
 
-        $this->response->jo('Tontine')
+        $this->response->jo('tontine')
             ->makeTableResponsive('content-subscription-beneficiaries');
     }
 
