@@ -2,8 +2,11 @@
 
 return [
     'binary' => env('CHROME_BINARY'),
+    'host' => env('CHROME_HOST'),
+    'port' => env('CHROME_PORT'),
     'browser' => [
         'startupTimeout' => 30,
+        'noSandbox' => true,
     ],
     'page' => [
         'landscape'           => true,             // default to false

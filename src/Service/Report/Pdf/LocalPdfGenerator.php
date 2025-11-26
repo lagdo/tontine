@@ -17,15 +17,8 @@ class LocalPdfGenerator implements PdfGeneratorInterface
      */
     public function getPdf(string $html, array $config): string
     {
-        try
-        {
-            $page = $this->browser->createPage();
-            $page->setHtml($html);
-            return $page->pdf($config)->getBase64();
-        }
-        finally
-        {
-            $this->browser->close();
-        }
+        $page = $this->browser->createPage();
+        $page->setHtml($html);
+        return $page->pdf($config)->getBase64();
     }
 }
