@@ -1,0 +1,25 @@
+{
+    "common": {
+        "access": {
+            "server": true,
+            "system": false
+        }
+    },
+    "fallback": {
+    },
+    "users": [{
+        "id": {
+            "user": "admin@company.com"
+        },
+        "servers": {
+            "tontine": {
+                "driver": "pgsql",
+                "name": "Siak Tontine",
+                "host": "tontine-postgres",
+                "port": "5432",
+                "username": "postgres",
+                "password": "tontine"
+            }
+        }
+    }]
+}

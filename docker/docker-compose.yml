@@ -1,0 +1,61 @@
+services:
+  tontine:
+    container_name: tontine
+    build:
+      context: ./
+      dockerfile: tontine/Dockerfile
+      args:
+        - PHP_USER=tontine
+        - PHP_UID=${PHP_UID:-1000}
+        - PHP_GID=${PHP_GID:-1000}
+    volumes:
+     - ..:/var/www
+    ports:
+      - 4000:80
+    networks:
+      tontine-network:
+        ipv4_address: 172.28.1.1
+
+  tontine-postgres:
+    container_name: tontine-postgres
+    image: postgres:17-alpine3.21
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: tontine
+    expose:
+      - 5432
+    networks:
+      tontine-network:
+        ipv4_address: 172.28.1.2
+
+  tontine-dbadmin:
+    container_name: tontine-dbadmin
+    image: lagdo/jaxon-dbadmin:latest
+    volumes:
+      - ./dbadmin/dbadmin.json:/var/www/config/dbadmin.json
+    ports:
+      - 4001:8080
+    networks:
+      tontine-network:
+        ipv4_address: 172.28.1.3
+
+  tontine-chromium:
+    container_name: tontine-chromium
+    image: lagdo/alpine-chromium-nginx
+    environment:
+      - NGINX_PORT=9222
+      - NGINX_ALLOW=172.28.1.1
+    restart: always
+    expose:
+      - 9222
+    networks:
+      tontine-network:
+        ipv4_address: 172.28.1.4
+
+networks:
+  tontine-network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
