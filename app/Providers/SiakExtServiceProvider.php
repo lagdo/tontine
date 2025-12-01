@@ -10,14 +10,49 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Uri;
 use Lagdo\Facades\Logger;
 use Siak\Tontine\Exception\PdfGeneratorException;
-use Siak\Tontine\Service\Report\Pdf\PdfGeneratorInterface;
 use Siak\Tontine\Service\Report\Pdf\LocalPdfGenerator;
+use Siak\Tontine\Service\Report\Pdf\PdfGeneratorInterface;
 use Exception;
 
 use function config;
 
 class SiakExtServiceProvider extends ServiceProvider implements DeferrableProvider
 {
+    /**
+     * @param array $options
+     *
+     * @throws PdfGeneratorException
+     * @return Browser|null
+     */
+    private function connectToChrome(array $options): Browser|null
+    {
+        $chromeHost = config('chrome.host');
+        $chromePort = config('chrome.port');
+        if($chromeHost === null || $chromePort === null)
+        {
+            return null;
+        }
+
+        $chromeHttpUrl = "http://$chromeHost:$chromePort/json/version";
+        try
+        {
+            $chromeVersion = Http::accept('application/json')->get($chromeHttpUrl);
+            $chomeWsUrl = Uri::of($chromeVersion['webSocketDebuggerUrl'] ?? '');
+            // Only take the path because due to the Nginx proxy, the full uri might not be correct.
+            $chomeWsUrl = "ws://$chromeHost:$chromePort/" . $chomeWsUrl->path();
+            if(config('app.debug'))
+            {
+                Logger::info("Connect to the headless Chrome URI at '$chomeWsUrl'");
+            }
+            return BrowserFactory::connectToBrowser($chomeWsUrl, $options);
+        }
+        catch(Exception)
+        {
+            Logger::error("Unable to connect to the headless Chrome URI at '$chromeHttpUrl'");
+            throw new PdfGeneratorException("Unable to connect to the headless Chrome URI");
+        }
+    }
+
     /**
      * @param array $options
      *
@@ -41,36 +76,6 @@ class SiakExtServiceProvider extends ServiceProvider implements DeferrableProvid
     }
 
     /**
-     * @param string $chromeUrl
-     * @param array $options
-     *
-     * @throws PdfGeneratorException
-     * @return Browser
-     */
-    private function connectToChrome(string $chromeUrl, array $options): Browser
-    {
-        $chromeHttpUrl = "http://$chromeUrl/json/version";
-        try
-        {
-            $chromeVersion = Http::accept('application/json')->get($chromeHttpUrl);
-            $chomeWsUrl = Uri::of($chromeVersion['webSocketDebuggerUrl'] ?? '');
-
-            // Only take the path because due to the Nginx proxy, the full uri might not be correct.
-            $chomeWsUrl = "ws://$chromeUrl/" . $chomeWsUrl->path();
-            if(config('app.debug'))
-            {
-                Logger::info("Connect to the headless Chrome URI at '$chomeWsUrl'");
-            }
-            return BrowserFactory::connectToBrowser($chomeWsUrl, $options);
-        }
-        catch(Exception)
-        {
-            Logger::error("Unable to connect to the headless Chrome URI at '$chromeHttpUrl'");
-            throw new PdfGeneratorException("Unable to connect to the headless Chrome URI");
-        }
-    }
-
-    /**
      * Register any application services
      *
      * @return void
@@ -84,17 +89,12 @@ class SiakExtServiceProvider extends ServiceProvider implements DeferrableProvid
                 $options['debugLogger'] = Logger::instance();
             }
 
-            $chromeHost = config('chrome.host');
-            $chromePort = config('chrome.port');
-            return $chromeHost !== null && $chromePort !== null ?
-                $this->connectToChrome("$chromeHost:$chromePort", $options) :
-                $this->startChromeBinary($options);
+            return $this->connectToChrome($options) ?? $this->startChromeBinary($options);
         });
 
         $this->app->bind(PdfGeneratorInterface::class, LocalPdfGenerator::class);
-        $this->app->singleton(LocalPdfGenerator::class, function($app) {
-            return new LocalPdfGenerator($app->make(Browser::class));
-        });
+        $this->app->singleton(LocalPdfGenerator::class, fn($app) =>
+            new LocalPdfGenerator($app->make(Browser::class)));
     }
 
     /**
