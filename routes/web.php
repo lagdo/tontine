@@ -63,7 +63,7 @@ Route::middleware(['auth', 'tontine', 'analytics'])
     });
 
 Route::prefix(LaravelLocalization::setLocale())
-    ->middleware('analytics')
+    ->middleware(['analytics', 'template'])
     ->group(function() {
         // Redefine Fortify routes with different HTTP verbs
         //--------------------------------------------------------
@@ -89,7 +89,6 @@ Route::prefix(LaravelLocalization::setLocale())
                 'playlist' => config('tontine.videos.playlist'),
                 'videos' => config('tontine.videos.parts'),
             ]);
-            return view('tontine.web.learn');
-        })
-        ->name('learn.page');
+            return view('tontine::web.learn');
+        })->name('learn.page');
     });

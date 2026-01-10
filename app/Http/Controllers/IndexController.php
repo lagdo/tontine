@@ -35,7 +35,7 @@ class IndexController extends Controller
             'hasGuestGuilds' => $guildService->hasGuestGuilds($user)
         ]);
 
-        return view("tontine::base.home");
+        return view("tontine_app::base.home");
     }
 
     /**
@@ -54,7 +54,7 @@ class IndexController extends Controller
             'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
         ]);
 
-        return view("tontine::base.profile", [
+        return view("tontine_app::base.profile", [
             'countries' => $localeService->getCountries(),
         ]);
     }
@@ -75,7 +75,7 @@ class IndexController extends Controller
             'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
         ]);
 
-        return view("tontine::base.users", [
+        return view("tontine_app::base.users", [
             'countries' => $localeService->getCountries(),
         ]);
     }

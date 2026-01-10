@@ -45,7 +45,7 @@ class FeedbackReceived extends Mailable
     public function content()
     {
         return new Content(
-            view: 'tontine.emails.feedbacks.received',
+            view: 'tontine::emails.feedbacks.received',
         );
     }
 

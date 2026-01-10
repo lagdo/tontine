@@ -29,7 +29,7 @@ class PdfPrinterService
     private function getViewPath(Guild $guild, string $report): string
     {
         $template = $this->guildService->getReportTemplate($guild);
-        return "tontine.report.$template.$report";
+        return "tontine::report.$template.$report";
     }
 
     /**
@@ -180,7 +180,7 @@ class PdfPrinterService
      */
     public function getFormViewPath(string $form): string
     {
-        return "tontine.entry.raptor.$form";
+        return "tontine::entry.raptor.$form";
     }
 
     /**

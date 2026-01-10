@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Middleware\EnsureEmailIsVerified;
-use App\Http\Middleware\TontineAnnotations;
 use App\Http\Middleware\TontineHelper;
 use App\Http\Middleware\TontineJaxon;
 use App\Http\Middleware\TontineLocale;
@@ -28,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'verified' => EnsureEmailIsVerified::class,
+            'template' => TontineTemplate::class,
         ]);
 
         // Tontine middlewares

@@ -42,7 +42,7 @@ trait ComponentTrait
      */
     protected function renderView(string $view, array $viewData = []): ?Store
     {
-        return $this->view()->render("tontine::$view", $viewData);
+        return $this->view()->render("tontine_app::$view", $viewData);
     }
 
     /**

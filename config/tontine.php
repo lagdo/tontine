@@ -3,7 +3,7 @@
 return [
     'templates' => [
         'login' => [
-            'form' => 'tontine.app.auth.login-form',
+            'form' => 'tontine::app.auth.login-form',
         ],
     ],
     'access' => [
