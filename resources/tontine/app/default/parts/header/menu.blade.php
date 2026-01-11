@@ -36,9 +36,6 @@
               <a href="{{ route('user.profile') }}" class="dropdown-item has-icon">
                 <i class="far fa-user"></i> {{ __('tontine.menus.profile') }}
               </a>
-              <a href="{{ route('user.invites') }}" class="dropdown-item has-icon">
-                <i class="far fa-user-circle"></i> {{ __('tontine.menus.users') }}
-              </a>
               <div class="dropdown-divider"></div>
               <a href="{{ route('logout.get') }}" class="dropdown-item has-icon text-danger">
                 <i class="fa fa-sign-out-alt"></i> {{ __('tontine.menus.logout') }}

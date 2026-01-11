@@ -58,25 +58,4 @@ class IndexController extends Controller
             'countries' => $localeService->getCountries(),
         ]);
     }
-
-    /**
-     * Show the users page.
-     *
-     * @param LocaleService $localeService
-     *
-     * @return View
-     */
-    public function users(LocaleService $localeService): View
-    {
-        view()->share([
-            'user' => auth()->user(),
-            'locales' => LaravelLocalization::getSupportedLocales(),
-            'locale' => LaravelLocalization::getCurrentLocale(),
-            'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
-        ]);
-
-        return view("tontine_app::base.users", [
-            'countries' => $localeService->getCountries(),
-        ]);
-    }
 }

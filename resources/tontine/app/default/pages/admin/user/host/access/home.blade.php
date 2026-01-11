@@ -1,8 +1,8 @@
 @php
   $guildId = je('select-invite-guild')->rd()->select();
-  $rqHostAccessFunc = rq(Ajax\User\Host\AccessFunc::class);
-  $rqHostGuildAccess = rq(Ajax\User\Host\GuildAccess::class);
-  $rqHost = rq(Ajax\User\Host\Host::class);
+  $rqHostAccessFunc = rq(Ajax\App\Admin\User\Host\AccessFunc::class);
+  $rqHostGuildAccess = rq(Ajax\App\Admin\User\Host\GuildAccess::class);
+  $rqHost = rq(Ajax\App\Admin\User\Host\Host::class);
 @endphp
               <div class="section-body">
                 <div class="row mb-2">

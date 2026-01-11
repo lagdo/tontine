@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\User\Host;
+namespace Ajax\App\Admin\User\Host;
 
 use Ajax\Component;
 use Jaxon\Attributes\Attribute\Databag;

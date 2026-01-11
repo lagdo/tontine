@@ -1,6 +1,6 @@
 @php
   $formValues = je('guest-guild-access-form')->rd()->form();
-  $rqHostAccessFunc = rq(Ajax\User\Host\AccessFunc::class);
+  $rqHostAccessFunc = rq(Ajax\App\Admin\User\Host\AccessFunc::class);
 @endphp
                 <div class="section-body">
                   <div class="row mb-2">

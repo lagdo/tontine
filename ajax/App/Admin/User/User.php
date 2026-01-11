@@ -1,16 +1,30 @@
 <?php
 
-namespace Ajax\User;
+namespace Ajax\App\Admin\User;
 
 use Ajax\Component;
+use Ajax\Page\SectionContent;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
-use Jaxon\Attributes\Attribute\Export;
 use Stringable;
 
-#[Databag('user')]
-#[Export(base: ['render'])]
+#[Before('checkHostAccess', ["admin", "users"])]
+#[Databag('admin')]
 class User extends Component
 {
+    /**
+     * @var string
+     */
+    protected $overrides = SectionContent::class;
+
+    #[Before('setSectionTitle', ["admin", "users"])]
+    #[Callback('tontine.hideMenu')]
+    public function home()
+    {
+        $this->render();
+    }
+
     /**
      * @inheritDoc
      */

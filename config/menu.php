@@ -1,40 +1,33 @@
 <?php
 
-use Ajax\App\Guild\Account\Account;
-use Ajax\App\Admin\Guild\Guild;
-use Ajax\App\Guild\Calendar\Round as Calendar;
-use Ajax\App\Guild\Charge\Charge;
-use Ajax\App\Guild\Member\Member;
-use Ajax\App\Guild\Pool\Pool;
-use Ajax\App\Meeting\Payment\Payment;
-use Ajax\App\Meeting\Presence\Presence;
-use Ajax\App\Meeting\Session\Session;
-use Ajax\App\Planning\Enrollment;
-use Ajax\App\Planning\Finance;
-use Ajax\App\Report\Round\Round as ReportRound;
-use Ajax\App\Report\Session\Session as ReportSession;
+use Ajax\App\Admin;
+use Ajax\App\Guild;
+use Ajax\App\Meeting;
+use Ajax\App\Planning;
+use Ajax\App\Report;
 
 return [
     'admin' => [
-        '#admin-menu-guilds' => Guild::class,
-    ],
-    'finance' => [
-        '#finance-menu-pools' => Pool::class,
-        '#finance-menu-accounts' => Account::class,
-        '#finance-menu-charges' => Charge::class,
+        '#admin-menu-guilds' => Admin\Guild\Guild::class,
+        '#admin-menu-users' => Admin\User\User::class,
     ],
     'tontine' => [
-        '#guild-menu-members' => Member::class,
-        '#guild-menu-calendar' => Calendar::class,
+        '#guild-menu-members' => Guild\Member\Member::class,
+        '#guild-menu-calendar' => Guild\Calendar\Round::class,
+    ],
+    'finance' => [
+        '#finance-menu-pools' => Guild\Pool\Pool::class,
+        '#finance-menu-accounts' => Guild\Account\Account::class,
+        '#finance-menu-charges' => Guild\Charge\Charge::class,
     ],
     'round' => [
-        '#planning-menu-enrollment' => Enrollment::class,
-        '#planning-menu-finance' => Finance::class,
-        '#meeting-menu-sessions' => Session::class,
-        '#meeting-menu-payments' => Payment::class,
-        '#meeting-menu-presences' => Presence::class,
-        '#report-menu-session' => ReportSession::class,
-        '#report-menu-round' => ReportRound::class,
+        '#planning-menu-enrollment' => Planning\Enrollment::class,
+        '#planning-menu-finance' => Planning\Finance::class,
+        '#meeting-menu-sessions' => Meeting\Session\Session::class,
+        '#meeting-menu-payments' => Meeting\Payment\Payment::class,
+        '#meeting-menu-presences' => Meeting\Presence\Presence::class,
+        '#report-menu-session' => Report\Session\Session::class,
+        '#report-menu-round' => Report\Round\Round::class,
     ],
     'color' => [
         'active' => '#6777ef',

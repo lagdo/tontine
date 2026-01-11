@@ -1,7 +1,7 @@
 @php
   $inviteId = jq()->parent()->attr('data-invite-id')->toInt();
-  $rqGuestUserFunc = rq(Ajax\User\Guest\GuestFunc::class);
-  $rqGuestUserPage = rq(Ajax\User\Guest\GuestPage::class);
+  $rqGuestUserFunc = rq(Ajax\App\Admin\User\Guest\GuestFunc::class);
+  $rqGuestUserPage = rq(Ajax\App\Admin\User\Guest\GuestPage::class);
 @endphp
                   <div class="table-responsive" id="content-guest-invites-page" @jxnEvent([
                     ['.btn-guest-invite-accept', 'click', $rqGuestUserFunc->accept($inviteId)
