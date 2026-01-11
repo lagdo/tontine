@@ -88,6 +88,7 @@ return [
         'deleted' => "The organisation was successfully deleted.",
         'selected' => "You have selected the organisation :guild.",
         'back_to_admin' => "You are back to the Administration section of the organisation :guild.",
+        'back_to_guild' => "You are back to the Guild section of the round :round.",
         'screen' => [
             'orientation' => "If you are using a mobile device, we advise you to place it in landscape mode, for a better display.",
         ],

@@ -1,12 +1,8 @@
-@php
-  $rqMenuFunc = rq(Ajax\Page\Header\MenuFunc::class);
-@endphp
         <form class="form-inline mr-auto">
           <ul class="navbar-nav mr-1">
             <li><a role="link" tabindex="0" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fa fa-bars"></i></a></li>
           </ul>
-          <ul class="navbar-nav mr-1" id="header-menu-home" style="display:none;">
-            <li><a role="link" tabindex="0" class="nav-link nav-link-lg" @jxnClick($rqMenuFunc->admin())><i class="fa fa-caret-square-left"></i></a></li>
+          <ul class="navbar-nav mr-1" id="header-menu-back" style="display:none;">
           </ul>
           <ul class="navbar-nav">
             <li class="dropdown language">

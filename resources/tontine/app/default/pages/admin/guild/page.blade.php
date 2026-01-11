@@ -1,12 +1,12 @@
 @php
   $guildId = jq()->parent()->attr('data-guild-id')->toInt();
-  $rqMenuFunc = rq(Ajax\Page\Header\MenuFunc::class);
+  $rqMenuFunc = rq(Ajax\Page\Header\GuildMenuFunc::class);
   $rqGuildFunc = rq(Ajax\App\Admin\Guild\GuildFunc::class);
   $rqGuildPage = rq(Ajax\App\Admin\Guild\GuildPage::class);
 @endphp
                 <div class="table-responsive" id="content-organisation-page" @jxnEvent([
                   ['.btn-guild-edit', 'click', $rqGuildFunc->edit($guildId)],
-                  ['.btn-guild-choose', 'click', $rqMenuFunc->saveGuild($guildId)],
+                  ['.btn-guild-choose', 'click', $rqMenuFunc->selectGuild($guildId)],
                   ['.btn-guild-delete', 'click', $rqGuildFunc->delete($guildId)
                     ->confirm(__('tontine.questions.delete'))]])>
 

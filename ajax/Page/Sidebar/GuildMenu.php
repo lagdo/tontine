@@ -2,16 +2,16 @@
 
 namespace Ajax\Page\Sidebar;
 
-use Ajax\App\Planning\Enrollment;
+use Ajax\App\Guild\Member\Member;
 use Ajax\Base\Component;
-use Ajax\Page\Header\RoundMenuFunc;
+use Ajax\Page\Header\GuildMenuFunc;
 use Jaxon\Attributes\Attribute\Exclude;
 use Stringable;
 
 use function config;
 
 #[Exclude]
-class RoundMenu extends Component
+class GuildMenu extends Component
 {
     /**
      * @var string
@@ -23,7 +23,7 @@ class RoundMenu extends Component
      */
     public function html(): Stringable
     {
-        return $this->renderView('parts.sidebar.round');
+        return $this->renderView('parts.sidebar.guild');
     }
 
     /**
@@ -32,16 +32,16 @@ class RoundMenu extends Component
     protected function after(): void
     {
         $this->node()->jq('.sidebar-menu a')->css('color', config('menu.color.active'));
-        foreach(config('menu.round') as $menuId => $menuClass)
+        foreach(config('menu.guild') as $menuId => $menuClass)
         {
             $this->node()->jq($menuId)->click($this->rq($menuClass)->home());
         }
 
-        $this->cl(Enrollment::class)->home();
-        $this->setSectionTitle('planning', 'enrollment');
+        $this->cl(Member::class)->home();
+        $this->setSectionTitle('guild', 'members');
 
         $back = $this->renderView('parts.header.select.back', [
-            'handler' => $this->rq(RoundMenuFunc::class)->back(),
+            'handler' => $this->rq(GuildMenuFunc::class)->back(),
         ]);
         $this->response->html('header-menu-back', $back);
         $this->response->jq('#header-menu-back')->show();

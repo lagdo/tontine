@@ -11,11 +11,9 @@ return [
         '#admin-menu-guilds' => Admin\Guild\Guild::class,
         '#admin-menu-users' => Admin\User\User::class,
     ],
-    'tontine' => [
+    'guild' => [
         '#guild-menu-members' => Guild\Member\Member::class,
         '#guild-menu-calendar' => Guild\Calendar\Round::class,
-    ],
-    'finance' => [
         '#finance-menu-pools' => Guild\Pool\Pool::class,
         '#finance-menu-accounts' => Guild\Account\Account::class,
         '#finance-menu-charges' => Guild\Charge\Charge::class,

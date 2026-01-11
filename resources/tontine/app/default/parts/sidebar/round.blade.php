@@ -1,3 +1,12 @@
+@php
+  $rqRound = rq(Ajax\Page\Header\RoundMenuFunc::class);
+@endphp
+            <ul class="sidebar-menu" id="back-menu">
+              <li><a class="nav-link" role="link" tabindex="0" @jxnClick($rqRound->back())>
+                <i class="fa fa-fw fa-caret-square-left"></i> <span>{{ __('tontine.menus.guild') }}</span>
+              </a></li>
+            </ul>
+
             <ul class="sidebar-menu">
               <li class="menu-header">{{ __('tontine.menus.planning') }}</li>
               <li><a class="nav-link" id="planning-menu-enrollment" role="link" tabindex="0">

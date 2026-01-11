@@ -1,6 +1,6 @@
 @php
   $roundId = jq()->parent()->attr('data-round-id')->toInt();
-  $rqMenuFunc = rq(Ajax\Page\Header\MenuFunc::class);
+  $rqMenuFunc = rq(Ajax\Page\Header\RoundMenuFunc::class);
   $rqRoundFunc = rq(Ajax\App\Guild\Calendar\RoundFunc::class);
   $rqRoundPage = rq(Ajax\App\Guild\Calendar\RoundPage::class);
   $rqSession = rq(Ajax\App\Guild\Calendar\Session::class);
@@ -8,7 +8,7 @@
                   <div class="table-responsive" id="content-planning-rounds-page" @jxnEvent([
                     ['.btn-round-edit', 'click', $rqRoundFunc->edit($roundId)],
                     ['.btn-round-sessions', 'click', $rqSession->round($roundId)],
-                    ['.btn-round-select', 'click', $rqMenuFunc->saveRound($roundId)],
+                    ['.btn-round-select', 'click', $rqMenuFunc->selectRound($roundId)],
                     ['.btn-round-delete', 'click', $rqRoundFunc->delete($roundId)
                       ->confirm(__('tontine.round.questions.delete'))]])>
 
