@@ -4,7 +4,6 @@ namespace Ajax\App\Report\Session;
 
 use Ajax\Component;
 use Ajax\Page\SectionContent;
-use Ajax\Page\SectionTitle;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Siak\Tontine\Model\Member as MemberModel;
@@ -30,18 +29,11 @@ class Session extends Component
         protected SessionService $sessionService)
     {}
 
+    #[Before('setSectionTitle', ["report", "session"])]
     #[Callback('tontine.hideMenu')]
     public function home()
     {
         $this->render();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function before(): void
-    {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.report'));
     }
 
     /**

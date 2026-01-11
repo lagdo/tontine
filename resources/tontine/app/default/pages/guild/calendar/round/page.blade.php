@@ -1,6 +1,6 @@
 @php
   $roundId = jq()->parent()->attr('data-round-id')->toInt();
-  $rqMenuFunc = rq(Ajax\Page\MenuFunc::class);
+  $rqMenuFunc = rq(Ajax\Page\Header\MenuFunc::class);
   $rqRoundFunc = rq(Ajax\App\Guild\Calendar\RoundFunc::class);
   $rqRoundPage = rq(Ajax\App\Guild\Calendar\RoundPage::class);
   $rqSession = rq(Ajax\App\Guild\Calendar\Session::class);

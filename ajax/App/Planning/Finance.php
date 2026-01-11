@@ -3,14 +3,12 @@
 namespace Ajax\App\Planning;
 
 use Ajax\App\Planning\Component;
+use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
 use Ajax\Page\SectionContent;
-use Ajax\Page\SectionTitle;
 use Stringable;
-
-use function trans;
 
 #[Databag('planning.fund')]
 #[Databag('planning.pool')]
@@ -22,18 +20,11 @@ class Finance extends Component
      */
     protected $overrides = SectionContent::class;
 
+    #[Before('setSectionTitle', ["planning", "finance"])]
     #[Callback('tontine.hideMenu')]
     public function home()
     {
         $this->render();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function before(): void
-    {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.planning'));
     }
 
     /**

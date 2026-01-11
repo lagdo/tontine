@@ -4,10 +4,16 @@
 
 @section('page-header')
 @php
-$rqMainTitle = rq(Ajax\Page\MainTitle::class);
+$rqGuildHeader = rq(Ajax\Page\Header\GuildHeader::class);
+$rqSectionHeader = rq(Ajax\Page\Header\SectionHeader::class);
 @endphp
-          <div class="section-header" @jxnBind($rqMainTitle)>
-            @jxnHtml($rqMainTitle)
+          <div class="section-header">
+            <div @jxnBind($rqGuildHeader)>
+              @jxnHtml($rqGuildHeader)
+            </div>
+            <div class="mt-2" @jxnBind($rqSectionHeader)>
+              @jxnHtml($rqSectionHeader)
+            </div>
           </div>
 @endsection
 

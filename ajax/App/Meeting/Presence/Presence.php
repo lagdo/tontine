@@ -4,13 +4,10 @@ namespace Ajax\App\Meeting\Presence;
 
 use Ajax\Component;
 use Ajax\Page\SectionContent;
-use Ajax\Page\SectionTitle;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Stringable;
-
-use function trans;
 
 #[Before('checkHostAccess', ["meeting", "presences"])]
 #[Databag('meeting.presence')]
@@ -22,6 +19,7 @@ class Presence extends Component
     protected $overrides = SectionContent::class;
 
     #[Before('checkRoundSessions')]
+    #[Before('setSectionTitle', ["meeting", "presences"])]
     #[Callback('tontine.hideMenu')]
     public function home(): void
     {
@@ -33,7 +31,6 @@ class Presence extends Component
      */
     protected function before(): void
     {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.presences'));
         $this->bag('meeting.presence')->set('session.id', 0);
         $this->bag('meeting.presence')->set('member.id', 0);
     }

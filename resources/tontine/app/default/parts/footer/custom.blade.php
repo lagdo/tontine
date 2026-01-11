@@ -11,6 +11,6 @@
         message: "{{ __('common.titles.message') }}",
     };
 
-    self.home = () => {!! rq(Ajax\Page\MenuFunc::class)->admin() !!};
+    self.home = () => {!! rq(Ajax\Page\Header\MenuFunc::class)->admin() !!};
 })(tontine);
 </script>

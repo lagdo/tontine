@@ -3,7 +3,7 @@
 namespace Ajax\App\Guild\Calendar;
 
 use Ajax\FuncComponent;
-use Ajax\Page\MainTitle;
+use Ajax\Page\Header\GuildHeader;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Inject;
@@ -61,7 +61,7 @@ class RoundFunc extends FuncComponent
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.round.messages.created'));
 
-        $this->cl(MainTitle::class)->render();
+        $this->cl(GuildHeader::class)->render();
     }
 
     public function edit(int $roundId): void
@@ -107,6 +107,6 @@ class RoundFunc extends FuncComponent
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.round.messages.deleted'));
 
-        $this->cl(MainTitle::class)->render();
+        $this->cl(GuildHeader::class)->render();
     }
 }

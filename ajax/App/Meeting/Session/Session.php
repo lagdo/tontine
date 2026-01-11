@@ -4,13 +4,10 @@ namespace Ajax\App\Meeting\Session;
 
 use Ajax\Component;
 use Ajax\Page\SectionContent;
-use Ajax\Page\SectionTitle;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Stringable;
-
-use function trans;
 
 #[Before('checkHostAccess', ["meeting", "sessions"])]
 #[Databag('meeting')]
@@ -22,18 +19,11 @@ class Session extends Component
     protected $overrides = SectionContent::class;
 
     #[Before('checkRoundSessions')]
+    #[Before('setSectionTitle', ["meeting", "sessions"])]
     #[Callback('tontine.hideMenu')]
     public function home()
     {
         $this->render();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function before(): void
-    {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.meeting'));
     }
 
     /**

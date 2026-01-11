@@ -3,8 +3,8 @@
 namespace Ajax\App\Admin\Guild;
 
 use Ajax\FuncComponent;
-use Ajax\Page\MainTitle;
-use Ajax\Page\MenuFunc;
+use Ajax\Page\Header\GuildHeader;
+use Ajax\Page\Header\MenuFunc;
 use Ajax\Page\Sidebar\AdminMenu;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Inject;
@@ -80,7 +80,7 @@ class GuildFunc extends FuncComponent
         $guild = $this->guildService->createGuild($user, $values);
 
         $this->guildCreated($guild);
-        $this->cl(MainTitle::class)->render();
+        $this->cl(GuildHeader::class)->render();
         $this->cl(AdminMenu::class)->render();
 
         $this->modal()->hide();
@@ -148,7 +148,7 @@ class GuildFunc extends FuncComponent
         $this->guildService->deleteGuild($user, $guildId);
 
         $this->guildDeleted($guildId);
-        $this->cl(MainTitle::class)->render();
+        $this->cl(GuildHeader::class)->render();
         $this->cl(AdminMenu::class)->render();
 
         $this->cl(GuildPage::class)->page(); // Back to current page

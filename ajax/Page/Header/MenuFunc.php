@@ -1,11 +1,10 @@
 <?php
 
-namespace Ajax\Page;
+namespace Ajax\Page\Header;
 
 use Ajax\App\Admin\Guild\Guild;
 use Ajax\App\Planning\Enrollment;
 use Ajax\FuncComponent;
-use Ajax\Page\MainTitle;
 use Ajax\Page\Sidebar\AdminMenu;
 use Ajax\Page\Sidebar\RoundMenu;
 use Jaxon\Attributes\Attribute\Databag;
@@ -26,6 +25,18 @@ class MenuFunc extends FuncComponent
         protected RoundService $roundService)
     {}
 
+    /**
+     * @param string $section
+     * @param string $entry
+     *
+     * @return void
+     */
+    protected function setSectionTitle(string $section, string $entry): void
+    {
+        $this->cl(SectionHeader::class)->show(trans("tontine.menus.$section"),
+            trans("tontine.menus.$entry"));
+    }
+
     public function admin(): void
     {
         $guild = $this->tenantService->guild();
@@ -34,8 +45,9 @@ class MenuFunc extends FuncComponent
 
         $this->response->jq('#header-menu-home')->hide();
         $this->cl(AdminMenu::class)->render();
-        $this->cl(MainTitle::class)->render();
+        $this->cl(GuildHeader::class)->render();
         $this->cl(Guild::class)->home();
+        $this->setSectionTitle('admin', 'guilds');
 
         if(!$guild)
         {
@@ -51,7 +63,7 @@ class MenuFunc extends FuncComponent
         $user = $this->tenantService->user();
         $guild = $this->tenantService->guild();
         $title = trans('tontine.titles.choose');
-        $content = $this->renderView('pages.select.guild', [
+        $content = $this->renderView('parts.header.select.guild', [
             'current' => $guild?->id ?? 0,
             'guilds' => $this->guildService->getGuilds($user)->pluck('name', 'id'),
         ]);
@@ -102,9 +114,10 @@ class MenuFunc extends FuncComponent
         $this->setCurrentGuild($guild);
 
         $this->response->jq('#header-menu-home')->hide();
-        $this->cl(MainTitle::class)->render();
+        $this->cl(GuildHeader::class)->render();
         $this->cl(AdminMenu::class)->render();
         $this->cl(Guild::class)->home();
+        $this->setSectionTitle('admin', 'guilds');
 
         $this->modal()->hide();
         $this->alert()->info(trans('tontine.messages.selected', [
@@ -121,7 +134,7 @@ class MenuFunc extends FuncComponent
 
         $round = $this->tenantService->round();
         $title = trans('tontine.round.titles.choose');
-        $content = $this->renderView('pages.select.round', [
+        $content = $this->renderView('parts.header.select.round', [
             'current' => $round?->id ?? 0,
             'rounds' => $this->roundService->getRoundList($guild),
         ]);
@@ -150,7 +163,7 @@ class MenuFunc extends FuncComponent
             return;
         }
         // Throws an exception.
-        $this->checkHostAccess('planning', 'finance');
+        $this->checkHostAccess('planning', 'enrollment');
 
         // Save the tontine and round ids in the user session.
         $this->bag('tenant')->set('guild.id', $round->guild->id);
@@ -162,8 +175,9 @@ class MenuFunc extends FuncComponent
 
         $this->response->jq('#header-menu-home')->show();
         $this->cl(RoundMenu::class)->render();
-        $this->cl(MainTitle::class)->render();
+        $this->cl(GuildHeader::class)->render();
         $this->cl(Enrollment::class)->home();
+        $this->setSectionTitle('planning', 'enrollment');
 
         $this->modal()->hide();
         $this->alert()->info(trans('tontine.round.messages.selected', [

@@ -58,6 +58,7 @@ class Round extends Component
     /**
      * @return void
      */
+    #[Before('setSectionTitle', ["report", "round"])]
     #[Callback('tontine.hideMenu')]
     public function home(): void
     {

@@ -4,14 +4,11 @@ namespace Ajax\App\Guild\Charge;
 
 use Ajax\Component;
 use Ajax\Page\SectionContent;
-use Ajax\Page\SectionTitle;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
 use Stringable;
-
-use function trans;
 
 #[Before('checkHostAccess', ["finance", "charges"])]
 #[Databag('guild.charge')]
@@ -23,18 +20,11 @@ class Charge extends Component
      */
     protected $overrides = SectionContent::class;
 
+    #[Before('setSectionTitle', ["finance", "charges"])]
     #[Callback('tontine.hideMenu')]
     public function home()
     {
         $this->render();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function before(): void
-    {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.finance'));
     }
 
     /**

@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Payment;
 
 use Ajax\Component;
 use Ajax\Page\SectionContent;
-use Ajax\Page\SectionTitle;
 use App\Events\OnPagePaymentHome;
 use Illuminate\Support\Collection;
 use Jaxon\Attributes\Attribute\Before;
@@ -12,8 +11,6 @@ use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Stringable;
-
-use function trans;
 
 #[Before('checkHostAccess', ["meeting", "payments"])]
 #[Before('getOpenedSessions')]
@@ -45,18 +42,11 @@ class Payment extends Component
     }
 
     #[Before('getOpenedSessions')]
+    #[Before('setSectionTitle', ["meeting", "payments"])]
     #[Callback('tontine.hideMenu')]
     public function home(): void
     {
         $this->render();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function before(): void
-    {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.meeting'));
     }
 
     /**

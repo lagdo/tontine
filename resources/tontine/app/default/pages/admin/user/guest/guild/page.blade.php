@@ -1,6 +1,6 @@
 @php
   $guildId = jq()->parent()->attr('data-guild-id')->toInt();
-  $rqMenuFunc = rq(Ajax\Page\MenuFunc::class);
+  $rqMenuFunc = rq(Ajax\Page\Header\MenuFunc::class);
 @endphp
                   <div class="table-responsive" @jxnEvent([
                     ['.btn-guest-guild-choose', 'click', $rqMenuFunc->saveGuild($guildId)]])>

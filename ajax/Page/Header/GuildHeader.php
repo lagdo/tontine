@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\Page;
+namespace Ajax\Page\Header;
 
 use Ajax\Component;
 use Jaxon\Attributes\Attribute\Exclude;
@@ -9,7 +9,7 @@ use Siak\Tontine\Service\TenantService;
 use Stringable;
 
 #[Exclude]
-class MainTitle extends Component
+class GuildHeader extends Component
 {
     /**
      * @param TenantService $tenantService
@@ -28,7 +28,7 @@ class MainTitle extends Component
     {
         $user = $this->tenantService->user();
         $guild = $this->tenantService->guild();
-        return $this->renderView('parts.header.title', [
+        return $this->renderView('parts.header.guild', [
             'guild' => $guild,
             'round' => $this->tenantService->round(),
             'guildCount' => $this->guildService->getGuildCount($user) +
