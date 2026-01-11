@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Summary\Charge\Libre;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementService;

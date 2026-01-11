@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Presence;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
@@ -23,10 +23,9 @@ class Session extends Component
 
     protected function getMember()
     {
-        $round = $this->stash()->get('tenant.round');
         $memberId = $this->bag('meeting.presence')->get('member.id', 0);
         $member = $memberId === 0 ? null :
-            $this->presenceService->getMember($round, $memberId);
+            $this->presenceService->getMember($this->round(), $memberId);
         $this->stash()->set('presence.member', $member);
     }
 
@@ -42,10 +41,9 @@ class Session extends Component
             return '';
         }
 
-        $round = $this->stash()->get('tenant.round');
         return $this->renderView('pages.meeting.presence.session.home', [
             'member' => $member,
-            'sessionCount' => $this->presenceService->getSessionCount($round),
+            'sessionCount' => $this->presenceService->getSessionCount($this->round()),
         ]);
     }
 

@@ -22,8 +22,7 @@ class PoolFunc extends FuncComponent
 
     public function enable(int $defId): void
     {
-        $round = $this->stash()->get('tenant.round');
-        $this->poolService->enablePool($round, $defId);
+        $this->poolService->enablePool($this->round(), $defId);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.pool.messages.enabled'));
 
@@ -33,8 +32,7 @@ class PoolFunc extends FuncComponent
 
     public function disable(int $defId): void
     {
-        $round = $this->stash()->get('tenant.round');
-        $this->poolService->disablePool($round, $defId);
+        $this->poolService->disablePool($this->round(), $defId);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.pool.messages.disabled'));
 

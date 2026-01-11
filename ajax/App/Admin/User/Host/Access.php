@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Admin\User\Host;
 
-use Ajax\Component;
+use Ajax\Base\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\UserService;

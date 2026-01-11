@@ -30,9 +30,8 @@ class FundPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.fund')->get('filter', null);
-        return $this->fundService->getFundDefCount($round, $filter);
+        return $this->fundService->getFundDefCount($this->round(), $filter);
     }
 
     /**
@@ -40,11 +39,10 @@ class FundPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.fund')->get('filter', null);
         return $this->renderView('pages.planning.fund.page', [
-            'round' => $round,
-            'defs' => $this->fundService->getFundDefs($round, $filter, $this->currentPage()),
+            'round' => $this->round(),
+            'defs' => $this->fundService->getFundDefs($this->round(), $filter, $this->currentPage()),
         ]);
     }
 

@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Charge;
 
-use Ajax\PageComponent;
+use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\ChargeService;
@@ -32,10 +32,9 @@ class ChargePage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->stash()->get('tenant.guild');
         $filter = $this->bag('guild.charge')->get('filter', null);
 
-        return $this->chargeService->getChargeCount($guild, $filter);
+        return $this->chargeService->getChargeCount($this->guild(), $filter);
     }
 
     /**
@@ -43,14 +42,13 @@ class ChargePage extends PageComponent
      */
     public function html(): Stringable
     {
-        $guild = $this->stash()->get('tenant.guild');
         $filter = $this->bag('guild.charge')->get('filter', null);
 
         return $this->renderView('pages.guild.charge.page', [
             'types' => $this->getChargeTypes(),
             'periods' => $this->getChargePeriods(),
             'charges' => $this->chargeService
-                ->getCharges($guild, $filter, $this->currentPage()),
+                ->getCharges($this->guild(), $filter, $this->currentPage()),
         ]);
     }
 

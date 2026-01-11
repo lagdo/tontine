@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Calendar;
 
-use Ajax\Component;
+use Ajax\Base\Guild\Component;
 use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
@@ -39,9 +39,8 @@ class Session extends Component
             // Save the round id in the databag.
             $this->bag('guild.calendar')->set('round.id', $this->target()->args()[0]);
         }
-        $guild = $this->stash()->get('tenant.guild');
         $roundId = $this->bag('guild.calendar')->get('round.id');
-        $round = $this->roundService->getRound($guild, $roundId);
+        $round = $this->roundService->getRound($this->guild(), $roundId);
         $this->stash()->set('guild.calendar.round', $round);
     }
 

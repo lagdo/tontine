@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Summary;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
@@ -28,8 +28,7 @@ class Summary extends Component
 
     public function home(int $sessionId)
     {
-        $round = $this->stash()->get('tenant.round');
-        $session = $this->sessionService->getSession($round, $sessionId);
+        $session = $this->sessionService->getSession($this->round(), $sessionId);
         if(!$session)
         {
             $this->alert()->title(trans('common.titles.error'))
@@ -48,12 +47,11 @@ class Summary extends Component
      */
     public function html(): Stringable
     {
-        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('summary.session');
         return $this->renderView('pages.meeting.summary.home', [
             'session' => $session,
-            'prevSession' => $this->sessionService->getPrevSession($round, $session),
-            'nextSession' => $this->sessionService->getNextSession($round, $session),
+            'prevSession' => $this->sessionService->getPrevSession($this->round(), $session),
+            'nextSession' => $this->sessionService->getNextSession($this->round(), $session),
         ]);
     }
 

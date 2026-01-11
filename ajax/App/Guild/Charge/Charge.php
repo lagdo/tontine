@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Charge;
 
-use Ajax\Component;
+use Ajax\Base\Guild\Component;
 use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;

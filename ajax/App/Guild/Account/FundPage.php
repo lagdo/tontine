@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Account;
 
-use Ajax\PageComponent;
+use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\FundService;
@@ -30,8 +30,7 @@ class FundPage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->stash()->get('tenant.guild');
-        return $this->fundService->getFundCount($guild);
+        return $this->fundService->getFundCount($this->guild());
     }
 
     /**
@@ -39,9 +38,8 @@ class FundPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $guild = $this->stash()->get('tenant.guild');
         return $this->renderView('pages.guild.account.fund.page', [
-            'funds' => $this->fundService->getFunds($guild, $this->currentPage()),
+            'funds' => $this->fundService->getFunds($this->guild(), $this->currentPage()),
         ]);
     }
 

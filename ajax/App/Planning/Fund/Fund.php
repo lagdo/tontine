@@ -17,7 +17,7 @@ class Fund extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.fund.home', [
-            'guild' => $this->tenantService->guild(),
+            'guild' => $this->guild(),
         ]);
     }
 

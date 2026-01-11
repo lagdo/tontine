@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Admin\Guild;
 
-use Ajax\FuncComponent;
+use Ajax\Base\FuncComponent;
 use Ajax\Page\Header\GuildHeader;
 use Ajax\Page\Header\MenuFunc;
 use Ajax\Page\Sidebar\AdminMenu;

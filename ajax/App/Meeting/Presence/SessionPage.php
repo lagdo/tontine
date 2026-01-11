@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Presence;
 
-use Ajax\PageComponent;
+use Ajax\Base\Round\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Presence\PresenceService;
@@ -31,10 +31,9 @@ class SessionPage extends PageComponent
 
     protected function getMember()
     {
-        $round = $this->stash()->get('tenant.round');
         $memberId = $this->bag('meeting.presence')->get('member.id', 0);
         $member = $memberId === 0 ? null :
-            $this->presenceService->getMember($round, $memberId);
+            $this->presenceService->getMember($this->round(), $memberId);
         $this->stash()->set('presence.member', $member);
     }
 
@@ -43,8 +42,7 @@ class SessionPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->stash()->get('tenant.round');
-        return $this->presenceService->getSessionCount($round);
+        return $this->presenceService->getSessionCount($this->round());
     }
 
     /**
@@ -53,15 +51,14 @@ class SessionPage extends PageComponent
     public function html(): Stringable
     {
         // Is null when showing presences by sessions.
-        $round = $this->stash()->get('tenant.round');
         $member = $this->stash()->get('presence.member');
         return $this->renderView('pages.meeting.presence.session.page', [
             'member' => $member,
-            'sessions' => $this->presenceService->getSessions($round, $this->currentPage()),
+            'sessions' => $this->presenceService->getSessions($this->round(), $this->currentPage()),
             'absences' => !$member ? null :
-                $this->presenceService->getMemberAbsences($round, $member),
+                $this->presenceService->getMemberAbsences($this->round(), $member),
             'statuses' => $this->sessionService->getSessionStatuses(),
-            'memberCount' => $this->presenceService->getMemberCount($round),
+            'memberCount' => $this->presenceService->getMemberCount($this->round()),
         ]);
     }
 

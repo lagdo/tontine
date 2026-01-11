@@ -15,7 +15,7 @@ class Charge extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.charge.home', [
-            'guild' => $this->tenantService->guild(),
+            'guild' => $this->guild(),
         ]);
     }
 

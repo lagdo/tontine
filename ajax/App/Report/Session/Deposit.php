@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Report\Session;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Service\Report\MemberService;

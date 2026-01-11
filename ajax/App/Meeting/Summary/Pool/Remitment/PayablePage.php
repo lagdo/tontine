@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Summary\Pool\Remitment;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
 use Stringable;

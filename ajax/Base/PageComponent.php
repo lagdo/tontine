@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax;
+namespace Ajax\Base;
 
 use Jaxon\App\PageComponent as BaseComponent;
 use Jaxon\App\PageDatabagTrait;

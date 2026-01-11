@@ -2,8 +2,8 @@
 
 namespace Ajax\App\Admin\Guild;
 
-use Ajax\Component;
 use Ajax\App\Admin\Guest\Guild as GuestGuild;
+use Ajax\Base\Component;
 use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;

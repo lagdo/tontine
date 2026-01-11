@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Pool;
 
-use Ajax\PageComponent;
+use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\PoolService;
@@ -32,8 +32,7 @@ class PoolPage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->stash()->get('tenant.guild');
-        return $this->poolService->getPoolCount($guild);
+        return $this->poolService->getPoolCount($this->guild());
     }
 
     /**
@@ -41,10 +40,9 @@ class PoolPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $guild = $this->stash()->get('tenant.guild');
         return $this->renderView('pages.guild.pool.page', [
             'round' => $this->tenantService->round(),
-            'pools' => $this->poolService->getPools($guild, $this->currentPage()),
+            'pools' => $this->poolService->getPools($this->guild(), $this->currentPage()),
         ]);
     }
 

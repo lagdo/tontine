@@ -2,7 +2,7 @@
 
 namespace Ajax\Page\Sidebar;
 
-use Ajax\Component;
+use Ajax\Base\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 
 #[Exclude]

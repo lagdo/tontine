@@ -2,7 +2,7 @@
 
 namespace Ajax\App;
 
-use Ajax\FuncComponent;
+use Ajax\Base\FuncComponent;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\LocaleService;

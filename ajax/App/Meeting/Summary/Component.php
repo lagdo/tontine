@@ -8,7 +8,7 @@ use Jaxon\Attributes\Attribute\Databag;
 #[Before('checkHostAccess', ["meeting", "sessions"])]
 #[Before('getSession')]
 #[Databag('summary')]
-abstract class Component extends \Ajax\Component
+abstract class Component extends \Ajax\Base\Round\Component
 {
     use ComponentTrait;
 }

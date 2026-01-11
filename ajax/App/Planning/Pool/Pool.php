@@ -17,7 +17,7 @@ class Pool extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.pool.home', [
-            'guild' => $this->tenantService->guild(),
+            'guild' => $this->guild(),
         ]);
     }
 

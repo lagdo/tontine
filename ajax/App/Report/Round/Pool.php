@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Report\Round;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Meeting\Session\SummaryService;
@@ -34,8 +34,7 @@ class Pool extends Component
     #[Inject(attr: 'summaryService')]
     public function refresh(int $poolId, int $sessionId): void
     {
-        $round = $this->stash()->get('tenant.round');
-        $pool = $round->pools()
+        $pool = $this->round()->pools()
             ->withCount('subscriptions')
             ->find($poolId);
         if(!$pool || $pool->subscriptions_count === 0)
@@ -45,8 +44,8 @@ class Pool extends Component
             return;
         }
 
-        $session = $round->sessions()->find($sessionId);
-        $figures = $this->summaryService->getFigures($round, $session, $pool->id);
+        $session = $this->round()->sessions()->find($sessionId);
+        $figures = $this->summaryService->getFigures($this->round(), $session, $pool->id);
         $this->stash()->set('report.round.figures', $figures[0]);
         $this->item("pool-{$pool->id}")->render();
     }

@@ -30,9 +30,8 @@ class PoolPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.pool')->get('filter', null);
-        return $this->poolService->getPoolDefCount($round, $filter);
+        return $this->poolService->getPoolDefCount($this->round(), $filter);
     }
 
     /**
@@ -40,11 +39,10 @@ class PoolPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.pool')->get('filter', null);
         return $this->renderView('pages.planning.pool.page', [
-            'round' => $round,
-            'defs' => $this->poolService->getPoolDefs($round, $filter, $this->currentPage()),
+            'round' => $this->round(),
+            'defs' => $this->poolService->getPoolDefs($this->round(), $filter, $this->currentPage()),
         ]);
     }
 

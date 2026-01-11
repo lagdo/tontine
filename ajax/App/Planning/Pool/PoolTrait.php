@@ -50,9 +50,8 @@ trait PoolTrait
             $this->bag('planning.pool')->set('pool.id', $poolId);
         }
 
-        $round = $this->stash()->get('tenant.round');
         $poolId = (int)$this->bag('planning.pool')->get('pool.id');
-        $pool = $this->poolService->getPool($round, $poolId);
+        $pool = $this->poolService->getPool($this->round(), $poolId);
         $this->stash()->set('planning.pool', $pool);
     }
 }

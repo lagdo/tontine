@@ -27,13 +27,11 @@ class OutflowFunc extends FuncComponent
 
     public function addOutflow(): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $round = $this->stash()->get('tenant.round');
         $title = trans('meeting.outflow.titles.add');
         $content = $this->renderView('pages.meeting.session.outflow.add', [
-            'categories' => $this->outflowService->getAccounts($guild),
-            'members' => $this->outflowService->getMembers($round),
-            'charges' => $this->outflowService->getCharges($round),
+            'categories' => $this->outflowService->getAccounts($this->guild()),
+            'members' => $this->outflowService->getMembers($this->round()),
+            'charges' => $this->outflowService->getCharges($this->round()),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -50,10 +48,9 @@ class OutflowFunc extends FuncComponent
     #[Inject(attr: 'validator')]
     public function createOutflow(array $formValues): void
     {
-        $guild = $this->stash()->get('tenant.guild');
         $session = $this->stash()->get('meeting.session');
         $values = $this->validator->validateItem($formValues);
-        $this->outflowService->createOutflow($guild, $session, $values);
+        $this->outflowService->createOutflow($this->guild(), $session, $values);
 
         $this->modal()->hide();
         $this->alert()->success(trans('meeting.outflow.messages.created'));
@@ -64,16 +61,14 @@ class OutflowFunc extends FuncComponent
 
     public function editOutflow(int $outflowId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');
         $title = trans('meeting.outflow.titles.edit');
         $content = $this->renderView('pages.meeting.session.outflow.edit', [
             'outflow' => $this->outflowService
                 ->getSessionOutflow($session, $outflowId),
-            'categories' => $this->outflowService->getAccounts($guild),
-            'members' => $this->outflowService->getMembers($round),
-            'charges' => $this->outflowService->getCharges($round),
+            'categories' => $this->outflowService->getAccounts($this->guild()),
+            'members' => $this->outflowService->getMembers($this->round()),
+            'charges' => $this->outflowService->getCharges($this->round()),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -90,10 +85,9 @@ class OutflowFunc extends FuncComponent
     #[Inject(attr: 'validator')]
     public function updateOutflow(int $outflowId, array $formValues): void
     {
-        $guild = $this->stash()->get('tenant.guild');
         $session = $this->stash()->get('meeting.session');
         $values = $this->validator->validateItem($formValues);
-        $this->outflowService->updateOutflow($guild, $session, $outflowId, $values);
+        $this->outflowService->updateOutflow($this->guild(), $session, $outflowId, $values);
 
         $this->modal()->hide();
         $this->alert()->success(trans('meeting.outflow.messages.updated'));

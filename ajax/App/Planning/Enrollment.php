@@ -31,7 +31,7 @@ class Enrollment extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.participation', [
-            'guild' => $this->tenantService->guild(),
+            'guild' => $this->guild(),
         ]);
     }
 

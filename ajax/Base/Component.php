@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax;
+namespace Ajax\Base;
 
 use Ajax\Page\Header\SectionHeader;
 use Jaxon\App\NodeComponent as BaseComponent;

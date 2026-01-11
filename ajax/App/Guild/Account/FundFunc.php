@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Account;
 
-use Ajax\FuncComponent;
+use Ajax\Base\Guild\FuncComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Inject;
@@ -48,8 +48,7 @@ class FundFunc extends FuncComponent
     {
         $values = $this->validator->validateItem($formValues);
 
-        $guild = $this->stash()->get('tenant.guild');
-        $this->fundService->createFund($guild, $values);
+        $this->fundService->createFund($this->guild(), $values);
         $this->cl(FundPage::class)->page(); // Back to current page
 
         $this->modal()->hide();
@@ -59,8 +58,7 @@ class FundFunc extends FuncComponent
 
     public function edit(int $fundId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $fund = $this->fundService->getFund($guild, $fundId);
+        $fund = $this->fundService->getFund($this->guild(), $fundId);
 
         $title = trans('tontine.fund.titles.edit');
         $content = $this->renderView('pages.guild.account.fund.edit')->with('fund', $fund);
@@ -81,8 +79,7 @@ class FundFunc extends FuncComponent
     {
         $values = $this->validator->validateItem($formValues);
 
-        $guild = $this->stash()->get('tenant.guild');
-        $fund = $this->fundService->getFund($guild, $fundId);
+        $fund = $this->fundService->getFund($this->guild(), $fundId);
         $this->fundService->updateFund($fund, $values);
         $this->cl(FundPage::class)->page(); // Back to current page
 
@@ -93,8 +90,7 @@ class FundFunc extends FuncComponent
 
     public function toggle(int $fundId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $fund = $this->fundService->getFund($guild, $fundId);
+        $fund = $this->fundService->getFund($this->guild(), $fundId);
         $this->fundService->toggleFund($fund);
 
         $this->cl(FundPage::class)->page();
@@ -102,14 +98,13 @@ class FundFunc extends FuncComponent
 
     public function delete(int $fundId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $fund = $this->fundService->getFund($guild, $fundId);
+        $fund = $this->fundService->getFund($this->guild(), $fundId);
         if($fund->funds_count > 0)
         {
             // A fund that is already in use cannot be deleted.
             return;
         }
-        $this->fundService->deleteFund($guild, $fund);
+        $this->fundService->deleteFund($this->guild(), $fund);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.fund.messages.deleted'));
 

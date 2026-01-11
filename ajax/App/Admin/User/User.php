@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Admin\User;
 
-use Ajax\Component;
+use Ajax\Base\Component;
 use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;

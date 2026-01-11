@@ -130,20 +130,6 @@ class GuildService
     }
 
     /**
-     * Get a single guild.
-     *
-     * @param User $user
-     * @param int $guildId    The guild id
-     *
-     * @return Guild|null
-     */
-    public function getUserOrGuestGuild(User $user, int $guildId): ?Guild
-    {
-        return $this->getGuild($user, $guildId) ??
-            $this->getGuestGuild($user, $guildId);
-    }
-
-    /**
      * @param User $user
      *
      * @return Guild|null

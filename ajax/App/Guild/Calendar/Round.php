@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Calendar;
 
-use Ajax\Component;
+use Ajax\Base\Guild\Component;
 use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;

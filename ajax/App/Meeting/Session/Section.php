@@ -30,14 +30,13 @@ class Section extends Component
      */
     public function html(): Stringable
     {
-        $round = $this->stash()->get('tenant.round');
         $section = $this->stash()->get('section');
         $session = $this->stash()->get('meeting.session');
 
         return $this->renderView("pages.meeting.session.section.$section", [
             'session' => $session,
-            'prevSession' => $this->sessionService->getPrevSession($round, $session),
-            'nextSession' => $this->sessionService->getNextSession($round, $session),
+            'prevSession' => $this->sessionService->getPrevSession($this->round(), $session),
+            'nextSession' => $this->sessionService->getNextSession($this->round(), $session),
         ]);
     }
 }

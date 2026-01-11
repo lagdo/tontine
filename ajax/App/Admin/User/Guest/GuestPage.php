@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Admin\User\Guest;
 
-use Ajax\PageComponent;
+use Ajax\Base\PageComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\UserService;
 use Stringable;

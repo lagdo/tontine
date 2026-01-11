@@ -6,19 +6,18 @@ trait PoolTrait
 {
     protected function getPools(): void
     {
-        $round = $this->stash()->get('tenant.round');
         $session = $this->target()->method() !== 'select' ? null :
-            $round->sessions()->active()->find($this->target()->args()[0]);
+            $this->round()->sessions()->active()->find($this->target()->args()[0]);
         if(!$session)
         {
-            $session = $round->sessions()->active()
+            $session = $this->round()->sessions()->active()
                 ->orderBy('day_date', 'desc')
                 ->first();
         }
 
-        $figures = $this->summaryService->getFigures($round, $session); 
+        $figures = $this->summaryService->getFigures($this->round(), $session); 
         $pools = $this->summaryService->getPoolsBalance($figures);
-        $funds = $this->summaryService->getFunds($round); 
+        $funds = $this->summaryService->getFunds($this->round()); 
 
         $this->stash()->set('tenant.session', $session);
 

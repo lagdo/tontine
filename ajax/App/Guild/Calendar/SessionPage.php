@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Calendar;
 
-use Ajax\PageComponent;
+use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\RoundService;
@@ -27,9 +27,8 @@ class SessionPage extends PageComponent
 
     protected function getRound()
     {
-        $guild = $this->stash()->get('tenant.guild');
         $roundId = $this->bag('guild.calendar')->get('round.id');
-        $round = $this->roundService->getRound($guild, $roundId);
+        $round = $this->roundService->getRound($this->guild(), $roundId);
         $this->stash()->set('guild.calendar.round', $round);
     }
 
@@ -39,7 +38,7 @@ class SessionPage extends PageComponent
     protected function count(): int
     {
         $round = $this->stash()->get('guild.calendar.round');
-        return $this->roundService->getSessionCount($round);
+        return $this->roundService->getSessionCount($this->round());
     }
 
     /**
@@ -51,7 +50,7 @@ class SessionPage extends PageComponent
 
         return $this->renderView('pages.guild.calendar.session.page', [
             'sessions' => $round === null ? []:
-                $this->roundService->getSessions($round, $this->currentPage()),
+                $this->roundService->getSessions($this->round(), $this->currentPage()),
             'statuses' => $this->sessionService->getSessionStatuses(),
         ]);
     }

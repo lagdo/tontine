@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Report\Session;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
@@ -41,13 +41,12 @@ class Session extends Component
      */
     public function html(): Stringable
     {
-        $round = $this->stash()->get('tenant.round');
-        $sessions = $this->sessionService->getSessions($round, orderAsc: false)
+        $sessions = $this->sessionService->getSessions($this->round(), orderAsc: false)
             ->filter(fn($session) => ($session->opened || $session->closed));
         return $this->renderView('pages.report.session.home', [
             'session' => $sessions->first(),
             'sessions' => $sessions->pluck('title', 'id'),
-            'members' => $this->memberService->getMemberList($round)->prepend('', 0),
+            'members' => $this->memberService->getMemberList($this->round())->prepend('', 0),
         ]);
     }
 
@@ -56,8 +55,7 @@ class Session extends Component
      */
     protected function after(): void
     {
-        $round = $this->stash()->get('tenant.round');
-        $sessions = $this->sessionService->getSessions($round, orderAsc: false)
+        $sessions = $this->sessionService->getSessions($this->round(), orderAsc: false)
             ->filter(fn($session) => ($session->opened || $session->closed));
         if($sessions->count() > 0)
         {
@@ -84,9 +82,8 @@ class Session extends Component
 
     public function showSession(int $sessionId)
     {
-        $round = $this->stash()->get('tenant.round');
         if($sessionId <= 0 ||
-            !($session = $this->sessionService->getSession($round, $sessionId)))
+            !($session = $this->sessionService->getSession($this->round(), $sessionId)))
         {
             return;
         }
@@ -95,10 +92,9 @@ class Session extends Component
 
     public function showMember(int $sessionId, int $memberId)
     {
-        $round = $this->stash()->get('tenant.round');
         if($sessionId <= 0 || $memberId <= 0 ||
-            !($session = $this->sessionService->getSession($round, $sessionId)) ||
-            !($member = $this->memberService->getMember($round, $memberId)))
+            !($session = $this->sessionService->getSession($this->round(), $sessionId)) ||
+            !($member = $this->memberService->getMember($this->round(), $memberId)))
         {
             return;
         }

@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Member;
 
-use Ajax\PageComponent;
+use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\MemberService;
@@ -30,11 +30,10 @@ class MemberPage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->stash()->get('tenant.guild');
         $search = $this->bag('guild.member')->get('search', '');
         $filter = $this->bag('guild.member')->get('filter', null);
 
-        return $this->memberService->getMemberCount($guild, $search, $filter);
+        return $this->memberService->getMemberCount($this->guild(), $search, $filter);
     }
 
     /**
@@ -42,13 +41,12 @@ class MemberPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $guild = $this->stash()->get('tenant.guild');
         $search = $this->bag('guild.member')->get('search', '');
         $filter = $this->bag('guild.member')->get('filter', null);
 
         return $this->renderView('pages.guild.member.page', [
             'members' => $this->memberService
-                ->getMembers($guild, $search, $filter, $this->currentPage()),
+                ->getMembers($this->guild(), $search, $filter, $this->currentPage()),
         ]);
     }
 

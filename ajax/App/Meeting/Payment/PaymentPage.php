@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Payment;
 
-use Ajax\PageComponent;
+use Ajax\Base\Round\PageComponent;
 use Illuminate\Support\Collection;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
@@ -31,8 +31,7 @@ class PaymentPage extends PageComponent
 
     private function getOpenedSessions(): Collection
     {
-        $round = $this->stash()->get('tenant.round');
-        return $this->sessionService->getSessions($round, orderAsc: false)
+        return $this->sessionService->getSessions($this->round(), orderAsc: false)
             ->filter(fn($session) => $session->opened)
             ->pluck('title', 'id');
     }
@@ -42,8 +41,7 @@ class PaymentPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->stash()->get('tenant.round');
-        return $this->memberService->getMemberCount($round);
+        return $this->memberService->getMemberCount($this->round());
     }
 
     /**
@@ -51,10 +49,9 @@ class PaymentPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $round = $this->stash()->get('tenant.round');
         return $this->renderView('pages.meeting.payment.page', [
             'sessions' => $this->getOpenedSessions(),
-            'members' => $this->memberService->getMembers($round, page: $this->currentPage()),
+            'members' => $this->memberService->getMembers($this->round(), page: $this->currentPage()),
         ]);
     }
 

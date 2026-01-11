@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Payment;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Ajax\Page\SectionContent;
 use App\Events\OnPagePaymentHome;
 use Illuminate\Support\Collection;
@@ -35,8 +35,7 @@ class Payment extends Component
 
     protected function getOpenedSessions()
     {
-        $round = $this->stash()->get('tenant.round');
-        $this->sessions = $this->sessionService->getSessions($round, orderAsc: false)
+        $this->sessions = $this->sessionService->getSessions($this->round(), orderAsc: false)
             ->filter(fn($session) => $session->opened)
             ->pluck('title', 'id');
     }

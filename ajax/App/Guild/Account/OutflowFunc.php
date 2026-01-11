@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Account;
 
-use Ajax\FuncComponent;
+use Ajax\Base\Guild\FuncComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Model\Category as CategoryModel;
@@ -44,8 +44,7 @@ class OutflowFunc extends FuncComponent
 
     public function create(array $formValues): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $this->accountService->createAccount($guild, $formValues);
+        $this->accountService->createAccount($this->guild(), $formValues);
         $this->cl(OutflowPage::class)->page(); // Back to current page
 
         $this->modal()->hide();
@@ -55,8 +54,7 @@ class OutflowFunc extends FuncComponent
 
     public function edit(int $accountId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $account = $this->accountService->getAccount($guild, $accountId);
+        $account = $this->accountService->getAccount($this->guild(), $accountId);
 
         $title = trans('tontine.account.titles.edit');
         $types = [
@@ -80,8 +78,7 @@ class OutflowFunc extends FuncComponent
 
     public function update(int $accountId, array $formValues): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $account = $this->accountService->getAccount($guild, $accountId);
+        $account = $this->accountService->getAccount($this->guild(), $accountId);
         $this->accountService->updateAccount($account, $formValues);
         $this->cl(OutflowPage::class)->page(); // Back to current page
 
@@ -92,8 +89,7 @@ class OutflowFunc extends FuncComponent
 
     public function toggle(int $accountId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $account = $this->accountService->getAccount($guild, $accountId);
+        $account = $this->accountService->getAccount($this->guild(), $accountId);
         $this->accountService->toggleAccount($account);
 
         $this->cl(OutflowPage::class)->page();
@@ -101,8 +97,7 @@ class OutflowFunc extends FuncComponent
 
     public function delete(int $accountId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $account = $this->accountService->getAccount($guild, $accountId);
+        $account = $this->accountService->getAccount($this->guild(), $accountId);
         $this->accountService->deleteAccount($account);
 
         $this->cl(OutflowPage::class)->page();

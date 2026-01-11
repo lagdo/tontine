@@ -55,8 +55,7 @@ trait ComponentTrait
      */
     protected function getSession(): void
     {
-        $round = $this->stash()->get('tenant.round');
-        $session = $this->sessionService->getSession($round, $this->getSessionId());
+        $session = $this->sessionService->getSession($this->round(), $this->getSessionId());
         if($session === null)
         {
             throw new MessageException(trans('meeting.errors.session.not_found'));

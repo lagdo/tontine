@@ -17,9 +17,8 @@ class FundCount extends Component
      */
     public function html(): string
     {
-        $round = $this->stash()->get('tenant.round');
         return $this->renderView('pages.planning.fund.count', [
-            'count' => $this->fundService->getFundCount($round),
+            'count' => $this->fundService->getFundCount($this->round()),
         ]);
     }
 }

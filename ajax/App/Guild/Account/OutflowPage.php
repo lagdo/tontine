@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Account;
 
-use Ajax\PageComponent;
+use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\AccountService;
@@ -30,8 +30,7 @@ class OutflowPage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->stash()->get('tenant.guild');
-        return $this->accountService->getCategoryCount($guild);
+        return $this->accountService->getCategoryCount($this->guild());
     }
 
     /**
@@ -39,9 +38,8 @@ class OutflowPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $guild = $this->stash()->get('tenant.guild');
         return $this->renderView('pages.guild.account.outflow.page', [
-            'accounts' => $this->accountService->getAccounts($guild, $this->currentPage()),
+            'accounts' => $this->accountService->getAccounts($this->guild(), $this->currentPage()),
         ]);
     }
 

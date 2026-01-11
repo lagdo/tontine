@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax;
+namespace Ajax\Base;
 
 use Jaxon\App\Dialog\DialogTrait;
 use Jaxon\App\View\Store;

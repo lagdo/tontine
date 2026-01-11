@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Pool;
 
-use Ajax\FuncComponent;
+use Ajax\Base\Guild\FuncComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Inject;
@@ -220,8 +220,7 @@ class PoolFunc extends FuncComponent
     {
         $formValues['properties'] = $this->bag('guild.pool')->get('add', []);
         $values = $this->validator->validateItem($formValues);
-        $guild = $this->stash()->get('tenant.guild');
-        $this->poolService->createPool($guild, $values);
+        $this->poolService->createPool($this->guild(), $values);
 
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
@@ -232,8 +231,7 @@ class PoolFunc extends FuncComponent
 
     public function edit(int $poolId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $pool = $this->poolService->getPool($guild, $poolId);
+        $pool = $this->poolService->getPool($this->guild(), $poolId);
         $title = trans('tontine.pool.titles.edit');
         $content = $this->renderView('pages.guild.pool.edit', [
             'pool' => $pool,
@@ -255,8 +253,7 @@ class PoolFunc extends FuncComponent
     #[Inject(attr: 'validator')]
     public function update(int $poolId, array $formValues): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $pool = $this->poolService->getPool($guild, $poolId);
+        $pool = $this->poolService->getPool($this->guild(), $poolId);
         // The properties field cannot be changed.
         $formValues['properties'] = $pool->properties;
         if($pool->pools_count > 0)
@@ -276,8 +273,7 @@ class PoolFunc extends FuncComponent
 
     public function delete(int $poolId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $pool = $this->poolService->getPool($guild, $poolId);
+        $pool = $this->poolService->getPool($this->guild(), $poolId);
         if($pool->pools_count > 0)
         {
             // A pool that is already in use cannot be deleted.

@@ -50,9 +50,8 @@ trait FundTrait
             $this->bag('planning.fund')->set('fund.id', $fundId);
         }
 
-        $round = $this->stash()->get('tenant.round');
         $fundId = (int)$this->bag('planning.fund')->get('fund.id');
-        $fund = $this->fundService->getFund($round, $fundId);
+        $fund = $this->fundService->getFund($this->round(), $fundId);
         $this->stash()->set('planning.fund', $fund);
     }
 }

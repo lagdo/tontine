@@ -30,9 +30,8 @@ class ChargePage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.charge')->get('filter', null);
-        return $this->chargeService->getChargeDefCount($round, $filter);
+        return $this->chargeService->getChargeDefCount($this->round(), $filter);
     }
 
     /**
@@ -40,11 +39,10 @@ class ChargePage extends PageComponent
      */
     public function html(): Stringable
     {
-        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.charge')->get('filter', null);
         return $this->renderView('pages.planning.charge.page', [
-            'round' => $round,
-            'defs' => $this->chargeService->getChargeDefs($round, $filter, $this->currentPage()),
+            'round' => $this->round(),
+            'defs' => $this->chargeService->getChargeDefs($this->round(), $filter, $this->currentPage()),
         ]);
     }
 

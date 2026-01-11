@@ -26,8 +26,7 @@ class SessionPage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->stash()->get('tenant.guild');
-        return $this->poolService->getGuildSessionCount($guild);
+        return $this->poolService->getGuildSessionCount($this->guild());
     }
 
     /**
@@ -35,11 +34,10 @@ class SessionPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $guild = $this->stash()->get('tenant.guild');
         return $this->renderView('pages.planning.pool.session.page', [
             'pool' => $this->stash()->get('planning.pool'),
             'sessions' => $this->poolService
-                ->getGuildSessions($guild, $this->currentPage(), orderAsc: false),
+                ->getGuildSessions($this->guild(), $this->currentPage(), orderAsc: false),
         ]);
     }
 
@@ -58,8 +56,7 @@ class SessionPage extends PageComponent
      */
     private function getSessionPageNumber(SessionModel $session): int
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $sessionCount = $this->poolService->getSessionCount($guild, $session, true, false);
+        $sessionCount = $this->poolService->getSessionCount($this->guild(), $session, true, false);
         return (int)($sessionCount / $this->tenantService->getLimit()) + 1;
     }
 

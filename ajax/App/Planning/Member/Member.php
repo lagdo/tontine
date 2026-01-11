@@ -17,7 +17,7 @@ class Member extends Component
     public function html(): Stringable
     {
         return $this->renderView('pages.planning.member.home', [
-            'guild' => $this->tenantService->guild(),
+            'guild' => $this->guild(),
         ]);
     }
 

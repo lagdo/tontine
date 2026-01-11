@@ -21,10 +21,9 @@ class Saving extends Component
      */
     public function html(): Stringable
     {
-        $round = $this->stash()->get('tenant.round');
         return $this->renderView('pages.meeting.session.charge.libre.saving.home', [
             'charge' => $this->stash()->get('meeting.session.charge'),
-            'funds' => $this->settlementService->getFunds($round),
+            'funds' => $this->settlementService->getFunds($this->round()),
         ]);
     }
 

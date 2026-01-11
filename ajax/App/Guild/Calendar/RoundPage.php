@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Calendar;
 
-use Ajax\PageComponent;
+use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\RoundService;
@@ -30,8 +30,7 @@ class RoundPage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->stash()->get('tenant.guild');
-        return $this->roundService->getRoundCount($guild);
+        return $this->roundService->getRoundCount($this->guild());
     }
 
     /**
@@ -39,9 +38,8 @@ class RoundPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $guild = $this->stash()->get('tenant.guild');
         return $this->renderView('pages.guild.calendar.round.page', [
-            'rounds' => $this->roundService->getRounds($guild, $this->currentPage()),
+            'rounds' => $this->roundService->getRounds($this->guild(), $this->currentPage()),
         ]);
     }
 

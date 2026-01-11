@@ -4,7 +4,7 @@ namespace Ajax\Page\Header;
 
 use Ajax\App\Admin\Guild\Guild;
 use Ajax\App\Planning\Enrollment;
-use Ajax\FuncComponent;
+use Ajax\Base\FuncComponent;
 use Ajax\Page\Sidebar\AdminMenu;
 use Ajax\Page\Sidebar\RoundMenu;
 use Jaxon\Attributes\Attribute\Databag;

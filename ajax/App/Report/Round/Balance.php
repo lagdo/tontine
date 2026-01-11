@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Report\Round;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Siak\Tontine\Service\Meeting\Session\SummaryService;
 use Siak\Tontine\Service\Report\RoundService;
@@ -28,9 +28,8 @@ class Balance extends Component
      */
     public function html(): Stringable
     {
-        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('tenant.session');
-        $sessions = $this->roundService->getRoundSessions($round);
+        $sessions = $this->roundService->getRoundSessions($this->round());
         if($session !== null)
         {
             $sessions = $sessions->filter(fn($_session) =>

@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Admin\User\Host;
 
-use Ajax\FuncComponent;
+use Ajax\Base\FuncComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\UserService;

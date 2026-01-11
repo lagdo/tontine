@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Presence;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;

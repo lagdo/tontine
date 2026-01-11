@@ -2,10 +2,13 @@
 
 namespace Siak\Tontine\Service;
 
+use Illuminate\Database\Eloquent\Builder;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\User;
+
+use function tap;
 
 class TenantService
 {
@@ -43,6 +46,37 @@ class TenantService
     public function setUser(User $user): void
     {
         $this->user = $user;
+    }
+
+    /**
+     * @param int $guildId    The guild id
+     *
+     * @return Guild|null
+     */
+    public function getGuild(int $guildId): ?Guild
+    {
+        return $this->user->guilds()->find($guildId) ??
+            tap(Guild::whereHas('invites', fn(Builder $query) =>
+                $query->where('guest_id', $this->user->id))->find($guildId),
+                    fn($guild) => $guild !== null && $guild->isGuest = true);
+    }
+
+    /**
+     * @param int $roundId    The round id
+     *
+     * @return Round|null
+     */
+    public function getRound(int $roundId): ?Round
+    {
+        return $this->guild->rounds()->find($roundId);
+    }
+
+    /**
+     * @return Round|null
+     */
+    public function getFirstRound(): ?Round
+    {
+        return $this->guild->rounds()->first();
     }
 
     /**
@@ -118,24 +152,6 @@ class TenantService
     public function round(): ?Round
     {
         return $this->round;
-    }
-
-    /**
-     * @param int $roundId    The round id
-     *
-     * @return Round|null
-     */
-    public function getRound(int $roundId): ?Round
-    {
-        return $this->guild->rounds()->find($roundId);
-    }
-
-    /**
-     * @return Round|null
-     */
-    public function getFirstRound(): ?Round
-    {
-        return $this->guild->rounds()->first();
     }
 
     /**

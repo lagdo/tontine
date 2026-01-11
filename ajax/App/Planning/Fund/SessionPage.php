@@ -25,8 +25,7 @@ class SessionPage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->stash()->get('tenant.guild');
-        return $this->fundService->getGuildSessionCount($guild);
+        return $this->fundService->getGuildSessionCount($this->guild());
     }
 
     /**
@@ -34,11 +33,10 @@ class SessionPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $guild = $this->stash()->get('tenant.guild');
         return $this->renderView('pages.planning.fund.session.page', [
             'fund' => $this->stash()->get('planning.fund'),
             'sessions' => $this->fundService
-                ->getGuildSessions($guild, $this->currentPage(), orderAsc: false),
+                ->getGuildSessions($this->guild(), $this->currentPage(), orderAsc: false),
         ]);
     }
 
@@ -52,8 +50,7 @@ class SessionPage extends PageComponent
 
     private function getSessionPageNumber($session): int
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $sessionCount = $this->fundService->getSessionCount($guild, $session, true, false);
+        $sessionCount = $this->fundService->getSessionCount($this->guild(), $session, true, false);
         return (int)($sessionCount / $this->tenantService->getLimit()) + 1;
     }
 

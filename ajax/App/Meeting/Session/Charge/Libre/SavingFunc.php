@@ -21,8 +21,7 @@ class SavingFunc extends FuncComponent
      */
     public function addSettlement(int $billId, int $fundId): void
     {
-        $round = $this->stash()->get('tenant.round');
-        $fund = $this->settlementService->getFund($round, $fundId);
+        $fund = $this->settlementService->getFund($this->round(), $fundId);
         if(!$fund)
         {
             throw new MessageException(trans('tontine.fund.errors.not_found'));
@@ -63,8 +62,7 @@ class SavingFunc extends FuncComponent
      */
     public function addSettlements(int $fundId): void
     {
-        $round = $this->stash()->get('tenant.round');
-        $fund = $this->settlementService->getFund($round, $fundId);
+        $fund = $this->settlementService->getFund($this->round(), $fundId);
         if(!$fund)
         {
             throw new MessageException(trans('tontine.fund.errors.not_found'));

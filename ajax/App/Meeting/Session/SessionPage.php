@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session;
 
-use Ajax\PageComponent;
+use Ajax\Base\Round\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
@@ -30,8 +30,7 @@ class SessionPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->stash()->get('tenant.round');
-        return $this->sessionService->getSessionCount($round);
+        return $this->sessionService->getSessionCount($this->round());
     }
 
     /**
@@ -39,9 +38,8 @@ class SessionPage extends PageComponent
      */
     public function html(): Stringable
     {
-        $round = $this->stash()->get('tenant.round');
         return $this->renderView('pages.meeting.session.page', [
-            'sessions' => $this->sessionService->getSessions($round, $this->currentPage()),
+            'sessions' => $this->sessionService->getSessions($this->round(), $this->currentPage()),
             'statuses' => $this->sessionService->getSessionStatuses(),
         ]);
     }

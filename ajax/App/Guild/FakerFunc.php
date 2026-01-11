@@ -1,8 +1,8 @@
 <?php
 
-namespace Ajax\App;
+namespace Ajax\App\Guild;
 
-use Ajax\FuncComponent;
+use Ajax\Base\Guild\FuncComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\MemberService;
 
@@ -19,10 +19,9 @@ class FakerFunc extends FuncComponent
 
     public function members(): void
     {
-        $guild = $this->stash()->get('tenant.guild');
         $count = intval($this->bag('faker')->get('member.count', 10));
         $html = $this->memberService
-            ->getFakeMembers($guild, $count)
+            ->getFakeMembers($this->guild(), $count)
             ->map(fn($member) => "{$member->name};{$member->email}")
             ->join("\n");
         $this->response->html('new-members-list', $html);

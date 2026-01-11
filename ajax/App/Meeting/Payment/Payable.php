@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Payment;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use App\Events\OnPagePaymentPayables;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
@@ -52,12 +52,11 @@ class Payable extends Component
 
     public function show(int $memberId, int $sessionId): void
     {
-        $round = $this->stash()->get('tenant.round');
-        if(!($member = $this->memberService->getMember($round, $memberId)))
+        if(!($member = $this->memberService->getMember($this->round(), $memberId)))
         {
             return;
         }
-        if(!($session = $this->sessionService->getSession($round, $sessionId)))
+        if(!($session = $this->sessionService->getSession($this->round(), $sessionId)))
         {
             return;
         }
