@@ -517,6 +517,14 @@ return [
                 'disbursed' => "Décaissé",
             ],
         ],
+        'errors' => [
+            'form' => [
+                'not_found' => "Impossible de trouver le formulaire demandé.",
+            ],
+            'report' => [
+                'not_found' => "Impossible de trouver le rapport demandé.",
+            ],
+        ],
     ],
     'options' => [
         'titles' => [

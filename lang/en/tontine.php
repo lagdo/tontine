@@ -517,6 +517,14 @@ return [
                 'disbursed' => "Disbursed",
             ],
         ],
+        'errors' => [
+            'form' => [
+                'not_found' => "Unable to find the requested form.",
+            ],
+            'report' => [
+                'not_found' => "Unable to find the requested report.",
+            ],
+        ],
     ],
     'options' => [
         'titles' => [
