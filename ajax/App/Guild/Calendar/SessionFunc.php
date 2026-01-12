@@ -57,7 +57,7 @@ class SessionFunc extends FuncComponent
         $round = $this->stash()->get('guild.calendar.round');
         $title = trans('tontine.session.titles.add');
         $content = $this->renderView('pages.guild.calendar.session.add', [
-            'members' => $this->memberService->getMemberList($this->round())->prepend('', 0),
+            'members' => $this->memberService->getMemberList($round)->prepend('', 0),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -76,7 +76,7 @@ class SessionFunc extends FuncComponent
     {
         $round = $this->stash()->get('guild.calendar.round');
         $values = $this->validator->validateItem($formValues);
-        $this->sessionService->createSession($this->round(), $values);
+        $this->sessionService->createSession($round, $values);
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.created'));
@@ -159,7 +159,7 @@ class SessionFunc extends FuncComponent
         $round = $this->stash()->get('guild.calendar.round');
         $values = $this->parseSessionList($formValues['sessions'] ?? '');
 
-        $this->sessionService->createSessions($this->round(), $values);
+        $this->sessionService->createSessions($round, $values);
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.created'));
@@ -171,11 +171,11 @@ class SessionFunc extends FuncComponent
     public function edit(int $sessionId): void
     {
         $round = $this->stash()->get('guild.calendar.round');
-        $session = $this->roundService->getSession($this->round(), $sessionId);
+        $session = $this->roundService->getSession($round, $sessionId);
         $title = trans('tontine.session.titles.edit');
         $content = $this->renderView('pages.guild.calendar.session.edit', [
             'session' => $session,
-            'members' => $this->memberService->getMemberList($this->round())->prepend('', 0),
+            'members' => $this->memberService->getMemberList($round)->prepend('', 0),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -195,7 +195,7 @@ class SessionFunc extends FuncComponent
         $round = $this->stash()->get('guild.calendar.round');
         $formValues['id'] = $sessionId;
         $values = $this->validator->validateItem($formValues);
-        $session = $this->roundService->getSession($this->round(), $sessionId);
+        $session = $this->roundService->getSession($round, $sessionId);
 
         $this->sessionService->updateSession($this->guild(), $session, $values);
         $this->modal()->hide();
@@ -208,7 +208,7 @@ class SessionFunc extends FuncComponent
     public function editVenue(int $sessionId): void
     {
         $round = $this->stash()->get('guild.calendar.round');
-        $session = $this->roundService->getSession($this->round(), $sessionId);
+        $session = $this->roundService->getSession($round, $sessionId);
 
         $title = trans('tontine.session.titles.venue');
         $content = $this->renderView('pages.guild.calendar.session.venue', [
@@ -232,7 +232,7 @@ class SessionFunc extends FuncComponent
     {
         $round = $this->stash()->get('guild.calendar.round');
         $values = $this->validator->validateVenue($formValues);
-        $session = $this->roundService->getSession($this->round(), $sessionId);
+        $session = $this->roundService->getSession($round, $sessionId);
 
         $this->sessionService->saveSessionVenue($session, $values);
         $this->modal()->hide();
@@ -245,7 +245,7 @@ class SessionFunc extends FuncComponent
     public function delete(int $sessionId): void
     {
         $round = $this->stash()->get('guild.calendar.round');
-        $session = $this->roundService->getSession($this->round(), $sessionId);
+        $session = $this->roundService->getSession($round, $sessionId);
         $this->sessionService->deleteSession($session);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.deleted'));

@@ -38,7 +38,7 @@ class SessionPage extends PageComponent
     protected function count(): int
     {
         $round = $this->stash()->get('guild.calendar.round');
-        return $this->roundService->getSessionCount($this->round());
+        return $this->roundService->getSessionCount($round);
     }
 
     /**
@@ -50,7 +50,7 @@ class SessionPage extends PageComponent
 
         return $this->renderView('pages.guild.calendar.session.page', [
             'sessions' => $round === null ? []:
-                $this->roundService->getSessions($this->round(), $this->currentPage()),
+                $this->roundService->getSessions($round, $this->currentPage()),
             'statuses' => $this->sessionService->getSessionStatuses(),
         ]);
     }
