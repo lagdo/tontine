@@ -49,7 +49,7 @@
         </div>
         <div class="report">
           <h2>{{ __('meeting.entry.titles.transactions') }}</h2>
-          <p>{{ !$session ? '' : $session->title }}</p>
+          <p>{{ $session === null ? '' : $session->title }}</p>
         </div>
       </div>
       <div class="box"></div>

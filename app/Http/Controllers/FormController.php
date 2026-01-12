@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Siak\Tontine\Service\Report\Pdf\PdfPrinterService;
 use Siak\Tontine\Service\Report\ReportService;
 use Siak\Tontine\Service\TenantService;
 use Sqids\SqidsInterface;
+use Exception;
 
 use function base64_decode;
 use function compact;
@@ -22,12 +22,30 @@ class FormController extends Controller
 {
     /**
      * @param TenantService $tenantService
-     * @param SessionService $sessionService
+     * @param SqidsInterface $sqids
      * @param PdfPrinterService $printerService
      */
     public function __construct(private TenantService $tenantService,
-        private SessionService $sessionService, private PdfPrinterService $printerService)
+        private SqidsInterface $sqids, private PdfPrinterService $printerService)
     {}
+
+    /**
+     * @param string $guildSqid
+     *
+     * @return bool
+     */
+    private function setGuild(string $guildSqid): bool
+    {
+        [$guildId] = $this->sqids->decode($guildSqid);
+        $guild = $this->tenantService->getGuild($guildId);
+        if($guild === null)
+        {
+            return false;
+        }
+
+        $this->tenantService->setGuild($guild);
+        return true;
+    }
 
     /**
      * @param Request $request
@@ -57,17 +75,21 @@ class FormController extends Controller
 
     /**
      * @param Request $request
-     * @param SqidsInterface $sqids
+     * @param string $guildSqid
      * @param string $sessionSqid
      *
      * @return View|Response
      */
     public function session(Request $request, ReportService $reportService,
-        SqidsInterface $sqids, string $sessionSqid)
+        string $guildSqid, string $sessionSqid)
     {
-        $round = $this->tenantService->round();
-        [$sessionId] = $sqids->decode($sessionSqid);
-        $session = $this->sessionService->getSession($round, $sessionId);
+        if(!$this->setGuild($guildSqid))
+        {
+            throw new Exception(trans('tontine.report.errors.form.not_found'));
+        }
+
+        [$sessionId] = $this->sqids->decode($sessionSqid);
+        $session = $this->tenantService->getSessionById($sessionId);
         view()->share($reportService->getSessionEntry($session));
 
         return $this->form($request, 'session');
@@ -76,24 +98,29 @@ class FormController extends Controller
     /**
      * @param Request $request
      * @param LocaleService $localeService
-     * @param SqidsInterface $sqids
+     * @param string $guildSqid
      * @param string $form
      * @param string $sessionSqid
      *
      * @return View|Response
      */
     public function entry(Request $request, LocaleService $localeService,
-        SqidsInterface $sqids, string $form, string $sessionSqid = '')
+        string $guildSqid, string $form, string $sessionSqid = '')
     {
-        $guild = $this->tenantService->guild();
-        [$country] = $localeService->getNameFromGuild($guild);
+        if(!$this->setGuild($guildSqid))
+        {
+            throw new Exception(trans('tontine.report.errors.form.not_found'));
+        }
+
         $session = null;
         if($sessionSqid !== '')
         {
-            $round = $this->tenantService->round();
-            [$sessionId] = $sqids->decode($sessionSqid);
-            $session = $this->sessionService->getSession($round, $sessionId);
+            [$sessionId] = $this->sqids->decode($sessionSqid);
+            $session = $this->tenantService->getSessionById($sessionId);
         }
+
+        $guild = $this->tenantService->guild();
+        [$country] = $localeService->getNameFromGuild($guild);
         view()->share(compact('guild', 'country', 'session'));
 
         return $this->form($request, $form);

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Guild;
+use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\User;
 
 use function is_array;
@@ -270,5 +271,30 @@ class TenantService
             throw new MessageException(trans('tontine.invite.errors.access_denied'));
         }
         return true;
+    }
+
+    /**
+     * @param int $roundId
+     * 
+     * @return Round|null
+     */
+    public function getRoundById(int $roundId): Round|null
+    {
+        return $this->guild->rounds()->find($roundId);
+    }
+
+    /**
+     * @param int $sessionId
+     *
+     * @return Session|null
+     */
+    public function getSessionById(int $sessionId): Session|null
+    {
+        $session = $this->guild->sessions()->with('round')->find($sessionId);
+        if($session !== null)
+        {
+            $this->setRound($session->round);
+        }
+        return $session;
     }
 }

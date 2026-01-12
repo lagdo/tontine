@@ -38,20 +38,20 @@ Route::middleware(['auth', 'tontine', 'analytics'])
 
         // Report pages
         //----------------------------------
-        Route::get('/pdf/report/session/{sessionId}', [ReportController::class, 'session'])
+        Route::get('/pdf/report/{guildId}/session/{sessionId}', [ReportController::class, 'session'])
             ->name('report.session');
-        Route::get('/pdf/report/savings/{sessionId}', [ReportController::class, 'savings'])
+        Route::get('/pdf/report/{guildId}/savings/{sessionId}', [ReportController::class, 'savings'])
             ->name('report.savings');
-        Route::get('/pdf/report/credit/{sessionId}', [ReportController::class, 'credit'])
+        Route::get('/pdf/report/{guildId}/credit/{sessionId}', [ReportController::class, 'credit'])
             ->name('report.credit');
-        Route::get('/pdf/report/round/{roundId}', [ReportController::class, 'round'])
+        Route::get('/pdf/report/{guildId}/round/{roundId}', [ReportController::class, 'round'])
             ->name('report.round');
 
         // Input forms page
         //----------------------------------
-        Route::get('/pdf/entry/session/{sessionId}', [FormController::class, 'session'])
+        Route::get('/pdf/entry/{guildId}/session/{sessionId}', [FormController::class, 'session'])
             ->name('entry.session');
-        Route::get('/pdf/entry/{form}/{sessionId?}', [FormController::class, 'entry'])
+        Route::get('/pdf/entry/{guildId}/{form}/{sessionId?}', [FormController::class, 'entry'])
             ->name('entry.form')
             ->where('form', 'report|transactions');
     });

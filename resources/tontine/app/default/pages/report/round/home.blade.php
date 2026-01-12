@@ -28,8 +28,10 @@
                     <i class="fa fa-file-pdf"></i>
                   </button>
                   <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" target="_blank" href="{{ $locale->route('report.round',
-                      ['roundId' => $sqids->encode([$round->id])]) }}">{{ __('tontine.report.actions.round') }}</a>
+                    <a class="dropdown-item" target="_blank" href="{{ $locale->route('report.round', [
+                      'guildId' => $sqids->encode([$currentGuild->id]),
+                      'roundId' => $sqids->encode([$round->id]),
+                    ]) }}">{{ __('tontine.report.actions.round') }}</a>
                   </div>
                 </div>
                 <div class="btn-group ml-3">
@@ -37,10 +39,14 @@
                     <i class="fa fa-file-alt"></i>
                   </button>
                   <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" target="_blank" href="{{ $locale->route('entry.form',
-                      ['form' => 'report']) }}">{{ __('meeting.entry.actions.report') }}</a>
-                    <a class="dropdown-item" target="_blank" href="{{ $locale->route('entry.form',
-                      ['form' => 'transactions']) }}">{{ __('meeting.entry.actions.transactions') }}</a>
+                    <a class="dropdown-item" target="_blank" href="{{ $locale->route('entry.form', [
+                      'guildId' => $sqids->encode([$currentGuild->id]),
+                      'form' => 'report',
+                    ]) }}">{{ __('meeting.entry.actions.report') }}</a>
+                    <a class="dropdown-item" target="_blank" href="{{ $locale->route('entry.form', [
+                      'guildId' => $sqids->encode([$currentGuild->id]),
+                      'form' => 'transactions',
+                    ]) }}">{{ __('meeting.entry.actions.transactions') }}</a>
                   </div>
                 </div>
               </div>
