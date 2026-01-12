@@ -40,7 +40,7 @@ class RoundMenu extends Component
         $this->cl(Enrollment::class)->home();
         $this->setSectionTitle('planning', 'enrollment');
 
-        $back = $this->renderView('parts.header.select.back', [
+        $back = $this->renderView('parts.sidebar.back', [
             'handler' => $this->rq(RoundMenuFunc::class)->back(),
         ]);
         $this->response->html('header-menu-back', $back);

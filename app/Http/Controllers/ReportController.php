@@ -177,6 +177,8 @@ class ReportController extends Controller
         view()->share($this->reportService->getRoundReport($round));
 
         $guild = $this->tenantService->guild();
+        view()->share('guild', $guild);
+
         // Show the html page
         if($request->has('html'))
         {

@@ -40,7 +40,7 @@ class GuildMenu extends Component
         $this->cl(Member::class)->home();
         $this->setSectionTitle('guild', 'members');
 
-        $back = $this->renderView('parts.header.select.back', [
+        $back = $this->renderView('parts.sidebar.back', [
             'handler' => $this->rq(GuildMenuFunc::class)->back(),
         ]);
         $this->response->html('header-menu-back', $back);

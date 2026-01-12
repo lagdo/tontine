@@ -1,8 +1,10 @@
-              <div class="row">
-                <div class="col-auto">
-                  <h2>{{ $section }}</h2>
+              <div class="row section-header-title">
+                <div class="col">
+                  <h2>{{ $section }}</h2><span style="font-weight:700; font-size:17px;"> > {{ $entry }}</span>
                 </div>
-                <div class="col d-flex align-items-end section-header-title">
-                  <h3 class="ml-auto">{{ $entry }}</h3>
+                <div class="col-auto d-flex align-items-end">
+@if ($currentGuild !== null)
+                  <span style="font-weight:700; font-size:17px;">{{ $locale->getCurrencyName() }} <i class="fa fa-money-bill"></i></span>
+@endif
                 </div>
               </div>
