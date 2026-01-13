@@ -69,7 +69,7 @@ class RoundFunc extends FuncComponent
 
         $title = trans('tontine.round.titles.edit');
         $content = $this->renderView('pages.guild.calendar.round.edit', [
-            'round' => $this->round(),
+            'round' => $round,
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),

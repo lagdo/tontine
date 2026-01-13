@@ -3,6 +3,7 @@
 namespace Ajax\Page\Header;
 
 use Ajax\Base;
+use Ajax\Page\Header\SectionHeader;
 use Ajax\Page\Sidebar\AdminMenu;
 use Ajax\Page\Sidebar\GuildMenu;
 use Jaxon\Attributes\Attribute\Before;
@@ -73,6 +74,7 @@ class GuildMenuFunc extends Base\FuncComponent
 
         $this->cl(GuildHeader::class)->render();
         $this->cl(GuildMenu::class)->render();
+        $this->cl(SectionHeader::class)->currency();
 
         $this->modal()->hide();
         $this->alert()->info(trans('tontine.messages.selected', [
@@ -94,6 +96,7 @@ class GuildMenuFunc extends Base\FuncComponent
 
         $this->cl(GuildHeader::class)->render();
         $this->cl(AdminMenu::class)->render();
+        $this->cl(SectionHeader::class)->currency();
 
         if($guild !== null)
         {

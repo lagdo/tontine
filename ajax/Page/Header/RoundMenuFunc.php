@@ -3,6 +3,7 @@
 namespace Ajax\Page\Header;
 
 use Ajax\Base;
+use Ajax\Page\Header\SectionHeader;
 use Ajax\Page\Sidebar\GuildMenu;
 use Ajax\Page\Sidebar\RoundMenu;
 use Jaxon\Attributes\Attribute\Before;
@@ -65,12 +66,12 @@ class RoundMenuFunc extends Base\FuncComponent
         ],[
             'title' => trans('tontine.actions.choose'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveRound(je('round_id')->rd()->select()->toInt()),
+            'click' => $this->rq()->selectRound(je('round_id')->rd()->select()->toInt()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
 
-    public function saveRound(int $roundId): void
+    public function selectRound(int $roundId): void
     {
         if(!($round = $this->tenantService->getRound($roundId)) ||
             $this->roundService->getSessionCount($round) === 0)
@@ -86,6 +87,7 @@ class RoundMenuFunc extends Base\FuncComponent
 
         $this->cl(GuildHeader::class)->render();
         $this->cl(RoundMenu::class)->render();
+        $this->cl(SectionHeader::class)->currency();
 
         $this->modal()->hide();
         $guild = $this->stash()->get('tenant.guild');
@@ -109,6 +111,7 @@ class RoundMenuFunc extends Base\FuncComponent
 
         $this->cl(GuildHeader::class)->render();
         $this->cl(GuildMenu::class)->render();
+        $this->cl(SectionHeader::class)->currency();
 
         if($round !== null)
         {

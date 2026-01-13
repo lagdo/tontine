@@ -12,22 +12,19 @@ class SectionHeader extends Component
     /**
      * @var string
      */
-    private string $section = '';
+    private string $template;
 
     /**
-     * @var string
+     * @var array
      */
-    private string $entry = '';
+    private array $vars;
 
     /**
      * @inheritDoc
      */
     public function html(): Stringable
     {
-        return $this->renderView('parts.header.section', [
-            'section' => $this->section,
-            'entry' => $this->entry,
-        ]);
+        return $this->renderView($this->template, $this->vars);
     }
 
     /**
@@ -36,10 +33,23 @@ class SectionHeader extends Component
      *
      * @return void
      */
-    public function show(string $section, string $entry): void
+    public function title(string $section, string $entry): void
     {
-        $this->section = $section;
-        $this->entry = $entry;
-        $this->render();
+        $this->template = 'parts.header.section.title';
+        $this->vars = [
+            'section' => $section,
+            'entry' => $entry,
+        ];
+        $this->item('title')->render();
+    }
+
+    /**
+     * @return void
+     */
+    public function currency(): void
+    {
+        $this->template = 'parts.header.section.currency';
+        $this->vars = [];
+        $this->item('currency')->render();
     }
 }

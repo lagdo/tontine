@@ -3,18 +3,7 @@
 @section('page-title', 'Siak Tontine')
 
 @section('page-header')
-@php
-$rqGuildHeader = rq(Ajax\Page\Header\GuildHeader::class);
-$rqSectionHeader = rq(Ajax\Page\Header\SectionHeader::class);
-@endphp
-          <div class="section-header">
-            <div @jxnBind($rqGuildHeader)>
-              @jxnHtml($rqGuildHeader)
-            </div>
-            <div class="mt-2" @jxnBind($rqSectionHeader)>
-              @jxnHtml($rqSectionHeader)
-            </div>
-          </div>
+@include('tontine_app::parts.header.section.block')
 @endsection
 
 @section('styles')

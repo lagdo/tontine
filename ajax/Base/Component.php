@@ -21,7 +21,7 @@ abstract class Component extends BaseComponent
      */
     protected function setSectionTitle(string $section, string $entry): void
     {
-        $this->cl(SectionHeader::class)->show(trans("tontine.menus.$section"),
+        $this->cl(SectionHeader::class)->title(trans("tontine.menus.$section"),
             trans("tontine.menus.$entry"));
     }
 }
