@@ -28,11 +28,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'verified' => EnsureEmailIsVerified::class,
             'template' => TontineTemplate::class,
+            'tenant' => TontineTenant::class,
         ]);
 
         // Tontine middlewares
         $middleware->appendToGroup('tontine', [
-            TontineTenant::class,
             TontineLocale::class,
             TontineTemplate::class,
             TontineJaxon::class,

@@ -15,6 +15,7 @@ return [
             'route' => 'jaxon.ajax',
             'middlewares' => [
                 'web',
+                'tenant',
                 'tontine',
                 'analytics',
                 'jaxon.config',

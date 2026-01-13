@@ -21,7 +21,7 @@ use Laravel\Fortify\RoutePath;
 |
 */
 
-Route::middleware(['auth', 'tontine', 'analytics'])
+Route::middleware(['auth', 'tenant', 'tontine', 'analytics'])
     ->prefix(LaravelLocalization::setLocale())
     ->group(function() {
         // Home page
