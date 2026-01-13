@@ -53,6 +53,14 @@ services:
       tontine-network:
         ipv4_address: 172.28.1.4
 
+  tontine-php82:
+    container_name: tontine-php82
+    build:
+      context: ./
+      dockerfile: php82/Dockerfile
+    volumes:
+     - ..:/var/www
+
 networks:
   tontine-network:
     ipam:
