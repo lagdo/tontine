@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Session\Pool\Remitment;
 use Ajax\App\Meeting\Session\Component;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
-use Stringable;
 
 #[Databag('meeting.auction')]
 #[Export(base: ['render'])]
@@ -19,9 +18,9 @@ class Auction extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.session.auction.home', [
+        return $this->renderTpl('pages.meeting.session.auction.home', [
             'session' => $this->stash()->get('meeting.session'),
         ]);
     }

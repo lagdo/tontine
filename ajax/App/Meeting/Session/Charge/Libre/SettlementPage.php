@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
-use Stringable;
 
 #[Before('checkChargeEdit')]
 class SettlementPage extends PageComponent
@@ -34,14 +33,14 @@ class SettlementPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $search = $this->bag('meeting')->get('settlement.libre.search');
         $filter = $this->bag('meeting')->get('settlement.libre.filter', null);
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
 
-        return $this->renderView('pages.meeting.session.charge.libre.settlement.page', [
+        return $this->renderTpl('pages.meeting.session.charge.libre.settlement.page', [
             'session' => $session,
             'charge' => $charge,
             'bills' => $this->billService->getBills($charge, $session,

@@ -5,7 +5,6 @@ namespace Ajax\App\Admin\User\Host;
 use Ajax\Base\PageComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\UserService;
-use Stringable;
 
 #[Databag('user')]
 class HostPage extends PageComponent
@@ -35,10 +34,10 @@ class HostPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $user = $this->tenantService->user();
-        return $this->renderView('pages.admin.user.host.page', [
+        return $this->renderTpl('pages.admin.user.host.page', [
             'invites' => $this->userService->getHostInvites($user, $this->currentPage()),
         ]);
     }

@@ -46,7 +46,7 @@ class GuildMenuFunc extends Base\FuncComponent
     public function showGuilds(): void
     {
         $title = trans('tontine.titles.choose');
-        $content = $this->renderView('parts.header.select.guild', [
+        $content = $this->renderTpl('parts.header.select.guild', [
             'current' => $this->tenantService->getLatestGuildId(),
             'guilds' => $this->tenantService->getGuilds(),
         ]);

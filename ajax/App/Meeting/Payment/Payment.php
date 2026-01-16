@@ -10,7 +10,6 @@ use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
-use Stringable;
 
 #[Before('checkHostAccess', ["meeting", "payments"])]
 #[Before('getOpenedSessions')]
@@ -51,9 +50,9 @@ class Payment extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.payment.home', [
+        return $this->renderTpl('pages.meeting.payment.home', [
             'sessions' => $this->sessions,
         ]);
     }

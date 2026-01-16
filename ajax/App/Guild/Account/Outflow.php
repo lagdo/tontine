@@ -6,16 +6,15 @@ use Ajax\Base\Guild\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
-use Stringable;
 
 #[Before('checkHostAccess', ["finance", "accounts"])]
 #[Databag('guild.account')]
 #[Export(base: ['render'])]
 class Outflow extends Component
 {
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.guild.account.outflow.home');
+        return $this->renderTpl('pages.guild.account.outflow.home');
     }
 
     /**

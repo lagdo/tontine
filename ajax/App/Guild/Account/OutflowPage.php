@@ -6,7 +6,6 @@ use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\AccountService;
-use Stringable;
 
 #[Before('checkHostAccess', ["finance", "accounts"])]
 #[Databag('guild.account')]
@@ -36,9 +35,9 @@ class OutflowPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.guild.account.outflow.page', [
+        return $this->renderTpl('pages.guild.account.outflow.page', [
             'accounts' => $this->accountService->getAccounts($this->guild(), $this->currentPage()),
         ]);
     }

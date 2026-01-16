@@ -31,7 +31,7 @@ class RoundFunc extends FuncComponent
     public function add(): void
     {
         $title = trans('tontine.round.titles.add');
-        $content = $this->renderView('pages.guild.calendar.round.add');
+        $content = $this->renderTpl('pages.guild.calendar.round.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -68,7 +68,7 @@ class RoundFunc extends FuncComponent
         $round = $this->roundService->getRound($this->guild(), $roundId);
 
         $title = trans('tontine.round.titles.edit');
-        $content = $this->renderView('pages.guild.calendar.round.edit', [
+        $content = $this->renderTpl('pages.guild.calendar.round.edit', [
             'round' => $round,
         ]);
         $buttons = [[

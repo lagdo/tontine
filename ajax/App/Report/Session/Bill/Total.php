@@ -5,7 +5,6 @@ namespace Ajax\App\Report\Session\Bill;
 use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Report\SessionService;
-use Stringable;
 
 use function trans;
 
@@ -21,19 +20,19 @@ class Total extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('report.session');
         $member = $this->stash()->get('report.member');
 
         if(!$member)
         {
-            return $this->renderView('pages.report.session.session.bills', [
+            return $this->renderTpl('pages.report.session.session.bills', [
                 'title' => trans('tontine.report.titles.bills.total'),
                 'charges' => $this->sessionService->getTotalCharges($session),
             ]);
         }
-        return $this->renderView('pages.report.session.member.bills.total', [
+        return $this->renderTpl('pages.report.session.member.bills.total', [
             'charges' => $this->sessionService->getTotalCharges($session, $member),
         ]);
     }

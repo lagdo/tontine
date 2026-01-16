@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Charge\Fixed;
 
 use Ajax\App\Meeting\Session\Charge\Component;
-use Stringable;
 
 use function trim;
 
@@ -19,9 +18,9 @@ class Settlement extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.session.charge.fixed.settlement.home', [
+        return $this->renderTpl('pages.meeting.session.charge.fixed.settlement.home', [
             'charge' => $this->stash()->get('meeting.session.charge'),
         ]);
     }

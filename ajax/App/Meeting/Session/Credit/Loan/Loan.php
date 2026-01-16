@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Session\Credit\Loan;
 use Ajax\App\Meeting\Session\Component;
 use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
-use Stringable;
 
 #[Export(base: ['render'], except: ['show'])]
 class Loan extends Component
@@ -21,10 +20,10 @@ class Loan extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('meeting.session');
-        return $this->renderView('pages.meeting.session.loan.home', [
+        return $this->renderTpl('pages.meeting.session.loan.home', [
             'session' => $session,
             'loans' => $this->loanService->getSessionLoans($session),
         ]);

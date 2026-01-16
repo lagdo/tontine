@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 use Ajax\App\Meeting\Session\Charge\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
-use Stringable;
 
 #[Before('getTarget')]
 class TargetPage extends PageComponent
@@ -49,14 +48,14 @@ class TargetPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $search = $this->bag('meeting')->get('fee.member.search', '');
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
         $target = $this->stash()->get('meeting.session.charge.target');
 
-        return $this->renderView('pages.meeting.session.charge.libre.target.page', [
+        return $this->renderTpl('pages.meeting.session.charge.libre.target.page', [
             'session' => $session,
             'target' => $target,
             'charge' => $charge,

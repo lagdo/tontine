@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Session\Profit;
 
 use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
-use Stringable;
 
 #[Exclude]
 class Amount extends Component
@@ -12,9 +11,9 @@ class Amount extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.session.profit.amount', [
+        return $this->renderTpl('pages.meeting.session.profit.amount', [
             'fund' => $this->stash()->get('profit.fund'),
             'profitAmount' => $this->stash()->get('profit.amount'),
         ]);

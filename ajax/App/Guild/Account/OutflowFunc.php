@@ -27,7 +27,7 @@ class OutflowFunc extends FuncComponent
             CategoryModel::TYPE_OUTFLOW => trans('tontine.account.types.outflow'),
         ];
         $title = trans('tontine.account.titles.add');
-        $content = $this->renderView('pages.guild.account.outflow.add', [
+        $content = $this->renderTpl('pages.guild.account.outflow.add', [
             'types' => $types,
         ]);
         $buttons = [[
@@ -60,7 +60,7 @@ class OutflowFunc extends FuncComponent
         $types = [
             CategoryModel::TYPE_OUTFLOW => trans('tontine.account.types.outflow'),
         ];
-        $content = $this->renderView('pages.guild.account.outflow.edit', [
+        $content = $this->renderTpl('pages.guild.account.outflow.edit', [
             'types' => $types,
             'account' => $account,
         ]);

@@ -5,7 +5,6 @@ namespace Ajax\App\Planning\Fund;
 use Ajax\App\Planning\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
-use Stringable;
 
 #[Before('getFund')]
 #[Databag('planning.fund')]
@@ -31,9 +30,9 @@ class SessionPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.planning.fund.session.page', [
+        return $this->renderTpl('pages.planning.fund.session.page', [
             'fund' => $this->stash()->get('planning.fund'),
             'sessions' => $this->fundService
                 ->getGuildSessions($this->guild(), $this->currentPage(), orderAsc: false),

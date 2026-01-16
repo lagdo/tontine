@@ -9,7 +9,6 @@ use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Planning\PoolService;
-use Stringable;
 
 #[Before('getPool')]
 #[Databag('planning.pool')]
@@ -42,9 +41,9 @@ class Member extends Component
         $this->render();
     }
 
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.planning.pool.subscription.member.home', [
+        return $this->renderTpl('pages.planning.pool.subscription.member.home', [
             'pool' => $pool = $this->stash()->get('planning.pool'),
         ]);
     }

@@ -5,7 +5,6 @@ namespace Ajax\App\Admin\User\Host;
 use Ajax\Base\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Guild\UserService;
-use Stringable;
 
 #[Exclude]
 class GuildAccess extends Component
@@ -19,12 +18,12 @@ class GuildAccess extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $invite = $this->stash()->get('user.access.invite');
         $guild = $this->stash()->get('user.access.guild');
 
-        return $this->renderView('pages.admin.user.host.access.guild', [
+        return $this->renderTpl('pages.admin.user.host.access.guild', [
             'guild' => $guild,
             'access' => $this->userService->getHostGuildAccess($invite, $guild),
         ]);

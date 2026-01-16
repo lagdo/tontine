@@ -7,7 +7,6 @@ use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\Report\MemberService;
 use Siak\Tontine\Service\Report\SessionService;
-use Stringable;
 
 #[Exclude]
 class Saving extends Component
@@ -24,18 +23,18 @@ class Saving extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('report.session');
         $member = $this->stash()->get('report.member');
 
         if($member !== null)
         {
-            return $this->renderView('pages.report.session.member.savings', [
+            return $this->renderTpl('pages.report.session.member.savings', [
                 'transfers' => $this->memberService->getTransfers($session, $member),
             ]);
         }
-        return $this->renderView('pages.report.session.session.savings', [
+        return $this->renderTpl('pages.report.session.session.savings', [
             'saving' => $this->sessionService->getSaving($session),
             'transfer' => $this->sessionService->getTransfer($session),
             'startingFunds' => $this->fundService->getStartingFunds($session),

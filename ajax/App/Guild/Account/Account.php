@@ -7,7 +7,6 @@ use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
-use Stringable;
 
 #[Before('checkHostAccess', ["finance", "accounts"])]
 #[Databag('guild.account')]
@@ -28,9 +27,9 @@ class Account extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.guild.account.home');
+        return $this->renderTpl('pages.guild.account.home');
     }
 
     /**

@@ -6,7 +6,6 @@ use Ajax\App\Guild\Member\Member;
 use Ajax\Base\Component;
 use Ajax\Page\Header\GuildMenuFunc;
 use Jaxon\Attributes\Attribute\Exclude;
-use Stringable;
 
 use function config;
 
@@ -21,9 +20,9 @@ class GuildMenu extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('parts.sidebar.guild');
+        return $this->renderTpl('parts.sidebar.guild');
     }
 
     /**
@@ -40,7 +39,7 @@ class GuildMenu extends Component
         $this->cl(Member::class)->home();
         $this->setSectionTitle('guild', 'members');
 
-        $back = $this->renderView('parts.sidebar.back', [
+        $back = $this->renderTpl('parts.sidebar.back', [
             'handler' => $this->rq(GuildMenuFunc::class)->back(),
         ]);
         $this->response->html('header-menu-back', $back);

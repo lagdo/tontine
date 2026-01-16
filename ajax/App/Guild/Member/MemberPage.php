@@ -6,7 +6,6 @@ use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\MemberService;
-use Stringable;
 
 #[Before('checkHostAccess', ["guild", "members"])]
 #[Databag('guild.member')]
@@ -39,12 +38,12 @@ class MemberPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $search = $this->bag('guild.member')->get('search', '');
         $filter = $this->bag('guild.member')->get('filter', null);
 
-        return $this->renderView('pages.guild.member.page', [
+        return $this->renderTpl('pages.guild.member.page', [
             'members' => $this->memberService
                 ->getMembers($this->guild(), $search, $filter, $this->currentPage()),
         ]);

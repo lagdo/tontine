@@ -6,7 +6,6 @@ use Ajax\App\Meeting\Session\Component;
 use Ajax\App\Meeting\Session\Pool\Deposit\Deposit;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Jaxon\Attributes\Attribute\Before;
-use Stringable;
 
 #[Before('getPool', [false])]
 #[Before('getNextSession')]
@@ -36,9 +35,9 @@ class Receivable extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.session.deposit.early.receivable.home', [
+        return $this->renderTpl('pages.meeting.session.deposit.early.receivable.home', [
             'pool' => $this->stash()->get('meeting.pool'),
             'session' => $this->stash()->get('meeting.early.session'),
         ]);

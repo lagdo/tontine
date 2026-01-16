@@ -7,7 +7,6 @@ use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Presence\PresenceService;
-use Stringable;
 
 #[Before('checkHostAccess', ["meeting", "presences"])]
 #[Before('getMember')]
@@ -32,7 +31,7 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable|string
+    public function html(): string
     {
         $exchange = $this->bag('meeting.presence')->get('exchange', false);
         $member = $this->stash()->get('presence.member'); // Is null when showing presences by sessions.
@@ -41,7 +40,7 @@ class Session extends Component
             return '';
         }
 
-        return $this->renderView('pages.meeting.presence.session.home', [
+        return $this->renderTpl('pages.meeting.presence.session.home', [
             'member' => $member,
             'sessionCount' => $this->presenceService->getSessionCount($this->round()),
         ]);

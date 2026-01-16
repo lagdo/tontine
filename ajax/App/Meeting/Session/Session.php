@@ -7,7 +7,6 @@ use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
-use Stringable;
 
 #[Before('checkHostAccess', ["meeting", "sessions"])]
 #[Databag('meeting')]
@@ -29,9 +28,9 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.session.home');
+        return $this->renderTpl('pages.meeting.session.home');
     }
 
     /**

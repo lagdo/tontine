@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Session\Credit\Loan;
 use Ajax\App\Meeting\Session\PageComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Credit\LoanService;
-use Stringable;
 
 #[Databag('meeting.loan')]
 class LoanPage extends PageComponent
@@ -37,10 +36,10 @@ class LoanPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('meeting.session');
-        return $this->renderView('pages.meeting.session.loan.page', [
+        return $this->renderTpl('pages.meeting.session.loan.page', [
             'session' => $session,
             'loans' => $this->loanService->getSessionLoans($session, $this->currentPage()),
         ]);

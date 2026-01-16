@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Session\Pool\Remitment;
 use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
-use Stringable;
 
 #[Exclude]
 class PayablePage extends Component
@@ -21,12 +20,12 @@ class PayablePage extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
 
-        return $this->renderView('pages.meeting.session.remitment.payable.page', [
+        return $this->renderTpl('pages.meeting.session.remitment.payable.page', [
             'pool' => $pool,
             'session' => $session,
             'payables' => $this->remitmentService->getPayables($pool, $session),

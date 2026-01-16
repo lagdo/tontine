@@ -59,7 +59,7 @@ class MemberFunc extends FuncComponent
         }
 
         $title = trans('meeting.bill.titles.all', ['count' => $noBillCount]);
-        $content = $this->renderView('pages.meeting.session.charge.libre.member.confirm', [
+        $content = $this->renderTpl('pages.meeting.session.charge.libre.member.confirm', [
             'charge' => $charge,
         ]);
 

@@ -6,7 +6,6 @@ use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 use Siak\Tontine\Service\Report\MemberService;
-use Stringable;
 
 #[Exclude]
 class Deposit extends Component
@@ -22,18 +21,18 @@ class Deposit extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('report.session');
         $member = $this->stash()->get('report.member');
 
         if(!$member)
         {
-            return $this->renderView('pages.report.session.session.deposits', [
+            return $this->renderTpl('pages.report.session.session.deposits', [
                 'pools' => $this->poolService->getPoolsWithReceivables($session),
             ]);
         }
-        return $this->renderView('pages.report.session.member.deposits', [
+        return $this->renderTpl('pages.report.session.member.deposits', [
             'receivables' => $this->memberService->getReceivables($session, $member),
         ]);
     }

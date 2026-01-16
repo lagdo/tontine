@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Session\Charge\Fixed;
 use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
-use Stringable;
 
 #[Exclude]
 class SettlementAll extends Component
@@ -21,13 +20,13 @@ class SettlementAll extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
         $search = $this->bag('meeting')->get('settlement.fixed.search', '');
 
-        return $this->renderView('pages.meeting.session.charge.fixed.settlement.all', [
+        return $this->renderTpl('pages.meeting.session.charge.fixed.settlement.all', [
             'billCount' => $this->billService->getBillCount($charge, $session, $search),
             'settlementCount' => $this->billService->getBillCount($charge, $session, $search, true),
         ]);

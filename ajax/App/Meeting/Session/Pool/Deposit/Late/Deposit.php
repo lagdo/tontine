@@ -6,7 +6,6 @@ use Ajax\App\Meeting\Session\Component;
 use Ajax\App\Meeting\Session\Pool\Deposit\Deposit as SessionDeposit;
 use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
-use Stringable;
 
 #[Export(base: ['render'])]
 class Deposit extends Component
@@ -27,10 +26,10 @@ class Deposit extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('meeting.session');
-        return $this->renderView('pages.meeting.session.deposit.late.home', [
+        return $this->renderTpl('pages.meeting.session.deposit.late.home', [
             'session' => $session,
             'pools' => $this->poolService->getPoolsWithLateDeposits($session),
         ]);

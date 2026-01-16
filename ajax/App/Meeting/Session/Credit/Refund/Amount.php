@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Session\Credit\Refund;
 use Ajax\App\Meeting\Session\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\LocaleService;
-use Stringable;
 
 #[Exclude]
 class Amount extends Component
@@ -18,12 +17,12 @@ class Amount extends Component
     public function __construct(private LocaleService $localeService)
     {}
 
-    public function html(): Stringable|string
+    public function html(): string
     {
         $debt = $this->stash()->get('meeting.refund.debt');
         if(!$debt || !$debt->partial_refund)
         {
-            return $this->renderView('pages.meeting.session.refund.amount.edit', [
+            return $this->renderTpl('pages.meeting.session.refund.amount.edit', [
                 'debt' => $debt,
                 'amount' => '',
             ]);
@@ -31,13 +30,13 @@ class Amount extends Component
 
         if($this->stash()->get('meeting.refund.edit', false))
         {
-            return $this->renderView('pages.meeting.session.refund.amount.edit', [
+            return $this->renderTpl('pages.meeting.session.refund.amount.edit', [
                 'debt' => $debt,
                 'amount' => $this->localeService->getMoneyValue($debt->partial_refund->amount),
             ]);
         }
 
-        return $this->renderView('pages.meeting.session.refund.amount.show', [
+        return $this->renderTpl('pages.meeting.session.refund.amount.show', [
             'debt' => $debt,
             'amount' => $this->localeService->formatMoney($debt->partial_refund->amount, false),
         ]);

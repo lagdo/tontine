@@ -3,7 +3,7 @@
 namespace Ajax\Base;
 
 use Jaxon\App\Dialog\DialogTrait;
-use Jaxon\App\View\Store;
+use Jaxon\App\RenderViewTrait;
 use Jaxon\App\View\ViewRenderer;
 use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Exception\MeetingRoundException;
@@ -18,12 +18,21 @@ use function trans;
 trait ComponentTrait
 {
     use DialogTrait;
+    use RenderViewTrait;
 
     /**
      * @var TenantService
      */
     #[Inject]
     protected TenantService $tenantService;
+
+    /**
+     * @return void
+     */
+    protected function setupComponent(): void
+    {
+        $this->setViewPrefix('tontine_app::');
+    }
 
     /**
      * Get the view renderer
@@ -38,11 +47,12 @@ trait ComponentTrait
      * @param string $view
      * @param array $viewData
      *
-     * @return null|Store
+     * @return string
      */
-    protected function renderView(string $view, array $viewData = []): ?Store
+    protected function renderTpl(string $view, array $viewData = []): string
     {
-        return $this->view()->render("tontine_app::$view", $viewData);
+        $html = $this->view()->render("tontine_app::$view", $viewData);
+        return $html = null ? '' : (string)$html;
     }
 
     /**

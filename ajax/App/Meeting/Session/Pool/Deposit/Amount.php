@@ -7,7 +7,6 @@ use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Jaxon\Attributes\Attribute\Before;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Payment\PaymentServiceInterface;
-use Stringable;
 
 #[Before('getPool')]
 class Amount extends Component
@@ -32,14 +31,14 @@ class Amount extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('meeting.session');
         $receivable = $this->stash()->get('meeting.session.receivable');
 
         if($session->closed)
         {
-            return $this->renderView('pages.meeting.session.deposit.libre.closed', [
+            return $this->renderTpl('pages.meeting.session.deposit.libre.closed', [
                 'amount' => !$receivable->deposit ? '' :
                     $this->localeService->formatMoney($receivable->deposit->amount),
             ]);
@@ -50,7 +49,7 @@ class Amount extends Component
         $edit = $this->stash()->get('meeting.session.edit');
         if($edit || !$receivable->deposit)
         {
-            return $this->renderView('pages.meeting.session.deposit.libre.edit', [
+            return $this->renderTpl('pages.meeting.session.deposit.libre.edit', [
                 'receivableId' => $receivable->id,
                 'amount' => !$receivable->deposit ? '' :
                     $this->localeService->getMoneyValue($receivable->deposit->amount),
@@ -58,7 +57,7 @@ class Amount extends Component
             ]);
         }
 
-        return $this->renderView('pages.meeting.session.deposit.libre.show', [
+        return $this->renderTpl('pages.meeting.session.deposit.libre.show', [
             'receivableId' => $receivable->id,
             'amount' => $this->localeService->formatMoney($receivable->deposit->amount, false),
             'editable' => $this->paymentService->isEditable($receivable->deposit),

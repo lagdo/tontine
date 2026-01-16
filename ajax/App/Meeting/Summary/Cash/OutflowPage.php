@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Summary\Cash;
 
 use Ajax\App\Meeting\Summary\PageComponent;
 use Siak\Tontine\Service\Meeting\Cash\OutflowService;
-use Stringable;
 
 class OutflowPage extends PageComponent
 {
@@ -35,10 +34,10 @@ class OutflowPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('summary.session');
-        return $this->renderView('pages.meeting.summary.outflow.page', [
+        return $this->renderTpl('pages.meeting.summary.outflow.page', [
             'session' => $session,
             'outflows' => $this->outflowService
                 ->getSessionOutflows($session, $this->currentPage()),

@@ -6,7 +6,6 @@ use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Report\MemberService;
 use Siak\Tontine\Service\Report\SessionService;
-use Stringable;
 
 #[Exclude]
 class Outflow extends Component
@@ -22,18 +21,18 @@ class Outflow extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('report.session');
         $member = $this->stash()->get('report.member');
 
         if(!$member)
         {
-            return $this->renderView('pages.report.session.session.outflows', [
+            return $this->renderTpl('pages.report.session.session.outflows', [
                 'outflow' => $this->sessionService->getOutflow($session),
             ]);
         }
-        return $this->renderView('pages.report.session.member.outflows', [
+        return $this->renderTpl('pages.report.session.member.outflows', [
             'outflows' => $this->memberService->getOutflows($session, $member),
         ]);
     }

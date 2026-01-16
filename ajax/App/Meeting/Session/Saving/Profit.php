@@ -10,7 +10,6 @@ use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
-use Stringable;
 
 #[Databag('meeting.saving')]
 class Profit extends Component
@@ -47,10 +46,10 @@ class Profit extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('meeting.session');
-        return $this->renderView('pages.meeting.session.profit.home', [
+        return $this->renderTpl('pages.meeting.session.profit.home', [
             'session' => $session,
             'fund' => $this->stash()->get('profit.fund'),
             'funds' => $this->fundService->getSessionFundList($session),

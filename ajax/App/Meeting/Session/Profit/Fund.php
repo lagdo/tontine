@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Session\Profit;
 use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Saving\ProfitService;
-use Stringable;
 
 #[Exclude]
 class Fund extends Component
@@ -41,9 +40,9 @@ class Fund extends Component
         $this->response->jo('tontine')->makeTableResponsive('content-profit-distribution');
     }
 
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.session.profit.fund', [
+        return $this->renderTpl('pages.meeting.session.profit.fund', [
             'fund' => $this->stash()->get('profit.fund'),
             'profitAmount' => $this->stash()->get('profit.amount'),
         ]);

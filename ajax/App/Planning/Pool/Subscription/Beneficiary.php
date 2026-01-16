@@ -14,7 +14,6 @@ use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Planning\SummaryService;
-use Stringable;
 
 use function array_values;
 use function collect;
@@ -126,7 +125,7 @@ class Beneficiary extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $pool = $this->stash()->get('planning.pool');
         $this->payables = $this->summaryService->getPayables($pool);
@@ -135,7 +134,7 @@ class Beneficiary extends Component
         // Subscriptions that already have a beneficiary assigned.
         $this->beneficiaries = $this->getBeneficiaries();
 
-        return $this->renderView('pages.planning.pool.subscription.beneficiaries', [
+        return $this->renderTpl('pages.planning.pool.subscription.beneficiaries', [
             'pool' => $pool,
             'candidates' => $this->candidates,
             'sessions' => $this->payables['sessions']

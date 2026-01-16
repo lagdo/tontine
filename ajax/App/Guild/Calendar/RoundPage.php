@@ -6,7 +6,6 @@ use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\RoundService;
-use Stringable;
 
 #[Before('checkHostAccess', ["guild", "calendar"])]
 #[Databag('guild.calendar')]
@@ -36,9 +35,9 @@ class RoundPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.guild.calendar.round.page', [
+        return $this->renderTpl('pages.guild.calendar.round.page', [
             'rounds' => $this->roundService->getRounds($this->guild(), $this->currentPage()),
         ]);
     }

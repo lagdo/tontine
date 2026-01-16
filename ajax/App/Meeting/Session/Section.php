@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Session;
 use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
-use Stringable;
 
 #[Exclude]
 class Section extends Component
@@ -28,12 +27,12 @@ class Section extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $section = $this->stash()->get('section');
         $session = $this->stash()->get('meeting.session');
 
-        return $this->renderView("pages.meeting.session.section.$section", [
+        return $this->renderTpl("pages.meeting.session.section.$section", [
             'session' => $session,
             'prevSession' => $this->sessionService->getPrevSession($this->round(), $session),
             'nextSession' => $this->sessionService->getNextSession($this->round(), $session),

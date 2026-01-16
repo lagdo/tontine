@@ -5,7 +5,6 @@ namespace Ajax\App\Planning\Pool;
 use Ajax\App\Planning\PageComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Planning\PoolService;
-use Stringable;
 
 #[Databag('planning.pool')]
 class PoolPage extends PageComponent
@@ -37,10 +36,10 @@ class PoolPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $filter = $this->bag('planning.pool')->get('filter', null);
-        return $this->renderView('pages.planning.pool.page', [
+        return $this->renderTpl('pages.planning.pool.page', [
             'round' => $this->round(),
             'defs' => $this->poolService->getPoolDefs($this->round(), $filter, $this->currentPage()),
         ]);

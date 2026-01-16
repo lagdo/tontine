@@ -7,7 +7,6 @@ use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
-use Stringable;
 
 #[Databag('planning.member')]
 #[Databag('planning.charge')]
@@ -28,9 +27,9 @@ class Enrollment extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.planning.participation', [
+        return $this->renderTpl('pages.planning.participation', [
             'guild' => $this->guild(),
         ]);
     }

@@ -6,7 +6,6 @@ use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Siak\Tontine\Service\Meeting\Session\SummaryService;
 use Siak\Tontine\Service\Report\RoundService;
-use Stringable;
 
 #[Before('checkHostAccess', ["report", "round"])]
 #[Before('checkOpenedSessions')]
@@ -26,7 +25,7 @@ class Balance extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('tenant.session');
         $sessions = $this->roundService->getRoundSessions($this->round());
@@ -37,7 +36,7 @@ class Balance extends Component
         }
         $sessionIds = $sessions->pluck('id');
 
-        return $this->renderView('pages.report.round.balance', [
+        return $this->renderTpl('pages.report.round.balance', [
             'sessions' => $sessions,
             'settlements' => $this->roundService->getSettlementAmounts($sessionIds),
             'loans' => $this->roundService->getLoanAmounts($sessionIds),

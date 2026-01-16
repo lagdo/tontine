@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
-use Stringable;
 
 #[Exclude]
 class MemberTotal extends Component
@@ -21,13 +20,13 @@ class MemberTotal extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('meeting.session');
         $charge = $this->stash()->get('meeting.session.charge');
         [$count, $amount] = $this->billService->getBillTotal($charge, $session);
 
-        return $this->renderView('pages.meeting.session.charge.libre.member.total', [
+        return $this->renderTpl('pages.meeting.session.charge.libre.member.total', [
             'billCount' => $count,
             'billAmount' => $amount,
             'memberCount' => $this->billService->getMemberCount($charge, $session),

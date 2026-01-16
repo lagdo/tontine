@@ -13,6 +13,6 @@ class Menu extends Component
      */
     public function html(): string
     {
-        return $this->renderView('parts.sidebar.admin', ['ajax' => false]);
+        return $this->renderTpl('parts.sidebar.admin', ['ajax' => false]);
     }
 }

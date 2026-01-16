@@ -9,7 +9,6 @@ use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SubscriptionService;
-use Stringable;
 
 #[Before('getPool')]
 #[Databag('planning.pool')]
@@ -52,13 +51,13 @@ class MemberPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $search = $this->bag('planning.pool')->get('member.search', '');
         $filter = $this->bag('planning.pool')->get('member.filter', null);
         $pool = $this->stash()->get('planning.pool');
 
-        return $this->renderView('pages.planning.pool.subscription.member.page', [
+        return $this->renderTpl('pages.planning.pool.subscription.member.page', [
             'members' => $this->subscriptionService
                 ->getMembers($pool, $search, $filter, $this->currentPage()),
             'total' => $this->subscriptionService->getSubscriptionCount($pool),

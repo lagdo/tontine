@@ -6,7 +6,6 @@ use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\ChargeService;
-use Stringable;
 
 #[Before('checkHostAccess', ["finance", "charges"])]
 #[Databag('guild.charge')]
@@ -40,11 +39,11 @@ class ChargePage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $filter = $this->bag('guild.charge')->get('filter', null);
 
-        return $this->renderView('pages.guild.charge.page', [
+        return $this->renderTpl('pages.guild.charge.page', [
             'types' => $this->getChargeTypes(),
             'periods' => $this->getChargePeriods(),
             'charges' => $this->chargeService

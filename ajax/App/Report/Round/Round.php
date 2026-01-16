@@ -8,7 +8,6 @@ use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Siak\Tontine\Service\Meeting\Session\SummaryService;
-use Stringable;
 
 #[Before('checkHostAccess', ["report", "round"])]
 #[Before('checkOpenedSessions')]
@@ -33,14 +32,14 @@ class Round extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $this->view()->share('lastSession', $this->stash()->get('tenant.session'));
 
         $sessions = $this->sessionService
             ->getSessions($this->round(), orderAsc: false)
             ->filter(fn($session) => $session->active);
-        return $this->renderView('pages.report.round.home', [
+        return $this->renderTpl('pages.report.round.home', [
             'round' => $this->round(),
             'sessions' => $sessions->pluck('title', 'id'),
         ]);

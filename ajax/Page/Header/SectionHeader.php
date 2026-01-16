@@ -4,7 +4,6 @@ namespace Ajax\Page\Header;
 
 use Ajax\Base\Component;
 use Jaxon\Attributes\Attribute\Exclude;
-use Stringable;
 
 #[Exclude]
 class SectionHeader extends Component
@@ -22,9 +21,9 @@ class SectionHeader extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView($this->template, $this->vars);
+        return $this->renderTpl($this->template, $this->vars);
     }
 
     /**

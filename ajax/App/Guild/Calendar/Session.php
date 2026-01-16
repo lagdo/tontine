@@ -8,7 +8,6 @@ use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Guild\RoundService;
-use Stringable;
 
 #[Before('checkHostAccess', ["guild", "calendar"])]
 #[Before('getRound')]
@@ -52,9 +51,9 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.guild.calendar.session.home', [
+        return $this->renderTpl('pages.guild.calendar.session.home', [
             'round' => $this->stash()->get('guild.calendar.round'),
         ]);
     }

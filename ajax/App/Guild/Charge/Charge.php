@@ -8,7 +8,6 @@ use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
-use Stringable;
 
 #[Before('checkHostAccess', ["finance", "charges"])]
 #[Databag('guild.charge')]
@@ -30,9 +29,9 @@ class Charge extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.guild.charge.home');
+        return $this->renderTpl('pages.guild.charge.home');
     }
 
     /**

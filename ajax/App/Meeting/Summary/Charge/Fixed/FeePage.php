@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Summary\Charge\Fixed;
 
 use Ajax\App\Meeting\Summary\PageComponent;
 use Siak\Tontine\Service\Meeting\Charge\FixedFeeService;
-use Stringable;
 
 class FeePage extends PageComponent
 {
@@ -34,11 +33,11 @@ class FeePage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('summary.session');
 
-        return $this->renderView('pages.meeting.summary.charge.fixed.page', [
+        return $this->renderTpl('pages.meeting.summary.charge.fixed.page', [
             'session' => $session,
             'charges' => $this->feeService->getFees($this->round(), $this->currentPage()),
             'bills' => $this->feeService->getBills($session),

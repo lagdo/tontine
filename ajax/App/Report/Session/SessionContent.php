@@ -4,7 +4,6 @@ namespace Ajax\App\Report\Session;
 
 use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
-use Stringable;
 
 #[Exclude]
 class SessionContent extends Component
@@ -12,9 +11,9 @@ class SessionContent extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.report.session.session');
+        return $this->renderTpl('pages.report.session.session');
     }
 
     protected function after(): void

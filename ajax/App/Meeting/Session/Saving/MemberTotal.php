@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Session\Saving;
 
 use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
-use Stringable;
 
 #[Exclude]
 class MemberTotal extends Component
@@ -14,9 +13,9 @@ class MemberTotal extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.session.saving.member.total', [
+        return $this->renderTpl('pages.meeting.session.saving.member.total', [
             'fund' => $this->getStashedFund(),
         ]);
     }

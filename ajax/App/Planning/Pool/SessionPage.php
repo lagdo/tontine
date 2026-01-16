@@ -6,7 +6,6 @@ use Ajax\App\Planning\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Model\Session as SessionModel;
-use Stringable;
 
 #[Before('getPool')]
 #[Databag('planning.pool')]
@@ -32,9 +31,9 @@ class SessionPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.planning.pool.session.page', [
+        return $this->renderTpl('pages.planning.pool.session.page', [
             'pool' => $this->stash()->get('planning.pool'),
             'sessions' => $this->poolService
                 ->getGuildSessions($this->guild(), $this->currentPage(), orderAsc: false),

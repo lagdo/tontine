@@ -6,7 +6,6 @@ use Ajax\Base\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\UserService;
-use Stringable;
 
 use function trans;
 
@@ -30,10 +29,10 @@ class Access extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $invite = $this->stash()->get('user.access.invite');
-        return $this->renderView('pages.admin.user.host.access.home', [
+        return $this->renderTpl('pages.admin.user.host.access.home', [
             'guest' => $invite->guest,
             'guilds' => $this->tenantService->user()->guilds->pluck('name', 'id'),
         ]);

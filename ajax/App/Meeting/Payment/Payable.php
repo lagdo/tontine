@@ -9,7 +9,6 @@ use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Member\MemberService;
 use Siak\Tontine\Service\Payment\PaymentService;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
-use Stringable;
 
 #[Before('checkHostAccess', ["meeting", "payments"])]
 #[Databag('meeting.payment')]
@@ -27,7 +26,7 @@ class Payable extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('payable.session');
         $member = $this->stash()->get('payable.member');
@@ -35,7 +34,7 @@ class Payable extends Component
         $payables = $this->paymentService->getPayables($session, $member);
         $this->stash()->set('payable.data', $payables);
 
-        return $this->renderView('pages.meeting.payment.payables', $payables);
+        return $this->renderTpl('pages.meeting.payment.payables', $payables);
     }
 
     /**

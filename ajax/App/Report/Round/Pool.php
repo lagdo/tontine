@@ -6,7 +6,6 @@ use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Meeting\Session\SummaryService;
-use Stringable;
 
 use function trans;
 
@@ -19,10 +18,10 @@ class Pool extends Component
      */
     protected SummaryService $summaryService;
 
-    public function html(): Stringable
+    public function html(): string
     {
         $figures = $this->stash()->get('report.round.figures');
-        return $this->renderView('pages.report.round.pool', $figures);
+        return $this->renderTpl('pages.report.round.pool', $figures);
     }
 
     /**

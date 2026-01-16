@@ -25,7 +25,7 @@ class OptionsFunc extends FuncComponent
         $options = $this->guildService->getGuildOptions($this->guild());
         $template = $options['reports']['template'] ?? 'raptor';
         $title = trans('tontine.options.titles.edit');
-        $content = $this->renderView('pages.guild.options.edit', [
+        $content = $this->renderTpl('pages.guild.options.edit', [
             'template' => $template,
             'templates' => [
                 'raptor' => 'Raptor',

@@ -8,7 +8,6 @@ use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
 use Ajax\Page\SectionContent;
-use Stringable;
 
 #[Databag('planning.fund')]
 #[Databag('planning.pool')]
@@ -30,9 +29,9 @@ class Finance extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.planning.finance', [
+        return $this->renderTpl('pages.planning.finance', [
             'guild' => $this->guild(),
         ]);
     }

@@ -28,7 +28,7 @@ class OutflowFunc extends FuncComponent
     public function addOutflow(): void
     {
         $title = trans('meeting.outflow.titles.add');
-        $content = $this->renderView('pages.meeting.session.outflow.add', [
+        $content = $this->renderTpl('pages.meeting.session.outflow.add', [
             'categories' => $this->outflowService->getAccounts($this->guild()),
             'members' => $this->outflowService->getMembers($this->round()),
             'charges' => $this->outflowService->getCharges($this->round()),
@@ -63,7 +63,7 @@ class OutflowFunc extends FuncComponent
     {
         $session = $this->stash()->get('meeting.session');
         $title = trans('meeting.outflow.titles.edit');
-        $content = $this->renderView('pages.meeting.session.outflow.edit', [
+        $content = $this->renderTpl('pages.meeting.session.outflow.edit', [
             'outflow' => $this->outflowService
                 ->getSessionOutflow($session, $outflowId),
             'categories' => $this->outflowService->getAccounts($this->guild()),

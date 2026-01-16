@@ -6,7 +6,6 @@ use Ajax\App\Meeting\Summary\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Credit\RefundService;
-use Stringable;
 
 #[Before('getFund')]
 #[Databag('summary.refund')]
@@ -49,7 +48,7 @@ class RefundPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('summary.session');
         $fund = $this->getStashedFund();
@@ -57,7 +56,7 @@ class RefundPage extends PageComponent
         $debts = $this->refundService
             ->getDebts($session, $fund, $filtered, $this->currentPage());
 
-        return $this->renderView('pages.meeting.summary.refund.page', [
+        return $this->renderTpl('pages.meeting.summary.refund.page', [
             'debts' => $debts,
         ]);
     }

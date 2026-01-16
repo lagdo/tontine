@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Summary\Saving;
 use Ajax\App\Meeting\Summary\PageComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
-use Stringable;
 
 #[Databag('summary.saving')]
 class SavingPage extends PageComponent
@@ -37,10 +36,10 @@ class SavingPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('summary.session');
-        return $this->renderView('pages.meeting.summary.saving.page', [
+        return $this->renderTpl('pages.meeting.summary.saving.page', [
             'session' => $session,
             'funds' => $this->savingService->getFunds($session, $this->currentPage()),
         ]);

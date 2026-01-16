@@ -17,7 +17,7 @@ class ChargeCount extends Component
      */
     public function html(): string
     {
-        return $this->renderView('pages.planning.charge.count', [
+        return $this->renderTpl('pages.planning.charge.count', [
             'count' => $this->chargeService->getChargeCount($this->round()),
         ]);
     }

@@ -17,7 +17,7 @@ class FundCount extends Component
      */
     public function html(): string
     {
-        return $this->renderView('pages.planning.fund.count', [
+        return $this->renderTpl('pages.planning.fund.count', [
             'count' => $this->fundService->getFundCount($this->round()),
         ]);
     }

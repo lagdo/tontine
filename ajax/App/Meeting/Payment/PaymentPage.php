@@ -8,7 +8,6 @@ use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Member\MemberService;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
-use Stringable;
 
 #[Before('checkHostAccess', ["meeting", "payments"])]
 #[Databag('meeting.payment')]
@@ -47,9 +46,9 @@ class PaymentPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.payment.page', [
+        return $this->renderTpl('pages.meeting.payment.page', [
             'sessions' => $this->getOpenedSessions(),
             'members' => $this->memberService->getMembers($this->round(), page: $this->currentPage()),
         ]);

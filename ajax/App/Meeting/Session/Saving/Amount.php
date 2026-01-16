@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Session\Saving;
 use Ajax\App\Meeting\Session\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\LocaleService;
-use Stringable;
 
 #[Exclude]
 class Amount extends Component
@@ -21,7 +20,7 @@ class Amount extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('meeting.session');
         $member = $this->stash()->get('meeting.saving.member');
@@ -29,7 +28,7 @@ class Amount extends Component
 
         if($session->closed)
         {
-            return $this->renderView('pages.meeting.session.saving.member.closed', [
+            return $this->renderTpl('pages.meeting.session.saving.member.closed', [
                 'amount' => !$saving ? '' :
                     $this->localeService->formatMoney($saving->amount),
             ]);
@@ -40,7 +39,7 @@ class Amount extends Component
         $edit = $this->stash()->get('meeting.saving.edit');
         if($edit || !$saving)
         {
-            return $this->renderView('pages.meeting.session.saving.member.edit', [
+            return $this->renderTpl('pages.meeting.session.saving.member.edit', [
                 'memberId' => $member->id,
                 'amount' => !$saving ? '' :
                     $this->localeService->getMoneyValue($saving->amount),
@@ -48,7 +47,7 @@ class Amount extends Component
             ]);
         }
 
-        return $this->renderView('pages.meeting.session.saving.member.show', [
+        return $this->renderTpl('pages.meeting.session.saving.member.show', [
             'memberId' => $member->id,
             'amount' => $this->localeService->formatMoney($saving->amount, false),
             'rqAmountFunc' => $this->rq(AmountFunc::class),

@@ -8,7 +8,6 @@ use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
-use Stringable;
 
 use function trim;
 
@@ -32,9 +31,9 @@ class Member extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.guild.member.home');
+        return $this->renderTpl('pages.guild.member.home');
     }
 
     /**

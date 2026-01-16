@@ -10,7 +10,6 @@ use Siak\Tontine\Model\Member as MemberModel;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Meeting\Member\MemberService;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
-use Stringable;
 
 #[Before('checkHostAccess', ["report", "session"])]
 #[Before('checkOpenedSessions')]
@@ -39,11 +38,11 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $sessions = $this->sessionService->getSessions($this->round(), orderAsc: false)
             ->filter(fn($session) => ($session->opened || $session->closed));
-        return $this->renderView('pages.report.session.home', [
+        return $this->renderTpl('pages.report.session.home', [
             'session' => $sessions->first(),
             'sessions' => $sessions->pluck('title', 'id'),
             'members' => $this->memberService->getMemberList($this->round())->prepend('', 0),

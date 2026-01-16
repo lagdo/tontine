@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\Component;
 use Jaxon\Attributes\Attribute\Before;
-use Stringable;
 
 #[Before('checkChargeEdit')]
 class Saving extends Component
@@ -19,9 +18,9 @@ class Saving extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.session.charge.libre.saving.home', [
+        return $this->renderTpl('pages.meeting.session.charge.libre.saving.home', [
             'charge' => $this->stash()->get('meeting.session.charge'),
             'funds' => $this->settlementService->getFunds($this->round()),
         ]);

@@ -6,7 +6,6 @@ use Ajax\Base\Round\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Presence\PresenceService;
-use Stringable;
 
 #[Before('checkHostAccess', ["meeting", "presences"])]
 #[Before('getSession')]
@@ -46,11 +45,11 @@ class MemberPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('presence.session'); // Is null when showing presences by members.
         $search = $this->bag('meeting.presence')->get('member.search', '');
-        return $this->renderView('pages.meeting.presence.member.page', [
+        return $this->renderTpl('pages.meeting.presence.member.page', [
             'session' => $session,
             'search' => $search,
             'members' => $this->presenceService

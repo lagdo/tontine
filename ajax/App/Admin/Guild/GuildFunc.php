@@ -36,7 +36,7 @@ class GuildFunc extends FuncComponent
     public function add(): void
     {
         $title = trans('tontine.titles.add');
-        $content = $this->renderView('pages.admin.guild.add', [
+        $content = $this->renderTpl('pages.admin.guild.add', [
             'countries' => $this->localeService->getCountries(),
         ]);
         $buttons = [[
@@ -74,7 +74,7 @@ class GuildFunc extends FuncComponent
 
         $title = trans('tontine.titles.edit');
         [, $currencies] = $this->localeService->getNamesFromGuilds(collect([$guild]));
-        $content = $this->renderView('pages.admin.guild.edit', [
+        $content = $this->renderTpl('pages.admin.guild.edit', [
             'guild' => $guild,
             'countries' => $this->localeService->getCountries(),
             'currencies' => $currencies

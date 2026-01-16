@@ -7,7 +7,6 @@ use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
-use Stringable;
 
 use function trans;
 
@@ -45,10 +44,10 @@ class Summary extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('summary.session');
-        return $this->renderView('pages.meeting.summary.home', [
+        return $this->renderTpl('pages.meeting.summary.home', [
             'session' => $session,
             'prevSession' => $this->sessionService->getPrevSession($this->round(), $session),
             'nextSession' => $this->sessionService->getNextSession($this->round(), $session),

@@ -56,7 +56,7 @@ class SessionFunc extends FuncComponent
     {
         $round = $this->stash()->get('guild.calendar.round');
         $title = trans('tontine.session.titles.add');
-        $content = $this->renderView('pages.guild.calendar.session.add', [
+        $content = $this->renderTpl('pages.guild.calendar.session.add', [
             'members' => $this->memberService->getMemberList($round)->prepend('', 0),
         ]);
         $buttons = [[
@@ -87,7 +87,7 @@ class SessionFunc extends FuncComponent
     public function addList(): void
     {
         $title = trans('tontine.session.titles.add-list');
-        $content = $this->renderView('pages.guild.calendar.session.list');
+        $content = $this->renderTpl('pages.guild.calendar.session.list');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -173,7 +173,7 @@ class SessionFunc extends FuncComponent
         $round = $this->stash()->get('guild.calendar.round');
         $session = $this->roundService->getSession($round, $sessionId);
         $title = trans('tontine.session.titles.edit');
-        $content = $this->renderView('pages.guild.calendar.session.edit', [
+        $content = $this->renderTpl('pages.guild.calendar.session.edit', [
             'session' => $session,
             'members' => $this->memberService->getMemberList($round)->prepend('', 0),
         ]);
@@ -211,7 +211,7 @@ class SessionFunc extends FuncComponent
         $session = $this->roundService->getSession($round, $sessionId);
 
         $title = trans('tontine.session.titles.venue');
-        $content = $this->renderView('pages.guild.calendar.session.venue', [
+        $content = $this->renderTpl('pages.guild.calendar.session.venue', [
             'session' => $session,
             'venue' => $session->venue ?? ($session->host ? $session->host->address : ''),
         ]);

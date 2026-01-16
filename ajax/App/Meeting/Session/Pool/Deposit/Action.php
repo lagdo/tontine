@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Session\Pool\Deposit;
 
 use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
-use Stringable;
 
 #[Exclude]
 class Action extends Component
@@ -12,9 +11,9 @@ class Action extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.session.deposit.receivable.action', [
+        return $this->renderTpl('pages.meeting.session.deposit.receivable.action', [
             'session' => $this->stash()->get('meeting.session'),
             'pool' => $this->stash()->get('meeting.pool'),
             'depositCount' => $this->stash()->get('meeting.pool.deposit.count'),

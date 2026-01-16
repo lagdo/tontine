@@ -5,7 +5,6 @@ namespace Ajax\App\Planning\Fund;
 use Ajax\App\Planning\PageComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Planning\FundService;
-use Stringable;
 
 #[Databag('planning.fund')]
 class FundPage extends PageComponent
@@ -37,10 +36,10 @@ class FundPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $filter = $this->bag('planning.fund')->get('filter', null);
-        return $this->renderView('pages.planning.fund.page', [
+        return $this->renderTpl('pages.planning.fund.page', [
             'round' => $this->round(),
             'defs' => $this->fundService->getFundDefs($this->round(), $filter, $this->currentPage()),
         ]);

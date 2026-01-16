@@ -35,7 +35,7 @@ class LoanFunc extends FuncComponent
     {
         $session = $this->stash()->get('meeting.session');
         $title = trans('meeting.loan.titles.add');
-        $content = $this->renderView('pages.meeting.session.loan.add', [
+        $content = $this->renderTpl('pages.meeting.session.loan.add', [
             'amountAvailable' => $this->loanService->getAmountAvailable($session),
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getSessionFundList($session, false),
@@ -106,7 +106,7 @@ class LoanFunc extends FuncComponent
 
         $session = $this->stash()->get('meeting.session');
         $title = trans('meeting.loan.titles.edit');
-        $content = $this->renderView('pages.meeting.session.loan.edit', [
+        $content = $this->renderTpl('pages.meeting.session.loan.edit', [
             'loan' => $loan,
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getSessionFundList($session, false),
@@ -179,7 +179,7 @@ class LoanFunc extends FuncComponent
         }
 
         $title = trans('meeting.loan.titles.deadline');
-        $content = $this->renderView('pages.meeting.session.loan.deadline', [
+        $content = $this->renderTpl('pages.meeting.session.loan.deadline', [
             'loan' => $loan,
         ]);
         $buttons = [[

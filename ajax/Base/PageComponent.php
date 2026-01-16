@@ -5,7 +5,6 @@ namespace Ajax\Base;
 use Jaxon\App\PageComponent as BaseComponent;
 use Jaxon\App\PageDatabagTrait;
 use Jaxon\Attributes\Attribute\Databag;
-use Jaxon\Response\AjaxResponse;
 
 #[Databag('tenant')]
 abstract class PageComponent extends BaseComponent
@@ -49,17 +48,10 @@ abstract class PageComponent extends BaseComponent
      *
      * @param int $pageNumber
      *
-     * @return AjaxResponse|null
+     * @return void
      */
-    public function page(int $pageNumber = 0): ?AjaxResponse
+    public function page(int $pageNumber = 0): void
     {
-        // Get the paginator. This will also set the current page number value.
-        $paginator = $this->paginator($pageNumber);
-        // Render the page content.
-        $this->render();
-        // Render the pagination component.
-        $paginator->render($this->rq()->page());
-
-        return $this->response;
+        $this->paginate($this->rq()->page(), $pageNumber);
     }
 }

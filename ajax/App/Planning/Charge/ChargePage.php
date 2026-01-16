@@ -5,7 +5,6 @@ namespace Ajax\App\Planning\Charge;
 use Ajax\App\Planning\PageComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Planning\ChargeService;
-use Stringable;
 
 #[Databag('planning.charge')]
 class ChargePage extends PageComponent
@@ -37,10 +36,10 @@ class ChargePage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $filter = $this->bag('planning.charge')->get('filter', null);
-        return $this->renderView('pages.planning.charge.page', [
+        return $this->renderTpl('pages.planning.charge.page', [
             'round' => $this->round(),
             'defs' => $this->chargeService->getChargeDefs($this->round(), $filter, $this->currentPage()),
         ]);

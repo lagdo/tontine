@@ -6,7 +6,6 @@ use Ajax\Base\PageComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\LocaleService;
-use Stringable;
 
 #[Databag('admin')]
 class GuildPage extends PageComponent
@@ -38,12 +37,12 @@ class GuildPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $user = $this->tenantService->user();
         $guilds = $this->guildService->getGuilds($user, $this->currentPage());
         [$countries, $currencies] = $this->localeService->getNamesFromGuilds($guilds);
-        return $this->renderView('pages.admin.guild.page', [
+        return $this->renderTpl('pages.admin.guild.page', [
             'guilds' => $guilds,
             'countries' => $countries,
             'currencies' => $currencies,

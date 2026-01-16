@@ -6,7 +6,6 @@ use Ajax\Base\Round\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
-use Stringable;
 
 #[Before('checkHostAccess', ["meeting", "sessions"])]
 #[Databag('meeting')]
@@ -36,9 +35,9 @@ class SessionPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.session.page', [
+        return $this->renderTpl('pages.meeting.session.page', [
             'sessions' => $this->sessionService->getSessions($this->round(), $this->currentPage()),
             'statuses' => $this->sessionService->getSessionStatuses(),
         ]);

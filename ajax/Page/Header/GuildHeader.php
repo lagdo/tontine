@@ -6,7 +6,6 @@ use Ajax\Base\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\TenantService;
-use Stringable;
 
 #[Exclude]
 class GuildHeader extends Component
@@ -24,11 +23,11 @@ class GuildHeader extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $user = $this->tenantService->user();
         $guild = $this->tenantService->guild();
-        return $this->renderView('parts.header.guild', [
+        return $this->renderTpl('parts.header.guild', [
             'guild' => $guild,
             'round' => $this->tenantService->round(),
             'guildCount' => $this->guildService->getGuildCount($user) +

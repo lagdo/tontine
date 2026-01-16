@@ -6,7 +6,6 @@ use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\PoolService;
-use Stringable;
 
 #[Before('checkHostAccess', ["finance", "pools"])]
 #[Databag('guild.pool')]
@@ -38,9 +37,9 @@ class PoolPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.guild.pool.page', [
+        return $this->renderTpl('pages.guild.pool.page', [
             'round' => $this->tenantService->round(),
             'pools' => $this->poolService->getPools($this->guild(), $this->currentPage()),
         ]);

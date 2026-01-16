@@ -7,7 +7,6 @@ use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Jaxon\Attributes\Attribute\Before;
 use Siak\Tontine\Service\Meeting\Pool\DepositService;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
-use Stringable;
 
 #[Before('getPool')]
 class ReceivablePage extends PageComponent
@@ -46,14 +45,14 @@ class ReceivablePage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $pool = $this->stash()->get('meeting.pool');
         $session = $this->stash()->get('meeting.session');
         $search = $this->bag('meeting')->get('receivable.search', '');
         $filter = $this->bag('meeting')->get('receivable.filter');
 
-        return $this->renderView('pages.meeting.session.deposit.receivable.page', [
+        return $this->renderTpl('pages.meeting.session.deposit.receivable.page', [
             'pool' => $pool,
             'session' => $session,
             'receivables' => $this->depositService

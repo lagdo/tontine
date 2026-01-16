@@ -58,7 +58,7 @@ class PayableFunc extends FuncComponent
         $session = $this->stash()->get('meeting.session');
 
         $title = trans('meeting.remitment.titles.add');
-        $content = $this->renderView('pages.meeting.session.remitment.payable.add', [
+        $content = $this->renderTpl('pages.meeting.session.remitment.payable.add', [
             'pool' => $pool,
             'payableId' => $payableId,
             'members' => $this->remitmentService->getSubscriptions($pool, $session),

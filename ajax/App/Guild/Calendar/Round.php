@@ -8,7 +8,6 @@ use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
-use Stringable;
 
 #[Before('checkHostAccess', ["guild", "calendar"])]
 #[Databag('guild.calendar')]
@@ -30,9 +29,9 @@ class Round extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.guild.calendar.round.home');
+        return $this->renderTpl('pages.guild.calendar.round.home');
     }
 
     /**

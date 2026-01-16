@@ -34,7 +34,7 @@ class PoolFunc extends FuncComponent
     public function showIntro(): void
     {
         $title = trans('tontine.pool.titles.add');
-        $content = $this->renderView('pages.guild.pool.add_intro', [
+        $content = $this->renderTpl('pages.guild.pool.add_intro', [
             'round' => $this->tenantService->round(),
         ]);
         $buttons = [[
@@ -56,7 +56,7 @@ class PoolFunc extends FuncComponent
 
         $title = trans('tontine.pool.titles.deposits');
         $properties = $this->bag('guild.pool')->get('add', []);
-        $content = $this->renderView('pages.guild.pool.deposit_fixed', [
+        $content = $this->renderTpl('pages.guild.pool.deposit_fixed', [
             'fixed' => $properties['deposit']['fixed'] ?? true,
         ]);
         $buttons = [[
@@ -96,7 +96,7 @@ class PoolFunc extends FuncComponent
 
         $properties = $this->bag('guild.pool')->get('add', []);
         $title = trans('tontine.pool.titles.deposits');
-        $content = $this->renderView('pages.guild.pool.deposit_lendable', [
+        $content = $this->renderTpl('pages.guild.pool.deposit_lendable', [
             'lendable' => $properties['deposit']['lendable'] ?? false,
         ]);
         $buttons = [[
@@ -132,7 +132,7 @@ class PoolFunc extends FuncComponent
         $properties = $this->bag('guild.pool')->get('add', []);
         $fixed = $properties['deposit']['fixed'] ?? true;
 
-        $content = $this->renderView('pages.guild.pool.remit_planned', [
+        $content = $this->renderTpl('pages.guild.pool.remit_planned', [
             'planned' => $properties['remit']['planned'] ?? true,
         ]);
         $buttons = [[
@@ -167,7 +167,7 @@ class PoolFunc extends FuncComponent
         $properties = $this->bag('guild.pool')->get('add', []);
 
         $title = trans('tontine.pool.titles.remitments');
-        $content = $this->renderView('pages.guild.pool.remit_auction', [
+        $content = $this->renderTpl('pages.guild.pool.remit_auction', [
             'auction' => $properties['remit']['auction'] ?? false,
         ]);
         $buttons = [[
@@ -200,7 +200,7 @@ class PoolFunc extends FuncComponent
         $this->modal()->hide();
 
         $title = trans('tontine.pool.titles.add');
-        $content = $this->renderView('pages.guild.pool.add', [
+        $content = $this->renderTpl('pages.guild.pool.add', [
             'properties' => $this->bag('guild.pool')->get('add', []),
         ]);
         $buttons = [[
@@ -233,7 +233,7 @@ class PoolFunc extends FuncComponent
     {
         $pool = $this->poolService->getPool($this->guild(), $poolId);
         $title = trans('tontine.pool.titles.edit');
-        $content = $this->renderView('pages.guild.pool.edit', [
+        $content = $this->renderTpl('pages.guild.pool.edit', [
             'pool' => $pool,
             'locales' => LaravelLocalization::getSupportedLocales(),
         ]);

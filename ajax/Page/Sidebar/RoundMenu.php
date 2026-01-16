@@ -6,7 +6,6 @@ use Ajax\App\Planning\Enrollment;
 use Ajax\Base\Component;
 use Ajax\Page\Header\RoundMenuFunc;
 use Jaxon\Attributes\Attribute\Exclude;
-use Stringable;
 
 use function config;
 
@@ -21,9 +20,9 @@ class RoundMenu extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('parts.sidebar.round');
+        return $this->renderTpl('parts.sidebar.round');
     }
 
     /**
@@ -40,7 +39,7 @@ class RoundMenu extends Component
         $this->cl(Enrollment::class)->home();
         $this->setSectionTitle('planning', 'enrollment');
 
-        $back = $this->renderView('parts.sidebar.back', [
+        $back = $this->renderTpl('parts.sidebar.back', [
             'handler' => $this->rq(RoundMenuFunc::class)->back(),
         ]);
         $this->response->html('header-menu-back', $back);

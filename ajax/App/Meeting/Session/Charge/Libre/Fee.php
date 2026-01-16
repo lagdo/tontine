@@ -4,14 +4,13 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Component;
 use Jaxon\Attributes\Attribute\Export;
-use Stringable;
 
 #[Export(base: ['render'], except: ['show'])]
 class Fee extends Component
 {
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.session.charge.libre.home', [
+        return $this->renderTpl('pages.meeting.session.charge.libre.home', [
             'session' => $this->stash()->get('meeting.session'),
         ]);
     }

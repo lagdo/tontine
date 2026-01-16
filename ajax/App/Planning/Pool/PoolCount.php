@@ -17,7 +17,7 @@ class PoolCount extends Component
      */
     public function html(): string
     {
-        return $this->renderView('pages.planning.pool.count', [
+        return $this->renderTpl('pages.planning.pool.count', [
             'count' => $this->poolService->getPoolCount($this->round()),
         ]);
     }

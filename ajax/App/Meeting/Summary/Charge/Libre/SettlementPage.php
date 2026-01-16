@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Summary\Charge\Libre;
 
 use Ajax\App\Meeting\Summary\Charge\PageComponent;
-use Stringable;
 
 class SettlementPage extends PageComponent
 {
@@ -32,14 +31,14 @@ class SettlementPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $search = $this->bag('summary')->get('settlement.libre.search', '');
         $filter = $this->bag('summary')->get('settlement.libre.filter', null);
         $session = $this->stash()->get('summary.session');
         $charge = $this->stash()->get('summary.session.charge');
 
-        return $this->renderView('pages.meeting.summary.charge.libre.settlement.page', [
+        return $this->renderTpl('pages.meeting.summary.charge.libre.settlement.page', [
             'session' => $session,
             'charge' => $charge,
             'bills' => $this->billService->getBills($charge, $session, $search, $filter, $this->currentPage()),

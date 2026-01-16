@@ -5,7 +5,6 @@ namespace Ajax\App\Planning\Member;
 use Ajax\App\Planning\PageComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Planning\MemberService;
-use Stringable;
 
 #[Databag('planning.member')]
 class MemberPage extends PageComponent
@@ -38,11 +37,11 @@ class MemberPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $search = $this->bag('planning.member')->get('search', '');
         $filter = $this->bag('planning.member')->get('filter', null);
-        return $this->renderView('pages.planning.member.page', [
+        return $this->renderTpl('pages.planning.member.page', [
             'round' => $this->round(),
             'defs' => $this->memberService->getMemberDefs($this->round(), $search, $filter, $this->currentPage()),
         ]);

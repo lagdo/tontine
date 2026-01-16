@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Summary\Pool\Remitment;
 use Ajax\App\Meeting\Summary\PageComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Pool\AuctionService;
-use Stringable;
 
 #[Databag('summary.auction')]
 class AuctionPage extends PageComponent
@@ -38,11 +37,11 @@ class AuctionPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('summary.session');
         $filtered = $this->bag('summary.auction')->get('filter', null);
-        return $this->renderView('pages.meeting.summary.auction.page', [
+        return $this->renderTpl('pages.meeting.summary.auction.page', [
             'session' => $session,
             'auctions' => $this->auctionService
                 ->getAuctions($session, $filtered, $this->currentPage()),

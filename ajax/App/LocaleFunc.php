@@ -18,7 +18,7 @@ class LocaleFunc extends FuncComponent
     #[Callback('tontine.currency')]
     public function selectCurrency(string $countryCode): void
     {
-        $html = $this->renderView('pages.admin.guild.currency', [
+        $html = $this->renderTpl('pages.admin.guild.currency', [
             'currencies' => !$countryCode ? [] :
                 $this->localeService->getCountryCurrencies($countryCode),
         ]);

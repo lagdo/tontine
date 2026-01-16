@@ -5,7 +5,6 @@ namespace Ajax\Page\Sidebar;
 use Ajax\App\Admin\Guild\Guild;
 use Ajax\Base\Component;
 use Jaxon\Attributes\Attribute\Exclude;
-use Stringable;
 
 use function config;
 
@@ -20,9 +19,9 @@ class AdminMenu extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('parts.sidebar.admin', ['ajax' => true]);
+        return $this->renderTpl('parts.sidebar.admin', ['ajax' => true]);
     }
 
     /**

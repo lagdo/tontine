@@ -5,7 +5,6 @@ namespace Ajax\App\Planning\Pool;
 use Ajax\App\Planning\Component;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
-use Stringable;
 
 #[Databag('planning.pool')]
 #[Export(base: ['render'])]
@@ -14,9 +13,9 @@ class Pool extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.planning.pool.home', [
+        return $this->renderTpl('pages.planning.pool.home', [
             'guild' => $this->guild(),
         ]);
     }

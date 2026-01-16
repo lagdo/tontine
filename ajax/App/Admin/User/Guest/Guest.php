@@ -5,7 +5,6 @@ namespace Ajax\App\Admin\User\Guest;
 use Ajax\Base\Component;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
-use Stringable;
 
 #[Databag('user')]
 #[Export(base: ['render'])]
@@ -14,9 +13,9 @@ class Guest extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.admin.user.guest.home');
+        return $this->renderTpl('pages.admin.user.guest.home');
     }
 
     /**

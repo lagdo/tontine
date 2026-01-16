@@ -6,7 +6,6 @@ use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Report\MemberService;
 use Siak\Tontine\Service\Report\SessionService;
-use Stringable;
 
 #[Exclude]
 class Refund extends Component
@@ -22,18 +21,18 @@ class Refund extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('report.session');
         $member = $this->stash()->get('report.member');
 
         if(!$member)
         {
-            return $this->renderView('pages.report.session.session.refunds', [
+            return $this->renderTpl('pages.report.session.session.refunds', [
                 'refund' => $this->sessionService->getRefund($session),
             ]);
         }
-        return $this->renderView('pages.report.session.member.refunds', [
+        return $this->renderTpl('pages.report.session.member.refunds', [
             'refunds' => $this->memberService->getRefunds($session, $member),
         ]);
     }

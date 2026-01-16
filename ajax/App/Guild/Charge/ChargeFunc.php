@@ -39,7 +39,7 @@ class ChargeFunc extends FuncComponent
     public function select(): void
     {
         $title = '';
-        $content = $this->renderView('pages.guild.charge.select', [
+        $content = $this->renderTpl('pages.guild.charge.select', [
             'groups' => $this->getChargeGroups()
         ]);
         $group = je('charge-group')->rd()->input()->toInt();
@@ -64,7 +64,7 @@ class ChargeFunc extends FuncComponent
         [, $currency] = $this->localeService->getNameFromGuild($this->guild());
 
         $title = trans('tontine.charge.titles.add');
-        $content = $this->renderView('pages.guild.charge.add', [
+        $content = $this->renderTpl('pages.guild.charge.add', [
             'fixed' => $group === self::$GROUP_FIXED,
             'label' => $this->getChargeGroups()[$group],
             'currency' => $currency,
@@ -121,7 +121,7 @@ class ChargeFunc extends FuncComponent
         [, $currency] = $this->localeService->getNameFromGuild($this->guild());
 
         $title = trans('tontine.charge.titles.edit');
-        $content = $this->renderView('pages.guild.charge.edit', [
+        $content = $this->renderTpl('pages.guild.charge.edit', [
             'charge' => $charge,
             'currency' => $currency,
             'types' => $this->getChargeTypes(),

@@ -6,7 +6,6 @@ use Ajax\App\Planning\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
-use Stringable;
 
 #[Before('getFund')]
 #[Databag('planning.fund')]
@@ -25,9 +24,9 @@ class Session extends Component
         $this->render();
     }
 
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.planning.fund.session.home', [
+        return $this->renderTpl('pages.planning.fund.session.home', [
             'fund' => $this->stash()->get('planning.fund'),
         ]);
     }

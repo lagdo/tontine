@@ -133,7 +133,7 @@ class AmountFunc extends FuncComponent
         }
 
         $title = trans('meeting.saving.titles.start_amount');
-        $content = $this->renderView('pages.meeting.session.saving.amount', [
+        $content = $this->renderTpl('pages.meeting.session.saving.amount', [
             'amount' => $fund->start_amount,
         ]);
         $buttons = [[
@@ -189,7 +189,7 @@ class AmountFunc extends FuncComponent
         }
 
         $title = trans('meeting.saving.titles.end_amount');
-        $content = $this->renderView('pages.meeting.session.saving.amount', [
+        $content = $this->renderTpl('pages.meeting.session.saving.amount', [
             'amount' => $fund->end_amount,
         ]);
         $buttons = [[

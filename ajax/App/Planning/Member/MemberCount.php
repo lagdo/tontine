@@ -17,7 +17,7 @@ class MemberCount extends Component
      */
     public function html(): string
     {
-        return $this->renderView('pages.planning.member.count', [
+        return $this->renderTpl('pages.planning.member.count', [
             'count' => $this->memberService->getMemberCount($this->round()),
         ]);
     }

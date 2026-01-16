@@ -9,7 +9,6 @@ use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\GuildService;
-use Stringable;
 
 #[Databag('admin')]
 class Guild extends Component
@@ -35,10 +34,10 @@ class Guild extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $user = $this->tenantService->user();
-        return $this->renderView('pages.admin.guild.home', [
+        return $this->renderTpl('pages.admin.guild.home', [
             'hasGuestGuilds' => $this->guildService->hasGuestGuilds($user),
         ]);
     }

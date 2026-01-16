@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\PageComponent;
 use Siak\Tontine\Service\Meeting\Charge\LibreFeeService;
-use Stringable;
 
 class FeePage extends PageComponent
 {
@@ -34,11 +33,11 @@ class FeePage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('meeting.session');
 
-        return $this->renderView('pages.meeting.session.charge.libre.page', [
+        return $this->renderTpl('pages.meeting.session.charge.libre.page', [
             'session' => $session,
             'charges' => $this->feeService->getFees($this->round(), $this->currentPage()),
             'bills' => $this->feeService->getBills($session),

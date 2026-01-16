@@ -55,7 +55,7 @@ class RoundMenuFunc extends Base\FuncComponent
     public function showRounds(): void
     {
         $title = trans('tontine.round.titles.choose');
-        $content = $this->renderView('parts.header.select.round', [
+        $content = $this->renderTpl('parts.header.select.round', [
             'current' => $this->tenantService->getLatestRoundId(),
             'rounds' => $this->tenantService->getRounds(),
         ]);

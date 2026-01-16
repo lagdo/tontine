@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c5c19013dbdc26032aca38afa5d0d662",
+    "content-hash": "8a69b4dbfe03e7610bf866e956438ae9",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -1926,16 +1926,16 @@
         },
         {
             "name": "jaxon-php/jaxon-core",
-            "version": "v5.3.5",
+            "version": "v5.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jaxon-php/jaxon-core.git",
-                "reference": "df1cdda355a2aa2e64cdaa750dfc850b2bef37c1"
+                "reference": "8600cc50205758c0a589a61a7a4119a44b50082a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/df1cdda355a2aa2e64cdaa750dfc850b2bef37c1",
-                "reference": "df1cdda355a2aa2e64cdaa750dfc850b2bef37c1",
+                "url": "https://api.github.com/repos/jaxon-php/jaxon-core/zipball/8600cc50205758c0a589a61a7a4119a44b50082a",
+                "reference": "8600cc50205758c0a589a61a7a4119a44b50082a",
                 "shasum": ""
             },
             "require": {
@@ -2006,7 +2006,7 @@
                 "issues": "https://github.com/jaxon-php/jaxon-core/issues",
                 "source": "https://github.com/jaxon-php/jaxon-core"
             },
-            "time": "2026-01-09T04:38:20+00:00"
+            "time": "2026-01-16T01:33:34+00:00"
         },
         {
             "name": "jaxon-php/jaxon-dialogs",

@@ -6,7 +6,6 @@ use Ajax\App\Meeting\Session\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
-use Stringable;
 
 #[Before('getFund')]
 #[Databag('meeting.saving')]
@@ -50,14 +49,14 @@ class MemberPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $search = $this->bag($this->bagId)->get('member.search', '');
         $filter = $this->bag($this->bagId)->get('member.filter', null);
         $session = $this->stash()->get('meeting.session');
         $fund = $this->getStashedFund();
 
-        return $this->renderView('pages.meeting.session.saving.member.page', [
+        return $this->renderTpl('pages.meeting.session.saving.member.page', [
             'session' => $session,
             'members' => $this->savingService
                 ->getMembers($session, $fund, $search, $filter, $this->currentPage()),
