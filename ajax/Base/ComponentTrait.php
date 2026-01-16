@@ -3,7 +3,6 @@
 namespace Ajax\Base;
 
 use Jaxon\App\Dialog\DialogTrait;
-use Jaxon\App\RenderViewTrait;
 use Jaxon\App\View\ViewRenderer;
 use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Exception\MeetingRoundException;
@@ -18,21 +17,17 @@ use function trans;
 trait ComponentTrait
 {
     use DialogTrait;
-    use RenderViewTrait;
+
+    /**
+     * @var string
+     */
+    protected static string $tontineViewPrefix = 'tontine_app::';
 
     /**
      * @var TenantService
      */
     #[Inject]
     protected TenantService $tenantService;
-
-    /**
-     * @return void
-     */
-    protected function setupComponent(): void
-    {
-        $this->setViewPrefix('tontine_app::');
-    }
 
     /**
      * Get the view renderer
@@ -51,7 +46,7 @@ trait ComponentTrait
      */
     protected function renderTpl(string $view, array $viewData = []): string
     {
-        $html = $this->view()->render("tontine_app::$view", $viewData);
+        $html = $this->view()->render(self::$tontineViewPrefix . $view, $viewData);
         return $html = null ? '' : (string)$html;
     }
 
@@ -110,7 +105,6 @@ trait ComponentTrait
         {
             throw new TontineMemberException(trans('tontine.errors.checks.members'));
         }
-
         if($round->sessions->filter(fn($session) =>
             ($session->opened || $session->closed))->count() === 0)
         {

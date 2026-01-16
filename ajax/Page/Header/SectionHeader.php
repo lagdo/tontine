@@ -3,27 +3,20 @@
 namespace Ajax\Page\Header;
 
 use Ajax\Base\Component;
+use Jaxon\App\RenderViewTrait;
 use Jaxon\Attributes\Attribute\Exclude;
 
 #[Exclude]
 class SectionHeader extends Component
 {
-    /**
-     * @var string
-     */
-    private string $template;
+    use RenderViewTrait;
 
     /**
-     * @var array
+     * @return void
      */
-    private array $vars;
-
-    /**
-     * @inheritDoc
-     */
-    public function html(): string
+    protected function setupComponent(): void
     {
-        return $this->renderTpl($this->template, $this->vars);
+        $this->setViewPrefix(self::$tontineViewPrefix);
     }
 
     /**
@@ -34,12 +27,10 @@ class SectionHeader extends Component
      */
     public function title(string $section, string $entry): void
     {
-        $this->template = 'parts.header.section.title';
-        $this->vars = [
+        $this->item('title')->renderView('parts.header.section.title', [
             'section' => $section,
             'entry' => $entry,
-        ];
-        $this->item('title')->render();
+        ]);
     }
 
     /**
@@ -47,8 +38,6 @@ class SectionHeader extends Component
      */
     public function currency(): void
     {
-        $this->template = 'parts.header.section.currency';
-        $this->vars = [];
-        $this->item('currency')->render();
+        $this->item('currency')->renderView('parts.header.section.currency');
     }
 }
