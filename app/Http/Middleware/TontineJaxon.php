@@ -39,7 +39,7 @@ class TontineJaxon
             ],
             $request->routeIs('tontine.home') => [
                 'jaxon.app.directories' => [$pageDir, $appDir],
-                'jaxon.lib.js.app.file' => env('JAXON_JS_APP_FILE', 'app-4.0.10-beta.1'),
+                'jaxon.app.assets.file' => env('TONTINE_ASSETS_FILE', 'app-4.0.10-beta.2'),
             ],
             $request->routeIs('user.profile') => [
                 'jaxon.app.directories' => [$pageDir],
@@ -59,8 +59,10 @@ class TontineJaxon
      */
     public function handle(Request $request, Closure $next)
     {
-        $options = $this->getOptions($request);
-        count($options) > 0 && config($options);
+        if((count($options = $this->getOptions($request))) > 0)
+        {
+            config($options);
+        }
 
         jaxon()->config()->globals();
 
