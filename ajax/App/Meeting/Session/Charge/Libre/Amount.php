@@ -52,7 +52,7 @@ class Amount extends Component
         }
 
         $amountValue = jq("#member-charge-input-$memberId")->val();
-        $paid = je('check-fee-libre-paid')->rd()->checked();
+        $paid = checked('check-fee-libre-paid');
         return $this->renderTpl('pages.meeting.session.charge.libre.member.edit', [
             'memberId' => $memberId,
             'amount' => !$bill ? '' : $this->localeService->getMoneyValue($bill->amount),

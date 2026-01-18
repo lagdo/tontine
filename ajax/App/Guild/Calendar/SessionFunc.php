@@ -12,7 +12,7 @@ use Siak\Tontine\Service\Guild\SessionService;
 use Siak\Tontine\Service\Meeting\Member\MemberService;
 use Siak\Tontine\Validation\Guild\SessionValidator;
 
-use function je;
+use function Jaxon\form;
 use function array_filter;
 use function array_map;
 use function array_unique;
@@ -66,7 +66,7 @@ class SessionFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(je('session-form')->rd()->form()),
+            'click' => $this->rq()->create(form('session-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -99,7 +99,7 @@ class SessionFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->createList(je('session-list')->rd()->form()),
+            'click' => $this->rq()->createList(form('session-list')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -110,7 +110,7 @@ class SessionFunc extends FuncComponent
         $html = collect($sessions)
             ->map(fn($session) => $session->title . ';' . $session->date)
             ->join("\n");
-        $this->response->html('new-sessions-list', $html);
+        $this->response()->html('new-sessions-list', $html);
     }
 
     /**
@@ -184,7 +184,7 @@ class SessionFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($session->id, je('session-form')->rd()->form()),
+            'click' => $this->rq()->update($session->id, form('session-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -222,7 +222,7 @@ class SessionFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveVenue($session->id, je('session-form')->rd()->form()),
+            'click' => $this->rq()->saveVenue($session->id, form('session-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

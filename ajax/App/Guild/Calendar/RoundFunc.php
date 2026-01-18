@@ -10,7 +10,7 @@ use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\RoundService;
 use Siak\Tontine\Validation\Guild\RoundValidator;
 
-use function je;
+use function Jaxon\form;
 use function trans;
 
 #[Before('checkHostAccess', ["guild", "calendar"])]
@@ -39,7 +39,7 @@ class RoundFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(je('round-form')->rd()->form()),
+            'click' => $this->rq()->create(form('round-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -78,7 +78,7 @@ class RoundFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($round->id, je('round-form')->rd()->form()),
+            'click' => $this->rq()->update($round->id, form('round-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

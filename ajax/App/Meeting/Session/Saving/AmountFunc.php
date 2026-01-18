@@ -10,8 +10,8 @@ use Siak\Tontine\Model\Member as MemberModel;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Validation\Meeting\SavingValidator;
 
+use function Jaxon\form;
 use function str_replace;
-use function je;
 use function trans;
 use function trim;
 
@@ -143,7 +143,7 @@ class AmountFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveStartAmount(je('fund-amount-form')->rd()->form()),
+            'click' => $this->rq()->saveStartAmount(form('fund-amount-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -199,7 +199,7 @@ class AmountFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveEndAmount(je('fund-amount-form')->rd()->form()),
+            'click' => $this->rq()->saveEndAmount(form('fund-amount-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

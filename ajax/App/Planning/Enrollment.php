@@ -39,7 +39,7 @@ class Enrollment extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->setSmScreenHandler('finance-sm-screens');
+        $this->response()->jo('tontine')->setSmScreenHandler('finance-sm-screens');
 
         $this->cl(Member\Member::class)->render();
         $this->cl(Charge\Charge::class)->render();

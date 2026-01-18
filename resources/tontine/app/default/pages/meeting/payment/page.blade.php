@@ -1,5 +1,5 @@
 @php
-  $sessionId = je('select-session')->rd()->select()->toInt();
+  $sessionId = Jaxon\select('select-session')->toInt();
   $memberId = jq()->parent()->attr('data-member-id')->toInt();
   $rqPayable = rq(Ajax\App\Meeting\Payment\Payable::class);
   $rqPaymentPage = rq(Ajax\App\Meeting\Payment\PaymentPage::class);

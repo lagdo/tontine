@@ -49,6 +49,6 @@ class OutflowPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-session-outflows');
+        $this->response()->jo('tontine')->makeTableResponsive('content-session-outflows');
     }
 }

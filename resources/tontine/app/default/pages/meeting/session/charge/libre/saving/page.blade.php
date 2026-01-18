@@ -1,6 +1,6 @@
 @php
   $billId = jq()->parent()->attr('data-bill-id')->toInt();
-  $fundId = je('settlement-saving-fund')->rd()->select()->toInt();
+  $fundId = Jaxon\select('settlement-saving-fund')->toInt();
   $rqSavingFunc = rq(Ajax\App\Meeting\Session\Charge\Libre\SavingFunc::class);
   $rqSavingPage = rq(Ajax\App\Meeting\Session\Charge\Libre\SavingPage::class);
 @endphp

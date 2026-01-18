@@ -70,6 +70,6 @@ class ReceivablePage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-meeting-receivables');
+        $this->response()->jo('tontine')->makeTableResponsive('content-meeting-receivables');
     }
 }

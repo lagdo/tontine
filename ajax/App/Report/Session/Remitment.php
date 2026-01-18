@@ -44,6 +44,6 @@ class Remitment extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-report-remitments');
+        $this->response()->jo('tontine')->makeTableResponsive('content-report-remitments');
     }
 }

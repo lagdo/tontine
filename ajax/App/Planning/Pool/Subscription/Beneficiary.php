@@ -150,18 +150,18 @@ class Beneficiary extends Component
         $callback = fn(string $name, int $id) => compact('id', 'name');
         $candidates = array_values($this->candidates->map($callback)->all());
         $beneficiaries = array_values($this->beneficiaries->map($callback)->all());
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->setSubscriptionCandidates($candidates, $beneficiaries);
 
         $sessionId = jq()->parent()->parent()->attr('data-session-id')->toInt();
         $nextSubscriptionId = jq()->val()->toInt();
         $currSubscriptionId = jq()->parent()->attr('data-subscription-id')->toInt();
         $wrapper = '#content-subscription-beneficiaries';
-        $this->response->jq('.select-beneficiary', $wrapper)
+        $this->response()->jq('.select-beneficiary', $wrapper)
             ->on('change', $this->rq()->save($sessionId,
                 $nextSubscriptionId, $currSubscriptionId));
 
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->makeTableResponsive('content-subscription-beneficiaries');
     }
 

@@ -10,7 +10,7 @@ use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\Meeting\Member\MemberService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 
-use function je;
+use function Jaxon\form;
 use function trans;
 
 class LoanFunc extends FuncComponent
@@ -48,10 +48,10 @@ class LoanFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(je('loan-form')->rd()->form()),
+            'click' => $this->rq()->create(form('loan-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-        $this->response->jo('tontine')->setLoanInterestLabel();
+        $this->response()->jo('tontine')->setLoanInterestLabel();
     }
 
     #[Inject(attr: 'validator')]
@@ -119,10 +119,10 @@ class LoanFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($loanId, je('loan-form')->rd()->form()),
+            'click' => $this->rq()->update($loanId, form('loan-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-        $this->response->jo('tontine')->setLoanInterestLabel();
+        $this->response()->jo('tontine')->setLoanInterestLabel();
     }
 
     #[Inject(attr: 'validator')]
@@ -193,7 +193,7 @@ class LoanFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->updateDeadline($loanId, je('loan-edit-deadline')->rd()->form()),
+            'click' => $this->rq()->updateDeadline($loanId, form('loan-edit-deadline')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

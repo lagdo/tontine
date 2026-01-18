@@ -52,6 +52,6 @@ class MemberPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-planning-member-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-planning-member-page');
     }
 }

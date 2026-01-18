@@ -1,5 +1,5 @@
 @php
-  $amountValue = je('fund-profit-amount')->rd()->input()->toInt();
+  $amountValue = Jaxon\input('fund-profit-amount')->toInt();
 @endphp
                       <div class="input-group">
                         {!! $html->text('fund-profit-amount', $locale->getMoneyValue($profitAmount))

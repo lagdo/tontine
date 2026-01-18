@@ -53,7 +53,7 @@ class Presence extends Component
         !$exchange ?
             $this->cl(Session::class)->render() :
             $this->cl(Member::class)->render();
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->showSmScreen('content-presence-left', 'presence-sm-screens');
     }
 }

@@ -9,7 +9,7 @@ use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Validation\Guild\GuildValidator;
 
-use function je;
+use function Jaxon\form;
 use function collect;
 use function trans;
 
@@ -46,7 +46,7 @@ class GuildFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(je('guild-form')->rd()->form()),
+            'click' => $this->rq()->create(form('guild-form')),
         ]];
 
         $this->modal()->hide();
@@ -86,7 +86,7 @@ class GuildFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($guild->id, je('guild-form')->rd()->form()),
+            'click' => $this->rq()->update($guild->id, form('guild-form')),
         ]];
 
         $this->modal()->show($title, $content, $buttons);

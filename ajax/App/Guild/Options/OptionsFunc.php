@@ -7,7 +7,7 @@ use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Validation\Guild\OptionsValidator;
 
-use function je;
+use function Jaxon\form;
 use function trans;
 
 class OptionsFunc extends FuncComponent
@@ -39,7 +39,7 @@ class OptionsFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveOptions(je('options-form')->rd()->form()),
+            'click' => $this->rq()->saveOptions(form('options-form')),
         ]];
 
         $this->modal()->show($title, $content, $buttons);

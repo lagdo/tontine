@@ -1,5 +1,5 @@
 @php
-  $selectFundId = je('profits-fund-id')->rd()->select()->toInt();
+  $selectFundId = Jaxon\select('profits-fund-id')->toInt();
   $rqFund = rq(Ajax\App\Meeting\Session\Profit\Fund::class);
 @endphp
                   <div class="row mb-2">

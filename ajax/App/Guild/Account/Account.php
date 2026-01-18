@@ -37,7 +37,7 @@ class Account extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->setSmScreenHandler('account-sm-screens');
+        $this->response()->jo('tontine')->setSmScreenHandler('account-sm-screens');
 
         $this->cl(Fund::class)->render();
         $this->cl(Outflow::class)->render();

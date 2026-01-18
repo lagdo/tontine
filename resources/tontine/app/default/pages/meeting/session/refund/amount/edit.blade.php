@@ -1,5 +1,5 @@
 @php
-  $amountValue = je("refund-amount-edit-{$debt->id}")->rd()->input();
+  $amountValue = Jaxon\input("refund-amount-edit-{$debt->id}");
   $rqAmountFunc = rq(Ajax\App\Meeting\Session\Credit\Refund\AmountFunc::class);
 @endphp
                         <div class="input-group">

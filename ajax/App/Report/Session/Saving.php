@@ -47,6 +47,6 @@ class Saving extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-report-savings');
+        $this->response()->jo('tontine')->makeTableResponsive('content-report-savings');
     }
 }

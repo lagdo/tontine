@@ -42,7 +42,7 @@ class GuildMenu extends Component
         $back = $this->renderTpl('parts.sidebar.back', [
             'handler' => $this->rq(GuildMenuFunc::class)->back(),
         ]);
-        $this->response->html('header-menu-back', $back);
-        $this->response->jq('#header-menu-back')->show();
+        $this->response()->html('header-menu-back', $back);
+        $this->response()->jq('#header-menu-back')->show();
     }
 }

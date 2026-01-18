@@ -46,7 +46,7 @@ class GuestFunc extends FuncComponent
         if($reloadPage)
         {
             // The active guild invite is deleted. Reload the page.
-            $this->response->redirect('/');
+            $this->response()->redirect('/');
             return;
         }
 

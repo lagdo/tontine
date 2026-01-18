@@ -8,7 +8,7 @@ use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\UserService;
 use Siak\Tontine\Validation\Guild\GuestInviteValidator;
 
-use function je;
+use function Jaxon\form;
 
 #[Databag('user')]
 class HostFunc extends FuncComponent
@@ -35,7 +35,7 @@ class HostFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(je('invite-form')->rd()->form()),
+            'click' => $this->rq()->create(form('invite-form')),
         ]];
 
         $this->modal()->hide();

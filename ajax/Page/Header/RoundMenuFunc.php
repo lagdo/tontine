@@ -10,7 +10,7 @@ use Jaxon\Attributes\Attribute\Before;
 use Siak\Tontine\Model\Round as RoundModel;
 use Siak\Tontine\Service\Guild\RoundService;
 
-use function je;
+use function Jaxon\select;
 use function trans;
 use function view;
 
@@ -66,7 +66,7 @@ class RoundMenuFunc extends Base\FuncComponent
         ],[
             'title' => trans('tontine.actions.choose'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->selectRound(je('round_id')->rd()->select()->toInt()),
+            'click' => $this->rq()->selectRound(select('round_id')->toInt()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

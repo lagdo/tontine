@@ -1,5 +1,5 @@
 @php
-  $formValues = je('guest-guild-access-form')->rd()->form();
+  $formValues = Jaxon\form('guest-guild-access-form');
   $rqHostAccessFunc = rq(Ajax\App\Admin\User\Host\AccessFunc::class);
 @endphp
                 <div class="section-body">

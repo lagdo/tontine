@@ -1,5 +1,5 @@
 @php
-  $formValues = je('fund-session-form')->rd()->form();
+  $formValues = Jaxon\form('fund-session-form');
   $rqSession = rq(Ajax\App\Planning\Fund\Session::class);
   $rqSessionPage = rq(Ajax\App\Planning\Fund\SessionPage::class);
   $rqSessionFunc = rq(Ajax\App\Planning\Fund\SessionFunc::class);

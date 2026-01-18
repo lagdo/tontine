@@ -24,6 +24,6 @@ class FakerFunc extends FuncComponent
             ->getFakeMembers($this->guild(), $count)
             ->map(fn($member) => "{$member->name};{$member->email}")
             ->join("\n");
-        $this->response->html('new-members-list', $html);
+        $this->response()->html('new-members-list', $html);
     }
 }

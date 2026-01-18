@@ -36,7 +36,7 @@ class Remitment extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-session-remitments');
+        $this->response()->jo('tontine')->makeTableResponsive('content-session-remitments');
     }
 
     public function show(): void

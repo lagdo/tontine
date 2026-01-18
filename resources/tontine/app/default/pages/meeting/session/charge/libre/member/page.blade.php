@@ -1,6 +1,6 @@
 @php
   $memberId = jq()->parent()->attr('data-member-id')->toInt();
-  $paid = je('check-fee-libre-paid')->rd()->checked();
+  $paid = Jaxon\checked('check-fee-libre-paid');
   $rqMemberFunc = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberFunc::class);
   $rqMemberPage = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberPage::class);
   $rqMemberName = rq(Ajax\App\Meeting\Session\Charge\Libre\MemberName::class);

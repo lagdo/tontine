@@ -50,6 +50,6 @@ class PoolPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-planning-pool-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-planning-pool-page');
     }
 }

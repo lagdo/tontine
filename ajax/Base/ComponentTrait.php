@@ -2,7 +2,6 @@
 
 namespace Ajax\Base;
 
-use Jaxon\App\Dialog\DialogTrait;
 use Jaxon\App\View\ViewRenderer;
 use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Exception\MeetingRoundException;
@@ -16,8 +15,6 @@ use function trans;
 
 trait ComponentTrait
 {
-    use DialogTrait;
-
     /**
      * @var string
      */

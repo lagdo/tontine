@@ -50,6 +50,6 @@ class FundPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-planning-fund-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-planning-fund-page');
     }
 }

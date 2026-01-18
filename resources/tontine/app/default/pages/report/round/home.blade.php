@@ -1,6 +1,6 @@
 @inject('sqids', 'Sqids\SqidsInterface')
 @php
-  $sessionId = je('report-select-session')->rd()->select();
+  $sessionId = Jaxon\select('report-select-session');
   $rqRound = rq(Ajax\App\Report\Round\Round::class);
   $rqRoundBalance = rq(Ajax\App\Report\Round\Balance::class);
   $rqRoundPool = rq(Ajax\App\Report\Round\Pool::class);

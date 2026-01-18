@@ -10,7 +10,7 @@ use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Validation\Guild\MemberValidator;
 
-use function je;
+use function Jaxon\form;
 use function array_filter;
 use function array_map;
 use function config;
@@ -43,7 +43,7 @@ class MemberFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(je('member-form')->rd()->form()),
+            'click' => $this->rq()->create(form('member-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -82,7 +82,7 @@ class MemberFunc extends FuncComponent
         $buttons[] = [
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->createList(je('member-list')->rd()->form()),
+            'click' => $this->rq()->createList(form('member-list')),
         ];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -151,7 +151,7 @@ class MemberFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($member->id, je('member-form')->rd()->form()),
+            'click' => $this->rq()->update($member->id, form('member-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

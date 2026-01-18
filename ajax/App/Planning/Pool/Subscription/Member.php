@@ -55,7 +55,7 @@ class Member extends Component
     {
         $this->cl(MemberPage::class)->page();
 
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->showSmScreen('content-subscription-members', 'subscription-sm-screens');
     }
 

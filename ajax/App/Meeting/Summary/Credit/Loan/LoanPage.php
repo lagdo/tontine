@@ -48,6 +48,6 @@ class LoanPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-session-loans-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-session-loans-page');
     }
 }

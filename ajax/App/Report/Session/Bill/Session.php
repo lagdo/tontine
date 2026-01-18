@@ -45,6 +45,6 @@ class Session extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-report-session-bills');
+        $this->response()->jo('tontine')->makeTableResponsive('content-report-session-bills');
     }
 }

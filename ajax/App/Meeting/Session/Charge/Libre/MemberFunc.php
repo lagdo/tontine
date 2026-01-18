@@ -5,6 +5,9 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 use Ajax\App\Meeting\Session\Charge\FuncComponent;
 use Jaxon\Attributes\Attribute\Before;
 
+use function Jaxon\checked;
+use function Jaxon\form;
+
 #[Before('checkChargeEdit')]
 class MemberFunc extends FuncComponent
 {
@@ -63,8 +66,8 @@ class MemberFunc extends FuncComponent
             'charge' => $charge,
         ]);
 
-        $formValues = je('bill-all-form')->rd()->form();
-        $paid = je('check-fee-libre-paid')->rd()->checked();
+        $formValues = form('bill-all-form');
+        $paid = checked('check-fee-libre-paid');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',

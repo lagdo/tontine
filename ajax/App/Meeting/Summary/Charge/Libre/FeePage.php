@@ -50,7 +50,7 @@ class FeePage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->makeTableResponsive('content-session-fees-libre-page');
     }
 }

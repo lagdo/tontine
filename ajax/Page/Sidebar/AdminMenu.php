@@ -38,7 +38,7 @@ class AdminMenu extends Component
         $this->cl(Guild::class)->home();
         $this->setSectionTitle('admin', 'guilds');
 
-        $this->response->html('header-menu-back', '');
-        $this->response->jq('#header-menu-back')->hide();
+        $this->response()->html('header-menu-back', '');
+        $this->response()->jq('#header-menu-back')->hide();
     }
 }

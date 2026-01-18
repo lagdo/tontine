@@ -72,7 +72,7 @@ class Summary extends Component
         $this->cl(Pool\Deposit\Deposit::class)->show();
         $this->cl(Pool\Remitment\Remitment::class)->show();
 
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->setSmScreenHandler('summary-pools-sm-screens', 'summary-pools');
     }
 
@@ -81,7 +81,7 @@ class Summary extends Component
         $this->cl(Charge\Fixed\Fee::class)->show();
         $this->cl(Charge\Libre\Fee::class)->show();
 
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->setSmScreenHandler('summary-charges-sm-screens', 'summary-charges');
     }
 
@@ -90,7 +90,7 @@ class Summary extends Component
         $this->cl(Credit\Loan\Loan::class)->show();
         $this->cl(Saving\Saving::class)->show();
 
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->setSmScreenHandler('summary-savings-sm-screens', 'summary-savings');
     }
 

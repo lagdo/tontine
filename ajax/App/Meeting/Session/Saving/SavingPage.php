@@ -50,6 +50,6 @@ class SavingPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-session-savings-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-session-savings-page');
     }
 }

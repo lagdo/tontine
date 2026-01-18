@@ -31,7 +31,7 @@ class SessionContent extends Component
         if(!$this->stash()->get('report.member'))
         {
             // Reset the member dropdown to the empty value.
-            $this->response->jq('#report-select-member')->val(0);
+            $this->response()->jq('#report-select-member')->val(0);
         }
     }
 }

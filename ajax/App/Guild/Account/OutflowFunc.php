@@ -8,7 +8,7 @@ use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Model\Category as CategoryModel;
 use Siak\Tontine\Service\Guild\AccountService;
 
-use function je;
+use function Jaxon\form;
 use function trans;
 
 #[Before('checkHostAccess', ["finance", "accounts"])]
@@ -37,7 +37,7 @@ class OutflowFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(je('account-form')->rd()->form()),
+            'click' => $this->rq()->create(form('account-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -71,7 +71,7 @@ class OutflowFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($account->id, je('account-form')->rd()->form()),
+            'click' => $this->rq()->update($account->id, form('account-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

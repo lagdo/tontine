@@ -41,7 +41,7 @@ class Finance extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->setSmScreenHandler('finance-sm-screens');
+        $this->response()->jo('tontine')->setSmScreenHandler('finance-sm-screens');
 
         $this->cl(Fund\Fund::class)->render();
         $this->cl(Pool\Pool::class)->render();

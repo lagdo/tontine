@@ -1,6 +1,6 @@
 @if ($billCount > 0)
 @php
-  $fundId = je('settlement-saving-fund')->rd()->select()->toInt();
+  $fundId = Jaxon\select('settlement-saving-fund')->toInt();
   $rqSavingFunc = rq(Ajax\App\Meeting\Session\Charge\Libre\SavingFunc::class);
   $menus = [];
   if($settlementCount < $billCount)

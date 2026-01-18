@@ -42,6 +42,6 @@ class Total extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-report-total-bills');
+        $this->response()->jo('tontine')->makeTableResponsive('content-report-total-bills');
     }
 }

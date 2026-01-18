@@ -44,7 +44,7 @@ class SessionPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-planning-sessions-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-planning-sessions-page');
     }
 
     private function getSessionPageNumber($session): int

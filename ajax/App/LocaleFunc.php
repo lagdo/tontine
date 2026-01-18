@@ -22,6 +22,6 @@ class LocaleFunc extends FuncComponent
             'currencies' => !$countryCode ? [] :
                 $this->localeService->getCountryCurrencies($countryCode),
         ]);
-        $this->response->html('select_currency_container', $html);
+        $this->response()->html('select_currency_container', $html);
     }
 }

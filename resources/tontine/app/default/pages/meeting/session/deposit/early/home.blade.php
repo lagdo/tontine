@@ -1,6 +1,6 @@
 @php
   $poolId = jq()->parent()->attr('data-pool-id')->toInt();
-  $sessionId = je('early-deposits-session')->rd()->select()->toInt();
+  $sessionId = Jaxon\select('early-deposits-session')->toInt();
   $rqDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Deposit::class);
   $rqLateDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Late\Deposit::class);
   $rqEarlyDeposit = rq(Ajax\App\Meeting\Session\Pool\Deposit\Early\Deposit::class);

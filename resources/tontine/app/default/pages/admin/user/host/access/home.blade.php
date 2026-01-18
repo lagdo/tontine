@@ -1,5 +1,5 @@
 @php
-  $guildId = je('select-invite-guild')->rd()->select();
+  $guildId = Jaxon\select('select-invite-guild');
   $rqHostAccessFunc = rq(Ajax\App\Admin\User\Host\AccessFunc::class);
   $rqHostGuildAccess = rq(Ajax\App\Admin\User\Host\GuildAccess::class);
   $rqHost = rq(Ajax\App\Admin\User\Host\Host::class);

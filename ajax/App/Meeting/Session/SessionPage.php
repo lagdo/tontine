@@ -48,6 +48,6 @@ class SessionPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-sessions-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-sessions-page');
     }
 }

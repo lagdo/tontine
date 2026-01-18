@@ -42,6 +42,6 @@ class Outflow extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-report-outflows');
+        $this->response()->jo('tontine')->makeTableResponsive('content-report-outflows');
     }
 }

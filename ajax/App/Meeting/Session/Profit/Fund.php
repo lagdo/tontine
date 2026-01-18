@@ -29,7 +29,7 @@ class Fund extends Component
             ->getDistribution($session, $fund, $profit));
 
         // Show the fund title
-        $this->response->html('content-report-profits-fund', $fund->title);
+        $this->response()->html('content-report-profits-fund', $fund->title);
     }
 
     /**
@@ -37,7 +37,7 @@ class Fund extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-profit-distribution');
+        $this->response()->jo('tontine')->makeTableResponsive('content-profit-distribution');
     }
 
     public function html(): string

@@ -47,6 +47,6 @@ class GuestPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-guest-invites-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-guest-invites-page');
     }
 }

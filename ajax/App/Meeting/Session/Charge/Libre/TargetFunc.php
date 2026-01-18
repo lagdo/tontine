@@ -8,7 +8,7 @@ use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Meeting\Charge\SettlementTargetService;
 use Siak\Tontine\Validation\Meeting\TargetValidator;
 
-use function je;
+use function Jaxon\form;
 use function trans;
 
 #[Before('getTarget')]
@@ -62,7 +62,7 @@ class TargetFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(je('target-form')->rd()->form()),
+            'click' => $this->rq()->create(form('target-form')),
         ]];
 
         $this->modal()->show($title, $content, $buttons);
@@ -121,7 +121,7 @@ class TargetFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update(je('target-form')->rd()->form()),
+            'click' => $this->rq()->update(form('target-form')),
         ]];
 
         $this->modal()->show($title, $content, $buttons);
