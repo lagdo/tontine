@@ -13,7 +13,6 @@ use Siak\Tontine\Validation\Guild\PoolValidator;
 
 use function Jaxon\checked;
 use function Jaxon\form;
-use function je;
 use function trans;
 
 #[Before('checkHostAccess', ["finance", "pools"])]

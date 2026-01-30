@@ -5,7 +5,7 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 use Ajax\App\Meeting\Session\Charge\Component;
 use Siak\Tontine\Service\LocaleService;
 
-use function je;
+use function Jaxon\checked;
 use function jq;
 
 class Amount extends Component
@@ -27,7 +27,6 @@ class Amount extends Component
     public function html(): string
     {
         $session = $this->stash()->get('meeting.session');
-        $charge = $this->stash()->get('meeting.session.charge');
         $bill = $this->stash()->get('meeting.charge.bill');
         $member = $this->stash()->get('meeting.charge.member');
         $memberId = $member->id;
