@@ -3,7 +3,7 @@
 namespace Siak\Tontine\Validation\Guild;
 
 use Illuminate\Support\Facades\Validator;
-use Siak\Tontine\Service\TenantService;
+use Siak\Tontine\Model\Round;
 use Siak\Tontine\Validation\AbstractValidator;
 use Siak\Tontine\Validation\ValidationException;
 
@@ -12,10 +12,20 @@ use function substr;
 class SessionValidator extends AbstractValidator
 {
     /**
-     * @param TenantService $tenantService
+     * @var Round
      */
-    public function __construct(protected TenantService $tenantService)
-    {}
+    private Round $round;
+
+    /**
+     * @param Round $round
+     *
+     * @return SessionValidator
+     */
+    public function round(Round $round): SessionValidator
+    {
+        $this->round = $round;
+        return $this;
+    }
 
     /**
      * Check duplicates in session date
@@ -27,7 +37,7 @@ class SessionValidator extends AbstractValidator
      */
     private function sessionDateExists(string $startAt, int $sessionId): bool
     {
-        return $this->tenantService->guild()->sessions()
+        return $this->round->guild->sessions()
             ->where('sessions.id', '!=', $sessionId)
             ->where('sessions.day_date', $startAt)
             ->first() !== null;
@@ -66,8 +76,7 @@ class SessionValidator extends AbstractValidator
         $validated['host_id'] = null;
         if($hostId > 0)
         {
-            $validated['host_id'] = $this->tenantService->round()
-                ->members()->find($hostId)?->id ?? null;
+            $validated['host_id'] = $this->round->members()->find($hostId)?->id ?? null;
         }
 
         return $validated;

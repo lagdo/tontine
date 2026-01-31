@@ -75,8 +75,9 @@ class SessionFunc extends FuncComponent
     public function create(array $formValues): void
     {
         $round = $this->stash()->get('guild.calendar.round');
-        $values = $this->validator->validateItem($formValues);
+        $values = $this->validator->round($round)->validateItem($formValues);
         $this->sessionService->createSession($round, $values);
+
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.created'));
@@ -157,9 +158,10 @@ class SessionFunc extends FuncComponent
     public function createList(array $formValues): void
     {
         $round = $this->stash()->get('guild.calendar.round');
+        $this->validator->round($round);
         $values = $this->parseSessionList($formValues['sessions'] ?? '');
-
         $this->sessionService->createSessions($round, $values);
+
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.created'));
@@ -194,10 +196,10 @@ class SessionFunc extends FuncComponent
     {
         $round = $this->stash()->get('guild.calendar.round');
         $formValues['id'] = $sessionId;
-        $values = $this->validator->validateItem($formValues);
+        $values = $this->validator->round($round)->validateItem($formValues);
         $session = $this->roundService->getSession($round, $sessionId);
-
         $this->sessionService->updateSession($this->guild(), $session, $values);
+
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.updated'));
@@ -231,7 +233,7 @@ class SessionFunc extends FuncComponent
     public function saveVenue(int $sessionId, array $formValues): void
     {
         $round = $this->stash()->get('guild.calendar.round');
-        $values = $this->validator->validateVenue($formValues);
+        $values = $this->validator->round($round)->validateVenue($formValues);
         $session = $this->roundService->getSession($round, $sessionId);
 
         $this->sessionService->saveSessionVenue($session, $values);
