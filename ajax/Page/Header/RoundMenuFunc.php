@@ -3,10 +3,10 @@
 namespace Ajax\Page\Header;
 
 use Ajax\Base;
-use Ajax\Page\Header\SectionHeader;
 use Ajax\Page\Sidebar\GuildMenu;
 use Ajax\Page\Sidebar\RoundMenu;
 use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Model\Round as RoundModel;
 use Siak\Tontine\Service\Guild\RoundService;
 
@@ -25,32 +25,6 @@ class RoundMenuFunc extends Base\FuncComponent
      */
     public function __construct(protected RoundService $roundService)
     {}
-
-    /**
-     * @return void
-     */
-    private function resetCurrentRound(): void
-    {
-        $this->bag('tenant')->set('round.id', 0);
-        $this->stash()->set('tenant.round', null);
-
-        view()->share('currentRound', null);
-    }
-
-    /**
-     * @param RoundModel $round
-     *
-     * @return void
-     */
-    private function setCurrentRound(RoundModel $round): void
-    {
-        $this->bag('tenant')->set('round.id', $round?->id ?? 0);
-        $this->stash()->set('tenant.round', $round);
-
-        view()->share('currentRound', $round);
-
-        $this->tenantService->setRound($round);
-    }
 
     public function showRounds(): void
     {
@@ -71,6 +45,26 @@ class RoundMenuFunc extends Base\FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
+    /**
+     * @param RoundModel $round
+     *
+     * @return void
+     */
+    #[Exclude]
+    public function setCurrentRound(RoundModel $round): void
+    {
+        $this->tenantService->setRound($round);
+
+        $this->bag('tenant')->set('round.id', $round?->id ?? 0);
+        $this->stash()->set('tenant.round', $round);
+
+        view()->share('currentRound', $round);
+
+        $this->cl(GuildHeader::class)->render();
+        $this->cl(RoundMenu::class)->render();
+        $this->cl(SectionHeader::class)->currency();
+    }
+
     public function selectRound(int $roundId): void
     {
         if(!($round = $this->tenantService->getRound($roundId)) ||
@@ -85,16 +79,22 @@ class RoundMenuFunc extends Base\FuncComponent
 
         $this->setCurrentRound($round);
 
-        $this->cl(GuildHeader::class)->render();
-        $this->cl(RoundMenu::class)->render();
-        $this->cl(SectionHeader::class)->currency();
-
         $this->modal()->hide();
-        $guild = $this->stash()->get('tenant.guild');
         $this->alert()->info(trans('tontine.round.messages.selected', [
-            'guild' => $guild->name,
+            'guild' => $round->guild->name,
             'round' => $round->title,
         ]));
+    }
+
+    /**
+     * @return void
+     */
+    private function resetCurrentRound(): void
+    {
+        $this->bag('tenant')->set('round.id', 0);
+        $this->stash()->set('tenant.round', null);
+
+        view()->share('currentRound', null);
     }
 
     /**

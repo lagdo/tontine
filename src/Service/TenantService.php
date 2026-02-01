@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Siak\Tontine\Exception\MessageException;
-use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Guild;
+use Siak\Tontine\Model\Round;
 use Siak\Tontine\Model\Session;
 use Siak\Tontine\Model\User;
 
@@ -90,6 +90,15 @@ class TenantService
     }
 
     /**
+     * @return Guild|null
+     */
+    public function getLatestGuild(): Guild|null
+    {
+        $guildId = $this->getLatestGuildId();
+        return $guildId > 0 ? $this->getGuild($guildId) : null;
+    }
+
+    /**
      * @param Guild $guild
      *
      * @return void
@@ -149,7 +158,16 @@ class TenantService
      */
     public function getLatestRoundId(): int
     {
-        return $this->user?->properties['latest']['round'][$this->guild->id] ?? 0;
+        return $this->user?->properties['latest']['round'][$this->guild?->id ?? 0] ?? 0;
+    }
+
+    /**
+     * @return Round|null
+     */
+    public function getLatestRound(): Round|null
+    {
+        $roundId = $this->getLatestRoundId();
+        return $roundId > 0 ? $this->getRound($roundId) : null;
     }
 
     /**

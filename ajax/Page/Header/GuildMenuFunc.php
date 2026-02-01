@@ -3,10 +3,10 @@
 namespace Ajax\Page\Header;
 
 use Ajax\Base;
-use Ajax\Page\Header\SectionHeader;
 use Ajax\Page\Sidebar\AdminMenu;
 use Ajax\Page\Sidebar\GuildMenu;
 use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Model\Guild as GuildModel;
 
 use function Jaxon\select;
@@ -16,32 +16,6 @@ use function view;
 class GuildMenuFunc extends Base\FuncComponent
 {
     use Base\Guild\ComponentTrait;
-
-    /**
-     * @return void
-     */
-    private function resetCurrentGuild(): void
-    {
-        $this->bag('tenant')->set('guild.id', 0);
-        $this->stash()->set('tenant.guild', null);
-
-        view()->share('currentGuild', null);
-    }
-
-    /**
-     * @param GuildModel $guild
-     *
-     * @return void
-     */
-    private function setCurrentGuild(GuildModel $guild): void
-    {
-        $this->bag('tenant')->set('guild.id', $guild->id);
-        $this->stash()->set('tenant.guild', $guild);
-
-        view()->share('currentGuild', $guild);
-
-        $this->tenantService->setGuild($guild);
-    }
 
     public function showGuilds(): void
     {
@@ -62,6 +36,26 @@ class GuildMenuFunc extends Base\FuncComponent
         $this->modal()->show($title, $content, $buttons);
     }
 
+    /**
+     * @param GuildModel $guild
+     *
+     * @return void
+     */
+    #[Exclude]
+    public function setCurrentGuild(GuildModel $guild): void
+    {
+        $this->tenantService->setGuild($guild);
+
+        $this->bag('tenant')->set('guild.id', $guild->id);
+        $this->stash()->set('tenant.guild', $guild);
+
+        view()->share('currentGuild', $guild);
+
+        $this->cl(GuildHeader::class)->render();
+        $this->cl(GuildMenu::class)->render();
+        $this->cl(SectionHeader::class)->currency();
+    }
+
     public function selectGuild(int $guildId): void
     {
         if(!($guild = $this->tenantService->getGuild($guildId)))
@@ -72,14 +66,21 @@ class GuildMenuFunc extends Base\FuncComponent
 
         $this->setCurrentGuild($guild);
 
-        $this->cl(GuildHeader::class)->render();
-        $this->cl(GuildMenu::class)->render();
-        $this->cl(SectionHeader::class)->currency();
-
         $this->modal()->hide();
         $this->alert()->info(trans('tontine.messages.selected', [
             'guild' => $guild->name,
         ]));
+    }
+
+    /**
+     * @return void
+     */
+    private function resetCurrentGuild(): void
+    {
+        $this->bag('tenant')->set('guild.id', 0);
+        $this->stash()->set('tenant.guild', null);
+
+        view()->share('currentGuild', null);
     }
 
     /**
