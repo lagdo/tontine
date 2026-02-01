@@ -23,9 +23,7 @@
         "tontine": {
             "type": "php",
             "root": "/var/www/public/",
-            "script": "index.php",
-            "user": "tontine",
-            "group": "tontine"
+            "script": "index.php"
         }
     }
 }
