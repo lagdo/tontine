@@ -21,7 +21,7 @@ class Member extends Component
     /**
      * @var string
      */
-    protected $overrides = Saving::class;
+    protected string $overrides = Saving::class;
 
     /**
      * The constructor

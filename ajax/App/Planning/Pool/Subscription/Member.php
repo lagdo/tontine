@@ -20,7 +20,7 @@ class Member extends Component
     /**
      * @var string
      */
-    protected $overrides = Pool::class;
+    protected string $overrides = Pool::class;
 
     /**
      * The constructor

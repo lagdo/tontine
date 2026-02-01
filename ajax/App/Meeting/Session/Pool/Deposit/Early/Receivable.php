@@ -17,7 +17,7 @@ class Receivable extends Component
     /**
      * @var string
      */
-    protected $overrides = Deposit::class;
+    protected string $overrides = Deposit::class;
 
     /**
      * @param int $poolId

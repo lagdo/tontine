@@ -22,7 +22,7 @@ class Planning extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
     /**
      * The constructor

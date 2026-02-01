@@ -15,7 +15,7 @@ class User extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
     #[Before('setSectionTitle', ["admin", "users"])]
     #[Callback('tontine.hideMenu')]

@@ -17,7 +17,7 @@ class Round extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
     #[Before('setSectionTitle', ["guild", "calendar"])]
     #[Callback('tontine.hideMenu')]

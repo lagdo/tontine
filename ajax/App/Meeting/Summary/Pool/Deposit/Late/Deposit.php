@@ -13,7 +13,7 @@ class Deposit extends Component
     /**
      * @var string
      */
-    protected $overrides = SessionDeposit::class;
+    protected string $overrides = SessionDeposit::class;
 
     /**
      * The constructor

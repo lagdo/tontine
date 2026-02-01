@@ -13,7 +13,7 @@ class Auction extends Component
     /**
      * @var string
      */
-    protected $overrides = Remitment::class;
+    protected string $overrides = Remitment::class;
 
     /**
      * @inheritDoc

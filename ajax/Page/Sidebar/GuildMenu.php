@@ -15,7 +15,7 @@ class GuildMenu extends Component
     /**
      * @var string
      */
-    protected $overrides = Menu::class;
+    protected string $overrides = Menu::class;
 
     /**
      * @inheritDoc

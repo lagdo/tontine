@@ -15,7 +15,7 @@ class Presence extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
     #[Before('checkRoundSessions')]
     #[Before('setSectionTitle', ["meeting", "presences"])]

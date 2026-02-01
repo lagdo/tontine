@@ -16,7 +16,7 @@ class Guild extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
     /**
      * @param GuildService $guildService

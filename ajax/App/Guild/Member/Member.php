@@ -19,7 +19,7 @@ class Member extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
     #[Before('setSectionTitle', ["guild", "members"])]
     #[Callback('tontine.hideMenu')]

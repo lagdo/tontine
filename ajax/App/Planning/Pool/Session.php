@@ -17,7 +17,7 @@ class Session extends Component
     /**
      * @var string
      */
-    protected $overrides = Pool::class;
+    protected string $overrides = Pool::class;
 
     public function pool(int $poolId)
     {

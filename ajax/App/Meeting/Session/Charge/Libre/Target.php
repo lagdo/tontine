@@ -14,7 +14,7 @@ class Target extends Component
     /**
      * @var string
      */
-    protected $overrides = Fee::class;
+    protected string $overrides = Fee::class;
 
     /**
      * The constructor

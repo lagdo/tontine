@@ -17,7 +17,7 @@ class Charge extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
     #[Before('setSectionTitle', ["finance", "charges"])]
     #[Callback('tontine.hideMenu')]

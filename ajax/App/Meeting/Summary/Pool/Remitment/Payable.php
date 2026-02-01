@@ -14,7 +14,7 @@ class Payable extends Component
     /**
      * @var string
      */
-    protected $overrides = Remitment::class;
+    protected string $overrides = Remitment::class;
 
     public function pool(int $poolId): void
     {

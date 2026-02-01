@@ -17,7 +17,7 @@ class Session extends Component
     /**
      * @var string
      */
-    protected $overrides = Fund::class;
+    protected string $overrides = Fund::class;
 
     public function fund(int $fundId)
     {

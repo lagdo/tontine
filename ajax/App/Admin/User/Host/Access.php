@@ -18,7 +18,7 @@ class Access extends Component
     /**
      * @var string
      */
-    protected $overrides = Host::class;
+    protected string $overrides = Host::class;
 
     /**
      * @param UserService $userService
