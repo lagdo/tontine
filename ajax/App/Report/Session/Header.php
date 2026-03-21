@@ -6,7 +6,7 @@ use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 
 #[Exclude]
-class ReportHeader extends Component
+class Header extends Component
 {
     /**
      * @inheritDoc
@@ -18,7 +18,7 @@ class ReportHeader extends Component
         $title = !$member ? $session->title : "{$session->title} - {$member->name}";
 
         return $this->renderTpl('pages.report.session.header', [
-            'reportTitle' => $title,
+            'title' => $title,
             'session' => $session,
             'member' => $member,
         ]);

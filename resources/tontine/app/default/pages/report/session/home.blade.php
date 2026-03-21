@@ -2,11 +2,11 @@
   $sessionId = Jaxon\select('report-select-session')->toInt();
   $memberId = Jaxon\select('report-select-member')->toInt();
   $rqSession = rq(Ajax\App\Report\Session\Session::class);
-  $rqSessionContent = rq(Ajax\App\Report\Session\SessionContent::class);
-  $rqReportHeader = rq(Ajax\App\Report\Session\ReportHeader::class);
+  $rqHeader = rq(Ajax\App\Report\Session\Header::class);
+  $rqSessionTables = rq(Ajax\App\Report\Session\SessionTables::class);
 @endphp
           <div class="section-body">
-            <div class="row mb-2" @jxnBind($rqReportHeader)>
+            <div class="row mb-2" @jxnBind($rqHeader)>
             </div>
             <div class="row">
               <div class="col-auto mb-2 pr-0 mr-0">
@@ -30,5 +30,5 @@
             </div>
           </div>
 
-          <div @jxnBind($rqSessionContent)>
+          <div @jxnBind($rqSessionTables)>
           </div>

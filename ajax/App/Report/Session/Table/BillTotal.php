@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Report\Session\Bill;
+namespace Ajax\App\Report\Session\Table;
 
 use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
@@ -9,7 +9,7 @@ use Siak\Tontine\Service\Report\SessionService;
 use function trans;
 
 #[Exclude]
-class Total extends Component
+class BillTotal extends Component
 {
     /**
      * @param SessionService $sessionService

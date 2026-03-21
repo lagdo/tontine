@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Report\Session;
+namespace Ajax\App\Report\Session\Table;
 
 use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;

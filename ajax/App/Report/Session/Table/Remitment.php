@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Report\Session;
+namespace Ajax\App\Report\Session\Table;
 
 use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
@@ -8,7 +8,7 @@ use Siak\Tontine\Service\Report\MemberService;
 use Siak\Tontine\Service\Report\SessionService;
 
 #[Exclude]
-class Outflow extends Component
+class Remitment extends Component
 {
     /**
      * @param MemberService $memberService
@@ -28,12 +28,14 @@ class Outflow extends Component
 
         if(!$member)
         {
-            return $this->renderTpl('pages.report.session.session.outflows', [
-                'outflow' => $this->sessionService->getOutflow($session),
+            return $this->renderTpl('pages.report.session.session.remitments', [
+                'pools' => $this->sessionService->getPayables($session),
+                'auctions' => $this->sessionService->getAuctions($session),
             ]);
         }
-        return $this->renderTpl('pages.report.session.member.outflows', [
-            'outflows' => $this->memberService->getOutflows($session, $member),
+        return $this->renderTpl('pages.report.session.member.remitments', [
+            'payables' => $this->memberService->getPayables($session, $member),
+            'auctions' => $this->memberService->getAuctions($session, $member),
         ]);
     }
 
@@ -42,6 +44,6 @@ class Outflow extends Component
      */
     protected function after(): void
     {
-        $this->response()->jo('tontine')->makeTableResponsive('content-report-outflows');
+        $this->response()->jo('tontine')->makeTableResponsive('content-report-remitments');
     }
 }

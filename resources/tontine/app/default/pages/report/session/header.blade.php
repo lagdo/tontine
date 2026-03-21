@@ -1,5 +1,5 @@
               <div class="col-auto">
-                <h2 class="section-title">{{ $reportTitle }}</h2>
+                <h2 class="section-title">{{ $title }}</h2>
               </div>
 @if($member === null)
               <div class="col-auto pl-0 ml-auto">

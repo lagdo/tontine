@@ -1,14 +1,16 @@
 <?php
 
-namespace Ajax\App\Report\Session;
+namespace Ajax\App\Report\Session\Table;
 
 use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Report\MemberService;
 use Siak\Tontine\Service\Report\SessionService;
 
+use function trans;
+
 #[Exclude]
-class Loan extends Component
+class BillSession extends Component
 {
     /**
      * @param MemberService $memberService
@@ -28,12 +30,13 @@ class Loan extends Component
 
         if(!$member)
         {
-            return $this->renderTpl('pages.report.session.session.loans', [
-                'loan' => $this->sessionService->getLoan($session),
+            return $this->renderTpl('pages.report.session.session.bills', [
+                'title' => trans('tontine.report.titles.bills.session'),
+                'charges' => $this->sessionService->getSessionCharges($session),
             ]);
         }
-        return $this->renderTpl('pages.report.session.member.loans', [
-            'loans' => $this->memberService->getLoans($session, $member),
+        return $this->renderTpl('pages.report.session.member.bills.session', [
+            'bills' => $this->memberService->getBills($session, $member),
         ]);
     }
 
@@ -42,6 +45,6 @@ class Loan extends Component
      */
     protected function after(): void
     {
-        $this->response()->jo('tontine')->makeTableResponsive('content-report-loans');
+        $this->response()->jo('tontine')->makeTableResponsive('content-report-session-bills');
     }
 }

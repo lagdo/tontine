@@ -1,12 +1,12 @@
 @php
-  $rqBillSession = rq(Ajax\App\Report\Session\Bill\Session::class);
-  $rqBillTotal = rq(Ajax\App\Report\Session\Bill\Total::class);
-  $rqDeposit = rq(Ajax\App\Report\Session\Deposit::class);
-  $rqRemitment = rq(Ajax\App\Report\Session\Remitment::class);
-  $rqOutflow = rq(Ajax\App\Report\Session\Outflow::class);
-  $rqLoan = rq(Ajax\App\Report\Session\Loan::class);
-  $rqRefund = rq(Ajax\App\Report\Session\Refund::class);
-  $rqSaving = rq(Ajax\App\Report\Session\Saving::class);
+  $rqBillSession = rq(Ajax\App\Report\Session\Table\BillSession::class);
+  $rqBillTotal = rq(Ajax\App\Report\Session\Table\BillTotal::class);
+  $rqDeposit = rq(Ajax\App\Report\Session\Table\Deposit::class);
+  $rqRemitment = rq(Ajax\App\Report\Session\Table\Remitment::class);
+  $rqOutflow = rq(Ajax\App\Report\Session\Table\Outflow::class);
+  $rqLoan = rq(Ajax\App\Report\Session\Table\Loan::class);
+  $rqRefund = rq(Ajax\App\Report\Session\Table\Refund::class);
+  $rqSaving = rq(Ajax\App\Report\Session\Table\Saving::class);
 @endphp
             <div class="row">
               <div class="col-md-6 col-sm-12">

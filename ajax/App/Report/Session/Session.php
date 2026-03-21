@@ -58,7 +58,7 @@ class Session extends Component
             ->filter(fn($session) => ($session->opened || $session->closed));
         if($sessions->count() > 0)
         {
-            $this->renderContent($sessions->first());
+            $this->renderTables($sessions->first());
         }
     }
 
@@ -68,15 +68,15 @@ class Session extends Component
      *
      * @return void
      */
-    private function renderContent(SessionModel $session, ?MemberModel $member = null): void
+    private function renderTables(SessionModel $session, ?MemberModel $member = null): void
     {
         $this->stash()->set('report.session', $session);
         $this->stash()->set('report.member', $member);
 
         // Render the page header.
-        $this->cl(ReportHeader::class)->render();
+        $this->cl(Header::class)->render();
 
-        $this->cl(SessionContent::class)->render();
+        $this->cl(SessionTables::class)->render();
     }
 
     public function showSession(int $sessionId)
@@ -86,7 +86,7 @@ class Session extends Component
         {
             return;
         }
-        $this->renderContent($session);
+        $this->renderTables($session);
     }
 
     public function showMember(int $sessionId, int $memberId)
@@ -97,6 +97,6 @@ class Session extends Component
         {
             return;
         }
-        $this->renderContent($session, $member);
+        $this->renderTables($session, $member);
     }
 }
