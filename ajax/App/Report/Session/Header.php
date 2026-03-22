@@ -3,11 +3,14 @@
 namespace Ajax\App\Report\Session;
 
 use Ajax\Base\Round\Component;
+use Jaxon\App\ComponentDataTrait;
 use Jaxon\Attributes\Attribute\Exclude;
 
 #[Exclude]
 class Header extends Component
 {
+    use ComponentDataTrait;
+
     /**
      * @inheritDoc
      */
@@ -15,12 +18,12 @@ class Header extends Component
     {
         $session = $this->stash()->get('report.session');
         $member = $this->stash()->get('report.member');
-        $title = !$member ? $session->title : "{$session->title} - {$member->name}";
 
         return $this->renderTpl('pages.report.session.header', [
-            'title' => $title,
+            'title' => !$member ? $session->title : "{$session->title} - {$member->name}",
             'session' => $session,
             'member' => $member,
+            'content' => $this->get('content'),
         ]);
     }
 }

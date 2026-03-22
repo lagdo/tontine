@@ -1,32 +1,12 @@
 @php
-  $sessionId = Jaxon\select('report-select-session')->toInt();
-  $memberId = Jaxon\select('report-select-member')->toInt();
-  $rqSession = rq(Ajax\App\Report\Session\Session::class);
   $rqHeader = rq(Ajax\App\Report\Session\Header::class);
+  $rqSelect = rq(Ajax\App\Report\Session\Select::class);
   $rqSessionTables = rq(Ajax\App\Report\Session\SessionTables::class);
 @endphp
           <div class="section-body">
             <div class="row mb-2" @jxnBind($rqHeader)>
             </div>
-            <div class="row">
-              <div class="col-auto mb-2 pr-0 mr-0">
-                <div class="input-group float-left">
-                  {{ $html->select('session_id', $sessions, 0)->id('report-select-session')
-                    ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') }}
-                  <div class="input-group-append">
-                    <button type="button" class="btn btn-primary" @jxnClick($rqSession->showSession($sessionId))><i class="fa fa-caret-right"></i></button>
-                  </div>
-                </div>
-              </div>
-              <div class="col-auto mb-2 pr-0 mr-0">
-                <div class="input-group float-left">
-                  {{ $html->select('member_id', $members, 0)->id('report-select-member')
-                    ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') }}
-                  <div class="input-group-append">
-                    <button type="button" class="btn btn-primary" @jxnClick($rqSession->showMember($sessionId, $memberId))><i class="fa fa-caret-right"></i></button>
-                  </div>
-                </div>
-              </div>
+            <div class="row" @jxnBind($rqSelect)>
             </div>
           </div>
 

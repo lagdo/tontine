@@ -26,6 +26,34 @@ class RoundService
      *
      * @return Collection
      */
+    public function getDepositAmounts(Collection $sessionIds): Collection
+    {
+        return DB::table('v_deposits')
+            ->select(DB::raw('sum(amount) as total_amount'), 'session_id')
+            ->whereIn('session_id', $sessionIds)
+            ->groupBy('session_id')
+            ->pluck('total_amount', 'session_id');
+    }
+
+    /**
+     * @param Collection $sessionIds
+     *
+     * @return Collection
+     */
+    public function getRemitmentAmounts(Collection $sessionIds): Collection
+    {
+        return DB::table('v_remitments')
+            ->select(DB::raw('sum(amount) as total_amount'), 'session_id')
+            ->whereIn('session_id', $sessionIds)
+            ->groupBy('session_id')
+            ->pluck('total_amount', 'session_id');
+    }
+
+    /**
+     * @param Collection $sessionIds
+     *
+     * @return Collection
+     */
     public function getSettlementAmounts(Collection $sessionIds): Collection
     {
         return DB::table('settlements')

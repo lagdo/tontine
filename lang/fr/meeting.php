@@ -23,6 +23,7 @@ return [
         'benefit' => "Bénéfice",
         'refund' => "Remboursement",
         'refunds' => "Remboursements",
+        'inflows' => "Entrées",
         'outflows' => "Sorties",
         'profits' => "Répartition des gains",
         'summary' => "Résumé",

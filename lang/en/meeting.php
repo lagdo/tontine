@@ -23,6 +23,7 @@ return [
         'benefit' => "Benefit",
         'refund' => "Refund",
         'refunds' => "Refunds",
+        'inflows' => "Inflows",
         'outflows' => "Outflows",
         'profits' => "Profits distribution",
         'summary' => "Summary",
