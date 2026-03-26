@@ -367,7 +367,9 @@ return [
         ],
         'titles' => [
             'graph' => [
-                'summary' => "Transactions summary",
+                'session' => "Session transactions",
+                'round' => "Round transactions",
+                'total' => "Total transactions",
                 'balance' => "Inflows and outflows",
                 'inflows' => "Inflow distribution",
                 'outflows' => "Outflow distribution",

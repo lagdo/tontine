@@ -18,6 +18,9 @@
             const { data: [[value]] = [[]] } = series;
             return `${label}: ${Number.isInteger(value) && value < 0 ? -value : value}`;
         },
+        // formatTickY: (label) => label,
+        sessionLabel: (label) => self.labels.session[label] ?? '',
+        totalLabel: (label) => self.labels.total[label] ?? '',
     };
 })(tontine);
 </script>

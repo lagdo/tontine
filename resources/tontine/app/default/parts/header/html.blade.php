@@ -15,3 +15,9 @@
 <link rel="stylesheet" href="/tpl/assets/css/components-v1.4.css">
 <link rel="stylesheet" href="/vendor/spinner/spin.css">
 <link rel="stylesheet" href="/assets/app.4.0.14.css">
+
+<style>
+.flot-tooltip {
+   z-index: 1500;
+}
+</style>

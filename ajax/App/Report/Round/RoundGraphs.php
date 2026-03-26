@@ -35,23 +35,23 @@ class RoundGraphs extends Component
             ->filter(fn($session) => $session->day_date <= $lastSession->day_date);
         $sessionIds = $sessions->pluck('id');
 
-        $this->stash()->set('report.total.deposits', $this->roundService
-            ->getDepositAmounts($sessionIds)->sum());
-        $this->stash()->set('report.total.remitments', $this->roundService
-            ->getRemitmentAmounts($sessionIds)->sum());
-        $this->stash()->set('report.total.settlements', $this->roundService
-            ->getSettlementAmounts($sessionIds)->sum());
-        $this->stash()->set('report.total.loans', $this->roundService
-            ->getLoanAmounts($sessionIds)->sum());
-        $this->stash()->set('report.total.refunds', $this->roundService
-            ->getRefundAmounts($sessionIds)->sum());
-        $this->stash()->set('report.total.savings', $this->roundService
-            ->getSavingAmounts($sessionIds)->sum());
-        $this->stash()->set('report.total.outflows', $this->roundService
-            ->getOutflowAmounts($sessionIds)->sum());
+        $this->stash()->set('report.total.deposits',
+            $this->roundService->getDepositAmounts($sessionIds));
+        $this->stash()->set('report.total.remitments',
+            $this->roundService->getRemitmentAmounts($sessionIds));
+        $this->stash()->set('report.total.settlements',
+            $this->roundService->getSettlementAmounts($sessionIds));
+        $this->stash()->set('report.total.loans',
+            $this->roundService->getLoanAmounts($sessionIds));
+        $this->stash()->set('report.total.refunds',
+            $this->roundService->getRefundAmounts($sessionIds));
+        $this->stash()->set('report.total.savings',
+            $this->roundService->getSavingAmounts($sessionIds));
+        $this->stash()->set('report.total.outflows',
+            $this->roundService->getOutflowAmounts($sessionIds));
 
-        // Initialize the page components.
-        $this->cl(Graph\Summary::class)->render();
+        $this->cl(Graph\Total::class)->render();
+        $this->cl(Graph\Round::class)->render();
         $this->cl(Graph\Balance::class)->render();
         $this->cl(Graph\Inflow::class)->render();
         $this->cl(Graph\Outflow::class)->render();

@@ -23,12 +23,26 @@ class SessionFunc extends FuncComponent
     {}
 
     /**
+     * @return Collection
+     */
+    private function getSessions(): Collection
+    {
+        $sessions = $this->sessionService->getSessions($this->round(), orderAsc: false)
+            ->filter(fn($session) => ($session->opened || $session->closed));
+        $this->stash()->set('report.sessions', $sessions);
+        return $sessions;
+    }
+
+    /**
      * @param int $sessionId
      *
      * @return SessionModel|null
      */
     private function getSession(int $sessionId): SessionModel|null
     {
+        // Stash the round sessions.
+        $this->getSessions();
+
         return $sessionId <= 0 ? null :
             $this->sessionService->getSession($this->round(), $sessionId);
     }
@@ -42,15 +56,6 @@ class SessionFunc extends FuncComponent
     {
         return $memberId <= 0 ? null :
             $this->memberService->getMember($this->round(), $memberId);
-    }
-
-    /**
-     * @return Collection
-     */
-    private function getSessions(): Collection
-    {
-        return $this->sessionService->getSessions($this->round(), orderAsc: false)
-            ->filter(fn($session) => ($session->opened || $session->closed));
     }
 
     /**

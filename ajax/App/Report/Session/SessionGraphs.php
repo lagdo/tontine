@@ -6,8 +6,6 @@ use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Report\RoundService;
 
-use function collect;
-
 #[Exclude]
 class SessionGraphs extends Component
 {
@@ -32,27 +30,26 @@ class SessionGraphs extends Component
 
     protected function after(): void
     {
-        $session = $this->stash()->get('report.session');
-        $sessionIds = collect([$session->id]);
+        $sessions = $this->stash()->get('report.sessions');
+        $sessionIds = $sessions->pluck('id');
 
-        $sessionId = "{$session->id}";
-        $this->stash()->set('report.total.deposits', $this->roundService
-            ->getDepositAmounts($sessionIds)[$sessionId] ?? 0);
-        $this->stash()->set('report.total.remitments', $this->roundService
-            ->getRemitmentAmounts($sessionIds)[$sessionId] ?? 0);
-        $this->stash()->set('report.total.settlements', $this->roundService
-            ->getSettlementAmounts($sessionIds)[$sessionId] ?? 0);
-        $this->stash()->set('report.total.loans', $this->roundService
-            ->getLoanAmounts($sessionIds)[$sessionId] ?? 0);
-        $this->stash()->set('report.total.refunds', $this->roundService
-            ->getRefundAmounts($sessionIds)[$sessionId] ?? 0);
-        $this->stash()->set('report.total.savings', $this->roundService
-            ->getSavingAmounts($sessionIds)[$sessionId] ?? 0);
-        $this->stash()->set('report.total.outflows', $this->roundService
-            ->getOutflowAmounts($sessionIds)[$sessionId] ?? 0);
+        $this->stash()->set('report.total.deposits',
+            $this->roundService->getDepositAmounts($sessionIds));
+        $this->stash()->set('report.total.remitments',
+            $this->roundService->getRemitmentAmounts($sessionIds));
+        $this->stash()->set('report.total.settlements',
+            $this->roundService->getSettlementAmounts($sessionIds));
+        $this->stash()->set('report.total.loans',
+            $this->roundService->getLoanAmounts($sessionIds));
+        $this->stash()->set('report.total.refunds',
+            $this->roundService->getRefundAmounts($sessionIds));
+        $this->stash()->set('report.total.savings',
+            $this->roundService->getSavingAmounts($sessionIds));
+        $this->stash()->set('report.total.outflows',
+            $this->roundService->getOutflowAmounts($sessionIds));
 
-        // Initialize the page components.
-        $this->cl(Graph\Summary::class)->render();
+        $this->cl(Graph\Total::class)->render();
+        $this->cl(Graph\Session::class)->render();
         $this->cl(Graph\Balance::class)->render();
         $this->cl(Graph\Inflow::class)->render();
         $this->cl(Graph\Outflow::class)->render();

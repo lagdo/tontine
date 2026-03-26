@@ -3,6 +3,7 @@
 namespace Ajax\App\Report\Session\Graph;
 
 use Ajax\Base\Round\Component;
+use Ajax\App\Report\Graph\GraphTrait;
 use Jaxon\Attributes\Attribute\Exclude;
 
 use function trans;
@@ -25,18 +26,16 @@ class Balance extends Component
      */
     protected function after(): void
     {
-        $card = $this->card();
+        $card = $this->card()->options($this->pieOptions());
 
-        // Set the card options
-        $card->options($this->pieOptions());
-
-        $inflows = $this->stash()->get('report.total.deposits') +
-            $this->stash()->get('report.total.settlements') +
-            $this->stash()->get('report.total.refunds') +
-            $this->stash()->get('report.total.savings');
-        $outflows = $this->stash()->get('report.total.remitments') +
-            $this->stash()->get('report.total.loans') +
-            $this->stash()->get('report.total.outflows');
+        $session = $this->stash()->get('report.session');
+        $inflows = $this->getCounter('deposits', $session->id) +
+            $this->getCounter('settlements', $session->id) +
+            $this->getCounter('refunds', $session->id) +
+            $this->getCounter('savings', $session->id);
+        $outflows = $this->getCounter('remitments', $session->id) +
+            $this->getCounter('loans', $session->id) +
+            $this->getCounter('outflows', $session->id);
         // Add the pie to the card
         $card->pie()->slices([
             [$inflows, trans('meeting.titles.inflows')],
