@@ -7,13 +7,22 @@
             <div class="row">
               <div class="col-md-6 col-sm-12">
                 <div class="card shadow mb-4">
-                  <div class="card-body" style="display: flex;">
+                  {{-- <div class="card-body" style="display: flex;">
                     <div style="width: 140px;">
-                      <!-- This element is embeded because the Flot library changes its width. -->
+                      <!-- This element is embedded because the Flot library changes its width. -->
                       <div id="tontine-graph-session-summary-labels">
                       </div>
                     </div>
                     <div @jxnBind($rqSummary) style="flex: 1;">
+                    </div>
+                  </div> --}}
+                  <div class="card-body">
+                    <div style="height:100px;">
+                      <!-- This element is embedded because the Flot library changes its width. -->
+                      <div id="tontine-graph-session-summary-labels">
+                      </div>
+                    </div>
+                    <div @jxnBind($rqSummary)>
                     </div>
                   </div>
                 </div>

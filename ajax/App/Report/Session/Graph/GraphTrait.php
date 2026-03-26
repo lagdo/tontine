@@ -14,6 +14,11 @@ trait GraphTrait
     protected string $graphId = '';
 
     /**
+     * @var string
+     */
+    protected string $graphHeight = '300px';
+
+    /**
      * @return AjaxResponse
      */
     abstract protected function response(): AjaxResponse;
@@ -32,7 +37,7 @@ trait GraphTrait
     private function card(): Card
     {
         // The width will be automatically set by the Flot plugin.
-        return $this->flot()->card($this->graphId)->height('300px');
+        return $this->flot()->card($this->graphId)->height($this->graphHeight);
     }
 
     /**

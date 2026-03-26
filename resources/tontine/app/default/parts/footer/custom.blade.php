@@ -13,11 +13,11 @@
 
     self.home = () => {!! rq(Ajax\Page\Admin::class)->home() !!};
 
-    // self.flot = {
-    //     formatLabel: (label, series) => {
-    //         const { data: [[, value]] = [[]] } = series;
-    //         return `${label}: ${value}`;
-    //     },
-    // };
+    self.flot = {
+        formatLabel: (label, series) => {
+            const { data: [[value]] = [[]] } = series;
+            return `${label}: ${Number.isInteger(value) && value < 0 ? -value : value}`;
+        },
+    };
 })(tontine);
 </script>

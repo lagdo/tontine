@@ -18,6 +18,7 @@ class Summary extends Component
     protected function before(): void
     {
         $this->graphId = 'tontine-graph-session-summary';
+        $this->graphHeight = '200px';
     }
 
     /**
@@ -28,8 +29,8 @@ class Summary extends Component
         $card = $this->card()->options([
             'series' => [
                 'labels' => [
-                    'show' => true,
-                    'position' => 'middle',
+                    'show' => false,
+                    // 'position' => 'middle',
                     // 'angle' => 90,
                     // 'labelFormatter' => 'tontine.flot.formatLabel',
                 ],
@@ -39,9 +40,9 @@ class Summary extends Component
             ],
             'legend' => [
                 'show' => true,
-                'noColumns' => 1,
+                'noColumns' => 2,
                 'container' => "{$this->graphId}-labels",
-                // 'labelFormatter' => 'tontine.flot.formatLabel',
+                'labelFormatter' => 'tontine.flot.formatLabel',
             ],
         ]);
 
@@ -52,43 +53,43 @@ class Summary extends Component
         // Add a second graph to the card
         $deposits = $card->graph([
             'label' => trans('meeting.titles.deposits'),
-            'bars' => ['show' => true, 'order' => 1],
+            'bars' => ['show' => true, 'horizontal' => true, 'order' => 7],
         ]);
         $deposits->series()->points([[0, $this->stash()->get('report.total.deposits')]]);
 
         $remitments = $card->graph([
             'label' => trans('meeting.titles.remitments'),
-            'bars' => ['show' => true, 'order' => 2],
+            'bars' => ['show' => true, 'horizontal' => true, 'order' => 6],
         ]);
         $remitments->series()->points([[0, -$this->stash()->get('report.total.remitments')]]);
 
         $settlements = $card->graph([
             'label' => trans('meeting.titles.settlements'),
-            'bars' => ['show' => true, 'order' => 3],
+            'bars' => ['show' => true, 'horizontal' => true, 'order' => 5],
         ]);
         $settlements->series()->points([[0, $this->stash()->get('report.total.settlements')]]);
 
         $outflows = $card->graph([
             'label' => trans('meeting.titles.outflows'),
-            'bars' => ['show' => true, 'order' => 4],
+            'bars' => ['show' => true, 'horizontal' => true, 'order' => 4],
         ]);
         $outflows->series()->points([[0, -$this->stash()->get('report.total.outflows')]]);
 
         $savings = $card->graph([
             'label' => trans('meeting.titles.savings'),
-            'bars' => ['show' => true, 'order' => 5],
+            'bars' => ['show' => true, 'horizontal' => true, 'order' => 3],
         ]);
         $savings->series()->points([[0, $this->stash()->get('report.total.savings')]]);
 
         $loans = $card->graph([
             'label' => trans('meeting.titles.loans'),
-            'bars' => ['show' => true, 'order' => 6],
+            'bars' => ['show' => true, 'horizontal' => true, 'order' => 2],
         ]);
         $loans->series()->points([[0, -$this->stash()->get('report.total.loans')]]);
 
         $refunds = $card->graph([
             'label' => trans('meeting.titles.refunds'),
-            'bars' => ['show' => true, 'order' => 7],
+            'bars' => ['show' => true, 'horizontal' => true, 'order' => 1],
         ]);
         $refunds->series()->points([[0, $this->stash()->get('report.total.refunds')]]);
 
