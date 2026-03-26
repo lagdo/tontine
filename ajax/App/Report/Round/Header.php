@@ -7,7 +7,7 @@ use Jaxon\App\ComponentDataTrait;
 use Jaxon\Attributes\Attribute\Exclude;
 
 #[Exclude]
-class Select extends Component
+class Header extends Component
 {
     use ComponentDataTrait;
 
@@ -16,9 +16,8 @@ class Select extends Component
      */
     public function html(): string
     {
-        $sessions = $this->stash()->get('report.sessions');
-        return $this->renderTpl('pages.report.round.select', [
-            'sessions' => $sessions->pluck('title', 'id'),
+        return $this->renderTpl('pages.report.round.header.menu', [
+            'round' => $this->round(),
             'content' => $this->get('content'),
         ]);
     }

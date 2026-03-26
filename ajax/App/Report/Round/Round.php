@@ -31,7 +31,7 @@ class Round extends Component
      */
     public function html(): string
     {
-        return $this->renderTpl('pages.report.round.home', ['round' => $this->round()]);
+        return $this->renderTpl('pages.report.round.home');
     }
 
     /**

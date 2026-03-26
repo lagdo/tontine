@@ -21,9 +21,8 @@ class RoundTables extends Component
     public function html(): string
     {
         $lastSession = $this->stash()->get('report.session');
-        $sessions = $this->sessionService->getSessions($this->round(), orderAsc: false)
-            ->filter(fn($session) => !$session->pending &&
-                $session->day_date <= $lastSession->day_date);
+        $sessions = $this->stash()->get('report.sessions')
+            ->filter(fn($session) => $session->day_date <= $lastSession->day_date);
         return $this->renderTpl('pages.report.round.tables', [
             'round' => $this->round(),
             'sessions' => $sessions->pluck('title', 'id'),

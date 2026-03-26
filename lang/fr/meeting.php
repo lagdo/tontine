@@ -365,8 +365,8 @@ return [
             'savings' => "Rapport d'épargne",
             'round' => "Rapport de tour",
         ],
-        'graph' => [
-            'session' => [
+        'titles' => [
+            'graph' => [
                 'summary' => "Résumé des opérations",
                 'balance' => "Entrées et sorties",
                 'inflows' => "Distribution des entrées",

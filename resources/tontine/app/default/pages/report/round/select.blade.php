@@ -12,5 +12,9 @@
                     <button type="button" class="btn btn-primary" @jxnClick($rqRoundFunc
                       ->showRoundTables($sessionId))><i class="fa fa-caret-right"></i></button>
 @endif
+@if ($content === 'graphs')
+                    <button type="button" class="btn btn-primary" @jxnClick($rqRoundFunc
+                      ->showRoundGraphs($sessionId))><i class="fa fa-caret-right"></i></button>
+@endif
                 </div>
               </div>

@@ -6,7 +6,6 @@
                 <h2 class="section-title">{{ $session->title }}: {!! $sectionTitle !!}</h2>
               </div>
               <div class="col-auto ml-auto">
-@include('tontine_app::pages.report.session.action.exports', ['sessionId' => $session->id])
                 <div class="btn-group ml-2" role="group" @jxnEvent([
                   ['.btn-session-pools', 'click', $rqSectionFunc->pools()],
                   ['.btn-session-charges', 'click', $rqSectionFunc->charges()],
