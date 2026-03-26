@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Report\Round;
+namespace Ajax\App\Report\Round\Table;
 
 trait PoolTrait
 {

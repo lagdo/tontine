@@ -6,7 +6,6 @@ use Ajax\Base\Round\Component;
 use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
-use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Siak\Tontine\Service\Meeting\Session\SummaryService;
 
 #[Before('checkHostAccess', ["report", "round"])]
@@ -14,7 +13,7 @@ use Siak\Tontine\Service\Meeting\Session\SummaryService;
 #[Before('getPools')]
 class Round extends Component
 {
-    use PoolTrait;
+    use Table\PoolTrait;
 
     /**
      * @var string
@@ -22,11 +21,9 @@ class Round extends Component
     protected string $overrides = SectionContent::class;
 
     /**
-     * @param SessionService $sessionService
      * @param SummaryService $summaryService
      */
-    public function __construct(private SessionService $sessionService,
-        private SummaryService $summaryService)
+    public function __construct(private SummaryService $summaryService)
     {}
 
     /**
@@ -34,15 +31,7 @@ class Round extends Component
      */
     public function html(): string
     {
-        $this->view()->share('lastSession', $this->stash()->get('tenant.session'));
-
-        $sessions = $this->sessionService
-            ->getSessions($this->round(), orderAsc: false)
-            ->filter(fn($session) => $session->active);
-        return $this->renderTpl('pages.report.round.home', [
-            'round' => $this->round(),
-            'sessions' => $sessions->pluck('title', 'id'),
-        ]);
+        return $this->renderTpl('pages.report.round.home', ['round' => $this->round()]);
     }
 
     /**
@@ -50,7 +39,7 @@ class Round extends Component
      */
     protected function after(): void
     {
-        $this->response()->jo('tontine')->makeTableResponsive('content-home');
+        $this->cl(RoundFunc::class)->showTables();
     }
 
     /**
@@ -59,16 +48,6 @@ class Round extends Component
     #[Before('setSectionTitle', ["report", "round"])]
     #[Callback('tontine.hideMenu')]
     public function home(): void
-    {
-        $this->render();
-    }
-
-    /**
-     * @param int $sessionId
-     *
-     * @return void
-     */
-    public function select(int $sessionId): void
     {
         $this->render();
     }

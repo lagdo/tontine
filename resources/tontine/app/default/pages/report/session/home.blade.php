@@ -6,7 +6,7 @@
           <div class="section-body">
             <div class="row mb-2" @jxnBind($rqHeader)>
             </div>
-            <div class="row" @jxnBind($rqSelect)>
+            <div class="row mb-2" @jxnBind($rqSelect)>
             </div>
           </div>
 

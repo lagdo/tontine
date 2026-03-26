@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Report\Round;
+namespace Ajax\App\Report\Round\Table;
 
 use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Before;
@@ -36,7 +36,7 @@ class Balance extends Component
         }
         $sessionIds = $sessions->pluck('id');
 
-        return $this->renderTpl('pages.report.round.balance', [
+        return $this->renderTpl('pages.report.round.round.balance', [
             'sessions' => $sessions,
             'settlements' => $this->roundService->getSettlementAmounts($sessionIds),
             'loans' => $this->roundService->getLoanAmounts($sessionIds),

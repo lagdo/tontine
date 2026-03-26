@@ -3,7 +3,7 @@
   $memberId = Jaxon\select('report-select-member')->toInt();
   $rqSessionFunc = rq(Ajax\App\Report\Session\SessionFunc::class);
 @endphp
-              <div class="col-auto mb-2 pr-0 mr-0">
+              <div class="col-auto pr-0 mr-0">
                 <div class="input-group float-left">
                   {{ $html->select('session_id', $sessions, 0)->id('report-select-session')
                     ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') }}
@@ -20,7 +20,7 @@
                 </div>
               </div>
 @if ($content === 'tables')
-              <div class="col-auto mb-2 pr-0 mr-0">
+              <div class="col-auto pr-0 mr-0">
                 <div class="input-group float-left">
                   {{ $html->select('member_id', $members, 0)->id('report-select-member')
                     ->class('form-control')->attribute('style', 'height:36px; padding:5px 5px;') }}

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ajax\App\Report\Round;
+namespace Ajax\App\Report\Round\Table;
 
 use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Before;
@@ -21,7 +21,7 @@ class Pool extends Component
     public function html(): string
     {
         $figures = $this->stash()->get('report.round.figures');
-        return $this->renderTpl('pages.report.round.pool', $figures);
+        return $this->renderTpl('pages.report.round.round.pool', $figures);
     }
 
     /**
