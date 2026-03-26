@@ -365,5 +365,13 @@ return [
             'savings' => "Savings report",
             'round' => "Round report",
         ],
+        'graph' => [
+            'session' => [
+                'summary' => "Transactions summary",
+                'balance' => "Inflows and outflows",
+                'inflows' => "Inflow distribution",
+                'outflows' => "Outflow distribution",
+            ],
+        ],
     ],
 ];
