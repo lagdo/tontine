@@ -14,7 +14,7 @@
                         <div class="section-title mt-0">{{ __('meeting.report.titles.graph.round') }}</div>
                       </div>
                     </div>
-                    <div style="height:70px;">
+                    <div style="height:80px;">
                       <!-- This element is embedded because the Flot library changes its width. -->
                       <div id="tontine-graph-round-current-labels">
                       </div>

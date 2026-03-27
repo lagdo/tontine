@@ -26,7 +26,7 @@ class Round extends Component
     protected function before(): void
     {
         $this->graphId = 'tontine-graph-round-current';
-        $this->graphHeight = '230px';
+        $this->graphHeight = '220px';
     }
 
     /**
@@ -34,7 +34,9 @@ class Round extends Component
      */
     protected function after(): void
     {
+        $lastSession = $this->stash()->get('report.session');
         $sessions = $this->stash()->get('report.sessions');
+        $sessions = $sessions->filter(fn($session) => $session->day_date <= $lastSession->day_date);
         if($sessions->count() < 2)
         {
             return;
@@ -42,7 +44,8 @@ class Round extends Component
 
         $card = $this->card()->options($this->lineOptions());
         // Set the sessions as ticks on X axis.
-        $card->xaxis()->points($sessions->map(fn($session) => [$session->id, $session->day_date])->toArray());
+        $card->xaxis()->points($sessions->map(fn($session) =>
+            [$session->id, $session->day_date->format('m-d')])->toArray());
         // $card->yaxis()->options([
         //     'position' => 'right',
         //     'tickFormatter' => 'tontine.flot.formatTickY',

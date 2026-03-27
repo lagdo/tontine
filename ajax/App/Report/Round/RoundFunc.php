@@ -42,9 +42,6 @@ class RoundFunc extends FuncComponent
      */
     private function getSession(int $sessionId): SessionModel|null
     {
-        // Stash the round sessions.
-        $this->getSessions();
-
         return $sessionId <= 0 ? null :
             $this->sessionService->getSession($this->round(), $sessionId);
     }
@@ -93,6 +90,7 @@ class RoundFunc extends FuncComponent
     {
         if(($session = $this->getSession($sessionId)) !== null)
         {
+            $this->getSessions();
             $this->renderTables($session);
         }
     }
@@ -111,6 +109,7 @@ class RoundFunc extends FuncComponent
     {
         if(($session = $this->getSession($sessionId)) !== null)
         {
+            $this->getSessions();
             $this->renderGraphs($session);
         }
     }

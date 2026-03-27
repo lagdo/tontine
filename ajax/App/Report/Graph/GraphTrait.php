@@ -97,7 +97,7 @@ trait GraphTrait
         return [
             'legend' => [
                 'show' => true,
-                'noColumns' => 4,
+                'noColumns' => 3,
                 'container' => "{$this->graphId}-labels",
             ],
             'yaxis' => [
