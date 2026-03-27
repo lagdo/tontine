@@ -5,6 +5,7 @@ return [
         'format' => 'D j M Y',
         'format_medium' => 'j M Y',
         'format_my' => 'F Y',
+        'format_md' => 'd M',
     ],
     'menus' => [
         'admin' => "Administration",

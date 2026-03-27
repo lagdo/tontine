@@ -44,8 +44,9 @@ class Round extends Component
 
         $card = $this->card()->options($this->lineOptions());
         // Set the sessions as ticks on X axis.
+        $dateFormat = trans('tontine.date.format_md');
         $card->xaxis()->points($sessions->map(fn($session) =>
-            [$session->id, $session->day_date->format('m-d')])->toArray());
+            [$session->id, $session->day_date->format($dateFormat)])->toArray());
         // $card->yaxis()->options([
         //     'position' => 'right',
         //     'tickFormatter' => 'tontine.flot.formatTickY',
