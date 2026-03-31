@@ -10,6 +10,7 @@ use Siak\Tontine\Model\Guild;
 use Siak\Tontine\Model\MemberDef;
 use Siak\Tontine\Service\TenantService;
 use Siak\Tontine\Validation\SearchSanitizer;
+use Exception;
 
 class MemberService
 {
