@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\Component;
-use Stringable;
 
 use function trim;
 
@@ -15,16 +14,16 @@ class Member extends Component
     /**
      * @var string
      */
-    protected $overrides = Fee::class;
+    protected string $overrides = Fee::class;
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $charge = $this->stash()->get('meeting.session.charge');
 
-        return $this->renderView('pages.meeting.session.charge.libre.member.home', [
+        return $this->renderTpl('pages.meeting.session.charge.libre.member.home', [
             'charge' => $charge,
             'paid' => $charge->is_fee,
         ]);

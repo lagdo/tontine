@@ -2,16 +2,13 @@
 
 namespace Ajax\App\Admin\Guild;
 
-use Ajax\Component;
 use Ajax\App\Admin\Guest\Guild as GuestGuild;
+use Ajax\Base\Component;
 use Ajax\Page\SectionContent;
-use Ajax\Page\SectionTitle;
+use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\GuildService;
-use Stringable;
-
-use function trans;
 
 #[Databag('admin')]
 class Guild extends Component
@@ -19,7 +16,7 @@ class Guild extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
     /**
      * @param GuildService $guildService
@@ -27,6 +24,7 @@ class Guild extends Component
     public function __construct(private GuildService $guildService)
     {}
 
+    #[Before('setSectionTitle', ["admin", "guilds"])]
     #[Callback('tontine.hideMenu')]
     public function home()
     {
@@ -36,18 +34,10 @@ class Guild extends Component
     /**
      * @inheritDoc
      */
-    protected function before(): void
-    {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.admin'));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function html(): Stringable
+    public function html(): string
     {
         $user = $this->tenantService->user();
-        return $this->renderView('pages.admin.guild.home', [
+        return $this->renderTpl('pages.admin.guild.home', [
             'hasGuestGuilds' => $this->guildService->hasGuestGuilds($user),
         ]);
     }

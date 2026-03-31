@@ -2,10 +2,9 @@
 
 namespace Ajax\App\Meeting\Summary\Pool\Remitment;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
-use Stringable;
 
 #[Exclude]
 class PayablePage extends Component
@@ -21,12 +20,12 @@ class PayablePage extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $pool = $this->stash()->get('summary.pool');
         $session = $this->stash()->get('summary.session');
 
-        return $this->renderView('pages.meeting.summary.remitment.payable.page', [
+        return $this->renderTpl('pages.meeting.summary.remitment.payable.page', [
             'pool' => $pool,
             'session' => $session,
             'payables' => $this->remitmentService->getPayables($pool, $session),
@@ -38,6 +37,6 @@ class PayablePage extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-session-pool-remitments');
+        $this->response()->jo('tontine')->makeTableResponsive('content-session-pool-remitments');
     }
 }

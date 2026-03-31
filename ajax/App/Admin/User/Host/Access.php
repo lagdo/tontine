@@ -1,0 +1,64 @@
+<?php
+
+namespace Ajax\App\Admin\User\Host;
+
+use Ajax\Base\Component;
+use Jaxon\Attributes\Attribute\Before;
+use Jaxon\Attributes\Attribute\Databag;
+use Siak\Tontine\Service\Guild\UserService;
+
+use function trans;
+
+#[Before('getInvite')]
+#[Databag('user.access')]
+class Access extends Component
+{
+    use AccessTrait;
+
+    /**
+     * @var string
+     */
+    protected string $overrides = Host::class;
+
+    /**
+     * @param UserService $userService
+     */
+    public function __construct(private UserService $userService)
+    {}
+
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
+    {
+        $invite = $this->stash()->get('user.access.invite');
+        return $this->renderTpl('pages.admin.user.host.access.home', [
+            'guest' => $invite->guest,
+            'guilds' => $this->tenantService->user()->guilds->pluck('name', 'id'),
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function after(): void
+    {
+        $guild = $this->tenantService->user()->guilds->first();
+        $this->bag('user.access')->set('guild.id', $guild->id);
+        $this->stash()->set('user.access.guild', $guild);
+
+        $this->cl(GuildAccess::class)->render();
+    }
+
+    public function home(int $inviteId): void
+    {
+        if($this->tenantService->user()->guilds->count() > 0)
+        {
+            $this->render();
+            return;
+        }
+
+        $this->alert()->title(trans('common.titles.warning'))
+            ->warning(trans('tontine.invite.errors.no_guild'));
+    }
+}

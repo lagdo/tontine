@@ -2,11 +2,10 @@
 
 namespace Ajax\App\Guild\Calendar;
 
-use Ajax\PageComponent;
+use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\RoundService;
-use Stringable;
 
 #[Before('checkHostAccess', ["guild", "calendar"])]
 #[Databag('guild.calendar')]
@@ -30,18 +29,16 @@ class RoundPage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->stash()->get('tenant.guild');
-        return $this->roundService->getRoundCount($guild);
+        return $this->roundService->getRoundCount($this->guild());
     }
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        $guild = $this->stash()->get('tenant.guild');
-        return $this->renderView('pages.guild.calendar.round.page', [
-            'rounds' => $this->roundService->getRounds($guild, $this->currentPage()),
+        return $this->renderTpl('pages.guild.calendar.round.page', [
+            'rounds' => $this->roundService->getRounds($this->guild(), $this->currentPage()),
         ]);
     }
 
@@ -50,7 +47,7 @@ class RoundPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->makeTableResponsive('content-planning-rounds-page');
     }
 }

@@ -2,12 +2,11 @@
 
 namespace Ajax\App\Guild\Calendar;
 
-use Ajax\PageComponent;
+use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\RoundService;
 use Siak\Tontine\Service\Guild\SessionService;
-use Stringable;
 
 #[Before('checkHostAccess', ["guild", "calendar"])]
 #[Before('getRound')]
@@ -27,9 +26,8 @@ class SessionPage extends PageComponent
 
     protected function getRound()
     {
-        $guild = $this->stash()->get('tenant.guild');
         $roundId = $this->bag('guild.calendar')->get('round.id');
-        $round = $this->roundService->getRound($guild, $roundId);
+        $round = $this->roundService->getRound($this->guild(), $roundId);
         $this->stash()->set('guild.calendar.round', $round);
     }
 
@@ -45,11 +43,11 @@ class SessionPage extends PageComponent
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $round = $this->stash()->get('guild.calendar.round');
 
-        return $this->renderView('pages.guild.calendar.session.page', [
+        return $this->renderTpl('pages.guild.calendar.session.page', [
             'sessions' => $round === null ? []:
                 $this->roundService->getSessions($round, $this->currentPage()),
             'statuses' => $this->sessionService->getSessionStatuses(),
@@ -61,6 +59,6 @@ class SessionPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-planning-sessions-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-planning-sessions-page');
     }
 }

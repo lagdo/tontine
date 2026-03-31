@@ -11,7 +11,6 @@ use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Planning\PoolService;
 use Siak\Tontine\Service\Planning\SummaryService;
-use Stringable;
 
 #[Before('getPool')]
 #[Databag('planning.pool')]
@@ -23,7 +22,7 @@ class Planning extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
     /**
      * The constructor
@@ -57,12 +56,12 @@ class Planning extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $pool = $this->stash()->get('planning.pool');
         $this->view()->shareValues($this->summaryService->getReceivables($pool));
 
-        return $this->renderView('pages.planning.pool.subscription.planning', [
+        return $this->renderTpl('pages.planning.pool.subscription.planning', [
             'pool' => $pool,
         ]);
     }
@@ -72,6 +71,6 @@ class Planning extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-subscription-planning');
+        $this->response()->jo('tontine')->makeTableResponsive('content-subscription-planning');
     }
 }

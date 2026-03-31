@@ -2,15 +2,15 @@
 
 namespace Ajax\App\Guild\Member;
 
-use Ajax\FuncComponent;
-use Ajax\App\FakerFunc;
+use Ajax\Base\Guild\FuncComponent;
+use Ajax\App\Guild\FakerFunc;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Validation\Guild\MemberValidator;
 
-use function je;
+use function Jaxon\form;
 use function array_filter;
 use function array_map;
 use function config;
@@ -35,7 +35,7 @@ class MemberFunc extends FuncComponent
     public function add(): void
     {
         $title = trans('tontine.member.titles.add');
-        $content = $this->renderView('pages.guild.member.add');
+        $content = $this->renderTpl('pages.guild.member.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -43,7 +43,7 @@ class MemberFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(je('member-form')->rd()->form()),
+            'click' => $this->rq()->create(form('member-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -52,9 +52,8 @@ class MemberFunc extends FuncComponent
     public function create(array $formValues): void
     {
         $values = $this->validator->validateItem($formValues);
-        $guild = $this->stash()->get('tenant.guild');
 
-        $this->memberService->createMember($guild, $values);
+        $this->memberService->createMember($this->guild(), $values);
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.member.messages.created'));
@@ -65,7 +64,7 @@ class MemberFunc extends FuncComponent
     public function addList(): void
     {
         $title = trans('tontine.member.titles.add');
-        $content = $this->renderView('pages.guild.member.list');
+        $content = $this->renderTpl('pages.guild.member.list');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -83,7 +82,7 @@ class MemberFunc extends FuncComponent
         $buttons[] = [
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->createList(je('member-list')->rd()->form()),
+            'click' => $this->rq()->createList(form('member-list')),
         ];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -130,9 +129,8 @@ class MemberFunc extends FuncComponent
     public function createList(array $formValues): void
     {
         $values = $this->parseMemberList($formValues['members'] ?? '');
-        $guild = $this->stash()->get('tenant.guild');
 
-        $this->memberService->createMembers($guild, $values);
+        $this->memberService->createMembers($this->guild(), $values);
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.member.messages.created'));
@@ -142,12 +140,10 @@ class MemberFunc extends FuncComponent
 
     public function edit(int $memberId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $member = $this->memberService->getMember($guild, $memberId);
+        $member = $this->memberService->getMember($this->guild(), $memberId);
 
         $title = trans('tontine.member.titles.edit');
-        $content = $this->renderView('pages.guild.member.edit')
-            ->with('member', $member);
+        $content = $this->renderTpl('pages.guild.member.edit', ['member' => $member]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -155,7 +151,7 @@ class MemberFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($member->id, je('member-form')->rd()->form()),
+            'click' => $this->rq()->update($member->id, form('member-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -163,8 +159,7 @@ class MemberFunc extends FuncComponent
     #[Inject(attr: 'validator')]
     public function update(int $memberId, array $formValues): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $member = $this->memberService->getMember($guild, $memberId);
+        $member = $this->memberService->getMember($this->guild(), $memberId);
         $values = $this->validator->validateItem($formValues);
 
         $this->memberService->updateMember($member, $values);
@@ -177,8 +172,7 @@ class MemberFunc extends FuncComponent
 
     public function toggle(int $memberId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $member = $this->memberService->getMember($guild, $memberId);
+        $member = $this->memberService->getMember($this->guild(), $memberId);
         $this->memberService->toggleMember($member);
 
         $this->cl(MemberPage::class)->page();
@@ -186,8 +180,7 @@ class MemberFunc extends FuncComponent
 
     public function delete(int $memberId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $member = $this->memberService->getMember($guild, $memberId);
+        $member = $this->memberService->getMember($this->guild(), $memberId);
         $this->memberService->deleteMember($member);
 
         $this->cl(MemberPage::class)->page();

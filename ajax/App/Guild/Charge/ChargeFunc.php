@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Charge;
 
-use Ajax\FuncComponent;
+use Ajax\Base\Guild\FuncComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Inject;
@@ -11,6 +11,8 @@ use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Service\Guild\ChargeService;
 use Siak\Tontine\Validation\Guild\ChargeValidator;
 
+use function Jaxon\form;
+use function Jaxon\input;
 use function je;
 use function trans;
 
@@ -39,10 +41,10 @@ class ChargeFunc extends FuncComponent
     public function select(): void
     {
         $title = '';
-        $content = $this->renderView('pages.guild.charge.select', [
+        $content = $this->renderTpl('pages.guild.charge.select', [
             'groups' => $this->getChargeGroups()
         ]);
-        $group = je('charge-group')->rd()->input()->toInt();
+        $group = input('charge-group')->toInt();
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -61,11 +63,10 @@ class ChargeFunc extends FuncComponent
     {
         $this->modal()->hide();
 
-        $guild = $this->stash()->get('tenant.guild');
-        [, $currency] = $this->localeService->getNameFromGuild($guild);
+        [, $currency] = $this->localeService->getNameFromGuild($this->guild());
 
         $title = trans('tontine.charge.titles.add');
-        $content = $this->renderView('pages.guild.charge.add', [
+        $content = $this->renderTpl('pages.guild.charge.add', [
             'fixed' => $group === self::$GROUP_FIXED,
             'label' => $this->getChargeGroups()[$group],
             'currency' => $currency,
@@ -79,7 +80,7 @@ class ChargeFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create($group, je('charge-form')->rd()->form()),
+            'click' => $this->rq()->create($group, form('charge-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -104,10 +105,9 @@ class ChargeFunc extends FuncComponent
                 $formValues['amount'] = 0;
             }
         }
-        $guild = $this->stash()->get('tenant.guild');
         $values = $this->validator->validateItem($formValues);
 
-        $this->chargeService->createCharge($guild, $values);
+        $this->chargeService->createCharge($this->guild(), $values);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.charge.messages.created'));
         $this->modal()->hide();
@@ -118,13 +118,12 @@ class ChargeFunc extends FuncComponent
     #[Inject(attr: 'localeService')]
     public function edit(int $chargeId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $charge = $this->chargeService->getCharge($guild, $chargeId);
+        $charge = $this->chargeService->getCharge($this->guild(), $chargeId);
 
-        [, $currency] = $this->localeService->getNameFromGuild($guild);
+        [, $currency] = $this->localeService->getNameFromGuild($this->guild());
 
         $title = trans('tontine.charge.titles.edit');
-        $content = $this->renderView('pages.guild.charge.edit', [
+        $content = $this->renderTpl('pages.guild.charge.edit', [
             'charge' => $charge,
             'currency' => $currency,
             'types' => $this->getChargeTypes(),
@@ -137,7 +136,7 @@ class ChargeFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($charge->id, je('charge-form')->rd()->form()),
+            'click' => $this->rq()->update($charge->id, form('charge-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -145,8 +144,7 @@ class ChargeFunc extends FuncComponent
     #[Inject(attr: 'validator')]
     public function update(int $chargeId, array $formValues): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $charge = $this->chargeService->getCharge($guild, $chargeId);
+        $charge = $this->chargeService->getCharge($this->guild(), $chargeId);
 
         // These fields cannot be changed
         $formValues['type'] = $charge->type;
@@ -168,8 +166,7 @@ class ChargeFunc extends FuncComponent
 
     public function toggle(int $chargeId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $charge = $this->chargeService->getCharge($guild, $chargeId);
+        $charge = $this->chargeService->getCharge($this->guild(), $chargeId);
         $this->chargeService->toggleCharge($charge);
 
         $this->cl(ChargePage::class)->page();
@@ -177,8 +174,7 @@ class ChargeFunc extends FuncComponent
 
     public function delete(int $chargeId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $charge = $this->chargeService->getCharge($guild, $chargeId);
+        $charge = $this->chargeService->getCharge($this->guild(), $chargeId);
         $this->chargeService->deleteCharge($charge);
 
         $this->cl(ChargePage::class)->page();

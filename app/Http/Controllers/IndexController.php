@@ -6,7 +6,6 @@ use Illuminate\View\View;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Service\Guild\GuildService;
 use Siak\Tontine\Service\LocaleService;
-use Siak\Tontine\Service\TenantService;
 
 use function auth;
 use function view;
@@ -17,15 +16,11 @@ class IndexController extends Controller
      * Show the home page.
      *
      * @param GuildService $guildService
-     * @param TenantService $tenantService
      *
      * @return View
      */
-    public function index(GuildService $guildService, TenantService $tenantService): View
+    public function index(GuildService $guildService): View
     {
-        // Do not select a round on the home page.
-        $tenantService->resetRound();
-
         $user = auth()->user();
         view()->share([
             'user' => $user,
@@ -35,7 +30,7 @@ class IndexController extends Controller
             'hasGuestGuilds' => $guildService->hasGuestGuilds($user)
         ]);
 
-        return view("tontine::base.home");
+        return view("tontine_app::base.home");
     }
 
     /**
@@ -54,28 +49,7 @@ class IndexController extends Controller
             'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
         ]);
 
-        return view("tontine::base.profile", [
-            'countries' => $localeService->getCountries(),
-        ]);
-    }
-
-    /**
-     * Show the users page.
-     *
-     * @param LocaleService $localeService
-     *
-     * @return View
-     */
-    public function users(LocaleService $localeService): View
-    {
-        view()->share([
-            'user' => auth()->user(),
-            'locales' => LaravelLocalization::getSupportedLocales(),
-            'locale' => LaravelLocalization::getCurrentLocale(),
-            'localeNative' => LaravelLocalization::getCurrentLocaleNative(),
-        ]);
-
-        return view("tontine::base.users", [
+        return view("tontine_app::base.profile", [
             'countries' => $localeService->getCountries(),
         ]);
     }

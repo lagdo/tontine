@@ -5,7 +5,6 @@ namespace Ajax\App\Planning\Charge;
 use Ajax\App\Planning\PageComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Planning\ChargeService;
-use Stringable;
 
 #[Databag('planning.charge')]
 class ChargePage extends PageComponent
@@ -30,21 +29,19 @@ class ChargePage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.charge')->get('filter', null);
-        return $this->chargeService->getChargeDefCount($round, $filter);
+        return $this->chargeService->getChargeDefCount($this->round(), $filter);
     }
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.charge')->get('filter', null);
-        return $this->renderView('pages.planning.charge.page', [
-            'round' => $round,
-            'defs' => $this->chargeService->getChargeDefs($round, $filter, $this->currentPage()),
+        return $this->renderTpl('pages.planning.charge.page', [
+            'round' => $this->round(),
+            'defs' => $this->chargeService->getChargeDefs($this->round(), $filter, $this->currentPage()),
         ]);
     }
 
@@ -53,6 +50,6 @@ class ChargePage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-planning-charge-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-planning-charge-page');
     }
 }

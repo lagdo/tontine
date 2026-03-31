@@ -45,24 +45,6 @@ class RoundService
     }
 
     /**
-     * Get a list of rounds for the dropdown select.
-     *
-     * @param Guild $guild
-     *
-     * @return Collection
-     */
-    public function getRoundList(Guild $guild): Collection
-    {
-        // Only rounds with at least 2 sessions are selectable.
-        return $guild->rounds()
-            ->join('sessions', 'sessions.round_id', '=', 'rounds.id')
-            ->select('rounds.title', 'rounds.id', DB::raw('count(sessions.id)'))
-            ->groupBy('rounds.title', 'rounds.id')
-            ->havingRaw('count(sessions.id) > ?', [1])
-            ->pluck('title', 'id');
-    }
-
-    /**
      * Get the number of rounds in the selected guild.
      *
      * @param Guild $guild

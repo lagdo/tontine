@@ -1,0 +1,29 @@
+{
+    "listeners": {
+        "*:80": {
+            "pass": "routes"
+        }
+    },
+
+    "routes": [
+        {
+            "match": {
+                "uri": "!/index.php"
+            },
+            "action": {
+                "share": "/var/www/public$uri",
+                "fallback": {
+                    "pass": "applications/tontine"
+                }
+            }
+        }
+    ],
+
+    "applications": {
+        "tontine": {
+            "type": "php",
+            "root": "/var/www/public/",
+            "script": "index.php"
+        }
+    }
+}

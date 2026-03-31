@@ -4,9 +4,8 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 
 use Ajax\App\Meeting\Session\Charge\Component;
 use Siak\Tontine\Service\LocaleService;
-use Stringable;
 
-use function je;
+use function Jaxon\checked;
 use function jq;
 
 class Amount extends Component
@@ -25,17 +24,16 @@ class Amount extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('meeting.session');
-        $charge = $this->stash()->get('meeting.session.charge');
         $bill = $this->stash()->get('meeting.charge.bill');
         $member = $this->stash()->get('meeting.charge.member');
         $memberId = $member->id;
 
         if(!$session->opened)
         {
-            return $this->renderView('pages.meeting.session.charge.libre.member.closed', [
+            return $this->renderTpl('pages.meeting.session.charge.libre.member.closed', [
                 'amount' => !$bill ? '' : $this->localeService->formatMoney($bill->amount),
             ]);
         }
@@ -45,7 +43,7 @@ class Amount extends Component
         $edit = $this->stash()->get('meeting.charge.edit');
         if(!$edit && $bill !== null)
         {
-            return $this->renderView('pages.meeting.session.charge.libre.member.show', [
+            return $this->renderTpl('pages.meeting.session.charge.libre.member.show', [
                 'memberId' => $memberId,
                 'amount' => $this->localeService->formatMoney($bill->amount, false),
                 'rqAmountFunc' => $this->rq(AmountFunc::class),
@@ -53,8 +51,8 @@ class Amount extends Component
         }
 
         $amountValue = jq("#member-charge-input-$memberId")->val();
-        $paid = je('check-fee-libre-paid')->rd()->checked();
-        return $this->renderView('pages.meeting.session.charge.libre.member.edit', [
+        $paid = checked('check-fee-libre-paid');
+        return $this->renderTpl('pages.meeting.session.charge.libre.member.edit', [
             'memberId' => $memberId,
             'amount' => !$bill ? '' : $this->localeService->getMoneyValue($bill->amount),
             'handler' => $this->rq(AmountFunc::class)->save($memberId, $paid, $amountValue),

@@ -4,7 +4,6 @@ namespace Ajax\App\Planning\Member;
 
 use Ajax\App\Planning\Component;
 use Jaxon\Attributes\Attribute\Databag;
-use Stringable;
 
 use function trim;
 
@@ -14,10 +13,10 @@ class Member extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.planning.member.home', [
-            'guild' => $this->tenantService->guild(),
+        return $this->renderTpl('pages.planning.member.home', [
+            'guild' => $this->guild(),
         ]);
     }
 

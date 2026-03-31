@@ -102,7 +102,7 @@ return [
     |
     */
 
-    'middleware' => ['web', TontineHelper::class],
+    'middleware' => ['web', 'template', TontineHelper::class],
 
     /*
     |--------------------------------------------------------------------------

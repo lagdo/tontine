@@ -6,7 +6,6 @@ use Ajax\App\Meeting\Summary\Component;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Service\Payment\BalanceCalculator;
 use Siak\Tontine\Service\Meeting\Pool\RemitmentService;
-use Stringable;
 
 #[Exclude]
 class Total extends Component
@@ -22,12 +21,12 @@ class Total extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $pool = $this->stash()->get('summary.pool');
         $session = $this->stash()->get('summary.session');
 
-        return $this->renderView('pages.meeting.summary.remitment.payable.total', [
+        return $this->renderTpl('pages.meeting.summary.remitment.payable.total', [
             'pool' => $pool,
             'amount' => $this->balanceCalculator->getPayableAmount($pool, $session),
             'total' => $this->remitmentService->getRemitmentAmount($pool, $session),

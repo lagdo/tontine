@@ -5,7 +5,6 @@ namespace Ajax\App\Planning\Member;
 use Ajax\App\Planning\PageComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Planning\MemberService;
-use Stringable;
 
 #[Databag('planning.member')]
 class MemberPage extends PageComponent
@@ -30,23 +29,21 @@ class MemberPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->stash()->get('tenant.round');
         $search = $this->bag('planning.member')->get('search', '');
         $filter = $this->bag('planning.member')->get('filter', null);
-        return $this->memberService->getMemberDefCount($round, $search, $filter);
+        return $this->memberService->getMemberDefCount($this->round(), $search, $filter);
     }
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        $round = $this->stash()->get('tenant.round');
         $search = $this->bag('planning.member')->get('search', '');
         $filter = $this->bag('planning.member')->get('filter', null);
-        return $this->renderView('pages.planning.member.page', [
-            'round' => $round,
-            'defs' => $this->memberService->getMemberDefs($round, $search, $filter, $this->currentPage()),
+        return $this->renderTpl('pages.planning.member.page', [
+            'round' => $this->round(),
+            'defs' => $this->memberService->getMemberDefs($this->round(), $search, $filter, $this->currentPage()),
         ]);
     }
 
@@ -55,6 +52,6 @@ class MemberPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-planning-member-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-planning-member-page');
     }
 }

@@ -1,0 +1,52 @@
+<?php
+
+namespace Ajax\App\Admin\User\Guest;
+
+use Ajax\Base\PageComponent;
+use Jaxon\Attributes\Attribute\Databag;
+use Siak\Tontine\Service\Guild\UserService;
+
+#[Databag('user')]
+class GuestPage extends PageComponent
+{
+    /**
+     * The pagination databag options
+     *
+     * @var array
+     */
+    protected array $bagOptions = ['user', 'guest.page'];
+
+    /**
+     * @param UserService $userService
+     */
+    public function __construct(private UserService $userService)
+    {}
+
+    /**
+     * @inheritDoc
+     */
+    protected function count(): int
+    {
+        $user = $this->tenantService->user();
+        return $this->userService->getGuestInviteCount($user);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
+    {
+        $user = $this->tenantService->user();
+        return $this->renderTpl('pages.admin.user.guest.page', [
+            'invites' => $this->userService->getGuestInvites($user, $this->currentPage()),
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function after(): void
+    {
+        $this->response()->jo('tontine')->makeTableResponsive('content-guest-invites-page');
+    }
+}

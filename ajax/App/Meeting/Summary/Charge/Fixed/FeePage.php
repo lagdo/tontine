@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Summary\Charge\Fixed;
 
 use Ajax\App\Meeting\Summary\PageComponent;
 use Siak\Tontine\Service\Meeting\Charge\FixedFeeService;
-use Stringable;
 
 class FeePage extends PageComponent
 {
@@ -28,21 +27,19 @@ class FeePage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->stash()->get('tenant.round');
-        return $this->feeService->getFeeCount($round);
+        return $this->feeService->getFeeCount($this->round());
     }
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('summary.session');
 
-        return $this->renderView('pages.meeting.summary.charge.fixed.page', [
+        return $this->renderTpl('pages.meeting.summary.charge.fixed.page', [
             'session' => $session,
-            'charges' => $this->feeService->getFees($round, $this->currentPage()),
+            'charges' => $this->feeService->getFees($this->round(), $this->currentPage()),
             'bills' => $this->feeService->getBills($session),
             'settlements' => $this->feeService->getSettlements($session),
         ]);
@@ -53,7 +50,7 @@ class FeePage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->makeTableResponsive('content-session-fees-fixed-page');
     }
 }

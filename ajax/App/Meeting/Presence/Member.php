@@ -2,12 +2,11 @@
 
 namespace Ajax\App\Meeting\Presence;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Presence\PresenceService;
-use Stringable;
 
 #[Before('checkHostAccess', ["meeting", "presences"])]
 #[Before('getSession')]
@@ -23,17 +22,16 @@ class Member extends Component
 
     protected function getSession(): void
     {
-        $round = $this->stash()->get('tenant.round');
         $sessionId = $this->bag('meeting.presence')->get('session.id', 0);
         $session = $sessionId === 0 ? null :
-            $this->presenceService->getSession($round, $sessionId);
+            $this->presenceService->getSession($this->round(), $sessionId);
         $this->stash()->set('presence.session', $session);
     }
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable|string
+    public function html(): string
     {
         $exchange = $this->bag('meeting.presence')->get('exchange', false);
         // Is null when showing presences by members.
@@ -43,11 +41,10 @@ class Member extends Component
             return '';
         }
 
-        $round = $this->stash()->get('tenant.round');
         $search = $this->bag('meeting.presence')->get('member.search', '');
-        return $this->renderView('pages.meeting.presence.member.home', [
+        return $this->renderTpl('pages.meeting.presence.member.home', [
             'session' => $session,
-            'memberCount' => $this->presenceService->getMemberCount($round, $search),
+            'memberCount' => $this->presenceService->getMemberCount($this->round(), $search),
         ]);
     }
 
@@ -61,7 +58,7 @@ class Member extends Component
         $session = $this->stash()->get('presence.session');
         if($session !== null)
         {
-            $this->response->jo('tontine')
+            $this->response()->jo('tontine')
                 ->showSmScreen('content-presence-right', 'presence-sm-screens');
         }
     }

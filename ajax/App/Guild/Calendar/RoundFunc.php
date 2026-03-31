@@ -2,15 +2,15 @@
 
 namespace Ajax\App\Guild\Calendar;
 
-use Ajax\FuncComponent;
-use Ajax\Page\MainTitle;
+use Ajax\Base\Guild\FuncComponent;
+use Ajax\Page\Header\GuildHeader;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\RoundService;
 use Siak\Tontine\Validation\Guild\RoundValidator;
 
-use function je;
+use function Jaxon\form;
 use function trans;
 
 #[Before('checkHostAccess', ["guild", "calendar"])]
@@ -31,7 +31,7 @@ class RoundFunc extends FuncComponent
     public function add(): void
     {
         $title = trans('tontine.round.titles.add');
-        $content = $this->renderView('pages.guild.calendar.round.add');
+        $content = $this->renderTpl('pages.guild.calendar.round.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -39,7 +39,7 @@ class RoundFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(je('round-form')->rd()->form()),
+            'click' => $this->rq()->create(form('round-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -47,30 +47,28 @@ class RoundFunc extends FuncComponent
     #[Inject(attr: 'validator')]
     public function create(array $formValues): void
     {
-        $guild = $this->stash()->get('tenant.guild');
         $values = $this->validator->validateItem($formValues);
         $options = [
             'members' => isset($formValues['members']),
             'charges' => isset($formValues['charges']),
             'savings' => isset($formValues['savings']),
         ];
-        $this->roundService->createRound($guild, $values, $options);
+        $this->roundService->createRound($this->guild(), $values, $options);
 
         $this->cl(RoundPage::class)->page(); // Back to current page
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.round.messages.created'));
 
-        $this->cl(MainTitle::class)->render();
+        $this->cl(GuildHeader::class)->render();
     }
 
     public function edit(int $roundId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $round = $this->roundService->getRound($guild, $roundId);
+        $round = $this->roundService->getRound($this->guild(), $roundId);
 
         $title = trans('tontine.round.titles.edit');
-        $content = $this->renderView('pages.guild.calendar.round.edit', [
+        $content = $this->renderTpl('pages.guild.calendar.round.edit', [
             'round' => $round,
         ]);
         $buttons = [[
@@ -80,7 +78,7 @@ class RoundFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($round->id, je('round-form')->rd()->form()),
+            'click' => $this->rq()->update($round->id, form('round-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -88,9 +86,8 @@ class RoundFunc extends FuncComponent
     #[Inject(attr: 'validator')]
     public function update(int $roundId, array $formValues): void
     {
-        $guild = $this->stash()->get('tenant.guild');
         $values = $this->validator->validateItem($formValues);
-        $this->roundService->updateRound($guild, $roundId, $values);
+        $this->roundService->updateRound($this->guild(), $roundId, $values);
 
         $this->cl(RoundPage::class)->page(); // Back to current page
         $this->modal()->hide();
@@ -100,13 +97,12 @@ class RoundFunc extends FuncComponent
 
     public function delete(int $roundId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $this->roundService->deleteRound($guild, $roundId);
+        $this->roundService->deleteRound($this->guild(), $roundId);
 
         $this->cl(RoundPage::class)->page(); // Back to current page
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.round.messages.deleted'));
 
-        $this->cl(MainTitle::class)->render();
+        $this->cl(GuildHeader::class)->render();
     }
 }

@@ -5,7 +5,6 @@ namespace Ajax\App\Planning\Pool;
 use Ajax\App\Planning\PageComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Planning\PoolService;
-use Stringable;
 
 #[Databag('planning.pool')]
 class PoolPage extends PageComponent
@@ -30,21 +29,19 @@ class PoolPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.pool')->get('filter', null);
-        return $this->poolService->getPoolDefCount($round, $filter);
+        return $this->poolService->getPoolDefCount($this->round(), $filter);
     }
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.pool')->get('filter', null);
-        return $this->renderView('pages.planning.pool.page', [
-            'round' => $round,
-            'defs' => $this->poolService->getPoolDefs($round, $filter, $this->currentPage()),
+        return $this->renderTpl('pages.planning.pool.page', [
+            'round' => $this->round(),
+            'defs' => $this->poolService->getPoolDefs($this->round(), $filter, $this->currentPage()),
         ]);
     }
 
@@ -53,6 +50,6 @@ class PoolPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-planning-pool-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-planning-pool-page');
     }
 }

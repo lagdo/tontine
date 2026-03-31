@@ -2,14 +2,14 @@
 
 namespace Ajax\App\Guild\Account;
 
-use Ajax\FuncComponent;
+use Ajax\Base\Guild\FuncComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Validation\Guild\FundValidator;
 
-use function je;
+use function Jaxon\form;
 use function trans;
 
 #[Before('checkHostAccess', ["finance", "accounts"])]
@@ -30,7 +30,7 @@ class FundFunc extends FuncComponent
     public function add()
     {
         $title = trans('tontine.fund.titles.add');
-        $content = $this->renderView('pages.guild.account.fund.add');
+        $content = $this->renderTpl('pages.guild.account.fund.add');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -38,7 +38,7 @@ class FundFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(je('fund-form')->rd()->form()),
+            'click' => $this->rq()->create(form('fund-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -48,8 +48,7 @@ class FundFunc extends FuncComponent
     {
         $values = $this->validator->validateItem($formValues);
 
-        $guild = $this->stash()->get('tenant.guild');
-        $this->fundService->createFund($guild, $values);
+        $this->fundService->createFund($this->guild(), $values);
         $this->cl(FundPage::class)->page(); // Back to current page
 
         $this->modal()->hide();
@@ -59,11 +58,10 @@ class FundFunc extends FuncComponent
 
     public function edit(int $fundId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $fund = $this->fundService->getFund($guild, $fundId);
+        $fund = $this->fundService->getFund($this->guild(), $fundId);
 
         $title = trans('tontine.fund.titles.edit');
-        $content = $this->renderView('pages.guild.account.fund.edit')->with('fund', $fund);
+        $content = $this->renderTpl('pages.guild.account.fund.edit', ['fund' => $fund]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -71,7 +69,7 @@ class FundFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($fund->id, je('fund-form')->rd()->form()),
+            'click' => $this->rq()->update($fund->id, form('fund-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -81,8 +79,7 @@ class FundFunc extends FuncComponent
     {
         $values = $this->validator->validateItem($formValues);
 
-        $guild = $this->stash()->get('tenant.guild');
-        $fund = $this->fundService->getFund($guild, $fundId);
+        $fund = $this->fundService->getFund($this->guild(), $fundId);
         $this->fundService->updateFund($fund, $values);
         $this->cl(FundPage::class)->page(); // Back to current page
 
@@ -93,8 +90,7 @@ class FundFunc extends FuncComponent
 
     public function toggle(int $fundId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $fund = $this->fundService->getFund($guild, $fundId);
+        $fund = $this->fundService->getFund($this->guild(), $fundId);
         $this->fundService->toggleFund($fund);
 
         $this->cl(FundPage::class)->page();
@@ -102,14 +98,13 @@ class FundFunc extends FuncComponent
 
     public function delete(int $fundId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $fund = $this->fundService->getFund($guild, $fundId);
+        $fund = $this->fundService->getFund($this->guild(), $fundId);
         if($fund->funds_count > 0)
         {
             // A fund that is already in use cannot be deleted.
             return;
         }
-        $this->fundService->deleteFund($guild, $fund);
+        $this->fundService->deleteFund($this->guild(), $fund);
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.fund.messages.deleted'));
 

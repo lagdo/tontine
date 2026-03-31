@@ -4,7 +4,6 @@ namespace Ajax\App\Planning\Charge;
 
 use Ajax\App\Planning\Component;
 use Jaxon\Attributes\Attribute\Databag;
-use Stringable;
 
 #[Databag('planning.charge')]
 class Charge extends Component
@@ -12,10 +11,10 @@ class Charge extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.planning.charge.home', [
-            'guild' => $this->tenantService->guild(),
+        return $this->renderTpl('pages.planning.charge.home', [
+            'guild' => $this->guild(),
         ]);
     }
 

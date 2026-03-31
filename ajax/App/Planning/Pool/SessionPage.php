@@ -6,7 +6,6 @@ use Ajax\App\Planning\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Model\Session as SessionModel;
-use Stringable;
 
 #[Before('getPool')]
 #[Databag('planning.pool')]
@@ -26,20 +25,18 @@ class SessionPage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->stash()->get('tenant.guild');
-        return $this->poolService->getGuildSessionCount($guild);
+        return $this->poolService->getGuildSessionCount($this->guild());
     }
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        $guild = $this->stash()->get('tenant.guild');
-        return $this->renderView('pages.planning.pool.session.page', [
+        return $this->renderTpl('pages.planning.pool.session.page', [
             'pool' => $this->stash()->get('planning.pool'),
             'sessions' => $this->poolService
-                ->getGuildSessions($guild, $this->currentPage(), orderAsc: false),
+                ->getGuildSessions($this->guild(), $this->currentPage(), orderAsc: false),
         ]);
     }
 
@@ -48,7 +45,7 @@ class SessionPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-planning-sessions-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-planning-sessions-page');
     }
 
     /**
@@ -58,8 +55,7 @@ class SessionPage extends PageComponent
      */
     private function getSessionPageNumber(SessionModel $session): int
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $sessionCount = $this->poolService->getSessionCount($guild, $session, true, false);
+        $sessionCount = $this->poolService->getSessionCount($this->guild(), $session, true, false);
         return (int)($sessionCount / $this->tenantService->getLimit()) + 1;
     }
 

@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Calendar;
 
-use Ajax\FuncComponent;
+use Ajax\Base\Guild\FuncComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Inject;
@@ -12,7 +12,7 @@ use Siak\Tontine\Service\Guild\SessionService;
 use Siak\Tontine\Service\Meeting\Member\MemberService;
 use Siak\Tontine\Validation\Guild\SessionValidator;
 
-use function je;
+use function Jaxon\form;
 use function array_filter;
 use function array_map;
 use function array_unique;
@@ -46,9 +46,8 @@ class SessionFunc extends FuncComponent
      */
     protected function getRound(): void
     {
-        $guild = $this->stash()->get('tenant.guild');
         $roundId = $this->bag('guild.calendar')->get('round.id');
-        $round = $this->roundService->getRound($guild, $roundId);
+        $round = $this->roundService->getRound($this->guild(), $roundId);
         $this->stash()->set('guild.calendar.round', $round);
     }
 
@@ -57,7 +56,7 @@ class SessionFunc extends FuncComponent
     {
         $round = $this->stash()->get('guild.calendar.round');
         $title = trans('tontine.session.titles.add');
-        $content = $this->renderView('pages.guild.calendar.session.add', [
+        $content = $this->renderTpl('pages.guild.calendar.session.add', [
             'members' => $this->memberService->getMemberList($round)->prepend('', 0),
         ]);
         $buttons = [[
@@ -67,7 +66,7 @@ class SessionFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(je('session-form')->rd()->form()),
+            'click' => $this->rq()->create(form('session-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -76,8 +75,9 @@ class SessionFunc extends FuncComponent
     public function create(array $formValues): void
     {
         $round = $this->stash()->get('guild.calendar.round');
-        $values = $this->validator->validateItem($formValues);
+        $values = $this->validator->round($round)->validateItem($formValues);
         $this->sessionService->createSession($round, $values);
+
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.created'));
@@ -88,7 +88,7 @@ class SessionFunc extends FuncComponent
     public function addList(): void
     {
         $title = trans('tontine.session.titles.add-list');
-        $content = $this->renderView('pages.guild.calendar.session.list');
+        $content = $this->renderTpl('pages.guild.calendar.session.list');
         $buttons = [[
             'title' => trans('common.actions.cancel'),
             'class' => 'btn btn-tertiary',
@@ -100,7 +100,7 @@ class SessionFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->createList(je('session-list')->rd()->form()),
+            'click' => $this->rq()->createList(form('session-list')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -111,7 +111,7 @@ class SessionFunc extends FuncComponent
         $html = collect($sessions)
             ->map(fn($session) => $session->title . ';' . $session->date)
             ->join("\n");
-        $this->response->html('new-sessions-list', $html);
+        $this->response()->html('new-sessions-list', $html);
     }
 
     /**
@@ -158,9 +158,10 @@ class SessionFunc extends FuncComponent
     public function createList(array $formValues): void
     {
         $round = $this->stash()->get('guild.calendar.round');
+        $this->validator->round($round);
         $values = $this->parseSessionList($formValues['sessions'] ?? '');
-
         $this->sessionService->createSessions($round, $values);
+
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.created'));
@@ -174,7 +175,7 @@ class SessionFunc extends FuncComponent
         $round = $this->stash()->get('guild.calendar.round');
         $session = $this->roundService->getSession($round, $sessionId);
         $title = trans('tontine.session.titles.edit');
-        $content = $this->renderView('pages.guild.calendar.session.edit', [
+        $content = $this->renderTpl('pages.guild.calendar.session.edit', [
             'session' => $session,
             'members' => $this->memberService->getMemberList($round)->prepend('', 0),
         ]);
@@ -185,7 +186,7 @@ class SessionFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($session->id, je('session-form')->rd()->form()),
+            'click' => $this->rq()->update($session->id, form('session-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -195,11 +196,10 @@ class SessionFunc extends FuncComponent
     {
         $round = $this->stash()->get('guild.calendar.round');
         $formValues['id'] = $sessionId;
-        $values = $this->validator->validateItem($formValues);
+        $values = $this->validator->round($round)->validateItem($formValues);
         $session = $this->roundService->getSession($round, $sessionId);
+        $this->sessionService->updateSession($this->guild(), $session, $values);
 
-        $guild = $this->stash()->get('tenant.guild');
-        $this->sessionService->updateSession($guild, $session, $values);
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
             ->success(trans('tontine.session.messages.updated'));
@@ -213,7 +213,7 @@ class SessionFunc extends FuncComponent
         $session = $this->roundService->getSession($round, $sessionId);
 
         $title = trans('tontine.session.titles.venue');
-        $content = $this->renderView('pages.guild.calendar.session.venue', [
+        $content = $this->renderTpl('pages.guild.calendar.session.venue', [
             'session' => $session,
             'venue' => $session->venue ?? ($session->host ? $session->host->address : ''),
         ]);
@@ -224,7 +224,7 @@ class SessionFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveVenue($session->id, je('session-form')->rd()->form()),
+            'click' => $this->rq()->saveVenue($session->id, form('session-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -233,7 +233,7 @@ class SessionFunc extends FuncComponent
     public function saveVenue(int $sessionId, array $formValues): void
     {
         $round = $this->stash()->get('guild.calendar.round');
-        $values = $this->validator->validateVenue($formValues);
+        $values = $this->validator->round($round)->validateVenue($formValues);
         $session = $this->roundService->getSession($round, $sessionId);
 
         $this->sessionService->saveSessionVenue($session, $values);

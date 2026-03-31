@@ -2,13 +2,12 @@
 
 namespace Ajax\App\Meeting\Payment;
 
-use Ajax\PageComponent;
+use Ajax\Base\Round\PageComponent;
 use Illuminate\Support\Collection;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Member\MemberService;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
-use Stringable;
 
 #[Before('checkHostAccess', ["meeting", "payments"])]
 #[Databag('meeting.payment')]
@@ -31,8 +30,7 @@ class PaymentPage extends PageComponent
 
     private function getOpenedSessions(): Collection
     {
-        $round = $this->stash()->get('tenant.round');
-        return $this->sessionService->getSessions($round, orderAsc: false)
+        return $this->sessionService->getSessions($this->round(), orderAsc: false)
             ->filter(fn($session) => $session->opened)
             ->pluck('title', 'id');
     }
@@ -42,19 +40,17 @@ class PaymentPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->stash()->get('tenant.round');
-        return $this->memberService->getMemberCount($round);
+        return $this->memberService->getMemberCount($this->round());
     }
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        $round = $this->stash()->get('tenant.round');
-        return $this->renderView('pages.meeting.payment.page', [
+        return $this->renderTpl('pages.meeting.payment.page', [
             'sessions' => $this->getOpenedSessions(),
-            'members' => $this->memberService->getMembers($round, page: $this->currentPage()),
+            'members' => $this->memberService->getMembers($this->round(), page: $this->currentPage()),
         ]);
     }
 
@@ -63,6 +59,6 @@ class PaymentPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-payment-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-payment-page');
     }
 }

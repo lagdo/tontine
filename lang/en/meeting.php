@@ -23,6 +23,7 @@ return [
         'benefit' => "Benefit",
         'refund' => "Refund",
         'refunds' => "Refunds",
+        'inflows' => "Inflows",
         'outflows' => "Outflows",
         'profits' => "Profits distribution",
         'summary' => "Summary",
@@ -363,6 +364,16 @@ return [
             'credit' => "Credit report",
             'savings' => "Savings report",
             'round' => "Round report",
+        ],
+        'titles' => [
+            'graph' => [
+                'session' => "Session transactions",
+                'round' => "Round transactions",
+                'total' => "Total transactions",
+                'balance' => "Inflows and outflows",
+                'inflows' => "Inflow distribution",
+                'outflows' => "Outflow distribution",
+            ],
         ],
     ],
 ];

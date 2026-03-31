@@ -2,12 +2,11 @@
 
 namespace Ajax\App\Meeting\Presence;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Presence\PresenceService;
-use Stringable;
 
 #[Before('checkHostAccess', ["meeting", "presences"])]
 #[Before('getMember')]
@@ -23,17 +22,16 @@ class Session extends Component
 
     protected function getMember()
     {
-        $round = $this->stash()->get('tenant.round');
         $memberId = $this->bag('meeting.presence')->get('member.id', 0);
         $member = $memberId === 0 ? null :
-            $this->presenceService->getMember($round, $memberId);
+            $this->presenceService->getMember($this->round(), $memberId);
         $this->stash()->set('presence.member', $member);
     }
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable|string
+    public function html(): string
     {
         $exchange = $this->bag('meeting.presence')->get('exchange', false);
         $member = $this->stash()->get('presence.member'); // Is null when showing presences by sessions.
@@ -42,10 +40,9 @@ class Session extends Component
             return '';
         }
 
-        $round = $this->stash()->get('tenant.round');
-        return $this->renderView('pages.meeting.presence.session.home', [
+        return $this->renderTpl('pages.meeting.presence.session.home', [
             'member' => $member,
-            'sessionCount' => $this->presenceService->getSessionCount($round),
+            'sessionCount' => $this->presenceService->getSessionCount($this->round()),
         ]);
     }
 
@@ -58,7 +55,7 @@ class Session extends Component
         $member = $this->stash()->get('presence.member'); // Is null when showing presences by sessions.
         if($member !== null)
         {
-            $this->response->jo('tontine')->showSmScreen('content-presence-right', 'presence-sm-screens');
+            $this->response()->jo('tontine')->showSmScreen('content-presence-right', 'presence-sm-screens');
         }
     }
 }

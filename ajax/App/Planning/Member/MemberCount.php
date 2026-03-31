@@ -17,9 +17,8 @@ class MemberCount extends Component
      */
     public function html(): string
     {
-        $round = $this->stash()->get('tenant.round');
-        return $this->renderView('pages.planning.member.count', [
-            'count' => $this->memberService->getMemberCount($round),
+        return $this->renderTpl('pages.planning.member.count', [
+            'count' => $this->memberService->getMemberCount($this->round()),
         ]);
     }
 }

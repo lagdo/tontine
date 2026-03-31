@@ -21,7 +21,7 @@ use Laravel\Fortify\RoutePath;
 |
 */
 
-Route::middleware(['auth', 'tontine', 'analytics'])
+Route::middleware(['auth', 'tenant', 'tontine', 'analytics'])
     ->prefix(LaravelLocalization::setLocale())
     ->group(function() {
         // Home page
@@ -36,34 +36,28 @@ Route::middleware(['auth', 'tontine', 'analytics'])
             ->name('user.profile')
             ->middleware(['jaxon.config']);
 
-        // Users management page
-        //----------------------------------
-        Route::get('/users', [IndexController::class, 'users'])
-            ->name('user.invites')
-            ->middleware(['jaxon.config']);
-
         // Report pages
         //----------------------------------
-        Route::get('/pdf/report/session/{sessionId}', [ReportController::class, 'session'])
+        Route::get('/pdf/report/{guildId}/session/{sessionId}', [ReportController::class, 'session'])
             ->name('report.session');
-        Route::get('/pdf/report/savings/{sessionId}', [ReportController::class, 'savings'])
+        Route::get('/pdf/report/{guildId}/savings/{sessionId}', [ReportController::class, 'savings'])
             ->name('report.savings');
-        Route::get('/pdf/report/credit/{sessionId}', [ReportController::class, 'credit'])
+        Route::get('/pdf/report/{guildId}/credit/{sessionId}', [ReportController::class, 'credit'])
             ->name('report.credit');
-        Route::get('/pdf/report/round/{roundId}', [ReportController::class, 'round'])
+        Route::get('/pdf/report/{guildId}/round/{roundId}', [ReportController::class, 'round'])
             ->name('report.round');
 
         // Input forms page
         //----------------------------------
-        Route::get('/pdf/entry/session/{sessionId}', [FormController::class, 'session'])
+        Route::get('/pdf/entry/{guildId}/session/{sessionId}', [FormController::class, 'session'])
             ->name('entry.session');
-        Route::get('/pdf/entry/{form}/{sessionId?}', [FormController::class, 'entry'])
+        Route::get('/pdf/entry/{guildId}/{form}/{sessionId?}', [FormController::class, 'entry'])
             ->name('entry.form')
             ->where('form', 'report|transactions');
     });
 
 Route::prefix(LaravelLocalization::setLocale())
-    ->middleware('analytics')
+    ->middleware(['analytics', 'template'])
     ->group(function() {
         // Redefine Fortify routes with different HTTP verbs
         //--------------------------------------------------------
@@ -89,7 +83,6 @@ Route::prefix(LaravelLocalization::setLocale())
                 'playlist' => config('tontine.videos.playlist'),
                 'videos' => config('tontine.videos.parts'),
             ]);
-            return view('tontine.web.learn');
-        })
-        ->name('learn.page');
+            return view('tontine::web.learn');
+        })->name('learn.page');
     });

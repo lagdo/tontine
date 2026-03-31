@@ -23,6 +23,7 @@ return [
         'benefit' => "Bénéfice",
         'refund' => "Remboursement",
         'refunds' => "Remboursements",
+        'inflows' => "Entrées",
         'outflows' => "Sorties",
         'profits' => "Répartition des gains",
         'summary' => "Résumé",
@@ -363,6 +364,16 @@ return [
             'credit' => "Rapport de crédit",
             'savings' => "Rapport d'épargne",
             'round' => "Rapport de tour",
+        ],
+        'titles' => [
+            'graph' => [
+                'session' => "Opérations de la séance",
+                'round' => "Opérations du tour",
+                'total' => "Total des opérations",
+                'balance' => "Entrées et sorties",
+                'inflows' => "Distribution des entrées",
+                'outflows' => "Distribution des sorties",
+            ],
         ],
     ],
 ];

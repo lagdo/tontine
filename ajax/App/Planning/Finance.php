@@ -3,14 +3,11 @@
 namespace Ajax\App\Planning;
 
 use Ajax\App\Planning\Component;
+use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
 use Ajax\Page\SectionContent;
-use Ajax\Page\SectionTitle;
-use Stringable;
-
-use function trans;
 
 #[Databag('planning.fund')]
 #[Databag('planning.pool')]
@@ -20,8 +17,9 @@ class Finance extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
+    #[Before('setSectionTitle', ["planning", "finance"])]
     #[Callback('tontine.hideMenu')]
     public function home()
     {
@@ -31,18 +29,10 @@ class Finance extends Component
     /**
      * @inheritDoc
      */
-    protected function before(): void
+    public function html(): string
     {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.planning'));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function html(): Stringable
-    {
-        return $this->renderView('pages.planning.finance', [
-            'guild' => $this->tenantService->guild(),
+        return $this->renderTpl('pages.planning.finance', [
+            'guild' => $this->guild(),
         ]);
     }
 
@@ -51,7 +41,7 @@ class Finance extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->setSmScreenHandler('finance-sm-screens');
+        $this->response()->jo('tontine')->setSmScreenHandler('finance-sm-screens');
 
         $this->cl(Fund\Fund::class)->render();
         $this->cl(Pool\Pool::class)->render();

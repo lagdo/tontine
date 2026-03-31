@@ -5,7 +5,6 @@ namespace Ajax\App\Planning\Fund;
 use Ajax\App\Planning\PageComponent;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Planning\FundService;
-use Stringable;
 
 #[Databag('planning.fund')]
 class FundPage extends PageComponent
@@ -30,21 +29,19 @@ class FundPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.fund')->get('filter', null);
-        return $this->fundService->getFundDefCount($round, $filter);
+        return $this->fundService->getFundDefCount($this->round(), $filter);
     }
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        $round = $this->stash()->get('tenant.round');
         $filter = $this->bag('planning.fund')->get('filter', null);
-        return $this->renderView('pages.planning.fund.page', [
-            'round' => $round,
-            'defs' => $this->fundService->getFundDefs($round, $filter, $this->currentPage()),
+        return $this->renderTpl('pages.planning.fund.page', [
+            'round' => $this->round(),
+            'defs' => $this->fundService->getFundDefs($this->round(), $filter, $this->currentPage()),
         ]);
     }
 
@@ -53,6 +50,6 @@ class FundPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-planning-fund-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-planning-fund-page');
     }
 }

@@ -2,12 +2,11 @@
 
 namespace Ajax\App\Meeting\Summary;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
-use Stringable;
 
 use function trans;
 
@@ -18,7 +17,7 @@ class Summary extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
     /**
      * @param SessionService $sessionService
@@ -28,8 +27,7 @@ class Summary extends Component
 
     public function home(int $sessionId)
     {
-        $round = $this->stash()->get('tenant.round');
-        $session = $this->sessionService->getSession($round, $sessionId);
+        $session = $this->sessionService->getSession($this->round(), $sessionId);
         if(!$session)
         {
             $this->alert()->title(trans('common.titles.error'))
@@ -46,14 +44,13 @@ class Summary extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('summary.session');
-        return $this->renderView('pages.meeting.summary.home', [
+        return $this->renderTpl('pages.meeting.summary.home', [
             'session' => $session,
-            'prevSession' => $this->sessionService->getPrevSession($round, $session),
-            'nextSession' => $this->sessionService->getNextSession($round, $session),
+            'prevSession' => $this->sessionService->getPrevSession($this->round(), $session),
+            'nextSession' => $this->sessionService->getNextSession($this->round(), $session),
         ]);
     }
 
@@ -75,7 +72,7 @@ class Summary extends Component
         $this->cl(Pool\Deposit\Deposit::class)->show();
         $this->cl(Pool\Remitment\Remitment::class)->show();
 
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->setSmScreenHandler('summary-pools-sm-screens', 'summary-pools');
     }
 
@@ -84,7 +81,7 @@ class Summary extends Component
         $this->cl(Charge\Fixed\Fee::class)->show();
         $this->cl(Charge\Libre\Fee::class)->show();
 
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->setSmScreenHandler('summary-charges-sm-screens', 'summary-charges');
     }
 
@@ -93,7 +90,7 @@ class Summary extends Component
         $this->cl(Credit\Loan\Loan::class)->show();
         $this->cl(Saving\Saving::class)->show();
 
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->setSmScreenHandler('summary-savings-sm-screens', 'summary-savings');
     }
 

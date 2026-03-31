@@ -3,7 +3,6 @@
 namespace Ajax\App\Meeting\Summary\Charge\Fixed;
 
 use Ajax\App\Meeting\Summary\Charge\Component;
-use Stringable;
 
 class Settlement extends Component
 {
@@ -12,14 +11,14 @@ class Settlement extends Component
     /**
      * @var string
      */
-    protected $overrides = Fee::class;
+    protected string $overrides = Fee::class;
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.summary.charge.fixed.settlement.home', [
+        return $this->renderTpl('pages.meeting.summary.charge.fixed.settlement.home', [
             'charge' => $this->stash()->get('summary.session.charge'),
         ]);
     }

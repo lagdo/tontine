@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Presence;
 
-use Ajax\FuncComponent;
+use Ajax\Base\Round\FuncComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Member\MemberService;
@@ -23,17 +23,15 @@ class MemberFunc extends FuncComponent
 
     protected function getSession(): void
     {
-        $round = $this->stash()->get('tenant.round');
         $sessionId = $this->bag('meeting.presence')->get('session.id', 0);
         $session = $sessionId === 0 ? null :
-            $this->presenceService->getSession($round, $sessionId);
+            $this->presenceService->getSession($this->round(), $sessionId);
         $this->stash()->set('presence.session', $session);
     }
 
     public function togglePresence(int $memberId): void
     {
-        $round = $this->stash()->get('tenant.round');
-        $member = $this->memberService->getMember($round, $memberId);
+        $member = $this->memberService->getMember($this->round(), $memberId);
         $session = $this->stash()->get('presence.session');
         if(!$member || !$session)
         {

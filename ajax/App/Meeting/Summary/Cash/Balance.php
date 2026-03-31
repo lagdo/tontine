@@ -4,7 +4,6 @@ namespace Ajax\App\Meeting\Summary\Cash;
 
 use Ajax\App\Meeting\Summary\Component;
 use Siak\Tontine\Service\Payment\BalanceCalculator;
-use Stringable;
 
 use function trans;
 
@@ -19,10 +18,10 @@ class Balance extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('summary.session');
-        return $this->renderView('pages.meeting.summary.outflow.balance', [
+        return $this->renderTpl('pages.meeting.summary.outflow.balance', [
             'rqBalance' => $this->rq(),
             'amount' => $this->balanceCalculator->getTotalBalance($session),
         ]);
@@ -33,7 +32,7 @@ class Balance extends Component
         $session = $this->stash()->get('summary.session');
         $balances = $this->balanceCalculator->getBalances($session, false);
         $title = trans('meeting.titles.amounts');
-        $content = $this->renderView('pages.meeting.session.balances', [
+        $content = $this->renderTpl('pages.meeting.session.balances', [
             'session' => $session,
             'balances' => $balances,
         ]);

@@ -2,11 +2,10 @@
 
 namespace Ajax\App\Meeting\Session;
 
-use Ajax\PageComponent;
+use Ajax\Base\Round\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
-use Stringable;
 
 #[Before('checkHostAccess', ["meeting", "sessions"])]
 #[Databag('meeting')]
@@ -30,18 +29,16 @@ class SessionPage extends PageComponent
      */
     protected function count(): int
     {
-        $round = $this->stash()->get('tenant.round');
-        return $this->sessionService->getSessionCount($round);
+        return $this->sessionService->getSessionCount($this->round());
     }
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        $round = $this->stash()->get('tenant.round');
-        return $this->renderView('pages.meeting.session.page', [
-            'sessions' => $this->sessionService->getSessions($round, $this->currentPage()),
+        return $this->renderTpl('pages.meeting.session.page', [
+            'sessions' => $this->sessionService->getSessions($this->round(), $this->currentPage()),
             'statuses' => $this->sessionService->getSessionStatuses(),
         ]);
     }
@@ -51,6 +48,6 @@ class SessionPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-sessions-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-sessions-page');
     }
 }

@@ -2,11 +2,10 @@
 
 namespace Ajax\App\Guild\Account;
 
-use Ajax\PageComponent;
+use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\AccountService;
-use Stringable;
 
 #[Before('checkHostAccess', ["finance", "accounts"])]
 #[Databag('guild.account')]
@@ -30,18 +29,16 @@ class OutflowPage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->stash()->get('tenant.guild');
-        return $this->accountService->getCategoryCount($guild);
+        return $this->accountService->getCategoryCount($this->guild());
     }
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        $guild = $this->stash()->get('tenant.guild');
-        return $this->renderView('pages.guild.account.outflow.page', [
-            'accounts' => $this->accountService->getAccounts($guild, $this->currentPage()),
+        return $this->renderTpl('pages.guild.account.outflow.page', [
+            'accounts' => $this->accountService->getAccounts($this->guild(), $this->currentPage()),
         ]);
     }
 
@@ -50,6 +47,6 @@ class OutflowPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-outflow-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-outflow-page');
     }
 }

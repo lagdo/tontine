@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Summary\Saving;
 use Ajax\App\Meeting\Summary\Component;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
-use Stringable;
 
 #[Databag('summary.saving')]
 #[Export(base: ['render'], except: ['show'])]
@@ -14,9 +13,9 @@ class Saving extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.summary.saving.home');
+        return $this->renderTpl('pages.meeting.summary.saving.home');
     }
 
     /**

@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Session\Credit\Loan;
 use Ajax\App\Meeting\Session\Component;
 use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Payment\BalanceCalculator;
-use Stringable;
 
 use function trans;
 
@@ -21,10 +20,10 @@ class Balance extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('meeting.session');
-        return $this->renderView('pages.meeting.session.loan.balance', [
+        return $this->renderTpl('pages.meeting.session.loan.balance', [
             'rqBalance' => $this->rq(),
             'amount' => $this->balanceCalculator->getBalanceForLoan($session),
         ]);
@@ -35,7 +34,7 @@ class Balance extends Component
         $session = $this->stash()->get('meeting.session');
         $balances = $this->balanceCalculator->getBalances($session, true);
         $title = trans('meeting.titles.amounts');
-        $content = $this->renderView('pages.meeting.session.balances', [
+        $content = $this->renderTpl('pages.meeting.session.balances', [
             'session' => $session,
             'balances' => $balances,
         ]);

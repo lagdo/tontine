@@ -2,16 +2,13 @@
 
 namespace Ajax\App\Guild\Member;
 
-use Ajax\Component;
+use Ajax\Base\Guild\Component;
 use Ajax\Page\SectionContent;
-use Ajax\Page\SectionTitle;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
-use Stringable;
 
-use function trans;
 use function trim;
 
 #[Before('checkHostAccess', ["guild", "members"])]
@@ -22,8 +19,9 @@ class Member extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
+    #[Before('setSectionTitle', ["guild", "members"])]
     #[Callback('tontine.hideMenu')]
     public function home()
     {
@@ -33,17 +31,9 @@ class Member extends Component
     /**
      * @inheritDoc
      */
-    protected function before(): void
+    public function html(): string
     {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.tontine'));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function html(): Stringable
-    {
-        return $this->renderView('pages.guild.member.home');
+        return $this->renderTpl('pages.guild.member.home');
     }
 
     /**

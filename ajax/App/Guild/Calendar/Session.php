@@ -2,13 +2,12 @@
 
 namespace Ajax\App\Guild\Calendar;
 
-use Ajax\Component;
+use Ajax\Base\Guild\Component;
 use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
 use Siak\Tontine\Service\Guild\RoundService;
-use Stringable;
 
 #[Before('checkHostAccess', ["guild", "calendar"])]
 #[Before('getRound')]
@@ -19,7 +18,7 @@ class Session extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
     /**
      * The constructor
@@ -39,9 +38,8 @@ class Session extends Component
             // Save the round id in the databag.
             $this->bag('guild.calendar')->set('round.id', $this->target()->args()[0]);
         }
-        $guild = $this->stash()->get('tenant.guild');
         $roundId = $this->bag('guild.calendar')->get('round.id');
-        $round = $this->roundService->getRound($guild, $roundId);
+        $round = $this->roundService->getRound($this->guild(), $roundId);
         $this->stash()->set('guild.calendar.round', $round);
     }
 
@@ -53,9 +51,9 @@ class Session extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.guild.calendar.session.home', [
+        return $this->renderTpl('pages.guild.calendar.session.home', [
             'round' => $this->stash()->get('guild.calendar.round'),
         ]);
     }

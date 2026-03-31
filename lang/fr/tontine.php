@@ -5,6 +5,7 @@ return [
         'format' => 'D j M Y',
         'format_medium' => 'j M Y',
         'format_my' => 'F Y',
+        'format_md' => 'd M',
     ],
     'menus' => [
         'admin' => "Administration",
@@ -88,6 +89,7 @@ return [
         'deleted' => "L'organisation a été supprimée",
         'selected' => "Vous avez sélectionné l'organisation :guild.",
         'back_to_admin' => "Vous êtes de retour sur la section Administration de l'organisation :guild.",
+        'back_to_guild' => "Vous êtes de retour sur la section Organisation du tour :round.",
         'screen' => [
             'orientation' => "Si vous utilisez un appareil mobile, nous vous conseillons de le placer en mode paysage, pour un meilleur affichage.",
         ],
@@ -514,6 +516,14 @@ return [
             'amounts' => [
                 'cashed' => "Encaissé",
                 'disbursed' => "Décaissé",
+            ],
+        ],
+        'errors' => [
+            'form' => [
+                'not_found' => "Impossible de trouver le formulaire demandé.",
+            ],
+            'report' => [
+                'not_found' => "Impossible de trouver le rapport demandé.",
             ],
         ],
     ],

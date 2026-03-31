@@ -6,7 +6,6 @@ use Ajax\App\Meeting\Session\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
-use Stringable;
 
 #[Before('getFund')]
 #[Databag('meeting.saving')]
@@ -22,7 +21,7 @@ class Member extends Component
     /**
      * @var string
      */
-    protected $overrides = Saving::class;
+    protected string $overrides = Saving::class;
 
     /**
      * The constructor
@@ -35,9 +34,9 @@ class Member extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.session.saving.member.home', [
+        return $this->renderTpl('pages.meeting.session.saving.member.home', [
             'fund' => $this->getStashedFund(),
             'session' => $this->stash()->get('meeting.session'),
         ]);

@@ -2,16 +2,12 @@
 
 namespace Ajax\App\Guild\Calendar;
 
-use Ajax\Component;
+use Ajax\Base\Guild\Component;
 use Ajax\Page\SectionContent;
-use Ajax\Page\SectionTitle;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
-use Stringable;
-
-use function trans;
 
 #[Before('checkHostAccess', ["guild", "calendar"])]
 #[Databag('guild.calendar')]
@@ -21,8 +17,9 @@ class Round extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
+    #[Before('setSectionTitle', ["guild", "calendar"])]
     #[Callback('tontine.hideMenu')]
     public function home()
     {
@@ -32,17 +29,9 @@ class Round extends Component
     /**
      * @inheritDoc
      */
-    protected function before(): void
+    public function html(): string
     {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.tontine'));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function html(): Stringable
-    {
-        return $this->renderView('pages.guild.calendar.round.home');
+        return $this->renderTpl('pages.guild.calendar.round.home');
     }
 
     /**

@@ -6,7 +6,6 @@ use Ajax\App\Meeting\Summary\Component;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Export;
-use Stringable;
 
 #[Before('getFund')]
 #[Databag('summary.refund')]
@@ -23,12 +22,12 @@ class Refund extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('summary.session');
         $funds = $this->fundService->getSessionFundList($session, false);
         $funds->prepend('', 0);
-        return $this->renderView('pages.meeting.summary.refund.home', [
+        return $this->renderTpl('pages.meeting.summary.refund.home', [
             'session' => $session,
             'funds' => $funds,
             'fund' => $this->getStashedFund(),

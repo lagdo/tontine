@@ -1,0 +1,50 @@
+<?php
+
+namespace Ajax\App\Report\Session\Table;
+
+use Ajax\Base\Round\Component;
+use Jaxon\Attributes\Attribute\Exclude;
+use Siak\Tontine\Service\Report\MemberService;
+use Siak\Tontine\Service\Report\SessionService;
+
+use function trans;
+
+#[Exclude]
+class BillSession extends Component
+{
+    /**
+     * @param MemberService $memberService
+     * @param SessionService $sessionService
+     */
+    public function __construct(protected MemberService $memberService,
+        protected SessionService $sessionService)
+    {}
+
+    /**
+     * @inheritDoc
+     */
+    public function html(): string
+    {
+        $session = $this->stash()->get('report.session');
+        $member = $this->stash()->get('report.member');
+
+        if(!$member)
+        {
+            return $this->renderTpl('pages.report.session.session.bills', [
+                'title' => trans('tontine.report.titles.bills.session'),
+                'charges' => $this->sessionService->getSessionCharges($session),
+            ]);
+        }
+        return $this->renderTpl('pages.report.session.member.bills.session', [
+            'bills' => $this->memberService->getBills($session, $member),
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function after(): void
+    {
+        $this->response()->jo('tontine')->makeTableResponsive('content-report-session-bills');
+    }
+}

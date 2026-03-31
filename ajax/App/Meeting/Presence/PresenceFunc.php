@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Presence;
 
-use Ajax\FuncComponent;
+use Ajax\Base\Round\FuncComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Presence\PresenceService;
@@ -23,8 +23,7 @@ class PresenceFunc extends FuncComponent
         $this->bag('meeting.presence')->set('member.id', 0);
         $this->bag('meeting.presence')->set('member.page', 1);
 
-        $round = $this->stash()->get('tenant.round');
-        $session = $this->presenceService->getSession($round, $sessionId);
+        $session = $this->presenceService->getSession($this->round(), $sessionId);
         $this->stash()->set('presence.session', $session);
 
         $this->cl(Member::class)->render();
@@ -36,8 +35,7 @@ class PresenceFunc extends FuncComponent
         $this->bag('meeting.presence')->set('session.id', 0);
         $this->bag('meeting.presence')->set('session.page', 1);
 
-        $round = $this->stash()->get('tenant.round');
-        $member = $this->presenceService->getMember($round, $memberId);
+        $member = $this->presenceService->getMember($this->round(), $memberId);
         $this->stash()->set('presence.member', $member);
 
         $this->cl(Session::class)->render();

@@ -2,11 +2,10 @@
 
 namespace Ajax\App\Guild\Member;
 
-use Ajax\PageComponent;
+use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\MemberService;
-use Stringable;
 
 #[Before('checkHostAccess', ["guild", "members"])]
 #[Databag('guild.member')]
@@ -30,25 +29,23 @@ class MemberPage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->stash()->get('tenant.guild');
         $search = $this->bag('guild.member')->get('search', '');
         $filter = $this->bag('guild.member')->get('filter', null);
 
-        return $this->memberService->getMemberCount($guild, $search, $filter);
+        return $this->memberService->getMemberCount($this->guild(), $search, $filter);
     }
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        $guild = $this->stash()->get('tenant.guild');
         $search = $this->bag('guild.member')->get('search', '');
         $filter = $this->bag('guild.member')->get('filter', null);
 
-        return $this->renderView('pages.guild.member.page', [
+        return $this->renderTpl('pages.guild.member.page', [
             'members' => $this->memberService
-                ->getMembers($guild, $search, $filter, $this->currentPage()),
+                ->getMembers($this->guild(), $search, $filter, $this->currentPage()),
         ]);
     }
 
@@ -57,6 +54,6 @@ class MemberPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-member-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-member-page');
     }
 }

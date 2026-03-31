@@ -2,15 +2,11 @@
 
 namespace Ajax\App\Meeting\Presence;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Ajax\Page\SectionContent;
-use Ajax\Page\SectionTitle;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
-use Stringable;
-
-use function trans;
 
 #[Before('checkHostAccess', ["meeting", "presences"])]
 #[Databag('meeting.presence')]
@@ -19,9 +15,10 @@ class Presence extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
     #[Before('checkRoundSessions')]
+    #[Before('setSectionTitle', ["meeting", "presences"])]
     #[Callback('tontine.hideMenu')]
     public function home(): void
     {
@@ -33,7 +30,6 @@ class Presence extends Component
      */
     protected function before(): void
     {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.presences'));
         $this->bag('meeting.presence')->set('session.id', 0);
         $this->bag('meeting.presence')->set('member.id', 0);
     }
@@ -41,9 +37,9 @@ class Presence extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.presence.home', [
+        return $this->renderTpl('pages.meeting.presence.home', [
             'exchange' => $this->bag('meeting.presence')->get('exchange', false),
         ]);
     }
@@ -57,7 +53,7 @@ class Presence extends Component
         !$exchange ?
             $this->cl(Session::class)->render() :
             $this->cl(Member::class)->render();
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->showSmScreen('content-presence-left', 'presence-sm-screens');
     }
 }

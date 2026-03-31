@@ -17,9 +17,8 @@ class ChargeCount extends Component
      */
     public function html(): string
     {
-        $round = $this->stash()->get('tenant.round');
-        return $this->renderView('pages.planning.charge.count', [
-            'count' => $this->chargeService->getChargeCount($round),
+        return $this->renderTpl('pages.planning.charge.count', [
+            'count' => $this->chargeService->getChargeCount($this->round()),
         ]);
     }
 }

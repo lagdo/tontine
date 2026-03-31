@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Meeting\Session;
 
-use Ajax\FuncComponent;
+use Ajax\Base\Round\FuncComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
@@ -21,8 +21,7 @@ class SessionFunc extends FuncComponent
 
     public function open(int $sessionId): void
     {
-        $round = $this->stash()->get('tenant.round');
-        $session = $this->sessionService->getSession($round, $sessionId);
+        $session = $this->sessionService->getSession($this->round(), $sessionId);
         if(!$session || $session->opened)
         {
             $this->alert()->title(trans('common.titles.error'))
@@ -38,8 +37,7 @@ class SessionFunc extends FuncComponent
 
     public function close(int $sessionId): void
     {
-        $round = $this->stash()->get('tenant.round');
-        $session = $this->sessionService->getSession($round, $sessionId);
+        $session = $this->sessionService->getSession($this->round(), $sessionId);
         if(!$session || !$session->opened)
         {
             $this->alert()->title(trans('common.titles.error'))
@@ -55,9 +53,8 @@ class SessionFunc extends FuncComponent
 
     public function saveAgenda(string $text): void
     {
-        $round = $this->stash()->get('tenant.round');
         $sessionId = $this->bag('meeting')->get('session.id', 0);
-        $session = $this->sessionService->getSession($round, $sessionId);
+        $session = $this->sessionService->getSession($this->round(), $sessionId);
         if(!$session)
         {
             $this->alert()->title(trans('common.titles.error'))
@@ -72,9 +69,8 @@ class SessionFunc extends FuncComponent
 
     public function saveReport(string $text): void
     {
-        $round = $this->stash()->get('tenant.round');
         $sessionId = $this->bag('meeting')->get('session.id', 0);
-        $session = $this->sessionService->getSession($round, $sessionId);
+        $session = $this->sessionService->getSession($this->round(), $sessionId);
         if(!$session)
         {
             $this->alert()->title(trans('common.titles.error'))

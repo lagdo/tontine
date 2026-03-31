@@ -73,9 +73,8 @@ trait ComponentTrait
         {
             $this->bag('summary')->set($chargeBagId, $this->target()->args()[0]);
         }
-        $round = $this->stash()->get('tenant.round');
         $chargeId = $this->bag('summary')->get($chargeBagId);
-        $charge = $this->chargeService->getCharge($round, $chargeId);
+        $charge = $this->chargeService->getCharge($this->round(), $chargeId);
         $this->stash()->set('summary.session.charge', $charge);
     }
 }

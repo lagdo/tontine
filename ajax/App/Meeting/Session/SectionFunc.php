@@ -40,7 +40,7 @@ class SectionFunc extends FuncComponent
         $this->cl(Pool\Deposit\Deposit::class)->show();
         $this->cl(Pool\Remitment\Remitment::class)->show();
 
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->setSmScreenHandler('session-pools-sm-screens', 'content-home');
     }
 
@@ -51,7 +51,7 @@ class SectionFunc extends FuncComponent
         $this->cl(Charge\Fixed\Fee::class)->show();
         $this->cl(Charge\Libre\Fee::class)->show();
 
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->setSmScreenHandler('session-charges-sm-screens', 'content-home');
     }
 
@@ -62,7 +62,7 @@ class SectionFunc extends FuncComponent
         $this->cl(Saving\Saving::class)->show();
         $this->cl(Credit\Loan\Loan::class)->show();
 
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->setSmScreenHandler('session-savings-sm-screens', 'content-home');
     }
 
@@ -106,9 +106,9 @@ class SectionFunc extends FuncComponent
             ],
             'dialogsInBody' => true,
         ];
-        $this->response->jq('#session-agenda')->summernote($options);
-        $this->response->jq('#session-report')->summernote($options);
-        $this->response->jo('tontine')
+        $this->response()->jq('#session-agenda')->summernote($options);
+        $this->response()->jq('#session-report')->summernote($options);
+        $this->response()->jo('tontine')
             ->setSmScreenHandler('session-reports-sm-screens', 'content-home');
     }
 }

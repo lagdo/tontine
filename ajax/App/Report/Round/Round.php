@@ -2,49 +2,36 @@
 
 namespace Ajax\App\Report\Round;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Ajax\Page\SectionContent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
-use Siak\Tontine\Service\Meeting\Session\SessionService;
 use Siak\Tontine\Service\Meeting\Session\SummaryService;
-use Stringable;
 
 #[Before('checkHostAccess', ["report", "round"])]
 #[Before('checkOpenedSessions')]
 #[Before('getPools')]
 class Round extends Component
 {
-    use PoolTrait;
+    use Table\PoolTrait;
 
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
     /**
-     * @param SessionService $sessionService
      * @param SummaryService $summaryService
      */
-    public function __construct(private SessionService $sessionService,
-        private SummaryService $summaryService)
+    public function __construct(private SummaryService $summaryService)
     {}
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        $this->view()->share('lastSession', $this->stash()->get('tenant.session'));
-
-        $round = $this->tenantService->round();
-        $sessions = $this->sessionService
-            ->getSessions($round, orderAsc: false)
-            ->filter(fn($session) => $session->active);
-        return $this->renderView('pages.report.round.home', [
-            'round' => $round,
-            'sessions' => $sessions->pluck('title', 'id'),
-        ]);
+        return $this->renderTpl('pages.report.round.home');
     }
 
     /**
@@ -52,24 +39,15 @@ class Round extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-home');
+        $this->cl(RoundFunc::class)->showTables();
     }
 
     /**
      * @return void
      */
+    #[Before('setSectionTitle', ["report", "round"])]
     #[Callback('tontine.hideMenu')]
     public function home(): void
-    {
-        $this->render();
-    }
-
-    /**
-     * @param int $sessionId
-     *
-     * @return void
-     */
-    public function select(int $sessionId): void
     {
         $this->render();
     }

@@ -2,11 +2,10 @@
 
 namespace Ajax\App\Guild\Charge;
 
-use Ajax\PageComponent;
+use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\ChargeService;
-use Stringable;
 
 #[Before('checkHostAccess', ["finance", "charges"])]
 #[Databag('guild.charge')]
@@ -32,25 +31,23 @@ class ChargePage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->stash()->get('tenant.guild');
         $filter = $this->bag('guild.charge')->get('filter', null);
 
-        return $this->chargeService->getChargeCount($guild, $filter);
+        return $this->chargeService->getChargeCount($this->guild(), $filter);
     }
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        $guild = $this->stash()->get('tenant.guild');
         $filter = $this->bag('guild.charge')->get('filter', null);
 
-        return $this->renderView('pages.guild.charge.page', [
+        return $this->renderTpl('pages.guild.charge.page', [
             'types' => $this->getChargeTypes(),
             'periods' => $this->getChargePeriods(),
             'charges' => $this->chargeService
-                ->getCharges($guild, $filter, $this->currentPage()),
+                ->getCharges($this->guild(), $filter, $this->currentPage()),
         ]);
     }
 
@@ -59,6 +56,6 @@ class ChargePage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-charge-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-charge-page');
     }
 }

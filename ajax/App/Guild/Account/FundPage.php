@@ -2,11 +2,10 @@
 
 namespace Ajax\App\Guild\Account;
 
-use Ajax\PageComponent;
+use Ajax\Base\Guild\PageComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Guild\FundService;
-use Stringable;
 
 #[Before('checkHostAccess', ["finance", "accounts"])]
 #[Databag('guild.account')]
@@ -30,18 +29,16 @@ class FundPage extends PageComponent
      */
     protected function count(): int
     {
-        $guild = $this->stash()->get('tenant.guild');
-        return $this->fundService->getFundCount($guild);
+        return $this->fundService->getFundCount($this->guild());
     }
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        $guild = $this->stash()->get('tenant.guild');
-        return $this->renderView('pages.guild.account.fund.page', [
-            'funds' => $this->fundService->getFunds($guild, $this->currentPage()),
+        return $this->renderTpl('pages.guild.account.fund.page', [
+            'funds' => $this->fundService->getFunds($this->guild(), $this->currentPage()),
         ]);
     }
 
@@ -50,6 +47,6 @@ class FundPage extends PageComponent
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('content-fund-page');
+        $this->response()->jo('tontine')->makeTableResponsive('content-fund-page');
     }
 }

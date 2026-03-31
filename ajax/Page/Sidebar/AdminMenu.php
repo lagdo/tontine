@@ -2,9 +2,9 @@
 
 namespace Ajax\Page\Sidebar;
 
-use Ajax\Component;
+use Ajax\App\Admin\Guild\Guild;
+use Ajax\Base\Component;
 use Jaxon\Attributes\Attribute\Exclude;
-use Stringable;
 
 use function config;
 
@@ -14,14 +14,14 @@ class AdminMenu extends Component
     /**
      * @var string
      */
-    protected $overrides = Menu::class;
+    protected string $overrides = Menu::class;
 
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('parts.sidebar.admin', ['ajax' => true]);
+        return $this->renderTpl('parts.sidebar.admin', ['ajax' => true]);
     }
 
     /**
@@ -35,18 +35,10 @@ class AdminMenu extends Component
             $this->node()->jq($menuId)->click($this->rq($menuClass)->home());
         }
 
-        if($this->stash()->get('menu.current.guild') !== null)
-        {
-            $this->node()->jq('#finance-menu a')->css('color', config('menu.color.active'));
-            foreach(config('menu.finance') as $menuId => $menuClass)
-            {
-                $this->node()->jq($menuId)->click($this->rq($menuClass)->home());
-            }
-            $this->node()->jq('#guild-menu a')->css('color', config('menu.color.active'));
-            foreach(config('menu.tontine') as $menuId => $menuClass)
-            {
-                $this->node()->jq($menuId)->click($this->rq($menuClass)->home());
-            }
-        }
+        $this->cl(Guild::class)->home();
+        $this->setSectionTitle('admin', 'guilds');
+
+        $this->response()->html('header-menu-back', '');
+        $this->response()->jq('#header-menu-back')->hide();
     }
 }

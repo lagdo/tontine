@@ -55,7 +55,7 @@ function showMessage(string $message, bool $isError): Response
     $jaxon = app()->make(Jaxon::class);
     $ajaxResponse = $jaxon->ajaxResponse();
     $messageType = $isError ? 'error' : 'warning';
-    $ajaxResponse->dialog
+    $ajaxResponse->dialog()
         ->title(trans("common.titles.$messageType"))
         ->$messageType($message);
 

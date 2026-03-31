@@ -15,6 +15,7 @@ return [
             'route' => 'jaxon.ajax',
             'middlewares' => [
                 'web',
+                'tenant',
                 'tontine',
                 'analytics',
                 'jaxon.config',
@@ -26,6 +27,14 @@ return [
         'views' => [
             // The "pagination" options are set by the TontineTemplate middleware.
             // 'pagination' => [],
+        ],
+        'assets' => [
+            'uri' => env('TONTINE_ASSETS_URI', '/jaxon'),
+            'dir' => env('TONTINE_ASSETS_DIR', public_path('/jaxon')),
+            'export' => env('TONTINE_ASSETS_EXPORT', !env('APP_DEBUG')),
+            'minify' => env('TONTINE_ASSETS_MINIFY', !env('APP_DEBUG')),
+            // The "file" option is set by the TontineJaxon middleware.
+            // 'file' => env('TONTINE_ASSETS_FILE', 'tontine-4.0.9'),
         ],
         'packages' => [
         ],
@@ -64,14 +73,6 @@ return [
         'js' => [
             'lib' => [
                 // 'uri' => '',
-            ],
-            'app' => [
-                'uri' => env('JAXON_JS_APP_URI', '/jaxon'),
-                'dir' => env('JAXON_JS_APP_DIR', public_path('/jaxon')),
-                // The "file" option is set by the TontineJaxon middleware.
-                // 'file' => env('JAXON_JS_APP_FILE', 'js-4.0.9'),
-                'export' => env('JAXON_JS_APP_EXPORT', !env('APP_DEBUG')),
-                'minify' => env('JAXON_JS_APP_MINIFY', !env('APP_DEBUG')),
             ],
         ],
     ],

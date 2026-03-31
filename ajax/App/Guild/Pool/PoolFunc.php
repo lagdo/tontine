@@ -2,7 +2,7 @@
 
 namespace Ajax\App\Guild\Pool;
 
-use Ajax\FuncComponent;
+use Ajax\Base\Guild\FuncComponent;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Jaxon\Attributes\Attribute\Inject;
@@ -11,7 +11,8 @@ use Siak\Tontine\Service\Guild\PoolService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Validation\Guild\PoolValidator;
 
-use function je;
+use function Jaxon\checked;
+use function Jaxon\form;
 use function trans;
 
 #[Before('checkHostAccess', ["finance", "pools"])]
@@ -34,7 +35,7 @@ class PoolFunc extends FuncComponent
     public function showIntro(): void
     {
         $title = trans('tontine.pool.titles.add');
-        $content = $this->renderView('pages.guild.pool.add_intro', [
+        $content = $this->renderTpl('pages.guild.pool.add_intro', [
             'round' => $this->tenantService->round(),
         ]);
         $buttons = [[
@@ -56,7 +57,7 @@ class PoolFunc extends FuncComponent
 
         $title = trans('tontine.pool.titles.deposits');
         $properties = $this->bag('guild.pool')->get('add', []);
-        $content = $this->renderView('pages.guild.pool.deposit_fixed', [
+        $content = $this->renderTpl('pages.guild.pool.deposit_fixed', [
             'fixed' => $properties['deposit']['fixed'] ?? true,
         ]);
         $buttons = [[
@@ -66,7 +67,7 @@ class PoolFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.next'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveDepositFixed(je('pool_deposit_fixed')->rd()->checked()),
+            'click' => $this->rq()->saveDepositFixed(checked('pool_deposit_fixed')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -96,7 +97,7 @@ class PoolFunc extends FuncComponent
 
         $properties = $this->bag('guild.pool')->get('add', []);
         $title = trans('tontine.pool.titles.deposits');
-        $content = $this->renderView('pages.guild.pool.deposit_lendable', [
+        $content = $this->renderTpl('pages.guild.pool.deposit_lendable', [
             'lendable' => $properties['deposit']['lendable'] ?? false,
         ]);
         $buttons = [[
@@ -110,7 +111,7 @@ class PoolFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.next'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveDepositLendable(je('pool_deposit_lendable')->rd()->checked()),
+            'click' => $this->rq()->saveDepositLendable(checked('pool_deposit_lendable')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -132,7 +133,7 @@ class PoolFunc extends FuncComponent
         $properties = $this->bag('guild.pool')->get('add', []);
         $fixed = $properties['deposit']['fixed'] ?? true;
 
-        $content = $this->renderView('pages.guild.pool.remit_planned', [
+        $content = $this->renderTpl('pages.guild.pool.remit_planned', [
             'planned' => $properties['remit']['planned'] ?? true,
         ]);
         $buttons = [[
@@ -146,7 +147,7 @@ class PoolFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.next'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveRemitPlanned(je('pool_remit_planned')->rd()->checked()),
+            'click' => $this->rq()->saveRemitPlanned(checked('pool_remit_planned')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -167,7 +168,7 @@ class PoolFunc extends FuncComponent
         $properties = $this->bag('guild.pool')->get('add', []);
 
         $title = trans('tontine.pool.titles.remitments');
-        $content = $this->renderView('pages.guild.pool.remit_auction', [
+        $content = $this->renderTpl('pages.guild.pool.remit_auction', [
             'auction' => $properties['remit']['auction'] ?? false,
         ]);
         $buttons = [[
@@ -181,7 +182,7 @@ class PoolFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.next'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveRemitAuction(je('pool_remit_auction')->rd()->checked()),
+            'click' => $this->rq()->saveRemitAuction(checked('pool_remit_auction')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -200,7 +201,7 @@ class PoolFunc extends FuncComponent
         $this->modal()->hide();
 
         $title = trans('tontine.pool.titles.add');
-        $content = $this->renderView('pages.guild.pool.add', [
+        $content = $this->renderTpl('pages.guild.pool.add', [
             'properties' => $this->bag('guild.pool')->get('add', []),
         ]);
         $buttons = [[
@@ -210,7 +211,7 @@ class PoolFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(je('pool-form')->rd()->form()),
+            'click' => $this->rq()->create(form('pool-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -220,8 +221,7 @@ class PoolFunc extends FuncComponent
     {
         $formValues['properties'] = $this->bag('guild.pool')->get('add', []);
         $values = $this->validator->validateItem($formValues);
-        $guild = $this->stash()->get('tenant.guild');
-        $this->poolService->createPool($guild, $values);
+        $this->poolService->createPool($this->guild(), $values);
 
         $this->modal()->hide();
         $this->alert()->title(trans('common.titles.success'))
@@ -232,10 +232,9 @@ class PoolFunc extends FuncComponent
 
     public function edit(int $poolId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $pool = $this->poolService->getPool($guild, $poolId);
+        $pool = $this->poolService->getPool($this->guild(), $poolId);
         $title = trans('tontine.pool.titles.edit');
-        $content = $this->renderView('pages.guild.pool.edit', [
+        $content = $this->renderTpl('pages.guild.pool.edit', [
             'pool' => $pool,
             'locales' => LaravelLocalization::getSupportedLocales(),
         ]);
@@ -246,7 +245,7 @@ class PoolFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($pool->id, je('pool-form')->rd()->form()),
+            'click' => $this->rq()->update($pool->id, form('pool-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -255,8 +254,7 @@ class PoolFunc extends FuncComponent
     #[Inject(attr: 'validator')]
     public function update(int $poolId, array $formValues): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $pool = $this->poolService->getPool($guild, $poolId);
+        $pool = $this->poolService->getPool($this->guild(), $poolId);
         // The properties field cannot be changed.
         $formValues['properties'] = $pool->properties;
         if($pool->pools_count > 0)
@@ -276,8 +274,7 @@ class PoolFunc extends FuncComponent
 
     public function delete(int $poolId): void
     {
-        $guild = $this->stash()->get('tenant.guild');
-        $pool = $this->poolService->getPool($guild, $poolId);
+        $pool = $this->poolService->getPool($this->guild(), $poolId);
         if($pool->pools_count > 0)
         {
             // A pool that is already in use cannot be deleted.

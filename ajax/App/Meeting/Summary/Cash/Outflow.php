@@ -4,16 +4,15 @@ namespace Ajax\App\Meeting\Summary\Cash;
 
 use Ajax\App\Meeting\Summary\Component;
 use Jaxon\Attributes\Attribute\Exclude;
-use Stringable;
 
 class Outflow extends Component
 {
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.summary.outflow.home', [
+        return $this->renderTpl('pages.meeting.summary.outflow.home', [
             'session' => $this->stash()->get('summary.session'),
         ]);
     }

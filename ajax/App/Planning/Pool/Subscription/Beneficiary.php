@@ -14,7 +14,6 @@ use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Model\Session as SessionModel;
 use Siak\Tontine\Service\Planning\SubscriptionService;
 use Siak\Tontine\Service\Planning\SummaryService;
-use Stringable;
 
 use function array_values;
 use function collect;
@@ -32,7 +31,7 @@ class Beneficiary extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
     /**
      * @var SubscriptionService
@@ -126,7 +125,7 @@ class Beneficiary extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $pool = $this->stash()->get('planning.pool');
         $this->payables = $this->summaryService->getPayables($pool);
@@ -135,7 +134,7 @@ class Beneficiary extends Component
         // Subscriptions that already have a beneficiary assigned.
         $this->beneficiaries = $this->getBeneficiaries();
 
-        return $this->renderView('pages.planning.pool.subscription.beneficiaries', [
+        return $this->renderTpl('pages.planning.pool.subscription.beneficiaries', [
             'pool' => $pool,
             'candidates' => $this->candidates,
             'sessions' => $this->payables['sessions']
@@ -151,18 +150,18 @@ class Beneficiary extends Component
         $callback = fn(string $name, int $id) => compact('id', 'name');
         $candidates = array_values($this->candidates->map($callback)->all());
         $beneficiaries = array_values($this->beneficiaries->map($callback)->all());
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->setSubscriptionCandidates($candidates, $beneficiaries);
 
         $sessionId = jq()->parent()->parent()->attr('data-session-id')->toInt();
         $nextSubscriptionId = jq()->val()->toInt();
         $currSubscriptionId = jq()->parent()->attr('data-subscription-id')->toInt();
         $wrapper = '#content-subscription-beneficiaries';
-        $this->response->jq('.select-beneficiary', $wrapper)
+        $this->response()->jq('.select-beneficiary', $wrapper)
             ->on('change', $this->rq()->save($sessionId,
                 $nextSubscriptionId, $currSubscriptionId));
 
-        $this->response->jo('tontine')
+        $this->response()->jo('tontine')
             ->makeTableResponsive('content-subscription-beneficiaries');
     }
 

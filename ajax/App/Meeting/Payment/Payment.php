@@ -2,18 +2,14 @@
 
 namespace Ajax\App\Meeting\Payment;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use Ajax\Page\SectionContent;
-use Ajax\Page\SectionTitle;
 use App\Events\OnPagePaymentHome;
 use Illuminate\Support\Collection;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Callback;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
-use Stringable;
-
-use function trans;
 
 #[Before('checkHostAccess', ["meeting", "payments"])]
 #[Before('getOpenedSessions')]
@@ -23,7 +19,7 @@ class Payment extends Component
     /**
      * @var string
      */
-    protected $overrides = SectionContent::class;
+    protected string $overrides = SectionContent::class;
 
     /**
      * @var Collection
@@ -38,13 +34,13 @@ class Payment extends Component
 
     protected function getOpenedSessions()
     {
-        $round = $this->stash()->get('tenant.round');
-        $this->sessions = $this->sessionService->getSessions($round, orderAsc: false)
+        $this->sessions = $this->sessionService->getSessions($this->round(), orderAsc: false)
             ->filter(fn($session) => $session->opened)
             ->pluck('title', 'id');
     }
 
     #[Before('getOpenedSessions')]
+    #[Before('setSectionTitle', ["meeting", "payments"])]
     #[Callback('tontine.hideMenu')]
     public function home(): void
     {
@@ -54,17 +50,9 @@ class Payment extends Component
     /**
      * @inheritDoc
      */
-    protected function before(): void
+    public function html(): string
     {
-        $this->cl(SectionTitle::class)->show(trans('tontine.menus.meeting'));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function html(): Stringable
-    {
-        return $this->renderView('pages.meeting.payment.home', [
+        return $this->renderTpl('pages.meeting.payment.home', [
             'sessions' => $this->sessions,
         ]);
     }

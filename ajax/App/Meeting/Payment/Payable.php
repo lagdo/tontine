@@ -2,14 +2,13 @@
 
 namespace Ajax\App\Meeting\Payment;
 
-use Ajax\Component;
+use Ajax\Base\Round\Component;
 use App\Events\OnPagePaymentPayables;
 use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Databag;
 use Siak\Tontine\Service\Meeting\Member\MemberService;
 use Siak\Tontine\Service\Payment\PaymentService;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
-use Stringable;
 
 #[Before('checkHostAccess', ["meeting", "payments"])]
 #[Databag('meeting.payment')]
@@ -27,7 +26,7 @@ class Payable extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
         $session = $this->stash()->get('payable.session');
         $member = $this->stash()->get('payable.member');
@@ -35,7 +34,7 @@ class Payable extends Component
         $payables = $this->paymentService->getPayables($session, $member);
         $this->stash()->set('payable.data', $payables);
 
-        return $this->renderView('pages.meeting.payment.payables', $payables);
+        return $this->renderTpl('pages.meeting.payment.payables', $payables);
     }
 
     /**
@@ -43,8 +42,8 @@ class Payable extends Component
      */
     protected function after(): void
     {
-        $this->response->jo('tontine')->makeTableResponsive('payment-payables-home');
-        $this->response->jo('tontine')->showSmScreen('payment-payables-home', 'payment-sm-screens');
+        $this->response()->jo('tontine')->makeTableResponsive('payment-payables-home');
+        $this->response()->jo('tontine')->showSmScreen('payment-payables-home', 'payment-sm-screens');
 
         $payables = $this->stash()->get('payable.data');
         OnPagePaymentPayables::dispatch($payables);
@@ -52,12 +51,11 @@ class Payable extends Component
 
     public function show(int $memberId, int $sessionId): void
     {
-        $round = $this->stash()->get('tenant.round');
-        if(!($member = $this->memberService->getMember($round, $memberId)))
+        if(!($member = $this->memberService->getMember($this->round(), $memberId)))
         {
             return;
         }
-        if(!($session = $this->sessionService->getSession($round, $sessionId)))
+        if(!($session = $this->sessionService->getSession($this->round(), $sessionId)))
         {
             return;
         }

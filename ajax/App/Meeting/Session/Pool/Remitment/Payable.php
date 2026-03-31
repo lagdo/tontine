@@ -5,7 +5,6 @@ namespace Ajax\App\Meeting\Session\Pool\Remitment;
 use Ajax\App\Meeting\Session\Component;
 use Ajax\App\Meeting\Session\Pool\PoolTrait;
 use Jaxon\Attributes\Attribute\Before;
-use Stringable;
 
 #[Before('getPool')]
 class Payable extends Component
@@ -15,7 +14,7 @@ class Payable extends Component
     /**
      * @var string
      */
-    protected $overrides = Remitment::class;
+    protected string $overrides = Remitment::class;
 
     public function pool(int $poolId)
     {
@@ -25,9 +24,9 @@ class Payable extends Component
     /**
      * @inheritDoc
      */
-    public function html(): Stringable
+    public function html(): string
     {
-        return $this->renderView('pages.meeting.session.remitment.payable.home', [
+        return $this->renderTpl('pages.meeting.session.remitment.payable.home', [
             'pool' => $this->stash()->get('meeting.pool'),
         ]);
     }

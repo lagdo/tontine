@@ -10,7 +10,7 @@ use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\Meeting\Member\MemberService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 
-use function je;
+use function Jaxon\form;
 use function trans;
 
 class LoanFunc extends FuncComponent
@@ -33,14 +33,13 @@ class LoanFunc extends FuncComponent
 
     public function add(): void
     {
-        $round = $this->stash()->get('tenant.round');
         $session = $this->stash()->get('meeting.session');
         $title = trans('meeting.loan.titles.add');
-        $content = $this->renderView('pages.meeting.session.loan.add', [
+        $content = $this->renderTpl('pages.meeting.session.loan.add', [
             'amountAvailable' => $this->loanService->getAmountAvailable($session),
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getSessionFundList($session, false),
-            'members' => $this->memberService->getMemberList($round),
+            'members' => $this->memberService->getMemberList($this->round()),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -49,18 +48,17 @@ class LoanFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(je('loan-form')->rd()->form()),
+            'click' => $this->rq()->create(form('loan-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-        $this->response->jo('tontine')->setLoanInterestLabel();
+        $this->response()->jo('tontine')->setLoanInterestLabel();
     }
 
     #[Inject(attr: 'validator')]
     public function create(array $formValues): void
     {
-        $round = $this->stash()->get('tenant.round');
         $values = $this->validator->validateItem($formValues);
-        if(!($member = $this->memberService->getMember($round, $values['member'])))
+        if(!($member = $this->memberService->getMember($this->round(), $values['member'])))
         {
             $this->alert()->warning(trans('tontine.member.errors.not_found'));
             return;
@@ -107,13 +105,12 @@ class LoanFunc extends FuncComponent
         }
 
         $session = $this->stash()->get('meeting.session');
-        $round = $this->stash()->get('tenant.round');
         $title = trans('meeting.loan.titles.edit');
-        $content = $this->renderView('pages.meeting.session.loan.edit', [
+        $content = $this->renderTpl('pages.meeting.session.loan.edit', [
             'loan' => $loan,
             'interestTypes' => $this->loanService->getInterestTypes(),
             'funds' => $this->fundService->getSessionFundList($session, false),
-            'members' => $this->memberService->getMemberList($round),
+            'members' => $this->memberService->getMemberList($this->round()),
         ]);
         $buttons = [[
             'title' => trans('common.actions.cancel'),
@@ -122,10 +119,10 @@ class LoanFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($loanId, je('loan-form')->rd()->form()),
+            'click' => $this->rq()->update($loanId, form('loan-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
-        $this->response->jo('tontine')->setLoanInterestLabel();
+        $this->response()->jo('tontine')->setLoanInterestLabel();
     }
 
     #[Inject(attr: 'validator')]
@@ -137,9 +134,8 @@ class LoanFunc extends FuncComponent
         }
 
         $session = $this->stash()->get('meeting.session');
-        $round = $this->stash()->get('tenant.round');
         $values = $this->validator->validateItem($formValues);
-        if(!($member = $this->memberService->getMember($round, $values['member'])))
+        if(!($member = $this->memberService->getMember($this->round(), $values['member'])))
         {
             $this->alert()->warning(trans('tontine.member.errors.not_found'));
             return;
@@ -183,7 +179,7 @@ class LoanFunc extends FuncComponent
         }
 
         $title = trans('meeting.loan.titles.deadline');
-        $content = $this->renderView('pages.meeting.session.loan.deadline', [
+        $content = $this->renderTpl('pages.meeting.session.loan.deadline', [
             'loan' => $loan,
         ]);
         $buttons = [[
@@ -197,7 +193,7 @@ class LoanFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->updateDeadline($loanId, je('loan-edit-deadline')->rd()->form()),
+            'click' => $this->rq()->updateDeadline($loanId, form('loan-edit-deadline')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -212,8 +208,7 @@ class LoanFunc extends FuncComponent
 
         $formValues['session'] = $loan->session->day_date;
         $values = $this->validator->validateDate($formValues);
-        $guild = $this->stash()->get('tenant.guild');
-        $this->loanService->updateDeadline($guild, $loan, $values['deadline']);
+        $this->loanService->updateDeadline($this->guild(), $loan, $values['deadline']);
 
         $this->cl(LoanPage::class)->page();
         $this->modal()->hide();

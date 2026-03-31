@@ -10,8 +10,8 @@ use Siak\Tontine\Model\Member as MemberModel;
 use Siak\Tontine\Service\Meeting\Saving\SavingService;
 use Siak\Tontine\Validation\Meeting\SavingValidator;
 
+use function Jaxon\form;
 use function str_replace;
-use function je;
 use function trans;
 use function trim;
 
@@ -41,8 +41,7 @@ class AmountFunc extends FuncComponent
      */
     public function edit(int $memberId): void
     {
-        $round = $this->stash()->get('tenant.round');
-        if(!($member = $this->savingService->getMember($round, $memberId)))
+        if(!($member = $this->savingService->getMember($this->round(), $memberId)))
         {
             $this->alert()->warning(trans('tontine.member.errors.not_found'));
             return;
@@ -97,8 +96,7 @@ class AmountFunc extends FuncComponent
     #[Inject(attr: 'validator')]
     public function save(int $memberId, string $amount): void
     {
-        $round = $this->stash()->get('tenant.round');
-        if(!($member = $this->savingService->getMember($round, $memberId)))
+        if(!($member = $this->savingService->getMember($this->round(), $memberId)))
         {
             $this->alert()->warning(trans('tontine.member.errors.not_found'));
             return;
@@ -135,7 +133,7 @@ class AmountFunc extends FuncComponent
         }
 
         $title = trans('meeting.saving.titles.start_amount');
-        $content = $this->renderView('pages.meeting.session.saving.amount', [
+        $content = $this->renderTpl('pages.meeting.session.saving.amount', [
             'amount' => $fund->start_amount,
         ]);
         $buttons = [[
@@ -145,7 +143,7 @@ class AmountFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveStartAmount(je('fund-amount-form')->rd()->form()),
+            'click' => $this->rq()->saveStartAmount(form('fund-amount-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -191,7 +189,7 @@ class AmountFunc extends FuncComponent
         }
 
         $title = trans('meeting.saving.titles.end_amount');
-        $content = $this->renderView('pages.meeting.session.saving.amount', [
+        $content = $this->renderTpl('pages.meeting.session.saving.amount', [
             'amount' => $fund->end_amount,
         ]);
         $buttons = [[
@@ -201,7 +199,7 @@ class AmountFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveEndAmount(je('fund-amount-form')->rd()->form()),
+            'click' => $this->rq()->saveEndAmount(form('fund-amount-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
