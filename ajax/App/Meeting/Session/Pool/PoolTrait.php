@@ -5,7 +5,7 @@ namespace Ajax\App\Meeting\Session\Pool;
 use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
 use Jaxon\Attributes\Attribute\Inject;
-use Jaxon\Request\TargetInterface;
+use Jaxon\Request\CallableAction;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\Pool\PoolService;
 
@@ -22,9 +22,9 @@ trait PoolTrait
     /**
      * Get the Jaxon request target
      *
-     * @return TargetInterface|null
+     * @return CallableAction|null
      */
-    abstract protected function target(): ?TargetInterface;
+    abstract protected function action(): ?CallableAction;
 
     /**
      * Get the temp cache
@@ -49,9 +49,9 @@ trait PoolTrait
      */
     protected function getPool(bool $ofSession = true): void
     {
-        if($this->target()->method() === 'pool')
+        if($this->action()->func() === 'pool')
         {
-            $this->bag('meeting')->set('pool.id', $this->target()->args()[0]);
+            $this->bag('meeting')->set('pool.id', $this->action()->args()[0]);
         }
         $session = $this->stash()->get('meeting.session');
         $poolId = (int)$this->bag('meeting')->get('pool.id');

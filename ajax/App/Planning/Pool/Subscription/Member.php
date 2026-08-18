@@ -18,18 +18,19 @@ class Member extends Component
     use PoolTrait;
 
     /**
-     * @var string
-     */
-    protected string $overrides = Pool::class;
-
-    /**
-     * The constructor
-     *
      * @param PoolService $poolService
      */
     public function __construct(PoolService $poolService)
     {
         $this->poolService = $poolService;
+    }
+
+    /**
+     * @return string
+     */
+    protected function overrides(): string
+    {
+        return Pool::class;
     }
 
     public function pool(int $poolId)

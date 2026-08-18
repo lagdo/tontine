@@ -157,7 +157,7 @@ form .form-group .col-form-label {
   form .form-group .col-form-label {
     text-align: left !important;
   }
-  
+
   .sm-screen-hidden,
   .sm-screen-selector,
   .sm-screen.sm-screen-active {
@@ -239,21 +239,7 @@ form .form-group .col-form-label {
   color: red;
 }
 
-/* Make the Kustomer component appear on top of the page elements */
-.kustomer-feedback-component {
+/* Make the Volet component appear on top of the page elements */
+#volet .volet-container {
   z-index: 100;
-}
-.kustomer-feedback-component .kustomer-popup .kustomer-header h1 {
-  margin-top: 0 !important;
-  font-size: 15px !important;
-}
-.kustomer-popup .kustomer-container section.kustomer-form h2 {
-  text-transform: none !important;
-}
-/* Hide the feedback popup logo */
-.kustomer-popup .kustomer-header .kustomer-logo {
-  display: none;
-}
-.kustomer-feedback-component .kustomer-popup .kustomer-container section.kustomer-form form textarea {
-  resize: vertical;
 }

@@ -5,7 +5,7 @@ namespace Ajax\App\Planning\Pool;
 use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
 use Jaxon\Attributes\Attribute\Inject;
-use Jaxon\Request\TargetInterface;
+use Jaxon\Request\CallableAction;
 use Siak\Tontine\Service\Planning\PoolService;
 
 trait PoolTrait
@@ -19,9 +19,9 @@ trait PoolTrait
     /**
      * Get the Jaxon request target
      *
-     * @return TargetInterface|null
+     * @return CallableAction|null
      */
-    abstract protected function target(): ?TargetInterface;
+    abstract protected function action(): ?CallableAction;
 
     /**
      * Get the temp cache
@@ -44,9 +44,9 @@ trait PoolTrait
      */
     protected function getPool()
     {
-        if($this->target()->method() === 'pool')
+        if($this->action()->func() === 'pool')
         {
-            $poolId = $this->target()->args()[0];
+            $poolId = $this->action()->args()[0];
             $this->bag('planning.pool')->set('pool.id', $poolId);
         }
 

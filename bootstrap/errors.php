@@ -63,7 +63,7 @@ function showMessage(string $message, bool $isError): Response
 }
 
 
-function handle(Exceptions $exceptions)
+function handleExceptions(Exceptions $exceptions): void
 {
     $exceptions->dontReport([
         MessageException::class,
@@ -84,7 +84,7 @@ function handle(Exceptions $exceptions)
         if ($response->getStatusCode() !== 419 || !$jaxon->canProcessRequest()) {
             return $response;
         }
- 
+
         // Handle token expiration errors on Jaxon requests.
         $ajaxResponse = $jaxon->ajaxResponse();
         $ajaxResponse->redirect(route('login'));

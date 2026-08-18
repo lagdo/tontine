@@ -5,7 +5,7 @@ namespace Ajax\App\Meeting\Summary\Charge;
 use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
 use Jaxon\Attributes\Attribute\Inject;
-use Jaxon\Request\TargetInterface;
+use Jaxon\Request\CallableAction;
 use Siak\Tontine\Service\Meeting\Charge\BillService;
 use Siak\Tontine\Service\Meeting\Charge\ChargeService;
 use Siak\Tontine\Service\Meeting\Charge\SettlementService;
@@ -33,9 +33,9 @@ trait ComponentTrait
     /**
      * Get the Jaxon request target
      *
-     * @return TargetInterface|null
+     * @return CallableAction|null
      */
-    abstract protected function target(): ?TargetInterface;
+    abstract protected function action(): ?CallableAction;
 
     /**
      * Get the temp cache
@@ -69,9 +69,9 @@ trait ComponentTrait
     protected function getCharge(): void
     {
         $chargeBagId = $this->chargeBagId();
-        if($this->target()->method() === 'charge')
+        if($this->action()->func() === 'charge')
         {
-            $this->bag('summary')->set($chargeBagId, $this->target()->args()[0]);
+            $this->bag('summary')->set($chargeBagId, $this->action()->args()[0]);
         }
         $chargeId = $this->bag('summary')->get($chargeBagId);
         $charge = $this->chargeService->getCharge($this->round(), $chargeId);

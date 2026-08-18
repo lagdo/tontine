@@ -10,9 +10,9 @@ trait AccessTrait
 {
     protected function getInvite(): void
     {
-        if($this->target()->method() === 'home')
+        if($this->action()->func() === 'home')
         {
-            $this->bag('user.access')->set('invite.id', $this->target()->args()[0]);
+            $this->bag('user.access')->set('invite.id', $this->action()->args()[0]);
         }
         $user = $this->tenantService->user();
         $inviteId = $this->bag('user.access')->get('invite.id');
@@ -25,9 +25,9 @@ trait AccessTrait
 
     protected function getGuild(): void
     {
-        if($this->target()->method() === 'guild')
+        if($this->action()->func() === 'guild')
         {
-            $this->bag('user.access')->set('guild.id', $this->target()->args()[0]);
+            $this->bag('user.access')->set('guild.id', $this->action()->args()[0]);
         }
         $user = $this->tenantService->user();
         $guildId = $this->bag('user.access')->get('guild.id');

@@ -10,11 +10,6 @@ use Siak\Tontine\Service\Meeting\Session\SessionService;
 class Section extends Component
 {
     /**
-     * @var string
-     */
-    protected string $overrides = SectionContent::class;
-
-    /**
      * The constructor
      *
      * @param SessionService $sessionService
@@ -22,6 +17,14 @@ class Section extends Component
     public function __construct(SessionService $sessionService)
     {
         $this->sessionService = $sessionService;
+    }
+
+    /**
+     * @return string
+     */
+    protected function overrides(): string
+    {
+        return SectionContent::class;
     }
 
     /**

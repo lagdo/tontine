@@ -20,13 +20,6 @@ class Planning extends Component
     use PoolTrait;
 
     /**
-     * @var string
-     */
-    protected string $overrides = SectionContent::class;
-
-    /**
-     * The constructor
-     *
      * @param PoolService $poolService
      * @param SummaryService $summaryService
      */
@@ -34,6 +27,14 @@ class Planning extends Component
         private SummaryService $summaryService)
     {
         $this->poolService = $poolService;
+    }
+
+    /**
+     * @return string
+     */
+    protected function overrides(): string
+    {
+        return SectionContent::class;
     }
 
     public function pool(int $poolId)

@@ -12,17 +12,20 @@ class Target extends Component
     use ChargeTrait;
 
     /**
-     * @var string
-     */
-    protected string $overrides = Fee::class;
-
-    /**
      * The constructor
      *
      * @param SettlementTargetService $targetService
      */
     public function __construct(protected SettlementTargetService $targetService)
     {}
+
+    /**
+     * @return string
+     */
+    protected function overrides(): string
+    {
+        return Fee::class;
+    }
 
     protected function getTarget(): void
     {

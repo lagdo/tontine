@@ -17,11 +17,6 @@ use Siak\Tontine\Service\Meeting\Session\SessionService;
 class Payment extends Component
 {
     /**
-     * @var string
-     */
-    protected string $overrides = SectionContent::class;
-
-    /**
      * @var Collection
      */
     private Collection $sessions;
@@ -31,6 +26,14 @@ class Payment extends Component
      */
     public function __construct(private SessionService $sessionService)
     {}
+
+    /**
+     * @return string
+     */
+    protected function overrides(): string
+    {
+        return SectionContent::class;
+    }
 
     protected function getOpenedSessions()
     {

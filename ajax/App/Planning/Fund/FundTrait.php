@@ -5,7 +5,7 @@ namespace Ajax\App\Planning\Fund;
 use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
 use Jaxon\Attributes\Attribute\Inject;
-use Jaxon\Request\TargetInterface;
+use Jaxon\Request\CallableAction;
 use Siak\Tontine\Service\Planning\FundService;
 
 trait FundTrait
@@ -19,9 +19,9 @@ trait FundTrait
     /**
      * Get the Jaxon request target
      *
-     * @return TargetInterface|null
+     * @return CallableAction|null
      */
-    abstract protected function target(): ?TargetInterface;
+    abstract protected function action(): ?CallableAction;
 
     /**
      * Get the temp cache
@@ -44,9 +44,9 @@ trait FundTrait
      */
     protected function getFund(): void
     {
-        if($this->target()->method() === 'fund')
+        if($this->action()->func() === 'fund')
         {
-            $fundId = $this->target()->args()[0];
+            $fundId = $this->action()->args()[0];
             $this->bag('planning.fund')->set('fund.id', $fundId);
         }
 

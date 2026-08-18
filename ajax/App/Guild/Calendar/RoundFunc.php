@@ -20,12 +20,12 @@ class RoundFunc extends FuncComponent
     /**
      * @var RoundValidator
      */
-    protected RoundValidator $validator;
+    private RoundValidator $validator;
 
     /**
      * @param RoundService $roundService
      */
-    public function __construct(protected RoundService $roundService)
+    public function __construct(private RoundService $roundService)
     {}
 
     public function add(): void

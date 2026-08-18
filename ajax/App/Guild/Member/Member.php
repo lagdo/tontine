@@ -17,9 +17,12 @@ use function trim;
 class Member extends Component
 {
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = SectionContent::class;
+    protected function overrides(): string
+    {
+        return SectionContent::class;
+    }
 
     #[Before('setSectionTitle', ["guild", "members"])]
     #[Callback('tontine.hideMenu')]

@@ -12,9 +12,12 @@ class Payable extends Component
     use PoolTrait;
 
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = Remitment::class;
+    protected function overrides(): string
+    {
+        return Remitment::class;
+    }
 
     public function pool(int $poolId): void
     {

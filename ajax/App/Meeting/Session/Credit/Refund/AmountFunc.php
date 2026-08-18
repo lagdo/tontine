@@ -27,14 +27,14 @@ class AmountFunc extends FuncComponent
     /**
      * @var DebtValidator
      */
-    protected DebtValidator $validator;
+    private DebtValidator $validator;
 
     /**
      * The constructor
      *
      * @param PartialRefundService $refundService
      */
-    public function __construct(protected PartialRefundService $refundService)
+    public function __construct(private PartialRefundService $refundService)
     {}
 
     public function edit(int $debtId): void

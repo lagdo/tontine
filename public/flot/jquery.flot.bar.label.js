@@ -42,7 +42,7 @@
                 // Move the labels layer under the overlay to preserve flot interactivity
                 barLabels.removeText(layer);
             }
-            
+
             const labelsEl = barLabels.element;
             const target = $(labelsEl.parentElement).children(".flot-overlay:first");
             $(labelsEl).insertBefore(target);

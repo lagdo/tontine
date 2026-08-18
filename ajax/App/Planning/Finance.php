@@ -15,9 +15,12 @@ use Ajax\Page\SectionContent;
 class Finance extends Component
 {
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = SectionContent::class;
+    protected function overrides(): string
+    {
+        return SectionContent::class;
+    }
 
     #[Before('setSectionTitle', ["planning", "finance"])]
     #[Callback('tontine.hideMenu')]

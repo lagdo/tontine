@@ -42,8 +42,8 @@ class AppServiceProvider extends ServiceProvider
         }
 
         // Access on analytics pages
-        Gate::define('analytics', function(User $user) {
-            return in_array($user->email, explode(',', env('ANALYTICS_USERS', '')));
-        });
+        // Gate::define('analytics', function(User $user) {
+        //     return in_array($user->email, explode(',', env('ANALYTICS_USERS', '')));
+        // });
     }
 }

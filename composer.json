@@ -3,49 +3,57 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/feuzeu/laravel-analytics"
+        }
+    ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "ext-gmp": "*",
         "ext-intl": "*",
         "ext-json": "*",
-        "akaunting/laravel-money": "^5.2",
-        "andreaselia/analytics": "^2.0",
-        "chrome-php/chrome": "^1.12",
-        "jaxon-php/jaxon-attributes": "^1.1",
-        "jaxon-php/jaxon-core": "^5.7",
+        "akaunting/laravel-money": "^6.0",
+        "andreaselia/analytics": "dev-main",
+        "chrome-php/chrome": "^1.16",
+        "jaxon-php/jaxon-attributes": "^1.3",
+        "jaxon-php/jaxon-core": "^5.8",
         "jaxon-php/jaxon-dialogs": "^5.1",
         "jaxon-php/jaxon-flot": "^5.3",
         "jaxon-php/jaxon-laravel": "^5.0",
         "lagdo/laravel-facades": "^1.0",
-        "laravel/fortify": "^1.25",
-        "laravel/framework": "^11.31",
-        "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.9",
-        "league/iso3166": "^4.3",
-        "mcamara/laravel-localization": "^2.2",
-        "mydnic/laravel-kustomer": "^1.10",
-        "propaganistas/laravel-phone": "^5.3",
-        "rinvex/countries": "^9.0",
-        "spatie/laravel-html": "^3.11",
+        "laravel/fortify": "^1.38",
+        "laravel/framework": "^13.17",
+        "laravel/tinker": "^3.0",
+        "league/iso3166": "^4.4",
+        "mcamara/laravel-localization": "^2.4",
+        "mydnic/volet": "^2.2",
+        "propaganistas/laravel-phone": "^6.0",
+        "rinvex/countries": "^9.1",
+        "spatie/laravel-html": "^3.13",
         "spatie/laravel-validation-rules": "^3.4",
-        "sqids/sqids": "^0.4.1",
+        "sqids/sqids": "^0.5.0",
         "umpirsky/country-list": "^2.0",
         "umpirsky/currency-list": "^1.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "laravel-lang/attributes": "^2.11",
-        "laravel-lang/http-statuses": "^3.8",
-        "laravel-lang/lang": "^15.11",
-        "laravel/breeze": "^2.3",
-        "laravel/pail": "^1.1",
-        "laravel/pint": "^1.13",
-        "laravel/sail": "^1.26",
+        "laravel-lang/attributes": "^2.16",
+        "laravel-lang/http-statuses": "^3.13",
+        "laravel-lang/lang": "^15.34",
+        "laravel/pail": "^1.2.5",
+        "laravel/pao": "^1.0.6",
+        "laravel/pint": "^1.27",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.1",
-        "phpunit/phpunit": "^11.0.1"
+        "nunomaduro/collision": "^8.6",
+        "pestphp/pest": "^5.1",
+        "pestphp/pest-plugin-laravel": "^5.0"
     },
     "autoload": {
         "psr-4": {
@@ -65,19 +73,37 @@
         }
     },
     "scripts": {
+        "setup": [
+            "composer install",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan key:generate",
+            "@php artisan migrate --force"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php artisan dev"
+        ],
+        "test": [
+            "@php artisan config:clear --ansi @no_additional_args",
+            "@php artisan test"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
-            "@php artisan lang:update"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@php artisan key:generate --ansi"
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
+        ],
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
         ]
     },
     "extra": {

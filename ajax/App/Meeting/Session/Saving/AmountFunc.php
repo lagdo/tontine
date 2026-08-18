@@ -24,14 +24,14 @@ class AmountFunc extends FuncComponent
     /**
      * @var SavingValidator
      */
-    protected SavingValidator $validator;
+    private SavingValidator $validator;
 
     /**
      * The constructor
      *
      * @param SavingService $savingService
      */
-    public function __construct(protected SavingService $savingService)
+    public function __construct(private SavingService $savingService)
     {}
 
     /**
@@ -230,7 +230,7 @@ class AmountFunc extends FuncComponent
     }
 
     /**
-     * @param array $formValues
+     * @param string $amount
      *
      * @return void
      */

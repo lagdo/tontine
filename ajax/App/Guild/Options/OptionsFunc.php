@@ -15,7 +15,7 @@ class OptionsFunc extends FuncComponent
     /**
      * @var OptionsValidator
      */
-    protected OptionsValidator $validator;
+    private OptionsValidator $validator;
 
     public function __construct(private GuildService $guildService)
     {}

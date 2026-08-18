@@ -16,7 +16,7 @@ class HostFunc extends FuncComponent
     /**
      * @var GuestInviteValidator
      */
-    protected GuestInviteValidator $validator;
+    private GuestInviteValidator $validator;
 
     /**
      * @param UserService $userService

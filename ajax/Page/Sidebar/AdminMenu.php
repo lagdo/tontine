@@ -12,9 +12,12 @@ use function config;
 class AdminMenu extends Component
 {
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = Menu::class;
+    protected function overrides(): string
+    {
+        return Menu::class;
+    }
 
     /**
      * @inheritDoc

@@ -14,9 +14,12 @@ class Receivable extends Component
     use DepositTrait;
 
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = Deposit::class;
+    protected function overrides(): string
+    {
+        return Deposit::class;
+    }
 
     /**
      * @param int $poolId

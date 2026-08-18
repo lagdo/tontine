@@ -16,9 +16,12 @@ class Round extends Component
     use Table\PoolTrait;
 
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = SectionContent::class;
+    protected function overrides(): string
+    {
+        return SectionContent::class;
+    }
 
     /**
      * @param SummaryService $summaryService

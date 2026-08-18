@@ -19,12 +19,12 @@ class FundFunc extends FuncComponent
     /**
      * @var FundValidator
      */
-    protected FundValidator $validator;
+    private FundValidator $validator;
 
     /**
      * @param FundService $fundService
      */
-    public function __construct(protected FundService $fundService)
+    public function __construct(private FundService $fundService)
     {}
 
     public function add()

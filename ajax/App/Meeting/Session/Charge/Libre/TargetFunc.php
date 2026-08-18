@@ -19,14 +19,12 @@ class TargetFunc extends FuncComponent
     /**
      * @var TargetValidator
      */
-    protected TargetValidator $validator;
+    private TargetValidator $validator;
 
     /**
-     * The constructor
-     *
      * @param SettlementTargetService $targetService
      */
-    public function __construct(protected SettlementTargetService $targetService)
+    public function __construct(private SettlementTargetService $targetService)
     {}
 
     protected function getTarget(): void
@@ -39,7 +37,7 @@ class TargetFunc extends FuncComponent
     }
 
     /**
-     * @return mixed
+     * @return void
      */
     #[Before('checkChargeEdit')]
     public function add(): void
@@ -71,7 +69,7 @@ class TargetFunc extends FuncComponent
     /**
      * @param array $formValues
      *
-     * @return mixed
+     * @return void
      */
     #[Before('checkChargeEdit')]
     #[Inject(attr: 'validator')]
@@ -97,7 +95,7 @@ class TargetFunc extends FuncComponent
     }
 
     /**
-     * @return mixed
+     * @return void
      */
     #[Before('checkChargeEdit')]
     public function edit(): void
@@ -128,8 +126,7 @@ class TargetFunc extends FuncComponent
     }
 
     /**
-     * @param int $memberId
-     * @param string $amount
+     * @param array $formValues
      *
      * @return mixed
      */

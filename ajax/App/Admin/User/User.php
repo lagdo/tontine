@@ -13,9 +13,12 @@ use Jaxon\Attributes\Attribute\Databag;
 class User extends Component
 {
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = SectionContent::class;
+    protected function overrides(): string
+    {
+        return SectionContent::class;
+    }
 
     #[Before('setSectionTitle', ["admin", "users"])]
     #[Callback('tontine.hideMenu')]

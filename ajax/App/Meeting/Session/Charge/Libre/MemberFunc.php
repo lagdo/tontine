@@ -54,8 +54,7 @@ class MemberFunc extends FuncComponent
         $charge = $this->stash()->get('meeting.session.charge');
         $search = $this->bag('meeting')->get('fee.member.search', '');
 
-        $noBillCount = $this->billService->getMemberCount($charge, $session,
-            $search, false);
+        $noBillCount = $this->billService->getMemberCount($charge, $session, $search, false);
         if($noBillCount < 2)
         {
             return;
@@ -95,8 +94,7 @@ class MemberFunc extends FuncComponent
 
         $session = $this->stash()->get('meeting.session');
         $search = $this->bag('meeting')->get('fee.member.search', '');
-        $this->billService->createBills($charge, $session,
-            $search, $paid, $amount);
+        $this->billService->createBills($charge, $session, $search, $paid, $amount);
 
         $this->modal()->hide();
 

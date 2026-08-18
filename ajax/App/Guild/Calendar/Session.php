@@ -16,11 +16,6 @@ use Siak\Tontine\Service\Guild\RoundService;
 class Session extends Component
 {
     /**
-     * @var string
-     */
-    protected string $overrides = SectionContent::class;
-
-    /**
      * The constructor
      *
      * @param RoundService $roundService
@@ -29,14 +24,22 @@ class Session extends Component
     {}
 
     /**
+     * @return string
+     */
+    protected function overrides(): string
+    {
+        return SectionContent::class;
+    }
+
+    /**
      * @return void
      */
     protected function getRound(): void
     {
-        if($this->target()->method() === 'round')
+        if($this->action()->func() === 'round')
         {
             // Save the round id in the databag.
-            $this->bag('guild.calendar')->set('round.id', $this->target()->args()[0]);
+            $this->bag('guild.calendar')->set('round.id', $this->action()->args()[0]);
         }
         $roundId = $this->bag('guild.calendar')->get('round.id');
         $round = $this->roundService->getRound($this->guild(), $roundId);

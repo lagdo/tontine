@@ -30,12 +30,12 @@ class SessionFunc extends FuncComponent
     /**
      * @var MemberService
      */
-    protected MemberService $memberService;
+    private MemberService $memberService;
 
     /**
      * @var SessionValidator
      */
-    protected SessionValidator $validator;
+    private SessionValidator $validator;
 
     public function __construct(private RoundService $roundService,
         private SessionService $sessionService)

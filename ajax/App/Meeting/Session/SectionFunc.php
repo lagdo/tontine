@@ -12,7 +12,7 @@ class SectionFunc extends FuncComponent
      */
     protected function getSessionId(): int
     {
-        $sessionId = (int)($this->target()->args()[0] ?? 0);
+        $sessionId = (int)($this->action()->args()[0] ?? 0);
         if($sessionId > 0)
         {
             $this->bag('meeting')->set('session.id', $sessionId);
