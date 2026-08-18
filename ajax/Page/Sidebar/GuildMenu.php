@@ -13,9 +13,12 @@ use function config;
 class GuildMenu extends Component
 {
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = Menu::class;
+    protected function overrides(): string
+    {
+        return Menu::class;
+    }
 
     /**
      * @inheritDoc

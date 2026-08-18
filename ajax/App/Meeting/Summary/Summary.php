@@ -15,9 +15,12 @@ use function trans;
 class Summary extends Component
 {
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = SectionContent::class;
+    protected function overrides(): string
+    {
+        return SectionContent::class;
+    }
 
     /**
      * @param SessionService $sessionService

@@ -13,9 +13,12 @@ use Jaxon\Attributes\Attribute\Databag;
 class Presence extends Component
 {
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = SectionContent::class;
+    protected function overrides(): string
+    {
+        return SectionContent::class;
+    }
 
     #[Before('checkRoundSessions')]
     #[Before('setSectionTitle', ["meeting", "presences"])]

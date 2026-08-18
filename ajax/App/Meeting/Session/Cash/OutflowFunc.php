@@ -15,14 +15,14 @@ class OutflowFunc extends FuncComponent
     /**
      * @var OutflowValidator
      */
-    protected OutflowValidator $validator;
+    private OutflowValidator $validator;
 
     /**
      * The constructor
      *
      * @param OutflowService $outflowService
      */
-    public function __construct(protected OutflowService $outflowService)
+    public function __construct(private OutflowService $outflowService)
     {}
 
     public function addOutflow(): void

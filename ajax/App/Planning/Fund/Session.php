@@ -15,9 +15,12 @@ class Session extends Component
     use FundTrait;
 
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = Fund::class;
+    protected function overrides(): string
+    {
+        return Fund::class;
+    }
 
     public function fund(int $fundId)
     {

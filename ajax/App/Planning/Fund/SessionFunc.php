@@ -17,7 +17,7 @@ class SessionFunc extends FuncComponent
     /**
      * @var FundSessionsValidator
      */
-    protected FundSessionsValidator $validator;
+    private FundSessionsValidator $validator;
 
     #[Inject(attr: 'validator')]
     public function save(array $formValues): void

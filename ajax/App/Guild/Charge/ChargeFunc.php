@@ -13,7 +13,6 @@ use Siak\Tontine\Validation\Guild\ChargeValidator;
 
 use function Jaxon\form;
 use function Jaxon\input;
-use function je;
 use function trans;
 
 #[Before('checkHostAccess', ["finance", "charges"])]
@@ -25,12 +24,12 @@ class ChargeFunc extends FuncComponent
     /**
      * @var LocaleService
      */
-    protected LocaleService $localeService;
+    private LocaleService $localeService;
 
     /**
      * @var ChargeValidator
      */
-    protected ChargeValidator $validator;
+    private ChargeValidator $validator;
 
     /**
      * @param ChargeService $chargeService

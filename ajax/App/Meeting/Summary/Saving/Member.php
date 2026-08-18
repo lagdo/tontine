@@ -16,17 +16,20 @@ class Member extends Component
     use FundTrait;
 
     /**
-     * @var string
-     */
-    protected string $overrides = Saving::class;
-
-    /**
      * The constructor
      *
      * @param SavingService $savingService
      */
     public function __construct(protected SavingService $savingService)
     {}
+
+    /**
+     * @return string
+     */
+    protected function overrides(): string
+    {
+        return Saving::class;
+    }
 
     /**
      * @inheritDoc

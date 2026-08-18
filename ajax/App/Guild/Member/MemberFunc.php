@@ -27,7 +27,7 @@ class MemberFunc extends FuncComponent
     /**
      * @var MemberValidator
      */
-    protected MemberValidator $validator;
+    private MemberValidator $validator;
 
     public function __construct(private MemberService $memberService)
     {}

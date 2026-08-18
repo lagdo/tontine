@@ -22,7 +22,7 @@ class AccessFunc extends FuncComponent
     /**
      * @var HostAccessValidator
      */
-    protected HostAccessValidator $validator;
+    private HostAccessValidator $validator;
 
     /**
      * @param UserService $userService

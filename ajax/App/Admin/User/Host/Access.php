@@ -16,15 +16,18 @@ class Access extends Component
     use AccessTrait;
 
     /**
-     * @var string
-     */
-    protected string $overrides = Host::class;
-
-    /**
      * @param UserService $userService
      */
     public function __construct(private UserService $userService)
     {}
+
+    /**
+     * @return string
+     */
+    protected function overrides(): string
+    {
+        return Host::class;
+    }
 
     /**
      * @inheritDoc

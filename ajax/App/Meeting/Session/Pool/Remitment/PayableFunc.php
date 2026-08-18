@@ -20,14 +20,14 @@ class PayableFunc extends FuncComponent
     /**
      * @var RemitmentValidator
      */
-    protected RemitmentValidator $validator;
+    private RemitmentValidator $validator;
 
     /**
      * The constructor
      *
      * @param RemitmentService $remitmentService
      */
-    public function __construct(protected RemitmentService $remitmentService)
+    public function __construct(private RemitmentService $remitmentService)
     {}
 
     public function createRemitment(int $payableId): void

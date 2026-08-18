@@ -15,9 +15,12 @@ class Session extends Component
     use PoolTrait;
 
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = Pool::class;
+    protected function overrides(): string
+    {
+        return Pool::class;
+    }
 
     public function pool(int $poolId)
     {

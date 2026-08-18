@@ -11,17 +11,20 @@ use Siak\Tontine\Service\Meeting\Pool\PoolService;
 class Deposit extends Component
 {
     /**
-     * @var string
-     */
-    protected string $overrides = SessionDeposit::class;
-
-    /**
      * The constructor
      *
      * @param PoolService $poolService
      */
     public function __construct(protected PoolService $poolService)
     {}
+
+    /**
+     * @return string
+     */
+    protected function overrides(): string
+    {
+        return SessionDeposit::class;
+    }
 
     /**
      * @inheritDoc

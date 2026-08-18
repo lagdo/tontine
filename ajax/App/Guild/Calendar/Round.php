@@ -15,9 +15,12 @@ use Jaxon\Attributes\Attribute\Export;
 class Round extends Component
 {
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = SectionContent::class;
+    protected function overrides(): string
+    {
+        return SectionContent::class;
+    }
 
     #[Before('setSectionTitle', ["guild", "calendar"])]
     #[Callback('tontine.hideMenu')]

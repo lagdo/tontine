@@ -14,15 +14,18 @@ use Siak\Tontine\Service\Guild\GuildService;
 class Guild extends Component
 {
     /**
-     * @var string
-     */
-    protected string $overrides = SectionContent::class;
-
-    /**
      * @param GuildService $guildService
      */
     public function __construct(private GuildService $guildService)
     {}
+
+    /**
+     * @return string
+     */
+    protected function overrides(): string
+    {
+        return SectionContent::class;
+    }
 
     #[Before('setSectionTitle', ["admin", "guilds"])]
     #[Callback('tontine.hideMenu')]
@@ -32,13 +35,20 @@ class Guild extends Component
     }
 
     /**
+     * @return void
+     */
+    private function hasGuestGuilds(): bool
+    {
+        return $this->guildService->hasGuestGuilds($this->tenantService->user());
+    }
+
+    /**
      * @inheritDoc
      */
     public function html(): string
     {
-        $user = $this->tenantService->user();
         return $this->renderTpl('pages.admin.guild.home', [
-            'hasGuestGuilds' => $this->guildService->hasGuestGuilds($user),
+            'hasGuestGuilds' => $this->hasGuestGuilds(),
         ]);
     }
 
@@ -47,9 +57,9 @@ class Guild extends Component
      */
     protected function after(): void
     {
-        $user = $this->tenantService->user();
         $this->cl(GuildPage::class)->page();
-        if($this->guildService->hasGuestGuilds($user))
+
+        if($this->hasGuestGuilds())
         {
             $this->cl(GuestGuild::class)->render();
         }

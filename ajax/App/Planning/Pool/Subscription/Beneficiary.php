@@ -29,14 +29,9 @@ class Beneficiary extends Component
     use PoolTrait;
 
     /**
-     * @var string
-     */
-    protected string $overrides = SectionContent::class;
-
-    /**
      * @var SubscriptionService
      */
-    protected SubscriptionService $subscriptionService;
+    private SubscriptionService $subscriptionService;
 
     /**
      * @var array
@@ -60,6 +55,14 @@ class Beneficiary extends Component
      */
     public function __construct(private SummaryService $summaryService)
     {}
+
+    /**
+     * @return string
+     */
+    protected function overrides(): string
+    {
+        return SectionContent::class;
+    }
 
     public function pool(int $poolId)
     {

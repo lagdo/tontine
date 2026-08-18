@@ -12,9 +12,12 @@ use Jaxon\Attributes\Attribute\Callback;
 class Session extends Component
 {
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = SectionContent::class;
+    protected function overrides(): string
+    {
+        return SectionContent::class;
+    }
 
     #[Before('setSectionTitle', ["report", "session"])]
     #[Callback('tontine.hideMenu')]

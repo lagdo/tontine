@@ -22,12 +22,12 @@ class PoolFunc extends FuncComponent
     /**
      * @var LocaleService
      */
-    protected LocaleService $localeService;
+    private LocaleService $localeService;
 
     /**
      * @var PoolValidator
      */
-    protected PoolValidator $validator;
+    private PoolValidator $validator;
 
     public function __construct(private PoolService $poolService)
     {}

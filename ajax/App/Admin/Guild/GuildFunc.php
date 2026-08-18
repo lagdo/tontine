@@ -19,12 +19,12 @@ class GuildFunc extends FuncComponent
     /**
      * @var LocaleService
      */
-    protected LocaleService $localeService;
+    private LocaleService $localeService;
 
     /**
      * @var GuildValidator
      */
-    protected GuildValidator $validator;
+    private GuildValidator $validator;
 
     /**
      * @param GuildService $guildService

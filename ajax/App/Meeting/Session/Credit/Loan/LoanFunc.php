@@ -18,7 +18,7 @@ class LoanFunc extends FuncComponent
     /**
      * @var LoanValidator
      */
-    protected LoanValidator $validator;
+    private LoanValidator $validator;
 
     /**
      * The constructor
@@ -27,8 +27,8 @@ class LoanFunc extends FuncComponent
      * @param FundService $fundService
      * @param MemberService $memberService
      */
-    public function __construct(protected LoanService $loanService,
-        protected FundService $fundService, protected MemberService $memberService)
+    public function __construct(private LoanService $loanService,
+        private FundService $fundService, private MemberService $memberService)
     {}
 
     public function add(): void

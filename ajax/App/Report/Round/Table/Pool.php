@@ -16,7 +16,7 @@ class Pool extends Component
     /**
      * @var SummaryService
      */
-    protected SummaryService $summaryService;
+    private SummaryService $summaryService;
 
     public function html(): string
     {

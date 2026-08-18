@@ -11,9 +11,12 @@ use Jaxon\Attributes\Attribute\Export;
 class Auction extends Component
 {
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = Remitment::class;
+    protected function overrides(): string
+    {
+        return Remitment::class;
+    }
 
     /**
      * @inheritDoc

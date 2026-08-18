@@ -26,14 +26,14 @@ class RefundFunc extends FuncComponent
     /**
      * @var DebtValidator
      */
-    protected DebtValidator $validator;
+    private DebtValidator $validator;
 
     /**
      * The constructor
      *
      * @param RefundService $refundService
      */
-    public function __construct(protected RefundService $refundService)
+    public function __construct(private RefundService $refundService)
     {}
 
     /**

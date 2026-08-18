@@ -16,17 +16,20 @@ use Siak\Tontine\Service\Guild\RoundService;
 class Session extends Component
 {
     /**
-     * @var string
-     */
-    protected string $overrides = SectionContent::class;
-
-    /**
      * The constructor
      *
      * @param RoundService $roundService
      */
     public function __construct(private RoundService $roundService)
     {}
+
+    /**
+     * @return string
+     */
+    protected function overrides(): string
+    {
+        return SectionContent::class;
+    }
 
     /**
      * @return void

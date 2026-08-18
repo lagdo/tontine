@@ -10,15 +10,18 @@ use Siak\Tontine\Service\Report\RoundService;
 class RoundGraphs extends Component
 {
     /**
-     * @var string
-     */
-    protected string $overrides = RoundTables::class;
-
-    /**
      * @param RoundService $roundService
      */
     public function __construct(private RoundService $roundService)
     {}
+
+    /**
+     * @return string
+     */
+    protected function overrides(): string
+    {
+        return RoundTables::class;
+    }
 
     /**
      * @inheritDoc

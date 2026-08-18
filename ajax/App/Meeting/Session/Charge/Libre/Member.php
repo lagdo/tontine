@@ -12,9 +12,12 @@ class Member extends Component
     use ChargeTrait;
 
     /**
-     * @var string
+     * @return string
      */
-    protected string $overrides = Fee::class;
+    protected function overrides(): string
+    {
+        return Fee::class;
+    }
 
     /**
      * @inheritDoc
