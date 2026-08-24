@@ -1,12 +1,9 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "lagdo/tontine",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": [
-        "laravel",
-        "framework"
-    ],
+    "description": "Web application for online tontine management.",
+    "keywords": ["Tontine", "Africa", "Finance", "Payment"],
     "license": "MIT",
     "repositories": [
         {

@@ -1,7 +1,7 @@
 # PHP extension installer
 FROM mlocati/php-extension-installer:2 AS php-extension-installer
 
-FROM php:8.2-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 ARG PHP_USER
 ARG PHP_UID
@@ -20,8 +20,8 @@ RUN set -xe && \
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # Create the user and group
-RUN addgroup -g ${PHP_GID} --system ${PHP_USER} \
-  && adduser -G ${PHP_USER} --system -D -s /bin/sh -u ${PHP_UID} ${PHP_USER}
+RUN addgroup -g ${PHP_GID} --system ${PHP_USER} && \
+  adduser -G ${PHP_USER} --system -D -s /bin/sh -u ${PHP_UID} ${PHP_USER}
 
 # Switch to use a non-root user from here on
 USER ${PHP_USER}
