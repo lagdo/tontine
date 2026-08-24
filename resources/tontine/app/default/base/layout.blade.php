@@ -5,6 +5,8 @@
   @include('tontine_app::parts.header.html')
 
 @yield('styles')
+@voletStyles
+
 </head>
 
 <body>
@@ -35,10 +37,11 @@
     </div>
   </div>
 
-@include('tontine_app::parts.content.feedback')
-</body>
+@volet
 
 @include('tontine_app::parts.footer.html')
 
 @yield('script')
+
+</body>
 </html>

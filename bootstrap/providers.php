@@ -1,12 +1,15 @@
 <?php
 
+use App\Providers;
+
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\EventServiceProvider::class,
-    App\Providers\FortifyServiceProvider::class,
+    Providers\AppServiceProvider::class,
+    Providers\EventServiceProvider::class,
+    Providers\FortifyServiceProvider::class,
     /*
     * Package Service Providers...
     */
-    App\Providers\SiakServiceProvider::class,
-    App\Providers\SiakExtServiceProvider::class,
+    Providers\SiakServiceProvider::class,
+    Providers\SiakExtServiceProvider::class,
+    Providers\VoletServiceProvider::class,
 ];

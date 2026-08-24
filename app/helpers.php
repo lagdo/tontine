@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Siak\Tontine\Service\Payment\PaymentServiceInterface;
 
 if(!function_exists('localizedRoute'))
 {
@@ -52,11 +53,17 @@ if(!function_exists('paymentLink'))
         $linkClass = "btn-add-$name";
         if(($payment))
         {
+            $paymentService = app()->make(PaymentServiceInterface::class);
+            if(!$paymentService->isEditable($payment))
+            {
+                return '<i class="fa fa-link"></i>';
+            }
+
             $icon = '<i class="fa fa-toggle-on"></i>';
             $linkClass = "btn-del-$name";
         }
 
         return $sessionIsClosed ? $icon :
-            '<a role="link" tabindex="0" class="' . $linkClass . '">' . $icon . '</a>';
+            "<a role=\"link\" tabindex=\"0\" class=\"$linkClass\">$icon</a>";
     }
 }

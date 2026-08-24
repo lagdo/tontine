@@ -4,7 +4,7 @@ var sparkline_values = [110, 147, 324, 108, 235, 498, 346, 525, 382, 214, 427, 4
   sparkline_values_bar = [10, 7, 4, 8, 5, 8, 6, 5, 2, 4, 7, 4, 9, 10, 7, 4, 8, 5, 8, 6, 5, 4],
   sparkline_pie = [30, 20, 10];
 
-$('.sparkline-inline').sparkline(sparkline_values, {
+jq('.sparkline-inline').sparkline(sparkline_values, {
   type: 'line',
   width: '100%',
   height: '200',
@@ -16,7 +16,7 @@ $('.sparkline-inline').sparkline(sparkline_values, {
   spotRadius: 3,
 });
 
-$('.sparkline-line').sparkline(sparkline_values, {
+jq('.sparkline-line').sparkline(sparkline_values, {
   type: 'line',
   width: '100%',
   height: '200',
@@ -28,7 +28,7 @@ $('.sparkline-line').sparkline(sparkline_values, {
   spotRadius: 3,
 });
 
-$(".sparkline-bar").sparkline(sparkline_values_bar, {
+jq(".sparkline-bar").sparkline(sparkline_values_bar, {
   type: 'bar',
   width: '100%',
   height: '200',
@@ -36,7 +36,7 @@ $(".sparkline-bar").sparkline(sparkline_values_bar, {
   barWidth: 20
 });
 
-$(".sparkline-pie").sparkline(sparkline_pie, {
+jq(".sparkline-pie").sparkline(sparkline_pie, {
   type: 'pie',
   width: 'auto',
   height: '200',

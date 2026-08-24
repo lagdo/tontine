@@ -4,7 +4,7 @@ namespace Ajax\App\Meeting\Summary\Saving;
 
 use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
-use Jaxon\Request\TargetInterface;
+use Jaxon\Request\CallableAction;
 use Siak\Tontine\Model\Fund;
 
 trait FundTrait
@@ -12,9 +12,9 @@ trait FundTrait
     /**
      * Get the Jaxon request target
      *
-     * @return TargetInterface|null
+     * @return CallableAction|null
      */
-    abstract protected function target(): ?TargetInterface;
+    abstract protected function action(): ?CallableAction;
 
     /**
      * Get the temp cache
@@ -37,9 +37,9 @@ trait FundTrait
      */
     protected function getFund(): void
     {
-        if($this->target()->method() === 'fund')
+        if($this->action()->func() === 'fund')
         {
-            $fundId = $this->target()->args()[0];
+            $fundId = $this->action()->args()[0];
             $this->bag('summary.saving')->set('fund.id', $fundId);
         }
 

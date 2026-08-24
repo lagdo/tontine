@@ -2,7 +2,7 @@
 
 return [
 
-    'enabled' => env('ANALYTICS_ENABLED', false),
+    'enabled' => env('ANALYTICS_ENABLED', true),
 
     /**
      * Analytics Dashboard.
@@ -11,10 +11,15 @@ return [
      */
     'prefix' => 'analytics',
 
+    /**
+     * Domain.
+     *
+     * The domain (optional) for the analytics dashboard.
+     */
+    'domain' => null,
+
     'middleware' => [
         'web',
-        'auth',
-        'can:analytics',
     ],
 
     /**
@@ -57,6 +62,24 @@ return [
      */
     'ignoreMethods' => [
         // 'OPTIONS', 'POST',
+    ],
+
+    /**
+     * Columns that won't be tracked.
+     *
+     * List the columns you want to ignore from the page view tracking.
+     */
+    'ignoredColumns' => [
+        // 'source',
+        // 'country',
+        // 'browser',
+        // 'device',
+        // 'host',
+        // 'utm_source',
+        // 'utm_medium',
+        // 'utm_campaign',
+        // 'utm_term',
+        // 'utm_content',
     ],
 
     'session' => [

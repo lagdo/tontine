@@ -5,7 +5,7 @@ namespace Ajax\App\Meeting\Session\Credit\Refund;
 use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
 use Jaxon\Attributes\Attribute\Inject;
-use Jaxon\Request\TargetInterface;
+use Jaxon\Request\CallableAction;
 use Siak\Tontine\Model\Fund;
 use Siak\Tontine\Service\Meeting\Saving\FundService;
 
@@ -20,9 +20,9 @@ trait FundTrait
     /**
      * Get the Jaxon request target
      *
-     * @return TargetInterface|null
+     * @return CallableAction|null
      */
-    abstract protected function target(): ?TargetInterface;
+    abstract protected function action(): ?CallableAction;
 
     /**
      * Get the temp cache
@@ -45,10 +45,10 @@ trait FundTrait
      */
     protected function getFund(): void
     {
-        if($this->target()->method() === 'fund')
+        if($this->action()->func() === 'fund')
         {
             // Save the fund id in the databag.
-            $this->bag($this->bagId)->set('fund.id', $this->target()->args()[0]);
+            $this->bag($this->bagId)->set('fund.id', $this->action()->args()[0]);
         }
 
         $session = $this->stash()->get('meeting.session');

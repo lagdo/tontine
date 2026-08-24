@@ -5,7 +5,7 @@ namespace Ajax\App\Meeting\Summary;
 use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
 use Jaxon\Attributes\Attribute\Inject;
-use Jaxon\Request\TargetInterface;
+use Jaxon\Request\CallableAction;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
 
@@ -22,9 +22,9 @@ trait ComponentTrait
     /**
      * Get the Jaxon request target
      *
-     * @return TargetInterface|null
+     * @return CallableAction|null
      */
-    abstract protected function target(): ?TargetInterface;
+    abstract protected function action(): ?CallableAction;
 
     /**
      * Get the temp cache
@@ -60,7 +60,7 @@ trait ComponentTrait
         {
             throw new MessageException(trans('meeting.errors.session.not_found'));
         }
-        if($this->target()->method() !== 'reports' && !$session->opened)
+        if($this->action()->func() !== 'reports' && !$session->opened)
         {
             throw new MessageException(trans('meeting.errors.session.not_opened'));
         }

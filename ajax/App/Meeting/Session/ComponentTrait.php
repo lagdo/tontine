@@ -5,7 +5,7 @@ namespace Ajax\App\Meeting\Session;
 use Jaxon\App\DataBag\DataBagContext;
 use Jaxon\App\Stash\Stash;
 use Jaxon\Attributes\Attribute\Inject;
-use Jaxon\Request\TargetInterface;
+use Jaxon\Request\CallableAction;
 use Siak\Tontine\Exception\MessageException;
 use Siak\Tontine\Service\Meeting\Session\SessionService;
 
@@ -22,9 +22,9 @@ trait ComponentTrait
     /**
      * Get the Jaxon request target
      *
-     * @return TargetInterface|null
+     * @return CallableAction|null
      */
-    abstract protected function target(): ?TargetInterface;
+    abstract protected function action(): ?CallableAction;
 
     /**
      * Get the temp cache

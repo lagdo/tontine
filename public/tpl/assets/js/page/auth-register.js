@@ -1,3 +1,3 @@
 "use strict";
 
-$(".pwstrength").pwstrength();
+jq(".pwstrength").pwstrength();

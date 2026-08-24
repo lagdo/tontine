@@ -5,7 +5,7 @@ jaxon.dom.ready(function() {
 });
 
 var tontine = {};
-(function(self) {
+(function(self, $) {
     // Spinner data.
     const spinner = {
         exec: null,
@@ -160,8 +160,8 @@ var tontine = {};
     /**
      * Create the select dropdown for a subscription
      *
-     * @param {int} beneficiaryId 
-     * @param {array} candidates 
+     * @param {int} beneficiaryId
+     * @param {array} candidates
      * @returns {string}
      */
     const getSubscriptionSelect = (beneficiaryId, candidates) => `
@@ -172,7 +172,7 @@ var tontine = {};
 </select>`;
 
     /**
-     * @param {array} candidates 
+     * @param {array} candidates
      * @param {array} beneficiaries
      * @returns {void}
      */
@@ -186,4 +186,4 @@ var tontine = {};
                 .html(getSubscriptionSelect(id, [ ...candidates, { id, name } ]));
         });
     };
-})(tontine);
+})(tontine, jQuery);

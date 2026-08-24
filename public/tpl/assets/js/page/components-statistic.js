@@ -4,7 +4,7 @@ var sparkline_values = [10, 7, 4, 8, 5, 8, 6, 5, 2, 4, 7, 4, 9, 6, 5, 9];
 var sparkline_values_chart = [2, 6, 4, 8, 3, 5, 2, 7];
 var sparkline_values_bar = [10, 7, 4, 8, 5, 8, 6, 5, 2, 4, 7, 4, 9, 10, 7, 4, 8, 5, 8, 6, 5, 2, 4, 7, 4, 9, 8, 6, 5, 2, 4, 7, 4, 9, 10, 2, 4, 7, 4, 9, 7, 4, 8, 5, 8, 6, 5];
 
-$('.sparkline-inline').sparkline(sparkline_values, {
+jq('.sparkline-inline').sparkline(sparkline_values, {
   type: 'line',
   width: '100%',
   height: '32',
@@ -16,7 +16,7 @@ $('.sparkline-inline').sparkline(sparkline_values, {
   spotRadius: 3,
 });
 
-$('.sparkline-line').sparkline(sparkline_values, {
+jq('.sparkline-line').sparkline(sparkline_values, {
   type: 'line',
   width: '100%',
   height: '32',
@@ -28,7 +28,7 @@ $('.sparkline-line').sparkline(sparkline_values, {
   spotRadius: 3,
 });
 
-$('.sparkline-line-chart').sparkline(sparkline_values_chart, {
+jq('.sparkline-line-chart').sparkline(sparkline_values_chart, {
   type: 'line',
   width: '100%',
   height: '32',
@@ -40,7 +40,7 @@ $('.sparkline-line-chart').sparkline(sparkline_values_chart, {
   spotRadius: 2,
 });
 
-$(".sparkline-bar").sparkline(sparkline_values_bar, {
+jq(".sparkline-bar").sparkline(sparkline_values_bar, {
   type: 'bar',
   height: '32',
   disableTooltips: true,
@@ -207,7 +207,7 @@ var myChart = new Chart(ctx, {
   }
 });
 
-$('#visitorMap').vectorMap(
+jq('#visitorMap').vectorMap(
 {
   map: 'world_en',
   backgroundColor: '#ffffff',

@@ -1,6 +1,6 @@
 /*
  * Flot plugin to order bars side by side.
- * 
+ *
  * Released under the MIT license by Benjamin BUFFET, 20-Sep-2010.
  *
  * This plugin is an alpha version.
@@ -34,17 +34,17 @@
          */
         function reOrderBars(plot, serie, datapoints){
             let shiftedPoints = null;
-            
-            if(serieNeedToBeReordered(serie)){                
+
+            if(serieNeedToBeReordered(serie)){
                 checkIfGraphIsHorizontal(serie);
                 calculPixel2XWidthConvert(plot);
                 retrieveBarSeries(plot);
                 calculBorderAndBarWidth(serie);
-                
-                if(nbOfBarsToOrder >= 2){  
+
+                if(nbOfBarsToOrder >= 2){
                     let position = findPosition(serie);
                     let decallage = 0;
-                    
+
                     let centerBarShift = calculCenterBarShift();
 
                     if (isBarAtLeftOfCenter(position)){
@@ -109,7 +109,7 @@
             borderWidth = serie.bars.lineWidth ? serie.bars.lineWidth  : 2;
             borderWidthInXabsWidth = borderWidth * pixelInXWidthEquivalent;
         }
-        
+
         function checkIfGraphIsHorizontal(serie){
             if(serie.bars.horizontal){
                 isHorizontal = true;
@@ -154,7 +154,7 @@
         function shiftPoints(datapoints,serie,dx){
             let ps = datapoints.pointsize;
             let points = datapoints.points;
-            let j = 0;           
+            let j = 0;
             for(let i = isHorizontal ? 1 : 0;i < points.length; i += ps){
                 points[i] += dx;
                 //Adding the new x value in the serie to be abble to display the right tooltip value,

@@ -36,10 +36,10 @@ class Session extends Component
      */
     protected function getRound(): void
     {
-        if($this->target()->method() === 'round')
+        if($this->action()->func() === 'round')
         {
             // Save the round id in the databag.
-            $this->bag('guild.calendar')->set('round.id', $this->target()->args()[0]);
+            $this->bag('guild.calendar')->set('round.id', $this->action()->args()[0]);
         }
         $roundId = $this->bag('guild.calendar')->get('round.id');
         $round = $this->roundService->getRound($this->guild(), $roundId);

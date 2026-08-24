@@ -55,10 +55,10 @@ trait DepositTrait
      */
     protected function getNextSession(): void
     {
-        if($this->target()->method() === 'pool')
+        if($this->action()->func() === 'pool')
         {
             $this->bag('meeting')->set('session.early.session',
-                $this->target()->args()[1]);
+                $this->action()->args()[1]);
         }
         $session = $this->stash()->get('meeting.session');
         $nextSessionId = (int)$this->bag('meeting')->get('session.early.session');
