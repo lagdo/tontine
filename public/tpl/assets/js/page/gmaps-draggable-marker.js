@@ -1,7 +1,7 @@
 "use strict";
 
-var input_lat = $("#input-lat"), // latitude input text
-  input_lng = $("#input-lng"), // longitude input text
+var input_lat = jq("#input-lat"), // latitude input text
+  input_lng = jq("#input-lng"), // longitude input text
   map = new GMaps({ // init map
     div: '#map',
     lat: -6.5637928,
@@ -17,7 +17,7 @@ var marker = map.addMarker({
 
 // when the map is clicked
 map.addListener("click", function(e) {
-  var lat = e.latLng.lat(), 
+  var lat = e.latLng.lat(),
     lng = e.latLng.lng();
 
   // move the marker position
@@ -25,7 +25,7 @@ map.addListener("click", function(e) {
     lat: lat,
     lng: lng
   });
-  update_position();       
+  update_position();
 });
 
 // when the marker is dragged
@@ -42,8 +42,8 @@ function update_position() {
 }
 
 // move the marker when the latitude and longitude inputs change in value
-$("#input-lat,#input-lng").blur(function() {
-  var lat = parseInt(input_lat.val()), 
+jq("#input-lat,#input-lng").blur(function() {
+  var lat = parseInt(input_lat.val()),
     lng = parseInt(input_lng.val());
 
   marker.setPosition({

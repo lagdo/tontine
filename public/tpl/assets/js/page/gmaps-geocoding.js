@@ -8,12 +8,12 @@ var map = new GMaps({
 });
 
 // when the form is submitted
-$("#search-form").submit(function(e) {
+jq("#search-form").submit(function(e) {
   e.preventDefault();
 
   // initialize map geocode
   GMaps.geocode({
-    address: $('#address').val(),
+    address: jq('#address').val(),
     callback: function(results, status) {
     if (status == 'OK') {
       var latlng = results[0].geometry.location;

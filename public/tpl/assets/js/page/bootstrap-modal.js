@@ -1,7 +1,7 @@
 "use strict";
 
-$("#modal-1").fireModal({body: 'Modal body text goes here.'});
-$("#modal-2").fireModal({body: 'Modal body text goes here.', center: true});
+jq("#modal-1").fireModal({body: 'Modal body text goes here.'});
+jq("#modal-2").fireModal({body: 'Modal body text goes here.', center: true});
 
 let modal_3_body = '<p>Object to create a button on the modal.</p><pre class="language-javascript"><code>';
 modal_3_body += '[\n';
@@ -15,7 +15,7 @@ modal_3_body += "   }\n"
 modal_3_body += ' }\n';
 modal_3_body += ']';
 modal_3_body += '</code></pre>';
-$("#modal-3").fireModal({
+jq("#modal-3").fireModal({
   title: 'Modal with Buttons',
   body: modal_3_body,
   buttons: [
@@ -29,7 +29,7 @@ $("#modal-3").fireModal({
   ]
 });
 
-$("#modal-4").fireModal({
+jq("#modal-4").fireModal({
   footerClass: 'bg-whitesmoke',
   body: 'Add the <code>bg-whitesmoke</code> class to the <code>footerClass</code> option.',
   buttons: [
@@ -42,14 +42,14 @@ $("#modal-4").fireModal({
   ]
 });
 
-$("#modal-5").fireModal({
+jq("#modal-5").fireModal({
   title: 'Login',
-  body: $("#modal-login-part"),
+  body: jq("#modal-login-part"),
   footerClass: 'bg-whitesmoke',
   autoFocus: false,
   onFormSubmit: function(modal, e, form) {
     // Form Data
-    let form_data = $(e.target).serialize();
+    let form_data = jq(e.target).serialize();
     console.log(form_data)
 
     // DO AJAX HERE
@@ -76,7 +76,7 @@ $("#modal-5").fireModal({
   ]
 });
 
-$("#modal-6").fireModal({
+jq("#modal-6").fireModal({
   body: '<p>Now you can see something on the left side of the footer.</p>',
   created: function(modal) {
     modal.find('.modal-footer').prepend('<div class="mr-auto"><a href="#">I\'m a hyperlink!</a></div>');
@@ -92,7 +92,7 @@ $("#modal-6").fireModal({
   ]
 });
 
-$('.oh-my-modal').fireModal({
+jq('.oh-my-modal').fireModal({
   title: 'My Modal',
   body: 'This is cool plugin!'
 });

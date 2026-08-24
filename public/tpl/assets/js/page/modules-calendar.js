@@ -1,6 +1,6 @@
 "use strict";
 
-$("#myEvent").fullCalendar({
+jq("#myEvent").fullCalendar({
   height: 'auto',
   header: {
     left: 'prev,next today',

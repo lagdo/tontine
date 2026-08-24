@@ -1,6 +1,6 @@
 "use strict";
 
-$("#users-carousel").owlCarousel({
+jq("#users-carousel").owlCarousel({
   items: 4,
   margin: 20,
   autoplay: true,

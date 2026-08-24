@@ -41,21 +41,21 @@ var cleaveCC = new Cleave('.creditcard', {
       }else if(type == 'jcb') {
         type = 'jcb';
       }
-      $(".creditcard").removeClass(cc_last_type);
-      $(".creditcard").addClass(type);
-      cc_last_type = type;                        
+      jq(".creditcard").removeClass(cc_last_type);
+      jq(".creditcard").addClass(type);
+      cc_last_type = type;
     }
   }
 });
 
-$(".pwstrength").pwstrength();
+jq(".pwstrength").pwstrength();
 
-$('.daterange-cus').daterangepicker({
+jq('.daterange-cus').daterangepicker({
   locale: {format: 'YYYY-MM-DD'},
   drops: 'down',
   opens: 'right'
 });
-$('.daterange-btn').daterangepicker({
+jq('.daterange-btn').daterangepicker({
   ranges: {
     'Today'       : [moment(), moment()],
     'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -67,11 +67,11 @@ $('.daterange-btn').daterangepicker({
   startDate: moment().subtract(29, 'days'),
   endDate  : moment()
 }, function (start, end) {
-  $('.daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+  jq('.daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
 });
 
-$(".colorpickerinput").colorpicker({
+jq(".colorpickerinput").colorpicker({
   format: 'hex',
   component: '.input-group-append',
 });
-$(".inputtags").tagsinput('items');
+jq(".inputtags").tagsinput('items');
