@@ -41,7 +41,7 @@ var myChart = new Chart(statistics_chart, {
   }
 });
 
-jq('#visitorMap').vectorMap(
+$('#visitorMap').vectorMap(
 {
   map: 'world_en',
   backgroundColor: '#ffffff',
@@ -92,10 +92,10 @@ function getWeather() {
     html += '</div>';
     html += '</div>';
 
-    jq("#myWeather").html(html);
+    $("#myWeather").html(html);
   },
   error: function(error) {
-    jq("#myWeather").html('<div class="alert alert-danger">'+error+'</div>');
+    $("#myWeather").html('<div class="alert alert-danger">'+error+'</div>');
   }
   });
 }

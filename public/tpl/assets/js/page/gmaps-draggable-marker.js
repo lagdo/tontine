@@ -1,7 +1,7 @@
 "use strict";
 
-var input_lat = jq("#input-lat"), // latitude input text
-  input_lng = jq("#input-lng"), // longitude input text
+var input_lat = $("#input-lat"), // latitude input text
+  input_lng = $("#input-lng"), // longitude input text
   map = new GMaps({ // init map
     div: '#map',
     lat: -6.5637928,
@@ -42,7 +42,7 @@ function update_position() {
 }
 
 // move the marker when the latitude and longitude inputs change in value
-jq("#input-lat,#input-lng").blur(function() {
+$("#input-lat,#input-lng").blur(function() {
   var lat = parseInt(input_lat.val()),
     lng = parseInt(input_lng.val());
 

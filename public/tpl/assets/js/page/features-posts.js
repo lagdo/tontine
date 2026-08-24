@@ -1,14 +1,14 @@
 "use strict";
 
-jq("[data-checkboxes]").each(function() {
-  var me = jq(this),
+$("[data-checkboxes]").each(function() {
+  var me = $(this),
     group = me.data('checkboxes'),
     role = me.data('checkbox-role');
 
   me.change(function() {
-    var all = jq('[data-checkboxes="' + group + '"]:not([data-checkbox-role="dad"])'),
-      checked = jq('[data-checkboxes="' + group + '"]:not([data-checkbox-role="dad"]):checked'),
-      dad = jq('[data-checkboxes="' + group + '"][data-checkbox-role="dad"]'),
+    var all = $('[data-checkboxes="' + group + '"]:not([data-checkbox-role="dad"])'),
+      checked = $('[data-checkboxes="' + group + '"]:not([data-checkbox-role="dad"]):checked'),
+      dad = $('[data-checkboxes="' + group + '"][data-checkbox-role="dad"]'),
       total = all.length,
       checked_length = checked.length;
 

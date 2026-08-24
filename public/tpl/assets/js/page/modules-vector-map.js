@@ -1,6 +1,6 @@
 "use strict";
 
-jq('#visitorMap').vectorMap({
+$('#visitorMap').vectorMap({
   map: 'world_en',
   backgroundColor: '#ffffff',
   borderColor: '#f2f2f2',
@@ -40,7 +40,7 @@ jq('#visitorMap').vectorMap({
     iziToast.info(opts);
   }
 });
-jq('#visitorMap2').vectorMap({
+$('#visitorMap2').vectorMap({
   map: 'world_en',
   backgroundColor: '#ffffff',
   borderColor: '#f2f2f2',
@@ -58,13 +58,13 @@ jq('#visitorMap2').vectorMap({
       + '" which has the code: '
       + code.toUpperCase();
 
-    jq("#flag-icon").removeClass (function (index, className) {
+    $("#flag-icon").removeClass (function (index, className) {
       return (className.match (/(^|\s)flag-icon-\S+/g) || []).join(' ');
     });
-    jq("#flag-icon").addClass('flag-icon-' + code);
+    $("#flag-icon").addClass('flag-icon-' + code);
   }
 });
-jq('#visitorMap3').vectorMap({
+$('#visitorMap3').vectorMap({
   map: 'indonesia_id',
   backgroundColor: '#ffffff',
   borderColor: '#f2f2f2',

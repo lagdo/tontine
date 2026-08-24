@@ -33,8 +33,8 @@ for(var i = 0; i < chats.length; i++) {
   });
 }
 
-jq("#chat-form").submit(function() {
-  var me = jq(this);
+$("#chat-form").submit(function() {
+  var me = $(this);
 
   if(me.find('input').val().trim().length > 0) {
     $.chatCtrl('#mychatbox', {
@@ -106,8 +106,8 @@ for(var i = 0; i < chats.length; i++) {
     type: type
   });
 }
-jq("#chat-form2").submit(function() {
-  var me = jq(this);
+$("#chat-form2").submit(function() {
+  var me = $(this);
 
   if(me.find('input').val().trim().length > 0) {
     $.chatCtrl('#mychatbox2', {

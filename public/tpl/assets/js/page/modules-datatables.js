@@ -1,14 +1,14 @@
 "use strict";
 
-jq("[data-checkboxes]").each(function() {
-  var me = jq(this),
+$("[data-checkboxes]").each(function() {
+  var me = $(this),
     group = me.data('checkboxes'),
     role = me.data('checkbox-role');
 
   me.change(function() {
-    var all = jq('[data-checkboxes="' + group + '"]:not([data-checkbox-role="dad"])'),
-      checked = jq('[data-checkboxes="' + group + '"]:not([data-checkbox-role="dad"]):checked'),
-      dad = jq('[data-checkboxes="' + group + '"][data-checkbox-role="dad"]'),
+    var all = $('[data-checkboxes="' + group + '"]:not([data-checkbox-role="dad"])'),
+      checked = $('[data-checkboxes="' + group + '"]:not([data-checkbox-role="dad"]):checked'),
+      dad = $('[data-checkboxes="' + group + '"][data-checkbox-role="dad"]'),
       total = all.length,
       checked_length = checked.length;
 
@@ -28,12 +28,12 @@ jq("[data-checkboxes]").each(function() {
   });
 });
 
-jq("#table-1").dataTable({
+$("#table-1").dataTable({
   "columnDefs": [
     { "sortable": false, "targets": [2,3] }
   ]
 });
-jq("#table-2").dataTable({
+$("#table-2").dataTable({
   "columnDefs": [
     { "sortable": false, "targets": [0,2,3] }
   ]

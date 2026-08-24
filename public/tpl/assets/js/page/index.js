@@ -174,7 +174,7 @@ var myChart = new Chart(sales_chart, {
   }
 });
 
-jq("#products-carousel").owlCarousel({
+$("#products-carousel").owlCarousel({
   items: 3,
   margin: 10,
   autoplay: true,

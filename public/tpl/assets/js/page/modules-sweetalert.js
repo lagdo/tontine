@@ -1,26 +1,26 @@
 "use strict";
 
-jq("#swal-1").click(function() {
+$("#swal-1").click(function() {
 	swal('Hello');
 });
 
-jq("#swal-2").click(function() {
+$("#swal-2").click(function() {
 	swal('Good Job', 'You clicked the button!', 'success');
 });
 
-jq("#swal-3").click(function() {
+$("#swal-3").click(function() {
 	swal('Good Job', 'You clicked the button!', 'warning');
 });
 
-jq("#swal-4").click(function() {
+$("#swal-4").click(function() {
 	swal('Good Job', 'You clicked the button!', 'info');
 });
 
-jq("#swal-5").click(function() {
+$("#swal-5").click(function() {
 	swal('Good Job', 'You clicked the button!', 'error');
 });
 
-jq("#swal-6").click(function() {
+$("#swal-6").click(function() {
   swal({
       title: 'Are you sure?',
       text: 'Once deleted, you will not be able to recover this imaginary file!',
@@ -39,7 +39,7 @@ jq("#swal-6").click(function() {
     });
 });
 
-jq("#swal-7").click(function() {
+$("#swal-7").click(function() {
   swal({
     title: 'What is your name?',
     content: {
@@ -54,7 +54,7 @@ jq("#swal-7").click(function() {
   });
 });
 
-jq("#swal-8").click(function() {
+$("#swal-8").click(function() {
   swal('This modal will disappear soon!', {
     buttons: false,
     timer: 3000,

@@ -1,6 +1,6 @@
 "use strict";
 
-jq("select").selectric();
+$("select").selectric();
 $.uploadPreview({
   input_field: "#image-upload",   // Default: .image-upload
   preview_box: "#image-preview",  // Default: .image-preview
@@ -10,4 +10,4 @@ $.uploadPreview({
   no_label: false,                // Default: false
   success_callback: null          // Default: null
 });
-jq(".inputtags").tagsinput('items');
+$(".inputtags").tagsinput('items');

@@ -37,8 +37,6 @@
     </div>
   </div>
 
-@volet
-
 @include('tontine_app::parts.footer.html')
 
 @yield('script')
