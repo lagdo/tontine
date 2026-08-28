@@ -15,6 +15,11 @@ class Round extends Component
     use GraphTrait;
 
     /**
+     * @var int
+     */
+    private int $sessionNum = 0;
+
+    /**
      * @param LocaleService $localeService
      */
     public function __construct(protected LocaleService $localeService)
@@ -36,17 +41,18 @@ class Round extends Component
     {
         $lastSession = $this->stash()->get('report.session');
         $sessions = $this->stash()->get('report.sessions');
-        $sessions = $sessions->filter(fn($session) => $session->day_date <= $lastSession->day_date);
-        if($sessions->count() < 2)
-        {
-            return;
-        }
+        $sessions = $sessions
+            ->filter(fn($session) => $session->day_date <= $lastSession->day_date)
+            // Sort the sessions by date.
+            ->sortBy(fn($session) => $session->day_date);
 
         $card = $this->card()->options($this->lineOptions());
-        // Set the sessions as ticks on X axis.
+        // Set the session dates as ticks on X axis.
         $dateFormat = trans('tontine.date.format_md');
-        $card->xaxis()->points($sessions->map(fn($session) =>
-            [$session->id, $session->day_date->format($dateFormat)])->toArray());
+        $this->sessionNum = 0;
+        $card->xaxis()->options(['labelHeight' => 16, 'position' => 'bottom'])
+            ->points($sessions->map(fn($session) =>
+                [$this->sessionNum++, $session->day_date->format($dateFormat)])->toArray());
         // $card->yaxis()->options([
         //     'position' => 'right',
         //     'tickFormatter' => 'tontine.flot.formatTickY',
@@ -60,9 +66,10 @@ class Round extends Component
                 'lines' => ['show' => true],
                 'points' => ['show' => true],
             ]);
+            $this->sessionNum = 0;
             $graph->series()->points($sessions->map(function($session) use($counter) {
                 $value = $this->getCounter($counter, $session->id);
-                return [$session->id, $value, $this->localeService->formatMoney($value)];
+                return [$this->sessionNum++, $value, $this->localeService->formatMoney($value)];
             })->toArray());
         }
 

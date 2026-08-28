@@ -31,13 +31,20 @@ class RoundGraphs extends Component
         return $this->renderTpl('pages.report.round.graphs');
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function after(): void
     {
         $lastSession = $this->stash()->get('report.session');
         $sessions = $this->stash()->get('report.sessions')
             ->filter(fn($session) => $session->day_date <= $lastSession->day_date);
-        $sessionIds = $sessions->pluck('id');
+        if($sessions->count() === 0)
+        {
+            return;
+        }
 
+        $sessionIds = $sessions->pluck('id');
         $this->stash()->set('report.total.deposits',
             $this->roundService->getDepositAmounts($sessionIds));
         $this->stash()->set('report.total.remitments',
@@ -53,8 +60,8 @@ class RoundGraphs extends Component
         $this->stash()->set('report.total.outflows',
             $this->roundService->getOutflowAmounts($sessionIds));
 
-        $this->cl(Graph\Total::class)->render();
         $this->cl(Graph\Round::class)->render();
+        $this->cl(Graph\Total::class)->render();
         $this->cl(Graph\Balance::class)->render();
         $this->cl(Graph\Inflow::class)->render();
         $this->cl(Graph\Outflow::class)->render();

@@ -29,6 +29,9 @@ class RoundTables extends Component
         ]);
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function after(): void
     {
         $this->response()->jo('tontine')->makeTableResponsive('content-home');
