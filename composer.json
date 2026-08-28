@@ -24,10 +24,12 @@
         "jaxon-php/jaxon-dialogs": "^5.1",
         "jaxon-php/jaxon-flot": "^5.3",
         "jaxon-php/jaxon-laravel": "^5.0",
+        "inertiajs/inertia-laravel": "^3.0",
         "lagdo/laravel-facades": "^1.0",
         "laravel/fortify": "^1.38",
         "laravel/framework": "^13.17",
         "laravel/tinker": "^3.0",
+        "laravel/wayfinder": "^0.1.14",
         "league/iso3166": "^4.4",
         "mcamara/laravel-localization": "^2.4",
         "mydnic/volet": "^2.2",
@@ -40,15 +42,17 @@
         "umpirsky/currency-list": "^1.1"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.23",
+        "fakerphp/faker": "^1.24",
         "laravel-lang/attributes": "^2.16",
         "laravel-lang/http-statuses": "^3.13",
         "laravel-lang/lang": "^15.34",
+        "larastan/larastan": "^3.9",
         "laravel/pail": "^1.2.5",
         "laravel/pao": "^1.0.6",
         "laravel/pint": "^1.27",
+        "laravel/sail": "^1.53",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.6",
+        "nunomaduro/collision": "^8.9.3",
         "pestphp/pest": "^5.1",
         "pestphp/pest-plugin-laravel": "^5.0"
     },
@@ -80,8 +84,19 @@
             "Composer\\Config::disableProcessTimeout",
             "@php artisan dev"
         ],
+        "lint": [
+            "pint --parallel"
+        ],
+        "lint:check": [
+            "pint --parallel --test"
+        ],
+        "types:check": [
+            "phpstan analyse"
+        ],
         "test": [
-            "@php artisan config:clear --ansi @no_additional_args",
+            "@php artisan config:clear --ansi",
+            "@lint:check",
+            "@types:check",
             "@php artisan test"
         ],
         "post-autoload-dump": [

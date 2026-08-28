@@ -15,6 +15,7 @@ return [
             'route' => 'jaxon.ajax',
             'middlewares' => [
                 'web',
+                'auth',
                 'tenant',
                 'tontine',
                 'analytics',
@@ -36,8 +37,7 @@ return [
             // The "file" option is set by the TontineJaxon middleware.
             // 'file' => env('TONTINE_ASSETS_FILE', 'tontine-4.0.9'),
         ],
-        'packages' => [
-        ],
+        'packages' => [],
         'dialogs' => [
             'default' => [
                 'modal' => 'bootbox',

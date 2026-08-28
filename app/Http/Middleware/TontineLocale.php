@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -10,7 +11,6 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Siak\Tontine\Model\User;
 use Closure;
 
-use function auth;
 use function config;
 use function setlocale;
 use function jaxon;
@@ -27,7 +27,7 @@ class TontineLocale
         $locale = LaravelLocalization::getCurrentLocale();
         $jaxonRouteName = config('jaxon.app.request.route', 'jaxon.ajax');
         /** @var User */
-        $user = auth()->user();
+        $user = Auth::user();
         // The Jaxon request processing path is not localized. So we need to save the current
         // locale in the database, so we can have it when processing the Jaxon ajax requests.
         if($request->routeIs('tontine.home'))

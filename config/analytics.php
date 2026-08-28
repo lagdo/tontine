@@ -20,6 +20,8 @@ return [
 
     'middleware' => [
         'web',
+        'auth',
+        'can:analytics',
     ],
 
     /**
