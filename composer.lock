@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ce30b204873cee0e3c1cfbe03070102",
+    "content-hash": "47ff7556e5568f6a09cb1ec1c6e78e2d",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -3887,16 +3887,16 @@
         },
         {
             "name": "mydnic/volet",
-            "version": "v2.2.2",
+            "version": "v2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mydnic/volet.git",
-                "reference": "d6e741b78131c78bfef9316e6ca7b68a2b0eace1"
+                "reference": "51a5736ed38c6e79565b179bf85b3e4007e5b270"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mydnic/volet/zipball/d6e741b78131c78bfef9316e6ca7b68a2b0eace1",
-                "reference": "d6e741b78131c78bfef9316e6ca7b68a2b0eace1",
+                "url": "https://api.github.com/repos/mydnic/volet/zipball/51a5736ed38c6e79565b179bf85b3e4007e5b270",
+                "reference": "51a5736ed38c6e79565b179bf85b3e4007e5b270",
                 "shasum": ""
             },
             "require": {
@@ -3949,7 +3949,7 @@
             ],
             "support": {
                 "issues": "https://github.com/mydnic/volet/issues",
-                "source": "https://github.com/mydnic/volet/tree/v2.2.2"
+                "source": "https://github.com/mydnic/volet/tree/v2.2.3"
             },
             "funding": [
                 {
@@ -3957,7 +3957,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-05-04T00:31:45+00:00"
+            "time": "2026-08-25T10:03:42+00:00"
         },
         {
             "name": "nesbot/carbon",
