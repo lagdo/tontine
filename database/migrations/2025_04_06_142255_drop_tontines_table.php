@@ -66,6 +66,7 @@ return new class extends Migration
         foreach($this->refTables as $tableName => $_)
         {
             Schema::table($tableName, function(Blueprint $table) use($column) {
+                $table->dropForeign([$column]);
                 $table->dropColumn($column);
             });
         }

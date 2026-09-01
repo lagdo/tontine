@@ -255,6 +255,7 @@ SQL;
         DB::statement($sql);
 
         Schema::table('pools', function(Blueprint $table) {
+            $table->dropForeign(['def_id']);
             $table->dropColumn('def_id');
             $table->dropColumn('start_sid');
             $table->dropColumn('end_sid');

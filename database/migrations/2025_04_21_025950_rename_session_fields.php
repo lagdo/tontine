@@ -18,8 +18,12 @@ return new class extends Migration
             $table->time('end_time')->nullable();
         });
 
-        $updateQuery = <<<SQL
+        $updateQuery = DB::getDriverName() === 'pgsql' ?
+<<<SQL
 update sessions set day_date=start_at::date, start_time=start_at::time, end_time=end_at::time
+SQL :
+<<<SQL
+update sessions set day_date=start_at, start_time=start_at, end_time=end_at
 SQL;
         DB::statement($updateQuery);
 

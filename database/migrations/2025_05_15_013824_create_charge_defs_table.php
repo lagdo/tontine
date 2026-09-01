@@ -51,8 +51,9 @@ SQL;
             $table->foreign('def_id')->references('id')->on('charge_defs');
             $table->unique(['round_id', 'def_id']);
             // Delete the duplicated columns
-            $table->dropColumn(['name', 'type', 'period', 'amount',
-                'lendable', 'active', 'guild_id']);
+            $table->dropColumn(['name', 'type', 'period', 'amount', 'lendable', 'active']);
+            $table->dropForeign(['guild_id']);
+            $table->dropColumn('guild_id');
         });
 
         // Create a temp view

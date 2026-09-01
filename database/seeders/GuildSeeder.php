@@ -4,7 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Siak\Tontine\Model\Charge;
+use Siak\Tontine\Model\FundDef;
+use Siak\Tontine\Model\ChargeDef;
 use Siak\Tontine\Model\Guild;
 
 class GuildSeeder extends Seeder
@@ -17,10 +18,13 @@ class GuildSeeder extends Seeder
     private function createFunds(Guild $guild): void
     {
         $guild->funds()->createMany([[
+            'type' => FundDef::TYPE_AUTO,
             'title' => '', // The mandatory default fund
         ],[
+            'type' => FundDef::TYPE_USER,
             'title' => 'Banque scolaire',
         ],[
+            'type' => FundDef::TYPE_USER,
             'title' => 'Banque annuelle',
         ]]);
     }
@@ -109,38 +113,38 @@ class GuildSeeder extends Seeder
     {
         $guild->charges()->createMany([[
             'name' => "Amende pour retard",
-            'type' => Charge::TYPE_FINE,
-            'period' => Charge::PERIOD_NONE,
+            'type' => ChargeDef::TYPE_FINE,
+            'period' => ChargeDef::PERIOD_NONE,
             'amount' => 500,
             'lendable' => true,
         ],[
             'name' => "Amende pour désordre",
-            'type' => Charge::TYPE_FINE,
-            'period' => Charge::PERIOD_NONE,
+            'type' => ChargeDef::TYPE_FINE,
+            'period' => ChargeDef::PERIOD_NONE,
             'amount' => 0,
             'lendable' => true,
         ],[
             'name' => "Contribution de solidarité",
-            'type' => Charge::TYPE_FEE,
-            'period' => Charge::PERIOD_NONE,
+            'type' => ChargeDef::TYPE_FEE,
+            'period' => ChargeDef::PERIOD_NONE,
             'amount' => 0,
             'lendable' => false,
         ],[
             'name' => "Frais de dossier",
-            'type' => Charge::TYPE_FEE,
-            'period' => Charge::PERIOD_ONCE,
+            'type' => ChargeDef::TYPE_FEE,
+            'period' => ChargeDef::PERIOD_ONCE,
             'amount' => 2000,
             'lendable' => false,
         ],[
             'name' => "Frais d'inscription",
-            'type' => Charge::TYPE_FEE,
-            'period' => Charge::PERIOD_ROUND,
+            'type' => ChargeDef::TYPE_FEE,
+            'period' => ChargeDef::PERIOD_ROUND,
             'amount' => 8000,
             'lendable' => false,
         ],[
             'name' => "Participation à la réception",
-            'type' => Charge::TYPE_FEE,
-            'period' => Charge::PERIOD_SESSION,
+            'type' => ChargeDef::TYPE_FEE,
+            'period' => ChargeDef::PERIOD_SESSION,
             'amount' => 1000,
             'lendable' => false,
         ]]);

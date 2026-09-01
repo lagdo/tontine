@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\MemberDef;
 
 class MemberSeeder extends Seeder
 {
@@ -14,6 +14,6 @@ class MemberSeeder extends Seeder
      */
     public function run()
     {
-        Member::factory()->count(50)->create();
+        MemberDef::factory()->count(50)->create();
     }
 }

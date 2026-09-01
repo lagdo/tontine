@@ -34,6 +34,7 @@ SQL;
     public function down(): void
     {
         Schema::table('onetime_bills', function (Blueprint $table) {
+            $table->dropForeign(['round_id']);
             $table->dropColumn('round_id');
         });
     }

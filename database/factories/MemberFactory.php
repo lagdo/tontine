@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 use Siak\Tontine\Model\Guild;
-use Siak\Tontine\Model\Member;
+use Siak\Tontine\Model\MemberDef;
 
 class MemberFactory extends Factory
 {
@@ -14,7 +14,7 @@ class MemberFactory extends Factory
      *
      * @var string
      */
-    protected $model = Member::class;
+    protected $model = MemberDef::class;
 
     /**
      * Define the model's default state.

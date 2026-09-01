@@ -126,6 +126,7 @@ SQL;
             $table->dropColumn('title');
             $table->dropColumn('notes');
             $table->dropColumn('active');
+            $table->dropForeign(['guild_id']);
             $table->dropColumn('guild_id');
         });
         // Delete the obsolete entries
@@ -271,11 +272,14 @@ SQL;
             $table->unsignedBigInteger('guild_id')->nullable(false)->change();
             $table->dropColumn('type');
             $table->dropColumn('options');
+            $table->dropForeign(['round_id']);
             $table->dropColumn('round_id');
+            $table->dropForeign(['def_id']);
             $table->dropColumn('def_id');
             $table->dropColumn('start_sid');
             $table->dropColumn('end_sid');
             $table->dropColumn('interest_sid');
+            $table->dropForeign(['pool_id']);
             $table->dropColumn('pool_id');
         });
 

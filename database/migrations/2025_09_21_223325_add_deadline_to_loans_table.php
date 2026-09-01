@@ -25,6 +25,7 @@ return new class extends Migration
     {
         Schema::table('loans', function (Blueprint $table) {
             $table->dropColumn('deadline_date');
+            $table->dropForeign(['deadline_session_id']);
             $table->dropColumn('deadline_session_id');
         });
     }

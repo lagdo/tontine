@@ -51,7 +51,9 @@ SQL;
             $table->unique(['round_id', 'def_id']);
             // Delete the duplicated columns
             $table->dropColumn(['name', 'email', 'phone', 'address',
-                'city', 'registered_at', 'birthday', 'active', 'guild_id']);
+                'city', 'registered_at', 'birthday', 'active']);
+            $table->dropForeign(['guild_id']);
+            $table->dropColumn('guild_id');
         });
 
         // Create a temp view

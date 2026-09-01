@@ -97,7 +97,7 @@ SQL;
         DB::statement($sql);
 
         Schema::table('settlements', function (Blueprint $table) {
-            $table->dropColumn('fund_id');
+            $table->dropForeign(['fund_id']);
         });
 
         // Then re-create the v_settlements view.
