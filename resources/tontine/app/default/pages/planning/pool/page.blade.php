@@ -28,12 +28,19 @@
                     <tbody>
 @foreach ($defs as $def)
 @php
+  $pool = $def->pools->first();
   $count = $def->pools->count();
   $toggleClass = $count > 0 ? 'btn-pool-disable' : 'btn-pool-enable';
   $toggleIcon = $count > 0 ? 'fa fa-toggle-on' : 'fa fa-toggle-off';
 @endphp
                       <tr>
-                        <td><b>{{ $def->title }}</b></td>
+                        <td>
+                          <b>{{ $def->title }}</b>
+@if ($count > 0)
+                          <br/>{{ trans_choice('tontine.pool.count.sessions', $pool->sessions_count) }}
+                          {{ trans_choice('tontine.pool.count.subscriptions', $pool->subscriptions_count) }}
+@endif
+                        </td>
                         <td class="table-item-toggle" data-def-id="{{ $def->id }}">
                           <a role="link" tabindex="0" class="{{ $toggleClass }}"><i class="{{ $toggleIcon }}"></i></a>
 @if ($def->pools_in_round_count > $count)
@@ -53,7 +60,7 @@
 @endphp
 @include('tontine_app::parts.table.menu', [
   'dataIdKey' => 'data-pool-id',
-  'dataIdValue' => $def->pools->first()->id,
+  'dataIdValue' => $pool->id,
   'menus' => [
     [
       'class' => 'btn-pool-sessions',

@@ -39,9 +39,11 @@ class PoolPage extends PageComponent
     public function html(): string
     {
         $filter = $this->bag('planning.pool')->get('filter', null);
+        $page = $this->currentPage();
+        $poolDefs = $this->poolService->getPoolDefs($this->round(), $filter, $page);
         return $this->renderTpl('pages.planning.pool.page', [
             'round' => $this->round(),
-            'defs' => $this->poolService->getPoolDefs($this->round(), $filter, $this->currentPage()),
+            'defs' => $poolDefs,
         ]);
     }
 

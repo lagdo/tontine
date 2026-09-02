@@ -420,6 +420,10 @@ return [
                 'auction' => "Les remises se font après enchères",
             ],
         ],
+        'count' => [
+            'sessions' => "{0} Pas de séance.|{1} 1 séance.|[2,*] :count séances.",
+            'subscriptions' => "{0} Pas de souscription.|{1} 1 souscription.|[2,*] :count souscriptions.",
+        ],
         'help' => [
             'intro' => "Vous allez ajouter un nouveau fonds de tontine.<br/>" .
                 "Nous allons vous demander de préciser ses caractéristiques.",

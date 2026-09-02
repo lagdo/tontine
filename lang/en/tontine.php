@@ -420,6 +420,10 @@ return [
                 'auction' => "The amounts are remitted after auction",
             ],
         ],
+        'count' => [
+            'sessions' => "{0} No session.|{1} 1 session.|[2,*] :count sessions.",
+            'subscriptions' => "{0} No subscription.|{1} 1 subscription.|[2,*] :count subscriptions.",
+        ],
         'help' => [
             'intro' => "You are going to add a new tontine fund.<br/>" .
                 "We are going to ask you to specify its characteristics.",

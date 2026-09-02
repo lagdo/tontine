@@ -59,7 +59,7 @@ class PoolService
                 'pools' => fn(Builder|Relation $q) => $q->where('round_id', $round->id),
             ])
             ->withCount([
-                'pools as pools_in_round_count' => fn(Builder|Relation $q) => $q->ofRound($round),
+                'pools as pools_in_round_count' => fn($q) => $q->ofRound($round),
             ])
             ->page($page, $this->tenantService->getLimit())
             ->get();

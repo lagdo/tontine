@@ -58,6 +58,7 @@ class Pool extends Base
                 'vp.end_date',
                 'vp.start_date',
                 'vp.sessions_count',
+                'vp.subscriptions_count',
             ])->join(DB::raw('v_pools as vp'), 'vp.pool_id', '=', 'pools.id');
         });
     }
