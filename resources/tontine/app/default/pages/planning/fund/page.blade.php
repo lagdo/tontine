@@ -22,12 +22,20 @@
                       <tbody>
 @foreach ($defs as $def)
 @php
+  $fund = $def->funds->first();
   $count = $def->funds->count();
   $toggleClass = $count > 0 ? 'btn-fund-disable' : 'btn-fund-enable';
   $toggleIcon = $count > 0 ? 'fa fa-toggle-on' : 'fa fa-toggle-off';
 @endphp
                         <tr>
-                          <td>{!! $def->type_user ? $def->title : __('tontine.fund.labels.default') !!}</td>
+                          <td>
+                            <b>{!! $def->type_user ? $def->title : __('tontine.fund.labels.default') !!}</b><br/>
+@if ($count === 0)
+                            {{ __('tontine.fund.labels.excluded') }}
+@else
+                            {{ trans_choice('tontine.fund.count.sessions', $fund->sessions_count) }}
+@endif
+                          </td>
                           <td class="table-item-toggle" data-def-id="{{ $def->id }}">
                             <a role="link" tabindex="0" class="{{ $toggleClass }}"><i class="{{ $toggleIcon }}"></i></a>
 @if ($def->funds_in_round_count > $count)
@@ -38,7 +46,7 @@
 @if($count > 0)
 @include('tontine_app::parts.table.menu', [
   'dataIdKey' => 'data-fund-id',
-  'dataIdValue' => $def->funds->first()->id,
+  'dataIdValue' => $fund->id,
   'menus' => [[
     'class' => 'btn-fund-sessions',
     'text' => __('tontine.actions.sessions'),

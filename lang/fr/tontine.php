@@ -279,6 +279,10 @@ return [
             'default' => "&Eacute;pargne",
             'fund' => "Fonds d'épargne",
             'savings' => "&Eacute;pargne",
+            'excluded' => "Pas inclus dans ce tour.",
+        ],
+        'count' => [
+            'sessions' => "{0} Pas de séance.|{1} 1 séance.|[2,*] :count séances.",
         ],
         'questions' => [
             'delete' => "Supprimer ce fonds d'épargne ?",
@@ -419,6 +423,7 @@ return [
                 'planned' => "Le nombre de remises est défini à l'avance",
                 'auction' => "Les remises se font après enchères",
             ],
+            'excluded' => "Pas inclus dans ce tour.",
         ],
         'count' => [
             'sessions' => "{0} Pas de séance.|{1} 1 séance.|[2,*] :count séances.",

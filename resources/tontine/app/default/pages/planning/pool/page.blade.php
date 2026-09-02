@@ -35,9 +35,11 @@
 @endphp
                       <tr>
                         <td>
-                          <b>{{ $def->title }}</b>
-@if ($count > 0)
-                          <br/>{{ trans_choice('tontine.pool.count.sessions', $pool->sessions_count) }}
+                          <b>{{ $def->title }}</b><br/>
+@if ($count === 0)
+                          {{ __('tontine.pool.labels.excluded') }}
+@else
+                          {{ trans_choice('tontine.pool.count.sessions', $pool->sessions_count) }}
                           {{ trans_choice('tontine.pool.count.subscriptions', $pool->subscriptions_count) }}
 @endif
                         </td>

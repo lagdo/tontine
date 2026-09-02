@@ -279,6 +279,10 @@ return [
             'default' => "Saving",
             'fund' => "Savings fund",
             'savings' => "Savings",
+            'excluded' => "Not selected for this round.",
+        ],
+        'count' => [
+            'sessions' => "{0} No session.|{1} 1 session.|[2,*] :count sessions.",
         ],
         'questions' => [
             'delete' => "Delete this savings fund?",
@@ -419,6 +423,7 @@ return [
                 'planned' => "The number of remitments is defined in advance",
                 'auction' => "The amounts are remitted after auction",
             ],
+            'excluded' => "Not selected for this round.",
         ],
         'count' => [
             'sessions' => "{0} No session.|{1} 1 session.|[2,*] :count sessions.",
