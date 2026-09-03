@@ -35,12 +35,14 @@ class FundService
      * Get the number of funds.
      *
      * @param Guild $guild
+     * @param bool $withDefault
      *
      * @return int
      */
-    public function getFundCount(Guild $guild): int
+    public function getFundCount(Guild $guild, bool $withDefault = false): int
     {
-        return $guild->funds()->user()->count();
+        return $withDefault ? $guild->funds()->count() :
+            $guild->funds()->user()->count();
     }
 
     /**
