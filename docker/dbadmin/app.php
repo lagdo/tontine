@@ -8,16 +8,20 @@ use Lagdo\DbAdmin\Support\Service;
 use Pharaonic\Slugify\Facades\Slugify;
 
 return [
-    'admin' => [
-        'ui' => [
-            'toast' => [
-                'lib' => 'butterup',
-            ],
-            'query' => [
-                // 'cm' for CodeMirror or 'ace' for Ace Editor.
-                'editor' => 'cm',
-            ],
+    'ui' => [
+        'template' => 'bootstrap5',
+        'assets' => [
+            'url' => '/dbadmin',
         ],
+        'toast' => [
+            'lib' => 'butterup',
+        ],
+        'query' => [
+            // 'cm' for CodeMirror or 'ace' for Ace Editor.
+            'editor' => 'cm',
+        ],
+    ],
+    'admin' => [
         'queries' => [
             'save' => [
                 'editor' => false,
