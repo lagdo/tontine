@@ -9,7 +9,7 @@ use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\FundService;
 use Siak\Tontine\Validation\Guild\FundValidator;
 
-use function Jaxon\form;
+use function Jaxon\pm;
 use function trans;
 
 #[Before('checkHostAccess', ["finance", "accounts"])]
@@ -38,7 +38,7 @@ class FundFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(form('fund-form')),
+            'click' => $this->rq()->create(pm()->form('fund-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -69,7 +69,7 @@ class FundFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($fund->id, form('fund-form')),
+            'click' => $this->rq()->update($fund->id, pm()->form('fund-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

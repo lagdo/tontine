@@ -10,7 +10,7 @@ use Siak\Tontine\Service\Meeting\Saving\FundService;
 use Siak\Tontine\Service\Meeting\Member\MemberService;
 use Siak\Tontine\Validation\Meeting\LoanValidator;
 
-use function Jaxon\form;
+use function Jaxon\pm;
 use function trans;
 
 class LoanFunc extends FuncComponent
@@ -48,7 +48,7 @@ class LoanFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(form('loan-form')),
+            'click' => $this->rq()->create(pm()->form('loan-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
         $this->response()->jo('tontine')->setLoanInterestLabel();
@@ -119,7 +119,7 @@ class LoanFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($loanId, form('loan-form')),
+            'click' => $this->rq()->update($loanId, pm()->form('loan-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
         $this->response()->jo('tontine')->setLoanInterestLabel();
@@ -193,7 +193,7 @@ class LoanFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->updateDeadline($loanId, form('loan-edit-deadline')),
+            'click' => $this->rq()->updateDeadline($loanId, pm()->form('loan-edit-deadline')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

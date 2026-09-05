@@ -7,7 +7,7 @@ use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Meeting\Cash\OutflowService;
 use Siak\Tontine\Validation\Meeting\OutflowValidator;
 
-use function Jaxon\form;
+use function Jaxon\pm;
 use function trans;
 
 class OutflowFunc extends FuncComponent
@@ -40,7 +40,7 @@ class OutflowFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->createOutflow(form('outflow-form')),
+            'click' => $this->rq()->createOutflow(pm()->form('outflow-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -77,7 +77,7 @@ class OutflowFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->updateOutflow($outflowId, form('outflow-form')),
+            'click' => $this->rq()->updateOutflow($outflowId, pm()->form('outflow-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

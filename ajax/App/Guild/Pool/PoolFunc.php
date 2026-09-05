@@ -11,8 +11,7 @@ use Siak\Tontine\Service\Guild\PoolService;
 use Siak\Tontine\Service\LocaleService;
 use Siak\Tontine\Validation\Guild\PoolValidator;
 
-use function Jaxon\checked;
-use function Jaxon\form;
+use function Jaxon\pm;
 use function trans;
 
 #[Before('checkHostAccess', ["finance", "pools"])]
@@ -67,7 +66,7 @@ class PoolFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.next'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveDepositFixed(checked('pool_deposit_fixed')),
+            'click' => $this->rq()->saveDepositFixed(pm()->checked('pool_deposit_fixed')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -111,7 +110,7 @@ class PoolFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.next'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveDepositLendable(checked('pool_deposit_lendable')),
+            'click' => $this->rq()->saveDepositLendable(pm()->checked('pool_deposit_lendable')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -147,7 +146,7 @@ class PoolFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.next'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveRemitPlanned(checked('pool_remit_planned')),
+            'click' => $this->rq()->saveRemitPlanned(pm()->checked('pool_remit_planned')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -182,7 +181,7 @@ class PoolFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.next'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->saveRemitAuction(checked('pool_remit_auction')),
+            'click' => $this->rq()->saveRemitAuction(pm()->checked('pool_remit_auction')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -211,7 +210,7 @@ class PoolFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(form('pool-form')),
+            'click' => $this->rq()->create(pm()->form('pool-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -245,7 +244,7 @@ class PoolFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($pool->id, form('pool-form')),
+            'click' => $this->rq()->update($pool->id, pm()->form('pool-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

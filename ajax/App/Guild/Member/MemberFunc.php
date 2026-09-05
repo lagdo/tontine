@@ -10,7 +10,7 @@ use Jaxon\Attributes\Attribute\Inject;
 use Siak\Tontine\Service\Guild\MemberService;
 use Siak\Tontine\Validation\Guild\MemberValidator;
 
-use function Jaxon\form;
+use function Jaxon\pm;
 use function array_filter;
 use function array_map;
 use function config;
@@ -43,7 +43,7 @@ class MemberFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->create(form('member-form')),
+            'click' => $this->rq()->create(pm()->form('member-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -70,7 +70,7 @@ class MemberFunc extends FuncComponent
             'class' => 'btn btn-tertiary',
             'click' => 'close',
         ]];
-        $useFaker = config('jaxon.app.faker', false);
+        $useFaker = config('tontine.app.demo', false);
         if($useFaker)
         {
             $buttons[] = [
@@ -82,7 +82,7 @@ class MemberFunc extends FuncComponent
         $buttons[] = [
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->createList(form('member-list')),
+            'click' => $this->rq()->createList(pm()->form('member-list')),
         ];
         $this->modal()->show($title, $content, $buttons);
     }
@@ -151,7 +151,7 @@ class MemberFunc extends FuncComponent
         ],[
             'title' => trans('common.actions.save'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->update($member->id, form('member-form')),
+            'click' => $this->rq()->update($member->id, pm()->form('member-form')),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

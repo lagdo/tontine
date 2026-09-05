@@ -9,7 +9,7 @@ use Jaxon\Attributes\Attribute\Before;
 use Jaxon\Attributes\Attribute\Exclude;
 use Siak\Tontine\Model\Guild as GuildModel;
 
-use function Jaxon\select;
+use function Jaxon\pm;
 use function trans;
 use function view;
 
@@ -31,7 +31,7 @@ class GuildMenuFunc extends Base\FuncComponent
         ], [
             'title' => trans('tontine.actions.choose'),
             'class' => 'btn btn-primary',
-            'click' => $this->rq()->selectGuild(select('guild_id')->toInt()),
+            'click' => $this->rq()->selectGuild(pm()->select('guild_id')->toInt()),
         ]];
         $this->modal()->show($title, $content, $buttons);
     }

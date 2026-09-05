@@ -5,7 +5,7 @@ namespace Ajax\App\Meeting\Session\Charge\Libre;
 use Ajax\App\Meeting\Session\Charge\Component;
 use Siak\Tontine\Service\LocaleService;
 
-use function Jaxon\checked;
+use function Jaxon\pm;
 use function jq;
 
 class Amount extends Component
@@ -51,7 +51,7 @@ class Amount extends Component
         }
 
         $amountValue = jq("#member-charge-input-$memberId")->val();
-        $paid = checked('check-fee-libre-paid');
+        $paid = pm()->checked('check-fee-libre-paid');
         return $this->renderTpl('pages.meeting.session.charge.libre.member.edit', [
             'memberId' => $memberId,
             'amount' => !$bill ? '' : $this->localeService->getMoneyValue($bill->amount),
