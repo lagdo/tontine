@@ -1,5 +1,6 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/lagdo/tontine/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/lagdo/tontine/?branch=main)
 [![StyleCI](https://github.styleci.io/repos/500135711/shield?branch=main)](https://github.styleci.io/repos/500135711?branch=main)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Flagdo%2Ftontine.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Flagdo%2Ftontine?ref=badge_shield)
 
 [![Latest Stable Version](https://poser.pugx.org/lagdo/tontine/v/stable)](https://packagist.org/packages/lagdo/tontine)
 [![License](https://poser.pugx.org/lagdo/tontine/license)](https://packagist.org/packages/lagdo/tontine)
@@ -38,3 +39,7 @@ php artisan db:seed
 ```
 
 Configure the web server to publish files in the `public` subdir, and display the page in your browser.
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Flagdo%2Ftontine.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Flagdo%2Ftontine?ref=badge_large)
