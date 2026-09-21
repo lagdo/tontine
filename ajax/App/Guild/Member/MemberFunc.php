@@ -70,8 +70,7 @@ class MemberFunc extends FuncComponent
             'class' => 'btn btn-tertiary',
             'click' => 'close',
         ]];
-        $useFaker = config('tontine.app.demo', false);
-        if($useFaker)
+        if(config('tontine.app.faker', false))
         {
             $buttons[] = [
                 'title' => '<i class="fa fa-fill"></i>',

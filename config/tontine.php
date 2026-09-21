@@ -1,10 +1,9 @@
 <?php
 
 return [
-    'templates' => [
-        'login' => [
-            'form' => 'tontine::app.auth.login-form',
-        ],
+    'app' => [
+        'demo' => env('APP_DEMO', false),
+        'faker' => env('APP_FAKER', false),
     ],
     'access' => [
         'admin' => [

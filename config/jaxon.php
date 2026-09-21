@@ -9,7 +9,6 @@ return [
                 'dir' => storage_path('attributes'),
             ]
         ],
-        'faker' => env('APP_FAKER', false),
         'helpers' => true,
         'request' => [
             'route' => 'jaxon.ajax',
