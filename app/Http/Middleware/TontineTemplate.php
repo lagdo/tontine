@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\View;
 
-use function config;
 use function jaxon;
 use function resource_path;
 
@@ -24,10 +23,9 @@ class TontineTemplate
      */
     public function handle(Request $request, Closure $next)
     {
-        $template = config('tontine.templates.app', 'default');
-        $tontinePath = resource_path("tontine/app/$template");
+        $tontinePath = resource_path('tontine/app');
         $paginationPath = "$tontinePath/parts/table/pagination";
-        View::addNamespace('tontine', resource_path("tontine"));
+        View::addNamespace('tontine', resource_path('tontine'));
         View::addNamespace('tontine_app', $tontinePath);
 
         // Register the namespaces in the Jaxon view renderer.

@@ -33,7 +33,7 @@
             <div class="login-brand">
             </div>
 
-@include('tontine::app.default.parts.header.learn')
+@include('tontine::app.parts.header.learn')
 
 @include('tontine::app.auth.messages.session')
 
